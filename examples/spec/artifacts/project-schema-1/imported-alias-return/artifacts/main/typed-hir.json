@@ -270,6 +270,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0
@@ -437,6 +438,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Show",
                 "evidence": {
                   "kind": "parameter",
                   "index": 0
@@ -475,6 +477,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Add",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/string::Add"
@@ -681,6 +684,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -818,6 +822,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"
@@ -1061,6 +1066,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "parameter",
                       "index": 0
@@ -1162,6 +1168,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -1246,6 +1253,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Bool>"

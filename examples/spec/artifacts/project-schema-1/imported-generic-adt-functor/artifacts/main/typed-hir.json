@@ -140,6 +140,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -520,6 +521,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "fixture/imported-generic-adt-functor::domain::trait(Functor)",
                     "evidence": {
                       "kind": "imported",
                       "identity": "fixture/imported-generic-adt-functor::domain::trait(Functor)<fixture/imported-generic-adt-functor::domain::Box>",

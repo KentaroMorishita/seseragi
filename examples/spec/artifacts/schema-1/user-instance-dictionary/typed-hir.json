@@ -300,6 +300,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/user-instance-dictionary::trait(Render)",
             "evidence": {
               "kind": "local",
               "identity": "artifact/user-instance-dictionary::trait(Render)<artifact/user-instance-dictionary::Badge>"

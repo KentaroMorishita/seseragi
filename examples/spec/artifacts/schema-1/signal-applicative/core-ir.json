@@ -665,6 +665,7 @@
                       {
                         "constraint": {
                           "name": "Mul",
+                          "traitIdentity": "std/prelude::Mul",
                           "arguments": [
                             {
                               "kind": "named",
@@ -745,6 +746,7 @@
                 {
                   "constraint": {
                     "name": "Functor",
+                    "traitIdentity": "std/prelude::Functor",
                     "arguments": [
                       {
                         "kind": "external-named",
@@ -856,6 +858,7 @@
                       {
                         "constraint": {
                           "name": "Add",
+                          "traitIdentity": "std/prelude::Add",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1071,6 +1074,7 @@
                 {
                   "constraint": {
                     "name": "Applicative",
+                    "traitIdentity": "std/prelude::Applicative",
                     "arguments": [
                       {
                         "kind": "external-named",
@@ -1652,6 +1656,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",

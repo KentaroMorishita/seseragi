@@ -447,6 +447,7 @@ fn match_imported_instance(
                 stack,
             )?;
             Some(TypedCallEvidence {
+                trait_identity: required.trait_identity.clone(),
                 constraint,
                 evidence,
             })

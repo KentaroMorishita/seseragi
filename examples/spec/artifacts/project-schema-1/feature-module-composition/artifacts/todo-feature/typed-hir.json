@@ -716,6 +716,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Eq",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/string::Eq"
@@ -1872,6 +1873,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Reducible",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/array::Reducible"
@@ -2299,6 +2301,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -2495,6 +2498,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<Array>"

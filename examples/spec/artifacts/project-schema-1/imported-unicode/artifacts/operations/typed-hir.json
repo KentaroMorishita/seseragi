@@ -1026,6 +1026,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "Debug<std/text::TextSliceError>"

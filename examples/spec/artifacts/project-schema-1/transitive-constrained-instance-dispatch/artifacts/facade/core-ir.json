@@ -109,6 +109,7 @@
           {
             "constraint": {
               "name": "Inspect",
+              "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
               "arguments": [
                 {
                   "kind": "named",

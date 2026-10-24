@@ -171,6 +171,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/transitive-instance-dispatch::provider::trait(Ready)",
                 "evidence": {
                   "kind": "imported",
                   "identity": "fixture/transitive-instance-dispatch::provider::trait(Ready)<fixture/transitive-instance-dispatch::provider::Badge>",

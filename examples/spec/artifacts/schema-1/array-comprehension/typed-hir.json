@@ -95,6 +95,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Add",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Add"
@@ -196,6 +197,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Iterable",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/array::Iterable"
@@ -290,6 +292,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Iterable",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/array::Iterable"
@@ -343,6 +346,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Eq"

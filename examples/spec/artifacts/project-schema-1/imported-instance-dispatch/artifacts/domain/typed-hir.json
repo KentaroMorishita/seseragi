@@ -214,6 +214,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-instance-dispatch::domain::trait(Ready)",
             "evidence": {
               "kind": "parameter",
               "index": 0

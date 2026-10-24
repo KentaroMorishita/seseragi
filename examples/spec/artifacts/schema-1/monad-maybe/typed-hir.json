@@ -1581,6 +1581,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/monad-maybe::trait(Monad)",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -1755,6 +1756,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                 "evidence": {
                   "kind": "parameter",
                   "index": 0
@@ -1794,6 +1796,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/monad-maybe::trait(Monad)",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -1914,6 +1917,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Add",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/int::Add"
@@ -2068,6 +2072,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -2166,6 +2171,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Ord",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Ord"
@@ -2502,6 +2508,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Add"
@@ -2554,6 +2561,7 @@
                   }
                 ]
               },
+              "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
               "evidence": {
                 "kind": "local",
                 "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
@@ -2569,6 +2577,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                     "evidence": {
                       "kind": "local",
                       "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
@@ -2609,6 +2618,7 @@
               }
             ]
           },
+          "traitIdentity": "artifact/monad-maybe::trait(Monad)",
           "evidence": {
             "kind": "local",
             "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
@@ -2624,6 +2634,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                 "evidence": {
                   "kind": "local",
                   "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
@@ -2639,6 +2650,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                       "evidence": {
                         "kind": "local",
                         "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
@@ -3124,6 +3136,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                           "evidence": {
                             "kind": "local",
                             "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
@@ -3395,6 +3408,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                           "evidence": {
                             "kind": "local",
                             "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
@@ -3410,6 +3424,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                 "evidence": {
                                   "kind": "local",
                                   "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
@@ -3554,6 +3569,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "artifact/monad-maybe::trait(Monad)",
                               "evidence": {
                                 "kind": "local",
                                 "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
@@ -3569,6 +3585,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                                     "evidence": {
                                       "kind": "local",
                                       "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
@@ -3584,6 +3601,7 @@
                                               }
                                             ]
                                           },
+                                          "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                           "evidence": {
                                             "kind": "local",
                                             "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
@@ -3652,6 +3670,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "artifact/monad-maybe::trait(Monad)",
                           "evidence": {
                             "kind": "local",
                             "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
@@ -3667,6 +3686,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                                 "evidence": {
                                   "kind": "local",
                                   "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
@@ -3682,6 +3702,7 @@
                                           }
                                         ]
                                       },
+                                      "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                       "evidence": {
                                         "kind": "local",
                                         "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
@@ -3825,6 +3846,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "artifact/monad-maybe::trait(Monad)",
                           "evidence": {
                             "kind": "local",
                             "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
@@ -3840,6 +3862,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                                 "evidence": {
                                   "kind": "local",
                                   "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
@@ -3855,6 +3878,7 @@
                                           }
                                         ]
                                       },
+                                      "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                       "evidence": {
                                         "kind": "local",
                                         "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"

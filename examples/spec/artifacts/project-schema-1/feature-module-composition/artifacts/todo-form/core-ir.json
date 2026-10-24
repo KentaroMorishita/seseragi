@@ -1549,6 +1549,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -1744,6 +1745,7 @@
           {
             "constraint": {
               "name": "IntoChildren",
+              "traitIdentity": "std/web/html::trait(IntoChildren)",
               "arguments": [
                 {
                   "kind": "named",

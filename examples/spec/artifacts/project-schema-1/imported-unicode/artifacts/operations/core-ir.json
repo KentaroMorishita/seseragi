@@ -775,6 +775,7 @@
           {
             "constraint": {
               "name": "Debug",
+              "traitIdentity": "std/prelude::Debug",
               "arguments": [
                 {
                   "kind": "external-named",

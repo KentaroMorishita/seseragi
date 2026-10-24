@@ -145,6 +145,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::String>"
@@ -190,6 +191,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "local",
                 "identity": "Show<artifact/template-interpolation::Badge>"

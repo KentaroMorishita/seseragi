@@ -80,6 +80,7 @@
               {
                 "constraint": {
                   "name": "Sub",
+                  "traitIdentity": "std/prelude::Sub",
                   "arguments": [
                     {
                       "kind": "named",
@@ -159,6 +160,7 @@
               {
                 "constraint": {
                   "name": "Add",
+                  "traitIdentity": "std/prelude::Add",
                   "arguments": [
                     {
                       "kind": "named",

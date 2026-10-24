@@ -132,6 +132,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Eq"
@@ -301,6 +302,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Ord"
@@ -459,6 +461,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Ord",
             "evidence": {
               "kind": "parameter",
               "index": 0

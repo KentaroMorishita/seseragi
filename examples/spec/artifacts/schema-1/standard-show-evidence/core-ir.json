@@ -180,6 +180,7 @@
                       {
                         "constraint": {
                           "name": "Show",
+                          "traitIdentity": "std/prelude::Show",
                           "arguments": [
                             {
                               "kind": "named",
@@ -396,6 +397,7 @@
           {
             "constraint": {
               "name": "Render",
+              "traitIdentity": "artifact/standard-show-evidence::trait(Render)",
               "arguments": [
                 {
                   "kind": "named",
@@ -424,6 +426,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",

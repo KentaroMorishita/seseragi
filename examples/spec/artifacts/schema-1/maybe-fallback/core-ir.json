@@ -355,6 +355,7 @@
           {
             "constraint": {
               "name": "Div",
+              "traitIdentity": "std/prelude::Div",
               "arguments": [
                 {
                   "kind": "named",
@@ -935,6 +936,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -1128,6 +1130,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -1349,6 +1352,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",

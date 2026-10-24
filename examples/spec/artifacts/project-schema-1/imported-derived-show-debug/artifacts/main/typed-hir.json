@@ -156,6 +156,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Show",
             "evidence": {
               "kind": "imported",
               "identity": "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
@@ -179,6 +180,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "imported",
                     "identity": "Show<fixture/imported-derived-show-debug::domain::Code>",
@@ -284,6 +286,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "imported",
               "identity": "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>",
@@ -307,6 +310,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "imported",
                     "identity": "Debug<fixture/imported-derived-show-debug::domain::Code>",

@@ -440,6 +440,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "imported",
                           "identity": "Show<fixture/opaque-struct::domain::Secret>",
@@ -563,6 +564,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Eq",
                             "evidence": {
                               "kind": "imported",
                               "identity": "Eq<fixture/opaque-struct::domain::Secret>",
@@ -593,6 +595,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -1034,6 +1037,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/array::Show",
@@ -1056,6 +1060,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Show",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "Show<std/prelude::Int>"

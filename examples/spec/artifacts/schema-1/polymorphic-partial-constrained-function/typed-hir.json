@@ -230,6 +230,7 @@
                   }
                 ]
               },
+              "traitIdentity": "artifact/polymorphic-partial-constrained-function::trait(Ready)",
               "evidence": {
                 "kind": "parameter",
                 "index": 0
@@ -285,6 +286,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/string::Add"
@@ -453,6 +455,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/polymorphic-partial-constrained-function::trait(Ready)",
                 "evidence": {
                   "kind": "parameter",
                   "index": 0
@@ -602,6 +605,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/polymorphic-partial-constrained-function::trait(Ready)",
                 "evidence": {
                   "kind": "local",
                   "identity": "artifact/polymorphic-partial-constrained-function::trait(Ready)<artifact/polymorphic-partial-constrained-function::Badge>"

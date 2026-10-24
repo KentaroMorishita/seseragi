@@ -164,6 +164,7 @@
             {
               "constraint": {
                 "name": "Rem",
+                "traitIdentity": "std/prelude::Rem",
                 "arguments": [
                   {
                     "kind": "named",
@@ -212,6 +213,7 @@
           {
             "constraint": {
               "name": "Eq",
+              "traitIdentity": "std/prelude::Eq",
               "arguments": [
                 {
                   "kind": "named",
@@ -343,6 +345,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -548,6 +551,7 @@
               {
                 "constraint": {
                   "name": "Sub",
+                  "traitIdentity": "std/prelude::Sub",
                   "arguments": [
                     {
                       "kind": "named",
@@ -687,6 +691,7 @@
               {
                 "constraint": {
                   "name": "Sub",
+                  "traitIdentity": "std/prelude::Sub",
                   "arguments": [
                     {
                       "kind": "named",
@@ -822,6 +827,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -889,6 +895,7 @@
                 "evidence": {
                   "constraint": {
                     "name": "Iterable",
+                    "traitIdentity": "std/prelude::Iterable",
                     "arguments": [
                       {
                         "kind": "named",
@@ -942,6 +949,7 @@
           {
             "constraint": {
               "name": "Reducible",
+              "traitIdentity": "std/prelude::Reducible",
               "arguments": [
                 {
                   "kind": "named",
@@ -1060,6 +1068,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -1127,6 +1136,7 @@
                 "evidence": {
                   "constraint": {
                     "name": "Iterable",
+                    "traitIdentity": "std/prelude::Iterable",
                     "arguments": [
                       {
                         "kind": "named",
@@ -1180,6 +1190,7 @@
           {
             "constraint": {
               "name": "Reducible",
+              "traitIdentity": "std/prelude::Reducible",
               "arguments": [
                 {
                   "kind": "named",
@@ -1848,6 +1859,7 @@
               {
                 "constraint": {
                   "name": "Reducible",
+                  "traitIdentity": "std/prelude::Reducible",
                   "arguments": [
                     {
                       "kind": "named",
@@ -2090,6 +2102,7 @@
               {
                 "constraint": {
                   "name": "Reducible",
+                  "traitIdentity": "std/prelude::Reducible",
                   "arguments": [
                     {
                       "kind": "named",

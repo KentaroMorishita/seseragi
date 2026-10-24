@@ -280,6 +280,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -496,6 +497,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/constrained-instance-dispatch::trait(Render)",
             "evidence": {
               "kind": "local",
               "identity": "artifact/constrained-instance-dispatch::trait(Render)<std/prelude::Maybe<$0>>",
@@ -518,6 +520,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
                   "evidence": {
                     "kind": "local",
                     "identity": "artifact/constrained-instance-dispatch::trait(Ready)<artifact/constrained-instance-dispatch::Badge>"

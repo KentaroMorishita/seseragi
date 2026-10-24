@@ -172,6 +172,7 @@
           {
             "constraint": {
               "name": "Traversable",
+              "traitIdentity": "std/prelude::Traversable",
               "arguments": [
                 {
                   "kind": "named",
@@ -354,6 +355,7 @@
           {
             "constraint": {
               "name": "Traversable",
+              "traitIdentity": "std/prelude::Traversable",
               "arguments": [
                 {
                   "kind": "named",
@@ -510,6 +512,7 @@
           {
             "constraint": {
               "name": "Reducible",
+              "traitIdentity": "std/prelude::Reducible",
               "arguments": [
                 {
                   "kind": "named",
@@ -549,6 +552,7 @@
           {
             "constraint": {
               "name": "Monoid",
+              "traitIdentity": "std/prelude::Monoid",
               "arguments": [
                 {
                   "kind": "named",
@@ -577,6 +581,7 @@
                 {
                   "constraint": {
                     "name": "Semigroup",
+                    "traitIdentity": "std/prelude::Semigroup",
                     "arguments": [
                       {
                         "kind": "named",

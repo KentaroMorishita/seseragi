@@ -89,6 +89,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -494,6 +495,7 @@
                   {
                     "constraint": {
                       "name": "Functor",
+                      "traitIdentity": "fixture/imported-higher-order-functor::domain::trait(Functor)",
                       "arguments": [
                         {
                           "kind": "named",

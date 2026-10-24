@@ -267,6 +267,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Add",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/int::Add"
@@ -318,6 +319,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Add",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/int::Add"
@@ -605,6 +607,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Add",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/string::Add"
@@ -799,6 +802,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -815,6 +819,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "parameter",
               "index": 1
@@ -1454,6 +1459,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Reducible",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/array::Reducible"
@@ -1476,6 +1482,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Monoid",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/sum::Monoid",
@@ -1498,6 +1505,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Zero",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::Zero"
@@ -1524,6 +1532,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Add",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::Add"
@@ -1616,6 +1625,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -1962,6 +1972,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Reducible",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/list::Reducible"
@@ -1984,6 +1995,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Monoid",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/product::Monoid",
@@ -2006,6 +2018,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::One",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::One"
@@ -2032,6 +2045,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Mul",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::Mul"
@@ -2124,6 +2138,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -2372,6 +2387,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Reducible",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/array::Reducible"
@@ -2394,6 +2410,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Monoid",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/sum::Monoid",
@@ -2416,6 +2433,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Zero",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::Zero"
@@ -2442,6 +2460,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Add",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::Add"
@@ -2534,6 +2553,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -2666,6 +2686,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Reducible",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/array::Reducible"
@@ -2688,6 +2709,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Monoid",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/product::Monoid",
@@ -2710,6 +2732,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::One",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::One"
@@ -2736,6 +2759,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Mul",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::Mul"
@@ -2828,6 +2852,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -3127,6 +3152,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Reducible",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/array::Reducible"
@@ -3149,6 +3175,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Monoid",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/sum::Monoid",
@@ -3171,6 +3198,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Zero",
                             "evidence": {
                               "kind": "local",
                               "identity": "std/prelude::Zero<artifact/monoid-wrappers::Tally>"
@@ -3197,6 +3225,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Add",
                             "evidence": {
                               "kind": "local",
                               "identity": "std/prelude::Add<artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally>"
@@ -3356,6 +3385,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -3655,6 +3685,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Reducible",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/array::Reducible"
@@ -3677,6 +3708,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Monoid",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/product::Monoid",
@@ -3699,6 +3731,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::One",
                             "evidence": {
                               "kind": "local",
                               "identity": "std/prelude::One<artifact/monoid-wrappers::Ordered>"
@@ -3725,6 +3758,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Mul",
                             "evidence": {
                               "kind": "local",
                               "identity": "std/prelude::Mul<artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered>"
@@ -4004,6 +4038,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Semigroup",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/sum::Semigroup",
@@ -4036,6 +4071,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Add",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/int::Add"
@@ -4282,6 +4318,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"

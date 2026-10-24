@@ -70,6 +70,7 @@
                 {
                   "constraint": {
                     "name": "Rem",
+                    "traitIdentity": "std/prelude::Rem",
                     "arguments": [
                       {
                         "kind": "named",
@@ -135,6 +136,7 @@
                 {
                   "constraint": {
                     "name": "Rem",
+                    "traitIdentity": "std/prelude::Rem",
                     "arguments": [
                       {
                         "kind": "named",
@@ -346,6 +348,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -521,6 +524,7 @@
             "evidence": {
               "constraint": {
                 "name": "Iterable",
+                "traitIdentity": "std/prelude::Iterable",
                 "arguments": [
                   {
                     "kind": "named",

@@ -563,6 +563,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Applicative",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/validation::Applicative"
@@ -656,6 +657,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Applicative",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/validation::Applicative"
@@ -741,6 +743,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Applicative",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/validation::Applicative"
@@ -970,6 +973,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Eq",
             "evidence": {
               "kind": "standard",
               "identity": "std/validation::Eq",
@@ -997,6 +1001,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0
@@ -1013,6 +1018,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "parameter",
                     "index": 1
@@ -1159,6 +1165,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Show",
             "evidence": {
               "kind": "standard",
               "identity": "std/validation::Show",
@@ -1186,6 +1193,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0
@@ -1202,6 +1210,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "parameter",
                     "index": 1
@@ -1352,6 +1361,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "std/validation::Debug",
@@ -1379,6 +1389,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0
@@ -1395,6 +1406,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "parameter",
                     "index": 1

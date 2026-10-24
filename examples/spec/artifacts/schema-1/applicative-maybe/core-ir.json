@@ -1154,6 +1154,7 @@
           {
             "constraint": {
               "name": "Functor",
+              "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
               "arguments": [
                 {
                   "kind": "named",
@@ -1363,6 +1364,7 @@
           {
             "constraint": {
               "name": "Applicative",
+              "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
               "arguments": [
                 {
                   "kind": "named",
@@ -1480,6 +1482,7 @@
           {
             "constraint": {
               "name": "Applicative",
+              "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
               "arguments": [
                 {
                   "kind": "named",
@@ -1578,6 +1581,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -1919,6 +1923,7 @@
                       {
                         "constraint": {
                           "name": "Applicative",
+                          "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1934,6 +1939,7 @@
                             {
                               "constraint": {
                                 "name": "Functor",
+                                "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -2075,6 +2081,7 @@
                       {
                         "constraint": {
                           "name": "Applicative",
+                          "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
                           "arguments": [
                             {
                               "kind": "named",
@@ -2090,6 +2097,7 @@
                             {
                               "constraint": {
                                 "name": "Functor",
+                                "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -2129,6 +2137,7 @@
                   {
                     "constraint": {
                       "name": "Applicative",
+                      "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
                       "arguments": [
                         {
                           "kind": "named",
@@ -2144,6 +2153,7 @@
                         {
                           "constraint": {
                             "name": "Functor",
+                            "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
                             "arguments": [
                               {
                                 "kind": "named",

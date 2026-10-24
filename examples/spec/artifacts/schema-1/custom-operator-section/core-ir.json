@@ -84,6 +84,7 @@
                 {
                   "constraint": {
                     "name": "Sub",
+                    "traitIdentity": "std/prelude::Sub",
                     "arguments": [
                       {
                         "kind": "named",
@@ -267,6 +268,7 @@
           {
             "constraint": {
               "name": "Difference",
+              "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
               "arguments": [
                 {
                   "kind": "named",
@@ -590,6 +592,7 @@
               {
                 "constraint": {
                   "name": "Difference",
+                  "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
                   "arguments": [
                     {
                       "kind": "named",
@@ -821,6 +824,7 @@
                             {
                               "constraint": {
                                 "name": "Difference",
+                                "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -925,6 +929,7 @@
                 "evidence": {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",
@@ -984,6 +989,7 @@
                 "evidence": {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",

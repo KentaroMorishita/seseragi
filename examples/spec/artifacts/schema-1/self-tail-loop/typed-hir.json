@@ -92,6 +92,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Ord",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Ord"
@@ -176,6 +177,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Sub",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Sub"
@@ -243,6 +245,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Add"
@@ -382,6 +385,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Eq",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Eq"

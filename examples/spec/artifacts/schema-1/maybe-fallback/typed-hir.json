@@ -186,6 +186,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Div",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Div"
@@ -746,6 +747,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -867,6 +869,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -1094,6 +1097,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"

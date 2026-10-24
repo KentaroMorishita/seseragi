@@ -93,6 +93,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -203,6 +204,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Add",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/int::Add"
@@ -935,6 +937,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monad",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -1480,6 +1483,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Functor",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/maybe::Functor"
@@ -1677,6 +1681,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Applicative",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/maybe::Applicative"
@@ -1849,6 +1854,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Monad",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/maybe::Monad"
@@ -1891,6 +1897,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Monad",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/maybe::Monad"

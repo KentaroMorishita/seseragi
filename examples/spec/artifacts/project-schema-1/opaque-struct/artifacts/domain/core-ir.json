@@ -1171,6 +1171,7 @@
             "evidence": {
               "constraint": {
                 "name": "Iterable",
+                "traitIdentity": "std/prelude::Iterable",
                 "arguments": [
                   {
                     "kind": "named",

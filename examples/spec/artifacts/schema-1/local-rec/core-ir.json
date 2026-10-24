@@ -192,6 +192,7 @@
                       {
                         "constraint": {
                           "name": "Eq",
+                          "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
                               "kind": "named",
@@ -260,6 +261,7 @@
                           {
                             "constraint": {
                               "name": "Sub",
+                              "traitIdentity": "std/prelude::Sub",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -380,6 +382,7 @@
                       {
                         "constraint": {
                           "name": "Eq",
+                          "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
                               "kind": "named",
@@ -448,6 +451,7 @@
                           {
                             "constraint": {
                               "name": "Sub",
+                              "traitIdentity": "std/prelude::Sub",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -568,6 +572,7 @@
                       {
                         "constraint": {
                           "name": "Eq",
+                          "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
                               "kind": "named",
@@ -641,6 +646,7 @@
                           {
                             "constraint": {
                               "name": "Sub",
+                              "traitIdentity": "std/prelude::Sub",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -953,6 +959,7 @@
                       {
                         "constraint": {
                           "name": "Eq",
+                          "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1001,6 +1008,7 @@
                       {
                         "constraint": {
                           "name": "Show",
+                          "traitIdentity": "std/prelude::Show",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1078,6 +1086,7 @@
                           {
                             "constraint": {
                               "name": "Sub",
+                              "traitIdentity": "std/prelude::Sub",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -1118,6 +1127,7 @@
                       {
                         "constraint": {
                           "name": "Show",
+                          "traitIdentity": "std/prelude::Show",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1246,6 +1256,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -1333,6 +1344,7 @@
                       {
                         "constraint": {
                           "name": "Eq",
+                          "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1406,6 +1418,7 @@
                           {
                             "constraint": {
                               "name": "Sub",
+                              "traitIdentity": "std/prelude::Sub",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -1642,6 +1655,7 @@
                       {
                         "constraint": {
                           "name": "Eq",
+                          "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1690,6 +1704,7 @@
                       {
                         "constraint": {
                           "name": "Applicative",
+                          "traitIdentity": "std/prelude::Applicative",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1780,6 +1795,7 @@
                           {
                             "constraint": {
                               "name": "Sub",
+                              "traitIdentity": "std/prelude::Sub",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2086,6 +2102,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "tuple",
@@ -2128,6 +2145,7 @@
                                 {
                                   "constraint": {
                                     "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2144,6 +2162,7 @@
                                 {
                                   "constraint": {
                                     "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2423,6 +2442,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "tuple",
@@ -2465,6 +2485,7 @@
                                 {
                                   "constraint": {
                                     "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2481,6 +2502,7 @@
                                 {
                                   "constraint": {
                                     "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2578,6 +2600,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",

@@ -453,6 +453,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Eq",
             "evidence": {
               "kind": "local",
               "identity": "std/prelude::Eq<artifact/user-eq-operator::Status>"
@@ -572,6 +573,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Eq",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -947,6 +949,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "local",
                           "identity": "std/prelude::Eq<artifact/user-eq-operator::Status>"

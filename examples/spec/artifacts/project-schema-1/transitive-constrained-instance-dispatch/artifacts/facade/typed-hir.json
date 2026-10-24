@@ -114,6 +114,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
             "evidence": {
               "kind": "parameter",
               "index": 0

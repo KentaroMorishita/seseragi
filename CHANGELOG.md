@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.91] - 2026-10-25
+
+### Fixed
+
+- Execute native equality selected through canonical Ord constraints, including imported generic instances and renamed facade types. Preserve checked Eq parent dictionaries, source application stages, cold Effect replay and resource finalizers, and reject mismatched owners or dictionary arguments before emission.
+
 ## [0.61.90] - 2026-10-24
 
 ### Fixed

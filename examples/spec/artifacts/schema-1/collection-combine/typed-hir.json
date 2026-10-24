@@ -110,6 +110,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -126,6 +127,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "parameter",
               "index": 1
@@ -249,6 +251,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -265,6 +268,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "standard",
               "identity": "std/string::Monoid"
@@ -465,6 +469,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -487,6 +492,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Monoid"
@@ -616,6 +622,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -816,6 +823,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -838,6 +846,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "standard",
               "identity": "std/list::Monoid"
@@ -967,6 +976,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/list::Reducible"
@@ -1135,6 +1145,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -1151,6 +1162,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "standard",
               "identity": "std/string::Monoid"
@@ -1272,6 +1284,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Semigroup",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -1368,6 +1381,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "standard",
               "identity": "std/string::Monoid"
@@ -1460,6 +1474,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Semigroup",
             "evidence": {
               "kind": "standard",
               "identity": "std/string::Semigroup"
@@ -1608,6 +1623,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Semigroup",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Semigroup"
@@ -1741,6 +1757,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -1885,6 +1902,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Semigroup",
             "evidence": {
               "kind": "standard",
               "identity": "std/list::Semigroup"
@@ -2018,6 +2036,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/list::Reducible"

@@ -310,6 +310,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Sub",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Sub"
@@ -423,6 +424,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Sub",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Sub"
@@ -566,6 +568,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"
@@ -625,6 +628,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"

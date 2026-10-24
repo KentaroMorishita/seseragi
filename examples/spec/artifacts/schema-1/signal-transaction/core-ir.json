@@ -182,6 +182,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -302,6 +303,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -1247,6 +1249,7 @@
                       {
                         "constraint": {
                           "name": "Add",
+                          "traitIdentity": "std/prelude::Add",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1720,6 +1723,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",

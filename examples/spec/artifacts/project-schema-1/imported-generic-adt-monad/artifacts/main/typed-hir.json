@@ -189,6 +189,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Add",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/int::Add"
@@ -636,6 +637,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Add"
@@ -717,6 +719,7 @@
               }
             ]
           },
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
           "evidence": {
             "kind": "imported",
             "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -734,6 +737,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
                 "evidence": {
                   "kind": "imported",
                   "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -751,6 +755,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
                       "evidence": {
                         "kind": "imported",
                         "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -1131,6 +1136,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Add",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/int::Add"
@@ -1244,6 +1250,7 @@
               }
             ]
           },
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
           "evidence": {
             "kind": "imported",
             "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -1261,6 +1268,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
                 "evidence": {
                   "kind": "imported",
                   "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -1278,6 +1286,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
                       "evidence": {
                         "kind": "imported",
                         "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -1489,6 +1498,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -1534,6 +1544,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Int>"
@@ -1906,6 +1917,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::String>"
@@ -1951,6 +1963,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -2296,6 +2309,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::String>"
@@ -2341,6 +2355,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -2521,6 +2536,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
                           "evidence": {
                             "kind": "imported",
                             "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -2538,6 +2554,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
                                 "evidence": {
                                   "kind": "imported",
                                   "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
@@ -2555,6 +2572,7 @@
                                           }
                                         ]
                                       },
+                                      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
                                       "evidence": {
                                         "kind": "imported",
                                         "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",

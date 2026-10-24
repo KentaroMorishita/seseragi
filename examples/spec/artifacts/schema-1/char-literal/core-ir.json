@@ -376,6 +376,7 @@
             "evidence": {
               "constraint": {
                 "name": "Show",
+                "traitIdentity": "std/prelude::Show",
                 "arguments": [
                   {
                     "kind": "tuple",
@@ -418,6 +419,7 @@
                   {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -434,6 +436,7 @@
                   {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -497,6 +500,7 @@
             "evidence": {
               "constraint": {
                 "name": "Show",
+                "traitIdentity": "std/prelude::Show",
                 "arguments": [
                   {
                     "kind": "named",
@@ -537,6 +541,7 @@
                   {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -565,6 +570,7 @@
                         {
                           "constraint": {
                             "name": "Show",
+                            "traitIdentity": "std/prelude::Show",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -614,6 +620,7 @@
             "evidence": {
               "constraint": {
                 "name": "Show",
+                "traitIdentity": "std/prelude::Show",
                 "arguments": [
                   {
                     "kind": "named",

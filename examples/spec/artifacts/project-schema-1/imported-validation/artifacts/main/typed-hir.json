@@ -466,6 +466,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/string::Eq"
@@ -992,6 +993,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Add",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/int::Add"
@@ -1441,6 +1443,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "local",
                         "identity": "Show<fixture/imported-validation::main::Problem>"
@@ -1457,6 +1460,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -1554,6 +1558,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "local",
                         "identity": "Debug<fixture/imported-validation::main::Problem>"
@@ -1570,6 +1575,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Debug<std/prelude::Int>"
@@ -1676,6 +1682,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "local",
                     "identity": "std/prelude::Eq<fixture/imported-validation::main::Problem>"
@@ -1692,6 +1699,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Eq"
@@ -1775,6 +1783,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Bool>"
@@ -1970,6 +1979,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/list::Show",
@@ -1992,6 +2002,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "local",
                               "identity": "Show<fixture/imported-validation::main::Problem>"
@@ -2326,6 +2337,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/either::Show",
@@ -2367,6 +2379,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/non-empty-list::Show",
@@ -2389,6 +2402,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Show",
                               "evidence": {
                                 "kind": "local",
                                 "identity": "Show<fixture/imported-validation::main::Problem>"
@@ -2408,6 +2422,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"

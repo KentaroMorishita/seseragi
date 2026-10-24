@@ -593,6 +593,7 @@
                       {
                         "constraint": {
                           "name": "Reducible",
+                          "traitIdentity": "std/prelude::Reducible",
                           "arguments": [
                             {
                               "kind": "named",
@@ -761,6 +762,7 @@
             {
               "constraint": {
                 "name": "Ord",
+                "traitIdentity": "std/prelude::Ord",
                 "arguments": [
                   {
                     "kind": "named",
@@ -837,6 +839,7 @@
                     {
                       "constraint": {
                         "name": "Add",
+                        "traitIdentity": "std/prelude::Add",
                         "arguments": [
                           {
                             "kind": "named",

@@ -206,6 +206,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/generic-instance-dispatch::trait(Tag)",
             "evidence": {
               "kind": "local",
               "identity": "artifact/generic-instance-dispatch::trait(Tag)<std/prelude::Maybe<$0>>",

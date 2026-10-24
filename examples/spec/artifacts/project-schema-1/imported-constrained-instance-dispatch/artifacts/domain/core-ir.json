@@ -229,6 +229,7 @@
                       {
                         "constraint": {
                           "name": "Ready",
+                          "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)",
                           "arguments": [
                             {
                               "kind": "named",
@@ -417,6 +418,7 @@
           {
             "constraint": {
               "name": "Inspect",
+              "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)",
               "arguments": [
                 {
                   "kind": "named",

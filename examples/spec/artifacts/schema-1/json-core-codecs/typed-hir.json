@@ -198,6 +198,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::JsonEncode",
             "evidence": {
               "kind": "standard",
               "identity": "std/record::JsonEncode",
@@ -245,6 +246,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/bool::JsonEncode"
@@ -261,6 +263,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::JsonEncode"
@@ -277,6 +280,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::JsonEncode"
@@ -421,6 +425,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::JsonDecode",
             "evidence": {
               "kind": "standard",
               "identity": "std/record::JsonDecode",
@@ -468,6 +473,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/bool::JsonDecode"
@@ -484,6 +490,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::JsonDecode"
@@ -500,6 +507,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::JsonDecode"

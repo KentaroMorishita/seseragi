@@ -194,6 +194,7 @@
           {
             "constraint": {
               "name": "JsonEncode",
+              "traitIdentity": "std/prelude::JsonEncode",
               "arguments": [
                 {
                   "kind": "record",
@@ -266,6 +267,7 @@
                 {
                   "constraint": {
                     "name": "JsonEncode",
+                    "traitIdentity": "std/prelude::JsonEncode",
                     "arguments": [
                       {
                         "kind": "named",
@@ -282,6 +284,7 @@
                 {
                   "constraint": {
                     "name": "JsonEncode",
+                    "traitIdentity": "std/prelude::JsonEncode",
                     "arguments": [
                       {
                         "kind": "named",
@@ -298,6 +301,7 @@
                 {
                   "constraint": {
                     "name": "JsonEncode",
+                    "traitIdentity": "std/prelude::JsonEncode",
                     "arguments": [
                       {
                         "kind": "named",
@@ -419,6 +423,7 @@
           {
             "constraint": {
               "name": "JsonDecode",
+              "traitIdentity": "std/prelude::JsonDecode",
               "arguments": [
                 {
                   "kind": "record",
@@ -491,6 +496,7 @@
                 {
                   "constraint": {
                     "name": "JsonDecode",
+                    "traitIdentity": "std/prelude::JsonDecode",
                     "arguments": [
                       {
                         "kind": "named",
@@ -507,6 +513,7 @@
                 {
                   "constraint": {
                     "name": "JsonDecode",
+                    "traitIdentity": "std/prelude::JsonDecode",
                     "arguments": [
                       {
                         "kind": "named",
@@ -523,6 +530,7 @@
                 {
                   "constraint": {
                     "name": "JsonDecode",
+                    "traitIdentity": "std/prelude::JsonDecode",
                     "arguments": [
                       {
                         "kind": "named",

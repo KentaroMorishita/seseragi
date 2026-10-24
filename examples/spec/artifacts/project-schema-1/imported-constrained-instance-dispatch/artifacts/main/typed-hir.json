@@ -196,6 +196,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)",
                 "evidence": {
                   "kind": "imported",
                   "identity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
@@ -219,6 +220,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)",
                       "evidence": {
                         "kind": "imported",
                         "identity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)<std/prelude::Int>",

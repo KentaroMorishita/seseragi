@@ -76,6 +76,7 @@
           {
             "constraint": {
               "name": "Show",
+              "traitIdentity": "std/prelude::Show",
               "arguments": [
                 {
                   "kind": "named",
@@ -104,6 +105,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",
@@ -210,6 +212,7 @@
           {
             "constraint": {
               "name": "Debug",
+              "traitIdentity": "std/prelude::Debug",
               "arguments": [
                 {
                   "kind": "named",
@@ -238,6 +241,7 @@
                 {
                   "constraint": {
                     "name": "Debug",
+                    "traitIdentity": "std/prelude::Debug",
                     "arguments": [
                       {
                         "kind": "named",
@@ -362,6 +366,7 @@
           {
             "constraint": {
               "name": "Debug",
+              "traitIdentity": "std/prelude::Debug",
               "arguments": [
                 {
                   "kind": "named",
@@ -402,6 +407,7 @@
                 {
                   "constraint": {
                     "name": "Debug",
+                    "traitIdentity": "std/prelude::Debug",
                     "arguments": [
                       {
                         "kind": "named",
@@ -430,6 +436,7 @@
                       {
                         "constraint": {
                           "name": "Debug",
+                          "traitIdentity": "std/prelude::Debug",
                           "arguments": [
                             {
                               "kind": "named",
@@ -605,6 +612,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -633,6 +641,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -750,6 +759,7 @@
                     {
                       "constraint": {
                         "name": "Debug",
+                        "traitIdentity": "std/prelude::Debug",
                         "arguments": [
                           {
                             "kind": "named",
@@ -778,6 +788,7 @@
                           {
                             "constraint": {
                               "name": "Debug",
+                              "traitIdentity": "std/prelude::Debug",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -895,6 +906,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -923,6 +935,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -1104,6 +1117,7 @@
                 {
                   "constraint": {
                     "name": "Debug",
+                    "traitIdentity": "std/prelude::Debug",
                     "arguments": [
                       {
                         "kind": "named",
@@ -1144,6 +1158,7 @@
                       {
                         "constraint": {
                           "name": "Debug",
+                          "traitIdentity": "std/prelude::Debug",
                           "arguments": [
                             {
                               "kind": "named",
@@ -1172,6 +1187,7 @@
                             {
                               "constraint": {
                                 "name": "Debug",
+                                "traitIdentity": "std/prelude::Debug",
                                 "arguments": [
                                   {
                                     "kind": "named",

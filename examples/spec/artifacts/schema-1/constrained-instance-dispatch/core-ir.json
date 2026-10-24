@@ -260,6 +260,7 @@
                       {
                         "constraint": {
                           "name": "Ready",
+                          "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
                           "arguments": [
                             {
                               "kind": "named",
@@ -450,6 +451,7 @@
           {
             "constraint": {
               "name": "Render",
+              "traitIdentity": "artifact/constrained-instance-dispatch::trait(Render)",
               "arguments": [
                 {
                   "kind": "named",
@@ -478,6 +480,7 @@
                 {
                   "constraint": {
                     "name": "Ready",
+                    "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
                     "arguments": [
                       {
                         "kind": "named",

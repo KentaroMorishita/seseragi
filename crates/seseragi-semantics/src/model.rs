@@ -298,6 +298,10 @@ pub struct TypedConstraint {
 #[serde(rename_all = "camelCase")]
 pub struct TypedCallEvidence {
     pub constraint: TypedConstraint,
+    /// Canonical trait selected while resolution and dictionary scope are
+    /// available. A target must not reconstruct it from the constraint label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trait_identity: Option<String>,
     pub evidence: TypedInstanceEvidence,
 }
 

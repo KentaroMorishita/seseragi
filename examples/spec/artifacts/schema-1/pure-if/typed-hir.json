@@ -79,6 +79,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Eq",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Eq"

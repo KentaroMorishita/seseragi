@@ -245,7 +245,10 @@ pub(super) fn lower_instance_evidence(evidence: TypedInstanceEvidence) -> CoreIn
             evidence_arguments: evidence_arguments
                 .into_iter()
                 .map(|evidence| CoreCallEvidence {
-                    constraint: lower_constraint(evidence.constraint),
+                    constraint: lower_constraint_with_identity(
+                        evidence.constraint,
+                        evidence.trait_identity,
+                    ),
                     evidence: lower_instance_evidence(evidence.evidence),
                 })
                 .collect(),
@@ -262,7 +265,10 @@ pub(super) fn lower_instance_evidence(evidence: TypedInstanceEvidence) -> CoreIn
             evidence_arguments: evidence_arguments
                 .into_iter()
                 .map(|evidence| CoreCallEvidence {
-                    constraint: lower_constraint(evidence.constraint),
+                    constraint: lower_constraint_with_identity(
+                        evidence.constraint,
+                        evidence.trait_identity,
+                    ),
                     evidence: lower_instance_evidence(evidence.evidence),
                 })
                 .collect(),
@@ -277,17 +283,16 @@ pub(super) fn lower_instance_evidence(evidence: TypedInstanceEvidence) -> CoreIn
             evidence_arguments: evidence_arguments
                 .into_iter()
                 .map(|evidence| CoreCallEvidence {
-                    constraint: lower_constraint(evidence.constraint),
+                    constraint: lower_constraint_with_identity(
+                        evidence.constraint,
+                        evidence.trait_identity,
+                    ),
                     evidence: lower_instance_evidence(evidence.evidence),
                 })
                 .collect(),
         },
         TypedInstanceEvidence::Parameter { index } => CoreInstanceEvidence::Parameter { index },
     }
-}
-
-pub(super) fn lower_constraint(constraint: TypedConstraint) -> CoreInstanceConstraint {
-    lower_constraint_with_identity(constraint, None)
 }
 
 pub(super) fn lower_constraint_with_identity(

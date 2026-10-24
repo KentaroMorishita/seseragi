@@ -430,6 +430,7 @@
           {
             "constraint": {
               "name": "Render",
+              "traitIdentity": "artifact/trait-method-candidates::trait(Render)",
               "arguments": [
                 {
                   "kind": "named",
@@ -515,6 +516,7 @@
           {
             "constraint": {
               "name": "Describe",
+              "traitIdentity": "artifact/trait-method-candidates::trait(Describe)",
               "arguments": [
                 {
                   "kind": "named",

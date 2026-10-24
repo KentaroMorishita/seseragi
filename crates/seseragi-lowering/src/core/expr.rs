@@ -683,7 +683,10 @@ fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
 
 fn lower_call_evidence(evidence: TypedCallEvidence) -> CoreCallEvidence {
     CoreCallEvidence {
-        constraint: super::instances::lower_constraint(evidence.constraint),
+        constraint: super::instances::lower_constraint_with_identity(
+            evidence.constraint,
+            evidence.trait_identity,
+        ),
         evidence: super::instances::lower_instance_evidence(evidence.evidence),
     }
 }

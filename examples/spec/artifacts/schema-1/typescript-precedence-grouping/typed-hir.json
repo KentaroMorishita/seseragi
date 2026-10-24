@@ -90,6 +90,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Sub",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/float::Sub"
@@ -157,6 +158,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Add",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/float::Add"
@@ -195,6 +197,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Div",
             "evidence": {
               "kind": "standard",
               "identity": "std/float::Div"
@@ -311,6 +314,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Sub",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/float::Sub"
@@ -362,6 +366,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Div",
             "evidence": {
               "kind": "standard",
               "identity": "std/float::Div"
@@ -462,6 +467,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Mul",
             "evidence": {
               "kind": "standard",
               "identity": "std/float::Mul"
@@ -582,6 +588,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Sub",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/float::Sub"
@@ -633,6 +640,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Div",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/float::Div"
@@ -869,6 +877,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/array::Debug",
@@ -891,6 +900,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Debug",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Debug<std/prelude::Float>"
@@ -1078,6 +1088,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/array::Debug",
@@ -1100,6 +1111,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Debug",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Debug<std/prelude::Float>"
@@ -1191,6 +1203,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Debug<std/prelude::Float>"

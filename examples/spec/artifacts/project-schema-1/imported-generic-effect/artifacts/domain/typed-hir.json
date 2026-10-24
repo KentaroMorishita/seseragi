@@ -137,6 +137,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Show",
                 "evidence": {
                   "kind": "parameter",
                   "index": 0

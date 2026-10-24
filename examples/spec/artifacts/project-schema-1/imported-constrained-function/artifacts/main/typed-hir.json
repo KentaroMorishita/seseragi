@@ -249,6 +249,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
                 "evidence": {
                   "kind": "local",
                   "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>"

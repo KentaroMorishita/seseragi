@@ -1427,6 +1427,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -1525,6 +1526,7 @@
           {
             "constraint": {
               "name": "Mul",
+              "traitIdentity": "std/prelude::Mul",
               "arguments": [
                 {
                   "kind": "named",
@@ -1824,6 +1826,7 @@
               {
                 "constraint": {
                   "name": "Add",
+                  "traitIdentity": "std/prelude::Add",
                   "arguments": [
                     {
                       "kind": "named",
@@ -1987,6 +1990,7 @@
               {
                 "constraint": {
                   "name": "Mul",
+                  "traitIdentity": "std/prelude::Mul",
                   "arguments": [
                     {
                       "kind": "named",
@@ -2189,6 +2193,7 @@
           {
             "constraint": {
               "name": "Monad",
+              "traitIdentity": "artifact/monad-laws::trait(Monad)",
               "arguments": [
                 {
                   "kind": "named",
@@ -2204,6 +2209,7 @@
                 {
                   "constraint": {
                     "name": "Applicative",
+                    "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                     "arguments": [
                       {
                         "kind": "named",
@@ -2219,6 +2225,7 @@
                       {
                         "constraint": {
                           "name": "Functor",
+                          "traitIdentity": "artifact/monad-laws::trait(Functor)",
                           "arguments": [
                             {
                               "kind": "named",
@@ -2737,6 +2744,7 @@
             {
               "constraint": {
                 "name": "Eq",
+                "traitIdentity": "std/prelude::Eq",
                 "arguments": [
                   {
                     "kind": "named",
@@ -2792,6 +2800,7 @@
             {
               "constraint": {
                 "name": "Add",
+                "traitIdentity": "std/prelude::Add",
                 "arguments": [
                   {
                     "kind": "named",
@@ -2857,6 +2866,7 @@
             {
               "constraint": {
                 "name": "Add",
+                "traitIdentity": "std/prelude::Add",
                 "arguments": [
                   {
                     "kind": "named",
@@ -3108,6 +3118,7 @@
                         {
                           "constraint": {
                             "name": "Functor",
+                            "traitIdentity": "artifact/monad-laws::trait(Functor)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3373,6 +3384,7 @@
                         {
                           "constraint": {
                             "name": "Functor",
+                            "traitIdentity": "artifact/monad-laws::trait(Functor)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3533,6 +3545,7 @@
                             {
                               "constraint": {
                                 "name": "Functor",
+                                "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -3573,6 +3586,7 @@
                         {
                           "constraint": {
                             "name": "Functor",
+                            "traitIdentity": "artifact/monad-laws::trait(Functor)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3706,6 +3720,7 @@
                             {
                               "constraint": {
                                 "name": "Applicative",
+                                "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -3721,6 +3736,7 @@
                                   {
                                     "constraint": {
                                       "name": "Functor",
+                                      "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -3840,6 +3856,7 @@
                         {
                           "constraint": {
                             "name": "Applicative",
+                            "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3855,6 +3872,7 @@
                               {
                                 "constraint": {
                                   "name": "Functor",
+                                  "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -4059,6 +4077,7 @@
                             {
                               "constraint": {
                                 "name": "Applicative",
+                                "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -4074,6 +4093,7 @@
                                   {
                                     "constraint": {
                                       "name": "Functor",
+                                      "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -4138,6 +4158,7 @@
                             {
                               "constraint": {
                                 "name": "Applicative",
+                                "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -4153,6 +4174,7 @@
                                   {
                                     "constraint": {
                                       "name": "Functor",
+                                      "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -4196,6 +4218,7 @@
                         {
                           "constraint": {
                             "name": "Applicative",
+                            "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -4211,6 +4234,7 @@
                               {
                                 "constraint": {
                                   "name": "Functor",
+                                  "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -4267,6 +4291,7 @@
                         {
                           "constraint": {
                             "name": "Applicative",
+                            "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -4282,6 +4307,7 @@
                               {
                                 "constraint": {
                                   "name": "Functor",
+                                  "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -4433,6 +4459,7 @@
                             {
                               "constraint": {
                                 "name": "Applicative",
+                                "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -4448,6 +4475,7 @@
                                   {
                                     "constraint": {
                                       "name": "Functor",
+                                      "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -4491,6 +4519,7 @@
                         {
                           "constraint": {
                             "name": "Monad",
+                            "traitIdentity": "artifact/monad-laws::trait(Monad)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -4506,6 +4535,7 @@
                               {
                                 "constraint": {
                                   "name": "Applicative",
+                                  "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -4521,6 +4551,7 @@
                                     {
                                       "constraint": {
                                         "name": "Functor",
+                                        "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                         "arguments": [
                                           {
                                             "kind": "named",
@@ -4761,6 +4792,7 @@
                         {
                           "constraint": {
                             "name": "Monad",
+                            "traitIdentity": "artifact/monad-laws::trait(Monad)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -4776,6 +4808,7 @@
                               {
                                 "constraint": {
                                   "name": "Applicative",
+                                  "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -4791,6 +4824,7 @@
                                     {
                                       "constraint": {
                                         "name": "Functor",
+                                        "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                         "arguments": [
                                           {
                                             "kind": "named",
@@ -5099,6 +5133,7 @@
                         {
                           "constraint": {
                             "name": "Monad",
+                            "traitIdentity": "artifact/monad-laws::trait(Monad)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -5114,6 +5149,7 @@
                               {
                                 "constraint": {
                                   "name": "Applicative",
+                                  "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -5129,6 +5165,7 @@
                                     {
                                       "constraint": {
                                         "name": "Functor",
+                                        "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                         "arguments": [
                                           {
                                             "kind": "named",
@@ -5175,6 +5212,7 @@
                     {
                       "constraint": {
                         "name": "Monad",
+                        "traitIdentity": "artifact/monad-laws::trait(Monad)",
                         "arguments": [
                           {
                             "kind": "named",
@@ -5190,6 +5228,7 @@
                           {
                             "constraint": {
                               "name": "Applicative",
+                              "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -5205,6 +5244,7 @@
                                 {
                                   "constraint": {
                                     "name": "Functor",
+                                    "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -5351,6 +5391,7 @@
                     {
                       "constraint": {
                         "name": "Monad",
+                        "traitIdentity": "artifact/monad-laws::trait(Monad)",
                         "arguments": [
                           {
                             "kind": "named",
@@ -5366,6 +5407,7 @@
                           {
                             "constraint": {
                               "name": "Applicative",
+                              "traitIdentity": "artifact/monad-laws::trait(Applicative)",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -5381,6 +5423,7 @@
                                 {
                                   "constraint": {
                                     "name": "Functor",
+                                    "traitIdentity": "artifact/monad-laws::trait(Functor)",
                                     "arguments": [
                                       {
                                         "kind": "named",

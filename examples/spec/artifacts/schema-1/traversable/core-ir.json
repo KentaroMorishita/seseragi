@@ -128,6 +128,7 @@
             {
               "constraint": {
                 "name": "Ord",
+                "traitIdentity": "std/prelude::Ord",
                 "arguments": [
                   {
                     "kind": "named",
@@ -187,6 +188,7 @@
                 {
                   "constraint": {
                     "name": "Add",
+                    "traitIdentity": "std/prelude::Add",
                     "arguments": [
                       {
                         "kind": "named",
@@ -531,6 +533,7 @@
                           {
                             "constraint": {
                               "name": "Add",
+                              "traitIdentity": "std/prelude::Add",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -699,6 +702,7 @@
                 {
                   "constraint": {
                     "name": "Traversable",
+                    "traitIdentity": "std/prelude::Traversable",
                     "arguments": [
                       {
                         "kind": "named",
@@ -715,6 +719,7 @@
                 {
                   "constraint": {
                     "name": "Applicative",
+                    "traitIdentity": "std/prelude::Applicative",
                     "arguments": [
                       {
                         "kind": "named",
@@ -926,6 +931,7 @@
                 {
                   "constraint": {
                     "name": "Traversable",
+                    "traitIdentity": "std/prelude::Traversable",
                     "arguments": [
                       {
                         "kind": "named",
@@ -942,6 +948,7 @@
                 {
                   "constraint": {
                     "name": "Applicative",
+                    "traitIdentity": "std/prelude::Applicative",
                     "arguments": [
                       {
                         "kind": "named",
@@ -1184,6 +1191,7 @@
                 {
                   "constraint": {
                     "name": "Traversable",
+                    "traitIdentity": "std/prelude::Traversable",
                     "arguments": [
                       {
                         "kind": "named",
@@ -1200,6 +1208,7 @@
                 {
                   "constraint": {
                     "name": "Applicative",
+                    "traitIdentity": "std/prelude::Applicative",
                     "arguments": [
                       {
                         "kind": "named",
@@ -1397,6 +1406,7 @@
                           {
                             "constraint": {
                               "name": "Add",
+                              "traitIdentity": "std/prelude::Add",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -1648,6 +1658,7 @@
                 {
                   "constraint": {
                     "name": "Traversable",
+                    "traitIdentity": "std/prelude::Traversable",
                     "arguments": [
                       {
                         "kind": "external-named",
@@ -1665,6 +1676,7 @@
                 {
                   "constraint": {
                     "name": "Applicative",
+                    "traitIdentity": "std/prelude::Applicative",
                     "arguments": [
                       {
                         "kind": "named",
@@ -1838,6 +1850,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -1878,6 +1891,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -1906,6 +1920,7 @@
                                 {
                                   "constraint": {
                                     "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2019,6 +2034,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2069,6 +2085,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2085,6 +2102,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2113,6 +2131,7 @@
                                 {
                                   "constraint": {
                                     "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2226,6 +2245,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2276,6 +2296,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2292,6 +2313,7 @@
                           {
                             "constraint": {
                               "name": "Show",
+                              "traitIdentity": "std/prelude::Show",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2320,6 +2342,7 @@
                                 {
                                   "constraint": {
                                     "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2428,6 +2451,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",
@@ -2470,6 +2494,7 @@
                       {
                         "constraint": {
                           "name": "Show",
+                          "traitIdentity": "std/prelude::Show",
                           "arguments": [
                             {
                               "kind": "external-named",
@@ -2499,6 +2524,7 @@
                             {
                               "constraint": {
                                 "name": "Show",
+                                "traitIdentity": "std/prelude::Show",
                                 "arguments": [
                                   {
                                     "kind": "named",

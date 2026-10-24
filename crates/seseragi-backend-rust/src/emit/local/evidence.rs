@@ -9,6 +9,24 @@ fn label_matches(declared: &CoreInstanceConstraint, label: &str) -> bool {
 }
 
 impl Backend<'_> {
+    fn inherited_eq_parameter(
+        &self,
+        declared: &CoreInstanceConstraint,
+        selected: &CoreInstanceConstraint,
+        scope: &Scope,
+    ) -> bool {
+        // The canonical Ord ABI carries its selected Eq method. This is a
+        // projection of the same scoped argument, not a second dictionary or
+        // permission to substitute traits with the same displayed name.
+        declared.trait_identity.as_deref() == Some("std/prelude::Ord")
+            && selected.trait_identity.as_deref() == Some("std/prelude::Eq")
+            && self.valid_constraint_label(selected)
+            && matches!(declared.arguments.as_slice(), [argument]
+                if self.declared_method_type_kind(argument, scope) == Some(0))
+            && matches!(selected.arguments.as_slice(), [argument]
+                if self.declared_method_type_kind(argument, scope) == Some(0))
+    }
+
     pub(in crate::emit) fn valid_constraint_label(
         &self,
         constraint: &CoreInstanceConstraint,
@@ -47,14 +65,18 @@ impl Backend<'_> {
             .iter()
             .map(|ty| self.local_canonical_type(ty, scope))
             .collect::<Result<Vec<_>>>()?;
+        let inherited_eq = self.inherited_eq_parameter(declared, &selected.constraint, scope);
         if !self.valid_constraint_label(declared)
-            || !label_matches(declared, &selected.constraint.name)
             || declared_arguments != selected_arguments
-            || selected
-                .constraint
-                .trait_identity
-                .as_ref()
-                .is_some_and(|identity| declared.trait_identity.as_ref() != Some(identity))
+            || (!inherited_eq
+                && (!label_matches(declared, &selected.constraint.name)
+                    || selected
+                        .constraint
+                        .trait_identity
+                        .as_ref()
+                        .is_some_and(|identity| {
+                            declared.trait_identity.as_ref() != Some(identity)
+                        })))
         {
             return Err("Rust backend: dictionary parameter constraint mismatch".into());
         }
@@ -91,7 +113,11 @@ impl Backend<'_> {
             self.validate_parameter_evidence(selected, scope)?;
             match &selected.evidence {
                 CoreInstanceEvidence::Parameter { index } => {
-                    if scope.dictionaries[*index].trait_identity != declared.trait_identity {
+                    let parameter = &scope.dictionaries[*index];
+                    if parameter.trait_identity != declared.trait_identity
+                        && !(declared.trait_identity.as_deref() == Some("std/prelude::Eq")
+                            && self.inherited_eq_parameter(parameter, &selected.constraint, scope))
+                    {
                         return Err("Rust backend: local callable parameter trait mismatch".into());
                     }
                 }

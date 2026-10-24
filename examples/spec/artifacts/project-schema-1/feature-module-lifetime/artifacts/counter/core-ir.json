@@ -453,6 +453,7 @@
                 {
                   "constraint": {
                     "name": "Add",
+                    "traitIdentity": "std/prelude::Add",
                     "arguments": [
                       {
                         "kind": "named",
@@ -1098,6 +1099,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -1223,6 +1225,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -1347,6 +1350,7 @@
                                     "evidence": {
                                       "constraint": {
                                         "name": "Show",
+                                        "traitIdentity": "std/prelude::Show",
                                         "arguments": [
                                           {
                                             "kind": "named",
@@ -1406,6 +1410,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -1585,6 +1590,7 @@
           {
             "constraint": {
               "name": "IntoChildren",
+              "traitIdentity": "std/web/html::trait(IntoChildren)",
               "arguments": [
                 {
                   "kind": "named",
