@@ -198,7 +198,20 @@
             "arguments": []
           }
         },
-        "arguments": [],
+        "arguments": [
+          {
+            "kind": "unit",
+            "type": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            },
+            "origin": {
+              "start": 168,
+              "end": 170
+            }
+          }
+        ],
         "origin": {
           "start": 160,
           "end": 170
@@ -356,7 +369,20 @@
               "arguments": []
             }
           },
-          "arguments": [],
+          "arguments": [
+            {
+              "kind": "unit",
+              "type": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "origin": {
+                "start": 270,
+                "end": 272
+              }
+            }
+          ],
           "origin": {
             "start": 262,
             "end": 272

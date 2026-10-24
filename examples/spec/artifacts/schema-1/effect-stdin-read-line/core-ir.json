@@ -204,7 +204,16 @@
             "name": "Unit",
             "arguments": []
           },
-          "arguments": [],
+          "arguments": [
+            {
+              "kind": "unit",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 91,
+                "end": 93
+              }
+            }
+          ],
           "origin": {
             "source": "main.ssrg",
             "start": 83,

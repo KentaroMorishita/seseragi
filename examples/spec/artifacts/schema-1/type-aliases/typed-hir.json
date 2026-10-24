@@ -2052,7 +2052,20 @@
             "arguments": []
           }
         },
-        "arguments": [],
+        "arguments": [
+          {
+            "kind": "unit",
+            "type": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1195,
+              "end": 1197
+            }
+          }
+        ],
         "origin": {
           "start": 1187,
           "end": 1197
