@@ -19,5 +19,8 @@ examples/spec/fixtures/rust-backend-projects/program-wasm-effect-package/** text
 # Imported type acceptance packages pin manifest and source bytes in their lock.
 examples/spec/fixtures/rust-backend-projects/imported-unit-*/** text eol=lf
 
+# The facade rename fixture lock pins manifest and source bytes.
+examples/spec/fixtures/rust-backend-projects/facade-generic-renames/** text eol=lf
+
 # Program stdout fixtures are byte-exact oracles, including line endings.
 *.stdout -text

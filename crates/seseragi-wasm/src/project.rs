@@ -1434,6 +1434,10 @@ fn path_for_module(paths: &BTreeMap<String, String>, module: &str) -> String {
 }
 
 #[cfg(test)]
+#[path = "project/facade_rename_tests.rs"]
+mod facade_rename_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use serde_json::{json, Value};

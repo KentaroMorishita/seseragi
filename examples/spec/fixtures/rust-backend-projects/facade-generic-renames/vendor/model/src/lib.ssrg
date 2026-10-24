@@ -1,0 +1,10 @@
+pub type Box<A> = | Box A
+pub trait Render<A> {
+  fn render value: A -> String
+}
+instance<A> Render<Box<A>> where Show<A> {
+  fn render value: Box<A> -> String = match value { Box inner -> "model=" + show inner }
+}
+pub fn boxed<A> value: A -> Box<A> = Box value
+
+pub fn rendered<A> value: A -> String where Render<A> = render value

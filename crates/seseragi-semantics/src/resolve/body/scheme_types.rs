@@ -29,7 +29,7 @@ pub(super) fn export_scheme_type_bindings(
     {
         return None;
     }
-    let candidates = provider_candidates(provider);
+    let candidates = provider_candidates(provider, export);
     let type_parameters = export
         .scheme
         .type_parameters
@@ -86,7 +86,10 @@ pub(super) fn export_scheme_type_bindings(
     Some(bindings)
 }
 
-fn provider_candidates(provider: &ModuleInterface) -> BTreeMap<String, Vec<ExternalTypeBinding>> {
+fn provider_candidates(
+    provider: &ModuleInterface,
+    scheme: &InterfaceExport,
+) -> BTreeMap<String, Vec<ExternalTypeBinding>> {
     let mut candidates = BTreeMap::<String, Vec<ExternalTypeBinding>>::new();
     for export in provider
         .exports
@@ -129,6 +132,60 @@ fn provider_candidates(provider: &ModuleInterface) -> BTreeMap<String, Vec<Exter
             );
         }
     }
+    // A reexport does not move the callable's defining scope. A type name in
+    // its legacy Named scheme can therefore differ from the facade's alias.
+    // Restore that name only through a checked declaration/import whose full
+    // canonical owner matches the callable, retaining the actual provider route.
+    // Quantified parameters still take precedence in collect_named.
+    let Some((owner, _)) = scheme.symbol.rsplit_once("::") else {
+        return candidates;
+    };
+    if owner == provider.module {
+        // Within the defining module, conflicting lexical imports must keep
+        // the existing ambiguity refusal rather than being overwritten.
+        return candidates;
+    }
+    let mut defining = BTreeMap::new();
+    for export in provider.exports.iter().filter(|e| e.namespace == "type") {
+        let InterfaceType::TypeConstructor { name, arity } = &export.scheme.type_ref else {
+            continue;
+        };
+        if export.symbol == format!("{owner}::{name}")
+            && *arity as usize == export.scheme.type_parameters.len()
+        {
+            push_candidate(
+                &mut defining,
+                ExternalTypeBinding {
+                    arity: Some(*arity),
+                    spelling: name.clone(),
+                    canonical: export.symbol.clone(),
+                    provider: Some(ExternalTypeProvider {
+                        module: provider.module.clone(),
+                        export: export.name.clone(),
+                    }),
+                },
+            );
+        }
+    }
+    for dependency in &provider.dependencies {
+        for import in dependency.imports.iter().filter(|i| i.namespace == "type") {
+            if import.symbol == format!("{owner}::{}", import.name) {
+                push_candidate(
+                    &mut defining,
+                    ExternalTypeBinding {
+                        arity: None,
+                        spelling: import.name.clone(),
+                        canonical: import.symbol.clone(),
+                        provider: Some(ExternalTypeProvider {
+                            module: dependency.module.clone(),
+                            export: import.name.clone(),
+                        }),
+                    },
+                );
+            }
+        }
+    }
+    candidates.extend(defining);
     candidates
 }
 
@@ -398,6 +455,56 @@ mod tests {
         let callable = function_export("accept", named("Missing"), named("Unit"));
 
         assert_eq!(export_scheme_type_bindings(&provider, &callable), None);
+    }
+
+    fn renamed_provider() -> (ModuleInterface, InterfaceExport) {
+        let mut user = type_export("User", "fixture/domain::User");
+        user.name = "ExportedUser".to_owned();
+        let mut callable = function_export("accept", named("User"), named("Unit"));
+        callable.symbol = "fixture/domain::accept".to_owned();
+        (module(vec![user]), callable)
+    }
+
+    #[test]
+    fn reexported_callable_uses_its_defining_name_and_actual_facade_route() {
+        let (provider, callable) = renamed_provider();
+        let bindings = export_scheme_type_bindings(&provider, &callable).unwrap();
+        assert_eq!(bindings.len(), 1);
+        assert_eq!(bindings[0].spelling, "User");
+        assert_eq!(bindings[0].canonical, "fixture/domain::User");
+        let route = bindings[0].provider.as_ref().unwrap();
+        assert_eq!(route.module, "fixture/provider");
+        assert_eq!(route.export, "ExportedUser");
+    }
+
+    #[test]
+    fn reexported_defining_name_rejects_wrong_owner_namespace_and_kind() {
+        let (provider, callable) = renamed_provider();
+        let mut wrong_owner = provider.clone();
+        wrong_owner.exports[0].symbol = "fixture/unrelated::User".to_owned();
+        let mut wrong_namespace = provider.clone();
+        wrong_namespace.exports[0].namespace = "trait".to_owned();
+        let mut wrong_kind = provider;
+        wrong_kind.exports[0].scheme.type_ref = InterfaceType::TypeConstructor {
+            name: "User".to_owned(),
+            arity: 1,
+        };
+        for invalid in [wrong_owner, wrong_namespace, wrong_kind] {
+            assert_eq!(export_scheme_type_bindings(&invalid, &callable), None);
+        }
+    }
+
+    #[test]
+    fn reexported_defining_name_does_not_capture_a_quantified_parameter() {
+        let (provider, mut callable) = renamed_provider();
+        callable
+            .scheme
+            .type_parameters
+            .push(seseragi_syntax::TypeParameter::value("User"));
+        assert_eq!(
+            export_scheme_type_bindings(&provider, &callable),
+            Some(Vec::new())
+        );
     }
 
     fn module(exports: Vec<InterfaceExport>) -> ModuleInterface {
