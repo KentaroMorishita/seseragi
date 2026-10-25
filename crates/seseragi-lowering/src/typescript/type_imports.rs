@@ -4,6 +4,7 @@ use crate::runtime_types::{
 };
 use crate::{CoreModule, CoreType};
 use seseragi_semantics::ExternalTypeBinding;
+use std::collections::BTreeMap;
 
 use super::names::safe_identifier;
 use super::{push_unique, TypeScriptTypeImport};
@@ -12,6 +13,7 @@ mod expr;
 
 pub(super) fn collect_module_type_imports(
     module: &CoreModule,
+    recursive_effect_types: &BTreeMap<String, CoreType>,
     requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptTypeImport>,
 ) {
@@ -62,8 +64,8 @@ pub(super) fn collect_module_type_imports(
         expr::collect_expr_type_imports(&binding.value, &type_bindings, requirements, imports);
     }
     for function in &module.functions {
-        if let Some(checked) = super::recursive::providerless_effect_type(module, function) {
-            collect_type_imports(&checked, &type_bindings, requirements, imports);
+        if let Some(checked) = recursive_effect_types.get(&function.symbol) {
+            collect_type_imports(checked, &type_bindings, requirements, imports);
         }
         for parameter in &function.parameters {
             collect_type_imports(&parameter.type_ref, &type_bindings, requirements, imports);

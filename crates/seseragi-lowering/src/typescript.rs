@@ -724,14 +724,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     plan: &TypeScriptOutputPlan,
     options: &TypeScriptLoweringOptions,
 ) -> Result<TypeScriptModule, TypeScriptLoweringError> {
-    let recursive_effect_types = module
-        .functions
-        .iter()
-        .filter_map(|function| {
-            recursive::providerless_effect_type(&module, function)
-                .map(|ty| (function.symbol.clone(), ty))
-        })
-        .collect::<BTreeMap<_, _>>();
+    let recursive_effect_types = recursive::providerless_effect_types(&module);
     let scalar_globals = plan.scalar_globals.clone().with_module(&module);
     let mut module_imports = lower_module_imports(&module, plan)?;
     module_imports.type_names = module_imports
@@ -741,7 +734,12 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     let mut runtime_requirements = Vec::new();
     let mut imports = Vec::new();
     let mut type_imports = Vec::new();
-    collect_module_type_imports(&module, &mut runtime_requirements, &mut type_imports);
+    collect_module_type_imports(
+        &module,
+        &recursive_effect_types,
+        &mut runtime_requirements,
+        &mut type_imports,
+    );
     // Runtime annotation types may coexist with actual nominal types. Keep the
     // source alias and freshen only the runtime import selected for annotation.
     let mut used_type_names = module

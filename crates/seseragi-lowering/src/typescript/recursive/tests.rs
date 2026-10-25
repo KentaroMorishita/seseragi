@@ -1,7 +1,62 @@
-use super::{annotation, providerless_effect_type};
+use super::{annotation, cyclic_members, providerless_effect_type};
 use crate::{lower_typed_module, CoreInstanceConstraint, CoreModule, CoreType, TypeScriptType};
 use seseragi_semantics::{type_module, ExternalTypeBinding};
 use seseragi_syntax::TypeParameter;
+use std::collections::{BTreeMap, BTreeSet};
+
+#[test]
+fn cycles_exclude_callers_and_sinks_but_include_saved_value_edges() {
+    let edges = BTreeMap::from([
+        ("caller", vec!["first", "sink"]),
+        ("first", vec!["saved"]),
+        ("saved", vec!["second"]),
+        ("second", vec!["first", "sink"]),
+        ("self", vec!["self"]),
+        ("sink", vec![]),
+    ])
+    .into_iter()
+    .map(|(name, refs)| {
+        (
+            name.to_owned(),
+            refs.into_iter().map(str::to_owned).collect(),
+        )
+    })
+    .collect();
+    assert_eq!(
+        cyclic_members(&edges),
+        BTreeSet::from([
+            "first".into(),
+            "saved".into(),
+            "second".into(),
+            "self".into()
+        ])
+    );
+}
+
+#[test]
+fn a_long_acyclic_graph_does_not_use_recursive_compiler_stack() {
+    let edges = (0..10000)
+        .map(|n| {
+            (
+                n.to_string(),
+                if n == 9999 {
+                    BTreeSet::new()
+                } else {
+                    BTreeSet::from([(n + 1).to_string()])
+                },
+            )
+        })
+        .collect();
+    assert!(cyclic_members(&edges).is_empty());
+}
+
+#[test]
+fn effect_dependency_analysis_does_not_weaken_pure_capture_refusals() {
+    let module=lower_typed_module(type_module("mutual.ssrg", "import * as effects from \"std/effect\"\neffect fn checkpoint _unit: Unit -> String = do { effects.yieldNow (); wait () }\nfn wait -> Effect<{}, Never, String> = effects.defer checkpoint\n"));
+    assert!(crate::core_free_variables(&module.functions[0].body).is_none());
+    let refs = crate::core_analysis::core_term_dependencies(&module.functions[0].body).unwrap();
+    assert!(refs.names.contains(&module.functions[1].symbol));
+}
 
 fn module() -> CoreModule {
     lower_typed_module(type_module(
