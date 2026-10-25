@@ -1,0 +1,28 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+effect fn read state: Ref<Int> -> amount: Int -> Int = do {
+  current <- refs.get state
+  refs.set (current + amount) state
+  effects.succeed (current + amount)
+}
+
+pub effect fn main = do {
+  state <- refs.make 0
+  released <- refs.make 0
+  let cold =
+    (match [read state][0] { Just selected -> selected;
+      Nothing -> read state }) 1
+  before <- refs.get state
+  println ("created: " + show before)
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) (\_ -> refs.update (\n -> n + 1) released)
+    first <- cold
+    println (show first)
+    second <- cold
+    println (show second)
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}

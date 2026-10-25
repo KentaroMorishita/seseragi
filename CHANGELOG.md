@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.96] - 2026-10-25
+
+### Fixed
+
+- Apply checked function values returned by match, if, block, and lambda expressions without losing their parameter or result types. Preserve canonical nominal owners, one-time callee evaluation, curried argument stages, cold Effects, and finalizer cleanup on native and TypeScript targets. Report incompatible arguments and missing instances before creating output artifacts.
+
 ## [0.61.95] - 2026-10-25
 
 ### Added

@@ -675,66 +675,19 @@ pub(crate) fn type_application_with(
         }
         if context.target(callee.span()).is_none() {
             let field_value = type_argument(callee, &context.without_expected());
-            let mut result_type = application_argument_type_from_expr(&field_value.value);
-            let mut parameters = Vec::new();
-            while let TypedType::Function { parameter, result } = result_type {
-                parameters.push(*parameter);
-                result_type = *result;
-            }
-            if !parameters.is_empty() {
-                // Reuse ordinary curried-call checking, capturing the field once
-                // so receiver evaluation precedes every argument evaluation.
-                let name = format!("__ssrg$field${}", callee.span().start);
-                let signature = TopLevelPureFunction {
-                    symbol: name.clone(),
-                    trait_identity: None,
-                    trait_method: None,
-                    type_parameters: Vec::new(),
-                    constraints: Vec::new(),
-                    constraint_identities: Vec::new(),
-                    semantic_parameters: parameters
-                        .iter()
-                        .map(|parameter| context.semantic_value_from_typed_type(parameter).key)
-                        .collect(),
-                    parameters,
-                    semantic_result: context.semantic_value_from_typed_type(&result_type).key,
-                    result: result_type,
-                };
-                let mut call = type_known_application_with_explicit(
-                    signature,
-                    explicit_type_arguments,
-                    *field_span,
+            if matches!(
+                application_argument_type_from_expr(&field_value.value),
+                TypedType::Function { .. }
+            ) {
+                return type_function_expression_application(
+                    callee,
+                    field_value,
                     &argument_nodes,
                     expression.span(),
+                    explicit_type_arguments,
                     context,
                     &mut type_argument,
                 );
-                let type_ref = application_argument_type_from_expr(&call.value);
-                let field_type = application_argument_type_from_expr(&field_value.value);
-                call.value = TypedExpr::Block {
-                    statements: vec![crate::TypedBlockStatement::Let {
-                        constraints: Vec::new(),
-                        constraint_identities: Vec::new(),
-                        type_parameters: Vec::new(),
-                        pattern: crate::TypedPattern::Binding {
-                            symbol: crate::SymbolId(u32::MAX),
-                            name,
-                            type_ref: field_type,
-                            origin: callee.span(),
-                        },
-                        value: field_value.value.clone(),
-                        origin: callee.span(),
-                    }],
-                    result: Box::new(call.value),
-                    type_ref,
-                    origin: expression.span(),
-                };
-                call.prioritize_field_argument_issue = matches!(
-                    call.pure_call_issue,
-                    Some(PureCallIssue::ArgumentType { .. })
-                );
-                call.merge_issues_from(field_value);
-                return call;
             }
         }
     }
@@ -1057,17 +1010,17 @@ pub(crate) fn type_known_application_with_explicit(
             &semantic_arguments,
         )
     });
-    let field_argument_issue = child_analyses
+    let computed_argument_issue = child_analyses
         .iter()
-        .filter(|child| child.prioritize_field_argument_issue)
+        .filter(|child| child.prioritize_computed_argument_issue)
         .filter_map(|child| child.pure_call_issue.as_ref())
         .find(|issue| matches!(issue, PureCallIssue::ArgumentType { .. }))
         .cloned();
-    let prioritize_field_argument_issue = issue.is_none() && field_argument_issue.is_some();
-    if prioritize_field_argument_issue {
-        // Preserve a field call's precise argument error through an enclosing
+    let prioritize_computed_argument_issue = issue.is_none() && computed_argument_issue.is_some();
+    if prioritize_computed_argument_issue {
+        // Preserve a computed callee's precise argument error through an enclosing
         // constrained call, leaving ordinary-call diagnostic priority intact.
-        issue = field_argument_issue;
+        issue = computed_argument_issue;
     }
     if issue.is_none() && !context.recursive_groups.is_empty() {
         // Infer the callback expectation from the other arguments. A recursive
@@ -1382,7 +1335,7 @@ pub(crate) fn type_known_application_with_explicit(
         semantic_type,
     );
     result.pure_call_issue = issue;
-    result.prioritize_field_argument_issue = prioritize_field_argument_issue;
+    result.prioritize_computed_argument_issue = prioritize_computed_argument_issue;
     for child in child_analyses {
         result.merge_issues_from(child);
     }
@@ -1677,6 +1630,88 @@ fn requires_callable_context(
     }
 }
 
+// A computed callee is already a checked monomorphic function value. Capture it
+// before typing the ordinary curried application, so its concrete result reaches
+// enclosing trait selection and its source evaluation happens exactly once.
+fn type_function_expression_application(
+    callee: &SurfaceExpr,
+    callee_analysis: SurfaceExpressionAnalysis,
+    arguments: &[&SurfaceExpr],
+    span: ByteSpan,
+    explicit_type_arguments: Option<&[TypeRef]>,
+    context: &PureExpressionContext<'_>,
+    type_argument: &mut impl FnMut(
+        &SurfaceExpr,
+        &PureExpressionContext<'_>,
+    ) -> SurfaceExpressionAnalysis,
+) -> SurfaceExpressionAnalysis {
+    let mut result_type = application_argument_type_from_expr(&callee_analysis.value);
+    let mut parameters = Vec::new();
+    while let TypedType::Function { parameter, result } = result_type {
+        parameters.push(*parameter);
+        result_type = *result;
+    }
+    debug_assert!(!parameters.is_empty());
+    let (name, callee_span) = if let SurfaceExpr::Member { field_span, .. } = callee {
+        (format!("__ssrg$field${}", callee.span().start), *field_span)
+    } else {
+        (
+            format!("__ssrg$callee${}", callee.span().start),
+            callee.span(),
+        )
+    };
+    let signature = TopLevelPureFunction {
+        symbol: name.clone(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: Vec::new(),
+        constraints: Vec::new(),
+        constraint_identities: Vec::new(),
+        semantic_parameters: parameters
+            .iter()
+            .map(|parameter| context.semantic_value_from_typed_type(parameter).key)
+            .collect(),
+        parameters,
+        semantic_result: context.semantic_value_from_typed_type(&result_type).key,
+        result: result_type,
+    };
+    let mut call = type_known_application_with_explicit(
+        signature,
+        explicit_type_arguments,
+        callee_span,
+        arguments,
+        span,
+        context,
+        type_argument,
+    );
+    let type_ref = application_argument_type_from_expr(&call.value);
+    let callee_type = application_argument_type_from_expr(&callee_analysis.value);
+    call.value = TypedExpr::Block {
+        statements: vec![crate::TypedBlockStatement::Let {
+            constraints: Vec::new(),
+            constraint_identities: Vec::new(),
+            type_parameters: Vec::new(),
+            pattern: crate::TypedPattern::Binding {
+                symbol: crate::SymbolId(u32::MAX),
+                name,
+                type_ref: callee_type,
+                origin: callee.span(),
+            },
+            value: callee_analysis.value.clone(),
+            origin: callee.span(),
+        }],
+        result: Box::new(call.value),
+        type_ref,
+        origin: span,
+    };
+    call.prioritize_computed_argument_issue = matches!(
+        call.pure_call_issue,
+        Some(PureCallIssue::ArgumentType { .. })
+    );
+    call.merge_issues_from(callee_analysis);
+    call
+}
+
 fn type_unknown_application(
     callee: &SurfaceExpr,
     arguments: &[&SurfaceExpr],
@@ -1684,20 +1719,34 @@ fn type_unknown_application(
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     let child_context = context.without_expected();
-    let mut callee = type_surface_expression(callee, &child_context);
+    let mut callee_analysis = type_surface_expression(callee, &child_context);
+    if matches!(
+        application_argument_type_from_expr(&callee_analysis.value),
+        TypedType::Function { .. }
+    ) {
+        return type_function_expression_application(
+            callee,
+            callee_analysis,
+            arguments,
+            span,
+            None,
+            context,
+            &mut type_surface_expression,
+        );
+    }
     for argument in arguments {
         let child = type_surface_expression(argument, &child_context);
-        callee.merge_issues_from(child);
+        callee_analysis.merge_issues_from(child);
     }
-    callee.value = TypedExpr::Variable {
+    callee_analysis.value = TypedExpr::Variable {
         callable_signature: None,
         name: String::new(),
         evidence: Vec::new(),
         type_ref: TypedType::Hole,
         origin: span,
     };
-    callee.semantic_type = SemanticTypeKey::Invalid;
-    callee
+    callee_analysis.semantic_type = SemanticTypeKey::Invalid;
+    callee_analysis
 }
 
 fn call_issue(

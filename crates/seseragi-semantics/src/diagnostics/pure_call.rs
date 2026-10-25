@@ -333,10 +333,14 @@ mod tests {
 
     #[test]
     fn reports_an_invalid_expression_instead_of_emitting_a_recovery_hole() {
-        let artifact = semantic_diagnostics(
-            "invalid-expression.ssrg",
-            "pub fn broken -> Int = (\\value: Int -> value) 1\n",
+        // Computed function values are callable; a literal is still not one.
+        let callable = semantic_diagnostics(
+            "computed-lambda.ssrg",
+            "pub fn accepted -> Int = (\\value: Int -> value) 1\n",
         );
+        assert!(callable.diagnostics.is_empty(), "{callable:#?}");
+        let artifact =
+            semantic_diagnostics("invalid-expression.ssrg", "pub fn broken -> Int = (1) 1\n");
 
         assert_eq!(artifact.diagnostics.len(), 1);
         assert_eq!(artifact.diagnostics[0].code, "SES-T0101");

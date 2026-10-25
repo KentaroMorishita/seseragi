@@ -1,0 +1,16 @@
+import * as effects from "std/effect"
+
+fn make left: Int -> (Int -> Int) = {
+  let stop: Int = 9007199254740991 + left
+  \right: Int -> left + right
+}
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do { println "acquired";
+      effects.succeed () }) (
+        \_: Unit -> effects.recover (\_: ConsoleError -> effects.succeed ())
+          (println "released")
+      )
+  println (show ((match [make][0] { Just selected -> selected;
+    Nothing -> make }) 1 (1 / 0)))
+}

@@ -1,0 +1,15 @@
+import * as effects from "std/effect"
+
+fn add left: Int -> right: Int -> Int = left + right
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do { println "acquired";
+      effects.succeed () }) (
+        \_: Unit -> effects.recover (\_: ConsoleError -> effects.succeed ())
+          (println "released")
+      )
+  println (show (({
+          let stop: Int = 9007199254740991 + 1
+          add 41
+      }) (1 / 0)))
+}

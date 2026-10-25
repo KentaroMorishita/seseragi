@@ -1,0 +1,22 @@
+type Box<A> = | Box A
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+fn add left: Int -> right: Int -> Int = left + right
+
+fn make left: Int -> (Int -> Int) = \right: Int -> left + right
+
+fn wrap value: Int -> Box<Int> = Box value
+
+pub effect fn main = do {
+  println (show ((match [add 41][0] { Just value -> value; Nothing -> add 0 }) 1))
+  let selected: Int -> Int = match [add 41][0] { Just value -> value; Nothing -> add 0 }
+  println (show (selected 1))
+  println (show ((if True then add 41 else add 0) 1))
+  println (show (({ let saved: Int -> Int = add 41; saved }) 1))
+  println (show ((\value: Int -> value + 41) 1))
+  println (show ((match [make][0] { Just value -> value; Nothing -> make }) 41 1))
+  println (show ((match [wrap][0] { Just value -> value; Nothing -> wrap }) 42))
+}

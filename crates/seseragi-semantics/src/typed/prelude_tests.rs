@@ -2,6 +2,59 @@ use super::type_module;
 use crate::{TypedDecl, TypedExpr, TypedInstanceEvidence, TypedPattern, TypedType};
 
 #[test]
+fn inferred_function_value_call_results_reach_trait_selection() {
+    for callee in [
+        "match [add 41][0] { Just value -> value; Nothing -> add 0 }",
+        "if True then add 41 else add 0",
+        "\\value: Int -> value + 41",
+        "{ let selected: Int -> Int = add 41; selected }",
+    ] {
+        let source = format!(
+            "fn add left: Int -> right: Int -> Int = left + right\n\
+             pub effect fn main = println (show (({callee}) 1))\n"
+        );
+        let diagnostics = crate::semantic_diagnostics("function-value-result.ssrg", &source);
+        assert!(
+            diagnostics.diagnostics.is_empty(),
+            "{callee}: {diagnostics:#?}"
+        );
+    }
+}
+
+#[test]
+fn computed_callees_preserve_argument_and_missing_instance_diagnostics() {
+    let source = concat!(
+        "// 雫🙂\n",
+        "fn add left: Int -> right: Int -> Int = left + right\n",
+        "pub fn probe -> String = show ((match [add 41][0] { Just value -> value; Nothing -> add 0 }) \"wrong\")\n",
+    );
+    let diagnostics = crate::semantic_diagnostics("function-value-λ.ssrg", source);
+    let diagnostic = diagnostics
+        .diagnostics
+        .iter()
+        .find(|d| d.message_key == "call.argument-type-mismatch")
+        .expect(&format!("{diagnostics:#?}"));
+    assert_eq!(diagnostic.code, "SES-T0101");
+    assert_eq!(
+        source.get(diagnostic.primary.start..diagnostic.primary.end),
+        Some("\"wrong\"")
+    );
+
+    let diagnostics = crate::semantic_diagnostics(
+        "function-value-no-show.ssrg",
+        "type Secret = | Secret Int\n\
+         fn wrap value: Int -> Secret = Secret value\n\
+         pub fn probe -> String = show ((if True then wrap else wrap) 42)\n",
+    );
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0201");
+    assert_eq!(
+        diagnostics.diagnostics[0].related[0].message,
+        "no Show<Secret> instance matches the inferred call arguments"
+    );
+}
+
+#[test]
 fn reversed_operator_infers_from_the_callback_before_contextual_collections() {
     let source = "fn first values: Array<Int> -> Maybe<Int> = values[0]\npub fn probe -> Maybe<Int> = [[7]][0] >>= first\n";
     let diagnostics = crate::semantic_diagnostics("operator-array.ssrg", source);
