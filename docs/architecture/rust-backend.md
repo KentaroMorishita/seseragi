@@ -119,9 +119,19 @@ scopeの全finalizerをLIFO順で試み、cleanup Defectを失わず結果へ渡
 このABIはproviderを持たない閉じた型と、生成前に証明した式だけを扱う。Intはsafe範囲の
 値の受渡しに限り、演算は含めない。String連結、Bool分岐、Tuple／Maybe／Either、source関数の
 保存・部分適用・返却closureと、選択した標準Effect操作を扱う。標準Effect関数自体の保存・部分適用、
-Ref、Fiber／Deferred、host入力callback、open provider row、generic公開scheme、未証明の式や
+公開Ref、Fiber／Deferred、host入力callback、open provider row、generic公開scheme、未証明の式や
 同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
 host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
+
+内部ではcanonicalな`std/ref::Ref<A>`の`make`／`get`／`set`を使える。
+payloadの`A`は既存の閉じたdata codecに限り、callback・Effect・別のRefを保持できない。
+Refの型やhandleを公開codecへ加えず、内部状態をcaptureした返却callbackとcold planが
+同じcellを保持する。factory planを再実行すると独立したcellを作り、保存済みplanは元の
+callbackをdetachした後もその状態を更新できる。tracingはglobal初期化前に有効にする。
+受入例は`program-wasm-private-ref.ssrg`と標準Web packageの
+`program-wasm-private-ref-package`。文字列の蓄積とFailure・Defectは同じbodyのstrict TS／nativeと比較する。
+取消後のLIFO cleanupとinstance終了時のroot解放は実WASMでも確認する。
+`update`／`modify`、Refを含むhost Effect ABI、tuple pattern、fallibleなInt演算は含めない。
 
 Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。
 同名のnominal Unitとはcanonicalな型identityを区別し、暗黙の変換を加えない。

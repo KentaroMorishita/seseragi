@@ -1,0 +1,81 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+effect fn append cell: Ref<String> -> suffix: String -> String = do {
+  current <- refs.get cell
+  let next = current + suffix
+  refs.set next cell
+  effects.succeed next
+}
+
+pub effect fn create initial: String -> (String -> Effect<{}, Never, String>) = do {
+  cell <- refs.make initial
+  effects.succeed (append cell)
+}
+
+effect fn read cell: Ref<String> -> _trigger: Unit -> String = refs.get cell
+
+pub effect fn reader initial: String -> (Unit -> Effect<{}, Never, String>) = do {
+  cell <- refs.make initial
+  effects.succeed (read cell)
+}
+
+effect fn unitCell _trigger: Unit -> Unit = do {
+  cell <- refs.make ()
+  refs.set () cell
+  refs.get cell
+}
+
+pub effect fn unit _trigger: Unit -> Unit = unitCell ()
+
+effect fn failAfter cell: Ref<String> -> suffix: String -> String fails String = do {
+  append cell suffix
+  effects.fail "typed failure"
+}
+
+pub effect fn failing initial: String -> (String -> Effect<{}, String, String>) = do {
+  cell <- refs.make initial
+  effects.succeed (failAfter cell)
+}
+
+pub effect fn snapshot initial: Int -> Int = do {
+  cell <- refs.make initial
+  refs.get cell
+}
+
+fn wait -> Effect<{}, Never, String> = effects.defer (\_ -> wait ())
+
+effect fn release cell: Ref<String> -> marker: String -> _resource: Unit -> Unit = do {
+  append cell marker
+  effects.succeed ()
+}
+
+effect fn step cell: Ref<String>
+  -> suffix: String
+  -> failing: Bool
+  -> defective: Bool
+  -> pending: Bool
+  -> String
+fails String =
+  effects.scoped $
+  do {
+  effects.acquireRelease (effects.succeed ()) (release cell ":outer")
+  effects.acquireRelease (effects.succeed ()) (release cell ":inner")
+  current <- append cell suffix
+  if failing then
+    effects.fail "typed failure"
+  else if defective then
+    effects.die "explicit defect"
+  else if pending then
+    wait ()
+  else
+    effects.succeed current
+}
+
+pub effect fn session initial: String
+  -> (String -> Bool -> Bool -> Bool -> Effect<{}, String, String>) =
+  do {
+    cell <- refs.make initial
+    effects.succeed (step cell)
+  }

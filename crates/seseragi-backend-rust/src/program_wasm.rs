@@ -203,6 +203,14 @@ pub fn emit_program_wasm(
     // Reuse the ordinary linker and every native evidence/admission check.
     // This explicit library mode changes no native executable entry contract.
     let mut library = project::emit_library(modules, entry_module)?;
+    let tracks_private_refs = library.metadata.capabilities.iter().any(|c| c == "ref");
+    if host_abi && tracks_private_refs {
+        return Err(project::at(
+            "program WASM: private Ref currently requires the providerless Effect ABI",
+            &public[0].origin,
+            entry_module,
+        ));
+    }
     if effect_abi {
         crate::program_wasm_effect::validate(modules)?;
     } else if library.metadata.capabilities.iter().any(|c| {
@@ -240,6 +248,11 @@ pub fn emit_program_wasm(
         trap_policy: "retire-instance".into(),
         max_boundary_bytes: 16 * 1024 * 1024,
     };
+    if effect_abi && !host_abi {
+        library.source.push_str(&format!(
+            "\nconst PROGRAM_TRACK_REFS: bool = {tracks_private_refs};\n"
+        ));
+    }
     library.source.push_str(if host_abi {
         include_str!("runtime_program_wasm_host_effect.rs")
     } else if effect_abi {
@@ -387,6 +400,12 @@ fn effect_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> 
         codecs.push(item);
         Some(index)
     }
+}
+
+pub(crate) fn has_closed_data_codec(ty: &CoreType) -> bool {
+    // Internal cells reuse the exact existing data fragment. This creates no
+    // Ref transport codec and admits neither callbacks nor Effect values.
+    codec(ty, false, &mut Vec::new()).is_some()
 }
 
 fn codec(ty: &CoreType, callable: bool, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {

@@ -1839,7 +1839,7 @@ await owner.dispose();
     ));
     for (index, source) in [
         "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nimport { Ref } from \"std/ref\"\npub effect fn selected value: Int -> Ref<Int> = refs.make value",
-        "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\npub effect fn selected value: Int -> Int = do { cell <- refs.make value; refs.get cell }",
+        "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nfn identity value: Int -> Int = value\npub effect fn selected value: Int -> Int = do { cell <- refs.make identity; saved <- refs.get cell; effects.succeed (saved value) }",
         "import * as effects from \"std/effect\"\npub effect fn selected callback: (Int -> Int) -> Int = effects.succeed (callback 1)",
         "import * as effects from \"std/effect\"\neffect fn add initial: Int -> delta: Int -> Int = effects.succeed (initial + delta)\npub effect fn selected initial: Int -> (Int -> Effect<{}, Never, Int>) = effects.succeed (add initial)",
 
@@ -2063,6 +2063,203 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
                 .arg(root().join("node_modules/typescript/bin/tsc"))
                 .arg("--project")
                 .arg(config_path),
+            &scratch.0,
+        ));
+    }
+}
+
+#[test]
+fn private_ref_effect_callbacks_retain_state_and_release_the_instance() {
+    let scratch = Scratch::new();
+    let source = root().join("examples/spec/fixtures/rust-backend/program-wasm-private-ref.ssrg");
+    let destination = scratch.0.join("cells");
+    successful(bounded(
+        &mut build(
+            &source,
+            &destination,
+            &["create", "reader", "unit", "failing", "snapshot", "session"],
+        ),
+        &scratch.0,
+    ));
+    for engine in ["bun", "node"] {
+        let result = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(root().join("scripts/program-wasm-private-ref-probe.mjs"))
+                .arg(&destination)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(result.stdout, b"private cells: cold independent state, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
+        assert!(result.stderr.is_empty(), "{result:?}");
+    }
+    fs::write(scratch.0.join("types.mts"), r#"
+import {loadProgram, type OwnedEffect, type OwnedCallback} from "./cells/program.mjs";
+const owner=await loadProgram(new Uint8Array());
+const creation:OwnedEffect<never,OwnedCallback<string,OwnedEffect<never,string>>>=owner.exports.create("seed:");
+const session:OwnedEffect<never,OwnedCallback<string,OwnedCallback<boolean,OwnedCallback<boolean,OwnedCallback<boolean,OwnedEffect<string,string>>>>>>=owner.exports.session("state");
+// @ts-expect-error private Ref does not become a host argument
+owner.exports.create({value:"seed:"});
+// @ts-expect-error state is owned by the returned callback and remains cold
+const eager:string=owner.exports.create("seed:");
+const value:OwnedEffect<never,number>=owner.exports.snapshot(42);
+await owner.dispose();
+"#).unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn private_ref_bodies_match_raw_ts_and_native() {
+    let scratch = Scratch::new();
+    let original = fs::read_to_string(
+        root().join("examples/spec/fixtures/rust-backend/program-wasm-private-ref.ssrg"),
+    )
+    .unwrap();
+    let normal = r#"
+effect fn oracle -> String fails String = do {
+  let creation = create "seed:"
+  first <- creation
+  second <- creation
+  one <- first "one"
+  two <- first "two"
+  other <- second "one"
+  state <- session "state"
+  initial <- state ":ok" False False False
+  failed <- state ":bad" True False False |> effects.recover (\message: String -> effects.succeed message)
+  after <- state "" False False False
+  read <- reader "雪🙂"
+  text <- read ()
+  unit ()
+  effects.succeed (one + "|" + two + "|" + other + "|" + initial + "|" + failed + "|" + after + "|" + text)
+}
+effect fn unexpected message: String -> String = effects.die message
+pub effect fn main = do {
+  answer <- oracle () |> effects.recover unexpected
+  println answer
+  number <- snapshot 42
+  println number
+}
+"#;
+    let defect = r#"
+effect fn oracle -> String fails String = do {
+  state <- session "state"
+  state ":die" False True False
+}
+effect fn unexpected message: String -> String = effects.die message
+pub effect fn main = do { answer <- oracle () |> effects.recover unexpected; println answer }
+"#;
+
+    for (label, main, code, expected) in [
+        ("normal", normal, 0, "seed:one|seed:onetwo|seed:one|state:ok|typed failure|state:ok:inner:outer:bad:inner:outer|雪🙂\n42\n"),
+        ("defect", defect, 70, ""),
+    ] {
+        let source = scratch.0.join(format!("{label}.ssrg"));
+        let text = format!("{original}\n{main}");
+        fs::write(&source, &text).unwrap();
+        let native = scratch.0.join(format!("{label}-native"));
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            &scratch.0,
+        ));
+        let result = bounded(
+            Command::new(native.join(if cfg!(windows) { "program.exe" } else { "program" }))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &scratch.0,
+        );
+        assert_eq!(result.status.code(), Some(code), "{label}: {result:?}");
+        assert_eq!(result.stdout, expected.as_bytes());
+        let error = String::from_utf8_lossy(&result.stderr);
+        assert!(error.contains("managed-live=0"), "{error}");
+        if label == "defect" { assert!(error.contains("explicit defect"), "{error}"); }
+        for (profile, value) in [("development", seseragi_project::BuildProfile::Development), ("release", seseragi_project::BuildProfile::Release)] {
+            let output = scratch.0.join(format!("{label}-{profile}"));
+            successful(bounded(
+                Command::new(env!("CARGO_BIN_EXE_seseragi")).arg("build").arg(&source)
+                    .args(["--profile", profile, "--out-dir"]).arg(&output),
+                &scratch.0,
+            ));
+            let raw = seseragi_driver::compile_module(
+                seseragi_driver::CompileInput::new("private-ref.ssrg", "proof/private-ref", &text).with_profile(value),
+            ).unwrap();
+            fs::write(output.join("raw.ts"), raw.generated.typescript).unwrap();
+            let mut files=vec![output.join("raw.ts")];
+            if profile == "development" { files.push(output.join("entry.ts")); }
+            let config=serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true,"skipLibCheck":false},"files":files});
+            fs::write(output.join("tsconfig.json"),serde_json::to_vec(&config).unwrap()).unwrap();
+            successful(bounded(Command::new(runtime("node", &scratch.0)).arg(root().join("node_modules/typescript/bin/tsc")).arg("--project").arg(output.join("tsconfig.json")),&scratch.0));
+            for engine in ["bun", "node"] {
+                let result=bounded(Command::new(runtime(engine,&scratch.0)).arg(output.join("entry.js")).env("PATH",""),&scratch.0);
+                assert_eq!(result.status.code(),Some(code),"{label}/{profile}: {result:?}");
+                assert_eq!(result.stdout,expected.as_bytes());
+                let error=String::from_utf8_lossy(&result.stderr);
+                if code==0 { assert!(error.is_empty(),"{error}"); }
+                else { assert!(error.contains("seseragi: runtime defect"),"{error}"); }
+            }
+        }
+    }
+}
+
+#[test]
+fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
+    let scratch = Scratch::new();
+    let package = root()
+        .join("examples/spec/fixtures/rust-backend-projects/program-wasm-private-ref-package");
+    assert_eq!(
+        fs::read(package.join("src/calculation.ssrg")).unwrap(),
+        fs::read(root().join("examples/spec/fixtures/rust-backend/program-wasm-private-ref.ssrg"))
+            .unwrap()
+    );
+    for profile in ["development", "release"] {
+        let site = scratch.0.join(profile);
+        successful(bounded(
+            standard_build(&package, &site, profile).current_dir(&scratch.0),
+            &scratch.0,
+        ));
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(site.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        assert_eq!(manifest["profile"], profile);
+        assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
+        assert_eq!(
+            manifest["programs"][0]["abi"],
+            "seseragi-program-wasm-effect-v1"
+        );
+        assert_eq!(
+            manifest["programs"][0]["hostImport"],
+            "@seseragi/programs/calculation"
+        );
+        let directory = site.join("programs/calculation");
+        for engine in ["bun", "node"] {
+            let result = successful(bounded(
+                Command::new(runtime(engine, &scratch.0))
+                    .arg(root().join("scripts/program-wasm-private-ref-probe.mjs"))
+                    .arg(&directory)
+                    .arg("package")
+                    .env("PATH", ""),
+                &scratch.0,
+            ));
+            assert_eq!(result.stdout,b"private cells: cold independent state, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
+            assert!(result.stderr.is_empty(), "{result:?}");
+        }
+        let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false,"paths":{"@seseragi/programs/calculation":[directory.join("index.d.mts")]}},"files":[package.join("host/bridge.ts")]});
+        let path = scratch.0.join(format!("{profile}-types.json"));
+        fs::write(&path, serde_json::to_vec(&config).unwrap()).unwrap();
+        successful(bounded(
+            Command::new(runtime("node", &scratch.0))
+                .arg(root().join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(&path),
             &scratch.0,
         ));
     }

@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/program-wasm-private-ref-package@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/program-wasm-private-ref-package@0.0.0#workspace:."
+name = "fixture/program-wasm-private-ref-package"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:12d49a6743fea2e7ee7f315f631edb715e8a1cea67cd8f4cac5488d70af044b4"
+content_digest = "sha256:27d400786537467f78d697352da2c00054a21e8fa887cdeef4353f47678c33ae"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/program-wasm-private-ref-package@0.0.0#workspace:."
+declaration = "src/main.ssrg#149-258"
+specifier = "../host/bridge.ts"
+exact_identity = "workspace:host/bridge.ts"
+declaration_digest = "sha256:c437a31c57cd55a7d4f4bebcd609851ef3b1c111d290ebcd8e9f8b57cc80c797"
+content_digest = "sha256:8b5789a004af8be5a7f93ff021e124034ae4a4badd114fda6179fd736887aadc"

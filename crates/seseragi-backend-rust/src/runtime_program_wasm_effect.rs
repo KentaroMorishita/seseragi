@@ -196,6 +196,11 @@ pub extern "C" fn ssrg_init() -> u32 {
     if !fresh {
         return program_result(Err("program ABI: instance already initialized or closed"));
     }
+    if PROGRAM_TRACK_REFS {
+        // Tracing must be enabled before any global or cold plan can create a
+        // cell. Private cells contain only the checked data fragment.
+        enable_cycle_collection();
+    }
     initialize_globals();
     PROGRAM.with(|state| state.borrow_mut().initialized = true);
     0
