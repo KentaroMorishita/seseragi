@@ -6,7 +6,7 @@ mod model;
 mod tests;
 
 pub use error::LocalProjectLoadError;
-pub use model::{LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests};
+pub use model::{LoadedLocalAnalysis, LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests};
 
 use crate::loader::audit;
 use crate::loader::filesystem;
@@ -196,11 +196,30 @@ pub fn load_local_project_module(
     load_project_entry(root.as_ref(), std::iter::empty(), Some(module))
 }
 
+/// Load the ordinary run entry and configured Web program roots for an editor.
+/// This does not widen the production build entry's import closure. Failed
+/// program discovery is isolated and retained without discarding other roots.
+pub fn load_local_project_for_analysis(
+    root: impl AsRef<Path>,
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+) -> Result<LoadedLocalAnalysis, LocalProjectLoadError> {
+    load_project_roots(root.as_ref(), overlays, None, true)
+}
+
 fn load_project_entry(
     root: &Path,
     overlays: impl IntoIterator<Item = SourceOverlay>,
     module: Option<&crate::ModulePath>,
 ) -> Result<LoadedLocalProject, LocalProjectLoadError> {
+    load_project_roots(root, overlays, module, false).map(LoadedLocalAnalysis::into_project)
+}
+
+fn load_project_roots(
+    root: &Path,
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+    module: Option<&crate::ModulePath>,
+    include_programs: bool,
+) -> Result<LoadedLocalAnalysis, LocalProjectLoadError> {
     let packages = discover_local_package_graph(root).map_err(LocalProjectLoadError::Packages)?;
     let overlays = normalize_overlays(overlays)?;
     let root = packages.root().clone();
@@ -219,14 +238,38 @@ fn load_project_entry(
             .entry
             .clone(),
     };
-    let entry = ModuleIdentity::new(root, ModuleRoot::Source, entry_path);
+    let entry = ModuleIdentity::new(root.clone(), ModuleRoot::Source, entry_path);
+    let mut program_errors = BTreeMap::new();
     let (graph, modules) = {
         let mut state = SourceDiscovery::new(&packages, overlays)?;
         state.discover(entry.clone())?;
+        if include_programs {
+            for program in root_manifest
+                .manifest()
+                .web
+                .iter()
+                .flat_map(|web| web.programs.values())
+            {
+                let identity =
+                    ModuleIdentity::new(root.clone(), ModuleRoot::Source, program.module.clone());
+                // Discovery can fail after adding dependencies. Commit an entire
+                // root or retain its error; never publish a partial graph.
+                let mut candidate = state.clone();
+                match candidate.discover(identity.clone()) {
+                    Ok(()) => state = candidate,
+                    Err(error) => {
+                        program_errors.insert(identity, error);
+                    }
+                }
+            }
+        }
         let graph = state.finish()?;
         (graph, state.modules)
     };
-    Ok(LoadedLocalProject::new(packages, entry, graph, modules))
+    Ok(LoadedLocalAnalysis::new(
+        LoadedLocalProject::new(packages, entry, graph, modules),
+        program_errors,
+    ))
 }
 
 fn normalize_overlays(
@@ -244,6 +287,7 @@ fn normalize_overlays(
     Ok(normalized)
 }
 
+#[derive(Clone)]
 struct SourceDiscovery<'a> {
     packages: &'a LocalPackageGraph,
     source_roots: BTreeMap<(PackageIdentity, ModuleRoot), PathBuf>,

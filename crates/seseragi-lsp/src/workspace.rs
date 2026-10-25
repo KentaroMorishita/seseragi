@@ -1,7 +1,7 @@
 use crate::features::DocumentState;
 use seseragi_driver::{analyze_project_recovering as analyze_project, ProjectModuleInput};
 use seseragi_project::{
-    load_local_project_with_overlays, load_workspace_project, logical_module_id,
+    load_local_project_for_analysis, load_workspace_project, logical_module_id,
     logical_package_scope, LoadedLocalProject, LoadedWorkspaceProject, ModuleGraph, ModuleIdentity,
     ModulePath, SourceOverlay,
 };
@@ -108,9 +108,48 @@ pub(crate) fn analyze(
                         .then(|| SourceOverlay::new(path, &document.source))
                 })
                 .collect::<Vec<_>>();
-            let project = load_local_project_with_overlays(root, overlays)
+            let analysis = load_local_project_for_analysis(root, overlays)
                 .map_err(|error| error.to_string())?;
-            analyze_local_package(&project, open_documents)
+            let project = analysis.project();
+            let mut snapshot = analyze_local_package(project, open_documents)?;
+            // Keep the ordinary project and all other successful programs when
+            // a selected program cannot link. Failing roots still get the
+            // existing standalone driver diagnostics, rather than silence.
+            for module in analysis.program_errors().keys() {
+                let package = project
+                    .packages()
+                    .package(module.package())
+                    .expect("selected root package exists");
+                let path = package
+                    .root()
+                    .join(package.manifest().layout.source.as_str())
+                    .join(module.path().as_str())
+                    .with_extension("ssrg");
+                let path = canonicalize_file_path(path);
+                let document = open_documents
+                    .iter()
+                    .find(|(_, document)| document.path.as_ref() == Some(&path));
+                let (uri, version, source) = match document {
+                    Some((uri, document)) => {
+                        (uri.clone(), Some(document.version), document.source.clone())
+                    }
+                    None => {
+                        let (Ok(uri), Ok(source)) =
+                            (Url::from_file_path(&path), fs::read_to_string(&path))
+                        else {
+                            continue;
+                        };
+                        (uri.into(), None, source)
+                    }
+                };
+                if !snapshot.documents.contains_key(&uri) {
+                    snapshot.documents.insert(
+                        uri.clone(),
+                        DocumentState::analyze_with_version(&uri, version, source),
+                    );
+                }
+            }
+            Ok(snapshot)
         }
         ProjectKey::WorkspaceSource { root, entry } => {
             let overlays = open_documents

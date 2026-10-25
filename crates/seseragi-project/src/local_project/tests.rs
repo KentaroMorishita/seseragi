@@ -11,6 +11,96 @@ fn repository_root() -> PathBuf {
 }
 
 #[test]
+fn analysis_program_roots_share_identity_and_overlays_without_widening_builds() {
+    let root =
+        repository_root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package");
+    let path = root.join("src/calculation.ssrg");
+    let source = format!(
+        "{}\npub fn editorOverlay -> Int = 7\n",
+        fs::read_to_string(&path).unwrap()
+    );
+    let analysis =
+        load_local_project_for_analysis(&root, [SourceOverlay::new(&path, &source)]).unwrap();
+    assert!(analysis.program_errors().is_empty());
+    let project = analysis.project();
+    assert_eq!(project.entry().path().as_str(), "main");
+    assert_eq!(project.modules().count(), 3);
+    assert!(project
+        .modules()
+        .all(|(id, _)| id.package() == project.entry().package()));
+    let calculation = project
+        .modules()
+        .find(|(id, _)| id.path().as_str() == "calculation")
+        .unwrap();
+    assert_eq!(calculation.1.source(), source);
+    assert_eq!(
+        project.graph().dependencies_for(calculation.0).unwrap()[0]
+            .1
+            .path()
+            .as_str(),
+        "constants"
+    );
+    let ordinary =
+        load_local_project_with_overlays(&root, [SourceOverlay::new(&path, &source)]).unwrap();
+    assert_eq!(ordinary.modules().count(), 1);
+    assert_eq!(ordinary.entry().package(), project.entry().package());
+}
+
+#[test]
+fn analysis_program_discovery_rolls_back_a_failed_root_and_keeps_its_error() {
+    let project = TempProject::new();
+    project.write("seseragi.toml", concat!(
+        "[package]\nname = \"fixture/analysis-programs\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n",
+        "[run]\nentry = \"main\"\ntarget = \"web\"\n",
+        "[web.programs.bad]\nmodule = \"bad\"\nexports = [\"amount\"]\n",
+        "[web.programs.good]\nmodule = \"good\"\nexports = [\"amount\"]\n",
+    ));
+    project.write(
+        "src/main.ssrg",
+        "import { base } from \"./shared\"\npub fn main -> Int = base\n",
+    );
+    project.write("src/shared.ssrg", "pub let base: Int = 42\n");
+    project.write(
+        "src/bad.ssrg",
+        "import { value } from \"./missing\"\npub fn amount -> Int = value\n",
+    );
+    project.write(
+        "src/good.ssrg",
+        "import { base } from \"./shared\"\npub fn amount -> Int = base\n",
+    );
+    let analysis = load_local_project_for_analysis(project.path(), []).unwrap();
+    assert_eq!(analysis.program_errors().len(), 1);
+    let (identity, error) = analysis.program_errors().first_key_value().unwrap();
+    assert_eq!(identity.path().as_str(), "bad");
+    assert!(error.to_string().contains("missing"));
+    assert_eq!(analysis.project().modules().count(), 3);
+    assert!(analysis
+        .project()
+        .modules()
+        .all(|(id, _)| id.path().as_str() != "bad"));
+    assert_eq!(
+        analysis
+            .project()
+            .graph()
+            .topological_order()
+            .unwrap()
+            .len(),
+        3
+    );
+    assert_eq!(
+        load_local_project(project.path())
+            .unwrap()
+            .modules()
+            .count(),
+        2
+    );
+    assert!(
+        load_local_project_module(project.path(), &crate::ModulePath::parse("bad").unwrap())
+            .is_err()
+    );
+}
+
+#[test]
 fn selecting_a_program_entry_loads_its_import_closure_not_the_ui() {
     let root =
         repository_root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package");

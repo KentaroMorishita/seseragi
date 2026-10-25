@@ -1,6 +1,38 @@
 use crate::{LoadedModule, LocalPackageGraph, ModuleGraph, ModuleIdentity};
 use std::collections::BTreeMap;
 
+/// Editor analysis keeps successfully linked program roots in one canonical
+/// graph while retaining failures for roots which could not be discovered.
+#[derive(Debug)]
+pub struct LoadedLocalAnalysis {
+    project: LoadedLocalProject,
+    program_errors: BTreeMap<ModuleIdentity, super::LocalProjectLoadError>,
+}
+
+impl LoadedLocalAnalysis {
+    pub(super) fn new(
+        project: LoadedLocalProject,
+        program_errors: BTreeMap<ModuleIdentity, super::LocalProjectLoadError>,
+    ) -> Self {
+        Self {
+            project,
+            program_errors,
+        }
+    }
+
+    pub const fn project(&self) -> &LoadedLocalProject {
+        &self.project
+    }
+
+    pub const fn program_errors(&self) -> &BTreeMap<ModuleIdentity, super::LocalProjectLoadError> {
+        &self.program_errors
+    }
+
+    pub(super) fn into_project(self) -> LoadedLocalProject {
+        self.project
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct LoadedLocalProject {
     packages: LocalPackageGraph,
