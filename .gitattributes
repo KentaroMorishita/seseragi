@@ -20,6 +20,11 @@ examples/spec/fixtures/rust-backend-projects/program-wasm-effect-factory-package
 examples/spec/fixtures/rust-backend-projects/program-wasm-private-ref-package/** text eol=lf
 examples/spec/fixtures/rust-backend-projects/program-wasm-host-ref-package/** text eol=lf
 
+# These standalone inputs must match their locked package source bytes.
+examples/spec/fixtures/rust-backend/program-wasm-effect-factory.ssrg text eol=lf
+examples/spec/fixtures/rust-backend/program-wasm-private-ref.ssrg text eol=lf
+examples/spec/fixtures/rust-backend/program-wasm-host-ref.ssrg text eol=lf
+
 # Imported type acceptance packages pin manifest and source bytes in their lock.
 examples/spec/fixtures/rust-backend-projects/imported-unit-*/** text eol=lf
 
