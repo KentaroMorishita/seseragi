@@ -372,6 +372,11 @@ impl<'a> PureExpressionContext<'a> {
         // proven identity to the caller's checked intrinsic representation.
         // A nominal owner or lexical type parameter cannot prove this case.
         if !self.lexical_type_parameters.contains_key("Unit")
+            // A generalized initializer has not introduced its own binder
+            // frame yet. Keep the canonical owner through nested function
+            // hydration so a quantified parameter named Unit cannot capture
+            // the callable's separate anonymous source argument.
+            && self.generalized_value_origin.is_none()
             && matches!(&value.type_ref,
                 TypedType::ExternalNamed { canonical, arguments, .. }
                     if canonical == "std/prelude::Unit" && arguments.is_empty())
