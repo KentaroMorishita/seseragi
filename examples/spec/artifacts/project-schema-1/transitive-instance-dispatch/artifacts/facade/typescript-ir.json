@@ -25,18 +25,6 @@
           }
         },
         {
-          "imported": "Badge",
-          "local": "Badge",
-          "sourceLocal": "Badge",
-          "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
-          "typeOnly": true,
-          "origin": {
-            "source": "facade.ssrg",
-            "start": 17,
-            "end": 22
-          }
-        },
-        {
           "imported": "describe",
           "local": "providerDescribe",
           "sourceLocal": "providerDescribe",
@@ -46,6 +34,18 @@
             "source": "facade.ssrg",
             "start": 43,
             "end": 59
+          }
+        },
+        {
+          "imported": "Badge",
+          "local": "Badge",
+          "sourceLocal": "Badge",
+          "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 17,
+            "end": 22
           }
         }
       ],

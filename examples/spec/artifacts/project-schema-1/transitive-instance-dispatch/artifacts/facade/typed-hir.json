@@ -103,8 +103,9 @@
         "kind": "variable",
         "name": "fixture/transitive-instance-dispatch::provider::Active",
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Badge",
+          "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
           "arguments": []
         },
         "origin": {

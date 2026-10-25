@@ -752,6 +752,126 @@ mod tests {
     }
 
     #[test]
+    fn imported_constructor_results_keep_the_public_nominal_provider() {
+        fn canonical_box_uses(value: &serde_json::Value) -> usize {
+            match value {
+                serde_json::Value::Object(object) => {
+                    assert!(
+                        !(object.get("kind").and_then(|value| value.as_str()) == Some("named")
+                            && object.get("name").and_then(|value| value.as_str()) == Some("Box")),
+                        "imported constructor lost its owner: {value}"
+                    );
+                    usize::from(
+                        object.get("kind").and_then(|value| value.as_str())
+                            == Some("external-named")
+                            && object.get("canonical").and_then(|value| value.as_str())
+                                == Some("fixture/namespace-owner::model::Box"),
+                    ) + object.values().map(canonical_box_uses).sum::<usize>()
+                }
+                serde_json::Value::Array(values) => values.iter().map(canonical_box_uses).sum(),
+                _ => 0,
+            }
+        }
+        for (specifier, namespace) in [("./facade", true), ("./model", true), ("./facade", false)] {
+            let mut graph = ModuleGraph::new();
+            graph
+                .add_module("fixture/namespace-owner::model".into(), [])
+                .unwrap();
+            graph
+                .add_module(
+                    "fixture/namespace-owner::facade".into(),
+                    [("./model".into(), "fixture/namespace-owner::model".into())],
+                )
+                .unwrap();
+            graph
+                .add_module(
+                    "fixture/namespace-owner::main".into(),
+                    [(
+                        specifier.into(),
+                        format!("fixture/namespace-owner::{}", &specifier[2..]),
+                    )],
+                )
+                .unwrap();
+            let imports = if namespace {
+                format!("import * as model from \"{specifier}\"\n")
+            } else {
+                format!("import {{ Box, read, keep }} from \"{specifier}\"\n")
+            };
+            let body = concat!(
+                "pub fn probe -> String = {\n",
+                "  let saved = model.read [model.keep (model.Box 42)]\n",
+                "  let callback = match saved 0 { Just value -> value; Nothing -> model.keep (model.Box 0) }\n",
+                "  show (callback 1)\n",
+                "}\n",
+            );
+            let body = if namespace {
+                body.to_owned()
+            } else {
+                body.replace("model.", "")
+            };
+            let project = compile_project(graph, [
+                ProjectModuleInput::new("model.ssrg", "fixture/namespace-owner::model", concat!(
+                    "pub type Box<A> = | Box A\n",
+                    "instance<A> Show<Box<A>> where Show<A> { fn show value: Box<A> -> String = match value { Box item -> show item } }\n",
+                    "pub fn read<A> values: Array<A> -> offset: Int -> Maybe<A> = values[offset]\n",
+                    "pub fn keep<A> value: A -> (Int -> A) = \\_: Int -> value\n",
+                ), "dist/namespace-owner/model.js"),
+                ProjectModuleInput::new("facade.ssrg", "fixture/namespace-owner::facade", "pub import { Box, read, keep } from \"./model\"\n", "dist/namespace-owner/facade.js"),
+                ProjectModuleInput::new("main.ssrg", "fixture/namespace-owner::main", imports + &body, "dist/namespace-owner/main.js"),
+            ]).unwrap();
+            let main = &project.modules["fixture/namespace-owner::main"];
+            assert!(
+                canonical_box_uses(&serde_json::to_value(&main.core_ir.functions).unwrap()) > 0
+            );
+            assert!(main
+                .typescript_ir
+                .source_imports
+                .iter()
+                .flat_map(|import| &import.bindings)
+                .any(|binding| binding.canonical == "fixture/namespace-owner::model::Box"));
+            if namespace {
+                assert!(
+                    main.generated
+                        .typescript
+                        .lines()
+                        .any(|line| line.starts_with("import ")
+                            && line.contains("type ")
+                            && line.contains("Box")),
+                    "{}",
+                    main.generated.typescript
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn imported_constructor_comparison_keeps_the_annotated_owner() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module("fixture/tree-owner::domain".into(), [])
+            .unwrap();
+        graph
+            .add_module(
+                "fixture/tree-owner::main".into(),
+                [("./domain".into(), "fixture/tree-owner::domain".into())],
+            )
+            .unwrap();
+        let project = compile_project(graph, [
+            ProjectModuleInput::new("domain.ssrg", "fixture/tree-owner::domain", "pub type Tree<A> deriving Eq, Ord = | Leaf A | Branch (Tree<A>, Tree<A>)\n", "dist/tree-owner/domain.js"),
+            ProjectModuleInput::new("main.ssrg", "fixture/tree-owner::main", concat!(
+                "import * as domain from \"./domain\"\n",
+                "pub fn check -> Bool = {\n",
+                "  let tree: domain.Tree<Int> = domain.Branch (domain.Leaf 1, domain.Leaf 2)\n",
+                "  (tree == domain.Branch (domain.Leaf 1, domain.Leaf 2)) && (tree < domain.Branch (domain.Leaf 1, domain.Leaf 3))\n",
+                "}\n",
+            ), "dist/tree-owner/main.js"),
+        ]).unwrap();
+        let main = &project.modules["fixture/tree-owner::main"];
+        assert!(main.generated.typescript.contains("__ssrg$instance$Eq$"));
+        assert!(main.generated.typescript.contains("__ssrg$instance$Ord$"));
+    }
+
+    #[test]
     fn public_alias_projection_defines_facade_reexport_targets() {
         let mut graph = ModuleGraph::new();
         graph

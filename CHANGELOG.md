@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.94] - 2026-10-25
+
+### Fixed
+
+- Preserve canonical imported ADT owners in inferred constructor results so namespace-only generic returned functions retain their required TypeScript imports. Check resolved owner and scoped argument identity in comparisons and monadic do while preserving strict evaluation, opaque boundaries, and dictionary frames.
+
 ## [0.61.93] - 2026-10-25
 
 ### Fixed

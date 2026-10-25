@@ -27,6 +27,7 @@ on:
       - "crates/seseragi-cli/tests/inherited_equality.rs"
       - "crates/seseragi-cli/tests/process_entry_strict.rs"
       - "crates/seseragi-cli/tests/public_aliases.rs"
+      - "crates/seseragi-cli/tests/namespace_results.rs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
       - "crates/seseragi-cli/tests/filesystem.rs"
@@ -75,6 +76,7 @@ on:
       - "crates/seseragi-cli/tests/inherited_equality.rs"
       - "crates/seseragi-cli/tests/process_entry_strict.rs"
       - "crates/seseragi-cli/tests/public_aliases.rs"
+      - "crates/seseragi-cli/tests/namespace_results.rs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
       - "crates/seseragi-cli/tests/filesystem.rs"
@@ -141,6 +143,8 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test process_entry_strict
       - name: Compare public alias exports, scoped binders and type-only initialization
         run: cargo test --locked -p seseragi-cli --test public_aliases
+      - name: Compare namespace constructor owners and saved generic results
+        run: cargo test --locked -p seseragi-cli --test namespace_results
       - name: Verify product program WASM, generated declarations and callback ownership
         run: cargo test --locked -p seseragi-cli --test program_wasm
       - name: Rebuild selected program dependencies and drain old browser owners

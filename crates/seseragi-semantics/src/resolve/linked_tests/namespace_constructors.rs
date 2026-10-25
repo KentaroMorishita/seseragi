@@ -13,12 +13,35 @@ fn types_a_namespace_qualified_constructor_as_its_canonical_adt_value() {
         TypedDecl::Fn {
             body: TypedExpr::Variable {
                 name,
-                type_ref: TypedType::Named { arguments, .. },
+                type_ref: TypedType::ExternalNamed { canonical, arguments, .. },
                 ..
             },
             ..
-        } if name == "fixture/game::domain::Rock" && arguments.is_empty()
+        } if name == "fixture/game::domain::Rock"
+            && canonical == "fixture/game::domain::Hand"
+            && arguments.is_empty()
     ));
+}
+
+#[test]
+fn comparison_still_rejects_distinct_owners_and_type_arguments() {
+    let domain = "pub type Box<A> deriving Eq = | Box A\n";
+    for expression in [
+        "domain.Box 1 == Local 1",
+        "domain.Box 1 == domain.Box \"one\"",
+    ] {
+        let main = format!(
+            "import * as domain from \"./domain\"\ntype Box<A> deriving Eq = | Local A\npub fn check -> Bool = {expression}\n"
+        );
+        let diagnostics = analyze(&main, domain).unwrap_err();
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .any(|item| item.code == "SES-T0101"),
+            "{diagnostics:#?}"
+        );
+    }
 }
 
 #[test]

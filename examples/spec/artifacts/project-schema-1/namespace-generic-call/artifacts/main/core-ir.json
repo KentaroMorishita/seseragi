@@ -200,8 +200,9 @@
               "kind": "variable",
               "name": "fixture/namespace-call::domain::Paper",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "domain.Hand",
+                "canonical": "fixture/namespace-call::domain::Hand",
                 "arguments": []
               },
               "origin": {
@@ -233,8 +234,9 @@
               "kind": "variable",
               "name": "fixture/namespace-call::domain::Scissors",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "domain.Hand",
+                "canonical": "fixture/namespace-call::domain::Hand",
                 "arguments": []
               },
               "origin": {
@@ -255,8 +257,9 @@
               "kind": "variable",
               "name": "fixture/namespace-call::domain::Rock",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "domain.Hand",
+                "canonical": "fixture/namespace-call::domain::Hand",
                 "arguments": []
               },
               "origin": {
@@ -274,8 +277,9 @@
         ],
         "exhaustive": true,
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "domain.Hand",
+          "canonical": "fixture/namespace-call::domain::Hand",
           "arguments": []
         },
         "origin": {

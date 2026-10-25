@@ -74,6 +74,7 @@ pub(super) fn type_monad_do(
                     value.span(),
                     &constructor,
                     &inferred_type_from_expr(&analysis.value),
+                    &context,
                 ) {
                     merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
                 }
@@ -89,12 +90,11 @@ pub(super) fn type_monad_do(
             } => {
                 let analysis = type_surface_expression(value, &context);
                 let actual = inferred_type_from_expr(&analysis.value);
-                let payload = monad_payload(&constructor, &actual);
+                let payload = monad_payload(&constructor, &actual, &context);
                 if payload.is_none() {
-                    merged.monad_do_issue = merged
-                        .monad_do_issue
-                        .take()
-                        .or_else(|| monad_type_issue(value.span(), &constructor, &actual));
+                    merged.monad_do_issue = merged.monad_do_issue.take().or_else(|| {
+                        monad_type_issue(value.span(), &constructor, &actual, &context)
+                    });
                 }
                 if let Some(type_ref) = payload {
                     let pattern_input = base_context.semantic_value_from_typed_type(&type_ref);
@@ -185,7 +185,9 @@ pub(super) fn type_monad_do(
         .with_expected(Some(expected.clone()));
     let result_analysis = type_surface_expression(result, &result_context);
     let result_type = inferred_type_from_expr(&result_analysis.value);
-    if let Some(issue) = monad_type_issue(result.span(), &constructor, &result_type) {
+    if let Some(issue) =
+        monad_type_issue(result.span(), &constructor, &result_type, &result_context)
+    {
         merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
     }
     let result_value = result_analysis.value.clone();
@@ -204,8 +206,9 @@ fn monad_type_issue(
     origin: ByteSpan,
     constructor: &TypedType,
     actual: &TypedType,
+    context: &PureExpressionContext<'_>,
 ) -> Option<MonadDoIssue> {
-    monad_payload(constructor, actual)
+    monad_payload(constructor, actual, context)
         .is_none()
         .then(|| MonadDoIssue::ConstructorMismatch {
             expression: origin,
@@ -214,9 +217,17 @@ fn monad_type_issue(
         })
 }
 
-fn monad_payload(constructor: &TypedType, applied: &TypedType) -> Option<TypedType> {
+fn monad_payload(
+    constructor: &TypedType,
+    applied: &TypedType,
+    context: &PureExpressionContext<'_>,
+) -> Option<TypedType> {
     let (actual_constructor, payload) = monad_parts(applied)?;
-    (actual_constructor == *constructor).then_some(payload)
+    crate::typed::semantic_types::semantic_values_have_same_identity(
+        &context.semantic_value_from_typed_type(constructor),
+        &context.semantic_value_from_typed_type(&actual_constructor),
+    )
+    .then_some(payload)
 }
 
 fn monad_parts(type_ref: &TypedType) -> Option<(TypedType, TypedType)> {

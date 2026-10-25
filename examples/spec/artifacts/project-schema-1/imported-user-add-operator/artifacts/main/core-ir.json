@@ -249,8 +249,9 @@
                   }
                 ],
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Score",
+                  "canonical": "fixture/imported-user-add-operator::domain::Score",
                   "arguments": []
                 },
                 "origin": {

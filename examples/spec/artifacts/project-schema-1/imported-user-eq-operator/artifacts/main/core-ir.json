@@ -589,8 +589,9 @@
                         "kind": "variable",
                         "name": "fixture/imported-user-eq-operator::domain::Ready",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
                           "arguments": []
                         },
                         "origin": {
@@ -603,8 +604,9 @@
                         "kind": "variable",
                         "name": "fixture/imported-user-eq-operator::domain::Ready",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
                           "arguments": []
                         },
                         "origin": {
@@ -621,8 +623,9 @@
                           "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Status",
+                              "canonical": "fixture/imported-user-eq-operator::domain::Status",
                               "arguments": []
                             }
                           ]
@@ -653,8 +656,9 @@
                         "kind": "variable",
                         "name": "fixture/imported-user-eq-operator::domain::Ready",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
                           "arguments": []
                         },
                         "origin": {
@@ -667,8 +671,9 @@
                         "kind": "variable",
                         "name": "fixture/imported-user-eq-operator::domain::Waiting",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
                           "arguments": []
                         },
                         "origin": {
@@ -685,8 +690,9 @@
                           "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Status",
+                              "canonical": "fixture/imported-user-eq-operator::domain::Status",
                               "arguments": []
                             }
                           ]

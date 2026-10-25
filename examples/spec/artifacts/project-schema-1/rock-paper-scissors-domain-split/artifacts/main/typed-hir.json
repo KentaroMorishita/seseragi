@@ -472,8 +472,9 @@
                         "kind": "variable",
                         "name": "fixture/rps-domain-split::domain::Rock",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Hand",
+                          "canonical": "fixture/rps-domain-split::domain::Hand",
                           "arguments": []
                         },
                         "origin": {
@@ -485,8 +486,9 @@
                         "kind": "variable",
                         "name": "fixture/rps-domain-split::domain::Scissors",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Hand",
+                          "canonical": "fixture/rps-domain-split::domain::Hand",
                           "arguments": []
                         },
                         "origin": {

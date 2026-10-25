@@ -405,8 +405,9 @@
                   }
                 ],
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "UserId",
+                  "canonical": "fixture/imported-newtype::domain::UserId",
                   "arguments": []
                 },
                 "origin": {

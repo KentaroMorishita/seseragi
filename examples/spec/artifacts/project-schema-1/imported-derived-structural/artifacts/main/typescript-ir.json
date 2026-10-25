@@ -131,18 +131,6 @@
           }
         },
         {
-          "imported": "Phase",
-          "local": "Phase",
-          "sourceLocal": "Phase",
-          "canonical": "fixture/imported-derived-structural::domain::Phase",
-          "typeOnly": true,
-          "origin": {
-            "source": "main.ssrg",
-            "start": 58,
-            "end": 63
-          }
-        },
-        {
           "imported": "Zebra",
           "local": "Zebra",
           "sourceLocal": "Zebra",
@@ -404,6 +392,30 @@
             "source": "main.ssrg",
             "start": 0,
             "end": 142
+          }
+        },
+        {
+          "imported": "Phantom",
+          "local": "Phantom_1",
+          "sourceLocal": "Phantom",
+          "canonical": "fixture/imported-derived-structural::domain::Phantom",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 117,
+            "end": 124
+          }
+        },
+        {
+          "imported": "Phase",
+          "local": "Phase",
+          "sourceLocal": "Phase",
+          "canonical": "fixture/imported-derived-structural::domain::Phase",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 63
           }
         }
       ],

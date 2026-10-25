@@ -1203,8 +1203,9 @@
                       }
                     ],
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Countdown",
+                      "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
                       "arguments": []
                     },
                     "origin": {

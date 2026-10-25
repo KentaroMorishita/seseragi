@@ -129,6 +129,18 @@
             "start": 0,
             "end": 59
           }
+        },
+        {
+          "imported": "Profile",
+          "local": "Profile_1",
+          "sourceLocal": "Profile",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 28,
+            "end": 35
+          }
         }
       ],
       "origin": {
@@ -1245,7 +1257,7 @@
               "arguments": [
                 {
                   "kind": "reference",
-                  "name": "Profile",
+                  "name": "Profile_1",
                   "arguments": []
                 }
               ]
@@ -1281,7 +1293,7 @@
                   "typeArguments": [
                     {
                       "kind": "reference",
-                      "name": "Profile",
+                      "name": "Profile_1",
                       "arguments": []
                     }
                   ]
@@ -1312,7 +1324,7 @@
                 "arguments": [
                   {
                     "kind": "reference",
-                    "name": "Profile",
+                    "name": "Profile_1",
                     "arguments": []
                   }
                 ]
@@ -1407,7 +1419,7 @@
                 "arguments": [
                   {
                     "kind": "reference",
-                    "name": "Profile",
+                    "name": "Profile_1",
                     "arguments": []
                   }
                 ]

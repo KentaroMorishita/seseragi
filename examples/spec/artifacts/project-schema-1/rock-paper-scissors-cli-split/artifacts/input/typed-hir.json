@@ -288,8 +288,9 @@
                   "kind": "variable",
                   "name": "fixture/rps-cli-split::domain::Rock",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
                     "arguments": []
                   },
                   "origin": {
@@ -328,8 +329,9 @@
                 },
                 "argumentTypes": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
                     "arguments": []
                   }
                 ],
@@ -394,8 +396,9 @@
                   "kind": "variable",
                   "name": "fixture/rps-cli-split::domain::Paper",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
                     "arguments": []
                   },
                   "origin": {
@@ -434,8 +437,9 @@
                 },
                 "argumentTypes": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
                     "arguments": []
                   }
                 ],
@@ -500,8 +504,9 @@
                   "kind": "variable",
                   "name": "fixture/rps-cli-split::domain::Scissors",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
                     "arguments": []
                   },
                   "origin": {
@@ -540,8 +545,9 @@
                 },
                 "argumentTypes": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
                     "arguments": []
                   }
                 ],
