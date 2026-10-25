@@ -29,6 +29,7 @@ on:
       - "crates/seseragi-cli/tests/public_aliases.rs"
       - "crates/seseragi-cli/tests/namespace_results.rs"
       - "crates/seseragi-cli/tests/computed_callees.rs"
+      - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -84,6 +85,7 @@ on:
       - "crates/seseragi-cli/tests/public_aliases.rs"
       - "crates/seseragi-cli/tests/namespace_results.rs"
       - "crates/seseragi-cli/tests/computed_callees.rs"
+      - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -160,6 +162,8 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test namespace_results
       - name: Compare computed callees, strict source stages and cleanup
         run: cargo test --locked -p seseragi-cli --test computed_callees
+      - name: Preserve nominal lambda identities, cold replay and scoped Defects
+        run: cargo test --locked -p seseragi-cli --test nominal_lambda_identity
       - name: Verify product program WASM, generated declarations and callback ownership
         run: cargo test --locked -p seseragi-cli --test program_wasm --test program_wasm_host_effect
       - name: Rebuild selected program dependencies and drain old browser owners

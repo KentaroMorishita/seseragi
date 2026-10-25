@@ -204,6 +204,7 @@ fn inferred_nominal_lambda_keeps_primitive_payload_under_a_same_named_type() {
         "println (show (match forward 42 { Foreign inner -> inner }))",
         "let saved = forward 42; println (show (match saved { Foreign inner -> inner }))",
         "let held = forward; println (show (match held 42 { Foreign inner -> inner }))",
+        "let saved = \\value -> forward (forward value); println (show (match saved 42 { Foreign (Foreign inner) -> inner }))",
     ] {
         let source = format!(
             r#"
@@ -230,11 +231,16 @@ fn inferred_nominal_lambda_does_not_confuse_the_shadowing_type_with_a_primitive(
             "let wrong: Foreign<Int> = forward 42; println \"unreachable\"",
             "SES-T0101",
         ),
+        (
+            "let local = \\value -> Local value; let wrong: Foreign<Bool> = local True; println \"unreachable\"",
+            "SES-T0101",
+        ),
     ] {
         let source = format!(
             r#"
 import {{ Box as Foreign, boxed }} from "model"
 type Int = | Nominal Bool
+type Box<A> = | Local A
 pub effect fn main = do {{
   let forward = \value -> boxed value
   {body}
