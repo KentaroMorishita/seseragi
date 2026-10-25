@@ -115,37 +115,16 @@ pub(crate) fn analyze(
             // Keep the ordinary project and all other successful programs when
             // a selected program cannot link. Failing roots still get the
             // existing standalone driver diagnostics, rather than silence.
-            for module in analysis.program_errors().keys() {
-                let package = project
-                    .packages()
-                    .package(module.package())
-                    .expect("selected root package exists");
-                let path = package
-                    .root()
-                    .join(package.manifest().layout.source.as_str())
-                    .join(module.path().as_str())
-                    .with_extension("ssrg");
-                let path = canonicalize_file_path(path);
-                let document = open_documents
-                    .iter()
-                    .find(|(_, document)| document.path.as_ref() == Some(&path));
-                let (uri, version, source) = match document {
-                    Some((uri, document)) => {
-                        (uri.clone(), Some(document.version), document.source.clone())
-                    }
-                    None => {
-                        let (Ok(uri), Ok(source)) =
-                            (Url::from_file_path(&path), fs::read_to_string(&path))
-                        else {
-                            continue;
-                        };
-                        (uri.into(), None, source)
-                    }
-                };
+            for source in analysis.failed_program_sources().values() {
+                let (uri, version) = uri_and_version(source.source_path(), open_documents)?;
                 if !snapshot.documents.contains_key(&uri) {
                     snapshot.documents.insert(
                         uri.clone(),
-                        DocumentState::analyze_with_version(&uri, version, source),
+                        DocumentState::analyze_with_version(
+                            &uri,
+                            version,
+                            source.source().to_owned(),
+                        ),
                     );
                 }
             }

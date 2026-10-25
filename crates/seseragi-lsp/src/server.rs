@@ -1322,6 +1322,71 @@ pub fn view -> html.Html<Never> =
     }
 
     #[test]
+    fn selected_program_cycles_do_not_discard_ui_or_other_program_diagnostics() {
+        let workspace = TempWorkspace::new();
+        workspace.write("seseragi.toml", concat!(
+            "[package]\nname = \"fixture/program-lsp-cycle\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n",
+            "[run]\nentry = \"main\"\ntarget = \"web\"\n",
+            "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n",
+            "[web.programs.other]\nmodule = \"other\"\nexports = [\"count\"]\n",
+        ));
+        let main = "pub fn main -> Int = 42\n";
+        workspace.write("src/main.ssrg", main);
+        workspace.write(
+            "src/calculation.ssrg",
+            "import { value } from \"./cycle\"\npub fn amount -> Int = value\n",
+        );
+        workspace.write(
+            "src/cycle.ssrg",
+            "import { amount } from \"./calculation\"\npub let value: Int = 1\n",
+        );
+        workspace.write("src/other.ssrg", "pub fn count -> Int = \"wrong\"\n");
+        let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let calculation_uri = file_uri(&workspace.path().join("src/calculation.ssrg"));
+        let other_uri = file_uri(&workspace.path().join("src/other.ssrg"));
+        let cycle_uri = file_uri(&workspace.path().join("src/cycle.ssrg"));
+        let mut state = State::default();
+        state
+            .handle(json!({"jsonrpc":"2.0","id":1,"method":"initialize",
+            "params":{"rootUri":file_uri(workspace.path()),"capabilities":{}}}))
+            .unwrap();
+        let opened = state.handle(json!({"jsonrpc":"2.0","method":"textDocument/didOpen",
+            "params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":main}}})).unwrap();
+        assert!(opened
+            .iter()
+            .any(|v| v["params"]["uri"] == main_uri && v["params"]["diagnostics"] == json!([])));
+        assert!(
+            opened.iter().any(|v| v["params"]["uri"] == other_uri
+                && v["params"]["diagnostics"][0]["code"] == "SES-T0101"),
+            "{opened:#?}"
+        );
+        assert!(
+            opened.iter().any(|v| v["params"]["uri"] == calculation_uri
+                && v["params"].get("version").is_none()
+                && v["params"]["diagnostics"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|d| d["severity"] == 1)),
+            "{opened:#?}"
+        );
+        assert!(!opened.iter().any(|v| v["params"]["uri"] == cycle_uri));
+        let fixed = "pub fn amount -> Int = 42\n";
+        let repaired = state.handle(json!({"jsonrpc":"2.0","method":"textDocument/didOpen",
+            "params":{"textDocument":{"uri":calculation_uri,"languageId":"seseragi","version":7,"text":fixed}}})).unwrap();
+        assert!(repaired
+            .iter()
+            .any(|v| v["params"]["uri"] == calculation_uri
+                && v["params"]["version"] == 7
+                && v["params"]["diagnostics"] == json!([])));
+        assert!(repaired
+            .iter()
+            .any(|v| v["params"]["uri"] == main_uri && v["params"]["diagnostics"] == json!([])));
+        assert!(repaired.iter().any(|v| v["params"]["uri"] == other_uri
+            && v["params"]["diagnostics"][0]["code"] == "SES-T0101"));
+    }
+
+    #[test]
     fn selected_programs_keep_other_roots_when_one_program_module_is_missing() {
         let workspace = TempWorkspace::new();
         workspace.write("seseragi.toml", concat!(

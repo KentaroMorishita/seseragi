@@ -7,16 +7,19 @@ use std::collections::BTreeMap;
 pub struct LoadedLocalAnalysis {
     project: LoadedLocalProject,
     program_errors: BTreeMap<ModuleIdentity, super::LocalProjectLoadError>,
+    failed_program_sources: BTreeMap<ModuleIdentity, LoadedModule>,
 }
 
 impl LoadedLocalAnalysis {
     pub(super) fn new(
         project: LoadedLocalProject,
         program_errors: BTreeMap<ModuleIdentity, super::LocalProjectLoadError>,
+        failed_program_sources: BTreeMap<ModuleIdentity, LoadedModule>,
     ) -> Self {
         Self {
             project,
             program_errors,
+            failed_program_sources,
         }
     }
 
@@ -26,6 +29,12 @@ impl LoadedLocalAnalysis {
 
     pub const fn program_errors(&self) -> &BTreeMap<ModuleIdentity, super::LocalProjectLoadError> {
         &self.program_errors
+    }
+
+    /// Canonically resolved source inputs for diagnostics only. These roots did
+    /// not link successfully and are absent from the project's accepted graph.
+    pub const fn failed_program_sources(&self) -> &BTreeMap<ModuleIdentity, LoadedModule> {
+        &self.failed_program_sources
     }
 
     pub(super) fn into_project(self) -> LoadedLocalProject {

@@ -240,6 +240,7 @@ fn load_project_roots(
     };
     let entry = ModuleIdentity::new(root.clone(), ModuleRoot::Source, entry_path);
     let mut program_errors = BTreeMap::new();
+    let mut failed_program_sources = BTreeMap::new();
     let (graph, modules) = {
         let mut state = SourceDiscovery::new(&packages, overlays)?;
         state.discover(entry.clone())?;
@@ -255,9 +256,23 @@ fn load_project_roots(
                 // Discovery can fail after adding dependencies. Commit an entire
                 // root or retain its error; never publish a partial graph.
                 let mut candidate = state.clone();
-                match candidate.discover(identity.clone()) {
+                let discovered = candidate
+                    .discover(identity.clone())
+                    .and_then(|()| candidate.finish().map(|_| ()));
+                match discovered {
                     Ok(()) => state = candidate,
                     Err(error) => {
+                        // Retain only a source read through the same canonical
+                        // filesystem checks and overlays as normal discovery.
+                        // This is diagnostic input, never a linked graph node.
+                        let source = candidate.modules.get(&identity).cloned().or_else(|| {
+                            let path = candidate.resolve_module_path(&identity).ok()?;
+                            let source = candidate.read_source(&identity, &path).ok()?;
+                            Some(LoadedModule::new(identity.clone(), path, source))
+                        });
+                        if let Some(source) = source {
+                            failed_program_sources.insert(identity.clone(), source);
+                        }
                         program_errors.insert(identity, error);
                     }
                 }
@@ -269,6 +284,7 @@ fn load_project_roots(
     Ok(LoadedLocalAnalysis::new(
         LoadedLocalProject::new(packages, entry, graph, modules),
         program_errors,
+        failed_program_sources,
     ))
 }
 
@@ -400,7 +416,10 @@ impl<'a> SourceDiscovery<'a> {
         Ok(())
     }
 
-    fn discover_module(&mut self, module: ModuleIdentity) -> Result<(), LocalProjectLoadError> {
+    fn resolve_module_path(
+        &self,
+        module: &ModuleIdentity,
+    ) -> Result<PathBuf, LocalProjectLoadError> {
         let source_root = self
             .source_roots
             .get(&(module.package().clone(), module.root()))
@@ -430,6 +449,31 @@ impl<'a> SourceDiscovery<'a> {
                 }),
             });
         }
+        Ok(canonical_path)
+    }
+
+    fn read_source(
+        &self,
+        module: &ModuleIdentity,
+        canonical_path: &Path,
+    ) -> Result<String, LocalProjectLoadError> {
+        match self.overlays.get(canonical_path) {
+            Some(source) => Ok(source.clone()),
+            None => fs::read_to_string(canonical_path).map_err(|error| {
+                LocalProjectLoadError::Filesystem {
+                    package: Box::new(module.package().clone()),
+                    error: Box::new(PackageLoadError::io(
+                        "read module",
+                        canonical_path.to_owned(),
+                        error,
+                    )),
+                }
+            }),
+        }
+    }
+
+    fn discover_module(&mut self, module: ModuleIdentity) -> Result<(), LocalProjectLoadError> {
+        let canonical_path = self.resolve_module_path(&module)?;
         // Source and generated roots share the compiler/output module namespace.
         // Reject a collision before the driver erases the filesystem root.
         if matches!(module.root(), ModuleRoot::Source | ModuleRoot::Generated) {
@@ -457,19 +501,7 @@ impl<'a> SourceDiscovery<'a> {
                 });
             }
         }
-        let source = match self.overlays.get(&canonical_path) {
-            Some(source) => source.clone(),
-            None => fs::read_to_string(&canonical_path).map_err(|error| {
-                LocalProjectLoadError::Filesystem {
-                    package: Box::new(module.package().clone()),
-                    error: Box::new(PackageLoadError::io(
-                        "read module",
-                        canonical_path.clone(),
-                        error,
-                    )),
-                }
-            })?,
-        };
+        let source = self.read_source(&module, &canonical_path)?;
         let unlinked = parse_unlinked_module_interface(
             canonical_path.to_string_lossy(),
             module_label(&module),
