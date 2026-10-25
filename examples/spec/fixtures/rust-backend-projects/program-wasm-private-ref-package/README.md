@@ -1,0 +1,5 @@
+# 状態を保持するtext callback
+
+標準Web packageでfactoryをrunし、独立した文字列の状態を持つcallbackを受け取る。同じcold planを再実行すると文字列を蓄積する。callbackのdetach後も保存したplanを実行でき、UI finalizerはcallbackが返すEffectを完了してからinstanceを閉じる。
+
+計算bodyはrust-backend/program-wasm-private-ref.ssrgと同じ。RefはWASM内部だけで保持し、公開境界は既存のdata・callback・Effectを使う。Failure・Defect・取消、LIFO finalizerとroot解放は実WASMのCLI受入で確認する。公開Ref、fallible Int算術、tuple pattern、一般provider ABIは未対応。

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.99] - 2026-10-26
+
+### Added
+
+- Run stateful callbacks returned from cold program WASM Effects. Keep private closed-data Ref cells across typed host requests, independent factories and replay, while preserving typed failure, Defect, cancellation acknowledgements and masked LIFO finalizers. Standard Web packages can fetch a UTF-8 file through the original typed TypeScript bridge and retain successful results until the instance and its callback/host leases are released. Public Ref transport, callable cell payloads and general provider signatures remain unsupported.
+
 ## [0.61.98] - 2026-10-25
 
 ### Fixed

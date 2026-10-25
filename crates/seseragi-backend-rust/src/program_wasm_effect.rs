@@ -59,6 +59,7 @@ fn closed_type(ty: &CoreType) -> bool {
             ) => true,
             ("std/prelude::Maybe", [value]) => closed_type(value),
             ("std/prelude::Either", [left, right]) => closed_type(left) && closed_type(right),
+            ("std/ref::Ref", [value]) => crate::program_wasm::has_closed_data_codec(value),
             ("std/prelude::Effect", [requirements, failure, success]) => {
                 empty_requirements(requirements) && closed_type(failure) && closed_type(success)
             }
@@ -152,6 +153,9 @@ enum Operation {
     Scoped,
     AcquireRelease,
     FromEither,
+    RefMake,
+    RefGet,
+    RefSet,
 }
 impl Operation {
     fn named(name: &str, normalized: bool) -> Option<Self> {
@@ -166,6 +170,9 @@ impl Operation {
             "std/effect::scoped" => Self::Scoped,
             "std/effect::acquireRelease" => Self::AcquireRelease,
             "std/effect::fromEither" => Self::FromEither,
+            "std/ref::make" => Self::RefMake,
+            "std/ref::get" => Self::RefGet,
+            "std/ref::set" => Self::RefSet,
             "effect.succeed" if normalized => Self::Succeed,
             "effect.fail" if normalized => Self::Fail,
             "effect.die" if normalized => Self::Die,
@@ -176,7 +183,11 @@ impl Operation {
     }
     fn arity(self) -> usize {
         match self {
-            Self::FlatMap | Self::Recover | Self::MapError | Self::AcquireRelease => 2,
+            Self::FlatMap
+            | Self::Recover
+            | Self::MapError
+            | Self::AcquireRelease
+            | Self::RefSet => 2,
             _ => 1,
         }
     }
@@ -373,6 +384,40 @@ impl Admission<'_> {
         let result = match operation {
             Operation::Succeed => effect(primitive("Never"), first.clone()),
             Operation::Fail => effect(first.clone(), primitive("Never")),
+            Operation::RefMake => {
+                if !crate::program_wasm::has_closed_data_codec(first) {
+                    return Err(self.error("private Ref requires a closed data payload", origin));
+                }
+                effect(
+                    primitive("Never"),
+                    CoreType::Named {
+                        name: "std/ref::Ref".into(),
+                        arguments: vec![first.clone()],
+                    },
+                )
+            }
+            Operation::RefGet | Operation::RefSet => {
+                let cell = if operation == Operation::RefGet {
+                    first
+                } else {
+                    &types[1]
+                };
+                let CoreType::Named { name, arguments } = cell else {
+                    return Err(self.error("private Ref requires its canonical cell owner", origin));
+                };
+                let [value] = arguments.as_slice() else {
+                    return Err(self.error("private Ref requires one checked payload type", origin));
+                };
+                if name != "std/ref::Ref" || !crate::program_wasm::has_closed_data_codec(value) {
+                    return Err(self.error("private Ref requires its canonical data cell", origin));
+                }
+                if operation == Operation::RefGet {
+                    effect(primitive("Never"), value.clone())
+                } else {
+                    self.accepts(value, first, origin)?;
+                    effect(primitive("Never"), primitive("Unit"))
+                }
+            }
             Operation::Die => {
                 if first != &primitive("String") {
                     return Err(self.error("die requires the canonical String identity", origin));
@@ -615,7 +660,7 @@ impl Admission<'_> {
                 let annotation = self.effect_annotation(requirements, failure, success, origin)?;
                 let operation = Operation::named(operation, true).ok_or_else(|| {
                     self.error(
-                        "host, Ref and concurrent operations are unsupported",
+                        "this host, Ref or concurrent operation is unsupported",
                         origin,
                     )
                 })?;

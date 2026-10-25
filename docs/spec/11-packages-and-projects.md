@@ -549,6 +549,9 @@ WASM内の一般Effectのunwind／cancel時のfinalizer保証を、このpure pr
 host callbackは`A -> Effect<{}, E, B>`で、閉じた値codecの引数・成功値・失敗値に限ります。
 source引数を適用する段階とcold Effectをrunする段階を保ち、hostのAbortSignalをsource arityへ加えません。
 取消とasync disposeは開始済みhost operationとmasked finalizerの応答を待ちます。
-非協調的なPromiseの強制終了、一般provider ABI、Ref／Fiber／Deferredやopen rowは含めません。
+両Effect ABIでは、既存の閉じたdataだけを保持する内部Refのmake／get／setを使い、
+状態をcaptureしたcallbackを返せます。Ref自体は公開境界へ渡せません。
+非協調的なPromiseの強制終了、一般provider ABI、
+Fiber／Deferredやopen rowは含めません。
 型・結果・寿命の詳細は[Rust backendのEffect ABI](../architecture/rust-backend.md)に従い、
 pure ABIの制限やtrap後のunwind保証と混同しません。

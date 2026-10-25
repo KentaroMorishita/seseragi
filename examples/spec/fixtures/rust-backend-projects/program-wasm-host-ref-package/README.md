@@ -1,0 +1,5 @@
+# 非同期の結果を保持するcallback
+
+同じpackageのinput.txtをtyped host Effectでfetchし、WASM内部のString状態へ成功結果を蓄積する。factoryはcoldで独立したcellを作り、保存したplanはcallbackのdetach後も実行できる。LIFO finalizerもhost応答を待って状態へmarkerを書き、UI finalizerは旧callbackのEffectが終わってからownerを閉じる。標準build/devで追加serverなしに動く。
+
+計算bodyはrust-backend/program-wasm-host-ref.ssrgと同じ。Failure・Defect・取消、late結果の非commit、非同期masked cleanup・host leaseとroot0はCLIの実WASM受入で検証する。正常/Failure/Defectは元raw strict TS両profileとnativeを比較する。HTTP fetchとJS所有記録の範囲であり、OS file descriptor・一般provider ABI・公開Ref・open row・一般host関数やfallible Int演算を解決済みとは扱わない。

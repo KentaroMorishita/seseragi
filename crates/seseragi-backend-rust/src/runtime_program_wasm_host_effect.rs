@@ -199,6 +199,11 @@ pub extern "C" fn ssrg_init() -> u32 {
     if !fresh {
         return program_result(Err("program ABI: instance already initialized or closed"));
     }
+    if PROGRAM_TRACK_REFS {
+        // Cell captures must be tracked before globals and decoded host leases
+        // can allocate values. Admission limits cells to the closed data codec.
+        enable_cycle_collection();
+    }
     initialize_globals();
     PROGRAM.with(|state| state.borrow_mut().initialized = true);
     0
