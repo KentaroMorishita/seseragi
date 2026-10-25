@@ -258,14 +258,19 @@ impl<'a> PureExpressionContext<'a> {
         if let Some(callable) = self.callable(target) {
             let mut callable = callable.clone();
             if let Some(local) = self.parameters.get(&target) {
-                let mut result = &local.type_ref;
+                let mut result = local.clone();
                 for _ in &callable.parameters {
-                    if let TypedType::Function { result: next, .. } = result {
+                    if let Some((_, next)) = result.function_parts() {
                         result = next;
                     }
                 }
-                callable.result = result.clone();
-                callable.semantic_result = self.semantic_value_from_typed_type(result).key;
+                // Local callable values already carry checked owner and scheme
+                // identities. Project their result through source arity before
+                // hydration; resolving its display type again loses quantified
+                // slots and can capture a same-named nominal declaration.
+                let result = self.hydrate_semantic_value(result);
+                callable.result = result.type_ref;
+                callable.semantic_result = result.key;
             }
             if let Some(trait_name) = self
                 .resolution
@@ -367,6 +372,11 @@ impl<'a> PureExpressionContext<'a> {
         // proven identity to the caller's checked intrinsic representation.
         // A nominal owner or lexical type parameter cannot prove this case.
         if !self.lexical_type_parameters.contains_key("Unit")
+            // A generalized initializer has not introduced its own binder
+            // frame yet. Keep the canonical owner through nested function
+            // hydration so a quantified parameter named Unit cannot capture
+            // the callable's separate anonymous source argument.
+            && self.generalized_value_origin.is_none()
             && matches!(&value.type_ref,
                 TypedType::ExternalNamed { canonical, arguments, .. }
                     if canonical == "std/prelude::Unit" && arguments.is_empty())

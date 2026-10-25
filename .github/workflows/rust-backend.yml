@@ -29,6 +29,7 @@ on:
       - "crates/seseragi-cli/tests/public_aliases.rs"
       - "crates/seseragi-cli/tests/namespace_results.rs"
       - "crates/seseragi-cli/tests/computed_callees.rs"
+      - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -84,6 +85,7 @@ on:
       - "crates/seseragi-cli/tests/public_aliases.rs"
       - "crates/seseragi-cli/tests/namespace_results.rs"
       - "crates/seseragi-cli/tests/computed_callees.rs"
+      - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -160,6 +162,8 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test namespace_results
       - name: Compare computed callees, strict source stages and cleanup
         run: cargo test --locked -p seseragi-cli --test computed_callees
+      - name: Preserve nominal lambda identities, cold replay and scoped Defects
+        run: cargo test --locked -p seseragi-cli --test nominal_lambda_identity
       - name: Verify product program WASM, generated declarations and callback ownership
         run: cargo test --locked -p seseragi-cli --test program_wasm --test program_wasm_host_effect
       - name: Rebuild selected program dependencies and drain old browser owners
@@ -307,6 +311,15 @@ jobs:
           mkdir -p target
           echo "Integration reason: verify native backend, runtime and browser contracts before queue integration."
           ./scripts/check-scoped.sh release-gate-after-wasm 2>&1 | tee target/native-integration-source-gate.log
+      - name: Show concise gate failure diagnostics
+        if: failure()
+        shell: bash
+        run: |
+          if [[ -f target/native-integration-source-gate.log ]]; then
+            grep -n -B 3 -A 20 -E 'FAILED|failures:|^----|Failed [0-9]+ Cargo test artifacts|error\[E[0-9]+\]|error: test failed' target/native-integration-source-gate.log \
+              | tail -c 50000 \
+              | sed 's/^/gate diagnostic: /' || true
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:

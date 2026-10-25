@@ -86,7 +86,10 @@ pub(crate) fn type_pattern_binding(
             actual: actual.type_ref.clone(),
         })
     });
-    let input = expected.unwrap_or_else(|| context.hydrate_semantic_value(actual));
+    // Keep the initializer's generalized binder boundary while hydrating its
+    // checked value. The outer context would normalize the anonymous Unit
+    // stage before a same-spelled quantified parameter is introduced.
+    let input = expected.unwrap_or_else(|| expression_context.hydrate_semantic_value(actual));
     let pattern = type_pattern(pattern, &input, &expression_context);
     let inferred_callable = inferred.and_then(|inferred| {
         if pattern.locals.len() != 1 || expression.pure_call_issue.is_some() {

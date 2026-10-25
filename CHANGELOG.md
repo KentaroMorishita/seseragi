@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.98] - 2026-10-25
+
+### Fixed
+
+- Preserve checked type identities when inferred local lambdas return imported nominal values and are saved as callbacks. Keep primitive payloads distinct from same-named local types through aliases, nested results, patterns and dictionary selection, without relaxing canonical owner or scoped parameter checks. Verify cold Effect replay and finalizer completion on normal and Defect exits.
+
 ## [0.61.97] - 2026-10-25
 
 ### Fixed

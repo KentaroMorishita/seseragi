@@ -157,11 +157,17 @@ pub(super) fn type_callable_value(
     }
 
     if signature.constraints.is_empty() && foreign_template(context, &signature.symbol).is_none() {
-        let semantic_type = if signature.parameters.is_empty() {
-            application.result.key.clone()
-        } else {
-            SemanticTypeKey::Other
-        };
+        // A saved reference needs the same checked function identity as an
+        // immediate call. Keep quantified slots and nominal children instead
+        // of forcing a later use to recover them from display types.
+        let semantic_type = application
+            .parameters
+            .iter()
+            .rev()
+            .fold(application.result.clone(), |result, parameter| {
+                SemanticValueType::function(parameter.clone(), result)
+            })
+            .key;
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             callable_reference(
                 signature,
