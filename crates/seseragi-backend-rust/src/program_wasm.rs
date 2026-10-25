@@ -204,14 +204,9 @@ pub fn emit_program_wasm(
     // This explicit library mode changes no native executable entry contract.
     let mut library = project::emit_library(modules, entry_module)?;
     let tracks_private_refs = library.metadata.capabilities.iter().any(|c| c == "ref");
-    if host_abi && tracks_private_refs {
-        return Err(project::at(
-            "program WASM: private Ref currently requires the providerless Effect ABI",
-            &public[0].origin,
-            entry_module,
-        ));
-    }
     if effect_abi {
+        // Both resumable ABIs use the same checked data-only cell proof. A
+        // private cell never transports a host lease or another callable.
         crate::program_wasm_effect::validate(modules)?;
     } else if library.metadata.capabilities.iter().any(|c| {
         matches!(
@@ -248,7 +243,7 @@ pub fn emit_program_wasm(
         trap_policy: "retire-instance".into(),
         max_boundary_bytes: 16 * 1024 * 1024,
     };
-    if effect_abi && !host_abi {
+    if effect_abi {
         library.source.push_str(&format!(
             "\nconst PROGRAM_TRACK_REFS: bool = {tracks_private_refs};\n"
         ));

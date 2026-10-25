@@ -1,0 +1,40 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+effect fn releaseFault message: String -> String = effects.die message
+
+effect fn release cell: Ref<String>
+  -> request: (String -> Effect<{}, String, String>)
+  -> marker: String
+  -> _resource: Unit
+  -> Unit =
+  do {
+    before <- refs.get cell
+    _ <- request (marker + before) |> effects.recover releaseFault
+    refs.set (before + marker) cell
+    effects.succeed ()
+  }
+
+effect fn append cell: Ref<String>
+  -> request: (String -> Effect<{}, String, String>)
+  -> input: String
+  -> String
+fails String =
+  effects.scoped $
+  do {
+  effects.acquireRelease (effects.succeed ()) (release cell request ":outer:")
+  effects.acquireRelease (effects.succeed ()) (release cell request ":inner:")
+  before <- refs.get cell
+  response <- request input
+  let next = before + response
+  refs.set next cell
+  effects.succeed next
+}
+
+pub effect fn create request: (String -> Effect<{}, String, String>)
+  -> (String -> Effect<{}, String, String>) =
+  do {
+    cell <- refs.make "seed:"
+    effects.succeed (append cell request)
+  }

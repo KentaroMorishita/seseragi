@@ -369,3 +369,181 @@ console.log("closed host channel codecs verified");
         assert_eq!(result.stdout, b"closed host channel codecs verified\n");
     }
 }
+
+#[test]
+fn private_data_host_effect_factory_retains_state_and_drains_cleanup() {
+    let scratch = Scratch::new();
+    let output = scratch.0.join("host-ref");
+    let source = root().join("examples/spec/fixtures/rust-backend/program-wasm-host-ref.ssrg");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-wasm"])
+            .arg(&source)
+            .arg("--out-dir")
+            .arg(&output)
+            .args(["--export", "create"]),
+        &scratch.0,
+    ));
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v1");
+    for engine in ["bun", "node"] {
+        let result = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(root().join("scripts/program-wasm-host-ref-probe.mjs"))
+                .arg(&output)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(result.stdout,b"host private state: replay, detached leases, Failure/Defect, late-result cancellation, masked LIFO cleanup and roots released\n");
+        assert!(result.stderr.is_empty(), "{result:?}");
+    }
+    fs::write(scratch.0.join("host-ref-types.mts"), r#"
+import {loadProgram, type HostEffect, type OwnedCallback, type OwnedEffect} from "./host-ref/program.mjs";
+const request:HostEffect<string,string,string>=async (input,context)=>{
+  const signal:AbortSignal=context.signal;
+  return signal.aborted ? {tag:"Failure",error:input} : {tag:"Success",value:input};
+};
+const owner=await loadProgram(new Uint8Array());
+const creation:OwnedEffect<never,OwnedCallback<string,OwnedEffect<string,string>>>=owner.exports.create(request);
+// @ts-expect-error a host request keeps its checked String input codec
+owner.exports.create((_input:number,_context)=>({tag:"Success",value:"wrong"}));
+// @ts-expect-error creation is a cold Effect, not an already-created callback
+const eager:OwnedCallback<string,OwnedEffect<string,string>>=owner.exports.create(request);
+const created=await creation.run().result;
+if(created.tag==="Success") {
+  const plan:OwnedEffect<string,string>=created.value("next");
+  // @ts-expect-error the internal cell never becomes a host callback argument
+  created.value({current:"next"});
+}
+await owner.dispose();
+"#).unwrap();
+    fs::write(scratch.0.join("host-ref-tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["host-ref-types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("host-ref-tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn private_data_host_effect_body_matches_raw_ts_and_native() {
+    let scratch = Scratch::new();
+    let original = fs::read_to_string(
+        root().join("examples/spec/fixtures/rust-backend/program-wasm-host-ref.ssrg"),
+    )
+    .unwrap();
+    let request = r#"
+effect fn request input: String -> String fails String = match input {
+  "fail" -> effects.fail "body failure"
+  "defect" -> effects.die "body defect"
+  _ -> effects.succeed input
+}
+effect fn unexpected message: String -> String = effects.die message
+"#;
+    let normal = r#"
+effect fn oracle -> String fails String = do {
+  let creation = create request
+  first <- creation
+  second <- creation
+  one <- first "one"
+  two <- first "two"
+  other <- second "other"
+  failed <- second "fail" |> effects.recover (\message: String -> effects.succeed message)
+  after <- second ""
+  effects.succeed (one + "|" + two + "|" + other + "|" + failed + "|" + after)
+}
+pub effect fn main = do { answer <- oracle () |> effects.recover unexpected; println answer }
+"#;
+    let defect = r#"
+effect fn oracle -> String fails String = do { next <- create request; next "defect" }
+pub effect fn main = do { answer <- oracle () |> effects.recover unexpected; println answer }
+"#;
+    for (label,main,code,expected) in [
+        ("normal",normal,0,"seed:one|seed:one:inner::outer:two|seed:other|body failure|seed:other:inner::outer::inner::outer:\n"),
+        ("defect",defect,70,""),
+    ] {
+        let text=format!("{original}\n{request}\n{main}");
+        let source=scratch.0.join(format!("{label}.ssrg"));fs::write(&source,&text).unwrap();
+        let native=scratch.0.join(format!("{label}-native"));
+        successful(bounded(Command::new(env!("CARGO_BIN_EXE_seseragi")).args(["experimental","build-native"]).arg(&source).args(["--entry","main","--out-dir"]).arg(&native),&scratch.0));
+        let result=bounded(Command::new(native.join(if cfg!(windows) {"program.exe"} else {"program"})).env("PATH","").env("SESERAGI_NATIVE_METRICS","1"),&scratch.0);
+        assert_eq!(result.status.code(),Some(code),"{label}: {result:?}");assert_eq!(result.stdout,expected.as_bytes());
+        let error=String::from_utf8_lossy(&result.stderr);assert!(error.contains("managed-live=0"),"{error}");
+        if label=="defect" { assert!(error.contains("body defect"),"{error}"); }
+        for (profile,value) in [("development",seseragi_project::BuildProfile::Development),("release",seseragi_project::BuildProfile::Release)] {
+            let output=scratch.0.join(format!("{label}-{profile}"));
+            successful(bounded(Command::new(env!("CARGO_BIN_EXE_seseragi")).arg("build").arg(&source).args(["--profile",profile,"--out-dir"]).arg(&output),&scratch.0));
+            let raw=seseragi_driver::compile_module(seseragi_driver::CompileInput::new("host-ref.ssrg","proof/host-ref",&text).with_profile(value)).unwrap();
+            fs::write(output.join("raw.ts"),raw.generated.typescript).unwrap();
+            let mut files=vec![output.join("raw.ts")];if profile=="development" {files.push(output.join("entry.ts"));}
+            let config=serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true,"skipLibCheck":false},"files":files});
+            fs::write(output.join("tsconfig.json"),serde_json::to_vec(&config).unwrap()).unwrap();
+            successful(bounded(Command::new(runtime("node",&scratch.0)).arg(root().join("node_modules/typescript/bin/tsc")).arg("--project").arg(output.join("tsconfig.json")),&scratch.0));
+            for engine in ["bun","node"] {
+                let result=bounded(Command::new(runtime(engine,&scratch.0)).arg(output.join("entry.js")).env("PATH",""),&scratch.0);
+                assert_eq!(result.status.code(),Some(code),"{label}/{profile}: {result:?}");assert_eq!(result.stdout,expected.as_bytes());
+                let error=String::from_utf8_lossy(&result.stderr);
+                if code==0 {assert!(error.is_empty(),"{error}");} else {assert!(error.contains("seseragi: runtime defect"),"{error}");}
+            }
+        }
+    }
+}
+
+#[test]
+fn private_data_host_effect_standard_package_keeps_the_original_typed_bridge() {
+    let scratch = Scratch::new();
+    let package =
+        root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-host-ref-package");
+    assert_eq!(
+        fs::read(package.join("src/calculation.ssrg")).unwrap(),
+        fs::read(root().join("examples/spec/fixtures/rust-backend/program-wasm-host-ref.ssrg"))
+            .unwrap()
+    );
+    for profile in ["development", "release"] {
+        let site = scratch.0.join(profile);
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&package)
+                .args(["--target", "web", "--profile", profile, "--out-dir"])
+                .arg(&site),
+            &scratch.0,
+        ));
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(site.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        assert_eq!(manifest["profile"], profile);
+        assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
+        assert_eq!(
+            manifest["programs"][0]["abi"],
+            "seseragi-program-wasm-host-effect-v1"
+        );
+        assert_eq!(fs::read(site.join("input.txt")).unwrap(), "流れ".as_bytes());
+        let directory = site.join("programs/calculation");
+        for engine in ["bun", "node"] {
+            let result = successful(bounded(
+                Command::new(runtime(engine, &scratch.0))
+                    .arg(root().join("scripts/program-wasm-host-ref-probe.mjs"))
+                    .arg(&directory)
+                    .arg("package")
+                    .env("PATH", ""),
+                &scratch.0,
+            ));
+            assert_eq!(result.stdout,b"host private state: replay, detached leases, Failure/Defect, late-result cancellation, masked LIFO cleanup and roots released\n");
+            assert!(result.stderr.is_empty(), "{result:?}");
+        }
+        let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false,"paths":{"@seseragi/programs/calculation":[directory.join("index.d.mts")]}},"files":[package.join("host/bridge.ts")]});
+        let path = scratch.0.join(format!("{profile}-types.json"));
+        fs::write(&path, serde_json::to_vec(&config).unwrap()).unwrap();
+        successful(bounded(
+            Command::new(runtime("node", &scratch.0))
+                .arg(root().join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(&path),
+            &scratch.0,
+        ));
+    }
+}

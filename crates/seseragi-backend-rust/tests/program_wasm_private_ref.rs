@@ -48,13 +48,20 @@ fn cell_handles_and_callable_payloads_cannot_cross_or_hide_in_the_boundary() {
 }
 
 #[test]
-fn private_cells_do_not_expand_the_separate_host_callback_contract() {
+fn private_cells_preserve_the_closed_unary_host_callback_codec() {
     let module = checked(
         "import * as refs from \"std/ref\"\npub effect fn value callback: (String -> Effect<{}, String, String>) -> String fails String = do { cell <- refs.make \"seed\"; input <- refs.get cell; callback input }\n",
     );
-    let error = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap_err();
-    assert!(error.message.contains("providerless Effect ABI"), "{error}");
-    assert!(error.origin.is_some());
+    let artifact = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
+    assert_eq!(
+        artifact.metadata.abi,
+        seseragi_backend_rust::PROGRAM_WASM_HOST_EFFECT_ABI
+    );
+    assert_eq!(artifact.metadata.exports[0].source_arity, 1);
+    assert!(artifact
+        .declarations
+        .contains("HostEffect<string, string, string>"));
+    assert!(!artifact.declarations.contains("Ref<"));
 }
 
 #[test]

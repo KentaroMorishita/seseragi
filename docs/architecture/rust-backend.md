@@ -131,7 +131,7 @@ callbackをdetachした後もその状態を更新できる。tracingはglobal�
 受入例は`program-wasm-private-ref.ssrg`と標準Web packageの
 `program-wasm-private-ref-package`。文字列の蓄積とFailure・Defectは同じbodyのstrict TS／nativeと比較する。
 取消後のLIFO cleanupとinstance終了時のroot解放は実WASMでも確認する。
-`update`／`modify`、Refを含むhost Effect ABI、tuple pattern、fallibleなInt演算は含めない。
+`update`／`modify`、tuple pattern、fallibleなInt演算は含めない。
 
 Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。
 同名のnominal Unitとはcanonicalな型identityを区別し、暗黙の変換を加えない。
@@ -141,7 +141,7 @@ Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿�
 公開関数の引数に、閉じた`A -> Effect<{}, E, B>`を持つ関数を渡せる。
 この場合は`seseragi-program-wasm-host-effect-v1`を生成し、pure／providerlessの出力を保つ。
 引数・成功値・失敗値には既存の閉じた値codecを使い、成功／失敗の`Never`は値を持たない。
-同期host関数、複数のsource引数を取るhost関数、open row、generic、Ref／Fiber／Deferred、
+同期host関数、複数のsource引数を取るhost関数、open row、generic、公開Ref／Fiber／Deferred、
 foreign handleや一般provider ABIは生成前に拒否する。
 
 ```seseragi
@@ -173,6 +173,13 @@ hostに渡したresourceの意味と実際のcloseはhost側が所有する。�
 JSのresource記録を使い、OS file descriptorのWASM ABIを実証したとは扱わない。
 予期しないengine trap／protocol違反ではinstanceをretireし、Rust unwindやfinalizer完了、
 managed root0を主張しない。一般interopや#814／#815全体の完了とは分ける。
+
+内部data Refとhost callbackを併用する場合も、同じcanonical型・operationのadmissionを通す。
+`program-wasm-host-ref.ssrg`は、host応答の成功後にString状態を更新するcold factoryを返す。
+取消後に届いたbodyの応答はcommitせず、Refを読むLIFO finalizerのhost応答を待ってから
+terminal outcomeとdisposeを完了する。Refへの既存の書込を一般にrollbackする契約ではない。
+host leaseをRefのpayloadに入れず、callbackと保持planのcaptureとして追跡し、最後に両方を解放する。
+標準Web packageの`program-wasm-host-ref-package`は、同じpackageのinput.txtをfetchして蓄積する。
 
 ## 同じpackageのWASM計算とTS UIをbuildする
 

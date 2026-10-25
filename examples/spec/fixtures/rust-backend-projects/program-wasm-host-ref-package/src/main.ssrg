@@ -1,0 +1,63 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+foreign "typescript" from "../host/bridge.ts" {
+  task fn operate action: String -> input: String -> String
+}
+
+type Action = | Prepare | Factory | Plan | Run | Detach | Dispose | Reload
+
+fn view state: String -> html.Html<Action> = html.main {
+  children: [
+    html.h1 { children: "非同期の結果を蓄積する" },
+    html.p {
+      children: "runすると同じpackageのinput.txtをfetchし、結果を蓄積します。callbackを解放した後も保存したplanを実行できます。"
+    },
+    html.pre { id: "status", children: state },
+    html.button { id: "prepare", onClick: Prepare, children: "factory planを作る" },
+    html.button {
+      id: "factory",
+      onClick: Factory,
+      children: "factoryをrunしてcallbackを受け取る"
+    },
+    html.button { id: "plan", onClick: Plan, children: "callbackからcold planを作る" },
+    html.button { id: "run", onClick: Run, children: "planをrun／再実行" },
+    html.button { id: "detach", onClick: Detach, children: "callbackを解放" },
+    html.button { id: "dispose", onClick: Dispose, children: "instanceを解放" },
+    html.button { id: "reload", onClick: Reload, children: "再生成" }
+  ]
+}
+
+effect fn dispatch state: signals.MutableSignal<String>
+  -> action: Action
+  -> Unit
+fails Js.Error =
+  do {
+    let name = match action {
+      Prepare -> "prepare"
+      Factory -> "factory"
+      Plan -> "plan"
+      Run -> "run"
+      Detach -> "detach"
+      Dispose -> "dispose"
+      Reload -> "reload"
+    }
+    status <- operate name "雪 / 入力"
+    signals.update (\_ -> status) state
+  }
+
+effect fn release _initial: String -> Unit = do {
+  _ <- effects.attempt (operate "finalize" "UI finalizer")
+  effects.succeed ()
+}
+
+pub effect fn main -> Unit with Dom fails String = do {
+  initial <- effects.acquireRelease (operate "reload" "初期") release
+    |> effects.mapError show
+  state <- signals.make initial
+  target <- dom.query "#app" |> effects.mapError show
+  dom.run (dom.defaultOptions ()) target (dispatch state) (signals.map view state)
+    |> effects.mapError show
+}
