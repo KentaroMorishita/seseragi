@@ -296,6 +296,10 @@ fn served_resource(port: u16, path: &str) -> (String, Vec<u8>) {
 }
 
 fn try_served_resource(port: u16, path: &str) -> Option<(String, Vec<u8>)> {
+    read_served_response(request_resource(port, path)?)
+}
+
+fn request_resource(port: u16, path: &str) -> Option<TcpStream> {
     let mut stream = TcpStream::connect(("127.0.0.1", port)).ok()?;
     stream
         .set_read_timeout(Some(Duration::from_secs(2)))
@@ -305,6 +309,10 @@ fn try_served_resource(port: u16, path: &str) -> Option<(String, Vec<u8>)> {
         "GET {path} HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nConnection: close\r\n\r\n"
     )
     .ok()?;
+    Some(stream)
+}
+
+fn read_served_response(mut stream: TcpStream) -> Option<(String, Vec<u8>)> {
     let mut response = Vec::new();
     stream.read_to_end(&mut response).ok()?;
     let boundary = response.windows(4).position(|bytes| bytes == b"\r\n\r\n")?;
@@ -325,55 +333,44 @@ fn try_served_resource(port: u16, path: &str) -> Option<(String, Vec<u8>)> {
 
 #[test]
 fn a_timed_out_binary_response_is_retried_without_accepting_partial_bytes() {
-    fn read_request(stream: &mut TcpStream) {
-        stream
+    fn prepare_response(listener: &TcpListener, response: &[u8]) -> (TcpStream, TcpStream) {
+        let client = request_resource(listener.local_addr().unwrap().port(), "/program.wasm")
+            .expect("queued binary request");
+        let (mut server, _) = listener.accept().unwrap();
+        server
             .set_read_timeout(Some(Duration::from_secs(2)))
             .unwrap();
         let mut request = Vec::new();
         while !request.ends_with(b"\r\n\r\n") {
             assert!(request.len() < 8192);
             let mut byte = [0];
-            stream.read_exact(&mut byte).unwrap();
+            server.read_exact(&mut byte).unwrap();
             request.push(byte[0]);
         }
         assert!(request.starts_with(b"GET /program.wasm HTTP/1.1\r\n"));
+        server.write_all(response).unwrap();
+        (client, server)
     }
     let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
-    let port = listener.local_addr().unwrap().port();
-    listener.set_nonblocking(true).unwrap();
-    let (release, held) = std::sync::mpsc::sync_channel(1);
-    let server = thread::spawn(move || {
-        let (mut first, _) = wait_for_value(
-            Duration::from_secs(5),
-            || listener.accept().ok(),
-            "first binary request",
-        );
-        read_request(&mut first);
-        first
-            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\na")
-            .unwrap();
-        held.recv_timeout(Duration::from_secs(5)).unwrap();
-        drop(first);
-        let (mut second, _) = wait_for_value(
-            Duration::from_secs(5),
-            || listener.accept().ok(),
-            "retried binary request",
-        );
-        read_request(&mut second);
-        second
-            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\n")
-            .unwrap();
-        second.write_all(&[0, 255, 1]).unwrap();
-    });
-    assert!(try_served_resource(port, "/program.wasm").is_none());
-    release.send(()).unwrap();
-    let (_, bytes) = wait_for_value(
-        Duration::from_secs(5),
-        || try_served_resource(port, "/program.wasm"),
-        "complete retried binary response",
+    // Queue bytes before reading so a real timeout does not depend on a server
+    // thread being scheduled while other Cargo tests build and run programs.
+    let (first, held) =
+        prepare_response(&listener, b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\na");
+    assert!(read_served_response(first).is_none());
+    drop(held);
+
+    let (truncated, closed) =
+        prepare_response(&listener, b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\na");
+    drop(closed);
+    assert!(read_served_response(truncated).is_none());
+
+    let (second, complete) = prepare_response(
+        &listener,
+        b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\n\0\xff\x01",
     );
+    drop(complete);
+    let (_, bytes) = read_served_response(second).expect("complete retried binary response");
     assert_eq!(bytes, [0, 255, 1]);
-    server.join().unwrap();
 }
 
 fn run_program_probe(engine: &str, script: &Path, directory: &Path) {
