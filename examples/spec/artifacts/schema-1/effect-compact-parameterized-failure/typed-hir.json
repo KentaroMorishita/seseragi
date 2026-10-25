@@ -998,6 +998,23 @@
                       }
                     ]
                   }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  }
                 ]
               },
               "type": {
@@ -1332,6 +1349,23 @@
                     ]
                   }
                 ]
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
               }
             ]
           },
@@ -2010,6 +2044,23 @@
                         ]
                       }
                     ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
                   }
                 ]
               },
