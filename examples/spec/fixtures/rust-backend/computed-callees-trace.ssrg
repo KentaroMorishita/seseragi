@@ -1,0 +1,17 @@
+fn add left: Int -> right: Int -> Int = left + right
+
+pub fn condition -> Bool = True
+
+pub fn calleeValue -> (Int -> Int -> Int) = add
+
+pub fn argument -> Int = 41
+
+pub fn beforeReuse -> Unit = ()
+
+pub fn probe -> Array<Int> = {
+  let saved = (if condition () then calleeValue () else add) (argument ())
+  let marker = beforeReuse ()
+  [saved 1, saved 2]
+}
+
+pub effect fn main = println (show (probe ()))
