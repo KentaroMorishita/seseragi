@@ -292,7 +292,11 @@ fn build_image(directory: &Path) -> std::collections::BTreeMap<String, Vec<u8>> 
 }
 
 fn served_resource(port: u16, path: &str) -> (String, Vec<u8>) {
-    let mut stream = TcpStream::connect(("127.0.0.1", port)).unwrap();
+    try_served_resource(port, path).expect("complete served resource")
+}
+
+fn try_served_resource(port: u16, path: &str) -> Option<(String, Vec<u8>)> {
+    let mut stream = TcpStream::connect(("127.0.0.1", port)).ok()?;
     stream
         .set_read_timeout(Some(Duration::from_secs(2)))
         .unwrap();
@@ -300,16 +304,76 @@ fn served_resource(port: u16, path: &str) -> (String, Vec<u8>) {
         stream,
         "GET {path} HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nConnection: close\r\n\r\n"
     )
-    .unwrap();
+    .ok()?;
     let mut response = Vec::new();
-    stream.read_to_end(&mut response).unwrap();
-    let boundary = response
-        .windows(4)
-        .position(|bytes| bytes == b"\r\n\r\n")
-        .unwrap();
+    stream.read_to_end(&mut response).ok()?;
+    let boundary = response.windows(4).position(|bytes| bytes == b"\r\n\r\n")?;
     let headers = String::from_utf8(response[..boundary].to_vec()).unwrap();
     assert!(headers.starts_with("HTTP/1.1 200 OK"), "{headers}");
-    (headers, response[boundary + 4..].to_vec())
+    let body = response[boundary + 4..].to_vec();
+    if let Some(length) = headers.lines().find_map(|line| {
+        let (name, value) = line.split_once(':')?;
+        name.eq_ignore_ascii_case("Content-Length")
+            .then(|| value.trim().parse::<usize>().unwrap())
+    }) {
+        if body.len() != length {
+            return None;
+        }
+    }
+    Some((headers, body))
+}
+
+#[test]
+fn a_timed_out_binary_response_is_retried_without_accepting_partial_bytes() {
+    fn read_request(stream: &mut TcpStream) {
+        stream
+            .set_read_timeout(Some(Duration::from_secs(2)))
+            .unwrap();
+        let mut request = Vec::new();
+        while !request.ends_with(b"\r\n\r\n") {
+            assert!(request.len() < 8192);
+            let mut byte = [0];
+            stream.read_exact(&mut byte).unwrap();
+            request.push(byte[0]);
+        }
+        assert!(request.starts_with(b"GET /program.wasm HTTP/1.1\r\n"));
+    }
+    let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
+    let port = listener.local_addr().unwrap().port();
+    listener.set_nonblocking(true).unwrap();
+    let (release, held) = std::sync::mpsc::sync_channel(1);
+    let server = thread::spawn(move || {
+        let (mut first, _) = wait_for_value(
+            Duration::from_secs(5),
+            || listener.accept().ok(),
+            "first binary request",
+        );
+        read_request(&mut first);
+        first
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\na")
+            .unwrap();
+        held.recv_timeout(Duration::from_secs(5)).unwrap();
+        drop(first);
+        let (mut second, _) = wait_for_value(
+            Duration::from_secs(5),
+            || listener.accept().ok(),
+            "retried binary request",
+        );
+        read_request(&mut second);
+        second
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\n")
+            .unwrap();
+        second.write_all(&[0, 255, 1]).unwrap();
+    });
+    assert!(try_served_resource(port, "/program.wasm").is_none());
+    release.send(()).unwrap();
+    let (_, bytes) = wait_for_value(
+        Duration::from_secs(5),
+        || try_served_resource(port, "/program.wasm"),
+        "complete retried binary response",
+    );
+    assert_eq!(bytes, [0, 255, 1]);
+    server.join().unwrap();
 }
 
 fn run_program_probe(engine: &str, script: &Path, directory: &Path) {
@@ -778,30 +842,45 @@ fn watches_host_effect_programs_and_drains_the_old_application_before_reload() {
         original.replace("\"processed:\"", "\"watched:\""),
     )
     .unwrap();
-    let rebuilt = wait_for_value(
+    let paths = [
+        "/programs/calculation/index.mjs",
+        "/programs/calculation/program.wasm",
+        "/programs/__lifecycle.mjs",
+    ];
+    let (rebuilt, served, index) = wait_for_value(
         Duration::from_secs(45),
         || {
+            assert!(
+                child.try_wait().unwrap().is_none(),
+                "{}",
+                fs::read_to_string(&log_path).unwrap()
+            );
             let (status, version) = request(port, RELOAD_ENDPOINT)?;
             if status != 200 || version == initial_version {
                 return None;
             }
-            Some(fs::read(output.join("programs/calculation/program.wasm")).unwrap())
+            // A source write can cause another watch snapshot while a build
+            // finishes. Keep binary delivery in the existing 45-second wait;
+            // each HTTP attempt still has its two-second timeout.
+            let served = paths
+                .iter()
+                .map(|path| try_served_resource(port, path))
+                .collect::<Option<Vec<_>>>()?;
+            let index = request(port, "/")?;
+            assert_eq!(index.0, 200);
+            Some((
+                fs::read(output.join("programs/calculation/program.wasm")).unwrap(),
+                served,
+                index.1,
+            ))
         },
         "host Effect program recovery and rebuild",
     );
     assert_ne!(rebuilt, initial["programs/calculation/program.wasm"]);
-    for path in [
-        "/programs/calculation/index.mjs",
-        "/programs/calculation/program.wasm",
-        "/programs/__lifecycle.mjs",
-    ] {
-        let (_, bytes) = served_resource(port, path);
+    for (path, (_, bytes)) in paths.into_iter().zip(served) {
         assert_eq!(bytes, fs::read(output.join(&path[1..])).unwrap());
     }
-    assert!(request(port, "/")
-        .unwrap()
-        .1
-        .contains("dispatchEvent(closing)"));
+    assert!(index.contains("dispatchEvent(closing)"));
     let after = directory.join("after");
     copy_directory(&output.join("programs"), &after.join("programs"));
     stop(&mut child);
