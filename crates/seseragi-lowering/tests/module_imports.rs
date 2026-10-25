@@ -354,11 +354,35 @@ pub fn status value: Unit -> String = describe Active
     )]);
 
     let typescript = lower_core_module_to_typescript_ir_with_plan(core, &output_plan).unwrap();
+    assert_eq!(typescript.source_imports.len(), 1);
+    let provider = &typescript.source_imports[0];
+    assert_eq!(provider.module, "fixture/game::domain");
+    assert_eq!(
+        provider
+            .bindings
+            .iter()
+            .map(|binding| (binding.imported.as_str(), binding.type_only))
+            .collect::<Vec<_>>(),
+        vec![
+            ("Active", false),
+            ("describe", false),
+            ("__ssrg$instance$Ready$0", false),
+            ("Badge", true),
+        ]
+    );
+    assert_eq!(
+        provider.bindings[3].canonical,
+        "fixture/game::domain::Badge"
+    );
     let generated = emit_typescript_module(typescript, main_source);
 
-    assert!(generated
-        .typescript
-        .contains("import { Active, describe, __ssrg$instance$Ready$0 } from \"./domain.js\""));
+    assert!(
+        generated.typescript.contains(
+            "import { Active, describe, __ssrg$instance$Ready$0, type Badge } from \"./domain.js\""
+        ),
+        "{}",
+        generated.typescript
+    );
     assert!(generated.typescript.contains(
         "export const status = (value: undefined) => ((describe(Active)(__ssrg$instance$Ready$0)) as string)"
     ));
@@ -399,14 +423,35 @@ pub fn status value: Unit -> String = describe Active
 
     let typescript =
         lower_core_module_to_typescript_ir_with_plan(core.clone(), &output_plan).unwrap();
+    let provider = typescript
+        .source_imports
+        .iter()
+        .find(|import| import.module == "fixture/game::domain")
+        .unwrap();
+    assert_eq!(
+        provider
+            .bindings
+            .iter()
+            .map(|binding| (binding.imported.as_str(), binding.type_only))
+            .collect::<Vec<_>>(),
+        vec![("__ssrg$instance$Ready$0", false), ("Badge", true)]
+    );
+    assert_eq!(
+        provider.bindings[1].canonical,
+        "fixture/game::domain::Badge"
+    );
     let generated = emit_typescript_module(typescript, main_source);
 
     assert!(generated
         .typescript
         .contains("import { Active, describe } from \"./facade.js\""));
-    assert!(generated
-        .typescript
-        .contains("import { __ssrg$instance$Ready$0 } from \"./domain.js\""));
+    assert!(
+        generated
+            .typescript
+            .contains("import { __ssrg$instance$Ready$0, type Badge } from \"./domain.js\""),
+        "{}",
+        generated.typescript
+    );
     assert!(generated.typescript.contains(
         "export const status = (value: undefined) => ((describe(Active)(__ssrg$instance$Ready$0)) as string)"
     ));
