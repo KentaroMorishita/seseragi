@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.100] - 2026-10-26
+
+### Fixed
+
+- Annotate mutually recursive ordinary functions that return closed Effects so their generated TypeScript passes strict checks. Reuse canonical scoped type identities and runtime imports while preserving cold replay, typed failure and finalizer order on native and TypeScript targets. Generic and open-row Effect result schemes remain outside this bounded annotation rule.
+
 ## [0.61.99] - 2026-10-26
 
 ### Added

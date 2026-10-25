@@ -124,6 +124,16 @@ impl CoreFreeVariables {
     }
 }
 pub fn core_free_variables(expr: &CoreExpr) -> Option<CoreFreeVariables> {
+    core_references(expr, false)
+}
+
+/// Term dependencies in the normalized Effect slice. The pure capture API
+/// deliberately retains its existing conservative refusal of Effect nodes.
+pub(crate) fn core_term_dependencies(expr: &CoreExpr) -> Option<CoreFreeVariables> {
+    core_references(expr, true)
+}
+
+fn core_references(expr: &CoreExpr, include_effects: bool) -> Option<CoreFreeVariables> {
     let mut free = CoreFreeVariables::default();
     match expr {
         CoreExpr::Unit { .. }
@@ -154,26 +164,28 @@ pub fn core_free_variables(expr: &CoreExpr) -> Option<CoreFreeVariables> {
             free.names.insert(callee.clone());
             free.evidence(evidence);
             for arg in arguments {
-                free.merge(core_free_variables(arg)?);
+                free.merge(core_references(arg, include_effects)?);
             }
         }
         CoreExpr::Lambda {
             parameter, body, ..
         } => {
-            free = core_free_variables(body)?;
+            free = core_references(body, include_effects)?;
             free.names.remove(&parameter.id);
         }
         CoreExpr::Tuple { elements, .. } | CoreExpr::Array { elements, .. } => {
             for element in elements {
-                free.merge(core_free_variables(element)?);
+                free.merge(core_references(element, include_effects)?);
             }
         }
-        CoreExpr::FieldAccess { receiver, .. } => free.merge(core_free_variables(receiver)?),
+        CoreExpr::FieldAccess { receiver, .. } => {
+            free.merge(core_references(receiver, include_effects)?)
+        }
         CoreExpr::Record { items, .. } => {
             for item in items {
                 match item {
                     crate::CoreRecordValueItem::Field { value, .. } => {
-                        free.merge(core_free_variables(value)?)
+                        free.merge(core_references(value, include_effects)?)
                     }
                     _ => return None,
                 }
@@ -185,11 +197,11 @@ pub fn core_free_variables(expr: &CoreExpr) -> Option<CoreFreeVariables> {
             evidence,
             ..
         } => {
-            free.merge(core_free_variables(left)?);
-            free.merge(core_free_variables(right)?);
+            free.merge(core_references(left, include_effects)?);
+            free.merge(core_references(right, include_effects)?);
             free.evidence(evidence);
         }
-        CoreExpr::Unary { operand, .. } => free.merge(core_free_variables(operand)?),
+        CoreExpr::Unary { operand, .. } => free.merge(core_references(operand, include_effects)?),
         CoreExpr::If {
             condition,
             then_branch,
@@ -197,7 +209,7 @@ pub fn core_free_variables(expr: &CoreExpr) -> Option<CoreFreeVariables> {
             ..
         } => {
             for value in [condition, then_branch, else_branch] {
-                free.merge(core_free_variables(value)?);
+                free.merge(core_references(value, include_effects)?);
             }
         }
         CoreExpr::Decision {
@@ -205,11 +217,11 @@ pub fn core_free_variables(expr: &CoreExpr) -> Option<CoreFreeVariables> {
             branches,
             ..
         } => {
-            free.merge(core_free_variables(scrutinee)?);
+            free.merge(core_references(scrutinee, include_effects)?);
             for branch in branches {
-                let mut inner = core_free_variables(&branch.value)?;
+                let mut inner = core_references(&branch.value, include_effects)?;
                 if let Some(guard) = &branch.guard {
-                    inner.merge(core_free_variables(guard)?);
+                    inner.merge(core_references(guard, include_effects)?);
                 }
                 for binding in &branch.bindings {
                     inner.names.remove(&binding.name);
@@ -222,15 +234,39 @@ pub fn core_free_variables(expr: &CoreExpr) -> Option<CoreFreeVariables> {
         } => {
             // Walk backwards: each initializer sees the preceding scope, while
             // the binding scopes over subsequent statements and the result.
-            free = core_free_variables(result)?;
+            free = core_references(result, include_effects)?;
             for statement in statements.iter().rev() {
                 match statement {
                     crate::CoreStatement::PureLet { name, value, .. } => {
                         free.names.remove(name);
-                        free.merge(core_free_variables(value)?);
+                        free.merge(core_references(value, include_effects)?);
+                    }
+                    crate::CoreStatement::Bind { name, value, .. } if include_effects => {
+                        free.names.remove(name);
+                        free.merge(core_references(value, include_effects)?);
+                    }
+                    crate::CoreStatement::Effect { value } if include_effects => {
+                        free.merge(core_references(value, include_effects)?);
                     }
                     _ => return None,
                 }
+            }
+        }
+        CoreExpr::EffectInvoke {
+            callee,
+            arguments,
+            evidence,
+            ..
+        } if include_effects => {
+            free.names.insert(callee.clone());
+            free.evidence(evidence);
+            for argument in arguments {
+                free.merge(core_references(argument, include_effects)?);
+            }
+        }
+        CoreExpr::EffectOperation { arguments, .. } if include_effects => {
+            for argument in arguments {
+                free.merge(core_references(argument, include_effects)?);
             }
         }
         _ => return None,

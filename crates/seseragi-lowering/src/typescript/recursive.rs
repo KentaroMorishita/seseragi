@@ -1,21 +1,114 @@
 //! A narrow checked contract for ordinary recursive functions returning Effects.
 //! This does not infer a return type from the body or recognize a rendered TS name.
-use crate::{core_free_variables, CoreFunction, CoreModule, CoreType};
+use std::collections::{BTreeMap, BTreeSet};
+
+use crate::core_analysis::core_term_dependencies;
+use crate::{CoreFunction, CoreModule, CoreType};
 
 use super::types::TypeScriptTypeContext;
 use super::TypeScriptType;
 
-pub(super) fn providerless_effect_type(
-    module: &CoreModule,
-    function: &CoreFunction,
-) -> Option<CoreType> {
+pub(super) fn providerless_effect_types(module: &CoreModule) -> BTreeMap<String, CoreType> {
+    // Canonical top-level identities also include saved values between functions.
+    // Local binders and imported modules cannot create an edge by spelling.
+    let bodies = module
+        .functions
+        .iter()
+        .map(|function| (&function.symbol, &function.body))
+        .chain(
+            module
+                .bindings
+                .iter()
+                .map(|binding| (&binding.symbol, &binding.value)),
+        )
+        .collect::<BTreeMap<_, _>>();
+    let edges = bodies
+        .iter()
+        .map(|(symbol, body)| {
+            let references = core_term_dependencies(body)
+                .map(|free| {
+                    free.names
+                        .into_iter()
+                        .filter(|name| bodies.contains_key(name))
+                        .collect()
+                })
+                .unwrap_or_default();
+            ((*symbol).clone(), references)
+        })
+        .collect();
+    let cyclic = cyclic_members(&edges);
+    module
+        .functions
+        .iter()
+        .filter_map(|function| {
+            cyclic
+                .contains(&function.symbol)
+                .then(|| providerless_effect_type(module, function))
+                .flatten()
+                .map(|ty| (function.symbol.clone(), ty))
+        })
+        .collect()
+}
+
+// Iterative strongly connected components keep compiler stack and graph work
+// bounded by the source symbol/edge graph, rather than searching from every fn.
+fn cyclic_members(edges: &BTreeMap<String, BTreeSet<String>>) -> BTreeSet<String> {
+    let mut seen = BTreeSet::new();
+    let mut order = Vec::new();
+    for root in edges.keys() {
+        let mut stack = vec![(root.clone(), false)];
+        while let Some((symbol, expanded)) = stack.pop() {
+            if expanded {
+                order.push(symbol);
+            } else if seen.insert(symbol.clone()) {
+                stack.push((symbol.clone(), true));
+                stack.extend(
+                    edges[&symbol]
+                        .iter()
+                        .rev()
+                        .map(|next| (next.clone(), false)),
+                );
+            }
+        }
+    }
+    let mut reverse = edges
+        .keys()
+        .map(|name| (name.clone(), BTreeSet::new()))
+        .collect::<BTreeMap<_, _>>();
+    for (symbol, references) in edges {
+        for next in references {
+            reverse
+                .get_mut(next)
+                .expect("only known top-level edges")
+                .insert(symbol.clone());
+        }
+    }
+    seen.clear();
+    let mut cyclic = BTreeSet::new();
+    for root in order.into_iter().rev() {
+        if seen.contains(&root) {
+            continue;
+        }
+        let mut component = Vec::new();
+        let mut stack = vec![root];
+        while let Some(symbol) = stack.pop() {
+            if seen.insert(symbol.clone()) {
+                stack.extend(reverse[&symbol].iter().cloned());
+                component.push(symbol);
+            }
+        }
+        if component.len() > 1 || edges[&component[0]].contains(&component[0]) {
+            cyclic.extend(component);
+        }
+    }
+    cyclic
+}
+
+fn providerless_effect_type(module: &CoreModule, function: &CoreFunction) -> Option<CoreType> {
     if function.is_effect
         || function.parameters.is_empty()
         || !function.type_parameters.is_empty()
         || !function.constraints.is_empty()
-        || !core_free_variables(&function.body)?
-            .names
-            .contains(&function.symbol)
     {
         return None;
     }
