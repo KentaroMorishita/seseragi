@@ -1,0 +1,5 @@
+# Effectが返すEffect callback
+
+標準Web packageでcoldなfactoryをrunしてcallbackを受け取り、callbackからcoldなplanを作って実行・再実行する。保持済みplanはcallbackのdetach後も実行できる。UI finalizerは旧callbackが返すEffectの終了を待ってinstanceを閉じる。
+
+計算bodyはrust-backend/program-wasm-effect-factory.ssrgと同じ。Failure・Defect・取消とmasked LIFO finalizerはCLIの実WASM受入で検証する。private Ref、fallible Int算術、一般provider ABIを解決済みとは扱わない。

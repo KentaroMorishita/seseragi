@@ -1,0 +1,45 @@
+import * as effects from "std/effect"
+
+let unit = ()
+
+effect fn append prefix: String -> suffix: String -> String =
+  effects.succeed (prefix + suffix)
+
+pub effect fn create prefix: String -> (String -> Effect<{}, Never, String>) =
+  effects.succeed (append prefix)
+
+pub effect fn nested initial: String -> Effect<{}, Never, String> =
+  effects.succeed (effects.succeed initial)
+
+effect fn crash message: String -> _trigger: Unit -> String = effects.die message
+
+pub effect fn createDefect message: String -> (Unit -> Effect<{}, Never, String>) =
+  effects.succeed (crash message)
+
+effect fn checked prefix: String -> failing: Bool -> String fails String =
+  if failing then effects.fail prefix else effects.succeed prefix
+
+pub effect fn createChecked prefix: String -> (Bool -> Effect<{}, String, String>) =
+  effects.succeed (checked prefix)
+
+fn wait -> Effect<{}, Never, Unit> = effects.defer (\_ -> wait ())
+
+effect fn release message: String -> _resource: Unit -> Unit = effects.die message
+
+effect fn cleanup _trigger: Unit -> Unit fails String = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed unit) (release "outer released")
+  effects.acquireRelease (effects.succeed unit) (release "inner released")
+  effects.fail "body failure"
+}
+
+pub effect fn cleanupFactory _trigger: Unit -> (Unit -> Effect<{}, String, Unit>) =
+  effects.succeed cleanup
+
+effect fn hold _trigger: Unit -> Unit = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed unit) (release "outer released")
+  effects.acquireRelease (effects.succeed unit) (release "inner released")
+  wait ()
+}
+
+pub effect fn pendingFactory _trigger: Unit -> (Unit -> Effect<{}, Never, Unit>) =
+  effects.succeed hold

@@ -364,7 +364,13 @@ fn effect_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> 
                 {
                     Some(None)
                 } else {
-                    codec(ty, callable, codecs).map(Some)
+                    codec(ty, callable, codecs)
+                        // Success values may own a returned callback whose
+                        // checked result is another closed Effect. Reuse the
+                        // same recursive proof; inputs and failures still use
+                        // their non-callable value-only codec boundary.
+                        .or_else(|| callable.then(|| effect_codec(ty, codecs)).flatten())
+                        .map(Some)
                 }
             };
             ProgramCodec::Effect {
