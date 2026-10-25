@@ -79,7 +79,7 @@ python3 -m http.server 8080 --directory target/program-demo/site
 
 このsampleは、別のSeseragi sourceを既存web targetでTSへ生成し、task foreign bridgeから
 program WASMを呼ぶ。画面で成功値・Eitherのdomain failure・callback detach・instance dispose・
-Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMRとhostから受け取るcallbackは残る。providerless Effectは次の別ABIで扱う。
+Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMRと一般の同期host callbackは残る。providerless Effectと型付きのhost Effect callbackは次の別ABIで扱う。
 これだけで#814／#815や実用化全体を完了扱いにしない。
 
 ## providerless Effectを実行・取消する
@@ -123,8 +123,46 @@ Ref、Fiber／Deferred、host入力callback、open provider row、generic公開s
 同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
 host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
 
-標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。
-Preludeの裸の`succeed ()`をnativeで拒否する既知の#915は残り、このABIでも共有guardで拒否する。
+Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。
+同名のnominal Unitとはcanonicalな型identityを区別し、暗黙の変換を加えない。
+
+## 型付きhost Effect callbackを渡す
+
+公開関数の引数に、閉じた`A -> Effect<{}, E, B>`を持つ関数を渡せる。
+この場合は`seseragi-program-wasm-host-effect-v1`を生成し、pure／providerlessの出力を保つ。
+引数・成功値・失敗値には既存の閉じた値codecを使い、成功／失敗の`Never`は値を持たない。
+同期host関数、複数のsource引数を取るhost関数、open row、generic、Ref／Fiber／Deferred、
+foreign handleや一般provider ABIは生成前に拒否する。
+
+```seseragi
+pub effect fn transfer
+  request: (String -> Effect<{}, String, String>) ->
+  release: (String -> Effect<{}, Never, Unit>) ->
+  input: String -> String fails String = effects.scoped $ do {
+    resource <- effects.acquireRelease (request ("open:" + input)) release
+    result <- request ("read:" + resource)
+    effects.succeed ("processed:" + result)
+  }
+```
+
+生成TSの`HostEffect<A, E, B>`は`(argument, {signal})`を受け取り、
+`HostResult<E, B>`またはそのPromiseLikeを返す。結果は`Success`の`value`、`Failure`の`error`、
+`Defect`の`messages`で、hostから任意の`Cancelled`を返すことはできない。
+AbortSignalはtransportの情報であり、Seseragiのsource arityには加えない。
+host関数の適用だけではI/Oせず、cold planの`run()`がその関数を一度呼び、応答を待って再開する。
+hostのthrow／rejectや不正な応答は言語Defectへ変換し、登録済みfinalizerを試みる。
+
+取消はunmaskedなhost operationのsignalへ通知し、operationの応答を待つ。acquisitionとfinalizerは
+maskを保つ。取消中にacquisitionが成功した場合もreleaseを登録し、releaseの応答後に結果を公開する。
+async disposeもこの終了を待ち、正常終了でcallback・plan・host登録とmanaged rootを解放する。
+host登録は捕捉している最後のlanguage値が解放された時にも回収する。planのdetachだけで実行は取消さない。
+同じinstanceへのsource呼出しはhost応答の待機中に拒否し、別instanceは独立して利用できる。
+
+非協調的なPromiseの強制終了や、host関数が自分自身のinstanceのdispose完了を待つ循環は扱わない。
+hostに渡したresourceの意味と実際のcloseはhost側が所有する。受入fixtureは実際の非同期fetchと
+JSのresource記録を使い、OS file descriptorのWASM ABIを実証したとは扱わない。
+予期しないengine trap／protocol違反ではinstanceをretireし、Rust unwindやfinalizer完了、
+managed root0を主張しない。一般interopや#814／#815全体の完了とは分ける。
 
 ## 同じpackageのWASM計算とTS UIをbuildする
 
@@ -150,7 +188,7 @@ packageの`@seseragi/programs/calculation`から`loadProgram`、所有callback�
 選択moduleはsource rootに対するcanonical module pathで、UIのrun entryを変更しない。
 共有loaderでそのimport closureを読み、path dependencyの可視性・ownerと初期化順を保つ。
 計算moduleから未使用のEffectやforeignを削って認定することはしない。root Web設定が選んだ
-pureまたはproviderless Effect ABIを生成し、dependency manifestのprogram設定を自動実行しない。実際に生成した
+pure、providerless Effectまたは型付きhost Effect callbackのABIを生成し、dependency manifestのprogram設定を自動実行しない。実際に生成した
 moduleのidentityとloader digestを渡してUIのbrowser importを検査する。
 
 `programs/calculation/`にWASM・loader・型宣言・生成Rust・receiptを配置する。通常の

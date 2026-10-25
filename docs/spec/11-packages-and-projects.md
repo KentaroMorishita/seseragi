@@ -541,3 +541,14 @@ watchの更新はfull-page reloadであり、TS UIのcancelとfinalizer・DOM・
 閉じたinstanceの保存callbackは拒否し、trap済みinstanceはretireとして扱います。UI状態を保持するHMR、
 WASM内の一般Effectのunwind／cancel時のfinalizer保証を、このpure programのlifetimeへ含めません。
 通常のtab終了でbrowserが非同期終了処理を待つ保証はなく、watch reloadと同じ完了保証はありません。
+
+### Effect program WASM assets
+
+同じprogram設定で、providerlessな閉じたEffectと、型付きの一引数host Effect callbackを持つ関数も選べます。
+それぞれ`seseragi-program-wasm-effect-v1`、`seseragi-program-wasm-host-effect-v1`を生成します。
+host callbackは`A -> Effect<{}, E, B>`で、閉じた値codecの引数・成功値・失敗値に限ります。
+source引数を適用する段階とcold Effectをrunする段階を保ち、hostのAbortSignalをsource arityへ加えません。
+取消とasync disposeは開始済みhost operationとmasked finalizerの応答を待ちます。
+非協調的なPromiseの強制終了、一般provider ABI、Ref／Fiber／Deferredやopen rowは含めません。
+型・結果・寿命の詳細は[Rust backendのEffect ABI](../architecture/rust-backend.md)に従い、
+pure ABIの制限やtrap後のunwind保証と混同しません。

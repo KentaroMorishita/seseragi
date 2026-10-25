@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.95] - 2026-10-25
+
+### Added
+
+- Run typed unary host Effect callbacks from experimental program WASM through a closed value codec. Preserve cold replay, typed failure and Defect channels, source argument stages, cancellation acknowledgements and masked LIFO cleanup. Standard Web builds and dev reload await resource release before disposing the old instance and callback references; general host/provider ABIs remain unsupported.
+
 ## [0.61.94] - 2026-10-25
 
 ### Fixed

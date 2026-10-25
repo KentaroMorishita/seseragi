@@ -1,0 +1,5 @@
+{
+  "name": "program-wasm-host-effect-package-host",
+  "private": true,
+  "type": "module"
+}

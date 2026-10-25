@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/program-wasm-host-effect-package@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/program-wasm-host-effect-package@0.0.0#workspace:."
+name = "fixture/program-wasm-host-effect-package"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:e433f82bfb3cddf28edb0588605777c42fa4be76dce0f4a1d0c5ffd12c67d7ae"
+content_digest = "sha256:ed262468ccda2452c38b9cb5c318daba289dab71f4cd0a1af91669ba08476c9a"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/program-wasm-host-effect-package@0.0.0#workspace:."
+declaration = "src/main.ssrg#149-258"
+specifier = "../host/bridge.ts"
+exact_identity = "workspace:host/bridge.ts"
+declaration_digest = "sha256:c437a31c57cd55a7d4f4bebcd609851ef3b1c111d290ebcd8e9f8b57cc80c797"
+content_digest = "sha256:d080e5b916b90fec7ed1c9806da90dfdb0c7fa1073af90e1d6e89927cd27629b"

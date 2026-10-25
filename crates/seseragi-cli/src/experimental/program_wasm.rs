@@ -1,5 +1,6 @@
 use seseragi_backend_rust::{
     emit_program_wasm, ProgramWasmArtifact, PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
+    PROGRAM_WASM_HOST_EFFECT_ABI,
 };
 use seseragi_driver::{compile_core_module, CompileInput};
 use sha2::{Digest, Sha256};
@@ -160,7 +161,9 @@ fn owned_output(path: &Path) -> Result<(), String> {
         &fs::read(path.join("program-wasm.json")).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
-    if (manifest["abi"] != PROGRAM_WASM_ABI && manifest["abi"] != PROGRAM_WASM_EFFECT_ABI)
+    if (manifest["abi"] != PROGRAM_WASM_ABI
+        && manifest["abi"] != PROGRAM_WASM_EFFECT_ABI
+        && manifest["abi"] != PROGRAM_WASM_HOST_EFFECT_ABI)
         || manifest["schema"] != 1
     {
         return Err("refusing to replace an unknown program WASM artifact".into());

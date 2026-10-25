@@ -34,6 +34,10 @@ on:
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "crates/seseragi-cli/tests/program_wasm.rs"
+      - "crates/seseragi-cli/tests/program_wasm_host_effect.rs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-effect.mjs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-lifetime.mjs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-watch.mjs"
       - "scripts/program-wasm-probe.mjs"
       - "scripts/program-wasm-effect-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
@@ -83,6 +87,10 @@ on:
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "crates/seseragi-cli/tests/program_wasm.rs"
+      - "crates/seseragi-cli/tests/program_wasm_host_effect.rs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-effect.mjs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-lifetime.mjs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-watch.mjs"
       - "scripts/program-wasm-probe.mjs"
       - "scripts/program-wasm-effect-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
@@ -115,7 +123,8 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    # Windows cold builds and the full program/watch acceptance exceed 20m.
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 30 || 20 }}
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -146,10 +155,11 @@ jobs:
       - name: Compare namespace constructor owners and saved generic results
         run: cargo test --locked -p seseragi-cli --test namespace_results
       - name: Verify product program WASM, generated declarations and callback ownership
-        run: cargo test --locked -p seseragi-cli --test program_wasm
+        run: cargo test --locked -p seseragi-cli --test program_wasm --test program_wasm_host_effect
       - name: Rebuild selected program dependencies and drain old browser owners
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
+          cargo test --locked -p seseragi-cli --test dev watches_host_effect_programs_and_drains_the_old_application_before_reload
           cargo test --locked -p seseragi-cli --test dev initial_program_
           bun test ./runtime/ts/tests/program-lifecycle.test.ts ./runtime/ts/tests/program-lifecycle-async.test.ts
           bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts

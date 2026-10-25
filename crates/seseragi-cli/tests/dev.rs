@@ -708,6 +708,132 @@ try{
 }
 
 #[test]
+fn watches_host_effect_programs_and_drains_the_old_application_before_reload() {
+    let _server = DEV_SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    let directory = test_directory("host-effect-program-wasm");
+    let project = directory.join("project");
+    copy_directory(
+        &repository_root()
+            .join("examples/spec/fixtures/rust-backend-projects/program-wasm-host-effect-package"),
+        &project,
+    );
+    update_lock(&project);
+    let port = available_port();
+    let log_path = directory.join("dev.log");
+    let log = fs::File::create(&log_path).unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("dev")
+            .arg(&project)
+            .args(["--port", &port.to_string()])
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log)),
+        log_path.clone(),
+    );
+    wait_for(
+        Duration::from_secs(45),
+        || {
+            assert!(
+                child.try_wait().unwrap().is_none(),
+                "{}",
+                fs::read_to_string(&log_path).unwrap()
+            );
+            request(port, "/").is_some_and(|response| response.0 == 200)
+        },
+        "initial host Effect program WASM build",
+    );
+    let output = project.join(".seseragi/dev");
+    let receipt: serde_json::Value = serde_json::from_slice(
+        &fs::read(output.join("programs/calculation/program-wasm.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(receipt["abi"], "seseragi-program-wasm-host-effect-v1");
+    let initial_version = request(port, RELOAD_ENDPOINT).unwrap().1;
+    let initial = build_image(&output);
+    let before = directory.join("before");
+    copy_directory(&output.join("programs"), &before.join("programs"));
+    let calculation = project.join("src/calculation.ssrg");
+    let original = fs::read_to_string(&calculation).unwrap();
+    assert!(original.contains("\"processed:\""));
+    fs::write(
+        &calculation,
+        format!("{original}\npub let watchBroken: Int = missingWatchValue\n"),
+    )
+    .unwrap();
+    wait_for(
+        Duration::from_secs(45),
+        || {
+            fs::read_to_string(&log_path)
+                .unwrap()
+                .contains("Build failed")
+        },
+        "host Effect program compile failure",
+    );
+    assert_eq!(build_image(&output), initial);
+    assert_eq!(request(port, RELOAD_ENDPOINT).unwrap().1, initial_version);
+    fs::write(
+        &calculation,
+        original.replace("\"processed:\"", "\"watched:\""),
+    )
+    .unwrap();
+    let rebuilt = wait_for_value(
+        Duration::from_secs(45),
+        || {
+            let (status, version) = request(port, RELOAD_ENDPOINT)?;
+            if status != 200 || version == initial_version {
+                return None;
+            }
+            Some(fs::read(output.join("programs/calculation/program.wasm")).unwrap())
+        },
+        "host Effect program recovery and rebuild",
+    );
+    assert_ne!(rebuilt, initial["programs/calculation/program.wasm"]);
+    for path in [
+        "/programs/calculation/index.mjs",
+        "/programs/calculation/program.wasm",
+        "/programs/__lifecycle.mjs",
+    ] {
+        let (_, bytes) = served_resource(port, path);
+        assert_eq!(bytes, fs::read(output.join(&path[1..])).unwrap());
+    }
+    assert!(request(port, "/")
+        .unwrap()
+        .1
+        .contains("dispatchEvent(closing)"));
+    let after = directory.join("after");
+    copy_directory(&output.join("programs"), &after.join("programs"));
+    stop(&mut child);
+
+    for (name, cleanup_defect) in [("success", false), ("defect", true)] {
+        let case = directory.join(name);
+        fs::create_dir(&case).unwrap();
+        copy_directory(&before, &case.join("before"));
+        copy_directory(&after, &case.join("after"));
+        fs::write(
+            case.join("watch-case.json"),
+            serde_json::to_vec(&serde_json::json!({"cleanupDefect":cleanup_defect})).unwrap(),
+        )
+        .unwrap();
+        let script = case.join("watch.mjs");
+        fs::copy(
+            repository_root()
+                .join("crates/seseragi-cli/tests/fixtures/program-wasm-host-watch.mjs"),
+            &script,
+        )
+        .unwrap();
+        for engine in ["bun", "node"] {
+            run_program_probe(engine, &script, &case);
+            assert!(fs::read_to_string(case.join(format!("{engine}-probe.log")))
+                .unwrap()
+                .contains("host watch event: old cleanup drained; next image verified"));
+        }
+    }
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
     let _server = DEV_SERVER_TEST_LOCK
         .lock()
