@@ -1143,6 +1143,281 @@ pub fn view -> html.Html<Never> =
     }
 
     #[test]
+    fn selected_programs_publish_overlays_and_preserve_the_ui_and_shared_definitions() {
+        for encoding in ["utf-8", "utf-16"] {
+            let workspace = TempWorkspace::new();
+            workspace.write(
+                "seseragi.toml",
+                concat!(
+                    "[package]\nname = \"fixture/program-lsp\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n",
+                    "[run]\nentry = \"main\"\ntarget = \"web\"\n",
+                    "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n",
+                    "[web.programs.other]\nmodule = \"other\"\nexports = [\"count\"]\n",
+                    "[dependencies]\ndomain = { package = \"fixture/program-domain\", path = \"vendor/domain\" }\n",
+                ),
+            );
+            let main = "import { base } from \"domain\"\npub fn main -> Int = base\n";
+            let calculation = "import { base } from \"domain\"\npub fn amount -> Int = base\n";
+            workspace.write("src/main.ssrg", main);
+            workspace.write("src/calculation.ssrg", calculation);
+            workspace.write("vendor/domain/seseragi.toml", concat!(
+                "[package]\nname = \"fixture/program-domain\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n",
+                "[exports]\n\".\" = \"lib\"\n",
+            ));
+            workspace.write("vendor/domain/src/lib.ssrg", "pub let base: Int = 42\n");
+            workspace.write("src/other.ssrg", "pub fn count -> Int = 1\n");
+            let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+            let calculation_uri = file_uri(&workspace.path().join("src/calculation.ssrg"));
+            let shared_uri = file_uri(&workspace.path().join("vendor/domain/src/lib.ssrg"));
+            let other_uri = file_uri(&workspace.path().join("src/other.ssrg"));
+            let mut state = State::default();
+            state
+                .handle(json!({
+                    "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                    "params": {"rootUri": file_uri(workspace.path()),
+                        "capabilities": {"general": {"positionEncodings": [encoding]}}}
+                }))
+                .unwrap();
+            let opened = state
+                .handle(json!({
+                    "jsonrpc": "2.0", "method": "textDocument/didOpen",
+                    "params": {"textDocument": {"uri": calculation_uri,
+                        "languageId": "seseragi", "version": 1, "text": calculation}}
+                }))
+                .unwrap();
+            for uri in [&main_uri, &calculation_uri, &shared_uri, &other_uri] {
+                assert!(
+                    state.documents.contains_key(uri),
+                    "selected graph omitted {uri}"
+                );
+            }
+            assert!(opened.iter().any(|v| v["params"]["uri"] == calculation_uri
+                && v["params"]["version"] == 1
+                && v["params"]["diagnostics"] == json!([])));
+
+            state
+                .handle(json!({
+                    "jsonrpc": "2.0", "method": "textDocument/didOpen",
+                    "params": {"textDocument": {"uri": main_uri,
+                        "languageId": "seseragi", "version": 10,
+                        "text": "pub fn main -> Int = \"ui wrong\"\n"}}
+                }))
+                .unwrap();
+            let wrong = format!("{calculation}\nfn takesInt value: Int -> Int = value\npub fn wrong -> Int = {{ let prefix = \"雫🙂\"; takesInt \"wrong\" }}\n");
+            let changed = state
+                .handle(json!({
+                    "jsonrpc": "2.0", "method": "textDocument/didChange",
+                    "params": {"textDocument": {"uri": calculation_uri, "version": 2},
+                        "contentChanges": [{"text": wrong}]}
+                }))
+                .unwrap();
+            let publication = changed
+                .iter()
+                .find(|v| v["params"]["uri"] == calculation_uri)
+                .unwrap();
+            assert_eq!(publication["params"]["version"], 2);
+            let diagnostics = publication["params"]["diagnostics"].as_array().unwrap();
+            assert_eq!(diagnostics.len(), 1);
+            assert_eq!(diagnostics[0]["code"], "SES-T0101");
+            assert_eq!(diagnostics[0]["data"]["expectedType"], "Int");
+            assert_eq!(diagnostics[0]["data"]["actualType"], "String");
+            let prefix = &wrong[..wrong.rfind("\"wrong\"").unwrap()];
+            let line = prefix.lines().count() - 1;
+            let tail = prefix.rsplit('\n').next().unwrap();
+            let column = if encoding == "utf-8" {
+                tail.len()
+            } else {
+                tail.encode_utf16().count()
+            };
+            assert_eq!(
+                diagnostics[0]["range"],
+                json!({
+                    "start": {"line": line, "character": column},
+                    "end": {"line": line, "character": column + 7}
+                })
+            );
+            assert!(changed.iter().any(|v| v["params"]["uri"] == main_uri
+                && v["params"]["version"] == 10
+                && v["params"]["diagnostics"][0]["code"] == "SES-T0101"));
+            let repaired = state
+                .handle(json!({
+                    "jsonrpc": "2.0", "method": "textDocument/didChange",
+                    "params": {"textDocument": {"uri": calculation_uri, "version": 3},
+                        "contentChanges": [{"text": calculation}]}
+                }))
+                .unwrap();
+            assert!(repaired
+                .iter()
+                .any(|v| v["params"]["uri"] == calculation_uri
+                    && v["params"]["version"] == 3
+                    && v["params"]["diagnostics"] == json!([])));
+            assert!(repaired.iter().any(|v| v["params"]["uri"] == main_uri
+                && v["params"]["diagnostics"][0]["code"] == "SES-T0101"));
+            let definition = state.handle(json!({
+                "jsonrpc": "2.0", "id": 2, "method": "textDocument/definition",
+                "params": {"textDocument": {"uri": calculation_uri},
+                    "position": {"line": 1, "character": calculation.lines().nth(1).unwrap().rfind("base").unwrap()}}
+            })).unwrap();
+            assert_eq!(definition[0]["result"]["uri"], shared_uri);
+            assert_eq!(
+                definition[0]["result"]["range"]["start"],
+                json!({"line": 0, "character": 8})
+            );
+        }
+    }
+
+    #[test]
+    fn selected_programs_report_a_failed_link_and_recover_without_losing_other_documents() {
+        let workspace = TempWorkspace::new();
+        workspace.write("seseragi.toml", concat!(
+            "[package]\nname = \"fixture/program-lsp-import\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n",
+            "[run]\nentry = \"main\"\ntarget = \"web\"\n",
+            "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n",
+            "[web.programs.other]\nmodule = \"other\"\nexports = [\"count\"]\n",
+        ));
+        let main = "import { base } from \"./shared\"\npub fn main -> Int = base\n";
+        let broken = "import { missing } from \"./missing\"\npub fn amount -> Int = missing\n";
+        workspace.write("src/main.ssrg", main);
+        workspace.write("src/shared.ssrg", "pub let base: Int = 42\n");
+        workspace.write("src/calculation.ssrg", broken);
+        workspace.write("src/other.ssrg", "pub fn count -> Int = \"wrong\"\n");
+        let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let calculation_uri = file_uri(&workspace.path().join("src/calculation.ssrg"));
+        let other_uri = file_uri(&workspace.path().join("src/other.ssrg"));
+        let mut state = State::default();
+        state
+            .handle(json!({"jsonrpc":"2.0","id":1,"method":"initialize",
+            "params":{"rootUri":file_uri(workspace.path()),"capabilities":{}}}))
+            .unwrap();
+        let opened = state.handle(json!({"jsonrpc":"2.0","method":"textDocument/didOpen",
+            "params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":main}}})).unwrap();
+        let failed = opened
+            .iter()
+            .find(|v| v["params"]["uri"] == calculation_uri)
+            .unwrap();
+        assert!(failed["params"].get("version").is_none());
+        assert!(failed["params"]["diagnostics"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|d| d["severity"] == 1));
+        assert!(opened
+            .iter()
+            .any(|v| v["params"]["uri"] == main_uri && v["params"]["diagnostics"] == json!([])));
+        assert!(opened.iter().any(|v| v["params"]["uri"] == other_uri
+            && v["params"]["diagnostics"][0]["code"] == "SES-T0101"));
+        let fixed = "import { base } from \"./shared\"\npub fn amount -> Int = base\n";
+        let repaired = state.handle(json!({"jsonrpc":"2.0","method":"textDocument/didOpen",
+            "params":{"textDocument":{"uri":calculation_uri,"languageId":"seseragi","version":7,"text":fixed}}})).unwrap();
+        assert!(repaired
+            .iter()
+            .any(|v| v["params"]["uri"] == calculation_uri
+                && v["params"]["version"] == 7
+                && v["params"]["diagnostics"] == json!([])));
+        assert!(repaired
+            .iter()
+            .any(|v| v["params"]["uri"] == main_uri && v["params"]["diagnostics"] == json!([])));
+        assert!(repaired.iter().any(|v| v["params"]["uri"] == other_uri
+            && v["params"]["diagnostics"][0]["code"] == "SES-T0101"));
+    }
+
+    #[test]
+    fn selected_program_cycles_do_not_discard_ui_or_other_program_diagnostics() {
+        let workspace = TempWorkspace::new();
+        workspace.write("seseragi.toml", concat!(
+            "[package]\nname = \"fixture/program-lsp-cycle\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n",
+            "[run]\nentry = \"main\"\ntarget = \"web\"\n",
+            "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n",
+            "[web.programs.other]\nmodule = \"other\"\nexports = [\"count\"]\n",
+        ));
+        let main = "pub fn main -> Int = 42\n";
+        workspace.write("src/main.ssrg", main);
+        workspace.write(
+            "src/calculation.ssrg",
+            "import { value } from \"./cycle\"\npub fn amount -> Int = value\n",
+        );
+        workspace.write(
+            "src/cycle.ssrg",
+            "import { amount } from \"./calculation\"\npub let value: Int = 1\n",
+        );
+        workspace.write("src/other.ssrg", "pub fn count -> Int = \"wrong\"\n");
+        let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let calculation_uri = file_uri(&workspace.path().join("src/calculation.ssrg"));
+        let other_uri = file_uri(&workspace.path().join("src/other.ssrg"));
+        let cycle_uri = file_uri(&workspace.path().join("src/cycle.ssrg"));
+        let mut state = State::default();
+        state
+            .handle(json!({"jsonrpc":"2.0","id":1,"method":"initialize",
+            "params":{"rootUri":file_uri(workspace.path()),"capabilities":{}}}))
+            .unwrap();
+        let opened = state.handle(json!({"jsonrpc":"2.0","method":"textDocument/didOpen",
+            "params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":main}}})).unwrap();
+        assert!(opened
+            .iter()
+            .any(|v| v["params"]["uri"] == main_uri && v["params"]["diagnostics"] == json!([])));
+        assert!(
+            opened.iter().any(|v| v["params"]["uri"] == other_uri
+                && v["params"]["diagnostics"][0]["code"] == "SES-T0101"),
+            "{opened:#?}"
+        );
+        assert!(
+            opened.iter().any(|v| v["params"]["uri"] == calculation_uri
+                && v["params"].get("version").is_none()
+                && v["params"]["diagnostics"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|d| d["severity"] == 1)),
+            "{opened:#?}"
+        );
+        assert!(!opened.iter().any(|v| v["params"]["uri"] == cycle_uri));
+        let fixed = "pub fn amount -> Int = 42\n";
+        let repaired = state.handle(json!({"jsonrpc":"2.0","method":"textDocument/didOpen",
+            "params":{"textDocument":{"uri":calculation_uri,"languageId":"seseragi","version":7,"text":fixed}}})).unwrap();
+        assert!(repaired
+            .iter()
+            .any(|v| v["params"]["uri"] == calculation_uri
+                && v["params"]["version"] == 7
+                && v["params"]["diagnostics"] == json!([])));
+        assert!(repaired
+            .iter()
+            .any(|v| v["params"]["uri"] == main_uri && v["params"]["diagnostics"] == json!([])));
+        assert!(repaired.iter().any(|v| v["params"]["uri"] == other_uri
+            && v["params"]["diagnostics"][0]["code"] == "SES-T0101"));
+    }
+
+    #[test]
+    fn selected_programs_keep_other_roots_when_one_program_module_is_missing() {
+        let workspace = TempWorkspace::new();
+        workspace.write("seseragi.toml", concat!(
+            "[package]\nname = \"fixture/program-lsp-missing\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n",
+            "[run]\nentry = \"main\"\ntarget = \"web\"\n",
+            "[web.programs.missing]\nmodule = \"missing\"\nexports = [\"amount\"]\n",
+            "[web.programs.valid]\nmodule = \"calculation\"\nexports = [\"amount\"]\n",
+        ));
+        let main = "import { base } from \"./shared\"\npub fn main -> Int = base\n";
+        workspace.write("src/main.ssrg", main);
+        workspace.write("src/shared.ssrg", "pub let base: Int = 42\n");
+        workspace.write("src/calculation.ssrg", "pub fn amount -> Int = \"wrong\"\n");
+        let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let calculation_uri = file_uri(&workspace.path().join("src/calculation.ssrg"));
+        let mut state = State::default();
+        state
+            .handle(json!({"jsonrpc":"2.0","id":1,"method":"initialize",
+            "params":{"rootUri":file_uri(workspace.path()),"capabilities":{}}}))
+            .unwrap();
+        let notifications = state.handle(json!({"jsonrpc":"2.0","method":"textDocument/didOpen",
+            "params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":main}}})).unwrap();
+        assert!(notifications
+            .iter()
+            .any(|v| v["params"]["uri"] == main_uri && v["params"]["diagnostics"] == json!([])));
+        assert!(notifications
+            .iter()
+            .any(|v| v["params"]["uri"] == calculation_uri
+                && v["params"]["diagnostics"][0]["code"] == "SES-T0101"));
+    }
+
+    #[test]
     fn package_lint_excludes_dependency_warnings() {
         let workspace = TempWorkspace::new();
         workspace.write(

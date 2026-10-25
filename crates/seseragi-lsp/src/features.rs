@@ -49,9 +49,13 @@ pub(crate) struct SymbolKey {
 
 impl DocumentState {
     pub(crate) fn analyze(uri: &str, version: i64, source: String) -> Self {
+        Self::analyze_with_version(uri, Some(version), source)
+    }
+
+    pub(crate) fn analyze_with_version(uri: &str, version: Option<i64>, source: String) -> Self {
         let analysis = analyze_module(CompileInput::new(uri, uri, &source));
         Self {
-            version: Some(version),
+            version,
             source,
             analysis,
             lint_enabled: true,

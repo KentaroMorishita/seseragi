@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.97] - 2026-10-25
+
+### Fixed
+
+- Analyze selected Web program modules alongside the UI entry in the LSP so editing an independent calculation module reports and clears its type errors. Preserve canonical package identities, overlays and UTF-8/UTF-16 diagnostic positions. Isolate missing or cyclic program roots without losing diagnostics from other modules, and resolve failed-root sources through the same validated filesystem boundary.
+
 ## [0.61.96] - 2026-10-25
 
 ### Fixed

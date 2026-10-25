@@ -72,8 +72,9 @@ pub use local_graph::{
     PackageImportError, ResolvedPackageImport,
 };
 pub use local_project::{
-    load_local_benchmarks, load_local_documents, load_local_project, load_local_project_module,
-    load_local_project_with_overlays, load_local_tests, LoadedLocalDocuments, LoadedLocalProject,
+    load_local_benchmarks, load_local_documents, load_local_project,
+    load_local_project_for_analysis, load_local_project_module, load_local_project_with_overlays,
+    load_local_tests, LoadedLocalAnalysis, LoadedLocalDocuments, LoadedLocalProject,
     LoadedLocalTests, LocalProjectLoadError,
 };
 pub use lockfile::{

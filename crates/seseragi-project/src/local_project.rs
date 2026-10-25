@@ -6,7 +6,7 @@ mod model;
 mod tests;
 
 pub use error::LocalProjectLoadError;
-pub use model::{LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests};
+pub use model::{LoadedLocalAnalysis, LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests};
 
 use crate::loader::audit;
 use crate::loader::filesystem;
@@ -196,11 +196,30 @@ pub fn load_local_project_module(
     load_project_entry(root.as_ref(), std::iter::empty(), Some(module))
 }
 
+/// Load the ordinary run entry and configured Web program roots for an editor.
+/// This does not widen the production build entry's import closure. Failed
+/// program discovery is isolated and retained without discarding other roots.
+pub fn load_local_project_for_analysis(
+    root: impl AsRef<Path>,
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+) -> Result<LoadedLocalAnalysis, LocalProjectLoadError> {
+    load_project_roots(root.as_ref(), overlays, None, true)
+}
+
 fn load_project_entry(
     root: &Path,
     overlays: impl IntoIterator<Item = SourceOverlay>,
     module: Option<&crate::ModulePath>,
 ) -> Result<LoadedLocalProject, LocalProjectLoadError> {
+    load_project_roots(root, overlays, module, false).map(LoadedLocalAnalysis::into_project)
+}
+
+fn load_project_roots(
+    root: &Path,
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+    module: Option<&crate::ModulePath>,
+    include_programs: bool,
+) -> Result<LoadedLocalAnalysis, LocalProjectLoadError> {
     let packages = discover_local_package_graph(root).map_err(LocalProjectLoadError::Packages)?;
     let overlays = normalize_overlays(overlays)?;
     let root = packages.root().clone();
@@ -219,14 +238,54 @@ fn load_project_entry(
             .entry
             .clone(),
     };
-    let entry = ModuleIdentity::new(root, ModuleRoot::Source, entry_path);
+    let entry = ModuleIdentity::new(root.clone(), ModuleRoot::Source, entry_path);
+    let mut program_errors = BTreeMap::new();
+    let mut failed_program_sources = BTreeMap::new();
     let (graph, modules) = {
         let mut state = SourceDiscovery::new(&packages, overlays)?;
         state.discover(entry.clone())?;
+        if include_programs {
+            for program in root_manifest
+                .manifest()
+                .web
+                .iter()
+                .flat_map(|web| web.programs.values())
+            {
+                let identity =
+                    ModuleIdentity::new(root.clone(), ModuleRoot::Source, program.module.clone());
+                // Discovery can fail after adding dependencies. Commit an entire
+                // root or retain its error; never publish a partial graph.
+                let mut candidate = state.clone();
+                let discovered = candidate
+                    .discover(identity.clone())
+                    .and_then(|()| candidate.finish().map(|_| ()));
+                match discovered {
+                    Ok(()) => state = candidate,
+                    Err(error) => {
+                        // Retain only a source read through the same canonical
+                        // filesystem checks and overlays as normal discovery.
+                        // This is diagnostic input, never a linked graph node.
+                        let source = candidate.modules.get(&identity).cloned().or_else(|| {
+                            let path = candidate.resolve_module_path(&identity).ok()?;
+                            let source = candidate.read_source(&identity, &path).ok()?;
+                            Some(LoadedModule::new(identity.clone(), path, source))
+                        });
+                        if let Some(source) = source {
+                            failed_program_sources.insert(identity.clone(), source);
+                        }
+                        program_errors.insert(identity, error);
+                    }
+                }
+            }
+        }
         let graph = state.finish()?;
         (graph, state.modules)
     };
-    Ok(LoadedLocalProject::new(packages, entry, graph, modules))
+    Ok(LoadedLocalAnalysis::new(
+        LoadedLocalProject::new(packages, entry, graph, modules),
+        program_errors,
+        failed_program_sources,
+    ))
 }
 
 fn normalize_overlays(
@@ -244,6 +303,7 @@ fn normalize_overlays(
     Ok(normalized)
 }
 
+#[derive(Clone)]
 struct SourceDiscovery<'a> {
     packages: &'a LocalPackageGraph,
     source_roots: BTreeMap<(PackageIdentity, ModuleRoot), PathBuf>,
@@ -356,7 +416,10 @@ impl<'a> SourceDiscovery<'a> {
         Ok(())
     }
 
-    fn discover_module(&mut self, module: ModuleIdentity) -> Result<(), LocalProjectLoadError> {
+    fn resolve_module_path(
+        &self,
+        module: &ModuleIdentity,
+    ) -> Result<PathBuf, LocalProjectLoadError> {
         let source_root = self
             .source_roots
             .get(&(module.package().clone(), module.root()))
@@ -386,6 +449,31 @@ impl<'a> SourceDiscovery<'a> {
                 }),
             });
         }
+        Ok(canonical_path)
+    }
+
+    fn read_source(
+        &self,
+        module: &ModuleIdentity,
+        canonical_path: &Path,
+    ) -> Result<String, LocalProjectLoadError> {
+        match self.overlays.get(canonical_path) {
+            Some(source) => Ok(source.clone()),
+            None => fs::read_to_string(canonical_path).map_err(|error| {
+                LocalProjectLoadError::Filesystem {
+                    package: Box::new(module.package().clone()),
+                    error: Box::new(PackageLoadError::io(
+                        "read module",
+                        canonical_path.to_owned(),
+                        error,
+                    )),
+                }
+            }),
+        }
+    }
+
+    fn discover_module(&mut self, module: ModuleIdentity) -> Result<(), LocalProjectLoadError> {
+        let canonical_path = self.resolve_module_path(&module)?;
         // Source and generated roots share the compiler/output module namespace.
         // Reject a collision before the driver erases the filesystem root.
         if matches!(module.root(), ModuleRoot::Source | ModuleRoot::Generated) {
@@ -413,19 +501,7 @@ impl<'a> SourceDiscovery<'a> {
                 });
             }
         }
-        let source = match self.overlays.get(&canonical_path) {
-            Some(source) => source.clone(),
-            None => fs::read_to_string(&canonical_path).map_err(|error| {
-                LocalProjectLoadError::Filesystem {
-                    package: Box::new(module.package().clone()),
-                    error: Box::new(PackageLoadError::io(
-                        "read module",
-                        canonical_path.clone(),
-                        error,
-                    )),
-                }
-            })?,
-        };
+        let source = self.read_source(&module, &canonical_path)?;
         let unlinked = parse_unlinked_module_interface(
             canonical_path.to_string_lossy(),
             module_label(&module),
