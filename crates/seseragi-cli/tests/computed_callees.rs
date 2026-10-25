@@ -67,10 +67,14 @@ fn computed_callees_preserve_results_cold_effects_and_defect_cleanup() {
         .prefix("seseragi-computed-callees-")
         .tempdir()
         .unwrap();
+    // Cargo supplies an absolute path; lexical parents avoid Windows verbatim
+    // prefixes, which Bun does not accept as a tsconfig baseUrl.
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../..")
-        .canonicalize()
-        .unwrap();
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .to_path_buf();
     let fixtures = root.join("examples/spec/fixtures/rust-backend");
     let engines = ["bun", "node"].map(|name| {
         let located = Command::new(if cfg!(windows) { "where" } else { "which" })
@@ -167,21 +171,25 @@ fn computed_callees_preserve_results_cold_effects_and_defect_cleanup() {
                 .with_profile(value),
             )
             .unwrap();
-            fs::write(output.join("raw.ts"), raw.generated.typescript).unwrap();
-            let mut files = vec![output.join("raw.ts")];
+            // Keep proof-only resolution settings away from the real CLI
+            // artifact: Bun also discovers tsconfig files when running a bundle.
+            let proof = scratch.path().join(format!("{name}-{profile}-proof"));
+            fs::create_dir(&proof).unwrap();
+            fs::write(proof.join("raw.ts"), raw.generated.typescript).unwrap();
+            let mut files = vec![proof.join("raw.ts")];
             if profile == "development" {
                 files.push(output.join("entry.ts"));
             }
             let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root.join("node_modules/@types")],"baseUrl":root,"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true,"skipLibCheck":false},"files":files});
             fs::write(
-                output.join("tsconfig.json"),
+                proof.join("tsconfig.json"),
                 serde_json::to_vec(&config).unwrap(),
             )
             .unwrap();
             let strict = Command::new(&engines[1])
                 .arg(root.join("node_modules/typescript/bin/tsc"))
                 .arg("--project")
-                .arg(output.join("tsconfig.json"))
+                .arg(proof.join("tsconfig.json"))
                 .output()
                 .unwrap();
             assert!(
@@ -193,7 +201,7 @@ fn computed_callees_preserve_results_cold_effects_and_defect_cleanup() {
             if name == "computed-callees-trace" {
                 let observed = Command::new(&engines[1])
                     .arg(root.join("crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"))
-                    .arg(output.join("raw.ts"))
+                    .arg(proof.join("raw.ts"))
                     .args(&engines)
                     .output()
                     .unwrap();
