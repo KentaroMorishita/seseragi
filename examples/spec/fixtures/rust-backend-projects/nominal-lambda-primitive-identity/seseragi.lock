@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/nominal-lambda-primitive-identity@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/nominal-lambda-model@1.0.0#path:vendor/model"
+name = "fixture/nominal-lambda-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:21dca679b35f0afe29f8ccaef13a60c20da53d130364e8489470f1494c0e3a1a"
+content_digest = "sha256:97e25009a53c85e8308d5f5d684ef6a92cd03b79e4ab2aeb797da9d97a5767ed"
+dependencies = []
+
+[[packages]]
+id = "fixture/nominal-lambda-primitive-identity@0.0.0#workspace:."
+name = "fixture/nominal-lambda-primitive-identity"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:c0088843b587612b52c0d18546ef2ea89dc0f621df5789dd6fe51c98b401f9b7"
+content_digest = "sha256:f7302bbe0123ea5cc6023f2832947ede74e068add2db99a46c5392afcd08f256"
+dependencies = [
+  { import = "model", package = "fixture/nominal-lambda-model@1.0.0#path:vendor/model" },
+]

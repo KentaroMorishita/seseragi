@@ -197,3 +197,56 @@ pub effect fn main = do {
     )
     .unwrap_err();
 }
+
+#[test]
+fn inferred_nominal_lambda_keeps_primitive_payload_under_a_same_named_type() {
+    for body in [
+        "println (show (match forward 42 { Foreign inner -> inner }))",
+        "let saved = forward 42; println (show (match saved { Foreign inner -> inner }))",
+        "let held = forward; println (show (match held 42 { Foreign inner -> inner }))",
+    ] {
+        let source = format!(
+            r#"
+import {{ Box as Foreign, boxed }} from "model"
+type Int = | Nominal Bool
+pub effect fn main = do {{
+  let forward = \value -> boxed value
+  {body}
+}}
+"#
+        );
+        project(&source).unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
+    }
+}
+
+#[test]
+fn inferred_nominal_lambda_does_not_confuse_the_shadowing_type_with_a_primitive() {
+    for (body, code) in [
+        (
+            "println (show (match forward (Nominal True) { Foreign inner -> inner }))",
+            "SES-T0201",
+        ),
+        (
+            "let wrong: Foreign<Int> = forward 42; println \"unreachable\"",
+            "SES-T0101",
+        ),
+    ] {
+        let source = format!(
+            r#"
+import {{ Box as Foreign, boxed }} from "model"
+type Int = | Nominal Bool
+pub effect fn main = do {{
+  let forward = \value -> boxed value
+  {body}
+}}
+"#
+        );
+        let error = project(&source).unwrap_err();
+        assert!(
+            matches!(&error, seseragi_driver::ProjectCompileError::Diagnostics { modules }
+                if modules.iter().any(|module| module.diagnostics.diagnostics.iter()
+                    .any(|diagnostic| diagnostic.code == code))),
+            "{source}\n{error:#?}"
+        );
+    }
+}

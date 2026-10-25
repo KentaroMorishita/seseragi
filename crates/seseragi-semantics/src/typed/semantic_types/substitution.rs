@@ -25,6 +25,13 @@ pub(crate) fn substitute_remaining_scheme_parameters(
 ) -> SemanticValueType {
     let substitutions = substitutions
         .iter()
+        // A display-only self binding supplies no new identity. Keeping its
+        // checked slot is essential when a let scheme is saved as a value;
+        // replacing it by Other would prevent later semantic instantiation.
+        .filter(|(parameter, type_ref)| {
+            !matches!(type_ref, TypedType::Named { name, arguments }
+                if name == *parameter && arguments.is_empty())
+        })
         .map(|(parameter, type_ref)| {
             (
                 TypeParameterKey::Scheme(parameter.clone()),
@@ -905,10 +912,53 @@ fn fill_semantic_constructor_holes(
 
 #[cfg(test)]
 mod tests {
-    use super::{instantiate_callable, instantiate_callable_indexed_with_display_types};
+    use super::{
+        instantiate_callable, instantiate_callable_indexed_with_display_types,
+        substitute_remaining_scheme_parameters,
+    };
     use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
     use crate::{SymbolId, TypedType};
     use std::collections::BTreeMap;
+
+    #[test]
+    fn unchanged_display_substitution_preserves_a_checked_scheme_slot() {
+        let slot = SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "A".to_owned(),
+                arguments: vec![],
+            },
+            key: SemanticTypeKey::SchemeParameter("A".to_owned()),
+        };
+        let nominal = SemanticValueType {
+            type_ref: TypedType::ExternalNamed {
+                name: "Box".to_owned(),
+                canonical: "fixture/model::Box".to_owned(),
+                arguments: vec![slot.type_ref.clone()],
+            },
+            key: SemanticTypeKey::ExternalNominal {
+                canonical: "fixture/model::Box".to_owned(),
+                arguments: vec![slot.clone()],
+            },
+        };
+        let value = SemanticValueType::function(slot.clone(), nominal);
+        let display = BTreeMap::from([("A".to_owned(), slot.type_ref)]);
+        assert_eq!(
+            substitute_remaining_scheme_parameters(&value, &display),
+            value
+        );
+
+        let resolved = SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "A".to_owned(),
+                arguments: vec![],
+            },
+            key: SemanticTypeKey::TypeParameter(SymbolId(42)),
+        };
+        assert_eq!(
+            substitute_remaining_scheme_parameters(&resolved, &display),
+            resolved
+        );
+    }
 
     #[test]
     fn projects_checked_caller_schemes_without_resolving_contextual_schemes() {

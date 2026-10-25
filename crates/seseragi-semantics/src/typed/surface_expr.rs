@@ -258,14 +258,19 @@ impl<'a> PureExpressionContext<'a> {
         if let Some(callable) = self.callable(target) {
             let mut callable = callable.clone();
             if let Some(local) = self.parameters.get(&target) {
-                let mut result = &local.type_ref;
+                let mut result = local.clone();
                 for _ in &callable.parameters {
-                    if let TypedType::Function { result: next, .. } = result {
+                    if let Some((_, next)) = result.function_parts() {
                         result = next;
                     }
                 }
-                callable.result = result.clone();
-                callable.semantic_result = self.semantic_value_from_typed_type(result).key;
+                // Local callable values already carry checked owner and scheme
+                // identities. Project their result through source arity before
+                // hydration; resolving its display type again loses quantified
+                // slots and can capture a same-named nominal declaration.
+                let result = self.hydrate_semantic_value(result);
+                callable.result = result.type_ref;
+                callable.semantic_result = result.key;
             }
             if let Some(trait_name) = self
                 .resolution

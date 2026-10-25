@@ -1,0 +1,28 @@
+import { Box as Foreign, boxed } from "model"
+import * as refs from "std/ref"
+import * as effects from "std/effect"
+
+type Int = | Nominal Bool
+
+pub effect fn main = do {
+  let forward = \value -> boxed value
+  let held = forward
+  counter <- refs.make 40
+  released <- refs.make False
+  let cold = do {
+    before <- refs.get counter
+    refs.set (before + 1) counter
+    effects.succeed (match held (before + 1) { Foreign inner -> inner })
+  }
+  before <- refs.get counter
+  println (show before)
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) (\_ -> refs.set True released)
+    first <- cold
+    println (show first)
+    second <- cold
+    println (show second)
+  }
+  ended <- refs.get released
+  println (show ended)
+}
