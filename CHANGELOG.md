@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.102] - 2026-10-26
+
+### Fixed
+
+- Support checked String equality and inequality in native programs, including saved methods and partial application. Preserve source evaluation order and captured String lifetimes while comparing UTF-8 file content before writing a different file; verify the shared runtime through standard Web program WASM and its typed bridge.
+
 ## [0.61.101] - 2026-10-26
 
 ### Fixed

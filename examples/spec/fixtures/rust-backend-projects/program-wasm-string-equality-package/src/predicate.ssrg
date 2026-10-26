@@ -1,0 +1,12 @@
+pub fn same left: String -> right: String -> Bool = left == right
+pub fn different left: String -> right: String -> Bool = left != right
+
+pub fn saved expected: String -> (String -> Bool) = {
+  let equal: String -> String -> Bool = (==)
+  equal expected
+}
+
+pub fn probe -> String = {
+  let matches = saved "ready\n"
+  `${show (same "雪🌊\0" ("雪🌊" + "\0"))}:${show (different "é" "é")}:${show (matches "ready\n")}:${show (matches "other")}`
+}

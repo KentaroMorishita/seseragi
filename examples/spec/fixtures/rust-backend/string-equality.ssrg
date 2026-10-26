@@ -1,0 +1,38 @@
+type Box<A> = | Box A
+
+instance<A> Eq<Box<A>> where Eq<A> {
+  fn eq left: Box<A> -> (Box<A> -> Bool) = match left {
+    Box value -> {
+      let same: A -> A -> Bool = (==)
+      let saved = same value
+      \right -> match right { Box other -> saved other }
+    }
+  }
+}
+
+fn forwarded<A> value: A -> Bool where Eq<A> = value == value
+fn returned expected: String -> (String -> Bool) = \actual: String -> expected == actual
+
+pub effect fn main = do {
+  println (show ("雫" == "雫"))
+  println (show (("r" + "eady") == "ready"))
+  println (show ("" == ""))
+  println (show ("\0" == "\0"))
+  println (show ("🙂" != "🦀"))
+  println (show ("é" == "é"))
+  let equal: String -> String -> Bool = (==)
+  let different: String -> String -> Bool = (!=)
+  let saved = equal "ready"
+  let changed = different "ready"
+  println (show (saved "ready"))
+  println (show (saved "other"))
+  println (show (changed "ready"))
+  println (show (changed "other"))
+  let wrapped: Box<String> -> Box<String> -> Bool = (==)
+  let boxed = wrapped (Box "雫")
+  println (show (boxed (Box "雫")))
+  println (show (boxed (Box "other")))
+  println (show (forwarded (Box "ready")))
+  let callback = returned "ready"
+  println (show (callback "ready"))
+}

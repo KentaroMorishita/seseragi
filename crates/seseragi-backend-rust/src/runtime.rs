@@ -368,6 +368,7 @@ fn binary(op: &str, a: V, b: V) -> V {
         ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value(a, b)),
         ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value(a, b)),
         ("==", V::Int(a), V::Int(b)) => V::Bool(int_equal_value(a, b)),
+        ("==", V::Text(a), V::Text(b)) => V::Bool(a.get() == b.get()),
         ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
         ("<=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(a, b)),
         ("+", V::Text(a), V::Text(b)) => V::Text(Shared::new(format!("{}{}", a.get(), b.get()))),
@@ -394,7 +395,7 @@ fn native_operator_dictionary(identity: &'static str) -> V {
             "std/int::Sub" => arithmetic!("sub", "-"),
             "std/int::Mul" => arithmetic!("mul", "*"),
             "std/int::Div" => arithmetic!("div", "/"),
-            "std/int::Eq" => arithmetic!("eq", "=="),
+            "std/int::Eq" | "std/string::Eq" => arithmetic!("eq", "=="),
             _ => panic!("Rust ABI: unsupported arithmetic dictionary"),
         }
     })
@@ -403,6 +404,22 @@ fn native_operator_dictionary(identity: &'static str) -> V {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn string_equality_compares_contents_and_releases_partial_captures() {
+        clear_dictionaries();
+        let equal = native_operator_dictionary("std/string::Eq").field("eq");
+        let saved = equal.apply(V::text("雫\0🙂"));
+        let separate = V::text(&format!("{}{}", "雫\0", "🙂"));
+        assert!(saved.apply(separate).boolean());
+        assert!(!saved.apply(V::text("雫\0🦀")).boolean());
+        assert!(binary("==", V::text(""), V::text("")).boolean());
+        assert!(!binary("==", V::text("é"), V::text("é")).boolean());
+        drop(saved);
+        drop(equal);
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
     #[test]
     fn scalar_global_reads_keep_checked_access_and_release_storage_borrows() {
         clear_globals();

@@ -1,0 +1,32 @@
+import * as effects from "std/effect"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+effect fn release _unit: Unit -> Unit with Console = say "released"
+
+effect fn body mode: String -> String with Console fails String = effects.scoped $ do {
+  effects.acquireRelease (say "acquired") release
+  let captured = "雫"
+  let equal: String -> String -> Bool = (==)
+  let same = equal captured
+  let plan = effects.defer $ \_: Unit -> do {
+    if mode == "fail" then effects.fail "body failure"
+    else if mode == "defect" then effects.die "body defect"
+    else effects.succeed (same ("" + captured))
+  }
+  say "cold"
+  first <- plan
+  second <- plan
+  effects.succeed (show first + ":" + show second)
+}
+
+effect fn report error: String -> String with Console = effects.succeed ("Failure: " + error)
+
+pub effect fn main = do {
+  result <- body "ready" |> effects.recover report
+  println result
+}

@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/program-wasm-string-equality-package@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/program-wasm-string-equality-package@0.0.0#workspace:."
+name = "fixture/program-wasm-string-equality-package"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:730e51f8f3611db7f1404f27c6b0de8f4dc1dfa45c2952c2845e35e587d7395a"
+content_digest = "sha256:c5248f553b56e47b5aa029441af64ffd4eb88e8b8c27bcdc11ad049ce31f6024"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/program-wasm-string-equality-package@0.0.0#workspace:."
+declaration = "src/main.ssrg#149-240"
+specifier = "../host/bridge.ts"
+exact_identity = "workspace:host/bridge.ts"
+declaration_digest = "sha256:47fedfc1030fbe445a3e38e2f2c4c5f3650fbf05f4a6a541fd1a08de5a7c8048"
+content_digest = "sha256:597d829c53535372b160b306f4fb279e8e956264f3bd27d47692cee800138d5b"

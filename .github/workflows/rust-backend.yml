@@ -32,6 +32,7 @@ on:
       - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/mutual_effect_returns.rs"
       - "crates/seseragi-cli/tests/captured_primitive_identity.rs"
+      - "crates/seseragi-cli/tests/string_equality.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -48,6 +49,7 @@ on:
       - "scripts/program-wasm-effect-factory-probe.mjs"
       - "scripts/program-wasm-private-ref-probe.mjs"
       - "scripts/program-wasm-host-ref-probe.mjs"
+      - "scripts/program-wasm-string-equality-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
@@ -93,6 +95,7 @@ on:
       - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/mutual_effect_returns.rs"
       - "crates/seseragi-cli/tests/captured_primitive_identity.rs"
+      - "crates/seseragi-cli/tests/string_equality.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -109,6 +112,7 @@ on:
       - "scripts/program-wasm-effect-factory-probe.mjs"
       - "scripts/program-wasm-private-ref-probe.mjs"
       - "scripts/program-wasm-host-ref-probe.mjs"
+      - "scripts/program-wasm-string-equality-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
@@ -139,8 +143,9 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-latest]
     runs-on: ${{ matrix.os }}
-    # macOS/Windows cold builds and the complete program/watch lane exceed 20m.
-    timeout-minutes: ${{ matrix.os == 'ubuntu-24.04' && 20 || 30 }}
+    # Cold builds plus the complete program/watch lane can exceed 20m on Linux
+    # and 30m on Windows. Individual command/test deadlines stay bounded.
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 45 || 30 }}
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -164,6 +169,8 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test filesystem --test fibers --test async_filesystem
       - name: Compare inherited Ord equality, dictionary owners and source stages
         run: cargo test --locked -p seseragi-cli --test inherited_equality
+      - name: Compare String equality, file conditions, strict source stages and program WASM
+        run: cargo test --locked -p seseragi-cli --test string_equality
       - name: Check process bootstrap strict types and initialization Defects
         run: cargo test --locked -p seseragi-cli --test process_entry_strict
       - name: Compare public alias exports, scoped binders and type-only initialization
