@@ -6,6 +6,10 @@ pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {
     (name == "std/int::IntParseError").then(Vec::new)
 }
 
+pub(super) fn is_show_dictionary(identity: &str) -> bool {
+    identity == "Show<std/int::IntParseError>"
+}
+
 fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let named = |name: &str| CoreType::Named {
         name: name.into(),
@@ -51,6 +55,101 @@ fn remaining_type(parameters: &[CoreType], result: &CoreType) -> CoreType {
 }
 
 impl Backend<'_> {
+    pub(super) fn validate_int_parse_show_call(
+        &self,
+        expr: &CoreExpr,
+        scope: &Scope,
+    ) -> Result<()> {
+        let CoreExpr::Call {
+            arguments,
+            type_ref,
+            evidence,
+            trait_dispatch,
+            deferred_evidence_parameters,
+            deferred_evidence_type_constructor_parameters,
+            evidence_argument_index,
+            ..
+        } = expr
+        else {
+            return Ok(());
+        };
+        if !evidence.iter().any(|selected| {
+            matches!(&selected.evidence, CoreInstanceEvidence::Standard { identity, .. }
+                if is_show_dictionary(identity))
+        }) {
+            return Ok(());
+        }
+        let valid_dispatch = trait_dispatch.as_ref().is_some_and(|dispatch| {
+            dispatch.trait_identity == "std/prelude::Show"
+                && dispatch.method == "show"
+                && dispatch.method_contract.is_none()
+        });
+        if evidence.len() != 1
+            || !valid_dispatch
+            || arguments.len() > 1
+            || !deferred_evidence_parameters.is_empty()
+            || !deferred_evidence_type_constructor_parameters.is_empty()
+            || evidence_argument_index.is_some()
+        {
+            return Err("Rust backend: unproven Int parse Show source application".into());
+        }
+        let parameter = CoreType::Named {
+            name: "std/int::IntParseError".into(),
+            arguments: vec![],
+        };
+        let result = CoreType::Named {
+            name: "std/prelude::String".into(),
+            arguments: vec![],
+        };
+        if let Some(argument) = arguments.first() {
+            let actual = local::method_argument_type(argument)
+                .ok_or("Rust backend: missing Int parse Show argument type")?;
+            self.int_parse_type_matches(&actual, &parameter, scope)?;
+        }
+        // A saved method keeps its one source argument. A saturated call must
+        // produce String; dictionary selection never consumes that argument.
+        let parameters = [parameter];
+        self.int_parse_type_matches(
+            type_ref,
+            &remaining_type(&parameters[arguments.len()..], &result),
+            scope,
+        )
+    }
+
+    pub(super) fn int_parse_show_dictionary(
+        &mut self,
+        selected: &CoreCallEvidence,
+        scope: &Scope,
+    ) -> Result<Option<String>> {
+        let CoreInstanceEvidence::Standard {
+            identity,
+            type_arguments,
+            evidence_arguments,
+        } = &selected.evidence
+        else {
+            return Ok(None);
+        };
+        if !is_show_dictionary(identity) {
+            return Ok(None);
+        }
+        let [actual] = selected.constraint.arguments.as_slice() else {
+            return Err("Rust backend: Int parse Show constraint arity".into());
+        };
+        let expected = CoreType::Named {
+            name: "std/int::IntParseError".into(),
+            arguments: vec![],
+        };
+        if !type_arguments.is_empty()
+            || !evidence_arguments.is_empty()
+            || !lists::standard_trait(selected, "Show", actual)
+            || self.declared_method_type_kind(actual, scope) != Some(0)
+            || self.local_canonical_type(actual, scope)? != expected
+        {
+            return Err("Rust backend: unproven canonical Int parse Show evidence".into());
+        }
+        Ok(Some("native_int_parse_error_show_dictionary()".into()))
+    }
+
     fn int_parse_callable(name: &str, arity: usize) -> String {
         let names: Vec<_> = (0..arity)
             .map(|i| format!("\0int_parse_argument_{i}"))

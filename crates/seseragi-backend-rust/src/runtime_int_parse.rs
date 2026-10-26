@@ -60,6 +60,29 @@ fn native_int_parse_operation(name: &str, arguments: Vec<V>) -> V {
     }
 }
 
+fn native_int_parse_error_show(value: &V) -> String {
+    let tag = native_standard_tag(value, "std/int::");
+    match tag.as_str() {
+        "EmptyInt" | "IntOutsideRange" => tag,
+        "InvalidIntRadix" => format!("{tag} {}", value.payload().render()),
+        "InvalidIntDigit" => format!(
+            "{tag} {{ offset: {}, radix: {} }}",
+            value.payload().field("offset").render(),
+            value.payload().field("radix").render()
+        ),
+        _ => panic!("Rust ABI: IntParseError Show variant"),
+    }
+}
+
+fn native_int_parse_error_show_dictionary() -> V {
+    V::dict(vec![(
+        "show",
+        V::fun(vec![], |_, value| {
+            native_display(|| V::text(&native_int_parse_error_show(&value)))
+        }),
+    )])
+}
+
 #[cfg(test)]
 mod int_parse_tests {
     use super::*;

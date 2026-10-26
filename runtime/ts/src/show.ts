@@ -41,6 +41,7 @@ import type { JsError } from "./foreign"
 import type { GraphemeSliceError } from "./grapheme"
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
+import type { IntParseError } from "./int"
 import type { List, NonEmptyList } from "./list"
 import type { LogError } from "./logger-service"
 import { entries as mapEntries, type Map as PersistentMap } from "./map"
@@ -272,6 +273,27 @@ export const intShow = /* @__PURE__ */ defineShow((value: number) =>
 /** Int Debug uses the same canonical spelling as Show. */
 export const intDebug = /* @__PURE__ */ defineDebug((value: number) =>
   text(value.toString(10))
+)
+
+/** The standard Int parse error keeps its constructor and field order. */
+export const intParseErrorShow = /* @__PURE__ */ defineShow(
+  (error: IntParseError) => {
+    switch (error.tag) {
+      case "EmptyInt":
+      case "IntOutsideRange":
+        return text(error.tag)
+      case "InvalidIntRadix":
+        return constructorDocument(
+          error.tag,
+          showDocument(intShow, error.value)
+        )
+      case "InvalidIntDigit":
+        return recordConstructorDocument(error.tag, [
+          ["offset", String(error.value.offset)],
+          ["radix", String(error.value.radix)],
+        ])
+    }
+  }
 )
 
 /** BigInt Show uses the canonical signed base-10 spelling. */

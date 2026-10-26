@@ -1,0 +1,26 @@
+import * as ints from "std/int"
+
+type IntParseError = | LocalParseFailure
+
+instance Show<IntParseError> {
+  fn show value: IntParseError -> String = "local"
+}
+
+fn describe input: String -> String = match ints.parse input {
+  Left error -> show error
+  Right value -> show value
+}
+
+fn saved -> (ints.IntParseError -> String) = show
+
+pub effect fn main = do {
+  println (show ints.EmptyInt)
+  println (show (ints.InvalidIntRadix 1))
+  println (show (ints.InvalidIntDigit { offset: 1, radix: 10 }))
+  println (show ints.IntOutsideRange)
+  println (describe "01")
+  println (describe "42")
+  let display: ints.IntParseError -> String = saved ()
+  println (display ints.EmptyInt)
+  println (show LocalParseFailure)
+}

@@ -2405,6 +2405,14 @@
       "identity": "Show<std/prelude::Int>"
     },
     {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "IntParseError",
+      "typeConstructorCanonical": "std/int::IntParseError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/int::IntParseError>"
+    },
+    {
       "trait": "Debug",
       "traitCanonical": "std/prelude::Debug",
       "typeConstructor": "Int",
@@ -7040,6 +7048,14 @@
         "trait": "Show",
         "head": "Int",
         "identity": "Show<std/prelude::Int>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "IntParseError",
+        "identity": "Show<std/int::IntParseError>",
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.11"

@@ -755,20 +755,13 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         )
         .collect::<std::collections::BTreeSet<_>>();
     used_type_names.extend(foreign_opaque_type_names(&module.foreign_modules));
-    if !recursive_effect_types.is_empty() {
-        used_type_names.extend(module.aliases.iter().map(|alias| alias.name.clone()));
-    }
+    used_type_names.extend(module.aliases.iter().map(|alias| alias.name.clone()));
     for import in &mut type_imports {
-        let runtime_type = match import.feature.as_str() {
-            "core.list" => Some(("std/prelude::List", "__ssrg$List")),
-            "effect.core.type" if !recursive_effect_types.is_empty() => {
-                Some(("std/prelude::Effect", "__ssrg$Effect"))
-            }
-            _ => None,
-        };
-        if let Some((canonical, base)) = runtime_type {
+        if let Some(runtime_type) =
+            crate::runtime_types::runtime_type_import_for_feature(&import.feature)
+        {
             if used_type_names.contains(&import.local) {
-                let mut alias = base.to_owned();
+                let mut alias = format!("__ssrg${}", runtime_type.export_name);
                 while used_type_names.contains(&alias) {
                     alias.push('_');
                 }
@@ -777,7 +770,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             used_type_names.insert(import.local.clone());
             module_imports.type_names = module_imports
                 .type_names
-                .with_runtime_type_name(canonical.into(), import.local.clone());
+                .with_runtime_type_name(runtime_type.canonical.into(), import.local.clone());
         }
     }
 

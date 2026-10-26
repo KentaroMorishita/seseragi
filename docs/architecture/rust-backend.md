@@ -322,8 +322,10 @@ canonicalなowner、閉じた型、kindとsourceの適用段階を確認し、�
 符号とsafe integer範囲、先頭の0、不正な桁の位置と最初の失敗を既存TS契約に合わせる。
 `filesystem-decimal-aggregate.ssrg`と`decimal-file-aggregate` packageは各行を集計し、
 成功時だけ別fileを置換する。parse/read失敗とoverflowのDefectでは既存出力を保ち、
-resource scopeを解放する。radix指定や他の数値変換、IntParseErrorのShowと
-program WASMのparseはこの対応に含めない。
+resource scopeを解放する。標準の`Show<std/int::IntParseError>`は4つのconstructorと
+payloadを表示し、同名のlocal型のinstanceとはcanonical ownerで区別する。保存したmethodでも
+sourceの引数を一度だけ評価し、型・kind・evidence・返り値を証明できないCoreIrは生成前に拒否する。
+radix指定や他の数値変換、IntParseErrorのEq/Debug、program WASMのparseはこの対応に含めない。
 nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
 商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
 0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。

@@ -509,9 +509,23 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 301);
+        assert_eq!(surface.instances.len(), 302);
         assert_eq!(surface.builtin_instances.len(), 44);
+        let parse_error_show = surface
+            .instances
+            .iter()
+            .filter(|instance| instance.identity == "Show<std/int::IntParseError>")
+            .collect::<Vec<_>>();
+        assert_eq!(parse_error_show.len(), 1);
+        assert_eq!(parse_error_show[0].trait_name, "Show");
+        assert_eq!(parse_error_show[0].trait_canonical, "std/prelude::Show");
+        assert_eq!(
+            parse_error_show[0].type_constructor_canonical,
+            "std/int::IntParseError"
+        );
+        assert_eq!(parse_error_show[0].type_constructor_arity, 0);
         for identity in [
+            "Show<std/int::IntParseError>",
             "std/maybe::Eq",
             "std/either::Eq",
             "std/int::Hash",
@@ -550,7 +564,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 301 + 44 + 12);
+        assert_eq!(implemented.len(), 302 + 44 + 12);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()
