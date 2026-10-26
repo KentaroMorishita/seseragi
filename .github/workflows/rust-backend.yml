@@ -143,8 +143,9 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-latest]
     runs-on: ${{ matrix.os }}
-    # macOS/Windows cold builds and the complete program/watch lane exceed 20m.
-    timeout-minutes: ${{ matrix.os == 'ubuntu-24.04' && 20 || 30 }}
+    # Cold builds plus the complete program/watch lane can exceed 20m on Linux
+    # and 30m on Windows. Individual command/test deadlines stay bounded.
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 45 || 30 }}
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
