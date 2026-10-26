@@ -1,0 +1,2 @@
+fn same mode: String -> Bool = mode == "defect"
+pub effect fn main = println (show (same "ready"))

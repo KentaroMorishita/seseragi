@@ -306,6 +306,11 @@ TS / nativeのscalar self-tail loop認定とscalar global readの共通改善は
 選択済みのuser instanceとnested dictionary、Int / Bool / String、基本Char / Float / List、
 Tuple / Array / field-only Record、local ADT、decision、let / effect sequence。
 Show / Debugは対応済みの標準辞書と選択済みchild methodを使う。
+Stringの`==`／`!=`と保存・部分適用は、canonicalな`std/string::Eq`の型と選択済みevidenceを照合する。
+比較はUnicode正規化を行わず、内容で判定する。左右の式を一度ずつ評価し、保存した左引数は
+返却closureの寿命まで保持する。`filesystem-string-equality.ssrg`はUTF-8入力の内容で分岐し、
+別fileへ結果を書き出す。`program-wasm-string-equality-package`は同じ比較を通常Web buildの
+typedなprogram関数と返却callbackで使い、callbackとinstanceを解放する。
 nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
 商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
 0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。

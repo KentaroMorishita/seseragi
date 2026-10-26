@@ -481,7 +481,7 @@ impl Backend<'_> {
                 values.push(dictionary?);
                 continue;
             }
-            if let Some(dictionary) = self.int_equality_dictionary(selected, scope) {
+            if let Some(dictionary) = self.primitive_equality_dictionary(selected, scope) {
                 values.push(dictionary?);
                 continue;
             }

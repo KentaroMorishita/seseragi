@@ -12,7 +12,7 @@ impl Backend<'_> {
         )
     }
 
-    pub(super) fn int_equality_dictionary(
+    pub(super) fn primitive_equality_dictionary(
         &self,
         selected: &CoreCallEvidence,
         scope: &Scope,
@@ -25,18 +25,20 @@ impl Backend<'_> {
         else {
             return None;
         };
-        if identity != "std/int::Eq" {
-            return None;
-        }
+        let primitive = match identity.as_str() {
+            "std/int::Eq" => "Int",
+            "std/string::Eq" => "String",
+            _ => return None,
+        };
         Some((|| {
             self.validate_eq_evidence(selected, scope)?;
             if !type_arguments.is_empty()
                 || !evidence_arguments.is_empty()
-                || !self.equality_builtin(&selected.constraint.arguments[0], "Int", scope)?
+                || !self.equality_builtin(&selected.constraint.arguments[0], primitive, scope)?
             {
-                return Err("Rust backend: invalid canonical Int Eq evidence".into());
+                return Err("Rust backend: invalid canonical primitive Eq evidence".into());
             }
-            Ok("native_operator_dictionary(\"std/int::Eq\")".into())
+            Ok(format!("native_operator_dictionary({})", quoted(identity)))
         })())
     }
 
@@ -79,6 +81,7 @@ impl Backend<'_> {
             let primitive = match identity.as_str() {
                 "std/int::Eq" => "Int",
                 "std/char::Eq" => "Char",
+                "std/string::Eq" => "String",
                 _ => return Err("Rust backend: unsupported canonical Eq provider".into()),
             };
             if !self.equality_builtin(&selected.constraint.arguments[0], primitive, scope)? {

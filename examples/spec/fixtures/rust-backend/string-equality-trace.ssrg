@@ -1,0 +1,12 @@
+fn leftValue -> String = "雪🌊\0"
+fn rightValue -> String = "雪🌊" + "\0"
+fn marker -> Unit = ()
+
+pub fn binaryProbe -> Bool = leftValue () == rightValue ()
+pub fn negatedProbe -> Bool = leftValue () != rightValue ()
+pub fn partialProbe -> Bool = {
+  let equal: String -> String -> Bool = (==)
+  let saved = equal (leftValue ())
+  let checkpoint = marker ()
+  saved (rightValue ())
+}

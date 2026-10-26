@@ -212,3 +212,11 @@ captureしたprimitiveの推論identityは、`cargo test -p seseragi-semantics -
 raw TS両profileのstrict、fresh Bun/Node、nativeとfinalizer・managed rootで比較する。
 標準moduleを使うfixtureはstandaloneのsemantics helperへ渡さず、共有driver経由で検証する。
 共有推論の変更には、統合前のfull gateと正規WASMの更新も必要となる。
+
+nativeのString Eqは、`cargo test --locked -p seseragi-backend-rust --test string_equality --test equality_partials`と
+`cargo test --locked -p seseragi-cli --test string_equality`で確認する。canonicalなEqのowner・型・evidenceを
+変えた負例を拒否し、Unicode/NUL・保存method・部分適用・cold再実行・Failure/Defect・finalizer/root0を
+raw strict TS両profile、fresh Bun/Nodeとnativeで比較する。file条件分岐では入力と失敗時の既存出力も保つ。
+共有runtimeを使うため、通常Web buildのprogram WASMと元のtyped bridge、callback/instanceの解放も検証する。
+左右のsource helperだけを計測するtraceで、一回評価と順序を比較し、生成Eq式は変更しない。
+共有runtimeの統合にはfull gateと正規compiler WASMの更新も必要となる。

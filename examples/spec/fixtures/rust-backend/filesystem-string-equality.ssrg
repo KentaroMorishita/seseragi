@@ -1,0 +1,32 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+type AppError =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+
+instance Show<AppError> {
+  fn show error: AppError -> String = match error {
+    PathFailure value -> "PathFailure " + show value
+    FileFailure value -> "FileFailure " + show value
+    TextFailure value -> "TextFailure " + show value
+  }
+}
+
+effect fn transform -> Unit with FileSystem fails AppError = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  content <- fs.readTextUtf8 input |> effects.mapError TextFailure
+  let selected = if content == "ready\n" then "accepted\n" else "rejected\n"
+  fs.writeTextUtf8 fs.Replace selected output
+    |> effects.mapError FileFailure
+}
+pub effect fn main -> Unit with FileSystem fails String =
+  transform ()
+  |> effects.mapError show
