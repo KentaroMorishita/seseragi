@@ -1118,10 +1118,35 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         String::from_utf8_lossy(&output.stderr)
     );
     assert!(output_path.exists());
+    let float_path = scratch.0.join("float-parse.ssrg");
+    fs::write(&float_path, "import * as floats from \"std/float\"\npub fn answer -> Either<floats.FloatParseError, Float> = floats.parse \"1.5\"\n").unwrap();
+    let float_output = scratch.0.join("float-parse.rs");
+    let parsed = cli()
+        .env("PATH", "")
+        .args(["experimental", "emit-rust"])
+        .arg(&float_path)
+        .args(["--entry", "answer", "--output"])
+        .arg(&float_output)
+        .output()
+        .unwrap();
+    assert!(
+        parsed.status.success(),
+        "{}",
+        String::from_utf8_lossy(&parsed.stderr)
+    );
+    assert!(float_output.exists());
+    let metadata: serde_json::Value = serde_json::from_slice(
+        &fs::read(float_output.with_extension("rust-backend.json")).unwrap(),
+    )
+    .unwrap();
+    assert!(metadata["capabilities"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|capability| capability == "float-parse"));
     for (name, source) in [
         ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n"),
         ("float-named-power", "import * as floats from \"std/float\"\npub fn answer -> Float = floats.power 2.0 1.5\n"),
-        ("float-parse", "import * as floats from \"std/float\"\npub fn answer -> Either<floats.FloatParseError, Float> = floats.parse \"1.5\"\n"),
         ("float-rounding", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Float = floats.roundIntegral numbers.HalfEven 1.5\n"),
         ("float-convert", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Either<floats.FloatConversionError, Int> = floats.toInt numbers.HalfEven 1.5\n"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n"),
@@ -1150,6 +1175,30 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         assert!(!bad_output.exists());
         assert!(!bad_output.with_extension("rust-backend.json").exists());
     }
+    let non_show_path = scratch.0.join("float-parse-error-show.ssrg");
+    fs::write(
+        &non_show_path,
+        "import * as floats from \"std/float\"\npub fn answer -> String = show floats.EmptyFloat\n",
+    )
+    .unwrap();
+    let non_show_output = scratch.0.join("float-parse-error-show.rs");
+    let non_show = cli()
+        .args(["experimental", "emit-rust"])
+        .arg(&non_show_path)
+        .args(["--entry", "answer", "--output"])
+        .arg(&non_show_output)
+        .output()
+        .unwrap();
+    assert_eq!(non_show.status.code(), Some(2));
+    let diagnostic = String::from_utf8_lossy(&non_show.stderr);
+    assert!(diagnostic.contains("SES-T0201"), "{diagnostic}");
+    assert!(diagnostic.contains("Show<FloatParseError>"), "{diagnostic}");
+    assert!(
+        diagnostic.contains("float-parse-error-show.ssrg:"),
+        "{diagnostic}"
+    );
+    assert!(!non_show_output.exists());
+    assert!(!non_show_output.with_extension("rust-backend.json").exists());
     let original = fs::read(&source_path).unwrap();
     let collision = cli()
         .args(["experimental", "emit-rust"])

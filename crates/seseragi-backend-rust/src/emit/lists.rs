@@ -135,7 +135,7 @@ pub(super) fn valid_display_dispatch(
             | "std/maybe::Debug"
     ) && primitive_display(selected).is_none()
         && filesystem::display_contract(dictionary).is_none()
-        && !int_parse::is_show_dictionary(dictionary)
+        && !number_parse::is_show_dictionary(dictionary)
     {
         return true;
     }

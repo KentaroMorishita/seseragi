@@ -1,9 +1,13 @@
 use super::*;
 
 pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {
-    // This concrete standard error owner is part of the admitted parse ABI.
-    // It has no type parameters; applied prefixes remain kind-checked normally.
-    (name == "std/int::IntParseError").then(Vec::new)
+    // These closed standard error owners are part of the admitted parse ABI.
+    // Neither takes type parameters; applied prefixes remain kind-checked normally.
+    matches!(
+        name,
+        "std/int::IntParseError" | "std/float::FloatParseError"
+    )
+    .then(Vec::new)
 }
 
 pub(super) fn is_show_dictionary(identity: &str) -> bool {
@@ -16,7 +20,27 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         arguments: vec![],
     };
     let error = named("std/int::IntParseError");
+    let float_error = named("std/float::FloatParseError");
     Some(match name {
+        "std/float::parse" => (
+            vec![named("std/prelude::String")],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![float_error, named("std/prelude::Float")],
+            },
+        ),
+        "std/float::EmptyFloat" | "std/float::FloatParseOverflow" => (vec![], float_error),
+        "std/float::InvalidFloat" => (
+            vec![CoreType::Record {
+                closed: true,
+                fields: vec![seseragi_lowering::CoreRecordField {
+                    name: "offset".into(),
+                    optional: false,
+                    type_ref: named("std/prelude::Int"),
+                }],
+            }],
+            float_error,
+        ),
         "std/int::parse" => (
             vec![named("std/prelude::String")],
             CoreType::Named {
@@ -42,6 +66,17 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         ),
         _ => return None,
     })
+}
+
+// Called only after the exact canonical signature above was admitted.
+fn parse_capability(name: &str) -> &'static str {
+    match name {
+        "std/float::parse"
+        | "std/float::EmptyFloat"
+        | "std/float::InvalidFloat"
+        | "std/float::FloatParseOverflow" => "float-parse",
+        _ => "int-parse",
+    }
 }
 
 fn remaining_type(parameters: &[CoreType], result: &CoreType) -> CoreType {
@@ -104,12 +139,12 @@ impl Backend<'_> {
         if let Some(argument) = arguments.first() {
             let actual = local::method_argument_type(argument)
                 .ok_or("Rust backend: missing Int parse Show argument type")?;
-            self.int_parse_type_matches(&actual, &parameter, scope)?;
+            self.number_parse_type_matches(&actual, &parameter, scope)?;
         }
         // A saved method keeps its one source argument. A saturated call must
         // produce String; dictionary selection never consumes that argument.
         let parameters = [parameter];
-        self.int_parse_type_matches(
+        self.number_parse_type_matches(
             type_ref,
             &remaining_type(&parameters[arguments.len()..], &result),
             scope,
@@ -150,9 +185,9 @@ impl Backend<'_> {
         Ok(Some("native_int_parse_error_show_dictionary()".into()))
     }
 
-    fn int_parse_callable(name: &str, arity: usize) -> String {
+    fn number_parse_callable(name: &str, arity: usize) -> String {
         let names: Vec<_> = (0..arity)
-            .map(|i| format!("\0int_parse_argument_{i}"))
+            .map(|i| format!("\0number_parse_argument_{i}"))
             .collect();
         let arguments = names
             .iter()
@@ -160,7 +195,7 @@ impl Backend<'_> {
             .collect::<Vec<_>>()
             .join(",");
         let mut body = format!(
-            "native_int_parse_operation({}, vec![{arguments}])",
+            "native_number_parse_operation({}, vec![{arguments}])",
             quoted(name)
         );
         for i in (0..arity).rev() {
@@ -169,7 +204,7 @@ impl Backend<'_> {
         body
     }
 
-    fn int_parse_type_matches(
+    fn number_parse_type_matches(
         &self,
         actual: &CoreType,
         expected: &CoreType,
@@ -178,12 +213,14 @@ impl Backend<'_> {
         if self.declared_method_type_kind(actual, scope) != Some(0)
             || self.local_canonical_type(actual, scope)? != *expected
         {
-            return Err("Rust backend: unproven canonical Int parse argument/result type".into());
+            return Err(
+                "Rust backend: unproven canonical number parse argument/result type".into(),
+            );
         }
         Ok(())
     }
 
-    pub(super) fn int_parse_reference(
+    pub(super) fn number_parse_reference(
         &mut self,
         name: &str,
         evidence: &[CoreCallEvidence],
@@ -197,14 +234,14 @@ impl Backend<'_> {
             return Ok(None);
         }
         if !evidence.is_empty() {
-            return Err("Rust backend: Int parse operation with unsupported evidence".into());
+            return Err("Rust backend: number parse operation with unsupported evidence".into());
         }
-        self.int_parse_type_matches(type_ref, &remaining_type(&parameters, &result), scope)?;
-        self.capabilities.insert("int-parse".into());
-        Ok(Some(Self::int_parse_callable(name, parameters.len())))
+        self.number_parse_type_matches(type_ref, &remaining_type(&parameters, &result), scope)?;
+        self.capabilities.insert(parse_capability(name).into());
+        Ok(Some(Self::number_parse_callable(name, parameters.len())))
     }
 
-    pub(super) fn int_parse_call(
+    pub(super) fn number_parse_call(
         &mut self,
         expr: &CoreExpr,
         scope: &Scope,
@@ -236,23 +273,23 @@ impl Backend<'_> {
             || !deferred_evidence_type_constructor_parameters.is_empty()
             || evidence_argument_index.is_some()
         {
-            return Err("Rust backend: unproven Int parse source application".into());
+            return Err("Rust backend: unproven number parse source application".into());
         }
         for (argument, expected) in arguments.iter().zip(&parameters) {
             let actual = local::method_argument_type(argument)
-                .ok_or("Rust backend: missing Int parse argument type")?;
-            self.int_parse_type_matches(&actual, expected, scope)?;
+                .ok_or("Rust backend: missing number parse argument type")?;
+            self.number_parse_type_matches(&actual, expected, scope)?;
         }
-        self.int_parse_type_matches(
+        self.number_parse_type_matches(
             type_ref,
             &remaining_type(&parameters[arguments.len()..], &result),
             scope,
         )?;
-        self.capabilities.insert("int-parse".into());
+        self.capabilities.insert(parse_capability(callee).into());
         if arguments.len() == parameters.len() {
             self.direct_calls += 1;
             return Ok(Some(format!(
-                "native_int_parse_operation({}, vec![{}])",
+                "native_number_parse_operation({}, vec![{}])",
                 quoted(callee),
                 self.expressions(arguments, scope)?
             )));
@@ -260,7 +297,7 @@ impl Backend<'_> {
         let value = self.fresh();
         let mut output = format!(
             "{{ let mut {value} = {};",
-            Self::int_parse_callable(callee, parameters.len())
+            Self::number_parse_callable(callee, parameters.len())
         );
         for argument in arguments {
             output.push_str(&format!(

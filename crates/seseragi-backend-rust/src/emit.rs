@@ -21,10 +21,10 @@ mod effect_defects;
 mod equality;
 mod filesystem;
 mod floats;
-mod int_parse;
 mod lists;
 mod local;
 mod methods;
+mod number_parse;
 mod operators;
 mod scalar;
 mod tail;
@@ -159,6 +159,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
+    output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
     output.push_str(include_str!("runtime_scheduler.rs"));
@@ -733,7 +734,7 @@ impl Backend<'_> {
                 if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
-                if let Some(value) = self.int_parse_reference(name, evidence, type_ref, scope)? {
+                if let Some(value) = self.number_parse_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if equality::is_equality(name) && !scope.contains(name) {
@@ -870,7 +871,7 @@ impl Backend<'_> {
                 if let Some(value) = self.text_call(expr, scope)? {
                     return Ok(value);
                 }
-                if let Some(value) = self.int_parse_call(expr, scope)? {
+                if let Some(value) = self.number_parse_call(expr, scope)? {
                     return Ok(value);
                 }
                 if matches!(callee.as_str(), "<$>" | "<*>" | ">>=") && !scope.contains(callee) {

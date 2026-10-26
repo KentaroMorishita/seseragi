@@ -1,0 +1,46 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/float-file-aggregate@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/decimal-file-numbers@0.0.0#path:vendor/numbers"
+name = "fixture/decimal-file-numbers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/numbers"
+manifest_digest = "sha256:bb2d000174d5ac9721cf5c5dab322c234904423c8ee0a718d0d74ce0c0cd121e"
+content_digest = "sha256:dba53955a9a376fd282a2a195387e6cc6b3bf1a090173924cc264343c562a1ac"
+dependencies = []
+
+[[packages]]
+id = "fixture/float-file-aggregate@0.0.0#workspace:."
+name = "fixture/float-file-aggregate"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:70bd9ecacf7782fe631781cadc51d76a3859aa118ec0b07e03480a268113d147"
+content_digest = "sha256:31a93a6e84c61f5532acdf1ad7b371be9ad08c7be2e638676961d4f32338b1ce"
+dependencies = [
+  { import = "numbers", package = "fixture/decimal-file-numbers@0.0.0#path:vendor/numbers" },
+]
+
+[[providers]]
+field = "fileSystem"
+service = "std/fs::FileSystem"
+required_contract = "1.1"
+provider_contract = "1.1"
+provider = "seseragi/runtime-bun#filesystem"
+package_version = "0.61.106"
+package_source = "toolchain:seseragi/runtime-bun@0.61.106"
+package_digest = "sha256:8237aa2d4468dbd239df3feb2c0e6bef27d8fa1be975969386417a57e0d5821a"
+artifact_digest = "sha256:dc3c79d83a56c5bf20883ea95f2cfddc11fa6a555c1a1871c72d61a38102d583"
+backend = "typescript"
+backend_abi_major = 1
+target = "bun-process"
+entry_module = "seseragi/runtime-bun/filesystem"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []
