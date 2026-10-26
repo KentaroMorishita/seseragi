@@ -183,6 +183,7 @@ fn decimal_file_sum_matches_strict_ts_and_preserves_failed_outputs() {
     check_file_entry(
         root().join("examples/spec/fixtures/rust-backend/filesystem-decimal-aggregate.ssrg"),
         false,
+        false,
     );
 }
 
@@ -191,10 +192,52 @@ fn decimal_path_package_sum_preserves_error_owners_and_strict_ts() {
     check_file_entry(
         root().join("examples/spec/fixtures/rust-backend-projects/decimal-file-aggregate"),
         true,
+        false,
     );
 }
 
-fn check_file_entry(source: PathBuf, project: bool) {
+#[test]
+fn standard_parse_error_show_in_path_package_preserves_failed_outputs() {
+    let scratch = Scratch::new();
+    let original =
+        root().join("examples/spec/fixtures/rust-backend-projects/decimal-file-aggregate");
+    let source = scratch.0.join("package");
+    for relative in [
+        "seseragi.toml",
+        "seseragi.lock",
+        "src/main.ssrg",
+        "vendor/numbers/seseragi.toml",
+        "vendor/numbers/src/main.ssrg",
+    ] {
+        let destination = source.join(relative);
+        fs::create_dir_all(destination.parent().unwrap()).unwrap();
+        fs::copy(original.join(relative), destination).unwrap();
+    }
+    let numbers = source.join("vendor/numbers/src/main.ssrg");
+    let original = fs::read_to_string(&numbers).unwrap();
+    let (prefix, old_error) = original.split_once("pub fn numberError").unwrap();
+    assert!(old_error.contains("match error"));
+    fs::write(
+        &numbers,
+        format!("{prefix}pub fn numberError error: ints.IntParseError -> String = show error\n"),
+    )
+    .unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["format"])
+            .arg(&numbers),
+        &scratch.0,
+    ));
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&source),
+        &scratch.0,
+    ));
+    check_file_entry(source, true, true);
+}
+
+fn check_file_entry(source: PathBuf, project: bool, standard_show: bool) {
     let scratch = Scratch::new();
     let native = scratch.0.join("native");
     successful(bounded(
@@ -387,6 +430,13 @@ fn check_file_entry(source: PathBuf, project: bool) {
                 "IsADirectory",
             ),
         ] {
+            let diagnostic = if standard_show
+                && diagnostic == "NumberFailure InvalidIntDigit offset=1 radix=10"
+            {
+                "NumberFailure InvalidIntDigit { offset: 1, radix: 10 }"
+            } else {
+                diagnostic
+            };
             let cwd = scratch.0.join(format!("{label}-{scenario}"));
             fs::create_dir(&cwd).unwrap();
             if let Some(input) = input {
@@ -650,6 +700,101 @@ fn decimal_parse_evaluates_direct_and_saved_source_once() {
                 serde_json::json!([["42", ["inputValue"]], ["42", ["inputValue"]]]),
                 "{label}/{engine}"
             );
+        }
+    }
+}
+
+#[test]
+fn standard_parse_error_show_values_and_cold_failures_match_raw_strict_ts() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/int-parse-effects.ssrg");
+    let (_, body) = original.split_once("effect fn ignore").unwrap();
+    let effects = format!("import * as effects from \"std/effect\"\nimport * as ints from \"std/int\"\n\nfn errorText error: ints.IntParseError -> String = show error\neffect fn ignore{body}");
+    assert_eq!(effects.matches("body \"21\"").count(), 1);
+    let values =
+        include_str!("../../../examples/spec/fixtures/rust-backend/int-parse-error-show.ssrg");
+    for (label, source, code, expected) in [
+        (
+            "constructors-and-owners",
+            values.to_owned(),
+            0,
+            "EmptyInt\nInvalidIntRadix 1\nInvalidIntDigit { offset: 1, radix: 10 }\nIntOutsideRange\nInvalidIntDigit { offset: 1, radix: 10 }\n42\nEmptyInt\nlocal\n",
+        ),
+        (
+            "cold-success",
+            effects.clone(),
+            0,
+            "acquired\ncold\nreleased\n42\n",
+        ),
+        (
+            "cold-failure",
+            effects.replace("body \"21\"", "body \"01\""),
+            0,
+            "acquired\ncold\nreleased\nFailure: InvalidIntDigit { offset: 1, radix: 10 }\n",
+        ),
+        (
+            "cold-defect",
+            effects.replace("body \"21\"", "body \"defect\""),
+            70,
+            "acquired\ncold\nreleased\n",
+        ),
+    ] {
+        let source_path = scratch.0.join(format!("{label}.ssrg"));
+        fs::write(&source_path, &source).unwrap();
+        let native = scratch.0.join(format!("{label}-native"));
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source_path)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            &scratch.0,
+        ));
+        let result = bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &scratch.0,
+        );
+        assert_eq!(result.status.code(), Some(code), "{label}: {result:?}");
+        assert_eq!(result.stdout, expected.as_bytes());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
+        if code == 70 {
+            assert!(String::from_utf8_lossy(&result.stderr).contains("aggregate defect"));
+        }
+        for (profile, value) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let output = scratch.0.join(format!("{label}-{profile}"));
+            successful(bounded(
+                Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                    .arg("build")
+                    .arg(&source_path)
+                    .args(["--target", "process", "--profile", profile, "--out-dir"])
+                    .arg(&output),
+                &scratch.0,
+            ));
+            check_raw_strict(&source, profile, value, &output, &scratch.0);
+            let manifest: serde_json::Value =
+                serde_json::from_slice(&fs::read(output.join("artifact-manifest.json")).unwrap())
+                    .unwrap();
+            for engine in ["bun", "node"] {
+                let result = bounded(
+                    Command::new(runtime(engine, &scratch.0))
+                        .arg(output.join(manifest["entry"].as_str().unwrap()))
+                        .env("PATH", ""),
+                    &scratch.0,
+                );
+                assert_eq!(result.status.code(), Some(code), "{label}/{profile}/{engine}: {result:?}");
+                assert_eq!(result.stdout, expected.as_bytes());
+                if code == 0 {
+                    assert!(result.stderr.is_empty());
+                } else {
+                    assert_eq!(result.stderr, b"seseragi: runtime defect\n");
+                }
+            }
         }
     }
 }

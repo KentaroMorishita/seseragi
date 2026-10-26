@@ -1330,6 +1330,13 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         identity: "Show<std/prelude::Int>",
     },
     PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "IntParseError",
+        type_canonical: Some("std/int::IntParseError"),
+        type_arity: 0,
+        identity: "Show<std/int::IntParseError>",
+    },
+    PreludeStandardInstance {
         trait_name: "Debug",
         type_name: "Int",
         type_canonical: None,

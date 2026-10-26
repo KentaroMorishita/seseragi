@@ -22,6 +22,12 @@ macro_rules! display_dictionary {
 }
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
+    display_dictionary!(
+        "Show<std/int::IntParseError>",
+        "core.int.parse-error.show",
+        "_ssrg_intParseErrorShow",
+        "intParseErrorShow"
+    ),
     RuntimeDisplayDictionary {
         semantic_identity: "Show<std/benchmark::BenchmarkFailure>",
         runtime_feature: "benchmark.failure.show",
@@ -1253,6 +1259,12 @@ mod tests {
     #[test]
     fn maps_the_complete_standard_display_dictionary_family() {
         for (identity, feature, local_name, export_name) in [
+            (
+                "Show<std/int::IntParseError>",
+                "core.int.parse-error.show",
+                "_ssrg_intParseErrorShow",
+                "intParseErrorShow",
+            ),
             (
                 "Show<std/prelude::Int>",
                 "core.int.show",

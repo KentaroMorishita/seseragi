@@ -464,6 +464,10 @@ impl Backend<'_> {
                 values.push(dictionary);
                 continue;
             }
+            if let Some(dictionary) = self.int_parse_show_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.list_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
@@ -894,6 +898,7 @@ impl Backend<'_> {
                     if dispatch.trait_identity == "std/prelude::Eq" {
                         return self.equality_call(expr, scope);
                     }
+                    self.validate_int_parse_show_call(expr, scope)?;
                     self.validate_primitive_operator_call(expr, scope)?;
                     if dispatch.method_contract.is_some() {
                         return self.method_call(expr, scope);
