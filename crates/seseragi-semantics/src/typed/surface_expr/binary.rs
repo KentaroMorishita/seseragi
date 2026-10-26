@@ -41,6 +41,7 @@ pub(super) fn type_binary(
     let left_evidence_type = context.evidence_type(&left_value_type);
     let right_evidence_type = context.evidence_type(&right_value_type);
     let mut missing_instance = None;
+    let mut arithmetic_output_identity = None;
     let standard = standard_operator(operator);
     let (result_type, evidence) = if let Some(standard) =
         standard.filter(|operator| operator.kind == StandardOperatorKind::Arithmetic)
@@ -50,7 +51,10 @@ pub(super) fn type_binary(
             left_evidence_type.clone(),
             right_evidence_type.clone(),
         ) {
-            Ok((output, evidence)) => (output, vec![evidence]),
+            Ok((output, evidence)) => {
+                arithmetic_output_identity = Some(output.key);
+                (output.type_ref, vec![evidence])
+            }
             Err(constraint) => {
                 if left_type != TypedType::Hole && right_type != TypedType::Hole {
                     missing_instance = Some(PureCallIssue::MissingInstance {
@@ -130,25 +134,15 @@ pub(super) fn type_binary(
     let range_issue = range_issue(operator, left_span, &left_type, right_span, &right_type);
     let semantic_type = if missing_instance.is_some() || result_type == TypedType::Hole {
         crate::typed::semantic_types::SemanticTypeKey::Invalid
+    } else if let Some(key) = arithmetic_output_identity {
+        key
     } else if standard.is_some_and(|operator| {
         matches!(
             operator.kind,
             StandardOperatorKind::Equality | StandardOperatorKind::Comparison
         )
     }) || matches!(operator, "&&" | "||")
-        || (standard.is_some_and(|operator| operator.kind == StandardOperatorKind::Arithmetic)
-            && evidence.iter().any(|selected| {
-                matches!(
-                    selected.evidence,
-                    crate::TypedInstanceEvidence::Standard { .. }
-                )
-            })
-            && matches!(&result_type, TypedType::Named { name, arguments }
-                if arguments.is_empty()
-                    && matches!(name.as_str(), "Unit" | "Bool" | "Int" | "Float" | "Char" | "String")))
     {
-        // Selected standard operations produce primitive values by contract.
-        // Local/imported dictionaries still resolve their own nominal output.
         crate::typed::semantic_types::SemanticTypeKey::Other
     } else {
         context.semantic_value_from_typed_type(&result_type).key

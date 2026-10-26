@@ -1,0 +1,6 @@
+type Int = | Nominal Bool
+pub effect fn main = do {
+  let captured = 42
+  let saved = \increment -> captured + increment
+  println (show (saved 0))
+}

@@ -425,7 +425,10 @@ fn inference_environment(context: &PureExpressionContext<'_>) -> BTreeMap<Symbol
             (
                 *symbol,
                 Scheme {
-                    value: value.type_ref.clone(),
+                    // The solver stores TypedType, so retain the checked
+                    // identity before dropping the semantic key. A captured
+                    // primitive must not be re-resolved as a local nominal.
+                    value: context.evidence_type(value),
                     quantified,
                     constraints,
                 },
@@ -452,7 +455,7 @@ impl Inference<'_, '_> {
                         self.resolve(left),
                         self.resolve(right),
                     ) {
-                        self.unify(output, &actual)?;
+                        self.unify(output, &self.context.evidence_type(&actual))?;
                     }
                 }
             }
@@ -968,7 +971,12 @@ impl Inference<'_, '_> {
                 (!typed_type_contains_hole(&value)
                     && analysis.semantic_type != SemanticTypeKey::Invalid
                     && analysis.pure_call_issue.is_none())
-                .then_some(value)
+                .then(|| {
+                    self.context.evidence_type(&SemanticValueType {
+                        type_ref: value,
+                        key: analysis.semantic_type,
+                    })
+                })
             }
         }
     }

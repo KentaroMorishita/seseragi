@@ -655,16 +655,32 @@ impl<'a> PureExpressionContext<'a> {
         trait_name: &str,
         left: TypedType,
         right: TypedType,
-    ) -> Result<(TypedType, crate::TypedCallEvidence), TypedConstraint> {
+    ) -> Result<(SemanticValueType, crate::TypedCallEvidence), TypedConstraint> {
         let trait_identity = self.trait_identity(trait_name);
-        super::call_evidence::select_binary_operator_evidence(
+        let (type_ref, evidence) = super::call_evidence::select_binary_operator_evidence(
             trait_name,
             left,
             right,
             trait_identity.as_deref(),
             self.resolution,
             &self.evidence_parameters,
-        )
+        )?;
+        // Standard operations prove their primitive output identity. Keep that
+        // proof alongside the type for both expression checking and inference;
+        // resolving the display name again could select a local nominal.
+        // Local/imported/scoped dictionaries retain their own output owner.
+        let key = if matches!(
+            evidence.evidence,
+            crate::TypedInstanceEvidence::Standard { .. }
+        ) && matches!(&type_ref, TypedType::Named { name, arguments }
+                if arguments.is_empty()
+                    && matches!(name.as_str(), "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"))
+        {
+            SemanticTypeKey::Other
+        } else {
+            self.semantic_value_from_typed_type(&type_ref).key
+        };
+        Ok((SemanticValueType { type_ref, key }, evidence))
     }
 
     pub(super) fn select_binary_same_type_evidence(

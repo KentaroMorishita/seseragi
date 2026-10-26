@@ -35,6 +35,25 @@ fn let_inference_block_and_captured_environment() {
     accepts("fn use<A> captured: A -> A = {\nlet identity = \\x -> x\nlet keep = \\x -> captured\nlet a: Int = identity 42\nlet b: String = identity \"hello\"\nkeep b\n}\n");
     rejects("fn bad<A> captured: A -> Int = {\nlet keep = \\x -> captured\nkeep \"hello\"\n}\n");
 }
+
+#[test]
+fn let_inference_retains_checked_primitive_capture_identity() {
+    let source = "type Int = | Nominal Bool\npub effect fn main = do {\n  let captured = 42\n  let saved = \\increment -> captured + increment\n  println (show (saved 0))\n}\n";
+    accepts(source);
+    accepts("type Int = | Nominal Bool\npub effect fn main = do { let saved = \\increment -> 42 + increment; println (show (saved 0)) }\n");
+}
+
+#[test]
+fn let_inference_keeps_nominal_capture_instance_rejection() {
+    rejects("type Int = | Nominal Bool\npub effect fn main = do {\n  let captured = Nominal True\n  let saved = \\increment -> captured + increment\n  println (show (saved 0))\n}\n");
+}
+
+#[test]
+fn let_inference_retains_local_operator_output_and_scoped_parameter_identity() {
+    accepts("type Int = | Nominal Bool\ninstance Add<Int, Int, Int> { fn add left: Int -> (Int -> Int) = \\right -> left }\npub effect fn main = do { let captured = Nominal True; let saved = \\right -> captured + right; match saved (Nominal False) { Nominal value -> println (show value) } }\n");
+    accepts("fn renderCaptured<Int> captured: Int -> String where Add<Int, Int, Int>, Show<Int> = { let saved = \\increment -> captured + increment; show (saved captured) }\npub effect fn main = println (renderCaptured 21)\n");
+}
+
 #[test]
 fn let_inference_preserves_rank_one_and_occurs_check() {
     rejects("let invalid = \\f -> (f 42, f \"hello\")\n");
