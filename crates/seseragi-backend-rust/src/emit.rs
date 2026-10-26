@@ -1152,7 +1152,7 @@ impl Backend<'_> {
                         quoted(operator)
                     ));
                 }
-                if operator == "/" {
+                if matches!(operator.as_str(), "/" | "%") {
                     self.validate_primitive_operator_binary(
                         operator,
                         [left, right],
@@ -1161,7 +1161,8 @@ impl Backend<'_> {
                         scope,
                     )?;
                     return Ok(format!(
-                        "binary(\"/\", {}, {})",
+                        "binary({}, {}, {})",
+                        quoted(operator),
                         self.expr(left, scope)?,
                         self.expr(right, scope)?
                     ));

@@ -1,0 +1,40 @@
+import * as numbers from "numbers"
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as ints from "std/int"
+import * as paths from "std/path"
+import * as text from "std/text"
+
+type AppError =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+  | NumberFailure ints.IntParseError
+
+instance Show<AppError> {
+  fn show error: AppError -> String = match error {
+    PathFailure value -> "PathFailure " + show value
+    FileFailure value -> "FileFailure " + show value
+    TextFailure value -> "TextFailure " + show value
+    NumberFailure value -> "NumberFailure " + show value
+  }
+}
+
+effect fn transform -> Unit with FileSystem fails AppError = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  content <- fs.readTextUtf8 input |> effects.mapError TextFailure
+  rendered <- numbers.renderLines 3 "" (content |> text.lines |> arrays.toList)
+    |> effects.fromEither
+    |> effects.mapError NumberFailure
+  fs.writeTextUtf8 fs.Replace rendered output |> effects.mapError FileFailure
+}
+
+pub effect fn main -> Unit with FileSystem fails String =
+  transform ()
+  |> effects.mapError show

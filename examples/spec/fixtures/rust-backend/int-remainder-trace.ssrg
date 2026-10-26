@@ -1,0 +1,17 @@
+type Operand = | Operand Int
+
+fn unwrap value: Operand -> Int = match value { Operand n -> n }
+fn left -> Operand = Operand 125
+fn right -> Operand = Operand 60
+fn selected marker: Operand -> Operand = marker
+fn select marker: Operand -> (Int -> Int -> Int) =
+  match selected marker { Operand _ -> (%) }
+
+pub fn probe -> Int = {
+  let direct = unwrap (left ()) % unwrap (right ())
+  let full = select (Operand 0) (unwrap (left ())) (unwrap (right ()))
+  let saved = select (Operand 0) (unwrap (left ()))
+  direct + full + saved (unwrap (right ())) + saved (unwrap (right ()))
+}
+
+pub effect fn main = println (show (probe ()))

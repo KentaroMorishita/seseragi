@@ -259,3 +259,12 @@ signed zero・明示NaN/Infinityを確認する。sourceとpath packageで小数
 保存parseの一回評価、cold再実行・Failure/Defect・finalizer/root0を検証する。
 FloatParseErrorの新しいShow/Debug/Eq、他の数値変換API、一般program WASMはこの受入に含めない。
 共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。
+
+nativeのInt剰余は、`cargo test --locked -p seseragi-backend-rust --test int_remainder --test int_division --test operator_partials`と
+`cargo test --locked -p seseragi-cli --test int_remainder`で確認する。標準Remのowner・kind・source arity・
+選択済みevidenceを検証し、既存Divとprogram WASMの拒否条件を保持する。正負の値とsafe integer境界、
+直接呼出し・保存method・generic/返り値関数の一回評価と順序、cold再実行、zero divisorのDefectと
+finalizer/root0を、元のraw strict TS両profile・fresh Bun/Node・nativeで比較する。
+sourceと凍結したpath packageで各行の整数の剰余を別fileへ書き、入力と失敗時の既存出力を保持する。
+Pow、新しいchecked remainder API、一般program WASMへの剰余の追加は受入に含めない。
+共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。

@@ -1,0 +1,24 @@
+fn returned numerator: Int -> (Int -> Int) = rem numerator
+
+fn generic<A> numerator: A -> denominator: A -> A where Rem<A, A, A> =
+  numerator % denominator
+
+pub effect fn main = do {
+  println (show (6 % 2))
+  println (show (125 % 60))
+  println (show ((-125) % 60))
+  println (show (125 % (-60)))
+  println (show ((-125) % (-60)))
+  println (show (9007199254740991 % (-1)))
+  println (show ((-9007199254740991) % (-1)))
+  println (show ((-1) % 2))
+  println (show (9007199254740991 % 2))
+  println (show ((-9007199254740991) % 2))
+  println (show (rem 125 60))
+  let selected: Int -> Int -> Int = (%)
+  let saved: Int -> Int = selected 125
+  println (show (saved 60))
+  println (show (saved 30))
+  println (show (returned (-125) 30))
+  println (show (generic (-125) 60))
+}

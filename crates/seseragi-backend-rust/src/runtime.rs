@@ -352,6 +352,14 @@ fn int_divide_value(a: i64, b: i64) -> i64 {
     checked_int_value(b);
     checked_int_value(a.checked_div(b).expect("Int overflow"))
 }
+fn int_remainder_value(a: i64, b: i64) -> i64 {
+    if b == 0 {
+        panic!("Int remainder by zero");
+    }
+    checked_int_value(a);
+    checked_int_value(b);
+    checked_int_value(a.checked_rem(b).expect("Int overflow"))
+}
 fn int_equal_value(a: i64, b: i64) -> bool {
     a == b
 }
@@ -367,6 +375,7 @@ fn binary(op: &str, a: V, b: V) -> V {
         ("-", V::Int(a), V::Int(b)) => V::Int(int_subtract_value(a, b)),
         ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value(a, b)),
         ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value(a, b)),
+        ("%", V::Int(a), V::Int(b)) => V::Int(int_remainder_value(a, b)),
         ("==", V::Int(a), V::Int(b)) => V::Bool(int_equal_value(a, b)),
         ("==", V::Text(a), V::Text(b)) => V::Bool(a.get() == b.get()),
         ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
@@ -395,6 +404,7 @@ fn native_operator_dictionary(identity: &'static str) -> V {
             "std/int::Sub" => arithmetic!("sub", "-"),
             "std/int::Mul" => arithmetic!("mul", "*"),
             "std/int::Div" => arithmetic!("div", "/"),
+            "std/int::Rem" => arithmetic!("rem", "%"),
             "std/int::Eq" | "std/string::Eq" => arithmetic!("eq", "=="),
             _ => panic!("Rust ABI: unsupported arithmetic dictionary"),
         }
