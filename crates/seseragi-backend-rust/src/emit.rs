@@ -27,6 +27,7 @@ mod methods;
 mod operators;
 mod scalar;
 mod tail;
+mod text;
 
 use local::{LocalCallable, Scope};
 type Result<T> = std::result::Result<T, RustBackendError>;
@@ -155,6 +156,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_tuple.rs"));
     output.push_str(include_str!("runtime_array.rs"));
+    output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
     output.push_str(include_str!("runtime_scheduler.rs"));
@@ -722,6 +724,9 @@ impl Backend<'_> {
                 if let Some(value) = self.filesystem_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
+                if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
                 if equality::is_equality(name) && !scope.contains(name) {
                     self.equality_result_type(type_ref, 0, evidence, scope)?;
                 }
@@ -851,6 +856,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.filesystem_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.text_call(expr, scope)? {
                     return Ok(value);
                 }
                 if matches!(callee.as_str(), "<$>" | "<*>" | ">>=") && !scope.contains(callee) {

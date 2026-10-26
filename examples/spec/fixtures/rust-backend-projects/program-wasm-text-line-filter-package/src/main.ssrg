@@ -1,0 +1,30 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+foreign "typescript" from "../host/bridge.ts" {
+  task fn normalize input: String -> String
+}
+
+type Action = | Normalize
+
+fn view status: String -> html.Html<Action> = html.main {
+  children: [
+    html.h1 { children: "Filter file lines in program WASM" },
+    html.pre { id: "status", children: status },
+    html.button { id: "normalize", onClick: Normalize, children: "Remove empty lines" }
+  ]
+}
+
+effect fn dispatch state: signals.MutableSignal<String> -> _action: Action -> Unit fails Js.Error = do {
+  result <- normalize "雫\r\n\r\n🙂\n"
+  signals.update (\_ -> result) state
+}
+
+pub effect fn main -> Unit with Dom fails String = do {
+  state <- signals.make "Ready to filter lines"
+  target <- dom.query "#app" |> effects.mapError show
+  dom.run (dom.defaultOptions ()) target (dispatch state) (signals.map view state)
+    |> effects.mapError show
+}

@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/program-wasm-text-line-filter-package@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/program-wasm-text-line-filter-package@0.0.0#workspace:."
+name = "fixture/program-wasm-text-line-filter-package"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6111f9e62e81055ad70a630e02799b567b0450206bcbdd119a4c0f7bf3a7a059"
+content_digest = "sha256:6bb01a7c7d044d08f8b909311f673a195bc215b3780be1c09679d0384726950b"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/program-wasm-text-line-filter-package@0.0.0#workspace:."
+declaration = "src/main.ssrg#149-242"
+specifier = "../host/bridge.ts"
+exact_identity = "workspace:host/bridge.ts"
+declaration_digest = "sha256:2f78f512617dd5cc1b01522ec739ab9f540bf8d1db6ac5b90ffe512cb7f38bf9"
+content_digest = "sha256:15e27114c52806885505f4b884653d2b66afad6517a5e05bfea92b492cc6adac"

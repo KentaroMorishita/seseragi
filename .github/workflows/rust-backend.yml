@@ -33,6 +33,7 @@ on:
       - "crates/seseragi-cli/tests/mutual_effect_returns.rs"
       - "crates/seseragi-cli/tests/captured_primitive_identity.rs"
       - "crates/seseragi-cli/tests/string_equality.rs"
+      - "crates/seseragi-cli/tests/text_processing.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -50,6 +51,7 @@ on:
       - "scripts/program-wasm-private-ref-probe.mjs"
       - "scripts/program-wasm-host-ref-probe.mjs"
       - "scripts/program-wasm-string-equality-probe.mjs"
+      - "scripts/program-wasm-text-line-filter-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
@@ -96,6 +98,7 @@ on:
       - "crates/seseragi-cli/tests/mutual_effect_returns.rs"
       - "crates/seseragi-cli/tests/captured_primitive_identity.rs"
       - "crates/seseragi-cli/tests/string_equality.rs"
+      - "crates/seseragi-cli/tests/text_processing.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -113,6 +116,7 @@ on:
       - "scripts/program-wasm-private-ref-probe.mjs"
       - "scripts/program-wasm-host-ref-probe.mjs"
       - "scripts/program-wasm-string-equality-probe.mjs"
+      - "scripts/program-wasm-text-line-filter-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
@@ -171,6 +175,8 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test inherited_equality
       - name: Compare String equality, file conditions, strict source stages and program WASM
         run: cargo test --locked -p seseragi-cli --test string_equality
+      - name: Compare text line processing, file preservation and program WASM
+        run: cargo test --locked -p seseragi-cli --test text_processing
       - name: Check process bootstrap strict types and initialization Defects
         run: cargo test --locked -p seseragi-cli --test process_entry_strict
       - name: Compare public alias exports, scoped binders and type-only initialization
