@@ -1,0 +1,36 @@
+import * as effects from "std/effect"
+import * as ints from "std/int"
+
+fn errorText error: ints.IntParseError -> String = match error {
+  ints.EmptyInt -> "EmptyInt"
+  ints.InvalidIntRadix radix -> "InvalidIntRadix " + show radix
+  ints.InvalidIntDigit position -> "InvalidIntDigit offset=" + show position.offset + " radix=" + show position.radix
+  ints.IntOutsideRange -> "IntOutsideRange"
+}
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say text: String -> Unit with Console = println text |> effects.recover ignore
+effect fn release _unit: Unit -> Unit with Console = say "released"
+
+effect fn body mode: String -> String with Console fails String = effects.scoped $ do {
+  effects.acquireRelease (say "acquired") release
+  let parse: String -> Either<ints.IntParseError, Int> = ints.parse
+  let input = if mode == "defect" then "21" else mode
+  let plan =
+    effects.defer $
+    \_: Unit -> parse input
+    |> effects.fromEither
+    |> effects.mapError errorText
+  say "cold"
+  first <- plan
+  second <- plan
+  if mode == "defect" then
+    effects.die "aggregate defect"
+  else
+    effects.succeed (show (first + second))
+}
+effect fn report error: String -> String with Console =
+  effects.succeed ("Failure: " + error)
+pub effect fn main = do {
+  result <- body "21" |> effects.recover report
+  println result
+}

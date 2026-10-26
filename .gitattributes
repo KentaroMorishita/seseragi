@@ -1,6 +1,10 @@
 # Hash-pinned upstream bytes must not be normalized or whitespace-cleaned.
 runtime/unicode/ucd/** -text whitespace=-blank-at-eol,-blank-at-eof
 
+# Toolchain provider locks hash these embedded canonical JSON bytes on every host.
+examples/spec/artifacts/provider-contract-schema-1/**/*.json text eol=lf
+examples/spec/artifacts/provider-manifest-schema-1/**/*.json text eol=lf
+
 # The canonical renderer emits a trailing space for Right of the empty String.
 examples/spec/artifacts/execution-schema-1/unicode-text/stdout.txt -text whitespace=-blank-at-eol
 
@@ -9,8 +13,10 @@ examples/spec/fixtures/rust-backend/filesystem-* text eol=lf
 examples/spec/fixtures/rust-backend/path-portable.* text eol=lf
 examples/spec/fixtures/rust-backend/string-equality* text eol=lf
 examples/spec/fixtures/rust-backend/text-*.ssrg text eol=lf
+examples/spec/fixtures/rust-backend/int-parse-*.ssrg text eol=lf
 examples/spec/fixtures/rust-backend/text-processing.stdout -text
 examples/spec/fixtures/rust-backend-projects/filesystem/** text eol=lf
+examples/spec/fixtures/rust-backend-projects/decimal-file-aggregate/** text eol=lf
 
 # Fiber/Deferred acceptance traces compare source bytes across hosts.
 examples/spec/fixtures/rust-backend/fiber-* text eol=lf
