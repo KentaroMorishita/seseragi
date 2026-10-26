@@ -1032,7 +1032,15 @@ pub fn listLength values: List<Int> -> Int = {
             .contains("export const addTwenty: (argument: number) => number = (() => { const __ssrg$operator$saved0: number = 20; return (_argument1: number) => _ssrg_int_add(__ssrg$operator$saved0, _argument1); })()"));
         assert!(bundle
             .typescript
-            .contains("[21 === 21, addTwenty(22), 6.0 * 7.0, \"sese\" + \"ragi\"] as const"));
+            .contains("[_ssrg_int_eq_dictionary[\"eq\"](21)(21), addTwenty(22), 6.0 * 7.0, \"sese\" + \"ragi\"] as const"));
+        assert!(bundle.typescript.contains(
+            "import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\""
+        ));
+        assert!(bundle
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"core.int.eq-dictionary".to_owned()));
         assert!(bundle
             .metadata
             .runtime

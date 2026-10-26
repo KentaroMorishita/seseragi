@@ -1,0 +1,40 @@
+pub fn probe -> Bool = eq 40 41
+
+pub effect fn main = do {
+  println (show (probe ()))
+  println (show (eq True False))
+  println (show (eq "雫" "🙂"))
+  println (show (eq 'λ' '🙂'))
+  println (show (eq () ()))
+  println (show (!(eq 40 41)))
+  println (show (40 == 41))
+  println (show (40 != 41))
+  let left = 40
+  let right = 41
+  println (show (eq left right))
+  let equalInt: Int -> Int -> Bool = eq
+  let savedInt = equalInt 40
+  println (show (savedInt 41))
+  let partialInt: Int -> Bool = eq 40
+  println (show (partialInt 41))
+  let equalBool: Bool -> Bool -> Bool = eq
+  let savedBool = equalBool True
+  println (show (savedBool False))
+  let partialBool: Bool -> Bool = eq True
+  println (show (partialBool False))
+  let equalString: String -> String -> Bool = eq
+  let savedString = equalString "雫"
+  println (show (savedString "🙂"))
+  let partialString: String -> Bool = eq "雫"
+  println (show (partialString "🙂"))
+  let equalChar: Char -> Char -> Bool = eq
+  let savedChar = equalChar 'λ'
+  println (show (savedChar '🙂'))
+  let partialChar: Char -> Bool = eq 'λ'
+  println (show (partialChar '🙂'))
+  let equalUnit: Unit -> Unit -> Bool = eq
+  let savedUnit = equalUnit ()
+  println (show (savedUnit ()))
+  let partialUnit: Unit -> Bool = eq ()
+  println (show (partialUnit ()))
+}

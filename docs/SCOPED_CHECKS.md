@@ -32,6 +32,13 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 cold再実行・typed Failure・Defect後のscope解放をBun／Nodeとnativeで比較します。
 共有Core解析を変える場合はlowering／driver crateの検証と、統合前の全体gateも必要です。
 
+標準primitive EqのTS投影は、`cargo test -p seseragi-cli --test string_equality`
+と`--test inherited_equality`で確認します。異なるliteral・保存したmethod・部分適用を
+元の生成TS両profileでstrict検査し、fresh Bun／Nodeで実行します。Int／String／Charの
+native対照と、直接method・部分適用のsource一回評価・順序も保ちます。
+Bool／UnitのEqと前置`!`のnative対応は、このTS修復の受入範囲に含めません。
+共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。

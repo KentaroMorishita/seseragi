@@ -179,6 +179,88 @@ fn check_raw_strict(
 }
 
 #[test]
+fn primitive_eq_literals_saved_and_partial_calls_match_raw_strict_ts_and_native() {
+    let expected = [
+        "False", "False", "False", "False", "True", "True", "False", "True", "False", "False",
+        "False", "False", "False", "False", "False", "False", "False", "True", "True",
+    ]
+    .join("\n")
+        + "\n";
+    check_primitive_eq_literals(
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/primitive-equality-literals.ssrg"
+        ),
+        &expected,
+        false,
+    );
+    let expected_native = [
+        "False", "False", "False", "False", "True", "False", "False", "False", "False", "False",
+        "False", "False",
+    ]
+    .join("\n")
+        + "\n";
+    check_primitive_eq_literals(
+        include_str!("../../../examples/spec/fixtures/rust-backend/primitive-equality-native.ssrg"),
+        &expected_native,
+        true,
+    );
+}
+
+fn check_primitive_eq_literals(text: &str, expected: &str, native_supported: bool) {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("primitive-equality-literals.ssrg");
+    fs::write(&source, text).unwrap();
+    for (profile, value) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let output = scratch.0.join(profile);
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--profile", profile, "--out-dir"])
+                .arg(&output),
+            &scratch.0,
+        ));
+        check_raw_strict(text, profile, value, &output, &scratch.0);
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(output.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        for engine in ["bun", "node"] {
+            let result = successful(bounded(
+                Command::new(runtime(engine, &scratch.0))
+                    .arg(output.join(manifest["entry"].as_str().unwrap()))
+                    .env("PATH", ""),
+                &scratch.0,
+            ));
+            assert_eq!(result.stdout, expected.as_bytes(), "{profile}/{engine}");
+            assert!(result.stderr.is_empty(), "{profile}/{engine}: {result:?}");
+        }
+    }
+    if !native_supported {
+        return;
+    }
+    let native = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&source)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        &scratch.0,
+    ));
+    let result = successful(bounded(
+        Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    ));
+    assert_eq!(result.stdout, expected.as_bytes());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
+}
+
+#[test]
 fn string_equality_matches_original_strict_ts_and_native_lifetimes() {
     let scratch = Scratch::new();
     let fixture = fs::read_to_string(
@@ -434,6 +516,12 @@ fn string_equality_evaluates_source_operands_once_in_order() {
             "True",
             vec!["leftValue", "marker", "rightValue"],
         ),
+        ("directMethodProbe", "True", vec!["leftValue", "rightValue"]),
+        (
+            "partialMethodProbe",
+            "True",
+            vec!["leftValue", "marker", "rightValue"],
+        ),
     ] {
         let mut rust = seseragi_backend_rust::emit_rust_module(&core, entry)
             .unwrap()
@@ -476,6 +564,8 @@ fn string_equality_evaluates_source_operands_once_in_order() {
     let expected = serde_json::json!([
         [true, ["leftValue", "rightValue"]],
         [false, ["leftValue", "rightValue"]],
+        [true, ["leftValue", "marker", "rightValue"]],
+        [true, ["leftValue", "rightValue"]],
         [true, ["leftValue", "marker", "rightValue"]]
     ]);
     for (label, profile) in [
@@ -506,7 +596,7 @@ fn string_equality_evaluates_source_operands_once_in_order() {
             traced.insert_str(end, ")");
             traced.insert_str(body, &format!(" ($trace.push({name:?}), "));
         }
-        traced.push_str("\nconst $trace: string[] = [];\nconst observed = [binaryProbe, negatedProbe, partialProbe].map(fn => { $trace.length = 0; return [fn(undefined), [...$trace]]; });\nconsole.log(JSON.stringify(observed));\n");
+        traced.push_str("\nconst $trace: string[] = [];\nconst observed = [binaryProbe, negatedProbe, partialProbe, directMethodProbe, partialMethodProbe].map(fn => { $trace.length = 0; return [fn(undefined), [...$trace]]; });\nconsole.log(JSON.stringify(observed));\n");
         fs::write(output.join("traced.ts"), traced).unwrap();
         let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"skipLibCheck":false,"allowImportingTsExtensions":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2023","DOM","DOM.Iterable"]},"files":[output.join("original.ts"),output.join("traced.ts")]});
         fs::write(

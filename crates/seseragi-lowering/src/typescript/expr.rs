@@ -1434,6 +1434,17 @@ fn lower_abi_trait_method_call(
     origin: &crate::SourceSpan,
 ) -> Option<TypeScriptExpr> {
     let operation = runtime_trait_method_call_operation(method, evidence, arguments.len())?;
+    if let RuntimeTraitMethodOperation::Equality(dictionary) = operation {
+        // The runtime method already has typed curried stages. Applying its
+        // first operand now also preserves strict partial application.
+        return Some(TypeScriptExpr::DictionaryCall {
+            dictionary: Box::new(TypeScriptExpr::RuntimeReference {
+                name: dictionary.local_name.to_owned(),
+            }),
+            method: method.to_owned(),
+            arguments,
+        });
+    }
     let binary = |left, right| match operation {
         RuntimeTraitMethodOperation::Int(operation) => TypeScriptExpr::RuntimeCall {
             callee: operation.local_name.to_owned(),
@@ -1444,6 +1455,9 @@ fn lower_abi_trait_method_call(
             left: Box::new(left),
             right: Box::new(right),
         },
+        RuntimeTraitMethodOperation::Equality(_) => {
+            unreachable!("typed equality was lowered through its selected dictionary")
+        }
     };
     match arguments.as_slice() {
         [left, right] => Some(binary(left.clone(), right.clone())),
