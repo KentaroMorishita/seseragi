@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.104] - 2026-10-26
+
+### Added
+
+- Support canonical decimal std/int.parse in experimental native programs. Read UTF-8 lines, sum safe Int values, and write another file only after successful validation. Keep typed parse failures, source evaluation order, cold replay and resource release consistent with the original strict TypeScript in both source files and normal path packages. Radix parsing and IntParseError Show remain outside this native slice.
+
 ## [0.61.103] - 2026-10-26
 
 ### Added
