@@ -31,6 +31,7 @@ on:
       - "crates/seseragi-cli/tests/computed_callees.rs"
       - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/mutual_effect_returns.rs"
+      - "crates/seseragi-cli/tests/captured_primitive_identity.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -91,6 +92,7 @@ on:
       - "crates/seseragi-cli/tests/computed_callees.rs"
       - "crates/seseragi-cli/tests/nominal_lambda_identity.rs"
       - "crates/seseragi-cli/tests/mutual_effect_returns.rs"
+      - "crates/seseragi-cli/tests/captured_primitive_identity.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -172,6 +174,8 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test computed_callees
       - name: Preserve nominal lambda identities, cold replay and scoped Defects
         run: cargo test --locked -p seseragi-cli --test nominal_lambda_identity
+      - name: Preserve captured primitive identities and resource cleanup
+        run: cargo test --locked -p seseragi-cli --test captured_primitive_identity
       - name: Verify product program WASM, generated declarations and callback ownership
         run: cargo test --locked -p seseragi-cli --test program_wasm --test program_wasm_host_effect
       - name: Rebuild selected program dependencies and drain old browser owners
@@ -219,6 +223,8 @@ jobs:
       - name: Verify shared frontend boundary
         run: |
           cargo test --locked -p seseragi-driver --lib core_compile::tests
+          cargo test --locked -p seseragi-semantics --lib typed::let_inference_tests
+          cargo test --locked -p seseragi-driver --test captured_primitive_identity
           cargo test --locked -p seseragi-lowering --lib core_analysis::scalar
           cargo test --locked -p seseragi-driver --test scalar_globals
       - name: Verify native values, captures, dictionaries, and teardown

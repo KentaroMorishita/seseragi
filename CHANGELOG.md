@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.101] - 2026-10-26
+
+### Fixed
+
+- Preserve checked primitive type identities through lambda capture inference and arithmetic result refinement when a local nominal type has the same display name. Keep nominal provider owners and scoped binders distinct while preserving cold replay, typed failure and finalizer order on native and TypeScript targets.
+
 ## [0.61.100] - 2026-10-26
 
 ### Fixed

@@ -33,3 +33,6 @@ examples/spec/fixtures/rust-backend-projects/facade-generic-renames/** text eol=
 
 # Program stdout fixtures are byte-exact oracles, including line endings.
 *.stdout -text
+# Captured primitive identity fixtures are byte-stable on every CI host.
+examples/spec/fixtures/rust-backend/captured-primitive-identity-minimal.ssrg text eol=lf
+examples/spec/fixtures/rust-backend/captured-primitive-identity.ssrg text eol=lf

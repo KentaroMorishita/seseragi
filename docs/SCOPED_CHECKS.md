@@ -204,3 +204,11 @@ WASM再生成時は[WASI SDK 25.0](https://github.com/WebAssembly/wasi-sdk/relea
 WASM glueには`cargo install wasm-bindgen-cli --version 0.2.126 --locked`でCargo.lockと同じCLIを用意する。`wasm-pack`の自動install fallbackはCLI内部の依存versionを変えるため、buildは`--mode no-install`で既存のCLIを使う。
 
 配布用WASMの正規生成hostはLinux x64。`check:wasm`は生成物全体のbyte一致を検証し、PRとrelease promotionのLinux gateで必須とする。Cargoはhostで実行するbuild script/proc macroのmetadataを依存先へ伝播するため、macOS生成物とはcode/dataを含む差分が生じ得る。macOS CIでは同じ固定toolchainと2つの独立したfresh Cargo targetで再構築する。1回目のfresh outputと2回目のrepo/pkg stagingで全packageのfile集合とbyte一致を確認し、変換・workspace・browser回帰を検証する。さらに両hostの変換JSON出力をCIで完全一致比較し、macOS生成物で配布artifactを置き換えない。
+
+captureしたprimitiveの推論identityは、`cargo test -p seseragi-semantics --lib`、
+`cargo test -p seseragi-driver --lib --test compile_module --test captured_primitive_identity`、
+`cargo test -p seseragi-cli --test captured_primitive_identity`で確認する。
+同名nominalの拒否とscoped evidenceを保ち、元のsourceとcold Effectの正常・Failure・Defectを
+raw TS両profileのstrict、fresh Bun/Node、nativeとfinalizer・managed rootで比較する。
+標準moduleを使うfixtureはstandaloneのsemantics helperへ渡さず、共有driver経由で検証する。
+共有推論の変更には、統合前のfull gateと正規WASMの更新も必要となる。

@@ -1475,25 +1475,30 @@ fn refine_collection_parameters(
     context: &PureExpressionContext<'_>,
 ) {
     let mut substitutions = BTreeMap::new();
-    for (constraint, identity) in application
-        .constraints
-        .iter()
-        .zip(&application.constraint_identities)
-    {
+    // Operator selection consumes the identity-preserving evidence arguments,
+    // rather than the display types substituted for source annotations.
+    for constraint in &application.evidence_constraints {
         if let [left, right, output] = constraint.arguments.as_slice() {
-            if let Ok((actual, _)) = context.select_binary_operator_evidence(
+            let selected = context.select_binary_operator_evidence(
                 &constraint.name,
                 left.clone(),
                 right.clone(),
-            ) {
+            );
+            if let Ok((actual, _)) = selected {
                 infer_type_parameters(
                     output,
-                    &actual,
+                    &context.evidence_type(&actual),
                     &signature.type_parameters,
                     &mut substitutions,
                 );
             }
         }
+    }
+    for (constraint, identity) in application
+        .constraints
+        .iter()
+        .zip(&application.constraint_identities)
+    {
         // An absent identity denotes the standard-operation fallback, exactly
         // as in select_function_call_evidence; named user traits stay distinct.
         if !matches!(constraint.name.as_str(), "Iterable" | "Reducible")
@@ -1525,12 +1530,18 @@ fn refine_collection_parameters(
     // inference may already have attached an ADT key to a still-generic type.
     // Substitute the source type once and recover its matching scoped key;
     // rebuilding a type from that stale key can apply the ADT arguments twice.
+    // An unchanged value already has its checked key, including primitives
+    // whose display names now denote a different local nominal declaration.
     for parameter in &mut application.parameters {
         let refined = substitute_type_parameters(&parameter.type_ref, &substitutions);
-        *parameter = context.semantic_value_from_typed_type(&refined);
+        if refined != parameter.type_ref {
+            *parameter = context.semantic_value_from_typed_type(&refined);
+        }
     }
     let refined = substitute_type_parameters(&application.result.type_ref, &substitutions);
-    application.result = context.semantic_value_from_typed_type(&refined);
+    if refined != application.result.type_ref {
+        application.result = context.semantic_value_from_typed_type(&refined);
+    }
     for constraint in application
         .constraints
         .iter_mut()
