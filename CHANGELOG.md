@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.106] - 2026-10-27
+
+### Added
+
+- Parse decimal Float records in native UTF-8 file programs and ordinary path packages, writing the sum only after successful reads and parsing. Preserve the existing TypeScript grammar, UTF-8 error positions, signed zero, NaN and Infinity, cold failures, Defects and resource cleanup through the shared checked number-parse ABI.
+
 ## [0.61.105] - 2026-10-26
 
 ### Fixed
