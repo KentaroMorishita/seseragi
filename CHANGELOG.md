@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.107] - 2026-10-27
+
+### Fixed
+
+- Preserve Bool, Int, String, Char and Unit operand types for primitive Eq methods in generated TypeScript. Direct, saved and partially applied comparisons of unequal literals now pass strict TypeScript checks while retaining canonical dictionaries and one-time left-to-right operand evaluation.
+
 ## [0.61.106] - 2026-10-27
 
 ### Added
