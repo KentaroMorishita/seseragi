@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.103] - 2026-10-26
+
+### Added
+
+- Support checked std/text.lines and std/text.join in native programs. Read UTF-8 text, remove empty lines with the existing Array/List APIs, and write another file while preserving input and typed I/O failures. Keep Unicode line boundaries, source evaluation order and managed lifetimes consistent with TypeScript and standard Web program WASM.
+
 ## [0.61.102] - 2026-10-26
 
 ### Fixed

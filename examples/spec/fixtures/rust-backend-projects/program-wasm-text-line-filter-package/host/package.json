@@ -1,0 +1,5 @@
+{
+  "name": "program-wasm-text-line-filter-host",
+  "private": true,
+  "type": "module"
+}

@@ -311,6 +311,12 @@ Stringの`==`／`!=`と保存・部分適用は、canonicalな`std/string::Eq`�
 返却closureの寿命まで保持する。`filesystem-string-equality.ssrg`はUTF-8入力の内容で分岐し、
 別fileへ結果を書き出す。`program-wasm-string-equality-package`は同じ比較を通常Web buildの
 typedなprogram関数と返却callbackで使い、callbackとinstanceを解放する。
+`std/text.lines`と`std/text.join`は、canonicalなString/Array<String>の型とsourceの適用段階を
+確認してnativeで実行する。linesはCRLFを一つの改行として扱い、CR/LF/NEL/LS/PSでも分割する。
+途中の空行は保持し、末尾改行による最後の空要素は加えない。joinは行の内容と順序を保つ。
+`filesystem-text-line-filter.ssrg`は空行を除いて別fileへ書き、読込失敗時の既存出力を保護する。
+同じ計算を使う`program-wasm-text-line-filter-package`はString入出力と返却callbackを公開する。
+Array<String>は内部値として使い、公開Array codecの対応を意味しない。
 nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
 商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
 0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。

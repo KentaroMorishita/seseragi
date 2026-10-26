@@ -1,0 +1,20 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as text from "std/text"
+
+pub fn clean content: String -> String = {
+  let selected = content
+    |> text.lines
+    |> arrays.toList
+    |> lists.filter (\line: String -> line != "")
+    |> lists.toArray
+  let joined = text.join "\n" selected
+  if joined == "" then "" else joined + "\n"
+}
+
+pub fn lines content: String -> Array<String> = text.lines content
+pub fn factory prefix: String -> (String -> String) = \input: String -> prefix + clean input
+pub fn probe -> String = {
+  let callback = factory "prefix:"
+  callback "雫\r\n\r\n🙂\n"
+}

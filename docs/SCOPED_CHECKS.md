@@ -220,3 +220,12 @@ raw strict TS両profile、fresh Bun/Nodeとnativeで比較する。file条件分
 共有runtimeを使うため、通常Web buildのprogram WASMと元のtyped bridge、callback/instanceの解放も検証する。
 左右のsource helperだけを計測するtraceで、一回評価と順序を比較し、生成Eq式は変更しない。
 共有runtimeの統合にはfull gateと正規compiler WASMの更新も必要となる。
+
+nativeのtext.lines/joinは、`cargo test --locked -p seseragi-backend-rust --lib text_tests`、
+`cargo test --locked -p seseragi-backend-rust --test text_processing`と
+`cargo test --locked -p seseragi-cli --test text_processing`で確認する。Unicode改行・CRLF・空入力と
+残る文字列のbytes、保存joinの一回評価・順序、cold再実行・Failure/Defect・finalizer/root0を
+raw strict TS両profile・fresh Bun/Node・nativeで比較する。fileの入力と読込失敗時の出力を保護し、
+通常Web buildのprogram WASM、元typed bridgeのstrict・skipLibCheck:false、callback/instance解放も
+確認する。公開Array codecや一般provider ABIはこの受入に含めない。共有runtimeの統合には
+full gateと正規compiler WASMの更新が必要となる。

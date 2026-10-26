@@ -1,0 +1,27 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as text from "std/text"
+
+fn describe content: String -> String = {
+  let parts = text.lines content
+  show (lists.length (arrays.toList parts)) + ":[" + text.join "|" parts + "]"
+}
+fn returned separator: String -> (Array<String> -> String) = text.join separator
+
+pub effect fn main = do {
+  println (describe "")
+  println (describe "\n")
+  println (describe "\n\n")
+  println (describe "a\n")
+  println (describe "a\r\n\r\nb\r")
+  println (describe "a\n\rb")
+  println (describe "雫🙂\né\0\n終")
+  let lines: String -> Array<String> = text.lines
+  let join: String -> Array<String> -> String = text.join
+  let saved = join "<|>"
+  println (saved (lines "a\n\n🙂\n"))
+  let callback = returned "\0"
+  println (callback ["雫", "🙂"])
+  let empty: Array<String> = []
+  println (text.join "|" empty)
+}

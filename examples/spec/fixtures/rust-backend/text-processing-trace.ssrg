@@ -1,0 +1,14 @@
+import * as text from "std/text"
+
+fn lineValue -> String = "a\r\nb\n"
+fn separatorValue -> String = "|"
+fn itemsValue -> Array<String> = ["a", "b"]
+fn marker -> Unit = ()
+
+pub fn linesProbe -> String = text.join "|" (text.lines (lineValue ()))
+pub fn joinProbe -> String = text.join (separatorValue ()) (itemsValue ())
+pub fn partialProbe -> String = {
+  let saved = text.join (separatorValue ())
+  let checkpoint = marker ()
+  saved (itemsValue ())
+}

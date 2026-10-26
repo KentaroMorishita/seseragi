@@ -1,0 +1,46 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as text from "std/text"
+
+pub fn clean content: String -> String = {
+  let selected = content
+    |> text.lines
+    |> arrays.toList
+    |> lists.filter (\line: String -> line != "")
+    |> lists.toArray
+  let joined = text.join "\n" selected
+  if joined == "" then "" else joined + "\n"
+}
+
+type AppError =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+
+instance Show<AppError> {
+  fn show error: AppError -> String = match error {
+    PathFailure value -> "PathFailure " + show value
+    FileFailure value -> "FileFailure " + show value
+    TextFailure value -> "TextFailure " + show value
+  }
+}
+
+effect fn transform -> Unit with FileSystem fails AppError = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  content <- fs.readTextUtf8 input |> effects.mapError TextFailure
+  let selected = clean content
+  fs.writeTextUtf8 fs.Replace selected output
+    |> effects.mapError FileFailure
+}
+pub effect fn main -> Unit with FileSystem fails String =
+  transform ()
+  |> effects.mapError show
