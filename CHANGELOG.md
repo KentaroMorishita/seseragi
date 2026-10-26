@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.105] - 2026-10-26
+
+### Fixed
+
+- Display standard IntParseError values on native and generated TypeScript, including saved Show methods and canonical error constructors. Keep local type owners distinct when a runtime annotation needs a fresh import name, while preserving cold failures, Defects and one finalizer with the original strict sources.
+
 ## [0.61.104] - 2026-10-26
 
 ### Added
