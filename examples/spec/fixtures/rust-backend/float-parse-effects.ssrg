@@ -1,0 +1,35 @@
+import * as effects from "std/effect"
+import * as floats from "std/float"
+
+fn errorText error: floats.FloatParseError -> String = match error {
+  floats.EmptyFloat -> "EmptyFloat"
+  floats.InvalidFloat position -> "InvalidFloat offset=" + show position.offset
+  floats.FloatParseOverflow -> "FloatParseOverflow"
+}
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say text: String -> Unit with Console = println text |> effects.recover ignore
+effect fn release _unit: Unit -> Unit with Console = say "released"
+
+effect fn body mode: String -> String with Console fails String = effects.scoped $ do {
+  effects.acquireRelease (say "acquired") release
+  let parse: String -> Either<floats.FloatParseError, Float> = floats.parse
+  let input = if mode == "defect" then "2.5" else mode
+  let plan =
+    effects.defer $
+    \_: Unit -> parse input
+    |> effects.fromEither
+    |> effects.mapError errorText
+  say "cold"
+  first <- plan
+  second <- plan
+  if mode == "defect" then
+    effects.die "aggregate defect"
+  else
+    effects.succeed (show (first + second))
+}
+effect fn report error: String -> String with Console =
+  effects.succeed ("Failure: " + error)
+pub effect fn main = do {
+  result <- body "2.5" |> effects.recover report
+  println result
+}

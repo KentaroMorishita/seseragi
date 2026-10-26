@@ -1,0 +1,9 @@
+import * as floats from "std/float"
+fn inputValue -> String = "2.5"
+fn display value: Either<floats.FloatParseError, Float> -> String =
+  match value { Left _ -> "failed"; Right number -> show number }
+pub fn directProbe -> String = display (floats.parse (inputValue ()))
+pub fn savedProbe -> String = {
+  let parse: String -> Either<floats.FloatParseError, Float> = floats.parse
+  display (parse (inputValue ()))
+}

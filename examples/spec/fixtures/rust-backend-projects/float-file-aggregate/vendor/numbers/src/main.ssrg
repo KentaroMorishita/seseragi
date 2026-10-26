@@ -1,0 +1,18 @@
+import * as floats from "std/float"
+
+pub fn sumLines total: Float
+  -> remaining: List<String>
+  -> Either<floats.FloatParseError, Float> =
+  match remaining {
+    `[] -> Right total
+    `[head, ...tail] -> match floats.parse head {
+      Left error -> Left error
+      Right value -> sumLines (total + value) tail
+    }
+  }
+
+pub fn numberError error: floats.FloatParseError -> String = match error {
+  floats.EmptyFloat -> "EmptyFloat"
+  floats.InvalidFloat position -> "InvalidFloat offset=" + show position.offset
+  floats.FloatParseOverflow -> "FloatParseOverflow"
+}

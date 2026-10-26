@@ -1,0 +1,56 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as floats from "std/float"
+import * as paths from "std/path"
+import * as text from "std/text"
+
+fn sumLines total: Float
+  -> remaining: List<String>
+  -> Either<floats.FloatParseError, Float> =
+  match remaining {
+    `[] -> Right total
+    `[head, ...tail] -> match floats.parse head {
+      Left error -> Left error
+      Right value -> sumLines (total + value) tail
+    }
+  }
+
+type AppError =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+  | NumberFailure floats.FloatParseError
+
+fn numberError error: floats.FloatParseError -> String = match error {
+  floats.EmptyFloat -> "EmptyFloat"
+  floats.InvalidFloat position -> "InvalidFloat offset=" + show position.offset
+  floats.FloatParseOverflow -> "FloatParseOverflow"
+}
+
+instance Show<AppError> {
+  fn show error: AppError -> String = match error {
+    PathFailure value -> "PathFailure " + show value
+    FileFailure value -> "FileFailure " + show value
+    TextFailure value -> "TextFailure " + show value
+    NumberFailure value -> "NumberFailure " + numberError value
+  }
+}
+
+effect fn aggregate -> Unit with FileSystem fails AppError = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  content <- fs.readTextUtf8 input |> effects.mapError TextFailure
+  total <- sumLines 0.0 (content |> text.lines |> arrays.toList)
+    |> effects.fromEither
+    |> effects.mapError NumberFailure
+  fs.writeTextUtf8 fs.Replace (show total + "\n") output |> effects.mapError FileFailure
+}
+
+pub effect fn main -> Unit with FileSystem fails String =
+  aggregate ()
+  |> effects.mapError show

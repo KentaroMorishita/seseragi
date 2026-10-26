@@ -241,3 +241,14 @@ fresh Bun/Node・nativeで比較する。標準IntParseErrorのShowはdriver/bac
 Defect/finalizer、fileの既存出力保持を比較する。radix指定、他の数値変換API、一般program WASM、
 IntParseErrorのEq/Debugはこの受入に含めない。共有runtimeの統合にはfull gateと
 正規compiler WASMの更新が必要となる。
+
+nativeのFloat parseは、`cargo test --locked -p seseragi-backend-rust --lib parse_tests`、
+`cargo test --locked -p seseragi-backend-rust --test float_parse --test int_parse --test int_parse_error_show`と
+`cargo test --locked -p seseragi-cli --test float_parse --test int_parse`で確認する。
+共通number parse ABIのowner・kind・source arity・evidence検査と既存Int/Showの拒否条件を保持し、
+decimal/exponent構文、UTF-8 byte offset、構文失敗とoverflowの順序、subnormal・underflow・
+signed zero・明示NaN/Infinityを確認する。sourceとpath packageで小数の各行を集計し、
+元のraw strict TS両profile・fresh Bun/Node・nativeで比較する。入力と失敗時の既存出力、
+保存parseの一回評価、cold再実行・Failure/Defect・finalizer/root0を検証する。
+FloatParseErrorの新しいShow/Debug/Eq、他の数値変換API、一般program WASMはこの受入に含めない。
+共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。

@@ -326,6 +326,16 @@ resource scopeを解放する。標準の`Show<std/int::IntParseError>`は4つ�
 payloadを表示し、同名のlocal型のinstanceとはcanonical ownerで区別する。保存したmethodでも
 sourceの引数を一度だけ評価し、型・kind・evidence・返り値を証明できないCoreIrは生成前に拒否する。
 radix指定や他の数値変換、IntParseErrorのEq/Debug、program WASMのparseはこの対応に含めない。
+`std/float.parse`はStringをFloatへ変換し、標準の`FloatParseError`を持つEitherを返す。
+Int parseと共通の境界でcanonical owner、kind、source arity、引数/返り型とevidenceを検査する。
+ASCIIのdecimal/exponent構文を先に検証し、不正文字のUTF-8 byte offsetを返す。
+構文が正しくても数値変換で範囲を超えた場合はFloatParseOverflowとなる。
+subnormal、underflowとsigned zero、明示したNaN／Infinity／-Infinityは既存TS契約を保つ。
+`filesystem-float-aggregate.ssrg`と`float-file-aggregate` packageは小数の各行を合計し、
+成功時だけ別fileへ書く。2.5と3.75は6.25、空入力は既存Float表示の0.0となる。
+読込・parse失敗では既存出力を保持し、cold計算のFailure/Defectでもresource scopeを解放する。
+Float演算の合計がInfinityやNaNとなる場合も既存TS契約に従う。標準FloatParseErrorの3つの
+constructorは明示matchで表示し、新しいShow/Debug/Eqやprogram WASMのparseは含めない。
 nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
 商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
 0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。
