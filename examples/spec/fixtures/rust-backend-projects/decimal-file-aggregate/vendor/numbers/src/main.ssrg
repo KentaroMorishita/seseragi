@@ -1,0 +1,19 @@
+import * as ints from "std/int"
+
+pub fn sumLines total: Int
+  -> remaining: List<String>
+  -> Either<ints.IntParseError, Int> =
+  match remaining {
+    `[] -> Right total
+    `[head, ...tail] -> match ints.parse head {
+      Left error -> Left error
+      Right value -> sumLines (total + value) tail
+    }
+  }
+
+pub fn numberError error: ints.IntParseError -> String = match error {
+  ints.EmptyInt -> "EmptyInt"
+  ints.InvalidIntRadix radix -> "InvalidIntRadix " + show radix
+  ints.InvalidIntDigit position -> "InvalidIntDigit offset=" + show position.offset + " radix=" + show position.radix
+  ints.IntOutsideRange -> "IntOutsideRange"
+}

@@ -1,0 +1,9 @@
+import * as ints from "std/int"
+fn inputValue -> String = "42"
+fn display value: Either<ints.IntParseError, Int> -> String =
+  match value { Left _ -> "failed"; Right number -> show number }
+pub fn directProbe -> String = display (ints.parse (inputValue ()))
+pub fn savedProbe -> String = {
+  let parse: String -> Either<ints.IntParseError, Int> = ints.parse
+  display (parse (inputValue ()))
+}

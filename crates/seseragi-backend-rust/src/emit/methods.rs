@@ -395,7 +395,7 @@ impl Backend<'_> {
             | "std/effect::FiberExit"
             | "std/deferred::Deferred" => Some(vec![0, 0]),
             "std/prelude::Effect" => Some(vec![0, 0, 0]),
-            _ => None,
+            _ => int_parse::constructor_slots(&name),
         }
     }
 

@@ -229,3 +229,12 @@ raw strict TS両profile・fresh Bun/Node・nativeで比較する。fileの入力
 通常Web buildのprogram WASM、元typed bridgeのstrict・skipLibCheck:false、callback/instance解放も
 確認する。公開Array codecや一般provider ABIはこの受入に含めない。共有runtimeの統合には
 full gateと正規compiler WASMの更新が必要となる。
+
+nativeの十進Int parseは、`cargo test --locked -p seseragi-backend-rust --lib int_parse_tests`、
+`cargo test --locked -p seseragi-backend-rust --test int_parse`と
+`cargo test --locked -p seseragi-cli --test int_parse`で確認する。標準のIntParseErrorのowner・kind・
+source arity・evidenceを検証し、fileとpath packageの集計、入力と失敗時の既存出力の保持、
+保存parseの一回評価、cold再実行・Failure/Defect・finalizer/root0をraw strict TS両profile・
+fresh Bun/Node・nativeで比較する。radix指定、他の数値変換API、一般program WASM、
+IntParseErrorのShowはこの受入に含めない。共有runtimeの統合にはfull gateと
+正規compiler WASMの更新が必要となる。
