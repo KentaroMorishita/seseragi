@@ -17,6 +17,7 @@ examples/spec/fixtures/rust-backend/int-parse-*.ssrg text eol=lf
 examples/spec/fixtures/rust-backend/text-processing.stdout -text
 examples/spec/fixtures/rust-backend-projects/filesystem/** text eol=lf
 examples/spec/fixtures/rust-backend-projects/decimal-file-aggregate/** text eol=lf
+examples/spec/fixtures/rust-backend-projects/float-file-aggregate/** text eol=lf
 
 # Fiber/Deferred acceptance traces compare source bytes across hosts.
 examples/spec/fixtures/rust-backend/fiber-* text eol=lf
