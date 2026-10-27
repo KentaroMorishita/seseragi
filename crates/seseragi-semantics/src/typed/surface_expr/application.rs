@@ -1300,7 +1300,18 @@ pub(crate) fn type_known_application_with_explicit(
     } else if arguments.len() >= signature.parameters.len() {
         application.result.key.clone()
     } else {
-        SemanticTypeKey::Other
+        // A source partial retains its already checked parameter and result
+        // identities. Erasing this chain to Other makes a canonical alias body
+        // depend on structural display names at the next function boundary.
+        application
+            .parameters
+            .iter()
+            .skip(arguments.len())
+            .rev()
+            .fold(application.result.clone(), |result, parameter| {
+                SemanticValueType::function(parameter.clone(), result)
+            })
+            .key
     };
     let deferred_evidence_parameters =
         if !evidence.is_empty() && !saturated && signature.trait_identity.is_none() {

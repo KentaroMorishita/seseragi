@@ -191,11 +191,6 @@ pub(crate) fn semantic_values_are_compatible(
     expected: &SemanticValueType,
     actual: &SemanticValueType,
 ) -> bool {
-    if std::env::var_os("SESERAGI_ALIAS_DEBUG").is_some()
-        && format!("{expected:?}{actual:?}").contains("Triple")
-    {
-        eprintln!("alias diagnostic expected={expected:#?} actual={actual:#?}");
-    }
     if matches!(expected.type_ref, TypedType::TypeFunction { .. })
         || matches!(actual.type_ref, TypedType::TypeFunction { .. })
     {

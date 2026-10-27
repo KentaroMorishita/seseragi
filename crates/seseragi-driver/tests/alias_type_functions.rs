@@ -170,5 +170,32 @@ fn returned_alias_application_keeps_the_canonical_nominal_and_intrinsic_argument
                 .with_profile(profile),
         )
         .unwrap_or_else(|error| panic!("{error:#?}"));
+        let wrong = format!(
+            "type Other<A,B,C> = | Other (A,B,C)\n{}",
+            source.replace(
+                "fn selected -> (String -> Triple<Int, Int, Int> -> String)",
+                "fn selected -> (String -> Other<Int, Int, Int> -> String)",
+            )
+        );
+        let error = compile_module(
+            CompileInput::new(
+                "returned-wrong-owner.ssrg",
+                "fixture/type-functions",
+                &wrong,
+            )
+            .with_profile(profile),
+        )
+        .unwrap_err();
+        assert!(
+            error
+                .diagnostics
+                .iter()
+                .any(
+                    |diagnostic| diagnostic.message_key == "function.return-type-mismatch"
+                        && diagnostic.primary.start < diagnostic.primary.end
+                        && diagnostic.primary.end <= wrong.len()
+                ),
+            "{error:#?}"
+        );
     }
 }
