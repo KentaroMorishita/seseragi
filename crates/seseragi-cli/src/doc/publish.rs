@@ -30,9 +30,18 @@ pub(super) fn publish(root: &Path, artifacts: BTreeMap<String, String>) -> Resul
                 lease_path.display()
             )
         })?;
-    let _lease = Lease(lease_path);
-    writeln!(&mut lease, "{}", std::process::id()).map_err(|error| error.to_string())?;
+    let owned_lease = Lease {
+        path: lease_path,
+        pending: true,
+    };
+    let written = writeln!(&mut lease, "{}", std::process::id())
+        .map_err(|error| format!("cannot record doc output lease: {error}"));
+    // Close the handle before any cleanup, including a failed lease write.
     drop(lease);
+    owned_lease.finish(written.and_then(|()| publish_locked(&dist, artifacts)))
+}
+
+fn publish_locked(dist: &Path, artifacts: BTreeMap<String, String>) -> Result<(), String> {
     let output = dist.join("doc");
     check_output(&output)?;
     let stage = tempfile::Builder::new()
@@ -112,9 +121,79 @@ fn check_output(path: &Path) -> Result<(), String> {
     }
 }
 
-struct Lease(std::path::PathBuf);
+struct Lease {
+    path: std::path::PathBuf,
+    pending: bool,
+}
+
+impl Lease {
+    fn finish(mut self, result: Result<(), String>) -> Result<(), String> {
+        self.pending = false;
+        let cleanup = fs::remove_file(&self.path).map_err(|error| {
+            format!(
+                "doc output lease cleanup failed at {}: {error}",
+                self.path.display()
+            )
+        });
+        match (result, cleanup) {
+            (Ok(()), Ok(())) => Ok(()),
+            (Err(error), Ok(())) | (Ok(()), Err(error)) => Err(error),
+            (Err(error), Err(cleanup)) => Err(format!("{error}; {cleanup}")),
+        }
+    }
+}
+
 impl Drop for Lease {
     fn drop(&mut self) {
-        let _ = fs::remove_file(&self.0);
+        if self.pending {
+            let _ = fs::remove_file(&self.path);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn lease_cleanup_preserves_both_publication_and_cleanup_errors() {
+        let root = tempfile::tempdir().unwrap();
+        let blocked = root.path().join("blocked-lease");
+        fs::create_dir(&blocked).unwrap();
+        for result in [Ok(()), Err("publication failed".to_owned())] {
+            let expected_publication = result.is_err();
+            let error = Lease {
+                path: blocked.clone(),
+                pending: true,
+            }
+            .finish(result)
+            .unwrap_err();
+            assert_eq!(error.contains("publication failed"), expected_publication);
+            assert!(error.contains("lease cleanup failed"));
+            assert!(error.contains(&blocked.display().to_string()));
+            assert!(blocked.is_dir());
+        }
+    }
+
+    #[test]
+    fn publication_failure_removes_the_closed_lease_and_preserves_previous_bytes() {
+        let root = tempfile::tempdir().unwrap();
+        publish(
+            root.path(),
+            BTreeMap::from([("index.html".to_owned(), "old".to_owned())]),
+        )
+        .unwrap();
+        let error = publish(
+            root.path(),
+            BTreeMap::from([("../escape".to_owned(), "new".to_owned())]),
+        )
+        .unwrap_err();
+        assert!(error.contains("invalid doc artifact path"));
+        assert_eq!(
+            fs::read(root.path().join("dist/doc/index.html")).unwrap(),
+            b"old"
+        );
+        assert!(!root.path().join("dist/.seseragi-doc.lock").exists());
+        assert_eq!(fs::read_dir(root.path().join("dist")).unwrap().count(), 1);
     }
 }

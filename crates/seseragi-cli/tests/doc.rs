@@ -359,6 +359,24 @@ fn refuses_symlink_document_output_and_parent_without_touching_the_target() {
 }
 
 #[test]
+fn an_existing_output_lease_preserves_the_holder_and_the_previous_documents() {
+    let project = LockedProject::doc_tests();
+    assert!(generate(&project, &[]).status.success());
+    let output = project.path.join("dist/doc");
+    let previous = document_bytes(&output);
+    let lease = project.path.join("dist/.seseragi-doc.lock");
+    fs::write(&lease, "another writer owns this lease\n").unwrap();
+    let rejected = generate(&project, &[]);
+    assert_eq!(rejected.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&rejected.stderr).contains("cannot acquire doc output lease"));
+    assert_eq!(
+        fs::read(&lease).unwrap(),
+        b"another writer owns this lease\n"
+    );
+    assert_eq!(document_bytes(&output), previous);
+}
+
+#[test]
 fn reports_stdout_and_diagnostic_code_mismatches_with_original_locations() {
     let project = LockedProject::doc_tests();
     let source = fs::read_to_string(project.source())

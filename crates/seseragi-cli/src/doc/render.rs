@@ -87,7 +87,7 @@ pub(super) fn generate(
                 .typed_interface
                 .exports
                 .iter()
-                .filter(|export| export.symbol.starts_with(&format!("{id}::")))
+                .filter(move |export| export.symbol.starts_with(&format!("{id}::")))
                 .map(move |export| (export.symbol.clone(), id.clone()))
         })
         .collect::<BTreeMap<_, _>>();
