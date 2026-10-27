@@ -180,6 +180,13 @@ impl SurfaceParser<'_> {
             .iter()
             .find(|foreign| foreign.span.start == self.tokens[start].start)
         {
+            if let Some(open) = self
+                .find_significant_token(start, end, |kind| kind == TokenKind::PunctuationBraceLeft)
+            {
+                if let Some(close) = self.find_matching_brace(open, end) {
+                    self.validate_foreign_members(open + 1, close, diagnostics);
+                }
+            }
             let tail = self
                 .tokens
                 .partition_point(|token| token.end <= foreign.span.end);
@@ -234,6 +241,29 @@ impl SurfaceParser<'_> {
                             self.method_ranges(open, close + 1)
                         };
                         for (method, method_end) in methods {
+                            match crate::declaration::declaration_prefix_in(
+                                self.tokens,
+                                method,
+                                method_end,
+                                crate::declaration::DeclarationContext::Member,
+                            ) {
+                                Err(span) => {
+                                    diagnostics
+                                        .push(error("parser.invalid-declaration-modifiers", span));
+                                    continue;
+                                }
+                                Ok(prefix)
+                                    if self.raw_at(keyword) == Some("instance")
+                                        && prefix.deprecation.is_some() =>
+                                {
+                                    diagnostics.push(error(
+                                        "parser.invalid-declaration-modifiers",
+                                        prefix.deprecation.unwrap().origin,
+                                    ));
+                                    continue;
+                                }
+                                _ => {}
+                            }
                             let equals = self.find_top_level_token(
                                 method,
                                 method_end,
@@ -252,6 +282,18 @@ impl SurfaceParser<'_> {
                                     self.declaration_span(method, method_end)
                                         .expect("trait method"),
                                 ));
+                            }
+                        }
+                    } else if self.raw_at(keyword) == Some("impl") {
+                        for (member, member_end) in self.method_ranges(open, close + 1) {
+                            if let Err(span) = crate::declaration::declaration_prefix_in(
+                                self.tokens,
+                                member,
+                                member_end,
+                                crate::declaration::DeclarationContext::Member,
+                            ) {
+                                diagnostics
+                                    .push(error("parser.invalid-declaration-modifiers", span));
                             }
                         }
                     }
@@ -291,6 +333,52 @@ impl SurfaceParser<'_> {
                         }
                     }
                     _ => {}
+                }
+            }
+        }
+    }
+
+    fn validate_foreign_members(
+        &self,
+        start: usize,
+        end: usize,
+        diagnostics: &mut Vec<Diagnostic>,
+    ) {
+        let starts = self.declaration_member_starts(
+            start,
+            end,
+            crate::declaration::DeclarationContext::Foreign,
+        );
+        for (position, member_start) in starts.iter().copied().enumerate() {
+            let member_end = starts.get(position + 1).copied().unwrap_or(end);
+            let prefix = match crate::declaration::declaration_prefix_in(
+                self.tokens,
+                member_start,
+                member_end,
+                crate::declaration::DeclarationContext::Foreign,
+            ) {
+                Ok(prefix) => prefix,
+                Err(span) => {
+                    diagnostics.push(error("parser.invalid-declaration-modifiers", span));
+                    continue;
+                }
+            };
+            let member = self.parse_foreign_member(member_start, member_end);
+            if let Some(deprecation) = prefix.deprecation.filter(|_| member.is_none()) {
+                diagnostics.push(error(
+                    "parser.invalid-declaration-modifiers",
+                    deprecation.origin,
+                ));
+            }
+            if matches!(member, Some(crate::SurfaceForeignMember::Namespace { .. })) {
+                if let Some(open) =
+                    self.find_significant_token(prefix.keyword, member_end, |kind| {
+                        kind == TokenKind::PunctuationBraceLeft
+                    })
+                {
+                    if let Some(close) = self.find_matching_brace(open, member_end) {
+                        self.validate_foreign_members(open + 1, close, diagnostics);
+                    }
                 }
             }
         }

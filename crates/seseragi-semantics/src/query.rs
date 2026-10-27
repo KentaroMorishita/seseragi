@@ -82,6 +82,8 @@ pub struct AnalysisSymbol {
     pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deprecation: Option<seseragi_syntax::Deprecation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub member_owner: Option<String>,
     #[serde(skip)]
     scope: ScopeId,
 }
@@ -361,7 +363,8 @@ impl AnalysisDocument {
         self.symbols
             .iter()
             .filter(|symbol| {
-                visible_scopes.contains(&symbol.scope)
+                symbol.kind != "inherent-method"
+                    && visible_scopes.contains(&symbol.scope)
                     && (symbol.scope == ScopeId(0) || symbol.definition.start <= position)
             })
             .collect()
@@ -377,12 +380,22 @@ impl AnalysisDocument {
             .symbols
             .iter()
             .filter(|symbol| symbol.identity == identity && symbol.namespace == namespace)
-            .map(|symbol| (symbol.namespace.as_str(), symbol.scope))
+            .map(|symbol| {
+                (
+                    symbol.namespace.as_str(),
+                    symbol.scope,
+                    symbol.member_owner.as_deref(),
+                )
+            })
             .collect::<BTreeSet<_>>();
         self.symbols.iter().find(|symbol| {
             (symbol.identity != identity || symbol.namespace != namespace)
                 && symbol.name == new_name
-                && targets.contains(&(symbol.namespace.as_str(), symbol.scope))
+                && targets.contains(&(
+                    symbol.namespace.as_str(),
+                    symbol.scope,
+                    symbol.member_owner.as_deref(),
+                ))
         })
     }
 
@@ -437,6 +450,8 @@ pub fn analysis_document(
     typed: &TypedModule,
 ) -> AnalysisDocument {
     let deprecations = deprecation::metadata(&resolved);
+    let members = deprecation::members::catalog(&resolved, typed);
+    let selected_members = deprecation::members::selected_references(&resolved, typed, &members);
     let catalog = standard_library_catalog();
     let catalog_callables = catalog_callables(&catalog);
     let (symbol_types, symbol_type_documents, local_callables) =
@@ -447,7 +462,7 @@ pub fn analysis_document(
         .iter()
         .map(|import| (import.symbol, import.origin))
         .collect::<BTreeMap<_, _>>();
-    let symbols = resolved
+    let mut symbols = resolved
         .symbols
         .iter()
         .map(|symbol| {
@@ -496,10 +511,31 @@ pub fn analysis_document(
                 deprecation: deprecations
                     .get(&symbol.id)
                     .map(|entry| entry.value.clone()),
+                member_owner: None,
                 scope: symbol.scope,
             }
         })
         .collect::<Vec<_>>();
+    for member in &members {
+        if let Some(symbol) = member
+            .resolved_symbol
+            .and_then(|id| symbols.get_mut(id.0 as usize))
+        {
+            symbol.member_owner = Some(member.owner.clone());
+            if member.inherent {
+                symbol.kind = "inherent-method".to_owned();
+            }
+            if member.deprecation.is_some() {
+                symbol.deprecation.clone_from(&member.deprecation);
+            }
+        } else if member.definition.is_some()
+            || selected_members
+                .iter()
+                .any(|(selected, _)| selected.identity == member.identity)
+        {
+            symbols.push(member.analysis_symbol(symbols.len() as u32, &resolved.module));
+        }
+    }
     let mut symbol_occurrences = resolved
         .symbols
         .iter()
@@ -515,6 +551,42 @@ pub fn analysis_document(
             symbol: target.0,
         })
     }));
+    let member_ids = symbols
+        .iter()
+        .map(|symbol| (symbol.identity.as_str(), symbol.id))
+        .collect::<BTreeMap<_, _>>();
+    let mut known_occurrences = symbol_occurrences
+        .iter()
+        .map(|occurrence| {
+            (
+                occurrence.range.start,
+                occurrence.range.end,
+                occurrence.symbol,
+            )
+        })
+        .collect::<BTreeSet<_>>();
+    for member in members
+        .iter()
+        .filter(|member| member.resolved_symbol.is_none())
+    {
+        if let (Some(range), Some(id)) =
+            (member.definition, member_ids.get(member.identity.as_str()))
+        {
+            if known_occurrences.insert((range.start, range.end, *id)) {
+                symbol_occurrences.push(AnalysisSymbolOccurrence { range, symbol: *id });
+            }
+        }
+    }
+    for (member, range) in &selected_members {
+        if let Some(id) = member_ids.get(member.identity.as_str()) {
+            if known_occurrences.insert((range.start, range.end, *id)) {
+                symbol_occurrences.push(AnalysisSymbolOccurrence {
+                    range: *range,
+                    symbol: *id,
+                });
+            }
+        }
+    }
 
     let mut type_occurrences = Vec::new();
     let mut call_requests = Vec::new();
@@ -559,7 +631,11 @@ pub fn analysis_document(
         },
     ));
 
-    let lint_facts = lint::collect(&resolved, typed);
+    let lint_facts = lint::collect(
+        &resolved,
+        typed,
+        deprecation::references(&resolved, &members, &selected_members),
+    );
     AnalysisDocument {
         schema: 1,
         lint_facts,

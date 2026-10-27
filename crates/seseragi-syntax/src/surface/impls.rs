@@ -35,15 +35,19 @@ impl SurfaceParser<'_> {
     }
 
     fn parse_impl_member(&self, start: usize, end: usize) -> Option<SurfaceImplMember> {
-        let first = self.next_significant_token(start, end)?;
-        let (visibility, decl_start) = if self.kind_at(first) == Some(TokenKind::KeywordPub) {
-            (
-                Visibility::Public,
-                self.next_significant_token(first + 1, end)?,
-            )
+        let prefix = crate::declaration::declaration_prefix_in(
+            self.tokens,
+            start,
+            end,
+            crate::declaration::DeclarationContext::Member,
+        )
+        .ok()?;
+        let visibility = if prefix.public {
+            Visibility::Public
         } else {
-            (Visibility::Private, first)
+            Visibility::Private
         };
+        let decl_start = prefix.keyword;
 
         if self.kind_at(decl_start) == Some(TokenKind::KeywordFn) {
             let declaration = self.parse_fn_decl(visibility, start, decl_start, end)?;
@@ -122,49 +126,6 @@ impl SurfaceParser<'_> {
     }
 
     fn impl_member_ranges(&self, body_start: usize, end: usize) -> Vec<(usize, usize)> {
-        let mut starts = Vec::new();
-        let mut depth = 1usize;
-        let mut body_end = end;
-        for index in body_start + 1..end {
-            match self.kind_at(index) {
-                Some(TokenKind::PunctuationBraceLeft) => depth += 1,
-                Some(TokenKind::PunctuationBraceRight) => {
-                    depth = depth.saturating_sub(1);
-                    if depth == 0 {
-                        body_end = index;
-                        break;
-                    }
-                }
-                Some(TokenKind::KeywordPub) if depth == 1 => starts.push(index),
-                Some(TokenKind::KeywordFn) if depth == 1 => {
-                    if !self.member_is_prefixed_by_pub(index) {
-                        starts.push(index);
-                    }
-                }
-                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
-                    if depth == 1
-                        && self.raw_at(index) == Some("operator")
-                        && !self.member_is_prefixed_by_pub(index) =>
-                {
-                    starts.push(index);
-                }
-                _ => {}
-            }
-        }
-        starts
-            .iter()
-            .enumerate()
-            .map(|(position, start)| {
-                (
-                    *start,
-                    starts.get(position + 1).copied().unwrap_or(body_end),
-                )
-            })
-            .collect()
-    }
-
-    fn member_is_prefixed_by_pub(&self, index: usize) -> bool {
-        self.previous_significant_token(index)
-            .is_some_and(|previous| self.kind_at(previous) == Some(TokenKind::KeywordPub))
+        self.method_ranges(body_start, end)
     }
 }

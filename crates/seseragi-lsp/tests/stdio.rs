@@ -254,6 +254,120 @@ fn imported_deprecation_related_locations_use_the_defining_unicode_document() {
 }
 
 #[test]
+fn inherent_deprecation_tags_and_rename_follow_the_nominal_owner() {
+    let uri = "file:///member-deprecation.ssrg";
+    let source = concat!(
+        "// 移行 🙂\n",
+        "pub struct Box { value: Int }\n",
+        "impl Box { pub deprecated \"Use read 関数\" since \"0.61.0\" fn old self: Box -> Int = self.value }\n",
+        "pub struct Plain { value: Int }\n",
+        "impl Plain { pub fn modern self: Plain -> Int = self.value }\n",
+        "pub fn answer box: Box -> Int = box.old\n",
+        "pub fn ordinary plain: Plain -> Int = plain.modern\n",
+    );
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let index = LineIndex::new(source);
+        let use_byte = source.find("box.old").unwrap() + "box.".len();
+        let use_position = index.try_locate_encoded(use_byte, encoding).unwrap();
+        let definition = index
+            .try_locate_encoded(source.find("fn old").unwrap() + 3, encoding)
+            .unwrap();
+        let position = json!({"line":use_position.line,"character":use_position.character});
+        let completion_position = index
+            .try_locate_encoded(use_byte - "box.".len(), encoding)
+            .unwrap();
+        let input = [
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+            json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":position}}),
+            json!({"jsonrpc":"2.0","id":3,"method":"textDocument/documentSymbol","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":4,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":position}}),
+            json!({"jsonrpc":"2.0","id":5,"method":"textDocument/rename","params":{"textDocument":{"uri":uri},"position":position,"newName":"modern"}}),
+            json!({"jsonrpc":"2.0","id":6,"method":"textDocument/semanticTokens/full","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":7,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":{"line":completion_position.line,"character":completion_position.character}}}),
+            json!({"jsonrpc":"2.0","id":8,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"exit"}),
+        ];
+        let messages = run_server(&input);
+        let facts = published(&messages, uri)["params"]["diagnostics"]
+            .as_array()
+            .unwrap();
+        assert_eq!(facts.len(), 1, "{facts:#?}");
+        assert_eq!(facts[0]["code"], "SES-L0201");
+        assert_eq!(facts[0]["tags"], json!([2]));
+        assert_eq!(facts[0]["range"]["start"], position);
+        let hover = response(&messages, 2)["result"]["contents"]["value"]
+            .as_str()
+            .unwrap();
+        assert!(
+            hover.contains("Use read 関数") && hover.contains("0.61.0"),
+            "{hover}"
+        );
+        let symbols = response(&messages, 3)["result"].as_array().unwrap();
+        let old = symbols
+            .iter()
+            .find(|symbol| symbol["name"] == "old")
+            .unwrap();
+        assert_eq!(old["kind"], 6);
+        assert_eq!(old["tags"], json!([1]));
+        assert!(symbols
+            .iter()
+            .find(|symbol| symbol["name"] == "modern")
+            .unwrap()
+            .get("tags")
+            .is_none());
+        let target = &response(&messages, 4)["result"];
+        assert_eq!(target["uri"], uri);
+        assert_eq!(
+            target["range"]["start"],
+            json!({"line":definition.line,"character":definition.character})
+        );
+        let changes = response(&messages, 5)["result"]["documentChanges"]
+            .as_array()
+            .unwrap();
+        assert_eq!(changes.len(), 1, "{changes:#?}");
+        let edits = changes[0]["edits"].as_array().unwrap();
+        assert_eq!(edits.len(), 2, "{edits:#?}");
+        assert!(edits.iter().all(|edit| edit["newText"] == "modern"));
+        let expected = [
+            position.clone(),
+            json!({"line":definition.line,"character":definition.character}),
+        ];
+        assert!(edits
+            .iter()
+            .all(|edit| expected.contains(&edit["range"]["start"])));
+        assert!(response(&messages, 7)["result"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|item| item["label"] != "old"));
+        let (mut line, mut character, mut matched) = (0usize, 0usize, false);
+        for token in response(&messages, 6)["result"]["data"]
+            .as_array()
+            .unwrap()
+            .chunks_exact(5)
+        {
+            let delta = token[0].as_u64().unwrap() as usize;
+            line += delta;
+            character = if delta == 0 {
+                character + token[1].as_u64().unwrap() as usize
+            } else {
+                token[1].as_u64().unwrap() as usize
+            };
+            if line == use_position.line && character == use_position.character {
+                assert_eq!(token[3], 13);
+                assert_eq!(token[4], 1);
+                matched = true;
+            }
+        }
+        assert!(matched, "selected member token is absent");
+    }
+}
+
+#[test]
 fn binary_reports_its_distribution_contract() {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi-lsp"))
         .arg("--version-json")

@@ -58,19 +58,68 @@ pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> Surfac
     );
     declarations.sort_by_key(|declaration| declaration.span().start);
 
-    let deprecations = parser
-        .top_level_declaration_starts()
+    use crate::declaration::DeclarationContext;
+    let mut deprecation_regions = Vec::new();
+    for declaration in &declarations {
+        if foreign_modules.iter().any(|foreign| {
+            foreign.span.start <= declaration.span().start
+                && declaration.span().end <= foreign.span.end
+        }) {
+            continue;
+        }
+        deprecation_regions.push((declaration.span(), DeclarationContext::TopLevel));
+        match declaration {
+            SurfaceDecl::Trait { methods, .. } => {
+                deprecation_regions.extend(
+                    methods
+                        .iter()
+                        .map(|method| (method.span, DeclarationContext::Member)),
+                );
+            }
+            SurfaceDecl::Impl { members, .. } => {
+                deprecation_regions.extend(
+                    members
+                        .iter()
+                        .map(|member| (member.span(), DeclarationContext::Member)),
+                );
+            }
+            _ => {}
+        }
+    }
+    fn foreign_regions(
+        members: &[SurfaceForeignMember],
+        regions: &mut Vec<(ByteSpan, DeclarationContext)>,
+    ) {
+        for member in members {
+            let span = match member {
+                SurfaceForeignMember::Function { span, .. }
+                | SurfaceForeignMember::Value { span, .. }
+                | SurfaceForeignMember::OpaqueType { span, .. }
+                | SurfaceForeignMember::Namespace { span, .. } => *span,
+            };
+            regions.push((span, DeclarationContext::Foreign));
+            if let SurfaceForeignMember::Namespace { members, .. } = member {
+                foreign_regions(members, regions);
+            }
+        }
+    }
+    for foreign in &foreign_modules {
+        foreign_regions(&foreign.members, &mut deprecation_regions);
+    }
+    let deprecations = deprecation_regions
         .into_iter()
-        .filter_map(|start| {
+        .filter_map(|(declaration, context)| {
+            let start = parser
+                .tokens
+                .partition_point(|token| token.start < declaration.start);
+            let end = parser
+                .tokens
+                .partition_point(|token| token.start < declaration.end);
             let prefix =
-                crate::declaration::declaration_prefix(parser.tokens, start, non_eof_token_count)
+                crate::declaration::declaration_prefix_in(parser.tokens, start, end, context)
                     .ok()?;
             let mut deprecation = prefix.deprecation?;
             deprecation.source.clone_from(&stream.source);
-            let declaration = declarations
-                .iter()
-                .find(|decl| decl.span().start == parser.tokens[start].start)?
-                .span();
             Some(crate::DeclarationDeprecation {
                 declaration,
                 deprecation,

@@ -171,6 +171,32 @@ fn deprecated_reference_is_positioned_and_denied_without_blocking_native_emissio
 }
 
 #[test]
+fn deprecated_member_warning_preserves_cli_exit_and_provider_location() {
+    let fixture = Fixture::new();
+    let source = "// 🙂\npub struct Box { value: Int }\nimpl Box { pub deprecated \"Use read\" since \"0.61.0\" fn old self: Box -> Int = self.value }\npub fn answer box: Box -> Int = box.old\n";
+    let path = fixture.write("member.ssrg", source);
+    let default = fixture.run(&[], &path);
+    assert_eq!(default.status.code(), Some(0));
+    assert!(String::from_utf8_lossy(&default.stderr).contains("SES-L0201"));
+    let denied = fixture.run(&["--deny-warnings", "--diagnostic-format", "json"], &path);
+    assert_eq!(denied.status.code(), Some(1));
+    let json: serde_json::Value = serde_json::from_slice(&denied.stderr).unwrap();
+    let facts = json["diagnostics"][0]["diagnostics"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert_eq!(facts.len(), 1, "{facts:#?}");
+    assert_eq!(facts[0]["code"], "SES-L0201");
+    assert_eq!(
+        facts[0]["related"][0]["source"],
+        path.to_string_lossy().as_ref()
+    );
+    assert_eq!(
+        facts[0]["primary"]["start"].as_u64().unwrap() as usize,
+        source.rfind("box.old").unwrap() + "box.".len()
+    );
+}
+
+#[test]
 fn cli_json_and_lsp_publish_the_same_utf8_lint_fact() {
     let fixture = Fixture::new();
     let source = "import { abs } from \"std/int\"\nimport * as eff from \"std/effect\"\nimport * as signals from \"std/signal\"\nfn privateUnused -> Int = 0\npub fn value -> Int = {\n  // 🙂\n  let unused = 1\n  let lost = eff.succeed 1\n  if True then 1 else 2\n}\npub effect fn discard source: signals.Signal<Int> -> Unit =\n do {\n signals.subscribe (\\value -> eff.succeed ()) source\n eff.succeed ()\n }\npub fn snapshot source: signals.MutableSignal<Int> -> Task<Int> = signals.read source\n";

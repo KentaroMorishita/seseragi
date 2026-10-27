@@ -23,8 +23,11 @@ fn warning(code: &str, key: &str, range: ByteSpan, reason: String) -> Diagnostic
     }
 }
 
-pub(super) fn collect(resolved: &ResolvedModule, typed: &TypedModule) -> Vec<Diagnostic> {
-    let mut facts = super::deprecation::references(resolved);
+pub(super) fn collect(
+    resolved: &ResolvedModule,
+    typed: &TypedModule,
+    mut facts: Vec<Diagnostic>,
+) -> Vec<Diagnostic> {
     let used = resolved
         .references
         .iter()

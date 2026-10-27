@@ -159,6 +159,13 @@ fn parse_unlinked_module_interface_inner(
         mark(&foreign.members, &mut exports);
     }
     attach_inherent_methods(&module_name, &surface_module.declarations, &mut exports);
+    for method in exports.iter_mut().flat_map(|export| &mut export.methods) {
+        method.deprecation = surface_module
+            .deprecations
+            .iter()
+            .find(|entry| entry.declaration == method.origin)
+            .map(|entry| entry.deprecation.clone());
+    }
     let interface = ModuleInterface {
         schema: 1,
         module: module_name.clone(),

@@ -1,0 +1,9 @@
+pub struct Box { value: Int }
+
+impl Box {
+  pub fn read self: Box -> Int = self.value
+
+  pub deprecated "Use read" since "0.61.0"
+
+  fn old self: Box -> Int = self.value
+}

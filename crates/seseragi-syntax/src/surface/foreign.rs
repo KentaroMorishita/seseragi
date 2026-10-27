@@ -81,33 +81,24 @@ impl SurfaceParser<'_> {
     }
 
     fn foreign_member_starts(&self, start: usize, end: usize) -> Vec<usize> {
-        let mut starts = Vec::new();
-        let mut brace_depth = 0usize;
-        for index in start..end {
-            match self.kind_at(index) {
-                Some(TokenKind::PunctuationBraceLeft) => brace_depth += 1,
-                Some(TokenKind::PunctuationBraceRight) => {
-                    brace_depth = brace_depth.saturating_sub(1)
-                }
-                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
-                    if brace_depth == 0
-                        && matches!(
-                            self.raw_at(index),
-                            Some("pure" | "task" | "opaque" | "namespace")
-                        )
-                        && self.is_declaration_boundary(index) =>
-                {
-                    starts.push(index);
-                }
-                _ => {}
-            }
-        }
-        starts
+        self.declaration_member_starts(start, end, crate::declaration::DeclarationContext::Foreign)
     }
 
-    fn parse_foreign_member(&self, start: usize, end: usize) -> Option<SurfaceForeignMember> {
-        if self.raw_at(start) == Some("namespace") {
-            let name_index = self.next_significant_token(start + 1, end)?;
+    pub(super) fn parse_foreign_member(
+        &self,
+        start: usize,
+        end: usize,
+    ) -> Option<SurfaceForeignMember> {
+        let prefix = crate::declaration::declaration_prefix_in(
+            self.tokens,
+            start,
+            end,
+            crate::declaration::DeclarationContext::Foreign,
+        )
+        .ok()?;
+        let keyword = prefix.keyword;
+        if self.raw_at(keyword) == Some("namespace") {
+            let name_index = self.next_significant_token(keyword + 1, end)?;
             let name = self.identifier_name_at(name_index)?;
             let next = self.next_significant_token(name_index + 1, end)?;
             let (host_name, open) = if self.kind_at(next) == Some(TokenKind::OperatorEquals) {
@@ -134,8 +125,8 @@ impl SurfaceParser<'_> {
                 span: self.declaration_span(start, close + 1)?,
             });
         }
-        if self.raw_at(start) == Some("opaque") {
-            let type_keyword = self.next_significant_token(start + 1, end)?;
+        if self.raw_at(keyword) == Some("opaque") {
+            let type_keyword = self.next_significant_token(keyword + 1, end)?;
             if self.raw_at(type_keyword) != Some("type") {
                 return None;
             }
@@ -150,12 +141,12 @@ impl SurfaceParser<'_> {
             });
         }
 
-        let mode = match self.raw_at(start) {
+        let mode = match self.raw_at(keyword) {
             Some("pure") => ForeignCallMode::Pure,
             Some("task") => ForeignCallMode::Task,
             _ => return None,
         };
-        let after_mode = self.next_significant_token(start + 1, end)?;
+        let after_mode = self.next_significant_token(keyword + 1, end)?;
         let (call_kind, fn_keyword) = match self.raw_at(after_mode) {
             Some("constructor") => (
                 ForeignCallKind::Constructor,

@@ -5,6 +5,7 @@ use super::{InterfaceConstraint, InterfaceMethod, InterfaceScheme, InterfaceType
 
 pub(super) fn interface_method_from_surface(method: &SurfaceMethod) -> InterfaceMethod {
     InterfaceMethod {
+        deprecation: None,
         name: method.name.clone(),
         scheme: InterfaceScheme {
             type_parameters: method.type_parameters.clone(),

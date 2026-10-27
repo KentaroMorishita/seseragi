@@ -59,6 +59,8 @@ pub struct InterfaceExport {
 #[serde(rename_all = "camelCase")]
 pub struct InterfaceMethod {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecation: Option<crate::Deprecation>,
     pub scheme: InterfaceScheme,
     pub origin: ByteSpan,
 }

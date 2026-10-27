@@ -1,6 +1,9 @@
 use super::*;
 use seseragi_syntax::{Deprecation, SurfaceDecl, SurfacePattern};
 
+pub(super) mod members;
+mod source_calls;
+
 pub(super) struct SymbolDeprecation {
     pub value: Deprecation,
     own_declaration: Option<ByteSpan>,
@@ -27,6 +30,20 @@ pub(super) fn metadata(resolved: &ResolvedModule) -> BTreeMap<SymbolId, SymbolDe
             ((span.start, span.end), declaration)
         })
         .collect::<BTreeMap<_, _>>();
+    let methods = resolved
+        .declarations
+        .iter()
+        .flat_map(|declaration| {
+            if let SurfaceDecl::Trait { methods, .. } = declaration {
+                methods
+                    .iter()
+                    .map(|method| ((method.span.start, method.span.end), method.name_span))
+                    .collect::<Vec<_>>()
+            } else {
+                Vec::new()
+            }
+        })
+        .collect::<BTreeMap<_, _>>();
     let definitions = resolved
         .symbols
         .iter()
@@ -39,27 +56,36 @@ pub(super) fn metadata(resolved: &ResolvedModule) -> BTreeMap<SymbolId, SymbolDe
         })
         .collect::<BTreeMap<_, _>>();
     for entry in &resolved.deprecations {
-        let Some(declaration) = declarations.get(&(entry.declaration.start, entry.declaration.end))
-        else {
+        let key = (entry.declaration.start, entry.declaration.end);
+        let target = declarations
+            .get(&key)
+            .and_then(|declaration| {
+                Some(match declaration {
+                    SurfaceDecl::Fn { name_span, .. } | SurfaceDecl::EffectFn { name_span, .. } => {
+                        (SymbolNamespace::Value, *name_span)
+                    }
+                    SurfaceDecl::Let {
+                        pattern: SurfacePattern::Name { name_span, .. },
+                        ..
+                    } => (SymbolNamespace::Value, *name_span),
+                    SurfaceDecl::Alias { name_span, .. }
+                    | SurfaceDecl::Struct { name_span, .. }
+                    | SurfaceDecl::Type { name_span, .. }
+                    | SurfaceDecl::Newtype { name_span, .. } => (SymbolNamespace::Type, *name_span),
+                    SurfaceDecl::Trait { name_span, .. } => (SymbolNamespace::Trait, *name_span),
+                    SurfaceDecl::Operator { spelling_span, .. } => {
+                        (SymbolNamespace::Operator, *spelling_span)
+                    }
+                    _ => return None,
+                })
+            })
+            .or_else(|| {
+                methods
+                    .get(&key)
+                    .map(|span| (SymbolNamespace::Value, *span))
+            });
+        let Some((namespace, definition)) = target else {
             continue;
-        };
-        let (namespace, definition) = match declaration {
-            SurfaceDecl::Fn { name_span, .. } | SurfaceDecl::EffectFn { name_span, .. } => {
-                (SymbolNamespace::Value, *name_span)
-            }
-            SurfaceDecl::Let {
-                pattern: SurfacePattern::Name { name_span, .. },
-                ..
-            } => (SymbolNamespace::Value, *name_span),
-            SurfaceDecl::Alias { name_span, .. }
-            | SurfaceDecl::Struct { name_span, .. }
-            | SurfaceDecl::Type { name_span, .. }
-            | SurfaceDecl::Newtype { name_span, .. } => (SymbolNamespace::Type, *name_span),
-            SurfaceDecl::Trait { name_span, .. } => (SymbolNamespace::Trait, *name_span),
-            SurfaceDecl::Operator { spelling_span, .. } => {
-                (SymbolNamespace::Operator, *spelling_span)
-            }
-            _ => continue,
         };
         if let Some(symbol) = definitions.get(&(namespace, definition.start, definition.end)) {
             result.insert(
@@ -72,7 +98,7 @@ pub(super) fn metadata(resolved: &ResolvedModule) -> BTreeMap<SymbolId, SymbolDe
         }
     }
     for import in &resolved.imports {
-        if import.member_owner.is_some() || import.export.constructor_of.is_some() {
+        if import.export.constructor_of.is_some() {
             continue;
         }
         let Some(value) = &import.export.deprecation else {
@@ -82,7 +108,10 @@ pub(super) fn metadata(resolved: &ResolvedModule) -> BTreeMap<SymbolId, SymbolDe
             continue;
         };
         if symbol.canonical.as_deref() != Some(import.export.symbol.as_str())
-            || super::namespace_name(symbol.namespace) != import.export.namespace
+            || !(super::namespace_name(symbol.namespace) == import.export.namespace
+                || import.member_owner.is_some()
+                    && import.export.namespace == "method"
+                    && symbol.namespace == SymbolNamespace::Value)
         {
             continue;
         }
@@ -97,9 +126,13 @@ pub(super) fn metadata(resolved: &ResolvedModule) -> BTreeMap<SymbolId, SymbolDe
     result
 }
 
-pub(super) fn references(resolved: &ResolvedModule) -> Vec<Diagnostic> {
+pub(super) fn references(
+    resolved: &ResolvedModule,
+    members: &[members::Member],
+    selected_members: &[(&members::Member, ByteSpan)],
+) -> Vec<Diagnostic> {
     let metadata = metadata(resolved);
-    if metadata.is_empty() {
+    if metadata.is_empty() && members.iter().all(|member| member.deprecation.is_none()) {
         return Vec::new();
     }
     let mut result = Vec::new();
@@ -126,7 +159,12 @@ pub(super) fn references(resolved: &ResolvedModule) -> Vec<Diagnostic> {
         let Some(identity) = symbol.canonical.as_deref() else {
             return;
         };
-        if !seen.insert((origin.start, origin.end, symbol.namespace, identity)) {
+        if !seen.insert((
+            origin.start,
+            origin.end,
+            symbol.namespace,
+            identity.to_owned(),
+        )) {
             return;
         }
         let since = entry
@@ -177,6 +215,48 @@ pub(super) fn references(resolved: &ResolvedModule) -> Vec<Diagnostic> {
         if import.reexported_as.is_some() {
             warn(import.symbol, import.origin);
         }
+    }
+    for (member, origin) in selected_members.iter().copied() {
+        let Some(value) = member.deprecation.as_ref() else {
+            continue;
+        };
+        if member
+            .own_declaration
+            .is_some_and(|own| own.start <= origin.start && origin.end <= own.end)
+            || !seen.insert((
+                origin.start,
+                origin.end,
+                SymbolNamespace::Value,
+                member.identity.clone(),
+            ))
+        {
+            continue;
+        }
+        let since = value
+            .since
+            .as_ref()
+            .map(|version| format!(" since {version}"))
+            .unwrap_or_default();
+        result.push(Diagnostic {
+            id: String::new(),
+            code: "SES-L0201".to_owned(),
+            severity: DiagnosticSeverity::Warning,
+            message_key: "lint.deprecated-symbol".to_owned(),
+            primary: ByteRange {
+                start: origin.start,
+                end: origin.end,
+            },
+            related: vec![RelatedDiagnostic {
+                source: Some(value.source.clone()),
+                message: format!("`{}` is deprecated{since}: {}", member.name, value.message),
+                primary: ByteRange {
+                    start: value.origin.start,
+                    end: value.origin.end,
+                },
+            }],
+            fixes: Vec::new(),
+            type_difference: None,
+        });
     }
     result
 }

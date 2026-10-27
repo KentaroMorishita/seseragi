@@ -313,6 +313,7 @@ pub(super) fn attach_inherent_methods(
                 let mut method_type_parameters = type_parameters.clone();
                 method_type_parameters.extend(method.type_parameters.clone());
                 Some(super::InterfaceMethod {
+                    deprecation: None,
                     name: method.name.clone(),
                     scheme: InterfaceScheme {
                         type_parameters: method_type_parameters,

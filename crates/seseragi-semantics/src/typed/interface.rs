@@ -113,6 +113,7 @@ pub(super) fn prelude_method_interface(
         .type_parameters
         .drain(..trait_spec.type_parameters.len());
     seseragi_syntax::InterfaceMethod {
+        deprecation: None,
         name: method.name.to_owned(),
         scheme,
         origin,

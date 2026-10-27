@@ -321,6 +321,7 @@ mod tests {
                 },
             },
             methods: vec![InterfaceMethod {
+                deprecation: None,
                 name: "method".to_owned(),
                 scheme: InterfaceScheme {
                     type_parameters: Vec::new(),
