@@ -26,6 +26,12 @@ pub struct SourceMap {
     pub sources_content: Vec<String>,
     pub names: Vec<String>,
     pub mappings: String,
+    #[serde(
+        default,
+        rename = "x_seseragi_deprecations",
+        skip_serializing_if = "Vec::is_empty"
+    )]
+    pub deprecations: Vec<super::metadata::GeneratedDeprecation>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -51,6 +57,7 @@ pub(super) fn source_map_for_module(
         sources_content: vec![source_text.to_owned()],
         names,
         mappings: encode_mappings(&mappings),
+        deprecations: Vec::new(),
     }
 }
 

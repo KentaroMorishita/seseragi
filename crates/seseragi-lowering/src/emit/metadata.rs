@@ -22,8 +22,23 @@ pub struct GeneratedModule {
     pub runtime: GeneratedRuntime,
     pub exports: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub deprecations: Vec<GeneratedDeprecation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<GeneratedInstance>,
     pub outputs: GeneratedOutputs,
+}
+
+/// Public API migration metadata. This is independent of executable exports:
+/// type and trait declarations can carry a notice without emitting a JS value.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GeneratedDeprecation {
+    pub identity: String,
+    pub namespace: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub owner: Option<String>,
+    pub deprecation: seseragi_syntax::Deprecation,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -81,6 +96,7 @@ pub(super) fn generated_module_for(
             requirements: module.runtime_requirements,
         },
         exports,
+        deprecations: Vec::new(),
         instances,
         outputs: GeneratedOutputs {
             typescript: output_paths.typescript,

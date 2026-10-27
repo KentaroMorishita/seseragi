@@ -14,6 +14,7 @@ mod dependencies;
 mod foreign_outputs;
 pub use foreign_outputs::relocate_foreign_outputs;
 mod format;
+mod generated_metadata;
 mod input;
 mod local_package;
 mod local_project;

@@ -55,8 +55,8 @@ pub use core::{
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
-    GeneratedInstance, GeneratedModule, GeneratedOutputPaths, GeneratedOutputs, GeneratedRuntime,
-    SourceMap,
+    GeneratedDeprecation, GeneratedInstance, GeneratedModule, GeneratedOutputPaths,
+    GeneratedOutputs, GeneratedRuntime, SourceMap,
 };
 pub use runtime_modules::runtime_provided_modules;
 pub(crate) use span::source_span;

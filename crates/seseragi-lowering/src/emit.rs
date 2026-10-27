@@ -23,7 +23,9 @@ mod source_map;
 use imports::render_import_lines;
 use instances::render_typescript_instances;
 use metadata::generated_module_for;
-pub use metadata::{GeneratedInstance, GeneratedModule, GeneratedOutputs, GeneratedRuntime};
+pub use metadata::{
+    GeneratedDeprecation, GeneratedInstance, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
+};
 use source_map::source_map_for_module;
 pub use source_map::SourceMap;
 

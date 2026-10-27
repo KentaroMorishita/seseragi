@@ -84,6 +84,7 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
         profile,
         &mut generated.metadata,
     );
+    crate::generated_metadata::retain_deprecations(&analyzed.typed_interface, &mut generated);
 
     Ok(CompiledModule {
         diagnostics: analyzed.diagnostics,
@@ -121,6 +122,7 @@ fn finish_compilation(
         profile,
         &mut generated.metadata,
     );
+    crate::generated_metadata::retain_deprecations(&typed_interface, &mut generated);
 
     CompiledModule {
         diagnostics,
