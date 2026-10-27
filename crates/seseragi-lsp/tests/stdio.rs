@@ -784,7 +784,7 @@ fn inherent_member_completion_uses_the_receiver_owner_and_keeps_deprecated_tags(
                 "{name} {id}: {methods:#?}"
             );
             let old = &methods[0];
-            assert_eq!(old["kind"], 6);
+            assert_eq!(old["kind"], 2);
             assert_eq!(old["tags"], json!([1]));
             assert!(old["documentation"].to_string().contains("Use read 関数"));
             assert!(old["documentation"].to_string().contains("0.61.0"));
