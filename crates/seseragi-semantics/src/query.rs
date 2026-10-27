@@ -195,6 +195,8 @@ pub struct AnalysisDocument {
     pub callable_occurrences: Vec<AnalysisCallableOccurrence>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub completion_contexts: Vec<AnalysisCompletionContext>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub nominal_receivers: Vec<crate::AnalysisNominalReceiver>,
     pub standard_library: Vec<AnalysisReferenceItem>,
     #[serde(skip)]
     scopes: Vec<crate::ResolvedScope>,
@@ -203,6 +205,30 @@ pub struct AnalysisDocument {
 }
 
 impl AnalysisDocument {
+    /// Inherent methods belonging to the receiver proved at this exact source
+    /// name occurrence. Rendered type names are intentionally not consulted.
+    pub fn members_of_receiver(&self, range: ByteSpan) -> Vec<&AnalysisSymbol> {
+        let Some(receiver) = self
+            .nominal_receivers
+            .iter()
+            .find(|fact| fact.range == range)
+        else {
+            return Vec::new();
+        };
+        let mut methods = self
+            .symbols
+            .iter()
+            .filter(|symbol| {
+                symbol.kind == "inherent-method"
+                    && symbol.member_owner.as_deref() == Some(receiver.owner.as_str())
+            })
+            .collect::<Vec<_>>();
+        methods.sort_by(|left, right| {
+            (&left.name, &left.identity).cmp(&(&right.name, &right.identity))
+        });
+        methods
+    }
+
     pub fn diagnostics(&self) -> &DiagnosticArtifact {
         &self.diagnostics
     }
@@ -449,6 +475,15 @@ pub fn analysis_document(
     resolved: ResolvedModule,
     typed: &TypedModule,
 ) -> AnalysisDocument {
+    analysis_document_with_receivers(diagnostics, resolved, typed, Vec::new())
+}
+
+pub fn analysis_document_with_receivers(
+    diagnostics: DiagnosticArtifact,
+    resolved: ResolvedModule,
+    typed: &TypedModule,
+    nominal_receivers: Vec<crate::AnalysisNominalReceiver>,
+) -> AnalysisDocument {
     let deprecations = deprecation::metadata(&resolved);
     let members = deprecation::members::catalog(&resolved, typed);
     let selected_members = deprecation::members::selected_references(&resolved, typed, &members);
@@ -647,6 +682,7 @@ pub fn analysis_document(
         type_occurrences,
         callable_occurrences,
         completion_contexts,
+        nominal_receivers,
         standard_library: catalog,
         scopes: resolved.scopes,
     }
@@ -667,6 +703,7 @@ pub fn diagnostics_only_analysis(
         type_occurrences: Vec::new(),
         callable_occurrences: Vec::new(),
         completion_contexts: Vec::new(),
+        nominal_receivers: Vec::new(),
         standard_library: standard_library_catalog(),
         scopes: Vec::new(),
         lint_facts: Vec::new(),

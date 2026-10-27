@@ -12,7 +12,7 @@ mod typed;
 
 pub use analysis::{
     analyze_linked_module, analyze_linked_module_recovering, analyze_module_interface,
-    AnalyzedModule,
+    AnalysisNominalReceiver, AnalyzedModule,
 };
 pub use diagnostics::semantic_diagnostics;
 pub use effect_ops::{known_effect_operation_by_semantic, KnownEffectOperation};
@@ -24,11 +24,12 @@ pub use prelude::{
     PreludeSpecialInstanceDispatch, StandardEqualityInstance, StandardModuleSurface,
 };
 pub use query::{
-    analysis_document, diagnostics_only_analysis, standard_library_catalog,
-    standard_reference_surface, AnalysisCallable, AnalysisCallableOccurrence,
-    AnalysisCompletionContext, AnalysisCompletionField, AnalysisDocument, AnalysisParameter,
-    AnalysisReferenceItem, AnalysisSymbol, AnalysisSymbolOccurrence, AnalysisTypeOccurrence,
-    StandardReferenceItem, StandardReferenceModule, StandardReferenceSurface,
+    analysis_document, analysis_document_with_receivers, diagnostics_only_analysis,
+    standard_library_catalog, standard_reference_surface, AnalysisCallable,
+    AnalysisCallableOccurrence, AnalysisCompletionContext, AnalysisCompletionField,
+    AnalysisDocument, AnalysisParameter, AnalysisReferenceItem, AnalysisSymbol,
+    AnalysisSymbolOccurrence, AnalysisTypeOccurrence, StandardReferenceItem,
+    StandardReferenceModule, StandardReferenceSurface,
 };
 pub use resolve::{resolve_linked_module, resolve_module, resolve_module_interface};
 pub use type_document::{

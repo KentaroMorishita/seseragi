@@ -2,8 +2,9 @@
 
 This extends the first #861 slice through trait, inherent, and foreign members.
 The saved first slice remains a separate commit. API HTML/JSON generation,
-actual DTS generated-binding metadata, source-map metadata, and all production
-acceptance remain separate pending boundaries; #861 remains open.
+actual DTS generated-binding metadata, and source-map metadata have separate
+commits and scoped acceptance. Final integrated production acceptance remains
+pending; #861 remains open.
 
 ```seseragi
 pub struct Box { value: Int }
@@ -43,5 +44,14 @@ unqualified lexical value or conflicts between different owners' names.
 Focused acceptance covers metadata attachment and malformed-clause ranges,
 selected-owner warnings, own-body and field exclusions, provider provenance,
 and exact generated TypeScript bytes in both profiles. LSP member navigation
-and tags reuse the shared analysis symbols. Member completion needs a proven
-receiver identity; this slice does not guess an owner from rendered type names.
+and tags reuse the shared analysis symbols.
+
+Inherent completion retains an optional `nominalReceivers` table on the analysis
+document. Its canonical owner comes from the actual final typing environment's
+resolved nominal key, including inferred local aliases and imported type aliases.
+A scoped type parameter with the same spelling has a distinct key and gains no
+nominal methods. The table lives beside Typed HIR, is omitted when empty, and is
+not recorded by ordinary compile paths. Recovery keeps the original diagnostics
+and exposes only proved receiver facts. Namespace and expected-record completion
+retain their existing paths; arbitrary chained-expression completion and new
+trait-call resolution are outside this bounded change.

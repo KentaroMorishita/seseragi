@@ -1,7 +1,7 @@
 use crate::CompileInput;
 use seseragi_project::{link_module, standard_module_target};
 use seseragi_semantics::{
-    analysis_document, analyze_linked_module, analyze_linked_module_recovering,
+    analysis_document_with_receivers, analyze_linked_module, analyze_linked_module_recovering,
     diagnostics_only_analysis, AnalysisDocument, AnalyzedModule,
 };
 use seseragi_syntax::{
@@ -13,9 +13,12 @@ use std::collections::BTreeMap;
 /// Effect execution and returns the reusable position-query snapshot.
 pub fn analyze_module(input: CompileInput<'_>) -> AnalysisDocument {
     match analyze_module_frontend_with(input, true) {
-        Ok(analyzed) => {
-            analysis_document(analyzed.diagnostics, analyzed.resolved, &analyzed.typed_hir)
-        }
+        Ok(analyzed) => analysis_document_with_receivers(
+            analyzed.diagnostics,
+            analyzed.resolved,
+            &analyzed.typed_hir,
+            analyzed.nominal_receivers,
+        ),
         Err(diagnostics) => {
             diagnostics_only_analysis(input.source_name(), input.module_id(), diagnostics)
         }

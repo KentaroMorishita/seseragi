@@ -729,6 +729,121 @@ fn unicode_namespace_completion_keeps_combining_identifier_continuations() {
 }
 
 #[test]
+fn inherent_member_completion_uses_the_receiver_owner_and_keeps_deprecated_tags() {
+    let uri = "file:///member-completion.ssrg";
+    let owners = concat!(
+        "// 移行 🙂\n",
+        "pub struct Box { value: Int }\n",
+        "impl Box {\n",
+        " pub deprecated \"Use read 関数\" since \"0.61.0\" fn old self: Box -> Int = self.value\n",
+        " pub fn read self: Box -> Int = self.value\n",
+        "}\n",
+        "pub struct Plain { value: Int }\n",
+        "impl Plain { pub fn old self: Plain -> Int = self.value }\n",
+    );
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let source =
+            format!("{owners}pub fn answer box: Box -> Int = {{ let alias = box; alias.old }}\n");
+        let editing = format!("{owners}pub fn answer box: Box -> Int = box.");
+        let generic = format!("{owners}pub fn answer<Box> box: Box -> Box = box.");
+        let plain = format!("{owners}pub fn answer value: Plain -> Int = value.");
+        let position = |text: &str, byte: usize| {
+            let position = LineIndex::new(text)
+                .try_locate_encoded(byte, encoding)
+                .unwrap();
+            json!({"line":position.line,"character":position.character})
+        };
+        let input = [
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+            json!({"jsonrpc":"2.0","id":2,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position(&source,source.rfind("alias.old").unwrap()+"alias.".len())}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":2},"contentChanges":[{"text":editing}]}}),
+            json!({"jsonrpc":"2.0","id":3,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position(&editing,editing.len())}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":3},"contentChanges":[{"text":generic}]}}),
+            json!({"jsonrpc":"2.0","id":4,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position(&generic,generic.len())}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":4},"contentChanges":[{"text":plain}]}}),
+            json!({"jsonrpc":"2.0","id":5,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position(&plain,plain.len())}}),
+            json!({"jsonrpc":"2.0","id":6,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"exit"}),
+        ];
+        let messages = run_server(&input);
+        for id in [2, 3] {
+            let methods = response(&messages, id)["result"].as_array().unwrap();
+            assert_eq!(
+                methods
+                    .iter()
+                    .map(|item| item["label"].as_str().unwrap())
+                    .collect::<Vec<_>>(),
+                ["old", "read"],
+                "{name} {id}: {methods:#?}"
+            );
+            let old = &methods[0];
+            assert_eq!(old["kind"], 6);
+            assert_eq!(old["tags"], json!([1]));
+            assert!(old["documentation"].to_string().contains("Use read 関数"));
+            assert!(old["documentation"].to_string().contains("0.61.0"));
+            assert!(methods[1].get("tags").is_none());
+        }
+        assert!(response(&messages, 4)["result"]
+            .as_array()
+            .unwrap()
+            .is_empty());
+        let methods = response(&messages, 5)["result"].as_array().unwrap();
+        assert_eq!(methods.len(), 1);
+        assert_eq!(methods[0]["label"], "old");
+        assert!(methods[0].get("tags").is_none());
+        assert!(methods[0]["data"]["identity"]
+            .as_str()
+            .unwrap()
+            .ends_with("::Plain::old"));
+    }
+}
+
+#[test]
+fn path_package_member_completion_keeps_an_aliased_provider_owner_during_recovery() {
+    let workspace = TempWorkspace::new();
+    workspace.write("seseragi.toml", "[package]\nname=\"fixture/member-completion\"\nversion=\"0.0.0\"\nlanguage=\">=0.1.0 <0.2.0\"\n[run]\nentry=\"main\"\ntarget=\"process\"\n[dependencies]\nmodel={package=\"fixture/member-model\",path=\"vendor/model\"}\n");
+    workspace.write("vendor/model/seseragi.toml", "[package]\nname=\"fixture/member-model\"\nversion=\"1.0.0\"\nlanguage=\">=0.1.0 <0.2.0\"\n[exports]\n\".\"=\"lib\"\n");
+    workspace.write("vendor/model/src/lib.ssrg", "// provider 🙂\npub struct Box { value: Int }\nimpl Box {\n pub deprecated \"Use read\" fn old self: Box -> Int = self.value\n pub fn read self: Box -> Int = self.value\n}\n");
+    let source = "import { Box as Container } from \"model\"\npub fn answer value: Container -> Int = value.old\n";
+    workspace.write("src/main.ssrg", source);
+    let lock = seseragi_project::generate_lockfile(workspace.path()).unwrap();
+    workspace.write("seseragi.lock", &seseragi_project::write_lockfile(&lock));
+    let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let editing = format!("{source}pub fn editing value: Container -> Int = value.");
+    let position = LineIndex::new(&editing)
+        .try_locate_encoded(editing.len(), PositionEncoding::Utf16)
+        .unwrap();
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{},"workspaceFolders":[{"uri":file_uri(workspace.path()),"name":"member-completion"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":2},"contentChanges":[{"text":editing}]}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":{"line":position.line,"character":position.character}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    let methods = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(
+        methods
+            .iter()
+            .map(|item| item["label"].as_str().unwrap())
+            .collect::<Vec<_>>(),
+        ["old", "read"],
+        "{methods:#?}"
+    );
+    assert_eq!(
+        methods[0]["data"]["identity"],
+        "fixture/member-model@1.0.0::lib::Box::old"
+    );
+    assert_eq!(methods[0]["tags"], json!([1]));
+    assert!(methods[0]["documentation"].to_string().contains("Use read"));
+    assert!(methods[1].get("tags").is_none());
+}
+
+#[test]
 fn namespace_completion_stays_scoped_inside_an_incomplete_nested_expression() {
     let uri = "file:///nested-completion.ssrg";
     let source = concat!(

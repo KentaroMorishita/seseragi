@@ -930,6 +930,17 @@ pub(super) fn type_surface_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    let analysis = type_surface_expression_inner(expression, context);
+    context
+        .resolution
+        .record_receiver_fact(expression, &analysis.semantic_type);
+    analysis
+}
+
+fn type_surface_expression_inner(
+    expression: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
     if context.unproved_trait_operator(expression.span()) {
         return application::type_trait_operator_contract_error(expression.span(), context);
     }

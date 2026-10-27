@@ -400,7 +400,8 @@ pub(crate) fn completion(
     };
     // A trailing namespace access is more specific than a recovered enclosing
     // record expectation (for example html. inside an unfinished children list).
-    let namespace = namespace_prefix(&document.source, position);
+    let access = namespace_prefix(&document.source, position);
+    let namespace = access.map(|(prefix, _)| prefix);
     if let Some(context) = namespace
         .is_none()
         .then(|| completion_context(document, position))
@@ -455,7 +456,14 @@ pub(crate) fn completion(
         {
             push_reference_completion(&mut items, &mut seen, item, "0", markup);
         }
-    } else if namespace.is_none() {
+    } else if let Some((_, range)) = access {
+        for symbol in document.analysis.members_of_receiver(range) {
+            let key = format!("{}:{}", symbol.namespace, symbol.identity);
+            if seen.insert(key) {
+                items.push(symbol_completion(symbol, markup));
+            }
+        }
+    } else {
         for symbol in document.analysis.visible_symbols(position) {
             let key = format!("{}:{}", symbol.namespace, symbol.identity);
             if !seen.insert(key) {
@@ -915,7 +923,7 @@ fn reference_for<'analysis>(
         .find(|item| item.identity == identity)
 }
 
-fn namespace_prefix(source: &str, position: usize) -> Option<&str> {
+fn namespace_prefix(source: &str, position: usize) -> Option<(&str, ByteSpan)> {
     let before = source.get(..position)?.trim_end();
     let prefix = before.strip_suffix('.')?;
     let start = prefix
@@ -929,7 +937,13 @@ fn namespace_prefix(source: &str, position: usize) -> Option<&str> {
         })
         .unwrap_or(0);
     let name = &prefix[start..];
-    (!name.is_empty()).then_some(name)
+    (!name.is_empty()).then_some((
+        name,
+        ByteSpan {
+            start,
+            end: prefix.len(),
+        },
+    ))
 }
 
 fn imported_namespace_module(source: &str, prefix: &str) -> Option<String> {

@@ -1,12 +1,23 @@
 use crate::{diagnostics, resolve, typed, ResolvedModule, TypedModule, TypedModuleInterface};
 use seseragi_syntax::{DiagnosticArtifact, DiagnosticSeverity, ModuleInterface};
 
+/// A source occurrence whose nominal receiver owner was proved in the actual
+/// typing environment. This editor fact is kept beside, rather than inside,
+/// Typed HIR and never changes type or dictionary contracts.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AnalysisNominalReceiver {
+    pub range: seseragi_syntax::ByteSpan,
+    pub owner: String,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AnalyzedModule {
     pub diagnostics: DiagnosticArtifact,
     pub resolved: ResolvedModule,
     pub typed_hir: TypedModule,
     pub typed_interface: TypedModuleInterface,
+    pub nominal_receivers: Vec<AnalysisNominalReceiver>,
 }
 
 /// Resolves and types one syntax-checked module interface.
@@ -40,6 +51,7 @@ pub fn analyze_module_interface(
         resolved,
         typed_hir,
         typed_interface,
+        nominal_receivers: Vec::new(),
     })
 }
 
@@ -70,6 +82,7 @@ pub fn analyze_linked_module(
         resolved,
         typed_hir,
         typed_interface,
+        nominal_receivers: Vec::new(),
     })
 }
 
@@ -112,13 +125,14 @@ pub fn analyze_linked_module_recovering(
         }
         diagnostics
     };
-    let (typed_hir, typed_interface) =
-        typed::type_resolved_module_with_public_interface(shallow, resolved.clone());
+    let (typed_hir, typed_interface, nominal_receivers) =
+        typed::type_resolved_module_with_analysis(shallow, resolved.clone());
     Ok(AnalyzedModule {
         diagnostics,
         resolved,
         typed_hir,
         typed_interface,
+        nominal_receivers,
     })
 }
 

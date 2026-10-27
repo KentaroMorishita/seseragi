@@ -8,8 +8,8 @@ use seseragi_project::{
     ModuleLinkTarget,
 };
 use seseragi_semantics::{
-    analysis_document, analyze_linked_module, analyze_linked_module_recovering, AnalysisDocument,
-    AnalyzedModule,
+    analysis_document_with_receivers, analyze_linked_module, analyze_linked_module_recovering,
+    AnalysisDocument, AnalyzedModule,
 };
 use seseragi_syntax::{
     parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
@@ -385,8 +385,12 @@ fn analyze_project_inner(
         .analyzed
         .into_iter()
         .map(|(module, analyzed)| {
-            let document =
-                analysis_document(analyzed.diagnostics, analyzed.resolved, &analyzed.typed_hir);
+            let document = analysis_document_with_receivers(
+                analyzed.diagnostics,
+                analyzed.resolved,
+                &analyzed.typed_hir,
+                analyzed.nominal_receivers,
+            );
             (module, document)
         })
         .collect();

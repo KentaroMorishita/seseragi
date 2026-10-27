@@ -20,6 +20,7 @@ mod imported_types;
 mod imports;
 mod inherent_methods;
 mod module_dependencies;
+mod source_facts;
 mod type_bindings;
 
 pub(crate) struct TypedResolution<'a> {
@@ -30,6 +31,7 @@ pub(crate) struct TypedResolution<'a> {
     imported_effects: BTreeMap<SymbolId, imported_effects::ImportedEffectFunction>,
     semantic_values: BTreeMap<SymbolId, SemanticTypeKey>,
     semantic_types: SemanticTypeCatalog,
+    receiver_facts: std::cell::RefCell<Option<source_facts::ReceiverFacts>>,
 }
 
 impl<'a> TypedResolution<'a> {
@@ -64,6 +66,7 @@ impl<'a> TypedResolution<'a> {
             imported_effects: imported_effects::collect_imported_effects(resolved),
             semantic_values,
             semantic_types,
+            receiver_facts: std::cell::RefCell::new(None),
         };
         resolution.infer_compact_effect_callables();
         resolution.infer_top_level_pattern_bindings();
