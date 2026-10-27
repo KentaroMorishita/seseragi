@@ -3427,19 +3427,7 @@ pub(crate) fn standard_instance_constraints(
     instance: &PreludeStandardInstance,
     type_ref: &TypedType,
 ) -> Option<Vec<TypedConstraint>> {
-    let arguments = match type_ref {
-        TypedType::Named { name, arguments }
-            if instance.type_canonical.is_none() && name == instance.type_name =>
-        {
-            arguments
-        }
-        TypedType::ExternalNamed {
-            canonical,
-            arguments,
-            ..
-        } if instance.type_canonical == Some(canonical.as_str()) => arguments,
-        _ => return None,
-    };
+    let arguments = standard_instance_arguments(instance, type_ref)?;
     let constraints = standard_instance_constraint_specs(instance.identity)
         .iter()
         .map(|constraint| {
@@ -4071,22 +4059,37 @@ fn standard_instance_canonical_head(
             .is_some_and(|arguments| arguments.starts_with('<'))
 }
 
-fn standard_instance_head(instance: &PreludeStandardInstance, type_ref: &TypedType) -> Option<u32> {
-    let arguments = match type_ref {
+/// Match the registered owner before exposing its type arguments. Explicit
+/// Prelude type references use the same registry as implicit source names.
+pub(crate) fn standard_instance_arguments<'a>(
+    instance: &PreludeStandardInstance,
+    type_ref: &'a TypedType,
+) -> Option<&'a [TypedType]> {
+    match type_ref {
         TypedType::Named { name, arguments }
             if instance.type_canonical.is_none()
                 && instance.type_name == name
                 && type_constructor_arity(name) == Some(instance.type_arity) =>
         {
-            arguments
+            Some(arguments)
         }
         TypedType::ExternalNamed {
             canonical,
             arguments,
             ..
-        } if instance.type_canonical == Some(canonical.as_str()) => arguments,
-        _ => return None,
-    };
+        } if instance.type_canonical.map_or_else(
+            || canonical == &format!("std/prelude::{}", instance.type_name),
+            |expected| canonical == expected,
+        ) =>
+        {
+            Some(arguments)
+        }
+        _ => None,
+    }
+}
+
+fn standard_instance_head(instance: &PreludeStandardInstance, type_ref: &TypedType) -> Option<u32> {
+    let arguments = standard_instance_arguments(instance, type_ref)?;
     let supplied = arguments
         .iter()
         .position(|argument| matches!(argument, TypedType::Hole))

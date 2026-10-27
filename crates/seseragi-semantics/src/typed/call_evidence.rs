@@ -1058,31 +1058,13 @@ fn standard_instance_type_arguments(
     instance: &crate::prelude::PreludeStandardInstance,
     type_ref: &TypedType,
 ) -> Option<Vec<TypedType>> {
-    match type_ref {
-        TypedType::Named { name, arguments }
-            if instance.type_canonical.is_none() && name == instance.type_name =>
-        {
-            Some(
-                arguments
-                    .iter()
-                    .filter(|argument| !matches!(argument, TypedType::Hole))
-                    .cloned()
-                    .collect(),
-            )
-        }
-        TypedType::ExternalNamed {
-            canonical,
-            arguments,
-            ..
-        } if instance.type_canonical == Some(canonical.as_str()) => Some(
-            arguments
-                .iter()
-                .filter(|argument| !matches!(argument, TypedType::Hole))
-                .cloned()
-                .collect(),
-        ),
-        _ => None,
-    }
+    Some(
+        crate::prelude::standard_instance_arguments(instance, type_ref)?
+            .iter()
+            .filter(|argument| !matches!(argument, TypedType::Hole))
+            .cloned()
+            .collect(),
+    )
 }
 
 fn standard_type_is_shadowed(
