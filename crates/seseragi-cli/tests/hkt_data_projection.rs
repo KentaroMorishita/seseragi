@@ -245,13 +245,18 @@ fn opaque_hkt_alias_factories_keep_real_values_and_private_brands_across_facades
         "hkt-opaque-alias-factory",
         "fixture/opaque-hkt",
         r#"
-import { create, reveal, type PublicWrapped, type PublicChain } from "./facade.js";
+import { create, reveal, scoped, constrained, type PublicWrapped, type PublicChain } from "./facade.js";
+import { intShow } from "@seseragi/runtime/show";
 type Maybe<A> = { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: A };
 interface MaybeKind { readonly args: readonly [unknown]; readonly type: Maybe<this["args"][0]> }
 const factory: (value: Maybe<number>) => PublicChain<MaybeKind, number> = create<MaybeKind, number>;
 const hidden: PublicChain<MaybeKind, number> = factory({ tag: "Just", value: 42 });
 const kept: PublicWrapped<MaybeKind, number> = hidden;
 const actual: Maybe<number> = reveal<MaybeKind, number>(kept);
+const throughScoped: Maybe<number> = scoped<MaybeKind, number>(actual);
+const withEvidence: Maybe<number> = constrained<MaybeKind, number>(actual)(intShow);
+// @ts-expect-error A checked factory input keeps the constructor's payload type.
+create<MaybeKind, number>({ tag: "Just", value: "wrong" });
 // @ts-expect-error The factory's actual value does not expose its private field.
 hidden.value;
 // @ts-expect-error A fabricated object lacks the canonical opaque brand.
@@ -377,7 +382,28 @@ fn type_only_hkt_alias_imports_keep_dependency_initialization_defects() {
         Command::new(cli).args(["lock", "update"]).arg(&project),
         &scratch.0,
     ));
-    for profile in ["development", "release"] {
+    let loaded = seseragi_project::load_local_project(&project).unwrap();
+    for (profile, value) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let raw = scratch.0.join(format!("raw-{profile}"));
+        fs::create_dir(&raw).unwrap();
+        let compiled =
+            seseragi_driver::compile_local_project_with_profile(&loaded, Some(value)).unwrap();
+        for module in compiled.compiled.modules.values() {
+            let relative = Path::new(&module.generated.metadata.outputs.typescript);
+            assert!(
+                !relative.is_absolute()
+                    && relative
+                        .components()
+                        .all(|part| matches!(part, std::path::Component::Normal(_)))
+            );
+            let path = raw.join(relative);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, &module.generated.typescript).unwrap();
+        }
+        strict(&raw, typescript_files(&raw), &scratch.0);
         let product = scratch.0.join(profile);
         successful(bounded(
             Command::new(cli)

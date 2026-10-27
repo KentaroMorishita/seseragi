@@ -142,6 +142,47 @@ fn opaque_hkt_alias_factories_keep_canonical_owner_and_private_representation() 
         assert!(!public.contains("\"value\""), "{public}");
         assert!(model.generated.typescript.contains("export type Wrapped<"));
         assert!(model.generated.typescript.contains("export type Chain<"));
+        for name in ["seal", "scoped", "constrained"] {
+            let parameter = model
+                .typescript_ir
+                .functions
+                .iter()
+                .find_map(|function| {
+                    let seseragi_lowering::TypeScriptFunction::ConstFunction {
+                        name: actual,
+                        parameters,
+                        ..
+                    } = function;
+                    (actual == name).then_some(&parameters[0])
+                })
+                .unwrap();
+            assert_eq!(parameter.type_name, "$ssrg$Apply<F, readonly [A]>");
+        }
+        let returned = model
+            .typescript_ir
+            .functions
+            .iter()
+            .find_map(|function| {
+                let seseragi_lowering::TypeScriptFunction::ConstFunction { name, body, .. } =
+                    function;
+                (name == "unseal").then_some(body)
+            })
+            .unwrap();
+        assert!(matches!(
+            returned,
+            seseragi_lowering::TypeScriptExpr::CheckedResult {
+                type_ref: TypeScriptType::KindApplication { constructor, arguments },
+                ..
+            } if constructor == "F" && arguments.len() == 1
+        ));
+        let constrained = model
+            .core_ir
+            .functions
+            .iter()
+            .find(|function| function.symbol.ends_with("::constrained"))
+            .unwrap();
+        assert_eq!(constrained.parameters.len(), 1);
+        assert_eq!(constrained.constraints.len(), 1);
         let facade = &compiled.modules["fixture/opaque-hkt::facade"].typescript_ir;
         for (original, renamed) in [("Wrapped", "PublicWrapped"), ("Chain", "PublicChain")] {
             assert!(facade

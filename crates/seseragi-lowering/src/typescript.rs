@@ -1082,6 +1082,19 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             let scoped_types = module_imports
                 .type_names
                 .with_parameters(&function.type_parameters);
+            let scoped_types = if function
+                .type_parameters
+                .iter()
+                .any(TypeParameter::is_constructor)
+            {
+                // A checked lexical constructor binder has the same witness in
+                // data annotations and its callable's input/result annotations.
+                // Unknown constructors and the separate dictionary ABI retain
+                // their existing erasure rules.
+                scoped_types.with_higher_kinds()
+            } else {
+                scoped_types
+            };
             let value_type = recursive_effect_types
                 .get(&function.symbol)
                 .and_then(|checked| recursive::annotation(checked, &scoped_types))

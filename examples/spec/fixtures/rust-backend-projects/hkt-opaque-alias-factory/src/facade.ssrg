@@ -3,5 +3,7 @@ pub import {
   Wrapped as PublicWrapped,
   Chain as PublicChain,
   seal as create,
-  unseal as reveal
+  unseal as reveal,
+  scoped,
+  constrained
 } from "./model"
