@@ -5,6 +5,7 @@
 ### Added
 
 - Support native Int remainder through the existing checked arithmetic boundary. UTF-8 integer rows can be transformed into remainder rows in source programs and ordinary path packages, preserving signed truncation, saved operator stages, failure output retention and scoped cleanup after a zero-divisor Defect.
+- Support native Float rounding and checked Int conversion for UTF-8 file transformations. Keep all six rounding modes, typed conversion failures, one-time evaluation and cleanup consistent with TypeScript, and preserve existing output when parsing or conversion fails.
 
 ## [0.61.107] - 2026-10-27
 
