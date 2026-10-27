@@ -158,3 +158,17 @@ fn renamed_facades_transport_a_structural_body_without_creating_an_alias_owner()
             .any(|function| function.symbol.ends_with("::main")));
     }
 }
+
+#[test]
+fn returned_alias_application_keeps_the_canonical_nominal_and_intrinsic_arguments() {
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/alias-type-function-evaluation.ssrg"
+    );
+    for profile in profiles() {
+        compile_module(
+            CompileInput::new("returned-雫.ssrg", "fixture/type-functions", source)
+                .with_profile(profile),
+        )
+        .unwrap_or_else(|error| panic!("{error:#?}"));
+    }
+}
