@@ -40,6 +40,28 @@ fn root() -> PathBuf {
 
 fn strict(directory: &Path, files: Vec<PathBuf>, scratch: &Path) {
     let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"skipLibCheck":false,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2023","DOM","DOM.Iterable"],"allowImportingTsExtensions":true},"files":files});
+    if let Some(evidence) = std::env::var_os("SESERAGI_HKT_PROJECTION_EVIDENCE") {
+        let capture = PathBuf::from(evidence)
+            .join(scratch.file_name().unwrap())
+            .join(directory.strip_prefix(scratch).unwrap());
+        fs::create_dir_all(&capture).unwrap();
+        let captured = files
+            .iter()
+            .map(|file| {
+                let destination = capture.join(file.strip_prefix(directory).unwrap());
+                fs::create_dir_all(destination.parent().unwrap()).unwrap();
+                fs::copy(file, &destination).unwrap();
+                destination
+            })
+            .collect::<Vec<_>>();
+        let mut captured_config = config.clone();
+        captured_config["files"] = serde_json::json!(captured);
+        fs::write(
+            capture.join("tsconfig.json"),
+            serde_json::to_vec(&captured_config).unwrap(),
+        )
+        .unwrap();
+    }
     fs::write(
         directory.join("tsconfig.json"),
         serde_json::to_vec(&config).unwrap(),
