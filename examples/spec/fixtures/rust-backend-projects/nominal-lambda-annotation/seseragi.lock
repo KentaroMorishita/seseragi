@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-trait-operator-order@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-trait-operator-order@0.0.0#workspace:."
+name = "fixture/native-trait-operator-order"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:2f2d60e52fb23971be22334a27f9be2bb3b6c40acb38cbdb522664dd033f9fa8"
+content_digest = "sha256:4c2afde327a0fd1bd225fc5fe4702a9f62cca9a5cf7b27d98cce1dd9c83d394e"
+dependencies = [
+  { import = "model", package = "fixture/trait-operator-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/trait-operator-model@1.0.0#path:vendor/model"
+name = "fixture/trait-operator-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:2dbd9f5815817a6f37f0c0064a62dcce838455be9cacabb5262a0bda2814daf7"
+content_digest = "sha256:ac599826a026795f3b4adc9242330bb4477fa0e7516a4cb2126c63d6260204a2"
+dependencies = []

@@ -261,6 +261,30 @@ fn check_primitive_eq_literals(text: &str, expected: &str, native_supported: boo
 }
 
 #[test]
+fn shared_frontend_identity_programs_match_raw_strict_ts_and_native() {
+    for (source, expected) in [
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/equality-source-partials.ssrg"
+            ),
+            "True\nTrue\nTrue\nTrue\n",
+        ),
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/imported-error-payload-match.ssrg"
+            ),
+            "not-finite\nnot-finite\noutside-int-range\noutside-int-range\n",
+        ),
+        (
+            include_str!("../../../examples/spec/fixtures/rust-backend/ref-array-shadow.ssrg"),
+            "[1, 2]\n[3, 4]\nlocal=5\n",
+        ),
+    ] {
+        check_primitive_eq_literals(source, expected, true);
+    }
+}
+
+#[test]
 fn string_equality_matches_original_strict_ts_and_native_lifetimes() {
     let scratch = Scratch::new();
     let fixture = fs::read_to_string(
@@ -270,6 +294,9 @@ fn string_equality_matches_original_strict_ts_and_native_lifetimes() {
     assert_eq!(fixture.matches("body \"ready\"").count(), 1);
     let original =
         include_str!("../../../examples/spec/fixtures/rust-backend/string-equality-minimal.ssrg");
+    let stage = "  let equal: String -> String -> Bool = (==)\n  let same = equal captured";
+    assert_eq!(fixture.matches(stage).count(), 1);
+    let source_partial = fixture.replace(stage, "  let same: String -> Bool = (==) captured");
     for (label, text, code, expected) in [
         ("original", original.to_owned(), 0, "False\n"),
         ("values", include_str!("../../../examples/spec/fixtures/rust-backend/string-equality.ssrg").to_owned(), 0, "True\nTrue\nTrue\nTrue\nTrue\nFalse\nTrue\nFalse\nFalse\nTrue\nTrue\nFalse\nTrue\nTrue\n"),
@@ -288,6 +315,24 @@ fn string_equality_matches_original_strict_ts_and_native_lifetimes() {
         (
             "defect",
             fixture.replace("body \"ready\"", "body \"defect\""),
+            70,
+            "acquired\ncold\nreleased\n",
+        ),
+        (
+            "source-partial-success",
+            source_partial.clone(),
+            0,
+            "acquired\ncold\nreleased\nTrue:True\n",
+        ),
+        (
+            "source-partial-failure",
+            source_partial.replace("body \"ready\"", "body \"fail\""),
+            0,
+            "acquired\ncold\nreleased\nFailure: body failure\n",
+        ),
+        (
+            "source-partial-defect",
+            source_partial.replace("body \"ready\"", "body \"defect\""),
             70,
             "acquired\ncold\nreleased\n",
         ),
@@ -522,6 +567,11 @@ fn string_equality_evaluates_source_operands_once_in_order() {
             "True",
             vec!["leftValue", "marker", "rightValue"],
         ),
+        (
+            "sourcePartialProbe",
+            "True",
+            vec!["leftValue", "marker", "rightValue"],
+        ),
     ] {
         let mut rust = seseragi_backend_rust::emit_rust_module(&core, entry)
             .unwrap()
@@ -566,6 +616,7 @@ fn string_equality_evaluates_source_operands_once_in_order() {
         [false, ["leftValue", "rightValue"]],
         [true, ["leftValue", "marker", "rightValue"]],
         [true, ["leftValue", "rightValue"]],
+        [true, ["leftValue", "marker", "rightValue"]],
         [true, ["leftValue", "marker", "rightValue"]]
     ]);
     for (label, profile) in [
@@ -596,7 +647,7 @@ fn string_equality_evaluates_source_operands_once_in_order() {
             traced.insert_str(end, ")");
             traced.insert_str(body, &format!(" ($trace.push({name:?}), "));
         }
-        traced.push_str("\nconst $trace: string[] = [];\nconst observed = [binaryProbe, negatedProbe, partialProbe, directMethodProbe, partialMethodProbe].map(fn => { $trace.length = 0; return [fn(undefined), [...$trace]]; });\nconsole.log(JSON.stringify(observed));\n");
+        traced.push_str("\nconst $trace: string[] = [];\nconst observed = [binaryProbe, negatedProbe, partialProbe, directMethodProbe, partialMethodProbe, sourcePartialProbe].map(fn => { $trace.length = 0; return [fn(undefined), [...$trace]]; });\nconsole.log(JSON.stringify(observed));\n");
         fs::write(output.join("traced.ts"), traced).unwrap();
         let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"skipLibCheck":false,"allowImportingTsExtensions":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2023","DOM","DOM.Iterable"]},"files":[output.join("original.ts"),output.join("traced.ts")]});
         fs::write(

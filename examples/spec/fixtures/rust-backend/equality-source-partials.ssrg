@@ -1,0 +1,14 @@
+fn same<A> captured: A -> (A -> Bool) where Eq<A> = (==) captured
+
+pub effect fn main = do {
+  let captured = "雫"
+  let partial: String -> Bool = (==) captured
+  let equal: String -> String -> Bool = (==)
+  let control = equal captured
+  let unequal: String -> Bool = (!=) captured
+  let generic = same captured
+  println (show (partial "雫"))
+  println (show (control "雫"))
+  println (show (unequal "雨"))
+  println (show (generic "雫"))
+}

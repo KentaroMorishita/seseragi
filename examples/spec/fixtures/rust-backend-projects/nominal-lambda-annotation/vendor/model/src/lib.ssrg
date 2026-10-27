@@ -1,0 +1,14 @@
+pub type Box<A> = | Box A
+
+pub trait Monad<Container<_>> {
+  fn flatMap<Input, Output> callback: (Input -> Container<Output>) -> source: Container<Input> -> Container<Output>
+}
+
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value {
+    Box item -> f item
+  }
+}
+
+pub fn make<A> value: A -> Box<A> = Box value
+pub fn unwrap<A> value: Box<A> -> A = match value { Box item -> item }

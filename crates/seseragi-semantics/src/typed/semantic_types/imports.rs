@@ -1,4 +1,4 @@
-use crate::{ResolvedModule, SymbolKind, TypedType};
+use crate::{ResolvedImport, ResolvedModule, SymbolKind, TypedType};
 use seseragi_syntax::InterfaceType;
 use std::collections::BTreeMap;
 
@@ -8,18 +8,24 @@ use super::{
 };
 use crate::typed::type_ref::typed_type_from_interface_type;
 
+pub(super) fn is_closed_adt_import(resolved: &ResolvedModule, import: &ResolvedImport) -> bool {
+    import.export.namespace == "type"
+        && (matches!(
+            import.export.declaration_kind.as_deref(),
+            Some("type" | "newtype")
+        ) || (import.export.declaration_kind.as_deref() == Some("opaque-type")
+            && resolved.imports.iter().any(|candidate| {
+                candidate.export.constructor_of.as_ref() == Some(&import.export.symbol)
+            })))
+}
+
 impl SemanticTypeCatalog {
     pub(super) fn collect_imported_adts(&mut self, resolved: &ResolvedModule) {
-        for owner_import in resolved.imports.iter().filter(|import| {
-            import.export.namespace == "type"
-                && (matches!(
-                    import.export.declaration_kind.as_deref(),
-                    Some("type" | "newtype")
-                ) || (import.export.declaration_kind.as_deref() == Some("opaque-type")
-                    && resolved.imports.iter().any(|candidate| {
-                        candidate.export.constructor_of.as_ref() == Some(&import.export.symbol)
-                    })))
-        }) {
+        for owner_import in resolved
+            .imports
+            .iter()
+            .filter(|import| is_closed_adt_import(resolved, import))
+        {
             let owner = owner_import.symbol;
             let owner_canonical = &owner_import.export.symbol;
             let type_parameters = owner_import

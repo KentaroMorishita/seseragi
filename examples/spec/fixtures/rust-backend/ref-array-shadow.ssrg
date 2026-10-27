@@ -1,0 +1,19 @@
+import * as refs from "std/ref"
+
+type Array<A> = | LocalArray A
+
+instance<A> Show<Array<A>> where Show<A> {
+  fn show value: Array<A> -> String = match value {
+    LocalArray item -> "local=" + show item
+  }
+}
+
+pub effect fn main = do {
+  value <- refs.make [1, 2]
+  current <- refs.get value
+  println (show current)
+  refs.set [3, 4] value
+  updated <- refs.get value
+  println (show updated)
+  println (show (LocalArray 5))
+}

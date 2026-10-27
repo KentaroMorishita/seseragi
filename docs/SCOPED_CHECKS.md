@@ -39,6 +39,15 @@ native対照と、直接method・部分適用のsource一回評価・順序も�
 Bool／UnitのEqと前置`!`のnative対応は、このTS修復の受入範囲に含めません。
 共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
 
+importしたADTのpayload identityと注釈付きEq部分適用は、driverの
+`--test frontend_payload_identity --test frontend_inference --test imported_returns`で確認します。
+constructorを公開するopaque ADT、local alias、同canonicalのdirect／facade／namespace import、
+別ownerと不正な残り関数型の拒否を確認し、表示名でownerを推測しません。
+CLIの`--test string_equality`と`--test nominal_lambda_identity`では、元の生成TS両profileの
+strict、fresh Bun／Node、native、source引数の一回評価、cold再実行、Failure／Defect後の
+finalizerとroot解放を比較します。FloatConversionErrorを含むnative fixtureには、
+同errorのcanonical変換ABIが必要です。無注釈の演算子部分適用全般はこの修復に含めません。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。
