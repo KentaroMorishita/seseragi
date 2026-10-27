@@ -65,6 +65,11 @@ pub fn resolve_linked_module(
     let mut resolver = Resolver::new(&linked.interface.module, module_origin(&surface));
     resolver.namespace_deprecations =
         namespace_deprecations::linked(&linked.dependencies, &linked.interface);
+    resolver.operator_deprecations = linked
+        .dependencies
+        .iter()
+        .flat_map(|dependency| dependency.interface.operator_deprecations.iter().cloned())
+        .collect();
     resolver.issues.extend(operator_issues);
     resolver.issues.extend(dependency_instance_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
@@ -180,6 +185,7 @@ fn finish_resolved_module(
         declarations: surface.declarations,
         deprecations: surface.deprecations,
         namespace_deprecations: namespaces,
+        operator_deprecations: resolver.operator_deprecations,
         scopes: resolver.scopes,
         symbols: resolver.symbols,
         references: resolver.references,
@@ -238,6 +244,7 @@ pub(super) struct Resolver {
     prelude_names: BTreeMap<(SymbolNamespace, String), SymbolId>,
     namespace_imports: namespace::NamespaceImports,
     namespace_deprecations: Vec<crate::ResolvedNamespaceDeprecation>,
+    operator_deprecations: Vec<seseragi_syntax::InterfaceOperatorDeprecation>,
 }
 
 impl Resolver {
@@ -259,6 +266,7 @@ impl Resolver {
             prelude_names: BTreeMap::new(),
             namespace_imports: namespace::NamespaceImports::default(),
             namespace_deprecations: Vec::new(),
+            operator_deprecations: Vec::new(),
         }
     }
 

@@ -7267,6 +7267,7 @@ fn float_interface() -> ModuleInterface {
 fn standard_interface(module: &str, exports: Vec<InterfaceExport>) -> ModuleInterface {
     ModuleInterface {
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         module: module.to_owned(),
         source: format!("{module}.ssrg"),
@@ -7885,6 +7886,7 @@ fn collection_interface(
     }
     ModuleInterface {
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         module: module.to_owned(),
         source: format!("{module}.ssrg"),
@@ -8548,6 +8550,7 @@ fn web_dom_interface() -> ModuleInterface {
     ];
     ModuleInterface {
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         module: "std/web/dom".to_owned(),
         source: "std/web/dom.ssrg".to_owned(),
@@ -9165,6 +9168,7 @@ fn web_svg_interface() -> ModuleInterface {
 
     ModuleInterface {
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         module: module.to_owned(),
         source: "std/web/svg.ssrg".to_owned(),
@@ -9462,6 +9466,7 @@ fn web_html_interface() -> ModuleInterface {
 
     ModuleInterface {
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         module: "std/web/html".to_owned(),
         source: "std/web/html.ssrg".to_owned(),
@@ -9642,6 +9647,7 @@ fn signal_interface() -> ModuleInterface {
     ];
     ModuleInterface {
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         module: "std/signal".to_owned(),
         source: "std/signal.ssrg".to_owned(),

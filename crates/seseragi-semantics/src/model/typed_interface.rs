@@ -13,6 +13,7 @@ impl TypedModuleInterface {
             dependencies: self.dependencies,
             exports: self.exports,
             namespace_deprecations: self.namespace_deprecations,
+            operator_deprecations: self.operator_deprecations,
             operators: self.operators,
             instances: self.instances,
         }

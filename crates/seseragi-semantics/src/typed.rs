@@ -369,9 +369,22 @@ fn type_resolved_module_with_source_facts(
 ) {
     let dependency_instances = resolved.dependency_instances.clone();
     let deprecations = resolved.deprecations.clone();
+    let mut operator_notices = resolved.operator_deprecations.clone();
+    let operator_sources = crate::deprecated_operators::sources(&resolved);
     let (typed, nominal_bindings) = typed_module_with_bindings(resolved, retain_receivers);
-    let typed_interface =
+    operator_notices.extend(crate::deprecated_operators::local(operator_sources, &typed));
+    let mut typed_interface =
         typed_interface_from_modules(shallow, &typed, &dependency_instances, &deprecations);
+    typed_interface.operator_deprecations = crate::deprecated_operators::merge(operator_notices)
+        .into_iter()
+        .filter(|notice| {
+            typed_interface.instances.iter().any(|instance| {
+                instance.identity.as_deref() == Some(notice.instance.as_str())
+                    && instance.provider_module.as_deref() == Some(notice.provider_module.as_str())
+                    && instance.trait_identity.as_deref() == Some(notice.trait_identity.as_str())
+            })
+        })
+        .collect();
     (typed, typed_interface, nominal_bindings)
 }
 
@@ -391,6 +404,7 @@ pub fn type_module_public_interface(
             dependencies: shallow.dependencies,
             exports: Vec::new(),
             namespace_deprecations: Vec::new(),
+            operator_deprecations: Vec::new(),
             operators: Vec::new(),
             instances: Vec::new(),
         };

@@ -11,6 +11,8 @@ pub struct ModuleInterface {
     pub exports: Vec<InterfaceExport>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub namespace_deprecations: Vec<InterfaceNamespaceDeprecation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub operator_deprecations: Vec<InterfaceOperatorDeprecation>,
     pub operators: Vec<InterfaceOperator>,
     pub instances: Vec<InterfaceInstance>,
 }
@@ -29,6 +31,31 @@ pub struct InterfaceNamespaceDeprecation {
     pub members: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub publication: Option<ByteSpan>,
+}
+
+/// Authoring metadata for a source implementation, indexed by the final
+/// dictionary identity and canonical method contract. It does not modify the
+/// instance/evidence representation or the global trait method's metadata.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InterfaceOperatorDeprecation {
+    pub instance: String,
+    pub provider_module: String,
+    pub trait_identity: String,
+    pub method: String,
+    pub spelling: String,
+    pub declaration: ByteSpan,
+    pub name_span: ByteSpan,
+    pub deprecation: crate::Deprecation,
+}
+
+impl InterfaceOperatorDeprecation {
+    pub fn symbol(&self) -> String {
+        format!(
+            "{}::implementation({})::{}",
+            self.provider_module, self.instance, self.method
+        )
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

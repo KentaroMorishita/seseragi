@@ -810,6 +810,89 @@ fn inherent_member_completion_uses_the_receiver_owner_and_keeps_deprecated_tags(
 }
 
 #[test]
+fn selected_operator_notices_do_not_mark_ordinary_addition_or_offer_invalid_rename() {
+    let uri = "file:///operator-notice.ssrg";
+    let source = "// 演算 🙂\npub struct Box { pub value: Int }\nimpl Box { deprecated \"Use combine\" since \"0.61.0\" operator + self -> other: Box -> Box = other }\npub fn answer left: Box -> right: Box -> Box = left + right\npub fn ordinary -> Int = 1 + 2\n";
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let locate = |byte| {
+            let p = LineIndex::new(source)
+                .try_locate_encoded(byte, encoding)
+                .unwrap();
+            json!({"line":p.line,"character":p.character})
+        };
+        let selected = locate(source.find("left + right").unwrap() + 5);
+        let ordinary = locate(source.find("1 + 2").unwrap() + 2);
+        let input = [
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+            json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":selected}}),
+            json!({"jsonrpc":"2.0","id":3,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":ordinary}}),
+            json!({"jsonrpc":"2.0","id":4,"method":"textDocument/documentSymbol","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":5,"method":"textDocument/semanticTokens/full","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":6,"method":"textDocument/prepareRename","params":{"textDocument":{"uri":uri},"position":selected}}),
+            json!({"jsonrpc":"2.0","id":7,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":selected}}),
+            json!({"jsonrpc":"2.0","id":8,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"exit"}),
+        ];
+        let messages = run_server(&input);
+        assert!(response(&messages, 2)["result"]
+            .to_string()
+            .contains("Use combine"));
+        assert!(!response(&messages, 3)["result"]
+            .to_string()
+            .contains("Use combine"));
+        let symbols = response(&messages, 4)["result"].as_array().unwrap();
+        let operator = symbols.iter().find(|symbol| symbol["name"] == "+").unwrap();
+        assert_eq!(operator["tags"], json!([1]));
+        assert_eq!(operator["kind"], 25);
+        let mut line = 0;
+        let mut character = 0;
+        let mut tokens = std::collections::BTreeMap::new();
+        for token in response(&messages, 5)["result"]["data"]
+            .as_array()
+            .unwrap()
+            .chunks(5)
+        {
+            let delta_line = token[0].as_u64().unwrap();
+            line += delta_line;
+            character = if delta_line == 0 {
+                character + token[1].as_u64().unwrap()
+            } else {
+                token[1].as_u64().unwrap()
+            };
+            tokens.insert((line, character), token[4].as_u64().unwrap());
+        }
+        assert_eq!(
+            tokens[&(
+                selected["line"].as_u64().unwrap(),
+                selected["character"].as_u64().unwrap()
+            )] & 1,
+            1
+        );
+        assert_eq!(
+            tokens[&(
+                ordinary["line"].as_u64().unwrap(),
+                ordinary["character"].as_u64().unwrap()
+            )] & 1,
+            0
+        );
+        assert!(response(&messages, 6)["result"].is_null());
+        assert!(!response(&messages, 7)["result"].is_null());
+        let facts = messages
+            .iter()
+            .filter(|message| message["method"] == "textDocument/publishDiagnostics")
+            .flat_map(|message| message["params"]["diagnostics"].as_array().unwrap())
+            .filter(|diagnostic| diagnostic["code"] == "SES-L0201")
+            .collect::<Vec<_>>();
+        assert_eq!(facts.len(), 1, "{facts:#?}");
+        assert_eq!(facts[0]["range"]["start"], selected);
+    }
+}
+
+#[test]
 fn foreign_namespace_notices_reach_positioned_editor_features() {
     let uri = "file:///namespace-notice.ssrg";
     let source = "// 元 🙂\npub foreign \"typescript\" from \"./host.mjs\" { deprecated \"Use current\" since \"0.61.0\" namespace legacy { pure fn read value: Int -> Int } namespace current { pure fn read value: Int -> Int } }\npub fn answer -> Int = legacy . read 41\n";

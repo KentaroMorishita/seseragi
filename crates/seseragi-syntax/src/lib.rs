@@ -33,8 +33,9 @@ pub use interface::{
     namespace_deprecations, parse_import_free_module_interface, parse_module_interface,
     parse_unlinked_module_interface, ImportOccurrence, InterfaceConstraint, InterfaceDependency,
     InterfaceExport, InterfaceImport, InterfaceInstance, InterfaceMethod,
-    InterfaceNamespaceDeprecation, InterfaceOperator, InterfaceRecordField, InterfaceScheme,
-    InterfaceType, ModuleHeader, ModuleHeaderName, ModuleInterface, UnlinkedModuleInterface,
+    InterfaceNamespaceDeprecation, InterfaceOperator, InterfaceOperatorDeprecation,
+    InterfaceRecordField, InterfaceScheme, InterfaceType, ModuleHeader, ModuleHeaderName,
+    ModuleInterface, UnlinkedModuleInterface,
 };
 pub use lexer::{is_custom_operator_candidate, lex};
 pub use literal::{decode_char_literal, decode_string_literal, LiteralDecodeError};

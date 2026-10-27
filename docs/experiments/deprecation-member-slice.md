@@ -43,10 +43,17 @@ reaches editor tags, generated metadata/source maps, and actual API HTML/JSON.
 Empty metadata is omitted from the previous wire format. A member notice does
 not change generated program code or introduce a new resolver entrance.
 
-Notices for selected impl operators remain a separate slice: their public
-instance/method provenance must survive dependency transport before warnings
-can safely follow an imported selected dictionary. Global Prelude Add/Eq
-methods must not acquire a concrete implementation's notice.
+The separate impl-operator slice records a final instance identity, provider,
+canonical trait/method, and the original source clause. Warnings follow selected
+Local/Imported evidence at an original operator or callee token. A scoped
+Parameter witness does not prove a concrete implementation. The global Prelude
+Add/Eq method is never marked, so other nominal or primitive instances remain
+ordinary. The optional record travels through public instance contracts into
+generated metadata/source maps and API HTML/JSON. Operator implementations retain
+definition navigation but are not offered a textual rename that would silently
+change their built-in trait contract. This branch's scoped acceptance and final
+integrated release are recorded separately from the already verified namespace
+checkpoint.
 
 Member source provenance is an analysis table: exact SurfaceExpr ranges identify
 the original callee token, and typed canonical callees/trait dispatch select

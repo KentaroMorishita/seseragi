@@ -163,6 +163,7 @@ mod tests {
     fn interface() -> TypedModuleInterface {
         TypedModuleInterface {
             namespace_deprecations: Vec::new(),
+            operator_deprecations: Vec::new(),
             schema: 1,
             stage: "typed-interface".to_owned(),
             module: "artifact/main".to_owned(),

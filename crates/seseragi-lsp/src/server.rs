@@ -725,6 +725,9 @@ impl State {
                 let document = self.documents.get(&params.text_document.uri)?;
                 let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
                 let symbol = features::symbol_at_position(document, &params, encoding)?;
+                if symbol.kind == "operator-implementation" {
+                    return None;
+                }
                 self.definition_location(&features::symbol_key(symbol))?;
                 let range = features::symbol_range_at_position(document, &params, encoding)?;
                 let placeholder = document.source.get(range.start..range.end)?;
@@ -752,6 +755,9 @@ impl State {
             return response(id, Value::Null);
         };
         let symbol_key = features::symbol_key(symbol);
+        if symbol.kind == "operator-implementation" {
+            return response(id, Value::Null);
+        }
         if self.definition_location(&symbol_key).is_none() {
             return response(id, Value::Null);
         }

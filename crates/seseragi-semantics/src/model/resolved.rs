@@ -35,6 +35,8 @@ pub struct ResolvedModule {
     pub deprecations: Vec<seseragi_syntax::DeclarationDeprecation>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub namespace_deprecations: Vec<ResolvedNamespaceDeprecation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub operator_deprecations: Vec<seseragi_syntax::InterfaceOperatorDeprecation>,
     pub scopes: Vec<ResolvedScope>,
     pub symbols: Vec<ResolvedSymbol>,
     pub references: Vec<ResolvedReference>,

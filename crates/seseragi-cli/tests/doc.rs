@@ -163,6 +163,64 @@ fn document_bytes(root: &Path) -> std::collections::BTreeMap<PathBuf, Vec<u8>> {
 }
 
 #[test]
+fn selected_operator_notices_reach_the_actual_doc_and_lint_commands() {
+    let project = LockedProject::doc_tests();
+    let source = "// 演算 🙂\npub struct Box { pub value: Int }\nimpl Box { deprecated \"Use combine\" since \"0.61.0\" operator + self -> other: Box -> Box = Box { value: self.value + other.value } }\npub fn combine left: Box -> right: Box -> Box = left + right\npub fn scalar -> Int = 1 + 2\n";
+    fs::write(project.source(), source).unwrap();
+    project.update_lock();
+    let output = generate(&project, &[]);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let html = fs::read_to_string(project.path.join("dist/doc/index.html")).unwrap();
+    let index: serde_json::Value =
+        serde_json::from_slice(&fs::read(project.path.join("dist/doc/search-index.json")).unwrap())
+            .unwrap();
+    let operators = index["symbols"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|symbol| symbol["namespace"] == "operator-implementation")
+        .collect::<Vec<_>>();
+    assert_eq!(operators.len(), 1);
+    let operator = operators[0];
+    assert_eq!(operator["deprecated"]["message"], "Use combine");
+    assert_eq!(operator["deprecated"]["since"], "0.61.0");
+    assert_eq!(operator["owner"], operator["metadata"]["instance"]);
+    let notice = &operator["deprecationSource"]["origin"];
+    assert_eq!(
+        &source
+            [notice["start"].as_u64().unwrap() as usize..notice["end"].as_u64().unwrap() as usize],
+        "deprecated \"Use combine\" since \"0.61.0\""
+    );
+    assert!(html.contains("operator +"));
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("lint")
+        .arg("--diagnostic-format")
+        .arg("json")
+        .arg("--deny-warnings")
+        .arg(&project.path)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(1));
+    let wire: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+    let facts = wire["diagnostics"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .flat_map(|document| document["diagnostics"]["diagnostics"].as_array().unwrap())
+        .filter(|diagnostic| diagnostic["code"] == "SES-L0201")
+        .collect::<Vec<_>>();
+    assert_eq!(facts.len(), 1, "{facts:#?}");
+    assert_eq!(
+        facts[0]["primary"]["start"].as_u64().unwrap() as usize,
+        source.find("left + right").unwrap() + 5
+    );
+}
+
+#[test]
 fn namespace_owner_notices_reach_real_docs_and_deny_warnings_without_infecting_children() {
     let project = LockedProject::doc_tests();
     let source = "// 元 🙂\npub foreign \"typescript\" from \"./host.mjs\" {\n /// Legacy API.\n deprecated \"Use current\" since \"0.61.0\" namespace legacy { pure fn read value: Int -> Int }\n namespace current { pure fn read value: Int -> Int }\n}\nforeign \"typescript\" from \"./host.mjs\" { deprecated \"Private only\" namespace internal { pure fn read value: Int -> Int } }\npub fn answer -> Int = legacy.read 41\n";

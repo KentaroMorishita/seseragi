@@ -9,6 +9,23 @@ pub(crate) fn retain_deprecations(
     generated: &mut GeneratedBundle,
 ) {
     let mut entries = BTreeMap::new();
+    for operator in &interface.operator_deprecations {
+        let entry = GeneratedDeprecation {
+            identity: operator.symbol(),
+            namespace: "operator-implementation".to_owned(),
+            name: operator.spelling.clone(),
+            owner: Some(operator.instance.clone()),
+            deprecation: operator.deprecation.clone(),
+        };
+        entries.insert(
+            (
+                entry.namespace.clone(),
+                entry.name.clone(),
+                entry.identity.clone(),
+            ),
+            entry,
+        );
+    }
     for namespace in &interface.namespace_deprecations {
         let entry = GeneratedDeprecation {
             identity: namespace.symbol.clone(),

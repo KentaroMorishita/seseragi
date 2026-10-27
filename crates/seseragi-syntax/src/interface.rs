@@ -1,8 +1,9 @@
 use crate::cst::{parse_cst, CstNode};
 pub use crate::interface_model::{
     InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
-    InterfaceMethod, InterfaceNamespaceDeprecation, InterfaceOperator, InterfaceRecordField,
-    InterfaceScheme, InterfaceType, ModuleInterface,
+    InterfaceMethod, InterfaceNamespaceDeprecation, InterfaceOperator,
+    InterfaceOperatorDeprecation, InterfaceRecordField, InterfaceScheme, InterfaceType,
+    ModuleInterface,
 };
 use crate::surface::parse_surface_ast;
 
@@ -176,6 +177,7 @@ fn parse_unlinked_module_interface_inner(
         dependencies: Vec::new(),
         exports,
         namespace_deprecations,
+        operator_deprecations: Vec::new(),
         operators: surface_module
             .declarations
             .iter()
@@ -202,6 +204,7 @@ fn empty_interface(module: String, source: String) -> ModuleInterface {
         dependencies: Vec::new(),
         exports: Vec::new(),
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         operators: Vec::new(),
         instances: Vec::new(),
     }

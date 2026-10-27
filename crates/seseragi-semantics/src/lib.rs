@@ -1,4 +1,5 @@
 mod analysis;
+mod deprecated_operators;
 mod diagnostics;
 mod effect_ops;
 mod instance_identity;

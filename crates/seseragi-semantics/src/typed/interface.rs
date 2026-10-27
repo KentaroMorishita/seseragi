@@ -294,6 +294,7 @@ pub(crate) fn typed_interface_from_modules(
         dependencies: shallow.dependencies,
         exports,
         namespace_deprecations: shallow.namespace_deprecations,
+        operator_deprecations: Vec::new(),
         operators: shallow.operators,
         instances,
     }

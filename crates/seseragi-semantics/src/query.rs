@@ -409,6 +409,7 @@ impl AnalysisDocument {
             .iter()
             .filter(|symbol| {
                 symbol.kind != "inherent-method"
+                    && symbol.kind != "operator-implementation"
                     && !(symbol.kind == "foreign-namespace" && symbol.name.contains('.'))
                     && visible_scopes.contains(&symbol.scope)
                     && (symbol.scope == ScopeId(0) || symbol.definition.start <= position)
@@ -643,6 +644,15 @@ pub fn analysis_document_with_source(
             symbol: target.0,
         })
     }));
+    let operator_notices = deprecation::operators::catalog(&resolved, typed);
+    let operator_uses = deprecation::operators::uses(&resolved, typed, &operator_notices);
+    deprecation::operators::project(
+        &resolved,
+        &operator_notices,
+        &operator_uses,
+        &mut symbols,
+        &mut symbol_occurrences,
+    );
     let member_ids = symbols
         .iter()
         .map(|symbol| (symbol.identity.as_str(), symbol.id))
@@ -725,6 +735,7 @@ pub fn analysis_document_with_source(
 
     let mut deprecated_references = deprecation::references(&resolved, &members, &selected_members);
     deprecated_references.extend(deprecation::namespaces::warnings(&namespace_uses));
+    deprecated_references.extend(deprecation::operators::warnings(&operator_uses));
     let lint_facts = lint::collect(&resolved, typed, deprecated_references);
     AnalysisDocument {
         schema: 1,

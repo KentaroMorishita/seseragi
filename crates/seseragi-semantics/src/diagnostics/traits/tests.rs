@@ -553,6 +553,7 @@ fn linked_with_instance_targets<const N: usize>(
 fn instance_target(module: &str, provider_module: &str, type_identity: &str) -> ModuleLinkTarget {
     ModuleLinkTarget::external(ModuleInterface {
         namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         module: module.to_owned(),
         source: "evidence.ssrg".to_owned(),

@@ -157,6 +157,31 @@ pub(super) fn generate(
                 metadata: serde_json::to_value(namespace).map_err(|error| error.to_string())?,
             });
         }
+        for operator in &interface.operator_deprecations {
+            let source = sources.get(&operator.provider_module).ok_or_else(|| {
+                format!(
+                    "documentation source for operator {} from {} is unavailable",
+                    operator.spelling, operator.provider_module
+                )
+            })?;
+            items.push(Item {
+                module: module_id.clone(),
+                scope,
+                identity: operator.symbol(),
+                namespace: "operator-implementation".to_owned(),
+                name: operator.spelling.clone(),
+                display_name: format!("{} ({})", operator.spelling, operator.instance),
+                owner: Some(operator.instance.clone()),
+                kind: "inherent-operator".to_owned(),
+                signature: format!("operator {}", operator.spelling),
+                source_module: operator.provider_module.clone(),
+                source_kind: "declaration",
+                origin: operator.declaration,
+                comment: attached_comment(source, operator.declaration),
+                deprecated: Some(operator.deprecation.clone()),
+                metadata: serde_json::to_value(operator).map_err(|error| error.to_string())?,
+            });
+        }
         for export in &interface.exports {
             let scheme = TypeSchemeDocument::from_interface_scheme(&export.scheme)
                 .render(TypeRenderOptions::default());
