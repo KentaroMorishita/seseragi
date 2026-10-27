@@ -149,18 +149,18 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
 }
 
 pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> TypedModule {
-    typed_module_with_receivers(resolved, false).0
+    typed_module_with_bindings(resolved, false).0
 }
 
-fn typed_module_with_receivers(
+fn typed_module_with_bindings(
     resolved: crate::ResolvedModule,
     retain_receivers: bool,
-) -> (TypedModule, Vec<crate::AnalysisNominalReceiver>) {
+) -> (TypedModule, Vec<crate::AnalysisNominalBinding>) {
     let mut resolution = TypedResolution::new(&resolved);
     if retain_receivers {
         // Initial callable/let inference can be speculative. Only the final
         // declaration pass records editor facts from its lexical environment.
-        resolution.enable_receiver_facts();
+        resolution.enable_binding_facts();
     }
     let foreign_modules = typed_foreign_modules(&resolved.foreign_modules, &resolution);
     let declarations = resolved
@@ -173,7 +173,7 @@ fn typed_module_with_receivers(
     let module_dependencies = resolution.module_dependencies();
     let instances = instances::analyze_instances(&resolved, &resolution).instances;
     let trait_methods = resolution.trait_method_declarations();
-    let nominal_receivers = resolution.nominal_receivers();
+    let nominal_bindings = resolution.nominal_bindings();
     drop(resolution);
 
     let typed = TypedModule {
@@ -188,7 +188,7 @@ fn typed_module_with_receivers(
         trait_methods,
         declarations,
     };
-    (typed, nominal_receivers)
+    (typed, nominal_bindings)
 }
 
 fn typed_foreign_modules(
@@ -353,7 +353,7 @@ pub(crate) fn type_resolved_module_with_analysis(
 ) -> (
     TypedModule,
     crate::TypedModuleInterface,
-    Vec<crate::AnalysisNominalReceiver>,
+    Vec<crate::AnalysisNominalBinding>,
 ) {
     type_resolved_module_with_source_facts(shallow, resolved, true)
 }
@@ -365,14 +365,14 @@ fn type_resolved_module_with_source_facts(
 ) -> (
     TypedModule,
     crate::TypedModuleInterface,
-    Vec<crate::AnalysisNominalReceiver>,
+    Vec<crate::AnalysisNominalBinding>,
 ) {
     let dependency_instances = resolved.dependency_instances.clone();
     let deprecations = resolved.deprecations.clone();
-    let (typed, nominal_receivers) = typed_module_with_receivers(resolved, retain_receivers);
+    let (typed, nominal_bindings) = typed_module_with_bindings(resolved, retain_receivers);
     let typed_interface =
         typed_interface_from_modules(shallow, &typed, &dependency_instances, &deprecations);
-    (typed, typed_interface, nominal_receivers)
+    (typed, typed_interface, nominal_bindings)
 }
 
 pub fn type_module_public_interface(

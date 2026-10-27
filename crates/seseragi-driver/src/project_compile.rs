@@ -8,7 +8,7 @@ use seseragi_project::{
     ModuleLinkTarget,
 };
 use seseragi_semantics::{
-    analysis_document_with_receivers, analyze_linked_module, analyze_linked_module_recovering,
+    analysis_document_with_bindings, analyze_linked_module, analyze_linked_module_recovering,
     AnalysisDocument, AnalyzedModule,
 };
 use seseragi_syntax::{
@@ -385,11 +385,11 @@ fn analyze_project_inner(
         .analyzed
         .into_iter()
         .map(|(module, analyzed)| {
-            let document = analysis_document_with_receivers(
+            let document = analysis_document_with_bindings(
                 analyzed.diagnostics,
                 analyzed.resolved,
                 &analyzed.typed_hir,
-                analyzed.nominal_receivers,
+                analyzed.nominal_bindings,
             );
             (module, document)
         })

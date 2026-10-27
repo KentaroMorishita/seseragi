@@ -51,11 +51,13 @@ pub(crate) struct PureExpressionContext<'a> {
 
 impl<'a> PureExpressionContext<'a> {
     pub(crate) fn new(parameters: &[TypedParameter], resolution: &'a TypedResolution<'a>) -> Self {
+        let parameters = resolution.parameter_types(parameters);
+        resolution.record_receiver_bindings(&parameters);
         Self {
             inferred_callables: BTreeMap::new(),
             recursive_groups: Vec::new(),
             lexical_type_parameters: BTreeMap::new(),
-            parameters: resolution.parameter_types(parameters),
+            parameters,
             evidence_parameters: Vec::new(),
             deferred_let_evidence: false,
             generalized_value_origin: None,
@@ -806,6 +808,7 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {
+        self.resolution.record_receiver_bindings(&locals);
         let mut parameters = self.parameters.clone();
         parameters.extend(locals);
         Self {
@@ -927,17 +930,6 @@ pub(crate) fn ensure_recovery_hole_issue(analysis: &mut SurfaceExpressionAnalysi
 }
 
 pub(super) fn type_surface_expression(
-    expression: &SurfaceExpr,
-    context: &PureExpressionContext<'_>,
-) -> SurfaceExpressionAnalysis {
-    let analysis = type_surface_expression_inner(expression, context);
-    context
-        .resolution
-        .record_receiver_fact(expression, &analysis.semantic_type);
-    analysis
-}
-
-fn type_surface_expression_inner(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {

@@ -456,8 +456,16 @@ pub(crate) fn completion(
         {
             push_reference_completion(&mut items, &mut seen, item, "0", markup);
         }
-    } else if let Some((_, range)) = access {
-        for symbol in document.analysis.members_of_receiver(range) {
+    } else if let Some((name, range)) = access {
+        // This bounded path completes a lexical value receiver. Do not treat
+        // a chained field token as an unrelated same-named local binding.
+        let simple_receiver = !document.source[..range.start].trim_end().ends_with('.');
+        let methods = if simple_receiver {
+            document.analysis.members_of_receiver(name, range.start)
+        } else {
+            Vec::new()
+        };
+        for symbol in methods {
             let key = format!("{}:{}", symbol.namespace, symbol.identity);
             if seen.insert(key) {
                 items.push(symbol_completion(symbol, markup));

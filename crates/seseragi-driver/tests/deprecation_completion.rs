@@ -34,7 +34,10 @@ fn nominal_parameters_and_inferred_local_aliases_keep_canonical_completion_owner
         document.diagnostics
     );
     for marker in ["box.old", "alias.old"] {
-        let methods = document.members_of_receiver(receiver(&source, marker));
+        let methods = document.members_of_receiver(
+            marker.split('.').next().unwrap(),
+            receiver(&source, marker).start,
+        );
         assert_eq!(
             methods
                 .iter()
@@ -48,7 +51,7 @@ fn nominal_parameters_and_inferred_local_aliases_keep_canonical_completion_owner
         assert_eq!(methods[0].deprecation.as_ref().unwrap().message, "Use read");
         assert!(methods[1].deprecation.is_none());
     }
-    let plain = document.members_of_receiver(receiver(&source, "value.old"));
+    let plain = document.members_of_receiver("value", receiver(&source, "value.old").start);
     assert_eq!(plain.len(), 1);
     assert_eq!(
         plain[0].member_owner.as_deref(),
@@ -65,11 +68,11 @@ fn nominal_parameters_and_inferred_local_aliases_keep_canonical_completion_owner
         .unwrap();
         assert!(serde_json::to_value(&compiled.typed_hir)
             .unwrap()
-            .get("nominalReceivers")
+            .get("nominalBindings")
             .is_none());
         assert!(serde_json::to_value(&compiled.core_ir)
             .unwrap()
-            .get("nominalReceivers")
+            .get("nominalBindings")
             .is_none());
     }
 }
@@ -88,50 +91,85 @@ fn a_scoped_binder_with_the_same_spelling_never_gains_nominal_methods() {
         document.diagnostics
     );
     let start = source.rfind("value").unwrap();
-    assert!(document
-        .members_of_receiver(ByteSpan {
-            start,
-            end: start + "value".len()
-        })
-        .is_empty());
+    assert!(document.members_of_receiver("value", start).is_empty());
+    let binding = document.symbol_at(start).unwrap().id;
     assert!(!document
-        .nominal_receivers
+        .nominal_bindings
         .iter()
-        .any(|fact| fact.range.start == start));
+        .any(|fact| fact.binding == binding));
 }
 
 #[test]
-fn an_unfinished_dot_keeps_valid_receiver_facts_and_original_parser_diagnostics() {
-    let source = format!("{OWNERS}\npub fn editing box: Box -> Int = box.\n");
+fn an_unfinished_dot_keeps_valid_binding_facts_and_original_parser_diagnostics() {
+    for (tail, name) in [
+        ("pub fn editing box: Box -> Int = box.\n", "box"),
+        (
+            "pub fn editing box: Box -> Int = { let alias = box; alias. }\n",
+            "alias",
+        ),
+    ] {
+        let source = format!("{OWNERS}\n{tail}");
+        let document = analyze_module(CompileInput::new(
+            "editing.ssrg",
+            "completion/editing",
+            &source,
+        ));
+        let parser = seseragi_syntax::parse_diagnostics("editing.ssrg", &source);
+        assert!(!parser.diagnostics.is_empty());
+        for diagnostic in &parser.diagnostics {
+            assert!(document
+                .diagnostics
+                .diagnostics
+                .iter()
+                .any(|original| original.code == diagnostic.code
+                    && original.primary == diagnostic.primary));
+        }
+        let methods =
+            document.members_of_receiver(name, receiver(&source, &format!("{name}.")).start);
+        assert_eq!(
+            methods
+                .iter()
+                .map(|method| method.name.as_str())
+                .collect::<Vec<_>>(),
+            ["old", "read"]
+        );
+        assert!(seseragi_driver::compile_module(CompileInput::new(
+            "editing.ssrg",
+            "completion/editing",
+            &source
+        ))
+        .is_err());
+    }
+}
+
+#[test]
+fn lexical_shadowing_selects_the_actual_binding_before_and_after_the_local_declaration() {
+    let source = format!("{OWNERS}\npub fn shadow box: Box -> Int = {{ let before = box.old; let box = Plain {{ value: 1 }}; before + box.old }}\n");
     let document = analyze_module(CompileInput::new(
-        "editing.ssrg",
-        "completion/editing",
+        "shadow.ssrg",
+        "completion/shadow",
         &source,
     ));
-    let parser = seseragi_syntax::parse_diagnostics("editing.ssrg", &source);
-    assert!(!parser.diagnostics.is_empty());
-    for diagnostic in &parser.diagnostics {
-        assert!(document
-            .diagnostics
-            .diagnostics
-            .iter()
-            .any(|original| original.code == diagnostic.code
-                && original.primary == diagnostic.primary));
-    }
-    let methods = document.members_of_receiver(receiver(&source, "box."));
+    assert!(
+        document.diagnostics.diagnostics.is_empty(),
+        "{:#?}",
+        document.diagnostics
+    );
+    let before = document.members_of_receiver("box", source.find("box.old").unwrap());
     assert_eq!(
-        methods
+        before
             .iter()
             .map(|method| method.name.as_str())
             .collect::<Vec<_>>(),
         ["old", "read"]
     );
-    assert!(seseragi_driver::compile_module(CompileInput::new(
-        "editing.ssrg",
-        "completion/editing",
-        &source
-    ))
-    .is_err());
+    let after = document.members_of_receiver("box", source.rfind("box.old").unwrap());
+    assert_eq!(after.len(), 1);
+    assert_eq!(
+        after[0].member_owner.as_deref(),
+        Some("completion/shadow::Plain")
+    );
+    assert!(after[0].deprecation.is_none());
 }
 
 #[test]
@@ -165,7 +203,7 @@ fn imported_aliases_keep_the_provider_owner_without_display_name_matching() {
         "{:#?}",
         document.diagnostics
     );
-    let methods = document.members_of_receiver(receiver(consumer, "value.old"));
+    let methods = document.members_of_receiver("value", receiver(consumer, "value.old").start);
     assert_eq!(
         methods
             .iter()

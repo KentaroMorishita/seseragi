@@ -750,6 +750,7 @@ fn inherent_member_completion_uses_the_receiver_owner_and_keeps_deprecated_tags(
         let editing = format!("{owners}pub fn answer box: Box -> Int = box.");
         let generic = format!("{owners}pub fn answer<Box> box: Box -> Box = box.");
         let plain = format!("{owners}pub fn answer value: Plain -> Int = value.");
+        let chained = format!("{owners}pub struct Holder {{ box: Plain }}\npub fn answer box: Box -> holder: Holder -> Int = holder.box.");
         let position = |text: &str, byte: usize| {
             let position = LineIndex::new(text)
                 .try_locate_encoded(byte, encoding)
@@ -766,7 +767,9 @@ fn inherent_member_completion_uses_the_receiver_owner_and_keeps_deprecated_tags(
             json!({"jsonrpc":"2.0","id":4,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position(&generic,generic.len())}}),
             json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":4},"contentChanges":[{"text":plain}]}}),
             json!({"jsonrpc":"2.0","id":5,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position(&plain,plain.len())}}),
-            json!({"jsonrpc":"2.0","id":6,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":5},"contentChanges":[{"text":chained}]}}),
+            json!({"jsonrpc":"2.0","id":6,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position(&chained,chained.len())}}),
+            json!({"jsonrpc":"2.0","id":7,"method":"shutdown"}),
             json!({"jsonrpc":"2.0","method":"exit"}),
         ];
         let messages = run_server(&input);
@@ -799,6 +802,10 @@ fn inherent_member_completion_uses_the_receiver_owner_and_keeps_deprecated_tags(
             .as_str()
             .unwrap()
             .ends_with("::Plain::old"));
+        assert!(response(&messages, 6)["result"]
+            .as_array()
+            .unwrap()
+            .is_empty());
     }
 }
 

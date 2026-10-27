@@ -1,13 +1,13 @@
 use crate::{diagnostics, resolve, typed, ResolvedModule, TypedModule, TypedModuleInterface};
 use seseragi_syntax::{DiagnosticArtifact, DiagnosticSeverity, ModuleInterface};
 
-/// A source occurrence whose nominal receiver owner was proved in the actual
-/// typing environment. This editor fact is kept beside, rather than inside,
-/// Typed HIR and never changes type or dictionary contracts.
+/// A value binding whose nominal owner was proved in the actual typing
+/// environment. The resolved binding id preserves its lexical scope without
+/// adding editor state to Typed HIR or changing type/dictionary contracts.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AnalysisNominalReceiver {
-    pub range: seseragi_syntax::ByteSpan,
+pub struct AnalysisNominalBinding {
+    pub binding: u32,
     pub owner: String,
 }
 
@@ -17,7 +17,7 @@ pub struct AnalyzedModule {
     pub resolved: ResolvedModule,
     pub typed_hir: TypedModule,
     pub typed_interface: TypedModuleInterface,
-    pub nominal_receivers: Vec<AnalysisNominalReceiver>,
+    pub nominal_bindings: Vec<AnalysisNominalBinding>,
 }
 
 /// Resolves and types one syntax-checked module interface.
@@ -51,7 +51,7 @@ pub fn analyze_module_interface(
         resolved,
         typed_hir,
         typed_interface,
-        nominal_receivers: Vec::new(),
+        nominal_bindings: Vec::new(),
     })
 }
 
@@ -82,7 +82,7 @@ pub fn analyze_linked_module(
         resolved,
         typed_hir,
         typed_interface,
-        nominal_receivers: Vec::new(),
+        nominal_bindings: Vec::new(),
     })
 }
 
@@ -125,14 +125,14 @@ pub fn analyze_linked_module_recovering(
         }
         diagnostics
     };
-    let (typed_hir, typed_interface, nominal_receivers) =
+    let (typed_hir, typed_interface, nominal_bindings) =
         typed::type_resolved_module_with_analysis(shallow, resolved.clone());
     Ok(AnalyzedModule {
         diagnostics,
         resolved,
         typed_hir,
         typed_interface,
-        nominal_receivers,
+        nominal_bindings,
     })
 }
 

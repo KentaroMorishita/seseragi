@@ -46,12 +46,14 @@ selected-owner warnings, own-body and field exclusions, provider provenance,
 and exact generated TypeScript bytes in both profiles. LSP member navigation
 and tags reuse the shared analysis symbols.
 
-Inherent completion retains an optional `nominalReceivers` table on the analysis
-document. Its canonical owner comes from the actual final typing environment's
-resolved nominal key, including inferred local aliases and imported type aliases.
+Inherent completion retains an optional `nominalBindings` table on the analysis
+document. It records resolved value binding ids and their canonical owner from
+the actual final typing environment, including inferred local aliases and imported type aliases.
 A scoped type parameter with the same spelling has a distinct key and gains no
 nominal methods. The table lives beside Typed HIR, is omitted when empty, and is
 not recorded by ordinary compile paths. Recovery keeps the original diagnostics
-and exposes only proved receiver facts. Namespace and expected-record completion
+and looks up the original lexical binding even when an unfinished dot is an
+invalid expression. It does not guess a local binding for a chained field token.
+Namespace and expected-record completion
 retain their existing paths; arbitrary chained-expression completion and new
 trait-call resolution are outside this bounded change.

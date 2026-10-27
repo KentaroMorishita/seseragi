@@ -196,7 +196,7 @@ pub struct AnalysisDocument {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub completion_contexts: Vec<AnalysisCompletionContext>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub nominal_receivers: Vec<crate::AnalysisNominalReceiver>,
+    pub nominal_bindings: Vec<crate::AnalysisNominalBinding>,
     pub standard_library: Vec<AnalysisReferenceItem>,
     #[serde(skip)]
     scopes: Vec<crate::ResolvedScope>,
@@ -205,14 +205,33 @@ pub struct AnalysisDocument {
 }
 
 impl AnalysisDocument {
-    /// Inherent methods belonging to the receiver proved at this exact source
-    /// name occurrence. Rendered type names are intentionally not consulted.
-    pub fn members_of_receiver(&self, range: ByteSpan) -> Vec<&AnalysisSymbol> {
-        let Some(receiver) = self
-            .nominal_receivers
-            .iter()
-            .find(|fact| fact.range == range)
-        else {
+    /// Resolve a source value name through its lexical scopes, then consult
+    /// the nominal owner proved for that exact binding. This also works when
+    /// an unfinished member expression has no valid value-use AST node.
+    pub fn members_of_receiver(&self, name: &str, position: usize) -> Vec<&AnalysisSymbol> {
+        let mut scope = self.innermost_scope(position);
+        let mut selected = None;
+        while let Some(id) = scope {
+            if let Some(symbol) = self.symbols.iter().find(|symbol| {
+                symbol.scope == id
+                    && symbol.namespace == "value"
+                    && symbol.kind != "inherent-method"
+                    && symbol.name == name
+                    && (id == ScopeId(0) || symbol.definition.start <= position)
+            }) {
+                selected = Some(symbol.id);
+                break;
+            }
+            scope = self
+                .scopes
+                .get(id.0 as usize)
+                .and_then(|scope| scope.parent);
+        }
+        let Some(receiver) = selected.and_then(|binding| {
+            self.nominal_bindings
+                .iter()
+                .find(|fact| fact.binding == binding)
+        }) else {
             return Vec::new();
         };
         let mut methods = self
@@ -475,14 +494,14 @@ pub fn analysis_document(
     resolved: ResolvedModule,
     typed: &TypedModule,
 ) -> AnalysisDocument {
-    analysis_document_with_receivers(diagnostics, resolved, typed, Vec::new())
+    analysis_document_with_bindings(diagnostics, resolved, typed, Vec::new())
 }
 
-pub fn analysis_document_with_receivers(
+pub fn analysis_document_with_bindings(
     diagnostics: DiagnosticArtifact,
     resolved: ResolvedModule,
     typed: &TypedModule,
-    nominal_receivers: Vec<crate::AnalysisNominalReceiver>,
+    nominal_bindings: Vec<crate::AnalysisNominalBinding>,
 ) -> AnalysisDocument {
     let deprecations = deprecation::metadata(&resolved);
     let members = deprecation::members::catalog(&resolved, typed);
@@ -682,7 +701,7 @@ pub fn analysis_document_with_receivers(
         type_occurrences,
         callable_occurrences,
         completion_contexts,
-        nominal_receivers,
+        nominal_bindings,
         standard_library: catalog,
         scopes: resolved.scopes,
     }
@@ -703,7 +722,7 @@ pub fn diagnostics_only_analysis(
         type_occurrences: Vec::new(),
         callable_occurrences: Vec::new(),
         completion_contexts: Vec::new(),
-        nominal_receivers: Vec::new(),
+        nominal_bindings: Vec::new(),
         standard_library: standard_library_catalog(),
         scopes: Vec::new(),
         lint_facts: Vec::new(),
