@@ -10,3 +10,10 @@ pub fn partialProbe -> Bool = {
   let checkpoint = marker ()
   saved (rightValue ())
 }
+
+pub fn directMethodProbe -> Bool = eq (leftValue ()) (rightValue ())
+pub fn partialMethodProbe -> Bool = {
+  let saved: String -> Bool = eq (leftValue ())
+  let checkpoint = marker ()
+  saved (rightValue ())
+}

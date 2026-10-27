@@ -1,10 +1,12 @@
 use crate::int_ops::{runtime_int_operation_with_evidence, RuntimeIntOperation};
+use crate::prelude_ops::{runtime_prelude_dictionary_for_identity, RuntimePreludeDictionary};
 use crate::{CoreCallEvidence, CoreInstanceEvidence, CoreType};
 use seseragi_semantics::{special_standard_instance_by_identity, PreludeSpecialInstanceDispatch};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum RuntimeTraitMethodOperation {
     Int(RuntimeIntOperation),
+    Equality(RuntimePreludeDictionary),
     Native(&'static str),
 }
 
@@ -44,12 +46,14 @@ pub(crate) fn runtime_trait_method_operation(
     if let Some(operation) = runtime_int_operation_with_evidence(operator.spelling, evidence) {
         return Some(RuntimeTraitMethodOperation::Int(operation));
     }
-    let operator = if instance.trait_name == "Eq" {
-        "==="
-    } else {
-        operator.spelling
-    };
-    Some(RuntimeTraitMethodOperation::Native(operator))
+    if instance.trait_name == "Eq" {
+        // Host literal types can be disjoint even when both operands have the
+        // same Seseragi primitive type. Use the selected, typed runtime method
+        // so TypeScript checks its operands without narrowing the comparison.
+        return runtime_prelude_dictionary_for_identity(identity)
+            .map(RuntimeTraitMethodOperation::Equality);
+    }
+    Some(RuntimeTraitMethodOperation::Native(operator.spelling))
 }
 
 fn arguments_match(arguments: &[CoreType], expected: &[&str]) -> bool {
@@ -74,16 +78,48 @@ mod tests {
             ),
             Some(RuntimeTraitMethodOperation::Int(operation)) if operation.operator == "+"
         ));
-        assert_eq!(
+        assert!(matches!(
             runtime_trait_method_operation("eq", &evidence("Eq", &["String"], "std/string::Eq")),
-            Some(RuntimeTraitMethodOperation::Native("==="))
-        );
+            Some(RuntimeTraitMethodOperation::Equality(dictionary))
+                if dictionary.semantic_identity == "std/string::Eq"
+                    && dictionary.export_name == "stringEq"
+        ));
         assert_eq!(
             runtime_trait_method_operation(
                 "mul",
                 &evidence("Mul", &["Float", "Float", "Float"], "std/float::Mul")
             ),
             Some(RuntimeTraitMethodOperation::Native("*"))
+        );
+    }
+
+    #[test]
+    fn typed_primitive_equality_preserves_supplied_source_stages() {
+        for (name, identity) in [
+            ("Int", "std/int::Eq"),
+            ("Bool", "std/bool::Eq"),
+            ("String", "std/string::Eq"),
+            ("Char", "std/char::Eq"),
+            ("Unit", "std/unit::Eq"),
+        ] {
+            let selected = evidence("Eq", &[name], identity);
+            assert!(runtime_trait_method_call_operation("eq", &selected, 0).is_none());
+            for supplied in [1, 2] {
+                assert!(matches!(
+                    runtime_trait_method_call_operation("eq", &selected, supplied),
+                    Some(RuntimeTraitMethodOperation::Equality(dictionary))
+                        if dictionary.semantic_identity == identity
+                ));
+            }
+            assert!(runtime_trait_method_call_operation("eq", &selected, 3).is_none());
+        }
+        assert!(
+            runtime_trait_method_operation("eq", &evidence("Eq", &["String"], "std/int::Eq"))
+                .is_none()
+        );
+        assert!(
+            runtime_trait_method_operation("eq", &evidence("Eq", &["Float"], "std/float::Eq"))
+                .is_none()
         );
     }
 

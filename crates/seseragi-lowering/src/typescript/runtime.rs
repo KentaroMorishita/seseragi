@@ -125,6 +125,10 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             }
             if let Some(RuntimeTraitMethodOperation::Int(operation)) = trait_method_operation {
                 push_unique(requirements, operation.runtime_feature);
+            } else if let Some(RuntimeTraitMethodOperation::Equality(dictionary)) =
+                trait_method_operation
+            {
+                push_unique(requirements, dictionary.runtime_feature);
             } else if let Some(operation) = runtime_collection_for_each_operation(callee, evidence)
             {
                 push_unique(requirements, operation.runtime_feature);
@@ -678,6 +682,16 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     TypeScriptImport {
                         feature: operation.runtime_feature.to_owned(),
                         local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(RuntimeTraitMethodOperation::Equality(dictionary)) =
+                trait_method_operation
+            {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: dictionary.runtime_feature.to_owned(),
+                        local: dictionary.local_name.to_owned(),
                     },
                 );
             } else if let Some(operation) = runtime_collection_for_each_operation(callee, evidence)
