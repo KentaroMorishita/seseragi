@@ -836,9 +836,28 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_provider_service_operation(&callee) {
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
+                if let Some(source_arity) = operation.source_arity {
+                    // An imported Effect function may be a zero-argument
+                    // partial Call. The standard declaration fixes its source
+                    // stages; a returned function and the host function's
+                    // implementation arity must not add or remove a stage.
+                    let remaining = source_arity.saturating_sub(arguments.len());
+                    lower_uncurried_runtime_call(
+                        operation.local_name.to_owned(),
+                        arguments,
+                        &type_ref,
+                        imported_types,
+                        "provider",
+                        Vec::new(),
+                        Some(remaining),
+                        checked_argument_types.iter().cloned().enumerate().collect(),
+                        origin,
+                    )
+                } else {
+                    TypeScriptExpr::RuntimeCall {
+                        callee: operation.local_name.to_owned(),
+                        arguments,
+                    }
                 }
             } else if let Some(operation) = runtime_effect_operation(&callee) {
                 let mut dictionary_arguments = Vec::new();
