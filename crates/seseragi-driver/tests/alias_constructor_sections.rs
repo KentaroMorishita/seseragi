@@ -147,14 +147,17 @@ fn kind_proofs_reject_a_value_prefix_where_the_alias_declares_a_constructor() {
         source,
     ))
     .unwrap_err();
-    assert!(
-        error
-            .diagnostics
-            .iter()
-            .any(|diagnostic| diagnostic.message_key.contains("kind")
-                && diagnostic.primary.start < diagnostic.primary.end
-                && diagnostic.primary.end <= source.len()),
-        "{error:#?}"
+    let diagnostic = error
+        .diagnostics
+        .iter()
+        .find(|diagnostic| {
+            diagnostic.code == "SES-T0604"
+                && diagnostic.message_key == "type.argument-kind-mismatch"
+        })
+        .unwrap_or_else(|| panic!("{error:#?}"));
+    assert_eq!(
+        &source[diagnostic.primary.start..diagnostic.primary.end],
+        "Int"
     );
 }
 
@@ -210,9 +213,21 @@ fn opaque_facades_keep_the_provider_kind_metadata_and_distinct_local_owner() {
         let wrong = source.replace("create<Bool, Int> True 42", "Local (True, 42)");
         assert_ne!(wrong, source);
         let error = project(&wrong, profile).unwrap_err();
+        let seseragi_driver::ProjectCompileError::Diagnostics { modules } = error else {
+            panic!("{error:#?}");
+        };
         assert!(
-            format!("{error:#?}").contains("type-mismatch"),
-            "{error:#?}"
+            modules
+                .iter()
+                .any(|module| module.module == "fixture/section::main"
+                    && module
+                        .diagnostics
+                        .diagnostics
+                        .iter()
+                        .any(|diagnostic| diagnostic.code == "SES-T0101"
+                            && diagnostic.primary.start < diagnostic.primary.end
+                            && diagnostic.primary.end <= wrong.len())),
+            "{modules:#?}"
         );
     }
 }
