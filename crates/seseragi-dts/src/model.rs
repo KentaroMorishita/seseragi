@@ -17,6 +17,14 @@ impl Span {
 pub struct Scope {
     pub declarations: Vec<Declaration>,
     pub private_declarations: Vec<Declaration>,
+    pub deprecations: Vec<DeclarationDeprecation>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DeclarationDeprecation {
+    pub declaration: Span,
+    pub origin: Span,
+    pub message: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -30,6 +38,16 @@ pub enum Declaration {
 }
 
 impl Declaration {
+    pub fn span(&self) -> Span {
+        match self {
+            Self::Interface(value) => value.span,
+            Self::Function(value) => value.span,
+            Self::Namespace(value) => value.span,
+            Self::Class(value) | Self::Enum(value) => value.span,
+            Self::TypeAlias(value) => value.span,
+        }
+    }
+
     pub fn original_name(&self) -> &str {
         match self {
             Self::Interface(value) => &value.name,

@@ -19,6 +19,7 @@ fn graph() -> SemanticGraph {
     graph.symbols.insert(
         "api::run".into(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             public_name: "run".into(),
             declaration_name: "run".into(),
             kind: SymbolKind::Callable,
@@ -278,6 +279,7 @@ fn nominal_graph(constructible: bool) -> SemanticGraph {
     graph.symbols.insert(
         "api::Widget".into(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             public_name: "Widget".into(),
             declaration_name: "Widget".into(),
             kind: SymbolKind::Type,

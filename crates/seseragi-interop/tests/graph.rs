@@ -65,6 +65,7 @@ fn generic_graph() -> SemanticGraph {
     graph.symbols.insert(
         "schema::identity".to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             declaration_name: "identity".to_owned(),
             kind: SymbolKind::Type,
             public_name: "identity".to_owned(),
@@ -129,6 +130,7 @@ fn recursive_shape_references_are_valid_without_a_source_parser() {
     graph.symbols.insert(
         "schema::List".to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             declaration_name: "identity".to_owned(),
             kind: SymbolKind::Type,
             public_name: "List".to_owned(),
@@ -150,6 +152,7 @@ fn declaration_references_do_not_capture_another_declarations_type_parameters() 
     graph.symbols.insert(
         "schema::escaped".to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             declaration_name: "identity".to_owned(),
             kind: SymbolKind::Type,
             public_name: "escaped".to_owned(),
@@ -335,6 +338,7 @@ fn deep_and_cyclic_type_graphs_do_not_recurse_on_the_host_stack() {
     graph.symbols.insert(
         "schema::cycle".to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             declaration_name: "identity".to_owned(),
             kind: SymbolKind::Type,
             public_name: "cycle".to_owned(),
@@ -362,6 +366,7 @@ fn namespace_ownership_cycles_and_non_callable_overloads_fail_closed() {
     graph.symbols.insert(
         "owner".to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             public_name: "owner".to_owned(),
             declaration_name: "owner".to_owned(),
             kind: SymbolKind::Namespace,

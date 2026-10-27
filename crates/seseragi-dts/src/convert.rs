@@ -607,6 +607,7 @@ struct Function {
     result: TypeId,
     generic_binder: Option<TypeId>,
     receiver: Option<TypeId>,
+    deprecations: Vec<seseragi_interop::SemanticDeprecation>,
 }
 fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> Option<Function> {
     let (type_parameters, body) = match &graph.types[&id] {
@@ -644,6 +645,14 @@ fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> 
         result: *result,
         generic_binder: matches!(graph.types[&id], SemanticType::Generic { .. }).then_some(id),
         receiver: *receiver,
+        deprecations: symbol
+            .deprecations
+            .iter()
+            .filter(|notice| {
+                notice.declaration.start == span.start && notice.declaration.end == span.end
+            })
+            .cloned()
+            .collect(),
     })
 }
 
@@ -687,6 +696,19 @@ fn render_scope(
     for symbol in declarations {
         let public_path = symbol_path(namespace, &symbol.public_name);
         let original_path = symbol_path(namespace, &symbol.declaration_name);
+        if symbol.kind != SymbolKind::Callable
+            && symbol.deprecations.iter().any(|notice| {
+                symbol
+                    .deprecations
+                    .first()
+                    .is_some_and(|first| first.message != notice.message)
+            })
+        {
+            context.diagnostics.push(diagnostic("SES-F0101", DiagnosticSeverity::Error,
+                "merged declarations have different deprecation messages; select one explicit API migration notice",
+                context.file, symbol_span(&symbol, "declaration"), Some(public_path)));
+            continue;
+        }
         match symbol.kind {
             SymbolKind::Type => {
                 let local = generated_name(
@@ -704,7 +726,10 @@ fn render_scope(
                     _ => Vec::new(),
                 };
                 let generic = render_type_parameter_names(&parameters);
-                types.push(format!("{pad}opaque type {local}{generic}"));
+                types.push(format!(
+                    "{pad}{}opaque type {local}{generic}",
+                    deprecation_clause(&symbol.deprecations)
+                ));
                 let span = symbol_span(&symbol, "public-name");
                 context.symbols.push(GeneratedSymbol {
                     identity: symbol_identity(&context.entry.specifier, &original_path, "type"),
@@ -719,6 +744,7 @@ fn render_scope(
                         end: span.end,
                     },
                     rule: "opaque-foreign-type".to_owned(),
+                    deprecations: symbol.deprecations.clone(),
                 });
             }
             SymbolKind::Callable => {
@@ -770,7 +796,10 @@ fn render_scope(
                 let mut nested = namespace.to_vec();
                 nested.push(symbol.public_name.clone());
                 let body = render_scope(&members, context, &nested, indent + 1);
-                namespaces.push(format!("{pad}namespace {local}{host} {{\n{body}{pad}}}"));
+                namespaces.push(format!(
+                    "{pad}{}namespace {local}{host} {{\n{body}{pad}}}",
+                    deprecation_clause(&symbol.deprecations)
+                ));
                 let span = symbol_span(&symbol, "public-name");
                 context.symbols.push(GeneratedSymbol {
                     identity: symbol_identity(
@@ -789,6 +818,7 @@ fn render_scope(
                         end: span.end,
                     },
                     rule: "merged-namespace".to_owned(),
+                    deprecations: symbol.deprecations.clone(),
                 });
             }
         }
@@ -1086,7 +1116,10 @@ fn render_function(
         signature.push_str(&format!(" = {:?}", function.public_name));
     }
     let pad = "  ".repeat(indent);
-    let line = wrap_signature(&pad, &signature);
+    let line = wrap_signature(
+        &pad,
+        &format!("{}{signature}", deprecation_clause(&function.deprecations)),
+    );
     context.symbols.push(GeneratedSymbol {
         identity: symbol_identity(
             &context.entry.specifier,
@@ -1108,8 +1141,20 @@ fn render_function(
         } else {
             format!("{}-function", evaluation_name(mode))
         },
+        deprecations: function.deprecations.clone(),
     });
     Some(line)
+}
+
+fn deprecation_clause(notices: &[seseragi_interop::SemanticDeprecation]) -> String {
+    notices.first().map_or_else(String::new, |notice| {
+        // JSON string escaping is also the declaration grammar's string syntax.
+        // No @since tag or host package version is treated as a since clause.
+        format!(
+            "deprecated {} ",
+            serde_json::to_string(&notice.message).expect("string serialization")
+        )
+    })
 }
 
 fn render_type(
@@ -1951,6 +1996,8 @@ struct GeneratedSymbol {
     signature: String,
     source: SourceSpan,
     rule: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    deprecations: Vec<seseragi_interop::SemanticDeprecation>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1986,14 +2033,24 @@ fn build_report(
             metadata
                 .symbols
                 .iter()
-                .map(|symbol| (symbol.identity.clone(), symbol.signature.clone()))
+                .map(|symbol| {
+                    (
+                        symbol.identity.clone(),
+                        (symbol.signature.clone(), symbol.deprecations.clone()),
+                    )
+                })
                 .collect::<BTreeMap<_, _>>()
         })
         .unwrap_or_default();
     let after = current
         .symbols
         .iter()
-        .map(|symbol| (symbol.identity.clone(), symbol.signature.clone()))
+        .map(|symbol| {
+            (
+                symbol.identity.clone(),
+                (symbol.signature.clone(), symbol.deprecations.clone()),
+            )
+        })
         .collect::<BTreeMap<_, _>>();
     let added = after
         .keys()

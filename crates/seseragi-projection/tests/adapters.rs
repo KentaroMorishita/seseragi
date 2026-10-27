@@ -116,6 +116,7 @@ fn graph() -> SemanticGraph {
         graph.symbols.insert(
             name.into(),
             SemanticSymbol {
+                deprecations: Vec::new(),
                 public_name: name.into(),
                 declaration_name: name.into(),
                 kind: SymbolKind::Type,

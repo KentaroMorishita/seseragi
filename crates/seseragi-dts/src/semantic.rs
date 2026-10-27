@@ -356,6 +356,16 @@ impl Builder {
                 self.origin(span, "declaration"),
                 self.origin(name_span, "public-name"),
             ];
+            let deprecations = scope
+                .deprecations
+                .iter()
+                .filter(|notice| notice.declaration == span)
+                .map(|notice| SemanticDeprecation {
+                    message: notice.message.clone(),
+                    declaration: self.origin(span, "declaration"),
+                    origin: self.origin(notice.origin, "jsdoc-deprecated"),
+                })
+                .collect::<Vec<_>>();
             self.graph
                 .type_origins
                 .entry(root)
@@ -445,9 +455,16 @@ impl Builder {
                         type_ref: root,
                         origins,
                         runtime: None,
+                        deprecations: Vec::new(),
                     },
                 );
             }
+            self.graph
+                .symbols
+                .get_mut(&key)
+                .unwrap()
+                .deprecations
+                .extend(deprecations);
             if !self.graph.private_symbols.contains(&key) {
                 members.insert(public.to_owned(), key);
             }

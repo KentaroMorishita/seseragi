@@ -105,6 +105,18 @@ pub struct SemanticSymbol {
     pub type_ref: TypeId,
     pub origins: Vec<Origin>,
     pub runtime: Option<RuntimeBinding>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub deprecations: Vec<SemanticDeprecation>,
+}
+
+/// Source-language migration metadata with explicit declaration ownership.
+/// Overloads retain separate notices rather than inheriting a sibling's tag.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct SemanticDeprecation {
+    pub message: String,
+    pub declaration: Origin,
+    pub origin: Origin,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]

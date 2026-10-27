@@ -51,6 +51,87 @@ fn run(arguments: &[&str]) -> Output {
         .unwrap()
 }
 
+#[test]
+fn converts_deprecation_through_the_product_writer_and_compiles_both_profiles() {
+    let directory = tempfile::tempdir().unwrap();
+    let package = directory.path().join("package");
+    copy_directory(&fixture("dts-basic-conversion"), &package);
+    let declaration = concat!(
+        "// 元のAPI 🙂\n",
+        "/** @deprecated Use current.\n * @since 9.9.9\n */\n",
+        "export declare function old(value: string): string;\n",
+        "export declare function current(value: string): string;\n",
+        "/** @deprecated Use Modern. */\nexport interface Old { readonly value: string; }\n",
+        "export declare namespace nested {\n",
+        "  /** @deprecated Use current. */\n  export function old(value: string): string;\n",
+        "}\n",
+    );
+    fs::write(package.join("host/index.d.ts"), declaration).unwrap();
+    let output = run(&["dts", "convert", package.to_str().unwrap()]);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let generated = package.join(".seseragi/generated/fixture-api.ssrg");
+    let source = fs::read_to_string(&generated).unwrap();
+    let metadata: Value =
+        serde_json::from_slice(&fs::read(generated.with_extension("binding.json")).unwrap())
+            .unwrap();
+    assert!(source.contains("deprecated \"Use current.\""));
+    assert!(!source.contains("since"));
+    let symbols = metadata["symbols"].as_array().unwrap();
+    assert_eq!(
+        symbols
+            .iter()
+            .filter(|symbol| symbol.get("deprecations").is_some())
+            .count(),
+        3
+    );
+    for symbol in symbols
+        .iter()
+        .filter(|symbol| symbol.get("deprecations").is_some())
+    {
+        let origin = &symbol["deprecations"][0]["origin"];
+        assert_eq!(origin["source"], "host/index.d.ts");
+        let start = origin["start"].as_u64().unwrap() as usize;
+        let end = origin["end"].as_u64().unwrap() as usize;
+        assert!(declaration[start..end].starts_with("/** @deprecated"));
+    }
+    let plain = source
+        .replace("deprecated \"Use current.\" ", "")
+        .replace("deprecated \"Use Modern.\" ", "");
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("generated.ssrg", "generated/api", &source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        let original = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("generated.ssrg", "generated/api", &plain)
+                .with_profile(profile),
+        )
+        .unwrap();
+        assert_eq!(compiled.generated.typescript, original.generated.typescript);
+        assert_eq!(
+            compiled
+                .typed_interface
+                .exports
+                .iter()
+                .find(|export| export.name == "old")
+                .unwrap()
+                .deprecation
+                .as_ref()
+                .unwrap()
+                .message,
+            "Use current."
+        );
+    }
+}
+
 fn expected_conversion_stdout(package: &Path, entries: &[(&str, &str)]) -> String {
     let mut output = String::new();
     for (id, name) in entries {

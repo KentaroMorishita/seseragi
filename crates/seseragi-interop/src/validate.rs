@@ -180,6 +180,24 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
                 _ => issue(id.clone(), "invalid source provenance"),
             }
         }
+        for notice in &symbol.deprecations {
+            if notice.message.trim().is_empty()
+                || !valid_origin(graph, &notice.origin)
+                || !valid_origin(graph, &notice.declaration)
+                || notice.origin.source != notice.declaration.source
+                || !symbol.origins.iter().any(|origin| {
+                    origin.source == notice.declaration.source
+                        && origin.start == notice.declaration.start
+                        && origin.end == notice.declaration.end
+                        && origin.rule == "declaration"
+                })
+            {
+                issue(
+                    id.clone(),
+                    "invalid deprecation message or declaration provenance",
+                );
+            }
+        }
         if let Some(runtime) = &symbol.runtime {
             if runtime.exact_identity.is_empty()
                 || runtime.export_path.iter().any(String::is_empty)
