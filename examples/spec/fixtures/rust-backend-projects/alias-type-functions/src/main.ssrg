@@ -1,13 +1,13 @@
-import { Pair, Reversed, Twice, Constant, Tag1, Tag2, tag1, tag2 } from "./facade"
+import { Pair, Reversed, Twice, Constant, Tag1, Tag2, label1, label2 } from "./facade"
 
 pub effect fn main = do {
-  let flipSaved = tag2<Reversed, Int, Bool> "saved="
-  let repeatSaved = tag1<Twice, Int> "saved="
-  let eraseSaved = tag1<Constant, Bool> "saved="
+  let flipSaved = label2<Reversed, Int, Bool> "saved="
+  let repeatSaved = label1<Twice, Int> "saved="
+  let eraseSaved = label1<Constant, Bool> "saved="
   println (flipSaved (Pair (True, 42)))
   println (repeatSaved (Pair (1, 2)))
   println (eraseSaved 9)
-  println (tag2<Reversed, Int, Bool> "again=" (Pair (False, 7)))
-  println (tag1<Twice, Int> "again=" (Pair (3, 4)))
-  println (tag1<Constant, Bool> "again=" 42)
+  println (label2<Reversed, Int, Bool> "again=" (Pair (False, 7)))
+  println (label1<Twice, Int> "again=" (Pair (3, 4)))
+  println (label1<Constant, Bool> "again=" 42)
 }

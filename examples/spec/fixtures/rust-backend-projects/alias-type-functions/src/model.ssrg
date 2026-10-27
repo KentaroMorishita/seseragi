@@ -22,3 +22,9 @@ instance Tag1<Repeat> {
 instance Tag1<Erase> {
   fn tag1<A> prefix: String -> value: Int -> String = prefix + "erased"
 }
+
+pub fn label2<F<_, _>, A, B> prefix: String -> value: F<A, B> -> String where Tag2<F> =
+  tag2<F, A, B> prefix value
+
+pub fn label1<F<_>, A> prefix: String -> value: F<A> -> String where Tag1<F> =
+  tag1<F, A> prefix value
