@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.108] - 2026-10-27
+
+### Added
+
+- Support native Int remainder through the existing checked arithmetic boundary. UTF-8 integer rows can be transformed into remainder rows in source programs and ordinary path packages, preserving signed truncation, saved operator stages, failure output retention and scoped cleanup after a zero-divisor Defect.
+
 ## [0.61.107] - 2026-10-27
 
 ### Fixed
