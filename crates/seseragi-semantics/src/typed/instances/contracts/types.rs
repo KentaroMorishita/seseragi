@@ -15,22 +15,15 @@ pub(crate) use coherence::{dependency_head, local_head, CoherenceHead, HeadRelat
 use model::{ContractMethod, ContractType};
 use resolution::{contract_constraint, contract_type, declaration_type_parameters, method_binders};
 
-/// Shared proof used by semantic alias projection as well as instance contracts.
-/// The caller has already identified a transparent alias by its resolved symbol.
-pub(crate) fn represented_alias_constructor(resolved: &ResolvedModule, owner: SymbolId) -> bool {
-    let Some(symbol) = resolved.symbols.iter().find(|symbol| symbol.id == owner) else {
-        return false;
-    };
-    let identity = symbol.canonical.clone().map_or(
-        model::TypeIdentity::Symbol(owner),
-        model::TypeIdentity::Canonical,
-    );
-    aliases::normalize_type(
-        resolved,
-        ContractType::Named(identity),
-        &mut Default::default(),
-    )
-    .is_some()
+/// Reuse the exact source application's owner/scoped-slot proof for semantic
+/// projection. An unapplied alias-wide boolean loses its supplied arguments.
+pub(crate) fn alias_constructor_omitted_suffix(
+    resolved: &ResolvedModule,
+    application: &TypeRef,
+) -> Option<usize> {
+    let raw = contract_type(resolved, application, &BTreeMap::new(), &BTreeMap::new())?;
+    let normalized = aliases::normalize_type(resolved, raw, &mut Default::default())?;
+    aliases::omitted_constructor_suffix(resolved, &normalized)
 }
 
 pub(in crate::typed::instances) fn unrepresented_alias_head(

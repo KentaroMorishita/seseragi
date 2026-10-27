@@ -141,6 +141,7 @@ impl AliasCatalog {
             owner,
             definition,
             Vec::new(),
+            None,
             &mut BTreeSet::new(),
         ))
     }
@@ -175,7 +176,21 @@ impl AliasCatalog {
                 }
                 if let Some(target) = target {
                     if let Some(definition) = self.definitions.get(&target) {
-                        return self.instantiate(resolved, target, definition, arguments, stack);
+                        let omitted_suffix = (arguments.len() < definition.parameter_names.len())
+                            .then(|| {
+                                crate::typed::instances::alias_constructor_omitted_suffix(
+                                    resolved, type_ref,
+                                )
+                            })
+                            .flatten();
+                        return self.instantiate(
+                            resolved,
+                            target,
+                            definition,
+                            arguments,
+                            omitted_suffix,
+                            stack,
+                        );
                     }
                 }
                 match target
@@ -248,6 +263,7 @@ impl AliasCatalog {
         owner: SymbolId,
         definition: &AliasDefinition,
         mut arguments: Vec<TypedType>,
+        omitted_suffix: Option<usize>,
         stack: &mut BTreeSet<SymbolId>,
     ) -> TypedType {
         let missing = definition
@@ -259,14 +275,14 @@ impl AliasCatalog {
                 && (arguments
                     .iter()
                     .any(|argument| matches!(argument, TypedType::Hole))
-                    || !crate::typed::instances::represented_alias_constructor(resolved, owner)))
+                    || omitted_suffix.is_none()))
             || !stack.insert(owner)
         {
             return TypedType::Hole;
         }
-        // Constructor equality was proved using owner-scoped ordinal slots,
-        // independently of these ordinary expansion placeholders. Only the
-        // proved trailing suffix is removed from the semantic projection.
+        // The same exact-application proof as registration/contracts has
+        // established each remaining slot's position, kind and multiplicity.
+        // Preserve non-trailing section slots; remove only its proved suffix.
         arguments.resize(definition.parameter_names.len(), TypedType::Hole);
         let arguments = arguments
             .into_iter()
@@ -302,7 +318,7 @@ impl AliasCatalog {
                 name,
                 mut arguments,
             } => {
-                if !remove_proven_suffix(&mut arguments, missing) {
+                if !remove_proven_suffix(&mut arguments, omitted_suffix.unwrap()) {
                     return TypedType::Hole;
                 }
                 TypedType::Named { name, arguments }
@@ -312,7 +328,7 @@ impl AliasCatalog {
                 canonical,
                 mut arguments,
             } => {
-                if !remove_proven_suffix(&mut arguments, missing) {
+                if !remove_proven_suffix(&mut arguments, omitted_suffix.unwrap()) {
                     return TypedType::Hole;
                 }
                 TypedType::ExternalNamed {

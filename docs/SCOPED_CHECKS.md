@@ -62,6 +62,14 @@ Ref cycleとcold Effectの再実行、Failure／Defect後のfinalizerとroot解�
 再実行、先行処理の一回実行、Failure／Defect後のfinalizerとRef root解放を比較します。
 共有frontendの修復なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
 
+固定済みalias引数のconstructor sectionは、driverとCLIの
+`--test alias_constructor_sections`で確認します。canonical ownerと宣言kindを根拠に、
+残るslotが順序どおり一度だけ現れる場合に限って、並替・重複・消失済みprefixを投影します。
+opaque providerのfacade、別owner・不正kind・未証明headの位置付き拒否、元のTS両profileの
+strict、fresh Bun／Node、native、選択済みevidenceとsource一回評価、cold Effectと
+Failure／Defect後の解放を比較します。未束縛の一般type lambdaやHKT逆推論は含めません。
+共有frontendの変更なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。

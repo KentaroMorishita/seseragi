@@ -1,0 +1,19 @@
+import { Sealed as Foreign, Flip, create } from "./facade"
+
+type Sealed<A, B> = | Local (A, B)
+
+trait Tag<F<_>> {
+  fn tag<A> prefix: String -> value: F<A> -> String
+}
+
+instance Tag<Flip<Int>> {
+  fn tag<A> prefix: String -> value: Foreign<A, Int> -> String = prefix + "sealed"
+}
+
+pub effect fn main = do {
+  let selected: String -> Foreign<Bool, Int> -> String = tag<Flip<Int>, Bool>
+    let saved = selected "saved="
+  let value = create<Bool, Int> True 42
+  println (saved value)
+  println (selected "again=" value)
+}

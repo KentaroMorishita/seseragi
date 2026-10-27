@@ -1,0 +1,5 @@
+pub opaque struct Sealed<A, B> { first: A, second: B }
+
+pub alias Flipped<A, B> = Sealed<B, A>
+
+pub fn make<A, B> first: A -> second: B -> Sealed<A, B> = Sealed { first, second }
