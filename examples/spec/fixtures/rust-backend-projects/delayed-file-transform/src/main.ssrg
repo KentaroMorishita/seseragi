@@ -1,0 +1,3 @@
+import * as operation from "operation"
+
+pub effect fn main -> Unit with Clock, FileSystem fails String = operation.main ()

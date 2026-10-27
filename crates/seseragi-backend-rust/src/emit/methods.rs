@@ -369,6 +369,9 @@ impl Backend<'_> {
         }
         match name.as_str() {
             "std/path::Path"
+            | "std/time::Duration"
+            | "std/time::DurationError"
+            | "std/clock::Clock"
             | "std/path::PathError"
             | "std/fs::FileSystem"
             | "std/fs::FileSystemError"

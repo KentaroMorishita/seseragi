@@ -19,12 +19,14 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     };
     let mut entry = None;
     let mut destination = None;
+    let mut provider = None;
     for pair in flags.chunks(2) {
         let [flag, value] = pair else {
             return Err(usage().into());
         };
         match flag.as_str() {
             "--entry" if entry.is_none() => entry = Some(value.as_str()),
+            "--provider" if provider.is_none() => provider = Some(value.as_str()),
             "--output" if !native && destination.is_none() => {
                 destination = Some(PathBuf::from(value))
             }
@@ -37,7 +39,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     let entry = entry.ok_or_else(|| usage().to_owned())?;
     let destination = destination.ok_or_else(|| usage().to_owned())?;
     let (artifact, source_paths) = if std::path::Path::new(path).is_dir() {
-        compile_project(path, entry)?
+        compile_project(path, entry, provider)?
     } else {
         if !path.ends_with(".ssrg") || !std::path::Path::new(path).is_file() {
             return Err("experimental Rust target accepts a .ssrg file or package root".into());
@@ -54,8 +56,12 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
             );
         }
         (
-            seseragi_backend_rust::emit_rust_module(&checked.core_ir, entry)
-                .map_err(|e| target_error(e, Some(path)))?,
+            seseragi_backend_rust::emit_rust_module_with_options(
+                &checked.core_ir,
+                entry,
+                &native_clock_options(provider)?,
+            )
+            .map_err(|e| target_error(e, Some(path)))?,
             vec![fs::canonicalize(path).map_err(|e| e.to_string())?],
         )
     };
@@ -116,6 +122,7 @@ fn target_error(
 fn compile_project(
     path: &str,
     entry: &str,
+    provider: Option<&str>,
 ) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
     let (project, checked) = load_checked_project(path)?;
     let modules = checked
@@ -124,8 +131,44 @@ fn compile_project(
         .iter()
         .map(|id| &checked.compiled.modules[id].core_ir)
         .collect::<Vec<_>>();
-    let artifact = seseragi_backend_rust::emit_rust_project(&modules, &checked.entry_module, entry)
-        .map_err(|error| project_target_error(error, &project))?;
+    let root = project
+        .packages()
+        .package(project.packages().root())
+        .expect("checked root package");
+    let manifest_path = root.root().join("seseragi.toml");
+    let options = native_clock_options(provider)?;
+    let artifact = seseragi_backend_rust::emit_rust_project_with_options(
+        &modules,
+        &checked.entry_module,
+        entry,
+        &options,
+    )
+    .map_err(|error| project_target_error(error, &project))?;
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
+        .any(|c| c == "clock-sleep")
+    {
+        reject_clock_manifest_pin(
+            root.manifest()
+                .providers
+                .get("std/clock::Clock")
+                .map(String::as_str),
+            &manifest_path,
+        )?;
+        for (identity, package) in project.packages().packages() {
+            if !package.manifest().provider_artifacts.is_empty()
+                || (identity != project.packages().root()
+                    && package
+                        .manifest()
+                        .providers
+                        .contains_key("std/clock::Clock"))
+            {
+                return Err(format!("{}: SES-RUST-0001: native Clock sleep requires the explicit native CLI selection; provider artifacts and dependency provider selections are not admitted", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
     if artifact
         .metadata
         .capabilities
@@ -148,6 +191,39 @@ fn compile_project(
         .map(|(_, module)| fs::canonicalize(module.source_path()).map_err(|e| e.to_string()))
         .collect::<Result<_, _>>()?;
     Ok((artifact, source_paths))
+}
+
+fn native_clock_options(
+    command_line: Option<&str>,
+) -> Result<seseragi_backend_rust::RustTargetOptions, String> {
+    use seseragi_backend_rust::{
+        NativeClockProvider, NativeProviderSelectionOrigin, RustTargetOptions,
+    };
+    let selected = command_line.map(|value| {
+        let Some((service, provider)) = value.split_once('=') else {
+            return Err("SES-RUST-0001: --provider requires std/clock::Clock=provider-identity".to_owned());
+        };
+        if service != "std/clock::Clock" {
+            return Err(format!("SES-RUST-0001: unsupported native provider service {service}; this finite selection supports Clock sleep only"));
+        }
+        Ok(provider)
+    }).transpose()?;
+    let Some(identity) = selected else {
+        return Ok(RustTargetOptions::default());
+    };
+    let provider =
+        NativeClockProvider::from_identity(identity).map_err(|error| error.to_string())?;
+    Ok(RustTargetOptions {
+        clock_provider: Some(provider),
+        clock_selection_origin: NativeProviderSelectionOrigin::CommandLine,
+    })
+}
+
+fn reject_clock_manifest_pin(manifest: Option<&str>, path: &std::path::Path) -> Result<(), String> {
+    if let Some(identity) = manifest {
+        return Err(format!("{}: SES-RUST-0001: native Clock sleep does not admit the target-shared manifest provider selection {identity}; use the explicit native --provider selection without a Clock manifest pin; JavaScript providers are not substituted", path.display()));
+    }
+    Ok(())
 }
 
 fn project_target_error(
@@ -265,5 +341,5 @@ fn load_checked_project_entry_for_command(
 }
 
 fn usage() -> &'static str {
-    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs | build-native source.ssrg|package-root --entry function --out-dir path"
+    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep] | build-native source.ssrg|package-root --entry function --out-dir path [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep]"
 }

@@ -1,0 +1,91 @@
+import * as effects from "std/effect"
+import * as deferred from "std/deferred"
+import * as clock from "std/clock"
+import * as time from "std/time"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+import { Deferred } from "std/deferred"
+
+fn durationError error: time.DurationError -> String = match error {
+  time.NegativeDuration value -> "negative delay: " + show value
+  time.DurationOutsideRange -> "delay outside range"
+}
+
+effect fn append message: String -> Unit with FileSystem fails String = do {
+  trace <- paths.child "trace.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  fs.writeTextUtf8 fs.Append message trace |> effects.mapError show
+}
+
+effect fn ignore _error: String -> Unit with FileSystem = effects.succeed ()
+
+effect fn acquire zero: time.Duration -> Unit with Clock, FileSystem = do {
+  clock.sleep zero
+  append "acquired\n" |> effects.recover ignore
+}
+
+effect fn release pause: time.Duration -> mode: String -> _resource: Unit -> Unit
+with Clock, FileSystem = do {
+  append "release-start\n" |> effects.recover ignore
+  clock.sleep pause
+  append "released\n" |> effects.recover ignore
+  if mode == "cleanup-defect" || mode == "cancel-cleanup-defect"
+  then effects.die "delayed cleanup defect" else effects.succeed ()
+}
+
+effect fn work ready: Deferred<Never, Unit>
+  -> mode: String -> millis: Int -> Unit
+with Clock, FileSystem
+fails String = effects.scoped $ do {
+  zero <- time.milliseconds 0
+    |> effects.fromEither |> effects.mapError durationError
+  cleanup <- time.milliseconds 20
+    |> effects.fromEither |> effects.mapError durationError
+  effects.acquireRelease (acquire zero) (release cleanup mode)
+  append "pending\n"
+  deferred.succeed () ready
+  let convert: Int -> Either<time.DurationError, time.Duration> = time.milliseconds
+  pause <- convert millis
+    |> effects.fromEither |> effects.mapError durationError
+  let wait = clock.sleep
+  wait pause
+  if mode == "defect" then effects.die "delayed body defect" else do {
+    input <- paths.child "input.txt" (paths.current ())
+      |> effects.fromEither |> effects.mapError show
+    output <- paths.child "output.txt" (paths.current ())
+      |> effects.fromEither |> effects.mapError show
+    content <- fs.readTextUtf8 input |> effects.mapError show
+    fs.writeTextUtf8 fs.Replace ("processed:\n" + content) output
+      |> effects.mapError show
+    append "written\n"
+  }
+}
+
+effect fn caseMain mode: String -> millis: Int -> Unit
+with Clock, FileSystem
+fails String = do {
+  ready <- deferred.make<Never, Unit> ()
+  let plan = work ready mode millis
+  append "created\n"
+  if mode == "cancel" || mode == "cancel-cleanup-defect" then do {
+    child <- effects.fork plan
+    deferred.await ready
+    sibling <- time.milliseconds 1
+      |> effects.fromEither |> effects.mapError durationError
+    clock.sleep sibling
+    append "sibling\n"
+    effects.interrupt child
+    exit <- effects.await child
+    match exit {
+      effects.FiberCancelled -> append "cancelled\n"
+      _ -> effects.fail "unexpected child outcome"
+    }
+  } else if mode == "replay" then do {
+    plan
+    plan
+  } else plan
+}
+
+pub effect fn main -> Unit with Clock, FileSystem fails String =
+  caseMain "success" 30

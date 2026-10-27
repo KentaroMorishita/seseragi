@@ -1,10 +1,15 @@
 //! Experimental Rust target. Checked CoreIr is the semantic authority;
 //! rustc validates generated implementation code, not Seseragi source types.
+mod clock_provider;
 mod emit;
 mod program_wasm;
 mod program_wasm_effect;
 mod project;
 mod type_names;
+pub use clock_provider::{
+    NativeClockProvider, NativeProviderReceipt, NativeProviderSelectionOrigin, RustTargetOptions,
+    NATIVE_CLOCK_SLEEP_PROVIDER,
+};
 pub use program_wasm::{
     emit_program_wasm, ProgramCodec, ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata,
     PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI, PROGRAM_WASM_HOST_EFFECT_ABI,
@@ -61,6 +66,9 @@ pub struct RustMetadata {
     /// Canonical source module identities in runtime initialization order.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub modules: Vec<String>,
+    /// Explicit finite native target bindings; absent for existing artifacts.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub providers: Vec<NativeProviderReceipt>,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RustArtifact {
@@ -88,6 +96,27 @@ pub fn emit_rust_project(
     project::emit(modules, entry_module, entry)
 }
 
+/// Emits with explicit native target bindings. No binding is inferred from a
+/// TypeScript provider selection; the default API continues to reject Clock.
+pub fn emit_rust_module_with_options(
+    module: &CoreModule,
+    entry: &str,
+    options: &RustTargetOptions,
+) -> Result<RustArtifact, RustBackendError> {
+    emit_rust_project_with_options(&[module], &module.module, entry, options)
+}
+
+/// Links a checked source graph with explicit native target bindings. Receipts
+/// describe only the supported operations, not a general provider ABI.
+pub fn emit_rust_project_with_options(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    entry: &str,
+    options: &RustTargetOptions,
+) -> Result<RustArtifact, RustBackendError> {
+    project::emit_with_options(modules, entry_module, entry, options)
+}
+
 #[cfg(test)]
 #[allow(dead_code)]
 mod runtime {
@@ -109,4 +138,5 @@ mod runtime {
     include!("runtime_path.rs");
     include!("runtime_filesystem.rs");
     include!("runtime_host.rs");
+    include!("runtime_clock.rs");
 }
