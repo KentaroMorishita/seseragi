@@ -632,7 +632,7 @@ fn provider_preflight_never_publishes_implicit_or_javascript_clock_selection() {
 fn unused_clock_pin_keeps_existing_non_clock_entry_while_used_clock_pin_is_rejected() {
     let scratch = Scratch::new();
     for (case, body, accepted) in [
-        ("unused", "pub fn main = 42\n", true),
+        ("unused", "pub fn main -> Int = 42\n", true),
         ("used", ORIGINAL, false),
     ] {
         let package = scratch.0.join(case);

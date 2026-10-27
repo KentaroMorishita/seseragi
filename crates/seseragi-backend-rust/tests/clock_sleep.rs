@@ -3,7 +3,7 @@ use seseragi_backend_rust::{
     NativeProviderSelectionOrigin, RustTargetOptions, NATIVE_CLOCK_SLEEP_PROVIDER,
 };
 use seseragi_driver::{compile_core_module, CompileInput};
-use seseragi_lowering::{CoreExpr, CoreModule, CoreRecordField, CoreType};
+use seseragi_lowering::{CoreCallSignature, CoreExpr, CoreModule, CoreRecordField, CoreType};
 
 fn checked(source: &str) -> CoreModule {
     compile_core_module(CompileInput::new("clock-雫🙂.ssrg", "native/clock", source))
@@ -193,8 +193,27 @@ fn milliseconds_preserves_canonical_owner_kind_signature_and_one_source_argument
         artifact.metadata.providers.is_empty(),
         "pure Duration conversion does not select Clock"
     );
+    let mut authoritative = module.clone();
+    if let CoreExpr::Call {
+        callee_signature,
+        type_ref,
+        ..
+    } = &mut authoritative.functions[0].body
+    {
+        callee_signature.get_or_insert_with(|| CoreCallSignature {
+            type_parameters: vec![],
+            parameters: vec![ty("std/prelude::Int")],
+            result: type_ref.clone(),
+            argument_types: vec![ty("std/prelude::Int")],
+            instantiated_type_arguments: vec![],
+        });
+    } else {
+        panic!("checked pure operation must retain its source call");
+    }
+    emit_rust_module(&authoritative, "probe")
+        .expect("explicit checked signature agrees with the canonical operation");
     for mutation in 0..9 {
-        let mut changed = module.clone();
+        let mut changed = authoritative.clone();
         let CoreExpr::Call {
             arguments,
             type_ref,
@@ -215,7 +234,9 @@ fn milliseconds_preserves_canonical_owner_kind_signature_and_one_source_argument
             }
             3 => *type_ref = CoreType::Hole,
             4 | 5 => {
-                let CoreType::Named { arguments, .. } = type_ref else {
+                let (CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. }) =
+                    type_ref
+                else {
                     panic!()
                 };
                 arguments[1] = if mutation == 4 {
@@ -261,6 +282,7 @@ fn ordinary_saved_and_returned_clock_functions_retain_source_stages() {
         r#"
 import * as effects from "std/effect"
 import * as clock from "std/clock"
+import { Clock } from "std/clock"
 import * as time from "std/time"
 fn conversion -> (Int -> Either<time.DurationError, time.Duration>) = time.milliseconds
 fn sleeper -> (time.Duration -> Effect<{clock: Clock}, Never, Unit>) = clock.sleep
@@ -296,7 +318,7 @@ fn finite_selection_never_admits_now_or_another_provider_or_program_wasm_clock()
     ] {
         assert!(NativeClockProvider::from_identity(identity).is_err());
     }
-    let now = checked("import * as clock from \"std/clock\"\npub effect fn main -> Unit with Clock = do { clock.now (); () }\n");
+    let now = checked("import * as clock from \"std/clock\"\npub effect fn main -> Unit with Clock = do { clock.now (); succeed () }\n");
     let error = emit_rust_module_with_options(&now, "main", &options()).unwrap_err();
     assert_eq!(error.code, "SES-RUST-0001");
     assert_eq!(error.origin.unwrap().source, "clock-雫🙂.ssrg");
@@ -305,8 +327,8 @@ fn finite_selection_never_admits_now_or_another_provider_or_program_wasm_clock()
     assert_eq!(error.code, "SES-RUST-0001");
     assert!(error.origin.is_some());
     for source in [
-        "import * as clock from \"std/clock\"\nstruct Duration { value: Int }\neffect fn wait value: Duration -> Unit with Clock = clock.sleep value\npub fn probe = ()\n",
-        "import * as clock from \"std/clock\"\neffect fn wait<Duration> value: Duration -> Unit with Clock = clock.sleep value\npub fn probe = ()\n",
+        "import * as clock from \"std/clock\"\nstruct Duration { value: Int }\neffect fn wait value: Duration -> Unit with Clock = clock.sleep value\npub fn probe -> Unit = ()\n",
+        "import * as clock from \"std/clock\"\neffect fn wait<Duration> value: Duration -> Unit with Clock = clock.sleep value\npub fn probe -> Unit = ()\n",
     ] {
         compile_core_module(CompileInput::new("nominal.ssrg", "native/clock", source)).expect_err("spelling cannot supply the Duration owner");
     }
@@ -314,7 +336,7 @@ fn finite_selection_never_admits_now_or_another_provider_or_program_wasm_clock()
 
 #[test]
 fn non_clock_metadata_preserves_the_existing_optional_field_contract() {
-    let module = checked("pub fn probe = 42\n");
+    let module = checked("pub fn probe -> Int = 42\n");
     let artifact = emit_rust_module(&module, "probe").unwrap();
     let json = serde_json::to_value(&artifact.metadata).unwrap();
     assert!(json.get("providers").is_none());
