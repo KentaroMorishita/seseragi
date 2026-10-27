@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.61.109] - 2026-10-27
+
+### Added
+
+- Preserve checked higher-kinded constructors in public data fields, patterns and opaque factory signatures in generated TypeScript, including imports through facades. Reject invalid constructor kinds even in unused annotations.
+- Support native Bool and Unit equality and Bool negation, preserving canonical standard evidence, source evaluation order and resource cleanup.
+- Retain deprecation metadata for declarations, selected members, namespaces and impl operators across imports, generated TypeScript, declarations and API documentation. Report positioned warnings through CLI lint and LSP while keeping ordinary compilation available.
+
+### Fixed
+
+- Keep generic impl binders aligned with generated instances and selected dictionaries. Resolve supported alias constructor sections with bound prefixes without changing source arity or evaluating arguments more than once.
+- Infer required environments for anonymous deferred Effects and preserve canonical provider owners across explicit requirements. Keep local types and scoped binders distinct from standard primitives and providers.
+- Require String arguments for prelude and imported Console print operations on TypeScript and native targets. Use explicit Show conversion when displaying other values.
+
 ## [0.61.108] - 2026-10-27
 
 ### Added
