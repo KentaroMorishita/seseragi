@@ -1,0 +1,13 @@
+// 元の宣言 🙂
+pub struct Box { pub value: Int }
+
+impl Box {
+  deprecated "Use combine" since "0.61.0"
+  operator + self -> other: Box -> Box = Box { value: self.value + other.value }
+}
+
+pub struct Other { pub value: Int }
+
+impl Other {
+  operator + self -> other: Other -> Other = Other { value: self.value + other.value }
+}

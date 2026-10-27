@@ -55,6 +55,17 @@ change their built-in trait contract. This branch's scoped acceptance and final
 integrated release are recorded separately from the already verified namespace
 checkpoint.
 
+The `rust-backend-projects/deprecation-operators` acceptance imports an aliased
+nominal through a public facade and a path dependency. Its binary operation,
+saved/reused partial and standard `add` call retain their selected dictionary;
+Int, another nominal, import-only sites and the implementation's own body do
+not inherit a notice. The separate CLI target compares the original generated
+TypeScript in both strict profiles and the original emitted Rust with/without
+the clause. It then runs Bun, Node and native. Its failing variant saves an
+arity-two operator before printing `saved`, executes the body only when the
+second argument arrives, and requires the scope finalizer before Defect exit.
+These new checks remain pending until their exact-head scoped run is recorded.
+
 Member source provenance is an analysis table: exact SurfaceExpr ranges identify
 the original callee token, and typed canonical callees/trait dispatch select
 the owner. A generated call without an original callee receives no fabricated

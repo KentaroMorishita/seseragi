@@ -1,0 +1,16 @@
+// 利用者 🙂
+import { Box as Container, Other } from "./facade"
+
+pub fn probe -> Array<Int> = {
+  let left = Container { value: 40 }
+  let direct = left + Container { value: 2 }
+  let chosen: Container -> Container -> Container = (+)
+  let saved: Container -> Container = chosen left
+  let partial = saved (Container { value: 3 })
+  let reused = saved (Container { value: 4 })
+  let method = add left (Container { value: 5 })
+  let other = Other { value: 20 } + Other { value: 22 }
+  [direct.value, partial.value, reused.value, method.value, other.value, 40 + 2]
+}
+
+pub effect fn main = println (show (probe ()))
