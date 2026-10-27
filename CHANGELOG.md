@@ -7,6 +7,13 @@
 - Support native Int remainder through the existing checked arithmetic boundary. UTF-8 integer rows can be transformed into remainder rows in source programs and ordinary path packages, preserving signed truncation, saved operator stages, failure output retention and scoped cleanup after a zero-divisor Defect.
 - Support native Float rounding and checked Int conversion for UTF-8 file transformations. Keep all six rounding modes, typed conversion failures, one-time evaluation and cleanup consistent with TypeScript, and preserve existing output when parsing or conversion fails.
 
+### Fixed
+
+- Preserve canonical imported ADT payload and alias owners in nested matches, and propagate the expected remaining function type into annotated Eq and Ord sections without changing dictionary selection or operand evaluation.
+- Make PostgreSQL Provider bundle freshness independent of linked dependency paths while preserving executable text and rejecting stale code.
+- Wait for native smoke processes and their stdio to close before bounded temporary-directory cleanup, retaining the original failure when cleanup also fails.
+- Update compatible VSIX packaging dependencies for the fast-uri and undici advisories. The incompatible MSAL update remains tracked separately.
+
 ## [0.61.107] - 2026-10-27
 
 ### Fixed
