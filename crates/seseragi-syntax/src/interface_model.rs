@@ -139,6 +139,14 @@ pub struct InterfaceConstraint {
     rename_all_fields = "camelCase"
 )]
 pub enum InterfaceType {
+    TypeFunction {
+        parameter_kinds: Vec<u32>,
+        body: Box<InterfaceType>,
+    },
+    TypeFunctionParameter {
+        depth: u32,
+        index: u32,
+    },
     Named {
         name: String,
         arguments: Vec<InterfaceType>,

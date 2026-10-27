@@ -49,6 +49,15 @@ fn check_program(source: &str, expected: &str, code: i32) {
     );
 }
 
+#[test]
+fn unapplied_alias_type_functions_keep_raw_strict_saved_method_and_native_results() {
+    check_program(
+        include_str!("../../../examples/spec/fixtures/rust-backend/alias-type-functions.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/alias-type-functions.stdout"),
+        0,
+    );
+}
+
 fn copy_project(source: &Path, destination: &Path) {
     fs::create_dir_all(destination).unwrap();
     for entry in fs::read_dir(source).unwrap() {
@@ -204,6 +213,12 @@ fn fixed_alias_sections_execute_the_same_checked_contract_on_all_targets() {
 }
 
 #[test]
+fn renamed_alias_type_functions_keep_package_owner_and_saved_source_arity() {
+    let fixture = root().join("examples/spec/fixtures/rust-backend-projects/alias-type-functions");
+    check_case("", include_str!("../../../examples/spec/fixtures/rust-backend-projects/alias-type-functions/expected.stdout"), 0, Some(&fixture), None);
+}
+
+#[test]
 fn opaque_alias_sections_keep_imported_owner_and_saved_source_arity() {
     let fixture =
         root().join("examples/spec/fixtures/rust-backend-projects/alias-constructor-sections");
@@ -233,14 +248,46 @@ fn alias_sections_keep_child_evidence_cold_replay_and_cleanup_on_failure_or_defe
 }
 
 #[test]
+fn alias_type_functions_keep_child_evidence_cold_replay_and_cleanup_on_failure_or_defect() {
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/alias-type-function-effects.ssrg"
+    );
+    assert_eq!(source.matches("body \"ready\" released").count(), 1);
+    check_program(
+        source,
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/alias-type-function-effects.stdout"
+        ),
+        0,
+    );
+    check_program(
+        &source.replace("body \"ready\" released", "body \"fail\" released"),
+        "acquired\ncreated\ncold=10\nreleased\nFailure: body failure\nreleased: 1\n",
+        0,
+    );
+    check_program(
+        &source.replace("body \"ready\" released", "body \"defect\" released"),
+        "acquired\ncreated\ncold=10\nreleased\n",
+        70,
+    );
+}
+
+#[test]
 fn alias_section_selection_prefix_and_payload_evaluate_once_in_source_order() {
+    check_source_order(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/alias-section-evaluation.ssrg"
+    ));
+    check_source_order(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/alias-type-function-evaluation.ssrg"
+    ));
+}
+
+fn check_source_order(source: &str) {
     let scratch = tempfile::Builder::new()
         .prefix("seseragi-alias-section-trace-")
         .tempdir()
         .unwrap();
     let directory = scratch.path();
-    let source =
-        include_str!("../../../examples/spec/fixtures/rust-backend/alias-section-evaluation.ssrg");
     let events = [
         "selected",
         "prefix",

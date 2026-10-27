@@ -206,6 +206,10 @@ fn is_never(type_ref: &InterfaceType) -> bool {
 
 fn canonical_type_spelling(type_ref: &InterfaceType) -> String {
     match type_ref {
+        InterfaceType::TypeFunction { .. } | InterfaceType::TypeFunctionParameter { .. } => {
+            seseragi_semantics::TypeDocument::from_interface_type(type_ref)
+                .render(Default::default())
+        }
         InterfaceType::Named { name, arguments }
         | InterfaceType::ExternalNamed {
             name, arguments, ..

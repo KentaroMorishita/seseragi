@@ -32,6 +32,10 @@ pub(crate) use substitution::{
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum SemanticTypeKey {
+    TypeFunction {
+        parameter_kinds: Vec<u32>,
+        body: Box<SemanticValueType>,
+    },
     Adt {
         owner: SymbolId,
         arguments: Vec<SemanticValueType>,
@@ -187,6 +191,11 @@ pub(crate) fn semantic_values_are_compatible(
     expected: &SemanticValueType,
     actual: &SemanticValueType,
 ) -> bool {
+    if matches!(expected.type_ref, TypedType::TypeFunction { .. })
+        || matches!(actual.type_ref, TypedType::TypeFunction { .. })
+    {
+        return semantic_values_have_same_identity(expected, actual);
+    }
     if crate::standard::standard_type_coercion(&expected.type_ref, &actual.type_ref) {
         return true;
     }
@@ -391,6 +400,24 @@ pub(crate) fn semantic_values_have_same_identity(
     expected: &SemanticValueType,
     actual: &SemanticValueType,
 ) -> bool {
+    if let (
+        SemanticTypeKey::TypeFunction {
+            parameter_kinds: left,
+            body: left_body,
+        },
+        SemanticTypeKey::TypeFunction {
+            parameter_kinds: right,
+            body: right_body,
+        },
+    ) = (&expected.key, &actual.key)
+    {
+        return left == right && semantic_values_have_same_identity(left_body, right_body);
+    }
+    if matches!(expected.key, SemanticTypeKey::TypeFunction { .. })
+        || matches!(actual.key, SemanticTypeKey::TypeFunction { .. })
+    {
+        return false;
+    }
     if let Some(same) = intrinsic_primitive_relation(expected, actual) {
         return same;
     }
@@ -1165,6 +1192,14 @@ impl SemanticTypeCatalog {
         type_ref: &TypedType,
     ) -> SemanticTypeKey {
         match type_ref {
+            TypedType::TypeFunction {
+                parameter_kinds,
+                body,
+            } => SemanticTypeKey::TypeFunction {
+                parameter_kinds: parameter_kinds.clone(),
+                body: Box::new(self.type_function_body_value(resolved, body)),
+            },
+            TypedType::TypeFunctionParameter { .. } => SemanticTypeKey::Other,
             TypedType::Named { name, arguments } => {
                 let matches_local_name = |symbol: &crate::ResolvedSymbol| {
                     symbol.spelling == *name
@@ -1280,6 +1315,61 @@ impl SemanticTypeCatalog {
             TypedType::Function { .. } | TypedType::RequirementMerge { .. } => {
                 SemanticTypeKey::Other
             }
+        }
+    }
+
+    fn type_function_body_value(
+        &self,
+        resolved: &ResolvedModule,
+        type_ref: &TypedType,
+    ) -> SemanticValueType {
+        let mut key = match type_ref {
+            TypedType::Function { parameter, result } => SemanticTypeKey::Function {
+                parameter: Box::new(self.type_function_body_value(resolved, parameter)),
+                result: Box::new(self.type_function_body_value(resolved, result)),
+            },
+            _ => self.key_from_typed_type(resolved, type_ref),
+        };
+        match (&mut key, type_ref) {
+            (
+                SemanticTypeKey::Adt { arguments, .. }
+                | SemanticTypeKey::Struct { arguments, .. }
+                | SemanticTypeKey::ExternalNominal { arguments, .. }
+                | SemanticTypeKey::NamedGeneric { arguments, .. },
+                TypedType::Named {
+                    arguments: types, ..
+                }
+                | TypedType::ExternalNamed {
+                    arguments: types, ..
+                },
+            ) => {
+                *arguments = types
+                    .iter()
+                    .map(|argument| self.type_function_body_value(resolved, argument))
+                    .collect();
+            }
+            (SemanticTypeKey::Record(values), TypedType::Record { fields, .. }) => {
+                *values = fields
+                    .iter()
+                    .map(|field| {
+                        (
+                            field.name.clone(),
+                            self.type_function_body_value(resolved, &field.type_ref),
+                        )
+                    })
+                    .collect();
+            }
+            (SemanticTypeKey::Tuple(keys), TypedType::Tuple { elements }) => {
+                *keys = elements
+                    .iter()
+                    .map(|element| self.type_function_body_value(resolved, element).key)
+                    .collect();
+            }
+            _ => {}
+        }
+        SemanticValueType {
+            type_ref: type_ref.clone(),
+            key,
         }
     }
 
@@ -1501,6 +1591,17 @@ fn semantic_key_from_expanded_type(
     type_ref: &TypedType,
 ) -> SemanticTypeKey {
     match type_ref {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => SemanticTypeKey::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(SemanticValueType {
+                type_ref: (**body).clone(),
+                key: semantic_key_from_expanded_type(resolved, owners, struct_owners, body),
+            }),
+        },
+        TypedType::TypeFunctionParameter { .. } => SemanticTypeKey::Other,
         TypedType::Named { name, arguments } => {
             let owner = resolved.symbols.iter().find_map(|symbol| {
                 (symbol.kind == SymbolKind::Type && symbol.spelling == *name).then_some(symbol.id)

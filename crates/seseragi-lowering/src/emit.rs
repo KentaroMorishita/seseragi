@@ -231,7 +231,7 @@ fn render_type_alias(alias: &TypeScriptAlias) -> Option<String> {
     ))
 }
 
-fn exact_alias_target(target: &TypeScriptType) -> bool {
+pub(crate) fn exact_alias_target(target: &TypeScriptType) -> bool {
     match target {
         TypeScriptType::Unknown => false,
         TypeScriptType::KindConstructor { arguments, .. } => {

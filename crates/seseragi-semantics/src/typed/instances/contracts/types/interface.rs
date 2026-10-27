@@ -82,6 +82,19 @@ pub(super) fn contract_type(
     bindings: &[ExternalTypeBinding],
 ) -> Option<ContractType> {
     match type_ref {
+        InterfaceType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => Some(ContractType::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(contract_type(body, binders, substitutions, bindings)?),
+        }),
+        InterfaceType::TypeFunctionParameter { depth, index } => {
+            Some(ContractType::TypeFunctionParameter {
+                depth: *depth,
+                index: *index,
+            })
+        }
         InterfaceType::Named { name, arguments } => {
             named_type(name, arguments, binders, substitutions, bindings)
         }

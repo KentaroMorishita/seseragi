@@ -436,6 +436,14 @@ fn substitute_parameters(
     substitutions: &BTreeMap<String, TypeDocument>,
 ) -> TypeDocument {
     match document {
+        TypeDocument::TypeFunction {
+            parameter_kinds,
+            body,
+        } => TypeDocument::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(substitute_parameters(body, substitutions)),
+        },
+        TypeDocument::TypeFunctionParameter { .. } => document.clone(),
         TypeDocument::Variable {
             name,
             arity: 0,

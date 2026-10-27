@@ -59,6 +59,13 @@ fn substitute_semantic_type_parameters(
             .iter()
             .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
             .collect::<Vec<_>>();
+        if matches!(constructor.type_ref, TypedType::TypeFunction { .. }) {
+            return seseragi_syntax::type_functions::apply_type_function(&constructor, &arguments)
+                .unwrap_or_else(|| SemanticValueType {
+                    type_ref: TypedType::Hole,
+                    key: SemanticTypeKey::Invalid,
+                });
+        }
         let mut type_ref = constructor.type_ref.clone();
         match &mut type_ref {
             TypedType::Named {
@@ -145,6 +152,18 @@ fn substitute_semantic_type_parameters(
     }
 
     match (&value.type_ref, &value.key) {
+        (
+            TypedType::TypeFunction {
+                parameter_kinds, ..
+            },
+            SemanticTypeKey::TypeFunction { body, .. },
+        ) => {
+            use seseragi_syntax::type_functions::TypeFunctionTerm;
+            SemanticValueType::from_type_function(
+                parameter_kinds.clone(),
+                substitute_semantic_type_parameters(body, substitutions),
+            )
+        }
         (TypedType::Function { .. }, SemanticTypeKey::Function { parameter, result }) => {
             SemanticValueType::function(
                 substitute_semantic_type_parameters(parameter, substitutions),

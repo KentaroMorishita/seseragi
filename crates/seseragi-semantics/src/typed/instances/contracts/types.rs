@@ -26,6 +26,97 @@ pub(crate) fn alias_constructor_omitted_suffix(
     aliases::omitted_constructor_suffix(resolved, &normalized)
 }
 
+/// Transport the same checked constructor body used for registration and
+/// method contracts. This must not reconstruct a lambda from a display name.
+pub(crate) fn alias_constructor_type_function(
+    resolved: &ResolvedModule,
+    application: &TypeRef,
+) -> Option<crate::TypedType> {
+    let raw = contract_type(resolved, application, &BTreeMap::new(), &BTreeMap::new())?;
+    let normalized = aliases::normalize_type(resolved, raw, &mut Default::default())?;
+    if !matches!(normalized, ContractType::TypeFunction { .. }) {
+        return None;
+    }
+    fn convert(resolved: &ResolvedModule, value: ContractType) -> Option<crate::TypedType> {
+        use crate::{TypedRecordField, TypedType};
+        use model::TypeIdentity;
+        Some(match value {
+            ContractType::TypeFunction {
+                parameter_kinds,
+                body,
+            } => TypedType::TypeFunction {
+                parameter_kinds,
+                body: Box::new(convert(resolved, *body)?),
+            },
+            ContractType::TypeFunctionParameter { depth, index } => {
+                TypedType::TypeFunctionParameter { depth, index }
+            }
+            ContractType::Named(TypeIdentity::Canonical(canonical)) => {
+                let name = resolved
+                    .symbols
+                    .iter()
+                    .find(|symbol| {
+                        symbol.namespace == crate::SymbolNamespace::Type
+                            && symbol.canonical.as_deref() == Some(&canonical)
+                    })
+                    .map(|symbol| symbol.spelling.clone())
+                    .unwrap_or_else(|| canonical.clone());
+                TypedType::ExternalNamed {
+                    name,
+                    canonical,
+                    arguments: vec![],
+                }
+            }
+            ContractType::Apply {
+                constructor,
+                arguments,
+            } => {
+                let constructor = convert(resolved, *constructor)?;
+                crate::typed::type_functions::apply(
+                    &constructor,
+                    arguments
+                        .into_iter()
+                        .map(|argument| convert(resolved, argument))
+                        .collect::<Option<_>>()?,
+                )?
+            }
+            ContractType::Function { parameter, result } => TypedType::Function {
+                parameter: Box::new(convert(resolved, *parameter)?),
+                result: Box::new(convert(resolved, *result)?),
+            },
+            ContractType::Tuple(elements) => TypedType::Tuple {
+                elements: elements
+                    .into_iter()
+                    .map(|element| convert(resolved, element))
+                    .collect::<Option<_>>()?,
+            },
+            ContractType::Record { closed, fields } => TypedType::Record {
+                closed,
+                fields: fields
+                    .into_iter()
+                    .map(|(name, optional, field)| {
+                        Some(TypedRecordField {
+                            name,
+                            optional,
+                            type_ref: convert(resolved, field)?,
+                        })
+                    })
+                    .collect::<Option<_>>()?,
+            },
+            ContractType::RequirementMerge(operands) => TypedType::RequirementMerge {
+                operands: operands
+                    .into_iter()
+                    .map(|operand| convert(resolved, operand))
+                    .collect::<Option<_>>()?,
+            },
+            // No private proof slot, free declaration binder, hole or
+            // unresolved identity leaves the finite closed-function producer.
+            _ => return None,
+        })
+    }
+    convert(resolved, normalized)
+}
+
 pub(in crate::typed::instances) fn unrepresented_alias_head(
     resolved: &ResolvedModule,
     type_ref: &TypeRef,
@@ -58,6 +149,7 @@ pub(in crate::typed::instances) fn has_unrepresented_parameters(
 ) -> bool {
     fn contains(type_ref: &ContractType, id: SymbolId) -> bool {
         match type_ref {
+            ContractType::TypeFunction { body, .. } => contains(body, id),
             ContractType::Parameter(actual) => *actual == id,
             ContractType::Apply {
                 constructor,
@@ -99,6 +191,19 @@ fn render_identity(
 ) -> Option<String> {
     use model::TypeIdentity;
     Some(match type_ref {
+        ContractType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => format!(
+            "lambda[{}]({})",
+            parameter_kinds
+                .iter()
+                .map(u32::to_string)
+                .collect::<Vec<_>>()
+                .join(","),
+            render_identity(resolved, body, binders)?,
+        ),
+        ContractType::TypeFunctionParameter { depth, index } => format!("@{depth}:{index}"),
         ContractType::Binder(index) => format!("${index}"),
         ContractType::Parameter(id) => {
             let symbol = resolved.symbols.iter().find(|symbol| symbol.id == *id)?;

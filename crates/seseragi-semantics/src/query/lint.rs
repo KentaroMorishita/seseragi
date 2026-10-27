@@ -208,6 +208,8 @@ pub(super) fn collect(
 
 fn complete_type(value: &TypedType) -> bool {
     match value {
+        TypedType::TypeFunction { body, .. } => complete_type(body),
+        TypedType::TypeFunctionParameter { .. } => true,
         TypedType::Hole => false,
         TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
             arguments.iter().all(complete_type)

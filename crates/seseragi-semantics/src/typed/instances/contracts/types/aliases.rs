@@ -57,6 +57,13 @@ fn normalize_impl(
     for_head: bool,
 ) -> Option<ContractType> {
     Some(match type_ref {
+        ContractType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => ContractType::TypeFunction {
+            parameter_kinds,
+            body: Box::new(normalize_impl(resolved, *body, active, for_head)?),
+        },
         ContractType::Named(identity) => named(resolved, identity, Vec::new(), active, for_head)?,
         ContractType::Apply {
             constructor,

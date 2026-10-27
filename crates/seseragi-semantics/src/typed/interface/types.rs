@@ -111,6 +111,19 @@ impl<'a> InterfaceTypes<'a> {
 
     pub(super) fn convert(&self, type_ref: &TypedType) -> InterfaceType {
         match type_ref {
+            TypedType::TypeFunction {
+                parameter_kinds,
+                body,
+            } => InterfaceType::TypeFunction {
+                parameter_kinds: parameter_kinds.clone(),
+                body: Box::new(self.convert(body)),
+            },
+            TypedType::TypeFunctionParameter { depth, index } => {
+                InterfaceType::TypeFunctionParameter {
+                    depth: *depth,
+                    index: *index,
+                }
+            }
             TypedType::Named { name, arguments } => {
                 let arguments = arguments
                     .iter()
@@ -195,6 +208,39 @@ impl<'a> InterfaceTypes<'a> {
                         canonical: canonical.clone(),
                         provider_module: provider_module.clone(),
                         provider_export: provider_export.clone(),
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| self.convert(argument))
+                            .collect(),
+                    };
+                }
+                if let Some((export, (_, provider))) = self
+                    .nominal_owners
+                    .iter()
+                    .find(|(_, (owner, _))| owner == canonical)
+                {
+                    return InterfaceType::ExternalNamed {
+                        name: name.clone(),
+                        canonical: canonical.clone(),
+                        provider_module: provider.clone(),
+                        provider_export: export.clone(),
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| self.convert(argument))
+                            .collect(),
+                    };
+                }
+                if canonical == &format!("std/prelude::{name}")
+                    && matches!(
+                        name.as_str(),
+                        "Bool" | "Int" | "Float" | "Char" | "String" | "Never"
+                    )
+                {
+                    return InterfaceType::ExternalNamed {
+                        name: name.clone(),
+                        canonical: canonical.clone(),
+                        provider_module: "std/prelude".into(),
+                        provider_export: name.clone(),
                         arguments: arguments
                             .iter()
                             .map(|argument| self.convert(argument))

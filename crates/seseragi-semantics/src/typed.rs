@@ -38,6 +38,7 @@ mod surface_expr;
 mod top_level_constraint_tests;
 #[cfg(test)]
 mod tuple_tests;
+mod type_functions;
 mod type_ref;
 
 pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};

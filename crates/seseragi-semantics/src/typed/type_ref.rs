@@ -3,6 +3,16 @@ use seseragi_syntax::{InterfaceType, TypeRef};
 
 pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<TypedType> {
     match type_ref {
+        InterfaceType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => Some(TypedType::TypeFunction {
+            parameter_kinds,
+            body: Box::new(typed_type_from_interface_type(*body)?),
+        }),
+        InterfaceType::TypeFunctionParameter { depth, index } => {
+            Some(TypedType::TypeFunctionParameter { depth, index })
+        }
         InterfaceType::Named { name, arguments } => Some(TypedType::Named {
             name,
             arguments: arguments
@@ -185,6 +195,8 @@ pub(crate) fn effect_value_type(effect: &TypedEffect) -> TypedType {
 
 pub(crate) fn typed_type_contains_hole(type_ref: &TypedType) -> bool {
     match type_ref {
+        TypedType::TypeFunction { body, .. } => typed_type_contains_hole(body),
+        TypedType::TypeFunctionParameter { .. } => false,
         TypedType::Hole => true,
         TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
             arguments.iter().any(typed_type_contains_hole)

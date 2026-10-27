@@ -1463,6 +1463,8 @@ fn contains_declared_type_parameter(
     parameters: &[seseragi_syntax::TypeParameter],
 ) -> bool {
     match type_ref {
+        TypedType::TypeFunction { body, .. } => contains_declared_type_parameter(body, parameters),
+        TypedType::TypeFunctionParameter { .. } => false,
         TypedType::Named { name, arguments } => {
             parameters.iter().any(|parameter| parameter.name == *name)
                 || arguments

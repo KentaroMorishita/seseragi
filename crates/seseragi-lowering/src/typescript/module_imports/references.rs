@@ -552,6 +552,8 @@ fn collect_pattern_type_names(pattern: &CorePattern, references: &mut Referenced
 
 fn collect_type_names(type_ref: &CoreType, references: &mut ReferencedTypes) {
     match type_ref {
+        CoreType::TypeFunction { body, .. } => collect_type_names(body, references),
+        CoreType::TypeFunctionParameter { .. } => {}
         CoreType::Named { name, arguments } => {
             references.names.insert(name.clone());
             for argument in arguments {

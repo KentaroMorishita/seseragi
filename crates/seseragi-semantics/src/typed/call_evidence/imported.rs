@@ -558,7 +558,9 @@ fn canonical_semantic_value(
                 fields.join(",")
             ))
         }
-        SemanticTypeKey::Other => canonical_other_type(&value.type_ref, resolution),
+        SemanticTypeKey::Other | SemanticTypeKey::TypeFunction { .. } => {
+            canonical_other_type(&value.type_ref, resolution)
+        }
         SemanticTypeKey::Invalid
         | SemanticTypeKey::TypeParameter(_)
         | SemanticTypeKey::Application { .. }
@@ -587,6 +589,19 @@ fn canonical_application(
 
 fn canonical_other_type(type_ref: &TypedType, resolution: &TypedResolution<'_>) -> Option<String> {
     match type_ref {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => Some(format!(
+            "lambda[{}]({})",
+            parameter_kinds
+                .iter()
+                .map(u32::to_string)
+                .collect::<Vec<_>>()
+                .join(","),
+            canonical_typed_type(body, resolution)?,
+        )),
+        TypedType::TypeFunctionParameter { depth, index } => Some(format!("@{depth}:{index}")),
         TypedType::Named { name, arguments } => canonical_named(name, arguments, resolution),
         TypedType::ExternalNamed {
             canonical,

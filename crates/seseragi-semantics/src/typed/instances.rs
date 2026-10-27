@@ -14,8 +14,9 @@ pub(crate) use crate::instance_identity::{
     canonical_instance_head_identity, canonical_instance_head_key, canonical_instance_identity,
 };
 pub(crate) use contracts::{
-    alias_constructor_omitted_suffix, analyze_instance_contracts, dependency_head,
-    has_trait_operator_contract, CoherenceHead, HeadRelation, InstanceContractIssue,
+    alias_constructor_omitted_suffix, alias_constructor_type_function, analyze_instance_contracts,
+    dependency_head, has_trait_operator_contract, CoherenceHead, HeadRelation,
+    InstanceContractIssue,
 };
 pub(crate) use show::derived_display_requirements;
 pub(crate) use user::canonical_type_ref;

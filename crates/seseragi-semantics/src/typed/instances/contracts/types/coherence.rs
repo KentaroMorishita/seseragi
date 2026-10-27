@@ -185,7 +185,35 @@ type Variable = (bool, u32);
 type Substitutions = BTreeMap<Variable, Term>;
 
 fn term(type_ref: &ContractType, parameters: &[TypeParameter], side: bool) -> Option<Term> {
+    term_scoped(type_ref, parameters, side, None)
+}
+
+fn term_scoped(
+    type_ref: &ContractType,
+    parameters: &[TypeParameter],
+    side: bool,
+    scope: Option<&[u32]>,
+) -> Option<Term> {
     Some(match type_ref {
+        ContractType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => {
+            if scope.is_some() || parameter_kinds.iter().any(|kind| *kind != 0) {
+                return None;
+            }
+            eta_section(
+                parameter_kinds.len() as u32,
+                term_scoped(body, parameters, side, Some(parameter_kinds))?,
+            )
+        }
+        ContractType::TypeFunctionParameter { depth, index } => {
+            if *depth != 0 || *index as usize >= scope?.len() {
+                return None;
+            }
+            Term::Slot(*index)
+        }
+
         ContractType::Binder(index) => Term::Variable {
             side,
             index: *index,
@@ -198,14 +226,14 @@ fn term(type_ref: &ContractType, parameters: &[TypeParameter], side: bool) -> Op
         } => {
             let mut slots = 0;
             let body = arguments.iter().try_fold(
-                term(constructor, parameters, side)?,
+                term_scoped(constructor, parameters, side, scope)?,
                 |constructor, argument| {
                     let argument = if matches!(argument, ContractType::Hole) {
                         let slot = Term::Slot(slots);
                         slots += 1;
                         slot
                     } else {
-                        term(argument, parameters, side)?
+                        term_scoped(argument, parameters, side, scope)?
                     };
                     Some(Term::Apply(Box::new(constructor), Box::new(argument)))
                 },
@@ -213,28 +241,32 @@ fn term(type_ref: &ContractType, parameters: &[TypeParameter], side: bool) -> Op
             eta_section(slots, body)
         }
         ContractType::Function { parameter, result } => Term::Function(
-            Box::new(term(parameter, parameters, side)?),
-            Box::new(term(result, parameters, side)?),
+            Box::new(term_scoped(parameter, parameters, side, scope)?),
+            Box::new(term_scoped(result, parameters, side, scope)?),
         ),
         ContractType::Record { closed, fields } => Term::Record {
             closed: *closed,
             fields: fields
                 .iter()
                 .map(|(name, optional, field)| {
-                    Some((name.clone(), *optional, term(field, parameters, side)?))
+                    Some((
+                        name.clone(),
+                        *optional,
+                        term_scoped(field, parameters, side, scope)?,
+                    ))
                 })
                 .collect::<Option<_>>()?,
         },
         ContractType::Tuple(elements) => Term::Tuple(
             elements
                 .iter()
-                .map(|element| term(element, parameters, side))
+                .map(|element| term_scoped(element, parameters, side, scope))
                 .collect::<Option<_>>()?,
         ),
         ContractType::RequirementMerge(operands) => Term::RequirementMerge(
             operands
                 .iter()
-                .map(|operand| term(operand, parameters, side))
+                .map(|operand| term_scoped(operand, parameters, side, scope))
                 .collect::<Option<_>>()?,
         ),
         // A hole or an unscoped parameter is not a wildcard in a checked head.

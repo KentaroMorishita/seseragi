@@ -18,7 +18,143 @@ pub(super) fn reduce(
             return super::apply_arguments(constructor, supplied);
         }
     }
-    section_reduce(resolved, template, owner, parameters, supplied)
+    section_reduce(
+        resolved,
+        template.clone(),
+        owner,
+        parameters,
+        supplied.clone(),
+    )
+    .or_else(|| type_function(resolved, template, owner, parameters, supplied))
+}
+
+/// A transparent alias may use a remaining parameter more than once, in a
+/// different position, or not at all. Keep that mapping instead of flattening
+/// its variables into nominal holes. The finite producer proves value-kinded
+/// domains and a closed value-kinded body; higher-order inverse inference is
+/// deliberately not introduced here.
+fn type_function(
+    resolved: &ResolvedModule,
+    template: ContractType,
+    owner: &TypeIdentity,
+    parameters: &[TypeParameter],
+    supplied: Vec<ContractType>,
+) -> Option<ContractType> {
+    if parameters.iter().any(|parameter| parameter.arity != 0)
+        || template_kinds(resolved, &template, owner, parameters)? != Vec::<u32>::new()
+    {
+        return None;
+    }
+    let remaining = (0..parameters.len())
+        .filter(|index| {
+            supplied
+                .get(*index)
+                .is_none_or(|argument| *argument == ContractType::Hole)
+        })
+        .collect::<Vec<_>>();
+    if remaining.is_empty() {
+        return None;
+    }
+    for argument in supplied
+        .iter()
+        .filter(|argument| **argument != ContractType::Hole)
+    {
+        if !remaining_kinds(resolved, argument)?.is_empty() {
+            return None;
+        }
+    }
+    fn replace(
+        value: &ContractType,
+        owner: &TypeIdentity,
+        supplied: &[ContractType],
+        remaining: &[usize],
+        depth: u32,
+    ) -> Option<ContractType> {
+        use seseragi_syntax::type_functions::{shift_type_function_parameters, TypeFunctionTerm};
+        match value {
+            ContractType::AliasSlot {
+                owner: actual,
+                index,
+            } if actual == owner => {
+                if let Some(index) = remaining
+                    .iter()
+                    .position(|remaining| *remaining == *index as usize)
+                {
+                    Some(ContractType::TypeFunctionParameter {
+                        depth,
+                        index: index as u32,
+                    })
+                } else {
+                    shift_type_function_parameters(
+                        supplied.get(*index as usize)?,
+                        depth.checked_add(1)?,
+                        0,
+                    )
+                }
+            }
+            ContractType::AliasSlot { .. } | ContractType::Hole => None,
+            ContractType::TypeFunction {
+                parameter_kinds,
+                body,
+            } => Some(ContractType::TypeFunction {
+                parameter_kinds: parameter_kinds.clone(),
+                body: Box::new(replace(
+                    body,
+                    owner,
+                    supplied,
+                    remaining,
+                    depth.checked_add(1)?,
+                )?),
+            }),
+            _ => value
+                .map_type_children(&mut |child| replace(child, owner, supplied, remaining, depth)),
+        }
+    }
+    Some(ContractType::TypeFunction {
+        parameter_kinds: vec![0; remaining.len()],
+        body: Box::new(replace(&template, owner, &supplied, &remaining, 0)?),
+    })
+}
+
+fn template_kinds(
+    resolved: &ResolvedModule,
+    value: &ContractType,
+    owner: &TypeIdentity,
+    parameters: &[TypeParameter],
+) -> Option<Vec<u32>> {
+    Some(match value {
+        ContractType::AliasSlot {
+            owner: actual,
+            index,
+        } if actual == owner => {
+            vec![0; parameters.get(*index as usize)?.arity as usize]
+        }
+        ContractType::Named(TypeIdentity::Canonical(canonical)) => {
+            rigid_parameter_kinds(resolved, canonical)?
+        }
+        ContractType::Apply {
+            constructor,
+            arguments,
+        } => {
+            let kinds = template_kinds(resolved, constructor, owner, parameters)?;
+            if arguments.len() > kinds.len() {
+                return None;
+            }
+            for (argument, kind) in arguments.iter().zip(&kinds) {
+                if template_kinds(resolved, argument, owner, parameters)? != vec![0; *kind as usize]
+                {
+                    return None;
+                }
+            }
+            kinds[arguments.len()..].to_vec()
+        }
+        // The finite producer accepts canonical constructor applications and
+        // scoped value slots. Structural function/record/row constructors need
+        // their own admission proof; no unknown body is silently exported.
+        // No wildcard, unresolved free binder or nested unproved function is
+        // evidence of the required closed constructor kind.
+        _ => return None,
+    })
 }
 
 fn section_reduce(
@@ -163,6 +299,9 @@ pub(super) fn omitted_suffix(resolved: &ResolvedModule, type_ref: &ContractType)
 
 fn remaining_kinds(resolved: &ResolvedModule, type_ref: &ContractType) -> Option<Vec<u32>> {
     match type_ref {
+        ContractType::TypeFunction {
+            parameter_kinds, ..
+        } => Some(parameter_kinds.clone()),
         ContractType::Named(TypeIdentity::Canonical(canonical)) => {
             rigid_parameter_kinds(resolved, canonical)
         }
@@ -272,6 +411,7 @@ fn rigid_parameter_kinds(resolved: &ResolvedModule, canonical: &str) -> Option<V
 fn contains_unrepresented_slot(type_ref: &ContractType) -> bool {
     match type_ref {
         ContractType::AliasSlot { .. } | ContractType::Hole => true,
+        ContractType::TypeFunction { body, .. } => contains_unrepresented_slot(body),
         ContractType::Apply {
             constructor,
             arguments,

@@ -1016,6 +1016,14 @@ fn variables(value: &TypedType) -> BTreeSet<String> {
 }
 fn map_children(value: &TypedType, mut map: impl FnMut(&TypedType) -> TypedType) -> TypedType {
     match value {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => TypedType::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(map(body)),
+        },
+        TypedType::TypeFunctionParameter { .. } => value.clone(),
         TypedType::Named { name, arguments } => TypedType::Named {
             name: name.clone(),
             arguments: arguments.iter().map(map).collect(),
