@@ -37,13 +37,6 @@ const CASES: &[(&str, &str, &str, &str, &str)] = &[
         "Higher (Just True)",
     ),
     (
-        "type Higher<F<_>,A> = | Higher F<A>\nalias Wrapped<F<_>,A> = Higher<F,A>",
-        "Wrapped<Either<_,Int>>",
-        "Higher<Either<_,Int>>",
-        "Higher<Either<_,Int>,A>",
-        "Higher (Left True)",
-    ),
-    (
         "type Int = | LocalInt\ntype Pair<A,B> = | Pair (A,B)\nalias Flip<A,B> = Pair<B,A>",
         "Flip<Int>",
         "Pair<_,Int>",
@@ -87,6 +80,53 @@ fn fixed_alias_arguments_project_to_the_same_checked_section_as_direct_heads() {
                 }
             }
         }
+    }
+}
+
+#[test]
+fn checked_inner_sections_share_owner_but_keep_unproved_selection_refused() {
+    // The declaration is represented, but this nested selection is already
+    // refused by the direct canonical head on formal107. Do not manufacture
+    // inverse HKT evidence while repairing the alias's supplied prefix.
+    let declarations = "type Higher<F<_>,A> = | Higher F<A>\nalias Wrapped<F<_>,A> = Higher<F,A>\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\n";
+    let mut control = None;
+    for head in ["Higher<Either<_,Int>>", "Wrapped<Either<_,Int>>"] {
+        let source = format!("{declarations}instance Tag<{head}> {{ fn tag<A> value:Higher<Either<_,Int>,A> -> String = \"ok\" }}\n");
+        let compiled = compile_module(CompileInput::new(
+            "inner-section.ssrg",
+            "fixture/alias-sections",
+            &source,
+        ))
+        .unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
+        let facts = compiled.typed_hir.instances[0].argument_identities.clone();
+        if let Some(control) = &control {
+            assert_eq!(&facts, control);
+        } else {
+            control = Some(facts);
+        }
+        let source = format!("{source}pub fn probe -> String = tag<{head},Bool> (Higher<Either<_,Int>,Bool> (Left<Bool,Int> True))\n");
+        let error = compile_module(CompileInput::new(
+            "inner-selection.ssrg",
+            "fixture/alias-sections",
+            &source,
+        ))
+        .unwrap_err();
+        assert!(
+            error
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.message_key == "instance.missing"
+                    && diagnostic.primary.start < diagnostic.primary.end
+                    && diagnostic.primary.end <= source.len()),
+            "{source}\n{error:#?}"
+        );
+        assert!(
+            error
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "trait.instance-head-unresolved"),
+            "{error:#?}"
+        );
     }
 }
 
