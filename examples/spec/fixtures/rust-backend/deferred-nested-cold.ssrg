@@ -1,0 +1,21 @@
+import * as effects from "std/effect"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+pub effect fn main = do {
+  let unused = say "unused"
+  let cold = effects.defer $ \_: Unit -> do {
+    say "outer"
+    effects.succeed (say "inner")
+  }
+  say "created"
+  first <- cold
+  say "between"
+  first
+  second <- cold
+  second
+}

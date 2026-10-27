@@ -55,6 +55,13 @@ generic implの演算子は、driverとCLIの`--test generic_impl_operators`で�
 Ref cycleとcold Effectの再実行、Failure／Defect後のfinalizerとroot解放も比較します。
 一般aliasのhead mappingや、返却関数を続けて適用する未対応全般は含めません。
 
+`do`末尾の分岐を含むcold Effectは、driverとCLIの
+`--test deferred_effect_environment`で確認します。先に実行するstatementの環境・失敗型、
+最終実行が返すEffect値の型、未実行のcold値を区別し、環境・成功型・失敗型の不正な
+注釈を位置付きで拒否します。元のTS両profileのstrict、fresh Bun／Nodeとnativeで
+再実行、先行処理の一回実行、Failure／Defect後のfinalizerとRef root解放を比較します。
+共有frontendの修復なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。
