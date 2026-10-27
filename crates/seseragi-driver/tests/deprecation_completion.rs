@@ -209,7 +209,11 @@ fn imported_aliases_keep_the_provider_owner_without_display_name_matching() {
             .iter()
             .map(|method| method.name.as_str())
             .collect::<Vec<_>>(),
-        ["old", "read"]
+        ["old", "read"],
+        "bindings={:#?}, scopes={:#?}, symbols={:#?}",
+        document.nominal_bindings,
+        document.scopes,
+        document.symbols
     );
     assert!(methods
         .iter()
