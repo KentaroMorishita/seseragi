@@ -23,10 +23,10 @@ fn block -> String = {
 }
 
 pub effect fn main = do {
-  println (apply aliasChain)
+  println (show (apply aliasChain))
   println (aliasValue "left" "right")
   println (block ())
   let doAlias = (<^>)
-  println (doAlias 20 5)
+  println (show (doAlias 20 5))
   println (doAlias "x" "y")
 }

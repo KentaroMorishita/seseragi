@@ -2143,7 +2143,7 @@ pub effect fn main = do {
   answer <- oracle () |> effects.recover unexpected
   println answer
   number <- snapshot 42
-  println number
+  println (show number)
 }
 "#;
     let defect = r#"

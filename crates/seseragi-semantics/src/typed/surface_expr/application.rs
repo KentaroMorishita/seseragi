@@ -1226,6 +1226,17 @@ pub(crate) fn type_known_application_with_explicit(
         SemanticTypeKey::Invalid
     } else if arguments.len() >= signature.parameters.len() {
         application.result.key.clone()
+    } else if arguments.is_empty() {
+        // Dictionary-only callable selection retains its checked function
+        // identity before any source value arguments are applied.
+        application
+            .parameters
+            .iter()
+            .rev()
+            .fold(application.result.clone(), |result, parameter| {
+                SemanticValueType::function(parameter.clone(), result)
+            })
+            .key
     } else {
         SemanticTypeKey::Other
     };

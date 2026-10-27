@@ -52,7 +52,7 @@ impl TypeScriptTypeContext {
         scoped
     }
 
-    fn with_constructor_position(&self) -> Self {
+    pub(super) fn with_constructor_position(&self) -> Self {
         let mut context = self.clone();
         context.constructor_position = true;
         context
@@ -687,8 +687,8 @@ pub(super) fn type_ref_from_core_type_with_erasure(
             TypeScriptType::Reference { name: name.clone(), arguments: Vec::new() }
         }
         // A source constructor is a kind, not a TypeScript value type. Erase
-        // unsaturated heads wherever they occur, including nested nominal
-        // arguments and dictionary instantiation, using declaration metadata.
+        // unsaturated heads in value positions using declaration metadata.
+        // Selected dictionary type arguments use constructor positions.
         CoreType::Named { name, arguments }
             if imported_types.arities.get(name).copied()
                 .or_else(|| seseragi_semantics::prelude_type_constructor_arity(name))
