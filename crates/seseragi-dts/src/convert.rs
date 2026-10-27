@@ -1148,12 +1148,10 @@ fn render_function(
 
 fn deprecation_clause(notices: &[seseragi_interop::SemanticDeprecation]) -> String {
     notices.first().map_or_else(String::new, |notice| {
-        // JSON string escaping is also the declaration grammar's string syntax.
-        // No @since tag or host package version is treated as a since clause.
-        format!(
-            "deprecated {} ",
-            serde_json::to_string(&notice.message).expect("string serialization")
-        )
+        // Rust's debug string uses scalar Unicode escapes (\u{...}), like the
+        // Seseragi grammar. JSON's \b/\f/\u0000 escapes are not that grammar.
+        // No @since tag or host package version supplies a since clause.
+        format!("deprecated {:?} ", notice.message)
     })
 }
 

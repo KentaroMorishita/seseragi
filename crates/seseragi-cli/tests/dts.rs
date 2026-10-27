@@ -58,7 +58,7 @@ fn converts_deprecation_through_the_product_writer_and_compiles_both_profiles() 
     copy_directory(&fixture("dts-basic-conversion"), &package);
     let declaration = concat!(
         "// 元のAPI 🙂\n",
-        "/** @deprecated Use current.\n * @since 9.9.9\n */\n",
+        "/** @deprecated Use current. x\u{8}y\u{c}z\n * @since 9.9.9\n */\n",
         "export declare function old(value: string): string;\n",
         "export declare function current(value: string): string;\n",
         "/** @deprecated Use Modern. */\nexport interface Old { readonly value: string; }\n",
@@ -78,7 +78,7 @@ fn converts_deprecation_through_the_product_writer_and_compiles_both_profiles() 
     let metadata: Value =
         serde_json::from_slice(&fs::read(generated.with_extension("binding.json")).unwrap())
             .unwrap();
-    assert!(source.contains("deprecated \"Use current.\""));
+    assert!(source.contains("deprecated \"Use current. x\\u{8}y\\u{c}z\""));
     assert!(!source.contains("since"));
     let symbols = metadata["symbols"].as_array().unwrap();
     assert_eq!(
@@ -99,6 +99,7 @@ fn converts_deprecation_through_the_product_writer_and_compiles_both_profiles() 
         assert!(declaration[start..end].starts_with("/** @deprecated"));
     }
     let plain = source
+        .replace("deprecated \"Use current. x\\u{8}y\\u{c}z\" ", "")
         .replace("deprecated \"Use current.\" ", "")
         .replace("deprecated \"Use Modern.\" ", "");
     for profile in [
@@ -127,7 +128,7 @@ fn converts_deprecation_through_the_product_writer_and_compiles_both_profiles() 
                 .as_ref()
                 .unwrap()
                 .message,
-            "Use current."
+            "Use current. x\u{8}y\u{c}z"
         );
     }
 }

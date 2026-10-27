@@ -235,3 +235,18 @@ fn invalid_metadata_provenance_cannot_be_persisted_or_projected() {
         assert!(project_graph(&invalid, SETTINGS, "api").is_err());
     }
 }
+
+#[test]
+fn control_characters_use_seseragi_scalar_escapes_instead_of_json_escapes() {
+    let source = "/** @deprecated Keep x\u{8}y\u{c}z. */\nexport declare function old(): string;";
+    let result = convert(source, SETTINGS, None);
+    assert!(result.diagnostics.is_empty(), "{:?}", result.diagnostics);
+    let binding = result.generated.unwrap();
+    assert!(
+        binding.source.contains("x\\u{8}y\\u{c}z"),
+        "{}",
+        binding.source
+    );
+    assert!(!binding.source.contains("\\b"));
+    assert!(!binding.source.contains("\\f"));
+}
