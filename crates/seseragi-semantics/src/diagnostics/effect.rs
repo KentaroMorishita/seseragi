@@ -287,6 +287,7 @@ pub(super) fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSp
 
 fn related(message: &str, span: ByteSpan) -> RelatedDiagnostic {
     RelatedDiagnostic {
+        source: None,
         message: message.to_owned(),
         primary: byte_range(span),
     }

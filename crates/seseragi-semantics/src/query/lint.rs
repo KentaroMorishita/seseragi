@@ -14,6 +14,7 @@ fn warning(code: &str, key: &str, range: ByteSpan, reason: String) -> Diagnostic
         message_key: key.to_owned(),
         primary,
         related: vec![RelatedDiagnostic {
+            source: None,
             message: reason,
             primary,
         }],
@@ -23,7 +24,7 @@ fn warning(code: &str, key: &str, range: ByteSpan, reason: String) -> Diagnostic
 }
 
 pub(super) fn collect(resolved: &ResolvedModule, typed: &TypedModule) -> Vec<Diagnostic> {
-    let mut facts = Vec::new();
+    let mut facts = super::deprecation::references(resolved);
     let used = resolved
         .references
         .iter()
@@ -392,11 +393,13 @@ fn readonly_signal_parameters(
         let mut fact = warning("SES-L0307", "lint.readonly-signal-parameter", *origin,
             format!("All {} resolved uses of public parameter `{name}` are direct canonical std/signal::read calls. Its {} input needs only Signal with the same payload; review the public callable contract before changing it.", all_uses.len(), super::render_type(type_ref)));
         fact.related.push(RelatedDiagnostic {
+            source: None,
             message: "This public declaration exposes the callable contract; no automatic signature edit is offered.".to_owned(),
             primary: ByteRange { start: declaration_origin.start, end: declaration_origin.end },
         });
         for call in reads.values() {
             fact.related.push(RelatedDiagnostic {
+                source: None,
                 message: "Canonical std/signal::read consumes Signal<A>; the one-way MutableSignal<A> to Signal<A> coercion preserves the same payload and signal identity. Other owners may still mutate it.".to_owned(),
                 primary: ByteRange { start: call.start, end: call.end },
             });
@@ -426,6 +429,7 @@ fn discarded_effect(
             "This cold Effect value is never used; constructing it does not execute the operation. Bind or return it explicitly.".to_owned());
         if let Some((range, _)) = super::pattern_type(pattern) {
             fact.related.push(RelatedDiagnostic {
+                source: None,
                 message: "This binding does not retain the Effect for use".to_owned(),
                 primary: ByteRange {
                     start: range.start,
@@ -474,6 +478,7 @@ fn inspect_expression(expr: &TypedExpr, used: &BTreeSet<SymbolId>, facts: &mut V
                                 "The canonical signal subscription handle has no resolved uses; retain it for unsubscribe.".to_owned());
                             if let Some((range, _)) = super::pattern_type(pattern) {
                                 fact.related.push(RelatedDiagnostic {
+                                    source: None,
                                     message:
                                         "This binding does not retain the resource handle for use"
                                             .to_owned(),
@@ -508,6 +513,7 @@ fn inspect_expression(expr: &TypedExpr, used: &BTreeSet<SymbolId>, facts: &mut V
                 );
                 let range = super::expression_origin(unreachable);
                 diagnostic.related.push(RelatedDiagnostic {
+                    source: None,
                     message: "This branch cannot be selected".to_owned(),
                     primary: ByteRange {
                         start: range.start,

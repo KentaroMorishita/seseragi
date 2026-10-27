@@ -13,6 +13,7 @@ use seseragi_syntax::{
 use std::collections::{BTreeMap, BTreeSet};
 
 mod completion;
+mod deprecation;
 mod lint;
 
 use completion::collect_completion_contexts;
@@ -79,6 +80,8 @@ pub struct AnalysisSymbol {
     pub callable: Option<AnalysisCallable>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deprecation: Option<seseragi_syntax::Deprecation>,
     #[serde(skip)]
     scope: ScopeId,
 }
@@ -285,6 +288,7 @@ impl AnalysisDocument {
                 message_key: "lint.unused-local-binding".to_owned(),
                 primary,
                 related: vec![RelatedDiagnostic {
+                    source: None,
                     message: format!("`{}` has no resolved references", symbol.name),
                     primary,
                 }],
@@ -432,6 +436,7 @@ pub fn analysis_document(
     resolved: ResolvedModule,
     typed: &TypedModule,
 ) -> AnalysisDocument {
+    let deprecations = deprecation::metadata(&resolved);
     let catalog = standard_library_catalog();
     let catalog_callables = catalog_callables(&catalog);
     let (symbol_types, symbol_type_documents, local_callables) =
@@ -488,6 +493,9 @@ pub fn analysis_document(
                 type_document,
                 callable,
                 description: standard_description(&identity).map(str::to_owned),
+                deprecation: deprecations
+                    .get(&symbol.id)
+                    .map(|entry| entry.value.clone()),
                 scope: symbol.scope,
             }
         })

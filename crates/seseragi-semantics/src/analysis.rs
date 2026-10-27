@@ -25,7 +25,8 @@ pub fn analyze_module_interface(
     }
 
     let shallow = interface.clone();
-    let resolved = resolve::resolve_module_from_interface(interface, source);
+    let mut resolved = resolve::resolve_module_from_interface(interface, source);
+    retain_deprecation_source(&mut resolved, &diagnostics.source);
     let diagnostics =
         diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
     if has_errors(&diagnostics) {
@@ -54,7 +55,8 @@ pub fn analyze_linked_module(
     }
 
     let shallow = linked.interface.clone();
-    let resolved = resolve::resolve_linked_module(linked, source);
+    let mut resolved = resolve::resolve_linked_module(linked, source);
+    retain_deprecation_source(&mut resolved, &diagnostics.source);
     let diagnostics =
         diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
     if has_errors(&diagnostics) {
@@ -83,7 +85,8 @@ pub fn analyze_linked_module_recovering(
     source: &str,
 ) -> Result<AnalyzedModule, DiagnosticArtifact> {
     let shallow = linked.interface.clone();
-    let resolved = resolve::resolve_linked_module(linked, source);
+    let mut resolved = resolve::resolve_linked_module(linked, source);
+    retain_deprecation_source(&mut resolved, &diagnostics.source);
     // A parser-invalid declaration may be absent or partially inferred in the
     // recovered interface. Its users can then produce unrelated-looking type
     // errors (for example Show<A> at a later call). Source-range filtering
@@ -124,4 +127,10 @@ fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {
         .diagnostics
         .iter()
         .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error)
+}
+
+fn retain_deprecation_source(resolved: &mut ResolvedModule, source: &str) {
+    for entry in &mut resolved.deprecations {
+        entry.deprecation.source = source.to_owned();
+    }
 }

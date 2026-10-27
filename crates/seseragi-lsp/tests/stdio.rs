@@ -87,6 +87,173 @@ fn published<'messages>(messages: &'messages [Value], uri: &str) -> &'messages V
 }
 
 #[test]
+fn deprecated_symbols_remain_navigable_and_carry_editor_tags() {
+    let uri = "file:///deprecation.ssrg";
+    let source = "// 移行 🙂\npub deprecated \"Use modern 関数\" since \"0.61.0\"\nfn historical value: Int -> Int = if value < 0 then historical 0 else value\npub fn answer -> Int = historical 41\n";
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let index = LineIndex::new(source);
+        let use_byte = source.rfind("historical 41").unwrap();
+        let use_position = index.try_locate_encoded(use_byte, encoding).unwrap();
+        let definition = index
+            .try_locate_encoded(source.find("fn historical").unwrap() + 3, encoding)
+            .unwrap();
+        let related = index
+            .try_locate_encoded(source.find("deprecated").unwrap(), encoding)
+            .unwrap();
+        let position = json!({"line": use_position.line, "character": use_position.character});
+        let input = [
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+            json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":position}}),
+            json!({"jsonrpc":"2.0","id":3,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":position}}),
+            json!({"jsonrpc":"2.0","id":4,"method":"textDocument/semanticTokens/full","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":5,"method":"textDocument/documentSymbol","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":6,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":position}}),
+            json!({"jsonrpc":"2.0","id":7,"method":"textDocument/rename","params":{"textDocument":{"uri":uri},"position":position,"newName":"historicalRenamed"}}),
+            json!({"jsonrpc":"2.0","id":8,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"exit"}),
+        ];
+        let messages = run_server(&input);
+        let capabilities = &response(&messages, 1)["result"]["capabilities"];
+        assert_eq!(capabilities["documentSymbolProvider"], true);
+        assert_eq!(
+            capabilities["semanticTokensProvider"]["legend"]["tokenModifiers"],
+            json!(["deprecated"])
+        );
+        let facts = published(&messages, uri)["params"]["diagnostics"]
+            .as_array()
+            .unwrap();
+        assert_eq!(facts.len(), 1, "{facts:?}");
+        assert_eq!(facts[0]["code"], "SES-L0201");
+        assert_eq!(facts[0]["tags"], json!([2]));
+        assert_eq!(facts[0]["range"]["start"], position);
+        assert_eq!(facts[0]["relatedInformation"][0]["location"]["uri"], uri);
+        assert_eq!(
+            facts[0]["relatedInformation"][0]["location"]["range"]["start"],
+            json!({"line":related.line,"character":related.character})
+        );
+        let hover = response(&messages, 2)["result"]["contents"]["value"]
+            .as_str()
+            .unwrap();
+        assert!(
+            hover.contains("Use modern 関数") && hover.contains("0.61.0"),
+            "{hover}"
+        );
+        let completion = response(&messages, 3)["result"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|item| item["label"] == "historical")
+            .unwrap();
+        assert_eq!(completion["tags"], json!([1]));
+        assert!(completion["documentation"]["value"]
+            .as_str()
+            .unwrap()
+            .contains("Use modern 関数"));
+        let symbols = response(&messages, 5)["result"].as_array().unwrap();
+        assert_eq!(
+            symbols
+                .iter()
+                .find(|symbol| symbol["name"] == "historical")
+                .unwrap()["tags"],
+            json!([1])
+        );
+        assert!(symbols
+            .iter()
+            .find(|symbol| symbol["name"] == "answer")
+            .unwrap()
+            .get("tags")
+            .is_none());
+        let target = &response(&messages, 6)["result"];
+        assert_eq!(target["uri"], uri);
+        assert_eq!(
+            target["range"]["start"],
+            json!({"line":definition.line,"character":definition.character})
+        );
+        let document_changes = response(&messages, 7)["result"]["documentChanges"]
+            .as_array()
+            .unwrap();
+        assert_eq!(document_changes.len(), 1);
+        assert_eq!(document_changes[0]["textDocument"]["uri"], uri);
+        assert_eq!(document_changes[0]["textDocument"]["version"], 1);
+        let changes = &document_changes[0]["edits"];
+        assert_eq!(changes.as_array().unwrap().len(), 3);
+        assert!(changes
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|edit| edit["newText"] == "historicalRenamed"));
+        let mut line = 0usize;
+        let mut character = 0usize;
+        let mut matched = false;
+        for token in response(&messages, 4)["result"]["data"]
+            .as_array()
+            .unwrap()
+            .chunks_exact(5)
+        {
+            let delta = token[0].as_u64().unwrap() as usize;
+            line += delta;
+            character = if delta == 0 {
+                character + token[1].as_u64().unwrap() as usize
+            } else {
+                token[1].as_u64().unwrap() as usize
+            };
+            if line == use_position.line && character == use_position.character {
+                assert_eq!(token[4], 1);
+                matched = true;
+            }
+        }
+        assert!(matched, "missing deprecated reference token");
+    }
+}
+
+#[test]
+fn imported_deprecation_related_locations_use_the_defining_unicode_document() {
+    let workspace = TempWorkspace::new();
+    workspace.write("seseragi.toml","[package]\nname = \"fixture/deprecation\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[run]\nentry = \"main\"\ntarget = \"process\"\n");
+    let model="// 元のAPI 🙂\npub deprecated \"Use modern\" since \"0.61.0\"\nfn old value: Int -> Int = value\n";
+    let facade = "pub import { old } from \"./model\"\n";
+    let main = "import { old } from \"./facade\"\npub let answer: Int = old 41\n";
+    workspace.write("src/model.ssrg", model);
+    workspace.write("src/facade.ssrg", facade);
+    workspace.write("src/main.ssrg", main);
+    let root_uri = file_uri(workspace.path());
+    let model_uri = file_uri(&workspace.path().join("src/model.ssrg"));
+    let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let facade_uri = file_uri(&workspace.path().join("src/facade.ssrg"));
+    let input = [
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{},"workspaceFolders":[{"uri":root_uri,"name":"deprecation"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":main}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ];
+    let messages = run_server(&input);
+    for uri in [&main_uri, &facade_uri] {
+        let facts = published(&messages, uri)["params"]["diagnostics"]
+            .as_array()
+            .unwrap();
+        assert_eq!(facts.len(), 1, "{uri}: {facts:?}");
+        assert_eq!(facts[0]["code"], "SES-L0201");
+        let location = &facts[0]["relatedInformation"][0]["location"];
+        assert_eq!(location["uri"], model_uri);
+        let position = LineIndex::new(model)
+            .try_locate_encoded(model.find("deprecated").unwrap(), PositionEncoding::Utf16)
+            .unwrap();
+        assert_eq!(
+            location["range"]["start"],
+            json!({"line":position.line,"character":position.character})
+        );
+        assert!(facts[0]["data"]["relatedSources"][0]["source"]
+            .as_str()
+            .unwrap()
+            .ends_with("model.ssrg"));
+    }
+}
+
+#[test]
 fn binary_reports_its_distribution_contract() {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi-lsp"))
         .arg("--version-json")

@@ -27,6 +27,7 @@ pub(super) fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             message_key: "match.pattern-type-mismatch".to_owned(),
             primary: byte_range(*pattern),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: message.clone(),
                 primary: byte_range(*pattern),
             }],
@@ -46,6 +47,7 @@ pub(super) fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             message_key: "match.guard-not-bool".to_owned(),
             primary: byte_range(*guard),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!("expected Bool, received {}", type_label(actual)),
                 primary: byte_range(*guard),
             }],
@@ -65,10 +67,12 @@ pub(super) fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             primary: byte_range(*actual_branch),
             related: vec![
                 RelatedDiagnostic {
+                    source: None,
                     message: format!("first branch has type {}", type_label(expected)),
                     primary: byte_range(*expected_branch),
                 },
                 RelatedDiagnostic {
+                    source: None,
                     message: format!("this branch has type {}", type_label(actual)),
                     primary: byte_range(*actual_branch),
                 },
@@ -86,6 +90,7 @@ pub(super) fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             message_key: "match.non-exhaustive".to_owned(),
             primary: byte_range(*expression),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!("missing patterns: {}", missing.join(", ")),
                 primary: byte_range(*expression),
             }],

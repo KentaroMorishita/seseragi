@@ -66,6 +66,7 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
                 message_key: "entry.invalid".to_owned(),
                 primary,
                 related: vec![seseragi_syntax::RelatedDiagnostic {
+                    source: None,
                     message: message.clone(),
                     primary,
                 }],

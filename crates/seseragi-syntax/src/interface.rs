@@ -99,7 +99,12 @@ fn parse_unlinked_module_interface_inner(
         };
     }
 
-    let surface_module = parse_surface_ast(source_file.clone(), source);
+    let mut surface_module = parse_surface_ast(source_file.clone(), source);
+    // Interface/source labels retain their stable short form. A related
+    // declaration location must nevertheless identify its original document.
+    for entry in &mut surface_module.deprecations {
+        entry.deprecation.source.clone_from(&source_name);
+    }
     if cst_type_declaration_count(&cst.root)
         != surface_module
             .declarations

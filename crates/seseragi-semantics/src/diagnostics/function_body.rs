@@ -25,6 +25,7 @@ pub(super) fn collect_function_body_diagnostics(
         message_key: "function.return-type-mismatch".to_owned(),
         primary: byte_range(*body),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: format!(
                 "declared {}, body produces {}",
                 type_label(expected),

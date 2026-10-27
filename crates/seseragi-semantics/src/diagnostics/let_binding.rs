@@ -93,6 +93,7 @@ pub(super) fn collect_let_binding_diagnostics(
         message_key: "binding.annotation-type-mismatch".to_owned(),
         primary: byte_range(body.span()),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: format!(
                 "declared {}, initializer produces {}",
                 type_label(&expected),

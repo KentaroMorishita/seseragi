@@ -35,6 +35,7 @@ pub(super) fn collect_impl_diagnostics(
                 message_key: "impl.target-not-local-nominal".to_owned(),
                 primary: byte_range(type_ref_span(target)),
                 related: vec![RelatedDiagnostic {
+                    source: None,
                     message: "inherent impl target must be a nominal type defined in this module"
                         .to_owned(),
                     primary: byte_range(*span),
@@ -65,6 +66,7 @@ pub(super) fn collect_impl_diagnostics(
                             message_key: "impl.operator-not-overloadable".to_owned(),
                             primary: byte_range(*spelling_span),
                             related: vec![RelatedDiagnostic {
+                                source: None,
                                 message: format!(
                                     "operator {spelling} cannot declare an individual overload"
                                 ),
@@ -139,6 +141,7 @@ pub(super) fn collect_impl_diagnostics(
                     message_key: "name.duplicate-definition".to_owned(),
                     primary: byte_range(method.name_span),
                     related: vec![RelatedDiagnostic {
+                        source: None,
                         message: format!("inherent method {} was first defined here", method.name),
                         primary: byte_range(*first),
                     }],
@@ -160,6 +163,7 @@ fn invalid_self_diagnostic(primary: ByteSpan, declaration: ByteSpan, message: &s
         message_key: "impl.invalid-self-parameter".to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: message.to_owned(),
             primary: byte_range(declaration),
         }],
@@ -180,6 +184,7 @@ fn invalid_operator_signature(
         message_key: "impl.invalid-operator-signature".to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: message.to_owned(),
             primary: byte_range(declaration),
         }],

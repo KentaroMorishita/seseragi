@@ -377,6 +377,9 @@ pub(crate) fn hover(
     if let Some(description) = description {
         lines.push(description.to_owned());
     }
+    if let Some(deprecation) = symbol.and_then(|symbol| symbol.deprecation.as_ref()) {
+        lines.push(deprecation_notice(deprecation));
+    }
 
     let range = hover_range(&document.analysis, position)
         .and_then(|range| range_json(&document.source, range.start, range.end, encoding));
@@ -687,17 +690,20 @@ pub(crate) fn semantic_tokens(document: &DocumentState, encoding: PositionEncodi
         if range.start.line != range.end.line || range.start.character == range.end.character {
             continue;
         }
-        tokens.insert(
-            (range.start.line, range.start.character, range.end.character),
-            semantic_token_type(symbol),
-        );
+        let token = tokens
+            .entry((range.start.line, range.start.character, range.end.character))
+            .or_insert((semantic_token_type(symbol), 0usize));
+        token.0 = semantic_token_type(symbol);
+        // A newtype's declaration name also declares its constructor. A
+        // constructor occurrence elsewhere must not inherit this type notice.
+        token.1 |= usize::from(symbol.deprecation.is_some());
     }
 
     let mut data = Vec::new();
     let mut previous_line = 0;
     let mut previous_character = 0;
     let mut previous_end = None;
-    for ((line, character, end), token_type) in tokens {
+    for ((line, character, end), (token_type, modifiers)) in tokens {
         if previous_end.is_some_and(|(previous_line, previous_end)| {
             previous_line == line && character < previous_end
         }) {
@@ -709,7 +715,13 @@ pub(crate) fn semantic_tokens(document: &DocumentState, encoding: PositionEncodi
         } else {
             character
         };
-        data.extend([delta_line, delta_start, end - character, token_type, 0]);
+        data.extend([
+            delta_line,
+            delta_start,
+            end - character,
+            token_type,
+            modifiers,
+        ]);
         previous_line = line;
         previous_character = character;
         previous_end = Some((line, end));
@@ -724,19 +736,71 @@ fn symbol_completion(symbol: &AnalysisSymbol, markup: MarkupKind) -> Value {
         .map(|callable| callable.signature.clone())
         .or_else(|| symbol.type_name.clone())
         .unwrap_or_else(|| symbol.kind.clone());
-    json!({
+    let description = match (&symbol.description, &symbol.deprecation) {
+        (Some(description), Some(deprecation)) => Some(format!(
+            "{description}\n\n{}",
+            deprecation_notice(deprecation)
+        )),
+        (None, Some(deprecation)) => Some(deprecation_notice(deprecation)),
+        (description, None) => description.clone(),
+    };
+    let mut item = json!({
         "label": symbol.name,
         "kind": completion_kind(&symbol.kind, &symbol.namespace, symbol.callable.is_some()),
         "detail": detail,
         "documentation": completion_documentation(
             symbol.callable.as_ref().map(|callable| callable.signature.as_str())
                 .or(symbol.type_name.as_deref()),
-            symbol.description.as_deref(),
+            description.as_deref(),
             markup,
         ),
         "sortText": format!("0-{}", symbol.name),
         "data": {"identity": symbol.identity, "namespace": symbol.namespace},
-    })
+    });
+    if symbol.deprecation.is_some() {
+        item["tags"] = json!([1]);
+    }
+    item
+}
+
+fn deprecation_notice(deprecation: &seseragi_syntax::Deprecation) -> String {
+    let since = deprecation
+        .since
+        .as_ref()
+        .map(|version| format!(" since {version}"))
+        .unwrap_or_default();
+    format!("Deprecated{since}: {}", deprecation.message)
+}
+
+pub(crate) fn document_symbols(
+    document: &DocumentState,
+    uri: &str,
+    encoding: PositionEncoding,
+) -> Value {
+    let symbols = document
+        .analysis
+        .workspace_symbols()
+        .into_iter()
+        .filter_map(|symbol| {
+            let range = range_json(
+                &document.source,
+                symbol.definition.start,
+                symbol.definition.end,
+                encoding,
+            )?;
+            let mut item = json!({
+                "name": symbol.name,
+                "kind": workspace_symbol_kind(symbol),
+                "location": {"uri": uri, "range": range},
+                "containerName": symbol.module,
+            });
+            if symbol.deprecation.is_some() {
+                item["tags"] = json!([1]);
+            }
+            Some(item)
+        })
+        .collect::<Vec<_>>();
+    json!(symbols)
 }
 
 fn push_reference_completion(

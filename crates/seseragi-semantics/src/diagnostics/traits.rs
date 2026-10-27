@@ -39,6 +39,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             message_key: "trait.instance-orphan".to_owned(),
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!("{identity} must be defined by the trait or an outermost nominal head type's module; an alias does not create an owner"),
                 primary: byte_range(*primary),
             }],
@@ -52,6 +53,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             message_key: "trait.instance-head-unresolved".to_owned(),
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: "the expanded instance head must preserve its resolved constructor and all declared type parameters; an unrepresented alias constructor cannot yet be used here".to_owned(),
                 primary: byte_range(*primary),
             }],
@@ -62,6 +64,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             severity: DiagnosticSeverity::Error, message_key: "trait.instance-coherence-unproved".to_owned(),
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: match provider_module {
                     Some(provider) => format!("cannot yet prove this {trait_name} instance disjoint from the instance provided by {provider}; higher-kinded constructor equality is not fully supported"),
                     None => format!("cannot yet prove this {trait_name} instance disjoint from the instance defined here; higher-kinded constructor equality is not fully supported"),
@@ -82,6 +85,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             message_key: "name.unresolved".to_owned(),
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!("deriving trait {trait_name} is not defined"),
                 primary: byte_range(*declaration),
             }],
@@ -107,6 +111,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
                 message_key: "trait.instance-missing".to_owned(),
                 primary: byte_range(*primary),
                 related: vec![RelatedDiagnostic {
+                    source: None,
                     message: format!("required {requirement} instance is not available"),
                     primary: byte_range(*declaration),
                 }],
@@ -126,6 +131,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             message_key: "trait.instance-ambiguous".to_owned(),
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!(
                     "conflicting {trait_name}<{type_identity}> instance is imported from {provider_module}"
                 ),
@@ -146,6 +152,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             message_key: "trait.instance-duplicate".to_owned(),
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!("{trait_name} instance {identity} was first defined here"),
                 primary: byte_range(*first),
             }],
@@ -155,7 +162,8 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             type_difference: None, id: String::new(), code: "SES-T0202".to_owned(),
             severity: DiagnosticSeverity::Error, message_key: "trait.instance-duplicate".to_owned(),
             primary: byte_range(*primary),
-            related: vec![RelatedDiagnostic { message: format!("this {trait_name} instance {identity} overlaps the instance defined here"), primary: byte_range(*first) }],
+            related: vec![RelatedDiagnostic {
+                source: None, message: format!("this {trait_name} instance {identity} overlaps the instance defined here"), primary: byte_range(*first) }],
             fixes: Vec::new(),
         },
         DerivedInstanceIssue::OverlappingStandardInstance {
@@ -170,6 +178,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             message_key: "trait.instance-duplicate".to_owned(),
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!(
                     "{trait_name} instance overlaps sealed standard instance {standard_identity}"
                 ),

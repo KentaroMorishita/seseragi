@@ -23,6 +23,7 @@ pub(super) fn range_diagnostic(issue: &RangeIssue, declaration: ByteSpan) -> Dia
         message_key: "range.endpoint-not-int".to_owned(),
         primary: byte_range(issue.endpoint),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: format!(
                 "range {} must be Int, received {}",
                 issue.position,
