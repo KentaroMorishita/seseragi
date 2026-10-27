@@ -4,6 +4,7 @@ use seseragi_syntax::{
     ModuleInterface, SurfaceBlockItem, SurfaceConstraint, SurfaceDecl, SurfaceImplMember,
     SurfaceMethod, SurfaceModule,
 };
+use std::collections::BTreeMap;
 
 mod types;
 
@@ -190,6 +191,7 @@ pub(super) fn register_imports(
 
 pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[SurfaceDecl]) {
     let module_scope = resolver.module_scope();
+    let mut impl_operator_scopes = BTreeMap::new();
     for declaration in declarations {
         match declaration {
             SurfaceDecl::Let {
@@ -331,6 +333,18 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 resolve_type_ref(resolver, scope, target);
                 resolve_constraints(resolver, scope, constraints);
                 resolve_impl_members(resolver, scope, members);
+                for member in members {
+                    if let SurfaceImplMember::Operator { spelling, span, .. } = member {
+                        if !type_parameters.is_empty()
+                            && seseragi_syntax::declarable_standard_operator(spelling).is_some()
+                        {
+                            impl_operator_scopes.insert(
+                                (span.start, span.end),
+                                (scope, type_parameters.as_slice()),
+                            );
+                        }
+                    }
+                }
             }
             SurfaceDecl::Instance {
                 type_parameters,
@@ -342,7 +356,15 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 span,
                 ..
             } => {
-                let scope = declaration_scope(resolver, module_scope, type_parameters, *span);
+                let scope = match impl_operator_scopes.get(&(span.start, span.end)) {
+                    Some((parent, parameters)) if *parameters == type_parameters.as_slice() => {
+                        // Sugar clones the source TypeRefs, including their spans. Keep
+                        // their actual impl binders rather than creating a second set
+                        // of same-spelled parameters for the generated instance.
+                        resolver.new_scope(*parent, ScopeKind::Declaration, *span)
+                    }
+                    _ => declaration_scope(resolver, module_scope, type_parameters, *span),
+                };
                 resolver.reference(
                     scope,
                     SymbolNamespace::Trait,

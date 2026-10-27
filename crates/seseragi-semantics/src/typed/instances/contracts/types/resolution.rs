@@ -1,6 +1,6 @@
 use super::model::{apply_arguments, ContractConstraint, ContractType, TypeIdentity};
 use crate::{ResolvedModule, ScopeKind, SymbolId, SymbolKind, SymbolNamespace};
-use seseragi_syntax::{SurfaceConstraint, SurfaceMethod, TypeRef};
+use seseragi_syntax::{SurfaceConstraint, SurfaceDecl, SurfaceImplMember, SurfaceMethod, TypeRef};
 use std::collections::BTreeMap;
 
 pub(super) fn contract_constraint(
@@ -120,6 +120,26 @@ pub(super) fn declaration_type_parameters(
         .scopes
         .iter()
         .find(|scope| scope.kind == ScopeKind::Declaration && scope.origin == span)?;
+    // Only an instance generated from this exact impl member inherits binders.
+    // Match the source declaration and full parameter kinds before selecting
+    // its parent scope; ordinary declarations never search enclosing names.
+    let binder_scope = scope
+        .parent
+        .and_then(|parent| resolved.scopes.iter().find(|scope| scope.id == parent))
+        .filter(|parent| {
+            parent.kind == ScopeKind::Declaration
+                && resolved.declarations.iter().any(|declaration| {
+                    matches!(declaration, SurfaceDecl::Impl { type_parameters, members, span: origin, .. }
+                        if *origin == parent.origin
+                            && type_parameters == names
+                            && members.iter().any(|member| {
+                                matches!(member, SurfaceImplMember::Operator { spelling, span: origin, .. }
+                                    if *origin == span
+                                        && seseragi_syntax::declarable_standard_operator(spelling).is_some())
+                            }))
+                })
+        })
+        .unwrap_or(scope);
     names
         .iter()
         .map(|parameter| {
@@ -127,7 +147,7 @@ pub(super) fn declaration_type_parameters(
                 .symbols
                 .iter()
                 .find(|symbol| {
-                    symbol.scope == scope.id
+                    symbol.scope == binder_scope.id
                         && symbol.kind == SymbolKind::TypeParameter
                         && symbol.spelling == parameter.name
                 })

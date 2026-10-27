@@ -48,6 +48,13 @@ strict、fresh Bun／Node、native、source引数の一回評価、cold再実行
 finalizerとroot解放を比較します。FloatConversionErrorを含むnative fixtureには、
 同errorのcanonical変換ABIが必要です。無注釈の演算子部分適用全般はこの修復に含めません。
 
+generic implの演算子は、driverとCLIの`--test generic_impl_operators`で確認します。
+生成instanceが元implのscoped binderを引き継ぎ、明示instance、別owner、importとreexport、
+制約、overlapとfunctional dependencyの位置付き拒否を保つことを検証します。
+元のTS両profileのstrict、fresh Bun／Nodeとnativeの結果、保存した演算子のsource一回評価、
+Ref cycleとcold Effectの再実行、Failure／Defect後のfinalizerとroot解放も比較します。
+一般aliasのhead mappingや、返却関数を続けて適用する未対応全般は含めません。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。

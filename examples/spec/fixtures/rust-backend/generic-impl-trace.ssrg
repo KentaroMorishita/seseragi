@@ -1,0 +1,22 @@
+struct Box<A> { value: A }
+
+fn leftValue -> Box<Bool> = Box { value: True }
+fn rightValue -> Int = 2
+fn selected -> (Box<Bool> -> Int -> Int) = (+)
+fn marker -> Unit = ()
+fn bodyValue value: Int -> Int = value
+
+impl<A> Box<A> {
+  operator + self -> other: Int -> Int = bodyValue other
+}
+
+pub fn probe -> Int = {
+  let operator = selected ()
+  let saved = operator (leftValue ())
+  let before = marker ()
+  let first = saved (rightValue ())
+  let second = saved (rightValue ())
+  first + second
+}
+
+pub effect fn main = println (show (probe ()))

@@ -1,0 +1,14 @@
+import { Box as DirectBox } from "./model"
+import { Box as FacadeBox, boxed } from "./facade"
+import * as model from "./model"
+
+type Box<A> = | LocalBox A
+
+pub effect fn main = do {
+  println ((model.boxed True) + 42)
+  let operator: DirectBox<Bool> -> Int -> String = (+)
+  let saved = operator (boxed True)
+  println (saved 43)
+  let other: FacadeBox<Bool> = boxed False
+  println (other + 44)
+}
