@@ -6,11 +6,14 @@ use seseragi_syntax::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod argument_kinds;
+
 pub(super) fn collect_alias_diagnostics(
     resolved: &ResolvedModule,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     collect_arity_diagnostics(resolved, diagnostics);
+    argument_kinds::collect_nominal_argument_kind_diagnostics(resolved, diagnostics);
     collect_cycle_diagnostics(resolved, diagnostics);
     collect_private_exposure_diagnostics(resolved, diagnostics);
     collect_requirement_merge_diagnostics(resolved, diagnostics);
@@ -21,7 +24,7 @@ fn collect_requirement_merge_diagnostics(
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     let mut allowed = BTreeSet::new();
-    walk_module_types(&resolved.declarations, &mut |type_ref| {
+    walk_module_types(&resolved.declarations, &mut |type_ref: &TypeRef| {
         let TypeRef::Named {
             name, arguments, ..
         } = type_ref
@@ -36,7 +39,7 @@ fn collect_requirement_merge_diagnostics(
     });
 
     let resolution = crate::typed::TypedResolution::new(resolved);
-    walk_module_types(&resolved.declarations, &mut |type_ref| {
+    walk_module_types(&resolved.declarations, &mut |type_ref: &TypeRef| {
         let TypeRef::RequirementMerge { operands, span } = type_ref else {
             return;
         };
@@ -114,7 +117,7 @@ fn valid_requirement_operand(
 }
 
 fn collect_arity_diagnostics(resolved: &ResolvedModule, diagnostics: &mut Vec<Diagnostic>) {
-    walk_module_types(&resolved.declarations, &mut |type_ref| {
+    walk_module_types(&resolved.declarations, &mut |type_ref: &TypeRef| {
         let TypeRef::Named {
             arguments, span, ..
         } = type_ref
@@ -155,7 +158,7 @@ fn collect_cycle_diagnostics(resolved: &ResolvedModule, diagnostics: &mut Vec<Di
         .iter()
         .map(|(owner, declaration)| {
             let mut edges = BTreeSet::new();
-            walk_type(&declaration.target, &mut |type_ref| {
+            walk_type(&declaration.target, &mut |type_ref: &TypeRef| {
                 if let TypeRef::Named { span, .. } = type_ref {
                     if let Some(target) =
                         type_target(resolved, *span).filter(|target| owners.contains(target))
@@ -238,7 +241,7 @@ fn private_nominal_in(
     visited: &mut BTreeSet<SymbolId>,
 ) -> Option<ByteSpan> {
     let mut found = None;
-    walk_type(type_ref, &mut |type_ref| {
+    walk_type(type_ref, &mut |type_ref: &TypeRef| {
         if found.is_some() {
             return;
         }
@@ -490,8 +493,28 @@ fn type_target(resolved: &ResolvedModule, origin: ByteSpan) -> Option<SymbolId> 
         .and_then(|reference| reference.target)
 }
 
-fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl FnMut(&TypeRef)) {
+trait TypeAnnotationVisitor {
+    fn visit_type(&mut self, _type_ref: &TypeRef) {}
+
+    fn visit_type_parameters(
+        &mut self,
+        _parameters: &[seseragi_syntax::TypeParameter],
+        _origin: ByteSpan,
+    ) {
+    }
+}
+
+impl<F: FnMut(&TypeRef)> TypeAnnotationVisitor for F {
+    fn visit_type(&mut self, type_ref: &TypeRef) {
+        self(type_ref);
+    }
+}
+
+fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl TypeAnnotationVisitor) {
     for declaration in declarations {
+        if let Some(parameters) = declaration_type_parameters(declaration) {
+            visit.visit_type_parameters(parameters.as_slice(), declaration.span());
+        }
         match declaration {
             SurfaceDecl::Let { type_ref, .. } => type_ref
                 .iter()
@@ -578,6 +601,7 @@ fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl FnMut(&TypeR
                     }
                 }
                 for method in methods {
+                    visit.visit_type_parameters(&method.type_parameters, method.span);
                     for parameter in &method.parameters {
                         walk_type(&parameter.type_ref, visit);
                     }
@@ -604,6 +628,7 @@ fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl FnMut(&TypeR
                 for member in members {
                     match member {
                         SurfaceImplMember::Method { method, .. } => {
+                            visit.visit_type_parameters(&method.type_parameters, method.span);
                             for parameter in &method.parameters {
                                 walk_type(&parameter.type_ref, visit);
                             }
@@ -632,7 +657,10 @@ fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl FnMut(&TypeR
     }
 }
 
-fn walk_declaration_expression_types(declaration: &SurfaceDecl, visit: &mut impl FnMut(&TypeRef)) {
+fn walk_declaration_expression_types(
+    declaration: &SurfaceDecl,
+    visit: &mut impl TypeAnnotationVisitor,
+) {
     match declaration {
         SurfaceDecl::Let { body, .. }
         | SurfaceDecl::EffectFn { body, .. }
@@ -667,7 +695,7 @@ fn walk_declaration_expression_types(declaration: &SurfaceDecl, visit: &mut impl
     }
 }
 
-fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeRef)) {
+fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl TypeAnnotationVisitor) {
     match expression {
         SurfaceExpr::Template { parts, .. } => {
             for part in parts {
@@ -799,12 +827,15 @@ fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeR
                         walk_expression_types(value, visit);
                     }
                     SurfaceBlockItem::Function {
+                        type_parameters,
                         parameters,
                         return_type,
                         constraints,
                         value,
+                        span,
                         ..
                     } => {
+                        visit.visit_type_parameters(type_parameters, *span);
                         for parameter in parameters {
                             walk_type(&parameter.type_ref, visit);
                         }
@@ -822,6 +853,13 @@ fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeR
         }
         SurfaceExpr::Do { items, result, .. } => {
             for item in items {
+                if let SurfaceDoItem::Let {
+                    type_ref: Some(type_ref),
+                    ..
+                } = item
+                {
+                    walk_type(type_ref, visit);
+                }
                 let value = match item {
                     SurfaceDoItem::Bind { value, .. }
                     | SurfaceDoItem::Let { value, .. }
@@ -844,8 +882,8 @@ fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeR
     }
 }
 
-fn walk_type(type_ref: &TypeRef, visit: &mut impl FnMut(&TypeRef)) {
-    visit(type_ref);
+fn walk_type(type_ref: &TypeRef, visit: &mut impl TypeAnnotationVisitor) {
+    visit.visit_type(type_ref);
     match type_ref {
         TypeRef::Named { arguments, .. } => {
             for argument in arguments {
