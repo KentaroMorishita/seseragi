@@ -210,10 +210,13 @@ fn imported_aliases_keep_the_provider_owner_without_display_name_matching() {
             .map(|method| method.name.as_str())
             .collect::<Vec<_>>(),
         ["old", "read"],
-        "bindings={:#?}, scopes={:#?}, symbols={:#?}",
+        "bindings={:#?}, symbols={:#?}",
         document.nominal_bindings,
-        document.scopes,
-        document.symbols
+        document
+            .symbols
+            .iter()
+            .filter(|symbol| matches!(symbol.name.as_str(), "value" | "old" | "read" | "Container"))
+            .collect::<Vec<_>>()
     );
     assert!(methods
         .iter()
