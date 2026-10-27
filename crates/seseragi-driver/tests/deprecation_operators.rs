@@ -28,7 +28,7 @@ fn warnings(document: &seseragi_driver::AnalysisDocument) -> Vec<Diagnostic> {
 
 #[test]
 fn only_the_selected_implementation_warns_for_operator_and_method_uses() {
-    let source = format!("{BOX}pub struct Other {{ pub value: Int }}\nimpl Other {{ operator + self -> other: Other -> Other = other }}\npub fn binary left: Box -> right: Box -> Box = left + right\npub fn method left: Box -> right: Box -> Box = add left right\npub fn section left: Box -> right: Box -> Box = (+) left right\npub fn ordinary left: Other -> right: Other -> Other = left + right\npub fn scalar -> Int = 1 + 2\n");
+    let source = format!("{BOX}pub struct Other {{ pub value: Int }}\nimpl Other {{ operator + self -> other: Other -> Other = other }}\npub fn binary left: Box -> right: Box -> Box = left + right\npub fn method left: Box -> right: Box -> Box = add left right\npub fn section left: Box -> right: Box -> Box = {{ let selected: Box -> Box -> Box = (+); selected left right }}\npub fn ordinary left: Other -> right: Other -> Other = left + right\npub fn scalar -> Int = 1 + 2\n");
     let document = analyze_module(CompileInput::new("λ/box.ssrg", "operators/local", &source));
     let facts = warnings(&document);
     assert_eq!(facts.len(), 3, "{facts:#?}");
