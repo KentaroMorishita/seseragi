@@ -344,10 +344,10 @@ toIntは非finiteを型付き失敗にし、丸めた後のsafe Int範囲を検�
 全行の成功後に別fileへ書く。入力と失敗時の既存出力を保ち、保存・返り値converterと
 cold Failure/Defectでも評価順、scope解放とroot0を保つ。program WASMの変換は位置付きで拒否し、
 Float Eq/Ord、power/stdmathと新しいnumeric errorのShow/Debugはこの範囲に含めない。
-nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
-商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
-0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。
-Rem／Powやprogram WASMのInt算術は、この対応には含まない。
+nativeのInt除算と剰余はcanonicalな`std/int::Div`／`std/int::Rem`の型・evidence・source段階を照合する。
+商は0方向へ切り捨て、剰余の符号は被除数に従う。保存したmethodや再利用する部分適用でも
+同じsafe integer範囲を保つ。0による除算・剰余はDefectとなり、Effectのresource scopeを閉じてから
+processを終了する。Powとprogram WASMのInt除算・剰余は、この対応には含まない。
 Arrayの`values[index]`はcanonical Array / Int / Maybeと要素型を検証し、
 receiver、indexをこの順で一度ずつ評価する。負数・範囲外・空配列ではNothingを返し、
 有効な位置では要素の共有edgeをJustへ保持する。取り出した関数・Ref・cold Effectは

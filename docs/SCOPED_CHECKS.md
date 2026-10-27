@@ -38,6 +38,13 @@ ConsoleのString契約はdriver／backendの`--test console_string_contract`とC
 fresh Bun／Nodeとnativeの出力、cold再実行、引数評価時のDefectとscope解放を保ちます。
 共有型互換性を変える場合はsemantics／driverの既存検証と最終統合gateも必要です。
 
+HKTのADT payload・struct field・public aliasはdriverとCLIの
+`--test hkt_data_projection`で確認します。元Issueの単独source、opaque aliasのfactory実値、
+facadeと保存関数、元の生成TS両profileのstrict、fresh Bun／Nodeとnativeを比較します。
+private fieldと偽造、別ownerやpayload違いの拒否を保ち、不正kindの位置付き診断は
+driverの`--test hkt_annotation_kinds`でも確認します。一般のUnknown targetやHKT逆推論は
+このlaneの受入へ追加しません。
+
 標準primitive EqのTS投影は、`cargo test -p seseragi-cli --test string_equality`
 と`--test inherited_equality`で確認します。異なるliteral・保存したmethod・部分適用を
 元の生成TS両profileでstrict検査し、fresh Bun／Nodeで実行します。Int／String／Charの

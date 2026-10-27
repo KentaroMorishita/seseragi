@@ -1,0 +1,13 @@
+import { Kept, PublicWrapped, PublicChain, create, reveal } from "./facade"
+
+struct Sealed<F<_>, A> { value: F<A> }
+
+pub fn keep<F<_>, A> value: PublicChain<F, A> -> PublicWrapped<F, A> = value
+
+pub effect fn main = do {
+  let saved: Maybe<Int> -> PublicChain<Maybe, Int> = create
+  let hidden: Kept<Maybe, Int> = saved (Just 42)
+  println (show (reveal (keep hidden)))
+  let second: PublicWrapped<Maybe, String> = create<Maybe, String> (Just "kept")
+  println (show (reveal second))
+}

@@ -1,10 +1,13 @@
 use std::{
-    fs::{self, File},
+    fs,
     path::{Path, PathBuf},
-    process::{Child, Command, Output, Stdio},
+    process::Command,
     sync::atomic::{AtomicUsize, Ordering},
-    time::{Duration, Instant},
 };
+
+#[path = "support/generic_impl_process.rs"]
+mod process;
+use process::{bounded, runtime, successful};
 
 struct Scratch(PathBuf);
 impl Scratch {
@@ -23,117 +26,6 @@ impl Drop for Scratch {
     fn drop(&mut self) {
         let _ = fs::remove_dir_all(&self.0);
     }
-}
-
-struct OwnedChild {
-    child: Child,
-    stdout: PathBuf,
-    stderr: PathBuf,
-}
-impl OwnedChild {
-    fn start(command: &mut Command, directory: &Path) -> Self {
-        let stdout = directory.join("stdout");
-        let stderr = directory.join("stderr");
-        command
-            .stdout(Stdio::from(File::create(&stdout).unwrap()))
-            .stderr(Stdio::from(File::create(&stderr).unwrap()));
-        #[cfg(unix)]
-        {
-            use std::os::unix::process::CommandExt;
-            command.process_group(0);
-        }
-        Self {
-            child: command.spawn().unwrap(),
-            stdout,
-            stderr,
-        }
-    }
-    fn wait(&mut self, timeout: Duration) -> Output {
-        let deadline = Instant::now() + timeout;
-        let status = loop {
-            if let Some(status) = self.child.try_wait().unwrap() {
-                break status;
-            }
-            assert!(
-                Instant::now() < deadline,
-                "deadline for owned PID {}\n{}",
-                self.child.id(),
-                fs::read_to_string(&self.stderr).unwrap()
-            );
-            std::thread::sleep(Duration::from_millis(10));
-        };
-        self.child.wait().unwrap();
-        Output {
-            status,
-            stdout: fs::read(&self.stdout).unwrap(),
-            stderr: fs::read(&self.stderr).unwrap(),
-        }
-    }
-}
-impl Drop for OwnedChild {
-    fn drop(&mut self) {
-        if self.child.try_wait().ok().flatten().is_none() {
-            #[cfg(unix)]
-            unsafe {
-                unsafe extern "C" {
-                    fn kill(pid: i32, signal: i32) -> i32;
-                }
-                // Only this still-live child's dedicated process group.
-                kill(-(self.child.id() as i32), 15);
-                // Do not reap the group leader during the grace interval. Its
-                // reserved PID prevents group-ID reuse before the final kill;
-                // compiler descendants may outlive a terminated parent.
-                std::thread::sleep(Duration::from_secs(2));
-                kill(-(self.child.id() as i32), 9);
-            }
-            #[cfg(windows)]
-            {
-                if let Ok(mut terminator) = Command::new("taskkill")
-                    .args(["/F", "/T", "/PID", &self.child.id().to_string()])
-                    .stdout(Stdio::null())
-                    .stderr(Stdio::null())
-                    .spawn()
-                {
-                    let until = Instant::now() + Duration::from_secs(5);
-                    while Instant::now() < until {
-                        if terminator.try_wait().ok().flatten().is_some() {
-                            break;
-                        }
-                        std::thread::sleep(Duration::from_millis(10));
-                    }
-                    let _ = terminator.kill();
-                    let _ = terminator.wait();
-                }
-            }
-            let _ = self.child.kill();
-        }
-        let _ = self.child.wait();
-    }
-}
-fn successful(output: Output) -> Output {
-    assert!(
-        output.status.success(),
-        "{}\n{}",
-        String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&output.stderr)
-    );
-    output
-}
-fn bounded(command: &mut Command, directory: &Path) -> Output {
-    OwnedChild::start(command, directory).wait(Duration::from_secs(120))
-}
-fn runtime(name: &str, directory: &Path) -> PathBuf {
-    let output = successful(bounded(
-        Command::new(if cfg!(windows) { "where" } else { "which" }).arg(name),
-        directory,
-    ));
-    PathBuf::from(
-        String::from_utf8(output.stdout)
-            .unwrap()
-            .lines()
-            .next()
-            .unwrap(),
-    )
 }
 
 fn root() -> PathBuf {
@@ -176,13 +68,35 @@ fn typescript_files(directory: &Path) -> Vec<PathBuf> {
     files
 }
 
-#[test]
-fn hkt_data_aliases_and_fields_keep_raw_strict_types_and_the_same_ts_native_results() {
+fn copy_project(source: &Path, destination: &Path) {
+    fs::create_dir_all(destination).unwrap();
+    for entry in fs::read_dir(source).unwrap() {
+        let entry = entry.unwrap();
+        let target = destination.join(entry.file_name());
+        if entry.file_type().unwrap().is_dir() {
+            copy_project(&entry.path(), &target);
+        } else {
+            fs::copy(entry.path(), target).unwrap();
+        }
+    }
+}
+
+fn check_project(fixture_name: &str, prefix: &str, consumer: &str) {
     use seseragi_driver::{compile_project, BuildProfile, ProjectModuleInput};
     use seseragi_project::ModuleGraph;
     let scratch = Scratch::new();
-    let fixture = root().join("examples/spec/fixtures/rust-backend-projects/hkt-data-projection");
+    let fixture = root()
+        .join("examples/spec/fixtures/rust-backend-projects")
+        .join(fixture_name);
     let expected = fs::read(fixture.join("expected.stdout")).unwrap();
+    let project = scratch.0.join("project");
+    copy_project(&fixture, &project);
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
     for (profile, value) in [
         ("development", BuildProfile::Development),
         ("release", BuildProfile::Release),
@@ -192,21 +106,21 @@ fn hkt_data_aliases_and_fields_keep_raw_strict_types_and_the_same_ts_native_resu
             ("model", vec![]),
             (
                 "facade",
-                vec![("./model".to_owned(), "fixture/data::model".to_owned())],
+                vec![("./model".to_owned(), format!("{prefix}::model"))],
             ),
             (
                 "main",
-                vec![("./facade".to_owned(), "fixture/data::facade".to_owned())],
+                vec![("./facade".to_owned(), format!("{prefix}::facade"))],
             ),
         ] {
             graph
-                .add_module(format!("fixture/data::{name}"), edges)
+                .add_module(format!("{prefix}::{name}"), edges)
                 .unwrap();
         }
         let inputs = ["model", "facade", "main"].map(|name| {
             ProjectModuleInput::new(
                 format!("{name}.ssrg"),
-                format!("fixture/data::{name}"),
+                format!("{prefix}::{name}"),
                 fs::read_to_string(fixture.join(format!("src/{name}.ssrg"))).unwrap(),
                 format!("dist/{name}.js"),
             )
@@ -222,32 +136,13 @@ fn hkt_data_aliases_and_fields_keep_raw_strict_types_and_the_same_ts_native_resu
             )
             .unwrap();
         }
-        fs::write(raw.join("consumer.ts"), r#"
-import { Parcel, Pack, StateT } from "./facade.js";
-import type { Sealed, $ssrg$kind$Plain } from "./model.js";
-type Maybe<A> = { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: A };
-interface MaybeKind { readonly args: readonly [unknown]; readonly type: Maybe<this["args"][0]> }
-const parcel: Pack<MaybeKind, number> = Parcel<MaybeKind, number>({ tag: "Just", value: 42 });
-if (parcel.value.tag === "Just") { const number: number = parcel.value.value; }
-declare const original: Sealed<MaybeKind, number>;
-const alias: Sealed<$ssrg$kind$Plain, number> = original;
-const transparent: Sealed<MaybeKind, number> = alias;
-const state: StateT<string, MaybeKind, number> = (input) => ({ tag: "Just", value: [42, input] });
-// @ts-expect-error A wrong payload must remain a TypeScript error.
-const wrong: Pack<MaybeKind, number> = { tag: "Box", value: { tag: "Just", value: "wrong" } };
-// @ts-expect-error A value kind does not satisfy a unary constructor binder.
-type WrongKind = Pack<number, number>;
-// @ts-expect-error Two-argument kinds do not satisfy a unary constructor binder.
-type WrongArity = Pack<{ readonly args: readonly [unknown, unknown]; readonly type: never }, number>;
-// @ts-expect-error The HKT alias keeps the state and success payload.
-const wrongState: StateT<string, MaybeKind, number> = (input) => ({ tag: "Just", value: [false, input] });
-"#).unwrap();
+        fs::write(raw.join("consumer.ts"), consumer).unwrap();
         strict(&raw, typescript_files(&raw), &scratch.0);
         let product = scratch.0.join(profile);
         successful(bounded(
             Command::new(env!("CARGO_BIN_EXE_seseragi"))
                 .arg("build")
-                .arg(&fixture)
+                .arg(&project)
                 .args(["--target", "process", "--profile", profile, "--out-dir"])
                 .arg(&product),
             &scratch.0,
@@ -276,7 +171,7 @@ const wrongState: StateT<string, MaybeKind, number> = (input) => ({ tag: "Just",
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .args(["experimental", "build-native"])
-            .arg(&fixture)
+            .arg(&project)
             .args(["--entry", "main", "--out-dir"])
             .arg(&native),
         &scratch.0,
@@ -291,6 +186,147 @@ const wrongState: StateT<string, MaybeKind, number> = (input) => ({ tag: "Just",
     assert!(
         String::from_utf8_lossy(&output.stderr).contains("managed-live=0"),
         "{output:?}"
+    );
+}
+
+#[test]
+fn hkt_data_aliases_and_fields_keep_raw_strict_types_and_the_same_ts_native_results() {
+    check_project(
+        "hkt-data-projection",
+        "fixture/data",
+        r#"
+import { Parcel, Pack, StateT } from "./facade.js";
+import type { Sealed, $ssrg$kind$Plain } from "./model.js";
+type Maybe<A> = { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: A };
+interface MaybeKind { readonly args: readonly [unknown]; readonly type: Maybe<this["args"][0]> }
+const parcel: Pack<MaybeKind, number> = Parcel<MaybeKind, number>({ tag: "Just", value: 42 });
+if (parcel.value.tag === "Just") { const number: number = parcel.value.value; }
+declare const original: Sealed<MaybeKind, number>;
+const alias: Sealed<$ssrg$kind$Plain, number> = original;
+const transparent: Sealed<MaybeKind, number> = alias;
+const state: StateT<string, MaybeKind, number> = (input) => ({ tag: "Just", value: [42, input] });
+// @ts-expect-error A wrong payload must remain a TypeScript error.
+const wrong: Pack<MaybeKind, number> = { tag: "Box", value: { tag: "Just", value: "wrong" } };
+// @ts-expect-error A value kind does not satisfy a unary constructor binder.
+type WrongKind = Pack<number, number>;
+// @ts-expect-error Two-argument kinds do not satisfy a unary constructor binder.
+type WrongArity = Pack<{ readonly args: readonly [unknown, unknown]; readonly type: never }, number>;
+// @ts-expect-error The HKT alias keeps the state and success payload.
+const wrongState: StateT<string, MaybeKind, number> = (input) => ({ tag: "Just", value: [false, input] });
+"#,
+    );
+}
+
+#[test]
+fn opaque_hkt_alias_factories_keep_real_values_and_private_brands_across_facades() {
+    check_project(
+        "hkt-opaque-alias-factory",
+        "fixture/opaque-hkt",
+        r#"
+import { create, reveal, type PublicWrapped, type PublicChain } from "./facade.js";
+type Maybe<A> = { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: A };
+interface MaybeKind { readonly args: readonly [unknown]; readonly type: Maybe<this["args"][0]> }
+const factory: (value: Maybe<number>) => PublicChain<MaybeKind, number> = create<MaybeKind, number>;
+const hidden: PublicChain<MaybeKind, number> = factory({ tag: "Just", value: 42 });
+const kept: PublicWrapped<MaybeKind, number> = hidden;
+const actual: Maybe<number> = reveal<MaybeKind, number>(kept);
+// @ts-expect-error The factory's actual value does not expose its private field.
+hidden.value;
+// @ts-expect-error A fabricated object lacks the canonical opaque brand.
+const forged: PublicChain<MaybeKind, number> = {};
+// @ts-expect-error The private brand retains the alias's success payload.
+const wrong: PublicChain<MaybeKind, string> = hidden;
+// @ts-expect-error A value kind does not satisfy the alias's constructor binder.
+type WrongKind = PublicChain<number, number>;
+"#,
+    );
+}
+
+fn check_original_source(source: &str, expected: &[u8]) {
+    use seseragi_driver::{compile_module, BuildProfile, CompileInput};
+    let scratch = Scratch::new();
+    let path = scratch.0.join("main.ssrg");
+    // The text fixtures retain the exact Issue/formal-release source bytes,
+    // including historical formatting. Feed those bytes to the compiler.
+    fs::write(&path, source).unwrap();
+    for (profile, value) in [
+        ("development", BuildProfile::Development),
+        ("release", BuildProfile::Release),
+    ] {
+        let raw = scratch.0.join(format!("raw-{profile}"));
+        fs::create_dir(&raw).unwrap();
+        let compiled = compile_module(
+            CompileInput::new("main.ssrg", "fixture/hkt-original", source).with_profile(value),
+        )
+        .unwrap();
+        fs::write(raw.join("main.ts"), compiled.generated.typescript).unwrap();
+        strict(&raw, vec![raw.join("main.ts")], &scratch.0);
+        let product = scratch.0.join(profile);
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&path)
+                .args(["--target", "process", "--profile", profile, "--out-dir"])
+                .arg(&product),
+            &scratch.0,
+        ));
+        if profile == "development" {
+            strict(
+                &product,
+                vec![product.join("entry.ts"), product.join("main.ts")],
+                &scratch.0,
+            );
+        }
+        for engine in ["bun", "node"] {
+            let output = successful(bounded(
+                Command::new(runtime(engine, &scratch.0))
+                    .arg(product.join("entry.js"))
+                    .env("PATH", ""),
+                &scratch.0,
+            ));
+            assert_eq!(output.stdout, expected, "{profile}/{engine}");
+            assert!(output.stderr.is_empty(), "{profile}/{engine}: {output:?}");
+        }
+    }
+    let native = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        &scratch.0,
+    ));
+    let output = successful(bounded(
+        Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, expected);
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("managed-live=0"),
+        "{output:?}"
+    );
+}
+
+#[test]
+fn issue894_original_pattern_source_is_raw_strict_and_runs_as_just42() {
+    check_original_source(
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/hkt-adt-pattern-issue894.ssrg.txt"
+        ),
+        include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/hkt-adt-pattern-issue894.stdout"
+        ),
+    );
+}
+
+#[test]
+fn issue908_formal63_original_saved_method_is_raw_strict_and_runs_as_true() {
+    check_original_source(
+        include_str!("../../../examples/spec/fixtures/rust-backend/hkt-holder-issue908.ssrg.txt"),
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/hkt-holder-issue908.stdout"),
     );
 }
 
