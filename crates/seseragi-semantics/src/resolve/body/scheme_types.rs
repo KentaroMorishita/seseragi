@@ -510,6 +510,7 @@ mod tests {
 
     fn module(exports: Vec<InterfaceExport>) -> ModuleInterface {
         ModuleInterface {
+            namespace_deprecations: Vec::new(),
             schema: 1,
             module: "fixture/provider".to_owned(),
             source: "provider.ssrg".to_owned(),

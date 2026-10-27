@@ -182,6 +182,8 @@ pub struct TypedModuleInterface {
     pub source: String,
     pub dependencies: Vec<InterfaceDependency>,
     pub exports: Vec<InterfaceExport>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub namespace_deprecations: Vec<seseragi_syntax::InterfaceNamespaceDeprecation>,
     pub operators: Vec<InterfaceOperator>,
     pub instances: Vec<InterfaceInstance>,
 }

@@ -266,6 +266,7 @@ mod tests {
             specifier: format!("./{module}"),
             origin: ByteSpan { start: 0, end: 1 },
             interface: ModuleInterface {
+                namespace_deprecations: Vec::new(),
                 schema: 1,
                 module: module.to_owned(),
                 source: "facade.ssrg".to_owned(),
@@ -314,6 +315,7 @@ mod overlap_tests {
             header: None,
             imports: Vec::new(),
             interface: ModuleInterface {
+                namespace_deprecations: Vec::new(),
                 schema: 1,
                 module: format!("fixture/{provider}"),
                 source: "lib.ssrg".into(),

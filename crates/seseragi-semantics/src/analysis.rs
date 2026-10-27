@@ -147,4 +147,9 @@ fn retain_deprecation_source(resolved: &mut ResolvedModule, source: &str) {
     for entry in &mut resolved.deprecations {
         entry.deprecation.source = source.to_owned();
     }
+    for entry in &mut resolved.namespace_deprecations {
+        if entry.own_declaration.is_some() {
+            entry.metadata.deprecation.source = source.to_owned();
+        }
+    }
 }

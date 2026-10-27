@@ -2,6 +2,7 @@ use super::*;
 use seseragi_syntax::{Deprecation, SurfaceDecl, SurfacePattern};
 
 pub(super) mod members;
+pub(super) mod namespaces;
 mod source_calls;
 
 pub(super) struct SymbolDeprecation {

@@ -390,6 +390,7 @@ pub fn type_module_public_interface(
             source: shallow.source,
             dependencies: shallow.dependencies,
             exports: Vec::new(),
+            namespace_deprecations: Vec::new(),
             operators: Vec::new(),
             instances: Vec::new(),
         };

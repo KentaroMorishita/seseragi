@@ -289,6 +289,7 @@ pub(crate) fn precise_symbol_range(
 
 pub(crate) fn workspace_symbol_kind(symbol: &AnalysisSymbol) -> u8 {
     match (symbol.namespace.as_str(), symbol.kind.as_str()) {
+        ("module", _) => 3,
         (_, "function" | "effect-function" | "generic-foreign-function") => 12,
         (_, "trait-method" | "inherent-method") => 6,
         (_, "constructor") => 9,

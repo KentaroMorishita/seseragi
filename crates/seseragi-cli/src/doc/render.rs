@@ -83,12 +83,19 @@ pub(super) fn generate(
         .modules
         .iter()
         .flat_map(|(id, module)| {
-            module
+            let declarations = module
                 .typed_interface
                 .exports
                 .iter()
                 .filter(move |export| export.symbol.starts_with(&format!("{id}::")))
-                .map(move |export| (export.symbol.clone(), id.clone()))
+                .map(move |export| (export.symbol.clone(), id.clone()));
+            let namespaces = module
+                .typed_interface
+                .namespace_deprecations
+                .iter()
+                .filter(move |namespace| namespace.symbol.starts_with(&format!("{id}::")))
+                .map(move |namespace| (namespace.symbol.clone(), id.clone()));
+            declarations.chain(namespaces)
         })
         .collect::<BTreeMap<_, _>>();
     let analysis = if include_private {
@@ -119,6 +126,36 @@ pub(super) fn generate(
                 *range,
                 "document comment is not attached to a declaration or the module header",
             ));
+        }
+        for namespace in &interface.namespace_deprecations {
+            let definition = defining_modules.get(&namespace.symbol);
+            let source_module = definition.unwrap_or(&module_id);
+            let origin = if definition.is_some() {
+                namespace.declaration
+            } else {
+                namespace.publication.unwrap_or(namespace.declaration)
+            };
+            items.push(Item {
+                module: module_id.clone(),
+                scope,
+                identity: namespace.symbol.clone(),
+                namespace: "namespace".to_owned(),
+                name: namespace.name.clone(),
+                display_name: namespace.name.clone(),
+                owner: None,
+                kind: "foreign-namespace".to_owned(),
+                signature: format!("namespace {}", namespace.name),
+                source_module: source_module.clone(),
+                origin,
+                source_kind: if definition.is_some() {
+                    "declaration"
+                } else {
+                    "reexport"
+                },
+                comment: attached_comment(&sources[source_module], origin),
+                deprecated: Some(namespace.deprecation.clone()),
+                metadata: serde_json::to_value(namespace).map_err(|error| error.to_string())?,
+            });
         }
         for export in &interface.exports {
             let scheme = TypeSchemeDocument::from_interface_scheme(&export.scheme)

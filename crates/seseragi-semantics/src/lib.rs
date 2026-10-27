@@ -24,11 +24,11 @@ pub use prelude::{
     PreludeSpecialInstanceDispatch, StandardEqualityInstance, StandardModuleSurface,
 };
 pub use query::{
-    analysis_document, analysis_document_with_bindings, diagnostics_only_analysis,
-    standard_library_catalog, standard_reference_surface, AnalysisCallable,
-    AnalysisCallableOccurrence, AnalysisCompletionContext, AnalysisCompletionField,
-    AnalysisDocument, AnalysisParameter, AnalysisReferenceItem, AnalysisSymbol,
-    AnalysisSymbolOccurrence, AnalysisTypeOccurrence, StandardReferenceItem,
+    analysis_document, analysis_document_with_bindings, analysis_document_with_source,
+    diagnostics_only_analysis, standard_library_catalog, standard_reference_surface,
+    AnalysisCallable, AnalysisCallableOccurrence, AnalysisCompletionContext,
+    AnalysisCompletionField, AnalysisDocument, AnalysisParameter, AnalysisReferenceItem,
+    AnalysisSymbol, AnalysisSymbolOccurrence, AnalysisTypeOccurrence, StandardReferenceItem,
     StandardReferenceModule, StandardReferenceSurface,
 };
 pub use resolve::{resolve_linked_module, resolve_module, resolve_module_interface};

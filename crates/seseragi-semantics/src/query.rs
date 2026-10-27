@@ -409,6 +409,7 @@ impl AnalysisDocument {
             .iter()
             .filter(|symbol| {
                 symbol.kind != "inherent-method"
+                    && !(symbol.kind == "foreign-namespace" && symbol.name.contains('.'))
                     && visible_scopes.contains(&symbol.scope)
                     && (symbol.scope == ScopeId(0) || symbol.definition.start <= position)
             })
@@ -521,6 +522,18 @@ pub fn analysis_document_with_bindings(
     typed: &TypedModule,
     nominal_bindings: Vec<crate::AnalysisNominalBinding>,
 ) -> AnalysisDocument {
+    analysis_document_with_source(diagnostics, resolved, typed, nominal_bindings, None)
+}
+
+/// Original source is optional for compatibility. Namespace-use positions are
+/// only projected when actual lexer tokens prove the owner's source range.
+pub fn analysis_document_with_source(
+    diagnostics: DiagnosticArtifact,
+    resolved: ResolvedModule,
+    typed: &TypedModule,
+    nominal_bindings: Vec<crate::AnalysisNominalBinding>,
+    source: Option<&str>,
+) -> AnalysisDocument {
     let deprecations = deprecation::metadata(&resolved);
     let members = deprecation::members::catalog(&resolved, typed);
     let selected_members = deprecation::members::selected_references(&resolved, typed, &members);
@@ -617,6 +630,13 @@ pub fn analysis_document_with_bindings(
             symbol: symbol.id.0,
         })
         .collect::<Vec<_>>();
+    let namespace_uses = deprecation::namespaces::uses(&resolved, source);
+    deprecation::namespaces::project(
+        &resolved,
+        &namespace_uses,
+        &mut symbols,
+        &mut symbol_occurrences,
+    );
     symbol_occurrences.extend(resolved.references.iter().filter_map(|reference| {
         reference.target.map(|target| AnalysisSymbolOccurrence {
             range: reference.origin,
@@ -703,11 +723,9 @@ pub fn analysis_document_with_bindings(
         },
     ));
 
-    let lint_facts = lint::collect(
-        &resolved,
-        typed,
-        deprecation::references(&resolved, &members, &selected_members),
-    );
+    let mut deprecated_references = deprecation::references(&resolved, &members, &selected_members);
+    deprecated_references.extend(deprecation::namespaces::warnings(&namespace_uses));
+    let lint_facts = lint::collect(&resolved, typed, deprecated_references);
     AnalysisDocument {
         schema: 1,
         lint_facts,

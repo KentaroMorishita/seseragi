@@ -159,6 +159,77 @@ fn document_bytes(root: &Path) -> std::collections::BTreeMap<PathBuf, Vec<u8>> {
 }
 
 #[test]
+fn namespace_owner_notices_reach_real_docs_and_deny_warnings_without_infecting_children() {
+    let project = LockedProject::doc_tests();
+    let source = "// 元 🙂\npub foreign \"typescript\" from \"./host.mjs\" {\n /// Legacy API.\n deprecated \"Use current\" since \"0.61.0\" namespace legacy { pure fn read value: Int -> Int }\n namespace current { pure fn read value: Int -> Int }\n}\nforeign \"typescript\" from \"./host.mjs\" { deprecated \"Private only\" namespace internal { pure fn read value: Int -> Int } }\npub fn answer -> Int = legacy.read 41\n";
+    fs::write(project.source(), source).unwrap();
+    fs::write(project.path.join("src/host.mjs"), "export const legacy = { read: value => value }; export const current = legacy; export const internal = legacy;\n").unwrap();
+    project.update_lock();
+    let output = generate(&project, &[]);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let html = fs::read_to_string(project.path.join("dist/doc/index.html")).unwrap();
+    let index: serde_json::Value =
+        serde_json::from_slice(&fs::read(project.path.join("dist/doc/search-index.json")).unwrap())
+            .unwrap();
+    let symbols = index["symbols"].as_array().unwrap();
+    let namespace = symbols
+        .iter()
+        .find(|symbol| symbol["namespace"] == "namespace" && symbol["name"] == "legacy")
+        .unwrap();
+    assert_eq!(namespace["deprecated"]["message"], "Use current");
+    assert_eq!(namespace["deprecated"]["since"], "0.61.0");
+    let notice = &namespace["deprecationSource"]["origin"];
+    assert_eq!(
+        &source
+            [notice["start"].as_u64().unwrap() as usize..notice["end"].as_u64().unwrap() as usize],
+        "deprecated \"Use current\" since \"0.61.0\""
+    );
+    assert!(namespace["deprecationSource"]["source"]
+        .as_str()
+        .unwrap()
+        .ends_with("math.ssrg"));
+    assert!(symbols
+        .iter()
+        .filter(|symbol| symbol["name"]
+            .as_str()
+            .is_some_and(|name| name.ends_with("read")))
+        .all(|symbol| symbol.get("deprecated").is_none()));
+    assert!(!html.contains("Private only"));
+    assert!(html.contains("namespace legacy"));
+    let lint = |deny: bool| {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+        command.arg("lint");
+        if deny {
+            command.arg("--deny-warnings");
+        }
+        command.arg(&project.path).output().unwrap()
+    };
+    let ordinary = lint(false);
+    assert!(
+        ordinary.status.success(),
+        "{}",
+        String::from_utf8_lossy(&ordinary.stderr)
+    );
+    assert!(String::from_utf8_lossy(&ordinary.stderr).contains("SES-L0201"));
+    let denied = lint(true);
+    assert_eq!(denied.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&denied.stderr).contains("Use current"));
+    let private = generate(&project, &["--include-private"]);
+    assert!(
+        private.status.success(),
+        "{}",
+        String::from_utf8_lossy(&private.stderr)
+    );
+    assert!(fs::read_to_string(project.path.join("dist/doc/index.html"))
+        .unwrap()
+        .contains("Private only"));
+}
+
+#[test]
 fn publishes_deterministic_html_and_json_with_positioned_deprecation_and_safe_markdown() {
     let project = LockedProject::doc_tests();
     fs::write(project.source(), API_SOURCE).unwrap();

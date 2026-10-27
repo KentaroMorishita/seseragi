@@ -9,8 +9,26 @@ pub struct ModuleInterface {
     pub source: String,
     pub dependencies: Vec<InterfaceDependency>,
     pub exports: Vec<InterfaceExport>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub namespace_deprecations: Vec<InterfaceNamespaceDeprecation>,
     pub operators: Vec<InterfaceOperator>,
     pub instances: Vec<InterfaceInstance>,
+}
+
+/// Namespace authoring metadata is separate from value/type exports. Member
+/// identities are fixed by the declaration producer, not reconstructed from
+/// consumer-side display names.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InterfaceNamespaceDeprecation {
+    pub symbol: String,
+    pub name: String,
+    pub declaration: ByteSpan,
+    pub name_span: ByteSpan,
+    pub deprecation: crate::Deprecation,
+    pub members: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub publication: Option<ByteSpan>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

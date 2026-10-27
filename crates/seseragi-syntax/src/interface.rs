@@ -1,8 +1,8 @@
 use crate::cst::{parse_cst, CstNode};
 pub use crate::interface_model::{
     InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
-    InterfaceMethod, InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType,
-    ModuleInterface,
+    InterfaceMethod, InterfaceNamespaceDeprecation, InterfaceOperator, InterfaceRecordField,
+    InterfaceScheme, InterfaceType, ModuleInterface,
 };
 use crate::surface::parse_surface_ast;
 
@@ -11,6 +11,7 @@ mod exports;
 mod header;
 mod instances;
 mod methods;
+mod namespaces;
 mod types;
 
 use dependencies::dependency_from_surface_import;
@@ -18,6 +19,7 @@ use exports::{attach_inherent_methods, exports_from_surface_decl, operator_from_
 use header::{empty_module_header, module_header_from_surface};
 pub use header::{ModuleHeader, ModuleHeaderName};
 use instances::instances_from_surface_decl;
+pub use namespaces::namespace_deprecations;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ImportOccurrence {
@@ -120,6 +122,7 @@ fn parse_unlinked_module_interface_inner(
     }
 
     let header = module_header_from_surface(&module_name, &surface_module);
+    let namespace_deprecations = namespace_deprecations(&module_name, &surface_module, false);
     let imports = surface_module.imports;
     let mut exports = surface_module
         .declarations
@@ -172,6 +175,7 @@ fn parse_unlinked_module_interface_inner(
         source: surface_module.source.clone(),
         dependencies: Vec::new(),
         exports,
+        namespace_deprecations,
         operators: surface_module
             .declarations
             .iter()
@@ -197,6 +201,7 @@ fn empty_interface(module: String, source: String) -> ModuleInterface {
         source,
         dependencies: Vec::new(),
         exports: Vec::new(),
+        namespace_deprecations: Vec::new(),
         operators: Vec::new(),
         instances: Vec::new(),
     }

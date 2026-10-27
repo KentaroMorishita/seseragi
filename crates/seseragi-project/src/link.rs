@@ -25,6 +25,7 @@ pub fn link_module(
     let mut errors = Vec::new();
 
     let mut reexported_exports = Vec::new();
+    let mut reexported_namespaces = Vec::new();
     let mut reexported_operators = Vec::new();
     for import in unlinked.imports {
         let is_public = import.visibility == Visibility::Public;
@@ -87,6 +88,12 @@ pub fn link_module(
                     LinkedImport::Namespace {
                         local_name, origin, ..
                     } => {
+                        for namespace in &target.interface().namespace_deprecations {
+                            let mut reexport = namespace.clone();
+                            reexport.name = format!("{local_name}.{}", namespace.name);
+                            reexport.publication = Some(*origin);
+                            reexported_namespaces.push(reexport);
+                        }
                         // Retain the namespace path, not unqualified copies of its members.
                         // Canonical identities and schemes still belong to the source module.
                         for export in &target.interface().exports {
@@ -119,6 +126,10 @@ pub fn link_module(
         return Err(errors);
     }
     unlinked.interface.exports.extend(reexported_exports);
+    unlinked
+        .interface
+        .namespace_deprecations
+        .extend(reexported_namespaces);
     unlinked.interface.operators.extend(reexported_operators);
     unlinked.interface.dependencies = interface_dependencies;
     Ok(LinkedModule {

@@ -66,6 +66,7 @@ fn interface_with_exports(
     instances: Vec<InterfaceInstance>,
 ) -> TypedModuleInterface {
     TypedModuleInterface {
+        namespace_deprecations: Vec::new(),
         schema: 1,
         stage: "typed-interface".to_owned(),
         module: "artifact/example".to_owned(),

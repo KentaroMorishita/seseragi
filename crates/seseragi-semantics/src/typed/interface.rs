@@ -293,6 +293,7 @@ pub(crate) fn typed_interface_from_modules(
         source: shallow.source,
         dependencies: shallow.dependencies,
         exports,
+        namespace_deprecations: shallow.namespace_deprecations,
         operators: shallow.operators,
         instances,
     }

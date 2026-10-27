@@ -810,6 +810,76 @@ fn inherent_member_completion_uses_the_receiver_owner_and_keeps_deprecated_tags(
 }
 
 #[test]
+fn foreign_namespace_notices_reach_positioned_editor_features() {
+    let uri = "file:///namespace-notice.ssrg";
+    let source = "// 元 🙂\npub foreign \"typescript\" from \"./host.mjs\" { deprecated \"Use current\" since \"0.61.0\" namespace legacy { pure fn read value: Int -> Int } namespace current { pure fn read value: Int -> Int } }\npub fn answer -> Int = legacy . read 41\n";
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let at = LineIndex::new(source)
+            .try_locate_encoded(source.rfind("legacy . read").unwrap(), encoding)
+            .unwrap();
+        let end = LineIndex::new(source)
+            .try_locate_encoded(source.len(), encoding)
+            .unwrap();
+        let input = [
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+            json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":{"line":at.line,"character":at.character}}}),
+            json!({"jsonrpc":"2.0","id":3,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":{"line":end.line,"character":end.character}}}),
+            json!({"jsonrpc":"2.0","id":4,"method":"textDocument/documentSymbol","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":5,"method":"textDocument/semanticTokens/full","params":{"textDocument":{"uri":uri}}}),
+            json!({"jsonrpc":"2.0","id":6,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":{"line":at.line,"character":at.character}}}),
+            json!({"jsonrpc":"2.0","id":7,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"exit"}),
+        ];
+        let messages = run_server(&input);
+        assert!(response(&messages, 2)["result"]
+            .to_string()
+            .contains("Use current"));
+        let completion = response(&messages, 3)["result"].as_array().unwrap();
+        let owner = completion
+            .iter()
+            .find(|item| item["label"] == "legacy")
+            .unwrap();
+        assert_eq!(owner["kind"], 9);
+        assert_eq!(owner["tags"], json!([1]));
+        assert!(completion
+            .iter()
+            .filter(|item| item["label"]
+                .as_str()
+                .is_some_and(|name| name.ends_with("read")))
+            .all(|item| item.get("tags").is_none()));
+        let symbols = response(&messages, 4)["result"].as_array().unwrap();
+        let owner = symbols
+            .iter()
+            .find(|item| item["name"] == "legacy")
+            .unwrap();
+        assert_eq!(owner["kind"], 3);
+        assert_eq!(owner["tags"], json!([1]));
+        assert!(response(&messages, 5)["result"]["data"]
+            .as_array()
+            .unwrap()
+            .chunks(5)
+            .any(|token| token[4].as_u64().unwrap() & 1 != 0));
+        assert!(!response(&messages, 6)["result"].is_null());
+        let facts = messages
+            .iter()
+            .filter(|message| message["method"] == "textDocument/publishDiagnostics")
+            .flat_map(|message| message["params"]["diagnostics"].as_array().unwrap())
+            .filter(|diagnostic| diagnostic["code"] == "SES-L0201")
+            .collect::<Vec<_>>();
+        assert_eq!(facts.len(), 1, "{facts:#?}");
+        assert_eq!(
+            facts[0]["range"]["start"],
+            json!({"line":at.line,"character":at.character})
+        );
+        assert_eq!(facts[0]["tags"], json!([2]));
+    }
+}
+
+#[test]
 fn path_package_member_completion_keeps_an_aliased_provider_owner_during_recovery() {
     let workspace = TempWorkspace::new();
     workspace.write("seseragi.toml", "[package]\nname=\"fixture/member-completion\"\nversion=\"0.0.0\"\nlanguage=\">=0.1.0 <0.2.0\"\n[run]\nentry=\"main\"\ntarget=\"process\"\n[dependencies]\nmodel={package=\"fixture/member-model\",path=\"vendor/model\"}\n");
