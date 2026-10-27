@@ -42,7 +42,8 @@ HKTのADT payload・struct field・public aliasはdriverとCLIの
 `--test hkt_data_projection`で確認します。元Issueの単独source、opaque aliasのfactory実値、
 facadeと保存関数、元の生成TS両profileのstrict、fresh Bun／Nodeとnativeを比較します。
 constructor binderを宣言する通常functionは同じchecked witnessを引数と返り値へ渡し、
-制約付きfunctionの辞書段階と、局所の同名value binderのscopeを維持します。
+制約付きfunctionの辞書段階と、別scopeの同名value binderを維持します。
+外側のtype parameter名を内側で再使用する、仕様で禁止された宣言は位置付きで拒否します。
 private fieldと偽造、別ownerやpayload違いの拒否を保ち、不正kindの位置付き診断は
 driverの`--test hkt_annotation_kinds`でも確認します。一般のUnknown targetやHKT逆推論は
 このlaneの受入へ追加しません。

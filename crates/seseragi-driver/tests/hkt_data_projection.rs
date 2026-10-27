@@ -218,6 +218,10 @@ fn opaque_hkt_aliases_reject_external_fields_forgery_and_changed_payload_or_owne
             "pub fn wrong value: Sealed<Maybe, Int> -> PublicChain<Maybe, Int> = value\n",
             "function.return-type-mismatch",
         ),
+        (
+            "pub fn wrong<F<_>, A> value: F<A> -> F<A> = { fn inner<F> item: F -> F = item; value }\n",
+            "name.duplicate-definition",
+        ),
     ] {
         let source = format!("{prefix}{body}");
         let error = opaque_project(&source, BuildProfile::Development).unwrap_err();

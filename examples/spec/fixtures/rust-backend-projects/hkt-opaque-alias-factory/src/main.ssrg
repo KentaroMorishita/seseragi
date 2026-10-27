@@ -1,4 +1,12 @@
-import { Kept, PublicWrapped, PublicChain, create, reveal, scoped, constrained } from "./facade"
+import {
+  Kept,
+  PublicWrapped,
+  PublicChain,
+  create,
+  reveal,
+  scoped,
+  constrained
+} from "./facade"
 
 struct Sealed<F<_>, A> { value: F<A> }
 

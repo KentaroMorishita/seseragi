@@ -245,7 +245,7 @@ fn opaque_hkt_alias_factories_keep_real_values_and_private_brands_across_facades
         "hkt-opaque-alias-factory",
         "fixture/opaque-hkt",
         r#"
-import { create, reveal, scoped, constrained, type PublicWrapped, type PublicChain } from "./facade.js";
+import { create, reveal, scoped, constrained, valueScope, type PublicWrapped, type PublicChain } from "./facade.js";
 import { intShow } from "@seseragi/runtime/show";
 type Maybe<A> = { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: A };
 interface MaybeKind { readonly args: readonly [unknown]; readonly type: Maybe<this["args"][0]> }
@@ -255,6 +255,7 @@ const kept: PublicWrapped<MaybeKind, number> = hidden;
 const actual: Maybe<number> = reveal<MaybeKind, number>(kept);
 const throughScoped: Maybe<number> = scoped<MaybeKind, number>(actual);
 const withEvidence: Maybe<number> = constrained<MaybeKind, number>(actual)(intShow);
+const siblingValueBinder: number = valueScope<number>(7);
 // @ts-expect-error A checked factory input keeps the constructor's payload type.
 create<MaybeKind, number>({ tag: "Just", value: "wrong" });
 // @ts-expect-error The factory's actual value does not expose its private field.
