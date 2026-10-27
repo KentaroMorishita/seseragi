@@ -140,25 +140,31 @@ fn unbound_permutation_repetition_erasure_and_wrong_method_owner_remain_position
 
 #[test]
 fn kind_proofs_reject_a_value_prefix_where_the_alias_declares_a_constructor() {
-    let source = "type Higher<F<_>,A> = | Higher F<A>\nalias Wrapped<F<_>,A> = Higher<F,A>\ntrait Tag<G<_>> { fn tag<A> value:G<A> -> String }\ninstance Tag<Wrapped<Int>> { fn tag<A> value:Higher<Maybe,A> -> String = \"bad\" }\n";
-    let error = compile_module(CompileInput::new(
-        "wrong-kind.ssrg",
-        "fixture/alias-sections",
-        source,
-    ))
-    .unwrap_err();
-    let diagnostic = error
-        .diagnostics
-        .iter()
-        .find(|diagnostic| {
-            diagnostic.code == "SES-T0604"
-                && diagnostic.message_key == "type.argument-kind-mismatch"
-        })
-        .unwrap_or_else(|| panic!("{error:#?}"));
-    assert_eq!(
-        &source[diagnostic.primary.start..diagnostic.primary.end],
-        "Int"
-    );
+    let declarations = "type Higher<F<_>,A> = | Higher F<A>\nalias Wrapped<F<_>,A> = Higher<F,A>\n";
+    for (tail, key, positioned) in [
+        (
+            "trait Tag<G<_>> { fn tag<A> value:G<A> -> String }\ninstance Tag<Wrapped<Int>> { fn tag<A> value:Higher<Maybe,A> -> String = \"bad\" }\n",
+            "trait.instance-head-unresolved",
+            "instance Tag<Wrapped<Int>>",
+        ),
+        (
+            "pub fn unused value: Wrapped<Int,Int> -> Unit = ()\n",
+            "alias.kind-mismatch",
+            "Int",
+        ),
+    ] {
+        let source = format!("{declarations}{tail}");
+        let error = compile_module(CompileInput::new("wrong-kind.ssrg", "fixture/alias-sections", &source)).unwrap_err();
+        let diagnostic = error.diagnostics.iter().find(|diagnostic| diagnostic.message_key == key).unwrap_or_else(|| panic!("{source}\n{error:#?}"));
+        let range = &source[diagnostic.primary.start..diagnostic.primary.end];
+        if key == "alias.kind-mismatch" {
+            assert_eq!(diagnostic.code, "SES-T0604");
+            assert_eq!(range, positioned);
+        } else {
+            assert_eq!(diagnostic.code, "SES-T0101");
+            assert!(range.starts_with(positioned), "{range}");
+        }
+    }
 }
 
 fn project(
