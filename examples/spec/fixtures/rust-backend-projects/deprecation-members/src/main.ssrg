@@ -12,5 +12,5 @@ instance Render<Int> {
 pub effect fn main = do {
   let box = Box { value: 42 }
   println (old 41)
-  println (box.old)
+  println (show (box.old))
 }
