@@ -1,0 +1,43 @@
+import * as effects from "std/effect"
+import * as floats from "std/float"
+import * as numbers from "std/number"
+
+fn errorText error: floats.FloatConversionError -> String = match error {
+  floats.FloatNotFinite -> "FloatNotFinite"
+  floats.FloatOutsideIntRange -> "FloatOutsideIntRange"
+}
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say text: String -> Unit with Console = println text |> effects.recover ignore
+effect fn release _unit: Unit -> Unit with Console = say "released"
+
+effect fn body mode: String -> String with Console fails String = effects.scoped $ do {
+  effects.acquireRelease (say "acquired") release
+  let convert: Float -> Either<floats.FloatConversionError, Int> =
+    floats.toInt numbers.HalfEven
+  let input =
+    if mode == "nonfinite" then
+      floats.nan ()
+    else if mode == "range" then
+      9007199254740992.0
+    else
+      2.5
+  let plan =
+    effects.defer $
+    \_: Unit -> convert input
+    |> effects.fromEither
+    |> effects.mapError errorText
+  say "cold"
+  first <- plan
+  second <- plan
+  if mode == "defect" then
+    effects.die "aggregate defect"
+  else
+    effects.succeed (show (first + second))
+}
+effect fn report error: String -> String with Console =
+  effects.succeed ("Failure: " + error)
+pub effect fn main = do {
+  result <- body "2.5" |> effects.recover report
+  println result
+}

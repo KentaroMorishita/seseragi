@@ -1,0 +1,28 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+effect fn append text: String -> Unit with FileSystem fails String = do {
+  path <- paths.child "trace.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  fs.writeTextUtf8 fs.Append text path |> effects.mapError show
+}
+
+effect fn ignore _error: String -> Unit with FileSystem = do {
+  let unit = ()
+  effects.succeed unit
+}
+
+effect fn release _value: Unit -> Unit with FileSystem =
+  append "release\n"
+  |> effects.recover ignore
+
+pub effect fn main -> Unit with FileSystem fails String = effects.scoped $ do {
+  effects.acquireRelease (append "acquire\n") release
+  let selected: Int -> Int -> Int = (%)
+  let saved: Int -> Int = selected 125
+  append "saved\n"
+  let value = saved 0
+  append ("unreachable: " + show value)
+}

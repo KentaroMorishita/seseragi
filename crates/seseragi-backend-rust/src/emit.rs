@@ -160,6 +160,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
+    output.push_str(include_str!("runtime_float_conversion.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
     output.push_str(include_str!("runtime_scheduler.rs"));
@@ -1152,7 +1153,7 @@ impl Backend<'_> {
                         quoted(operator)
                     ));
                 }
-                if operator == "/" {
+                if matches!(operator.as_str(), "/" | "%") {
                     self.validate_primitive_operator_binary(
                         operator,
                         [left, right],
@@ -1161,7 +1162,8 @@ impl Backend<'_> {
                         scope,
                     )?;
                     return Ok(format!(
-                        "binary(\"/\", {}, {})",
+                        "binary({}, {}, {})",
+                        quoted(operator),
                         self.expr(left, scope)?,
                         self.expr(right, scope)?
                     ));

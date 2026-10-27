@@ -1,0 +1,28 @@
+import * as floats from "std/float"
+
+type FloatConversionError = | LocalError
+alias Conversion = floats.FloatConversionError
+type Failure = | Wrapped Conversion
+
+fn describeConversion value: floats.FloatConversionError -> String = match value {
+  floats.FloatNotFinite -> "not-finite"
+  floats.FloatOutsideIntRange -> "outside-int-range"
+}
+
+fn nested failure: Failure -> String = match failure {
+  Wrapped value -> match value {
+    floats.FloatNotFinite -> "not-finite"
+    floats.FloatOutsideIntRange -> "outside-int-range"
+  }
+}
+
+fn helper failure: Failure -> String = match failure {
+  Wrapped value -> describeConversion value
+}
+
+pub effect fn main = do {
+  println (nested (Wrapped floats.FloatNotFinite))
+  println (helper (Wrapped floats.FloatNotFinite))
+  println (nested (Wrapped floats.FloatOutsideIntRange))
+  println (helper (Wrapped floats.FloatOutsideIntRange))
+}

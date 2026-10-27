@@ -73,10 +73,13 @@ fn saved_nominal_return_lambda_keeps_primitive_identity_and_scoped_effects() {
         ("cold-replay", 0, expected.as_slice()),
         ("scoped-defect", 70, b"40\nacquired\nreleased\n".as_slice()),
         ("implicit-unit-stage", 0, b"7:9\n".as_slice()),
+        ("annotated-import-return", 0, b"42\n".as_slice()),
     ] {
         let project = scratch.path().join(label).join("project");
         let selected_fixture = if label == "implicit-unit-stage" {
             root.join("examples/spec/fixtures/rust-backend-projects/implicit-unit-functions")
+        } else if label == "annotated-import-return" {
+            root.join("examples/spec/fixtures/rust-backend-projects/nominal-lambda-annotation")
         } else {
             fixture.clone()
         };

@@ -81,6 +81,9 @@ fn native_parse_float(text: &str) -> V {
 }
 
 fn native_number_parse_operation(name: &str, arguments: Vec<V>) -> V {
+    if let Some(value) = native_float_conversion_operation(name, &arguments) {
+        return value;
+    }
     match (name, arguments.as_slice()) {
         ("std/float::parse", [text]) => native_parse_float(native_text(text)),
         ("std/float::EmptyFloat", []) => native_float_parse_error("EmptyFloat", V::Unit),

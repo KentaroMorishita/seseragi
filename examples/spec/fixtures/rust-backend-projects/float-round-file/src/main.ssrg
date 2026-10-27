@@ -1,0 +1,41 @@
+import * as rowData from "rounder"
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as floats from "std/float"
+import * as numbers from "std/number"
+import * as paths from "std/path"
+import * as text from "std/text"
+
+type AppError =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+  | DataFailure rowData.DataError
+
+instance Show<AppError> {
+  fn show error: AppError -> String = match error {
+    PathFailure value -> "PathFailure " + show value
+    FileFailure value -> "FileFailure " + show value
+    TextFailure value -> "TextFailure " + show value
+    DataFailure value -> "DataFailure " + rowData.errorText value
+  }
+}
+
+effect fn convert -> Unit with FileSystem fails AppError = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  content <- fs.readTextUtf8 input |> effects.mapError TextFailure
+  rendered <- rowData.renderLines numbers.HalfEven "" (content |> text.lines |> arrays.toList)
+    |> effects.fromEither
+    |> effects.mapError DataFailure
+  fs.writeTextUtf8 fs.Replace rendered output |> effects.mapError FileFailure
+}
+
+pub effect fn main -> Unit with FileSystem fails String =
+  convert ()
+  |> effects.mapError show

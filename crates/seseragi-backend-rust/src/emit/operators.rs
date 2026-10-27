@@ -6,6 +6,7 @@ fn primitive_operator(identity: &str) -> Option<(&'static str, &'static str, &'s
         "std/int::Sub" => ("Sub", "sub", "Int"),
         "std/int::Mul" => ("Mul", "mul", "Int"),
         "std/int::Div" => ("Div", "div", "Int"),
+        "std/int::Rem" => ("Rem", "rem", "Int"),
         "std/string::Add" => ("Add", "add", "String"),
         _ => return None,
     })
@@ -22,7 +23,7 @@ pub(super) fn primitive_reference(
     let (_, method, _) = primitive_operator(identity)?;
     (matches!(
         (operator, method),
-        ("+", "add") | ("-", "sub") | ("*", "mul") | ("/", "div")
+        ("+", "add") | ("-", "sub") | ("*", "mul") | ("/", "div") | ("%", "rem")
     ))
     .then_some(method)
 }
@@ -85,11 +86,18 @@ impl Backend<'_> {
         };
         let (trait_name, _, primitive) = primitive_operator(identity)?;
         Some((|| {
-            if self.program_wasm_library && identity == "std/int::Div" {
-                return Err(
-                    "program WASM: native Int division requires a target-specific arithmetic proof"
-                        .into(),
-                );
+            if self.program_wasm_library
+                && matches!(identity.as_str(), "std/int::Div" | "std/int::Rem")
+            {
+                let operation = if identity == "std/int::Div" {
+                    "division"
+                } else {
+                    "remainder"
+                };
+                return Err(format!(
+                    "program WASM: native Int {operation} requires a target-specific arithmetic proof"
+                )
+                .into());
             }
             if selected.constraint.name != trait_name
                 || selected

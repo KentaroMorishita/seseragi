@@ -1736,7 +1736,12 @@ fn type_unknown_application(
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     let child_context = context.without_expected();
-    let mut callee_analysis = type_surface_expression(callee, &child_context);
+    let callee_context = child_context.with_expected(operator_application_expectation(
+        callee,
+        arguments.len(),
+        context,
+    ));
+    let mut callee_analysis = type_surface_expression(callee, &callee_context);
     if matches!(
         application_argument_type_from_expr(&callee_analysis.value),
         TypedType::Function { .. }
@@ -1764,6 +1769,42 @@ fn type_unknown_application(
     };
     callee_analysis.semantic_type = SemanticTypeKey::Invalid;
     callee_analysis
+}
+
+fn operator_application_expectation(
+    callee: &SurfaceExpr,
+    argument_count: usize,
+    context: &PureExpressionContext<'_>,
+) -> Option<SemanticValueType> {
+    let SurfaceExpr::Name { name, .. } = callee else {
+        return None;
+    };
+    let operator = seseragi_syntax::standard_operator(name)?;
+    let target = context.operator_target(callee.span())?;
+    let symbol = context.resolution.symbol(target)?;
+    if symbol.canonical.as_deref() != Some(format!("std/prelude::{}", operator.spelling).as_str()) {
+        return None;
+    }
+    if argument_count != 1
+        || !matches!(
+            operator.kind,
+            seseragi_syntax::StandardOperatorKind::Equality
+                | seseragi_syntax::StandardOperatorKind::Comparison
+        )
+    {
+        return None;
+    }
+    // Eq and Ord have one checked operand type. The remaining function's
+    // parameter therefore supplies the same expectation for the first source
+    // operand. The existing operator selector still proves its dictionary,
+    // and the ordinary application checker checks that source operand once.
+    let remaining = context.expected()?.clone();
+    let (parameter, _) = remaining.function_parts()?;
+    let parameter = SemanticValueType {
+        type_ref: context.evidence_type(&parameter),
+        key: parameter.key,
+    };
+    Some(SemanticValueType::function(parameter, remaining))
 }
 
 fn call_issue(

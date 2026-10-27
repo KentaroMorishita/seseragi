@@ -17,3 +17,9 @@ pub fn partialMethodProbe -> Bool = {
   let checkpoint = marker ()
   saved (rightValue ())
 }
+
+pub fn sourcePartialProbe -> Bool = {
+  let saved: String -> Bool = (==) (leftValue ())
+  let checkpoint = marker ()
+  saved (rightValue ())
+}

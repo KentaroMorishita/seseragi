@@ -39,6 +39,15 @@ native対照と、直接method・部分適用のsource一回評価・順序も�
 Bool／UnitのEqと前置`!`のnative対応は、このTS修復の受入範囲に含めません。
 共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
 
+importしたADTのpayload identityと注釈付きEq部分適用は、driverの
+`--test frontend_payload_identity --test frontend_inference --test imported_returns`で確認します。
+constructorを公開するopaque ADT、local alias、同canonicalのdirect／facade／namespace import、
+別ownerと不正な残り関数型の拒否を確認し、表示名でownerを推測しません。
+CLIの`--test string_equality`と`--test nominal_lambda_identity`では、元の生成TS両profileの
+strict、fresh Bun／Node、native、source引数の一回評価、cold再実行、Failure／Defect後の
+finalizerとroot解放を比較します。FloatConversionErrorを含むnative fixtureには、
+同errorのcanonical変換ABIが必要です。無注釈の演算子部分適用全般はこの修復に含めません。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。
@@ -51,6 +60,19 @@ sample・Tourのコマンド検証は、processの終了とstdout・stderrのEOF
 期限切れは独立した失敗として返し、後始末で再びstdioを無期限に待ちません。
 POSIXでは親が先に終了しても所有process groupを停止します。親終了後の出力、
 非zero終了、Unicode、期限と後始末は`scripts/sample-cli-process.test.ts`で確認します。
+
+配布archiveの検証は、展開したCLI/LSPとarchive commandのprocess終了・stdioのcloseを
+確認してから一時directoryを削除します。一時的な`EBUSY`等で失敗した場合も、削除を試みるのは
+最初の試行を含めて最大6回です。再試行の待機は合計1500msまでです。
+検証とcleanupが両方失敗した場合は両方のエラーを保持し、
+検証が成功してもcleanupが失敗すれば失敗です。`bun test scripts/native-release.test.ts`で
+正常・非zero・検証拒否・cleanup失敗と子process終了後の実ファイル削除を確認します。
+cleanup失敗時は、実行したcommandのPID・終了code・exit/closeの観測も残します。
+Windows固有のhandle競合の確認は、Windows CIと正式Releaseの実archive検証も必要です。
+
+PostgreSQL Provider bundleの鮮度確認は、実際に解決された`node_modules`のsection comment
+だけを正規化します。`bun test scripts/postgres-provider-bundle.test.ts`で通常installと
+深いworktreeのsymlink installの生成bytes一致、実行コード変更時の拒否を確認します。
 
 Playgroundのruntime resolverは`runtime/ts/package.json`のexportsと
 `runtime/providers/package.json`の`runtime-browser/*` exportsから生成します。
@@ -258,4 +280,22 @@ signed zero・明示NaN/Infinityを確認する。sourceとpath packageで小数
 元のraw strict TS両profile・fresh Bun/Node・nativeで比較する。入力と失敗時の既存出力、
 保存parseの一回評価、cold再実行・Failure/Defect・finalizer/root0を検証する。
 FloatParseErrorの新しいShow/Debug/Eq、他の数値変換API、一般program WASMはこの受入に含めない。
+共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。
+
+nativeのFloat丸め・Int変換は、backendの`--lib float_conversion_tests`と
+`--test float_conversion`、CLIの`--test float_conversion`で確認する。
+canonicalなRoundingModeとFloatConversionErrorのowner/kind・source arity・evidenceを保ち、
+6modeの中間値と隣接値、signed zero、safe Int境界と非finite失敗を比較する。
+source/path packageの元生成TS両profileをstrict検査し、fresh Bun/Node/nativeで
+入力と失敗時の旧出力、一回評価と保存・返り値converter、cold Failure/Defect・finalizer/root0を確認する。
+program WASMは位置付き拒否を保ち、Float Eq/Ord・Pow/stdmathや新しいerror Showを含めない。
+共有numeric ABIの変更には元Int/Float parseとShowの回帰確認、統合前の全体gateと正規compiler WASMも必要となる。
+
+nativeのInt剰余は、`cargo test --locked -p seseragi-backend-rust --test int_remainder --test int_division --test operator_partials`と
+`cargo test --locked -p seseragi-cli --test int_remainder`で確認する。標準Remのowner・kind・source arity・
+選択済みevidenceを検証し、既存Divとprogram WASMの拒否条件を保持する。正負の値とsafe integer境界、
+直接呼出し・保存method・generic/返り値関数の一回評価と順序、cold再実行、zero divisorのDefectと
+finalizer/root0を、元のraw strict TS両profile・fresh Bun/Node・nativeで比較する。
+sourceと凍結したpath packageで各行の整数の剰余を別fileへ書き、入力と失敗時の既存出力を保持する。
+Pow、新しいchecked remainder API、一般program WASMへの剰余の追加は受入に含めない。
 共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。

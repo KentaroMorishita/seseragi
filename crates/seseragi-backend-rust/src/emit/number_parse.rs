@@ -1,11 +1,14 @@
 use super::*;
 
 pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {
-    // These closed standard error owners are part of the admitted parse ABI.
-    // Neither takes type parameters; applied prefixes remain kind-checked normally.
+    // Closed numeric API owners take no type parameters. Applied prefixes
+    // remain kind-checked normally, including saved conversion functions.
     matches!(
         name,
-        "std/int::IntParseError" | "std/float::FloatParseError"
+        "std/int::IntParseError"
+            | "std/float::FloatParseError"
+            | "std/float::FloatConversionError"
+            | "std/number::RoundingMode"
     )
     .then(Vec::new)
 }
@@ -22,6 +25,35 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let error = named("std/int::IntParseError");
     let float_error = named("std/float::FloatParseError");
     Some(match name {
+        "std/float::toInt" => (
+            vec![
+                named("std/number::RoundingMode"),
+                named("std/prelude::Float"),
+            ],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![
+                    named("std/float::FloatConversionError"),
+                    named("std/prelude::Int"),
+                ],
+            },
+        ),
+        "std/float::roundIntegral" => (
+            vec![
+                named("std/number::RoundingMode"),
+                named("std/prelude::Float"),
+            ],
+            named("std/prelude::Float"),
+        ),
+        "std/float::FloatNotFinite" | "std/float::FloatOutsideIntRange" => {
+            (vec![], named("std/float::FloatConversionError"))
+        }
+        "std/number::HalfEven"
+        | "std/number::HalfUp"
+        | "std/number::TowardZero"
+        | "std/number::AwayFromZero"
+        | "std/number::Floor"
+        | "std/number::Ceiling" => (vec![], named("std/number::RoundingMode")),
         "std/float::parse" => (
             vec![named("std/prelude::String")],
             CoreType::Named {
@@ -71,6 +103,16 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
 // Called only after the exact canonical signature above was admitted.
 fn parse_capability(name: &str) -> &'static str {
     match name {
+        "std/float::toInt"
+        | "std/float::roundIntegral"
+        | "std/float::FloatNotFinite"
+        | "std/float::FloatOutsideIntRange"
+        | "std/number::HalfEven"
+        | "std/number::HalfUp"
+        | "std/number::TowardZero"
+        | "std/number::AwayFromZero"
+        | "std/number::Floor"
+        | "std/number::Ceiling" => "float-conversion",
         "std/float::parse"
         | "std/float::EmptyFloat"
         | "std/float::InvalidFloat"
@@ -233,6 +275,9 @@ impl Backend<'_> {
         if scope.contains(name) {
             return Ok(None);
         }
+        if self.program_wasm_library && parse_capability(name) == "float-conversion" {
+            return Err("Rust backend: Float conversion is not admitted in program WASM".into());
+        }
         if !evidence.is_empty() {
             return Err("Rust backend: number parse operation with unsupported evidence".into());
         }
@@ -265,6 +310,9 @@ impl Backend<'_> {
         };
         if scope.contains(callee) {
             return Ok(None);
+        }
+        if self.program_wasm_library && parse_capability(callee) == "float-conversion" {
+            return Err("Rust backend: Float conversion is not admitted in program WASM".into());
         }
         if arguments.len() > parameters.len()
             || !evidence.is_empty()

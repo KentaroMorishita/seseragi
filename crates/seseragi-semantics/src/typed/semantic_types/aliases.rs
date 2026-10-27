@@ -178,7 +178,9 @@ impl AliasCatalog {
                         return self.instantiate(resolved, target, definition, arguments, stack);
                     }
                 }
-                match target.and_then(|target| external_canonical(resolved, target)) {
+                match target
+                    .and_then(|target| external_canonical(resolved, target, !stack.is_empty()))
+                {
                     Some(canonical) => TypedType::ExternalNamed {
                         name: name.clone(),
                         canonical,
@@ -536,7 +538,11 @@ fn canonical(resolved: &ResolvedModule, symbol: SymbolId) -> Option<String> {
         .and_then(|candidate| candidate.canonical.clone())
 }
 
-fn external_canonical(resolved: &ResolvedModule, symbol: SymbolId) -> Option<String> {
+fn external_canonical(
+    resolved: &ResolvedModule,
+    symbol: SymbolId,
+    alias_target: bool,
+) -> Option<String> {
     let canonical = canonical(resolved, symbol)?;
     resolved
         .imports
@@ -549,7 +555,13 @@ fn external_canonical(resolved: &ResolvedModule, symbol: SymbolId) -> Option<Str
                 ) || (matches!(
                     import.export.declaration_kind.as_deref(),
                     Some("type" | "newtype")
-                ) && (super::is_shadowing_builtin(
+                ) && (alias_target
+                    // A local alias target is resolved in its declaration
+                    // scope. Retain that selected imported owner before its
+                    // TypeRef span is erased; a renamed display type cannot
+                    // recover the owner later. Parameter substitution above
+                    // still takes precedence over any imported spelling.
+                    || super::is_shadowing_builtin(
                     &import.export.name,
                     &import.export.symbol,
                 ) || super::is_shadowing_builtin(

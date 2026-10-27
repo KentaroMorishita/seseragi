@@ -1,5 +1,8 @@
-use seseragi_driver::{compile_project, ProjectModuleInput};
+use seseragi_driver::{compile_project, BuildProfile, ProjectModuleInput};
 use seseragi_project::ModuleGraph;
+
+#[path = "support/frontend_evidence.rs"]
+mod evidence;
 
 const MODEL: &str = r#"
 pub type Box<A> = | Box A
@@ -15,6 +18,13 @@ pub fn paired<A> value: A -> Pair<String, A> = Pair ("fixed=", value)
 
 fn project(
     source: &str,
+) -> Result<seseragi_driver::CompiledProject, seseragi_driver::ProjectCompileError> {
+    project_with_profile(source, BuildProfile::Development)
+}
+
+fn project_with_profile(
+    source: &str,
+    profile: BuildProfile,
 ) -> Result<seseragi_driver::CompiledProject, seseragi_driver::ProjectCompileError> {
     let mut graph = ModuleGraph::new();
     graph
@@ -49,6 +59,7 @@ fn project(
                 MODEL,
                 "dist/model/lib.js",
             )
+            .with_profile(profile)
             .with_package_scope("fixture/model@1.0.0"),
             ProjectModuleInput::new(
                 "app/src/facade.ssrg",
@@ -56,6 +67,7 @@ fn project(
                 "pub import { Box, boxed, Secret, secret } from \"model\"\n",
                 "dist/app/facade.js",
             )
+            .with_profile(profile)
             .with_package_scope("fixture/app@1.0.0"),
             ProjectModuleInput::new(
                 "app/src/main.ssrg",
@@ -63,6 +75,7 @@ fn project(
                 source,
                 "dist/app/main.js",
             )
+            .with_profile(profile)
             .with_package_scope("fixture/app@1.0.0"),
         ],
     )
@@ -218,6 +231,65 @@ pub effect fn main = do {{
         );
         project(&source).unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
     }
+}
+
+#[test]
+fn annotated_nominal_return_lambdas_keep_imported_owners() {
+    for (index, (import, name, call)) in [
+        ("import { Box, boxed } from \"model\"", "Box", "boxed"),
+        (
+            "import { Box as Foreign, boxed } from \"./facade\"",
+            "Foreign",
+            "boxed",
+        ),
+        (
+            "import * as model from \"./facade\"",
+            "model.Box",
+            "model.boxed",
+        ),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let source = format!(
+            "{import}\n\
+             fn named value: Int -> {name}<Int> = {call}<Int> (value + 2)\n\
+             pub effect fn main = do {{\n\
+               let callback: Int -> {name}<Int> = \\value: Int -> {call}<Int> (value + 2)\n\
+               println (show (match callback 40 {{ {name} item -> item }}))\n\
+               println (show (match named 40 {{ {name} item -> item }}))\n\
+             }}\n"
+        );
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let compiled = project_with_profile(&source, profile)
+                .unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
+            evidence::record(
+                &format!("annotated-nominal-return-{index}"),
+                profile,
+                "fixture/app@1.0.0::main",
+                "42\n42\n",
+                compiled
+                    .modules
+                    .iter()
+                    .map(|(id, module)| (id.as_str(), module)),
+            );
+        }
+    }
+}
+
+#[test]
+fn canonical_alias_payloads_keep_one_owner_across_direct_and_facade_imports() {
+    project(
+        r#"
+import { Box as Direct } from "model"
+import { Box as Via, boxed } from "./facade"
+alias Payload = Direct<Int>
+type Envelope = | Wrap Payload
+fn nested value: Envelope -> Int = match value { Wrap (Via item) -> item }
+pub fn main -> Int = nested (Wrap (boxed 42))
+"#,
+    )
+    .unwrap();
 }
 
 #[test]

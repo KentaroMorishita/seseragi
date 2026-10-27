@@ -1,0 +1,31 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+effect fn delayed numerator: Int
+  -> denominator: Int
+  -> Int
+with Console
+fails ConsoleError =
+  do {
+    println "cold"
+    effects.succeed (numerator % denominator)
+  }
+
+pub effect fn main = do {
+  let selected: Int -> Int -> Int = (%)
+  saved <- refs.make (selected 125)
+  released <- refs.make 0
+  let cold = delayed 125 60
+  println "created"
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed selected) (\_ -> refs.update (\n -> n + 1) released)
+    first <- cold
+    println (show first)
+    second <- cold
+    println (show second)
+    again <- refs.get saved
+    println (show (again 30))
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}

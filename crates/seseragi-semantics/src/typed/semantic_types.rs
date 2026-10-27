@@ -876,13 +876,7 @@ impl SemanticTypeCatalog {
                 resolved
                     .imports
                     .iter()
-                    .filter(|import| {
-                        import.export.namespace == "type"
-                            && matches!(
-                                import.export.declaration_kind.as_deref(),
-                                Some("type" | "newtype")
-                            )
-                    })
+                    .filter(|import| imports::is_closed_adt_import(resolved, import))
                     .map(|import| import.symbol),
             )
             .collect::<BTreeSet<_>>();
@@ -1447,16 +1441,35 @@ fn semantic_key_from_expanded_type(
             canonical,
             arguments,
             ..
-        } => SemanticTypeKey::ExternalNominal {
-            canonical: canonical.clone(),
-            arguments: arguments
+        } => {
+            let arguments = arguments
                 .iter()
                 .map(|argument| SemanticValueType {
                     type_ref: argument.clone(),
                     key: semantic_key_from_expanded_type(resolved, owners, struct_owners, argument),
                 })
-                .collect(),
-        },
+                .collect();
+            // Alias expansion has already selected a canonical owner. Recover
+            // only a registered closed family; an opaque representation with
+            // no visible constructor remains an external nominal.
+            let mut candidates = resolved.symbols.iter().filter(|symbol| {
+                symbol.kind == SymbolKind::Type
+                    && symbol.canonical.as_deref() == Some(canonical.as_str())
+                    && (owners.contains(&symbol.id) || struct_owners.contains(&symbol.id))
+            });
+            let owner = candidates
+                .next()
+                .filter(|_| candidates.next().is_none())
+                .map(|symbol| symbol.id);
+            match owner {
+                Some(owner) if owners.contains(&owner) => SemanticTypeKey::Adt { owner, arguments },
+                Some(owner) => SemanticTypeKey::Struct { owner, arguments },
+                None => SemanticTypeKey::ExternalNominal {
+                    canonical: canonical.clone(),
+                    arguments,
+                },
+            }
+        }
         TypedType::Tuple { elements } => SemanticTypeKey::Tuple(
             elements
                 .iter()

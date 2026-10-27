@@ -1,0 +1,13 @@
+import { Box, Monad, make, unwrap, bump } from "./facade"
+
+fn next value: Int -> Box<Int> = make<Int> (bump value)
+
+pub fn probe -> Int = {
+  let bind: Box<Int> -> (Int -> Box<Int>) -> Box<Int> = (>>=)
+  let held = bind (make 40)
+  let callback: Int -> Box<Int> = \value: Int -> make<Int> (bump value)
+  let result: Box<Int> = held callback
+  unwrap<Int> result
+}
+
+pub effect fn main = do { println (show (probe ())) }

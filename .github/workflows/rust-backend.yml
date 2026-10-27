@@ -36,6 +36,8 @@ on:
       - "crates/seseragi-cli/tests/text_processing.rs"
       - "crates/seseragi-cli/tests/int_parse.rs"
       - "crates/seseragi-cli/tests/float_parse.rs"
+      - "crates/seseragi-cli/tests/float_conversion.rs"
+      - "crates/seseragi-cli/tests/int_remainder.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -103,6 +105,8 @@ on:
       - "crates/seseragi-cli/tests/text_processing.rs"
       - "crates/seseragi-cli/tests/int_parse.rs"
       - "crates/seseragi-cli/tests/float_parse.rs"
+      - "crates/seseragi-cli/tests/float_conversion.rs"
+      - "crates/seseragi-cli/tests/int_remainder.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -151,9 +155,9 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-latest]
     runs-on: ${{ matrix.os }}
-    # Cold builds plus the complete numeric/program/watch lane can exceed 30m
-    # on macOS and Windows. Individual command/test deadlines stay bounded.
-    timeout-minutes: ${{ matrix.os == 'ubuntu-24.04' && 30 || 45 }}
+    # Batch all CLI suites in one Cargo invocation to reuse compilation.
+    # Preserve every test and its individual deadline, with cold-build headroom.
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 90 || matrix.os == 'macos-15' && 60 || 45 }}
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -171,36 +175,34 @@ jobs:
         with:
           node-version: "24.22.1"
       - run: bun install --frozen-lockfile
+      - name: Preserve smoke failures and bound Windows temporary cleanup
+        if: runner.os == 'Windows'
+        run: bun test scripts/native-release.test.ts
       - name: Drain pending file stages, close real handles and join exceptional workers
         run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
       - name: Keep locked provider identities identical across checkout hosts
         run: cargo test --locked -p seseragi-runtime --test provider_catalog_identity
-      - name: Compare file programs, pending I/O, cancellation and finalizers on native, Bun and Node
-        run: cargo test --locked -p seseragi-cli --test filesystem --test fibers --test async_filesystem
-      - name: Compare inherited Ord equality, dictionary owners and source stages
-        run: cargo test --locked -p seseragi-cli --test inherited_equality
-      - name: Compare String equality, file conditions, strict source stages and program WASM
-        run: cargo test --locked -p seseragi-cli --test string_equality
-      - name: Compare text line processing, file preservation and program WASM
-        run: cargo test --locked -p seseragi-cli --test text_processing
-      - name: Compare decimal file aggregates, typed parse errors and resource release
-        run: cargo test --locked -p seseragi-cli --test int_parse
-      - name: Compare Float file aggregates, parse boundaries and resource release
-        run: cargo test --locked -p seseragi-cli --test float_parse
-      - name: Check process bootstrap strict types and initialization Defects
-        run: cargo test --locked -p seseragi-cli --test process_entry_strict
-      - name: Compare public alias exports, scoped binders and type-only initialization
-        run: cargo test --locked -p seseragi-cli --test public_aliases
-      - name: Compare namespace constructor owners and saved generic results
-        run: cargo test --locked -p seseragi-cli --test namespace_results
-      - name: Compare computed callees, strict source stages and cleanup
-        run: cargo test --locked -p seseragi-cli --test computed_callees
-      - name: Preserve nominal lambda identities, cold replay and scoped Defects
-        run: cargo test --locked -p seseragi-cli --test nominal_lambda_identity
-      - name: Preserve captured primitive identities and resource cleanup
-        run: cargo test --locked -p seseragi-cli --test captured_primitive_identity
-      - name: Verify product program WASM, generated declarations and callback ownership
-        run: cargo test --locked -p seseragi-cli --test program_wasm --test program_wasm_host_effect
+      - name: Compare complete file, numeric, identity and program WASM suites
+        run: >-
+          cargo test --locked -p seseragi-cli
+          --test filesystem
+          --test fibers
+          --test async_filesystem
+          --test inherited_equality
+          --test string_equality
+          --test text_processing
+          --test int_parse
+          --test float_parse
+          --test float_conversion
+          --test int_remainder
+          --test process_entry_strict
+          --test public_aliases
+          --test namespace_results
+          --test computed_callees
+          --test nominal_lambda_identity
+          --test captured_primitive_identity
+          --test program_wasm
+          --test program_wasm_host_effect
       - name: Rebuild selected program dependencies and drain old browser owners
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
