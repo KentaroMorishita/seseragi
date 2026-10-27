@@ -1,0 +1,22 @@
+import * as floats from "std/float"
+import * as numbers from "std/number"
+
+fn modeValue -> numbers.RoundingMode = numbers.HalfEven
+fn inputValue -> Float = 2.5
+type Marker = | Marker Int
+fn selected marker: Marker -> Marker = marker
+fn choose marker: Marker -> (Float -> Either<floats.FloatConversionError, Int>) =
+  match selected marker { Marker _ -> floats.toInt (modeValue ()) }
+fn render value: Either<floats.FloatConversionError, Int> -> String = match value {
+  Left _ -> "failed"
+  Right integer -> show integer
+}
+fn direct -> String = render (floats.toInt (modeValue ()) (inputValue ()))
+fn saved -> String = {
+  let convert = floats.toInt (modeValue ())
+  render (convert (inputValue ())) + render (convert (inputValue ()))
+}
+fn returned -> String = render (choose (Marker 0) (inputValue ()))
+fn rounded -> String = show (floats.roundIntegral (modeValue ()) (inputValue ()))
+pub fn probe -> String =
+  direct () + ":" + saved () + ":" + returned () + ":" + rounded ()

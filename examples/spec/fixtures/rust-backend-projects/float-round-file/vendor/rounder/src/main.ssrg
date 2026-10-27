@@ -1,0 +1,37 @@
+import * as floats from "std/float"
+import * as numbers from "std/number"
+
+pub type DataError =
+  | ParseFailure floats.FloatParseError
+  | ConversionFailure floats.FloatConversionError
+
+pub fn renderLines mode: numbers.RoundingMode
+  -> output: String
+  -> remaining: List<String>
+  -> Either<DataError, String> =
+  match remaining {
+    `[] -> Right output
+    `[head, ...tail] -> match floats.parse head {
+      Left error -> Left (ParseFailure error)
+      Right value -> match floats.toInt mode value {
+        Left error -> Left (ConversionFailure error)
+        Right integer -> renderLines mode (output + show integer + "\n") tail
+      }
+    }
+  }
+
+fn parseError value: floats.FloatParseError -> String = match value {
+  floats.EmptyFloat -> "EmptyFloat"
+  floats.InvalidFloat position -> "InvalidFloat offset=" + show position.offset
+  floats.FloatParseOverflow -> "FloatParseOverflow"
+}
+
+fn conversionError value: floats.FloatConversionError -> String = match value {
+  floats.FloatNotFinite -> "FloatNotFinite"
+  floats.FloatOutsideIntRange -> "FloatOutsideIntRange"
+}
+
+pub fn errorText error: DataError -> String = match error {
+  ParseFailure value -> parseError value
+  ConversionFailure value -> conversionError value
+}

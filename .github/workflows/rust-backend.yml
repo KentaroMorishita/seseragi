@@ -36,6 +36,7 @@ on:
       - "crates/seseragi-cli/tests/text_processing.rs"
       - "crates/seseragi-cli/tests/int_parse.rs"
       - "crates/seseragi-cli/tests/float_parse.rs"
+      - "crates/seseragi-cli/tests/float_conversion.rs"
       - "crates/seseragi-cli/tests/int_remainder.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
@@ -104,6 +105,7 @@ on:
       - "crates/seseragi-cli/tests/text_processing.rs"
       - "crates/seseragi-cli/tests/int_parse.rs"
       - "crates/seseragi-cli/tests/float_parse.rs"
+      - "crates/seseragi-cli/tests/float_conversion.rs"
       - "crates/seseragi-cli/tests/int_remainder.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
@@ -189,6 +191,8 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test int_parse
       - name: Compare Float file aggregates, parse boundaries and resource release
         run: cargo test --locked -p seseragi-cli --test float_parse
+      - name: Compare rounded Float file rows, checked Int conversion and resource release
+        run: cargo test --locked -p seseragi-cli --test float_conversion
       - name: Compare integer remainder files, strict stages and Defect cleanup
         run: cargo test --locked -p seseragi-cli --test int_remainder
       - name: Check process bootstrap strict types and initialization Defects

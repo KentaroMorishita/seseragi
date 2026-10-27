@@ -336,6 +336,14 @@ subnormal、underflowとsigned zero、明示したNaN／Infinity／-Infinityは�
 読込・parse失敗では既存出力を保持し、cold計算のFailure/Defectでもresource scopeを解放する。
 Float演算の合計がInfinityやNaNとなる場合も既存TS契約に従う。標準FloatParseErrorの3つの
 constructorは明示matchで表示し、新しいShow/Debug/Eqやprogram WASMのparseは含めない。
+`std/float.toInt`と`roundIntegral`は、共通numeric境界でcanonicalなRoundingModeと
+FloatConversionError、引数/返り型、kind、evidenceとsource arityを照合する。
+6種類の丸めをTSと揃え、roundIntegralはsigned zeroとNaN/Infinityを保つ。
+toIntは非finiteを型付き失敗にし、丸めた後のsafe Int範囲を検査してzeroを正規化する。
+`filesystem-float-round.ssrg`と`float-round-file` packageはHalfEvenで各行を整数化し、
+全行の成功後に別fileへ書く。入力と失敗時の既存出力を保ち、保存・返り値converterと
+cold Failure/Defectでも評価順、scope解放とroot0を保つ。program WASMの変換は位置付きで拒否し、
+Float Eq/Ord、power/stdmathと新しいnumeric errorのShow/Debugはこの範囲に含めない。
 nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
 商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
 0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。

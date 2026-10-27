@@ -1,0 +1,41 @@
+import * as floats from "std/float"
+import * as numbers from "std/number"
+
+fn rounded value: Float -> String = match floats.toInt numbers.HalfEven value {
+  Left error -> match error {
+    floats.FloatNotFinite -> "not-finite"
+    floats.FloatOutsideIntRange -> "outside-int-range"
+  }
+  Right integer -> show integer
+}
+
+pub effect fn main = do {
+  println (rounded 2.5)
+  println (rounded 3.5)
+  println (rounded (-2.5))
+  println (rounded (-3.5))
+  println (rounded (-0.0))
+  println (rounded 9007199254740991.0)
+  println (rounded 9007199254740992.0)
+  println (rounded (floats.nan ()))
+  println (rounded (floats.positiveInfinity ()))
+  println (rounded (floats.negativeInfinity ()))
+  println (show (floats.roundIntegral numbers.HalfEven 2.5))
+  println (show (floats.roundIntegral numbers.HalfUp (-2.5)))
+  println (show (floats.roundIntegral numbers.TowardZero (-2.5)))
+  println (show (floats.roundIntegral numbers.AwayFromZero (-2.5)))
+  println (show (floats.roundIntegral numbers.Floor (-2.5)))
+  println (show (floats.roundIntegral numbers.Ceiling (-2.5)))
+  println (show (floats.isNegativeZero (floats.roundIntegral numbers.HalfEven (-0.5))))
+  println (show (floats.isNaN (floats.roundIntegral numbers.HalfEven (floats.nan ()))))
+  println (
+    show (
+      floats.isInfinite
+        (floats.roundIntegral numbers.HalfEven (floats.positiveInfinity ()))
+    )
+  )
+  let saved: numbers.RoundingMode -> Float -> Either<floats.FloatConversionError, Int> =
+    floats.toInt
+  let partial: Float -> Either<floats.FloatConversionError, Int> = saved numbers.HalfUp
+  println (match partial (-2.5) { Left _ -> "failed"; Right value -> show value })
+}

@@ -50,3 +50,7 @@ examples/spec/fixtures/rust-backend-projects/facade-generic-renames/** text eol=
 # Captured primitive identity fixtures are byte-stable on every CI host.
 examples/spec/fixtures/rust-backend/captured-primitive-identity-minimal.ssrg text eol=lf
 examples/spec/fixtures/rust-backend/captured-primitive-identity.ssrg text eol=lf
+
+# Numeric conversion acceptance has byte-pinned source and package locks.
+examples/spec/fixtures/rust-backend/float-conversion*.ssrg text eol=lf
+examples/spec/fixtures/rust-backend-projects/float-round-file/** text eol=lf

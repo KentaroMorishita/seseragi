@@ -1,0 +1,75 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as floats from "std/float"
+import * as numbers from "std/number"
+import * as paths from "std/path"
+import * as text from "std/text"
+
+type DataError =
+  | ParseFailure floats.FloatParseError
+  | ConversionFailure floats.FloatConversionError
+
+fn convertLines mode: numbers.RoundingMode
+  -> output: String
+  -> remaining: List<String>
+  -> Either<DataError, String> =
+  match remaining {
+    `[] -> Right output
+    `[head, ...tail] -> match floats.parse head {
+      Left error -> Left (ParseFailure error)
+      Right value -> match floats.toInt mode value {
+        Left error -> Left (ConversionFailure error)
+        Right integer -> convertLines mode (output + show integer + "\n") tail
+      }
+    }
+  }
+
+fn parseError value: floats.FloatParseError -> String = match value {
+  floats.EmptyFloat -> "EmptyFloat"
+  floats.InvalidFloat position -> "InvalidFloat offset=" + show position.offset
+  floats.FloatParseOverflow -> "FloatParseOverflow"
+}
+
+fn conversionError value: floats.FloatConversionError -> String = match value {
+  floats.FloatNotFinite -> "FloatNotFinite"
+  floats.FloatOutsideIntRange -> "FloatOutsideIntRange"
+}
+
+fn dataError error: DataError -> String = match error {
+  ParseFailure value -> parseError value
+  ConversionFailure value -> conversionError value
+}
+
+type AppError =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+  | DataFailure DataError
+
+instance Show<AppError> {
+  fn show error: AppError -> String = match error {
+    PathFailure value -> "PathFailure " + show value
+    FileFailure value -> "FileFailure " + show value
+    TextFailure value -> "TextFailure " + show value
+    DataFailure value -> "DataFailure " + dataError value
+  }
+}
+
+effect fn convert -> Unit with FileSystem fails AppError = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError PathFailure
+  content <- fs.readTextUtf8 input |> effects.mapError TextFailure
+  rendered <- convertLines numbers.HalfEven "" (content |> text.lines |> arrays.toList)
+    |> effects.fromEither
+    |> effects.mapError DataFailure
+  fs.writeTextUtf8 fs.Replace rendered output |> effects.mapError FileFailure
+}
+
+pub effect fn main -> Unit with FileSystem fails String =
+  convert ()
+  |> effects.mapError show

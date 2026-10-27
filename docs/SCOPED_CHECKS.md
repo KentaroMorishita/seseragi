@@ -260,6 +260,15 @@ signed zero・明示NaN/Infinityを確認する。sourceとpath packageで小数
 FloatParseErrorの新しいShow/Debug/Eq、他の数値変換API、一般program WASMはこの受入に含めない。
 共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。
 
+nativeのFloat丸め・Int変換は、backendの`--lib float_conversion_tests`と
+`--test float_conversion`、CLIの`--test float_conversion`で確認する。
+canonicalなRoundingModeとFloatConversionErrorのowner/kind・source arity・evidenceを保ち、
+6modeの中間値と隣接値、signed zero、safe Int境界と非finite失敗を比較する。
+source/path packageの元生成TS両profileをstrict検査し、fresh Bun/Node/nativeで
+入力と失敗時の旧出力、一回評価と保存・返り値converter、cold Failure/Defect・finalizer/root0を確認する。
+program WASMは位置付き拒否を保ち、Float Eq/Ord・Pow/stdmathや新しいerror Showを含めない。
+共有numeric ABIの変更には元Int/Float parseとShowの回帰確認、統合前の全体gateと正規compiler WASMも必要となる。
+
 nativeのInt剰余は、`cargo test --locked -p seseragi-backend-rust --test int_remainder --test int_division --test operator_partials`と
 `cargo test --locked -p seseragi-cli --test int_remainder`で確認する。標準Remのowner・kind・source arity・
 選択済みevidenceを検証し、既存Divとprogram WASMの拒否条件を保持する。正負の値とsafe integer境界、
