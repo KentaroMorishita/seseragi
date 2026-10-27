@@ -33,6 +33,21 @@ grammar. Nested foreign namespace members keep their own identity and never
 inherit a sibling or owner's notice. Host export names and package versions
 are not a metadata source.
 
+An explicitly deprecated foreign namespace retains a separate optional
+`namespaceDeprecations` interface record. Its source-produced child identities
+prove the owner relationship. An original lexer token then positions a warning
+at `legacy` in `legacy.read`, independently of the child's own metadata.
+Nested owners, qualified type uses, module aliases, public reexports, and
+private output retain their original source ranges. The same owner record
+reaches editor tags, generated metadata/source maps, and actual API HTML/JSON.
+Empty metadata is omitted from the previous wire format. A member notice does
+not change generated program code or introduce a new resolver entrance.
+
+Notices for selected impl operators remain a separate slice: their public
+instance/method provenance must survive dependency transport before warnings
+can safely follow an imported selected dictionary. Global Prelude Add/Eq
+methods must not acquire a concrete implementation's notice.
+
 Member source provenance is an analysis table: exact SurfaceExpr ranges identify
 the original callee token, and typed canonical callees/trait dispatch select
 the owner. A generated call without an original callee receives no fabricated

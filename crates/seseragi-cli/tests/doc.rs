@@ -76,7 +76,11 @@ impl LockedProject {
             .arg(&self.path)
             .output()
             .unwrap();
-        assert!(output.status.success());
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
     }
 }
 
@@ -164,6 +168,18 @@ fn namespace_owner_notices_reach_real_docs_and_deny_warnings_without_infecting_c
     let source = "// 元 🙂\npub foreign \"typescript\" from \"./host.mjs\" {\n /// Legacy API.\n deprecated \"Use current\" since \"0.61.0\" namespace legacy { pure fn read value: Int -> Int }\n namespace current { pure fn read value: Int -> Int }\n}\nforeign \"typescript\" from \"./host.mjs\" { deprecated \"Private only\" namespace internal { pure fn read value: Int -> Int } }\npub fn answer -> Int = legacy.read 41\n";
     fs::write(project.source(), source).unwrap();
     fs::write(project.path.join("src/host.mjs"), "export const legacy = { read: value => value }; export const current = legacy; export const internal = legacy;\n").unwrap();
+    let manifest = project.path.join("seseragi.toml");
+    fs::write(&manifest, format!("{}\n[foreign.typescript]\nresolver = \"node\"\nmanifest = \"host/package.json\"\nlockfile = \"host/bun.lock\"\n", fs::read_to_string(&manifest).unwrap())).unwrap();
+    fs::create_dir_all(project.path.join("host")).unwrap();
+    for name in ["package.json", "bun.lock"] {
+        fs::copy(
+            repository_root()
+                .join("examples/spec/fixtures/projects/foreign-pure-load/host")
+                .join(name),
+            project.path.join("host").join(name),
+        )
+        .unwrap();
+    }
     project.update_lock();
     let output = generate(&project, &[]);
     assert!(
