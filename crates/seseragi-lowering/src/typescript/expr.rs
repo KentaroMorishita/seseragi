@@ -334,6 +334,30 @@ pub(super) fn lower_core_expr_to_typescript(
             type_ref,
             origin,
         } => {
+            // These canonical Console declarations have exactly one source
+            // parameter. A zero-argument partial is the function value, not a
+            // call that constructs an Effect with a missing String argument.
+            if arguments.is_empty()
+                && matches!(type_ref, CoreType::Function { .. })
+                && matches!(
+                    callee.as_str(),
+                    "std/prelude::print"
+                        | "std/prelude::println"
+                        | "std/console::print"
+                        | "std/console::println"
+                )
+            {
+                let name = runtime_effect_operation(&callee)
+                    .map(|operation| operation.local_name)
+                    .or_else(|| {
+                        runtime_provider_service_operation(&callee)
+                            .map(|operation| operation.local_name)
+                    })
+                    .expect("canonical Console text operation has a runtime binding");
+                return TypeScriptExpr::RuntimeReference {
+                    name: name.to_owned(),
+                };
+            }
             if imported_types.is_erased_newtype(&callee) && arguments.len() == 1 {
                 return TypeScriptExpr::CheckedResult {
                     value: Box::new(lower_core_expr_to_typescript(

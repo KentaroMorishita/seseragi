@@ -60,16 +60,22 @@
                   {
                     "name": "console",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Console",
+                      "canonical": "std/prelude::Console",
+                      "providerModule": "std/console",
+                      "providerExport": "Console",
                       "arguments": []
                     }
                   }
                 ]
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "ConsoleError",
+                "canonical": "std/prelude::ConsoleError",
+                "providerModule": "std/console",
+                "providerExport": "ConsoleError",
                 "arguments": []
               },
               {

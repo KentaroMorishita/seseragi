@@ -14,6 +14,7 @@ use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
 use super::type_ref::{typed_type_contains_hole, typed_type_from_type_ref};
 
+mod console;
 mod imported_effects;
 mod imported_types;
 mod imports;
@@ -541,6 +542,13 @@ impl<'a> TypedResolution<'a> {
         }
     }
 
+    pub(crate) fn explicit_requirement_field(
+        &self,
+        requirement: &SurfaceRequirement,
+    ) -> crate::TypedRecordField {
+        explicit_requirement_field(requirement, self.resolved, &self.semantic_types)
+    }
+
     pub(crate) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
         SemanticValueType {
             type_ref: type_ref.clone(),
@@ -939,6 +947,12 @@ fn collect_callables(
             continue;
         }
         match symbol.canonical.as_deref() {
+            Some(canonical @ ("std/prelude::print" | "std/prelude::println")) => {
+                callables.insert(
+                    symbol.id,
+                    console::callable(canonical).expect("standard Console declaration"),
+                );
+            }
             Some("std/prelude::reduce") => {
                 callables.insert(symbol.id, standard_reduce_callable());
             }
@@ -1368,21 +1382,7 @@ fn explicit_effect_value_type(
 ) -> TypedType {
     let fields = requirements
         .iter()
-        .map(|requirement| match requirement {
-            SurfaceRequirement::Field { name, type_ref, .. } => crate::TypedRecordField {
-                name: name.clone(),
-                optional: false,
-                type_ref: semantic_typed_type_from_type_ref(type_ref, resolved, semantic_types),
-            },
-            SurfaceRequirement::Shorthand { name, .. } => crate::TypedRecordField {
-                name: lower_first(name),
-                optional: false,
-                type_ref: TypedType::Named {
-                    name: name.clone(),
-                    arguments: Vec::new(),
-                },
-            },
-        })
+        .map(|requirement| explicit_requirement_field(requirement, resolved, semantic_types))
         .collect();
     TypedType::Named {
         name: "Effect".to_owned(),
@@ -1400,6 +1400,29 @@ fn explicit_effect_value_type(
             ),
             semantic_typed_type_from_type_ref(return_type, resolved, semantic_types),
         ],
+    }
+}
+
+fn explicit_requirement_field(
+    requirement: &SurfaceRequirement,
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+) -> crate::TypedRecordField {
+    let (name, type_ref) = match requirement {
+        SurfaceRequirement::Field { name, type_ref, .. } => (name.clone(), type_ref.clone()),
+        SurfaceRequirement::Shorthand { name, span } => (
+            lower_first(name),
+            TypeRef::Named {
+                name: name.clone(),
+                arguments: Vec::new(),
+                span: *span,
+            },
+        ),
+    };
+    crate::TypedRecordField {
+        name,
+        optional: false,
+        type_ref: semantic_typed_type_from_type_ref(&type_ref, resolved, semantic_types),
     }
 }
 

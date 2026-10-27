@@ -976,15 +976,17 @@ mod tests {
                         fields: vec![TypedRecordField {
                             name: "console".to_owned(),
                             optional: false,
-                            type_ref: TypedType::Named {
+                            type_ref: TypedType::ExternalNamed {
                                 name: "Console".to_owned(),
+                                canonical: "std/prelude::Console".to_owned(),
                                 arguments: Vec::new(),
                             },
                         }],
                     },
-                    failure: TypedType::Named {
+                    failure: TypedType::ExternalNamed {
                         name: "ConsoleError".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::ConsoleError".to_owned(),
+                        arguments: Vec::new()
                     },
                     success: unit_type(),
                 },
@@ -996,14 +998,16 @@ mod tests {
                             fields: vec![TypedRecordField {
                                 name: "console".to_owned(),
                                 optional: false,
-                                type_ref: TypedType::Named {
+                                type_ref: TypedType::ExternalNamed {
                                     name: "Console".to_owned(),
+                                    canonical: "std/prelude::Console".to_owned(),
                                     arguments: Vec::new()
                                 }
                             }]
                         },
-                        failure: TypedType::Named {
+                        failure: TypedType::ExternalNamed {
                             name: "ConsoleError".to_owned(),
+                            canonical: "std/prelude::ConsoleError".to_owned(),
                             arguments: Vec::new()
                         },
                         success: unit_type()
@@ -1053,15 +1057,17 @@ mod tests {
                         fields: vec![TypedRecordField {
                             name: "console".to_owned(),
                             optional: false,
-                            type_ref: TypedType::Named {
+                            type_ref: TypedType::ExternalNamed {
                                 name: "Console".to_owned(),
-                                arguments: Vec::new(),
+                                canonical: "std/prelude::Console".to_owned(),
+                                arguments: Vec::new()
                             },
                         }],
                     },
-                    failure: TypedType::Named {
+                    failure: TypedType::ExternalNamed {
                         name: "ConsoleError".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::ConsoleError".to_owned(),
+                        arguments: Vec::new()
                     },
                     success: unit_type(),
                 },
@@ -1073,14 +1079,16 @@ mod tests {
                             fields: vec![TypedRecordField {
                                 name: "console".to_owned(),
                                 optional: false,
-                                type_ref: TypedType::Named {
+                                type_ref: TypedType::ExternalNamed {
                                     name: "Console".to_owned(),
+                                    canonical: "std/prelude::Console".to_owned(),
                                     arguments: Vec::new()
                                 }
                             }]
                         },
-                        failure: TypedType::Named {
+                        failure: TypedType::ExternalNamed {
                             name: "ConsoleError".to_owned(),
+                            canonical: "std/prelude::ConsoleError".to_owned(),
                             arguments: Vec::new()
                         },
                         success: unit_type()
@@ -1136,11 +1144,11 @@ pub effect fn main =
             main.0,
             TypedEffect {
                 environment: TypedType::Record { fields, .. },
-                failure: TypedType::Named { name: failure, .. },
+                failure: TypedType::ExternalNamed { canonical: failure, .. },
                 success: TypedType::Named { name: success, .. },
-            } if matches!(fields.as_slice(), [TypedRecordField { name, type_ref: TypedType::Named { name: service, .. }, .. }]
-                if name == "console" && service == "Console")
-                && failure == "ConsoleError"
+            } if matches!(fields.as_slice(), [TypedRecordField { name, type_ref: TypedType::ExternalNamed { canonical: service, .. }, .. }]
+                if name == "console" && service == "std/prelude::Console")
+                && failure == "std/prelude::ConsoleError"
                 && success == "Unit"
         ));
 
@@ -1230,9 +1238,12 @@ pub effect fn main =
         assert_eq!(
             export.scheme.type_ref,
             InterfaceType::Function {
-                parameter: Box::new(InterfaceType::Named {
+                parameter: Box::new(InterfaceType::ExternalNamed {
                     name: "String".to_owned(),
-                    arguments: Vec::new(),
+                    canonical: "std/prelude::String".to_owned(),
+                    provider_module: "std/prelude".to_owned(),
+                    provider_export: "String".to_owned(),
+                    arguments: Vec::new()
                 }),
                 result: Box::new(InterfaceType::Named {
                     name: "Effect".to_owned(),
@@ -1242,15 +1253,21 @@ pub effect fn main =
                             fields: vec![seseragi_syntax::InterfaceRecordField {
                                 name: "console".to_owned(),
                                 optional: false,
-                                type_ref: InterfaceType::Named {
+                                type_ref: InterfaceType::ExternalNamed {
                                     name: "Console".to_owned(),
-                                    arguments: Vec::new(),
+                                    canonical: "std/prelude::Console".to_owned(),
+                                    provider_module: "std/console".to_owned(),
+                                    provider_export: "Console".to_owned(),
+                                    arguments: Vec::new()
                                 },
                             }],
                         },
-                        InterfaceType::Named {
+                        InterfaceType::ExternalNamed {
                             name: "ConsoleError".to_owned(),
-                            arguments: Vec::new(),
+                            canonical: "std/prelude::ConsoleError".to_owned(),
+                            provider_module: "std/console".to_owned(),
+                            provider_export: "ConsoleError".to_owned(),
+                            arguments: Vec::new()
                         },
                         InterfaceType::Named {
                             name: "Unit".to_owned(),
@@ -1291,18 +1308,20 @@ pub effect fn main =
                 fields: vec![TypedRecordField {
                     name: "console".to_owned(),
                     optional: false,
-                    type_ref: TypedType::Named {
+                    type_ref: TypedType::ExternalNamed {
                         name: "Console".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::Console".to_owned(),
+                        arguments: Vec::new()
                     },
                 }],
             }
         );
         assert_eq!(
             effect.failure,
-            TypedType::Named {
+            TypedType::ExternalNamed {
                 name: "ConsoleError".to_owned(),
-                arguments: Vec::new(),
+                canonical: "std/prelude::ConsoleError".to_owned(),
+                arguments: Vec::new()
             }
         );
         let TypedExpr::DoBlock {
@@ -1335,18 +1354,20 @@ pub effect fn main =
                 fields: vec![TypedRecordField {
                     name: "console".to_owned(),
                     optional: false,
-                    type_ref: TypedType::Named {
+                    type_ref: TypedType::ExternalNamed {
                         name: "Console".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::Console".to_owned(),
+                        arguments: Vec::new()
                     },
                 }],
             }
         );
         assert_eq!(
             effect.failure,
-            TypedType::Named {
+            TypedType::ExternalNamed {
                 name: "ConsoleError".to_owned(),
-                arguments: Vec::new(),
+                canonical: "std/prelude::ConsoleError".to_owned(),
+                arguments: Vec::new()
             }
         );
         let TypedExpr::DoBlock {

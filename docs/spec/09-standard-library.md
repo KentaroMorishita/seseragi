@@ -622,6 +622,12 @@ fn flush
 加えます。`printValue value` は `print (show value)` です。stderr出力は
 `Console.error` / `Console.errorLine` を使います。
 
+preludeと`std/console`の`print` / `println`はいずれもStringを受け取ります。
+Bool、Int、Char、Unitなどを直接渡すと型エラーです。改行付きで値を表示する場合は
+`println (show value)`やtemplateを使います。JavaScriptの`String(value)`、`toString`、
+runtime object inspectionへ暗黙に変換しません。たとえば`println (show True)`は`True`、
+`println (show ())`は`()`を出力します。
+
 同じdo block内のConsole Effectはsource順に実行します。buffering、terminal encoding、
 broken pipeなどhost由来の失敗はConsoleErrorです。test hostはConsole serviceを差し替えて
 出力を値として検証できます。

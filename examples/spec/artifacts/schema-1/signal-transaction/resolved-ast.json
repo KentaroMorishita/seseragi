@@ -1008,6 +1008,18 @@
     },
     {
       "id": 9,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
       "spelling": "Unit",
       "canonical": "std/prelude::Unit",
       "namespace": "type",
@@ -1019,7 +1031,7 @@
       }
     },
     {
-      "id": 10,
+      "id": 11,
       "spelling": "ConsoleError",
       "canonical": "std/prelude::ConsoleError",
       "namespace": "type",
@@ -1031,7 +1043,7 @@
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "spelling": "left",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1042,7 +1054,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 13,
       "spelling": "right",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1053,7 +1065,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 14,
       "spelling": "doubled",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1064,7 +1076,7 @@
       }
     },
     {
-      "id": 14,
+      "id": 15,
       "spelling": "total",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1075,7 +1087,7 @@
       }
     },
     {
-      "id": 15,
+      "id": 16,
       "spelling": "setLeft",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1086,7 +1098,7 @@
       }
     },
     {
-      "id": 16,
+      "id": 17,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -1097,7 +1109,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 18,
       "spelling": "updateRight",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1108,7 +1120,7 @@
       }
     },
     {
-      "id": 18,
+      "id": 19,
       "spelling": "current",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1119,7 +1131,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 20,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -1232,9 +1244,18 @@
       }
     },
     {
-      "spelling": "Unit",
+      "spelling": "Console",
       "namespace": "type",
       "target": 9,
+      "origin": {
+        "start": 168,
+        "end": 175
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 10,
       "origin": {
         "start": 158,
         "end": 162
@@ -1243,7 +1264,7 @@
     {
       "spelling": "ConsoleError",
       "namespace": "type",
-      "target": 10,
+      "target": 11,
       "origin": {
         "start": 182,
         "end": 194
@@ -1285,7 +1306,7 @@
     {
       "spelling": "left",
       "namespace": "value",
-      "target": 11,
+      "target": 12,
       "origin": {
         "start": 296,
         "end": 300
@@ -1311,7 +1332,7 @@
     {
       "spelling": "doubled",
       "namespace": "value",
-      "target": 13,
+      "target": 14,
       "origin": {
         "start": 337,
         "end": 344
@@ -1320,7 +1341,7 @@
     {
       "spelling": "right",
       "namespace": "value",
-      "target": 12,
+      "target": 13,
       "origin": {
         "start": 345,
         "end": 350
@@ -1354,7 +1375,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 445,
         "end": 450
@@ -1372,7 +1393,7 @@
     {
       "spelling": "left",
       "namespace": "value",
-      "target": 11,
+      "target": 12,
       "origin": {
         "start": 462,
         "end": 466
@@ -1389,7 +1410,7 @@
     {
       "spelling": "setLeft",
       "namespace": "value",
-      "target": 15,
+      "target": 16,
       "origin": {
         "start": 505,
         "end": 512
@@ -1398,7 +1419,7 @@
     {
       "spelling": "left",
       "namespace": "value",
-      "target": 11,
+      "target": 12,
       "origin": {
         "start": 513,
         "end": 517
@@ -1407,7 +1428,7 @@
     {
       "spelling": "updateRight",
       "namespace": "value",
-      "target": 17,
+      "target": 18,
       "origin": {
         "start": 525,
         "end": 536
@@ -1416,7 +1437,7 @@
     {
       "spelling": "right",
       "namespace": "value",
-      "target": 12,
+      "target": 13,
       "origin": {
         "start": 537,
         "end": 542
@@ -1425,7 +1446,7 @@
     {
       "spelling": "total",
       "namespace": "value",
-      "target": 14,
+      "target": 15,
       "origin": {
         "start": 567,
         "end": 572
@@ -1434,7 +1455,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 577,
         "end": 584
@@ -1443,7 +1464,7 @@
     {
       "spelling": "current",
       "namespace": "value",
-      "target": 18,
+      "target": 19,
       "origin": {
         "start": 598,
         "end": 605

@@ -43,8 +43,9 @@ pub(super) fn explicit_environment_mismatch(
     let declared = explicit_environment(requirements, resolution);
     let mut operations = Vec::new();
     collect_explicit_environments(body, &mut operations);
-    operations
-        .retain(|operation| !environment_satisfies(&declared, &operation.environment, resolution));
+    operations.retain(|operation| {
+        !environment_satisfies(&declared, &operation.environment, requirements, resolution)
+    });
     (!operations.is_empty()).then_some(EffectFunctionIssue::ExplicitEnvironmentMismatch {
         primary: requirements
             .first()
@@ -67,6 +68,7 @@ fn requirement_span(requirement: &SurfaceRequirement) -> ByteSpan {
 fn environment_satisfies(
     declared: &TypedType,
     actual: &TypedType,
+    requirements: &[SurfaceRequirement],
     resolution: &TypedResolution<'_>,
 ) -> bool {
     let (
@@ -83,44 +85,63 @@ fn environment_satisfies(
         return false;
     };
     actual_fields.iter().all(|actual_field| {
-        declared_fields.iter().any(|declared_field| {
-            declared_field.name == actual_field.name
-                && declared_field.optional == actual_field.optional
-                && environment_field_types_have_same_identity(
-                    &declared_field.type_ref,
-                    &actual_field.type_ref,
-                    resolution,
-                )
-        })
+        declared_fields
+            .iter()
+            .zip(requirements)
+            .any(|(declared_field, requirement)| {
+                let (source, implicit_shorthand) = match requirement {
+                    SurfaceRequirement::Shorthand { name, span } => (
+                        TypeRef::Named {
+                            name: name.clone(),
+                            arguments: vec![],
+                            span: *span,
+                        },
+                        resolution
+                            .target(*span, crate::SymbolNamespace::Type)
+                            .is_none(),
+                    ),
+                    SurfaceRequirement::Field { type_ref, .. } => (type_ref.clone(), false),
+                };
+                declared_field.name == actual_field.name
+                    && declared_field.optional == actual_field.optional
+                    && environment_field_types_have_same_identity(
+                        &resolution.semantic_value_from_type_ref(&source),
+                        &actual_field.type_ref,
+                        implicit_shorthand,
+                        resolution,
+                    )
+            })
     })
 }
 
 fn environment_field_types_have_same_identity(
-    declared: &TypedType,
+    declared: &SemanticValueType,
     actual: &TypedType,
+    implicit_shorthand: bool,
     resolution: &TypedResolution<'_>,
 ) -> bool {
     if semantic_values_have_same_identity(
-        &resolution.semantic_value_from_typed_type(declared),
+        declared,
         &resolution.semantic_value_from_typed_type(actual),
     ) {
         return true;
     }
 
-    // Shorthand requirements such as `with Clock` retain only their local
-    // spelling, while a re-exported standard Effect contract carries the
-    // canonical external identity (`std/clock::Clock`). Match that narrow
-    // hydrated/unhydrated pair without weakening explicitly typed fields.
-    matches!(
-        (declared, actual),
-        (
-            TypedType::Named { name: declared_name, arguments: declared_arguments },
-            TypedType::ExternalNamed { name: actual_name, canonical, arguments: actual_arguments },
-        ) if declared_arguments.is_empty()
-            && actual_arguments.is_empty()
-            && declared_name == actual_name
-            && canonical.ends_with(&format!("::{declared_name}"))
-    )
+    // Existing provider shorthand such as `with Clock` may have no lexical
+    // type reference. Only that unresolved shorthand retains the legacy
+    // hydrated/unhydrated comparison. A resolved binder, alias or nominal
+    // owner must satisfy the checked identity above.
+    implicit_shorthand
+        && matches!(
+            (&declared.type_ref, actual),
+            (
+                TypedType::Named { name: declared_name, arguments: declared_arguments },
+                TypedType::ExternalNamed { name: actual_name, canonical, arguments: actual_arguments },
+            ) if declared_arguments.is_empty()
+                && actual_arguments.is_empty()
+                && declared_name == actual_name
+                && canonical.ends_with(&format!("::{declared_name}"))
+        )
 }
 
 fn collect_explicit_environments(

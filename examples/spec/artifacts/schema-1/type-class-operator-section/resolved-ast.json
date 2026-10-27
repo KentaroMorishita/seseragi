@@ -1803,6 +1803,18 @@
     },
     {
       "id": 29,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 30,
       "spelling": "Unit",
       "canonical": "std/prelude::Unit",
       "namespace": "type",
@@ -1814,7 +1826,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 31,
       "spelling": "ConsoleError",
       "canonical": "std/prelude::ConsoleError",
       "namespace": "type",
@@ -1826,7 +1838,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 32,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -1838,7 +1850,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 33,
       "spelling": "<$>",
       "canonical": "std/prelude::<$>",
       "namespace": "operator",
@@ -1850,7 +1862,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 34,
       "spelling": "<*>",
       "canonical": "std/prelude::<*>",
       "namespace": "operator",
@@ -2485,9 +2497,18 @@
       }
     },
     {
-      "spelling": "Unit",
+      "spelling": "Console",
       "namespace": "type",
       "target": 29,
+      "origin": {
+        "start": 952,
+        "end": 959
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 30,
       "origin": {
         "start": 942,
         "end": 946
@@ -2496,7 +2517,7 @@
     {
       "spelling": "ConsoleError",
       "namespace": "type",
-      "target": 30,
+      "target": 31,
       "origin": {
         "start": 966,
         "end": 978
@@ -2505,7 +2526,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 31,
+      "target": 32,
       "origin": {
         "start": 983,
         "end": 990
@@ -2532,7 +2553,7 @@
     {
       "spelling": "<$>",
       "namespace": "operator",
-      "target": 32,
+      "target": 33,
       "origin": {
         "start": 1015,
         "end": 1018
@@ -2550,7 +2571,7 @@
     {
       "spelling": "<*>",
       "namespace": "operator",
-      "target": 33,
+      "target": 34,
       "origin": {
         "start": 1037,
         "end": 1040

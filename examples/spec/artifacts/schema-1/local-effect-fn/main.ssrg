@@ -11,7 +11,7 @@ pub effect fn main = {
   effect fn render<A> value: A -> String where Show<A> = pure (show value)
   effect fn count n: Int -> Int = if n == 0 then pure 1 else count (n - 1)
   effect fn log value: Int -> Unit with console: Console fails ConsoleError =
-    println value
+    println (show value)
   let fromPure = {
     fn step -> Int = 1
     effect fn step = pure 2
@@ -29,7 +29,7 @@ pub effect fn main = {
     second <- identity 9
     println $ show (first, second)
     result <- count 3
-    println result
+    println (show result)
     rendered <- render 42
     println rendered
     shadowed <- fromPure

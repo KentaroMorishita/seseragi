@@ -1836,6 +1836,18 @@
     },
     {
       "id": 30,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 31,
       "spelling": "Unit",
       "canonical": "std/prelude::Unit",
       "namespace": "type",
@@ -1847,7 +1859,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 32,
       "spelling": "ConsoleError",
       "canonical": "std/prelude::ConsoleError",
       "namespace": "type",
@@ -1859,7 +1871,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 33,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -1871,7 +1883,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 34,
       "spelling": "!=",
       "canonical": "std/prelude::!=",
       "namespace": "operator",
@@ -2371,9 +2383,18 @@
       }
     },
     {
-      "spelling": "Unit",
+      "spelling": "Console",
       "namespace": "type",
       "target": 30,
+      "origin": {
+        "start": 1004,
+        "end": 1011
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 31,
       "origin": {
         "start": 994,
         "end": 998
@@ -2382,7 +2403,7 @@
     {
       "spelling": "ConsoleError",
       "namespace": "type",
-      "target": 31,
+      "target": 32,
       "origin": {
         "start": 1018,
         "end": 1030
@@ -2391,7 +2412,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 32,
+      "target": 33,
       "origin": {
         "start": 1035,
         "end": 1042
@@ -2454,7 +2475,7 @@
     {
       "spelling": "!=",
       "namespace": "operator",
-      "target": 33,
+      "target": 34,
       "origin": {
         "start": 1113,
         "end": 1115
@@ -2508,7 +2529,7 @@
     {
       "spelling": "!=",
       "namespace": "operator",
-      "target": 33,
+      "target": 34,
       "origin": {
         "start": 1191,
         "end": 1193

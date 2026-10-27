@@ -472,8 +472,8 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 536,
-        "end": 540
+        "start": 543,
+        "end": 547
       },
       "typeName": "Unit -> Int"
     },
@@ -485,8 +485,8 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 566,
-        "end": 570
+        "start": 573,
+        "end": 577
       },
       "typeName": "Unit -> Effect<{}, Never, Int>"
     },
@@ -498,8 +498,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 516,
-        "end": 524
+        "start": 523,
+        "end": 531
       },
       "typeName": "Effect<{}, Never, Int>"
     },
@@ -511,8 +511,8 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 631,
-        "end": 635
+        "start": 638,
+        "end": 642
       },
       "typeName": "Unit -> Effect<{}, Never, Int>"
     },
@@ -524,8 +524,8 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 652,
-        "end": 656
+        "start": 659,
+        "end": 663
       },
       "typeName": "Unit -> Int"
     },
@@ -537,8 +537,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 602,
-        "end": 612
+        "start": 609,
+        "end": 619
       },
       "typeName": "Int"
     },
@@ -550,8 +550,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 695,
-        "end": 700
+        "start": 702,
+        "end": 707
       },
       "typeName": "Int"
     },
@@ -563,8 +563,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 734,
-        "end": 739
+        "start": 741,
+        "end": 746
       },
       "typeName": "Bool"
     },
@@ -576,8 +576,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 761,
-        "end": 767
+        "start": 768,
+        "end": 774
       },
       "typeName": "Int"
     },
@@ -589,8 +589,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 821,
-        "end": 827
+        "start": 828,
+        "end": 834
       },
       "typeName": "Int"
     },
@@ -602,8 +602,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 862,
-        "end": 870
+        "start": 876,
+        "end": 884
       },
       "typeName": "String"
     },
@@ -615,8 +615,8 @@
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 909,
-        "end": 917
+        "start": 923,
+        "end": 931
       },
       "typeName": "Int"
     }
@@ -743,85 +743,85 @@
     },
     {
       "range": {
-        "start": 536,
-        "end": 540
+        "start": 543,
+        "end": 547
       },
       "symbol": 29
     },
     {
       "range": {
-        "start": 566,
-        "end": 570
+        "start": 573,
+        "end": 577
       },
       "symbol": 30
     },
     {
       "range": {
-        "start": 516,
-        "end": 524
+        "start": 523,
+        "end": 531
       },
       "symbol": 31
     },
     {
       "range": {
-        "start": 631,
-        "end": 635
+        "start": 638,
+        "end": 642
       },
       "symbol": 32
     },
     {
       "range": {
-        "start": 652,
-        "end": 656
+        "start": 659,
+        "end": 663
       },
       "symbol": 33
     },
     {
       "range": {
-        "start": 602,
-        "end": 612
+        "start": 609,
+        "end": 619
       },
       "symbol": 34
     },
     {
       "range": {
-        "start": 695,
-        "end": 700
+        "start": 702,
+        "end": 707
       },
       "symbol": 35
     },
     {
       "range": {
-        "start": 734,
-        "end": 739
+        "start": 741,
+        "end": 746
       },
       "symbol": 36
     },
     {
       "range": {
-        "start": 761,
-        "end": 767
+        "start": 768,
+        "end": 774
       },
       "symbol": 37
     },
     {
       "range": {
-        "start": 821,
-        "end": 827
+        "start": 828,
+        "end": 834
       },
       "symbol": 38
     },
     {
       "range": {
-        "start": 862,
-        "end": 870
+        "start": 876,
+        "end": 884
       },
       "symbol": 39
     },
     {
       "range": {
-        "start": 909,
-        "end": 917
+        "start": 923,
+        "end": 931
       },
       "symbol": 40
     },
@@ -1037,190 +1037,204 @@
     },
     {
       "range": {
-        "start": 504,
+        "start": 505,
         "end": 509
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 510,
+        "end": 515
       },
       "symbol": 26
     },
     {
       "range": {
-        "start": 544,
-        "end": 547
+        "start": 551,
+        "end": 554
       },
       "symbol": 21
     },
     {
       "range": {
-        "start": 573,
-        "end": 577
+        "start": 580,
+        "end": 584
       },
       "symbol": 10
     },
     {
       "range": {
-        "start": 584,
-        "end": 588
+        "start": 591,
+        "end": 595
       },
       "symbol": 30
     },
     {
       "range": {
-        "start": 638,
-        "end": 642
+        "start": 645,
+        "end": 649
       },
       "symbol": 10
     },
     {
       "range": {
-        "start": 660,
-        "end": 663
+        "start": 667,
+        "end": 670
       },
       "symbol": 21
     },
     {
       "range": {
-        "start": 672,
-        "end": 676
+        "start": 679,
+        "end": 683
       },
       "symbol": 33
     },
     {
       "range": {
-        "start": 704,
-        "end": 712
+        "start": 711,
+        "end": 719
       },
       "symbol": 8
     },
     {
       "range": {
-        "start": 720,
-        "end": 723
+        "start": 727,
+        "end": 730
       },
       "symbol": 25
     },
     {
       "range": {
-        "start": 724,
-        "end": 729
+        "start": 731,
+        "end": 736
       },
       "symbol": 35
     },
     {
       "range": {
-        "start": 743,
-        "end": 751
+        "start": 750,
+        "end": 758
       },
       "symbol": 11
     },
     {
       "range": {
-        "start": 771,
-        "end": 779
+        "start": 778,
+        "end": 786
       },
       "symbol": 11
     },
     {
       "range": {
-        "start": 786,
-        "end": 793
+        "start": 793,
+        "end": 800
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 796,
-        "end": 800
+        "start": 803,
+        "end": 807
       },
       "symbol": 19
     },
     {
       "range": {
-        "start": 802,
-        "end": 807
+        "start": 809,
+        "end": 814
       },
       "symbol": 36
     },
     {
       "range": {
-        "start": 809,
-        "end": 815
+        "start": 816,
+        "end": 822
       },
       "symbol": 37
     },
     {
       "range": {
-        "start": 831,
-        "end": 836
+        "start": 838,
+        "end": 843
       },
       "symbol": 20
     },
     {
       "range": {
-        "start": 843,
-        "end": 850
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 851,
+        "start": 850,
         "end": 857
       },
-      "symbol": 38
-    },
-    {
-      "range": {
-        "start": 874,
-        "end": 880
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 888,
-        "end": 895
-      },
       "symbol": 5
     },
     {
       "range": {
-        "start": 896,
-        "end": 904
-      },
-      "symbol": 39
-    },
-    {
-      "range": {
-        "start": 921,
-        "end": 929
-      },
-      "symbol": 31
-    },
-    {
-      "range": {
-        "start": 934,
-        "end": 941
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 944,
-        "end": 948
+        "start": 859,
+        "end": 863
       },
       "symbol": 19
     },
     {
       "range": {
-        "start": 950,
-        "end": 958
+        "start": 864,
+        "end": 870
+      },
+      "symbol": 38
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 894
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 902,
+        "end": 909
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 910,
+        "end": 918
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 935,
+        "end": 943
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 948,
+        "end": 955
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 958,
+        "end": 962
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 964,
+        "end": 972
       },
       "symbol": 40
     },
     {
       "range": {
-        "start": 960,
-        "end": 970
+        "start": 974,
+        "end": 984
       },
       "symbol": 34
     }
@@ -1306,7 +1320,7 @@
     {
       "range": {
         "start": 115,
-        "end": 977
+        "end": 991
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
@@ -1586,490 +1600,518 @@
     {
       "range": {
         "start": 496,
-        "end": 509
+        "end": 516
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 504,
+        "start": 505,
         "end": 509
+      },
+      "type": "A -> String"
+    },
+    {
+      "range": {
+        "start": 505,
+        "end": 515
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 510,
+        "end": 515
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 516,
-        "end": 524
+        "start": 523,
+        "end": 531
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 527,
-        "end": 595
+        "start": 534,
+        "end": 602
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 536,
-        "end": 540
+        "start": 543,
+        "end": 547
       },
       "type": "Unit -> Int"
     },
     {
       "range": {
-        "start": 550,
-        "end": 551
+        "start": 557,
+        "end": 558
       },
       "type": "Int"
-    },
-    {
-      "range": {
-        "start": 566,
-        "end": 570
-      },
-      "type": "Unit -> Effect<{}, Never, Int>"
     },
     {
       "range": {
         "start": 573,
         "end": 577
       },
+      "type": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 580,
+        "end": 584
+      },
       "type": "A -> F<A>"
     },
     {
       "range": {
-        "start": 573,
-        "end": 579
+        "start": 580,
+        "end": 586
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 578,
-        "end": 579
+        "start": 585,
+        "end": 586
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 584,
-        "end": 588
+        "start": 591,
+        "end": 595
       },
       "type": "Unit -> Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 584,
-        "end": 591
+        "start": 591,
+        "end": 598
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 589,
-        "end": 591
+        "start": 596,
+        "end": 598
       },
       "type": "Unit"
     },
     {
       "range": {
-        "start": 602,
-        "end": 612
+        "start": 609,
+        "end": 619
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 615,
-        "end": 683
+        "start": 622,
+        "end": 690
       },
       "type": "Int"
-    },
-    {
-      "range": {
-        "start": 631,
-        "end": 635
-      },
-      "type": "Unit -> Effect<{}, Never, Int>"
     },
     {
       "range": {
         "start": 638,
         "end": 642
       },
+      "type": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 645,
+        "end": 649
+      },
       "type": "A -> F<A>"
     },
     {
       "range": {
-        "start": 638,
-        "end": 644
+        "start": 645,
+        "end": 651
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 643,
-        "end": 644
+        "start": 650,
+        "end": 651
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 652,
-        "end": 656
+        "start": 659,
+        "end": 663
       },
       "type": "Unit -> Int"
     },
     {
       "range": {
-        "start": 666,
-        "end": 667
+        "start": 673,
+        "end": 674
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 672,
-        "end": 676
+        "start": 679,
+        "end": 683
       },
       "type": "Unit -> Int"
     },
     {
       "range": {
-        "start": 672,
-        "end": 679
+        "start": 679,
+        "end": 686
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 677,
-        "end": 679
+        "start": 684,
+        "end": 686
       },
       "type": "Unit"
     },
     {
       "range": {
-        "start": 686,
-        "end": 975
+        "start": 693,
+        "end": 989
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 695,
-        "end": 700
+        "start": 702,
+        "end": 707
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 704,
-        "end": 712
+        "start": 711,
+        "end": 719
       },
       "type": "Unit -> Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 704,
-        "end": 715
+        "start": 711,
+        "end": 722
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 713,
-        "end": 715
+        "start": 720,
+        "end": 722
       },
       "type": "Unit"
     },
     {
       "range": {
-        "start": 720,
-        "end": 723
+        "start": 727,
+        "end": 730
       },
       "type": "Int -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 720,
-        "end": 729
+        "start": 727,
+        "end": 736
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 724,
-        "end": 729
+        "start": 731,
+        "end": 736
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 734,
-        "end": 739
+        "start": 741,
+        "end": 746
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 743,
-        "end": 751
+        "start": 750,
+        "end": 758
       },
       "type": "A -> Effect<{}, Never, A>"
     },
     {
       "range": {
-        "start": 743,
-        "end": 756
+        "start": 750,
+        "end": 763
       },
       "type": "Effect<{}, Never, Bool>"
     },
     {
       "range": {
-        "start": 752,
-        "end": 756
+        "start": 759,
+        "end": 763
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 761,
-        "end": 767
+        "start": 768,
+        "end": 774
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 771,
-        "end": 779
+        "start": 778,
+        "end": 786
       },
       "type": "A -> Effect<{}, Never, A>"
     },
     {
       "range": {
-        "start": 771,
-        "end": 781
+        "start": 778,
+        "end": 788
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 780,
-        "end": 781
+        "start": 787,
+        "end": 788
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 786,
-        "end": 793
+        "start": 793,
+        "end": 800
       },
       "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 786,
-        "end": 816
+        "start": 793,
+        "end": 823
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 796,
-        "end": 800
+        "start": 803,
+        "end": 807
       },
       "type": "A -> String"
     },
     {
       "range": {
-        "start": 796,
-        "end": 816
+        "start": 803,
+        "end": 823
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 801,
-        "end": 816
+        "start": 808,
+        "end": 823
       },
       "type": "(Bool, Int)"
     },
     {
       "range": {
-        "start": 802,
-        "end": 807
+        "start": 809,
+        "end": 814
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 809,
-        "end": 815
+        "start": 816,
+        "end": 822
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 821,
-        "end": 827
+        "start": 828,
+        "end": 834
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 831,
-        "end": 836
+        "start": 838,
+        "end": 843
       },
       "type": "Int -> Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 831,
-        "end": 838
+        "start": 838,
+        "end": 845
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 837,
-        "end": 838
+        "start": 844,
+        "end": 845
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 843,
-        "end": 850
+        "start": 850,
+        "end": 857
       },
       "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 843,
-        "end": 857
+        "start": 850,
+        "end": 871
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 851,
-        "end": 857
+        "start": 859,
+        "end": 863
       },
-      "type": "Int"
+      "type": "A -> String"
     },
     {
       "range": {
-        "start": 862,
+        "start": 859,
         "end": 870
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 874,
-        "end": 880
+        "start": 864,
+        "end": 870
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 876,
+        "end": 884
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 894
       },
       "type": "A -> Effect<{}, Never, String>"
     },
     {
       "range": {
-        "start": 874,
-        "end": 883
+        "start": 888,
+        "end": 897
       },
       "type": "Effect<{}, Never, String>"
     },
     {
       "range": {
-        "start": 881,
-        "end": 883
+        "start": 895,
+        "end": 897
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 888,
-        "end": 895
+        "start": 902,
+        "end": 909
       },
       "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 888,
-        "end": 904
+        "start": 902,
+        "end": 918
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 896,
-        "end": 904
+        "start": 910,
+        "end": 918
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 909,
-        "end": 917
+        "start": 923,
+        "end": 931
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 921,
-        "end": 929
+        "start": 935,
+        "end": 943
       },
       "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 934,
-        "end": 941
+        "start": 948,
+        "end": 955
       },
       "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 934,
-        "end": 971
+        "start": 948,
+        "end": 985
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 944,
-        "end": 948
+        "start": 958,
+        "end": 962
       },
       "type": "A -> String"
     },
     {
       "range": {
-        "start": 944,
-        "end": 971
+        "start": 958,
+        "end": 985
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 949,
-        "end": 971
+        "start": 963,
+        "end": 985
       },
       "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 950,
-        "end": 958
+        "start": 964,
+        "end": 972
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 960,
-        "end": 970
+        "start": 974,
+        "end": 984
       },
       "type": "Int"
     }
@@ -2340,84 +2382,8 @@
     },
     {
       "range": {
-        "start": 573,
-        "end": 577
-      },
-      "callable": {
-        "identity": "std/prelude::Applicative::pure",
-        "name": "pure",
-        "module": "std/prelude",
-        "typeParameters": [
-          "F<_>",
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A"
-          }
-        ],
-        "result": "F<A>",
-        "constraints": [
-          "Applicative<F<_>>"
-        ],
-        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 638,
-        "end": 642
-      },
-      "callable": {
-        "identity": "std/prelude::Applicative::pure",
-        "name": "pure",
-        "module": "std/prelude",
-        "typeParameters": [
-          "F<_>",
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A"
-          }
-        ],
-        "result": "F<A>",
-        "constraints": [
-          "Applicative<F<_>>"
-        ],
-        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 786,
-        "end": 793
-      },
-      "callable": {
-        "identity": "std/prelude::println",
-        "name": "println",
-        "module": "std/prelude",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "text",
-            "type": "String"
-          }
-        ],
-        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
-        "constraints": [],
-        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 796,
-        "end": 800
+        "start": 505,
+        "end": 509
       },
       "callable": {
         "identity": "std/prelude::Show::show",
@@ -2442,8 +2408,62 @@
     },
     {
       "range": {
-        "start": 843,
-        "end": 850
+        "start": 580,
+        "end": 584
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 645,
+        "end": 649
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 793,
+        "end": 800
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -2464,8 +2484,34 @@
     },
     {
       "range": {
-        "start": 888,
-        "end": 895
+        "start": 803,
+        "end": 807
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 850,
+        "end": 857
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -2486,8 +2532,34 @@
     },
     {
       "range": {
-        "start": 934,
-        "end": 941
+        "start": 859,
+        "end": 863
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 902,
+        "end": 909
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -2508,8 +2580,30 @@
     },
     {
       "range": {
-        "start": 944,
-        "end": 948
+        "start": 948,
+        "end": 955
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 958,
+        "end": 962
       },
       "callable": {
         "identity": "std/prelude::Show::show",
@@ -2734,7 +2828,7 @@
     {
       "range": {
         "start": 496,
-        "end": 509
+        "end": 516
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -2755,84 +2849,8 @@
     },
     {
       "range": {
-        "start": 573,
-        "end": 579
-      },
-      "callable": {
-        "identity": "std/prelude::Applicative::pure",
-        "name": "pure",
-        "module": "std/prelude",
-        "typeParameters": [
-          "F<_>",
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A"
-          }
-        ],
-        "result": "F<A>",
-        "constraints": [
-          "Applicative<F<_>>"
-        ],
-        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 638,
-        "end": 644
-      },
-      "callable": {
-        "identity": "std/prelude::Applicative::pure",
-        "name": "pure",
-        "module": "std/prelude",
-        "typeParameters": [
-          "F<_>",
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A"
-          }
-        ],
-        "result": "F<A>",
-        "constraints": [
-          "Applicative<F<_>>"
-        ],
-        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 786,
-        "end": 816
-      },
-      "callable": {
-        "identity": "std/prelude::println",
-        "name": "println",
-        "module": "std/prelude",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "text",
-            "type": "String"
-          }
-        ],
-        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
-        "constraints": [],
-        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 796,
-        "end": 816
+        "start": 505,
+        "end": 515
       },
       "callable": {
         "identity": "std/prelude::Show::show",
@@ -2857,8 +2875,62 @@
     },
     {
       "range": {
-        "start": 843,
-        "end": 857
+        "start": 580,
+        "end": 586
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 645,
+        "end": 651
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 793,
+        "end": 823
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -2879,8 +2951,34 @@
     },
     {
       "range": {
-        "start": 888,
-        "end": 904
+        "start": 803,
+        "end": 823
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 850,
+        "end": 871
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -2901,8 +2999,34 @@
     },
     {
       "range": {
-        "start": 934,
-        "end": 971
+        "start": 859,
+        "end": 870
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 902,
+        "end": 918
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -2923,8 +3047,30 @@
     },
     {
       "range": {
-        "start": 944,
-        "end": 971
+        "start": 948,
+        "end": 985
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 958,
+        "end": 985
       },
       "callable": {
         "identity": "std/prelude::Show::show",

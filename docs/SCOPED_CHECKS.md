@@ -32,6 +32,12 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 cold再実行・typed Failure・Defect後のscope解放をBun／Nodeとnativeで比較します。
 共有Core解析を変える場合はlowering／driver crateの検証と、統合前の全体gateも必要です。
 
+ConsoleのString契約はdriver／backendの`--test console_string_contract`とCLIの同名test、
+`bun test runtime/ts/tests/console-string-contract.test.ts`で確認します。prelude／import／
+保存したcallableの引数型、canonical ownerとscoped binder、raw生成TS両profileのstrict、
+fresh Bun／Nodeとnativeの出力、cold再実行、引数評価時のDefectとscope解放を保ちます。
+共有型互換性を変える場合はsemantics／driverの既存検証と最終統合gateも必要です。
+
 標準primitive EqのTS投影は、`cargo test -p seseragi-cli --test string_equality`
 と`--test inherited_equality`で確認します。異なるliteral・保存したmethod・部分適用を
 元の生成TS両profileでstrict検査し、fresh Bun／Nodeで実行します。Int／String／Charの

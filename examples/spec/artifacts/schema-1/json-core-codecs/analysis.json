@@ -922,6 +922,18 @@
     },
     {
       "id": 43,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 44,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -933,7 +945,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 45,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -945,7 +957,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 46,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1237,24 +1249,31 @@
     },
     {
       "range": {
+        "start": 490,
+        "end": 497
+      },
+      "symbol": 43
+    },
+    {
+      "range": {
         "start": 480,
         "end": 484
       },
-      "symbol": 43
+      "symbol": 44
     },
     {
       "range": {
         "start": 504,
         "end": 516
       },
-      "symbol": 44
+      "symbol": 45
     },
     {
       "range": {
         "start": 521,
         "end": 528
       },
-      "symbol": 45
+      "symbol": 46
     },
     {
       "range": {

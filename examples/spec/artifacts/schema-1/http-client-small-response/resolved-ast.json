@@ -1307,6 +1307,14 @@
       }
     },
     {
+      "spelling": "HttpClient",
+      "namespace": "type",
+      "origin": {
+        "start": 360,
+        "end": 370
+      }
+    },
+    {
       "spelling": "String",
       "namespace": "type",
       "target": 10,

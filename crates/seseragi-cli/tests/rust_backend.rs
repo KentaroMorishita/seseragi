@@ -1928,7 +1928,7 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
         (
             "console-values",
             "fixtures/rust-backend/console-values.ssrg",
-            "true\n42\nhello\nundefined\nTrue\n",
+            "True\n42\nhello\n()\nTrue\n",
             0,
         ),
         (

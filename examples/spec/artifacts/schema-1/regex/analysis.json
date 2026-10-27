@@ -1804,6 +1804,18 @@
     },
     {
       "id": 104,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 105,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -1815,7 +1827,7 @@
       }
     },
     {
-      "id": 105,
+      "id": 106,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -1827,8 +1839,8 @@
       }
     },
     {
-      "id": 106,
-      "identity": "artifact/regex::local(106)",
+      "id": 107,
+      "identity": "artifact/regex::local(107)",
       "name": "line",
       "module": "artifact/regex",
       "namespace": "value",
@@ -1840,7 +1852,7 @@
       "typeName": "String"
     },
     {
-      "id": 107,
+      "id": 108,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -2289,7 +2301,7 @@
         "start": 4072,
         "end": 4076
       },
-      "symbol": 106
+      "symbol": 107
     },
     {
       "range": {
@@ -3518,17 +3530,24 @@
     },
     {
       "range": {
+        "start": 4037,
+        "end": 4044
+      },
+      "symbol": 104
+    },
+    {
+      "range": {
         "start": 4027,
         "end": 4031
       },
-      "symbol": 104
+      "symbol": 105
     },
     {
       "range": {
         "start": 4051,
         "end": 4063
       },
-      "symbol": 105
+      "symbol": 106
     },
     {
       "range": {
@@ -3542,14 +3561,14 @@
         "start": 4094,
         "end": 4101
       },
-      "symbol": 107
+      "symbol": 108
     },
     {
       "range": {
         "start": 4102,
         "end": 4106
       },
-      "symbol": 106
+      "symbol": 107
     }
   ],
   "typeOccurrences": [

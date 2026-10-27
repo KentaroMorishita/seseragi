@@ -62,8 +62,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "String",
+            "canonical": "std/prelude::String",
+            "providerModule": "std/prelude",
+            "providerExport": "String",
             "arguments": []
           }
         }
@@ -93,8 +96,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "String",
+            "canonical": "std/prelude::String",
+            "providerModule": "std/prelude",
+            "providerExport": "String",
             "arguments": []
           }
         }
@@ -123,15 +129,21 @@
             "providerExport": "DomRuntimeError",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "String",
+                "canonical": "std/prelude::String",
+                "providerModule": "std/prelude",
+                "providerExport": "String",
                 "arguments": []
               }
             ]
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "String",
+            "canonical": "std/prelude::String",
+            "providerModule": "std/prelude",
+            "providerExport": "String",
             "arguments": []
           }
         }
@@ -160,15 +172,21 @@
             "providerExport": "DomRuntimeError",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "String",
+                "canonical": "std/prelude::String",
+                "providerModule": "std/prelude",
+                "providerExport": "String",
                 "arguments": []
               }
             ]
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "String",
+            "canonical": "std/prelude::String",
+            "providerModule": "std/prelude",
+            "providerExport": "String",
             "arguments": []
           }
         }
@@ -198,8 +216,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "String",
+            "canonical": "std/prelude::String",
+            "providerModule": "std/prelude",
+            "providerExport": "String",
             "arguments": []
           }
         }
@@ -229,8 +250,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "String",
+            "canonical": "std/prelude::String",
+            "providerModule": "std/prelude",
+            "providerExport": "String",
             "arguments": []
           }
         }
@@ -270,16 +294,22 @@
                   {
                     "name": "console",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Console",
+                      "canonical": "std/prelude::Console",
+                      "providerModule": "std/console",
+                      "providerExport": "Console",
                       "arguments": []
                     }
                   }
                 ]
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "ConsoleError",
+                "canonical": "std/prelude::ConsoleError",
+                "providerModule": "std/console",
+                "providerExport": "ConsoleError",
                 "arguments": []
               },
               {

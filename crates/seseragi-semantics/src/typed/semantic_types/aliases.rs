@@ -560,6 +560,16 @@ fn external_canonical(
     alias_target: bool,
 ) -> Option<String> {
     let canonical = canonical(resolved, symbol)?;
+    if matches!(
+        canonical.as_str(),
+        "std/prelude::Console" | "std/prelude::ConsoleError"
+    ) && resolved
+        .symbols
+        .iter()
+        .any(|candidate| candidate.id == symbol && candidate.kind == SymbolKind::Prelude)
+    {
+        return Some(canonical);
+    }
     resolved
         .imports
         .iter()

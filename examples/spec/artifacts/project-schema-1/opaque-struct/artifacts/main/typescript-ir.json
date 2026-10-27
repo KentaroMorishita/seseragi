@@ -7,10 +7,10 @@
     "core.int",
     "effect.core.flatMap",
     "effect.console.println",
+    "core.int.show",
     "core.string",
     "core.bool.show",
     "core.bool",
-    "core.int.show",
     "core.array.show"
   ],
   "imports": [
@@ -23,12 +23,12 @@
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.bool.show",
-      "local": "_ssrg_show_boolShow"
-    },
-    {
       "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
     },
     {
       "feature": "core.array.show",
@@ -194,7 +194,7 @@
           "origin": {
             "source": "main.ssrg",
             "start": 119,
-            "end": 434
+            "end": 469
           }
         },
         {
@@ -206,14 +206,14 @@
           "origin": {
             "source": "main.ssrg",
             "start": 119,
-            "end": 434
+            "end": 469
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 119,
-        "end": 434
+        "end": 469
       }
     }
   ],
@@ -267,14 +267,30 @@
                 "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "read",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "secret"
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "read",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "secret"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -286,14 +302,30 @@
                 "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "unpack",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "secret"
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "unpack",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "secret"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -383,30 +415,46 @@
                 "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "unbox",
-                    "arguments": [
-                      {
-                        "kind": "call",
-                        "callee": "box",
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "42"
-                          }
-                        ],
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ]
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "unbox",
+                          "arguments": [
+                            {
+                              "kind": "call",
+                              "callee": "box",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "42"
+                                }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -418,27 +466,43 @@
                 "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "nested",
-                    "arguments": [
-                      {
-                        "kind": "call",
-                        "callee": "box",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "secret"
-                          }
-                        ],
-                        "typeArguments": [
-                          {
-                            "kind": "reference",
-                            "name": "Secret",
-                            "arguments": []
-                          }
-                        ]
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "nested",
+                          "arguments": [
+                            {
+                              "kind": "call",
+                              "callee": "box",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "secret"
+                                }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "Secret",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -505,20 +569,36 @@
             "callee": "_ssrg_console_println",
             "arguments": [
               {
-                "kind": "call",
-                "callee": "read",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "update",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "secret"
-                      }
-                    ]
-                  }
-                ]
+                "kind": "checked-result",
+                "value": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "read",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "update",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "secret"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "string"
+                }
               }
             ]
           }
@@ -527,7 +607,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 119,
-        "end": 434
+        "end": 469
       }
     }
   ]

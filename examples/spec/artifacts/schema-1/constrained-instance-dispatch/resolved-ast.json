@@ -981,6 +981,18 @@
     },
     {
       "id": 22,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
       "spelling": "Unit",
       "canonical": "std/prelude::Unit",
       "namespace": "type",
@@ -992,7 +1004,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 24,
       "spelling": "ConsoleError",
       "canonical": "std/prelude::ConsoleError",
       "namespace": "type",
@@ -1004,7 +1016,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 25,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -1258,9 +1270,18 @@
       }
     },
     {
-      "spelling": "Unit",
+      "spelling": "Console",
       "namespace": "type",
       "target": 22,
+      "origin": {
+        "start": 517,
+        "end": 524
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 23,
       "origin": {
         "start": 507,
         "end": 511
@@ -1269,7 +1290,7 @@
     {
       "spelling": "ConsoleError",
       "namespace": "type",
-      "target": 23,
+      "target": 24,
       "origin": {
         "start": 531,
         "end": 543
@@ -1278,7 +1299,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 24,
+      "target": 25,
       "origin": {
         "start": 548,
         "end": 555

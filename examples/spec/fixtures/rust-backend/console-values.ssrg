@@ -1,7 +1,7 @@
 pub effect fn main = do {
-  println True
-  println 42
+  println (show True)
+  println (show 42)
   println "hello"
-  println ()
+  println (show ())
   println (show True)
 }

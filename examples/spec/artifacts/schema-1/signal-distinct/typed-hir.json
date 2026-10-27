@@ -5,8 +5,31 @@
   "module": "artifact/signal-distinct",
   "externalTypeBindings": [
     {
+      "arity": 0,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "provider": {
+        "module": "std/prelude",
+        "export": "String"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "provider": {
+        "module": "std/console",
+        "export": "Console"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ConsoleError",
-      "canonical": "std/prelude::ConsoleError"
+      "canonical": "std/prelude::ConsoleError",
+      "provider": {
+        "module": "std/console",
+        "export": "ConsoleError"
+      }
     },
     {
       "arity": 1,
@@ -446,16 +469,18 @@
             {
               "name": "console",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Console",
+                "canonical": "std/prelude::Console",
                 "arguments": []
               }
             }
           ]
         },
         "failure": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "ConsoleError",
+          "canonical": "std/prelude::ConsoleError",
           "arguments": []
         },
         "success": {
@@ -471,7 +496,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 19,
+              "symbol": 20,
               "name": "source",
               "type": {
                 "kind": "external-named",
@@ -626,7 +651,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 20,
+              "symbol": 21,
               "name": "notifications",
               "type": {
                 "kind": "external-named",
@@ -759,7 +784,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 22,
+              "symbol": 23,
               "name": "filtered",
               "type": {
                 "kind": "external-named",
@@ -848,7 +873,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 28,
+              "symbol": 29,
               "name": "subscription",
               "type": {
                 "kind": "external-named",
@@ -1960,7 +1985,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 32,
+              "symbol": 33,
               "name": "count",
               "type": {
                 "kind": "named",
@@ -2032,7 +2057,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 33,
+              "symbol": 34,
               "name": "current",
               "type": {
                 "kind": "named",
@@ -2112,16 +2137,18 @@
                 {
                   "name": "console",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Console",
+                    "canonical": "std/prelude::Console",
                     "arguments": []
                   }
                 }
               ]
             },
             "failure": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "ConsoleError",
+              "canonical": "std/prelude::ConsoleError",
               "arguments": []
             },
             "success": {

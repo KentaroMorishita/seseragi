@@ -43,12 +43,12 @@ fn fixtures_with_the_same_clock_reading_keep_sources_and_cleanup_isolated() {
     let second = Fixture::with_nonce(0);
     fs::write(
         first.0.join("main.ssrg"),
-        "pub effect fn main = println 1\n",
+        "pub effect fn main = println \"1\"\n",
     )
     .unwrap();
     fs::write(
         second.0.join("main.ssrg"),
-        "pub effect fn main = println 2\n",
+        "pub effect fn main = println \"2\"\n",
     )
     .unwrap();
     drop(first);

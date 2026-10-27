@@ -15,6 +15,7 @@ mod canonical;
 mod characters;
 mod comparisons;
 mod concurrency;
+mod console;
 mod display;
 mod effect_conversions;
 mod effect_defects;
@@ -720,6 +721,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.console_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.die_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
@@ -756,6 +760,9 @@ impl Backend<'_> {
                 success,
                 ..
             } => {
+                if let Some(value) = self.console_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.die_operation(expr, scope)? {
                     return Ok(value);
                 }
@@ -782,7 +789,6 @@ impl Backend<'_> {
                     );
                 }
                 self.require_operation(operation);
-                check_console_argument(operation, arguments)?;
                 format!(
                     "native_operation({}, vec![{}])",
                     quoted(operation),
@@ -795,6 +801,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.console_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.die_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -807,7 +816,6 @@ impl Backend<'_> {
                 if let Some(value) = self.filesystem_call(expr, scope)? {
                     return Ok(value);
                 }
-                check_console_argument(callee, arguments)?;
                 if let Some(callable) = scope.callables.get(callee) {
                     self.validate_local_arguments(callable, arguments, evidence, scope)?;
                 }
@@ -857,6 +865,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.console_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.die_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -887,7 +898,6 @@ impl Backend<'_> {
                 if equality::is_equality(callee) && !scope.contains(callee) {
                     return self.equality_call(expr, scope);
                 }
-                check_console_argument(callee, arguments)?;
                 if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
                     return self.local_call(expr, scope);
                 }
@@ -1507,47 +1517,4 @@ fn operation_arity(name: &str) -> Option<usize> {
         | "std/ref::modify" => 2,
         _ => return None,
     })
-}
-
-fn check_console_argument(name: &str, arguments: &[CoreExpr]) -> Result<()> {
-    if matches!(
-        name,
-        "console.print"
-            | "console.println"
-            | "std/prelude::print"
-            | "std/prelude::println"
-            | "std/console::print"
-            | "std/console::println"
-            | "std/console::error"
-            | "std/console::errorLine"
-    ) {
-        if let Some(value) = arguments.first() {
-            if !console_scalar(value) {
-                return Err("Rust backend: native Console currently requires String or a primitive scalar; render values with Show or std/console.printValue".into());
-            }
-        }
-    }
-    Ok(())
-}
-fn console_scalar(value: &CoreExpr) -> bool {
-    match value {
-        CoreExpr::Unit { .. }
-        | CoreExpr::Integer { .. }
-        | CoreExpr::Float64 { .. }
-        | CoreExpr::Boolean { .. }
-        | CoreExpr::String { .. }
-        | CoreExpr::Char { .. }
-        | CoreExpr::Template { .. } => true,
-        CoreExpr::Variable { type_ref, .. }
-        | CoreExpr::Call { type_ref, .. }
-        | CoreExpr::FieldAccess { type_ref, .. }
-        | CoreExpr::Binary { type_ref, .. }
-        | CoreExpr::Unary { type_ref, .. }
-        | CoreExpr::If { type_ref, .. }
-        | CoreExpr::Decision { type_ref, .. } => {
-            matches!(type_ref, CoreType::Named { name, arguments } if arguments.is_empty() && matches!(name.as_str(), "String" | "Int" | "Float" | "Bool" | "Unit" | "Char"))
-        }
-        CoreExpr::Sequence { result, .. } => console_scalar(result),
-        _ => false,
-    }
 }

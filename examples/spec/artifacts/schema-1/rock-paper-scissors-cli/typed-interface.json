@@ -341,8 +341,11 @@
                   {
                     "name": "console",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Console",
+                      "canonical": "std/prelude::Console",
+                      "providerModule": "std/console",
+                      "providerExport": "Console",
                       "arguments": []
                     }
                   }

@@ -20,7 +20,7 @@ fn local_effect_functions_reject_invalid_contracts_and_later_capture() {
     for source in [
         "pub fn task -> Effect<{}, Never, Int> = { effect fn get = do { pure later }; let later = 1; get () }",
         "pub fn task -> Effect<{}, Never, Int> = { effect fn get -> Int = pure True; get () }",
-        "pub fn task -> Effect<{}, Never, Unit> = { effect fn get -> Unit = println 1; get () }",
+        "pub fn task -> Effect<{}, Never, Unit> = { effect fn get -> Unit = println \"1\"; get () }",
         "pub fn task -> Effect<{}, Never, Unit> = { effect fn get = 1; get () }",
     ] {
         let result = compile_module(CompileInput::new("local.ssrg", "fixture/local", source));
@@ -38,7 +38,7 @@ fn local_effect_project_supports_newline_separated_declarations() {
 
 #[test]
 fn declaration_only_local_effect_block_returns_unit_and_exposes_effect_hover() {
-    let source = "pub fn silent -> Unit = { effect fn ignored = println 1 }";
+    let source = "pub fn silent -> Unit = { effect fn ignored = println \"1\" }";
     let result = compile_module(CompileInput::new("local.ssrg", "fixture/local", source));
     assert!(result.is_ok(), "{result:#?}");
     let analysis =
@@ -61,15 +61,15 @@ fn declaration_only_local_effect_block_returns_unit_and_exposes_effect_hover() {
 fn local_contract_diagnostics_match_module_level_effect_diagnostics() {
     for (declaration, key) in [
         (
-            "effect fn get -> Unit = println 1",
+            "effect fn get -> Unit = println \"1\"",
             "effect.explicit-environment-mismatch",
         ),
         (
-            "effect fn get -> Unit with console: Console = println 1",
+            "effect fn get -> Unit with console: Console = println \"1\"",
             "effect.explicit-failure-mismatch",
         ),
         (
-            "effect fn get with console: Console = println 1",
+            "effect fn get with console: Console = println \"1\"",
             "effect.compact-contract-clause",
         ),
     ] {

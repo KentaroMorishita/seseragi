@@ -1613,6 +1613,18 @@
     },
     {
       "id": 85,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 86,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -1624,7 +1636,7 @@
       }
     },
     {
-      "id": 86,
+      "id": 87,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -1636,8 +1648,8 @@
       }
     },
     {
-      "id": 87,
-      "identity": "artifact/big-int-apis::local(87)",
+      "id": 88,
+      "identity": "artifact/big-int-apis::local(88)",
       "name": "line",
       "module": "artifact/big-int-apis",
       "namespace": "value",
@@ -1649,7 +1661,7 @@
       "typeName": "String"
     },
     {
-      "id": 88,
+      "id": 89,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1909,7 +1921,7 @@
         "start": 2688,
         "end": 2692
       },
-      "symbol": 87
+      "symbol": 88
     },
     {
       "range": {
@@ -2977,17 +2989,24 @@
     },
     {
       "range": {
+        "start": 2653,
+        "end": 2660
+      },
+      "symbol": 85
+    },
+    {
+      "range": {
         "start": 2643,
         "end": 2647
       },
-      "symbol": 85
+      "symbol": 86
     },
     {
       "range": {
         "start": 2667,
         "end": 2679
       },
-      "symbol": 86
+      "symbol": 87
     },
     {
       "range": {
@@ -3001,14 +3020,14 @@
         "start": 2710,
         "end": 2717
       },
-      "symbol": 88
+      "symbol": 89
     },
     {
       "range": {
         "start": 2718,
         "end": 2722
       },
-      "symbol": 87
+      "symbol": 88
     }
   ],
   "typeOccurrences": [

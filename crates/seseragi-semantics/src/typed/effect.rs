@@ -194,22 +194,7 @@ fn explicit_environment_field(
     requirement: &SurfaceRequirement,
     resolution: &TypedResolution<'_>,
 ) -> TypedRecordField {
-    match requirement {
-        SurfaceRequirement::Shorthand { name, .. } => environment_field(&lower_first(name), name),
-        SurfaceRequirement::Field { name, type_ref, .. } => TypedRecordField {
-            name: name.clone(),
-            optional: false,
-            type_ref: resolution.semantic_value_from_type_ref(type_ref).type_ref,
-        },
-    }
-}
-
-fn environment_field(field_name: &str, type_name: &str) -> TypedRecordField {
-    TypedRecordField {
-        name: field_name.to_owned(),
-        optional: false,
-        type_ref: named_type(type_name),
-    }
+    resolution.explicit_requirement_field(requirement)
 }
 
 fn named_type(name: &str) -> TypedType {
@@ -221,10 +206,6 @@ fn named_type(name: &str) -> TypedType {
 
 fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
     matches!(type_ref, TypedType::Named { name, .. } if name == expected_name)
-}
-
-fn lower_first(value: &str) -> String {
-    seseragi_syntax::unicode::lowercase_first(value)
 }
 
 /// Join lazy Effect branch contracts without inventing a union failure type.

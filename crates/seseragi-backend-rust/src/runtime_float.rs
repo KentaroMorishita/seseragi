@@ -56,20 +56,6 @@ fn native_float_dictionary(identity: &'static str) -> V {
     })
 }
 
-fn native_float_console(value: f64) -> String {
-    if value == 0.0 {
-        return "0".into();
-    }
-    let text = native_float_format(value);
-    if let Some((coefficient, exponent)) = text.split_once('e') {
-        return format!(
-            "{coefficient}e{}{exponent}",
-            if exponent.starts_with('-') { "" } else { "+" }
-        );
-    }
-    text.strip_suffix(".0").unwrap_or(&text).to_owned()
-}
-
 fn native_float_compare(left: f64, right: f64) -> std::cmp::Ordering {
     use std::cmp::Ordering::*;
     if left.is_nan() {

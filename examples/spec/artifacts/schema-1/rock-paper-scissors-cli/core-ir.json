@@ -4,12 +4,35 @@
   "module": "artifact/rock-paper-scissors-cli",
   "externalTypeBindings": [
     {
-      "spelling": "StdinError",
-      "canonical": "std/prelude::StdinError"
+      "arity": 0,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "provider": {
+        "module": "std/prelude",
+        "export": "String"
+      }
     },
     {
+      "arity": 0,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "provider": {
+        "module": "std/console",
+        "export": "Console"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ConsoleError",
-      "canonical": "std/prelude::ConsoleError"
+      "canonical": "std/prelude::ConsoleError",
+      "provider": {
+        "module": "std/console",
+        "export": "ConsoleError"
+      }
+    },
+    {
+      "spelling": "StdinError",
+      "canonical": "std/prelude::StdinError"
     }
   ],
   "adts": [
@@ -143,8 +166,9 @@
           "symbol": "artifact/rock-paper-scissors-cli::ConsoleFailure",
           "name": "ConsoleFailure",
           "payload": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "ConsoleError",
+            "canonical": "std/prelude::ConsoleError",
             "arguments": []
           },
           "origin": {
@@ -1706,8 +1730,9 @@
                 {
                   "name": "console",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Console",
+                    "canonical": "std/prelude::Console",
                     "arguments": []
                   }
                 }
@@ -2230,8 +2255,9 @@
               {
                 "name": "console",
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Console",
+                  "canonical": "std/prelude::Console",
                   "arguments": []
                 }
               }
@@ -2254,8 +2280,9 @@
               "type": {
                 "kind": "function",
                 "parameter": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "ConsoleError",
+                  "canonical": "std/prelude::ConsoleError",
                   "arguments": []
                 },
                 "result": {
@@ -2280,16 +2307,18 @@
                   {
                     "name": "console",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Console",
+                      "canonical": "std/prelude::Console",
                       "arguments": []
                     }
                   }
                 ]
               },
               "failure": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "ConsoleError",
+                "canonical": "std/prelude::ConsoleError",
                 "arguments": []
               },
               "success": {

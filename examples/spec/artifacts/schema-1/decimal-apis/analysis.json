@@ -2448,6 +2448,18 @@
     },
     {
       "id": 124,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 125,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -2459,7 +2471,7 @@
       }
     },
     {
-      "id": 125,
+      "id": 126,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -2471,8 +2483,8 @@
       }
     },
     {
-      "id": 126,
-      "identity": "artifact/decimal-apis::local(126)",
+      "id": 127,
+      "identity": "artifact/decimal-apis::local(127)",
       "name": "line",
       "module": "artifact/decimal-apis",
       "namespace": "value",
@@ -2484,7 +2496,7 @@
       "typeName": "String"
     },
     {
-      "id": 127,
+      "id": 128,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -2800,7 +2812,7 @@
         "start": 4255,
         "end": 4259
       },
-      "symbol": 126
+      "symbol": 127
     },
     {
       "range": {
@@ -4337,17 +4349,24 @@
     },
     {
       "range": {
+        "start": 4220,
+        "end": 4227
+      },
+      "symbol": 124
+    },
+    {
+      "range": {
         "start": 4210,
         "end": 4214
       },
-      "symbol": 124
+      "symbol": 125
     },
     {
       "range": {
         "start": 4234,
         "end": 4246
       },
-      "symbol": 125
+      "symbol": 126
     },
     {
       "range": {
@@ -4361,14 +4380,14 @@
         "start": 4277,
         "end": 4284
       },
-      "symbol": 127
+      "symbol": 128
     },
     {
       "range": {
         "start": 4285,
         "end": 4289
       },
-      "symbol": 126
+      "symbol": 127
     }
   ],
   "typeOccurrences": [

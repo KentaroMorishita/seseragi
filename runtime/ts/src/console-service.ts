@@ -20,18 +20,18 @@ export type ConsoleError = {
 }
 
 export function print(
-  value: unknown
+  value: string
 ): Effect<ConsoleEnvironment, ConsoleError, Unit> {
   return serviceEffect((environment: ConsoleEnvironment) =>
-    environment.console.print(String(value))
+    environment.console.print(consoleText(value))
   )
 }
 
 export function println(
-  value: unknown
+  value: string
 ): Effect<ConsoleEnvironment, ConsoleError, Unit> {
   return serviceEffect((environment: ConsoleEnvironment) =>
-    environment.console.println(String(value))
+    environment.console.println(consoleText(value))
   )
 }
 
@@ -43,18 +43,18 @@ export function printValue<Value>(
 }
 
 export function error(
-  value: unknown
+  value: string
 ): Effect<ConsoleEnvironment, ConsoleError, Unit> {
   return serviceEffect((environment: ConsoleEnvironment) =>
-    environment.console.error(String(value))
+    environment.console.error(consoleText(value))
   )
 }
 
 export function errorLine(
-  value: unknown
+  value: string
 ): Effect<ConsoleEnvironment, ConsoleError, Unit> {
   return serviceEffect((environment: ConsoleEnvironment) =>
-    environment.console.errorLine(String(value))
+    environment.console.errorLine(consoleText(value))
   )
 }
 
@@ -62,4 +62,13 @@ export function flush(): Effect<ConsoleEnvironment, ConsoleError, Unit> {
   return serviceEffect((environment: ConsoleEnvironment) =>
     environment.console.flush()
   )
+}
+
+function consoleText(value: string): string {
+  if (typeof value !== "string") {
+    throw new TypeError(
+      "Console requires String; render values with show or printValue"
+    )
+  }
+  return value
 }

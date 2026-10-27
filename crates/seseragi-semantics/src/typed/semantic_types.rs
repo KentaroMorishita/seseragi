@@ -190,6 +190,9 @@ pub(crate) fn semantic_values_are_compatible(
     if crate::standard::standard_type_coercion(&expected.type_ref, &actual.type_ref) {
         return true;
     }
+    if let Some(same) = intrinsic_primitive_relation(expected, actual) {
+        return same;
+    }
     if let (
         TypedType::Record {
             fields: expected_fields,
@@ -388,6 +391,9 @@ pub(crate) fn semantic_values_have_same_identity(
     expected: &SemanticValueType,
     actual: &SemanticValueType,
 ) -> bool {
+    if let Some(same) = intrinsic_primitive_relation(expected, actual) {
+        return same;
+    }
     match (&expected.key, &actual.key) {
         (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => false,
         (
@@ -544,6 +550,72 @@ pub(crate) fn semantic_values_have_same_identity(
             expected.type_ref == actual.type_ref
         }
         _ => false,
+    }
+}
+
+/// Literal/standard primitive values already have a checked intrinsic identity
+/// (`Other` with the primitive value encoding). Public schemes can retain its
+/// explicit canonical owner instead. Compare those two encodings without
+/// looking their spelling up again in a caller's nominal or binder scope.
+fn intrinsic_primitive_identity(value: &SemanticValueType) -> Option<&'static str> {
+    let canonical = match (&value.type_ref, &value.key) {
+        (TypedType::Named { name, arguments }, SemanticTypeKey::Other) if arguments.is_empty() => {
+            return match name.as_str() {
+                "Unit" => Some("std/prelude::Unit"),
+                "Never" => Some("std/prelude::Never"),
+                "Bool" => Some("std/prelude::Bool"),
+                "Int" => Some("std/prelude::Int"),
+                "Float" => Some("std/prelude::Float"),
+                "Char" => Some("std/prelude::Char"),
+                "String" => Some("std/prelude::String"),
+                _ => None,
+            };
+        }
+        (
+            TypedType::ExternalNamed {
+                canonical,
+                arguments,
+                ..
+            },
+            SemanticTypeKey::ExternalNominal {
+                canonical: owner,
+                arguments: children,
+            },
+        ) if canonical == owner && arguments.is_empty() && children.is_empty() => canonical,
+        _ => return None,
+    };
+    match canonical.as_str() {
+        "std/prelude::Unit" => Some("std/prelude::Unit"),
+        "std/prelude::Never" => Some("std/prelude::Never"),
+        "std/prelude::Bool" => Some("std/prelude::Bool"),
+        "std/prelude::Int" => Some("std/prelude::Int"),
+        "std/prelude::Float" => Some("std/prelude::Float"),
+        "std/prelude::Char" => Some("std/prelude::Char"),
+        "std/prelude::String" => Some("std/prelude::String"),
+        _ => None,
+    }
+}
+
+fn intrinsic_primitive_relation(
+    expected: &SemanticValueType,
+    actual: &SemanticValueType,
+) -> Option<bool> {
+    let binder = |value: &SemanticValueType| {
+        matches!(
+            value.key,
+            SemanticTypeKey::TypeParameter(_) | SemanticTypeKey::SchemeParameter(_)
+        )
+    };
+    match (
+        intrinsic_primitive_identity(expected),
+        intrinsic_primitive_identity(actual),
+    ) {
+        (Some(expected), Some(actual)) => Some(expected == actual),
+        (Some(_), None) if binder(actual) => Some(false),
+        (None, Some(_)) if binder(expected) => Some(false),
+        // Unknown/recovery keys, nominal owners and compound types retain the
+        // existing dedicated rules. Other alone never proves a primitive.
+        _ => None,
     }
 }
 
@@ -1287,6 +1359,18 @@ fn semantic_key_from_type_ref(
                             .collect(),
                     }
                 }
+                Some((_, SymbolKind::Prelude, Some(canonical)))
+                    if arguments.is_empty()
+                        && matches!(
+                            canonical,
+                            "std/prelude::Console" | "std/prelude::ConsoleError"
+                        ) =>
+                {
+                    SemanticTypeKey::ExternalNominal {
+                        canonical: canonical.into(),
+                        arguments: vec![],
+                    }
+                }
                 Some((target, SymbolKind::Type, Some(canonical)))
                     if crate::prelude::is_external_nominal_type(canonical)
                         || resolved.imports.iter().any(|import| {
@@ -1524,6 +1608,88 @@ fn named_generic_key(name: &str, arguments: Vec<SemanticValueType>) -> SemanticT
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn checked_intrinsic_encodings_share_an_owner_but_never_a_scoped_binder() {
+        for name in ["String", "Int", "Unit"] {
+            let literal = SemanticValueType {
+                type_ref: TypedType::Named {
+                    name: name.into(),
+                    arguments: vec![],
+                },
+                key: SemanticTypeKey::Other,
+            };
+            let canonical = SemanticValueType {
+                type_ref: TypedType::ExternalNamed {
+                    name: name.into(),
+                    canonical: format!("std/prelude::{name}"),
+                    arguments: vec![],
+                },
+                key: SemanticTypeKey::ExternalNominal {
+                    canonical: format!("std/prelude::{name}"),
+                    arguments: vec![],
+                },
+            };
+            assert!(semantic_values_are_compatible(&canonical, &literal));
+            assert!(semantic_values_have_same_identity(&literal, &canonical));
+            for key in [
+                SemanticTypeKey::TypeParameter(SymbolId(7)),
+                SemanticTypeKey::SchemeParameter(name.into()),
+            ] {
+                let binder = SemanticValueType {
+                    type_ref: literal.type_ref.clone(),
+                    key,
+                };
+                for primitive in [&literal, &canonical] {
+                    assert!(!semantic_values_are_compatible(primitive, &binder));
+                    assert!(!semantic_values_are_compatible(&binder, primitive));
+                    assert!(!semantic_values_have_same_identity(primitive, &binder));
+                    assert!(!semantic_values_have_same_identity(&binder, primitive));
+                }
+                assert!(semantic_values_have_same_identity(&binder, &binder));
+            }
+            let mut other_owner = canonical.clone();
+            other_owner.type_ref = TypedType::ExternalNamed {
+                name: name.into(),
+                canonical: format!("other::{name}"),
+                arguments: vec![],
+            };
+            other_owner.key = SemanticTypeKey::ExternalNominal {
+                canonical: format!("other::{name}"),
+                arguments: vec![],
+            };
+            assert!(!semantic_values_are_compatible(&literal, &other_owner));
+            assert!(!semantic_values_have_same_identity(
+                &canonical,
+                &other_owner
+            ));
+        }
+    }
+
+    #[test]
+    fn intrinsic_identity_does_not_reinterpret_unknown_or_invalid_recovery() {
+        let literal = SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "String".into(),
+                arguments: vec![],
+            },
+            key: SemanticTypeKey::Other,
+        };
+        let recovery = SemanticValueType {
+            type_ref: TypedType::Hole,
+            key: SemanticTypeKey::Invalid,
+        };
+        assert!(semantic_values_are_compatible(&literal, &recovery));
+        assert!(!semantic_values_have_same_identity(&literal, &recovery));
+        let unknown = SemanticValueType {
+            type_ref: TypedType::Hole,
+            key: SemanticTypeKey::Other,
+        };
+        assert_eq!(
+            semantic_values_are_compatible(&literal, &unknown),
+            structural_types_are_compatible(&literal.type_ref, &unknown.type_ref)
+        );
+    }
 
     #[test]
     fn function_arguments_retain_scoped_binders_and_nominal_owners() {
