@@ -57,22 +57,23 @@ pub(super) fn collect_external_type_bindings(
         let Some(canonical) = &symbol.canonical else {
             continue;
         };
-        if !is_external_nominal_type(canonical) {
+        let prelude_provider = (symbol.kind == SymbolKind::Prelude)
+            .then(|| crate::prelude::provider_type_for_prelude(canonical))
+            .flatten();
+        if !is_external_nominal_type(canonical) && prelude_provider.is_none() {
             continue;
         }
-        let provider = (symbol.kind == SymbolKind::Prelude
-            && matches!(
-                canonical.as_str(),
-                "std/prelude::Console" | "std/prelude::ConsoleError"
-            ))
-        .then(|| ExternalTypeProvider {
-            module: "std/console".into(),
-            export: symbol.spelling.clone(),
-        });
+        let provider = prelude_provider
+            .as_ref()
+            .map(|provider| ExternalTypeProvider {
+                module: provider.module.into(),
+                export: provider.export.into(),
+            });
         let binding = ExternalTypeBinding {
             arity: provider.as_ref().map(|_| 0),
             spelling: reference.spelling.clone(),
-            canonical: canonical.clone(),
+            canonical: prelude_provider
+                .map_or_else(|| canonical.clone(), |provider| provider.canonical.into()),
             provider,
         };
         if !bindings.contains(&binding) {

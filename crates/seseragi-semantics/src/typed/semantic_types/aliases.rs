@@ -560,15 +560,14 @@ fn external_canonical(
     alias_target: bool,
 ) -> Option<String> {
     let canonical = canonical(resolved, symbol)?;
-    if matches!(
-        canonical.as_str(),
-        "std/prelude::Console" | "std/prelude::ConsoleError"
-    ) && resolved
+    if resolved
         .symbols
         .iter()
         .any(|candidate| candidate.id == symbol && candidate.kind == SymbolKind::Prelude)
     {
-        return Some(canonical);
+        if let Some(provider) = crate::prelude::provider_type_for_prelude(&canonical) {
+            return Some(provider.canonical.into());
+        }
     }
     resolved
         .imports

@@ -3154,6 +3154,29 @@ pub fn type_constructor_arity(spelling: &str) -> Option<u32> {
     }
 }
 
+pub(crate) struct PreludeProviderType {
+    pub(crate) canonical: &'static str,
+    pub(crate) module: &'static str,
+    pub(crate) export: &'static str,
+}
+
+/// The selected implicit Prelude declaration can denote a service owned by a
+/// standard provider module. Callers must first prove SymbolKind::Prelude;
+/// source names, local aliases and scoped parameters cannot establish this map.
+pub(crate) fn provider_type_for_prelude(canonical: &str) -> Option<PreludeProviderType> {
+    let (canonical, module, export) = match canonical {
+        "std/prelude::Console" => ("std/prelude::Console", "std/console", "Console"),
+        "std/prelude::ConsoleError" => ("std/prelude::ConsoleError", "std/console", "ConsoleError"),
+        "std/prelude::FileSystem" => ("std/fs::FileSystem", "std/fs", "FileSystem"),
+        _ => return None,
+    };
+    Some(PreludeProviderType {
+        canonical,
+        module,
+        export,
+    })
+}
+
 pub(crate) fn is_external_nominal_type(canonical: &str) -> bool {
     matches!(
         canonical,

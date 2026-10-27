@@ -1361,13 +1361,12 @@ fn semantic_key_from_type_ref(
                 }
                 Some((_, SymbolKind::Prelude, Some(canonical)))
                     if arguments.is_empty()
-                        && matches!(
-                            canonical,
-                            "std/prelude::Console" | "std/prelude::ConsoleError"
-                        ) =>
+                        && crate::prelude::provider_type_for_prelude(canonical).is_some() =>
                 {
+                    let provider = crate::prelude::provider_type_for_prelude(canonical)
+                        .expect("the resolved Prelude provider was checked above");
                     SemanticTypeKey::ExternalNominal {
-                        canonical: canonical.into(),
+                        canonical: provider.canonical.into(),
                         arguments: vec![],
                     }
                 }
