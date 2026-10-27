@@ -1,3 +1,4 @@
+use sha2::{Digest, Sha256};
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -473,6 +474,19 @@ fn provider_receipt(directory: &Path) {
     );
     assert_eq!(providers[0]["selection"], "command-line");
     assert_eq!(
+        providers[0]["contractVersion"],
+        serde_json::json!({"major":1,"minor":0})
+    );
+    assert_eq!(
+        providers[0]["contractDigest"],
+        format!(
+            "{:x}",
+            Sha256::digest(include_bytes!(
+                "../../../examples/spec/artifacts/provider-contract-schema-1/clock/contract.json"
+            ))
+        )
+    );
+    assert_eq!(
         providers[0]["supportedOperations"],
         serde_json::json!(["std/clock::Clock#sleep"])
     );
@@ -631,15 +645,32 @@ fn provider_preflight_never_publishes_implicit_or_javascript_clock_selection() {
 #[test]
 fn unused_clock_pin_keeps_existing_non_clock_entry_while_used_clock_pin_is_rejected() {
     let scratch = Scratch::new();
-    for (case, body, accepted) in [
-        ("unused", "pub fn main -> Int = 42\n", true),
-        ("used", ORIGINAL, false),
+    for (case, body, accepted, identity) in [
+        (
+            "unused",
+            "pub fn main -> Int = 42\n",
+            true,
+            "seseragi/runtime-bun#clock",
+        ),
+        ("used", ORIGINAL, false, "seseragi/runtime-bun#clock"),
+        (
+            "unused-native-pin",
+            "pub fn main -> Int = 42\n",
+            true,
+            "seseragi/runtime-native#clock-sleep",
+        ),
+        (
+            "used-native-pin",
+            ORIGINAL,
+            false,
+            "seseragi/runtime-native#clock-sleep",
+        ),
     ] {
         let package = scratch.0.join(case);
         fs::create_dir(&package).unwrap();
         fs::create_dir(package.join("src")).unwrap();
         fs::write(package.join("src/main.ssrg"), body).unwrap();
-        fs::write(package.join("seseragi.toml"), "[package]\nname = \"acceptance/pinned-clock\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[run]\nentry = \"main\"\ntarget = \"process\"\n[providers]\n\"std/clock::Clock\" = \"seseragi/runtime-bun#clock\"\n").unwrap();
+        fs::write(package.join("seseragi.toml"), format!("[package]\nname = \"acceptance/pinned-clock\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[run]\nentry = \"main\"\ntarget = \"process\"\n[providers]\n\"std/clock::Clock\" = {identity:?}\n")).unwrap();
         lock(&package, &scratch.0);
         let frozen = ["seseragi.lock", "seseragi.toml", "src/main.ssrg"]
             .map(|name| (name, fs::read(package.join(name)).unwrap()));
@@ -681,6 +712,85 @@ fn unused_clock_pin_keeps_existing_non_clock_entry_while_used_clock_pin_is_rejec
                 fs::read(package.join(name)).unwrap(),
                 bytes,
                 "{case}/{name}"
+            );
+        }
+    }
+    for case in ["dependency-pin", "root-artifact", "dependency-artifact"] {
+        let package = scratch.0.join(case);
+        copy_package(
+            &root().join("examples/spec/fixtures/rust-backend-projects/delayed-file-transform"),
+            &package,
+        );
+        let owner = if case == "root-artifact" {
+            package.clone()
+        } else {
+            package.join("vendor/operation")
+        };
+        let manifest = owner.join("seseragi.toml");
+        let mut body = fs::read_to_string(&manifest).unwrap();
+        let mut artifact_path = None;
+        if case == "dependency-pin" {
+            body.push_str("\n[providers]\n\"std/clock::Clock\" = \"seseragi/runtime-bun#clock\"\n");
+        } else {
+            body.push_str("\n[provider]\nartifacts = [\"clock.json\"]\n");
+            let path = owner.join("clock.json");
+            let mut provider: serde_json::Value = serde_json::from_slice(include_bytes!("../../../examples/spec/artifacts/provider-manifest-schema-1/bun-clock/provider.json")).unwrap();
+            provider["identity"] = serde_json::Value::String(
+                if case == "root-artifact" {
+                    "acceptance/delayed-file-transform#clock"
+                } else {
+                    "acceptance/delayed-file-operation#clock"
+                }
+                .into(),
+            );
+            fs::write(&path, serde_json::to_vec_pretty(&provider).unwrap()).unwrap();
+            artifact_path = Some(path);
+        }
+        fs::write(&manifest, body).unwrap();
+        lock(&package, &scratch.0);
+        seseragi_project::read_and_validate_lockfile(&package).unwrap();
+        let mut frozen = [
+            "seseragi.lock",
+            "seseragi.toml",
+            "src/main.ssrg",
+            "vendor/operation/seseragi.toml",
+            "vendor/operation/src/operation.ssrg",
+        ]
+        .map(|name| package.join(name))
+        .into_iter()
+        .collect::<Vec<_>>();
+        frozen.extend(artifact_path);
+        let frozen = frozen
+            .into_iter()
+            .map(|path| {
+                let bytes = fs::read(&path).unwrap();
+                (path, bytes)
+            })
+            .collect::<Vec<_>>();
+        let output = scratch.0.join(format!("{case}-output")).join("program.rs");
+        let result = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "emit-rust"])
+                .arg(&package)
+                .args(["--entry", "main", "--provider", PROVIDER, "--output"])
+                .arg(&output),
+            &scratch.0,
+        );
+        assert!(!result.status.success(), "{case}: {result:?}");
+        assert!(result.stdout.is_empty());
+        assert!(!output.parent().unwrap().exists());
+        let error = String::from_utf8_lossy(&result.stderr);
+        assert!(
+            error.contains("SES-RUST-0001")
+                && error.contains("seseragi.toml:")
+                && error.contains("provider artifacts and dependency provider selections"),
+            "{case}: {error}"
+        );
+        for (path, bytes) in frozen {
+            assert_eq!(
+                fs::read(path).unwrap(),
+                bytes,
+                "{case}: source and provider metadata remain unchanged"
             );
         }
     }

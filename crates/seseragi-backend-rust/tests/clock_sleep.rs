@@ -4,6 +4,7 @@ use seseragi_backend_rust::{
 };
 use seseragi_driver::{compile_core_module, CompileInput};
 use seseragi_lowering::{CoreCallSignature, CoreExpr, CoreModule, CoreRecordField, CoreType};
+use sha2::{Digest, Sha256};
 
 fn checked(source: &str) -> CoreModule {
     compile_core_module(CompileInput::new("clock-雫🙂.ssrg", "native/clock", source))
@@ -80,6 +81,15 @@ fn delayed_transform_requires_explicit_finite_binding_and_records_contract() {
     );
     assert_eq!(provider.supported_operations, ["std/clock::Clock#sleep"]);
     assert_eq!(provider.contract_digest.len(), 64);
+    assert_eq!(
+        provider.contract_digest,
+        format!(
+            "{:x}",
+            Sha256::digest(include_bytes!(
+                "../../../examples/spec/artifacts/provider-contract-schema-1/clock/contract.json"
+            ))
+        )
+    );
     assert!(provider
         .contract_digest
         .bytes()
