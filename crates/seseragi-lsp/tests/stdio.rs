@@ -834,7 +834,9 @@ fn selected_operator_notices_do_not_mark_ordinary_addition_or_offer_invalid_rena
             json!({"jsonrpc":"2.0","id":5,"method":"textDocument/semanticTokens/full","params":{"textDocument":{"uri":uri}}}),
             json!({"jsonrpc":"2.0","id":6,"method":"textDocument/prepareRename","params":{"textDocument":{"uri":uri},"position":selected}}),
             json!({"jsonrpc":"2.0","id":7,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":selected}}),
-            json!({"jsonrpc":"2.0","id":8,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","id":8,"method":"textDocument/rename","params":{"textDocument":{"uri":uri},"position":selected,"newName":"++"}}),
+            json!({"jsonrpc":"2.0","id":9,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":ordinary}}),
+            json!({"jsonrpc":"2.0","id":10,"method":"shutdown"}),
             json!({"jsonrpc":"2.0","method":"exit"}),
         ];
         let messages = run_server(&input);
@@ -881,6 +883,16 @@ fn selected_operator_notices_do_not_mark_ordinary_addition_or_offer_invalid_rena
         );
         assert!(response(&messages, 6)["result"].is_null());
         assert!(!response(&messages, 7)["result"].is_null());
+        let declaration = source.find("operator +").unwrap() + "operator ".len();
+        assert_eq!(
+            response(&messages, 7)["result"],
+            json!({"uri": uri, "range": {"start": locate(declaration), "end": locate(declaration + 1)}})
+        );
+        // The distributed pre-metadata LSP already rejects textual rename of
+        // built-in operators. Adding exact implementation navigation preserves
+        // that boundary rather than silently changing the selected trait.
+        assert!(response(&messages, 8)["result"].is_null());
+        assert!(response(&messages, 9)["result"].is_null());
         let facts = messages
             .iter()
             .filter(|message| message["method"] == "textDocument/publishDiagnostics")
