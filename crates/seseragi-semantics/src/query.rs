@@ -474,9 +474,27 @@ impl AnalysisDocument {
         self.scopes
             .iter()
             .filter(|scope| contains(scope.origin, position))
-            .min_by_key(|scope| span_length(scope.origin))
+            .min_by_key(|scope| {
+                (
+                    span_length(scope.origin),
+                    std::cmp::Reverse(self.scope_depth(scope.id)),
+                )
+            })
             .map(|scope| scope.id)
             .or(Some(ScopeId(0)))
+    }
+
+    fn scope_depth(&self, mut scope: ScopeId) -> usize {
+        let mut depth = 0;
+        while let Some(parent) = self
+            .scopes
+            .get(scope.0 as usize)
+            .and_then(|scope| scope.parent)
+        {
+            depth += 1;
+            scope = parent;
+        }
+        depth
     }
 }
 
