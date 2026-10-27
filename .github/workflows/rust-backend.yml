@@ -175,6 +175,9 @@ jobs:
         with:
           node-version: "24.22.1"
       - run: bun install --frozen-lockfile
+      - name: Preserve smoke failures and bound Windows temporary cleanup
+        if: runner.os == 'Windows'
+        run: bun test scripts/native-release.test.ts
       - name: Drain pending file stages, close real handles and join exceptional workers
         run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
       - name: Keep locked provider identities identical across checkout hosts

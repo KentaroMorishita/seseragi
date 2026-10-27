@@ -164,6 +164,9 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
+      - name: Preserve smoke failures and bound Windows temporary cleanup
+        if: runner.os == 'Windows'
+        run: bun test scripts/native-release.test.ts
       - name: Build CLI and LSP
         run: cargo build --locked --release -p seseragi-cli -p seseragi-lsp
       - name: Package, extract, and smoke test native archive

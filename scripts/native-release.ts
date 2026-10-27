@@ -3,15 +3,17 @@ import {
   chmod,
   copyFile,
   mkdir,
-  mkdtemp,
   readdir,
   readFile,
   rm,
   stat,
   writeFile,
 } from "node:fs/promises"
-import { tmpdir } from "node:os"
 import path from "node:path"
+import {
+  type NativeReleaseCommandRunner,
+  withNativeReleaseDirectory,
+} from "./native-release-process"
 import { readReleaseContract, repositoryRoot } from "./release-contract"
 
 export const nativeReleaseTargets = {
@@ -73,12 +75,13 @@ export function hostNativeReleaseTarget(
   platform = process.platform,
   architecture = process.arch
 ): NativeReleaseTarget {
-  const target = {
+  const targets: Record<string, NativeReleaseTarget | undefined> = {
     "darwin:arm64": "darwin-arm64",
     "darwin:x64": "darwin-x64",
     "linux:x64": "linux-x64",
     "win32:x64": "win32-x64",
-  }[`${platform}:${architecture}`]
+  }
+  const target = targets[`${platform}:${architecture}`]
   if (!target) fail(`unsupported host ${platform}/${architecture}`)
   return target as NativeReleaseTarget
 }
@@ -95,21 +98,6 @@ export function nativeChecksumName(
   target: NativeReleaseTarget
 ): string {
   return `${nativeArchiveName(version, target)}.sha256`
-}
-
-function run(command: string[], cwd = repositoryRoot): string {
-  const result = Bun.spawnSync(command, {
-    cwd,
-    env: { ...process.env, COPYFILE_DISABLE: "1" },
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  const stdout = result.stdout.toString()
-  const stderr = result.stderr.toString()
-  if (!result.success) {
-    fail(`${command.join(" ")} failed${stderr ? `:\n${stderr.trim()}` : ""}`)
-  }
-  return stdout
 }
 
 function powershellLiteral(value: string): string {
@@ -175,12 +163,9 @@ export async function packageNativeRelease(
   const { target, version, cli, lsp, output } = await releaseInputs(options)
   const contract = targetContract(target)
   const [cliName, lspName] = binaryNames(target)
-  const temporary = await mkdtemp(
-    path.join(tmpdir(), "seseragi-native-package-")
-  )
   const archive = path.join(output, nativeArchiveName(version, target))
 
-  try {
+  return withNativeReleaseDirectory("package", async (temporary, execute) => {
     const staging = path.join(temporary, "staging")
     await mkdir(staging)
     await copyFile(cli, path.join(staging, cliName))
@@ -199,24 +184,30 @@ export async function packageNativeRelease(
     await rm(`${archive}.sha256`, { force: true })
 
     if (contract.archiveExtension === "tar.gz") {
-      run([
-        "tar",
-        "-C",
-        staging,
-        "-czf",
-        archive,
-        cliName,
-        lspName,
-        "UNICODE-LICENSE",
-      ])
+      await execute(
+        [
+          "tar",
+          "-C",
+          staging,
+          "-czf",
+          archive,
+          cliName,
+          lspName,
+          "UNICODE-LICENSE",
+        ],
+        repositoryRoot
+      )
     } else {
-      run([
-        "powershell.exe",
-        "-NoProfile",
-        "-NonInteractive",
-        "-Command",
-        `Compress-Archive -LiteralPath ${[cliName, lspName, "UNICODE-LICENSE"].map((name) => powershellLiteral(path.join(staging, name))).join(",")} -DestinationPath ${powershellLiteral(archive)} -Force`,
-      ])
+      await execute(
+        [
+          "powershell.exe",
+          "-NoProfile",
+          "-NonInteractive",
+          "-Command",
+          `Compress-Archive -LiteralPath ${[cliName, lspName, "UNICODE-LICENSE"].map((name) => powershellLiteral(path.join(staging, name))).join(",")} -DestinationPath ${powershellLiteral(archive)} -Force`,
+        ],
+        repositoryRoot
+      )
     }
 
     return {
@@ -225,9 +216,7 @@ export async function packageNativeRelease(
       target,
       version,
     }
-  } finally {
-    await rm(temporary, { recursive: true, force: true })
-  }
+  })
 }
 
 async function extractedFiles(directory: string): Promise<string[]> {
@@ -243,17 +232,14 @@ async function extractedFiles(directory: string): Promise<string[]> {
   return files.sort()
 }
 
-function verifyExecutable(executable: string, arguments_: string[]): string {
-  const result = Bun.spawnSync([executable, ...arguments_], {
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  if (!result.success) {
-    fail(
-      `${path.basename(executable)} ${arguments_.join(" ")} failed: ${result.stderr.toString().trim()}`
-    )
-  }
-  return result.stdout.toString().trim()
+async function verifyExecutable(
+  execute: NativeReleaseCommandRunner,
+  executable: string,
+  arguments_: string[]
+): Promise<string> {
+  return (
+    await execute([executable, ...arguments_], repositoryRoot)
+  ).stdout.trim()
 }
 
 export async function verifyNativeRelease(
@@ -266,112 +252,114 @@ export async function verifyNativeRelease(
   )
   const checksum = `${archive}.sha256`
   const [cliName, lspName] = binaryNames(target)
-  const temporary = await mkdtemp(
-    path.join(tmpdir(), "seseragi-native-verify-")
-  )
+  return withNativeReleaseDirectory(
+    "verification",
+    async (temporary, execute) => {
+      await verifyChecksum(archive, checksum)
+      if (contract.archiveExtension === "tar.gz") {
+        await execute(["tar", "-xzf", archive, "-C", temporary], repositoryRoot)
+      } else {
+        await execute(
+          [
+            "powershell.exe",
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            `Expand-Archive -LiteralPath ${powershellLiteral(archive)} -DestinationPath ${powershellLiteral(temporary)} -Force`,
+          ],
+          repositoryRoot
+        )
+      }
 
-  try {
-    await verifyChecksum(archive, checksum)
-    if (contract.archiveExtension === "tar.gz") {
-      run(["tar", "-xzf", archive, "-C", temporary])
-    } else {
-      run([
-        "powershell.exe",
-        "-NoProfile",
-        "-NonInteractive",
-        "-Command",
-        `Expand-Archive -LiteralPath ${powershellLiteral(archive)} -DestinationPath ${powershellLiteral(temporary)} -Force`,
-      ])
-    }
+      const expectedFiles = [cliName, lspName, "UNICODE-LICENSE"].sort()
+      const actualFiles = await extractedFiles(temporary)
+      if (JSON.stringify(actualFiles) !== JSON.stringify(expectedFiles)) {
+        fail(
+          `${path.basename(archive)} must contain only ${expectedFiles.join(", ")}; received ${actualFiles.join(", ")}`
+        )
+      }
 
-    const expectedFiles = [cliName, lspName, "UNICODE-LICENSE"].sort()
-    const actualFiles = await extractedFiles(temporary)
-    if (JSON.stringify(actualFiles) !== JSON.stringify(expectedFiles)) {
-      fail(
-        `${path.basename(archive)} must contain only ${expectedFiles.join(", ")}; received ${actualFiles.join(", ")}`
-      )
-    }
-
-    const cli = path.join(temporary, cliName)
-    if (
-      (await readFile(path.join(temporary, "UNICODE-LICENSE"), "utf8")) !==
-      (await readFile(
-        path.join(repositoryRoot, "runtime/unicode/LICENSE"),
-        "utf8"
-      ))
-    ) {
-      fail("archive Unicode license notice differs from the pinned data notice")
-    }
-    const lsp = path.join(temporary, lspName)
-    if (contract.archiveExtension === "tar.gz") {
-      for (const executable of [cli, lsp]) {
-        const mode = (await stat(executable)).mode & 0o777
-        if (mode !== 0o755) {
-          fail(
-            `${path.basename(executable)} must be mode 755, received ${mode.toString(8)}`
-          )
+      const cli = path.join(temporary, cliName)
+      if (
+        (await readFile(path.join(temporary, "UNICODE-LICENSE"), "utf8")) !==
+        (await readFile(
+          path.join(repositoryRoot, "runtime/unicode/LICENSE"),
+          "utf8"
+        ))
+      ) {
+        fail(
+          "archive Unicode license notice differs from the pinned data notice"
+        )
+      }
+      const lsp = path.join(temporary, lspName)
+      if (contract.archiveExtension === "tar.gz") {
+        for (const executable of [cli, lsp]) {
+          const mode = (await stat(executable)).mode & 0o777
+          if (mode !== 0o755) {
+            fail(
+              `${path.basename(executable)} must be mode 755, received ${mode.toString(8)}`
+            )
+          }
         }
       }
-    }
 
-    const cliVersion = verifyExecutable(cli, ["--version"])
-    if (
-      !cliVersion.includes(`seseragi ${version}`) ||
-      !cliVersion.includes(`target ${contract.rustTarget}`)
-    ) {
-      fail(
-        `seseragi --version does not match ${version}/${contract.rustTarget}`
-      )
-    }
-    if (options.release && !cliVersion.includes("(release,")) {
-      fail(`seseragi is not a clean v${version} release build`)
-    }
-    const cliMetadata = JSON.parse(
-      verifyExecutable(cli, ["--version-json"])
-    ) as Record<string, unknown>
-    if (
-      cliMetadata.name !== "seseragi" ||
-      cliMetadata.version !== version ||
-      cliMetadata.target !== contract.rustTarget
-    ) {
-      fail(
-        `seseragi --version-json does not match ${version}/${contract.rustTarget}`
-      )
-    }
-    if (
-      options.release &&
-      (cliMetadata.channel !== "release" ||
-        cliMetadata.dirty !== false ||
-        cliMetadata.releaseTag !== `v${version}`)
-    ) {
-      fail(`seseragi --version-json is not a clean v${version} release build`)
-    }
+      const cliVersion = await verifyExecutable(execute, cli, ["--version"])
+      if (
+        !cliVersion.includes(`seseragi ${version}`) ||
+        !cliVersion.includes(`target ${contract.rustTarget}`)
+      ) {
+        fail(
+          `seseragi --version does not match ${version}/${contract.rustTarget}`
+        )
+      }
+      if (options.release && !cliVersion.includes("(release,")) {
+        fail(`seseragi is not a clean v${version} release build`)
+      }
+      const cliMetadata = JSON.parse(
+        await verifyExecutable(execute, cli, ["--version-json"])
+      ) as Record<string, unknown>
+      if (
+        cliMetadata.name !== "seseragi" ||
+        cliMetadata.version !== version ||
+        cliMetadata.target !== contract.rustTarget
+      ) {
+        fail(
+          `seseragi --version-json does not match ${version}/${contract.rustTarget}`
+        )
+      }
+      if (
+        options.release &&
+        (cliMetadata.channel !== "release" ||
+          cliMetadata.dirty !== false ||
+          cliMetadata.releaseTag !== `v${version}`)
+      ) {
+        fail(`seseragi --version-json is not a clean v${version} release build`)
+      }
 
-    const lspVersion = JSON.parse(
-      verifyExecutable(lsp, ["--version-json"])
-    ) as Record<string, unknown>
-    if (
-      lspVersion.name !== "seseragi-lsp" ||
-      lspVersion.version !== version ||
-      lspVersion.target !== contract.rustTarget
-    ) {
-      fail(
-        `seseragi-lsp --version-json does not match ${version}/${contract.rustTarget}`
-      )
-    }
-    if (
-      options.release &&
-      (lspVersion.channel !== "release" ||
-        lspVersion.dirty !== false ||
-        lspVersion.releaseTag !== `v${version}`)
-    ) {
-      fail(`seseragi-lsp is not a clean v${version} release build`)
-    }
+      const lspVersion = JSON.parse(
+        await verifyExecutable(execute, lsp, ["--version-json"])
+      ) as Record<string, unknown>
+      if (
+        lspVersion.name !== "seseragi-lsp" ||
+        lspVersion.version !== version ||
+        lspVersion.target !== contract.rustTarget
+      ) {
+        fail(
+          `seseragi-lsp --version-json does not match ${version}/${contract.rustTarget}`
+        )
+      }
+      if (
+        options.release &&
+        (lspVersion.channel !== "release" ||
+          lspVersion.dirty !== false ||
+          lspVersion.releaseTag !== `v${version}`)
+      ) {
+        fail(`seseragi-lsp is not a clean v${version} release build`)
+      }
 
-    return { archive, checksum, target, version }
-  } finally {
-    await rm(temporary, { recursive: true, force: true })
-  }
+      return { archive, checksum, target, version }
+    }
+  )
 }
 
 function parseOptions(arguments_: string[]): NativeReleaseOptions {
@@ -443,7 +431,7 @@ async function main(): Promise<void> {
 
 if (import.meta.main) {
   main().catch((error) => {
-    console.error(error instanceof Error ? error.message : error)
+    console.error(error)
     process.exitCode = 1
   })
 }

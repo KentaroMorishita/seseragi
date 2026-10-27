@@ -61,6 +61,19 @@ sample・Tourのコマンド検証は、processの終了とstdout・stderrのEOF
 POSIXでは親が先に終了しても所有process groupを停止します。親終了後の出力、
 非zero終了、Unicode、期限と後始末は`scripts/sample-cli-process.test.ts`で確認します。
 
+配布archiveの検証は、展開したCLI/LSPとarchive commandのprocess終了・stdioのcloseを
+確認してから一時directoryを削除します。一時的な`EBUSY`等で失敗した場合も、削除を試みるのは
+最初の試行を含めて最大6回です。再試行の待機は合計1500msまでです。
+検証とcleanupが両方失敗した場合は両方のエラーを保持し、
+検証が成功してもcleanupが失敗すれば失敗です。`bun test scripts/native-release.test.ts`で
+正常・非zero・検証拒否・cleanup失敗と子process終了後の実ファイル削除を確認します。
+cleanup失敗時は、実行したcommandのPID・終了code・exit/closeの観測も残します。
+Windows固有のhandle競合の確認は、Windows CIと正式Releaseの実archive検証も必要です。
+
+PostgreSQL Provider bundleの鮮度確認は、実際に解決された`node_modules`のsection comment
+だけを正規化します。`bun test scripts/postgres-provider-bundle.test.ts`で通常installと
+深いworktreeのsymlink installの生成bytes一致、実行コード変更時の拒否を確認します。
+
 Playgroundのruntime resolverは`runtime/ts/package.json`のexportsと
 `runtime/providers/package.json`の`runtime-browser/*` exportsから生成します。
 `bun run --cwd apps/playground runtime:generate`で更新し、`runtime:check`と

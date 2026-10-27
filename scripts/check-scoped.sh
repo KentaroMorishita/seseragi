@@ -205,6 +205,7 @@ run_conformance_checks() {
   echo "Checking project fixture roles and availability..."
   check_step bun run fixtures:check
   echo "Checking the bundled PostgreSQL external Provider..."
+  check_step bun test scripts/postgres-provider-bundle.test.ts
   check_step bun run postgres:bundle:check
   echo "Checking the pinned timezone database bundle..."
   check_step bun run timezones:bundle:check
@@ -249,6 +250,7 @@ run_release_contract_metadata_check() {
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
     scripts/native-release.ts \
+    scripts/native-release-process.ts \
     scripts/check-generated-types.ts \
     scripts/release-shapes.ts \
     scripts/release-shapes.test.ts \
@@ -385,9 +387,11 @@ run_full_checks() {
     scripts/check-project-fixtures.ts \
     scripts/check-project-fixtures.test.ts \
     scripts/postgres-provider-bundle.ts \
+    scripts/postgres-provider-bundle.test.ts \
     scripts/timezone-bundle.ts \
     scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
+    scripts/native-release-process.ts \
     scripts/check-generated-types.ts \
     scripts/release-shapes.ts \
     scripts/release-shapes.test.ts \
