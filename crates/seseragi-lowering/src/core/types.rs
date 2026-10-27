@@ -73,6 +73,72 @@ impl CoreType {
         }
     }
 
+    /// A private witness key for a proved structural body. String lengths keep
+    /// canonical names unambiguous without treating a debug/display spelling
+    /// as identity or adding a serialization dependency to lowering.
+    pub(crate) fn type_function_key(&self) -> Option<String> {
+        fn encode(value: &CoreType) -> Option<String> {
+            Some(match value {
+                CoreType::TypeFunction {
+                    parameter_kinds,
+                    body,
+                } => format!(
+                    "L[{}]({})",
+                    parameter_kinds
+                        .iter()
+                        .map(u32::to_string)
+                        .collect::<Vec<_>>()
+                        .join(","),
+                    encode(body)?,
+                ),
+                CoreType::TypeFunctionParameter { depth, index } => format!("P{depth}:{index};"),
+                CoreType::ExternalNamed {
+                    canonical,
+                    arguments,
+                    ..
+                } => format!(
+                    "N{}:{canonical}[{}]",
+                    canonical.len(),
+                    arguments
+                        .iter()
+                        .map(encode)
+                        .collect::<Option<Vec<_>>>()?
+                        .join(","),
+                ),
+                CoreType::Tuple { elements } => format!(
+                    "T[{}]",
+                    elements
+                        .iter()
+                        .map(encode)
+                        .collect::<Option<Vec<_>>>()?
+                        .join(",")
+                ),
+                CoreType::Record { closed, fields } => format!(
+                    "R{}[{}]",
+                    u8::from(*closed),
+                    fields
+                        .iter()
+                        .map(|field| Some(format!(
+                            "{}:{}:{}({})",
+                            field.name.len(),
+                            field.name,
+                            u8::from(field.optional),
+                            encode(&field.type_ref)?,
+                        )))
+                        .collect::<Option<Vec<_>>>()?
+                        .join(","),
+                ),
+                CoreType::Function { parameter, result } => {
+                    format!("F({})({})", encode(parameter)?, encode(result)?)
+                }
+                CoreType::Named { .. } | CoreType::Hole | CoreType::RequirementMerge { .. } => {
+                    return None
+                }
+            })
+        }
+        encode(&self.normalized_type_function()?)
+    }
+
     /// Validate lexical slot scopes and discard display-only nominal names.
     /// Canonical leaves remain structured; this never resolves a type name.
     pub fn normalized_type_function(&self) -> Option<Self> {
@@ -294,6 +360,22 @@ mod tests {
             canonical: "provider/model::Pair".into(),
             arguments: vec![CoreType::TypeFunctionParameter { depth: 0, index: 0 }],
         };
+        let key = function(canonical.clone()).type_function_key().unwrap();
+        let mut renamed = canonical.clone();
+        let CoreType::ExternalNamed { name, .. } = &mut renamed else {
+            unreachable!()
+        };
+        *name = "RenamedInConsumer".into();
+        assert_eq!(function(renamed.clone()).type_function_key().unwrap(), key);
+        let CoreType::ExternalNamed {
+            canonical: other_owner,
+            ..
+        } = &mut renamed
+        else {
+            unreachable!()
+        };
+        *other_owner = "other/provider::Pair".into();
+        assert_ne!(function(renamed).type_function_key().unwrap(), key);
         let normalized = function(canonical).normalized_type_function().unwrap();
         assert!(normalized.contains_type_function());
         let CoreType::TypeFunction { body, .. } = normalized else {

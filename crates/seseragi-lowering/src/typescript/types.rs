@@ -56,8 +56,7 @@ impl TypeScriptTypeContext {
         else {
             return None;
         };
-        let normalized = value.normalized_type_function()?;
-        let identity = format!("type-function:{}", serde_json::to_string(&normalized).ok()?);
+        let identity = format!("type-function:{}", value.type_function_key()?);
         let mut body_context = self.clone();
         body_context
             .type_function_scopes
