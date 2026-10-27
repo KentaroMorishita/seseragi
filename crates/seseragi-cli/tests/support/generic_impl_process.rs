@@ -2,6 +2,7 @@ use std::{
     fs::{self, File},
     path::{Path, PathBuf},
     process::{Child, Command, Output, Stdio},
+    sync::atomic::{AtomicUsize, Ordering},
     time::{Duration, Instant},
 };
 
@@ -9,6 +10,7 @@ struct OwnedChild {
     child: Child,
     stdout: PathBuf,
     stderr: PathBuf,
+    record: Option<PathBuf>,
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
@@ -22,11 +24,32 @@ impl OwnedChild {
             use std::os::unix::process::CommandExt;
             command.process_group(0);
         }
-        Self {
+        let mut owned = Self {
             child: command.spawn().unwrap(),
             stdout,
             stderr,
-        }
+            record: None,
+        };
+        owned.record = std::env::var_os("SESERAGI_GENERIC_IMPL_PROCESS_EVIDENCE").map(|root| {
+            static NEXT: AtomicUsize = AtomicUsize::new(0);
+            let root = PathBuf::from(root);
+            fs::create_dir_all(&root).unwrap();
+            let path = root.join(format!(
+                "{}-{}.json",
+                std::process::id(),
+                NEXT.fetch_add(1, Ordering::Relaxed)
+            ));
+            fs::write(
+                &path,
+                serde_json::to_vec_pretty(&serde_json::json!({
+                "pid":owned.child.id(), "command":format!("{command:?}"), "waited":false
+                }))
+                .unwrap(),
+            )
+            .unwrap();
+            path
+        });
+        owned
     }
     fn wait(&mut self, timeout: Duration) -> Output {
         let deadline = Instant::now() + timeout;
@@ -43,11 +66,21 @@ impl OwnedChild {
             std::thread::sleep(Duration::from_millis(10));
         };
         self.child.wait().unwrap();
-        Output {
+        let output = Output {
             status,
             stdout: fs::read(&self.stdout).unwrap(),
             stderr: fs::read(&self.stderr).unwrap(),
+        };
+        if let Some(record) = &self.record {
+            let mut value: serde_json::Value =
+                serde_json::from_slice(&fs::read(record).unwrap()).unwrap();
+            value["waited"] = true.into();
+            value["exit"] = output.status.code().into();
+            value["stdout"] = String::from_utf8_lossy(&output.stdout).into_owned().into();
+            value["stderr"] = String::from_utf8_lossy(&output.stderr).into_owned().into();
+            fs::write(record, serde_json::to_vec_pretty(&value).unwrap()).unwrap();
         }
+        output
     }
 }
 impl Drop for OwnedChild {
