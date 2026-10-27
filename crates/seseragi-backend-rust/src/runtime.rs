@@ -377,6 +377,8 @@ fn binary(op: &str, a: V, b: V) -> V {
         ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value(a, b)),
         ("%", V::Int(a), V::Int(b)) => V::Int(int_remainder_value(a, b)),
         ("==", V::Int(a), V::Int(b)) => V::Bool(int_equal_value(a, b)),
+        ("==", V::Bool(a), V::Bool(b)) => V::Bool(a == b),
+        ("==", V::Unit, V::Unit) => V::Bool(true),
         ("==", V::Text(a), V::Text(b)) => V::Bool(a.get() == b.get()),
         ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
         ("<=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(a, b)),
@@ -405,7 +407,9 @@ fn native_operator_dictionary(identity: &'static str) -> V {
             "std/int::Mul" => arithmetic!("mul", "*"),
             "std/int::Div" => arithmetic!("div", "/"),
             "std/int::Rem" => arithmetic!("rem", "%"),
-            "std/int::Eq" | "std/string::Eq" => arithmetic!("eq", "=="),
+            "std/int::Eq" | "std/bool::Eq" | "std/unit::Eq" | "std/string::Eq" => {
+                arithmetic!("eq", "==")
+            }
             _ => panic!("Rust ABI: unsupported arithmetic dictionary"),
         }
     })
@@ -426,6 +430,23 @@ mod tests {
         assert!(!binary("==", V::text("é"), V::text("é")).boolean());
         drop(saved);
         drop(equal);
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn bool_and_unit_equality_preserve_curried_value_stages() {
+        clear_dictionaries();
+        let bool_eq = native_operator_dictionary("std/bool::Eq").field("eq");
+        let true_stage = bool_eq.apply(V::Bool(true));
+        assert!(true_stage.apply(V::Bool(true)).boolean());
+        assert!(!true_stage.apply(V::Bool(false)).boolean());
+        let unit_eq = native_operator_dictionary("std/unit::Eq").field("eq");
+        let unit_stage = unit_eq.apply(V::Unit);
+        assert!(matches!(&unit_stage, V::Fun(_)));
+        assert!(unit_stage.apply(V::Unit).boolean());
+        assert!(unit_stage.apply(V::Unit).boolean());
+        drop((unit_stage, unit_eq, true_stage, bool_eq));
         clear_dictionaries();
         assert_eq!(LIVE.with(Cell::get), 0);
     }

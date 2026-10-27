@@ -191,7 +191,7 @@ fn primitive_eq_literals_saved_and_partial_calls_match_raw_strict_ts_and_native(
             "../../../examples/spec/fixtures/rust-backend/primitive-equality-literals.ssrg"
         ),
         &expected,
-        false,
+        true,
     );
     let expected_native = [
         "False", "False", "False", "False", "True", "False", "False", "False", "False", "False",

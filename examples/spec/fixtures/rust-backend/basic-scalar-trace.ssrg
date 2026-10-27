@@ -1,0 +1,22 @@
+fn leftBool -> Bool = True
+fn rightBool -> Bool = False
+fn leftUnit -> Unit = ()
+fn rightUnit -> Unit = ()
+fn marker -> Unit = ()
+
+pub fn boolBinary -> Bool = leftBool () == rightBool ()
+pub fn boolNegated -> Bool = leftBool () != rightBool ()
+pub fn unitBinary -> Bool = eq (leftUnit ()) (rightUnit ())
+pub fn unitNegated -> Bool = leftUnit () != rightUnit ()
+pub fn boolPartial -> Bool = {
+  let equal: Bool -> Bool -> Bool = (==)
+  let saved = equal (leftBool ())
+  let checkpoint = marker ()
+  saved (rightBool ())
+}
+pub fn unitPartial -> Bool = {
+  let saved: Unit -> Bool = eq (leftUnit ())
+  let checkpoint = marker ()
+  saved (rightUnit ())
+}
+pub fn notProbe -> Bool = !(leftBool ())

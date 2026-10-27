@@ -42,7 +42,10 @@ fresh Bun／Nodeとnativeの出力、cold再実行、引数評価時のDefectと
 と`--test inherited_equality`で確認します。異なるliteral・保存したmethod・部分適用を
 元の生成TS両profileでstrict検査し、fresh Bun／Nodeで実行します。Int／String／Charの
 native対照と、直接method・部分適用のsource一回評価・順序も保ちます。
-Bool／UnitのEqと前置`!`のnative対応は、このTS修復の受入範囲に含めません。
+Bool／UnitのEqと前置`!`のnative契約は、backend／CLIの`--test basic_scalars`と
+上記の元literal fixtureで確認します。Unitも二つのsource引数を評価し、保存した部分適用、
+別nominal ownerとscoped binderの拒否、Ref・cold再実行・Failure／Defect後の解放を保ちます。
+前置operatorは関数値として参照できません。標準Float Eqは提供しません。
 共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
 
 importしたADTのpayload identityと注釈付きEq部分適用は、driverの

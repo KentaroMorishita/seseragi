@@ -11,6 +11,7 @@ use seseragi_lowering::{
 use std::collections::{BTreeMap, BTreeSet};
 
 mod arrays;
+mod booleans;
 mod canonical;
 mod characters;
 mod comparisons;
@@ -1192,6 +1193,12 @@ impl Backend<'_> {
                     self.expr(right, scope)?
                 )
             }
+            CoreExpr::Unary {
+                operator,
+                operand,
+                type_ref,
+                ..
+            } if operator == "!" => self.boolean_not(operand, type_ref, scope)?,
             CoreExpr::Unary {
                 operator, operand, ..
             } if operator == "-" => format!("negate({})", self.expr(operand, scope)?),

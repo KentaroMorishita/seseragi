@@ -1,0 +1,54 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message |> effects.recover ignore
+
+fn token -> Unit = ()
+fn brokenBool -> Bool = { let overflow = 9007199254740991 + 1; False }
+fn brokenToken -> Unit = { let overflow = 9007199254740991 + 1; () }
+
+effect fn delayed value: Bool -> Bool with Console = do {
+  say "cold"
+  effects.succeed value
+}
+
+effect fn acquire held: (Unit -> Bool) -> (Unit -> Bool) with Console = do {
+  say "acquired"
+  effects.succeed held
+}
+
+effect fn release held: (Unit -> Bool) -> Unit with Console =
+  say ("release:" + show (held ()))
+
+effect fn body mode: String -> String with Console fails String = effects.scoped $ do {
+  let equalUnit: Unit -> Unit -> Bool = eq
+  let held = equalUnit ()
+  stored <- refs.make held
+  effects.acquireRelease (acquire held) release
+  same <- refs.get stored
+  let unitSame = () == token ()
+  say ("unit:" + show (same ()) + ":" + show unitSame)
+  let equalBool: Bool -> Bool -> Bool = eq
+  let sameFlag = equalBool True
+  flags <- refs.make False
+  current <- refs.get flags
+  let cold = delayed (sameFlag current)
+  say "created"
+  first <- cold
+  second <- cold
+  let inverted = !first
+  say ("flag:" + show inverted + ":" + show (!second))
+  if mode == "fail" then effects.fail "body failure"
+  else if mode == "defect" then effects.die "body defect"
+  else effects.succeed "done"
+}
+
+effect fn report error: String -> String with Console =
+  effects.succeed ("Failure: " + error)
+
+pub effect fn main = do {
+  result <- body "ready" |> effects.recover report
+  println result
+}
