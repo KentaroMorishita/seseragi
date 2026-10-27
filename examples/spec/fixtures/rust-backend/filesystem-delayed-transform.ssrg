@@ -44,12 +44,13 @@ fails String = effects.scoped $ do {
     |> effects.fromEither |> effects.mapError durationError
   effects.acquireRelease (acquire zero) (release cleanup mode)
   append "pending\n"
-  deferred.succeed () ready
   let convert: Int -> Either<time.DurationError, time.Duration> = time.milliseconds
   pause <- convert millis
     |> effects.fromEither |> effects.mapError durationError
   let wait = clock.sleep
-  wait pause
+  let paused = wait pause
+  deferred.succeed () ready
+  paused
   if mode == "defect" then effects.die "delayed body defect" else do {
     input <- paths.child "input.txt" (paths.current ())
       |> effects.fromEither |> effects.mapError show
@@ -71,6 +72,7 @@ fails String = do {
   if mode == "cancel" || mode == "cancel-cleanup-defect" then do {
     child <- effects.fork plan
     deferred.await ready
+    effects.yieldNow ()
     sibling <- time.milliseconds 1
       |> effects.fromEither |> effects.mapError durationError
     clock.sleep sibling
