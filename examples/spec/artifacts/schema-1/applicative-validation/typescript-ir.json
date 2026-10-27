@@ -2,6 +2,53 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/applicative-validation",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Errors",
+        "identity": "artifact/applicative-validation::Errors",
+        "exported": true,
+        "parameters": [
+          "E"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Validation",
+        "identity": "artifact/applicative-validation::Validation",
+        "exported": true,
+        "parameters": [
+          "E",
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            },
+            {
+              "kind": "kind-argument",
+              "index": 1
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.adt",
     "core.string",

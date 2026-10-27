@@ -194,6 +194,7 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
     let import_lines = render_import_lines(module).len();
     import_lines
         + 1 // Unicode ABI guard precedes every source declaration.
+        + super::render_kind_declarations(module).lines().count()
         + usize::from(
             import_lines > 0
                 && (!module.adts.is_empty()
@@ -575,6 +576,33 @@ mod tests {
     }
 
     #[test]
+    fn higher_kind_helpers_preserve_source_declaration_mappings() {
+        let source = "pub type Box<F<_>, A> = | Box F<A>\npub alias Wrapped<F<_>, A> = Box<F, A>\npub fn value -> Int = 42\n";
+        let module = crate::lower_core_module_to_typescript_ir(crate::lower_typed_module(
+            seseragi_semantics::type_module("artifact/kind-map/main.ssrg", source),
+        ));
+        assert!(module.higher_kinds.is_some());
+        let generated = super::super::render_typescript(&module);
+        let (names, mappings) =
+            module_names_and_mappings(&module, source, &runtime_helper_names(&module));
+        for (name, prefix, original_line) in [
+            ("Wrapped", "export type Wrapped", 1),
+            ("value", "export const value", 2),
+        ] {
+            let actual_line = generated
+                .lines()
+                .position(|line| line.starts_with(prefix))
+                .unwrap();
+            let mapping = mappings
+                .iter()
+                .find(|mapping| names[mapping.name_index] == name)
+                .unwrap();
+            assert_eq!(mapping.generated_line, actual_line, "{name}");
+            assert_eq!(mapping.original_line, original_line, "{name}");
+        }
+    }
+
+    #[test]
     fn counts_type_only_and_side_effect_source_import_lines_before_declarations() {
         let origin = SourceSpan {
             source: "main.ssrg".to_owned(),
@@ -582,6 +610,7 @@ mod tests {
             end: 20,
         };
         let module = TypeScriptModule {
+            higher_kinds: None,
             foreign_modules: Vec::new(),
             schema: 1,
             stage: "typescript-ir".to_owned(),

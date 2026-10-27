@@ -4,6 +4,13 @@ import { intHash as _ssrg_int_hash_dictionary, tupleHash as _ssrg_tuple_hash_dic
 import { type List as List } from "@seseragi/runtime/list"
 $ssrg$assertUnicodeVersion("17.0.0")
 
+interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
+type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })["type"];
+type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
+export interface $ssrg$kind$Nested extends $ssrg$Kind<readonly [unknown]> { readonly type: Nested<this["args"][0]> }
+export interface $ssrg$kind$Phantom extends $ssrg$Kind<readonly [unknown]> { readonly type: Phantom<this["args"][0]> }
+export interface $ssrg$kind$Profile extends $ssrg$Kind<readonly [unknown]> { readonly type: Profile<this["args"][0]> }
+export interface $ssrg$kind$Tree extends $ssrg$Kind<readonly [unknown]> { readonly type: Tree<this["args"][0]> }
 export type UserId =
   | { readonly tag: "UserId"; readonly value: number };
 export const UserId = (value: number): UserId => ({ tag: "UserId", value } as const);

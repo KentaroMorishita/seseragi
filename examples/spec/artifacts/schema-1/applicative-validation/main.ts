@@ -4,6 +4,11 @@ import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
 
+interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
+type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })["type"];
+type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
+export interface $ssrg$kind$Errors extends $ssrg$Kind<readonly [unknown]> { readonly type: Errors<this["args"][0]> }
+export interface $ssrg$kind$Validation extends $ssrg$Kind<readonly [unknown, unknown]> { readonly type: Validation<this["args"][0], this["args"][1]> }
 export type Errors<E> =
   | { readonly tag: "One"; readonly value: E }
   | { readonly tag: "More"; readonly value: readonly [E, Errors<E>] };

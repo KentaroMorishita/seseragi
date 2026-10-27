@@ -160,6 +160,18 @@
             "start": 11,
             "end": 17
           }
+        },
+        {
+          "imported": "$ssrg$kind$Box",
+          "local": "$ssrg$kind$Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/opaque-struct::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 24
+          }
         }
       ],
       "origin": {

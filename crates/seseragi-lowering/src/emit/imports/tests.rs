@@ -17,6 +17,7 @@ fn binding(type_only: bool) -> TypeScriptSourceImportBinding {
 }
 fn lines(reexports: Vec<TypeScriptSourceImportBinding>) -> Vec<String> {
     render_source_imports(&TypeScriptModule {
+        higher_kinds: None,
         schema: 1,
         stage: "typescript-ir".into(),
         module: "facade".into(),

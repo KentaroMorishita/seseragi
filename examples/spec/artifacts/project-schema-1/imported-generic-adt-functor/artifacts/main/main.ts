@@ -1,4 +1,4 @@
-import { type Box, Boxed, transform, __ssrg$instance$Functor$0 } from "./domain.js"
+import { type Box, Boxed, transform, __ssrg$instance$Functor$0, type $ssrg$kind$Box } from "./domain.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"

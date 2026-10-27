@@ -829,18 +829,60 @@ fn collect_callables(
             collect_local_callables(body, resolved, semantic_types, &mut callables);
         }
     }
+    // Constructor payload/result keys already use the declaration's scoped
+    // SymbolIds. Keep its parameter kinds too: reconstructing every binder as
+    // a value parameter loses F<_> before the checked call signature reaches
+    // Typed HIR/Core. Match the resolved owner, not a constructor spelling.
+    let mut constructor_parameters = resolved
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            let (name_span, parameters) = match declaration {
+                SurfaceDecl::Type {
+                    name_span,
+                    type_parameters,
+                    ..
+                }
+                | SurfaceDecl::Newtype {
+                    name_span,
+                    type_parameters,
+                    ..
+                } => (name_span, type_parameters),
+                _ => return None,
+            };
+            let owner = resolved
+                .symbols
+                .iter()
+                .find(|symbol| symbol.kind == SymbolKind::Type && symbol.origin == *name_span)?;
+            Some((owner.id, parameters.clone()))
+        })
+        .collect::<BTreeMap<_, _>>();
+    constructor_parameters.extend(
+        resolved
+            .imports
+            .iter()
+            .filter(|import| import.export.namespace == "type")
+            .map(|import| (import.symbol, import.export.scheme.type_parameters.clone())),
+    );
     for (constructor, signature) in semantic_types.constructor_signatures() {
+        let type_parameters = semantic_types
+            .constructor(constructor)
+            .and_then(|(owner, _)| constructor_parameters.get(&owner))
+            .cloned()
+            .unwrap_or_else(|| {
+                signature
+                    .type_parameters
+                    .into_iter()
+                    .map(seseragi_syntax::TypeParameter::value)
+                    .collect()
+            });
         callables.insert(
             constructor,
             TopLevelPureFunction {
                 symbol: signature.symbol,
                 trait_identity: None,
                 trait_method: None,
-                type_parameters: signature
-                    .type_parameters
-                    .into_iter()
-                    .map(seseragi_syntax::TypeParameter::value)
-                    .collect(),
+                type_parameters,
                 constraints: Vec::new(),
                 constraint_identities: Vec::new(),
                 parameters: signature

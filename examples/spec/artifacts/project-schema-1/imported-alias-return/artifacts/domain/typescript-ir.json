@@ -2,6 +2,66 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-alias-return::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Again",
+        "identity": "fixture/imported-alias-return::domain::Again",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Again",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Box",
+        "identity": "fixture/imported-alias-return::domain::Box",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Wrapped",
+        "identity": "fixture/imported-alias-return::domain::Wrapped",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Wrapped",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.adt"
   ],

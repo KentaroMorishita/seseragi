@@ -44,6 +44,7 @@ examples/spec/fixtures/rust-backend-projects/imported-unit-*/** text eol=lf
 
 # The facade rename fixture lock pins manifest and source bytes.
 examples/spec/fixtures/rust-backend-projects/facade-generic-renames/** text eol=lf
+examples/spec/fixtures/rust-backend-projects/hkt-data-projection/** text eol=lf
 
 # Program stdout fixtures are byte-exact oracles, including line endings.
 *.stdout -text

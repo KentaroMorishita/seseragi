@@ -2,6 +2,48 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/derived-show-debug-nominal",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Envelope",
+        "identity": "artifact/derived-show-debug-nominal::Envelope",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Packet",
+        "identity": "artifact/derived-show-debug-nominal::Packet",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.adt",
     "core.int",

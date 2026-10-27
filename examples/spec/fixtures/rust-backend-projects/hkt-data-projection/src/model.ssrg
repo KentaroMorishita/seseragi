@@ -1,0 +1,22 @@
+import * as effects from "std/effect"
+
+pub type Box<F<_>, A> = | Box F<A>
+pub struct Holder<G<_>, A> { value: G<A> }
+pub alias Wrapped<F<_>, A> = Box<F, A>
+pub alias Chained<F<_>, A> = Wrapped<F, A>
+pub alias StateT<S, M<_>, A> = S -> M<(A, S)>
+
+pub fn unwrap<F<_>, A> value: Box<F, A> -> F<A> = match value {
+  Box item -> item
+}
+pub fn field<G<_>, A> owner: Holder<G, A> -> G<A> = owner.value
+pub fn make<A> value: Maybe<A> -> Holder<Maybe, A> = Holder { value }
+
+pub alias ClosedEffects<E, A> = Wrapped<Effect<{}, E>, A>
+pub fn cold value: Int -> ClosedEffects<Never, Int> = Box (effects.succeed value)
+
+pub alias Plain<A> = Maybe<A>
+pub opaque struct Sealed<F<_>, A> { value: F<A> }
+
+pub fn sectionValue owner: Holder<Either<_, Int>, String> -> Either<String, Int> =
+  owner.value

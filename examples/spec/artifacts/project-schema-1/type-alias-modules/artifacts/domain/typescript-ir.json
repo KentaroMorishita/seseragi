@@ -2,6 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/type-alias-modules::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Pair",
+        "identity": "fixture/type-alias-modules::domain::Pair",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Pair",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [],
   "aliases": [
     {

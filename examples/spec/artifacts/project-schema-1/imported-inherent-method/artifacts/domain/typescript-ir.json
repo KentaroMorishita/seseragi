@@ -2,6 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-inherent-method::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Box",
+        "identity": "fixture/imported-inherent-method::domain::Box",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [],
   "structs": [
     {

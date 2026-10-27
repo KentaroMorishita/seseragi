@@ -417,6 +417,66 @@
             "start": 58,
             "end": 63
           }
+        },
+        {
+          "imported": "$ssrg$kind$Profile",
+          "local": "$ssrg$kind$Profile",
+          "sourceLocal": "Profile",
+          "canonical": "fixture/imported-derived-structural::domain::Profile",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 28
+          }
+        },
+        {
+          "imported": "$ssrg$kind$Tree",
+          "local": "$ssrg$kind$Tree",
+          "sourceLocal": "Tree",
+          "canonical": "fixture/imported-derived-structural::domain::Tree",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 32,
+            "end": 36
+          }
+        },
+        {
+          "imported": "$ssrg$kind$Nested",
+          "local": "$ssrg$kind$Nested",
+          "sourceLocal": "Nested",
+          "canonical": "fixture/imported-derived-structural::domain::Nested",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 94,
+            "end": 100
+          }
+        },
+        {
+          "imported": "$ssrg$kind$Phantom",
+          "local": "$ssrg$kind$Phantom",
+          "sourceLocal": "Phantom",
+          "canonical": "fixture/imported-derived-structural::domain::Phantom",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 117,
+            "end": 124
+          }
+        },
+        {
+          "imported": "$ssrg$kind$Phantom",
+          "local": "$ssrg$kind$Phantom_1",
+          "sourceLocal": "Phantom",
+          "canonical": "fixture/imported-derived-structural::domain::Phantom",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 117,
+            "end": 124
+          }
         }
       ],
       "origin": {

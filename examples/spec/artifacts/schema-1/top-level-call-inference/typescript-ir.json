@@ -2,6 +2,48 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/top-level-call-inference",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Box",
+        "identity": "artifact/top-level-call-inference::Box",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Packet",
+        "identity": "artifact/top-level-call-inference::Packet",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.list",
     "core.adt",

@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/higher-kinded-alias",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.adt",
     "core.maybe.just",
@@ -72,7 +77,25 @@
           "arguments": []
         },
         "result": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "M",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "reference",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
         }
       },
       "origin": {
@@ -92,7 +115,15 @@
         "A"
       ],
       "target": {
-        "kind": "unknown"
+        "kind": "kind-application",
+        "constructor": "F",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

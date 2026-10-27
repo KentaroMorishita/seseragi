@@ -10,6 +10,7 @@ mod dictionaries;
 mod expr;
 mod imports;
 mod instances;
+pub(crate) mod kinds;
 mod module_imports;
 mod names;
 mod recursive;
@@ -44,6 +45,8 @@ pub struct TypeScriptModule {
     pub schema: u32,
     pub stage: String,
     pub module: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub higher_kinds: Option<TypeScriptKinds>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub foreign_modules: Vec<TypeScriptForeignModule>,
     pub runtime_requirements: Vec<String>,
@@ -65,6 +68,26 @@ pub struct TypeScriptModule {
     pub bindings: Vec<TypeScriptBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub functions: Vec<TypeScriptFunction>,
+}
+
+/// Type-only witnesses for checked source type constructors. They introduce no
+/// runtime values, dictionary stages, or new source parameters.
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptKinds {
+    pub constructors: Vec<TypeScriptKindConstructor>,
+    pub partials: Vec<Vec<bool>>,
+    pub application: bool,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptKindConstructor {
+    pub name: String,
+    pub identity: String,
+    pub exported: bool,
+    pub parameters: Vec<TypeParameter>,
+    pub target: TypeScriptType,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -421,6 +444,17 @@ pub enum TypeScriptType {
     Never,
     Ordering,
     Unknown,
+    KindArgument {
+        index: usize,
+    },
+    KindConstructor {
+        name: String,
+        arguments: Vec<Option<TypeScriptType>>,
+    },
+    KindApplication {
+        constructor: String,
+        arguments: Vec<TypeScriptType>,
+    },
     Reference {
         name: String,
         arguments: Vec<TypeScriptType>,
@@ -898,7 +932,8 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         .map(|alias| {
             let type_names = module_imports
                 .type_names
-                .with_parameters(&alias.type_parameters);
+                .with_parameters(&alias.type_parameters)
+                .with_higher_kinds();
             let type_constructor_parameters = alias
                 .type_parameters
                 .iter()
@@ -941,6 +976,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                                 &module_imports
                                     .type_names
                                     .with_parameters(&structure.type_parameters)
+                                    .with_higher_kinds()
                                     .with_private_representation(),
                             ),
                         })
@@ -955,7 +991,10 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                     optional: false,
                     type_ref: types::type_ref_from_core_type(
                         &field.type_ref,
-                        &module_imports.type_names,
+                        &module_imports
+                            .type_names
+                            .with_parameters(&structure.type_parameters)
+                            .with_higher_kinds(),
                     ),
                 })
                 .collect(),
@@ -1118,6 +1157,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         schema: module.schema,
         stage: "typescript-ir".to_owned(),
         module: module.module,
+        higher_kinds: module_imports.type_names.higher_kinds(),
         foreign_modules,
         runtime_requirements,
         imports,

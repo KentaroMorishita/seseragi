@@ -1,0 +1,21 @@
+import { Parcel, Stored, Pack, Chained, unwrap, field, make, cold } from "./facade"
+
+pub effect fn main = do {
+  let boxed: Pack<Maybe, Int> = Parcel (Just 42)
+  println (show (match boxed { Parcel value -> value }))
+  let nested: Chained<Maybe, Maybe<Int>> = Parcel (Just (Just 7))
+  println (show (unwrap nested))
+  let saved: Maybe<String> -> Stored<Maybe, String> = make
+  let holder = saved (Just "stored")
+  println (show (field holder))
+  let direct: Stored<Either<String>, Int> = Stored { value: Right 9 }
+  println (match direct.value {
+      Left message -> "Left " + message
+      Right number -> "Right " + show number
+      }
+  )
+  let later: Maybe<Int> -> Pack<Maybe, Int> = Parcel
+  println (show (unwrap (later (Just 11))))
+  completed <- unwrap (cold 23)
+  println (show completed)
+}

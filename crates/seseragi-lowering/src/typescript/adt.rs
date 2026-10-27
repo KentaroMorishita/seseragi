@@ -15,7 +15,9 @@ pub(super) fn lower_core_adt_to_typescript(
     push_unique(runtime_requirements, "core.adt");
     let exported = adt.visibility == Visibility::Public;
     let constructors_exported = exported && !adt.opaque;
-    let scoped_types = imported_types.with_parameters(&adt.type_parameters);
+    let scoped_types = imported_types
+        .with_parameters(&adt.type_parameters)
+        .with_higher_kinds();
     TypeScriptAdt {
         erased_newtype: adt.newtype
             && adt
@@ -92,7 +94,7 @@ mod tests {
             origin,
         };
         // An outer constructor spelling A must be shadowed by the ADT's own
-        // value parameter. F<A> uses the existing HKT erasure policy.
+        // value parameter. F<A> uses the ADT's exact checked constructor kind.
         let types =
             TypeScriptTypeContext::default().with_parameters(&[TypeParameter::constructor("A", 1)]);
         let lowered = lower_core_adt_to_typescript(adt, &types, &mut vec![]);
@@ -100,7 +102,13 @@ mod tests {
             lowered.variants[0].payload,
             Some(TypeScriptType::Tuple {
                 elements: vec![
-                    TypeScriptType::Unknown,
+                    TypeScriptType::KindApplication {
+                        constructor: "F".into(),
+                        arguments: vec![TypeScriptType::Reference {
+                            name: "A".into(),
+                            arguments: vec![]
+                        }],
+                    },
                     TypeScriptType::Reference {
                         name: "A".into(),
                         arguments: vec![]

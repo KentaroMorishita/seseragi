@@ -125,6 +125,18 @@
             "start": 96,
             "end": 103
           }
+        },
+        {
+          "imported": "$ssrg$kind$Box",
+          "local": "$ssrg$kind$Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/opaque-struct::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 25,
+            "end": 28
+          }
         }
       ],
       "module": "fixture/opaque-struct::domain",

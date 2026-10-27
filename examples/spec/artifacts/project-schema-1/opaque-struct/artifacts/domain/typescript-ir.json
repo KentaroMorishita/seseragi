@@ -2,6 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/opaque-struct::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Box",
+        "identity": "fixture/opaque-struct::domain::Box",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.show.dictionary",
     "core.show.bounded",

@@ -2,6 +2,10 @@ import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/ru
 import { boundedShow as _ssrg_show_boundedShow, boundedDebug as _ssrg_debug_boundedDebug, stringShow as _ssrg_show_stringShow, stringDebug as _ssrg_debug_stringDebug, maybeShow as _ssrg_show_maybeShow, maybeDebug as _ssrg_debug_maybeDebug, type Show as _ssrg_show_Show, type Debug as _ssrg_debug_Debug } from "@seseragi/runtime/show"
 $ssrg$assertUnicodeVersion("17.0.0")
 
+interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
+type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })["type"];
+type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
+export interface $ssrg$kind$Remote extends $ssrg$Kind<readonly [unknown]> { readonly type: Remote<this["args"][0]> }
 export type Code =
   | { readonly tag: "Code"; readonly value: string };
 export const Code = (value: string): Code => ({ tag: "Code", value } as const);

@@ -2,6 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/generic-struct",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Box",
+        "identity": "artifact/generic-struct::Box",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.int",
     "core.string",

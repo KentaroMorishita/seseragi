@@ -1,4 +1,4 @@
-import { create, read, unpack, update, box, unbox, nested, collect, type Box, type Secret } from "./facade.js"
+import { create, read, unpack, update, box, unbox, nested, collect, type Box, type Secret, type $ssrg$kind$Box } from "./facade.js"
 import { __ssrg$instance$Eq$0, __ssrg$instance$Show$1 } from "./domain.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"

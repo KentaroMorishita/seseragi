@@ -2,6 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/explicit-generic-struct",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Marker",
+        "identity": "artifact/explicit-generic-struct::Marker",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Marker",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.string",
     "core.string.add-dictionary",

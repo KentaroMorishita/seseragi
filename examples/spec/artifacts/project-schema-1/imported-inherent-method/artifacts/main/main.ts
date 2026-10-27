@@ -1,4 +1,4 @@
-import { box, __ssrg$method$Box$map as map, __ssrg$method$Box$get as get, type Box } from "./domain.js"
+import { box, __ssrg$method$Box$map as map, __ssrg$method$Box$get as get, type Box, type $ssrg$kind$Box } from "./domain.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
