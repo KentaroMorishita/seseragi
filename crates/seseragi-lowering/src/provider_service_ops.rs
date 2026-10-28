@@ -7,6 +7,9 @@ pub(crate) struct RuntimeProviderServiceOperation {
     pub(crate) export_name: &'static str,
     pub(crate) source_map_name: &'static str,
     pub(crate) type_argument_sources: &'static [usize],
+    /// Source parameters certified against the canonical standard interface.
+    /// `None` keeps entries without that proof on their existing call path.
+    pub(crate) source_arity: Option<usize>,
 }
 
 macro_rules! operation {
@@ -19,6 +22,7 @@ macro_rules! operation {
             export_name: $export,
             source_map_name: $export,
             type_argument_sources: &[],
+            source_arity: None,
         }
     };
 }
@@ -414,13 +418,16 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "@seseragi/runtime/clock",
         "now"
     ),
-    operation!(
-        "std/clock::sleep",
-        "clock.sleep",
-        "_ssrg_clock_sleep",
-        "@seseragi/runtime/clock",
-        "sleep"
-    ),
+    RuntimeProviderServiceOperation {
+        source_arity: Some(1),
+        ..operation!(
+            "std/clock::sleep",
+            "clock.sleep",
+            "_ssrg_clock_sleep",
+            "@seseragi/runtime/clock",
+            "sleep"
+        )
+    },
     operation!(
         "std/time::databaseVersion",
         "time.database-version",
@@ -1007,6 +1014,36 @@ use crate::CoreType;
 #[cfg(test)]
 mod tests {
     use super::runtime_provider_service_operation;
+
+    #[test]
+    fn clock_sleep_source_stage_matches_the_canonical_interface() {
+        use seseragi_syntax::InterfaceType;
+
+        let operation = runtime_provider_service_operation("std/clock::sleep").unwrap();
+        let target = seseragi_project::standard_module_target("std/clock").unwrap();
+        let export = target
+            .interface()
+            .exports
+            .iter()
+            .find(|export| export.symbol == operation.canonical)
+            .unwrap();
+        assert_eq!(export.declaration_kind.as_deref(), Some("effect-function"));
+        assert!(export.scheme.type_parameters.is_empty());
+        assert!(export.scheme.constraints.is_empty());
+        let InterfaceType::Function { parameter, result } = &export.scheme.type_ref else {
+            panic!("{export:?}");
+        };
+        assert!(matches!(parameter.as_ref(), InterfaceType::ExternalNamed {
+            canonical, arguments, ..
+        } if canonical == "std/time::Duration" && arguments.is_empty()));
+        assert!(!matches!(result.as_ref(), InterfaceType::Function { .. }));
+        assert_eq!(operation.source_arity, Some(1));
+        assert!(runtime_provider_service_operation("fixture/clock::sleep").is_none());
+        assert!(runtime_provider_service_operation("std/clock::now")
+            .unwrap()
+            .source_arity
+            .is_none());
+    }
 
     #[test]
     fn database_decoders_do_not_have_a_map2_runtime_operation() {

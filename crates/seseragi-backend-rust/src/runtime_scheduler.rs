@@ -15,6 +15,8 @@ enum ConcurrentOperation {
     CompleteDeferred,
     SucceedDeferred,
     FailDeferred,
+    // Emitted only after the explicit finite native Clock binding is proved.
+    ClockSleep,
 }
 impl ConcurrentOperation {
     fn named(name: &str) -> Option<Self> {
@@ -163,6 +165,7 @@ struct NativeTask {
     handle: V,
     waiting: Option<NativeWait>,
     file: Option<NativeFileTask>,
+    timer: Option<NativeTimer>,
 }
 #[derive(Default)]
 struct NativeScheduler {
@@ -193,6 +196,7 @@ impl NativeScheduler {
                 handle: handle.clone(),
                 waiting: None,
                 file: None,
+                timer: None,
             },
         );
         self.ready.push_back(id);
@@ -204,10 +208,15 @@ impl NativeScheduler {
         let root_id = root.fiber().task;
         loop {
             scheduler.poll_files();
+            scheduler.poll_timers();
             let Some(id) = scheduler.ready.pop_front() else {
                 // A program awaiting an uncompleted Deferred stays pending.
                 // No artificial typed failure or Defect is invented for it.
-                std::thread::park();
+                if let Some(timeout) = scheduler.next_timer_wait() {
+                    std::thread::park_timeout(timeout);
+                } else {
+                    std::thread::park();
+                }
                 continue;
             };
             let mut task = scheduler.tasks.remove(&id).expect("runnable native task");
@@ -281,6 +290,10 @@ impl NativeScheduler {
         if task.machine.context.masked {
             return;
         }
+        if task.timer.take().is_some() {
+            task.machine.resume(Err(NativeExit::Cancelled));
+            self.ready.push_back(id);
+        }
         if let Some(file) = &task.file {
             // A blocking OS call has no invented abort. Observe it and join
             // its worker after close, before running language finalizers.
@@ -338,6 +351,16 @@ impl NativeScheduler {
         c: Vec<V>,
     ) {
         let result = match operation {
+            ConcurrentOperation::ClockSleep => {
+                match NativeTimer::start(&c[0]) {
+                    Ok(timer) => task.timer = Some(timer),
+                    Err(exit) => {
+                        task.machine.resume(Err(exit));
+                        self.ready.push_back(id);
+                    }
+                }
+                return;
+            }
             ConcurrentOperation::Fork => {
                 let child = self.spawn(
                     NativeContext {

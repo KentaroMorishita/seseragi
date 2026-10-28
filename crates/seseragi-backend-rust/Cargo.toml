@@ -8,6 +8,8 @@ repository.workspace = true
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
+sha2.workspace = true
+seseragi-provider = { path = "../seseragi-provider" }
 seseragi-lowering = { path = "../seseragi-lowering" }
 seseragi-project = { path = "../seseragi-project" }
 seseragi-semantics = { path = "../seseragi-semantics" }

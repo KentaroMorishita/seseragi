@@ -539,8 +539,10 @@ dependencies = [
  "seseragi-driver",
  "seseragi-lowering",
  "seseragi-project",
+ "seseragi-provider",
  "seseragi-semantics",
  "seseragi-syntax",
+ "sha2",
 ]
 
 [[package]]

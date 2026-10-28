@@ -1,0 +1,11 @@
+[package]
+name = "acceptance/delayed-file-transform"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+operation = { package = "acceptance/delayed-file-operation", path = "vendor/operation" }

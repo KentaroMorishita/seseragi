@@ -58,6 +58,15 @@ Bool／UnitのEqと前置`!`のnative契約は、backend／CLIの`--test basic_s
 前置operatorは関数値として参照できません。標準Float Eqは提供しません。
 共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
 
+native Clock sleepの有限契約は、backend／CLIの`--test clock_sleep`とbackend runtimeの
+`clock_tests`で確認します。明示native CLI provider選択、canonical DurationとClockの
+owner／kind／source引数、target receipt、通常path packageのTS用lock保持、元のTS両profileの
+raw strict、fresh Bun／Nodeとnativeの結果を比較します。pending sibling、cold再実行、
+typed Failure／Defect／取消、acquisitionのatomic登録とsleepを使うmasked finalizer、旧outputと入力保持、
+timer／managed root解放を検証します。Clock now、WASMのClock row、一般provider ABIと
+target別manifest／native provider lockはこのsliceに含めません。共通native schedulerを
+変えるため、既存filesystem／Fiberとprogram WASMの回帰も確認し、統合時は全体gateを行います。
+
 importしたADTのpayload identityと注釈付きEq部分適用は、driverの
 `--test frontend_payload_identity --test frontend_inference --test imported_returns`で確認します。
 constructorを公開するopaque ADT、local alias、同canonicalのdirect／facade／namespace import、

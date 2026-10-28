@@ -14,6 +14,7 @@ mod arrays;
 mod booleans;
 mod canonical;
 mod characters;
+mod clock;
 mod comparisons;
 mod concurrency;
 mod console;
@@ -52,6 +53,7 @@ pub fn emit(
     scalar_globals: &seseragi_lowering::CoreScalarGlobals,
     type_names: &BTreeMap<(String, String), String>,
     trait_names: &BTreeMap<(String, String), String>,
+    options: &crate::RustTargetOptions,
 ) -> Result<RustArtifact> {
     emit_body(
         module,
@@ -60,6 +62,7 @@ pub fn emit(
         scalar_globals,
         type_names,
         trait_names,
+        options,
     )
 }
 
@@ -77,6 +80,7 @@ pub(crate) fn emit_library(
         scalar_globals,
         type_names,
         trait_names,
+        &crate::RustTargetOptions::default(),
     )
 }
 
@@ -96,6 +100,7 @@ fn emit_body(
     scalar_globals: &seseragi_lowering::CoreScalarGlobals,
     type_names: &BTreeMap<(String, String), String>,
     trait_names: &BTreeMap<(String, String), String>,
+    options: &crate::RustTargetOptions,
 ) -> Result<RustArtifact> {
     if !module.foreign_modules.is_empty() {
         return Err("Rust backend: foreign modules are unsupported".into());
@@ -106,6 +111,8 @@ fn emit_body(
         scalar_globals,
         type_names,
         trait_names,
+        options,
+        clock_origins: Vec::new(),
         program_wasm_library: entry.is_none(),
         owner: &module.module,
         functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
@@ -169,6 +176,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_path.rs"));
     output.push_str(include_str!("runtime_filesystem.rs"));
     output.push_str(include_str!("runtime_host.rs"));
+    output.push_str(include_str!("runtime_clock.rs"));
     let mut initialization = String::new();
     for (index, binding) in module.bindings.iter().enumerate() {
         backend.owner = &owners[&binding.symbol];
@@ -308,7 +316,12 @@ fn emit_body(
     }
     if let Some(entry) = entry {
         if entry.is_effect {
-            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            let runner = if backend.capabilities.contains("clock-sleep") {
+                "run_native_clock_entry"
+            } else {
+                "run_native_entry"
+            };
+            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         } else {
             output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         }
@@ -319,7 +332,9 @@ fn emit_body(
             schema: 1,
             backend: "rust".into(),
             stability: "experimental".into(),
-            abi: if backend.capabilities.contains("filesystem-async") {
+            abi: if backend.capabilities.contains("clock-sleep") {
+                "rust-erased-clock-sleep-v5"
+            } else if backend.capabilities.contains("filesystem-async") {
                 "rust-erased-async-v4"
             } else if backend.capabilities.contains("fiber")
                 || backend.capabilities.contains("deferred")
@@ -345,6 +360,14 @@ fn emit_body(
             .into(),
             capabilities: backend.capabilities.into_iter().collect(),
             modules: Vec::new(),
+            providers: if backend.clock_origins.is_empty() {
+                Vec::new()
+            } else {
+                vec![crate::clock_provider::receipt(
+                    options,
+                    backend.clock_origins,
+                )?]
+            },
         },
     })
 }
@@ -380,6 +403,8 @@ struct Backend<'a> {
     self_tail_calls: usize,
     closed_dictionary_sites: usize,
     capabilities: BTreeSet<String>,
+    options: &'a crate::RustTargetOptions,
+    clock_origins: Vec<seseragi_lowering::SourceSpan>,
 }
 
 impl Backend<'_> {
@@ -722,6 +747,11 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) =
+                    self.clock_reference(name, evidence, type_ref, core_expr_origin(expr), scope)?
+                {
+                    return Ok(value);
+                }
                 if let Some(value) = self.console_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
@@ -761,6 +791,9 @@ impl Backend<'_> {
                 success,
                 ..
             } => {
+                if let Some(value) = self.clock_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.console_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -802,6 +835,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.clock_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.console_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -866,6 +902,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.clock_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.console_call(expr, scope)? {
                     return Ok(value);
                 }
