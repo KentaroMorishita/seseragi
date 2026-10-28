@@ -5,6 +5,8 @@ import {
   indentLess,
   indentMore,
   moveLineDown,
+  redo,
+  undo,
 } from "@codemirror/commands"
 import { foldable } from "@codemirror/language"
 import { getSearchQuery, SearchQuery, setSearchQuery } from "@codemirror/search"
@@ -12,6 +14,7 @@ import {
   EditorSelection,
   EditorState,
   type StateCommand,
+  type Transaction,
 } from "@codemirror/state"
 import { editorWhitespaceExtensions } from "../src/editor/create-editor"
 import {
@@ -48,6 +51,125 @@ function runCommand(
 }
 
 describe("Playground editor operations", () => {
+  for (const insert of ["newtext", "xy", ""]) {
+    for (const direction of ["forward", "backward"] as const) {
+      test(`collapses a fully replaced ${direction} selection after ${JSON.stringify(insert)}`, () => {
+        let state = EditorState.create({
+          doc: "abcdef",
+          selection: EditorSelection.range(
+            direction === "forward" ? 1 : 4,
+            direction === "forward" ? 4 : 1
+          ),
+          extensions: [selectionMarkField],
+        })
+        state = state.update({
+          changes: { from: 0, to: 6, insert },
+        }).state
+
+        expect(state.doc.toString()).toBe(insert)
+        expect(state.selection.main.toJSON()).toEqual({
+          anchor: insert.length,
+          head: insert.length,
+        })
+        expect(state.field(selectionMarkField).size).toBe(0)
+      })
+    }
+
+    test(`keeps multiple replacement cursors and the main range after ${JSON.stringify(insert)}`, () => {
+      let state = EditorState.create({
+        doc: "abcdef",
+        selection: EditorSelection.create(
+          [
+            EditorSelection.range(0, 1),
+            EditorSelection.range(4, 2),
+            EditorSelection.range(5, 6),
+          ],
+          1
+        ),
+        extensions: editorExtensions,
+      })
+      state = state.update({ changes: { from: 0, to: 6, insert } }).state
+
+      expect(state.selection.toJSON()).toEqual({
+        ranges:
+          insert.length === 0
+            ? [{ anchor: 0, head: 0 }]
+            : [
+                { anchor: 0, head: 0 },
+                { anchor: insert.length, head: insert.length },
+              ],
+        main: insert.length === 0 ? 0 : 1,
+      })
+      expect(state.field(selectionMarkField).size).toBe(0)
+    })
+  }
+
+  test("preserves valid selections, explicit selections, and surrounding text", () => {
+    const state = EditorState.create({
+      doc: "abcdef",
+      selection: EditorSelection.range(5, 1),
+      extensions: editorExtensions,
+    })
+    const partial = state.update({
+      changes: { from: 2, to: 3, insert: "XY" },
+    }).state
+    expect(partial.doc.toString()).toBe("abXYdef")
+    expect(partial.selection.main.toJSON()).toEqual({ anchor: 6, head: 1 })
+    expect(partial.field(selectionMarkField).size).toBe(1)
+
+    const explicit = state.update({
+      changes: { from: 0, to: 6, insert: "newtext" },
+      selection: EditorSelection.single(3, 1),
+    }).state
+    expect(explicit.selection.main.toJSON()).toEqual({ anchor: 3, head: 1 })
+    expect(explicit.field(selectionMarkField).size).toBe(1)
+
+    const surrounding = EditorState.create({
+      doc: "before abcdef after",
+      selection: EditorSelection.range(8, 11),
+      extensions: editorExtensions,
+    }).update({ changes: { from: 7, to: 13, insert: "XY" } }).state
+    expect(surrounding.doc.toString()).toBe("before XY after")
+    expect(surrounding.selection.main.toJSON()).toEqual({ anchor: 9, head: 9 })
+
+    const whole = EditorState.create({
+      doc: "abcdef",
+      selection: EditorSelection.range(6, 0),
+      extensions: editorExtensions,
+    }).update({ changes: { from: 0, to: 6, insert: "newtext" } }).state
+    expect(whole.selection.main.toJSON()).toEqual({ anchor: 7, head: 0 })
+    expect(whole.field(selectionMarkField).size).toBe(1)
+
+    const cursor = EditorState.create({
+      doc: "abcdef",
+      selection: EditorSelection.cursor(2),
+      extensions: editorExtensions,
+    }).update({ changes: { from: 0, to: 6, insert: "newtext" } }).state
+    expect(cursor.selection.main.toJSON()).toEqual({ anchor: 0, head: 0 })
+  })
+
+  test("undo and redo restore the original selection and replacement cursor", () => {
+    let state = EditorState.create({
+      doc: "abcdef",
+      selection: EditorSelection.range(4, 1),
+      extensions: editorExtensions,
+    })
+    state = state.update({
+      changes: { from: 0, to: 6, insert: "newtext" },
+    }).state
+    const dispatch = (transaction: Transaction) => {
+      state = transaction.state
+    }
+    expect(undo({ state, dispatch })).toBe(true)
+    expect(state.doc.toString()).toBe("abcdef")
+    expect(state.selection.main.toJSON()).toEqual({ anchor: 4, head: 1 })
+    expect(state.field(selectionMarkField).size).toBe(1)
+    expect(redo({ state, dispatch })).toBe(true)
+    expect(state.doc.toString()).toBe("newtext")
+    expect(state.selection.main.toJSON()).toEqual({ anchor: 7, head: 7 })
+    expect(state.field(selectionMarkField).size).toBe(0)
+  })
+
   test("keeps multiple selections and marks primary and secondary ranges", () => {
     const state = EditorState.create({
       doc: "value + value",

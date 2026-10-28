@@ -1,0 +1,24 @@
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1325,7 +1325,7 @@
+         }
+         else {
+             from = change.mapPos(this.from, 1);
+-            to = change.mapPos(this.to, -1);
++            to = Math.max(from, change.mapPos(this.to, -1));
+         }
+         return from == this.from && to == this.to ? this : new SelectionRange(from, to, this.flags, this.goalColumn);
+     }
+diff --git a/dist/index.cjs b/dist/index.cjs
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -1328,7 +1328,7 @@
+         }
+         else {
+             from = change.mapPos(this.from, 1);
+-            to = change.mapPos(this.to, -1);
++            to = Math.max(from, change.mapPos(this.to, -1));
+         }
+         return from == this.from && to == this.to ? this : new SelectionRange(from, to, this.flags, this.goalColumn);
+     }
