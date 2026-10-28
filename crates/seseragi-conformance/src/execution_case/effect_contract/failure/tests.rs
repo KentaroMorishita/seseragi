@@ -158,6 +158,7 @@ fn canonical_standard_failures_preserve_runtime_renderers_and_reject_forged_owne
         ("ConsoleError", "std/prelude"),
         ("ConsoleError", "std/console"),
         ("StdinError", "std/prelude"),
+        ("StdinError", "std/stdin"),
     ] {
         let typed = interface_with_exports(vec![type_export(name)], Vec::new());
         let failure = InterfaceType::ExternalNamed {

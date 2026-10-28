@@ -205,7 +205,8 @@ fn standard_failure_name(type_ref: &InterfaceType) -> Option<&str> {
             ..
         } if arguments.is_empty()
             && (provider_module == "std/prelude"
-                || (provider_module == "std/console" && provider_export == "ConsoleError"))
+                || (provider_module == "std/console" && provider_export == "ConsoleError")
+                || (provider_module == "std/stdin" && provider_export == "StdinError"))
             && canonical == &format!("std/prelude::{provider_export}") =>
         {
             Some(provider_export)
