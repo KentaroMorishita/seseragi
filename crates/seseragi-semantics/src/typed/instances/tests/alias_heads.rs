@@ -114,15 +114,13 @@ fn alias_head_preserves_nominal_and_shadowed_primitive_owners() {
 }
 
 #[test]
-fn alias_head_rejects_an_unrepresented_constructor_before_it_is_used() {
+fn alias_head_keeps_a_repeated_constructor_before_it_is_used() {
     let source = "type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = \"pair\" }\n";
     let diagnostics = semantic_diagnostics("artifact/alias-constructor/main.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    let typed = type_module("artifact/alias-constructor/main.ssrg", source);
     assert!(
-        diagnostics
-            .diagnostics
-            .iter()
-            .any(|d| d.message_key == "trait.instance-head-unresolved"),
-        "{diagnostics:#?}"
+        matches!(&typed.instances[0].arguments[..], [crate::TypedType::TypeFunction { parameter_kinds, .. }] if parameter_kinds == &[0])
     );
 }
 
