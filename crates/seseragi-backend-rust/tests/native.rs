@@ -1055,6 +1055,53 @@ fn persistent_list_values_patterns_display_and_operations_execute() {
 }
 
 #[test]
+fn checked_list_prefixes_reuse_cursors_and_preserve_nested_guards_and_escaped_tails() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/list-prefix-decisions.ssrg"
+    ));
+    assert!(artifact.source.contains("_cell1.head.clone()"));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(output.stderr.is_empty());
+    assert_eq!(
+        output.stdout,
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/list-prefix-decisions.stdout")
+    );
+}
+
+#[test]
+fn wide_list_prefixes_do_not_repeat_root_walks() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/list-prefix-kernel.ssrg"
+    ));
+    assert!(artifact.source.contains("_cell31.head.clone()"));
+    assert!(!artifact.source.contains(".list_element(31)"));
+    assert!(!artifact.source.contains(".list_length_matches(32, true)"));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/list-prefix-kernel.stdout")
+    );
+}
+
+#[test]
 fn deep_list_construction_traversal_and_drop_are_separately_stack_safe() {
     let artifact = emit(include_str!(
         "../../../examples/spec/fixtures/rust-backend/list-tail.ssrg"
@@ -1856,6 +1903,7 @@ fn checked_effect_programs_run_on_a_small_stack_and_release_the_native_heap() {
         include_str!("../../../examples/spec/fixtures/rust-backend-research/deep-effect.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend-research/ref-cycle.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/list-effects.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/list-prefix-effects.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/local-dictionary-effects.ssrg"),
     ] {
         let core =

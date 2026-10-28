@@ -6,6 +6,16 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+List prefix projection reuse is checked with lowering's `--test match_decision`,
+backend's `--test native list_prefix`, and CLI's `--test rust_backend
+list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`. Keep the
+original raw TypeScript strict in both profiles and compare fresh Bun/Node with
+native, including failed guards, exact/partial lengths, nested payloads, aliases,
+captured tails, Ref cycles and scoped Failure cleanup. The shared proof excludes
+lexical `List` binders and unproved root types. Measure widths 1/4/16/32 using the
+tracked `measure_list_prefix.py` harness; final integration also needs the full
+gate and regenerated canonical compiler WASM.
+
 | 変更範囲 | コマンド | 含まれる検証 |
 | --- | --- | --- |
 | sample metadata / source | `bun run check:sample` | native CLI sample実行、全sampleのWASM compile / format、Playground sample manifestのfreshness |

@@ -8,6 +8,7 @@ mod adt;
 mod decision;
 mod expr;
 mod instances;
+mod list_prefix;
 mod types;
 
 use adt::{lower_adt, AdtDeclInput};
@@ -21,6 +22,7 @@ pub use instances::{
     CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation,
     CoreInstanceMethod, CoreShowPayloadEvidence,
 };
+pub use list_prefix::{core_list_prefix_plan, CoreListPrefixPlan};
 pub use types::{CoreRecordField, CoreType};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

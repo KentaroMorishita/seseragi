@@ -9,6 +9,57 @@ fn lower(source_name: &str, source: &str) -> seseragi_lowering::TypeScriptModule
 }
 
 #[test]
+fn wide_list_decisions_share_only_proved_cursors() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/list-prefix-kernel.ssrg");
+    let module = lower("prefix/main.ssrg", source);
+    let bundle = emit_typescript_module(module, source);
+    assert!(bundle.typescript.contains("$ssrg_prefix31.head"));
+    assert!(bundle
+        .typescript
+        .contains("const $ssrg_prefix32 = $ssrg_prefix31.tail"));
+    assert!(!bundle.typescript.contains(".tail.tail.tail"));
+    assert_eq!(
+        bundle
+            .typescript
+            .matches("const $ssrg_prefix0 = $ssrg_match")
+            .count(),
+        3
+    );
+}
+
+#[test]
+fn a_lexical_list_constructor_binder_never_receives_a_builtin_prefix_plan() {
+    let source =
+        "pub fn probe xs: List<Int> -> Int = match xs { `[a,b,...tail] -> a + b\n _ -> 0 }";
+    let mut core = lower_typed_module(type_module("prefix/main.ssrg", source));
+    let bound = lower_typed_module(type_module(
+        "prefix/main.ssrg",
+        "pub fn bound<List<_>> xs: List<Int> -> List<Int> = xs",
+    ));
+    core.functions[0].type_parameters = bound.functions[0].type_parameters.clone();
+    assert_eq!(core.functions[0].type_parameters[0].name, "List");
+    let ts = lower_core_module_to_typescript_ir(core);
+    let TypeScriptFunction::ConstFunction { body, .. } = &ts.functions[0];
+    let TypeScriptExpr::Decision { branches, .. } = body else {
+        panic!("decision")
+    };
+    assert!(branches.iter().all(|branch| branch.list_prefix.is_none()));
+}
+
+#[test]
+fn prefix_guards_share_the_once_evaluated_scrutinee_without_sharing_arms() {
+    let source = "fn input values: List<Int> -> List<Int> = values\n\npub fn guarded values: List<Int> -> Int = match input values { `[a,b] when a == 0 -> b\n `[a,b] when a == 1 -> a\n `[a,b,...tail] -> b\n _ -> -1 }";
+    let bundle = emit_typescript_module(lower("prefix/main.ssrg", source), source);
+    assert_eq!(bundle.typescript.matches("input(values)").count(), 1);
+    assert!(bundle.typescript.contains("$ssrg_prefix_branch0"));
+    assert!(bundle.typescript.contains("$ssrg_prefix_branch1"));
+    assert!(bundle
+        .typescript
+        .contains("$ssrg_prefix2.tag !== \"Empty\""));
+}
+
+#[test]
 fn lowers_match_to_tag_tests_without_a_runtime_helper() {
     let source = r#"pub type Label =
   | Missing

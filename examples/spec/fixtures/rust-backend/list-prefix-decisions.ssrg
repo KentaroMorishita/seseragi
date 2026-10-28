@@ -1,0 +1,55 @@
+import * as lists from "std/list"
+
+type Box = | Missing | Box List<Int>
+
+alias Ints = List<Int>
+
+fn aliasCase values: Ints -> Int = match values {
+  `[a, b, ...tail] -> a + b + lists.length tail
+  _ -> -1
+}
+
+fn input values: List<Int> -> List<Int> = values
+
+fn exact values: List<Int> -> Int = match values {
+  `[a, b] -> a * 10 + b
+  _ -> -1
+}
+
+fn guarded values: List<Int> -> Int = match input values {
+  `[a, b, c, ...tail] when b == 0 -> -100
+  `[a, b, c, ...tail] when a == 1 -> a + b + c + lists.length tail
+  `[a, b, ...tail] -> a - b + lists.length tail
+  _ -> -1
+}
+
+fn nested values: List<{ items: Box }> -> Int = match values {
+  `[{ items: Box `[a, b, ...inner] }, { items: Box `[c, d] }, ...outer] when a == 1 ->
+    a + b + c + d + lists.length inner + lists.length outer
+  _ -> -1
+}
+
+fn capture values: List<Int> -> Unit -> List<Int> = match values {
+  `[_, _, ...tail] -> \_ -> tail
+  _ -> \_ -> `[]
+}
+
+fn chunks total: Int -> values: List<Int> -> Int = match values {
+  `[a, b, c, d, ...tail] when a == 0 -> chunks (-100) tail
+  `[a, b, c, d, ...tail] -> chunks (total + a + b + c + d) tail
+  `[a, ...tail] -> chunks (total + a) tail
+  `[] -> total
+}
+
+pub fn probe -> Array<String> = {
+  let values = `[1, 2, 3, 4]
+  let saved = capture values
+  [show (exact `[]), show (exact `[1]), show (exact `[1, 2]),
+    show (exact `[1, 2, 3]), show (guarded values),
+    show (guarded `[1, 0, 3]), show (guarded `[8, 2, 3]),
+    show (guarded `[8, 2]), show (guarded `[1]),
+    show (nested `[{ items: Box `[1, 2, 9] }, { items: Box `[3, 4] }]),
+    show (nested `[{ items: Box `[1] }, { items: Box `[3, 4] }]),
+    show (nested `[{ items: Box `[1, 2] }, { items: Box `[3, 4, 5] }]),
+    show (saved ()), show values, show (chunks 0 values), show (chunks 0 `[]), show (aliasCase values), show (nested `[{ items: Missing }, { items: Box `[3, 4] }])]
+}

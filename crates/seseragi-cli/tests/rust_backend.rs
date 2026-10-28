@@ -29,6 +29,121 @@ fn cli() -> Command {
     Command::new(env!("CARGO_BIN_EXE_seseragi"))
 }
 
+#[path = "support/generic_impl_process.rs"]
+mod prefix_process;
+
+#[test]
+fn list_prefix_decisions_and_effects_match_raw_strict_ts_and_native() {
+    use prefix_process::{bounded, runtime, successful};
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    for fixture in [
+        "list-prefix-kernel",
+        "list-prefix-decisions",
+        "list-prefix-effects",
+    ] {
+        let original = root.join(format!(
+            "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
+        ));
+        let expected = fs::read(original.with_extension("stdout")).unwrap();
+        let source = fs::read_to_string(original).unwrap();
+        let effect = source.contains("pub effect fn main");
+        let directory = scratch.0.join(fixture);
+        fs::create_dir(&directory).unwrap();
+        let input = directory.join("main.ssrg");
+        fs::write(
+            &input,
+            if effect {
+                source.clone()
+            } else {
+                format!("{source}\npub effect fn main = println (show (probe ()))\n")
+            },
+        )
+        .unwrap();
+        let native = directory.join("native");
+        successful(bounded(
+            cli()
+                .args(["experimental", "build-native"])
+                .arg(&input)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            &directory,
+        ));
+        let output = bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &directory,
+        );
+        assert_eq!(output.status.code(), Some(0), "{fixture}: {output:?}");
+        assert_eq!(output.stdout, expected, "{fixture}");
+        assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+        for (profile, build_profile) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let destination = directory.join(profile);
+            successful(bounded(
+                cli()
+                    .arg("build")
+                    .arg(&input)
+                    .args(["--target", "process", "--profile", profile, "--out-dir"])
+                    .arg(&destination),
+                &directory,
+            ));
+            let raw = seseragi_driver::compile_module(
+                seseragi_driver::CompileInput::new(
+                    "main.ssrg",
+                    "prefix/main",
+                    &fs::read_to_string(&input).unwrap(),
+                )
+                .with_profile(build_profile),
+            )
+            .unwrap();
+            let raw_path = destination.join("raw-original.ts");
+            fs::write(&raw_path, raw.generated.typescript).unwrap();
+            let config = serde_json::json!({"compilerOptions":{
+                "strict":true,"noEmit":true,"skipLibCheck":false,"target":"ES2022",
+                "module":"ESNext","moduleResolution":"Bundler","allowImportingTsExtensions":true,
+                "types":["bun","node"],"typeRoots":[root.join("node_modules/@types")],
+                "baseUrl":root,"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},
+                "lib":["ES2023","DOM","DOM.Iterable"]},"files":[raw_path]});
+            let config_path = destination.join("raw-tsconfig.json");
+            fs::write(&config_path, serde_json::to_vec(&config).unwrap()).unwrap();
+            successful(bounded(
+                Command::new(runtime("node", &directory))
+                    .arg(root.join("node_modules/typescript/bin/tsc"))
+                    .args(["--project"])
+                    .arg(&config_path),
+                &directory,
+            ));
+            let manifest: serde_json::Value = serde_json::from_slice(
+                &fs::read(destination.join("artifact-manifest.json")).unwrap(),
+            )
+            .unwrap();
+            let entry = destination.join(manifest["entry"].as_str().unwrap());
+            for engine in ["bun", "node"] {
+                let output = bounded(
+                    Command::new(runtime(engine, &directory))
+                        .arg(&entry)
+                        .env("PATH", ""),
+                    &directory,
+                );
+                assert_eq!(
+                    output.status.code(),
+                    Some(0),
+                    "{fixture}/{profile}/{engine}: {output:?}"
+                );
+                assert_eq!(output.stdout, expected, "{fixture}/{profile}/{engine}");
+                assert!(output.stderr.is_empty(), "{output:?}");
+            }
+        }
+    }
+}
+
 #[test]
 fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
     let scratch = Scratch::new();

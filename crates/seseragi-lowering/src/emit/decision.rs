@@ -26,13 +26,77 @@ pub(super) fn render_decision_with_branch_renderer(
     type_ref: &TypeScriptType,
     render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
 ) -> String {
-    let body = render_branches(branches, type_ref, render_value);
+    let body = if branches.iter().any(|branch| branch.list_prefix.is_some()) {
+        render_prefix_branches(branches, type_ref, render_value)
+    } else {
+        render_branches(branches, type_ref, render_value)
+    };
     format!(
         "(({SCRUTINEE_NAME}: {}): {} => {body})({})",
         render_typescript_type(scrutinee_type),
         render_typescript_type(type_ref),
         render_typescript_expr(scrutinee)
     )
+}
+
+fn render_prefix_branches(
+    branches: &[TypeScriptDecisionBranch],
+    result: &TypeScriptType,
+    render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
+) -> String {
+    let mut body = format!("((): {} => {{", render_typescript_type(result));
+    for (index, branch) in branches.iter().enumerate() {
+        let Some(plan) = &branch.list_prefix else {
+            let value = render_with_bindings(&branch.bindings, &render_value(branch), result);
+            if let Some(condition) = render_condition(branch) {
+                body.push_str(&format!("if ({condition}) {{ return {value}; }}"));
+            } else {
+                body.push_str(&format!("return {value};"));
+            }
+            continue;
+        };
+        let label = format!("$ssrg_prefix_branch{index}");
+        body.push_str(&format!(
+            "{label}: {{ const $ssrg_prefix0 = {SCRUTINEE_NAME};"
+        ));
+        for cursor in 0..plan.length {
+            body.push_str(&format!(
+                "if ($ssrg_prefix{cursor}.tag !== \"Cons\") break {label}; const $ssrg_prefix{} = $ssrg_prefix{cursor}.tail;",
+                cursor + 1
+            ));
+        }
+        if !plan.minimum {
+            body.push_str(&format!(
+                "if ($ssrg_prefix{}.tag !== \"Empty\") break {label};",
+                plan.length
+            ));
+        }
+        let mut parts = branch.tests[1..]
+            .iter()
+            .map(|test| render_test_with_prefix(test, true))
+            .collect::<Vec<_>>();
+        if let Some(guard) = &branch.guard {
+            parts.push(render_with_bindings_and_prefix(
+                &branch.bindings,
+                &render_typescript_expr(guard),
+                &TypeScriptType::Boolean,
+                true,
+            ));
+        }
+        let value =
+            render_with_bindings_and_prefix(&branch.bindings, &render_value(branch), result, true);
+        if parts.is_empty() {
+            body.push_str(&format!("return {value};"));
+        } else {
+            body.push_str(&format!(
+                "if ({}) {{ return {value}; }}",
+                parts.join(" && ")
+            ));
+        }
+        body.push('}');
+    }
+    body.push_str("throw new Error(\"non-exhaustive Seseragi match\"); })()");
+    body
 }
 
 fn render_branches(
@@ -67,41 +131,38 @@ fn render_condition(branch: &TypeScriptDecisionBranch) -> Option<String> {
 }
 
 fn render_test(test: &TypeScriptDecisionTest) -> String {
+    render_test_with_prefix(test, false)
+}
+
+fn render_test_with_prefix(test: &TypeScriptDecisionTest, prefix: bool) -> String {
+    let project = |path: &[TypeScriptDecisionProjection]| render_prefix_path(path, prefix);
     match test {
-        TypeScriptDecisionTest::NumberEquals { path, value } => format!(
-            "{} === {value}",
-            render_projection_path(SCRUTINEE_NAME, path)
-        ),
-        TypeScriptDecisionTest::StringEquals { path, value } => format!(
-            "{} === {value:?}",
-            render_projection_path(SCRUTINEE_NAME, path)
-        ),
-        TypeScriptDecisionTest::BooleanEquals { path, value } => format!(
-            "{} === {value}",
-            render_projection_path(SCRUTINEE_NAME, path)
-        ),
-        TypeScriptDecisionTest::TagEquals { path, tag } => format!(
-            "{}.tag === {tag:?}",
-            render_projection_path(SCRUTINEE_NAME, path)
-        ),
+        TypeScriptDecisionTest::NumberEquals { path, value } => {
+            format!("{} === {value}", project(path))
+        }
+        TypeScriptDecisionTest::StringEquals { path, value } => {
+            format!("{} === {value:?}", project(path))
+        }
+        TypeScriptDecisionTest::BooleanEquals { path, value } => {
+            format!("{} === {value}", project(path))
+        }
+        TypeScriptDecisionTest::TagEquals { path, tag } => {
+            format!("{}.tag === {tag:?}", project(path))
+        }
         TypeScriptDecisionTest::ArrayLength {
             path,
             length,
             minimum,
         } => format!(
             "{}.length {} {length}",
-            render_projection_path(SCRUTINEE_NAME, path),
+            project(path),
             if *minimum { ">=" } else { "===" }
         ),
         TypeScriptDecisionTest::ListLength {
             path,
             length,
             minimum,
-        } => render_list_length_test(
-            &render_projection_path(SCRUTINEE_NAME, path),
-            *length,
-            *minimum,
-        ),
+        } => render_list_length_test(&project(path), *length, *minimum),
         TypeScriptDecisionTest::Invalid => "false".to_owned(),
     }
 }
@@ -110,6 +171,15 @@ fn render_with_bindings(
     bindings: &[TypeScriptDecisionBinding],
     expression: &str,
     result: &TypeScriptType,
+) -> String {
+    render_with_bindings_and_prefix(bindings, expression, result, false)
+}
+
+fn render_with_bindings_and_prefix(
+    bindings: &[TypeScriptDecisionBinding],
+    expression: &str,
+    result: &TypeScriptType,
+    prefix: bool,
 ) -> String {
     if bindings.is_empty() {
         return expression.to_owned();
@@ -127,13 +197,28 @@ fn render_with_bindings(
         .join(", ");
     let arguments = bindings
         .iter()
-        .map(|binding| render_projection_path(SCRUTINEE_NAME, &binding.path))
+        .map(|binding| render_prefix_path(&binding.path, prefix))
         .collect::<Vec<_>>()
         .join(", ");
     format!(
         "(({parameters}): {} => {expression})({arguments})",
         render_typescript_type(result)
     )
+}
+
+fn render_prefix_path(path: &[TypeScriptDecisionProjection], prefix: bool) -> String {
+    if prefix {
+        match path.first() {
+            Some(TypeScriptDecisionProjection::ListElement { index }) => {
+                return render_projection_path(&format!("$ssrg_prefix{index}.head"), &path[1..]);
+            }
+            Some(TypeScriptDecisionProjection::ListRest { start }) => {
+                return render_projection_path(&format!("$ssrg_prefix{start}"), &path[1..]);
+            }
+            _ => {}
+        }
+    }
+    render_projection_path(SCRUTINEE_NAME, path)
 }
 
 fn render_projection_path(root: &str, path: &[TypeScriptDecisionProjection]) -> String {

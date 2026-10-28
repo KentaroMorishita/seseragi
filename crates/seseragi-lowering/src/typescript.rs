@@ -617,6 +617,8 @@ pub enum TypeScriptExpr {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptDecisionBranch {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub list_prefix: Option<crate::CoreListPrefixPlan>,
     pub tests: Vec<TypeScriptDecisionTest>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<TypeScriptDecisionBinding>,

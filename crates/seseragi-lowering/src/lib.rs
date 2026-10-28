@@ -43,15 +43,15 @@ pub use reachability::{retain_application, ApplicationReachability, RetainedDecl
 mod web_html_ops;
 
 pub use core::{
-    lower_typed_module, CoreAdt, CoreAdtVariant, CoreAlias, CoreBinding, CoreCallEvidence,
-    CoreCallSignature, CoreComprehensionClause, CoreDecisionBinding, CoreDecisionBranch,
-    CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreForeignMember, CoreForeignModule,
-    CoreFunction, CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence,
-    CoreInstanceImplementation, CoreInstanceMethod, CoreModule, CoreModuleDependency,
-    CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern, CoreRecordField,
-    CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence, CoreStatement,
-    CoreStruct, CoreStructField, CoreTemplatePart, CoreTraitDispatch, CoreTraitMethodContract,
-    CoreTraitMethodDeclaration, CoreType,
+    core_list_prefix_plan, lower_typed_module, CoreAdt, CoreAdtVariant, CoreAlias, CoreBinding,
+    CoreCallEvidence, CoreCallSignature, CoreComprehensionClause, CoreDecisionBinding,
+    CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreForeignMember,
+    CoreForeignModule, CoreFunction, CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence,
+    CoreInstanceImplementation, CoreInstanceMethod, CoreListPrefixPlan, CoreModule,
+    CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
+    CoreRecordField, CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence,
+    CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart, CoreTraitDispatch,
+    CoreTraitMethodContract, CoreTraitMethodDeclaration, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,

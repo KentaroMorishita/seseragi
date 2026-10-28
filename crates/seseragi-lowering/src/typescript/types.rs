@@ -493,6 +493,13 @@ impl TypeScriptTypeContext {
         self.imported_names.get(canonical)
     }
 
+    pub(super) fn bound_type_names(&self) -> impl Iterator<Item = &str> {
+        self.value_parameters
+            .iter()
+            .chain(self.constructors.iter())
+            .map(String::as_str)
+    }
+
     pub(super) fn with_parameters(&self, parameters: &[TypeParameter]) -> Self {
         let mut scoped = self.clone();
         for parameter in parameters {
