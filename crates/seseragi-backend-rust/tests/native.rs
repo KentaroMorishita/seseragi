@@ -1748,7 +1748,7 @@ fn escaped_callback_does_not_retain_an_unused_array() {
 #[test]
 fn unsupported_features_have_target_codes_and_source_ranges() {
     for source in [
-        "pub fn probe -> Float = 1.5 ** 2.0\n",
+        "import * as math from \"std/math\"\npub fn probe -> Float = math.sqrt 4.0\n",
         "pub fn probe -> List<Int> = `[n | n <- `[1, 2]]\n",
     ] {
         let core = compile_core_module(CompileInput::new("bad.ssrg", "native/bad", source))

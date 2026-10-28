@@ -1,0 +1,13 @@
+import * as ints from "std/int"
+
+pub fn renderLines base: Int
+  -> output: String
+  -> remaining: List<String>
+  -> Either<ints.IntParseError, String> =
+  match remaining {
+    `[] -> Right output
+    `[head, ...tail] -> match ints.parse head {
+      Left error -> Left error
+      Right value -> renderLines base (output + show (base ** value) + "\n") tail
+    }
+  }
