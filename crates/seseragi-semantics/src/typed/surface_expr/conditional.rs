@@ -5,7 +5,9 @@ use super::{
     primitive_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };
 use crate::typed::pure_issues::ConditionalIssue;
-use crate::typed::semantic_types::SemanticTypeKey;
+use crate::typed::semantic_types::{
+    semantic_values_have_same_identity, SemanticTypeKey, SemanticValueType,
+};
 use crate::typed::type_ref::{
     application_argument_type_from_expr, inferred_type_from_expr, typed_type_contains_hole,
 };
@@ -45,7 +47,21 @@ pub(crate) fn type_if_with(
     let condition_type = inferred_type_from_expr(&condition.value);
     let then_type = application_argument_type_from_expr(&then_branch.value);
     let else_type = application_argument_type_from_expr(&else_branch.value);
-    let joined_type = crate::typed::effect::join_branch_types(&then_type, &else_type);
+    let same_identity = semantic_values_have_same_identity(
+        &SemanticValueType {
+            type_ref: then_type.clone(),
+            key: then_branch.semantic_type.clone(),
+        },
+        &SemanticValueType {
+            type_ref: else_type.clone(),
+            key: else_branch.semantic_type.clone(),
+        },
+    );
+    let joined_type = if same_identity {
+        Some(then_type.clone())
+    } else {
+        crate::typed::effect::join_branch_types(&then_type, &else_type)
+    };
     let has_unresolved_type = typed_type_contains_hole(&condition_type)
         || typed_type_contains_hole(&then_type)
         || typed_type_contains_hole(&else_type);
@@ -74,12 +90,13 @@ pub(crate) fn type_if_with(
     } else {
         TypedType::Hole
     };
-    let semantic_type =
-        if conditional_issue.is_none() && then_branch.semantic_type == else_branch.semantic_type {
-            then_branch.semantic_type.clone()
-        } else {
-            SemanticTypeKey::Invalid
-        };
+    let semantic_type = if conditional_issue.is_none()
+        && (same_identity || then_branch.semantic_type == else_branch.semantic_type)
+    {
+        then_branch.semantic_type.clone()
+    } else {
+        SemanticTypeKey::Invalid
+    };
     let semantic_type = if crate::typed::type_ref::effect_from_value_type(&type_ref).is_some() {
         context.semantic_value_from_typed_type(&type_ref).key
     } else {
