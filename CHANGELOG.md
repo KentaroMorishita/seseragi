@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.111] - 2026-10-28
+
+### Fixed
+
+- Keep editor selections valid when replacing selected text, formatting source, or switching Tour lessons. Preserve undo/redo, multiple selections, diagnostic navigation and the existing selection decorations.
+
 ## [0.61.110] - 2026-10-28
 
 ### Added

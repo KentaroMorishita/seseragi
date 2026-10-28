@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/playground",
-  "version": "0.61.110",
+  "version": "0.61.111",
   "private": true,
   "type": "module",
   "scripts": {
@@ -41,5 +41,8 @@
     "@types/bun": "latest",
     "esbuild": "0.28.1",
     "vite": "^7.0.4"
+  },
+  "patchedDependencies": {
+    "@codemirror/state@6.7.1": "patches/@codemirror%2Fstate@6.7.1.patch"
   }
 }
