@@ -24,6 +24,13 @@ pub(crate) struct DeclarationPrefix {
     pub deprecation: Option<Deprecation>,
 }
 
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub(crate) enum DeclarationContext {
+    TopLevel,
+    Member,
+    Foreign,
+}
+
 fn significant(tokens: &[Token], start: usize, end: usize) -> Option<usize> {
     (start..end).find(|&i| {
         !matches!(
@@ -42,6 +49,15 @@ pub(crate) fn declaration_prefix(
     tokens: &[Token],
     start: usize,
     end: usize,
+) -> Result<DeclarationPrefix, ByteSpan> {
+    declaration_prefix_in(tokens, start, end, DeclarationContext::TopLevel)
+}
+
+pub(crate) fn declaration_prefix_in(
+    tokens: &[Token],
+    start: usize,
+    end: usize,
+    context: DeclarationContext,
 ) -> Result<DeclarationPrefix, ByteSpan> {
     let span = |i: usize| ByteSpan {
         start: tokens[i].start,
@@ -93,23 +109,35 @@ pub(crate) fn declaration_prefix(
         });
     }
     let opaque = tokens[keyword].raw == "opaque";
-    if opaque {
+    if opaque && context != DeclarationContext::Foreign {
         keyword = significant(tokens, keyword + 1, end).ok_or_else(|| span(keyword))?;
     }
-    if deprecation.is_some()
-        && (!matches!(
-            tokens[keyword].raw.as_str(),
-            "let"
-                | "fn"
-                | "effect"
-                | "type"
-                | "newtype"
-                | "alias"
-                | "struct"
-                | "trait"
-                | "operator"
-        ) || opaque && !matches!(tokens[keyword].raw.as_str(), "type" | "newtype" | "struct"))
-    {
+    let allowed = match context {
+        DeclarationContext::TopLevel => {
+            matches!(
+                tokens[keyword].raw.as_str(),
+                "let"
+                    | "fn"
+                    | "effect"
+                    | "type"
+                    | "newtype"
+                    | "alias"
+                    | "struct"
+                    | "trait"
+                    | "operator"
+            ) && (!opaque || matches!(tokens[keyword].raw.as_str(), "type" | "newtype" | "struct"))
+        }
+        DeclarationContext::Member => {
+            matches!(tokens[keyword].raw.as_str(), "fn" | "operator") && !opaque
+        }
+        DeclarationContext::Foreign => {
+            matches!(
+                tokens[keyword].raw.as_str(),
+                "pure" | "task" | "opaque" | "namespace"
+            ) && !public
+        }
+    };
+    if deprecation.is_some() && !allowed {
         return Err(span(keyword));
     }
     Ok(DeclarationPrefix {

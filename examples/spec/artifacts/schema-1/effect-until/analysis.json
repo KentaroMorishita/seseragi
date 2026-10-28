@@ -1644,6 +1644,56 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 5,
+      "owner": "std/collection::SizeError"
+    },
+    {
+      "binding": 8,
+      "owner": "std/collection::ReduceStep"
+    },
+    {
+      "binding": 9,
+      "owner": "std/collection::ReduceStep"
+    },
+    {
+      "binding": 12,
+      "owner": "std/effect::LoopControl"
+    },
+    {
+      "binding": 13,
+      "owner": "std/effect::LoopControl"
+    },
+    {
+      "binding": 20,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 21,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 22,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 25,
+      "owner": "std/effect::ParallelismError"
+    },
+    {
+      "binding": 30,
+      "owner": "std/effect::ScheduleDecision"
+    },
+    {
+      "binding": 31,
+      "owner": "std/effect::ScheduleDecision"
+    },
+    {
+      "binding": 33,
+      "owner": "std/effect::ScheduleError"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

@@ -27,6 +27,8 @@ impl Backend<'_> {
         };
         let primitive = match identity.as_str() {
             "std/int::Eq" => "Int",
+            "std/bool::Eq" => "Bool",
+            "std/unit::Eq" => "Unit",
             "std/string::Eq" => "String",
             _ => return None,
         };
@@ -80,6 +82,8 @@ impl Backend<'_> {
             }
             let primitive = match identity.as_str() {
                 "std/int::Eq" => "Int",
+                "std/bool::Eq" => "Bool",
+                "std/unit::Eq" => "Unit",
                 "std/char::Eq" => "Char",
                 "std/string::Eq" => "String",
                 _ => return Err("Rust backend: unsupported canonical Eq provider".into()),

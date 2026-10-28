@@ -9414,6 +9414,60 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/collection-reduce-until::Countdown"
+    },
+    {
+      "binding": 3,
+      "owner": "artifact/collection-reduce-until::Forever"
+    },
+    {
+      "binding": 14,
+      "owner": "std/collection::SizeError"
+    },
+    {
+      "binding": 17,
+      "owner": "std/collection::ReduceStep"
+    },
+    {
+      "binding": 18,
+      "owner": "std/collection::ReduceStep"
+    },
+    {
+      "binding": 22,
+      "owner": "artifact/collection-reduce-until::Countdown"
+    },
+    {
+      "binding": 30,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 31,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 37,
+      "owner": "artifact/collection-reduce-until::Countdown"
+    },
+    {
+      "binding": 40,
+      "owner": "artifact/collection-reduce-until::Forever"
+    },
+    {
+      "binding": 62,
+      "owner": "std/collection::ReduceStep"
+    },
+    {
+      "binding": 85,
+      "owner": "std/prelude::Iterator"
+    },
+    {
+      "binding": 92,
+      "owner": "std/prelude::String"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

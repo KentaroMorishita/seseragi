@@ -24,13 +24,18 @@ pub use diagnostics::{
     DiagnosticSeverity, LintEvidence, RelatedDiagnostic, TypeDifference, TypeDifferenceEntry,
     TypeDifferenceKind, TypeDifferencePathSegment,
 };
-pub use documentation::{extract_document_tests, DocumentTestBlock, DocumentTestMode};
+pub use documentation::{
+    extract_document_comments, extract_document_tests, DocumentComment, DocumentComments,
+    DocumentTestBlock, DocumentTestMode,
+};
 pub use integer_literal::{decode_integer_literal, IntegerLiteralError};
 pub use interface::{
-    parse_import_free_module_interface, parse_module_interface, parse_unlinked_module_interface,
-    ImportOccurrence, InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport,
-    InterfaceInstance, InterfaceMethod, InterfaceOperator, InterfaceRecordField, InterfaceScheme,
-    InterfaceType, ModuleHeader, ModuleHeaderName, ModuleInterface, UnlinkedModuleInterface,
+    namespace_deprecations, parse_import_free_module_interface, parse_module_interface,
+    parse_unlinked_module_interface, ImportOccurrence, InterfaceConstraint, InterfaceDependency,
+    InterfaceExport, InterfaceImport, InterfaceInstance, InterfaceMethod,
+    InterfaceNamespaceDeprecation, InterfaceOperator, InterfaceOperatorDeprecation,
+    InterfaceRecordField, InterfaceScheme, InterfaceType, ModuleHeader, ModuleHeaderName,
+    ModuleInterface, UnlinkedModuleInterface,
 };
 pub use lexer::{is_custom_operator_candidate, lex};
 pub use literal::{decode_char_literal, decode_string_literal, LiteralDecodeError};

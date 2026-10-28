@@ -113,6 +113,7 @@ pub(super) fn prelude_method_interface(
         .type_parameters
         .drain(..trait_spec.type_parameters.len());
     seseragi_syntax::InterfaceMethod {
+        deprecation: None,
         name: method.name.to_owned(),
         scheme,
         origin,
@@ -292,6 +293,8 @@ pub(crate) fn typed_interface_from_modules(
         source: shallow.source,
         dependencies: shallow.dependencies,
         exports,
+        namespace_deprecations: shallow.namespace_deprecations,
+        operator_deprecations: Vec::new(),
         operators: shallow.operators,
         instances,
     }

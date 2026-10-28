@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { samples } from "../src/samples"
+import { tourLessons } from "../src/tour/curriculum"
 
 type ProjectResponse = Readonly<{
   readonly status: "success" | "failure"
@@ -26,6 +27,11 @@ type WasmBindings = Readonly<{
     readonly module_or_path: ArrayBuffer
   }) => Promise<unknown>
   readonly compile_project: (request: string) => string
+  readonly compile_single_file: (
+    sourceName: string,
+    moduleId: string,
+    source: string
+  ) => string
   readonly format_project_file: (request: string, path: string) => string
 }>
 
@@ -54,6 +60,29 @@ function requestFor(sample: (typeof samples)[number]) {
     files: sample.workspace.files.map(({ path, source }) => ({ path, source })),
   } as const
 }
+
+describe("canonical Tour compiler gate", () => {
+  for (const lesson of tourLessons) {
+    for (const [kind, source] of [
+      ["lesson", lesson.source],
+      ["exercise", lesson.exerciseSource],
+    ] as const) {
+      if (source.trim() === "") continue
+      test(`compiles ${lesson.id} ${kind}`, async () => {
+        const wasm = await loadBindings()
+        const compiled = JSON.parse(
+          wasm.compile_single_file("main.ssrg", `tour/${lesson.id}`, source)
+        ) as ProjectResponse
+        expect(compiled.status).toBe("success")
+        if (compiled.status !== "success") {
+          throw new Error(
+            `Tour ${lesson.id} ${kind} failed: ${JSON.stringify(compiled)}`
+          )
+        }
+      })
+    }
+  }
+})
 
 describe("canonical sample compiler gate", () => {
   for (const sample of samples) {

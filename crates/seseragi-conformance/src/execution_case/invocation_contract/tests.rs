@@ -23,6 +23,8 @@ fn function(parameter: InterfaceType, result: InterfaceType) -> InterfaceType {
 
 fn interface(entry_type: InterfaceType) -> TypedModuleInterface {
     TypedModuleInterface {
+        namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         stage: "typed-interface".to_owned(),
         module: "fixture/main".to_owned(),

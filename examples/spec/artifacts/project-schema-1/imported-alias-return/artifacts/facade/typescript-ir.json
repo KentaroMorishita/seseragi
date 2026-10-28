@@ -41,6 +41,18 @@
             "start": 18,
             "end": 23
           }
+        },
+        {
+          "imported": "$ssrg$kind$Box",
+          "local": "$ssrg$kind$Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 13,
+            "end": 16
+          }
         }
       ],
       "module": "fixture/imported-alias-return::domain",

@@ -39,16 +39,22 @@
                   {
                     "name": "stdin",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Stdin",
+                      "canonical": "std/prelude::Stdin",
+                      "providerModule": "std/stdin",
+                      "providerExport": "Stdin",
                       "arguments": []
                     }
                   }
                 ]
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "StdinError",
+                "canonical": "std/prelude::StdinError",
+                "providerModule": "std/stdin",
+                "providerExport": "StdinError",
                 "arguments": []
               },
               {

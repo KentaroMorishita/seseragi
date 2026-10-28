@@ -2779,6 +2779,64 @@
       ]
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 0,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 1,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 2,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 3,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 4,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 23,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 24,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 25,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 26,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 27,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 29,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 30,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 31,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 32,
+      "owner": "std/web/html::HtmlBuildError"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

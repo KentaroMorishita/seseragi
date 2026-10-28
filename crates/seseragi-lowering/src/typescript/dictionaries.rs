@@ -73,7 +73,9 @@ pub(super) fn local_dictionary_expression(
             callee: local_name.to_owned(),
             type_arguments: type_arguments
                 .iter()
-                .map(|type_ref| type_ref_from_core_type(type_ref, imported_types))
+                .map(|type_ref| {
+                    type_ref_from_core_type(type_ref, &imported_types.with_constructor_position())
+                })
                 .collect(),
             arguments: structural_dictionary_arguments(identity, type_arguments, arguments)?,
         });
@@ -106,11 +108,15 @@ pub(super) fn local_dictionary_expression(
     if type_arguments.is_empty() && arguments.is_empty() {
         return Some(TypeScriptExpr::Identifier { name: callee });
     }
+    // Selected instance arguments can be constructors; retain their checked
+    // kind witnesses just as the corresponding data annotations do.
     Some(TypeScriptExpr::TypeApplicationCall {
         callee,
         type_arguments: type_arguments
             .iter()
-            .map(|type_ref| type_ref_from_core_type(type_ref, imported_types))
+            .map(|type_ref| {
+                type_ref_from_core_type(type_ref, &imported_types.with_constructor_position())
+            })
             .collect(),
         arguments,
     })

@@ -14,6 +14,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "trait.instance-arity-mismatch",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!(
                     "trait {trait_name} expects {expected} type argument(s), but the instance provides {actual}"
                 ),
@@ -31,6 +32,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "trait.instance-kind-mismatch",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!(
                     "trait parameter {parameter} expects kind {}, but the instance argument has kind {}",
                     render_kind(*expected),
@@ -48,6 +50,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "trait.supertrait-instance-missing",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!("required supertrait instance {supertrait} is not available"),
                 primary: byte_range(*declaration),
             },
@@ -61,6 +64,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "trait.instance-method-missing",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!("trait contract requires method {method}"),
                 primary: byte_range(*contract),
             },
@@ -74,6 +78,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "trait.instance-method-unexpected",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!("trait contract does not declare method {method}"),
                 primary: byte_range(*contract),
             },
@@ -87,6 +92,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "name.duplicate-definition",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!("instance method {method} is already defined here"),
                 primary: byte_range(*declaration),
             },
@@ -100,6 +106,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "trait.instance-method-signature-mismatch",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!("instance method {method} must match this trait contract"),
                 primary: byte_range(*contract),
             },
@@ -113,6 +120,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
             "trait.instance-method-body-missing",
             *primary,
             RelatedDiagnostic {
+                source: None,
                 message: format!("instance method {method} must implement this trait contract"),
                 primary: byte_range(*contract),
             },

@@ -71,6 +71,15 @@ pub fn retain_application(
             types(&alias.target, &mut refs);
             add(&alias.name, refs);
         }
+        for constructor in module
+            .higher_kinds
+            .iter()
+            .flat_map(|kinds| &kinds.constructors)
+        {
+            let mut refs = Names::new();
+            types(&constructor.target, &mut refs);
+            add(&constructor.name, refs);
+        }
         for structure in &module.structs {
             let mut refs = Names::new();
             for field in structure
@@ -235,6 +244,11 @@ pub fn retain_application(
         module.aliases.retain(|alias| keep(&alias.name));
         module.structs.retain(|structure| keep(&structure.name));
         module.adts.retain(|adt| keep(&adt.name));
+        if let Some(kinds) = &mut module.higher_kinds {
+            kinds
+                .constructors
+                .retain(|constructor| keep(&constructor.name));
+        }
         module
             .instances
             .retain(|instance| keep(&instance.dictionary_export));
@@ -300,6 +314,21 @@ fn parameters_refs(parameters: &[TypeScriptParameter], refs: &mut Names) {
 }
 fn types(value: &TypeScriptType, refs: &mut Names) {
     match value {
+        TypeScriptType::KindConstructor { name, arguments } => {
+            refs.insert(name.clone());
+            for value in arguments.iter().flatten() {
+                types(value, refs);
+            }
+        }
+        TypeScriptType::KindApplication {
+            constructor,
+            arguments,
+        } => {
+            refs.insert(constructor.clone());
+            for value in arguments {
+                types(value, refs);
+            }
+        }
         TypeScriptType::Reference { name, arguments } => {
             refs.insert(name.clone());
             for value in arguments {
@@ -332,7 +361,8 @@ fn types(value: &TypeScriptType, refs: &mut Names) {
             types(parameter, refs);
             types(result, refs);
         }
-        TypeScriptType::Bigint
+        TypeScriptType::KindArgument { .. }
+        | TypeScriptType::Bigint
         | TypeScriptType::Number
         | TypeScriptType::Boolean
         | TypeScriptType::String

@@ -303,9 +303,11 @@ TS / nativeのscalar self-tail loop認定とscalar global readの共通改善は
 ## 対応範囲と診断
 
 対応するのは、pure / 同期Effect function、返却closure、部分適用、generic / HKTの型消去、
-選択済みのuser instanceとnested dictionary、Int / Bool / String、基本Char / Float / List、
+選択済みのuser instanceとnested dictionary、Int / Bool / Unit / String、基本Char / Float / List、
 Tuple / Array / field-only Record、local ADT、decision、let / effect sequence。
 Show / Debugは対応済みの標準辞書と選択済みchild methodを使う。
+BoolとUnitの`==`／`!=`はcanonicalな`std/bool::Eq`／`std/unit::Eq`の型とevidenceを照合する。
+Boolの前置`!`も入力と結果のcanonicalなBool型を確認し、operandを一度だけ評価する。
 Stringの`==`／`!=`と保存・部分適用は、canonicalな`std/string::Eq`の型と選択済みevidenceを照合する。
 比較はUnicode正規化を行わず、内容で判定する。左右の式を一度ずつ評価し、保存した左引数は
 返却closureの寿命まで保持する。`filesystem-string-equality.ssrg`はUTF-8入力の内容で分岐し、
@@ -344,10 +346,10 @@ toIntは非finiteを型付き失敗にし、丸めた後のsafe Int範囲を検�
 全行の成功後に別fileへ書く。入力と失敗時の既存出力を保ち、保存・返り値converterと
 cold Failure/Defectでも評価順、scope解放とroot0を保つ。program WASMの変換は位置付きで拒否し、
 Float Eq/Ord、power/stdmathと新しいnumeric errorのShow/Debugはこの範囲に含めない。
-nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
-商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
-0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。
-Rem／Powやprogram WASMのInt算術は、この対応には含まない。
+nativeのInt除算と剰余はcanonicalな`std/int::Div`／`std/int::Rem`の型・evidence・source段階を照合する。
+商は0方向へ切り捨て、剰余の符号は被除数に従う。保存したmethodや再利用する部分適用でも
+同じsafe integer範囲を保つ。0による除算・剰余はDefectとなり、Effectのresource scopeを閉じてから
+processを終了する。Powとprogram WASMのInt除算・剰余は、この対応には含まない。
 Arrayの`values[index]`はcanonical Array / Int / Maybeと要素型を検証し、
 receiver、indexをこの順で一度ずつ評価する。負数・範囲外・空配列ではNothingを返し、
 有効な位置では要素の共有edgeをJustへ保持する。取り出した関数・Ref・cold Effectは
@@ -358,6 +360,7 @@ Maybe表示も既存のclosed dictionaryと残るsource parameterの検査を通
 未証明の型・辞書stagingは生成前に拒否する。部分適用した関数値をArrayへ保存・取得する経路も扱う。
 Effectはsucceed / fail / defer / flatMap / recover / mapError、Refはmake / get / set / update / modify、
 resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/consoleの出力を扱う。
+Consoleの引数はStringに限り、他の値は`show`で明示的に変換する。引数の評価はcoldな出力処理の作成前に行う。
 `std/path`のcurrent / parse / child / join / render / normalize / isAbsolute / parent /
 fileName / extensionと、`std/fs`のreadTextUtf8 / writeTextUtf8をnative file workerで扱う。
 write modeはReplace / CreateNew / Append。Pathはcanonical ownerを持つopaque値として保持し、

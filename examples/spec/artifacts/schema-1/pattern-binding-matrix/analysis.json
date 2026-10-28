@@ -6616,6 +6616,64 @@
       "type": "{ value: Int }"
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 2,
+      "owner": "artifact/pattern-binding-matrix::UserId"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/pattern-binding-matrix::Profile"
+    },
+    {
+      "binding": 17,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 19,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 46,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 47,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 48,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 55,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 61,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 62,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 63,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 69,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 76,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 77,
+      "owner": "std/prelude::Either"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

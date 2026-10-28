@@ -314,6 +314,7 @@ fn void_children_diagnostic(tag: &str, primary: ByteSpan) -> Diagnostic {
         message_key: "web.html.void-children".to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: format!("`html.{tag}` is a void element and cannot receive `children`"),
             primary: byte_range(primary),
         }],
@@ -330,6 +331,7 @@ fn missing_required_prop_diagnostic(tag: &str, name: &str, primary: ByteSpan) ->
         message_key: "web.html.missing-required-prop".to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: format!("`html.{tag}` requires the `{name}` prop"),
             primary: byte_range(primary),
         }],
@@ -358,6 +360,7 @@ fn unknown_prop_diagnostic(
         message_key: "web.html.unknown-prop".to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message,
             primary: byte_range(primary),
         }],
@@ -387,6 +390,7 @@ fn event_control_without_handler_diagnostic(
         message_key: "web.html.event-control-without-handler".to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: format!("`html.{tag}` prop `{name}` has no effect without `onClick`"),
             primary: byte_range(primary),
         }],

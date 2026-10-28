@@ -14,13 +14,13 @@ import {
 pub effect fn main = {
   let secret = create 7
   do {
-    println $ read secret
-    println $ unpack secret
+    println $ show (read secret)
+    println $ show (unpack secret)
     println $ show secret
     println $ show (secret == create 7)
-    println $ unbox (box 42)
-    println $ nested (box secret)
+    println $ show (unbox (box 42))
+    println $ show (nested (box secret))
     println $ show (collect [secret])
-    println $ read (update secret)
+    println $ show (read (update secret))
   }
 }

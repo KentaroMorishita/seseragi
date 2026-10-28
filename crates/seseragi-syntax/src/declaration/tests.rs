@@ -177,3 +177,147 @@ fn ordinary_interfaces_do_not_gain_empty_metadata() {
     .unwrap();
     assert!(json["exports"][0].get("deprecation").is_none());
 }
+
+#[test]
+fn member_clauses_keep_their_own_ranges_and_interface_owner() {
+    let source = concat!(
+        "pub trait Render<A> {\n",
+        "  fn current value: A -> String\n",
+        "  deprecated \"Use current\" since \"0.61.0\"\n",
+        "  fn old value: A -> String\n",
+        "}\n",
+        "pub struct Box { value: Int }\n",
+        "impl Box {\n",
+        "  pub fn read self: Box -> Int = self.value\n",
+        "  pub deprecated \"Use read\" fn old self: Box -> Int = self.value\n",
+        "}\n",
+    );
+    let diagnostics = parse_diagnostics("λ/api.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    let surface = parse_surface_ast("λ/api.ssrg", source);
+    assert_eq!(surface.deprecations.len(), 2);
+    assert_eq!(surface.deprecations[0].deprecation.message, "Use current");
+    assert_eq!(surface.deprecations[1].deprecation.message, "Use read");
+    for entry in &surface.deprecations {
+        assert!(source[entry.declaration.start..entry.declaration.end].contains("fn old"));
+        assert!(
+            source[entry.deprecation.origin.start..entry.deprecation.origin.end]
+                .starts_with("deprecated \"Use ")
+        );
+    }
+    let interface = parse_module_interface("λ/api.ssrg", source);
+    let owner = |name: &str| {
+        interface
+            .exports
+            .iter()
+            .find(|export| export.name == name)
+            .unwrap()
+    };
+    for (name, message) in [("Render", "Use current"), ("Box", "Use read")] {
+        let owner = owner(name);
+        assert!(owner.deprecation.is_none());
+        assert_eq!(owner.methods.len(), 2);
+        assert!(owner.methods[0].deprecation.is_none());
+        let old = &owner.methods[1];
+        assert_eq!(old.name, "old");
+        let metadata = old.deprecation.as_ref().unwrap();
+        assert_eq!(metadata.message, message);
+        assert_eq!(metadata.source, "λ/api.ssrg");
+    }
+}
+
+#[test]
+fn foreign_clauses_survive_nested_member_projection_without_inheritance() {
+    let source = concat!(
+        "pub foreign \"typescript\" from \"./host.mjs\" {\n",
+        "  deprecated \"Use NewHandle\" opaque type Handle\n",
+        "  deprecated \"Use current\" pure fn old value: Int -> Int\n",
+        "  pure fn current value: Int -> Int\n",
+        "  namespace nested {\n",
+        "    deprecated \"Use modern\" since \"0.61.0\" task fn old value: Int -> Int\n",
+        "    pure value count: Int\n",
+        "  }\n",
+        "}\n",
+    );
+    let diagnostics = parse_diagnostics("λ/foreign.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    let surface = parse_surface_ast("λ/foreign.ssrg", source);
+    assert_eq!(surface.deprecations.len(), 3);
+    let interface = parse_module_interface("λ/foreign.ssrg", source);
+    for (name, message) in [
+        ("Handle", "Use NewHandle"),
+        ("old", "Use current"),
+        ("nested.old", "Use modern"),
+    ] {
+        let export = interface
+            .exports
+            .iter()
+            .find(|export| export.name == name)
+            .unwrap();
+        assert_eq!(export.deprecation.as_ref().unwrap().message, message);
+        assert_eq!(
+            export.deprecation.as_ref().unwrap().source,
+            "λ/foreign.ssrg"
+        );
+    }
+    for name in ["current", "nested.count"] {
+        assert!(interface
+            .exports
+            .iter()
+            .find(|export| export.name == name)
+            .unwrap()
+            .deprecation
+            .is_none());
+    }
+}
+
+#[test]
+fn malformed_member_clauses_and_instance_notices_are_positioned_errors() {
+    for prefix in [
+        "deprecated \"\"",
+        "deprecated \"old\" since \"1.2\"",
+        "deprecated 41",
+    ] {
+        for owner in [
+            "trait Render<A>",
+            "impl Int",
+            "pub foreign \"typescript\" from \"./host.mjs\"",
+        ] {
+            let member = if owner.contains("foreign") {
+                "pure fn old value: Int -> Int"
+            } else {
+                "fn old value: Int -> Int"
+            };
+            let source = format!("// 🙂\n{owner} {{\n {prefix} {member}\n}}\n");
+            let diagnostics = parse_diagnostics("bad.ssrg", &source);
+            assert!(
+                diagnostics
+                    .diagnostics
+                    .iter()
+                    .any(|d| d.severity == DiagnosticSeverity::Error),
+                "{source}: {diagnostics:#?}"
+            );
+            for diagnostic in diagnostics.diagnostics {
+                assert!(source
+                    .get(diagnostic.primary.start..diagnostic.primary.end)
+                    .is_some());
+            }
+        }
+    }
+    let source = "type Badge = | Active\ntrait Render<A> { fn old value: A -> Int }\ninstance Render<Badge> { deprecated \"Use current\" fn old value: Badge -> Int = 41 }\n";
+    let diagnostics = parse_diagnostics("bad.ssrg", source);
+    assert!(
+        diagnostics
+            .diagnostics
+            .iter()
+            .any(
+                |diagnostic| diagnostic.message_key == "parser.invalid-declaration-modifiers"
+                    && source[diagnostic.primary.start..diagnostic.primary.end]
+                        .starts_with("deprecated")
+            ),
+        "{diagnostics:#?}"
+    );
+    assert!(parse_surface_ast("bad.ssrg", source)
+        .deprecations
+        .is_empty());
+}

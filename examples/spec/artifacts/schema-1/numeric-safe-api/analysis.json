@@ -3505,6 +3505,128 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 8,
+      "owner": "std/float::FloatParseError"
+    },
+    {
+      "binding": 9,
+      "owner": "std/float::FloatParseError"
+    },
+    {
+      "binding": 10,
+      "owner": "std/float::FloatParseError"
+    },
+    {
+      "binding": 12,
+      "owner": "std/float::FloatConversionError"
+    },
+    {
+      "binding": 13,
+      "owner": "std/float::FloatConversionError"
+    },
+    {
+      "binding": 16,
+      "owner": "std/int::IntParseError"
+    },
+    {
+      "binding": 17,
+      "owner": "std/int::IntParseError"
+    },
+    {
+      "binding": 18,
+      "owner": "std/int::IntParseError"
+    },
+    {
+      "binding": 19,
+      "owner": "std/int::IntParseError"
+    },
+    {
+      "binding": 21,
+      "owner": "std/int::IntDivisionError"
+    },
+    {
+      "binding": 23,
+      "owner": "std/int::IntPowerError"
+    },
+    {
+      "binding": 24,
+      "owner": "std/int::IntPowerError"
+    },
+    {
+      "binding": 27,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 28,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 29,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 30,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 31,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 32,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 36,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 37,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 39,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 45,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 46,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 47,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 49,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 51,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 54,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 55,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 56,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 57,
+      "owner": "std/prelude::Ordering"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

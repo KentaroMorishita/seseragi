@@ -2130,6 +2130,36 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/derived-show-debug-nominal::UserId"
+    },
+    {
+      "binding": 3,
+      "owner": "artifact/derived-show-debug-nominal::Packet"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/derived-show-debug-nominal::Packet"
+    },
+    {
+      "binding": 8,
+      "owner": "artifact/derived-show-debug-nominal::Packet"
+    },
+    {
+      "binding": 9,
+      "owner": "artifact/derived-show-debug-nominal::Packet"
+    },
+    {
+      "binding": 10,
+      "owner": "artifact/derived-show-debug-nominal::Envelope"
+    },
+    {
+      "binding": 11,
+      "owner": "artifact/derived-show-debug-nominal::Stats"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

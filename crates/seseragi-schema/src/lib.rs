@@ -99,6 +99,7 @@ pub fn interpret_schema(
         builder.graph.symbols.insert(
             symbol.clone(),
             SemanticSymbol {
+                deprecations: Vec::new(),
                 public_name: symbol.clone(),
                 declaration_name: symbol,
                 kind: SymbolKind::Type,
@@ -118,6 +119,7 @@ pub fn interpret_schema(
     builder.graph.symbols.insert(
         public_name.into(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             public_name: public_name.into(),
             declaration_name: public_name.into(),
             kind: SymbolKind::Type,

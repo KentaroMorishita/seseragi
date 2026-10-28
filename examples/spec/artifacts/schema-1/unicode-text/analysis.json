@@ -12828,6 +12828,172 @@
       "type": "{ start: Int, end: Int, length: Int }"
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 10,
+      "owner": "std/text::Utf8DecodeError"
+    },
+    {
+      "binding": 12,
+      "owner": "std/text::TextSliceError"
+    },
+    {
+      "binding": 16,
+      "owner": "std/text/grapheme::GraphemeSliceError"
+    },
+    {
+      "binding": 19,
+      "owner": "std/text/unicode::NormalizationForm"
+    },
+    {
+      "binding": 20,
+      "owner": "std/text/unicode::NormalizationForm"
+    },
+    {
+      "binding": 21,
+      "owner": "std/text/unicode::NormalizationForm"
+    },
+    {
+      "binding": 22,
+      "owner": "std/text/unicode::NormalizationForm"
+    },
+    {
+      "binding": 24,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 25,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 26,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 27,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 28,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 29,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 30,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 31,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 32,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 33,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 34,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 35,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 36,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 37,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 38,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 39,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 40,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 41,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 42,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 43,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 44,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 45,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 46,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 47,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 48,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 49,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 50,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 51,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 52,
+      "owner": "std/text/unicode::UnicodeGeneralCategory"
+    },
+    {
+      "binding": 59,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 60,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 75,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 76,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 77,
+      "owner": "std/prelude::Ordering"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

@@ -162,6 +162,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
         message_key: message_key.to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message,
             primary: byte_range(declaration),
         }],

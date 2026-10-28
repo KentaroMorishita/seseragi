@@ -114,6 +114,7 @@ fn bounded_normalization_preserves_unresolved_relations_and_reports_exhaustion()
     graph.symbols.insert(
         "Loop".to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             public_name: "Loop".to_owned(),
             declaration_name: "Loop".to_owned(),
             kind: SymbolKind::Type,

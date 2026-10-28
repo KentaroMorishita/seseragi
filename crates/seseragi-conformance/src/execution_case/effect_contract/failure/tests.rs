@@ -66,6 +66,8 @@ fn interface_with_exports(
     instances: Vec<InterfaceInstance>,
 ) -> TypedModuleInterface {
     TypedModuleInterface {
+        namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         stage: "typed-interface".to_owned(),
         module: "artifact/example".to_owned(),
@@ -139,6 +141,74 @@ fn resolve_effect_entry_contract(
     generated_module: &GeneratedModule,
 ) -> Result<EffectEntryContract, String> {
     super::resolve_effect_entry_contract(interface, failure, generated_module, "./main.ts")
+}
+
+#[test]
+fn canonical_standard_failures_preserve_runtime_renderers_and_reject_forged_owners() {
+    let generated = generated_instances(json!([]));
+    let catalog = ProjectFailureRendererCatalog::new(
+        Vec::<(String, &GeneratedModule)>::new(),
+        Vec::<(String, &TypedModuleInterface)>::new(),
+        Vec::<(String, String)>::new(),
+    );
+    for (name, provider) in [
+        ("Never", "std/prelude"),
+        ("Int", "std/prelude"),
+        ("String", "std/prelude"),
+        ("ConsoleError", "std/prelude"),
+        ("ConsoleError", "std/console"),
+        ("StdinError", "std/prelude"),
+        ("StdinError", "std/stdin"),
+    ] {
+        let typed = interface_with_exports(vec![type_export(name)], Vec::new());
+        let failure = InterfaceType::ExternalNamed {
+            name: "RenamedFailure".to_owned(),
+            canonical: format!("std/prelude::{name}"),
+            provider_module: provider.to_owned(),
+            provider_export: name.to_owned(),
+            arguments: Vec::new(),
+        };
+        let expected =
+            resolve_effect_entry_contract(&interface(Vec::new()), &named(name), &generated)
+                .unwrap();
+        assert_eq!(
+            resolve_effect_entry_contract(&typed, &failure, &generated).unwrap(),
+            expected
+        );
+        assert_eq!(
+            super::project::resolve(&typed, &failure, &generated, "./main.ts", &catalog).unwrap(),
+            expected
+        );
+        for field in ["canonical", "provider", "export", "arguments"] {
+            let mut forged = failure.clone();
+            let InterfaceType::ExternalNamed {
+                canonical,
+                provider_module,
+                provider_export,
+                arguments,
+                ..
+            } = &mut forged
+            else {
+                unreachable!()
+            };
+            match field {
+                "canonical" => *canonical = format!("artifact/other::{name}"),
+                "provider" => *provider_module = "artifact/other".to_owned(),
+                "export" => *provider_export = "Other".to_owned(),
+                "arguments" => arguments.push(named("Int")),
+                _ => unreachable!(),
+            }
+            assert!(
+                resolve_effect_entry_contract(&typed, &forged, &generated).is_err(),
+                "{name}: {field}"
+            );
+            assert!(
+                super::project::resolve(&typed, &forged, &generated, "./main.ts", &catalog)
+                    .is_err(),
+                "{name}: {field}"
+            );
+        }
+    }
 }
 
 #[test]

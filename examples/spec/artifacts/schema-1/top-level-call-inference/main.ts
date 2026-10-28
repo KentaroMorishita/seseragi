@@ -7,6 +7,11 @@ import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
 
+interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
+type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })["type"];
+type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
+export interface $ssrg$kind$Box extends $ssrg$Kind<readonly [unknown]> { readonly type: Box<this["args"][0]> }
+export interface $ssrg$kind$Packet extends $ssrg$Kind<readonly [unknown]> { readonly type: Packet<this["args"][0]> }
 export type Packet<A> =
   | { readonly tag: "Packet"; readonly value: A };
 export const Packet = <A>(value: A): Packet<A> => ({ tag: "Packet", value } as const);

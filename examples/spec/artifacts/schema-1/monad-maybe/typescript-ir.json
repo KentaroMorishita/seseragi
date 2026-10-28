@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/monad-maybe",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.maybe",
     "core.adt",
@@ -553,12 +558,12 @@
       "parameters": [
         {
           "name": "f",
-          "type": "(argument: A) => unknown",
+          "type": "(argument: A) => $ssrg$Apply<M, readonly [B]>",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<M, readonly [A]>",
           "implicit": false
         }
       ],
@@ -583,7 +588,15 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "M",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {
@@ -620,7 +633,7 @@
       "parameters": [
         {
           "name": "f",
-          "type": "(argument: A) => unknown",
+          "type": "(argument: A) => $ssrg$Apply<M, readonly [B]>",
           "implicit": false
         },
         {
@@ -660,13 +673,29 @@
                 ]
               },
               "type": {
-                "kind": "unknown"
+                "kind": "kind-application",
+                "constructor": "M",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
               }
             }
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "M",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {

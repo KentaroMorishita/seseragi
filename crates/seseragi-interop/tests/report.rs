@@ -5,6 +5,7 @@ fn symbol(graph: &mut SemanticGraph, name: &str, type_ref: TypeId) {
     graph.symbols.insert(
         name.to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             public_name: name.to_owned(),
             declaration_name: name.to_owned(),
             kind: SymbolKind::Type,
@@ -180,6 +181,7 @@ fn runtime_uncertainty_is_separate_from_interpreted_callable_shape() {
     graph.symbols.insert(
         "read".to_owned(),
         SemanticSymbol {
+            deprecations: Vec::new(),
             public_name: "read".to_owned(),
             declaration_name: "read".to_owned(),
             kind: SymbolKind::Callable,

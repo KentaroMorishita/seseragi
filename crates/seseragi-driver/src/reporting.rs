@@ -55,6 +55,24 @@ pub fn render_terminal_diagnostics(artifact: &DiagnosticArtifact, source: &str) 
         for note in diagnostic.notes() {
             rendered.push_str(&format!("  = note: {note}\n"));
         }
+        for related in &diagnostic.related {
+            if let Some(related_source) = &related.source {
+                // This renderer only has the primary document's text. Retain
+                // an external byte location instead of inventing its line.
+                if related_source == &artifact.source {
+                    let location = lines.locate(related.primary.start.min(source.len()));
+                    rendered.push_str(&format!(
+                        "  = related: {related_source}:{}:{}: {}\n",
+                        location.line, location.column, related.message,
+                    ));
+                } else {
+                    rendered.push_str(&format!(
+                        "  = related: {related_source}:bytes {}..{}: {}\n",
+                        related.primary.start, related.primary.end, related.message,
+                    ));
+                }
+            }
+        }
         for help in diagnostic.helps() {
             rendered.push_str(&format!("  = help: {help}\n"));
         }

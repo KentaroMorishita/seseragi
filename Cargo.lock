@@ -391,6 +391,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pulldown-cmark"
+version = "0.13.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "278e9268c93b9e498a2da46c34d90ba93a3255eb99009646398f34bc73ab36eb"
+dependencies = [
+ "bitflags",
+ "memchr",
+ "pulldown-cmark-escape",
+ "unicase",
+]
+
+[[package]]
+name = "pulldown-cmark-escape"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "007d8adb5ddab6f8e3f491ac63566a7d5002cc7ed73901f72057943fa71ae1ae"
+
+[[package]]
 name = "quote"
 version = "1.0.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -514,7 +532,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-backend-rust"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -527,9 +545,10 @@ dependencies = [
 
 [[package]]
 name = "seseragi-cli"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "ctrlc",
+ "pulldown-cmark",
  "serde_json",
  "seseragi-backend-rust",
  "seseragi-driver",
@@ -546,7 +565,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-conformance"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -561,7 +580,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-driver"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "semver",
  "serde_json",
@@ -576,7 +595,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-dts"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -592,14 +611,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-formatter"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "seseragi-syntax",
 ]
 
 [[package]]
 name = "seseragi-interop"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -608,7 +627,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-lowering"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "semver",
  "serde",
@@ -621,7 +640,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-lsp"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -635,7 +654,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-project"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "semver",
  "serde",
@@ -652,7 +671,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-projection"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -665,7 +684,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-provider"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "semver",
  "serde",
@@ -676,14 +695,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-release"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "seseragi-runtime"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -697,7 +716,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-schema"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -708,7 +727,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-semantics"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -718,14 +737,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-source"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "seseragi-syntax"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "semver",
  "serde",
@@ -737,7 +756,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-wasm"
-version = "0.61.108"
+version = "0.61.109"
 dependencies = [
  "serde",
  "serde_json",
@@ -932,6 +951,12 @@ name = "typenum"
 version = "1.20.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6f5e870be6c3b371b77fe0ee0bafb859fa4964b4404c27de1d380043c4dda20"
+
+[[package]]
+name = "unicase"
+version = "2.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "357cc3acc6a036009fd6c973ed009037c732d60d0b4f6c673e9041497482a28f"
 
 [[package]]
 name = "unicode-ident"

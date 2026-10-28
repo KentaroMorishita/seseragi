@@ -2,6 +2,26 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "artifact/effect-stdin-read-line",
+  "externalTypeBindings": [
+    {
+      "arity": 0,
+      "spelling": "Stdin",
+      "canonical": "std/prelude::Stdin",
+      "provider": {
+        "module": "std/stdin",
+        "export": "Stdin"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "StdinError",
+      "canonical": "std/prelude::StdinError",
+      "provider": {
+        "module": "std/stdin",
+        "export": "StdinError"
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/effect-stdin-read-line::main",
@@ -30,16 +50,18 @@
                 {
                   "name": "stdin",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Stdin",
+                    "canonical": "std/prelude::Stdin",
                     "arguments": []
                   }
                 }
               ]
             },
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "StdinError",
+              "canonical": "std/prelude::StdinError",
               "arguments": []
             },
             {
@@ -89,16 +111,18 @@
                   {
                     "name": "stdin",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Stdin",
+                      "canonical": "std/prelude::Stdin",
                       "arguments": []
                     }
                   }
                 ]
               },
               "failure": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "StdinError",
+                "canonical": "std/prelude::StdinError",
                 "arguments": []
               },
               "success": {
@@ -149,16 +173,18 @@
                   {
                     "name": "stdin",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Stdin",
+                      "canonical": "std/prelude::Stdin",
                       "arguments": []
                     }
                   }
                 ]
               },
               "failure": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "StdinError",
+                "canonical": "std/prelude::StdinError",
                 "arguments": []
               },
               "success": {

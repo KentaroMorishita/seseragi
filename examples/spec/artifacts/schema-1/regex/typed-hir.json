@@ -5,8 +5,31 @@
   "module": "artifact/regex",
   "externalTypeBindings": [
     {
+      "arity": 0,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "provider": {
+        "module": "std/prelude",
+        "export": "String"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "provider": {
+        "module": "std/console",
+        "export": "Console"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ConsoleError",
-      "canonical": "std/prelude::ConsoleError"
+      "canonical": "std/prelude::ConsoleError",
+      "provider": {
+        "module": "std/console",
+        "export": "ConsoleError"
+      }
     },
     {
       "arity": 0,
@@ -6640,16 +6663,18 @@
             {
               "name": "console",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Console",
+                "canonical": "std/prelude::Console",
                 "arguments": []
               }
             }
           ]
         },
         "failure": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "ConsoleError",
+          "canonical": "std/prelude::ConsoleError",
           "arguments": []
         },
         "success": {
@@ -6696,7 +6721,7 @@
                 {
                   "pattern": {
                     "kind": "binding",
-                    "symbol": 106,
+                    "symbol": 107,
                     "name": "line",
                     "type": {
                       "kind": "named",
@@ -6719,16 +6744,18 @@
                           {
                             "name": "console",
                             "type": {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Console",
+                              "canonical": "std/prelude::Console",
                               "arguments": []
                             }
                           }
                         ]
                       },
                       "failure": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "ConsoleError",
+                        "canonical": "std/prelude::ConsoleError",
                         "arguments": []
                       },
                       "success": {
@@ -6775,16 +6802,18 @@
                       {
                         "name": "console",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Console",
+                          "canonical": "std/prelude::Console",
                           "arguments": []
                         }
                       }
                     ]
                   },
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "ConsoleError",
+                    "canonical": "std/prelude::ConsoleError",
                     "arguments": []
                   },
                   {
@@ -6817,16 +6846,18 @@
                       {
                         "name": "console",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Console",
+                          "canonical": "std/prelude::Console",
                           "arguments": []
                         }
                       }
                     ]
                   },
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "ConsoleError",
+                    "canonical": "std/prelude::ConsoleError",
                     "arguments": []
                   },
                   {
@@ -6917,16 +6948,18 @@
                 {
                   "name": "console",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Console",
+                    "canonical": "std/prelude::Console",
                     "arguments": []
                   }
                 }
               ]
             },
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "ConsoleError",
+              "canonical": "std/prelude::ConsoleError",
               "arguments": []
             },
             {

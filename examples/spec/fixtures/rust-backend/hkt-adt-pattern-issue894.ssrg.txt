@@ -1,0 +1,5 @@
+type Box<F<_>, A> = | Box F<A>
+pub effect fn main = do {
+  let boxed: Box<Maybe, Int> = Box (Just 42)
+  println (match boxed { Box value -> show value })
+}

@@ -1,0 +1,13 @@
+struct Box<A> { value: A }
+
+impl<A> Box<A> where Show<A> {
+  operator + self -> other: Int -> String = show self.value + ":" + show other
+}
+
+pub effect fn main = do {
+  println ((Box { value: True }) + 42)
+  let operator: Box<Bool> -> Int -> String = (+)
+  let saved = operator (Box { value: True })
+  println (saved 43)
+  println (saved 44)
+}

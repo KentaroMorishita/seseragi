@@ -1,0 +1,27 @@
+type Triple<A, B, C> = | Triple (A, B, C)
+alias Duplicate<A, B> = Triple<A, A, B>
+
+trait Label<F<_>, A> {
+  fn label prefix: String -> value: F<A> -> String
+}
+
+fn bodyValue value: String -> String = value
+
+instance<A> Label<Duplicate<Int>, A> where Show<A> {
+  fn label prefix: String -> value: Triple<Int, Int, A> -> String =
+    match value { Triple (_, _, item) -> bodyValue (prefix + show item) }
+}
+
+fn selected -> (String -> Triple<Int, Int, Int> -> String) = label<Duplicate<Int>, Int>
+fn prefix -> String = "saved="
+fn payload -> Triple<Int, Int, Int> = Triple (1, 2, 42)
+
+pub fn probe -> String = {
+  let method = selected ()
+  let saved = method (prefix ())
+  let first = saved (payload ())
+  let second = saved (payload ())
+  first + "|" + second
+}
+
+pub effect fn main = println (probe ())

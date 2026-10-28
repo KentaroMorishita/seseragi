@@ -303,6 +303,25 @@ fn effect_application(
         return None;
     }
     let mut operation = known_effect_operation_by_surface(&symbol.spelling)?;
+    if matches!(operation.surface_name, "print" | "println") {
+        if argument_nodes.len() != 1 {
+            return None;
+        }
+        let signature = context.callable(target)?.clone();
+        let analysis = application::type_known_application(
+            signature,
+            *span,
+            &argument_nodes,
+            expression.span(),
+            context,
+            analyze_resolved_expression,
+        );
+        let value = finish_expression_analysis(analysis, issues);
+        let TypedExpr::Call { arguments, .. } = value else {
+            unreachable!("ordinary Console application retains its arguments")
+        };
+        return Some((operation, arguments, None));
+    }
     if operation.surface_name == "mapError" && argument_nodes.len() != 2 {
         return None;
     }

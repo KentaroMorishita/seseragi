@@ -1950,6 +1950,16 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 19,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 20,
+      "owner": "std/prelude::Maybe"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

@@ -1356,6 +1356,18 @@
     },
     {
       "id": 70,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 71,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -1367,7 +1379,7 @@
       }
     },
     {
-      "id": 71,
+      "id": 72,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -1379,8 +1391,8 @@
       }
     },
     {
-      "id": 72,
-      "identity": "artifact/bytes-codecs::local(72)",
+      "id": 73,
+      "identity": "artifact/bytes-codecs::local(73)",
       "name": "line",
       "module": "artifact/bytes-codecs",
       "namespace": "value",
@@ -1392,7 +1404,7 @@
       "typeName": "String"
     },
     {
-      "id": 73,
+      "id": 74,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1680,7 +1692,7 @@
         "start": 2297,
         "end": 2301
       },
-      "symbol": 72
+      "symbol": 73
     },
     {
       "range": {
@@ -2447,17 +2459,24 @@
     },
     {
       "range": {
+        "start": 2262,
+        "end": 2269
+      },
+      "symbol": 70
+    },
+    {
+      "range": {
         "start": 2252,
         "end": 2256
       },
-      "symbol": 70
+      "symbol": 71
     },
     {
       "range": {
         "start": 2276,
         "end": 2288
       },
-      "symbol": 71
+      "symbol": 72
     },
     {
       "range": {
@@ -2471,14 +2490,14 @@
         "start": 2319,
         "end": 2326
       },
-      "symbol": 73
+      "symbol": 74
     },
     {
       "range": {
         "start": 2327,
         "end": 2331
       },
-      "symbol": 72
+      "symbol": 73
     }
   ],
   "typeOccurrences": [
@@ -6147,6 +6166,128 @@
         "end": 2219
       },
       "type": "{ offset: Int }"
+    }
+  ],
+  "nominalBindings": [
+    {
+      "binding": 0,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 10,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 11,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 12,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 13,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 18,
+      "owner": "std/bytes::ByteError"
+    },
+    {
+      "binding": 20,
+      "owner": "std/bytes::BytesSliceError"
+    },
+    {
+      "binding": 23,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 24,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 28,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 29,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 30,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 31,
+      "owner": "std/bytes::ByteError"
+    },
+    {
+      "binding": 33,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 34,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 39,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 40,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 43,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 46,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 47,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 48,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 51,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 52,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 53,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 54,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 57,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 58,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 59,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 60,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 63,
+      "owner": "std/bytes::Bytes"
     }
   ],
   "standardLibrary": [

@@ -25,6 +25,7 @@ pub(super) fn collect_resolution_diagnostics(
             related: containing_declaration(&resolved.declarations, issue.primary)
                 .map(|declaration| {
                     vec![RelatedDiagnostic {
+                        source: None,
                         message: declaration_context(declaration).to_owned(),
                         primary: byte_range(declaration.span()),
                     }]

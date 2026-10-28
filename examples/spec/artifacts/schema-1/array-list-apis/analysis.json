@@ -20638,6 +20638,88 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 8,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 9,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 20,
+      "owner": "std/collection::SizeError"
+    },
+    {
+      "binding": 23,
+      "owner": "std/collection::ReduceStep"
+    },
+    {
+      "binding": 24,
+      "owner": "std/collection::ReduceStep"
+    },
+    {
+      "binding": 32,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 33,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 39,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 41,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 42,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 44,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 45,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 46,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 50,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 93,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 94,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 95,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 154,
+      "owner": "artifact/array-list-apis::Key"
+    },
+    {
+      "binding": 158,
+      "owner": "artifact/array-list-apis::Key"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

@@ -11,6 +11,7 @@ path = "src/main.rs"
 
 [dependencies]
 ctrlc = "3.4"
+pulldown-cmark = { version = "=0.13.5", default-features = false, features = ["html"] }
 seseragi-backend-rust = { path = "../seseragi-backend-rust" }
 seseragi-dts = { path = "../seseragi-dts" }
 seseragi-driver = { path = "../seseragi-driver" }

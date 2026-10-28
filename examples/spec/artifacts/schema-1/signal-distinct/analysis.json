@@ -220,6 +220,18 @@
     },
     {
       "id": 16,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -231,7 +243,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 18,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -243,7 +255,7 @@
       }
     },
     {
-      "id": 18,
+      "id": 19,
       "identity": "std/signal::make",
       "name": "make",
       "module": "std/signal",
@@ -275,8 +287,8 @@
       "description": "Creates a mutable Signal inside Effect."
     },
     {
-      "id": 19,
-      "identity": "artifact/signal-distinct::local(19)",
+      "id": 20,
+      "identity": "artifact/signal-distinct::local(20)",
       "name": "source",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -288,8 +300,8 @@
       "typeName": "MutableSignal<Reading>"
     },
     {
-      "id": 20,
-      "identity": "artifact/signal-distinct::local(20)",
+      "id": 21,
+      "identity": "artifact/signal-distinct::local(21)",
       "name": "notifications",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -301,7 +313,7 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 21,
+      "id": 22,
       "identity": "std/signal::distinct",
       "name": "distinct",
       "module": "std/signal",
@@ -334,8 +346,8 @@
       }
     },
     {
-      "id": 22,
-      "identity": "artifact/signal-distinct::local(22)",
+      "id": 23,
+      "identity": "artifact/signal-distinct::local(23)",
       "name": "filtered",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -347,7 +359,7 @@
       "typeName": "Signal<Reading>"
     },
     {
-      "id": 23,
+      "id": 24,
       "identity": "std/signal::subscribe",
       "name": "subscribe",
       "module": "std/signal",
@@ -383,8 +395,8 @@
       }
     },
     {
-      "id": 24,
-      "identity": "artifact/signal-distinct::local(24)",
+      "id": 25,
+      "identity": "artifact/signal-distinct::local(25)",
       "name": "_reading",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -396,7 +408,7 @@
       "typeName": "Reading"
     },
     {
-      "id": 25,
+      "id": 26,
       "identity": "std/signal::update",
       "name": "update",
       "module": "std/signal",
@@ -431,8 +443,8 @@
       }
     },
     {
-      "id": 26,
-      "identity": "artifact/signal-distinct::local(26)",
+      "id": 27,
+      "identity": "artifact/signal-distinct::local(27)",
       "name": "count",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -444,7 +456,7 @@
       "typeName": "Int"
     },
     {
-      "id": 27,
+      "id": 28,
       "identity": "std/prelude::+",
       "name": "+",
       "module": "std/prelude",
@@ -456,8 +468,8 @@
       }
     },
     {
-      "id": 28,
-      "identity": "artifact/signal-distinct::local(28)",
+      "id": 29,
+      "identity": "artifact/signal-distinct::local(29)",
       "name": "subscription",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -469,7 +481,7 @@
       "typeName": "Subscription"
     },
     {
-      "id": 29,
+      "id": 30,
       "identity": "std/signal::transaction",
       "name": "transaction",
       "module": "std/signal",
@@ -498,7 +510,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 31,
       "identity": "std/signal::planSet",
       "name": "planSet",
       "module": "std/signal",
@@ -533,7 +545,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 32,
       "identity": "std/signal::unsubscribe",
       "name": "unsubscribe",
       "module": "std/signal",
@@ -562,8 +574,8 @@
       }
     },
     {
-      "id": 32,
-      "identity": "artifact/signal-distinct::local(32)",
+      "id": 33,
+      "identity": "artifact/signal-distinct::local(33)",
       "name": "count",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -575,8 +587,8 @@
       "typeName": "Int"
     },
     {
-      "id": 33,
-      "identity": "artifact/signal-distinct::local(33)",
+      "id": 34,
+      "identity": "artifact/signal-distinct::local(34)",
       "name": "current",
       "module": "artifact/signal-distinct",
       "namespace": "value",
@@ -588,7 +600,7 @@
       "typeName": "Reading"
     },
     {
-      "id": 34,
+      "id": 35,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -659,56 +671,56 @@
         "start": 259,
         "end": 265
       },
-      "symbol": 19
+      "symbol": 20
     },
     {
       "range": {
         "start": 309,
         "end": 322
       },
-      "symbol": 20
+      "symbol": 21
     },
     {
       "range": {
         "start": 349,
         "end": 357
       },
-      "symbol": 22
+      "symbol": 23
     },
     {
       "range": {
         "start": 424,
         "end": 432
       },
-      "symbol": 24
+      "symbol": 25
     },
     {
       "range": {
         "start": 468,
         "end": 473
       },
-      "symbol": 26
+      "symbol": 27
     },
     {
       "range": {
         "start": 388,
         "end": 400
       },
-      "symbol": 28
+      "symbol": 29
     },
     {
       "range": {
         "start": 802,
         "end": 807
       },
-      "symbol": 32
+      "symbol": 33
     },
     {
       "range": {
         "start": 830,
         "end": 837
       },
-      "symbol": 33
+      "symbol": 34
     },
     {
       "range": {
@@ -789,24 +801,31 @@
     },
     {
       "range": {
+        "start": 219,
+        "end": 226
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
         "start": 209,
         "end": 213
       },
-      "symbol": 16
+      "symbol": 17
     },
     {
       "range": {
         "start": 233,
         "end": 245
       },
-      "symbol": 17
+      "symbol": 18
     },
     {
       "range": {
         "start": 269,
         "end": 281
       },
-      "symbol": 18
+      "symbol": 19
     },
     {
       "range": {
@@ -820,28 +839,28 @@
         "start": 326,
         "end": 338
       },
-      "symbol": 18
+      "symbol": 19
     },
     {
       "range": {
         "start": 360,
         "end": 376
       },
-      "symbol": 21
+      "symbol": 22
     },
     {
       "range": {
         "start": 377,
         "end": 383
       },
-      "symbol": 19
+      "symbol": 20
     },
     {
       "range": {
         "start": 404,
         "end": 421
       },
-      "symbol": 23
+      "symbol": 24
     },
     {
       "range": {
@@ -855,7 +874,7 @@
         "start": 451,
         "end": 465
       },
-      "symbol": 25
+      "symbol": 26
     },
     {
       "range": {
@@ -869,42 +888,42 @@
         "start": 482,
         "end": 487
       },
-      "symbol": 26
+      "symbol": 27
     },
     {
       "range": {
         "start": 488,
         "end": 489
       },
-      "symbol": 27
+      "symbol": 28
     },
     {
       "range": {
         "start": 493,
         "end": 506
       },
-      "symbol": 20
+      "symbol": 21
     },
     {
       "range": {
         "start": 508,
         "end": 516
       },
-      "symbol": 22
+      "symbol": 23
     },
     {
       "range": {
         "start": 522,
         "end": 541
       },
-      "symbol": 29
+      "symbol": 30
     },
     {
       "range": {
         "start": 550,
         "end": 565
       },
-      "symbol": 30
+      "symbol": 31
     },
     {
       "range": {
@@ -918,14 +937,14 @@
         "start": 589,
         "end": 595
       },
-      "symbol": 19
+      "symbol": 20
     },
     {
       "range": {
         "start": 603,
         "end": 618
       },
-      "symbol": 30
+      "symbol": 31
     },
     {
       "range": {
@@ -939,14 +958,14 @@
         "start": 642,
         "end": 648
       },
-      "symbol": 19
+      "symbol": 20
     },
     {
       "range": {
         "start": 660,
         "end": 666
       },
-      "symbol": 19
+      "symbol": 20
     },
     {
       "range": {
@@ -960,7 +979,7 @@
         "start": 695,
         "end": 701
       },
-      "symbol": 19
+      "symbol": 20
     },
     {
       "range": {
@@ -974,7 +993,7 @@
         "start": 730,
         "end": 736
       },
-      "symbol": 19
+      "symbol": 20
     },
     {
       "range": {
@@ -988,49 +1007,49 @@
         "start": 765,
         "end": 784
       },
-      "symbol": 31
+      "symbol": 32
     },
     {
       "range": {
         "start": 785,
         "end": 797
       },
-      "symbol": 28
+      "symbol": 29
     },
     {
       "range": {
         "start": 812,
         "end": 825
       },
-      "symbol": 20
+      "symbol": 21
     },
     {
       "range": {
         "start": 842,
         "end": 850
       },
-      "symbol": 22
+      "symbol": 23
     },
     {
       "range": {
         "start": 855,
         "end": 862
       },
-      "symbol": 34
+      "symbol": 35
     },
     {
       "range": {
         "start": 878,
         "end": 883
       },
-      "symbol": 32
+      "symbol": 33
     },
     {
       "range": {
         "start": 889,
         "end": 896
       },
-      "symbol": 33
+      "symbol": 34
     }
   ],
   "typeOccurrences": [
@@ -2317,6 +2336,40 @@
         "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
         "remainingParameters": []
       }
+    }
+  ],
+  "nominalBindings": [
+    {
+      "binding": 11,
+      "owner": "artifact/signal-distinct::Reading"
+    },
+    {
+      "binding": 12,
+      "owner": "artifact/signal-distinct::Reading"
+    },
+    {
+      "binding": 20,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 21,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 23,
+      "owner": "std/signal::Signal"
+    },
+    {
+      "binding": 25,
+      "owner": "artifact/signal-distinct::Reading"
+    },
+    {
+      "binding": 29,
+      "owner": "std/signal::Subscription"
+    },
+    {
+      "binding": 34,
+      "owner": "artifact/signal-distinct::Reading"
     }
   ],
   "standardLibrary": [

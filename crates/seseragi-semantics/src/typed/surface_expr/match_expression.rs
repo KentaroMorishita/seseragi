@@ -1,5 +1,7 @@
 use crate::typed::pure_issues::MatchIssue;
-use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
+use crate::typed::semantic_types::{
+    semantic_values_have_same_identity, SemanticTypeKey, SemanticValueType,
+};
 use crate::typed::type_ref::{
     application_argument_type_from_expr, inferred_type_from_expr, typed_type_contains_hole,
 };
@@ -38,7 +40,7 @@ pub(crate) fn type_match_with(
         key: scrutinee.semantic_type.clone(),
     };
     let mut result_type: Option<(TypedType, ByteSpan)> = None;
-    let mut result_key: Option<SemanticTypeKey> = None;
+    let mut result_value: Option<SemanticValueType> = None;
     let mut typed_arms = Vec::with_capacity(arms.len());
     let mut coverage_arms = Vec::with_capacity(arms.len());
     let mut issues = Vec::new();
@@ -71,11 +73,21 @@ pub(crate) fn type_match_with(
 
         let body = type_body(&arm.body, &arm_context);
         let body_type = application_argument_type_from_expr(&body.value);
+        let body_value = SemanticValueType {
+            type_ref: body_type.clone(),
+            key: body.semantic_type.clone(),
+        };
+        let same_identity = result_value
+            .as_ref()
+            .is_some_and(|expected| semantic_values_have_same_identity(expected, &body_value));
         if !typed_type_contains_hole(&body_type) {
             if let Some((expected_type, expected_span)) = &mut result_type {
-                if let Some(joined) =
+                let joined = if same_identity {
+                    Some(expected_type.clone())
+                } else {
                     crate::typed::effect::join_branch_types(expected_type, &body_type)
-                {
+                };
+                if let Some(joined) = joined {
                     *expected_type = joined;
                 } else {
                     issues.push(MatchIssue::BranchTypeMismatch {
@@ -90,11 +102,14 @@ pub(crate) fn type_match_with(
             }
         }
         if body.semantic_type != SemanticTypeKey::Invalid {
-            match &result_key {
-                Some(expected_key) if *expected_key != body.semantic_type => {
-                    result_key = Some(SemanticTypeKey::Invalid);
+            match &result_value {
+                Some(expected) if expected.key != body.semantic_type && !same_identity => {
+                    result_value = Some(SemanticValueType {
+                        type_ref: body_type.clone(),
+                        key: SemanticTypeKey::Invalid,
+                    });
                 }
-                None => result_key = Some(body.semantic_type.clone()),
+                None => result_value = Some(body_value),
                 _ => {}
             }
         }
@@ -148,7 +163,7 @@ pub(crate) fn type_match_with(
     let semantic_type = if has_branch_mismatch {
         SemanticTypeKey::Invalid
     } else {
-        result_key.unwrap_or(SemanticTypeKey::Invalid)
+        result_value.map_or(SemanticTypeKey::Invalid, |value| value.key)
     };
     let semantic_type = if crate::typed::type_ref::effect_from_value_type(&type_ref).is_some() {
         context.semantic_value_from_typed_type(&type_ref).key

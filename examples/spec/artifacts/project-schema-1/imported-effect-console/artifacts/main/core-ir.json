@@ -2,6 +2,32 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/imported-effect-console::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "provider": {
+        "module": "std/prelude",
+        "export": "String"
+      }
+    },
+    {
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "provider": {
+        "module": "std/console",
+        "export": "Console"
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "provider": {
+        "module": "std/console",
+        "export": "ConsoleError"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./effects",
@@ -54,16 +80,18 @@
                 {
                   "name": "console",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Console",
+                    "canonical": "std/prelude::Console",
                     "arguments": []
                   }
                 }
               ]
             },
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "ConsoleError",
+              "canonical": "std/prelude::ConsoleError",
               "arguments": []
             },
             {
@@ -96,16 +124,18 @@
             {
               "name": "console",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Console",
+                "canonical": "std/prelude::Console",
                 "arguments": []
               }
             }
           ]
         },
         "failure": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "ConsoleError",
+          "canonical": "std/prelude::ConsoleError",
           "arguments": []
         },
         "success": {

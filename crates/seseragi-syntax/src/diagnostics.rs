@@ -94,6 +94,7 @@ pub struct LintEvidence {
 impl Diagnostic {
     pub fn lint_evidence(&self) -> Option<LintEvidence> {
         let non_fixable_reason = match self.message_key.as_str() {
+            "lint.deprecated-symbol" => "A replacement can have a different contract; migration requires author intent.",
             "lint.unused-local-binding" | "lint.unused-private-declaration" => "Removing initialization or evaluation may change observable behavior.",
             "lint.unused-import" => "Removing an import may remove observable module initialization or instance availability.",
             "lint.discarded-effect" => "Executing a discarded Effect or deleting its construction requires author intent.",
@@ -198,6 +199,7 @@ impl Diagnostic {
                 "Type alias was used with the wrong number of arguments".to_owned()
             }
             "alias.kind-mismatch" => "Type alias argument has the wrong kind".to_owned(),
+            "type.argument-kind-mismatch" => "Type argument has the wrong kind".to_owned(),
             "alias.cycle" => "Type alias expands recursively into itself".to_owned(),
             "alias.private-type-exposure" => "Public type alias exposes a private type".to_owned(),
             "module.initialization-order" => {
@@ -217,6 +219,11 @@ impl Diagnostic {
             "web.html.event-control-without-handler" => {
                 "This event control has no matching handler".to_owned()
             }
+            "lint.deprecated-symbol" => self
+                .related
+                .first()
+                .map(|related| related.message.clone())
+                .unwrap_or_else(|| "Reference to a deprecated symbol".to_owned()),
             "lint.unused-local-binding" => "Local binding is never referenced".to_owned(),
             "lint.unused-import" => "Imported binding is never referenced".to_owned(),
             "lint.unused-private-declaration" => {
@@ -306,6 +313,9 @@ impl Diagnostic {
             "alias.kind-mismatch" => {
                 "Pass a type or type constructor with the kind required by the alias parameter."
             }
+            "type.argument-kind-mismatch" => {
+                "Pass a type or type constructor with the kind required by the declared parameter."
+            }
             "alias.cycle" => {
                 "Break the expansion cycle, or use an ADT, struct, or newtype for recursive data."
             }
@@ -330,6 +340,7 @@ impl Diagnostic {
             "web.html.event-control-without-handler" => {
                 "Add `onClick`, or remove the unused event control prop."
             }
+            "lint.deprecated-symbol" => "Review the declaration's migration notice before replacing this reference.",
             "lint.unused-import" => "Remove the binding only after checking module initialization and instance use.",
             "lint.unused-private-declaration" => "Remove the declaration only after checking initialization and entrypoint intent.",
             "lint.discarded-effect" => "Bind the Effect in do, return it, or intentionally remove its construction.",
@@ -517,6 +528,10 @@ pub struct ByteRange {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct RelatedDiagnostic {
+    /// Defining source when the related byte range belongs to another document.
+    /// Absence retains the primary diagnostic's source for existing diagnostics.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
     pub message: String,
     pub primary: ByteRange,
 }

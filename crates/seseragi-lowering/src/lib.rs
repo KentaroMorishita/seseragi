@@ -55,8 +55,8 @@ pub use core::{
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
-    GeneratedInstance, GeneratedModule, GeneratedOutputPaths, GeneratedOutputs, GeneratedRuntime,
-    SourceMap,
+    GeneratedDeprecation, GeneratedInstance, GeneratedModule, GeneratedOutputPaths,
+    GeneratedOutputs, GeneratedRuntime, SourceMap,
 };
 pub use runtime_modules::runtime_provided_modules;
 pub(crate) use span::source_span;
@@ -70,11 +70,11 @@ pub use typescript::{
     TypeScriptForeignMember, TypeScriptForeignModule, TypeScriptForeignNamespace,
     TypeScriptForeignOpaqueType, TypeScriptForeignValue, TypeScriptFunction, TypeScriptImport,
     TypeScriptInstance, TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
-    TypeScriptInstanceMethod, TypeScriptLoweringError, TypeScriptLoweringOptions, TypeScriptModule,
-    TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
-    TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
-    TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct, TypeScriptType,
-    TypeScriptTypeImport,
+    TypeScriptInstanceMethod, TypeScriptKindConstructor, TypeScriptKinds, TypeScriptLoweringError,
+    TypeScriptLoweringOptions, TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter,
+    TypeScriptRecordTypeField, TypeScriptRecordValueItem, TypeScriptShowDictionaryReference,
+    TypeScriptSourceImport, TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct,
+    TypeScriptType, TypeScriptTypeImport,
 };
 
 #[cfg(test)]
@@ -822,10 +822,15 @@ where Lift<F> =
         assert_eq!(typescript.aliases[0].type_parameters[1].name, "M");
         assert_eq!(typescript.aliases[0].type_parameters[1].arity, 1);
         let generated = emit_typescript_module(typescript, source);
-        assert!(
-            !generated.typescript.contains("export type StateT"),
-            "constructor erasure must not be exposed as a faithful public alias"
-        );
+        assert!(generated
+            .typescript
+            .contains("export type StateT<S, M extends"));
+        assert!(generated
+            .typescript
+            .contains("$ssrg$Apply<M, readonly [readonly [A, S]]>"));
+        assert!(generated
+            .typescript
+            .contains("export interface $ssrg$kind$StateT"));
     }
 
     #[test]
@@ -1639,8 +1644,9 @@ fails ConsoleError =
                 fields: vec![CoreRecordField {
                     name: "stdin".to_owned(),
                     optional: false,
-                    type_ref: CoreType::Named {
+                    type_ref: CoreType::ExternalNamed {
                         name: "Stdin".to_owned(),
+                        canonical: "std/prelude::Stdin".to_owned(),
                         arguments: Vec::new(),
                     },
                 }],
@@ -1648,8 +1654,9 @@ fails ConsoleError =
         );
         assert_eq!(
             failure,
-            &CoreType::Named {
+            &CoreType::ExternalNamed {
                 name: "StdinError".to_owned(),
+                canonical: "std/prelude::StdinError".to_owned(),
                 arguments: Vec::new(),
             }
         );

@@ -23,7 +23,9 @@ mod source_map;
 use imports::render_import_lines;
 use instances::render_typescript_instances;
 use metadata::generated_module_for;
-pub use metadata::{GeneratedInstance, GeneratedModule, GeneratedOutputs, GeneratedRuntime};
+pub use metadata::{
+    GeneratedDeprecation, GeneratedInstance, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
+};
 use source_map::source_map_for_module;
 pub use source_map::SourceMap;
 
@@ -136,6 +138,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         output.push('\n');
     }
     render_foreign_modules(&mut output, module);
+    output.push_str(&render_kind_declarations(module));
     for adt in &module.adts {
         render_adt(&mut output, adt);
     }
@@ -214,17 +217,10 @@ fn render_typescript(module: &TypeScriptModule) -> String {
 }
 
 /// A transparent public alias needs an actual type export for facade reexports.
-/// Constructor-kinded parameters and erased targets remain metadata-only until
-/// the TS IR has a faithful higher-kinded representation; do not export their
-/// current `unknown` erasure as if it were the source alias contract.
+/// Only exact targets are exported: kind applications carry checked witnesses,
+/// while unresolved holes/unsupported erasure remain metadata-only.
 fn render_type_alias(alias: &TypeScriptAlias) -> Option<String> {
-    if !alias.exported
-        || alias
-            .type_parameters
-            .iter()
-            .any(|parameter| parameter.is_constructor())
-        || !exact_alias_target(&alias.target)
-    {
+    if !alias.exported || !exact_alias_target(&alias.target) {
         return None;
     }
     Some(format!(
@@ -238,6 +234,13 @@ fn render_type_alias(alias: &TypeScriptAlias) -> Option<String> {
 fn exact_alias_target(target: &TypeScriptType) -> bool {
     match target {
         TypeScriptType::Unknown => false,
+        TypeScriptType::KindConstructor { arguments, .. } => {
+            arguments.iter().flatten().all(exact_alias_target)
+        }
+        TypeScriptType::KindApplication { arguments, .. } => {
+            arguments.iter().all(exact_alias_target)
+        }
+        TypeScriptType::KindArgument { .. } => true,
         TypeScriptType::Reference { arguments, .. } => arguments.iter().all(exact_alias_target),
         TypeScriptType::Maybe { element }
         | TypeScriptType::Array { element }
@@ -664,11 +667,7 @@ fn render_struct(output: &mut String, structure: &TypeScriptStruct) {
             structure
                 .type_parameters
                 .iter()
-                .map(|parameter| if parameter.is_constructor() {
-                    "unknown"
-                } else {
-                    parameter.name.as_str()
-                })
+                .map(|parameter| parameter.name.as_str())
                 .collect::<Vec<_>>()
                 .join(", ")
         )
@@ -734,7 +733,7 @@ fn render_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> Stri
             "<{}>",
             parameters
                 .iter()
-                .map(|parameter| parameter.name.as_str())
+                .map(render_type_parameter)
                 .collect::<Vec<_>>()
                 .join(", ")
         )
@@ -742,7 +741,100 @@ fn render_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> Stri
 }
 
 fn render_type_arguments(parameters: &[seseragi_syntax::TypeParameter]) -> String {
-    render_type_parameters(parameters)
+    if parameters.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "<{}>",
+            parameters
+                .iter()
+                .map(|p| p.name.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    }
+}
+
+fn render_type_parameter(parameter: &seseragi_syntax::TypeParameter) -> String {
+    if parameter.is_constructor() {
+        format!(
+            "{} extends {}",
+            parameter.name,
+            crate::typescript::kinds::kind_constraint(parameter.arity)
+        )
+    } else {
+        parameter.name.clone()
+    }
+}
+
+fn render_kind_declarations(module: &TypeScriptModule) -> String {
+    let Some(kinds) = &module.higher_kinds else {
+        return String::new();
+    };
+    let mut output = concat!(
+        "interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }\n",
+        "type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })[\"type\"];\n",
+        "type $ssrg$Apply<F extends $ssrg$Kind, Args extends F[\"args\"]> = $ssrg$Invoke<F, Args>;\n",
+    ).to_owned();
+    for shape in &kinds.partials {
+        let arity = shape.len() as u32;
+        assert!(
+            shape.iter().any(|fixed| *fixed) && shape.iter().any(|fixed| !fixed),
+            "checked partial kind application"
+        );
+        let mut fixed_index = 0;
+        let mut hole_index = 0;
+        let mut parameters = Vec::new();
+        let mut holes = Vec::new();
+        let arguments = shape
+            .iter()
+            .enumerate()
+            .map(|(slot, &fixed)| {
+                if fixed {
+                    let name = format!("P{fixed_index}");
+                    fixed_index += 1;
+                    parameters.push(format!("{name} extends F[\"args\"][{slot}]"));
+                    name
+                } else {
+                    holes.push(format!("F[\"args\"][{slot}]"));
+                    let argument = format!("this[\"args\"][{hole_index}]");
+                    hole_index += 1;
+                    argument
+                }
+            })
+            .collect::<Vec<_>>()
+            .join(", ");
+        output.push_str(&format!(
+            "interface {}<F extends {}, {}> extends $ssrg$Kind<readonly [{}]> {{ readonly type: $ssrg$Invoke<F, readonly [{arguments}]> }}\n",
+            crate::typescript::kinds::partial_name(shape), crate::typescript::kinds::kind_constraint(arity), parameters.join(", "), holes.join(", "),
+        ));
+    }
+    for constructor in &kinds.constructors {
+        if module.aliases.iter().any(|alias| {
+            constructor.name == crate::typescript::kinds::constructor_name(&alias.name)
+                && !exact_alias_target(&alias.target)
+        }) {
+            continue;
+        }
+        let parameter_kinds = constructor
+            .parameters
+            .iter()
+            .map(|parameter| {
+                if parameter.is_constructor() {
+                    crate::typescript::kinds::kind_constraint(parameter.arity)
+                } else {
+                    "unknown".to_owned()
+                }
+            })
+            .collect::<Vec<_>>()
+            .join(", ");
+        output.push_str(&format!(
+            "{}interface {} extends $ssrg$Kind<readonly [{parameter_kinds}]> {{ readonly type: {} }}\n",
+            if constructor.exported { "export " } else { "" }, constructor.name,
+            render_typescript_type(&constructor.target),
+        ));
+    }
+    output
 }
 
 fn render_function_body(
@@ -952,7 +1044,7 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
 fn render_arrow_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> String {
     let names = parameters
         .iter()
-        .map(|parameter| parameter.name.as_str())
+        .map(render_type_parameter)
         .collect::<Vec<_>>();
     match names.as_slice() {
         [] => String::new(),

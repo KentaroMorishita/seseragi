@@ -32,11 +32,30 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 cold再実行・typed Failure・Defect後のscope解放をBun／Nodeとnativeで比較します。
 共有Core解析を変える場合はlowering／driver crateの検証と、統合前の全体gateも必要です。
 
+ConsoleのString契約はdriver／backendの`--test console_string_contract`とCLIの同名test、
+`bun test runtime/ts/tests/console-string-contract.test.ts`で確認します。prelude／import／
+保存したcallableの引数型、canonical ownerとscoped binder、raw生成TS両profileのstrict、
+fresh Bun／Nodeとnativeの出力、cold再実行、引数評価時のDefectとscope解放を保ちます。
+共有型互換性を変える場合はsemantics／driverの既存検証と最終統合gateも必要です。
+
+HKTのADT payload・struct field・public aliasはdriverとCLIの
+`--test hkt_data_projection`で確認します。元Issueの単独source、opaque aliasのfactory実値、
+facadeと保存関数、元の生成TS両profileのstrict、fresh Bun／Nodeとnativeを比較します。
+constructor binderを宣言する通常functionは同じchecked witnessを引数と返り値へ渡し、
+制約付きfunctionの辞書段階と、別scopeの同名value binderを維持します。
+外側のtype parameter名を内側で再使用する、仕様で禁止された宣言は位置付きで拒否します。
+private fieldと偽造、別ownerやpayload違いの拒否を保ち、不正kindの位置付き診断は
+driverの`--test hkt_annotation_kinds`でも確認します。一般のUnknown targetやHKT逆推論は
+このlaneの受入へ追加しません。
+
 標準primitive EqのTS投影は、`cargo test -p seseragi-cli --test string_equality`
 と`--test inherited_equality`で確認します。異なるliteral・保存したmethod・部分適用を
 元の生成TS両profileでstrict検査し、fresh Bun／Nodeで実行します。Int／String／Charの
 native対照と、直接method・部分適用のsource一回評価・順序も保ちます。
-Bool／UnitのEqと前置`!`のnative対応は、このTS修復の受入範囲に含めません。
+Bool／UnitのEqと前置`!`のnative契約は、backend／CLIの`--test basic_scalars`と
+上記の元literal fixtureで確認します。Unitも二つのsource引数を評価し、保存した部分適用、
+別nominal ownerとscoped binderの拒否、Ref・cold再実行・Failure／Defect後の解放を保ちます。
+前置operatorは関数値として参照できません。標準Float Eqは提供しません。
 共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
 
 importしたADTのpayload identityと注釈付きEq部分適用は、driverの
@@ -47,6 +66,28 @@ CLIの`--test string_equality`と`--test nominal_lambda_identity`では、元の
 strict、fresh Bun／Node、native、source引数の一回評価、cold再実行、Failure／Defect後の
 finalizerとroot解放を比較します。FloatConversionErrorを含むnative fixtureには、
 同errorのcanonical変換ABIが必要です。無注釈の演算子部分適用全般はこの修復に含めません。
+
+generic implの演算子は、driverとCLIの`--test generic_impl_operators`で確認します。
+生成instanceが元implのscoped binderを引き継ぎ、明示instance、別owner、importとreexport、
+制約、overlapとfunctional dependencyの位置付き拒否を保つことを検証します。
+元のTS両profileのstrict、fresh Bun／Nodeとnativeの結果、保存した演算子のsource一回評価、
+Ref cycleとcold Effectの再実行、Failure／Defect後のfinalizerとroot解放も比較します。
+一般aliasのhead mappingや、返却関数を続けて適用する未対応全般は含めません。
+
+`do`末尾の分岐を含むcold Effectは、driverとCLIの
+`--test deferred_effect_environment`で確認します。先に実行するstatementの環境・失敗型、
+最終実行が返すEffect値の型、未実行のcold値を区別し、環境・成功型・失敗型の不正な
+注釈を位置付きで拒否します。元のTS両profileのstrict、fresh Bun／Nodeとnativeで
+再実行、先行処理の一回実行、Failure／Defect後のfinalizerとRef root解放を比較します。
+共有frontendの修復なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
+
+固定済みalias引数のconstructor sectionは、driverとCLIの
+`--test alias_constructor_sections`で確認します。canonical ownerと宣言kindを根拠に、
+残るslotが順序どおり一度だけ現れる場合に限って、並替・重複・消失済みprefixを投影します。
+opaque providerのfacade、別owner・不正kind・未証明headの位置付き拒否、元のTS両profileの
+strict、fresh Bun／Node、native、選択済みevidenceとsource一回評価、cold Effectと
+Failure／Defect後の解放を比較します。未束縛の一般type lambdaやHKT逆推論は含めません。
+共有frontendの変更なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
 
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、

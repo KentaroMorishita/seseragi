@@ -8939,6 +8939,84 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/non-empty-list-instances::Rank"
+    },
+    {
+      "binding": 2,
+      "owner": "artifact/non-empty-list-instances::Rank"
+    },
+    {
+      "binding": 3,
+      "owner": "std/non-empty-list::NonEmptyList"
+    },
+    {
+      "binding": 4,
+      "owner": "std/non-empty-list::NonEmptyList"
+    },
+    {
+      "binding": 5,
+      "owner": "std/non-empty-list::NonEmptyList"
+    },
+    {
+      "binding": 6,
+      "owner": "std/non-empty-list::NonEmptyList"
+    },
+    {
+      "binding": 7,
+      "owner": "std/non-empty-list::NonEmptyList"
+    },
+    {
+      "binding": 8,
+      "owner": "std/non-empty-list::NonEmptyList"
+    },
+    {
+      "binding": 16,
+      "owner": "artifact/non-empty-list-instances::Rank"
+    },
+    {
+      "binding": 17,
+      "owner": "artifact/non-empty-list-instances::Rank"
+    },
+    {
+      "binding": 20,
+      "owner": "artifact/non-empty-list-instances::Rank"
+    },
+    {
+      "binding": 21,
+      "owner": "artifact/non-empty-list-instances::Rank"
+    },
+    {
+      "binding": 23,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 24,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 25,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 40,
+      "owner": "artifact/non-empty-list-instances::Rank"
+    },
+    {
+      "binding": 50,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 51,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 52,
+      "owner": "std/non-empty-list::NonEmptyList"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

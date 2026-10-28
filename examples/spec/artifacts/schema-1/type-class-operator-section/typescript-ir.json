@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/type-class-operator-section",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
@@ -249,12 +254,12 @@
       "parameters": [
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<M, readonly [A]>",
           "implicit": false
         },
         {
           "name": "next",
-          "type": "(argument: A) => unknown",
+          "type": "(argument: A) => $ssrg$Apply<M, readonly [B]>",
           "implicit": false
         }
       ],
@@ -274,16 +279,40 @@
                   "arguments": []
                 },
                 "result": {
-                  "kind": "unknown"
+                  "kind": "kind-application",
+                  "constructor": "M",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
                 }
               },
               "result": {
                 "kind": "function",
                 "parameter": {
-                  "kind": "unknown"
+                  "kind": "kind-application",
+                  "constructor": "M",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
                 },
                 "result": {
-                  "kind": "unknown"
+                  "kind": "kind-application",
+                  "constructor": "M",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
                 }
               }
             },
@@ -308,16 +337,40 @@
                     "arguments": []
                   },
                   "result": {
-                    "kind": "unknown"
+                    "kind": "kind-application",
+                    "constructor": "M",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
                   }
                 },
                 "result": {
                   "kind": "function",
                   "parameter": {
-                    "kind": "unknown"
+                    "kind": "kind-application",
+                    "constructor": "M",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
                   },
                   "result": {
-                    "kind": "unknown"
+                    "kind": "kind-application",
+                    "constructor": "M",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
                   }
                 }
               }
@@ -336,7 +389,15 @@
               "kind": "pure-let",
               "name": "__ssrg$trait$641$source0",
               "type": {
-                "kind": "unknown"
+                "kind": "kind-application",
+                "constructor": "M",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
               },
               "initializer": {
                 "kind": "identifier",
@@ -363,7 +424,15 @@
                     "arguments": []
                   },
                   "result": {
-                    "kind": "unknown"
+                    "kind": "kind-application",
+                    "constructor": "M",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
                   }
                 },
                 "initializer": {
@@ -382,10 +451,26 @@
                 "type": {
                   "kind": "function",
                   "parameter": {
-                    "kind": "unknown"
+                    "kind": "kind-application",
+                    "constructor": "M",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
                   },
                   "result": {
-                    "kind": "unknown"
+                    "kind": "kind-application",
+                    "constructor": "M",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
                   }
                 },
                 "initializer": {
@@ -408,7 +493,15 @@
                 "kind": "pure-let",
                 "name": "__ssrg$trait$641$stage1",
                 "type": {
-                  "kind": "unknown"
+                  "kind": "kind-application",
+                  "constructor": "M",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
                 },
                 "initializer": {
                   "kind": "call",

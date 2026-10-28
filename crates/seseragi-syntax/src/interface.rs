@@ -1,7 +1,8 @@
 use crate::cst::{parse_cst, CstNode};
 pub use crate::interface_model::{
     InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
-    InterfaceMethod, InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType,
+    InterfaceMethod, InterfaceNamespaceDeprecation, InterfaceOperator,
+    InterfaceOperatorDeprecation, InterfaceRecordField, InterfaceScheme, InterfaceType,
     ModuleInterface,
 };
 use crate::surface::parse_surface_ast;
@@ -11,6 +12,7 @@ mod exports;
 mod header;
 mod instances;
 mod methods;
+mod namespaces;
 mod types;
 
 use dependencies::dependency_from_surface_import;
@@ -18,6 +20,7 @@ use exports::{attach_inherent_methods, exports_from_surface_decl, operator_from_
 use header::{empty_module_header, module_header_from_surface};
 pub use header::{ModuleHeader, ModuleHeaderName};
 use instances::instances_from_surface_decl;
+pub use namespaces::namespace_deprecations;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ImportOccurrence {
@@ -99,7 +102,12 @@ fn parse_unlinked_module_interface_inner(
         };
     }
 
-    let surface_module = parse_surface_ast(source_file.clone(), source);
+    let mut surface_module = parse_surface_ast(source_file.clone(), source);
+    // Interface/source labels retain their stable short form. A related
+    // declaration location must nevertheless identify its original document.
+    for entry in &mut surface_module.deprecations {
+        entry.deprecation.source.clone_from(&source_name);
+    }
     if cst_type_declaration_count(&cst.root)
         != surface_module
             .declarations
@@ -115,6 +123,7 @@ fn parse_unlinked_module_interface_inner(
     }
 
     let header = module_header_from_surface(&module_name, &surface_module);
+    let namespace_deprecations = namespace_deprecations(&module_name, &surface_module, false);
     let imports = surface_module.imports;
     let mut exports = surface_module
         .declarations
@@ -154,12 +163,21 @@ fn parse_unlinked_module_interface_inner(
         mark(&foreign.members, &mut exports);
     }
     attach_inherent_methods(&module_name, &surface_module.declarations, &mut exports);
+    for method in exports.iter_mut().flat_map(|export| &mut export.methods) {
+        method.deprecation = surface_module
+            .deprecations
+            .iter()
+            .find(|entry| entry.declaration == method.origin)
+            .map(|entry| entry.deprecation.clone());
+    }
     let interface = ModuleInterface {
         schema: 1,
         module: module_name.clone(),
         source: surface_module.source.clone(),
         dependencies: Vec::new(),
         exports,
+        namespace_deprecations,
+        operator_deprecations: Vec::new(),
         operators: surface_module
             .declarations
             .iter()
@@ -185,6 +203,8 @@ fn empty_interface(module: String, source: String) -> ModuleInterface {
         source,
         dependencies: Vec::new(),
         exports: Vec::new(),
+        namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         operators: Vec::new(),
         instances: Vec::new(),
     }

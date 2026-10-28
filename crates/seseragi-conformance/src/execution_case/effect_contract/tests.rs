@@ -163,6 +163,8 @@ fn requires_unit_success_only_for_the_package_main_entry() {
         }),
     };
     let mut interface = TypedModuleInterface {
+        namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         stage: "typed-interface".to_owned(),
         module: "fixture/parse".to_owned(),
@@ -244,6 +246,8 @@ fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
         }),
     };
     let interface = TypedModuleInterface {
+        namespace_deprecations: Vec::new(),
+        operator_deprecations: Vec::new(),
         schema: 1,
         stage: "typed-interface".to_owned(),
         module: "fixture/game::main".to_owned(),

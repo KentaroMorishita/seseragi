@@ -2,6 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-derived-show-debug::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Remote",
+        "identity": "fixture/imported-derived-show-debug::domain::Remote",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Remote",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.adt",
     "core.string",

@@ -292,7 +292,7 @@ fn ensure_dependency_method(
         symbol: canonical,
         namespace: "method".to_owned(),
         name: method.name.clone(),
-        deprecation: None,
+        deprecation: method.deprecation.clone(),
         constructor_of: None,
         call_arity: None,
         visibility: seseragi_syntax::Visibility::Public,

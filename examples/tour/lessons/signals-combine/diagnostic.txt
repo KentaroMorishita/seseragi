@@ -6,6 +6,14 @@ examples/tour/lessons/signals-combine/diagnostic.ssrg:8:38: error[SES-T0101]: Ar
   = diff: expected Signal<String>, actual MutableSignal<Int>
   = note: Seseragi does not insert an implicit conversion between these types.
   = help: Change the expression or its annotation so the two types agree.
+examples/tour/lessons/signals-combine/diagnostic.ssrg:10:11: error[SES-T0101]: Argument type does not match the parameter type
+  |   println current
+  |           ^^^^^^^ argument 1 expected String, received A
+  = expected: String
+  = actual: A
+  = diff: expected String, actual A
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.
 examples/tour/lessons/signals-combine/diagnostic.ssrg:3:56: error[SES-P0101]: Operator unknown
   | fn join left: String -> right: String -> String = left ++ right
   |                                                        ^^ pure function body

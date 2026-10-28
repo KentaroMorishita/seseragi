@@ -53,6 +53,18 @@
             "start": 16,
             "end": 23
           }
+        },
+        {
+          "imported": "$ssrg$kind$Box",
+          "local": "$ssrg$kind$Foreign",
+          "sourceLocal": "Foreign",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 23
+          }
         }
       ],
       "origin": {

@@ -260,6 +260,7 @@ pub(super) fn call_diagnostic(
             end: primary.end,
         },
         related: vec![RelatedDiagnostic {
+            source: None,
             message: related_message,
             primary: ByteRange {
                 start: function_span.start,

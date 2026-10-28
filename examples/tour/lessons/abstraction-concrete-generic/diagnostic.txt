@@ -3,3 +3,11 @@ examples/tour/lessons/abstraction-concrete-generic/diagnostic.ssrg:1:39: error[S
   |                                       ^ no Add instance matches the inferred call arguments
   = note: Trait instances are selected from the current lexical and import scope.
   = help: Define or import a matching instance, or use a type with an available instance.
+examples/tour/lessons/abstraction-concrete-generic/diagnostic.ssrg:3:32: error[SES-T0101]: Argument type does not match the parameter type
+  | pub effect fn main = duplicate 21 |> println
+  |                                ^^ argument 1 expected String, received Int
+  = expected: String
+  = actual: Int
+  = diff: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

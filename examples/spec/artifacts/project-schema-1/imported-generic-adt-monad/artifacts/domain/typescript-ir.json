@@ -2,6 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-generic-adt-monad::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Box",
+        "identity": "fixture/imported-generic-adt-monad::domain::Box",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -591,12 +615,12 @@
       "parameters": [
         {
           "name": "f",
-          "type": "(argument: A) => unknown",
+          "type": "(argument: A) => $ssrg$Apply<M, readonly [B]>",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<M, readonly [A]>",
           "implicit": false
         }
       ],
@@ -621,7 +645,15 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "M",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {

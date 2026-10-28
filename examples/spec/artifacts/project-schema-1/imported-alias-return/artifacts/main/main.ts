@@ -1,4 +1,4 @@
-import { type Box as Foreign } from "./domain.js"
+import { type Box as Foreign, type $ssrg$kind$Box as $ssrg$kind$Foreign } from "./domain.js"
 import { boxed } from "./facade.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringAdd as _ssrg_string_add_dictionary } from "@seseragi/runtime/string"

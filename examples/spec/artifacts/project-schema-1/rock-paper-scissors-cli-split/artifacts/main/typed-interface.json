@@ -158,16 +158,22 @@
                   {
                     "name": "stdin",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Stdin",
+                      "canonical": "std/prelude::Stdin",
+                      "providerModule": "std/stdin",
+                      "providerExport": "Stdin",
                       "arguments": []
                     }
                   },
                   {
                     "name": "console",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Console",
+                      "canonical": "std/prelude::Console",
+                      "providerModule": "std/console",
+                      "providerExport": "Console",
                       "arguments": []
                     }
                   }

@@ -82,6 +82,18 @@
             "start": 0,
             "end": 39
           }
+        },
+        {
+          "imported": "$ssrg$kind$Remote",
+          "local": "$ssrg$kind$Remote",
+          "sourceLocal": "Remote",
+          "canonical": "fixture/imported-derived-show-debug::domain::Remote",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 15,
+            "end": 21
+          }
         }
       ],
       "origin": {

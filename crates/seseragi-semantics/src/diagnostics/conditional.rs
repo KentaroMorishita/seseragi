@@ -27,6 +27,7 @@ pub(super) fn collect_conditional_diagnostics(
             message_key: "if.condition-not-bool".to_owned(),
             primary: byte_range(*condition),
             related: vec![RelatedDiagnostic {
+                source: None,
                 message: format!("expected Bool, received {}", type_label(actual)),
                 primary: byte_range(span),
             }],
@@ -46,10 +47,12 @@ pub(super) fn collect_conditional_diagnostics(
             primary: byte_range(*else_branch),
             related: vec![
                 RelatedDiagnostic {
+                    source: None,
                     message: format!("then branch has type {}", type_label(then_type)),
                     primary: byte_range(*then_branch),
                 },
                 RelatedDiagnostic {
+                    source: None,
                     message: format!("else branch has type {}", type_label(else_type)),
                     primary: byte_range(*else_branch),
                 },

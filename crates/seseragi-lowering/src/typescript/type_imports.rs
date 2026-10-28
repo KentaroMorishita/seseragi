@@ -19,12 +19,7 @@ pub(super) fn collect_module_type_imports(
 ) {
     let type_bindings = runtime_type_bindings(module);
     for alias in &module.aliases {
-        if alias.visibility != seseragi_syntax::Visibility::Public
-            || alias
-                .type_parameters
-                .iter()
-                .any(|parameter| parameter.is_constructor())
-        {
+        if alias.visibility != seseragi_syntax::Visibility::Public {
             continue;
         }
         let scoped_bindings = type_bindings

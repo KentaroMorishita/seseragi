@@ -289,8 +289,9 @@ pub(crate) fn precise_symbol_range(
 
 pub(crate) fn workspace_symbol_kind(symbol: &AnalysisSymbol) -> u8 {
     match (symbol.namespace.as_str(), symbol.kind.as_str()) {
+        ("module", _) => 3,
         (_, "function" | "effect-function" | "generic-foreign-function") => 12,
-        (_, "trait-method") => 6,
+        (_, "trait-method" | "inherent-method") => 6,
         (_, "constructor") => 9,
         ("type", _) => 23,
         ("trait", _) => 11,
@@ -377,6 +378,9 @@ pub(crate) fn hover(
     if let Some(description) = description {
         lines.push(description.to_owned());
     }
+    if let Some(deprecation) = symbol.and_then(|symbol| symbol.deprecation.as_ref()) {
+        lines.push(deprecation_notice(deprecation));
+    }
 
     let range = hover_range(&document.analysis, position)
         .and_then(|range| range_json(&document.source, range.start, range.end, encoding));
@@ -397,7 +401,8 @@ pub(crate) fn completion(
     };
     // A trailing namespace access is more specific than a recovered enclosing
     // record expectation (for example html. inside an unfinished children list).
-    let namespace = namespace_prefix(&document.source, position);
+    let access = namespace_prefix(&document.source, position);
+    let namespace = access.map(|(prefix, _)| prefix);
     if let Some(context) = namespace
         .is_none()
         .then(|| completion_context(document, position))
@@ -452,7 +457,22 @@ pub(crate) fn completion(
         {
             push_reference_completion(&mut items, &mut seen, item, "0", markup);
         }
-    } else if namespace.is_none() {
+    } else if let Some((name, range)) = access {
+        // This bounded path completes a lexical value receiver. Do not treat
+        // a chained field token as an unrelated same-named local binding.
+        let simple_receiver = !document.source[..range.start].trim_end().ends_with('.');
+        let methods = if simple_receiver {
+            document.analysis.members_of_receiver(name, range.start)
+        } else {
+            Vec::new()
+        };
+        for symbol in methods {
+            let key = format!("{}:{}", symbol.namespace, symbol.identity);
+            if seen.insert(key) {
+                items.push(symbol_completion(symbol, markup));
+            }
+        }
+    } else {
         for symbol in document.analysis.visible_symbols(position) {
             let key = format!("{}:{}", symbol.namespace, symbol.identity);
             if !seen.insert(key) {
@@ -687,17 +707,20 @@ pub(crate) fn semantic_tokens(document: &DocumentState, encoding: PositionEncodi
         if range.start.line != range.end.line || range.start.character == range.end.character {
             continue;
         }
-        tokens.insert(
-            (range.start.line, range.start.character, range.end.character),
-            semantic_token_type(symbol),
-        );
+        let token = tokens
+            .entry((range.start.line, range.start.character, range.end.character))
+            .or_insert((semantic_token_type(symbol), 0usize));
+        token.0 = semantic_token_type(symbol);
+        // A newtype's declaration name also declares its constructor. A
+        // constructor occurrence elsewhere must not inherit this type notice.
+        token.1 |= usize::from(symbol.deprecation.is_some());
     }
 
     let mut data = Vec::new();
     let mut previous_line = 0;
     let mut previous_character = 0;
     let mut previous_end = None;
-    for ((line, character, end), token_type) in tokens {
+    for ((line, character, end), (token_type, modifiers)) in tokens {
         if previous_end.is_some_and(|(previous_line, previous_end)| {
             previous_line == line && character < previous_end
         }) {
@@ -709,7 +732,13 @@ pub(crate) fn semantic_tokens(document: &DocumentState, encoding: PositionEncodi
         } else {
             character
         };
-        data.extend([delta_line, delta_start, end - character, token_type, 0]);
+        data.extend([
+            delta_line,
+            delta_start,
+            end - character,
+            token_type,
+            modifiers,
+        ]);
         previous_line = line;
         previous_character = character;
         previous_end = Some((line, end));
@@ -724,19 +753,71 @@ fn symbol_completion(symbol: &AnalysisSymbol, markup: MarkupKind) -> Value {
         .map(|callable| callable.signature.clone())
         .or_else(|| symbol.type_name.clone())
         .unwrap_or_else(|| symbol.kind.clone());
-    json!({
+    let description = match (&symbol.description, &symbol.deprecation) {
+        (Some(description), Some(deprecation)) => Some(format!(
+            "{description}\n\n{}",
+            deprecation_notice(deprecation)
+        )),
+        (None, Some(deprecation)) => Some(deprecation_notice(deprecation)),
+        (description, None) => description.clone(),
+    };
+    let mut item = json!({
         "label": symbol.name,
         "kind": completion_kind(&symbol.kind, &symbol.namespace, symbol.callable.is_some()),
         "detail": detail,
         "documentation": completion_documentation(
             symbol.callable.as_ref().map(|callable| callable.signature.as_str())
                 .or(symbol.type_name.as_deref()),
-            symbol.description.as_deref(),
+            description.as_deref(),
             markup,
         ),
         "sortText": format!("0-{}", symbol.name),
         "data": {"identity": symbol.identity, "namespace": symbol.namespace},
-    })
+    });
+    if symbol.deprecation.is_some() {
+        item["tags"] = json!([1]);
+    }
+    item
+}
+
+fn deprecation_notice(deprecation: &seseragi_syntax::Deprecation) -> String {
+    let since = deprecation
+        .since
+        .as_ref()
+        .map(|version| format!(" since {version}"))
+        .unwrap_or_default();
+    format!("Deprecated{since}: {}", deprecation.message)
+}
+
+pub(crate) fn document_symbols(
+    document: &DocumentState,
+    uri: &str,
+    encoding: PositionEncoding,
+) -> Value {
+    let symbols = document
+        .analysis
+        .workspace_symbols()
+        .into_iter()
+        .filter_map(|symbol| {
+            let range = range_json(
+                &document.source,
+                symbol.definition.start,
+                symbol.definition.end,
+                encoding,
+            )?;
+            let mut item = json!({
+                "name": symbol.name,
+                "kind": workspace_symbol_kind(symbol),
+                "location": {"uri": uri, "range": range},
+                "containerName": symbol.module,
+            });
+            if symbol.deprecation.is_some() {
+                item["tags"] = json!([1]);
+            }
+            Some(item)
+        })
+        .collect::<Vec<_>>();
+    json!(symbols)
 }
 
 fn push_reference_completion(
@@ -806,7 +887,11 @@ fn type_inline(value: &str, markup: MarkupKind) -> String {
 
 fn completion_kind(kind: &str, namespace: &str, callable: bool) -> u8 {
     if callable {
-        return if kind == "trait-method" { 2 } else { 3 };
+        return if matches!(kind, "trait-method" | "inherent-method") {
+            2
+        } else {
+            3
+        };
     }
     match (namespace, kind) {
         ("module", _) => 9,
@@ -830,7 +915,7 @@ fn semantic_token_type(symbol: &AnalysisSymbol) -> usize {
         ("operator", _) => 21,
         (_, "parameter" | "pattern-binding") => 7,
         (_, "constructor") => 10,
-        (_, "trait-method") => 13,
+        (_, "trait-method" | "inherent-method") => 13,
         (_, "function" | "effect-function" | "generic-foreign-function" | "prelude") => 12,
         _ if symbol.callable.is_some() => 12,
         _ => 8,
@@ -847,7 +932,7 @@ fn reference_for<'analysis>(
         .find(|item| item.identity == identity)
 }
 
-fn namespace_prefix(source: &str, position: usize) -> Option<&str> {
+fn namespace_prefix(source: &str, position: usize) -> Option<(&str, ByteSpan)> {
     let before = source.get(..position)?.trim_end();
     let prefix = before.strip_suffix('.')?;
     let start = prefix
@@ -861,7 +946,13 @@ fn namespace_prefix(source: &str, position: usize) -> Option<&str> {
         })
         .unwrap_or(0);
     let name = &prefix[start..];
-    (!name.is_empty()).then_some(name)
+    (!name.is_empty()).then_some((
+        name,
+        ByteSpan {
+            start,
+            end: prefix.len(),
+        },
+    ))
 }
 
 fn imported_namespace_module(source: &str, prefix: &str) -> Option<String> {

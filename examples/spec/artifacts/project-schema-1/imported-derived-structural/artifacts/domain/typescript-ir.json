@@ -2,6 +2,84 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-derived-structural::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Nested",
+        "identity": "fixture/imported-derived-structural::domain::Nested",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Nested",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Phantom",
+        "identity": "fixture/imported-derived-structural::domain::Phantom",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Phantom",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Profile",
+        "identity": "fixture/imported-derived-structural::domain::Profile",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$Tree",
+        "identity": "fixture/imported-derived-structural::domain::Tree",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": false
+  },
   "runtimeRequirements": [
     "core.list",
     "core.adt",

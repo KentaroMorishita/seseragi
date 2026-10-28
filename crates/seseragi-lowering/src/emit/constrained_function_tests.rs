@@ -145,7 +145,14 @@ where Functor<F> =
 
     assert!(
         bundle.typescript.contains(
-            "return (__ssrg$partial$0: unknown) => __ssrg$partial$stage(__ssrg$partial$0)(__ssrg$evidence$0);"
+            "return (__ssrg$partial$0: $ssrg$Apply<F, readonly [A]>) => __ssrg$partial$stage(__ssrg$partial$0)(__ssrg$evidence$0);"
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle.typescript.contains(
+            "const __ssrg$partial$stage: (argument: $ssrg$Apply<F, readonly [A]>) => (argument: unknown) => $ssrg$Apply<F, readonly [B]>"
         ),
         "{}",
         bundle.typescript

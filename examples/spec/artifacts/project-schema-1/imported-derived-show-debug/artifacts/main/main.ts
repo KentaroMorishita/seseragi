@@ -1,4 +1,4 @@
-import { type Code, type Remote, __ssrg$instance$Debug$1, __ssrg$instance$Debug$3, __ssrg$instance$Show$0, __ssrg$instance$Show$2 } from "./domain.js"
+import { type Code, type Remote, __ssrg$instance$Debug$1, __ssrg$instance$Debug$3, __ssrg$instance$Show$0, __ssrg$instance$Show$2, type $ssrg$kind$Remote } from "./domain.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 $ssrg$assertUnicodeVersion("17.0.0")
 

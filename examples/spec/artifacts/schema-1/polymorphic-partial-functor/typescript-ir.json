@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/polymorphic-partial-functor",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.maybe",
     "core.adt",
@@ -189,7 +194,7 @@
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [A]>",
           "implicit": false
         }
       ],
@@ -214,7 +219,15 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "F",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {
@@ -238,12 +251,12 @@
       "parameters": [
         {
           "name": "mapper",
-          "type": "(argument: unknown) => unknown",
+          "type": "(argument: $ssrg$Apply<F, readonly [A]>) => $ssrg$Apply<F, readonly [B]>",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [A]>",
           "implicit": false
         }
       ],
@@ -296,7 +309,7 @@
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [A]>",
           "implicit": false
         }
       ],
@@ -315,7 +328,15 @@
                   "type": {
                     "kind": "function",
                     "parameter": {
-                      "kind": "unknown"
+                      "kind": "kind-application",
+                      "constructor": "F",
+                      "arguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
                     },
                     "result": {
                       "kind": "function",
@@ -323,7 +344,15 @@
                         "kind": "unknown"
                       },
                       "result": {
-                        "kind": "unknown"
+                        "kind": "kind-application",
+                        "constructor": "F",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        ]
                       }
                     }
                   },
@@ -342,7 +371,15 @@
                     "type": {
                       "kind": "function",
                       "parameter": {
-                        "kind": "unknown"
+                        "kind": "kind-application",
+                        "constructor": "F",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
                       },
                       "result": {
                         "kind": "function",
@@ -350,7 +387,15 @@
                           "kind": "unknown"
                         },
                         "result": {
-                          "kind": "unknown"
+                          "kind": "kind-application",
+                          "constructor": "F",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
                         }
                       }
                     }
@@ -364,7 +409,7 @@
               ],
               "result": {
                 "kind": "lambda",
-                "parameter": "__ssrg$partial$0: unknown",
+                "parameter": "__ssrg$partial$0: $ssrg$Apply<F, readonly [A]>",
                 "body": {
                   "kind": "call",
                   "callee": "__ssrg$partial$stage",
@@ -384,10 +429,26 @@
             "type": {
               "kind": "function",
               "parameter": {
-                "kind": "unknown"
+                "kind": "kind-application",
+                "constructor": "F",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
               },
               "result": {
-                "kind": "unknown"
+                "kind": "kind-application",
+                "constructor": "F",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
               }
             }
           },
@@ -401,19 +462,51 @@
           "parameter": {
             "kind": "function",
             "parameter": {
-              "kind": "unknown"
+              "kind": "kind-application",
+              "constructor": "F",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
             },
             "result": {
-              "kind": "unknown"
+              "kind": "kind-application",
+              "constructor": "F",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
             }
           },
           "result": {
             "kind": "function",
             "parameter": {
-              "kind": "unknown"
+              "kind": "kind-application",
+              "constructor": "F",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
             },
             "result": {
-              "kind": "unknown"
+              "kind": "kind-application",
+              "constructor": "F",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
             }
           }
         }

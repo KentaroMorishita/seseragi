@@ -922,6 +922,18 @@
     },
     {
       "id": 43,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 44,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -933,7 +945,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 45,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -945,7 +957,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 46,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1237,24 +1249,31 @@
     },
     {
       "range": {
+        "start": 490,
+        "end": 497
+      },
+      "symbol": 43
+    },
+    {
+      "range": {
         "start": 480,
         "end": 484
       },
-      "symbol": 43
+      "symbol": 44
     },
     {
       "range": {
         "start": 504,
         "end": 516
       },
-      "symbol": 44
+      "symbol": 45
     },
     {
       "range": {
         "start": 521,
         "end": 528
       },
-      "symbol": 45
+      "symbol": 46
     },
     {
       "range": {
@@ -1901,6 +1920,96 @@
         "end": 584
       },
       "type": "{ active: Bool, name: String, score: Int }"
+    }
+  ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 2,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 6,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 7,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 8,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 9,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 10,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 11,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 13,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 14,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 16,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 17,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 18,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 19,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 20,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 23,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 24,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 26,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 27,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 37,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 38,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 41,
+      "owner": "std/json::JsonReadError"
     }
   ],
   "standardLibrary": [

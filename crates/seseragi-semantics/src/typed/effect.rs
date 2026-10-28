@@ -2,7 +2,8 @@ use crate::{unit_type, TypedDoStatement, TypedEffect, TypedExpr, TypedRecordFiel
 use seseragi_syntax::{SurfaceRequirement, TypeRef};
 
 use super::type_ref::{
-    application_argument_type_from_expr, effect_from_value_type, inferred_type_from_expr,
+    application_argument_type_from_expr, effect_from_value_type, effect_success_type_from_expr,
+    inferred_type_from_expr,
 };
 use super::TypedResolution;
 
@@ -55,9 +56,18 @@ pub(super) fn explicit_environment(
 }
 
 pub(crate) fn infer_compact_effect(body: &TypedExpr) -> TypedEffect {
-    if let Some(effect) = effect_from_value_type(&inferred_type_from_expr(body)) {
-        return effect;
-    }
+    let success = if let TypedExpr::DoBlock { result, .. } = body {
+        // A branch tail carries its complete Effect type. The do block also
+        // executes its preceding statements, so that tail cannot summarize the
+        // whole contract. Unwrap only the final execution's success value;
+        // that value may itself be a cold Effect.
+        effect_success_type_from_expr(result)
+    } else {
+        if let Some(effect) = effect_from_value_type(&inferred_type_from_expr(body)) {
+            return effect;
+        }
+        inferred_type_from_expr(body)
+    };
     let mut requirements = Vec::new();
     let mut failure = named_type("Never");
 
@@ -69,7 +79,7 @@ pub(crate) fn infer_compact_effect(body: &TypedExpr) -> TypedEffect {
             fields: requirements,
         },
         failure,
-        success: inferred_type_from_expr(body),
+        success,
     }
 }
 
@@ -184,22 +194,7 @@ fn explicit_environment_field(
     requirement: &SurfaceRequirement,
     resolution: &TypedResolution<'_>,
 ) -> TypedRecordField {
-    match requirement {
-        SurfaceRequirement::Shorthand { name, .. } => environment_field(&lower_first(name), name),
-        SurfaceRequirement::Field { name, type_ref, .. } => TypedRecordField {
-            name: name.clone(),
-            optional: false,
-            type_ref: resolution.semantic_value_from_type_ref(type_ref).type_ref,
-        },
-    }
-}
-
-fn environment_field(field_name: &str, type_name: &str) -> TypedRecordField {
-    TypedRecordField {
-        name: field_name.to_owned(),
-        optional: false,
-        type_ref: named_type(type_name),
-    }
+    resolution.explicit_requirement_field(requirement)
 }
 
 fn named_type(name: &str) -> TypedType {
@@ -211,10 +206,6 @@ fn named_type(name: &str) -> TypedType {
 
 fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
     matches!(type_ref, TypedType::Named { name, .. } if name == expected_name)
-}
-
-fn lower_first(value: &str) -> String {
-    seseragi_syntax::unicode::lowercase_first(value)
 }
 
 /// Join lazy Effect branch contracts without inventing a union failure type.

@@ -1,12 +1,23 @@
 use crate::{diagnostics, resolve, typed, ResolvedModule, TypedModule, TypedModuleInterface};
 use seseragi_syntax::{DiagnosticArtifact, DiagnosticSeverity, ModuleInterface};
 
+/// A value binding whose nominal owner was proved in the actual typing
+/// environment. The resolved binding id preserves its lexical scope without
+/// adding editor state to Typed HIR or changing type/dictionary contracts.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AnalysisNominalBinding {
+    pub binding: u32,
+    pub owner: String,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AnalyzedModule {
     pub diagnostics: DiagnosticArtifact,
     pub resolved: ResolvedModule,
     pub typed_hir: TypedModule,
     pub typed_interface: TypedModuleInterface,
+    pub nominal_bindings: Vec<AnalysisNominalBinding>,
 }
 
 /// Resolves and types one syntax-checked module interface.
@@ -25,7 +36,8 @@ pub fn analyze_module_interface(
     }
 
     let shallow = interface.clone();
-    let resolved = resolve::resolve_module_from_interface(interface, source);
+    let mut resolved = resolve::resolve_module_from_interface(interface, source);
+    retain_deprecation_source(&mut resolved, &diagnostics.source);
     let diagnostics =
         diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
     if has_errors(&diagnostics) {
@@ -39,6 +51,7 @@ pub fn analyze_module_interface(
         resolved,
         typed_hir,
         typed_interface,
+        nominal_bindings: Vec::new(),
     })
 }
 
@@ -54,7 +67,8 @@ pub fn analyze_linked_module(
     }
 
     let shallow = linked.interface.clone();
-    let resolved = resolve::resolve_linked_module(linked, source);
+    let mut resolved = resolve::resolve_linked_module(linked, source);
+    retain_deprecation_source(&mut resolved, &diagnostics.source);
     let diagnostics =
         diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
     if has_errors(&diagnostics) {
@@ -68,6 +82,7 @@ pub fn analyze_linked_module(
         resolved,
         typed_hir,
         typed_interface,
+        nominal_bindings: Vec::new(),
     })
 }
 
@@ -83,7 +98,8 @@ pub fn analyze_linked_module_recovering(
     source: &str,
 ) -> Result<AnalyzedModule, DiagnosticArtifact> {
     let shallow = linked.interface.clone();
-    let resolved = resolve::resolve_linked_module(linked, source);
+    let mut resolved = resolve::resolve_linked_module(linked, source);
+    retain_deprecation_source(&mut resolved, &diagnostics.source);
     // A parser-invalid declaration may be absent or partially inferred in the
     // recovered interface. Its users can then produce unrelated-looking type
     // errors (for example Show<A> at a later call). Source-range filtering
@@ -109,13 +125,14 @@ pub fn analyze_linked_module_recovering(
         }
         diagnostics
     };
-    let (typed_hir, typed_interface) =
-        typed::type_resolved_module_with_public_interface(shallow, resolved.clone());
+    let (typed_hir, typed_interface, nominal_bindings) =
+        typed::type_resolved_module_with_analysis(shallow, resolved.clone());
     Ok(AnalyzedModule {
         diagnostics,
         resolved,
         typed_hir,
         typed_interface,
+        nominal_bindings,
     })
 }
 
@@ -124,4 +141,15 @@ fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {
         .diagnostics
         .iter()
         .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error)
+}
+
+fn retain_deprecation_source(resolved: &mut ResolvedModule, source: &str) {
+    for entry in &mut resolved.deprecations {
+        entry.deprecation.source = source.to_owned();
+    }
+    for entry in &mut resolved.namespace_deprecations {
+        if entry.own_declaration.is_some() {
+            entry.metadata.deprecation.source = source.to_owned();
+        }
+    }
 }

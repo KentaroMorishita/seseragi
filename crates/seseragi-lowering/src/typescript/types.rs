@@ -1,7 +1,7 @@
 use crate::{CoreExpr, CoreParameter, CoreType};
 use seseragi_syntax::TypeParameter;
 use std::collections::{BTreeMap, BTreeSet};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use super::names::{local_name, safe_identifier};
 use super::{TypeScriptParameter, TypeScriptType};
@@ -12,6 +12,11 @@ use crate::runtime_types::runtime_type_import_for_surface;
 pub(super) struct TypeScriptTypeContext {
     imported_names: Arc<BTreeMap<String, String>>,
     constructors: BTreeSet<String>,
+    constructor_kinds: BTreeMap<String, u32>,
+    project_higher_kinds: bool,
+    constructor_position: bool,
+    kind_templates: BTreeMap<String, super::TypeScriptKindConstructor>,
+    kind_requirements: Arc<Mutex<super::kinds::Requirements>>,
     value_parameters: BTreeSet<String>,
     arities: BTreeMap<String, u32>,
     private_struct_names: BTreeSet<String>,
@@ -25,6 +30,11 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
         Self {
             imported_names: Arc::new(imported_names),
             constructors: BTreeSet::new(),
+            constructor_kinds: BTreeMap::new(),
+            project_higher_kinds: false,
+            constructor_position: false,
+            kind_templates: BTreeMap::new(),
+            kind_requirements: Default::default(),
             value_parameters: BTreeSet::new(),
             arities: BTreeMap::new(),
             private_struct_names: BTreeSet::new(),
@@ -36,6 +46,95 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn with_higher_kinds(&self) -> Self {
+        let mut scoped = self.clone();
+        scoped.project_higher_kinds = true;
+        scoped
+    }
+
+    pub(super) fn with_constructor_position(&self) -> Self {
+        let mut context = self.clone();
+        context.constructor_position = true;
+        context
+    }
+
+    pub(super) fn higher_kinds(&self) -> Option<super::TypeScriptKinds> {
+        self.kind_requirements
+            .lock()
+            .expect("module type witnesses")
+            .output()
+    }
+
+    fn project_constructor(&self, key: &str, arguments: &[CoreType]) -> Option<TypeScriptType> {
+        let template = self
+            .kind_templates
+            .get(key)
+            .cloned()
+            .or_else(|| super::kinds::intrinsic_constructor(key));
+        let (name, arity) = if let Some(template) = template {
+            let arity = template.parameters.len() as u32;
+            if arguments.len() > arity as usize
+                || (arguments.len() == arity as usize
+                    && !arguments
+                        .iter()
+                        .any(|argument| matches!(argument, CoreType::Hole)))
+            {
+                return None;
+            }
+            let name = template.name.clone();
+            self.kind_requirements
+                .lock()
+                .expect("module type witnesses")
+                .constructors
+                .insert(name.clone(), template);
+            (name, arity)
+        } else {
+            let arity = *self.arities.get(key)?;
+            if arguments.len() > arity as usize
+                || (arguments.len() == arity as usize
+                    && !arguments
+                        .iter()
+                        .any(|argument| matches!(argument, CoreType::Hole)))
+                || crate::runtime_types::runtime_type_import(key).is_some()
+            {
+                return None;
+            }
+            let name = super::kinds::constructor_name(self.imported_names.get(key)?);
+            (name, arity)
+        };
+        Some(self.constructor_prefix(name, arity, arguments))
+    }
+
+    fn constructor_prefix(
+        &self,
+        name: String,
+        arity: u32,
+        arguments: &[CoreType],
+    ) -> TypeScriptType {
+        let slots = (0..arity as usize)
+            .map(|index| {
+                arguments
+                    .get(index)
+                    .filter(|argument| !matches!(argument, CoreType::Hole))
+                    .map(|argument| {
+                        type_ref_from_core_type(argument, &self.with_constructor_position())
+                    })
+            })
+            .collect::<Vec<_>>();
+        let shape = slots.iter().map(Option::is_some).collect::<Vec<_>>();
+        if shape.iter().any(|fixed| *fixed) {
+            self.kind_requirements
+                .lock()
+                .expect("module type witnesses")
+                .partials
+                .insert(shape);
+        }
+        TypeScriptType::KindConstructor {
+            name,
+            arguments: slots,
+        }
+    }
+
     pub(super) fn with_runtime_type_name(mut self, canonical: String, name: String) -> Self {
         Arc::make_mut(&mut self.imported_names).insert(canonical, name);
         self
@@ -92,6 +191,106 @@ impl TypeScriptTypeContext {
     }
 
     pub(super) fn with_module(mut self, module: &crate::CoreModule) -> Self {
+        for (symbol, name, visibility, parameters) in module
+            .adts
+            .iter()
+            .map(|item| {
+                (
+                    &item.symbol,
+                    &item.name,
+                    item.visibility,
+                    &item.type_parameters,
+                )
+            })
+            .chain(module.structs.iter().map(|item| {
+                (
+                    &item.symbol,
+                    &item.name,
+                    item.visibility,
+                    &item.type_parameters,
+                )
+            }))
+            .chain(
+                module
+                    .aliases
+                    .iter()
+                    .filter(|item| item.visibility == seseragi_syntax::Visibility::Public)
+                    .map(|item| {
+                        (
+                            &item.symbol,
+                            &item.name,
+                            item.visibility,
+                            &item.type_parameters,
+                        )
+                    }),
+            )
+        {
+            if parameters.is_empty() {
+                continue;
+            }
+            let template = super::kinds::nominal_constructor(
+                &local_name(symbol),
+                symbol,
+                visibility == seseragi_syntax::Visibility::Public,
+                parameters,
+            );
+            self.kind_templates.insert(symbol.clone(), template.clone());
+            self.kind_templates.insert(name.clone(), template.clone());
+            if template.exported {
+                self.kind_requirements
+                    .lock()
+                    .expect("module type witnesses")
+                    .constructors
+                    .insert(template.name.clone(), template);
+            }
+        }
+        fn opaque_constructors(
+            members: &[crate::CoreForeignMember],
+            module: &str,
+            exported: bool,
+            out: &mut Vec<super::TypeScriptKindConstructor>,
+        ) {
+            for member in members {
+                match member {
+                    crate::CoreForeignMember::OpaqueType {
+                        symbol,
+                        type_parameters,
+                        ..
+                    } if !type_parameters.is_empty() => {
+                        out.push(super::kinds::nominal_constructor(
+                            &super::names::module_value_name(module, symbol),
+                            symbol,
+                            exported,
+                            type_parameters,
+                        ))
+                    }
+                    crate::CoreForeignMember::Namespace { members, .. } => {
+                        opaque_constructors(members, module, exported, out);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        let mut opaque = Vec::new();
+        for foreign in &module.foreign_modules {
+            opaque_constructors(
+                &foreign.members,
+                &module.module,
+                foreign.visibility == seseragi_syntax::Visibility::Public,
+                &mut opaque,
+            );
+        }
+        for template in opaque {
+            self.kind_templates
+                .insert(template.identity.clone(), template.clone());
+            if template.exported {
+                self.kind_requirements
+                    .lock()
+                    .expect("module type witnesses")
+                    .constructors
+                    .insert(template.name.clone(), template);
+            }
+        }
         fn collect(
             members: &[crate::CoreForeignMember],
             results: &mut BTreeMap<String, (usize, usize, usize)>,
@@ -232,9 +431,15 @@ impl TypeScriptTypeContext {
         for parameter in parameters {
             scoped.private_struct_names.remove(&parameter.name);
             scoped.constructors.remove(&parameter.name);
+            scoped.constructor_kinds.remove(&parameter.name);
+            scoped.kind_templates.remove(&parameter.name);
+            scoped.arities.remove(&parameter.name);
             scoped.value_parameters.remove(&parameter.name);
             if parameter.is_constructor() {
                 scoped.constructors.insert(parameter.name.clone());
+                scoped
+                    .constructor_kinds
+                    .insert(parameter.name.clone(), parameter.arity);
             } else {
                 scoped.value_parameters.insert(parameter.name.clone());
             }
@@ -401,6 +606,80 @@ pub(super) fn type_ref_from_core_type_with_erasure(
     imported_types: &TypeScriptTypeContext,
     type_constructor_parameters: &[String],
 ) -> TypeScriptType {
+    let in_kind_position = imported_types.constructor_position;
+    let value_context;
+    let imported_types = if in_kind_position {
+        value_context = {
+            let mut context = imported_types.clone();
+            context.constructor_position = false;
+            context
+        };
+        &value_context
+    } else {
+        imported_types
+    };
+    match type_ref {
+        CoreType::Named { name, arguments } => {
+            if let Some(&arity) = imported_types.constructor_kinds.get(name) {
+                if arguments.is_empty() {
+                    return TypeScriptType::Reference {
+                        name: name.clone(),
+                        arguments: vec![],
+                    };
+                }
+                if imported_types.project_higher_kinds || in_kind_position {
+                    if arguments.len() < arity as usize
+                        || (in_kind_position
+                            && arguments.len() == arity as usize
+                            && arguments
+                                .iter()
+                                .any(|argument| matches!(argument, CoreType::Hole)))
+                    {
+                        return imported_types.constructor_prefix(name.clone(), arity, arguments);
+                    }
+                    if imported_types.project_higher_kinds && arguments.len() == arity as usize {
+                        imported_types
+                            .kind_requirements
+                            .lock()
+                            .expect("module type witnesses")
+                            .application = true;
+                        return TypeScriptType::KindApplication {
+                            constructor: name.clone(),
+                            arguments: arguments
+                                .iter()
+                                .map(|arg| type_ref_from_core_type(arg, imported_types))
+                                .collect(),
+                        };
+                    }
+                }
+                // The ordinary erased function/dictionary ABI remains separate
+                // from exact data declarations. A name alone proves no kind.
+                return TypeScriptType::Unknown;
+            }
+            if in_kind_position && !imported_types.value_parameters.contains(name) {
+                if let Some(projected) = imported_types.project_constructor(name, arguments) {
+                    return projected;
+                }
+                if !imported_types.arities.contains_key(name) {
+                    if let Some(projected) = imported_types
+                        .project_constructor(&format!("std/prelude::{name}"), arguments)
+                    {
+                        return projected;
+                    }
+                }
+            }
+        }
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if in_kind_position => {
+            if let Some(projected) = imported_types.project_constructor(canonical, arguments) {
+                return projected;
+            }
+        }
+        _ => {}
+    }
     match type_ref {
         CoreType::Named { name, arguments }
             if arguments.is_empty() && imported_types.value_parameters.contains(name) =>
@@ -408,8 +687,8 @@ pub(super) fn type_ref_from_core_type_with_erasure(
             TypeScriptType::Reference { name: name.clone(), arguments: Vec::new() }
         }
         // A source constructor is a kind, not a TypeScript value type. Erase
-        // unsaturated heads wherever they occur, including nested nominal
-        // arguments and dictionary instantiation, using declaration metadata.
+        // unsaturated heads in value positions using declaration metadata.
+        // Selected dictionary type arguments use constructor positions.
         CoreType::Named { name, arguments }
             if imported_types.arities.get(name).copied()
                 .or_else(|| seseragi_semantics::prelude_type_constructor_arity(name))
@@ -512,7 +791,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                     .map(|argument| {
                         type_ref_from_core_type_with_erasure(
                             argument,
-                            imported_types,
+                            &imported_types.with_constructor_position(),
                             type_constructor_parameters,
                         )
                     })
@@ -528,7 +807,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 .map(|argument| {
                     type_ref_from_core_type_with_erasure(
                         argument,
-                        imported_types,
+                        &imported_types.with_constructor_position(),
                         type_constructor_parameters,
                     )
                 })
@@ -539,7 +818,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         {
             TypeScriptType::Reference {
                 name: private_representation_name(&local_name(name)),
-                arguments: arguments.iter().map(|argument| type_ref_from_core_type_with_erasure(argument, imported_types, type_constructor_parameters)).collect(),
+                arguments: arguments.iter().map(|argument| type_ref_from_core_type_with_erasure(argument, &imported_types.with_constructor_position(), type_constructor_parameters)).collect(),
             }
         }
         // Instance selection can preserve primitive identity canonically when
@@ -583,7 +862,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 .map(|argument| {
                     type_ref_from_core_type_with_erasure(
                         argument,
-                        imported_types,
+                        &imported_types.with_constructor_position(),
                         type_constructor_parameters,
                     )
                 })
@@ -656,6 +935,16 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
                 .to_owned()
         }
         TypeScriptType::Unknown => "unknown".to_owned(),
+        TypeScriptType::KindArgument { index } => format!("this[\"args\"][{index}]"),
+        TypeScriptType::KindConstructor { name, arguments } if arguments.iter().any(Option::is_some) => format!(
+            "{}<{}>", super::kinds::partial_name(&arguments.iter().map(Option::is_some).collect::<Vec<_>>()),
+            std::iter::once(name.clone()).chain(arguments.iter().flatten().map(render_typescript_type)).collect::<Vec<_>>().join(", ")
+        ),
+        TypeScriptType::KindConstructor { name, .. } => name.clone(),
+        TypeScriptType::KindApplication { constructor, arguments } => format!(
+            "$ssrg$Apply<{constructor}, readonly [{}]>",
+            arguments.iter().map(render_typescript_type).collect::<Vec<_>>().join(", ")
+        ),
         TypeScriptType::Reference { name, arguments } if arguments.is_empty() => name.clone(),
         TypeScriptType::Reference { name, arguments } => format!(
             "{name}<{}>",

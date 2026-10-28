@@ -2,6 +2,95 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/transformers",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$builtin$kind$Effect",
+        "identity": "std/prelude::Effect",
+        "exported": false,
+        "parameters": [
+          "A0",
+          "A1",
+          "A2"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "import(\"@seseragi/runtime/effect\").Effect",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            },
+            {
+              "kind": "kind-argument",
+              "index": 1
+            },
+            {
+              "kind": "kind-argument",
+              "index": 2
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$builtin$kind$Maybe",
+        "identity": "std/prelude::Maybe",
+        "exported": false,
+        "parameters": [
+          "A0"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "import(\"@seseragi/runtime/sum\").Maybe",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$builtin$kind$StateT",
+        "identity": "std/transformer/state::StateT",
+        "exported": false,
+        "parameters": [
+          "A0",
+          {
+            "name": "A1",
+            "arity": 1
+          },
+          "A2"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "import(\"@seseragi/runtime/transformer\").StateT",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            },
+            {
+              "kind": "kind-argument",
+              "index": 1
+            },
+            {
+              "kind": "kind-argument",
+              "index": 2
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [
+      [
+        true,
+        true,
+        false
+      ]
+    ],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.transformer.maybe.type",
     "core.transformer.either.type",
@@ -429,7 +518,11 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -457,7 +550,11 @@
           "name": "MaybeT",
           "arguments": [
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -480,7 +577,11 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -502,7 +603,11 @@
               "callee": "_ssrg_maybeTFunctor",
               "typeArguments": [
                 {
-                  "kind": "unknown"
+                  "kind": "kind-constructor",
+                  "name": "$ssrg$builtin$kind$Maybe",
+                  "arguments": [
+                    null
+                  ]
                 }
               ],
               "arguments": [
@@ -519,7 +624,11 @@
           "name": "MaybeT",
           "arguments": [
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -545,7 +654,11 @@
             "kind": "string"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -582,7 +695,11 @@
               "kind": "string"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -608,7 +725,11 @@
             "kind": "number"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -638,7 +759,11 @@
               "kind": "number"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -664,7 +789,11 @@
             "kind": "number"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -713,7 +842,11 @@
               "kind": "number"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -739,7 +872,11 @@
             "kind": "number"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -769,7 +906,11 @@
               "kind": "number"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -795,7 +936,11 @@
             "kind": "string"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "undefined"
@@ -830,7 +975,11 @@
               "kind": "string"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "undefined"
@@ -858,7 +1007,11 @@
               "kind": "number"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -904,7 +1057,7 @@
           ],
           "result": {
             "kind": "lambda",
-            "parameter": "__ssrg$collection$partial$0: StateT<number, unknown, number>",
+            "parameter": "__ssrg$collection$partial$0: StateT<number, $ssrg$builtin$kind$Maybe, number>",
             "body": {
               "kind": "runtime-call",
               "callee": "_ssrg_stateTRun",
@@ -931,7 +1084,11 @@
                 "kind": "number"
               },
               {
-                "kind": "unknown"
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Maybe",
+                "arguments": [
+                  null
+                ]
               },
               {
                 "kind": "number"
@@ -969,7 +1126,11 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -983,7 +1144,11 @@
           "callee": "_ssrg_maybeTMonad",
           "typeArguments": [
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             }
           ],
           "arguments": [
@@ -1020,7 +1185,11 @@
               "callee": "_ssrg_maybeTApplicative",
               "typeArguments": [
                 {
-                  "kind": "unknown"
+                  "kind": "kind-constructor",
+                  "name": "$ssrg$builtin$kind$Maybe",
+                  "arguments": [
+                    null
+                  ]
                 }
               ],
               "arguments": [
@@ -1053,7 +1222,11 @@
             "name": "MaybeT",
             "arguments": [
               {
-                "kind": "unknown"
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Maybe",
+                "arguments": [
+                  null
+                ]
               },
               {
                 "kind": "number"
@@ -1077,7 +1250,11 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -1093,7 +1270,11 @@
             "callee": "_ssrg_maybeTApplicative",
             "typeArguments": [
               {
-                "kind": "unknown"
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Maybe",
+                "arguments": [
+                  null
+                ]
               }
             ],
             "arguments": [
@@ -1114,7 +1295,11 @@
                   "callee": "_ssrg_maybeTApplicative",
                   "typeArguments": [
                     {
-                      "kind": "unknown"
+                      "kind": "kind-constructor",
+                      "name": "$ssrg$builtin$kind$Maybe",
+                      "arguments": [
+                        null
+                      ]
                     }
                   ],
                   "arguments": [
@@ -1151,7 +1336,11 @@
                 "name": "MaybeT",
                 "arguments": [
                   {
-                    "kind": "unknown"
+                    "kind": "kind-constructor",
+                    "name": "$ssrg$builtin$kind$Maybe",
+                    "arguments": [
+                      null
+                    ]
                   },
                   {
                     "kind": "function",
@@ -1176,7 +1365,11 @@
           "name": "MaybeT",
           "arguments": [
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "number"
@@ -1199,7 +1392,11 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -1224,7 +1421,11 @@
                   "name": "MaybeT",
                   "arguments": [
                     {
-                      "kind": "unknown"
+                      "kind": "kind-constructor",
+                      "name": "$ssrg$builtin$kind$Maybe",
+                      "arguments": [
+                        null
+                      ]
                     },
                     {
                       "kind": "number"
@@ -1239,7 +1440,11 @@
                   "name": "MaybeT",
                   "arguments": [
                     {
-                      "kind": "unknown"
+                      "kind": "kind-constructor",
+                      "name": "$ssrg$builtin$kind$Maybe",
+                      "arguments": [
+                        null
+                      ]
                     },
                     {
                       "kind": "number"
@@ -1251,7 +1456,11 @@
                   "name": "MaybeT",
                   "arguments": [
                     {
-                      "kind": "unknown"
+                      "kind": "kind-constructor",
+                      "name": "$ssrg$builtin$kind$Maybe",
+                      "arguments": [
+                        null
+                      ]
                     },
                     {
                       "kind": "number"
@@ -1269,7 +1478,11 @@
                   "callee": "_ssrg_maybeTMonad",
                   "typeArguments": [
                     {
-                      "kind": "unknown"
+                      "kind": "kind-constructor",
+                      "name": "$ssrg$builtin$kind$Maybe",
+                      "arguments": [
+                        null
+                      ]
                     }
                   ],
                   "arguments": [
@@ -1294,7 +1507,11 @@
                     "name": "MaybeT",
                     "arguments": [
                       {
-                        "kind": "unknown"
+                        "kind": "kind-constructor",
+                        "name": "$ssrg$builtin$kind$Maybe",
+                        "arguments": [
+                          null
+                        ]
                       },
                       {
                         "kind": "number"
@@ -1309,7 +1526,11 @@
                     "name": "MaybeT",
                     "arguments": [
                       {
-                        "kind": "unknown"
+                        "kind": "kind-constructor",
+                        "name": "$ssrg$builtin$kind$Maybe",
+                        "arguments": [
+                          null
+                        ]
                       },
                       {
                         "kind": "number"
@@ -1321,7 +1542,11 @@
                     "name": "MaybeT",
                     "arguments": [
                       {
-                        "kind": "unknown"
+                        "kind": "kind-constructor",
+                        "name": "$ssrg$builtin$kind$Maybe",
+                        "arguments": [
+                          null
+                        ]
                       },
                       {
                         "kind": "number"
@@ -1349,7 +1574,11 @@
                 "name": "MaybeT",
                 "arguments": [
                   {
-                    "kind": "unknown"
+                    "kind": "kind-constructor",
+                    "name": "$ssrg$builtin$kind$Maybe",
+                    "arguments": [
+                      null
+                    ]
                   },
                   {
                     "kind": "number"
@@ -1383,7 +1612,11 @@
                     "name": "MaybeT",
                     "arguments": [
                       {
-                        "kind": "unknown"
+                        "kind": "kind-constructor",
+                        "name": "$ssrg$builtin$kind$Maybe",
+                        "arguments": [
+                          null
+                        ]
                       },
                       {
                         "kind": "number"
@@ -1425,7 +1658,11 @@
                       "name": "MaybeT",
                       "arguments": [
                         {
-                          "kind": "unknown"
+                          "kind": "kind-constructor",
+                          "name": "$ssrg$builtin$kind$Maybe",
+                          "arguments": [
+                            null
+                          ]
                         },
                         {
                           "kind": "number"
@@ -1450,7 +1687,11 @@
                     "name": "MaybeT",
                     "arguments": [
                       {
-                        "kind": "unknown"
+                        "kind": "kind-constructor",
+                        "name": "$ssrg$builtin$kind$Maybe",
+                        "arguments": [
+                          null
+                        ]
                       },
                       {
                         "kind": "number"
@@ -1462,7 +1703,11 @@
                     "name": "MaybeT",
                     "arguments": [
                       {
-                        "kind": "unknown"
+                        "kind": "kind-constructor",
+                        "name": "$ssrg$builtin$kind$Maybe",
+                        "arguments": [
+                          null
+                        ]
                       },
                       {
                         "kind": "number"
@@ -1494,7 +1739,11 @@
                   "name": "MaybeT",
                   "arguments": [
                     {
-                      "kind": "unknown"
+                      "kind": "kind-constructor",
+                      "name": "$ssrg$builtin$kind$Maybe",
+                      "arguments": [
+                        null
+                      ]
                     },
                     {
                       "kind": "number"
@@ -1543,7 +1792,11 @@
             "kind": "number"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "undefined"
@@ -1588,7 +1841,11 @@
               "kind": "number"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "undefined"
@@ -1614,7 +1871,11 @@
             "kind": "number"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -1631,7 +1892,11 @@
               "kind": "number"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             }
           ],
           "arguments": [
@@ -1673,7 +1938,11 @@
                 "kind": "number"
               },
               {
-                "kind": "unknown"
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Maybe",
+                "arguments": [
+                  null
+                ]
               },
               {
                 "kind": "number"
@@ -1700,7 +1969,11 @@
             "kind": "string"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "undefined"
@@ -1735,7 +2008,11 @@
               "kind": "string"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "undefined"
@@ -1761,7 +2038,11 @@
             "kind": "string"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "undefined"
@@ -1796,7 +2077,11 @@
               "kind": "string"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "undefined"
@@ -1822,7 +2107,11 @@
             "kind": "string"
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -1839,7 +2128,11 @@
               "kind": "string"
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             }
           ],
           "arguments": [
@@ -1881,7 +2174,11 @@
                   "kind": "string"
                 },
                 {
-                  "kind": "unknown"
+                  "kind": "kind-constructor",
+                  "name": "$ssrg$builtin$kind$Maybe",
+                  "arguments": [
+                    null
+                  ]
                 }
               ],
               "arguments": [
@@ -1911,7 +2208,11 @@
                 "kind": "string"
               },
               {
-                "kind": "unknown"
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Maybe",
+                "arguments": [
+                  null
+                ]
               },
               {
                 "kind": "number"
@@ -1935,18 +2236,20 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "reference",
-            "name": "StateT",
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$StateT",
             "arguments": [
               {
                 "kind": "number"
               },
               {
-                "kind": "unknown"
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Maybe",
+                "arguments": [
+                  null
+                ]
               },
-              {
-                "kind": "unknown"
-              }
+              null
             ]
           },
           {
@@ -1968,7 +2271,11 @@
                   "kind": "number"
                 },
                 {
-                  "kind": "unknown"
+                  "kind": "kind-constructor",
+                  "name": "$ssrg$builtin$kind$Maybe",
+                  "arguments": [
+                    null
+                  ]
                 }
               ],
               "arguments": [
@@ -1995,18 +2302,20 @@
           "name": "MaybeT",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "StateT",
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$StateT",
               "arguments": [
                 {
                   "kind": "number"
                 },
                 {
-                  "kind": "unknown"
+                  "kind": "kind-constructor",
+                  "name": "$ssrg$builtin$kind$Maybe",
+                  "arguments": [
+                    null
+                  ]
                 },
-                {
-                  "kind": "unknown"
-                }
+                null
               ]
             },
             {
@@ -2030,7 +2339,30 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "console",
+                    "optional": false,
+                    "type": {
+                      "kind": "reference",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "reference",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              null
+            ]
           },
           {
             "kind": "number"
@@ -2064,7 +2396,30 @@
           "name": "MaybeT",
           "arguments": [
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "console",
+                      "optional": false,
+                      "type": {
+                        "kind": "reference",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "reference",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                null
+              ]
             },
             {
               "kind": "number"
@@ -2087,8 +2442,8 @@
         "name": "MaybeT",
         "arguments": [
           {
-            "kind": "reference",
-            "name": "Effect",
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Effect",
             "arguments": [
               {
                 "kind": "record",
@@ -2109,9 +2464,7 @@
                 "name": "ConsoleError",
                 "arguments": []
               },
-              {
-                "kind": "unknown"
-              }
+              null
             ]
           },
           {
@@ -2128,8 +2481,8 @@
             "callee": "_ssrg_maybeTFunctor",
             "typeArguments": [
               {
-                "kind": "reference",
-                "name": "Effect",
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Effect",
                 "arguments": [
                   {
                     "kind": "record",
@@ -2150,9 +2503,7 @@
                     "name": "ConsoleError",
                     "arguments": []
                   },
-                  {
-                    "kind": "unknown"
-                  }
+                  null
                 ]
               }
             ],
@@ -2194,8 +2545,8 @@
           "name": "MaybeT",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "Effect",
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Effect",
               "arguments": [
                 {
                   "kind": "record",
@@ -2216,9 +2567,7 @@
                   "name": "ConsoleError",
                   "arguments": []
                 },
-                {
-                  "kind": "unknown"
-                }
+                null
               ]
             },
             {
@@ -2247,7 +2596,11 @@
             "arguments": []
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "undefined"
@@ -2305,7 +2658,11 @@
               "arguments": []
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "undefined"
@@ -2333,7 +2690,11 @@
             "arguments": []
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "undefined"
@@ -2391,7 +2752,11 @@
               "arguments": []
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             },
             {
               "kind": "undefined"
@@ -2419,7 +2784,11 @@
             "arguments": []
           },
           {
-            "kind": "unknown"
+            "kind": "kind-constructor",
+            "name": "$ssrg$builtin$kind$Maybe",
+            "arguments": [
+              null
+            ]
           },
           {
             "kind": "number"
@@ -2438,7 +2807,11 @@
               "arguments": []
             },
             {
-              "kind": "unknown"
+              "kind": "kind-constructor",
+              "name": "$ssrg$builtin$kind$Maybe",
+              "arguments": [
+                null
+              ]
             }
           ],
           "arguments": [
@@ -2489,7 +2862,11 @@
                   "arguments": []
                 },
                 {
-                  "kind": "unknown"
+                  "kind": "kind-constructor",
+                  "name": "$ssrg$builtin$kind$Maybe",
+                  "arguments": [
+                    null
+                  ]
                 }
               ],
               "arguments": [
@@ -2528,7 +2905,11 @@
                 "arguments": []
               },
               {
-                "kind": "unknown"
+                "kind": "kind-constructor",
+                "name": "$ssrg$builtin$kind$Maybe",
+                "arguments": [
+                  null
+                ]
               },
               {
                 "kind": "number"
@@ -2680,7 +3061,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [number]>",
           "implicit": false
         }
       ],
@@ -2719,7 +3100,13 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "F",
+          "arguments": [
+            {
+              "kind": "number"
+            }
+          ]
         }
       },
       "origin": {
@@ -3838,7 +4225,11 @@
                                     "kind": "string"
                                   },
                                   {
-                                    "kind": "unknown"
+                                    "kind": "kind-constructor",
+                                    "name": "$ssrg$builtin$kind$Maybe",
+                                    "arguments": [
+                                      null
+                                    ]
                                   },
                                   {
                                     "kind": "tuple",
@@ -3993,7 +4384,11 @@
                                     "kind": "number"
                                   },
                                   {
-                                    "kind": "unknown"
+                                    "kind": "kind-constructor",
+                                    "name": "$ssrg$builtin$kind$Maybe",
+                                    "arguments": [
+                                      null
+                                    ]
                                   },
                                   {
                                     "kind": "maybe",

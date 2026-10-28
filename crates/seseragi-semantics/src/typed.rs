@@ -149,7 +149,19 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
 }
 
 pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> TypedModule {
-    let resolution = TypedResolution::new(&resolved);
+    typed_module_with_bindings(resolved, false).0
+}
+
+fn typed_module_with_bindings(
+    resolved: crate::ResolvedModule,
+    retain_receivers: bool,
+) -> (TypedModule, Vec<crate::AnalysisNominalBinding>) {
+    let mut resolution = TypedResolution::new(&resolved);
+    if retain_receivers {
+        // Initial callable/let inference can be speculative. Only the final
+        // declaration pass records editor facts from its lexical environment.
+        resolution.enable_binding_facts();
+    }
     let foreign_modules = typed_foreign_modules(&resolved.foreign_modules, &resolution);
     let declarations = resolved
         .declarations
@@ -161,8 +173,10 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
     let module_dependencies = resolution.module_dependencies();
     let instances = instances::analyze_instances(&resolved, &resolution).instances;
     let trait_methods = resolution.trait_method_declarations();
+    let nominal_bindings = resolution.nominal_bindings();
+    drop(resolution);
 
-    TypedModule {
+    let typed = TypedModule {
         schema: 1,
         stage: "typed-hir".to_owned(),
         source: resolved.source,
@@ -173,7 +187,8 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
         instances,
         trait_methods,
         declarations,
-    }
+    };
+    (typed, nominal_bindings)
 }
 
 fn typed_foreign_modules(
@@ -328,12 +343,49 @@ pub(crate) fn type_resolved_module_with_public_interface(
     shallow: ModuleInterface,
     resolved: crate::ResolvedModule,
 ) -> (TypedModule, crate::TypedModuleInterface) {
+    let (typed, interface, _) = type_resolved_module_with_source_facts(shallow, resolved, false);
+    (typed, interface)
+}
+
+pub(crate) fn type_resolved_module_with_analysis(
+    shallow: ModuleInterface,
+    resolved: crate::ResolvedModule,
+) -> (
+    TypedModule,
+    crate::TypedModuleInterface,
+    Vec<crate::AnalysisNominalBinding>,
+) {
+    type_resolved_module_with_source_facts(shallow, resolved, true)
+}
+
+fn type_resolved_module_with_source_facts(
+    shallow: ModuleInterface,
+    resolved: crate::ResolvedModule,
+    retain_receivers: bool,
+) -> (
+    TypedModule,
+    crate::TypedModuleInterface,
+    Vec<crate::AnalysisNominalBinding>,
+) {
     let dependency_instances = resolved.dependency_instances.clone();
     let deprecations = resolved.deprecations.clone();
-    let typed = typed_module_from_resolved(resolved);
-    let typed_interface =
+    let mut operator_notices = resolved.operator_deprecations.clone();
+    let operator_sources = crate::deprecated_operators::sources(&resolved);
+    let (typed, nominal_bindings) = typed_module_with_bindings(resolved, retain_receivers);
+    operator_notices.extend(crate::deprecated_operators::local(operator_sources, &typed));
+    let mut typed_interface =
         typed_interface_from_modules(shallow, &typed, &dependency_instances, &deprecations);
-    (typed, typed_interface)
+    typed_interface.operator_deprecations = crate::deprecated_operators::merge(operator_notices)
+        .into_iter()
+        .filter(|notice| {
+            typed_interface.instances.iter().any(|instance| {
+                instance.identity.as_deref() == Some(notice.instance.as_str())
+                    && instance.provider_module.as_deref() == Some(notice.provider_module.as_str())
+                    && instance.trait_identity.as_deref() == Some(notice.trait_identity.as_str())
+            })
+        })
+        .collect();
+    (typed, typed_interface, nominal_bindings)
 }
 
 pub fn type_module_public_interface(
@@ -351,6 +403,8 @@ pub fn type_module_public_interface(
             source: shallow.source,
             dependencies: shallow.dependencies,
             exports: Vec::new(),
+            namespace_deprecations: Vec::new(),
+            operator_deprecations: Vec::new(),
             operators: Vec::new(),
             instances: Vec::new(),
         };
@@ -976,15 +1030,17 @@ mod tests {
                         fields: vec![TypedRecordField {
                             name: "console".to_owned(),
                             optional: false,
-                            type_ref: TypedType::Named {
+                            type_ref: TypedType::ExternalNamed {
                                 name: "Console".to_owned(),
+                                canonical: "std/prelude::Console".to_owned(),
                                 arguments: Vec::new(),
                             },
                         }],
                     },
-                    failure: TypedType::Named {
+                    failure: TypedType::ExternalNamed {
                         name: "ConsoleError".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::ConsoleError".to_owned(),
+                        arguments: Vec::new()
                     },
                     success: unit_type(),
                 },
@@ -996,14 +1052,16 @@ mod tests {
                             fields: vec![TypedRecordField {
                                 name: "console".to_owned(),
                                 optional: false,
-                                type_ref: TypedType::Named {
+                                type_ref: TypedType::ExternalNamed {
                                     name: "Console".to_owned(),
+                                    canonical: "std/prelude::Console".to_owned(),
                                     arguments: Vec::new()
                                 }
                             }]
                         },
-                        failure: TypedType::Named {
+                        failure: TypedType::ExternalNamed {
                             name: "ConsoleError".to_owned(),
+                            canonical: "std/prelude::ConsoleError".to_owned(),
                             arguments: Vec::new()
                         },
                         success: unit_type()
@@ -1053,15 +1111,17 @@ mod tests {
                         fields: vec![TypedRecordField {
                             name: "console".to_owned(),
                             optional: false,
-                            type_ref: TypedType::Named {
+                            type_ref: TypedType::ExternalNamed {
                                 name: "Console".to_owned(),
-                                arguments: Vec::new(),
+                                canonical: "std/prelude::Console".to_owned(),
+                                arguments: Vec::new()
                             },
                         }],
                     },
-                    failure: TypedType::Named {
+                    failure: TypedType::ExternalNamed {
                         name: "ConsoleError".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::ConsoleError".to_owned(),
+                        arguments: Vec::new()
                     },
                     success: unit_type(),
                 },
@@ -1073,14 +1133,16 @@ mod tests {
                             fields: vec![TypedRecordField {
                                 name: "console".to_owned(),
                                 optional: false,
-                                type_ref: TypedType::Named {
+                                type_ref: TypedType::ExternalNamed {
                                     name: "Console".to_owned(),
+                                    canonical: "std/prelude::Console".to_owned(),
                                     arguments: Vec::new()
                                 }
                             }]
                         },
-                        failure: TypedType::Named {
+                        failure: TypedType::ExternalNamed {
                             name: "ConsoleError".to_owned(),
+                            canonical: "std/prelude::ConsoleError".to_owned(),
                             arguments: Vec::new()
                         },
                         success: unit_type()
@@ -1136,11 +1198,11 @@ pub effect fn main =
             main.0,
             TypedEffect {
                 environment: TypedType::Record { fields, .. },
-                failure: TypedType::Named { name: failure, .. },
+                failure: TypedType::ExternalNamed { canonical: failure, .. },
                 success: TypedType::Named { name: success, .. },
-            } if matches!(fields.as_slice(), [TypedRecordField { name, type_ref: TypedType::Named { name: service, .. }, .. }]
-                if name == "console" && service == "Console")
-                && failure == "ConsoleError"
+            } if matches!(fields.as_slice(), [TypedRecordField { name, type_ref: TypedType::ExternalNamed { canonical: service, .. }, .. }]
+                if name == "console" && service == "std/prelude::Console")
+                && failure == "std/prelude::ConsoleError"
                 && success == "Unit"
         ));
 
@@ -1185,8 +1247,9 @@ pub effect fn main =
                 fields: vec![TypedRecordField {
                     name: "stdin".to_owned(),
                     optional: false,
-                    type_ref: TypedType::Named {
+                    type_ref: TypedType::ExternalNamed {
                         name: "Stdin".to_owned(),
+                        canonical: "std/prelude::Stdin".to_owned(),
                         arguments: Vec::new(),
                     },
                 }],
@@ -1194,8 +1257,9 @@ pub effect fn main =
         );
         assert_eq!(
             effect.failure,
-            TypedType::Named {
+            TypedType::ExternalNamed {
                 name: "StdinError".to_owned(),
+                canonical: "std/prelude::StdinError".to_owned(),
                 arguments: Vec::new(),
             }
         );
@@ -1230,9 +1294,12 @@ pub effect fn main =
         assert_eq!(
             export.scheme.type_ref,
             InterfaceType::Function {
-                parameter: Box::new(InterfaceType::Named {
+                parameter: Box::new(InterfaceType::ExternalNamed {
                     name: "String".to_owned(),
-                    arguments: Vec::new(),
+                    canonical: "std/prelude::String".to_owned(),
+                    provider_module: "std/prelude".to_owned(),
+                    provider_export: "String".to_owned(),
+                    arguments: Vec::new()
                 }),
                 result: Box::new(InterfaceType::Named {
                     name: "Effect".to_owned(),
@@ -1242,15 +1309,21 @@ pub effect fn main =
                             fields: vec![seseragi_syntax::InterfaceRecordField {
                                 name: "console".to_owned(),
                                 optional: false,
-                                type_ref: InterfaceType::Named {
+                                type_ref: InterfaceType::ExternalNamed {
                                     name: "Console".to_owned(),
-                                    arguments: Vec::new(),
+                                    canonical: "std/prelude::Console".to_owned(),
+                                    provider_module: "std/console".to_owned(),
+                                    provider_export: "Console".to_owned(),
+                                    arguments: Vec::new()
                                 },
                             }],
                         },
-                        InterfaceType::Named {
+                        InterfaceType::ExternalNamed {
                             name: "ConsoleError".to_owned(),
-                            arguments: Vec::new(),
+                            canonical: "std/prelude::ConsoleError".to_owned(),
+                            provider_module: "std/console".to_owned(),
+                            provider_export: "ConsoleError".to_owned(),
+                            arguments: Vec::new()
                         },
                         InterfaceType::Named {
                             name: "Unit".to_owned(),
@@ -1291,18 +1364,20 @@ pub effect fn main =
                 fields: vec![TypedRecordField {
                     name: "console".to_owned(),
                     optional: false,
-                    type_ref: TypedType::Named {
+                    type_ref: TypedType::ExternalNamed {
                         name: "Console".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::Console".to_owned(),
+                        arguments: Vec::new()
                     },
                 }],
             }
         );
         assert_eq!(
             effect.failure,
-            TypedType::Named {
+            TypedType::ExternalNamed {
                 name: "ConsoleError".to_owned(),
-                arguments: Vec::new(),
+                canonical: "std/prelude::ConsoleError".to_owned(),
+                arguments: Vec::new()
             }
         );
         let TypedExpr::DoBlock {
@@ -1335,18 +1410,20 @@ pub effect fn main =
                 fields: vec![TypedRecordField {
                     name: "console".to_owned(),
                     optional: false,
-                    type_ref: TypedType::Named {
+                    type_ref: TypedType::ExternalNamed {
                         name: "Console".to_owned(),
-                        arguments: Vec::new(),
+                        canonical: "std/prelude::Console".to_owned(),
+                        arguments: Vec::new()
                     },
                 }],
             }
         );
         assert_eq!(
             effect.failure,
-            TypedType::Named {
+            TypedType::ExternalNamed {
                 name: "ConsoleError".to_owned(),
-                arguments: Vec::new(),
+                canonical: "std/prelude::ConsoleError".to_owned(),
+                arguments: Vec::new()
             }
         );
         let TypedExpr::DoBlock {

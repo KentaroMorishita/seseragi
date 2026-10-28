@@ -678,6 +678,24 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 0,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 5,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 6,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 9,
+      "owner": "std/validation::Validation"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

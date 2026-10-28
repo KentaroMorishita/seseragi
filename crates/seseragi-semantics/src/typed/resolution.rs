@@ -14,11 +14,13 @@ use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
 use super::type_ref::{typed_type_contains_hole, typed_type_from_type_ref};
 
+mod console;
 mod imported_effects;
 mod imported_types;
 mod imports;
 mod inherent_methods;
 mod module_dependencies;
+mod source_facts;
 mod type_bindings;
 
 pub(crate) struct TypedResolution<'a> {
@@ -29,6 +31,7 @@ pub(crate) struct TypedResolution<'a> {
     imported_effects: BTreeMap<SymbolId, imported_effects::ImportedEffectFunction>,
     semantic_values: BTreeMap<SymbolId, SemanticTypeKey>,
     semantic_types: SemanticTypeCatalog,
+    binding_facts: std::cell::RefCell<Option<source_facts::BindingFacts>>,
 }
 
 impl<'a> TypedResolution<'a> {
@@ -63,6 +66,7 @@ impl<'a> TypedResolution<'a> {
             imported_effects: imported_effects::collect_imported_effects(resolved),
             semantic_values,
             semantic_types,
+            binding_facts: std::cell::RefCell::new(None),
         };
         resolution.infer_compact_effect_callables();
         resolution.infer_top_level_pattern_bindings();
@@ -541,6 +545,13 @@ impl<'a> TypedResolution<'a> {
         }
     }
 
+    pub(crate) fn explicit_requirement_field(
+        &self,
+        requirement: &SurfaceRequirement,
+    ) -> crate::TypedRecordField {
+        explicit_requirement_field(requirement, self.resolved, &self.semantic_types)
+    }
+
     pub(crate) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
         SemanticValueType {
             type_ref: type_ref.clone(),
@@ -829,18 +840,60 @@ fn collect_callables(
             collect_local_callables(body, resolved, semantic_types, &mut callables);
         }
     }
+    // Constructor payload/result keys already use the declaration's scoped
+    // SymbolIds. Keep its parameter kinds too: reconstructing every binder as
+    // a value parameter loses F<_> before the checked call signature reaches
+    // Typed HIR/Core. Match the resolved owner, not a constructor spelling.
+    let mut constructor_parameters = resolved
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            let (name_span, parameters) = match declaration {
+                SurfaceDecl::Type {
+                    name_span,
+                    type_parameters,
+                    ..
+                }
+                | SurfaceDecl::Newtype {
+                    name_span,
+                    type_parameters,
+                    ..
+                } => (name_span, type_parameters),
+                _ => return None,
+            };
+            let owner = resolved
+                .symbols
+                .iter()
+                .find(|symbol| symbol.kind == SymbolKind::Type && symbol.origin == *name_span)?;
+            Some((owner.id, parameters.clone()))
+        })
+        .collect::<BTreeMap<_, _>>();
+    constructor_parameters.extend(
+        resolved
+            .imports
+            .iter()
+            .filter(|import| import.export.namespace == "type")
+            .map(|import| (import.symbol, import.export.scheme.type_parameters.clone())),
+    );
     for (constructor, signature) in semantic_types.constructor_signatures() {
+        let type_parameters = semantic_types
+            .constructor(constructor)
+            .and_then(|(owner, _)| constructor_parameters.get(&owner))
+            .cloned()
+            .unwrap_or_else(|| {
+                signature
+                    .type_parameters
+                    .into_iter()
+                    .map(seseragi_syntax::TypeParameter::value)
+                    .collect()
+            });
         callables.insert(
             constructor,
             TopLevelPureFunction {
                 symbol: signature.symbol,
                 trait_identity: None,
                 trait_method: None,
-                type_parameters: signature
-                    .type_parameters
-                    .into_iter()
-                    .map(seseragi_syntax::TypeParameter::value)
-                    .collect(),
+                type_parameters,
                 constraints: Vec::new(),
                 constraint_identities: Vec::new(),
                 parameters: signature
@@ -897,6 +950,12 @@ fn collect_callables(
             continue;
         }
         match symbol.canonical.as_deref() {
+            Some(canonical @ ("std/prelude::print" | "std/prelude::println")) => {
+                callables.insert(
+                    symbol.id,
+                    console::callable(canonical).expect("standard Console declaration"),
+                );
+            }
             Some("std/prelude::reduce") => {
                 callables.insert(symbol.id, standard_reduce_callable());
             }
@@ -1326,21 +1385,7 @@ fn explicit_effect_value_type(
 ) -> TypedType {
     let fields = requirements
         .iter()
-        .map(|requirement| match requirement {
-            SurfaceRequirement::Field { name, type_ref, .. } => crate::TypedRecordField {
-                name: name.clone(),
-                optional: false,
-                type_ref: semantic_typed_type_from_type_ref(type_ref, resolved, semantic_types),
-            },
-            SurfaceRequirement::Shorthand { name, .. } => crate::TypedRecordField {
-                name: lower_first(name),
-                optional: false,
-                type_ref: TypedType::Named {
-                    name: name.clone(),
-                    arguments: Vec::new(),
-                },
-            },
-        })
+        .map(|requirement| explicit_requirement_field(requirement, resolved, semantic_types))
         .collect();
     TypedType::Named {
         name: "Effect".to_owned(),
@@ -1358,6 +1403,29 @@ fn explicit_effect_value_type(
             ),
             semantic_typed_type_from_type_ref(return_type, resolved, semantic_types),
         ],
+    }
+}
+
+fn explicit_requirement_field(
+    requirement: &SurfaceRequirement,
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+) -> crate::TypedRecordField {
+    let (name, type_ref) = match requirement {
+        SurfaceRequirement::Field { name, type_ref, .. } => (name.clone(), type_ref.clone()),
+        SurfaceRequirement::Shorthand { name, span } => (
+            lower_first(name),
+            TypeRef::Named {
+                name: name.clone(),
+                arguments: Vec::new(),
+                span: *span,
+            },
+        ),
+    };
+    crate::TypedRecordField {
+        name,
+        optional: false,
+        type_ref: semantic_typed_type_from_type_ref(&type_ref, resolved, semantic_types),
     }
 }
 

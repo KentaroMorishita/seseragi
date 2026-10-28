@@ -72,8 +72,16 @@ pub(super) fn resolve_requirements(
     requirements: &[SurfaceRequirement],
 ) {
     for requirement in requirements {
-        if let SurfaceRequirement::Field { type_ref, .. } = requirement {
-            resolve_type_ref(resolver, scope, type_ref);
+        match requirement {
+            SurfaceRequirement::Shorthand { name, span } => {
+                // Shorthand service requirements may be supplied by provider metadata.
+                // Retain any actual lexical owner without adding a new unresolved-name
+                // rule for those existing implicit service requirements.
+                resolver.reference(scope, SymbolNamespace::Type, name, *span, false);
+            }
+            SurfaceRequirement::Field { type_ref, .. } => {
+                resolve_type_ref(resolver, scope, type_ref);
+            }
         }
     }
 }

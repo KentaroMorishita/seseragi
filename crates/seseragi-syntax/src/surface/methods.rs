@@ -11,8 +11,20 @@ impl SurfaceParser<'_> {
         self.method_ranges(body_start, end)
             .into_iter()
             .filter_map(|(start, method_end)| {
+                let prefix = crate::declaration::declaration_prefix_in(
+                    self.tokens,
+                    start,
+                    method_end,
+                    crate::declaration::DeclarationContext::Member,
+                )
+                .ok()?;
+                // An instance implements a contract; it cannot introduce an
+                // independent API migration notice for that contract method.
+                if prefix.deprecation.is_some() || prefix.public {
+                    return None;
+                }
                 let declaration =
-                    self.parse_fn_decl(Visibility::Private, start, start, method_end)?;
+                    self.parse_fn_decl(Visibility::Private, start, prefix.keyword, method_end)?;
                 let SurfaceDecl::Fn {
                     name,
                     name_span,
@@ -52,15 +64,6 @@ impl SurfaceParser<'_> {
         self.method_ranges(body_start, end)
             .into_iter()
             .map(|(start, end)| {
-                // A deprecation clause belongs to the following method. Only
-                // recognize its complete grammar before `fn`, so contextual
-                // parameter names such as `deprecated: A` stay in signatures.
-                let prefix = (start..end).find(|index| {
-                    self.raw_at(*index) == Some("deprecated")
-                        && self.is_declaration_boundary(*index)
-                        && self.deprecated_method_after(*index, end + 1) == Some(end)
-                });
-                let end = prefix.unwrap_or(end);
                 let end = self
                     .previous_significant_token(end)
                     .filter(|last| self.kind_at(*last) == Some(TokenKind::PunctuationSemicolon))
@@ -70,24 +73,18 @@ impl SurfaceParser<'_> {
             .collect()
     }
 
-    fn deprecated_method_after(&self, start: usize, end: usize) -> Option<usize> {
-        let message = self.next_significant_token(start + 1, end)?;
-        if self.kind_at(message) != Some(TokenKind::LiteralString) {
+    pub(super) fn parse_trait_method(&self, start: usize, end: usize) -> Option<SurfaceMethod> {
+        let prefix = crate::declaration::declaration_prefix_in(
+            self.tokens,
+            start,
+            end,
+            crate::declaration::DeclarationContext::Member,
+        )
+        .ok()?;
+        if prefix.public || self.kind_at(prefix.keyword) != Some(TokenKind::KeywordFn) {
             return None;
         }
-        let mut next = self.next_significant_token(message + 1, end)?;
-        if self.raw_at(next) == Some("since") {
-            let version = self.next_significant_token(next + 1, end)?;
-            if self.kind_at(version) != Some(TokenKind::LiteralString) {
-                return None;
-            }
-            next = self.next_significant_token(version + 1, end)?;
-        }
-        (self.kind_at(next) == Some(TokenKind::KeywordFn)).then_some(next)
-    }
-
-    pub(super) fn parse_trait_method(&self, start: usize, end: usize) -> Option<SurfaceMethod> {
-        let name_index = self.next_significant_token(start + 1, end)?;
+        let name_index = self.next_significant_token(prefix.keyword + 1, end)?;
         let name = self.identifier_name_at(name_index)?;
         let (type_parameters, after_type_parameters) =
             self.parse_optional_type_parameters(name_index + 1, end);
@@ -114,23 +111,12 @@ impl SurfaceParser<'_> {
         if self.kind_at(body_start) != Some(TokenKind::PunctuationBraceLeft) {
             return Vec::new();
         }
-        let mut starts = Vec::new();
-        let mut depth = 1usize;
-        let mut body_end = end;
-        for index in body_start + 1..end {
-            match self.kind_at(index) {
-                Some(TokenKind::PunctuationBraceLeft) => depth += 1,
-                Some(TokenKind::PunctuationBraceRight) => {
-                    depth = depth.saturating_sub(1);
-                    if depth == 0 {
-                        body_end = index;
-                        break;
-                    }
-                }
-                Some(TokenKind::KeywordFn) if depth == 1 => starts.push(index),
-                _ => {}
-            }
-        }
+        let body_end = self.find_matching_brace(body_start, end).unwrap_or(end);
+        let starts = self.declaration_member_starts(
+            body_start + 1,
+            body_end,
+            crate::declaration::DeclarationContext::Member,
+        );
         starts
             .iter()
             .enumerate()
@@ -141,5 +127,57 @@ impl SurfaceParser<'_> {
                 )
             })
             .collect()
+    }
+
+    /// Delimit members with the same closed modifier grammar as declarations.
+    /// A clause starts the following member instead of extending its predecessor.
+    pub(super) fn declaration_member_starts(
+        &self,
+        start: usize,
+        end: usize,
+        context: crate::declaration::DeclarationContext,
+    ) -> Vec<usize> {
+        use crate::declaration::{declaration_prefix_in, DeclarationContext};
+        let mut starts = Vec::new();
+        let mut depth = 0usize;
+        let mut prefix_end = None;
+        for index in start..end {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationBraceLeft) => depth += 1,
+                Some(TokenKind::PunctuationBraceRight) => {
+                    depth = depth.saturating_sub(1);
+                }
+                _ if depth == 0 && !prefix_end.is_some_and(|end| index <= end) => {
+                    let raw = self.raw_at(index).unwrap_or_default();
+                    let contextual_prefix = raw == "deprecated"
+                        && self
+                            .next_significant_token(index + 1, end)
+                            .is_none_or(|next| {
+                                self.kind_at(next) != Some(TokenKind::PunctuationColon)
+                            });
+                    let candidate = contextual_prefix
+                        || match context {
+                            DeclarationContext::Foreign => {
+                                matches!(raw, "pure" | "task" | "opaque" | "namespace")
+                            }
+                            _ => matches!(raw, "pub" | "fn" | "operator"),
+                        };
+                    let boundary = self.is_declaration_boundary(index)
+                        || self
+                            .previous_significant_token(index)
+                            .is_some_and(|previous| {
+                                self.kind_at(previous) == Some(TokenKind::PunctuationBraceLeft)
+                            });
+                    if candidate && boundary {
+                        starts.push(index);
+                        prefix_end = declaration_prefix_in(self.tokens, index, end, context)
+                            .ok()
+                            .map(|prefix| prefix.keyword);
+                    }
+                }
+                _ => {}
+            }
+        }
+        starts
     }
 }

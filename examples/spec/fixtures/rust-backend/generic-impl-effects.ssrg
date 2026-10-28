@@ -1,0 +1,60 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type Watch<A> = | Watch (A, Ref<Watch<A> -> Watch<A>>)
+
+impl<A> Watch<A> {
+  operator + self -> right: Watch<A> -> Watch<A> = self
+}
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+effect fn replay mode: String -> left: Watch<Bool> -> Bool with Console fails String =
+  do {
+    say "cold"
+    if mode == "fail" then
+      effects.fail "body failure"
+    else if mode == "defect" then
+      effects.die "body defect"
+    else
+      match left {
+      Watch (_, callbacks) -> do {
+        again <- refs.get callbacks
+        let other: Watch<Bool> = again left
+        effects.succeed (match other { Watch (value, _) -> value })
+      }
+    }
+  }
+
+effect fn body mode: String -> released: Ref<Int> -> String with Console fails String =
+  effects.scoped $
+  do {
+  callbacks <- refs.make (\value: Watch<Bool> -> value)
+  let left = Watch (True, callbacks)
+  let operator: Watch<Bool> -> Watch<Bool> -> Watch<Bool> = (+)
+  let saved = operator left
+  refs.set saved callbacks
+  effects.acquireRelease (say "acquired") (\_: Unit -> do { refs.set 1 released;
+      say "released" })
+  let cold = replay mode left
+  say "created"
+  first <- cold
+  second <- cold
+  effects.succeed (show first + ":" + show second)
+}
+
+effect fn report error: String -> String with Console =
+  effects.succeed ("Failure: " + error)
+
+pub effect fn main = do {
+  released <- refs.make 0
+  result <- body "ready" released |> effects.recover report
+  println result
+  count <- refs.get released
+  println ("released: " + show count)
+}

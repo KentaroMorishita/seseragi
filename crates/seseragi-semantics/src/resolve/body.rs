@@ -14,6 +14,7 @@ mod expression;
 mod imports;
 mod instances;
 mod namespace;
+mod namespace_deprecations;
 mod operator_chains;
 mod pattern;
 mod scheme_types;
@@ -62,6 +63,13 @@ pub fn resolve_linked_module(
     let (dependency_instances, dependency_instance_issues) =
         instances::resolve_dependency_instances(&linked.dependencies);
     let mut resolver = Resolver::new(&linked.interface.module, module_origin(&surface));
+    resolver.namespace_deprecations =
+        namespace_deprecations::linked(&linked.dependencies, &linked.interface);
+    resolver.operator_deprecations = linked
+        .dependencies
+        .iter()
+        .flat_map(|dependency| dependency.interface.operator_deprecations.iter().cloned())
+        .collect();
     resolver.issues.extend(operator_issues);
     resolver.issues.extend(dependency_instance_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
@@ -155,6 +163,16 @@ fn finish_resolved_module(
     mut resolver: Resolver,
 ) -> ResolvedModule {
     merge_selected_imports(&mut imports, resolver.namespace_imports.take_selected());
+    let mut namespaces = seseragi_syntax::namespace_deprecations(&interface.module, &surface, true)
+        .into_iter()
+        .map(|metadata| crate::ResolvedNamespaceDeprecation {
+            path: metadata.name.clone(),
+            own_declaration: Some(metadata.declaration),
+            metadata,
+            reexport_origin: None,
+        })
+        .collect::<Vec<_>>();
+    namespaces.append(&mut resolver.namespace_deprecations);
     ResolvedModule {
         schema: 2,
         stage: "resolved-ast".to_owned(),
@@ -166,6 +184,8 @@ fn finish_resolved_module(
         foreign_modules: surface.foreign_modules,
         declarations: surface.declarations,
         deprecations: surface.deprecations,
+        namespace_deprecations: namespaces,
+        operator_deprecations: resolver.operator_deprecations,
         scopes: resolver.scopes,
         symbols: resolver.symbols,
         references: resolver.references,
@@ -223,6 +243,8 @@ pub(super) struct Resolver {
     dependency_symbols: BTreeMap<(SymbolNamespace, String), SymbolId>,
     prelude_names: BTreeMap<(SymbolNamespace, String), SymbolId>,
     namespace_imports: namespace::NamespaceImports,
+    namespace_deprecations: Vec<crate::ResolvedNamespaceDeprecation>,
+    operator_deprecations: Vec<seseragi_syntax::InterfaceOperatorDeprecation>,
 }
 
 impl Resolver {
@@ -243,6 +265,8 @@ impl Resolver {
             dependency_symbols: BTreeMap::new(),
             prelude_names: BTreeMap::new(),
             namespace_imports: namespace::NamespaceImports::default(),
+            namespace_deprecations: Vec::new(),
+            operator_deprecations: Vec::new(),
         }
     }
 

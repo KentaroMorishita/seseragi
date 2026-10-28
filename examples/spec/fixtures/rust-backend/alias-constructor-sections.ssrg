@@ -1,0 +1,36 @@
+type Pair<A, B> = | Pair (A, B)
+type Triple<A, B, C> = | Triple (A, B, C)
+type Box<A> = | Box A
+type Higher<F<_>, A> = | Higher F<A>
+
+alias Flip<A, B> = Pair<B, A>
+alias Duplicate<A, B> = Triple<A, A, B>
+alias Ignore<A, B> = Box<B>
+alias Wrapped<F<_>, A> = Higher<F, A>
+
+trait Tag<F<_>> {
+  fn tag<A> value: F<A> -> String
+}
+
+instance Tag<Flip<Int>> {
+  fn tag<A> value: Pair<A, Int> -> String = "flip"
+}
+
+instance Tag<Duplicate<Int>> {
+  fn tag<A> value: Triple<Int, Int, A> -> String = "duplicate"
+}
+
+instance Tag<Ignore<Int>> {
+  fn tag<A> value: Box<A> -> String = "erased"
+}
+
+instance Tag<Wrapped<Maybe>> {
+  fn tag<A> value: Higher<Maybe, A> -> String = "higher"
+}
+
+pub effect fn main = do {
+  println (tag<Flip<Int>, Bool> (Pair (True, 42)))
+  println (tag<Duplicate<Int>, Bool> (Triple (1, 2, True)))
+  println (tag<Ignore<Int>, Bool> (Box True))
+  println (tag<Wrapped<Maybe>, Int> (Higher (Just 42)))
+}

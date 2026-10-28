@@ -19,11 +19,11 @@ pub effect fn main = {
   }
   do {
     println $ show (even 8, odd 9)
-    println $ first 3
+    println $ show (first 3)
     println $ show (identity True, identity 42)
     println $ render 42 3
-    println $ count 100000
+    println $ show (count 100000)
     value <- left 3
-    println value
+    println (show value)
   }
 }

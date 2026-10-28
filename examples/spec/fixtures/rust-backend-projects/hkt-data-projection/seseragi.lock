@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/hkt-data-projection@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/hkt-data-projection@0.0.0#workspace:."
+name = "fixture/hkt-data-projection"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:7e0f87c7048521934fe2e7d1f6e796c6472531a8ae95ea62b903e5e1dfbf4d06"
+content_digest = "sha256:f920c3277537cbd63e0072fede8edccb0e0e2450344eec1f092907aa53e1f5b6"
+dependencies = []

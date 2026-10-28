@@ -1,6 +1,6 @@
 use crate::model::{
-    Declaration, Function, Interface, Namespace, OpaqueDeclaration, Parameter, Scope, Span,
-    TypeAlias, TypeKind, TypeParameterRelation, TypeRef,
+    Declaration, DeclarationDeprecation, Function, Interface, Namespace, OpaqueDeclaration,
+    Parameter, Scope, Span, TypeAlias, TypeKind, TypeParameterRelation, TypeRef,
 };
 use std::collections::BTreeMap;
 use tree_sitter::{Node, Parser};
@@ -47,6 +47,7 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
     let mut exported = Vec::new();
     let mut aliases = Vec::<(String, String, Span)>::new();
     let mut explicit_export_list = false;
+    let mut deprecations = Vec::new();
     let mut cursor = container.walk();
     for child in container.named_children(&mut cursor) {
         if child.kind() == "export_statement" {
@@ -57,6 +58,9 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
                 default.is_some() || child.child_by_field_name("declaration").is_none();
             if let Some(declaration) = child.child_by_field_name("declaration") {
                 for declaration in parse_declaration(declaration, source)? {
+                    if let Some(notice) = attached_deprecation(child, source, declaration.span())? {
+                        deprecations.push(notice);
+                    }
                     local
                         .entry(declaration.original_name().to_owned())
                         .or_default()
@@ -86,6 +90,9 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
             continue;
         }
         for declaration in parse_declaration(child, source)? {
+            if let Some(notice) = attached_deprecation(child, source, declaration.span())? {
+                deprecations.push(notice);
+            }
             local
                 .entry(declaration.original_name().to_owned())
                 .or_default()
@@ -119,6 +126,7 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
         );
     }
     Ok(Scope {
+        deprecations,
         private_declarations: local
             .into_iter()
             .filter(|(name, _)| !exported.iter().any(|decl| decl.original_name() == name))
@@ -126,6 +134,79 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
             .collect(),
         declarations: exported,
     })
+}
+
+/// Only the immediately preceding JSDoc CST node can annotate this declaration.
+/// A tag in another declaration, ordinary comment, string or namespace owner
+/// never supplies migration metadata for a sibling or child.
+fn attached_deprecation(
+    declaration: Node<'_>,
+    source: &str,
+    span: Span,
+) -> Result<Option<DeclarationDeprecation>, ParseError> {
+    let Some(comment) = declaration
+        .prev_named_sibling()
+        .filter(|node| node.kind() == "comment")
+    else {
+        return Ok(None);
+    };
+    if !source[comment.end_byte()..declaration.start_byte()]
+        .trim()
+        .is_empty()
+    {
+        return Ok(None);
+    }
+    let text = node_text(comment, source);
+    let Some(body) = text
+        .strip_prefix("/**")
+        .and_then(|body| body.strip_suffix("*/"))
+    else {
+        return Ok(None);
+    };
+    let mut message = None::<Vec<String>>;
+    let mut collecting = false;
+    for line in body.lines() {
+        let line = line
+            .trim()
+            .strip_prefix('*')
+            .unwrap_or(line.trim())
+            .trim_start();
+        if let Some(rest) = line
+            .strip_prefix("@deprecated")
+            .filter(|rest| rest.is_empty() || rest.starts_with(char::is_whitespace))
+        {
+            if message.is_some() {
+                return Err(ParseError {
+                    message:
+                        "multiple JSDoc @deprecated tags require one explicit migration message"
+                            .to_owned(),
+                    span: Span::from_node(comment),
+                });
+            }
+            message = Some(vec![rest.trim().to_owned()]);
+            collecting = true;
+        } else if line.starts_with('@') {
+            collecting = false;
+        } else if collecting {
+            message.as_mut().unwrap().push(line.trim_end().to_owned());
+        }
+    }
+    let Some(lines) = message else {
+        return Ok(None);
+    };
+    let message = lines.join("\n").trim().to_owned();
+    if message.is_empty() {
+        return Err(ParseError {
+            message: "JSDoc @deprecated needs a nonempty migration message for a Seseragi clause"
+                .to_owned(),
+            span: Span::from_node(comment),
+        });
+    }
+    Ok(Some(DeclarationDeprecation {
+        declaration: span,
+        origin: Span::from_node(comment),
+        message,
+    }))
 }
 
 fn collect_export_aliases(

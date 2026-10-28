@@ -56,6 +56,7 @@ pub(super) fn collect_monad_do_diagnostic(
             end: primary.end,
         },
         related: vec![RelatedDiagnostic {
+            source: None,
             message,
             primary: ByteRange {
                 start: function_span.start,

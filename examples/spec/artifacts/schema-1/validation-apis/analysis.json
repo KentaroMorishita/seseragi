@@ -11399,6 +11399,164 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/validation-apis::FormError"
+    },
+    {
+      "binding": 2,
+      "owner": "artifact/validation-apis::FormError"
+    },
+    {
+      "binding": 5,
+      "owner": "artifact/validation-apis::User"
+    },
+    {
+      "binding": 6,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 7,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 8,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 12,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 13,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 16,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 17,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 26,
+      "owner": "artifact/validation-apis::FormError"
+    },
+    {
+      "binding": 27,
+      "owner": "artifact/validation-apis::FormError"
+    },
+    {
+      "binding": 31,
+      "owner": "artifact/validation-apis::User"
+    },
+    {
+      "binding": 32,
+      "owner": "artifact/validation-apis::User"
+    },
+    {
+      "binding": 34,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 36,
+      "owner": "artifact/validation-apis::User"
+    },
+    {
+      "binding": 39,
+      "owner": "std/non-empty-list::NonEmptyList"
+    },
+    {
+      "binding": 42,
+      "owner": "artifact/validation-apis::FormError"
+    },
+    {
+      "binding": 58,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 59,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 62,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 65,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 73,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 74,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 75,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 77,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 84,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 86,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 90,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 92,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 94,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 96,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 98,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 101,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 104,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 107,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 110,
+      "owner": "std/validation::Validation"
+    },
+    {
+      "binding": 111,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 112,
+      "owner": "std/prelude::Either"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

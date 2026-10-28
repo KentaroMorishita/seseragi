@@ -1,0 +1,7 @@
+acquired
+created
+cold=10
+cold=20
+released
+result=10:result=20
+released: 1

@@ -66,6 +66,7 @@ pub(super) fn array_diagnostic(issue: &ArrayIssue, declaration: ByteSpan) -> Dia
         message_key,
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
+            source: None,
             message,
             primary: byte_range(declaration),
         }],

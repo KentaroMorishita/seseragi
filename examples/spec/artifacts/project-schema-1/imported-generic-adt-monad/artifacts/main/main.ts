@@ -1,4 +1,4 @@
-import { type Box, Boxed, Profile, bind, __ssrg$instance$Applicative$1, __ssrg$instance$Functor$0, __ssrg$instance$Monad$2, type Profile as Profile_1 } from "./domain.js"
+import { type Box, Boxed, Profile, bind, __ssrg$instance$Applicative$1, __ssrg$instance$Functor$0, __ssrg$instance$Monad$2, type Profile as Profile_1, type $ssrg$kind$Box } from "./domain.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { stringShow as _ssrg_show_stringShow, intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"

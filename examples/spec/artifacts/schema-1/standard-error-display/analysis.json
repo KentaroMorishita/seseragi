@@ -2868,6 +2868,124 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 11,
+      "owner": "std/web/dom::HydrationMode"
+    },
+    {
+      "binding": 12,
+      "owner": "std/web/dom::HydrationMode"
+    },
+    {
+      "binding": 13,
+      "owner": "std/web/dom::HydrationMode"
+    },
+    {
+      "binding": 15,
+      "owner": "std/web/dom::CleanupMode"
+    },
+    {
+      "binding": 16,
+      "owner": "std/web/dom::CleanupMode"
+    },
+    {
+      "binding": 31,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 32,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 33,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 34,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 35,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 36,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 37,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 40,
+      "owner": "std/web/dom::DomRuntimeError"
+    },
+    {
+      "binding": 41,
+      "owner": "std/web/dom::DomRuntimeError"
+    },
+    {
+      "binding": 60,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 61,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 62,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 63,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 64,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 66,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 67,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 68,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 69,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 70,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 74,
+      "owner": "std/web/dom::DomError"
+    },
+    {
+      "binding": 77,
+      "owner": "std/web/dom::DomRuntimeError"
+    },
+    {
+      "binding": 78,
+      "owner": "std/web/dom::DomRuntimeError"
+    },
+    {
+      "binding": 79,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 80,
+      "owner": "std/web/html::HtmlBuildError"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

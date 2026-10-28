@@ -14,9 +14,9 @@
     "core.int.eq-dictionary",
     "core.bool",
     "core.int.subtract",
+    "core.int.show",
     "effect.core.flatMap",
     "core.bool.show",
-    "core.int.show",
     "core.tuple.show"
   ],
   "imports": [
@@ -37,16 +37,16 @@
       "local": "_ssrg_int_subtract"
     },
     {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
       "feature": "effect.core.flatMap",
       "local": "_ssrg_effect_flatMap"
     },
     {
       "feature": "core.bool.show",
       "local": "_ssrg_show_boolShow"
-    },
-    {
-      "feature": "core.int.show",
-      "local": "_ssrg_show_intShow"
     },
     {
       "feature": "core.tuple.show",
@@ -512,15 +512,31 @@
                           "callee": "_ssrg_console_println",
                           "arguments": [
                             {
-                              "kind": "identifier",
-                              "name": "value"
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "value"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
                             }
                           ]
                         },
                         "origin": {
                           "source": "main.ssrg",
                           "start": 414,
-                          "end": 509
+                          "end": 516
                         }
                       }
                     ],
@@ -565,8 +581,8 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 528,
-                                  "end": 551
+                                  "start": 535,
+                                  "end": 558
                                 }
                               }
                             ],
@@ -618,8 +634,8 @@
                                   },
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 552,
-                                    "end": 579
+                                    "start": 559,
+                                    "end": 586
                                   }
                                 }
                               ],
@@ -637,8 +653,8 @@
                           "initializerInOuterScope": true,
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 510,
-                            "end": 595
+                            "start": 517,
+                            "end": 602
                           }
                         }
                       ],
@@ -699,8 +715,8 @@
                                   },
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 616,
-                                    "end": 644
+                                    "start": 623,
+                                    "end": 651
                                   }
                                 }
                               ],
@@ -723,8 +739,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 645,
-                                      "end": 667
+                                      "start": 652,
+                                      "end": 674
                                     }
                                   }
                                 ],
@@ -742,8 +758,8 @@
                             "initializerInOuterScope": true,
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 596,
-                              "end": 683
+                              "start": 603,
+                              "end": 690
                             }
                           }
                         ],
@@ -767,8 +783,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 695,
-                                "end": 715
+                                "start": 702,
+                                "end": 722
                               }
                             },
                             {
@@ -807,8 +823,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 734,
-                                "end": 756
+                                "start": 741,
+                                "end": 763
                               }
                             },
                             {
@@ -834,8 +850,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 761,
-                                "end": 781
+                                "start": 768,
+                                "end": 788
                               }
                             },
                             {
@@ -917,8 +933,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 821,
-                                "end": 838
+                                "start": 828,
+                                "end": 845
                               }
                             },
                             {
@@ -928,8 +944,24 @@
                                 "callee": "_ssrg_console_println",
                                 "arguments": [
                                   {
-                                    "kind": "identifier",
-                                    "name": "result"
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_show_intShow"
+                                      },
+                                      "method": "show",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "result"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "kind": "string"
+                                    }
                                   }
                                 ]
                               }
@@ -975,8 +1007,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 862,
-                                "end": 883
+                                "start": 876,
+                                "end": 897
                               }
                             },
                             {
@@ -1004,8 +1036,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 909,
-                                "end": 929
+                                "start": 923,
+                                "end": 943
                               }
                             }
                           ],
@@ -1080,7 +1112,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 94,
-        "end": 977
+        "end": 991
       }
     }
   ]

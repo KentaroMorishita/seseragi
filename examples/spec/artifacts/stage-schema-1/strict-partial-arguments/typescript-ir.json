@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/strict-partial-arguments",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -504,7 +509,13 @@
           "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
-              "kind": "unknown"
+              "kind": "kind-application",
+              "constructor": "F",
+              "arguments": [
+                {
+                  "kind": "number"
+                }
+              ]
             }
           ]
         }
@@ -512,7 +523,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [number]>",
           "implicit": false
         }
       ],

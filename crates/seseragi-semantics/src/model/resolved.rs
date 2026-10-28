@@ -33,10 +33,25 @@ pub struct ResolvedModule {
     pub declarations: Vec<SurfaceDecl>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub deprecations: Vec<seseragi_syntax::DeclarationDeprecation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub namespace_deprecations: Vec<ResolvedNamespaceDeprecation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub operator_deprecations: Vec<seseragi_syntax::InterfaceOperatorDeprecation>,
     pub scopes: Vec<ResolvedScope>,
     pub symbols: Vec<ResolvedSymbol>,
     pub references: Vec<ResolvedReference>,
     pub issues: Vec<ResolveIssue>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResolvedNamespaceDeprecation {
+    pub metadata: seseragi_syntax::InterfaceNamespaceDeprecation,
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub own_declaration: Option<seseragi_syntax::ByteSpan>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reexport_origin: Option<seseragi_syntax::ByteSpan>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

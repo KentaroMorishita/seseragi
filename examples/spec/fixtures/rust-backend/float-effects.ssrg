@@ -22,8 +22,8 @@ pub effect fn main = do {
   println ("current: " + show current)
   released <- refs.get releaseCell
   println ("released: " + show released)
-  println released
-  println 1.0
-  println 1e21
-  println (floats.positiveInfinity ())
+  println (show released)
+  println (show 1.0)
+  println (show 1e21)
+  println (show (floats.positiveInfinity ()))
 }

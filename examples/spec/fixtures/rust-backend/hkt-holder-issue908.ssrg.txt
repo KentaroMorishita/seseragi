@@ -1,0 +1,15 @@
+trait Pick<F<_>> { fn pick<A> left: F<A> -> right: F<A> -> Bool }
+
+struct Holder<G<_>, A> { value: G<A> }
+instance Pick<Holder<Maybe>> {
+ fn pick<A> left: Holder<Maybe, A> -> (Holder<Maybe, A> -> Bool) = \right -> True
+}
+fn selected<G<_>, A> left: Holder<G, A> -> (Holder<G, A> -> Bool) where Pick<Holder<G>> = {
+ let chosen: Holder<G, A> -> Holder<G, A> -> Bool = pick
+ chosen left
+}
+pub effect fn main = do {
+ let value: Holder<Maybe, Int> = Holder { value: Just 1 }
+ let saved = selected<Maybe, Int> value
+ println (show (saved value))
+}

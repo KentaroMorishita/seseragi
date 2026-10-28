@@ -8,6 +8,8 @@ use std::{
 };
 
 static SERIAL: AtomicUsize = AtomicUsize::new(0);
+const NOMINAL_UNIT: &str = "fixture/native-imported-unit-identity@0.0.0::domain::Unit";
+const NOMINAL_UNIT_PROVIDER: &str = "fixture/native-imported-unit-identity@0.0.0::domain";
 struct Scratch(PathBuf);
 impl Drop for Scratch {
     fn drop(&mut self) {
@@ -135,8 +137,14 @@ fn imported_unit_alias_requires_its_checked_provider_owner_and_kind() {
         let nominal = main
             .external_type_bindings
             .iter()
-            .position(|b| b.canonical != "std/prelude::Unit")
+            .position(|b| b.canonical == NOMINAL_UNIT)
             .unwrap();
+        let provider = main.external_type_bindings[nominal]
+            .provider
+            .as_ref()
+            .unwrap();
+        assert_eq!(provider.module, NOMINAL_UNIT_PROVIDER);
+        assert_eq!(provider.export, "Unit");
         let primitive = main
             .external_type_bindings
             .iter()
@@ -216,8 +224,13 @@ fn matching_import_metadata_cannot_forge_an_unrelated_source_type_provider() {
     let nominal = main
         .external_type_bindings
         .iter_mut()
-        .find(|binding| binding.canonical != "std/prelude::Unit")
+        .find(|binding| binding.canonical == NOMINAL_UNIT)
         .unwrap();
+    assert_eq!(
+        nominal.provider.as_ref().unwrap().module,
+        NOMINAL_UNIT_PROVIDER
+    );
+    assert_eq!(nominal.provider.as_ref().unwrap().export, "Unit");
     nominal.provider.as_mut().unwrap().module = provider;
     let error = emit_rust_project(&modules.iter().collect::<Vec<_>>(), &entry, "main").unwrap_err();
     assert!(error.message.contains("provider owner"), "{error:?}");

@@ -1,0 +1,16 @@
+import { Box } from "model"
+
+trait Render<A> {
+  deprecated "Use current" since "0.61.0"
+  fn old value: A -> String
+}
+
+instance Render<Int> {
+  fn old value: Int -> String = "trait"
+}
+
+pub effect fn main = do {
+  let box = Box { value: 42 }
+  println (old 41)
+  println (show (box.old))
+}

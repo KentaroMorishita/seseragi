@@ -43,6 +43,13 @@ pub(super) fn normalize_coherence_type(
     normalize_impl(resolved, type_ref, &mut BTreeSet::new(), true)
 }
 
+pub(super) fn omitted_constructor_suffix(
+    resolved: &ResolvedModule,
+    normalized: &ContractType,
+) -> Option<usize> {
+    constructors::omitted_suffix(resolved, normalized)
+}
+
 fn normalize_impl(
     resolved: &ResolvedModule,
     type_ref: ContractType,
@@ -154,8 +161,12 @@ fn named(
     // Mixed implicit and explicit sections need their own section/kind proof.
     // Never lose an implicit slot by flattening it into an explicit Hole.
     if partial
-        && (parameters.iter().any(|parameter| parameter.arity != 0)
-            || (arguments.len() < arity && arguments.contains(&ContractType::Hole)))
+        && (parameters.iter().enumerate().any(|(index, parameter)| {
+            parameter.arity != 0
+                && arguments
+                    .get(index)
+                    .is_none_or(|argument| *argument == ContractType::Hole)
+        }) || (arguments.len() < arity && arguments.contains(&ContractType::Hole)))
     {
         return None;
     }
@@ -192,8 +203,7 @@ fn named(
     };
     let normalized = normalize_impl(resolved, expanded, active, for_head)?;
     let normalized = if partial {
-        let constructor = constructors::reduce(resolved, normalized, &identity, arity)?;
-        apply_arguments(constructor, arguments)?
+        constructors::reduce(resolved, normalized, &identity, parameters, arguments)?
     } else {
         normalized
     };

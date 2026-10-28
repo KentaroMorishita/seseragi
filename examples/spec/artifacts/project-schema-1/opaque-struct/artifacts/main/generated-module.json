@@ -12,10 +12,10 @@
       "core.int",
       "effect.core.flatMap",
       "effect.console.println",
+      "core.int.show",
       "core.string",
       "core.bool.show",
       "core.bool",
-      "core.int.show",
       "core.array.show"
     ]
   },

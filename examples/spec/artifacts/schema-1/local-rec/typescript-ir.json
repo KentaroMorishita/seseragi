@@ -993,14 +993,30 @@
                     "callee": "_ssrg_console_println",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "first",
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "3"
-                          }
-                        ]
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_intShow"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "call",
+                              "callee": "first",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "3"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -1128,14 +1144,30 @@
                     "callee": "_ssrg_console_println",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "count",
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "100000"
-                          }
-                        ]
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_intShow"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "call",
+                              "callee": "count",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "100000"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -1158,8 +1190,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1060,
-                    "end": 1075
+                    "start": 1074,
+                    "end": 1089
                   }
                 }
               ],
@@ -1168,8 +1200,24 @@
                 "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "identifier",
-                    "name": "value"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -1180,7 +1228,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 1099
+        "end": 1120
       }
     }
   ]

@@ -1,0 +1,14 @@
+pub opaque struct Sealed<F<_>, A> { value: F<A> }
+pub alias Wrapped<F<_>, A> = Sealed<F, A>
+pub alias Chain<F<_>, A> = Wrapped<F, A>
+
+pub fn seal<F<_>, A> value: F<A> -> Chain<F, A> = Sealed { value }
+pub fn unseal<F<_>, A> owner: Chain<F, A> -> F<A> = owner.value
+
+pub fn scoped<F<_>, A> value: F<A> -> F<A> = {
+  fn identity<B> item: B -> B = item
+  identity value
+}
+
+pub fn constrained<F<_>, A> value: F<A> -> F<A> where Show<A> = value
+pub fn valueScope<F> value: F -> F = value

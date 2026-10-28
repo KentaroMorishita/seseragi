@@ -4423,6 +4423,128 @@
       "type": "{ label: String, count: Int }"
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 2,
+      "owner": "artifact/derived-json-codecs::UserId"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/derived-json-codecs::Tree"
+    },
+    {
+      "binding": 5,
+      "owner": "artifact/derived-json-codecs::Tree"
+    },
+    {
+      "binding": 7,
+      "owner": "artifact/derived-json-codecs::Event"
+    },
+    {
+      "binding": 8,
+      "owner": "artifact/derived-json-codecs::Event"
+    },
+    {
+      "binding": 9,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 10,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 11,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 18,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 19,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 20,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 21,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 22,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 23,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 25,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 26,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 28,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 29,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 30,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 31,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 32,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 35,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 36,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 38,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 39,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 48,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 49,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 54,
+      "owner": "artifact/derived-json-codecs::Profile"
+    },
+    {
+      "binding": 57,
+      "owner": "artifact/derived-json-codecs::Tree"
+    },
+    {
+      "binding": 59,
+      "owner": "artifact/derived-json-codecs::Event"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

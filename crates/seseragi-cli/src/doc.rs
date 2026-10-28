@@ -11,16 +11,13 @@ use seseragi_syntax::{
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
+mod publish;
+mod render;
+
 const SYNTHETIC_SPECIFIER: &str = "__documented";
 
 pub(crate) fn doc(arguments: &[String]) -> Result<i32, String> {
     let invocation = Invocation::parse(arguments)?;
-    if !invocation.test {
-        return Err(
-            "document artifact generation has no normative wire schema yet; use `seseragi doc --test`"
-                .to_owned(),
-        );
-    }
     let root = crate::local_project::containing_package(&invocation.path)
         .unwrap_or_else(|| invocation.path.clone());
     if !root.join("seseragi.toml").is_file() {
@@ -35,74 +32,81 @@ pub(crate) fn doc(arguments: &[String]) -> Result<i32, String> {
         .map_err(|error| format!("{}: {error}", error.code()))?;
     let base =
         compile_documents(&project, None).map_err(|error| format_project_error(&project, error))?;
-    let root_manifest = project
-        .packages()
-        .package(project.packages().root())
-        .expect("root manifest")
-        .manifest();
-    let target = invocation
-        .target
-        .as_deref()
-        .or_else(|| {
-            root_manifest
-                .test
-                .as_ref()
-                .and_then(|test| test.target.as_ref())
-                .map(|value| value.as_str())
-        })
-        .or_else(|| {
-            root_manifest
-                .run
-                .as_ref()
-                .and_then(|run| run.target.as_ref())
-                .map(|value| value.as_str())
+    if invocation.test {
+        let root_manifest = project
+            .packages()
+            .package(project.packages().root())
+            .expect("root manifest")
+            .manifest();
+        let target = invocation
+            .target
+            .as_deref()
+            .or_else(|| {
+                root_manifest
+                    .test
+                    .as_ref()
+                    .and_then(|test| test.target.as_ref())
+                    .map(|value| value.as_str())
+            })
+            .or_else(|| {
+                root_manifest
+                    .run
+                    .as_ref()
+                    .and_then(|run| run.target.as_ref())
+                    .map(|value| value.as_str())
+            });
+        let has_run_block = project.roots().any(|identity| {
+            let module = project.module(identity).expect("document root is loaded");
+            extract_document_tests(module.source_path().to_string_lossy(), module.source())
+                .iter()
+                .any(|block| matches!(block.mode, DocumentTestMode::Run))
         });
-    let has_run_block = project.roots().any(|identity| {
-        let module = project.module(identity).expect("document root is loaded");
-        extract_document_tests(module.source_path().to_string_lossy(), module.source())
-            .iter()
-            .any(|block| matches!(block.mode, DocumentTestMode::Run))
-    });
-    if has_run_block {
-        let selected = target.ok_or_else(|| {
-            "doc run target is required; pass `--target node` or set test.target/run.target"
-                .to_owned()
-        })?;
-        if !matches!(selected, "node" | "process" | "test-js") {
-            return Err(format!(
-                "doc target `{selected}` is unsupported; expected `node`"
-            ));
+        if has_run_block {
+            let selected = target.ok_or_else(|| {
+                "doc run target is required; pass `--target node` or set test.target/run.target"
+                    .to_owned()
+            })?;
+            if !matches!(selected, "node" | "process" | "test-js") {
+                return Err(format!(
+                    "doc target `{selected}` is unsupported; expected `node`"
+                ));
+            }
         }
-    }
 
-    let mut passed = 0;
-    let mut failed = 0;
-    for identity in project.roots() {
-        let module = project.module(identity).expect("document root is loaded");
-        let blocks =
-            extract_document_tests(module.source_path().to_string_lossy(), module.source());
-        for block in blocks {
-            let id = format!(
-                "{}::{}#{}",
-                identity.path().as_str(),
-                block.declaration,
-                block.ordinal
-            );
-            match run_block(&project, &base, identity, &block, target, &root) {
-                Ok(()) => {
-                    println!("PASS {id} {}", block.mode.label());
-                    passed += 1;
-                }
-                Err(message) => {
-                    println!("FAIL {id} {}", block.mode.label());
-                    eprintln!("{message}");
-                    failed += 1;
+        let mut passed = 0;
+        let mut failed = 0;
+        for identity in project.roots() {
+            let module = project.module(identity).expect("document root is loaded");
+            let blocks =
+                extract_document_tests(module.source_path().to_string_lossy(), module.source());
+            for block in blocks {
+                let id = format!(
+                    "{}::{}#{}",
+                    identity.path().as_str(),
+                    block.declaration,
+                    block.ordinal
+                );
+                match run_block(&project, &base, identity, &block, target, &root) {
+                    Ok(()) => {
+                        println!("PASS {id} {}", block.mode.label());
+                        passed += 1;
+                    }
+                    Err(message) => {
+                        println!("FAIL {id} {}", block.mode.label());
+                        eprintln!("{message}");
+                        failed += 1;
+                    }
                 }
             }
         }
+        println!("{passed} passed; {failed} failed");
+        if failed != 0 {
+            return Ok(1);
+        }
     }
-    println!("{passed} passed; {failed} failed");
-    Ok(if failed == 0 { 0 } else { 1 })
+    let artifacts = render::generate(&project, &base, invocation.include_private)?;
+    publish::publish(&root, artifacts)?;
+    Ok(0)
 }
 
 fn run_block(
@@ -211,6 +215,14 @@ fn compile_documents(
     project: &LoadedLocalDocuments,
     synthetic: Option<SyntheticInput>,
 ) -> Result<CompiledProject, ProjectCompileError> {
+    let (graph, inputs) = document_inputs(project, synthetic);
+    compile_project(graph, inputs)
+}
+
+fn document_inputs(
+    project: &LoadedLocalDocuments,
+    synthetic: Option<SyntheticInput>,
+) -> (ModuleGraph<String>, Vec<ProjectModuleInput>) {
     let mut graph = ModuleGraph::new();
     for (identity, _) in project.modules() {
         graph
@@ -258,7 +270,7 @@ fn compile_documents(
             .with_package_scope(logical_package_scope(project.packages().root())),
         );
     }
-    compile_project(graph, inputs)
+    (graph, inputs)
 }
 
 fn public_import(project: &CompiledProject, module: &str) -> Result<String, String> {
@@ -410,6 +422,7 @@ fn sanitize(value: &str) -> String {
 struct Invocation {
     path: PathBuf,
     test: bool,
+    include_private: bool,
     target: Option<String>,
 }
 
@@ -418,6 +431,7 @@ impl Invocation {
         let mut result = Self {
             path: PathBuf::from("."),
             test: false,
+            include_private: false,
             target: None,
         };
         let mut saw_path = false;
@@ -426,6 +440,10 @@ impl Invocation {
             match arguments[index].as_str() {
                 "--test" => {
                     result.test = true;
+                    index += 1;
+                }
+                "--include-private" => {
+                    result.include_private = true;
                     index += 1;
                 }
                 "--target" => {

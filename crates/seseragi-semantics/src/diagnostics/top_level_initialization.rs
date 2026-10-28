@@ -511,6 +511,7 @@ impl<'graph, 'source, 'diagnostics> DependencyWalker<'graph, 'source, 'diagnosti
             .copied()
             .unwrap_or(span);
         let mut related = vec![RelatedDiagnostic {
+            source: None,
             message: if root_call.is_some() {
                 format!("{target_name} is not initialized before this call")
             } else {
@@ -523,6 +524,7 @@ impl<'graph, 'source, 'diagnostics> DependencyWalker<'graph, 'source, 'diagnosti
             }),
         }];
         related.push(RelatedDiagnostic {
+            source: None,
             message: format!("{} is initialized here", self.binding.name),
             primary: byte_range(self.binding.name_span),
         });

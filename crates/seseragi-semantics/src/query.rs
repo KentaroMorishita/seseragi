@@ -13,6 +13,7 @@ use seseragi_syntax::{
 use std::collections::{BTreeMap, BTreeSet};
 
 mod completion;
+mod deprecation;
 mod lint;
 
 use completion::collect_completion_contexts;
@@ -79,6 +80,10 @@ pub struct AnalysisSymbol {
     pub callable: Option<AnalysisCallable>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deprecation: Option<seseragi_syntax::Deprecation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub member_owner: Option<String>,
     #[serde(skip)]
     scope: ScopeId,
 }
@@ -190,6 +195,8 @@ pub struct AnalysisDocument {
     pub callable_occurrences: Vec<AnalysisCallableOccurrence>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub completion_contexts: Vec<AnalysisCompletionContext>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub nominal_bindings: Vec<crate::AnalysisNominalBinding>,
     pub standard_library: Vec<AnalysisReferenceItem>,
     #[serde(skip)]
     scopes: Vec<crate::ResolvedScope>,
@@ -198,6 +205,49 @@ pub struct AnalysisDocument {
 }
 
 impl AnalysisDocument {
+    /// Resolve a source value name through its lexical scopes, then consult
+    /// the nominal owner proved for that exact binding. This also works when
+    /// an unfinished member expression has no valid value-use AST node.
+    pub fn members_of_receiver(&self, name: &str, position: usize) -> Vec<&AnalysisSymbol> {
+        let mut scope = self.innermost_scope(position);
+        let mut selected = None;
+        while let Some(id) = scope {
+            if let Some(symbol) = self.symbols.iter().find(|symbol| {
+                symbol.scope == id
+                    && symbol.namespace == "value"
+                    && symbol.kind != "inherent-method"
+                    && symbol.name == name
+                    && (id == ScopeId(0) || symbol.definition.start <= position)
+            }) {
+                selected = Some(symbol.id);
+                break;
+            }
+            scope = self
+                .scopes
+                .get(id.0 as usize)
+                .and_then(|scope| scope.parent);
+        }
+        let Some(receiver) = selected.and_then(|binding| {
+            self.nominal_bindings
+                .iter()
+                .find(|fact| fact.binding == binding)
+        }) else {
+            return Vec::new();
+        };
+        let mut methods = self
+            .symbols
+            .iter()
+            .filter(|symbol| {
+                symbol.kind == "inherent-method"
+                    && symbol.member_owner.as_deref() == Some(receiver.owner.as_str())
+            })
+            .collect::<Vec<_>>();
+        methods.sort_by(|left, right| {
+            (&left.name, &left.identity).cmp(&(&right.name, &right.identity))
+        });
+        methods
+    }
+
     pub fn diagnostics(&self) -> &DiagnosticArtifact {
         &self.diagnostics
     }
@@ -285,6 +335,7 @@ impl AnalysisDocument {
                 message_key: "lint.unused-local-binding".to_owned(),
                 primary,
                 related: vec![RelatedDiagnostic {
+                    source: None,
                     message: format!("`{}` has no resolved references", symbol.name),
                     primary,
                 }],
@@ -357,7 +408,10 @@ impl AnalysisDocument {
         self.symbols
             .iter()
             .filter(|symbol| {
-                visible_scopes.contains(&symbol.scope)
+                symbol.kind != "inherent-method"
+                    && symbol.kind != "operator-implementation"
+                    && !(symbol.kind == "foreign-namespace" && symbol.name.contains('.'))
+                    && visible_scopes.contains(&symbol.scope)
                     && (symbol.scope == ScopeId(0) || symbol.definition.start <= position)
             })
             .collect()
@@ -373,12 +427,22 @@ impl AnalysisDocument {
             .symbols
             .iter()
             .filter(|symbol| symbol.identity == identity && symbol.namespace == namespace)
-            .map(|symbol| (symbol.namespace.as_str(), symbol.scope))
+            .map(|symbol| {
+                (
+                    symbol.namespace.as_str(),
+                    symbol.scope,
+                    symbol.member_owner.as_deref(),
+                )
+            })
             .collect::<BTreeSet<_>>();
         self.symbols.iter().find(|symbol| {
             (symbol.identity != identity || symbol.namespace != namespace)
                 && symbol.name == new_name
-                && targets.contains(&(symbol.namespace.as_str(), symbol.scope))
+                && targets.contains(&(
+                    symbol.namespace.as_str(),
+                    symbol.scope,
+                    symbol.member_owner.as_deref(),
+                ))
         })
     }
 
@@ -412,9 +476,27 @@ impl AnalysisDocument {
         self.scopes
             .iter()
             .filter(|scope| contains(scope.origin, position))
-            .min_by_key(|scope| span_length(scope.origin))
+            .min_by_key(|scope| {
+                (
+                    span_length(scope.origin),
+                    std::cmp::Reverse(self.scope_depth(scope.id)),
+                )
+            })
             .map(|scope| scope.id)
             .or(Some(ScopeId(0)))
+    }
+
+    fn scope_depth(&self, mut scope: ScopeId) -> usize {
+        let mut depth = 0;
+        while let Some(parent) = self
+            .scopes
+            .get(scope.0 as usize)
+            .and_then(|scope| scope.parent)
+        {
+            depth += 1;
+            scope = parent;
+        }
+        depth
     }
 }
 
@@ -432,6 +514,30 @@ pub fn analysis_document(
     resolved: ResolvedModule,
     typed: &TypedModule,
 ) -> AnalysisDocument {
+    analysis_document_with_bindings(diagnostics, resolved, typed, Vec::new())
+}
+
+pub fn analysis_document_with_bindings(
+    diagnostics: DiagnosticArtifact,
+    resolved: ResolvedModule,
+    typed: &TypedModule,
+    nominal_bindings: Vec<crate::AnalysisNominalBinding>,
+) -> AnalysisDocument {
+    analysis_document_with_source(diagnostics, resolved, typed, nominal_bindings, None)
+}
+
+/// Original source is optional for compatibility. Namespace-use positions are
+/// only projected when actual lexer tokens prove the owner's source range.
+pub fn analysis_document_with_source(
+    diagnostics: DiagnosticArtifact,
+    resolved: ResolvedModule,
+    typed: &TypedModule,
+    nominal_bindings: Vec<crate::AnalysisNominalBinding>,
+    source: Option<&str>,
+) -> AnalysisDocument {
+    let deprecations = deprecation::metadata(&resolved);
+    let members = deprecation::members::catalog(&resolved, typed);
+    let selected_members = deprecation::members::selected_references(&resolved, typed, &members);
     let catalog = standard_library_catalog();
     let catalog_callables = catalog_callables(&catalog);
     let (symbol_types, symbol_type_documents, local_callables) =
@@ -442,7 +548,7 @@ pub fn analysis_document(
         .iter()
         .map(|import| (import.symbol, import.origin))
         .collect::<BTreeMap<_, _>>();
-    let symbols = resolved
+    let mut symbols = resolved
         .symbols
         .iter()
         .map(|symbol| {
@@ -488,10 +594,34 @@ pub fn analysis_document(
                 type_document,
                 callable,
                 description: standard_description(&identity).map(str::to_owned),
+                deprecation: deprecations
+                    .get(&symbol.id)
+                    .map(|entry| entry.value.clone()),
+                member_owner: None,
                 scope: symbol.scope,
             }
         })
         .collect::<Vec<_>>();
+    for member in &members {
+        if let Some(symbol) = member
+            .resolved_symbol
+            .and_then(|id| symbols.get_mut(id.0 as usize))
+        {
+            symbol.member_owner = Some(member.owner.clone());
+            if member.inherent {
+                symbol.kind = "inherent-method".to_owned();
+            }
+            if member.deprecation.is_some() {
+                symbol.deprecation.clone_from(&member.deprecation);
+            }
+        } else if member.definition.is_some()
+            || selected_members
+                .iter()
+                .any(|(selected, _)| selected.identity == member.identity)
+        {
+            symbols.push(member.analysis_symbol(symbols.len() as u32, &resolved.module));
+        }
+    }
     let mut symbol_occurrences = resolved
         .symbols
         .iter()
@@ -501,12 +631,64 @@ pub fn analysis_document(
             symbol: symbol.id.0,
         })
         .collect::<Vec<_>>();
+    let namespace_uses = deprecation::namespaces::uses(&resolved, source);
+    deprecation::namespaces::project(
+        &resolved,
+        &namespace_uses,
+        &mut symbols,
+        &mut symbol_occurrences,
+    );
     symbol_occurrences.extend(resolved.references.iter().filter_map(|reference| {
         reference.target.map(|target| AnalysisSymbolOccurrence {
             range: reference.origin,
             symbol: target.0,
         })
     }));
+    let operator_notices = deprecation::operators::catalog(&resolved, typed);
+    let operator_uses = deprecation::operators::uses(&resolved, typed, &operator_notices);
+    deprecation::operators::project(
+        &resolved,
+        &operator_notices,
+        &operator_uses,
+        &mut symbols,
+        &mut symbol_occurrences,
+    );
+    let member_ids = symbols
+        .iter()
+        .map(|symbol| (symbol.identity.as_str(), symbol.id))
+        .collect::<BTreeMap<_, _>>();
+    let mut known_occurrences = symbol_occurrences
+        .iter()
+        .map(|occurrence| {
+            (
+                occurrence.range.start,
+                occurrence.range.end,
+                occurrence.symbol,
+            )
+        })
+        .collect::<BTreeSet<_>>();
+    for member in members
+        .iter()
+        .filter(|member| member.resolved_symbol.is_none())
+    {
+        if let (Some(range), Some(id)) =
+            (member.definition, member_ids.get(member.identity.as_str()))
+        {
+            if known_occurrences.insert((range.start, range.end, *id)) {
+                symbol_occurrences.push(AnalysisSymbolOccurrence { range, symbol: *id });
+            }
+        }
+    }
+    for (member, range) in &selected_members {
+        if let Some(id) = member_ids.get(member.identity.as_str()) {
+            if known_occurrences.insert((range.start, range.end, *id)) {
+                symbol_occurrences.push(AnalysisSymbolOccurrence {
+                    range: *range,
+                    symbol: *id,
+                });
+            }
+        }
+    }
 
     let mut type_occurrences = Vec::new();
     let mut call_requests = Vec::new();
@@ -551,7 +733,10 @@ pub fn analysis_document(
         },
     ));
 
-    let lint_facts = lint::collect(&resolved, typed);
+    let mut deprecated_references = deprecation::references(&resolved, &members, &selected_members);
+    deprecated_references.extend(deprecation::namespaces::warnings(&namespace_uses));
+    deprecated_references.extend(deprecation::operators::warnings(&operator_uses));
+    let lint_facts = lint::collect(&resolved, typed, deprecated_references);
     AnalysisDocument {
         schema: 1,
         lint_facts,
@@ -563,6 +748,7 @@ pub fn analysis_document(
         type_occurrences,
         callable_occurrences,
         completion_contexts,
+        nominal_bindings,
         standard_library: catalog,
         scopes: resolved.scopes,
     }
@@ -583,6 +769,7 @@ pub fn diagnostics_only_analysis(
         type_occurrences: Vec::new(),
         callable_occurrences: Vec::new(),
         completion_contexts: Vec::new(),
+        nominal_bindings: Vec::new(),
         standard_library: standard_library_catalog(),
         scopes: Vec::new(),
         lint_facts: Vec::new(),

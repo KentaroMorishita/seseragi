@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/maybe-either-apis",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.list",
     "core.non-empty-list",
@@ -842,7 +847,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: A }]>",
           "implicit": false
         }
       ],
@@ -899,7 +904,7 @@
         },
         {
           "name": "values",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [A]>",
           "implicit": false
         }
       ],

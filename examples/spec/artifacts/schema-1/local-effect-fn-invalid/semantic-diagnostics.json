@@ -11,21 +11,21 @@
       "message": "Effect body failure does not match the declared failure type",
       "primary": {
         "start": 78,
-        "end": 87
+        "end": 89
       },
       "related": [
         {
           "message": "declared failure type is Never",
           "primary": {
             "start": 78,
-            "end": 87
+            "end": 89
           }
         },
         {
           "message": "operation can fail with ConsoleError",
           "primary": {
             "start": 78,
-            "end": 87
+            "end": 89
           }
         }
       ],
@@ -34,14 +34,14 @@
           "message": "declared failure type is Never",
           "primary": {
             "start": 78,
-            "end": 87
+            "end": 89
           }
         },
         {
           "message": "operation can fail with ConsoleError",
           "primary": {
             "start": 78,
-            "end": 87
+            "end": 89
           }
         }
       ],

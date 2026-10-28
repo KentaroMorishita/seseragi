@@ -3,6 +3,10 @@ import { stringAdd as _ssrg_string_add_dictionary } from "@seseragi/runtime/stri
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
 
+interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
+type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })["type"];
+type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
+export interface $ssrg$kind$Marker extends $ssrg$Kind<readonly [unknown]> { readonly type: Marker<this["args"][0]> }
 declare const __ssrg$brand$Marker: unique symbol;
 export type Marker<A> = {
   readonly "label": string;

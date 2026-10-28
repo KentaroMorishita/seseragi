@@ -687,6 +687,7 @@ fn common_graph_can_be_constructed_and_projected_without_a_typescript_source() {
         symbols: BTreeMap::from([(
             "read".to_owned(),
             SemanticSymbol {
+                deprecations: Vec::new(),
                 public_name: "read".to_owned(),
                 declaration_name: "read".to_owned(),
                 kind: SymbolKind::Callable,
@@ -728,6 +729,7 @@ fn recursive_inline_graph_requires_an_explicit_boundary_instead_of_recursing_for
         symbols: BTreeMap::from([(
             "read".to_owned(),
             SemanticSymbol {
+                deprecations: Vec::new(),
                 public_name: "read".to_owned(),
                 declaration_name: "read".to_owned(),
                 kind: SymbolKind::Callable,

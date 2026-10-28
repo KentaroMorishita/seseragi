@@ -4,6 +4,10 @@ import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { collectMap as _ssrg_array_comprehend } from "@seseragi/runtime/array"
 $ssrg$assertUnicodeVersion("17.0.0")
 
+interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
+type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })["type"];
+type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
+export interface $ssrg$kind$Box extends $ssrg$Kind<readonly [unknown]> { readonly type: Box<this["args"][0]> }
 declare const __ssrg$brand$Secret: unique symbol;
 export type Secret = {
   readonly [__ssrg$brand$Secret]: true;

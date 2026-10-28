@@ -239,6 +239,12 @@ pub struct SemanticTokensParams {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct DocumentSymbolParams {
+    pub text_document: TextDocumentIdentifier,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DocumentFormattingParams {
     pub text_document: TextDocumentIdentifier,
 }

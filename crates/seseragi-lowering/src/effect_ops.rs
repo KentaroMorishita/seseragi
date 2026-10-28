@@ -1034,6 +1034,13 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
 ];
 
 pub(crate) fn runtime_effect_operation(core_name: &str) -> Option<RuntimeEffectOperation> {
+    // Prelude references retain the canonical callable owner; direct Effect
+    // syntax already lowers to the same Console runtime operation.
+    let core_name = match core_name {
+        "std/prelude::print" => "console.print",
+        "std/prelude::println" => "console.println",
+        other => other,
+    };
     RUNTIME_EFFECT_OPERATIONS
         .iter()
         .copied()
@@ -1060,6 +1067,20 @@ mod tests {
         assert_eq!(operation.runtime_feature, "effect.console.println");
         assert_eq!(operation.module, "@seseragi/runtime/console");
         assert_eq!(operation.export_name, "println");
+    }
+
+    #[test]
+    fn canonical_prelude_console_references_share_the_runtime_abi() {
+        for (canonical, operation) in [
+            ("std/prelude::print", "console.print"),
+            ("std/prelude::println", "console.println"),
+        ] {
+            let reference = runtime_effect_operation(canonical).unwrap();
+            let direct = runtime_effect_operation(operation).unwrap();
+            assert_eq!(reference.local_name, direct.local_name);
+            assert_eq!(reference.runtime_feature, direct.runtime_feature);
+        }
+        assert!(runtime_effect_operation("fixture/console::println").is_none());
     }
 
     #[test]

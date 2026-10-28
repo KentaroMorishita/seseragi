@@ -10831,6 +10831,172 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 2,
+      "owner": "std/transformer/reader::ReaderT"
+    },
+    {
+      "binding": 5,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 6,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 7,
+      "owner": "std/transformer/either::EitherT"
+    },
+    {
+      "binding": 8,
+      "owner": "std/transformer/reader::ReaderT"
+    },
+    {
+      "binding": 9,
+      "owner": "std/transformer/reader::ReaderT"
+    },
+    {
+      "binding": 10,
+      "owner": "std/transformer/state::StateT"
+    },
+    {
+      "binding": 11,
+      "owner": "std/transformer/writer::WriterT"
+    },
+    {
+      "binding": 13,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 14,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 15,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 16,
+      "owner": "std/transformer/state::StateT"
+    },
+    {
+      "binding": 17,
+      "owner": "std/transformer/state::StateT"
+    },
+    {
+      "binding": 18,
+      "owner": "std/transformer/writer::WriterT"
+    },
+    {
+      "binding": 19,
+      "owner": "std/transformer/writer::WriterT"
+    },
+    {
+      "binding": 20,
+      "owner": "std/transformer/writer::WriterT"
+    },
+    {
+      "binding": 21,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 22,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 23,
+      "owner": "std/transformer/maybe::MaybeT"
+    },
+    {
+      "binding": 24,
+      "owner": "std/transformer/writer::WriterT"
+    },
+    {
+      "binding": 25,
+      "owner": "std/transformer/writer::WriterT"
+    },
+    {
+      "binding": 26,
+      "owner": "std/transformer/writer::WriterT"
+    },
+    {
+      "binding": 31,
+      "owner": "std/effect::LoopControl"
+    },
+    {
+      "binding": 32,
+      "owner": "std/effect::LoopControl"
+    },
+    {
+      "binding": 39,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 40,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 41,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 44,
+      "owner": "std/effect::ParallelismError"
+    },
+    {
+      "binding": 49,
+      "owner": "std/effect::ScheduleDecision"
+    },
+    {
+      "binding": 50,
+      "owner": "std/effect::ScheduleDecision"
+    },
+    {
+      "binding": 52,
+      "owner": "std/effect::ScheduleError"
+    },
+    {
+      "binding": 90,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 91,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 101,
+      "owner": "artifact/transformers::Log"
+    },
+    {
+      "binding": 102,
+      "owner": "artifact/transformers::Log"
+    },
+    {
+      "binding": 110,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 111,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 130,
+      "owner": "artifact/transformers::Log"
+    },
+    {
+      "binding": 137,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 138,
+      "owner": "std/prelude::Maybe"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

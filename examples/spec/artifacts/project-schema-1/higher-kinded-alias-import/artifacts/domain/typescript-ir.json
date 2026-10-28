@@ -2,6 +2,61 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/higher-kinded-alias-import::domain",
+  "higherKinds": {
+    "constructors": [
+      {
+        "name": "$ssrg$kind$Box",
+        "identity": "fixture/higher-kinded-alias-import::domain::Box",
+        "exported": true,
+        "parameters": [
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "$ssrg$kind$StateT",
+        "identity": "fixture/higher-kinded-alias-import::domain::StateT",
+        "exported": true,
+        "parameters": [
+          "S",
+          {
+            "name": "M",
+            "arity": 1
+          },
+          "A"
+        ],
+        "target": {
+          "kind": "reference",
+          "name": "StateT",
+          "arguments": [
+            {
+              "kind": "kind-argument",
+              "index": 0
+            },
+            {
+              "kind": "kind-argument",
+              "index": 1
+            },
+            {
+              "kind": "kind-argument",
+              "index": 2
+            }
+          ]
+        }
+      }
+    ],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.adt",
     "core.int",
@@ -60,7 +115,25 @@
           "arguments": []
         },
         "result": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "M",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "reference",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
         }
       },
       "origin": {

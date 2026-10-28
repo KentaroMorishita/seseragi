@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-functor-dispatch::domain",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.maybe",
     "core.adt",
@@ -206,7 +211,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [number]>",
           "implicit": false
         }
       ],
@@ -231,7 +236,13 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "F",
+          "arguments": [
+            {
+              "kind": "number"
+            }
+          ]
         }
       },
       "origin": {

@@ -194,6 +194,57 @@ pub(super) fn lower_module_imports(
         &mut used_types,
     )?;
 
+    // A source type's companion carries its checked complete kind signature.
+    // Follow the same canonical provider/rename selected for the type itself;
+    // the external arity alone is not enough to reconstruct that signature.
+    let generic_types = module
+        .external_type_bindings
+        .iter()
+        .filter(|binding| binding.arity.is_some_and(|arity| arity > 0))
+        .map(|binding| binding.canonical.as_str())
+        .collect::<BTreeSet<_>>();
+    for group in &mut imports {
+        let is_generic_type = |binding: &TypeScriptSourceImportBinding| {
+            generic_types.contains(binding.canonical.as_str())
+                && crate::runtime_types::runtime_type_import(&binding.canonical).is_none()
+                && (binding.type_only
+                    || module.module_dependencies.iter().any(|dependency| {
+                        dependency.module == group.module
+                            && dependency.imports.iter().any(|import| {
+                                import.namespace == "type"
+                                    && import.canonical == binding.canonical
+                                    && safe_identifier(&import.imported) == binding.imported
+                            })
+                    }))
+        };
+        let companion = |binding: &TypeScriptSourceImportBinding| TypeScriptSourceImportBinding {
+            imported: super::kinds::constructor_name(&binding.imported),
+            local: super::kinds::constructor_name(&binding.local),
+            source_local: binding.source_local.clone(),
+            canonical: binding.canonical.clone(),
+            type_only: true,
+            origin: binding.origin.clone(),
+        };
+        let bindings = group
+            .bindings
+            .iter()
+            .filter(|binding| is_generic_type(binding))
+            .map(companion)
+            .collect::<Vec<_>>();
+        let reexports = group
+            .reexports
+            .iter()
+            .filter(|binding| is_generic_type(binding))
+            .map(companion)
+            .collect::<Vec<_>>();
+        for binding in bindings {
+            push_binding(group, binding);
+        }
+        for binding in reexports {
+            push_reexport(group, binding);
+        }
+    }
+
     Ok(LoweredModuleImports {
         imports,
         value_names,

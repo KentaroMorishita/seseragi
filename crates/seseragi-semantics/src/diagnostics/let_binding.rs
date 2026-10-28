@@ -28,6 +28,7 @@ pub(super) fn collect_let_binding_diagnostics(
     if analysis.array_issue.is_some()
         || analysis.range_issue.is_some()
         || analysis.conditional_issue.is_some()
+        || !analysis.match_issues.is_empty()
         || analysis.record_issue.is_some()
         || analysis.pure_call_issue.is_some()
     {
@@ -46,6 +47,12 @@ pub(super) fn collect_let_binding_diagnostics(
             declaration,
             diagnostics,
         );
+        super::conditional::collect_conditional_diagnostics(
+            analysis.conditional_issue.as_ref(),
+            declaration,
+            diagnostics,
+        );
+        super::match_expression::collect_match_diagnostics(&analysis.match_issues, diagnostics);
         if let Some(issue) = analysis.pure_call_issue {
             diagnostics.push(super::pure_call::call_diagnostic(issue, declaration));
         }
@@ -93,6 +100,7 @@ pub(super) fn collect_let_binding_diagnostics(
         message_key: "binding.annotation-type-mismatch".to_owned(),
         primary: byte_range(body.span()),
         related: vec![RelatedDiagnostic {
+            source: None,
             message: format!(
                 "declared {}, initializer produces {}",
                 type_label(&expected),
@@ -114,6 +122,26 @@ fn byte_range(span: ByteSpan) -> ByteRange {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn reports_branch_errors_in_top_level_initializers() {
+        for (source, key) in [
+            (
+                "let value = if True then 1 else \"wrong\"\n",
+                "if.branch-type-mismatch",
+            ),
+            (
+                "let value = match True { True -> 1; False -> \"wrong\" }\n",
+                "match.branch-type-mismatch",
+            ),
+        ] {
+            let artifact = crate::semantic_diagnostics("branches.ssrg", source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{:#?}", artifact.diagnostics);
+            assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+            assert_eq!(artifact.diagnostics[0].message_key, key);
+            assert!(artifact.diagnostics[0].primary.end > artifact.diagnostics[0].primary.start);
+        }
+    }
 
     #[test]
     fn accepts_matching_adt_constructor_annotation() {

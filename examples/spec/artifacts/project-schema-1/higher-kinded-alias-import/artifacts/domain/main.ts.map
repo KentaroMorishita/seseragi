@@ -11,8 +11,9 @@
   "names": [
     "Box",
     "Boxed",
+    "StateT",
     "keepMaybe",
     "keepEither"
   ],
-  "mappings": ";;;AAAAA;;AACIC;AAIJC;AAIAC"
+  "mappings": ";;;;;;;;AAAAA;;AACIC;AAEJC;AAEAC;AAIAC"
 }

@@ -396,10 +396,10 @@ fn native_operation(name: &str, args: Vec<V>) -> V {
             })
         }
         "std/prelude::print" | "console.print" | "std/console::print" => V::leaf(args, |c, _| {
-            write_native_console(&mut std::io::stdout().lock(), &console_text(&c[0]))
+            write_native_console(&mut std::io::stdout().lock(), console_text(&c[0]))
         }),
         "std/console::error" => V::leaf(args, |c, _| {
-            write_native_console(&mut std::io::stderr().lock(), &console_text(&c[0]))
+            write_native_console(&mut std::io::stderr().lock(), console_text(&c[0]))
         }),
         "std/console::errorLine" => V::leaf(args, |c, _| {
             write_native_console(
@@ -415,17 +415,11 @@ fn native_operation(name: &str, args: Vec<V>) -> V {
     }
 }
 
-// Preserve the established prelude's primitive console coercions separately
-// from language Show and the pure target's inspection format. In particular,
-// direct Bool output is `true`, while Show Bool is `True`.
-fn console_text(value: &V) -> String {
-    match value {
-        V::Unit => "undefined".into(),
-        V::Bool(value) => value.to_string(),
-        V::Float(value) => native_float_console(*value),
-        V::Text(_) | V::Int(_) | V::Char(_) => value.render(),
-        _ => panic!("Rust ABI: render non-scalar Console values with Show"),
-    }
+fn console_text(value: &V) -> &str {
+    let V::Text(text) = value else {
+        panic!("Rust ABI: Console requires String; render values with Show first")
+    };
+    text.get()
 }
 
 fn write_native_console(writer: &mut impl std::io::Write, text: &str) -> NativeOutcome {

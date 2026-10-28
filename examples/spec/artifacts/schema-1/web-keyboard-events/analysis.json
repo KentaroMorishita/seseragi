@@ -2485,6 +2485,92 @@
       ]
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/web-keyboard-events::Action"
+    },
+    {
+      "binding": 2,
+      "owner": "artifact/web-keyboard-events::Action"
+    },
+    {
+      "binding": 3,
+      "owner": "artifact/web-keyboard-events::Action"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/web-keyboard-events::Action"
+    },
+    {
+      "binding": 5,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 6,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 7,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 8,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 9,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 28,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 29,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 30,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 31,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 32,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 34,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 35,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 36,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 37,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 39,
+      "owner": "std/web/html::KeyboardEvent"
+    },
+    {
+      "binding": 43,
+      "owner": "std/web/html::KeyboardEvent"
+    },
+    {
+      "binding": 44,
+      "owner": "std/web/html::KeyboardEvent"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

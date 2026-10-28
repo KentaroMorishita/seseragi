@@ -3464,6 +3464,15 @@
       }
     },
     {
+      "spelling": "Console",
+      "namespace": "type",
+      "target": 28,
+      "origin": {
+        "start": 1231,
+        "end": 1238
+      }
+    },
+    {
       "spelling": "Unit",
       "namespace": "type",
       "target": 53,

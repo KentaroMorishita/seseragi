@@ -19,6 +19,21 @@ fn standard_operation_effect(
     operation: KnownEffectOperation,
     arguments: &[TypedExpr],
 ) -> TypedEffect {
+    let standard_provider = matches!(
+        operation.surface_name,
+        "print" | "println" | "printValue" | "readLine"
+    );
+    let operation_type = |name: &str| {
+        if standard_provider {
+            TypedType::ExternalNamed {
+                name: name.into(),
+                canonical: format!("std/prelude::{name}"),
+                arguments: vec![],
+            }
+        } else {
+            named_type(name)
+        }
+    };
     let argument_type = || {
         arguments
             .first()
@@ -39,7 +54,7 @@ fn standard_operation_effect(
                 .map(|(name, type_name)| TypedRecordField {
                     name: name.to_owned(),
                     optional: false,
-                    type_ref: named_type(type_name),
+                    type_ref: operation_type(type_name),
                 })
                 .into_iter()
                 .collect(),
@@ -47,7 +62,7 @@ fn standard_operation_effect(
         failure: if operation.surface_name == "fail" {
             argument_type()
         } else {
-            named_type(operation.failure_type)
+            operation_type(operation.failure_type)
         },
         success,
     }

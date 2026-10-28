@@ -4,12 +4,31 @@
   "module": "artifact/local-effect-fn",
   "externalTypeBindings": [
     {
-      "spelling": "Console",
-      "canonical": "std/prelude::Console"
+      "arity": 0,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "provider": {
+        "module": "std/prelude",
+        "export": "String"
+      }
     },
     {
+      "arity": 0,
+      "spelling": "Console",
+      "canonical": "std/prelude::Console",
+      "provider": {
+        "module": "std/console",
+        "export": "Console"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ConsoleError",
-      "canonical": "std/prelude::ConsoleError"
+      "canonical": "std/prelude::ConsoleError",
+      "provider": {
+        "module": "std/console",
+        "export": "ConsoleError"
+      }
     }
   ],
   "bindings": [
@@ -110,16 +129,18 @@
                   {
                     "name": "console",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Console",
+                      "canonical": "std/prelude::Console",
                       "arguments": []
                     }
                   }
                 ]
               },
               "failure": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "ConsoleError",
+                "canonical": "std/prelude::ConsoleError",
                 "arguments": []
               },
               "success": {
@@ -172,7 +193,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 94,
-        "end": 977
+        "end": 991
       },
       "valueType": {
         "kind": "function",
@@ -193,16 +214,18 @@
                 {
                   "name": "console",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Console",
+                    "canonical": "std/prelude::Console",
                     "arguments": []
                   }
                 }
               ]
             },
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "ConsoleError",
+              "canonical": "std/prelude::ConsoleError",
               "arguments": []
             },
             {
@@ -280,16 +303,18 @@
                     {
                       "name": "console",
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Console",
+                        "canonical": "std/prelude::Console",
                         "arguments": []
                       }
                     }
                   ]
                 },
                 "failure": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "ConsoleError",
+                  "canonical": "std/prelude::ConsoleError",
                   "arguments": []
                 },
                 "success": {
@@ -1001,16 +1026,18 @@
                               {
                                 "name": "console",
                                 "type": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Console",
+                                  "canonical": "std/prelude::Console",
                                   "arguments": []
                                 }
                               }
                             ]
                           },
                           "failure": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "ConsoleError",
+                            "canonical": "std/prelude::ConsoleError",
                             "arguments": []
                           },
                           "success": {
@@ -1020,30 +1047,69 @@
                           },
                           "arguments": [
                             {
-                              "kind": "variable",
-                              "name": "value",
+                              "kind": "call",
+                              "callee": "std/prelude::Show::show",
+                              "arguments": [
+                                {
+                                  "kind": "variable",
+                                  "name": "value",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 510,
+                                    "end": 515
+                                  }
+                                }
+                              ],
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Show",
+                                    "traitIdentity": "std/prelude::Show",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "Show<std/prelude::Int>"
+                                  }
+                                }
+                              ],
+                              "traitDispatch": {
+                                "traitIdentity": "std/prelude::Show",
+                                "method": "show"
+                              },
                               "type": {
                                 "kind": "named",
-                                "name": "Int",
+                                "name": "String",
                                 "arguments": []
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 504,
-                                "end": 509
+                                "start": 505,
+                                "end": 515
                               }
                             }
                           ],
                           "origin": {
                             "source": "main.ssrg",
                             "start": 496,
-                            "end": 509
+                            "end": 516
                           }
                         },
                         "origin": {
                           "source": "main.ssrg",
                           "start": 414,
-                          "end": 509
+                          "end": 516
                         }
                       }
                     ],
@@ -1097,14 +1163,14 @@
                                   "value": "1",
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 550,
-                                    "end": 551
+                                    "start": 557,
+                                    "end": 558
                                   }
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 528,
-                                  "end": 551
+                                  "start": 535,
+                                  "end": 558
                                 }
                               }
                             ],
@@ -1135,8 +1201,8 @@
                                         "value": "2",
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 578,
-                                          "end": 579
+                                          "start": 585,
+                                          "end": 586
                                         }
                                       }
                                     ],
@@ -1197,14 +1263,14 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 573,
-                                      "end": 579
+                                      "start": 580,
+                                      "end": 586
                                     }
                                   },
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 552,
-                                    "end": 579
+                                    "start": 559,
+                                    "end": 586
                                   }
                                 }
                               ],
@@ -1216,8 +1282,8 @@
                                     "kind": "unit",
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 589,
-                                      "end": 591
+                                      "start": 596,
+                                      "end": 598
                                     }
                                   }
                                 ],
@@ -1244,26 +1310,26 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 584,
-                                  "end": 591
+                                  "start": 591,
+                                  "end": 598
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 527,
-                                "end": 595
+                                "start": 534,
+                                "end": 602
                               }
                             },
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 527,
-                              "end": 595
+                              "start": 534,
+                              "end": 602
                             }
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 510,
-                            "end": 595
+                            "start": 517,
+                            "end": 602
                           }
                         }
                       ],
@@ -1305,8 +1371,8 @@
                                         "value": "1",
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 643,
-                                          "end": 644
+                                          "start": 650,
+                                          "end": 651
                                         }
                                       }
                                     ],
@@ -1367,14 +1433,14 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 638,
-                                      "end": 644
+                                      "start": 645,
+                                      "end": 651
                                     }
                                   },
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 616,
-                                    "end": 644
+                                    "start": 623,
+                                    "end": 651
                                   }
                                 }
                               ],
@@ -1401,14 +1467,14 @@
                                       "value": "3",
                                       "origin": {
                                         "source": "main.ssrg",
-                                        "start": 666,
-                                        "end": 667
+                                        "start": 673,
+                                        "end": 674
                                       }
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 645,
-                                      "end": 667
+                                      "start": 652,
+                                      "end": 674
                                     }
                                   }
                                 ],
@@ -1420,8 +1486,8 @@
                                       "kind": "unit",
                                       "origin": {
                                         "source": "main.ssrg",
-                                        "start": 677,
-                                        "end": 679
+                                        "start": 684,
+                                        "end": 686
                                       }
                                     }
                                   ],
@@ -1432,26 +1498,26 @@
                                   },
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 672,
-                                    "end": 679
+                                    "start": 679,
+                                    "end": 686
                                   }
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 615,
-                                  "end": 683
+                                  "start": 622,
+                                  "end": 690
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 615,
-                                "end": 683
+                                "start": 622,
+                                "end": 690
                               }
                             },
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 596,
-                              "end": 683
+                              "start": 603,
+                              "end": 690
                             }
                           }
                         ],
@@ -1474,8 +1540,8 @@
                                     "kind": "unit",
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 713,
-                                      "end": 715
+                                      "start": 720,
+                                      "end": 722
                                     }
                                   }
                                 ],
@@ -1502,14 +1568,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 704,
-                                  "end": 715
+                                  "start": 711,
+                                  "end": 722
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 695,
-                                "end": 715
+                                "start": 702,
+                                "end": 722
                               }
                             },
                             {
@@ -1528,8 +1594,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 724,
-                                      "end": 729
+                                      "start": 731,
+                                      "end": 736
                                     }
                                   }
                                 ],
@@ -1544,16 +1610,18 @@
                                         {
                                           "name": "console",
                                           "type": {
-                                            "kind": "named",
+                                            "kind": "external-named",
                                             "name": "Console",
+                                            "canonical": "std/prelude::Console",
                                             "arguments": []
                                           }
                                         }
                                       ]
                                     },
                                     {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "ConsoleError",
+                                      "canonical": "std/prelude::ConsoleError",
                                       "arguments": []
                                     },
                                     {
@@ -1565,8 +1633,8 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 720,
-                                  "end": 729
+                                  "start": 727,
+                                  "end": 736
                                 }
                               }
                             },
@@ -1587,8 +1655,8 @@
                                     "value": true,
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 752,
-                                      "end": 756
+                                      "start": 759,
+                                      "end": 763
                                     }
                                   }
                                 ],
@@ -1662,14 +1730,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 743,
-                                  "end": 756
+                                  "start": 750,
+                                  "end": 763
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 734,
-                                "end": 756
+                                "start": 741,
+                                "end": 763
                               }
                             },
                             {
@@ -1689,8 +1757,8 @@
                                     "value": "9",
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 780,
-                                      "end": 781
+                                      "start": 787,
+                                      "end": 788
                                     }
                                   }
                                 ],
@@ -1764,14 +1832,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 771,
-                                  "end": 781
+                                  "start": 778,
+                                  "end": 788
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 761,
-                                "end": 781
+                                "start": 768,
+                                "end": 788
                               }
                             },
                             {
@@ -1786,16 +1854,18 @@
                                     {
                                       "name": "console",
                                       "type": {
-                                        "kind": "named",
+                                        "kind": "external-named",
                                         "name": "Console",
+                                        "canonical": "std/prelude::Console",
                                         "arguments": []
                                       }
                                     }
                                   ]
                                 },
                                 "failure": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "ConsoleError",
+                                  "canonical": "std/prelude::ConsoleError",
                                   "arguments": []
                                 },
                                 "success": {
@@ -1821,8 +1891,8 @@
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 802,
-                                              "end": 807
+                                              "start": 809,
+                                              "end": 814
                                             }
                                           },
                                           {
@@ -1835,8 +1905,8 @@
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 809,
-                                              "end": 815
+                                              "start": 816,
+                                              "end": 822
                                             }
                                           }
                                         ],
@@ -1857,8 +1927,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 801,
-                                          "end": 816
+                                          "start": 808,
+                                          "end": 823
                                         }
                                       }
                                     ],
@@ -1955,15 +2025,15 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 796,
-                                      "end": 816
+                                      "start": 803,
+                                      "end": 823
                                     }
                                   }
                                 ],
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 786,
-                                  "end": 816
+                                  "start": 793,
+                                  "end": 823
                                 }
                               }
                             },
@@ -1984,8 +2054,8 @@
                                     "value": "3",
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 837,
-                                      "end": 838
+                                      "start": 844,
+                                      "end": 845
                                     }
                                   }
                                 ],
@@ -2012,14 +2082,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 831,
-                                  "end": 838
+                                  "start": 838,
+                                  "end": 845
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 821,
-                                "end": 838
+                                "start": 828,
+                                "end": 845
                               }
                             },
                             {
@@ -2034,16 +2104,18 @@
                                     {
                                       "name": "console",
                                       "type": {
-                                        "kind": "named",
+                                        "kind": "external-named",
                                         "name": "Console",
+                                        "canonical": "std/prelude::Console",
                                         "arguments": []
                                       }
                                     }
                                   ]
                                 },
                                 "failure": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "ConsoleError",
+                                  "canonical": "std/prelude::ConsoleError",
                                   "arguments": []
                                 },
                                 "success": {
@@ -2053,24 +2125,63 @@
                                 },
                                 "arguments": [
                                   {
-                                    "kind": "variable",
-                                    "name": "result",
+                                    "kind": "call",
+                                    "callee": "std/prelude::Show::show",
+                                    "arguments": [
+                                      {
+                                        "kind": "variable",
+                                        "name": "result",
+                                        "type": {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 864,
+                                          "end": 870
+                                        }
+                                      }
+                                    ],
+                                    "evidence": [
+                                      {
+                                        "constraint": {
+                                          "name": "Show",
+                                          "traitIdentity": "std/prelude::Show",
+                                          "arguments": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        },
+                                        "evidence": {
+                                          "kind": "standard",
+                                          "identity": "Show<std/prelude::Int>"
+                                        }
+                                      }
+                                    ],
+                                    "traitDispatch": {
+                                      "traitIdentity": "std/prelude::Show",
+                                      "method": "show"
+                                    },
                                     "type": {
                                       "kind": "named",
-                                      "name": "Int",
+                                      "name": "String",
                                       "arguments": []
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 851,
-                                      "end": 857
+                                      "start": 859,
+                                      "end": 870
                                     }
                                   }
                                 ],
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 843,
-                                  "end": 857
+                                  "start": 850,
+                                  "end": 871
                                 }
                               }
                             },
@@ -2091,8 +2202,8 @@
                                     "value": "42",
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 881,
-                                      "end": 883
+                                      "start": 895,
+                                      "end": 897
                                     }
                                   }
                                 ],
@@ -2138,14 +2249,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 874,
-                                  "end": 883
+                                  "start": 888,
+                                  "end": 897
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 862,
-                                "end": 883
+                                "start": 876,
+                                "end": 897
                               }
                             },
                             {
@@ -2160,16 +2271,18 @@
                                     {
                                       "name": "console",
                                       "type": {
-                                        "kind": "named",
+                                        "kind": "external-named",
                                         "name": "Console",
+                                        "canonical": "std/prelude::Console",
                                         "arguments": []
                                       }
                                     }
                                   ]
                                 },
                                 "failure": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "ConsoleError",
+                                  "canonical": "std/prelude::ConsoleError",
                                   "arguments": []
                                 },
                                 "success": {
@@ -2188,15 +2301,15 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 896,
-                                      "end": 904
+                                      "start": 910,
+                                      "end": 918
                                     }
                                   }
                                 ],
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 888,
-                                  "end": 904
+                                  "start": 902,
+                                  "end": 918
                                 }
                               }
                             },
@@ -2234,14 +2347,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 921,
-                                  "end": 929
+                                  "start": 935,
+                                  "end": 943
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 909,
-                                "end": 929
+                                "start": 923,
+                                "end": 943
                               }
                             }
                           ],
@@ -2255,16 +2368,18 @@
                                 {
                                   "name": "console",
                                   "type": {
-                                    "kind": "named",
+                                    "kind": "external-named",
                                     "name": "Console",
+                                    "canonical": "std/prelude::Console",
                                     "arguments": []
                                   }
                                 }
                               ]
                             },
                             "failure": {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "ConsoleError",
+                              "canonical": "std/prelude::ConsoleError",
                               "arguments": []
                             },
                             "success": {
@@ -2290,8 +2405,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 950,
-                                          "end": 958
+                                          "start": 964,
+                                          "end": 972
                                         }
                                       },
                                       {
@@ -2304,8 +2419,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 960,
-                                          "end": 970
+                                          "start": 974,
+                                          "end": 984
                                         }
                                       }
                                     ],
@@ -2326,8 +2441,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 949,
-                                      "end": 971
+                                      "start": 963,
+                                      "end": 985
                                     }
                                   }
                                 ],
@@ -2424,75 +2539,75 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 944,
-                                  "end": 971
+                                  "start": 958,
+                                  "end": 985
                                 }
                               }
                             ],
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 934,
-                              "end": 971
+                              "start": 948,
+                              "end": 985
                             }
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 686,
-                            "end": 975
+                            "start": 693,
+                            "end": 989
                           }
                         },
                         "origin": {
                           "source": "main.ssrg",
                           "start": 115,
-                          "end": 977
+                          "end": 991
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
                         "start": 115,
-                        "end": 977
+                        "end": 991
                       }
                     },
                     "origin": {
                       "source": "main.ssrg",
                       "start": 115,
-                      "end": 977
+                      "end": 991
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
                     "start": 115,
-                    "end": 977
+                    "end": 991
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
                   "start": 115,
-                  "end": 977
+                  "end": 991
                 }
               },
               "origin": {
                 "source": "main.ssrg",
                 "start": 115,
-                "end": 977
+                "end": 991
               }
             },
             "origin": {
               "source": "main.ssrg",
               "start": 115,
-              "end": 977
+              "end": 991
             }
           },
           "origin": {
             "source": "main.ssrg",
             "start": 115,
-            "end": 977
+            "end": 991
           }
         },
         "origin": {
           "source": "main.ssrg",
           "start": 115,
-          "end": 977
+          "end": 991
         }
       }
     }

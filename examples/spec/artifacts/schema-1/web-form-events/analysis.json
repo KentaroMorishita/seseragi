@@ -4817,6 +4817,100 @@
       ]
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/web-form-events::Action"
+    },
+    {
+      "binding": 2,
+      "owner": "artifact/web-form-events::Action"
+    },
+    {
+      "binding": 3,
+      "owner": "artifact/web-form-events::Action"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/web-form-events::Action"
+    },
+    {
+      "binding": 5,
+      "owner": "artifact/web-form-events::Action"
+    },
+    {
+      "binding": 6,
+      "owner": "artifact/web-form-events::Action"
+    },
+    {
+      "binding": 7,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 26,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 27,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 28,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 29,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 30,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 32,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 33,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 34,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 35,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 38,
+      "owner": "std/web/html::InputEvent"
+    },
+    {
+      "binding": 39,
+      "owner": "std/web/html::ChangeEvent"
+    },
+    {
+      "binding": 42,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 43,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 50,
+      "owner": "std/web/html::ChangeEvent"
+    },
+    {
+      "binding": 52,
+      "owner": "std/web/html::ChangeEvent"
+    },
+    {
+      "binding": 54,
+      "owner": "std/web/html::ChangeEvent"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

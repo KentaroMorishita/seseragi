@@ -4,8 +4,8 @@ use crate::features::{self, DocumentState, SEMANTIC_TOKEN_TYPES};
 use crate::model::{
     CodeActionParams, DidChangeParams, DidChangeWatchedFilesParams,
     DidChangeWorkspaceFoldersParams, DidCloseParams, DidOpenParams, DocumentFormattingParams,
-    InitializeParams, MarkupKind, ReferencesParams, RenameParams, SemanticTokensParams,
-    TextDocumentPositionParams, WorkspaceSymbolParams,
+    DocumentSymbolParams, InitializeParams, MarkupKind, ReferencesParams, RenameParams,
+    SemanticTokensParams, TextDocumentPositionParams, WorkspaceSymbolParams,
 };
 use crate::protocol::{self, ProtocolError};
 use crate::workspace::{
@@ -141,13 +141,14 @@ impl State {
                             "referencesProvider": true,
                             "renameProvider": {"prepareProvider": true},
                             "workspaceSymbolProvider": true,
+                            "documentSymbolProvider": true,
                             "codeActionProvider": true,
                             "documentFormattingProvider": true,
                             "documentRangeFormattingProvider": true,
                             "semanticTokensProvider": {
                                 "legend": {
                                     "tokenTypes": SEMANTIC_TOKEN_TYPES,
-                                    "tokenModifiers": []
+                                    "tokenModifiers": ["deprecated"]
                                 },
                                 "full": true,
                                 "range": false
@@ -270,6 +271,22 @@ impl State {
             }
             Some("textDocument/rename") => Ok(vec![self.rename_response(id, &message)]),
             Some("workspace/symbol") => Ok(vec![self.workspace_symbol_response(id, &message)]),
+            Some("textDocument/documentSymbol") => {
+                let result = parse_params::<DocumentSymbolParams>(&message)
+                    .and_then(|params| {
+                        self.documents
+                            .get(&params.text_document.uri)
+                            .map(|document| {
+                                features::document_symbols(
+                                    document,
+                                    &params.text_document.uri,
+                                    self.encoding.unwrap_or(PositionEncoding::Utf16),
+                                )
+                            })
+                    })
+                    .unwrap_or_else(|| json!([]));
+                Ok(vec![response(id, result)])
+            }
             Some("textDocument/codeAction") => {
                 let result = parse_params::<CodeActionParams>(&message)
                     .and_then(|params| {
@@ -567,7 +584,17 @@ impl State {
         let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
         uris.into_iter()
             .map(|uri| match self.documents.get(&uri) {
-                Some(document) => publish(&uri, document, encoding).map_err(ServerError::from),
+                Some(document) => publish_with_sources(&uri, document, encoding, |source| {
+                    self.documents.iter().find_map(|(uri, document)| {
+                        (document.analysis.diagnostics.source == source).then_some(
+                            diagnostics::RelatedSource {
+                                uri,
+                                text: &document.source,
+                            },
+                        )
+                    })
+                })
+                .map_err(ServerError::from),
                 None => Ok(clear_diagnostics(&uri)),
             })
             .collect()
@@ -698,6 +725,9 @@ impl State {
                 let document = self.documents.get(&params.text_document.uri)?;
                 let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
                 let symbol = features::symbol_at_position(document, &params, encoding)?;
+                if symbol.kind == "operator-implementation" {
+                    return None;
+                }
                 self.definition_location(&features::symbol_key(symbol))?;
                 let range = features::symbol_range_at_position(document, &params, encoding)?;
                 let placeholder = document.source.get(range.start..range.end)?;
@@ -725,6 +755,9 @@ impl State {
             return response(id, Value::Null);
         };
         let symbol_key = features::symbol_key(symbol);
+        if symbol.kind == "operator-implementation" {
+            return response(id, Value::Null);
+        }
         if self.definition_location(&symbol_key).is_none() {
             return response(id, Value::Null);
         }
@@ -882,17 +915,28 @@ impl State {
     }
 }
 
+#[cfg(test)]
 fn publish(
     uri: &str,
     document: &DocumentState,
     encoding: PositionEncoding,
+) -> Result<Value, LineIndexError> {
+    publish_with_sources(uri, document, encoding, |_| None)
+}
+
+fn publish_with_sources<'a>(
+    uri: &str,
+    document: &DocumentState,
+    encoding: PositionEncoding,
+    related_source: impl Fn(&str) -> Option<diagnostics::RelatedSource<'a>>,
 ) -> Result<Value, LineIndexError> {
     let artifact = if document.lint_enabled {
         document.analysis.authoring_diagnostics()
     } else {
         document.analysis.diagnostics.clone()
     };
-    let diagnostics = diagnostics::convert(&artifact, &document.source, encoding)?;
+    let diagnostics =
+        diagnostics::convert_with_sources(&artifact, &document.source, encoding, related_source)?;
     let mut params = json!({"uri": uri, "diagnostics": diagnostics});
     if let Some(version) = document.version {
         params["version"] = json!(version);
