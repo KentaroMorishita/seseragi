@@ -179,6 +179,42 @@ fn check_raw_strict(
     ));
 }
 
+fn standalone_ts_package(source: &Path, scratch: &Path) -> PathBuf {
+    // Native accepts the original standalone file with an explicit binding.
+    // The ordinary TS process entry requires a resolved package provider.
+    // Keep the body bytes, while deliberately using a different module identity.
+    let package = scratch.join("ts-process-package");
+    fs::create_dir(&package).unwrap();
+    fs::create_dir(package.join("src")).unwrap();
+    fs::write(package.join("src/main.ssrg"), fs::read(source).unwrap()).unwrap();
+    fs::write(
+        package.join("seseragi.toml"),
+        concat!(
+            "[package]\n",
+            "name = \"acceptance/standalone-clock-oracle\"\n",
+            "version = \"0.0.0\"\n",
+            "language = \">=0.1.0 <0.2.0\"\n",
+            "[run]\n",
+            "entry = \"main\"\n",
+            "target = \"process\"\n",
+        ),
+    )
+    .unwrap();
+    lock(&package, scratch);
+    let parsed = seseragi_project::read_and_validate_lockfile(&package).unwrap();
+    assert!(parsed
+        .providers
+        .iter()
+        .any(|provider| provider.service == "std/clock::Clock"
+            && provider.target == "bun-process"
+            && provider.provider == "seseragi/runtime-bun#clock"));
+    assert!(!parsed
+        .providers
+        .iter()
+        .any(|provider| provider.provider == "seseragi/runtime-native#clock-sleep"));
+    package
+}
+
 fn build_programs(
     source: &Path,
     project: bool,
@@ -205,6 +241,12 @@ fn build_programs(
         None,
         true,
     )];
+    let ts_package = (!project).then(|| standalone_ts_package(source, scratch));
+    let ts_input = ts_package.as_deref().unwrap_or(source);
+    let frozen = ts_package.as_ref().map(|package| {
+        ["seseragi.toml", "seseragi.lock", "src/main.ssrg"]
+            .map(|name| (package.join(name), fs::read(package.join(name)).unwrap()))
+    });
     for (profile, value) in [
         ("development", seseragi_driver::BuildProfile::Development),
         ("release", seseragi_driver::BuildProfile::Release),
@@ -213,7 +255,7 @@ fn build_programs(
         successful(bounded(
             Command::new(env!("CARGO_BIN_EXE_seseragi"))
                 .arg("build")
-                .arg(&source)
+                .arg(ts_input)
                 .args(["--target", "process", "--profile", profile, "--out-dir"])
                 .arg(&output),
             &scratch,
@@ -277,6 +319,15 @@ fn build_programs(
                 false,
             ));
         }
+    }
+    if let Some(frozen) = frozen {
+        for (file, bytes) in frozen {
+            assert_eq!(fs::read(&file).unwrap(), bytes, "{}", file.display());
+        }
+        assert_eq!(
+            fs::read(ts_input.join("src/main.ssrg")).unwrap(),
+            fs::read(source).unwrap()
+        );
     }
     assert_eq!(programs.len(), 5);
     programs
