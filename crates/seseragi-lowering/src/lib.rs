@@ -43,15 +43,15 @@ pub use reachability::{retain_application, ApplicationReachability, RetainedDecl
 mod web_html_ops;
 
 pub use core::{
-    core_list_prefix_plan, lower_typed_module, CoreAdt, CoreAdtVariant, CoreAlias, CoreBinding,
-    CoreCallEvidence, CoreCallSignature, CoreComprehensionClause, CoreDecisionBinding,
-    CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreForeignMember,
-    CoreForeignModule, CoreFunction, CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence,
-    CoreInstanceImplementation, CoreInstanceMethod, CoreListPrefixPlan, CoreModule,
-    CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
-    CoreRecordField, CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence,
-    CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart, CoreTraitDispatch,
-    CoreTraitMethodContract, CoreTraitMethodDeclaration, CoreType,
+    closed_standard_display_key, core_list_prefix_plan, lower_typed_module, CoreAdt,
+    CoreAdtVariant, CoreAlias, CoreBinding, CoreCallEvidence, CoreCallSignature,
+    CoreComprehensionClause, CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection,
+    CoreDecisionTest, CoreExpr, CoreForeignMember, CoreForeignModule, CoreFunction, CoreInstance,
+    CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod,
+    CoreListPrefixPlan, CoreModule, CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement,
+    CoreParameter, CorePattern, CoreRecordField, CoreRecordPatternField, CoreRecordValueItem,
+    CoreShowPayloadEvidence, CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart,
+    CoreTraitDispatch, CoreTraitMethodContract, CoreTraitMethodDeclaration, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -64,17 +64,18 @@ pub use span::SourceSpan;
 pub use typescript::{
     lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_options,
     lower_core_module_to_typescript_ir_with_plan, TypeScriptAdt, TypeScriptAdtVariant,
-    TypeScriptAlias, TypeScriptBinding, TypeScriptDecisionBinding, TypeScriptDecisionBranch,
-    TypeScriptDecisionProjection, TypeScriptDecisionTest, TypeScriptDerivedShowField,
-    TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptExpr,
-    TypeScriptForeignMember, TypeScriptForeignModule, TypeScriptForeignNamespace,
-    TypeScriptForeignOpaqueType, TypeScriptForeignValue, TypeScriptFunction, TypeScriptImport,
-    TypeScriptInstance, TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
-    TypeScriptInstanceMethod, TypeScriptKindConstructor, TypeScriptKinds, TypeScriptLoweringError,
-    TypeScriptLoweringOptions, TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter,
-    TypeScriptRecordTypeField, TypeScriptRecordValueItem, TypeScriptShowDictionaryReference,
-    TypeScriptSourceImport, TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct,
-    TypeScriptType, TypeScriptTypeImport,
+    TypeScriptAlias, TypeScriptBinding, TypeScriptClosedDisplayDictionary,
+    TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
+    TypeScriptDecisionTest, TypeScriptDerivedShowField, TypeScriptDerivedShowPayload,
+    TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptForeignMember, TypeScriptForeignModule,
+    TypeScriptForeignNamespace, TypeScriptForeignOpaqueType, TypeScriptForeignValue,
+    TypeScriptFunction, TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
+    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptKindConstructor,
+    TypeScriptKinds, TypeScriptLoweringError, TypeScriptLoweringOptions, TypeScriptModule,
+    TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
+    TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
+    TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct, TypeScriptType,
+    TypeScriptTypeImport,
 };
 
 #[cfg(test)]

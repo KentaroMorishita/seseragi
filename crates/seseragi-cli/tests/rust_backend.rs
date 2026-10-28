@@ -32,19 +32,14 @@ fn cli() -> Command {
 #[path = "support/generic_impl_process.rs"]
 mod prefix_process;
 
-#[test]
-fn list_prefix_decisions_and_effects_match_raw_strict_ts_and_native() {
+fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
     use prefix_process::{bounded, runtime, successful};
     let scratch = Scratch::new();
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .canonicalize()
         .unwrap();
-    for fixture in [
-        "list-prefix-kernel",
-        "list-prefix-decisions",
-        "list-prefix-effects",
-    ] {
+    for &(fixture, exit) in fixtures {
         let original = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
         ));
@@ -78,7 +73,7 @@ fn list_prefix_decisions_and_effects_match_raw_strict_ts_and_native() {
                 .env("SESERAGI_NATIVE_METRICS", "1"),
             &directory,
         );
-        assert_eq!(output.status.code(), Some(0), "{fixture}: {output:?}");
+        assert_eq!(output.status.code(), Some(exit), "{fixture}: {output:?}");
         assert_eq!(output.stdout, expected, "{fixture}");
         assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
         for (profile, build_profile) in [
@@ -134,13 +129,87 @@ fn list_prefix_decisions_and_effects_match_raw_strict_ts_and_native() {
                 );
                 assert_eq!(
                     output.status.code(),
-                    Some(0),
+                    Some(exit),
                     "{fixture}/{profile}/{engine}: {output:?}"
                 );
                 assert_eq!(output.stdout, expected, "{fixture}/{profile}/{engine}");
-                assert!(output.stderr.is_empty(), "{output:?}");
+                if exit == 70 {
+                    assert_eq!(output.stderr, b"seseragi: runtime defect\n");
+                } else {
+                    assert!(output.stderr.is_empty(), "{output:?}");
+                }
             }
         }
+    }
+}
+
+#[test]
+fn list_prefix_decisions_and_effects_match_raw_strict_ts_and_native() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("list-prefix-kernel", 0),
+        ("list-prefix-decisions", 0),
+        ("list-prefix-effects", 0),
+    ]);
+}
+
+#[test]
+fn closed_display_dictionaries_keep_raw_types_values_cold_effects_and_cleanup() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("tuple-show-kernel", 0),
+        ("closed-display-values", 0),
+        ("tuple-display", 0),
+        ("tuple-nominal", 0),
+        ("closed-display-effects", 0),
+        ("tuple-effects", 0),
+        ("closed-display-defect", 70),
+        ("tuple-defect", 70),
+    ]);
+}
+
+#[test]
+fn closed_display_factories_are_lazy_on_fresh_bun_and_node_modules() {
+    use prefix_process::{bounded, runtime, successful};
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/tuple-show-kernel.ssrg");
+    for (name, profile) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("main.ssrg", "display/main", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        assert_eq!(compiled.typescript_ir.closed_display_dictionaries.len(), 1);
+        let directory = scratch.0.join(name);
+        fs::create_dir(&directory).unwrap();
+        let file = directory.join("original.ts");
+        fs::write(&file, compiled.generated.typescript).unwrap();
+        let output = bounded(
+            Command::new(runtime("bun", &directory))
+                .arg(root.join("scripts/closed-display-probe.ts"))
+                .arg(&file)
+                .current_dir(&root),
+            &directory,
+        );
+        successful(output.clone());
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout)
+                .matches("\"zeroStepCold\":true")
+                .count(),
+            2
+        );
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout)
+                .matches("\"changingInputs\":1000")
+                .count(),
+            2
+        );
     }
 }
 

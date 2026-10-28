@@ -18,6 +18,8 @@ pub(super) struct TypeScriptTypeContext {
     type_function_scopes: Vec<Vec<u32>>,
     kind_templates: BTreeMap<String, super::TypeScriptKindConstructor>,
     kind_requirements: Arc<Mutex<super::kinds::Requirements>>,
+    closed_display_dictionaries:
+        Arc<Mutex<BTreeMap<String, super::TypeScriptClosedDisplayDictionary>>>,
     value_parameters: BTreeSet<String>,
     arities: BTreeMap<String, u32>,
     private_struct_names: BTreeSet<String>,
@@ -37,6 +39,7 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
             type_function_scopes: Vec::new(),
             kind_templates: BTreeMap::new(),
             kind_requirements: Default::default(),
+            closed_display_dictionaries: Default::default(),
             value_parameters: BTreeSet::new(),
             arities: BTreeMap::new(),
             private_struct_names: BTreeSet::new(),
@@ -48,6 +51,40 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn closed_display_dictionary(
+        &self,
+        key: String,
+        factory: super::TypeScriptExpr,
+    ) -> String {
+        let mut entries = self
+            .closed_display_dictionaries
+            .lock()
+            .expect("closed display factories");
+        if let Some(entry) = entries.get(&key) {
+            return entry.name.clone();
+        }
+        let name = format!("$ssrg$closedDisplay${}", entries.len());
+        entries.insert(
+            key,
+            super::TypeScriptClosedDisplayDictionary {
+                name: name.clone(),
+                factory,
+            },
+        );
+        name
+    }
+
+    pub(super) fn closed_display_dictionaries(
+        &self,
+    ) -> Vec<super::TypeScriptClosedDisplayDictionary> {
+        self.closed_display_dictionaries
+            .lock()
+            .expect("closed display factories")
+            .values()
+            .cloned()
+            .collect()
+    }
+
     fn project_type_function(&self, value: &CoreType) -> Option<TypeScriptType> {
         let CoreType::TypeFunction {
             parameter_kinds,

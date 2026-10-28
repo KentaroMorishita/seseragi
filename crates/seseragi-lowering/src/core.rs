@@ -5,6 +5,7 @@ use seseragi_syntax::{ByteSpan, ForeignCallKind, ForeignCallMode, TypeParameter,
 use std::collections::BTreeSet;
 
 mod adt;
+mod closed_display;
 mod decision;
 mod expr;
 mod instances;
@@ -13,6 +14,7 @@ mod types;
 
 use adt::{lower_adt, AdtDeclInput};
 pub use adt::{CoreAdt, CoreAdtVariant};
+pub use closed_display::closed_standard_display_key;
 pub use decision::{
     CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest,
 };

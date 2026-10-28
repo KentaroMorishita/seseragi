@@ -20,6 +20,9 @@ pub(super) fn freshen_runtime_imports(module: &mut TypeScriptModule) {
     if renames.is_empty() {
         return;
     }
+    for dictionary in &mut module.closed_display_dictionaries {
+        rewrite_expr(&mut dictionary.factory, &renames);
+    }
     for binding in &mut module.bindings {
         match binding {
             TypeScriptBinding::Const { initializer, .. } => rewrite_expr(initializer, &renames),
@@ -55,6 +58,12 @@ fn declaration_names(module: &TypeScriptModule) -> BTreeSet<String> {
         .chain(module.functions.iter().map(|function| match function {
             TypeScriptFunction::ConstFunction { name, .. } => name.clone(),
         }))
+        .chain(
+            module
+                .closed_display_dictionaries
+                .iter()
+                .map(|dictionary| dictionary.name.clone()),
+        )
         .chain(
             module
                 .instances

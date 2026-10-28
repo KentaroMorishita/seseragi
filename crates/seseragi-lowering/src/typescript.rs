@@ -5,6 +5,7 @@ use seseragi_syntax::{TypeParameter, Visibility};
 use std::collections::BTreeMap;
 
 mod adt;
+mod closed_display;
 mod decision;
 mod dictionaries;
 mod expr;
@@ -19,6 +20,7 @@ mod type_imports;
 pub(crate) mod types;
 
 use adt::lower_core_adt_to_typescript;
+pub use closed_display::TypeScriptClosedDisplayDictionary;
 use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
 use imports::freshen_runtime_imports;
 pub(crate) use instances::evidence_parameter_name;
@@ -47,6 +49,8 @@ pub struct TypeScriptModule {
     pub module: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub higher_kinds: Option<TypeScriptKinds>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub closed_display_dictionaries: Vec<TypeScriptClosedDisplayDictionary>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub foreign_modules: Vec<TypeScriptForeignModule>,
     pub runtime_requirements: Vec<String>,
@@ -1173,6 +1177,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         stage: "typescript-ir".to_owned(),
         module: module.module,
         higher_kinds: module_imports.type_names.higher_kinds(),
+        closed_display_dictionaries: module_imports.type_names.closed_display_dictionaries(),
         foreign_modules,
         runtime_requirements,
         imports,

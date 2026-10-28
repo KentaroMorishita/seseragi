@@ -498,7 +498,18 @@ impl Backend<'_> {
                 }
             }
             if let Some(dictionary) = self.structural_display_dictionary(selected, scope)? {
-                values.push(dictionary);
+                if let Some(key) = seseragi_lowering::closed_standard_display_key(
+                    selected,
+                    scope.bound_type_names(),
+                ) {
+                    self.closed_dictionary_sites += 1;
+                    values.push(format!(
+                        "cached({}, || {dictionary})",
+                        quoted(&format!("closed-standard-display:{key}"))
+                    ));
+                } else {
+                    values.push(dictionary);
+                }
                 continue;
             }
             if let Some(dictionary) = self.filesystem_display_dictionary(selected, scope)? {
