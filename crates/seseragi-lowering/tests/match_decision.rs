@@ -17,7 +17,7 @@ fn wide_list_decisions_share_only_proved_cursors() {
     assert!(bundle.typescript.contains("$ssrg_prefix31.head"));
     assert!(bundle
         .typescript
-        .contains("const $ssrg_prefix32 = $ssrg_prefix31.tail"));
+        .contains("$ssrg_prefix32 = $ssrg_prefix31.tail"));
     assert!(!bundle.typescript.contains(".tail.tail.tail"));
     assert_eq!(
         bundle
@@ -52,11 +52,19 @@ fn prefix_guards_share_the_once_evaluated_scrutinee_without_sharing_arms() {
     let source = "fn input values: List<Int> -> List<Int> = values\n\npub fn guarded values: List<Int> -> Int = match input values { `[a,b] when a == 0 -> b\n `[a,b] when a == 1 -> a\n `[a,b,...tail] -> b\n _ -> -1 }";
     let bundle = emit_typescript_module(lower("prefix/main.ssrg", source), source);
     assert_eq!(bundle.typescript.matches("input(values)").count(), 1);
-    assert!(bundle.typescript.contains("$ssrg_prefix_branch0"));
-    assert!(bundle.typescript.contains("$ssrg_prefix_branch1"));
+    assert_eq!(
+        bundle
+            .typescript
+            .matches("$ssrg_prefix1 = $ssrg_prefix0.tail")
+            .count(),
+        3
+    );
     assert!(bundle
         .typescript
-        .contains("$ssrg_prefix2.tag !== \"Empty\""));
+        .contains("$ssrg_prefix2 = $ssrg_prefix1.tail, true"));
+    assert!(bundle
+        .typescript
+        .contains("$ssrg_prefix2.tag === \"Empty\""));
 }
 
 #[test]

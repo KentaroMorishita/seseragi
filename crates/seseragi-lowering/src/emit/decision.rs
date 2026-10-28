@@ -44,59 +44,75 @@ fn render_prefix_branches(
     result: &TypeScriptType,
     render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
 ) -> String {
-    let mut body = format!("((): {} => {{", render_typescript_type(result));
-    for (index, branch) in branches.iter().enumerate() {
-        let Some(plan) = &branch.list_prefix else {
-            let value = render_with_bindings(&branch.bindings, &render_value(branch), result);
-            if let Some(condition) = render_condition(branch) {
-                body.push_str(&format!("if ({condition}) {{ return {value}; }}"));
-            } else {
-                body.push_str(&format!("return {value};"));
-            }
-            continue;
-        };
-        let label = format!("$ssrg_prefix_branch{index}");
-        body.push_str(&format!(
-            "{label}: {{ const $ssrg_prefix0 = {SCRUTINEE_NAME};"
-        ));
-        for cursor in 0..plan.length {
-            body.push_str(&format!(
-                "if ($ssrg_prefix{cursor}.tag !== \"Cons\") break {label}; const $ssrg_prefix{} = $ssrg_prefix{cursor}.tail;",
-                cursor + 1
-            ));
-        }
-        if !plan.minimum {
-            body.push_str(&format!(
-                "if ($ssrg_prefix{}.tag !== \"Empty\") break {label};",
-                plan.length
-            ));
-        }
-        let mut parts = branch.tests[1..]
-            .iter()
-            .map(|test| render_test_with_prefix(test, true))
-            .collect::<Vec<_>>();
-        if let Some(guard) = &branch.guard {
-            parts.push(render_with_bindings_and_prefix(
-                &branch.bindings,
-                &render_typescript_expr(guard),
-                &TypeScriptType::Boolean,
-                true,
-            ));
-        }
-        let value =
-            render_with_bindings_and_prefix(&branch.bindings, &render_value(branch), result, true);
-        if parts.is_empty() {
-            body.push_str(&format!("return {value};"));
-        } else {
-            body.push_str(&format!(
-                "if ({}) {{ return {value}; }}",
-                parts.join(" && ")
-            ));
-        }
-        body.push('}');
+    let length = branches
+        .iter()
+        .filter_map(|branch| branch.list_prefix.as_ref().map(|plan| plan.length))
+        .max()
+        .unwrap();
+    let mut body = format!("{{ const $ssrg_prefix0 = {SCRUTINEE_NAME};");
+    for index in 1..=length {
+        body.push_str(&format!("let $ssrg_prefix{index} = {SCRUTINEE_NAME};"));
     }
-    body.push_str("throw new Error(\"non-exhaustive Seseragi match\"); })()");
+    body.push_str(&format!(
+        "return {}; }}",
+        render_prefix_branch_expression(branches, result, render_value)
+    ));
     body
+}
+
+fn render_prefix_branch_expression(
+    branches: &[TypeScriptDecisionBranch],
+    result: &TypeScriptType,
+    render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
+) -> String {
+    let Some((branch, rest)) = branches.split_first() else {
+        return "((): never => { throw new Error(\"non-exhaustive Seseragi match\"); })()"
+            .to_owned();
+    };
+    let Some(plan) = &branch.list_prefix else {
+        let value = render_with_bindings(&branch.bindings, &render_value(branch), result);
+        return match render_condition(branch) {
+            Some(condition) => format!(
+                "{condition} ? {value} : {}",
+                render_prefix_branch_expression(rest, result, render_value)
+            ),
+            None => value,
+        };
+    };
+    let mut parts = vec!["$ssrg_prefix0.tag === \"Cons\"".to_owned()];
+    for index in 1..=plan.length {
+        let test = if index < plan.length {
+            format!("$ssrg_prefix{index}.tag === \"Cons\"")
+        } else if !plan.minimum {
+            format!("$ssrg_prefix{index}.tag === \"Empty\"")
+        } else {
+            "true".to_owned()
+        };
+        parts.push(format!(
+            "($ssrg_prefix{index} = $ssrg_prefix{}.tail, {test})",
+            index - 1
+        ));
+    }
+    parts.extend(
+        branch.tests[1..]
+            .iter()
+            .map(|test| render_test_with_prefix(test, true)),
+    );
+    if let Some(guard) = &branch.guard {
+        parts.push(render_with_bindings_and_prefix(
+            &branch.bindings,
+            &render_typescript_expr(guard),
+            &TypeScriptType::Boolean,
+            true,
+        ));
+    }
+    let value =
+        render_with_bindings_and_prefix(&branch.bindings, &render_value(branch), result, true);
+    format!(
+        "{} ? {value} : {}",
+        parts.join(" && "),
+        render_prefix_branch_expression(rest, result, render_value)
+    )
 }
 
 fn render_branches(

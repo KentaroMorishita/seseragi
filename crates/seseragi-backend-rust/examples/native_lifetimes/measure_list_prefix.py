@@ -71,6 +71,7 @@ def main():
     for name in ["cli", "typescript-emitter", "out"]:
         parser.add_argument("--" + name, required=True)
     parser.add_argument("--compare-with")
+    parser.add_argument("--typescript-only", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[4]
     source = root / "examples/spec/fixtures/rust-backend/list-prefix-kernel.ssrg"
@@ -78,9 +79,10 @@ def main():
     stage.mkdir(parents=True, exist_ok=False)
     cli, emitter = Path(args.cli).resolve(), Path(args.typescript_emitter).resolve()
     native_env = dict(os.environ, PATH="")
-    run([cli, "experimental", "build-native", source, "--entry", "probe",
-         "--out-dir", stage / "native"])
-    assert run([stage / "native/program"], env=native_env).strip() == "675000"
+    if not args.typescript_only:
+        run([cli, "experimental", "build-native", source, "--entry", "probe",
+             "--out-dir", stage / "native"])
+        assert run([stage / "native/program"], env=native_env).strip() == "675000"
     run([emitter, source, stage / "ts"])
     config = {
         "compilerOptions": {"strict": True, "noEmit": True, "skipLibCheck": False,
@@ -94,26 +96,32 @@ def main():
     run(["node", root / "node_modules/typescript/bin/tsc", "-p", stage / "tsconfig.json"])
     run(["bun", "build", stage / "ts/release.ts", "--target=node", "--format=esm",
          "--outfile", stage / "module.mjs"])
-    metadata = json.loads((stage / "native/rust-backend.json").read_text())
-    symbols = ["v_" + (metadata["module"] + f"::kernel{w}").encode().hex()
-               + "(vec![])" for w in WIDTHS]
-    generated = (stage / "native/program.rs").read_text()
-    offset = generated.rfind("\nfn main()")
-    assert offset > 1000
-    (stage / "timing.rs").write_text(generated[:offset] + RUST.replace("KERNELS", ",".join(symbols)))
-    run(["rustc", "--edition=2021", "-O", stage / "timing.rs", "-o", stage / "timing"])
+    if not args.typescript_only:
+        metadata = json.loads((stage / "native/rust-backend.json").read_text())
+        symbols = ["v_" + (metadata["module"] + f"::kernel{w}").encode().hex()
+                   + "(vec![])" for w in WIDTHS]
+        generated = (stage / "native/program.rs").read_text()
+        offset = generated.rfind("\nfn main()")
+        assert offset > 1000
+        (stage / "timing.rs").write_text(generated[:offset] + RUST.replace("KERNELS", ",".join(symbols)))
+        run(["rustc", "--edition=2021", "-O", stage / "timing.rs", "-o", stage / "timing"])
     (stage / "measure.mjs").write_text(JS)
-    commands = {"native": [stage / "timing"], "bun": ["bun", stage / "measure.mjs"],
-                "node": ["node", stage / "measure.mjs"]}
+    commands = {"bun": ["bun", stage / "measure.mjs"], "node": ["node", stage / "measure.mjs"]}
+    controls = ["module.mjs", "measure.mjs"]
+    if not args.typescript_only:
+        commands = {"native": [stage / "timing"], **commands}
+        controls.insert(0, "timing")
     if args.compare_with:
         base = Path(args.compare_with).resolve()
         previous = json.loads((base / "report.json").read_text())
         assert previous["sourceSha256"] == digest(source)
-        for name in ["timing", "module.mjs", "measure.mjs"]:
+        for name in controls:
             assert previous["controlsSha256"][name] == digest(base / name)
-        commands = {"baseline-native": [base / "timing"],
-                    "baseline-bun": ["bun", base / "measure.mjs"],
-                    "baseline-node": ["node", base / "measure.mjs"], **commands}
+        baseline_commands = {"baseline-bun": ["bun", base / "measure.mjs"],
+                             "baseline-node": ["node", base / "measure.mjs"]}
+        if not args.typescript_only:
+            baseline_commands = {"baseline-native": [base / "timing"], **baseline_commands}
+        commands = {**baseline_commands, **commands}
     names = list(commands)
     raw = {name: [] for name in names}
     for iteration in range(len(names) * 2):
@@ -126,9 +134,9 @@ def main():
                 assert len(row["samplesNs"]) == 5 and row["warmups"] >= 3
             raw[name].append(data)
     report = {"sourceSha256": digest(source),
-        "generatedRustSha256": digest(stage / "native/program.rs"),
+        "generatedRustSha256": None if args.typescript_only else digest(stage / "native/program.rs"),
         "typescriptSha256": {p: digest(stage / "ts" / (p + ".ts")) for p in ["development", "release"]},
-        "controlsSha256": {p: digest(stage / p) for p in ["timing", "module.mjs", "measure.mjs"]},
+        "controlsSha256": {p: digest(stage / p) for p in controls},
         "compilerIdentity": json.loads(run([cli, "--version-json"])),
         "host": platform.platform(), "runtimes": {p: run([p, "--version"]).strip() for p in ["rustc", "bun", "node"]},
         "protocol": {"widths": WIDTHS, "callsPerSample": 1000,
@@ -136,7 +144,7 @@ def main():
             "warmup": ">=3 samples and >=1 second per width", "order": "balanced rotation",
             "bodyRewritten": False, "tsPhysicalHeapMeasured": False,
             "excluded": ["compile", "module load", "process startup", "checksum assertions"]},
-        "strictBothProfiles": True, "nativeManagedLiveAfterTeardown": 0, "raw": raw,
+        "typescriptOnly": args.typescript_only, "strictBothProfiles": True, "nativeManagedLiveAfterTeardown": None if args.typescript_only else 0, "raw": raw,
         "medianNsPerDecision": {name: {str(w): statistics.median(v for row in rows
             for v in row[str(w)]["samplesNs"])/1000 for w in WIDTHS} for name, rows in raw.items()}}
     (stage / "report.json").write_text(json.dumps(report, indent=2) + "\n")
