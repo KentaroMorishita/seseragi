@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.113] - 2026-10-29
+
+### Changed
+
+- Reduce native allocation for short-lived ADT values by retaining canonical constructor tags and directly reclaiming childless final owners. Preserve shared graphs, borrowed Refs, cycles and scoped cleanup.
+- Reuse proved List prefix cursors in TypeScript and native decisions while preserving short-circuit guards, one scrutinee evaluation, captured tails and binding snapshots.
+- Lazily reuse closed standard tuple Show/Debug dictionaries after checking canonical types and child evidence. Keep first reads cold, preserve changing inputs and module ownership, and retain the existing path for user, generic and unproved factories.
+
 ## [0.61.112] - 2026-10-29
 
 ### Added

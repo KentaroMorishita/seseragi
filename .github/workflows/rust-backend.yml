@@ -71,6 +71,7 @@ on:
       - "scripts/float-probe.mjs"
       - "scripts/list-probe.ts"
       - "scripts/list-probe.mjs"
+      - "scripts/closed-display-probe.ts"
   push:
     branches: [main]
     paths:
@@ -142,6 +143,7 @@ on:
       - "scripts/float-probe.mjs"
       - "scripts/list-probe.ts"
       - "scripts/list-probe.mjs"
+      - "scripts/closed-display-probe.ts"
   workflow_dispatch:
     inputs:
       integration:
@@ -208,6 +210,10 @@ jobs:
           --test captured_primitive_identity
           --test program_wasm
           --test program_wasm_host_effect
+      - name: Preserve checked cursors and lazy standard display on every host
+        run: |
+          cargo test --locked -p seseragi-cli --test rust_backend list_prefix_
+          cargo test --locked -p seseragi-cli --test rust_backend closed_display_
       - name: Rebuild selected program dependencies and drain old browser owners
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
