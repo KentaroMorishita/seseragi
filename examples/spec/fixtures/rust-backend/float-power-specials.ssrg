@@ -42,4 +42,5 @@ pub effect fn main = do {
   println (floats.format ((2.0) ** (-1074.0)))
   println (floats.format ((-2.0) ** (-1075.0)))
   println (floats.format (1.5 ** 2.0))
+  println (floats.format (floats.power 2.0 1.5))
 }
