@@ -9,8 +9,8 @@ mod types;
 
 pub(crate) use model::InstanceContractIssue;
 use model::{TraitContract, TraitMethodContract};
-pub(crate) use types::alias_constructor_omitted_suffix;
 pub(super) use types::unrepresented_alias_head;
+pub(crate) use types::{alias_constructor_omitted_suffix, alias_constructor_type_function};
 pub(super) use types::{canonical_type_identity, has_unrepresented_parameters};
 pub(crate) use types::{dependency_head, local_head, CoherenceHead, HeadRelation};
 

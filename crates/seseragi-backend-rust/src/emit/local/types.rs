@@ -96,6 +96,9 @@ impl Backend<'_> {
         ty: &CoreType,
         scope: &Scope,
     ) -> Option<usize> {
+        if matches!(ty, CoreType::TypeFunction { .. }) {
+            return self.declared_method_type_kind(ty, scope);
+        }
         if let CoreType::Named { name, arguments } = ty {
             if arguments.is_empty() {
                 if let Some(arity) = scope.type_parameter_arity(name) {
@@ -139,6 +142,25 @@ impl Backend<'_> {
     ) -> Result<()> {
         if let CoreType::Named { name, arguments } = template {
             if let Some(arity) = variables.get(name) {
+                if let Some(bound @ CoreType::TypeFunction { .. }) = bindings.get(name) {
+                    let applied =
+                        seseragi_syntax::type_functions::apply_type_function(bound, arguments)
+                            .ok_or("Rust backend: unproven type-function application")?;
+                    return self.match_local_type(&applied, actual, variables, bindings, scope);
+                }
+                if arguments.is_empty() && matches!(actual, CoreType::TypeFunction { .. }) {
+                    if self.declared_method_type_kind(actual, scope) != Some(*arity as usize) {
+                        return Err("Rust backend: type-function binder kind mismatch".into());
+                    }
+                    let actual = actual
+                        .normalized_type_function()
+                        .ok_or("Rust backend: unproven closed type function")?;
+                    if bindings.get(name).is_some_and(|bound| bound != &actual) {
+                        return Err("Rust backend: local callable type parameter mismatch".into());
+                    }
+                    bindings.insert(name.clone(), actual);
+                    return Ok(());
+                }
                 let actual = if *arity == 0 && arguments.is_empty() {
                     self.local_canonical_type(actual, scope)?
                 } else {

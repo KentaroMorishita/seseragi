@@ -276,6 +276,8 @@ fn type_mismatch(
 
 fn contains_unknown(document: &TypeDocument) -> bool {
     match document {
+        TypeDocument::TypeFunction { body, .. } => contains_unknown(body),
+        TypeDocument::TypeFunctionParameter { .. } => false,
         TypeDocument::Unknown => true,
         TypeDocument::Named { arguments, .. } | TypeDocument::Variable { arguments, .. } => {
             arguments.iter().any(contains_unknown)

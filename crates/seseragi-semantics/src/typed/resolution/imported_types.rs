@@ -110,6 +110,11 @@ impl ImportedTypeContext {
         bindings: &[ExternalTypeBinding],
     ) -> TypedType {
         match type_ref {
+            // A checked constructor body is closed over canonical owners and
+            // scoped indices. Ordinary import localization must not turn its
+            // intrinsic leaves back into consumer-local display names.
+            TypedType::TypeFunction { .. } => type_ref,
+            TypedType::TypeFunctionParameter { .. } => type_ref,
             TypedType::Named { name, arguments } => {
                 let localized_name = if type_parameters.contains(&name) {
                     name.clone()
@@ -232,6 +237,65 @@ impl ImportedTypeContext {
         }
     }
 
+    fn type_function_value(&self, type_ref: &InterfaceType) -> Option<SemanticValueType> {
+        let type_value = crate::typed::type_ref::typed_type_from_interface_type(type_ref.clone())?;
+        let key = match type_ref {
+            InterfaceType::ExternalNamed {
+                canonical,
+                arguments,
+                ..
+            } => {
+                let arguments = arguments
+                    .iter()
+                    .map(|argument| self.type_function_value(argument))
+                    .collect::<Option<Vec<_>>>()?;
+                match self.canonical_owners.get(canonical) {
+                    Some(owner) => self.owner_key(*owner, arguments),
+                    None => SemanticTypeKey::ExternalNominal {
+                        canonical: canonical.clone(),
+                        arguments,
+                    },
+                }
+            }
+            InterfaceType::TypeFunctionParameter { .. } => SemanticTypeKey::Other,
+            InterfaceType::TypeFunction {
+                parameter_kinds,
+                body,
+            } => SemanticTypeKey::TypeFunction {
+                parameter_kinds: parameter_kinds.clone(),
+                body: Box::new(self.type_function_value(body)?),
+            },
+            InterfaceType::Function { parameter, result } => SemanticTypeKey::Function {
+                parameter: Box::new(self.type_function_value(parameter)?),
+                result: Box::new(self.type_function_value(result)?),
+            },
+            InterfaceType::Tuple { elements } => SemanticTypeKey::Tuple(
+                elements
+                    .iter()
+                    .map(|element| self.type_function_value(element).map(|value| value.key))
+                    .collect::<Option<_>>()?,
+            ),
+            InterfaceType::Record { fields, .. } => SemanticTypeKey::Record(
+                fields
+                    .iter()
+                    .map(|field| {
+                        Some((
+                            field.name.clone(),
+                            self.type_function_value(&field.type_ref)?,
+                        ))
+                    })
+                    .collect::<Option<_>>()?,
+            ),
+            // No free display-name binder or inference hole is accepted as a
+            // captured constructor body at an imported semantic boundary.
+            _ => return None,
+        };
+        Some(SemanticValueType {
+            type_ref: type_value,
+            key,
+        })
+    }
+
     fn semantic_key(
         &self,
         type_ref: &InterfaceType,
@@ -240,6 +304,14 @@ impl ImportedTypeContext {
         bindings: &[ExternalTypeBinding],
     ) -> Option<SemanticTypeKey> {
         match type_ref {
+            InterfaceType::TypeFunction {
+                parameter_kinds,
+                body,
+            } => Some(SemanticTypeKey::TypeFunction {
+                parameter_kinds: parameter_kinds.clone(),
+                body: Box::new(self.type_function_value(body)?),
+            }),
+            InterfaceType::TypeFunctionParameter { .. } => Some(SemanticTypeKey::Other),
             InterfaceType::Named { name, arguments } => {
                 if arguments.is_empty() && type_parameters.contains(name) {
                     return Some(SemanticTypeKey::SchemeParameter(name.clone()));

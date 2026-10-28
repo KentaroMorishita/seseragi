@@ -411,7 +411,9 @@ pub(crate) fn infer_type_parameters(
             if arguments.is_empty()
                 && matches!(
                     argument,
-                    TypedType::Named { .. } | TypedType::ExternalNamed { .. }
+                    TypedType::Named { .. }
+                        | TypedType::ExternalNamed { .. }
+                        | TypedType::TypeFunction { .. }
                 )
             {
                 substitutions
@@ -623,6 +625,8 @@ fn split_constructor_application(
 
 fn contains_type_parameter(type_ref: &TypedType, parameters: &[TypeParameter]) -> bool {
     match type_ref {
+        TypedType::TypeFunction { body, .. } => contains_type_parameter(body, parameters),
+        TypedType::TypeFunctionParameter { .. } => false,
         TypedType::Named { name, arguments } => {
             parameters.iter().any(|parameter| parameter.name == *name)
                 || arguments
@@ -654,6 +658,14 @@ pub(crate) fn substitute_type_parameters(
     substitutions: &BTreeMap<String, TypedType>,
 ) -> TypedType {
     match type_ref {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => TypedType::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(substitute_type_parameters(body, substitutions)),
+        },
+        TypedType::TypeFunctionParameter { .. } => type_ref.clone(),
         TypedType::Named { name, arguments } if arguments.is_empty() => substitutions
             .get(name)
             .cloned()
@@ -664,6 +676,10 @@ pub(crate) fn substitute_type_parameters(
                 .map(|argument| substitute_type_parameters(argument, substitutions))
                 .collect::<Vec<_>>();
             match substitutions.get(name) {
+                Some(constructor @ TypedType::TypeFunction { .. }) => {
+                    crate::typed::type_functions::apply(constructor, arguments)
+                        .unwrap_or(TypedType::Hole)
+                }
                 Some(TypedType::Named {
                     name: constructor,
                     arguments: existing,

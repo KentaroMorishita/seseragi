@@ -1,0 +1,30 @@
+pub type Pair<A, B> = | Pair (A, B)
+pub alias Flip<A, B> = Pair<B, A>
+pub alias Repeat<A> = Pair<A, A>
+pub alias Erase<A> = Int
+
+pub trait Tag2<F<_, _>> {
+  fn tag2<A, B> prefix: String -> value: F<A, B> -> String
+}
+
+pub trait Tag1<F<_>> {
+  fn tag1<A> prefix: String -> value: F<A> -> String
+}
+
+instance Tag2<Flip> {
+  fn tag2<A, B> prefix: String -> value: Pair<B, A> -> String = prefix + "flip"
+}
+
+instance Tag1<Repeat> {
+  fn tag1<A> prefix: String -> value: Pair<A, A> -> String = prefix + "repeat"
+}
+
+instance Tag1<Erase> {
+  fn tag1<A> prefix: String -> value: Int -> String = prefix + "erased"
+}
+
+pub fn label2<F<_, _>, A, B> prefix: String -> value: F<A, B> -> String where Tag2<F> =
+  tag2<F, A, B> prefix value
+
+pub fn label1<F<_>, A> prefix: String -> value: F<A> -> String where Tag1<F> =
+  tag1<F, A> prefix value

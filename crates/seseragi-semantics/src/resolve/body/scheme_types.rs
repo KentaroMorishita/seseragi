@@ -277,7 +277,10 @@ fn collect_bindings(
                 collect_bindings(operand, type_parameters, candidates, bindings)?;
             }
         }
-        InterfaceType::Hole => {}
+        InterfaceType::TypeFunction { body, .. } => {
+            collect_bindings(body, type_parameters, candidates, bindings)?;
+        }
+        InterfaceType::TypeFunctionParameter { .. } | InterfaceType::Hole => {}
     }
     Some(())
 }

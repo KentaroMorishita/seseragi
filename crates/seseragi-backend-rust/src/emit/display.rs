@@ -226,10 +226,21 @@ pub(super) fn canonical_type(
 ) -> Option<CoreType> {
     let recur = |ty| canonical_type(ty, owner, substitutions, type_names, declaration_scope);
     Some(match ty {
+        CoreType::TypeFunction { .. } => ty.normalized_type_function()?,
+        CoreType::TypeFunctionParameter { .. } => return None,
         CoreType::Hole => return None,
         CoreType::Named { name, arguments } => {
             let arguments = arguments.iter().map(recur).collect::<Option<Vec<_>>>()?;
             if let Some(bound) = substitutions.get(name) {
+                if matches!(bound, CoreType::TypeFunction { .. }) {
+                    let applied =
+                        seseragi_syntax::type_functions::apply_type_function(bound, &arguments)?;
+                    return if matches!(applied, CoreType::TypeFunction { .. }) {
+                        applied.normalized_type_function()
+                    } else {
+                        recur(&applied)
+                    };
+                }
                 let mut bound = bound.clone();
                 match &mut bound {
                     CoreType::Named {

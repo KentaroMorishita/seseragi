@@ -55,7 +55,10 @@ impl Backend<'_> {
         let expected = &selected.constraint.arguments[0];
         fn value_binders(ty: &CoreType, scope: &Scope) -> bool {
             match ty {
-                CoreType::Hole | CoreType::RequirementMerge { .. } => false,
+                CoreType::TypeFunction { .. }
+                | CoreType::TypeFunctionParameter { .. }
+                | CoreType::Hole
+                | CoreType::RequirementMerge { .. } => false,
                 CoreType::Named { name, arguments } => {
                     scope
                         .type_parameter_arity(name)

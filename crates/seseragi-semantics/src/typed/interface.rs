@@ -29,6 +29,8 @@ pub(super) fn prelude_method_interface(
     ) {
         use crate::TypedType;
         match type_ref {
+            TypedType::TypeFunction { body, .. } => collect_providers(body, bindings),
+            TypedType::TypeFunctionParameter { .. } => {}
             TypedType::ExternalNamed {
                 name,
                 canonical,

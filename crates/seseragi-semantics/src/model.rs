@@ -465,6 +465,17 @@ pub enum TypedInstanceEvidence {
     rename_all_fields = "camelCase"
 )]
 pub enum TypedType {
+    /// A checked transparent constructor that cannot be represented by a
+    /// nominal prefix/section. Binders are scoped indices, never source names.
+    /// This is a compile-time type function, not a source function or value.
+    TypeFunction {
+        parameter_kinds: Vec<u32>,
+        body: Box<TypedType>,
+    },
+    TypeFunctionParameter {
+        depth: u32,
+        index: u32,
+    },
     Named {
         name: String,
         arguments: Vec<TypedType>,

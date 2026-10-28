@@ -206,6 +206,18 @@ fn emit_body(
     }
     for instance in &module.instances {
         backend.owner = &owners[&instance.identity];
+        if backend.program_wasm_library
+            && instance
+                .arguments
+                .iter()
+                .any(CoreType::contains_type_function)
+        {
+            return Err(crate::project::at(
+                "program WASM: checked type-function dictionaries are unsupported",
+                &instance.origin,
+                backend.owner,
+            ));
+        }
         let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
             return Err(crate::project::at(
                 "Rust backend: derived instances are unsupported",

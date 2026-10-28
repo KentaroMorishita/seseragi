@@ -301,6 +301,9 @@ fn canonical_type_spelling(type_ref: &InterfaceType) -> Result<String, String> {
             .collect::<Result<Vec<_>, _>>()?
             .join(" & ")),
         InterfaceType::TypeConstructor { name, .. } => Ok(name.clone()),
+        InterfaceType::TypeFunction { .. } | InterfaceType::TypeFunctionParameter { .. } => {
+            Err("execution Effect environment contains a constructor-kinded type".to_owned())
+        }
         InterfaceType::Hole => {
             Err("execution Effect environment contains an unresolved type hole".to_owned())
         }

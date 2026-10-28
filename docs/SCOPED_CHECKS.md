@@ -98,6 +98,20 @@ strict、fresh Bun／Node、native、選択済みevidenceとsource一回評価�
 Failure／Defect後の解放を比較します。未束縛の一般type lambdaやHKT逆推論は含めません。
 共有frontendの変更なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
 
+transparent aliasの残るvalue-kind parameterを並替・重複・破棄するconstructorは、
+semanticsの`type_functions::tests`、loweringの`core::types::tests`、driverとbackendの
+`--test alias_type_functions`、driver／CLIの`--test alias_constructor_sections`で確認します。
+`Flip<A,B> = Pair<B,A>`、`Repeat<A> = Pair<A,A>`、`Erase<A> = Int`の明示type引数を使い、
+scoped slotのcaptureを避けた適用、canonical owner／provider、alpha同値の重複診断、
+renamed facade packageと保存methodのsource arityを保ちます。元のTS両profileのstrict、
+fresh Bun／Nodeとnativeの出力・source一回評価、Ref・cold再実行・Failure／Defect後の
+finalizerとroot解放を比較します。使わない束縛parameterもconstructorのarityに数え、
+失われるfree instance parameter、不正owner／kind、未証明の選択は位置付きで拒否します。
+このproducerはcanonical nominal applicationとscoped value slotに限ります。structural
+function／record／row constructor、一般HKT逆推論、完全なtype-function同値判定と
+program WASMの受入拡張は含めません。共有型表現・投影の変更なので、統合前は必要な
+全体gateとcanonical compiler WASMの再生成・公開consumer検証も必要です。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。

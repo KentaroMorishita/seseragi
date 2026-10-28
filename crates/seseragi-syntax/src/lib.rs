@@ -15,6 +15,7 @@ mod surface;
 mod surface_model;
 mod template;
 mod token;
+pub mod type_functions;
 pub mod unicode;
 mod unicode_data;
 

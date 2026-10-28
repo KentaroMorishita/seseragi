@@ -1169,6 +1169,8 @@ pub(super) fn collect_type_runtime_requirement(
     requirements: &mut Vec<String>,
 ) {
     match type_ref {
+        CoreType::TypeFunction { body, .. } => collect_type_runtime_requirement(body, requirements),
+        CoreType::TypeFunctionParameter { .. } => {}
         CoreType::Named { name, arguments } => {
             match name.as_str() {
                 "Int" => push_unique(requirements, "core.int"),

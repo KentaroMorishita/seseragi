@@ -216,6 +216,10 @@ fn standard_failure_name(type_ref: &InterfaceType) -> Option<&str> {
 
 fn canonical_type_spelling(type_ref: &InterfaceType) -> String {
     match type_ref {
+        InterfaceType::TypeFunction { .. } | InterfaceType::TypeFunctionParameter { .. } => {
+            seseragi_semantics::TypeDocument::from_interface_type(type_ref)
+                .render(Default::default())
+        }
         InterfaceType::Named { name, arguments }
         | InterfaceType::ExternalNamed {
             name, arguments, ..

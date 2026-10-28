@@ -1,0 +1,36 @@
+type Pair<A, B> = | Pair (A, B)
+alias Flip<A, B> = Pair<B, A>
+alias Repeat<A> = Pair<A, A>
+alias Erase<A> = Int
+
+trait Tag2<F<_, _>> {
+  fn tag2<A, B> value: F<A, B> -> String
+}
+
+trait Tag1<F<_>> {
+  fn tag1<A> value: F<A> -> String
+}
+
+instance Tag2<Flip> {
+  fn tag2<A, B> value: Pair<B, A> -> String = "flip"
+}
+
+instance Tag1<Repeat> {
+  fn tag1<A> value: Pair<A, A> -> String = "repeat"
+}
+
+instance Tag1<Erase> {
+  fn tag1<A> value: Int -> String = "erased"
+}
+
+pub effect fn main = do {
+  println (tag2<Flip, Int, Bool> (Pair (True, 42)))
+  println (tag1<Repeat, Int> (Pair (1, 2)))
+  println (tag1<Erase, Bool> 42)
+  let flipSaved = tag2<Flip, Int, Bool>
+  let repeatSaved = tag1<Repeat, Int>
+  let eraseSaved = tag1<Erase, Bool>
+  println (flipSaved (Pair (False, 7)))
+  println (repeatSaved (Pair (3, 4)))
+  println (eraseSaved 9)
+}

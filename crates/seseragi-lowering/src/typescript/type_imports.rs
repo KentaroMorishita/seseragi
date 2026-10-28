@@ -157,6 +157,10 @@ fn collect_type_imports(
     imports: &mut Vec<TypeScriptTypeImport>,
 ) {
     match type_ref {
+        CoreType::TypeFunction { body, .. } => {
+            collect_type_imports(body, bindings, requirements, imports)
+        }
+        CoreType::TypeFunctionParameter { .. } => {}
         CoreType::Named { name, arguments } => {
             if let Some(type_import) = if name == "List" && arguments.len() == 1 {
                 runtime_type_import("std/prelude::List")

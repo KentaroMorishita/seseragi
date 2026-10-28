@@ -46,6 +46,14 @@ impl Default for TypeRenderOptions {
     rename_all_fields = "camelCase"
 )]
 pub enum TypeDocument {
+    TypeFunction {
+        parameter_kinds: Vec<u32>,
+        body: Box<TypeDocument>,
+    },
+    TypeFunctionParameter {
+        depth: u32,
+        index: u32,
+    },
     Named {
         name: String,
         #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -305,6 +313,17 @@ fn typed_type_document(
     parameter_arities: &BTreeMap<String, u32>,
 ) -> TypeDocument {
     match type_ref {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => TypeDocument::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(typed_type_document(body, parameter_arities)),
+        },
+        TypedType::TypeFunctionParameter { depth, index } => TypeDocument::TypeFunctionParameter {
+            depth: *depth,
+            index: *index,
+        },
         TypedType::Named { name, arguments } => named_or_variable_document(
             name,
             None,
@@ -366,6 +385,19 @@ fn interface_type_document(
     parameter_arities: &BTreeMap<String, u32>,
 ) -> TypeDocument {
     match type_ref {
+        InterfaceType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => TypeDocument::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(interface_type_document(body, parameter_arities)),
+        },
+        InterfaceType::TypeFunctionParameter { depth, index } => {
+            TypeDocument::TypeFunctionParameter {
+                depth: *depth,
+                index: *index,
+            }
+        }
         InterfaceType::Named { name, arguments } => named_or_variable_document(
             name,
             None,
@@ -538,6 +570,8 @@ fn typed_parameter_arities(scheme: &TypedScheme) -> BTreeMap<String, u32> {
 
 fn collect_typed_parameter_arities(type_ref: &TypedType, arities: &mut BTreeMap<String, u32>) {
     match type_ref {
+        TypedType::TypeFunction { body, .. } => collect_typed_parameter_arities(body, arities),
+        TypedType::TypeFunctionParameter { .. } => {}
         TypedType::Named { name, arguments } => {
             if let Some(arity) = arities.get_mut(name) {
                 *arity = (*arity).max(arguments.len() as u32);
@@ -742,6 +776,26 @@ fn render_constraint(constraint: &TypeConstraintDocument, options: TypeRenderOpt
 
 fn render_compact(document: &TypeDocument, nested: bool) -> String {
     match document {
+        TypeDocument::TypeFunction {
+            parameter_kinds,
+            body,
+        } => format!(
+            "typefn<{}> => {}",
+            parameter_kinds
+                .iter()
+                .enumerate()
+                .map(|(index, arity)| render_constructor(&format!("T{index}"), *arity))
+                .collect::<Vec<_>>()
+                .join(", "),
+            render_compact(body, true)
+        ),
+        TypeDocument::TypeFunctionParameter { depth, index } => {
+            if *depth == 0 {
+                format!("T{index}")
+            } else {
+                format!("T{depth}_{index}")
+            }
+        }
         TypeDocument::Named {
             name, arguments, ..
         } => render_compact_application(name, arguments),
@@ -824,6 +878,9 @@ fn render_compact_application(name: &str, arguments: &[TypeDocument]) -> String 
 
 fn render_multiline(document: &TypeDocument, indent_width: usize, nested: bool) -> Vec<String> {
     let lines = match document {
+        TypeDocument::TypeFunction { .. } | TypeDocument::TypeFunctionParameter { .. } => {
+            vec![render_compact(document, nested)]
+        }
         TypeDocument::Named {
             name, arguments, ..
         } => render_multiline_application(name, arguments, indent_width),
