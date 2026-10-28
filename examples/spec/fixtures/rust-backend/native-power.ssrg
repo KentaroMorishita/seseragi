@@ -1,0 +1,15 @@
+import * as floats from "std/float"
+
+fn selected<A> base: A -> (A -> A) where Pow<A, A, A> = pow base
+
+pub fn probe -> String = {
+  let method: Int -> Int -> Int = pow
+  let saved = method 2
+  let generic = selected 3
+  let operator: Int -> Int -> Int = (**)
+  let floating = selected 2.0
+  let exponentFirst = floats.power 3.0
+  show (saved 3) + ":" + show (saved 4) + ":" + show (generic 3) + ":" + show (operator 5 2) + ":" + floats.format (floating 3.0) + ":" + floats.format (exponentFirst 2.0) + ":" + floats.format (floats.power 0.0 (floats.nan ())) + ":" + floats.format ((-0.0) ** 3.0) + ":" + floats.format (1.0 ** (floats.positiveInfinity ()))
+}
+
+pub effect fn main = println (probe ())

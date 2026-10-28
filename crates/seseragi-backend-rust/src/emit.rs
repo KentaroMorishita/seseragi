@@ -518,6 +518,9 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = floats::float_dictionary(selected) {
+                if let Some(validation) = self.primitive_operator_dictionary(selected, scope) {
+                    validation?;
+                }
                 self.capabilities.insert("float".into());
                 values.push(dictionary?);
                 continue;
@@ -648,6 +651,7 @@ impl Backend<'_> {
                 "*" => "mul",
                 "/" => "div",
                 "%" => "rem",
+                "**" => "pow",
                 _ => unreachable!(),
             };
             let dictionary = self.evidence(evidence, scope)?;
@@ -795,6 +799,9 @@ impl Backend<'_> {
                 {
                     self.validate_primitive_operator_result(&evidence[0], 0, type_ref, scope)?;
                 }
+                if name == "std/float::power" && !scope.contains(name) {
+                    self.validate_float_power_type(type_ref, 0, scope)?;
+                }
                 self.reference(name, evidence, scope)?
             }
             CoreExpr::EffectOperation {
@@ -914,6 +921,22 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if callee == "std/float::power" && !scope.contains(callee) {
+                    if !evidence.is_empty()
+                        || trait_dispatch.is_some()
+                        || !deferred_evidence_parameters.is_empty()
+                        || !deferred_evidence_type_constructor_parameters.is_empty()
+                        || evidence_argument_index.is_some()
+                    {
+                        return Err("Rust backend: unproven Float power evidence or staging".into());
+                    }
+                    self.validate_float_power_type(type_ref, arguments.len(), scope)?;
+                    for argument in arguments {
+                        let actual = local::method_argument_type(argument)
+                            .ok_or("Rust backend: unproven Float power argument type")?;
+                        self.validate_float_power_type(&actual, 2, scope)?;
+                    }
+                }
                 if let Some(value) = self.clock_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -1172,7 +1195,22 @@ impl Backend<'_> {
                         self.expr(right, scope)?
                     ));
                 }
+                if self.program_wasm_library && operator == "**" {
+                    return Err(
+                        "program WASM: native power requires a target-specific arithmetic proof"
+                            .into(),
+                    );
+                }
                 if floats::float_binary(evidence, operator) {
+                    if operator == "**" {
+                        self.validate_primitive_operator_binary(
+                            operator,
+                            [left, right],
+                            evidence,
+                            type_ref,
+                            scope,
+                        )?;
+                    }
                     self.capabilities.insert("float".into());
                     return Ok(format!(
                         "native_float_binary({}, {}, {})",
@@ -1215,7 +1253,7 @@ impl Backend<'_> {
                         quoted(operator)
                     ));
                 }
-                if matches!(operator.as_str(), "/" | "%") {
+                if matches!(operator.as_str(), "/" | "%" | "**") {
                     self.validate_primitive_operator_binary(
                         operator,
                         [left, right],
@@ -1528,6 +1566,7 @@ fn dictionary_arithmetic<'a>(evidence: &[CoreCallEvidence], operator: &'a str) -
         "*" => ("Mul", "mul"),
         "/" => ("Div", "div"),
         "%" => ("Rem", "rem"),
+        "**" => ("Pow", "pow"),
         _ => return None,
     };
     let [selected] = evidence else { return None };
