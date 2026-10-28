@@ -87,7 +87,7 @@ fn native_float_to_int(mode: &V, value: f64) -> V {
     native_right(V::Int(checked_int_value(rounded as i64)))
 }
 
-fn native_float_conversion_operation(name: &str, arguments: &[V]) -> Option<V> {
+fn native_float_conversion_operation(name: &'static str, arguments: &[V]) -> Option<V> {
     Some(match (name, arguments) {
         ("std/float::toInt", [mode, value]) => native_float_to_int(mode, native_float(value)),
         ("std/float::roundIntegral", [mode, value]) => V::Float(native_round_integral(
@@ -244,7 +244,16 @@ mod float_conversion_tests {
     fn conversion_checks_range_after_rounding_and_keeps_closed_error_owners() {
         clear_dictionaries();
         for name in NAMES {
-            let mode = V::adt(&format!("std/number::{name}"), V::Unit);
+            let tag = match name {
+                "HalfEven" => "std/number::HalfEven",
+                "HalfUp" => "std/number::HalfUp",
+                "TowardZero" => "std/number::TowardZero",
+                "AwayFromZero" => "std/number::AwayFromZero",
+                "Floor" => "std/number::Floor",
+                "Ceiling" => "std/number::Ceiling",
+                _ => unreachable!(),
+            };
+            let mode = V::adt(tag, V::Unit);
             for value in [
                 -9_007_199_254_740_991.0,
                 -4_503_599_627_370_497.0,

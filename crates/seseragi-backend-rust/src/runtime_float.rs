@@ -147,7 +147,7 @@ fn native_float_extreme(left: f64, right: f64, maximum: bool) -> f64 {
     }
 }
 
-fn native_float_operation(name: &str, args: Vec<V>) -> V {
+fn native_float_operation(name: &'static str, args: Vec<V>) -> V {
     match (name, args.as_slice()) {
         ("std/float::nan", [V::Unit]) => V::Float(f64::NAN),
         ("std/float::positiveInfinity", [V::Unit]) => V::Float(f64::INFINITY),

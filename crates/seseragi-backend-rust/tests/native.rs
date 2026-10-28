@@ -55,6 +55,39 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn scalar_adt_roundtrip_bounds_actual_system_allocations_and_releases_every_node() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/char-roundtrip-kernel.ssrg"
+    ));
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let mut generated = artifact.source[..main].to_owned();
+    generated.push_str(
+        &include_str!("../examples/native_lifetimes/char_allocation.rs")
+            .replace("KERNEL", &rust_id("native/main::kernel"))
+            .replace("ALLOCATION_BOUND", "1_114_113"),
+    );
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let measured: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(measured["checksum"], 620_506_872_831_i64);
+    assert_eq!(measured["managedLive"], 0);
+    assert_eq!(measured["allocations"], measured["deallocations"]);
+    assert_eq!(
+        measured["cumulativeRequestedBytes"],
+        measured["cumulativeReleasedBytes"]
+    );
+    assert!(measured["allocations"].as_u64().unwrap() <= 1_114_113);
+}
+
+#[test]
 fn array_index_keeps_maybe_bounds_generic_elements_and_saved_callables() {
     run(
         include_str!("../../../examples/spec/fixtures/rust-backend/array-index.ssrg"),

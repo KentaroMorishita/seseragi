@@ -76,6 +76,16 @@ impl<T: TraceValue + 'static> Drop for Shared<T> {
             drop(node);
             return;
         }
+        let mut managed_child = false;
+        let inspected = node.value.edges(&mut |value| {
+            managed_child |= value.node_id().is_some();
+        });
+        if inspected.is_ok() && !managed_child {
+            // Scalar payloads cannot recurse into another managed destructor.
+            // Failed inspection (for example a borrowed Ref) keeps the queue.
+            drop(node);
+            return;
+        }
         DROP_QUEUE.with(|queue| queue.borrow_mut().push(Box::new(node)));
         if DRAINING.with(|flag| flag.replace(true)) {
             return;
@@ -168,7 +178,7 @@ enum V {
     ListEmpty,
     List(Shared<ListCell>),
     Record(Shared<BTreeMap<String, V>>),
-    Adt(Shared<(String, V)>),
+    Adt(Shared<(&'static str, V)>),
     Fun(Shared<Function>),
     Dict(Shared<BTreeMap<String, V>>),
     Reference(Shared<RefCell<V>>),
@@ -189,8 +199,8 @@ impl V {
     fn fun(captures: Vec<V>, code: fn(&[V], V) -> V) -> Self {
         Self::Fun(Shared::new(Function { captures, code }))
     }
-    fn adt(tag: &str, payload: V) -> Self {
-        Self::Adt(Shared::new((tag.into(), payload)))
+    fn adt(tag: &'static str, payload: V) -> Self {
+        Self::Adt(Shared::new((tag, payload)))
     }
     fn dict(methods: Vec<(&str, V)>) -> Self {
         Self::Dict(Shared::new(
@@ -440,6 +450,70 @@ fn native_operator_dictionary(identity: &'static str) -> V {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn released_while_the_drop_queue_is_busy<T: TraceValue + 'static>(value: Shared<T>) -> bool {
+        assert!(DROP_QUEUE.with(|queue| queue.borrow().is_empty()));
+        let weak = Rc::downgrade(value.0.as_ref().unwrap());
+        DRAINING.with(|flag| flag.set(true));
+        drop(value);
+        let released = weak.upgrade().is_none();
+        DRAINING.with(|flag| flag.set(false));
+        // Restore the queue before asserting, including on the old behavior.
+        let pending = DROP_QUEUE.with(|queue| std::mem::take(&mut *queue.borrow_mut()));
+        drop(pending);
+        assert!(weak.upgrade().is_none());
+        assert!(DROP_QUEUE.with(|queue| queue.borrow().is_empty()));
+        assert_eq!(LIVE.with(Cell::get), 0);
+        released
+    }
+
+    #[test]
+    fn childless_last_owners_release_without_waiting_for_the_drop_queue() {
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            "雫🙂".to_owned()
+        )));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(vec![
+            V::Int(1),
+            V::Bool(true)
+        ])));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            BTreeMap::from([("field".to_owned(), V::Unit),])
+        )));
+        let V::Adt(value) = V::adt("local::Sample", V::Int(42)) else {
+            unreachable!()
+        };
+        assert!(released_while_the_drop_queue_is_busy(value));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            Function {
+                captures: vec![V::Int(42)],
+                code: |capture, _| capture[0].clone(),
+            }
+        )));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            RefCell::new(V::Bool(true))
+        )));
+    }
+
+    #[test]
+    fn child_managed_last_owners_still_wait_for_the_drop_queue() {
+        assert!(!released_while_the_drop_queue_is_busy(Shared::new(vec![
+            V::text("child")
+        ])));
+    }
+
+    #[test]
+    fn uninspectable_last_owners_still_wait_for_the_drop_queue() {
+        struct Uninspectable(V);
+        impl TraceValue for Uninspectable {
+            fn edges(&self, _: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
+                let _ = &self.0;
+                Err("borrowed edge")
+            }
+        }
+        assert!(!released_while_the_drop_queue_is_busy(Shared::new(
+            Uninspectable(V::text("child"))
+        )));
+    }
     #[test]
     fn int_power_preserves_safe_integer_bounds_and_large_exponent_parity() {
         const MAX: i64 = 9_007_199_254_740_991;

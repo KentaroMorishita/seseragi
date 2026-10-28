@@ -356,7 +356,7 @@ fn native_operation(name: &str, args: Vec<V>) -> V {
             let V::Adt(value) = &c[0] else {
                 panic!("Rust ABI: expected Either")
             };
-            match value.get().0.as_str() {
+            match value.get().0 {
                 "std/prelude::Left" => Err(NativeExit::Failure(value.get().1.clone())),
                 "std/prelude::Right" => Ok(value.get().1.clone()),
                 _ => panic!("Rust ABI: Either owner"),

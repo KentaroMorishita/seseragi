@@ -1,11 +1,11 @@
-fn native_float_parse_error(name: &str, value: V) -> V {
-    V::adt(&format!("std/float::{name}"), value)
+fn native_float_parse_error(tag: &'static str, value: V) -> V {
+    V::adt(tag, value)
 }
 
 fn native_float_invalid(offset: usize) -> V {
     let offset = checked_int_value(i64::try_from(offset).expect("Float parse offset overflow"));
     native_float_parse_error(
-        "InvalidFloat",
+        "std/float::InvalidFloat",
         V::Record(Shared::new(BTreeMap::from([(
             "offset".into(),
             V::Int(offset),
@@ -56,7 +56,7 @@ fn native_float_syntax_error(bytes: &[u8]) -> Option<usize> {
 
 fn native_parse_float(text: &str) -> V {
     if text.is_empty() {
-        return native_left(native_float_parse_error("EmptyFloat", V::Unit));
+        return native_left(native_float_parse_error("std/float::EmptyFloat", V::Unit));
     }
     let special = match text {
         "NaN" => Some(f64::NAN),
@@ -76,22 +76,25 @@ fn native_parse_float(text: &str) -> V {
     if value.is_finite() {
         native_right(V::Float(value))
     } else {
-        native_left(native_float_parse_error("FloatParseOverflow", V::Unit))
+        native_left(native_float_parse_error(
+            "std/float::FloatParseOverflow",
+            V::Unit,
+        ))
     }
 }
 
-fn native_number_parse_operation(name: &str, arguments: Vec<V>) -> V {
+fn native_number_parse_operation(name: &'static str, arguments: Vec<V>) -> V {
     if let Some(value) = native_float_conversion_operation(name, &arguments) {
         return value;
     }
     match (name, arguments.as_slice()) {
         ("std/float::parse", [text]) => native_parse_float(native_text(text)),
-        ("std/float::EmptyFloat", []) => native_float_parse_error("EmptyFloat", V::Unit),
+        ("std/float::EmptyFloat", []) => native_float_parse_error("std/float::EmptyFloat", V::Unit),
         ("std/float::FloatParseOverflow", []) => {
-            native_float_parse_error("FloatParseOverflow", V::Unit)
+            native_float_parse_error("std/float::FloatParseOverflow", V::Unit)
         }
         ("std/float::InvalidFloat", [value]) => {
-            native_float_parse_error("InvalidFloat", value.clone())
+            native_float_parse_error("std/float::InvalidFloat", value.clone())
         }
         _ => native_int_parse_operation(name, arguments),
     }
