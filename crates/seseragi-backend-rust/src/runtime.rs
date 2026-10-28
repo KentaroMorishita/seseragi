@@ -453,19 +453,30 @@ mod tests {
             }
         }
         for (base, exponent, expected) in [
-            (0, 0, 1), (MAX, 1, MAX), (-MAX, 1, -MAX),
-            (0, MAX, 0), (1, MAX, 1), (-1, MAX, -1), (-1, MAX - 1, 1),
+            (0, 0, 1),
+            (MAX, 1, MAX),
+            (-MAX, 1, -MAX),
+            (0, MAX, 0),
+            (1, MAX, 1),
+            (-1, MAX, -1),
+            (-1, MAX - 1, 1),
         ] {
             assert_eq!(int_power_value(base, exponent), expected);
         }
         for (base, exponent, reason) in [
-            (2, 53, "Int overflow"), (3, 34, "Int overflow"),
-            (MAX, 2, "Int overflow"), (2, MAX, "Int overflow"),
-            (2, -1, "Int negative exponent"), (0, -1, "Int negative exponent"),
+            (2, 53, "Int overflow"),
+            (3, 34, "Int overflow"),
+            (MAX, 2, "Int overflow"),
+            (2, MAX, "Int overflow"),
+            (2, -1, "Int negative exponent"),
+            (0, -1, "Int negative exponent"),
         ] {
             let error = std::panic::catch_unwind(|| int_power_value(base, exponent)).unwrap_err();
-            let message = error.downcast_ref::<String>().map(String::as_str)
-                .or_else(|| error.downcast_ref::<&str>().copied()).unwrap();
+            let message = error
+                .downcast_ref::<String>()
+                .map(String::as_str)
+                .or_else(|| error.downcast_ref::<&str>().copied())
+                .unwrap();
             assert!(message.contains(reason), "{base} ** {exponent}: {message}");
         }
     }

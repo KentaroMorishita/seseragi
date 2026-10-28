@@ -21,19 +21,39 @@ fn native_float_power(base: f64, exponent: f64) -> f64 {
     let negative = base.is_sign_negative() && odd;
     if base.is_infinite() {
         return if exponent > 0.0 {
-            if negative { f64::NEG_INFINITY } else { f64::INFINITY }
-        } else if negative { -0.0 } else { 0.0 };
+            if negative {
+                f64::NEG_INFINITY
+            } else {
+                f64::INFINITY
+            }
+        } else if negative {
+            -0.0
+        } else {
+            0.0
+        };
     }
     if base == 0.0 {
         return if exponent > 0.0 {
-            if negative { -0.0 } else { 0.0 }
-        } else if negative { f64::NEG_INFINITY } else { f64::INFINITY };
+            if negative {
+                -0.0
+            } else {
+                0.0
+            }
+        } else if negative {
+            f64::NEG_INFINITY
+        } else {
+            f64::INFINITY
+        };
     }
     if exponent.is_infinite() {
         if base.abs() == 1.0 {
             return f64::NAN;
         }
-        return if (base.abs() > 1.0) == (exponent > 0.0) { f64::INFINITY } else { 0.0 };
+        return if (base.abs() > 1.0) == (exponent > 0.0) {
+            f64::INFINITY
+        } else {
+            0.0
+        };
     }
     if base < 0.0 && exponent.fract() != 0.0 {
         return f64::NAN;
@@ -181,7 +201,10 @@ fn native_float_operation(name: &str, args: Vec<V>) -> V {
             }
         }
         ("std/float::abs", [value]) => V::Float(native_float(value).abs()),
-        ("std/float::power", [exponent, base]) => V::Float(native_float_power(native_float(base), native_float(exponent))),
+        ("std/float::power", [exponent, base]) => V::Float(native_float_power(
+            native_float(base),
+            native_float(exponent),
+        )),
         ("std/float::sign", [value]) => {
             let value = native_float(value);
             if value.is_nan() {
@@ -212,31 +235,54 @@ mod float_tests {
         let nan = f64::NAN;
         let inf = f64::INFINITY;
         for (base, exponent, expected) in [
-            (1.0, nan, nan), (-1.0, nan, nan), (0.0, nan, nan),
-            (nan, 0.0, 1.0), (nan, -0.0, 1.0), (nan, 2.0, nan),
-            (inf, 3.0, inf), (inf, -3.0, 0.0),
-            (-inf, 3.0, -inf), (-inf, 2.0, inf),
-            (-inf, -3.0, -0.0), (-inf, -2.0, 0.0),
-            (0.0, 2.0, 0.0), (0.0, -2.0, inf),
-            (-0.0, 3.0, -0.0), (-0.0, 2.0, 0.0),
-            (-0.0, -3.0, -inf), (-0.0, -2.0, inf),
-            (1.0, inf, nan), (-1.0, inf, nan),
-            (1.0, -inf, nan), (-1.0, -inf, nan),
-            (2.0, inf, inf), (2.0, -inf, 0.0),
-            (0.5, inf, 0.0), (0.5, -inf, inf),
-            (-2.0, 0.5, nan), (-2.0, 3.0, -8.0),
-            (-2.0, -3.0, -0.125), (4.0, 0.5, 2.0), (4.0, -0.5, 0.5),
+            (1.0, nan, nan),
+            (-1.0, nan, nan),
+            (0.0, nan, nan),
+            (nan, 0.0, 1.0),
+            (nan, -0.0, 1.0),
+            (nan, 2.0, nan),
+            (inf, 3.0, inf),
+            (inf, -3.0, 0.0),
+            (-inf, 3.0, -inf),
+            (-inf, 2.0, inf),
+            (-inf, -3.0, -0.0),
+            (-inf, -2.0, 0.0),
+            (0.0, 2.0, 0.0),
+            (0.0, -2.0, inf),
+            (-0.0, 3.0, -0.0),
+            (-0.0, 2.0, 0.0),
+            (-0.0, -3.0, -inf),
+            (-0.0, -2.0, inf),
+            (1.0, inf, nan),
+            (-1.0, inf, nan),
+            (1.0, -inf, nan),
+            (-1.0, -inf, nan),
+            (2.0, inf, inf),
+            (2.0, -inf, 0.0),
+            (0.5, inf, 0.0),
+            (0.5, -inf, inf),
+            (-2.0, 0.5, nan),
+            (-2.0, 3.0, -8.0),
+            (-2.0, -3.0, -0.125),
+            (4.0, 0.5, 2.0),
+            (4.0, -0.5, 0.5),
             (-0.0, 9_007_199_254_740_991.0, -0.0),
             (-0.0, 9_007_199_254_740_992.0, 0.0),
             (-inf, -9_007_199_254_740_991.0, -0.0),
-            (2.0, 1024.0, inf), (-2.0, 1025.0, -inf),
-            (2.0, -1074.0, f64::from_bits(1)), (-2.0, -1075.0, -0.0),
+            (2.0, 1024.0, inf),
+            (-2.0, 1025.0, -inf),
+            (2.0, -1074.0, f64::from_bits(1)),
+            (-2.0, -1075.0, -0.0),
         ] {
             let actual = native_float_power(base, exponent);
             if expected.is_nan() {
                 assert!(actual.is_nan(), "{base:?} ** {exponent:?}: {actual:?}");
             } else {
-                assert_eq!(actual.to_bits(), expected.to_bits(), "{base:?} ** {exponent:?}");
+                assert_eq!(
+                    actual.to_bits(),
+                    expected.to_bits(),
+                    "{base:?} ** {exponent:?}"
+                );
             }
         }
     }
@@ -248,8 +294,13 @@ mod float_tests {
         let saved = method.apply(V::Float(2.0));
         assert_eq!(native_float(&saved.apply(V::Float(3.0))), 8.0);
         assert_eq!(native_float(&saved.apply(V::Float(4.0))), 16.0);
-        assert_eq!(native_float(&native_float_operation(
-            "std/float::power", vec![V::Float(3.0), V::Float(2.0)])), 8.0);
+        assert_eq!(
+            native_float(&native_float_operation(
+                "std/float::power",
+                vec![V::Float(3.0), V::Float(2.0)]
+            )),
+            8.0
+        );
         drop((saved, method));
         clear_dictionaries();
         assert_eq!(LIVE.with(Cell::get), 0);
