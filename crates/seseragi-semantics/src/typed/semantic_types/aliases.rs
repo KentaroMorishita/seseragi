@@ -568,6 +568,27 @@ fn external_canonical(
         if let Some(provider) = crate::prelude::provider_type_for_prelude(&canonical) {
             return Some(provider.canonical.into());
         }
+        // A closed alias selected this Prelude owner in its declaration
+        // scope. Preserve it when a later generic binder can reuse the name;
+        // display-only application inference must not substitute that binder
+        // into the alias's separate primitive result or field.
+        if alias_target
+            && matches!(
+                canonical.as_str(),
+                "std/prelude::Unit"
+                    | "std/prelude::Bool"
+                    | "std/prelude::Int"
+                    | "std/prelude::Float"
+                    | "std/prelude::Char"
+                    | "std/prelude::String"
+            )
+            && resolved.symbols.iter().any(|candidate| {
+                candidate.kind == SymbolKind::TypeParameter
+                    && candidate.spelling == canonical.rsplit("::").next().unwrap()
+            })
+        {
+            return Some(canonical);
+        }
     }
     resolved
         .imports

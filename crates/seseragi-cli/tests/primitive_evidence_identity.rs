@@ -132,55 +132,68 @@ fn composite_display_keeps_primitive_and_nominal_field_dictionaries_distinct() {
 
 #[test]
 fn imported_reexported_scalar_return_preserves_the_primitive_under_a_caller_binder() {
-    let program = Program::new("import {again} from \"./facade\"\nfn tricky<Bool> value: Bool -> String where Show<Bool> = show (again True)\npub effect fn main = do {println (tricky 1)}\n");
-    let source = program.0.join("src");
-    let host = program.0.join("host");
-    fs::create_dir(&source).unwrap();
-    fs::create_dir(&host).unwrap();
-    fs::rename(program.0.join("main.ssrg"), source.join("main.ssrg")).unwrap();
-    fs::rename(program.0.join("host.mjs"), host.join("host.mjs")).unwrap();
-    fs::write(program.0.join("seseragi.toml"), "[package]\nname = \"fixture/primitive-evidence-import\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[layout]\nsource = \"src\"\n[run]\nentry = \"main\"\ntarget = \"process\"\n[foreign.typescript]\nresolver = \"node\"\nmanifest = \"host/package.json\"\nlockfile = \"host/bun.lock\"\n").unwrap();
-    fs::write(
-        host.join("package.json"),
-        "{\"name\":\"primitive-evidence-host\",\"version\":\"1.0.0\",\"type\":\"module\"}\n",
-    )
-    .unwrap();
-    fs::write(
-        host.join("bun.lock"),
-        "{\"lockfileVersion\":1,\"packages\":{}}\n",
-    )
-    .unwrap();
-    fs::write(source.join("foreign.ssrg"), "pub foreign \"typescript\" from \"../host/host.mjs\" {\n pure fn echo<A> value: A -> A\n}\n").unwrap();
-    fs::write(
-        source.join("facade.ssrg"),
-        "pub import {echo as again} from \"./foreign\"\n",
-    )
-    .unwrap();
-    let lock = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .args(["lock", "update", "."])
-        .current_dir(&program.0)
-        .output()
-        .unwrap();
-    assert!(
-        lock.status.success(),
-        "{}",
-        String::from_utf8_lossy(&lock.stderr)
+    let original = concat!(
+        "import {again} from \"./facade\"\n",
+        "fn tricky<Bool> value: Bool -> String where Show<Bool> = show (again True)\n",
+        "pub effect fn main = do {println (tricky 1)}\n",
     );
-    for profile in ["development", "release"] {
-        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-            .args(["run", ".", "--profile", profile])
+    let alias = concat!(
+        "import {again} from \"./facade\"\n",
+        "alias Rendered = String\n",
+        "fn tricky<String> value: String -> Rendered where Show<String> = show (again \"ok\")\n",
+        "pub effect fn main = println (tricky 1)\n",
+    );
+    for (input, expected) in [(original, "True\n"), (alias, "ok\n")] {
+        let program = Program::new(input);
+        let source = program.0.join("src");
+        let host = program.0.join("host");
+        fs::create_dir(&source).unwrap();
+        fs::create_dir(&host).unwrap();
+        fs::rename(program.0.join("main.ssrg"), source.join("main.ssrg")).unwrap();
+        fs::rename(program.0.join("host.mjs"), host.join("host.mjs")).unwrap();
+        fs::write(program.0.join("seseragi.toml"), "[package]\nname = \"fixture/primitive-evidence-import\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[layout]\nsource = \"src\"\n[run]\nentry = \"main\"\ntarget = \"process\"\n[foreign.typescript]\nresolver = \"node\"\nmanifest = \"host/package.json\"\nlockfile = \"host/bun.lock\"\n").unwrap();
+        fs::write(
+            host.join("package.json"),
+            "{\"name\":\"primitive-evidence-host\",\"version\":\"1.0.0\",\"type\":\"module\"}\n",
+        )
+        .unwrap();
+        fs::write(
+            host.join("bun.lock"),
+            "{\"lockfileVersion\":1,\"packages\":{}}\n",
+        )
+        .unwrap();
+        fs::write(source.join("foreign.ssrg"), "pub foreign \"typescript\" from \"../host/host.mjs\" {\n pure fn echo<A> value: A -> A\n}\n").unwrap();
+        fs::write(
+            source.join("facade.ssrg"),
+            "pub import {echo as again} from \"./foreign\"\n",
+        )
+        .unwrap();
+        let lock = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update", "."])
             .current_dir(&program.0)
             .output()
             .unwrap();
         assert!(
-            output.status.success(),
-            "{profile}: {}",
-            String::from_utf8_lossy(&output.stderr)
+            lock.status.success(),
+            "{}",
+            String::from_utf8_lossy(&lock.stderr)
         );
-        assert_eq!(
-            String::from_utf8(output.stdout).unwrap(),
-            "True\n",
-            "{profile}"
-        );
+        for profile in ["development", "release"] {
+            let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["run", ".", "--profile", profile])
+                .current_dir(&program.0)
+                .output()
+                .unwrap();
+            assert!(
+                output.status.success(),
+                "{profile}: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(
+                String::from_utf8(output.stdout).unwrap(),
+                expected,
+                "{profile}"
+            );
+        }
     }
 }

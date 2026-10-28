@@ -176,15 +176,19 @@ impl<'a> InterfaceTypes<'a> {
                 canonical,
                 arguments,
             } => {
-                // Anonymous parameters can introduce this intrinsic without
-                // a source import. Its canonical identity is its provenance;
-                // a local nominal named Unit still follows the owner table.
-                if canonical == "std/prelude::Unit" && arguments.is_empty() {
+                // Anonymous parameters and closed aliases can introduce a
+                // checked primitive without a source import. Its canonical
+                // owner is its provenance; same-named local nominals still
+                // follow the owner table below.
+                if let Some(primitive) = canonical.strip_prefix("std/prelude::").filter(|name| {
+                    arguments.is_empty()
+                        && matches!(*name, "Unit" | "Bool" | "Int" | "Float" | "Char" | "String")
+                }) {
                     return InterfaceType::ExternalNamed {
                         name: name.clone(),
                         canonical: canonical.clone(),
                         provider_module: "std/prelude".to_owned(),
-                        provider_export: "Unit".to_owned(),
+                        provider_export: primitive.to_owned(),
                         arguments: Vec::new(),
                     };
                 }
@@ -277,6 +281,28 @@ impl<'a> InterfaceTypes<'a> {
 mod tests {
     use super::*;
     use crate::ExternalTypeProvider;
+
+    #[test]
+    fn closed_primitive_aliases_keep_canonical_provider_provenance() {
+        let types = InterfaceTypes::new(&[]);
+        for primitive in ["Unit", "Bool", "Int", "Float", "Char", "String"] {
+            let canonical = format!("std/prelude::{primitive}");
+            assert_eq!(
+                types.convert(&TypedType::ExternalNamed {
+                    name: "Renamed".to_owned(),
+                    canonical: canonical.clone(),
+                    arguments: vec![],
+                }),
+                InterfaceType::ExternalNamed {
+                    name: "Renamed".to_owned(),
+                    canonical,
+                    provider_module: "std/prelude".to_owned(),
+                    provider_export: primitive.to_owned(),
+                    arguments: vec![],
+                }
+            );
+        }
+    }
 
     #[test]
     fn canonicalizes_a_named_type_from_its_unique_provider_binding() {

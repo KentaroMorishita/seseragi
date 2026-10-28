@@ -310,7 +310,7 @@ fn imported_scalar_codec_result_is_not_captured_by_a_caller_generic_binder() {
         ("Unit", "()"),
     ] {
         for (target, call) in [("foreign", "echo"), ("facade", "again")] {
-            let source = format!("import {{{call}}} from \"./{target}\"\nalias Rendered = String\npub fn tricky<{name}> value: {name} -> Rendered where Show<{name}> = show ({call} {literal})\n");
+            let source = format!("import {{{call}}} from \"./{target}\"\nalias Rendered = String\nfn tricky<{name}> value: {name} -> Rendered where Show<{name}> = show ({call} {literal})\npub effect fn main = do {{println (tricky 1)}}\n");
             let mut graph = ModuleGraph::new();
             graph
                 .add_module(
