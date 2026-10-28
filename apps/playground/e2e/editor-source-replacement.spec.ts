@@ -40,7 +40,8 @@ for (const surface of ["Playground", "Tour"] as const) {
     await expect
       .poll(() => page.evaluate(() => getSelection()?.toString()))
       .toBe("main")
-    await page.locator(".cm-content").press("ControlOrMeta+Shift+z")
+    // Playwright uses the character's case even when Shift is held.
+    await page.locator(".cm-content").press("ControlOrMeta+Shift+Z")
     await expect.poll(() => sourceText(page)).toBe(formatted)
     await page.locator(tour ? "#tour-run-button" : "#run-button").click()
     await expect(
