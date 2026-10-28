@@ -23,6 +23,7 @@ on:
       - "crates/seseragi-cli/src/experimental/**"
       - "crates/seseragi-cli/src/main.rs"
       - "crates/seseragi-cli/Cargo.toml"
+      - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "crates/seseragi-cli/tests/inherited_equality.rs"
       - "crates/seseragi-cli/tests/process_entry_strict.rs"
@@ -38,6 +39,7 @@ on:
       - "crates/seseragi-cli/tests/float_parse.rs"
       - "crates/seseragi-cli/tests/float_conversion.rs"
       - "crates/seseragi-cli/tests/int_remainder.rs"
+      - "crates/seseragi-cli/tests/native_power.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -92,6 +94,7 @@ on:
       - "crates/seseragi-cli/src/experimental/**"
       - "crates/seseragi-cli/src/main.rs"
       - "crates/seseragi-cli/Cargo.toml"
+      - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "crates/seseragi-cli/tests/inherited_equality.rs"
       - "crates/seseragi-cli/tests/process_entry_strict.rs"
@@ -107,6 +110,7 @@ on:
       - "crates/seseragi-cli/tests/float_parse.rs"
       - "crates/seseragi-cli/tests/float_conversion.rs"
       - "crates/seseragi-cli/tests/int_remainder.rs"
+      - "crates/seseragi-cli/tests/native_power.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -195,6 +199,7 @@ jobs:
           --test float_parse
           --test float_conversion
           --test int_remainder
+          --test native_power
           --test process_entry_strict
           --test public_aliases
           --test namespace_results

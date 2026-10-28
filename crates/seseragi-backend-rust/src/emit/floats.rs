@@ -27,7 +27,8 @@ pub(super) fn float_operation_arity(name: &str) -> Option<usize> {
         "std/float::ieeeEq"
         | "std/float::totalCompare"
         | "std/float::minimumNumber"
-        | "std/float::maximumNumber" => 2,
+        | "std/float::maximumNumber"
+        | "std/float::power" => 2,
         "std/float::clampNumber" => 3,
         _ => return None,
     })
@@ -40,6 +41,7 @@ fn float_signature(identity: &str) -> Option<(&'static str, usize)> {
         "std/float::Mul" => ("Mul", 3),
         "std/float::Div" => ("Div", 3),
         "std/float::Rem" => ("Rem", 3),
+        "std/float::Pow" => ("Pow", 3),
         "std/float::Zero" => ("Zero", 1),
         "std/float::One" => ("One", 1),
         "Show<std/prelude::Float>" => ("Show", 1),
@@ -66,6 +68,7 @@ pub(super) fn valid_float_dispatch(
         "Mul" => "mul",
         "Div" => "div",
         "Rem" => "rem",
+        "Pow" => "pow",
         "Zero" => "zero",
         "One" => "one",
         "Show" => "show",
@@ -112,11 +115,51 @@ pub(super) fn float_binary(evidence: &[CoreCallEvidence], operator: &str) -> boo
         "*" => "Mul",
         "/" => "Div",
         "%" => "Rem",
+        "**" => "Pow",
         _ => return false,
     };
     matches!(&selected.evidence, CoreInstanceEvidence::Standard { identity, .. }
         if identity == &format!("std/float::{name}"))
         && matches!(float_dictionary(selected), Some(Ok(_)))
+}
+
+impl Backend<'_> {
+    pub(super) fn validate_float_power_type(
+        &self,
+        ty: &CoreType,
+        supplied: usize,
+        scope: &Scope,
+    ) -> Result<()> {
+        if self.program_wasm_library {
+            return Err(
+                "program WASM: native Float power requires a target-specific arithmetic proof"
+                    .into(),
+            );
+        }
+        if supplied > 2 {
+            return Err("Rust backend: Float power source arity mismatch".into());
+        }
+        let mut result = ty;
+        for _ in supplied..2 {
+            let CoreType::Function {
+                parameter,
+                result: next,
+            } = result
+            else {
+                return Err("Rust backend: Float power result stage mismatch".into());
+            };
+            if !matches!(self.local_canonical_type(parameter, scope)?, CoreType::Named { name, arguments } if name == "std/prelude::Float" && arguments.is_empty())
+            {
+                return Err("Rust backend: Float power requires canonical Float arguments".into());
+            }
+            result = next;
+        }
+        if !matches!(self.local_canonical_type(result, scope)?, CoreType::Named { name, arguments } if name == "std/prelude::Float" && arguments.is_empty())
+        {
+            return Err("Rust backend: Float power requires a canonical Float result".into());
+        }
+        Ok(())
+    }
 }
 
 pub(super) fn closed_float_partial(

@@ -7,6 +7,8 @@ fn primitive_operator(identity: &str) -> Option<(&'static str, &'static str, &'s
         "std/int::Mul" => ("Mul", "mul", "Int"),
         "std/int::Div" => ("Div", "div", "Int"),
         "std/int::Rem" => ("Rem", "rem", "Int"),
+        "std/int::Pow" => ("Pow", "pow", "Int"),
+        "std/float::Pow" => ("Pow", "pow", "Float"),
         "std/string::Add" => ("Add", "add", "String"),
         _ => return None,
     })
@@ -23,7 +25,7 @@ pub(super) fn primitive_reference(
     let (_, method, _) = primitive_operator(identity)?;
     (matches!(
         (operator, method),
-        ("+", "add") | ("-", "sub") | ("*", "mul") | ("/", "div") | ("%", "rem")
+        ("+", "add") | ("-", "sub") | ("*", "mul") | ("/", "div") | ("%", "rem") | ("**", "pow")
     ))
     .then_some(method)
 }
@@ -87,15 +89,18 @@ impl Backend<'_> {
         let (trait_name, _, primitive) = primitive_operator(identity)?;
         Some((|| {
             if self.program_wasm_library
-                && matches!(identity.as_str(), "std/int::Div" | "std/int::Rem")
+                && matches!(
+                    identity.as_str(),
+                    "std/int::Div" | "std/int::Rem" | "std/int::Pow" | "std/float::Pow"
+                )
             {
-                let operation = if identity == "std/int::Div" {
-                    "division"
-                } else {
-                    "remainder"
+                let operation = match identity.as_str() {
+                    "std/int::Div" => "division",
+                    "std/int::Rem" => "remainder",
+                    _ => "power",
                 };
                 return Err(format!(
-                    "program WASM: native Int {operation} requires a target-specific arithmetic proof"
+                    "program WASM: native {primitive} {operation} requires a target-specific arithmetic proof"
                 )
                 .into());
             }
@@ -119,7 +124,12 @@ impl Backend<'_> {
                     return Err("Rust backend: primitive arithmetic cannot stand for a nominal or scoped binder".into());
                 }
             }
-            Ok(format!("native_operator_dictionary({})", quoted(identity)))
+            let factory = if primitive == "Float" {
+                "native_float_dictionary"
+            } else {
+                "native_operator_dictionary"
+            };
+            Ok(format!("{factory}({})", quoted(identity)))
         })())
     }
 

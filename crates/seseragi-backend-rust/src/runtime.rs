@@ -360,6 +360,26 @@ fn int_remainder_value(a: i64, b: i64) -> i64 {
     checked_int_value(b);
     checked_int_value(a.checked_rem(b).expect("Int overflow"))
 }
+fn int_power_value(base: i64, exponent: i64) -> i64 {
+    if exponent < 0 {
+        panic!("Int negative exponent");
+    }
+    checked_int_value(base);
+    checked_int_value(exponent);
+    let mut exponent = exponent as u64;
+    let mut factor = base;
+    let mut result = 1;
+    while exponent != 0 {
+        if exponent & 1 != 0 {
+            result = int_multiply_value(result, factor);
+        }
+        exponent >>= 1;
+        if exponent != 0 {
+            factor = int_multiply_value(factor, factor);
+        }
+    }
+    result
+}
 fn int_equal_value(a: i64, b: i64) -> bool {
     a == b
 }
@@ -376,6 +396,7 @@ fn binary(op: &str, a: V, b: V) -> V {
         ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value(a, b)),
         ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value(a, b)),
         ("%", V::Int(a), V::Int(b)) => V::Int(int_remainder_value(a, b)),
+        ("**", V::Int(a), V::Int(b)) => V::Int(int_power_value(a, b)),
         ("==", V::Int(a), V::Int(b)) => V::Bool(int_equal_value(a, b)),
         ("==", V::Bool(a), V::Bool(b)) => V::Bool(a == b),
         ("==", V::Unit, V::Unit) => V::Bool(true),
@@ -407,6 +428,7 @@ fn native_operator_dictionary(identity: &'static str) -> V {
             "std/int::Mul" => arithmetic!("mul", "*"),
             "std/int::Div" => arithmetic!("div", "/"),
             "std/int::Rem" => arithmetic!("rem", "%"),
+            "std/int::Pow" => arithmetic!("pow", "**"),
             "std/int::Eq" | "std/bool::Eq" | "std/unit::Eq" | "std/string::Eq" => {
                 arithmetic!("eq", "==")
             }
@@ -418,6 +440,59 @@ fn native_operator_dictionary(identity: &'static str) -> V {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn int_power_preserves_safe_integer_bounds_and_large_exponent_parity() {
+        const MAX: i64 = 9_007_199_254_740_991;
+        for base in -100_i64..=100 {
+            for exponent in 0..=53_u32 {
+                if let Some(expected) = i128::from(base).checked_pow(exponent) {
+                    if (-i128::from(MAX)..=i128::from(MAX)).contains(&expected) {
+                        assert_eq!(int_power_value(base, i64::from(exponent)), expected as i64);
+                    }
+                }
+            }
+        }
+        for (base, exponent, expected) in [
+            (0, 0, 1),
+            (MAX, 1, MAX),
+            (-MAX, 1, -MAX),
+            (0, MAX, 0),
+            (1, MAX, 1),
+            (-1, MAX, -1),
+            (-1, MAX - 1, 1),
+        ] {
+            assert_eq!(int_power_value(base, exponent), expected);
+        }
+        for (base, exponent, reason) in [
+            (2, 53, "Int overflow"),
+            (3, 34, "Int overflow"),
+            (MAX, 2, "Int overflow"),
+            (2, MAX, "Int overflow"),
+            (2, -1, "Int negative exponent"),
+            (0, -1, "Int negative exponent"),
+        ] {
+            let error = std::panic::catch_unwind(|| int_power_value(base, exponent)).unwrap_err();
+            let message = error
+                .downcast_ref::<String>()
+                .map(String::as_str)
+                .or_else(|| error.downcast_ref::<&str>().copied())
+                .unwrap();
+            assert!(message.contains(reason), "{base} ** {exponent}: {message}");
+        }
+    }
+
+    #[test]
+    fn int_power_reuses_curried_stages_and_releases_the_dictionary() {
+        clear_dictionaries();
+        let method = native_operator_dictionary("std/int::Pow").field("pow");
+        let saved = method.apply(V::Int(2));
+        assert!(matches!(saved.apply(V::Int(3)), V::Int(8)));
+        assert!(matches!(saved.apply(V::Int(4)), V::Int(16)));
+        drop((saved, method));
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
     #[test]
     fn string_equality_compares_contents_and_releases_partial_captures() {
         clear_dictionaries();

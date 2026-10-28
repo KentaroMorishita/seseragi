@@ -363,3 +363,14 @@ finalizer/root0を、元のraw strict TS両profile・fresh Bun/Node・nativeで�
 sourceと凍結したpath packageで各行の整数の剰余を別fileへ書き、入力と失敗時の既存出力を保持する。
 Pow、新しいchecked remainder API、一般program WASMへの剰余の追加は受入に含めない。
 共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。
+
+nativeのInt/Float累乗は、backendの`--lib power`と`--test native_power`、CLIの
+`--test native_power`で確認する。標準Powと`std/float.power`のcanonical owner/kind、
+辞書、source arity、保存methodと返り値関数、同名のlexical binderを区別する。
+Intのsafe integer境界・負指数とoverflowのDefect、FloatのNaN/Infinity/signed zeroと
+指数の偶奇を、元生成TS両profileのstrict検査とfresh Bun/Node/nativeで比較する。
+直接・保存した演算子のsource一回評価と順序、Refとcold再実行、型付きFailure/Defect後の
+finalizer/root0、sourceと凍結したpath packageでの入力・失敗時の旧出力保持も検証する。
+一般program WASMへの累乗の追加、残るstdmath API、Float Eq/Ordは含めない。
+既存Div/Rem・Float parse/conversion・operator partialの回帰を確認し、共有backend/runtimeの
+統合前は全体gateと正規compiler WASMの検証も必要となる。

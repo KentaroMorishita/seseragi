@@ -1,0 +1,36 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as floats from "std/float"
+
+effect fn say message: String -> Unit with Console fails String =
+  println message
+  |> effects.mapError (\_ -> "console")
+
+effect fn delayed base: Int -> exponent: Int -> Int with Console fails String = do {
+  say "cold"
+  effects.succeed (base ** exponent)
+}
+
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  let selected: Int -> Int -> Int = (**)
+  saved <- refs.make (selected 2)
+  released <- refs.make 0
+  let cold = delayed 2 3
+  say "created"
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed selected) (\_ -> refs.update (\n -> n + 1) released)
+    first <- cold
+    say (show first)
+    second <- cold
+    say (show second)
+    again <- refs.get saved
+    say (show (again 4))
+    let floating = floats.power 3.0
+    say (floats.format (floating 2.0))
+    failBody ()
+  } |> effects.recover (\message -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

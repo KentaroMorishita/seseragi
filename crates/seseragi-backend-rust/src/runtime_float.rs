@@ -5,6 +5,62 @@ fn native_float(value: &V) -> f64 {
     *value
 }
 
+fn native_float_power(base: f64, exponent: f64) -> f64 {
+    // https://tc39.es/ecma262/2026/#sec-numeric-types-number-exponentiate
+    // The NaN/one rules differ from IEEE powf and are part of std/float's ABI.
+    if exponent.is_nan() {
+        return f64::NAN;
+    }
+    if exponent == 0.0 {
+        return 1.0;
+    }
+    if base.is_nan() {
+        return f64::NAN;
+    }
+    let odd = exponent.is_finite() && exponent.abs() % 2.0 == 1.0;
+    let negative = base.is_sign_negative() && odd;
+    if base.is_infinite() {
+        return if exponent > 0.0 {
+            if negative {
+                f64::NEG_INFINITY
+            } else {
+                f64::INFINITY
+            }
+        } else if negative {
+            -0.0
+        } else {
+            0.0
+        };
+    }
+    if base == 0.0 {
+        return if exponent > 0.0 {
+            if negative {
+                -0.0
+            } else {
+                0.0
+            }
+        } else if negative {
+            f64::NEG_INFINITY
+        } else {
+            f64::INFINITY
+        };
+    }
+    if exponent.is_infinite() {
+        if base.abs() == 1.0 {
+            return f64::NAN;
+        }
+        return if (base.abs() > 1.0) == (exponent > 0.0) {
+            f64::INFINITY
+        } else {
+            0.0
+        };
+    }
+    if base < 0.0 && exponent.fract() != 0.0 {
+        return f64::NAN;
+    }
+    base.powf(exponent)
+}
+
 fn native_float_binary(operator: &str, left: V, right: V) -> V {
     let (left, right) = (native_float(&left), native_float(&right));
     V::Float(match operator {
@@ -13,6 +69,7 @@ fn native_float_binary(operator: &str, left: V, right: V) -> V {
         "*" => left * right,
         "/" => left / right,
         "%" => left % right,
+        "**" => native_float_power(left, right),
         _ => panic!("Rust ABI: unsupported Float operator"),
     })
 }
@@ -37,6 +94,7 @@ fn native_float_dictionary(identity: &'static str) -> V {
             "std/float::Mul" => arithmetic!("mul", "*"),
             "std/float::Div" => arithmetic!("div", "/"),
             "std/float::Rem" => arithmetic!("rem", "%"),
+            "std/float::Pow" => arithmetic!("pow", "**"),
             "Show<std/prelude::Float>" => V::dict(vec![(
                 "show",
                 V::fun(vec![], |_, v| {
@@ -143,6 +201,10 @@ fn native_float_operation(name: &str, args: Vec<V>) -> V {
             }
         }
         ("std/float::abs", [value]) => V::Float(native_float(value).abs()),
+        ("std/float::power", [exponent, base]) => V::Float(native_float_power(
+            native_float(base),
+            native_float(exponent),
+        )),
         ("std/float::sign", [value]) => {
             let value = native_float(value);
             if value.is_nan() {
@@ -167,6 +229,82 @@ fn native_float_operation(name: &str, args: Vec<V>) -> V {
 #[cfg(test)]
 mod float_tests {
     use super::*;
+
+    #[test]
+    fn float_power_preserves_the_ecmascript_special_value_table() {
+        let nan = f64::NAN;
+        let inf = f64::INFINITY;
+        for (base, exponent, expected) in [
+            (1.0, nan, nan),
+            (-1.0, nan, nan),
+            (0.0, nan, nan),
+            (nan, 0.0, 1.0),
+            (nan, -0.0, 1.0),
+            (nan, 2.0, nan),
+            (inf, 3.0, inf),
+            (inf, -3.0, 0.0),
+            (-inf, 3.0, -inf),
+            (-inf, 2.0, inf),
+            (-inf, -3.0, -0.0),
+            (-inf, -2.0, 0.0),
+            (0.0, 2.0, 0.0),
+            (0.0, -2.0, inf),
+            (-0.0, 3.0, -0.0),
+            (-0.0, 2.0, 0.0),
+            (-0.0, -3.0, -inf),
+            (-0.0, -2.0, inf),
+            (1.0, inf, nan),
+            (-1.0, inf, nan),
+            (1.0, -inf, nan),
+            (-1.0, -inf, nan),
+            (2.0, inf, inf),
+            (2.0, -inf, 0.0),
+            (0.5, inf, 0.0),
+            (0.5, -inf, inf),
+            (-2.0, 0.5, nan),
+            (-2.0, 3.0, -8.0),
+            (-2.0, -3.0, -0.125),
+            (4.0, 0.5, 2.0),
+            (4.0, -0.5, 0.5),
+            (-0.0, 9_007_199_254_740_991.0, -0.0),
+            (-0.0, 9_007_199_254_740_992.0, 0.0),
+            (-inf, -9_007_199_254_740_991.0, -0.0),
+            (2.0, 1024.0, inf),
+            (-2.0, 1025.0, -inf),
+            (2.0, -1074.0, f64::from_bits(1)),
+            (-2.0, -1075.0, -0.0),
+        ] {
+            let actual = native_float_power(base, exponent);
+            if expected.is_nan() {
+                assert!(actual.is_nan(), "{base:?} ** {exponent:?}: {actual:?}");
+            } else {
+                assert_eq!(
+                    actual.to_bits(),
+                    expected.to_bits(),
+                    "{base:?} ** {exponent:?}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn float_power_preserves_method_and_exponent_first_function_stages() {
+        clear_dictionaries();
+        let method = native_float_dictionary("std/float::Pow").field("pow");
+        let saved = method.apply(V::Float(2.0));
+        assert_eq!(native_float(&saved.apply(V::Float(3.0))), 8.0);
+        assert_eq!(native_float(&saved.apply(V::Float(4.0))), 16.0);
+        assert_eq!(
+            native_float(&native_float_operation(
+                "std/float::power",
+                vec![V::Float(3.0), V::Float(2.0)]
+            )),
+            8.0
+        );
+        drop((saved, method));
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
 
     #[test]
     fn ieee_arithmetic_retains_negative_zero_and_non_finite_values() {

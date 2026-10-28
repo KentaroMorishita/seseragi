@@ -604,7 +604,7 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
             }
             "unsupported" | "polymorphic-global" => {
                 let addition = if kind == "unsupported" {
-                    "\npub fn unsupported -> Float = 2.0 ** 3.0\n"
+                    "\npub fn unsupported -> List<Int> = `[n | n <- `[1, 2]]\n"
                 } else {
                     "\nlet initial = \\value -> value\n"
                 };
@@ -613,7 +613,7 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                     "SES-RUST-0001",
                     Some(library.clone()),
                     if kind == "unsupported" {
-                        "2.0 ** 3.0"
+                        "`[n | n <- `[1, 2]]"
                     } else {
                         "initial"
                     },
@@ -674,6 +674,38 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
             "unsupported project created outputs: {kind}"
         );
     }
+}
+
+#[test]
+fn native_project_accepts_the_formerly_unsupported_imported_power() {
+    let scratch = Scratch::new();
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/spec/fixtures/rust-backend-projects/linked");
+    let project = scratch.0.join("power");
+    copy_project(&fixture, &project);
+    let library = project.join("vendor/model/src/lib.ssrg");
+    fs::write(
+        &library,
+        fs::read_to_string(&library).unwrap() + "\npub fn unsupported -> Float = 2.0 ** 3.0\n",
+    )
+    .unwrap();
+    write_project_lock(&project);
+    let output = scratch.0.join("power.rs");
+    let result = cli()
+        .env("PATH", "")
+        .args(["experimental", "emit-rust"])
+        .arg(&project)
+        .args(["--entry", "probe", "--output"])
+        .arg(&output)
+        .output()
+        .unwrap();
+    assert!(
+        result.status.success(),
+        "{}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+    assert!(output.is_file());
+    assert!(output.with_extension("rust-backend.json").is_file());
 }
 
 #[test]
@@ -1204,11 +1236,13 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         .unwrap()
         .iter()
         .any(|capability| capability == "float-parse"));
-    // Newly admitted conversion cases retain the empty-PATH emission proof;
+    // Newly admitted conversion/power cases retain the empty-PATH emission proof;
     // the remaining unsupported targets below keep their original refusals.
-    for (name, source) in [
-        ("float-rounding", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Float = floats.roundIntegral numbers.HalfEven 1.5\n"),
-        ("float-convert", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Either<floats.FloatConversionError, Int> = floats.toInt numbers.HalfEven 1.5\n"),
+    for (name, source, capability) in [
+        ("float-rounding", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Float = floats.roundIntegral numbers.HalfEven 1.5\n", "float-conversion"),
+        ("float-convert", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Either<floats.FloatConversionError, Int> = floats.toInt numbers.HalfEven 1.5\n", "float-conversion"),
+        ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n", "float"),
+        ("float-named-power", "import * as floats from \"std/float\"\npub fn answer -> Float = floats.power 2.0 1.5\n", "float"),
     ] {
         let path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&path, source).unwrap();
@@ -1218,11 +1252,10 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         assert!(result.status.success(), "{name}: {}", String::from_utf8_lossy(&result.stderr));
         assert!(output.is_file());
         let metadata: serde_json::Value = serde_json::from_slice(&fs::read(output.with_extension("rust-backend.json")).unwrap()).unwrap();
-        assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == "float-conversion"));
+        assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == capability));
     }
     for (name, source) in [
-        ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n"),
-        ("float-named-power", "import * as floats from \"std/float\"\npub fn answer -> Float = floats.power 2.0 1.5\n"),
+        ("float-math-sqrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.sqrt 4.0\n"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n"),
         ("list-eq", "pub fn answer -> Bool = `[1] == `[1]\n"),
         ("list-sort", "import * as lists from \"std/list\"\npub fn answer -> List<Int> = lists.sort `[2, 1]\n"),
