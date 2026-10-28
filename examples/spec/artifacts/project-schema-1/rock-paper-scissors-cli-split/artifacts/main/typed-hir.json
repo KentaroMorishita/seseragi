@@ -58,6 +58,14 @@
       }
     },
     {
+      "spelling": "Stdin",
+      "canonical": "std/prelude::Stdin",
+      "provider": {
+        "module": "std/stdin",
+        "export": "Stdin"
+      }
+    },
+    {
       "arity": 0,
       "spelling": "InputError",
       "canonical": "fixture/rps-cli-split::input::InputError",
@@ -288,8 +296,9 @@
             {
               "name": "stdin",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Stdin",
+                "canonical": "std/prelude::Stdin",
                 "arguments": []
               }
             },
@@ -346,8 +355,9 @@
                     {
                       "name": "stdin",
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Stdin",
+                        "canonical": "std/prelude::Stdin",
                         "arguments": []
                       }
                     }
@@ -398,8 +408,9 @@
                         {
                           "name": "stdin",
                           "type": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Stdin",
+                            "canonical": "std/prelude::Stdin",
                             "arguments": []
                           }
                         }
@@ -476,8 +487,9 @@
                     {
                       "name": "stdin",
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Stdin",
+                        "canonical": "std/prelude::Stdin",
                         "arguments": []
                       }
                     }
@@ -528,8 +540,9 @@
                         {
                           "name": "stdin",
                           "type": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Stdin",
+                            "canonical": "std/prelude::Stdin",
                             "arguments": []
                           }
                         }

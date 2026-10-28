@@ -19,9 +19,12 @@ fn standard_operation_effect(
     operation: KnownEffectOperation,
     arguments: &[TypedExpr],
 ) -> TypedEffect {
-    let console = matches!(operation.surface_name, "print" | "println" | "printValue");
+    let standard_provider = matches!(
+        operation.surface_name,
+        "print" | "println" | "printValue" | "readLine"
+    );
     let operation_type = |name: &str| {
-        if console {
+        if standard_provider {
             TypedType::ExternalNamed {
                 name: name.into(),
                 canonical: format!("std/prelude::{name}"),

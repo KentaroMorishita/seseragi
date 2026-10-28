@@ -1247,8 +1247,9 @@ pub effect fn main =
                 fields: vec![TypedRecordField {
                     name: "stdin".to_owned(),
                     optional: false,
-                    type_ref: TypedType::Named {
+                    type_ref: TypedType::ExternalNamed {
                         name: "Stdin".to_owned(),
+                        canonical: "std/prelude::Stdin".to_owned(),
                         arguments: Vec::new(),
                     },
                 }],
@@ -1256,8 +1257,9 @@ pub effect fn main =
         );
         assert_eq!(
             effect.failure,
-            TypedType::Named {
+            TypedType::ExternalNamed {
                 name: "StdinError".to_owned(),
+                canonical: "std/prelude::StdinError".to_owned(),
                 arguments: Vec::new(),
             }
         );

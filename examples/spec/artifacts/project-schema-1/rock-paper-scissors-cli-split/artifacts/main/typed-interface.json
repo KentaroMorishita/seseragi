@@ -158,8 +158,11 @@
                   {
                     "name": "stdin",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Stdin",
+                      "canonical": "std/prelude::Stdin",
+                      "providerModule": "std/stdin",
+                      "providerExport": "Stdin",
                       "arguments": []
                     }
                   },

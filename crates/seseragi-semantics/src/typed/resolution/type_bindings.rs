@@ -10,24 +10,26 @@ pub(super) fn collect_external_type_bindings(
     // The implicit Prelude declaration owns this signature, even when its
     // types do not occur in a source annotation/import. Keep that provenance
     // for saved callables, public interfaces and the native admission proof.
-    let uses_console = resolved.references.iter().any(|reference| {
-        reference.namespace == SymbolNamespace::Value
-            && reference.target.is_some_and(|target| {
-                resolved.symbols.iter().any(|symbol| {
-                    symbol.id == target
-                        && symbol.kind == SymbolKind::Prelude
-                        && matches!(
-                            symbol.canonical.as_deref(),
-                            Some(
-                                "std/prelude::print"
-                                    | "std/prelude::println"
-                                    | "std/prelude::printValue"
-                            )
-                        )
+    let uses_prelude = |operations: &[&str]| {
+        resolved.references.iter().any(|reference| {
+            reference.namespace == SymbolNamespace::Value
+                && reference.target.is_some_and(|target| {
+                    resolved.symbols.iter().any(|symbol| {
+                        symbol.id == target
+                            && symbol.kind == SymbolKind::Prelude
+                            && symbol
+                                .canonical
+                                .as_deref()
+                                .is_some_and(|canonical| operations.contains(&canonical))
+                    })
                 })
-            })
-    });
-    if uses_console {
+        })
+    };
+    if uses_prelude(&[
+        "std/prelude::print",
+        "std/prelude::println",
+        "std/prelude::printValue",
+    ]) {
         for (name, provider) in [
             ("String", "std/prelude"),
             ("Console", "std/console"),
@@ -39,6 +41,19 @@ pub(super) fn collect_external_type_bindings(
                 canonical: format!("std/prelude::{name}"),
                 provider: Some(ExternalTypeProvider {
                     module: provider.into(),
+                    export: name.into(),
+                }),
+            });
+        }
+    }
+    if uses_prelude(&["std/prelude::readLine"]) {
+        for name in ["Stdin", "StdinError"] {
+            bindings.push(ExternalTypeBinding {
+                arity: Some(0),
+                spelling: name.into(),
+                canonical: format!("std/prelude::{name}"),
+                provider: Some(ExternalTypeProvider {
+                    module: "std/stdin".into(),
                     export: name.into(),
                 }),
             });

@@ -1644,8 +1644,9 @@ fails ConsoleError =
                 fields: vec![CoreRecordField {
                     name: "stdin".to_owned(),
                     optional: false,
-                    type_ref: CoreType::Named {
+                    type_ref: CoreType::ExternalNamed {
                         name: "Stdin".to_owned(),
+                        canonical: "std/prelude::Stdin".to_owned(),
                         arguments: Vec::new(),
                     },
                 }],
@@ -1653,8 +1654,9 @@ fails ConsoleError =
         );
         assert_eq!(
             failure,
-            &CoreType::Named {
+            &CoreType::ExternalNamed {
                 name: "StdinError".to_owned(),
+                canonical: "std/prelude::StdinError".to_owned(),
                 arguments: Vec::new(),
             }
         );

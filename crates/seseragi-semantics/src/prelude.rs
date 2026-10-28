@@ -3167,6 +3167,8 @@ pub(crate) fn provider_type_for_prelude(canonical: &str) -> Option<PreludeProvid
     let (canonical, module, export) = match canonical {
         "std/prelude::Console" => ("std/prelude::Console", "std/console", "Console"),
         "std/prelude::ConsoleError" => ("std/prelude::ConsoleError", "std/console", "ConsoleError"),
+        "std/prelude::Stdin" => ("std/prelude::Stdin", "std/stdin", "Stdin"),
+        "std/prelude::StdinError" => ("std/prelude::StdinError", "std/stdin", "StdinError"),
         "std/prelude::FileSystem" => ("std/fs::FileSystem", "std/fs", "FileSystem"),
         _ => return None,
     };
