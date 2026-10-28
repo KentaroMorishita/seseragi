@@ -182,6 +182,46 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
 }
 
 #[test]
+fn represented_repeated_alias_head_emits_without_changing_the_original_source() {
+    let scratch = Scratch::new();
+    let declarations = "type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = \"box\" }\n";
+    let source = format!("// 雫\n{declarations}\npub effect fn main = println \"MUST_NOT_RUN\"\n");
+    let path = scratch.0.join("represented-constructor-λ.ssrg");
+    fs::write(&path, &source).unwrap();
+    let rust = scratch.0.join("represented-constructor.rs");
+    let output = cli()
+        .env("PATH", "")
+        .args(["experimental", "emit-rust"])
+        .arg(&path)
+        .args(["--entry", "main", "--output"])
+        .arg(&rust)
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(output.stderr.is_empty(), "{output:?}");
+    assert!(rust.is_file());
+    assert!(rust.with_extension("rust-backend.json").is_file());
+    for profile in ["development", "release"] {
+        let directory = scratch.0.join(profile);
+        let output = cli()
+            .arg("build")
+            .arg(&path)
+            .args(["--profile", profile, "--out-dir"])
+            .arg(&directory)
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "{profile}: {output:?}");
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(directory.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        assert!(directory
+            .join(manifest["entry"].as_str().unwrap())
+            .is_file());
+    }
+    assert_eq!(fs::read_to_string(path).unwrap(), source);
+}
+
+#[test]
 fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
     let scratch = Scratch::new();
     for (name, source, code) in [
@@ -197,10 +237,12 @@ fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
         ("standard-duplicate", "alias Number = Int\ninstance Show<Number> { fn show value: Int -> String = \"number\" }\n", "SES-T0202"),
         ("erased-parameter", "type Label = | Label\nalias Erased<A> = Label\ninstance<A> Show<Erased<A>> { fn show value: Label -> String = \"label\" }\n", "SES-T0101"),
         ("method-hole-contract", "alias Id<A> = A\ntrait Tag<A> { fn tag value: Int -> String }\ninstance Tag<Int> { fn tag value: Id<_> -> String = \"unused\" }\n", "SES-T0101"),
-        ("unrepresented-constructor", "type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = \"box\" }\n", "SES-T0101"),
+        ("unrepresented-function-constructor", "alias Arrow<A> = A -> Int\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Arrow> { fn tag<A> value: (A -> Int) -> String = \"arrow\" }\n", "SES-T0101"),
+        ("unrepresented-record-constructor", "alias Fields<A> = { value: A }\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Fields> { fn tag<A> value: { value: A } -> String = \"fields\" }\n", "SES-T0101"),
     ] {
         let path = scratch.0.join(format!("{name}-λ.ssrg"));
-        fs::write(&path, format!("// 雫\n{source}\npub effect fn main = println \"MUST_NOT_RUN\"\n")).unwrap();
+        let full_source = format!("// 雫\n{source}\npub effect fn main = println \"MUST_NOT_RUN\"\n");
+        fs::write(&path, &full_source).unwrap();
         let rust = scratch.0.join(format!("{name}.rs"));
         let output = cli().env("PATH", "").args(["experimental", "emit-rust"])
             .arg(&path).args(["--entry", "main", "--output"]).arg(&rust).output().unwrap();
@@ -223,7 +265,25 @@ fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
             let diagnostics: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
             assert!(diagnostics.to_string().contains(code));
             assert!(diagnostics.to_string().contains("utf-8"));
+            if name.starts_with("unrepresented-") {
+                let modules = diagnostics["diagnostics"].as_array().unwrap();
+                assert_eq!(modules.len(), 1);
+                assert_eq!(modules[0]["path"], path.to_str().unwrap());
+                let artifact = &modules[0]["diagnostics"];
+                assert_eq!(artifact["positionEncoding"], "utf-8");
+                let error = artifact["diagnostics"].as_array().unwrap()
+                    .iter()
+                    .find(|error| error["messageKey"] == "trait.instance-head-unresolved")
+                    .unwrap_or_else(|| panic!("{diagnostics}"));
+                let start = error["primary"]["start"].as_u64().unwrap() as usize;
+                let end = error["primary"]["end"].as_u64().unwrap() as usize;
+                assert_eq!(
+                    &full_source[start..end],
+                    source.lines().find(|line| line.starts_with("instance ")).unwrap()
+                );
+            }
         }
+        assert_eq!(fs::read_to_string(path).unwrap(), full_source);
     }
 }
 
