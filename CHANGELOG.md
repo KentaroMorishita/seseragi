@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.110] - 2026-10-28
+
+### Added
+
+- Support native Clock sleep through explicit CLI provider selection. Preserve cold replay, cancellation, masked finalizers, checked Duration identity and provider receipts while retaining ordinary TypeScript package locks.
+- Represent transparent alias constructors that reorder, repeat or discard value-kind parameters. Preserve scoped slots, canonical owners, source arity and selected evidence across facades and saved methods.
+
+### Fixed
+
+- Retain the checked source stage of saved Clock operations and partial alias applications until their source arguments are supplied. Reject incompatible owners, kinds and unsupported program WASM admission before generation.
+
 ## [0.61.109] - 2026-10-27
 
 ### Added
