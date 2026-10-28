@@ -162,11 +162,28 @@ fn proved_alias_sections_detect_unused_duplicates_against_the_direct_owner() {
 }
 
 #[test]
-fn unbound_permutation_repetition_erasure_and_wrong_method_owner_remain_positioned_refusals() {
+fn previously_refused_bare_aliases_now_preserve_their_declared_constructor_arity() {
+    // Keep these exact original inputs. Their prior refusal assertions and the
+    // fixed-base source are saved with the implementation evidence.
+    for (source, arity) in [
+        ("type Pair<A,B> = | Pair (A,B)\nalias Repeat<A> = Pair<A,A>\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\ninstance Tag<Repeat> { fn tag<A> value:Pair<A,A> -> String = \"bad\" }\n", 1),
+        ("type Pair<A,B> = | Pair (A,B)\nalias Flip<A,B> = Pair<B,A>\ntrait Tag<F<_,_>> { fn tag<A,B> value:F<A,B> -> String }\ninstance Tag<Flip> { fn tag<A,B> value:Pair<B,A> -> String = \"bad\" }\n", 2),
+        ("alias Erase<A> = Int\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\ninstance Tag<Erase> { fn tag<A> value:Int -> String = \"bad\" }\n", 1),
+    ] {
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let compiled = compile_module(CompileInput::new("original-雫.ssrg", "fixture/alias-sections", source).with_profile(profile))
+                .unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
+            let seseragi_semantics::TypedType::TypeFunction { parameter_kinds, .. } = &compiled.typed_hir.instances[0].arguments[0] else {
+                panic!("{:#?}", compiled.typed_hir.instances[0]);
+            };
+            assert_eq!(parameter_kinds, &vec![0; arity]);
+        }
+    }
+}
+
+#[test]
+fn unbound_free_parameters_and_wrong_method_owner_remain_positioned_refusals() {
     for (source, key) in [
-        ("type Pair<A,B> = | Pair (A,B)\nalias Repeat<A> = Pair<A,A>\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\ninstance Tag<Repeat> { fn tag<A> value:Pair<A,A> -> String = \"bad\" }\n", "trait.instance-head-unresolved"),
-        ("type Pair<A,B> = | Pair (A,B)\nalias Flip<A,B> = Pair<B,A>\ntrait Tag<F<_,_>> { fn tag<A,B> value:F<A,B> -> String }\ninstance Tag<Flip> { fn tag<A,B> value:Pair<B,A> -> String = \"bad\" }\n", "trait.instance-head-unresolved"),
-        ("alias Erase<A> = Int\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\ninstance Tag<Erase> { fn tag<A> value:Int -> String = \"bad\" }\n", "trait.instance-head-unresolved"),
         ("type Box<A> = | Box A\nalias Ignore<A,B> = Box<B>\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\ninstance<T> Tag<Ignore<T>> { fn tag<A> value:Box<A> -> String = \"bad\" }\n", "trait.instance-head-unresolved"),
         ("type Pair<A,B> = | Pair (A,B)\nalias Flip<A,B> = Pair<B,A>\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\ninstance Tag<Flip<Int>> { fn tag<A> value:Pair<Int,A> -> String = \"bad\" }\n", "trait.instance-method-signature-mismatch"),
         ("type Pair<A,B> = | Pair (A,B)\ntype Other<A,B> = | Other (A,B)\nalias Flip<A,B> = Pair<B,A>\ntrait Tag<F<_>> { fn tag<A> value:F<A> -> String }\ninstance Tag<Flip<Int>> { fn tag<A> value:Other<A,Int> -> String = \"bad\" }\n", "trait.instance-method-signature-mismatch"),

@@ -293,14 +293,43 @@ impl Backend<'_> {
     /// declaration slots. Fixed prefixes consume slots from the left; scoped
     /// constructors use their binder identity, never their displayed spelling.
     pub(super) fn declared_method_type_kind(&self, ty: &CoreType, scope: &Scope) -> Option<usize> {
+        self.declared_method_type_kind_scoped(ty, scope, &[])
+    }
+
+    fn declared_method_type_kind_scoped(
+        &self,
+        ty: &CoreType,
+        scope: &Scope,
+        functions: &[Vec<u32>],
+    ) -> Option<usize> {
         match ty {
+            CoreType::TypeFunction {
+                parameter_kinds,
+                body,
+            } => {
+                if self.program_wasm_library
+                    || parameter_kinds.is_empty()
+                    || parameter_kinds.iter().any(|kind| *kind != 0)
+                {
+                    return None;
+                }
+                let mut nested = functions.to_vec();
+                nested.push(parameter_kinds.clone());
+                (self.declared_method_type_kind_scoped(body, scope, &nested) == Some(0))
+                    .then_some(parameter_kinds.len())
+            }
+            CoreType::TypeFunctionParameter { depth, index } => functions
+                .iter()
+                .rev()
+                .nth(*depth as usize)
+                .and_then(|function| function.get(*index as usize))
+                .map(|arity| *arity as usize),
             CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
                 if let CoreType::Named { name, .. } = ty {
                     if let Some(arity) = scope.type_parameter_arity(name) {
-                        if arguments
-                            .iter()
-                            .any(|a| self.declared_method_type_kind(a, scope) != Some(0))
-                        {
+                        if arguments.iter().any(|a| {
+                            self.declared_method_type_kind_scoped(a, scope, functions) != Some(0)
+                        }) {
                             return None;
                         }
                         return (arity as usize).checked_sub(arguments.len());
@@ -315,7 +344,8 @@ impl Backend<'_> {
                 let slots = self.declared_method_constructor_slots(&head, scope)?;
                 let remaining = slots.get(arguments.len()..)?;
                 if arguments.iter().zip(&slots).any(|(argument, kind)| {
-                    self.declared_method_type_kind(argument, scope) != Some(*kind as usize)
+                    self.declared_method_type_kind_scoped(argument, scope, functions)
+                        != Some(*kind as usize)
                 }) || remaining.iter().any(|kind| *kind != 0)
                 {
                     return None;
@@ -326,18 +356,18 @@ impl Backend<'_> {
                 Some(remaining.len())
             }
             CoreType::Function { parameter, result } => {
-                (self.declared_method_type_kind(parameter, scope) == Some(0)
-                    && self.declared_method_type_kind(result, scope) == Some(0))
+                (self.declared_method_type_kind_scoped(parameter, scope, functions) == Some(0)
+                    && self.declared_method_type_kind_scoped(result, scope, functions) == Some(0))
                 .then_some(0)
             }
             CoreType::Tuple { elements } => elements
                 .iter()
-                .all(|e| self.declared_method_type_kind(e, scope) == Some(0))
+                .all(|e| self.declared_method_type_kind_scoped(e, scope, functions) == Some(0))
                 .then_some(0),
             CoreType::Record { closed, fields } => (*closed
-                && fields
-                    .iter()
-                    .all(|f| self.declared_method_type_kind(&f.type_ref, scope) == Some(0)))
+                && fields.iter().all(|f| {
+                    self.declared_method_type_kind_scoped(&f.type_ref, scope, functions) == Some(0)
+                }))
             .then_some(0),
             CoreType::Hole | CoreType::RequirementMerge { .. } => None,
         }
@@ -369,6 +399,9 @@ impl Backend<'_> {
         }
         match name.as_str() {
             "std/path::Path"
+            | "std/time::Duration"
+            | "std/time::DurationError"
+            | "std/clock::Clock"
             | "std/path::PathError"
             | "std/fs::FileSystem"
             | "std/fs::FileSystemError"

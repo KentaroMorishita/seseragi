@@ -109,6 +109,16 @@ impl PureExpressionContext<'_> {
 
 fn term(value: &TypedType, variables: &BTreeMap<String, Variable>) -> Term {
     match value {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => Term::Shape(
+            format!("type-function:{parameter_kinds:?}"),
+            vec![term(body, variables)],
+        ),
+        TypedType::TypeFunctionParameter { depth, index } => {
+            Term::Shape(format!("type-function-parameter:{depth}:{index}"), vec![])
+        }
         TypedType::Hole => Term::Hole,
         TypedType::Named { name, arguments } => {
             let head = variables.get(name).map(|v| Term::Variable(v.clone()));

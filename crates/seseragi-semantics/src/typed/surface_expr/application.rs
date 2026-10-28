@@ -479,7 +479,10 @@ fn available_method_type(ty: &TypedType, context: &PureExpressionContext<'_>) ->
             }
             known(&context.semantic_value_from_typed_type(ty).key, context)
         }
-        TypedType::Hole | TypedType::RequirementMerge { .. } => false,
+        TypedType::TypeFunction { .. } => closed_type_function(ty, context, &[]),
+        TypedType::TypeFunctionParameter { .. }
+        | TypedType::Hole
+        | TypedType::RequirementMerge { .. } => false,
     }
 }
 
@@ -558,6 +561,73 @@ fn closed_method_evidence(
             .all(|child| closed_method_evidence(child, context))
 }
 
+fn closed_type_function(
+    ty: &TypedType,
+    context: &PureExpressionContext<'_>,
+    scopes: &[Vec<u32>],
+) -> bool {
+    match ty {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => {
+            if parameter_kinds.is_empty() || parameter_kinds.iter().any(|kind| *kind != 0) {
+                return false;
+            }
+            let mut nested = scopes.to_vec();
+            nested.push(parameter_kinds.clone());
+            closed_type_function(body, context, &nested)
+        }
+        TypedType::TypeFunctionParameter { depth, index } => scopes
+            .iter()
+            .rev()
+            .nth(*depth as usize)
+            .and_then(|scope| scope.get(*index as usize))
+            .is_some_and(|kind| *kind == 0),
+        TypedType::Named { name, arguments } => {
+            closed_method_type(
+                &TypedType::Named {
+                    name: name.clone(),
+                    arguments: vec![],
+                },
+                context,
+            ) && arguments
+                .iter()
+                .all(|argument| closed_type_function(argument, context, scopes))
+        }
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => {
+            closed_method_type(
+                &TypedType::ExternalNamed {
+                    name: name.clone(),
+                    canonical: canonical.clone(),
+                    arguments: vec![],
+                },
+                context,
+            ) && arguments
+                .iter()
+                .all(|argument| closed_type_function(argument, context, scopes))
+        }
+        TypedType::Function { parameter, result } => {
+            closed_type_function(parameter, context, scopes)
+                && closed_type_function(result, context, scopes)
+        }
+        TypedType::Tuple { elements } => elements
+            .iter()
+            .all(|element| closed_type_function(element, context, scopes)),
+        TypedType::Record { closed, fields } => {
+            *closed
+                && fields
+                    .iter()
+                    .all(|field| closed_type_function(&field.type_ref, context, scopes))
+        }
+        TypedType::RequirementMerge { .. } | TypedType::Hole => false,
+    }
+}
+
 fn closed_method_type(ty: &TypedType, context: &PureExpressionContext<'_>) -> bool {
     match ty {
         TypedType::Function { parameter, result } => {
@@ -587,7 +657,10 @@ fn closed_method_type(ty: &TypedType, context: &PureExpressionContext<'_>) -> bo
             };
             owner_is_closed && arguments.iter().all(|ty| closed_method_type(ty, context))
         }
-        TypedType::Hole | TypedType::RequirementMerge { .. } => false,
+        TypedType::TypeFunction { .. } => closed_type_function(ty, context, &[]),
+        TypedType::TypeFunctionParameter { .. }
+        | TypedType::Hole
+        | TypedType::RequirementMerge { .. } => false,
     }
 }
 
@@ -1238,7 +1311,18 @@ pub(crate) fn type_known_application_with_explicit(
             })
             .key
     } else {
-        SemanticTypeKey::Other
+        // A source partial retains its already checked parameter and result
+        // identities. Erasing this chain to Other makes a canonical alias body
+        // depend on structural display names at the next function boundary.
+        application
+            .parameters
+            .iter()
+            .skip(arguments.len())
+            .rev()
+            .fold(application.result.clone(), |result, parameter| {
+                SemanticValueType::function(parameter.clone(), result)
+            })
+            .key
     };
     let deferred_evidence_parameters =
         if !evidence.is_empty() && !saturated && signature.trait_identity.is_none() {
@@ -1883,7 +1967,9 @@ fn is_unresolved_parameter_expectation(
             parameters.iter().any(|parameter| parameter.name == *name) && !resolved.contains(name)
         }
         TypedType::Hole => true,
-        TypedType::ExternalNamed { .. }
+        TypedType::TypeFunction { .. }
+        | TypedType::TypeFunctionParameter { .. }
+        | TypedType::ExternalNamed { .. }
         | TypedType::Record { .. }
         | TypedType::Tuple { .. }
         | TypedType::Function { .. }
@@ -1897,6 +1983,14 @@ fn mask_unresolved_type_parameters(
     resolved: &std::collections::BTreeSet<String>,
 ) -> TypedType {
     match type_ref {
+        TypedType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => TypedType::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(mask_unresolved_type_parameters(body, parameters, resolved)),
+        },
+        TypedType::TypeFunctionParameter { .. } => type_ref.clone(),
         TypedType::Named { name, .. }
             if parameters.iter().any(|parameter| parameter.name == *name)
                 && !resolved.contains(name) =>
@@ -1969,6 +2063,10 @@ fn contains_unresolved_type_parameter(
     resolved: &std::collections::BTreeSet<String>,
 ) -> bool {
     match type_ref {
+        TypedType::TypeFunction { body, .. } => {
+            contains_unresolved_type_parameter(body, parameters, resolved)
+        }
+        TypedType::TypeFunctionParameter { .. } => false,
         TypedType::Named { name, arguments } => {
             (parameters.iter().any(|parameter| parameter.name == *name) && !resolved.contains(name))
                 || arguments.iter().any(|argument| {

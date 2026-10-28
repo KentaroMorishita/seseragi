@@ -58,6 +58,52 @@ test("alias heads keep selected dictionaries, closures and resource lifetimes", 
   }
 })
 
+test("represented alias bodies compile and execute through the canonical SDK", async () => {
+  const repeated =
+    'type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = "box" }\n'
+  for (const source of [
+    `// 雫🙂\n${repeated}\npub effect fn main = println "MUST_NOT_RUN"\n`,
+    await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/semantic-diagnostics-schema-1/alias-constructor-noneta/main.ssrg",
+        import.meta.url
+      )
+    ).text(),
+  ]) {
+    const response = JSON.parse(
+      compile_single_file("λ.ssrg", "fixture/alias-positive", source)
+    ) as CompileResponse
+    expect(response.status).toBe("success")
+    expect(response.diagnostics.diagnostics).toEqual([])
+  }
+  for (const name of [
+    "alias-type-functions",
+    "alias-type-function-evaluation",
+    "alias-type-function-effects",
+  ]) {
+    const base = new URL(
+      `../../../examples/spec/fixtures/rust-backend/${name}`,
+      import.meta.url
+    )
+    const source = await Bun.file(`${base.pathname}.ssrg`).text()
+    const response = JSON.parse(
+      compile_single_file("λ.ssrg", "fixture/alias-positive", source)
+    ) as CompileResponse
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error(JSON.stringify(response))
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: (await Bun.file(`${base.pathname}.stdout`).text()).trimEnd(),
+      debug: "()",
+    })
+  }
+})
+
 test("unused duplicate and unrepresented alias heads fail before generation", () => {
   for (const [declarations, key] of [
     [
@@ -81,7 +127,11 @@ test("unused duplicate and unrepresented alias heads fail before generation", ()
       "trait.instance-head-unresolved",
     ],
     [
-      'type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = "box" }\n',
+      'alias Arrow<A> = A -> Int\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Arrow> { fn tag<A> value: (A -> Int) -> String = "arrow" }\n',
+      "trait.instance-head-unresolved",
+    ],
+    [
+      'alias Fields<A> = { value: A }\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Fields> { fn tag<A> value: { value: A } -> String = "fields" }\n',
       "trait.instance-head-unresolved",
     ],
   ]) {
@@ -166,7 +216,8 @@ test("constructor overlap and unproved HKT heads fail without generated code", a
     ["constructor-section-duplicate", "trait.instance-duplicate"],
     ["constructor-coherence-unproved", "trait.instance-coherence-unproved"],
     ["alias-constructor-duplicate", "trait.instance-duplicate"],
-    ["alias-constructor-noneta", "trait.instance-head-unresolved"],
+    ["alias-constructor-function", "trait.instance-head-unresolved"],
+    ["alias-constructor-record", "trait.instance-head-unresolved"],
     ["alias-method-hole-contract", "trait.instance-method-signature-mismatch"],
   ]) {
     const source = await Bun.file(

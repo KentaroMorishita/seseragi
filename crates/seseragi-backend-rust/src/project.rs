@@ -14,20 +14,40 @@ pub(crate) fn emit(
     entry_module: &str,
     entry: &str,
 ) -> Result<RustArtifact, RustBackendError> {
-    emit_body(modules, entry_module, Some(entry))
+    emit_with_options(
+        modules,
+        entry_module,
+        entry,
+        &crate::RustTargetOptions::default(),
+    )
+}
+
+pub(crate) fn emit_with_options(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    entry: &str,
+    options: &crate::RustTargetOptions,
+) -> Result<RustArtifact, RustBackendError> {
+    emit_body(modules, entry_module, Some(entry), options)
 }
 
 pub(crate) fn emit_library(
     modules: &[&CoreModule],
     entry_module: &str,
 ) -> Result<RustArtifact, RustBackendError> {
-    emit_body(modules, entry_module, None)
+    emit_body(
+        modules,
+        entry_module,
+        None,
+        &crate::RustTargetOptions::default(),
+    )
 }
 
 fn emit_body(
     modules: &[&CoreModule],
     entry_module: &str,
     entry: Option<&str>,
+    options: &crate::RustTargetOptions,
 ) -> Result<RustArtifact, RustBackendError> {
     let entry_core = modules
         .iter()
@@ -168,6 +188,7 @@ fn emit_body(
             &scalar_globals,
             &type_names,
             &trait_names,
+            options,
         )
     } else {
         emit::emit_library(&linked, &owners, &scalar_globals, &type_names, &trait_names)

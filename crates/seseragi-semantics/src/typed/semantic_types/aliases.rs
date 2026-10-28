@@ -183,6 +183,20 @@ impl AliasCatalog {
                                 )
                             })
                             .flatten();
+                        if (arguments.len() < definition.parameter_names.len()
+                            || arguments
+                                .iter()
+                                .any(|argument| matches!(argument, TypedType::Hole)))
+                            && omitted_suffix.is_none()
+                        {
+                            if let Some(constructor) =
+                                crate::typed::instances::alias_constructor_type_function(
+                                    resolved, type_ref,
+                                )
+                            {
+                                return constructor;
+                            }
+                        }
                         return self.instantiate(
                             resolved,
                             target,
@@ -376,6 +390,17 @@ fn expand_interface_type(
     bindings: &[ExternalTypeBinding],
 ) -> TypedType {
     match type_ref {
+        InterfaceType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => TypedType::TypeFunction {
+            parameter_kinds: parameter_kinds.clone(),
+            body: Box::new(expand_interface_type(body, substitutions, bindings)),
+        },
+        InterfaceType::TypeFunctionParameter { depth, index } => TypedType::TypeFunctionParameter {
+            depth: *depth,
+            index: *index,
+        },
         InterfaceType::Named { name, arguments } => {
             let arguments = arguments
                 .iter()
@@ -470,6 +495,10 @@ fn normalize_constructor_argument(argument: TypedType, expected_arity: u32) -> T
         return argument;
     }
     match argument {
+        TypedType::TypeFunction {
+            ref parameter_kinds,
+            ..
+        } if parameter_kinds.len() == expected_arity as usize => argument,
         TypedType::Named { name, arguments } => TypedType::Named { name, arguments },
         TypedType::ExternalNamed {
             name,
@@ -485,6 +514,10 @@ fn normalize_constructor_argument(argument: TypedType, expected_arity: u32) -> T
 }
 
 fn apply_type_arguments(substitution: &TypedType, arguments: Vec<TypedType>) -> TypedType {
+    if matches!(substitution, TypedType::TypeFunction { .. }) {
+        return crate::typed::type_functions::apply(substitution, arguments)
+            .unwrap_or(TypedType::Hole);
+    }
     match substitution {
         TypedType::Named {
             name,

@@ -58,6 +58,15 @@ Bool／UnitのEqと前置`!`のnative契約は、backend／CLIの`--test basic_s
 前置operatorは関数値として参照できません。標準Float Eqは提供しません。
 共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
 
+native Clock sleepの有限契約は、backend／CLIの`--test clock_sleep`とbackend runtimeの
+`clock_tests`で確認します。明示native CLI provider選択、canonical DurationとClockの
+owner／kind／source引数、target receipt、通常path packageのTS用lock保持、元のTS両profileの
+raw strict、fresh Bun／Nodeとnativeの結果を比較します。pending sibling、cold再実行、
+typed Failure／Defect／取消、acquisitionのatomic登録とsleepを使うmasked finalizer、旧outputと入力保持、
+timer／managed root解放を検証します。Clock now、WASMのClock row、一般provider ABIと
+target別manifest／native provider lockはこのsliceに含めません。共通native schedulerを
+変えるため、既存filesystem／Fiberとprogram WASMの回帰も確認し、統合時は全体gateを行います。
+
 importしたADTのpayload identityと注釈付きEq部分適用は、driverの
 `--test frontend_payload_identity --test frontend_inference --test imported_returns`で確認します。
 constructorを公開するopaque ADT、local alias、同canonicalのdirect／facade／namespace import、
@@ -88,6 +97,20 @@ opaque providerのfacade、別owner・不正kind・未証明headの位置付き�
 strict、fresh Bun／Node、native、選択済みevidenceとsource一回評価、cold Effectと
 Failure／Defect後の解放を比較します。未束縛の一般type lambdaやHKT逆推論は含めません。
 共有frontendの変更なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
+
+transparent aliasの残るvalue-kind parameterを並替・重複・破棄するconstructorは、
+semanticsの`type_functions::tests`、loweringの`core::types::tests`、driverとbackendの
+`--test alias_type_functions`、driver／CLIの`--test alias_constructor_sections`で確認します。
+`Flip<A,B> = Pair<B,A>`、`Repeat<A> = Pair<A,A>`、`Erase<A> = Int`の明示type引数を使い、
+scoped slotのcaptureを避けた適用、canonical owner／provider、alpha同値の重複診断、
+renamed facade packageと保存methodのsource arityを保ちます。元のTS両profileのstrict、
+fresh Bun／Nodeとnativeの出力・source一回評価、Ref・cold再実行・Failure／Defect後の
+finalizerとroot解放を比較します。使わない束縛parameterもconstructorのarityに数え、
+失われるfree instance parameter、不正owner／kind、未証明の選択は位置付きで拒否します。
+このproducerはcanonical nominal applicationとscoped value slotに限ります。structural
+function／record／row constructor、一般HKT逆推論、完全なtype-function同値判定と
+program WASMの受入拡張は含めません。共有型表現・投影の変更なので、統合前は必要な
+全体gateとcanonical compiler WASMの再生成・公開consumer検証も必要です。
 
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、

@@ -15,6 +15,7 @@ pub(super) struct TypeScriptTypeContext {
     constructor_kinds: BTreeMap<String, u32>,
     project_higher_kinds: bool,
     constructor_position: bool,
+    type_function_scopes: Vec<Vec<u32>>,
     kind_templates: BTreeMap<String, super::TypeScriptKindConstructor>,
     kind_requirements: Arc<Mutex<super::kinds::Requirements>>,
     value_parameters: BTreeSet<String>,
@@ -33,6 +34,7 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
             constructor_kinds: BTreeMap::new(),
             project_higher_kinds: false,
             constructor_position: false,
+            type_function_scopes: Vec::new(),
             kind_templates: BTreeMap::new(),
             kind_requirements: Default::default(),
             value_parameters: BTreeSet::new(),
@@ -46,6 +48,71 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
 }
 
 impl TypeScriptTypeContext {
+    fn project_type_function(&self, value: &CoreType) -> Option<TypeScriptType> {
+        let CoreType::TypeFunction {
+            parameter_kinds,
+            body,
+        } = value
+        else {
+            return None;
+        };
+        let identity = format!("type-function:{}", value.type_function_key()?);
+        let mut body_context = self.clone();
+        body_context
+            .type_function_scopes
+            .push(parameter_kinds.clone());
+        body_context.project_higher_kinds = true;
+        body_context.constructor_position = false;
+        let target = type_ref_from_core_type_with_erasure(body, &body_context, &[]);
+        if !crate::emit::exact_alias_target(&target) {
+            return None;
+        }
+        let mut requirements = self
+            .kind_requirements
+            .lock()
+            .expect("module type witnesses");
+        let name = if let Some(existing) = requirements
+            .constructors
+            .values()
+            .find(|constructor| constructor.identity == identity)
+        {
+            existing.name.clone()
+        } else {
+            // This is a private emitted identifier, not semantic identity.
+            // Reuse is checked against the complete canonical body above.
+            let mut index = requirements.constructors.len();
+            let name = loop {
+                let candidate = format!("$ssrg$typefn${index}");
+                if !requirements.constructors.contains_key(&candidate) {
+                    break candidate;
+                }
+                index += 1;
+            };
+            requirements.constructors.insert(
+                name.clone(),
+                super::TypeScriptKindConstructor {
+                    name: name.clone(),
+                    identity,
+                    exported: false,
+                    parameters: parameter_kinds
+                        .iter()
+                        .enumerate()
+                        .map(|(index, arity)| TypeParameter {
+                            name: format!("T{index}"),
+                            arity: *arity,
+                        })
+                        .collect(),
+                    target,
+                },
+            );
+            name
+        };
+        Some(TypeScriptType::KindConstructor {
+            name,
+            arguments: vec![None; parameter_kinds.len()],
+        })
+    }
+
     pub(super) fn with_higher_kinds(&self) -> Self {
         let mut scoped = self.clone();
         scoped.project_higher_kinds = true;
@@ -543,6 +610,7 @@ pub(super) fn instantiated_hkt_callee(
 ) -> Option<TypeScriptType> {
     fn applied_constructor(ty: &CoreType, parameters: &[TypeParameter]) -> Option<bool> {
         let (applied, children): (bool, Vec<&CoreType>) = match ty {
+            CoreType::TypeFunction { .. } | CoreType::TypeFunctionParameter { .. } => return None,
             CoreType::Named { name, arguments } => {
                 let parameter = parameters.iter().find(|p| p.name == *name);
                 if parameter
@@ -681,6 +749,16 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         _ => {}
     }
     match type_ref {
+        CoreType::TypeFunction { .. } => imported_types.project_type_function(type_ref).unwrap_or(TypeScriptType::Unknown),
+        CoreType::TypeFunctionParameter { depth, index } => {
+            if *depth == 0 && imported_types.type_function_scopes.last()
+                .and_then(|scope| scope.get(*index as usize)).is_some_and(|kind| *kind == 0)
+            {
+                TypeScriptType::KindArgument { index: *index as usize }
+            } else {
+                TypeScriptType::Unknown
+            }
+        }
         CoreType::Named { name, arguments }
             if arguments.is_empty() && imported_types.value_parameters.contains(name) =>
         {

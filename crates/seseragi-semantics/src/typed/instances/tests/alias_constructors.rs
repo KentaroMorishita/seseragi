@@ -109,26 +109,73 @@ fn alias_constructor_eta_preserves_fixed_prefix_and_missing_parameter_order() {
 }
 
 #[test]
-fn alias_constructor_eta_refuses_unrepresented_shapes_even_when_unused() {
-    for (alias, use_head, signature) in [
-        ("alias Flip<A, B> = Pair<B, A>", "Flip", "Pair<B, A>"),
-        ("alias Repeat<A> = Pair<A, A>", "Repeat", "Pair<A, A>"),
-        ("alias Erase<A> = Int", "Erase", "Int"),
-        ("alias Identity<A> = A", "Identity", "A"),
-        ("alias Nested<A> = Box<Box<A>>", "Nested", "Box<Box<A>>"),
-        ("alias Applied<F<_>, A> = F<A>", "Applied", "Box<A>"),
-        ("alias Same<A, B> = Pair<A, B>", "Same<_>", "Pair<A, B>"),
+fn alias_constructor_eta_keeps_represented_bodies_and_positioned_refusals() {
+    for (alias, use_head, signature, refusal) in [
+        (
+            "alias Flip<A, B> = Pair<B, A>",
+            "Flip",
+            "Pair<B, A>",
+            Some("trait.instance-kind-mismatch"),
+        ),
+        ("alias Repeat<A> = Pair<A, A>", "Repeat", "Pair<A, A>", None),
+        ("alias Erase<A> = Int", "Erase", "Int", None),
+        ("alias Identity<A> = A", "Identity", "A", None),
+        (
+            "alias Nested<A> = Box<Box<A>>",
+            "Nested",
+            "Box<Box<A>>",
+            None,
+        ),
+        (
+            "alias Applied<F<_>, A> = F<A>",
+            "Applied",
+            "Box<A>",
+            Some("trait.instance-head-unresolved"),
+        ),
+        (
+            "alias Same<A, B> = Pair<A, B>",
+            "Same<_>",
+            "Pair<A, B>",
+            Some("trait.instance-head-unresolved"),
+        ),
+        (
+            "alias Arrow<A> = A -> Int",
+            "Arrow",
+            "A -> Int",
+            Some("trait.instance-head-unresolved"),
+        ),
+        (
+            "alias Fields<A> = { value: A }",
+            "Fields",
+            "{ value: A }",
+            Some("trait.instance-head-unresolved"),
+        ),
     ] {
         let source = format!("// 雫🙂\ntype Box<A> = | Box A\ntype Pair<A, B> = | Pair (A, B)\n{alias}\ntrait Tag<F<_>> {{ fn tag<A, B> value: F<A> -> String }}\ninstance Tag<{use_head}> {{ fn tag<A, B> value: {signature} -> String = \"unused\" }}\n");
         let diagnostics = semantic_diagnostics("artifact/alias-eta-refused/main.ssrg", &source);
+        let Some(refusal) = refusal else {
+            assert!(
+                diagnostics.diagnostics.is_empty(),
+                "{source}\n{diagnostics:#?}"
+            );
+            let typed = type_module("artifact/alias-eta-refused/main.ssrg", &source);
+            assert!(
+                matches!(&typed.instances[0].arguments[..], [TypedType::TypeFunction { parameter_kinds, .. }] if parameter_kinds == &[0])
+            );
+            continue;
+        };
         let error = diagnostics
             .diagnostics
             .iter()
-            .find(|d| d.message_key == "trait.instance-head-unresolved")
+            .find(|d| d.message_key == refusal)
             .unwrap_or_else(|| panic!("{source}\n{diagnostics:#?}"));
         assert_eq!(
             &source[error.primary.start..error.primary.end],
-            source.lines().nth(5).unwrap()
+            if refusal == "trait.instance-kind-mismatch" {
+                use_head
+            } else {
+                source.lines().nth(5).unwrap()
+            }
         );
     }
 }

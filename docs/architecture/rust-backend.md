@@ -392,7 +392,24 @@ abortを作らず、実行中のOS呼出しを待ち、chunk間で取消を確�
 公開せず、closeのDefectはcleanupとして保持する。scopeとinterruptはこのdrain・close・joinと
 利用者のmasked finalizerが完了するまで待つ。
 
-外部process shutdownのcooperative処理、強制OS abort、timer、race / parallel API、Queue / Stream等は
+`std/clock.sleep`は、native CLIで`--provider std/clock::Clock=seseragi/runtime-native#clock-sleep`
+を明示して使う。既存のProvider ContractにあるcanonicalなClock／Duration、Never／Unitと
+一つのsource引数を検査する。`std/time.milliseconds`は0〜2^63−1 nsを正確に保持するopaque
+Durationを作り、負値と範囲外は既存のDurationErrorを持つEitherで返す。
+保存・返却した変換関数とsleepも同じsource段階を保つ。
+
+sleepの作成は待機せず、実行時にschedulerへdeadlineを登録する。待機中もsibling Fiberは進行し、
+取消時はtimerを解除してからscopeの解放へ進む。取得成功後は次の取消checkpointより先にfinalizerを登録し、
+finalizer中は取消を保留する。
+finalizerのsleepを含むcleanupを完了してから結果を公開する。`filesystem-delayed-transform.ssrg`と
+`delayed-file-transform` path packageは、待機後のfile変換と取消時の旧output保持を受入にする。
+
+nativeの選択はtarget receiptへoperation範囲とContract digestを記録する。TS用lockのBun Clockを
+nativeへ読み替えない。Clockを使うpackageにtarget共通manifestのClock pinやprovider artifactが
+ある場合は出力前に拒否する。Clock未使用の既存native entryは未使用pinの影響を受けない。
+Clock now、他のDuration API、WASMのClock row、一般provider ABIとnative provider lockは未対応。
+
+外部process shutdownのcooperative処理、強制OS abort、race / parallel API、Queue / Stream等は
 未対応。compiler WASMの生成TSで動くことと、一般program WASMの対応も分ける。
 
 検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。
@@ -454,6 +471,11 @@ cargo run --locked -p seseragi-cli -- experimental build-native \
 
 env PATH="" target/rust-native-ownership/program
 # (42, 42, 11, 12)
+
+cargo run --locked -p seseragi-cli -- experimental build-native \
+  examples/spec/fixtures/rust-backend/filesystem-delayed-transform.ssrg \
+  --entry main --out-dir target/delayed-file-transform \
+  --provider std/clock::Clock=seseragi/runtime-native#clock-sleep
 ```
 
 `build-native`は`program.rs`、`rust-backend.json`、`program`（Windowsは`.exe`）を保存する。
