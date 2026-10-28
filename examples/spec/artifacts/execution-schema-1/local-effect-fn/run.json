@@ -52,9 +52,9 @@
       "core.int.eq-dictionary",
       "core.bool",
       "core.int.subtract",
+      "core.int.show",
       "effect.core.flatMap",
       "core.bool.show",
-      "core.int.show",
       "core.tuple.show"
     ],
     "process": {

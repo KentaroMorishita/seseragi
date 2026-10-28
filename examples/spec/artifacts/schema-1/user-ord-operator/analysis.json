@@ -5980,6 +5980,48 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 13,
+      "owner": "artifact/user-ord-operator::Score"
+    },
+    {
+      "binding": 14,
+      "owner": "artifact/user-ord-operator::Score"
+    },
+    {
+      "binding": 18,
+      "owner": "artifact/user-ord-operator::Score"
+    },
+    {
+      "binding": 19,
+      "owner": "artifact/user-ord-operator::Score"
+    },
+    {
+      "binding": 21,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 22,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 23,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 45,
+      "owner": "artifact/user-ord-operator::Score"
+    },
+    {
+      "binding": 56,
+      "owner": "artifact/user-ord-operator::Score"
+    },
+    {
+      "binding": 57,
+      "owner": "artifact/user-ord-operator::Score"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

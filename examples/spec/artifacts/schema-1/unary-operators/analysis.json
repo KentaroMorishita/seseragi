@@ -261,7 +261,8 @@
       "definition": {
         "start": 867,
         "end": 873
-      }
+      },
+      "memberOwner": "artifact/unary-operators::trait(Render)"
     },
     {
       "id": 16,
@@ -3395,6 +3396,12 @@
         "end": 594
       },
       "type": "{ negative: Int, inverted: Bool }"
+    }
+  ],
+  "nominalBindings": [
+    {
+      "binding": 10,
+      "owner": "artifact/unary-operators::Snapshot"
     }
   ],
   "standardLibrary": [

@@ -4445,6 +4445,48 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 11,
+      "owner": "artifact/monoid-wrappers::Tally"
+    },
+    {
+      "binding": 12,
+      "owner": "artifact/monoid-wrappers::Tally"
+    },
+    {
+      "binding": 18,
+      "owner": "artifact/monoid-wrappers::Ordered"
+    },
+    {
+      "binding": 19,
+      "owner": "artifact/monoid-wrappers::Ordered"
+    },
+    {
+      "binding": 29,
+      "owner": "std/prelude::Sum"
+    },
+    {
+      "binding": 30,
+      "owner": "std/prelude::Sum"
+    },
+    {
+      "binding": 35,
+      "owner": "std/prelude::Product"
+    },
+    {
+      "binding": 36,
+      "owner": "std/prelude::Product"
+    },
+    {
+      "binding": 44,
+      "owner": "artifact/monoid-wrappers::Tally"
+    },
+    {
+      "binding": 45,
+      "owner": "artifact/monoid-wrappers::Ordered"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

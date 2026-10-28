@@ -4081,6 +4081,80 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/top-level-call-inference::Packet"
+    },
+    {
+      "binding": 3,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 4,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 5,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 8,
+      "owner": "artifact/top-level-call-inference::Packet"
+    },
+    {
+      "binding": 9,
+      "owner": "artifact/top-level-call-inference::Box"
+    },
+    {
+      "binding": 10,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 11,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 12,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 13,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 16,
+      "owner": "artifact/top-level-call-inference::Packet"
+    },
+    {
+      "binding": 17,
+      "owner": "artifact/top-level-call-inference::Box"
+    },
+    {
+      "binding": 23,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 24,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 26,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 27,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 40,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 41,
+      "owner": "std/prelude::Either"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

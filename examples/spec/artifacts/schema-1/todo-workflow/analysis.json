@@ -2982,6 +2982,24 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 15,
+      "owner": "artifact/todo-workflow::Todo"
+    },
+    {
+      "binding": 19,
+      "owner": "artifact/todo-workflow::Todo"
+    },
+    {
+      "binding": 24,
+      "owner": "artifact/todo-workflow::Todo"
+    },
+    {
+      "binding": 26,
+      "owner": "artifact/todo-workflow::Todo"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

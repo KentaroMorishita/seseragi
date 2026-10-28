@@ -4015,6 +4015,204 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/http-client-small-response::AppError"
+    },
+    {
+      "binding": 2,
+      "owner": "artifact/http-client-small-response::AppError"
+    },
+    {
+      "binding": 3,
+      "owner": "artifact/http-client-small-response::AppError"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/http-client-small-response::AppError"
+    },
+    {
+      "binding": 10,
+      "owner": "std/bytes::ByteError"
+    },
+    {
+      "binding": 12,
+      "owner": "std/bytes::BytesSliceError"
+    },
+    {
+      "binding": 15,
+      "owner": "std/effect::LoopControl"
+    },
+    {
+      "binding": 16,
+      "owner": "std/effect::LoopControl"
+    },
+    {
+      "binding": 23,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 24,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 25,
+      "owner": "std/effect::FiberExit"
+    },
+    {
+      "binding": 28,
+      "owner": "std/effect::ParallelismError"
+    },
+    {
+      "binding": 33,
+      "owner": "std/effect::ScheduleDecision"
+    },
+    {
+      "binding": 34,
+      "owner": "std/effect::ScheduleDecision"
+    },
+    {
+      "binding": 36,
+      "owner": "std/effect::ScheduleError"
+    },
+    {
+      "binding": 50,
+      "owner": "std/http::HttpVersion"
+    },
+    {
+      "binding": 51,
+      "owner": "std/http::HttpVersion"
+    },
+    {
+      "binding": 52,
+      "owner": "std/http::HttpVersion"
+    },
+    {
+      "binding": 53,
+      "owner": "std/http::HttpVersion"
+    },
+    {
+      "binding": 54,
+      "owner": "std/http::HttpVersion"
+    },
+    {
+      "binding": 57,
+      "owner": "std/http::HttpEvent"
+    },
+    {
+      "binding": 58,
+      "owner": "std/http::HttpEvent"
+    },
+    {
+      "binding": 59,
+      "owner": "std/http::HttpEvent"
+    },
+    {
+      "binding": 60,
+      "owner": "std/http::HttpEvent"
+    },
+    {
+      "binding": 62,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 63,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 64,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 65,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 66,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 67,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 68,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 69,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 70,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 71,
+      "owner": "std/http::HttpBuildError"
+    },
+    {
+      "binding": 73,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 74,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 75,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 76,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 77,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 78,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 79,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 80,
+      "owner": "std/http::HttpError"
+    },
+    {
+      "binding": 83,
+      "owner": "std/text::Utf8DecodeError"
+    },
+    {
+      "binding": 85,
+      "owner": "std/text::TextSliceError"
+    },
+    {
+      "binding": 91,
+      "owner": "std/http::HttpUrl"
+    },
+    {
+      "binding": 94,
+      "owner": "std/http::Method"
+    },
+    {
+      "binding": 95,
+      "owner": "std/http::Request"
+    },
+    {
+      "binding": 97,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 100,
+      "owner": "std/http::Response"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

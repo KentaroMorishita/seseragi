@@ -12,4 +12,4 @@ fn double value: Int -> Int = value * 2
 
 fn transform box: Box<Int> -> Int = (box.map double).get
 
-pub effect fn main = Box { value: 21 } |> transform |> println
+pub effect fn main = Box { value: 21 } |> transform |> show |> println

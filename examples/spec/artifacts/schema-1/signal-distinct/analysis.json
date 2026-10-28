@@ -2338,6 +2338,40 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 11,
+      "owner": "artifact/signal-distinct::Reading"
+    },
+    {
+      "binding": 12,
+      "owner": "artifact/signal-distinct::Reading"
+    },
+    {
+      "binding": 20,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 21,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 23,
+      "owner": "std/signal::Signal"
+    },
+    {
+      "binding": 25,
+      "owner": "artifact/signal-distinct::Reading"
+    },
+    {
+      "binding": 29,
+      "owner": "std/signal::Subscription"
+    },
+    {
+      "binding": 34,
+      "owner": "artifact/signal-distinct::Reading"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

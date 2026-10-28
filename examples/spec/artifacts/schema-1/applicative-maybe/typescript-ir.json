@@ -2,6 +2,11 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/applicative-maybe",
+  "higherKinds": {
+    "constructors": [],
+    "partials": [],
+    "application": true
+  },
   "runtimeRequirements": [
     "core.maybe",
     "core.adt",
@@ -419,7 +424,7 @@
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [A]>",
           "implicit": false
         }
       ],
@@ -444,7 +449,15 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "F",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {
@@ -481,12 +494,12 @@
       "parameters": [
         {
           "name": "wrapped",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [(argument: A) => B]>",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [A]>",
           "implicit": false
         }
       ],
@@ -511,7 +524,15 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "F",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {
@@ -568,7 +589,15 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "F",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {

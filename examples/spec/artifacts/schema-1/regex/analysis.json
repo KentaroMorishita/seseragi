@@ -9897,6 +9897,164 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 11,
+      "owner": "std/regex::RegexCompileErrorKind"
+    },
+    {
+      "binding": 12,
+      "owner": "std/regex::RegexCompileErrorKind"
+    },
+    {
+      "binding": 13,
+      "owner": "std/regex::RegexCompileErrorKind"
+    },
+    {
+      "binding": 14,
+      "owner": "std/regex::RegexCompileErrorKind"
+    },
+    {
+      "binding": 15,
+      "owner": "std/regex::RegexCompileErrorKind"
+    },
+    {
+      "binding": 16,
+      "owner": "std/regex::RegexCompileErrorKind"
+    },
+    {
+      "binding": 17,
+      "owner": "std/regex::RegexCompileErrorKind"
+    },
+    {
+      "binding": 34,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 35,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 36,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 45,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 46,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 47,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 48,
+      "owner": "std/regex::RegexCompileError"
+    },
+    {
+      "binding": 49,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 51,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 52,
+      "owner": "std/regex::RegexCompileError"
+    },
+    {
+      "binding": 53,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 55,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 61,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 63,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 65,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 68,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 70,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 72,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 74,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 77,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 80,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 83,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 85,
+      "owner": "std/regex::RegexMatch"
+    },
+    {
+      "binding": 87,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 91,
+      "owner": "std/regex::RegexOptions"
+    },
+    {
+      "binding": 92,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 95,
+      "owner": "std/regex::RegexOptions"
+    },
+    {
+      "binding": 96,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 98,
+      "owner": "std/regex::RegexOptions"
+    },
+    {
+      "binding": 99,
+      "owner": "std/regex::Regex"
+    },
+    {
+      "binding": 101,
+      "owner": "std/regex::RegexSpan"
+    },
+    {
+      "binding": 102,
+      "owner": "std/regex::RegexSpan"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

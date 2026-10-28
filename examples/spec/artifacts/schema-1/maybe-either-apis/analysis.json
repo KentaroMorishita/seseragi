@@ -13255,6 +13255,104 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/maybe-either-apis::Box"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/maybe-either-apis::Token"
+    },
+    {
+      "binding": 6,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 7,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 8,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 9,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 11,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 23,
+      "owner": "artifact/maybe-either-apis::Box"
+    },
+    {
+      "binding": 30,
+      "owner": "artifact/maybe-either-apis::Box"
+    },
+    {
+      "binding": 34,
+      "owner": "artifact/maybe-either-apis::Box"
+    },
+    {
+      "binding": 38,
+      "owner": "artifact/maybe-either-apis::Token"
+    },
+    {
+      "binding": 39,
+      "owner": "artifact/maybe-either-apis::Token"
+    },
+    {
+      "binding": 43,
+      "owner": "artifact/maybe-either-apis::Token"
+    },
+    {
+      "binding": 49,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 50,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 64,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 65,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 81,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 94,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 95,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 114,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 119,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 120,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 124,
+      "owner": "std/prelude::Maybe"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

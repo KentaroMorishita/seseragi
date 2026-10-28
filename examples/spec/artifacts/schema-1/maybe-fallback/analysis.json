@@ -1485,6 +1485,28 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 2,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 3,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 8,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 9,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 10,
+      "owner": "std/prelude::Maybe"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

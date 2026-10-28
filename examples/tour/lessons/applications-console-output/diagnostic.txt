@@ -1,3 +1,6 @@
-examples/tour/lessons/applications-console-output/diagnostic.ssrg:1:23: error[SES-T0101]: Expression invalid
+examples/tour/lessons/applications-console-output/diagnostic.ssrg:1:23: error[SES-T0101]: Binding annotation type mismatch
   | let invalid: String = println "report"
-  |                       ^^^^^^^^^^^^^^^^ the expression could not be resolved to a typed language construct
+  |                       ^^^^^^^^^^^^^^^^ declared String, initializer produces Effect<{ console: Console }, ConsoleError, Unit>
+  = expected: String
+  = actual: Effect<{ console: Console }, ConsoleError, Unit>
+  = diff: expected String, actual Effect<{ console: Console }, ConsoleError, Unit>

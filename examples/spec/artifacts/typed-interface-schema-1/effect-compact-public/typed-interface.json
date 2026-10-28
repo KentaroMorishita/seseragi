@@ -11,13 +11,23 @@
       "name": "greet",
       "visibility": "public",
       "declarationKind": "effect-function",
-      "declaration": { "start": 0, "end": 52 },
+      "declaration": {
+        "start": 0,
+        "end": 52
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
         "type": {
           "kind": "function",
-          "parameter": { "kind": "named", "name": "String", "arguments": [] },
+          "parameter": {
+            "kind": "external-named",
+            "name": "String",
+            "canonical": "std/prelude::String",
+            "providerModule": "std/prelude",
+            "providerExport": "String",
+            "arguments": []
+          },
           "result": {
             "kind": "named",
             "name": "Effect",
@@ -29,19 +39,29 @@
                   {
                     "name": "console",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Console",
+                      "canonical": "std/prelude::Console",
+                      "providerModule": "std/console",
+                      "providerExport": "Console",
                       "arguments": []
                     }
                   }
                 ]
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "ConsoleError",
+                "canonical": "std/prelude::ConsoleError",
+                "providerModule": "std/console",
+                "providerExport": "ConsoleError",
                 "arguments": []
               },
-              { "kind": "named", "name": "Unit", "arguments": [] }
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
             ]
           }
         }

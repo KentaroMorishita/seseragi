@@ -13210,6 +13210,276 @@
       "type": "{ offset: Int }"
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 0,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 1,
+      "owner": "std/decimal::DecimalContext"
+    },
+    {
+      "binding": 5,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 6,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 7,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 14,
+      "owner": "std/decimal::DecimalParseError"
+    },
+    {
+      "binding": 16,
+      "owner": "std/decimal::DecimalContextError"
+    },
+    {
+      "binding": 18,
+      "owner": "std/decimal::DecimalArithmeticError"
+    },
+    {
+      "binding": 19,
+      "owner": "std/decimal::DecimalArithmeticError"
+    },
+    {
+      "binding": 21,
+      "owner": "std/decimal::DecimalConversionError"
+    },
+    {
+      "binding": 22,
+      "owner": "std/decimal::DecimalConversionError"
+    },
+    {
+      "binding": 23,
+      "owner": "std/decimal::DecimalConversionError"
+    },
+    {
+      "binding": 24,
+      "owner": "std/decimal::DecimalConversionError"
+    },
+    {
+      "binding": 26,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 27,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 28,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 29,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 30,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 32,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 35,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 36,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 37,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 38,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 39,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 40,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 42,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 43,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 45,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 46,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 47,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 48,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 49,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 52,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 53,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 55,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 56,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 60,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 61,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 62,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 63,
+      "owner": "std/decimal::DecimalParseError"
+    },
+    {
+      "binding": 65,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 66,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 67,
+      "owner": "std/decimal::DecimalContextError"
+    },
+    {
+      "binding": 69,
+      "owner": "std/decimal::DecimalContext"
+    },
+    {
+      "binding": 70,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 71,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 76,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 77,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 78,
+      "owner": "std/prelude::Ordering"
+    },
+    {
+      "binding": 79,
+      "owner": "std/number::RoundingMode"
+    },
+    {
+      "binding": 80,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 81,
+      "owner": "std/decimal::DecimalContextError"
+    },
+    {
+      "binding": 84,
+      "owner": "std/decimal::DecimalContext"
+    },
+    {
+      "binding": 92,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 93,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 94,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 97,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 98,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 99,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 100,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 101,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 102,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 103,
+      "owner": "std/decimal::Decimal"
+    },
+    {
+      "binding": 104,
+      "owner": "std/decimal::DecimalContext"
+    },
+    {
+      "binding": 105,
+      "owner": "std/decimal::DecimalContext"
+    },
+    {
+      "binding": 106,
+      "owner": "std/decimal::DecimalContext"
+    },
+    {
+      "binding": 107,
+      "owner": "std/decimal::DecimalContext"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

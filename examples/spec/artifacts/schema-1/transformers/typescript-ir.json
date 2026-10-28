@@ -89,7 +89,7 @@
         false
       ]
     ],
-    "application": false
+    "application": true
   },
   "runtimeRequirements": [
     "core.transformer.maybe.type",
@@ -3015,7 +3015,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<F, readonly [number]>",
           "implicit": false
         }
       ],
@@ -3054,7 +3054,13 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "F",
+          "arguments": [
+            {
+              "kind": "number"
+            }
+          ]
         }
       },
       "origin": {

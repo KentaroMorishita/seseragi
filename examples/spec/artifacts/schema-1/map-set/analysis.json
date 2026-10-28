@@ -23359,6 +23359,188 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/map-set::Key"
+    },
+    {
+      "binding": 4,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 6,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 7,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 8,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 10,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 13,
+      "owner": "std/set::Set"
+    },
+    {
+      "binding": 17,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 18,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 29,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 30,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 31,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 32,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 33,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 34,
+      "owner": "std/json::Json"
+    },
+    {
+      "binding": 36,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 37,
+      "owner": "std/json::JsonPathSegment"
+    },
+    {
+      "binding": 39,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 40,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 41,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 42,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 43,
+      "owner": "std/json::DecodeErrorKind"
+    },
+    {
+      "binding": 46,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 47,
+      "owner": "std/json::JsonParseError"
+    },
+    {
+      "binding": 49,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 50,
+      "owner": "std/json::JsonReadError"
+    },
+    {
+      "binding": 54,
+      "owner": "artifact/map-set::Key"
+    },
+    {
+      "binding": 55,
+      "owner": "artifact/map-set::Key"
+    },
+    {
+      "binding": 61,
+      "owner": "artifact/map-set::Key"
+    },
+    {
+      "binding": 62,
+      "owner": "artifact/map-set::Key"
+    },
+    {
+      "binding": 67,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 69,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 70,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 82,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 83,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 86,
+      "owner": "std/set::Set"
+    },
+    {
+      "binding": 97,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 102,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 105,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 106,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 108,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 111,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 117,
+      "owner": "std/prelude::Maybe"
+    },
+    {
+      "binding": 122,
+      "owner": "std/map::Map"
+    },
+    {
+      "binding": 127,
+      "owner": "std/map::Map"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

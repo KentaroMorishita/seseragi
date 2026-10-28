@@ -4627,6 +4627,100 @@
       ]
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 5,
+      "owner": "artifact/type-aliases::AppError"
+    },
+    {
+      "binding": 15,
+      "owner": "artifact/type-aliases::AppError"
+    },
+    {
+      "binding": 16,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 18,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 19,
+      "owner": "std/signal::Signal"
+    },
+    {
+      "binding": 40,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 41,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 42,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 43,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 44,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 46,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 47,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 48,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 49,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 67,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 68,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 80,
+      "owner": "artifact/type-aliases::AppError"
+    },
+    {
+      "binding": 81,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 82,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 88,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 91,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 96,
+      "owner": "std/signal::MutableSignal"
+    },
+    {
+      "binding": 97,
+      "owner": "std/signal::Signal"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

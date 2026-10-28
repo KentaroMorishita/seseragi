@@ -113,13 +113,7 @@ fn resolve_local_show_dictionary(
 }
 
 fn standard_show_dictionary(failure: &InterfaceType) -> Option<DictionaryImport> {
-    let InterfaceType::Named { name, arguments } = failure else {
-        return None;
-    };
-    if !arguments.is_empty() {
-        return None;
-    }
-    let export = match name.as_str() {
+    let export = match standard_failure_name(failure)? {
         "Int" => "intShow",
         "String" => "stringShow",
         "ConsoleError" => "consoleErrorShow",
@@ -197,11 +191,27 @@ fn local_type_identity(
 }
 
 fn is_never(type_ref: &InterfaceType) -> bool {
-    matches!(
-        type_ref,
-        InterfaceType::Named { name, arguments }
-            if name == "Never" && arguments.is_empty()
-    )
+    standard_failure_name(type_ref) == Some("Never")
+}
+
+fn standard_failure_name(type_ref: &InterfaceType) -> Option<&str> {
+    match type_ref {
+        InterfaceType::Named { name, arguments } if arguments.is_empty() => Some(name),
+        InterfaceType::ExternalNamed {
+            canonical,
+            provider_module,
+            provider_export,
+            arguments,
+            ..
+        } if arguments.is_empty()
+            && (provider_module == "std/prelude"
+                || (provider_module == "std/console" && provider_export == "ConsoleError"))
+            && canonical == &format!("std/prelude::{provider_export}") =>
+        {
+            Some(provider_export)
+        }
+        _ => None,
+    }
 }
 
 fn canonical_type_spelling(type_ref: &InterfaceType) -> String {

@@ -6168,6 +6168,128 @@
       "type": "{ offset: Int }"
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 0,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 10,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 11,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 12,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 13,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 18,
+      "owner": "std/bytes::ByteError"
+    },
+    {
+      "binding": 20,
+      "owner": "std/bytes::BytesSliceError"
+    },
+    {
+      "binding": 23,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 24,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 28,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 29,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 30,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 31,
+      "owner": "std/bytes::ByteError"
+    },
+    {
+      "binding": 33,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 34,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 39,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 40,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 43,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 46,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 47,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 48,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 51,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 52,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 53,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 54,
+      "owner": "std/bytes/hex::HexDecodeError"
+    },
+    {
+      "binding": 57,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 58,
+      "owner": "std/prelude::Either"
+    },
+    {
+      "binding": 59,
+      "owner": "std/bytes/base64::Base64DecodeError"
+    },
+    {
+      "binding": 60,
+      "owner": "std/bytes::Bytes"
+    },
+    {
+      "binding": 63,
+      "owner": "std/bytes::Bytes"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

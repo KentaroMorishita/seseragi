@@ -2159,6 +2159,88 @@
       ]
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 1,
+      "owner": "artifact/web-pointer-events::Action"
+    },
+    {
+      "binding": 2,
+      "owner": "artifact/web-pointer-events::Action"
+    },
+    {
+      "binding": 3,
+      "owner": "artifact/web-pointer-events::Action"
+    },
+    {
+      "binding": 4,
+      "owner": "artifact/web-pointer-events::Action"
+    },
+    {
+      "binding": 5,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 6,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 7,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 8,
+      "owner": "std/web/html::Html"
+    },
+    {
+      "binding": 27,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 28,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 29,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 30,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 31,
+      "owner": "std/web/html::EventAction"
+    },
+    {
+      "binding": 33,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 34,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 35,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 36,
+      "owner": "std/web/html::HtmlBuildError"
+    },
+    {
+      "binding": 39,
+      "owner": "std/web/html::MouseEvent"
+    },
+    {
+      "binding": 40,
+      "owner": "std/web/html::PointerEvent"
+    },
+    {
+      "binding": 41,
+      "owner": "std/web/html::ScrollEvent"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",

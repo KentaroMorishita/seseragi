@@ -24,7 +24,7 @@
       }
     ],
     "partials": [],
-    "application": false
+    "application": true
   },
   "runtimeRequirements": [
     "core.adt",
@@ -615,12 +615,12 @@
       "parameters": [
         {
           "name": "f",
-          "type": "(argument: A) => unknown",
+          "type": "(argument: A) => $ssrg$Apply<M, readonly [B]>",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "unknown",
+          "type": "$ssrg$Apply<M, readonly [A]>",
           "implicit": false
         }
       ],
@@ -645,7 +645,15 @@
           ]
         },
         "type": {
-          "kind": "unknown"
+          "kind": "kind-application",
+          "constructor": "M",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
         }
       },
       "origin": {

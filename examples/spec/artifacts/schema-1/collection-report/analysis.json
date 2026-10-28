@@ -2050,6 +2050,20 @@
       }
     }
   ],
+  "nominalBindings": [
+    {
+      "binding": 11,
+      "owner": "artifact/collection-report::Sale"
+    },
+    {
+      "binding": 14,
+      "owner": "artifact/collection-report::Sale"
+    },
+    {
+      "binding": 17,
+      "owner": "artifact/collection-report::Sale"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/bytes/base64::Base64DecodeError",
