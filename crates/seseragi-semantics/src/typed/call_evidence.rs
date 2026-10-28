@@ -595,9 +595,30 @@ fn select_resolved_evidence_inner(
                 .arguments
                 .iter()
                 .zip(&constraint.arguments)
-                .all(|(available, required)| {
+                .enumerate()
+                .all(|(index, (argument, required))| {
+                    // An unchanged scoped constraint still denotes its
+                    // declaration, including an erased caller type parameter.
+                    if argument == required {
+                        return true;
+                    }
+                    // Source constraints already carry their declaration's
+                    // binder/owner identity. Looking their spelling up again
+                    // can turn a parameter named Bool into Prelude Bool and
+                    // capture a dictionary selected for a literal result.
+                    let declared = available
+                        .source_arguments
+                        .as_ref()
+                        .and_then(|arguments| arguments.get(index));
+                    let recovered;
+                    let argument = if let Some(declared) = declared {
+                        declared
+                    } else {
+                        recovered = resolution.semantic_value_from_typed_type(argument);
+                        &recovered
+                    };
                     super::semantic_types::semantic_values_are_compatible(
-                        &resolution.semantic_value_from_typed_type(available),
+                        argument,
                         &resolution.semantic_value_from_typed_type(required),
                     )
                 })

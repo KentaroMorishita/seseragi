@@ -300,48 +300,84 @@ fn imported_scalar_codec_result_is_not_captured_by_a_caller_generic_binder() {
     use seseragi_project::ModuleGraph;
     let foreign =
         "pub foreign \"typescript\" from \"./host.mjs\" {\n pure fn echo<A> value: A -> A\n}\n";
-    let source = "import {echo} from \"./foreign\"\nfn tricky<Bool> value: Bool -> String where Show<Bool> = show (echo True)\npub effect fn main = do {println (tricky 1)}\n";
-    let mut graph = ModuleGraph::new();
-    graph
-        .add_module(
-            "fixture/identity::foreign".to_owned(),
-            std::iter::empty::<(String, String)>(),
-        )
-        .unwrap();
-    graph
-        .add_module(
-            "fixture/identity::main".to_owned(),
-            [(
-                "./foreign".to_owned(),
-                "fixture/identity::foreign".to_owned(),
-            )],
-        )
-        .unwrap();
-    let compiled = compile_project(
-        graph,
-        [
-            ProjectModuleInput::new(
-                "foreign.ssrg",
-                "fixture/identity::foreign",
-                foreign,
-                "dist/foreign.js",
-            ),
-            ProjectModuleInput::new(
-                "main.ssrg",
-                "fixture/identity::main",
-                source,
-                "dist/main.js",
-            ),
-        ],
-    )
-    .unwrap();
-    let emitted = &compiled.modules["fixture/identity::main"]
-        .generated
-        .typescript;
-    assert!(
-        emitted.contains("echo(true)(\"bool\")) as boolean"),
-        "{emitted}"
-    );
+    let facade = "pub import {echo as again} from \"./foreign\"\n";
+    for (name, literal) in [
+        ("Bool", "True"),
+        ("Int", "1"),
+        ("Float", "(-1.0)"),
+        ("Char", "'a'"),
+        ("String", "\"ok\""),
+        ("Unit", "()"),
+    ] {
+        for (target, call) in [("foreign", "echo"), ("facade", "again")] {
+            let source = format!("import {{{call}}} from \"./{target}\"\nalias Rendered = String\npub fn tricky<{name}> value: {name} -> Rendered where Show<{name}> = show ({call} {literal})\n");
+            let mut graph = ModuleGraph::new();
+            graph
+                .add_module(
+                    "fixture/identity::foreign".to_owned(),
+                    std::iter::empty::<(String, String)>(),
+                )
+                .unwrap();
+            graph
+                .add_module(
+                    "fixture/identity::facade".to_owned(),
+                    [(
+                        "./foreign".to_owned(),
+                        "fixture/identity::foreign".to_owned(),
+                    )],
+                )
+                .unwrap();
+            graph
+                .add_module(
+                    "fixture/identity::main".to_owned(),
+                    [(format!("./{target}"), format!("fixture/identity::{target}"))],
+                )
+                .unwrap();
+            let compiled = compile_project(
+                graph,
+                [
+                    ProjectModuleInput::new(
+                        "foreign.ssrg",
+                        "fixture/identity::foreign",
+                        foreign,
+                        "dist/foreign.js",
+                    ),
+                    ProjectModuleInput::new(
+                        "facade.ssrg",
+                        "fixture/identity::facade",
+                        facade,
+                        "dist/facade.js",
+                    ),
+                    ProjectModuleInput::new(
+                        "main.ssrg",
+                        "fixture/identity::main",
+                        source,
+                        "dist/main.js",
+                    ),
+                ],
+            )
+            .unwrap();
+            let module = &compiled.modules["fixture/identity::main"];
+            let body = module
+                .typed_hir
+                .declarations
+                .iter()
+                .find_map(|declaration| match declaration {
+                    TypedDecl::Fn { symbol, body, .. } if symbol.ends_with("::tricky") => {
+                        Some(body)
+                    }
+                    _ => None,
+                })
+                .unwrap();
+            let mut found = Vec::new();
+            identities(&serde_json::to_value(body).unwrap(), &mut found);
+            assert!(
+                found.contains(&format!("Show<std/prelude::{name}>")),
+                "{name}/{target}: {found:?}\n{}",
+                module.generated.typescript
+            );
+        }
+    }
 }
 
 #[test]
