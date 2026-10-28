@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.112] - 2026-10-29
+
+### Added
+
+- Support native Int and Float powers through checked standard dictionaries and `std/float.power`. Preserve saved functions, source evaluation order, safe integer bounds, negative-exponent Defects, and Float special values.
+- Transform UTF-8 exponent rows into power results from source files and ordinary path packages. Preserve inputs and existing outputs on failure, cold replay, and scoped cleanup after typed failures or arithmetic Defects.
+
 ## [0.61.111] - 2026-10-28
 
 ### Fixed
