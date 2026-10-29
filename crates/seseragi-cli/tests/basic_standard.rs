@@ -413,6 +413,44 @@ fn basic_standard_defect_runs_the_finalizer_and_releases_every_root() {
     );
 }
 
+#[test]
+fn basic_hash_keeps_exact_public_values_and_selected_generic_and_saved_methods() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-hash.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-hash.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn existing_user_hash_still_executes_in_program_wasm_on_bun_and_node() {
+    let scratch = Scratch::new();
+    let source = root().join("examples/spec/fixtures/rust-backend/basic-hash-user.ssrg");
+    let original = fs::read(&source).unwrap();
+    let out = scratch.0.join("wasm");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-wasm"])
+            .arg(&source)
+            .args(["--export", "probe", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let script = scratch.0.join("user-hash.mjs");
+    fs::write(&script, "import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {pathToFileURL} from 'node:url';import {resolve} from 'node:path';const dir=process.argv[2];const {loadProgram}=await import(pathToFileURL(resolve(dir,'program.mjs')));const bytes=await readFile(resolve(dir,'program.wasm'));assert.deepEqual(WebAssembly.Module.imports(await WebAssembly.compile(bytes)),[]);const p=await loadProgram(bytes);for(const value of [-42,0,42])assert.equal(p.exports.probe(value),value+100);p.dispose();assert.equal(p.ownership().managedLiveAtClose,0);console.log('user-hash-wasm:ok');").unwrap();
+    for name in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(name, &scratch.0))
+                .arg(&script)
+                .arg(&out),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"user-hash-wasm:ok\n");
+    }
+    assert_eq!(fs::read(source).unwrap(), original);
+}
+
 fn copy_package(source: &Path, target: &Path) {
     fs::create_dir(target).unwrap();
     for entry in fs::read_dir(source).unwrap() {

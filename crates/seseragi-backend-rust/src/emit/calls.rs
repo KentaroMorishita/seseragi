@@ -91,6 +91,7 @@ impl Backend<'_> {
             }
         }
         if let Some(dispatch) = trait_dispatch {
+            self.validate_hash_call(expr, scope)?;
             if dispatch.trait_identity == "std/prelude::Eq" {
                 return self.equality_call(expr, scope);
             }

@@ -28,6 +28,7 @@ mod effect_defects;
 mod equality;
 mod filesystem;
 mod floats;
+mod hashing;
 mod lists;
 mod local;
 mod math;
@@ -177,6 +178,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int.rs"));
+    output.push_str(include_str!("runtime_hashing.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));
@@ -246,6 +248,9 @@ fn emit_body(
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
         backend
             .validate_eq_instance(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
+        backend
+            .validate_hash_instance(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
         let mut values = Vec::new();
         if backend
@@ -488,6 +493,14 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Hash") {
+                self.validate_hash_evidence(selected, scope)?;
+            }
+            if let Some(dictionary) = self.primitive_hash_dictionary(selected, scope)? {
+                self.capabilities.insert("hash".into());
+                values.push(dictionary);
+                continue;
+            }
             if selected.constraint.name == "Ord" {
                 self.validate_ord_evidence(selected, scope)?;
             }
