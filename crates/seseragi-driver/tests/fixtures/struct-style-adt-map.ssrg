@@ -1,0 +1,60 @@
+import * as maps from "std/map"
+import * as text from "std/text"
+
+type Key = | Key { identity: Int, label: String }
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool = match left {
+    Key a -> match right { Key b -> a.identity == b.identity }
+  }
+}
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key detail -> detail.label } }
+
+fn lookup<K, V> key: K -> values: maps.Map<K, V> -> Maybe<V> where Eq<K>, Hash<K> =
+  maps.get key values
+fn integer value: Maybe<Int> -> String = match value {
+  Nothing -> "none"
+  Just value -> show value
+}
+fn string value: Maybe<String> -> String = match value {
+  Nothing -> "none"
+  Just value -> value
+}
+fn saved -> (Int -> Int) = {
+  let values = maps.singleton "callback" (\value: Int -> value + 2)
+  match maps.get "callback" values {
+    Nothing -> \value: Int -> value
+    Just call -> call
+  }
+}
+
+pub fn probe -> String = {
+  let empty: maps.Map<String, Int> = maps.empty ()
+  let one = maps.insert "snow" 1 empty
+  let two = maps.insert "wave" 2 one
+  let updated = maps.insert "snow" 3 two
+  let removed = maps.remove "snow" updated
+  let again = maps.insert "snow" 4 removed
+  let get: String -> maps.Map<String, Int> -> Maybe<Int> = maps.get
+  let snow = get "snow"
+  let first = Key { identity: 1, label: "original" }
+  let other = Key { identity: 2, label: "second" }
+  let equal = Key { identity: 1, label: "replacement" }
+  let keys = maps.singleton first "one" |> maps.insert other "two"
+  let replaced = maps.insert equal "new" keys
+  let read = saved ()
+  text.join "|" [
+    show (maps.isEmpty empty), show (maps.size empty),
+    show (maps.keys updated), show (maps.values updated),
+    integer (snow updated), integer (lookup "snow" one),
+    integer (lookup "missing" updated),
+    show (maps.keys again), show (maps.values again),
+    show (maps.size (maps.remove "absent" updated)),
+    show (maps.isEmpty (maps.remove "snow" one)),
+    show (maps.keys replaced), show (maps.values replaced),
+    string (lookup equal replaced), string (lookup first keys),
+    show (read 40), show (maps.size empty)
+  ]
+}
+
+pub effect fn main = println (probe ())

@@ -135,6 +135,10 @@ pub(crate) enum ArrayIssue {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum RecordIssue {
+    ConstructionOnNonStruct {
+        structure: ByteSpan,
+        name: String,
+    },
     DuplicateField {
         field: ByteSpan,
         name: String,

@@ -19,6 +19,13 @@ pub(super) fn collect_record_diagnostic(
 
 pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> Diagnostic {
     let (message_key, primary, message, suggestion, type_difference) = match issue {
+        RecordIssue::ConstructionOnNonStruct { structure, name } => (
+            "struct.construction-on-non-struct",
+            *structure,
+            format!("type `{name}` does not support struct construction"),
+            None,
+            None,
+        ),
         RecordIssue::DuplicateField { field, name } => (
             "record.duplicate-field",
             *field,

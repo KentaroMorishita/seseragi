@@ -22,6 +22,18 @@ pub(super) fn type_struct(
         return invalid_struct(name, items, span, context);
     };
     let Some(struct_type) = context.semantic_types().struct_type(owner) else {
+        if context.semantic_types().adt(owner).is_some() {
+            return invalid_struct_with_issue(
+                name,
+                items,
+                span,
+                context,
+                RecordIssue::ConstructionOnNonStruct {
+                    structure: name_span,
+                    name: name.to_owned(),
+                },
+            );
+        }
         return invalid_struct(name, items, span, context);
     };
     if !struct_type.construction_allowed {
