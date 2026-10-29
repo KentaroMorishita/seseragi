@@ -8,8 +8,6 @@
 - Apply native constrained functions and primary methods one source stage at a time when their results are functions. Retain canonical primitive owners under same-named binders, strict argument order, cold cleanup and positioned refusal of unproved Core inputs.
 - Keep namespace-qualified explicit type arguments valid and stable when formatting source.
 
-## [0.61.113] - 2026-10-29
-
 ### Changed
 
 - Reduce native allocation for short-lived ADT values by retaining canonical constructor tags and directly reclaiming childless final owners. Preserve shared graphs, borrowed Refs, cycles and scoped cleanup.
