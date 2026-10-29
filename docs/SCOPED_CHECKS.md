@@ -107,6 +107,12 @@ Ref/cold/Failure/Defect/finalizerを確認します。`measure_display_runtime.p
 | tag release source gate | `bun run check:release-gate` | repository-wide full gate相当。ただしnative / VSIXのpackage smokeは同一SHAを使うrelease matrix jobへ委譲し、成果物を二重生成しない |
 | repository-wide | `bun run check` または `bun run check:full` | format、lint、Rust workspace、全conformance、native samples、WASM、Playground、extension |
 
+devの停止要求とHTTP request待ち行列はCLIの`--bin seseragi dev::tests::`で、
+実際の待受socketへ複数requestをqueueして確認します。停止前・handler中の停止では
+次のrequest処理とwatch/buildへ進まず、通常時はchange pollを続けます。
+`--test dev`の元13入力・recovery assertion・5秒のgraceful shutdown制限も保持します。
+CLIだけの修復なのでcompiler WASMは変更せず、配布時のcanonical source gateで全体を確認します。
+
 相互再帰するclosed EffectのTS注釈は、`cargo test -p seseragi-driver --test mutual_effect_returns`
 と`cargo test -p seseragi-cli --test mutual_effect_returns`で確認します。元の生成TSを両profileでstrict検査し、
 cold再実行・typed Failure・Defect後のscope解放をBun／Nodeとnativeで比較します。
