@@ -22,6 +22,45 @@ Source → shared frontend → TypedHir → CoreCompilation / CoreIr
                                                                          → rustc → native
 ```
 
+## nativeで使える標準moduleの基本操作
+
+v0.61.115では、既存の文字列・整数・Float・List・ファイル操作に加え、次の30 APIを
+nativeへ接続する。通常のsource、保存関数・部分適用、検証した複数moduleのpath packageから
+呼び出せる。標準module全体のnative対応を意味する一覧ではない。
+
+| module | 追加するAPI |
+| --- | --- |
+| `std/text` | `split`、`trim`、`contains`、`replace` |
+| `std/math` | `sqrt`、`sin`、`cos`、`log` |
+| `std/bytes` | `fromInts`、`toInts`、`get`、`toInt` |
+| `std/array` | `filter`、`find`、`get`、`length`、`take`、`drop` |
+| `std/big-int` | `parse`、`format`、`fromInt` |
+| `std/map` | `empty`、`singleton`、`get`、`insert`、`remove`、`keys`、`values`、`size`、`isEmpty` |
+
+Mapのkeyには選択済みの`Eq<K>`と`Hash<K>`を使う。標準HashはInt／Bool／Char／String／Unitに
+対応し、user instanceとgenericな辞書も渡せる。Mapは過去のsnapshotを保ち、更新は変更経路以外を
+共有する。置換は最初のkeyと位置を保ち、削除して再挿入したkeyは末尾へ移る。結果Mapは削除済みの
+keyとvalueを保持しない。内部seedはOS entropyまたは環境変数`SESERAGI_HASH_SEED`から生成し、
+publicなhash値や挿入順へ混ぜない。設定したseedはsigned 64-bit整数でなければアプリ開始前に拒否する。
+
+Bytesは0〜255のbyteを独立したstorageに保持し、最初の範囲外Intを`ByteOutOfRange`として返す。
+BigIntのdecimal parse／formatはFloatや固定幅整数を経由しない。Text replaceはliteralの置換で、
+trimはUnicode 17のWhite_Spaceを使う。各APIの詳細は[標準library仕様](../spec/10-library-surface.md)を参照する。
+
+元のsourceと通常path packageは`examples/spec/fixtures/rust-backend/basic-*.ssrg`および
+`examples/spec/fixtures/rust-backend-projects/basic-*`にあり、例えば次を実行できる。
+
+```sh
+seseragi experimental build-native \
+  examples/spec/fixtures/rust-backend-projects/basic-map \
+  --entry main --out-dir target/basic-map
+./target/basic-map/program
+```
+
+これらの新APIとprimitive Hash辞書をprogram WASMへ受け入れる変更は含めない。既存の
+user Hash program WASMは保持する。Mapの残るAPI、Set／JSON／Decimal／Regex、BigInt算術と
+全標準辞書、一般provider ABIは未完了で、[基本APIのIssue](https://github.com/KentaroMorishita/seseragi/issues/812)に残る。
+
 ## pure program WASMとtypedな返却関数
 
 `experimental build-wasm`はcompiler WASMとは別の、利用者のprogramを生成する。
