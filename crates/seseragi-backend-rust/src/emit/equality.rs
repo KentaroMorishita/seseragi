@@ -44,7 +44,11 @@ impl Backend<'_> {
         })())
     }
 
-    fn validate_eq_evidence(&self, selected: &CoreCallEvidence, scope: &Scope) -> Result<()> {
+    pub(super) fn validate_eq_evidence(
+        &self,
+        selected: &CoreCallEvidence,
+        scope: &Scope,
+    ) -> Result<()> {
         if selected.constraint.arguments.len() != 1
             || selected
                 .constraint

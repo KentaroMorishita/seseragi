@@ -5,6 +5,7 @@
 ### Added
 
 - Generate native `Hash<Int/Bool/Char/String/Unit>` dictionaries with safe integer results, Unicode scalar FNV hashing and checked generic or saved method stages. Preserve existing user-defined Hash program WASM; the newly admitted primitive dictionaries remain explicitly refused there.
+- Generate native Map `empty`, `singleton`, `get`, `insert`, `remove`, `keys`, `values`, `size` and `isEmpty`. Keep immutable snapshots, insertion order and selected generic Eq/Hash evidence in saved or partially applied functions. Share bounded persistent index paths and release removed entries without tombstones. Initialize the internal process seed from OS entropy or a checked signed 64-bit fixed seed before application code.
 - Read and format arbitrary-precision native decimal integers through `std/big-int.parse`, `format` and `fromInt`, with distinct opaque storage, canonical sign/zero and precise UTF-8 parse errors.
 - Generate native `std/array.filter`, `find`, `get`, `length`, `take` and `drop` with checked generic element identities, saved functions and partial applications. Preserve source order, short-circuit search, bounds and captured element lifetimes; keep new program WASM operations explicitly refused.
 - Generate native `std/bytes.fromInts`, `toInts`, `get` and `toInt` with distinct immutable byte storage, first-error range checks and saved-buffer cleanup. Keep program WASM Bytes explicitly refused.

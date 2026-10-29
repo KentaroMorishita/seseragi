@@ -432,6 +432,7 @@ impl Backend<'_> {
                 Some(vec![0])
             }
             "std/prelude::Either"
+            | "std/map::Map"
             | "std/effect::Fiber"
             | "std/effect::FiberExit"
             | "std/deferred::Deferred" => Some(vec![0, 0]),

@@ -1,0 +1,12 @@
+import * as maps from "std/map"
+
+pub fn singleton<K, V> key: K -> value: V -> maps.Map<K, V> where Eq<K>, Hash<K> =
+  maps.singleton key value
+pub fn put<K, V> key: K -> value: V -> maps.Map<K, V> -> maps.Map<K, V> where Eq<K>, Hash<K> =
+  maps.insert key value
+pub fn remove<K, V> key: K -> maps.Map<K, V> -> maps.Map<K, V> where Eq<K>, Hash<K> =
+  maps.remove key
+pub fn reader<K, V> values: maps.Map<K, V> -> K -> Maybe<V> where Eq<K>, Hash<K> =
+  \key: K -> maps.get key values
+pub fn keys<K, V> values: maps.Map<K, V> -> Array<K> = maps.keys values
+pub fn size<K, V> values: maps.Map<K, V> -> Int = maps.size values

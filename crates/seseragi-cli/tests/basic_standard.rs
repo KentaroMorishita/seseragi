@@ -43,6 +43,7 @@ struct Case<'a> {
     exit: i32,
     failure: Option<&'a str>,
     defect: bool,
+    hash_seed: Option<&'a str>,
 }
 impl<'a> Case<'a> {
     fn success(stdout: &'a [u8]) -> Self {
@@ -54,6 +55,7 @@ impl<'a> Case<'a> {
             exit: 0,
             failure: None,
             defect: false,
+            hash_seed: None,
         }
     }
 }
@@ -167,6 +169,9 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
             }
             let mut command = Command::new(&executable);
             command.current_dir(&directory).env("PATH", "");
+            if let Some(seed) = case.hash_seed {
+                command.env("SESERAGI_HASH_SEED", seed);
+            }
             if let Some(argument) = &argument {
                 command.arg(argument);
             }
@@ -421,6 +426,110 @@ fn basic_hash_keeps_exact_public_values_and_selected_generic_and_saved_methods()
             "../../../examples/spec/fixtures/rust-backend/basic-hash.stdout"
         ))],
     );
+}
+
+#[test]
+fn basic_map_preserves_snapshots_collision_keys_and_generic_saved_readers() {
+    let output = include_bytes!("../../../examples/spec/fixtures/rust-backend/basic-map.stdout");
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map.ssrg"),
+        &[
+            Case::success(output),
+            Case {
+                name: "minimum-seed",
+                hash_seed: Some("-9223372036854775808"),
+                ..Case::success(output)
+            },
+            Case {
+                name: "maximum-seed",
+                hash_seed: Some("9223372036854775807"),
+                ..Case::success(output)
+            },
+            Case {
+                name: "zero-seed",
+                hash_seed: Some("+000"),
+                ..Case::success(output)
+            },
+        ],
+    );
+}
+
+#[test]
+fn basic_map_keeps_saved_snapshots_cold_and_releases_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_defect_runs_the_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-map-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("map-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42\ncold\n42\n84\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_map_path_package_preserves_generic_evidence_and_saved_callbacks() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-map"),
+        &[Case::success(b"1:3:[wave, snow]:2:42\n")],
+    );
+}
+
+#[test]
+fn basic_map_invalid_seed_stops_before_application_effects() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("startup.ssrg");
+    fs::write(&source, "import * as maps from \"std/map\"\npub effect fn main = do {\n  println \"MUST_NOT_RUN\"\n  let values = maps.singleton \"snow\" 1\n  println (show (maps.size values))\n}\n").unwrap();
+    let native = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&source)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        &scratch.0,
+    ));
+    for seed in ["invalid", "9223372036854775808", "-9223372036854775809"] {
+        let output = bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_HASH_SEED", seed)
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &scratch.0,
+        );
+        assert_eq!(output.status.code(), Some(70), "{seed}: {output:?}");
+        assert!(
+            output.stdout.is_empty(),
+            "application ran: {seed}: {output:?}"
+        );
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(
+            stderr.contains("SESERAGI_HASH_SEED must be a signed 64-bit integer"),
+            "{seed}: {stderr}"
+        );
+        assert!(stderr.contains("managed-live=0"), "{seed}: {stderr}");
+    }
 }
 
 #[test]
