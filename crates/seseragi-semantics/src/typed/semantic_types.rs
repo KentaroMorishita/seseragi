@@ -501,12 +501,37 @@ pub(crate) fn semantic_values_have_same_identity(
             structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
         }
         (SemanticTypeKey::Record(expected_fields), SemanticTypeKey::Record(actual_fields)) => {
-            structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
-                && expected_fields.len() == actual_fields.len()
-                && expected_fields.iter().all(|(name, value)| {
-                    actual_fields
-                        .get(name)
-                        .is_some_and(|actual| semantic_values_have_same_identity(value, actual))
+            let (
+                TypedType::Record {
+                    closed: expected_closed,
+                    fields: expected_types,
+                },
+                TypedType::Record {
+                    closed: actual_closed,
+                    fields: actual_types,
+                },
+            ) = (&expected.type_ref, &actual.type_ref)
+            else {
+                return false;
+            };
+            // Identity stays invariant at every record depth. Compare shape
+            // and presence exactly, then use each checked field identity;
+            // a raw display-type precheck would erase canonical function leaves.
+            expected_closed == actual_closed
+                && expected_types.len() == actual_types.len()
+                && expected_fields.len() == expected_types.len()
+                && actual_fields.len() == actual_types.len()
+                && expected_types.iter().all(|field| {
+                    actual_types
+                        .iter()
+                        .find(|actual| actual.name == field.name)
+                        .is_some_and(|actual| field.optional == actual.optional)
+                        && expected_fields
+                            .get(&field.name)
+                            .zip(actual_fields.get(&field.name))
+                            .is_some_and(|(expected, actual)| {
+                                semantic_values_have_same_identity(expected, actual)
+                            })
                 })
         }
         (SemanticTypeKey::Record(_), _) | (_, SemanticTypeKey::Record(_)) => false,

@@ -69,6 +69,11 @@ fn structural_aliases_keep_raw_strict_returned_method_and_native_results() {
         ),
         0,
     );
+    check_program(
+        include_str!("../../../examples/spec/fixtures/rust-backend/structural-alias-nested.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/structural-alias-nested.stdout"),
+        0,
+    );
 }
 
 #[test]

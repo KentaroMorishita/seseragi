@@ -117,6 +117,13 @@ row／requirement merge constructor、一般HKT逆推論、完全なtype-functio
 program WASMの受入拡張は含めません。共有型表現・投影の変更なので、統合前は必要な
 全体gateとcanonical compiler WASMの再生成・公開consumer検証も必要です。
 
+制約付き関数やprimary辞書のmethodが返す関数の連続適用は、backendの
+`--test returned_evidence_stages`とCLIの`--test alias_constructor_sections`で確認します。
+宣言のsource境界・完全な返却型・owner／kind・辞書を検証し、各本体を次のsource引数より先に
+実行します。保存・未使用部分適用、同名Unit／Int binder、Show aliasとUnit callback、
+最初の段階のDefect、構造型alias経由のRef・cold再実行・Failure／Defect後の解放を比較します。
+不正Core入力は位置付きで拒否し、program WASMの受入範囲は広げません。
+
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。
