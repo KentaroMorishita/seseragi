@@ -6,6 +6,16 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Decimal parse/fromInt/Showはbackendの`--test basic_decimal`、runtimeの
+`decimal_tests`、CLIの`--test basic_standard basic_decimal_`で確認します。
+係数とscaleを任意精度の符号付き十進列として保ち、指数をFloatや固定幅整数へ丸めません。
+厳密なsyntax・最初の不正UTF-8位置・負zero/末尾zeroの正規化・canonical表記、
+opaque値と保存formatterを渡す通常2 module path package、raw TS両profile strictと
+fresh Bun/Node/nativeを比較します。巨大指数はparseでき、host limitを超える表記だけを
+Defectにします。cold再実行・Failure/Defect後のfinalizer/root0、Ref cycleと
+owner/kind/source段階の拒否も確認します。算術・丸め・全標準辞書や新program WASMは
+追加しません。共有native runtimeの統合時は全体gateも通します。
+
 native Set empty/singleton/contains/insert/remove/toArray/size/isEmptyと、Mapの
 containsKey/entriesはbackendの`--test basic_collections`、runtimeの`set_tests`と
 `map_tests`、CLIの`--test basic_standard basic_collections_`で確認します。

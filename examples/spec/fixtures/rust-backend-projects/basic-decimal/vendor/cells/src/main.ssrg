@@ -1,0 +1,12 @@
+import * as decimal from "std/decimal"
+
+pub fn fromInt value: Int -> decimal.Decimal = decimal.fromInt value
+pub fn format value: decimal.Decimal -> String = show value
+pub fn reader text: String -> Unit -> String = match decimal.parse text {
+  Left _ -> \_: Unit -> "invalid"
+  Right value -> \_: Unit -> show value
+}
+pub fn accepted text: String -> Bool = match decimal.parse text {
+  Right _ -> True
+  Left _ -> False
+}

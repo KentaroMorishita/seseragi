@@ -23,6 +23,7 @@ mod collections;
 mod comparisons;
 mod concurrency;
 mod console;
+mod decimal;
 mod display;
 mod effect_conversions;
 mod effect_defects;
@@ -179,6 +180,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int.rs"));
+    output.push_str(include_str!("runtime_decimal.rs"));
     output.push_str(include_str!("runtime_hashing.rs"));
     output.push_str(include_str!("runtime_map.rs"));
     output.push_str(include_str!("runtime_set.rs"));
@@ -552,6 +554,10 @@ impl Backend<'_> {
                 values.push(dictionary);
                 continue;
             }
+            if let Some(dictionary) = self.decimal_show_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.list_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
@@ -833,6 +839,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.big_int_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.decimal_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.collection_reference(name, evidence, type_ref, scope)? {

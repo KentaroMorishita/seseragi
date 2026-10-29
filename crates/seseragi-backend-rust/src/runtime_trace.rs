@@ -93,6 +93,7 @@ impl V {
             | Self::Char(_)
             | Self::ListEmpty => return None,
             Self::Text(v) | Self::BigInt(v) => v.id(),
+            Self::Decimal(v) => v.id(),
             Self::Bytes(v) => v.id(),
             Self::Tuple(v) | Self::Array(v) => v.id(),
             Self::Map(v) | Self::Set(v) => v.id(),

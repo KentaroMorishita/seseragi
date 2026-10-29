@@ -1,0 +1,32 @@
+import * as big from "std/decimal"
+import * as text from "std/text"
+
+fn describe result: Either<big.DecimalParseError, big.Decimal> -> String = match result {
+  Right value -> show value
+  Left (big.InvalidDecimal detail) -> "invalid:" + show detail.offset
+}
+fn accepted value: String -> Bool = match big.parse value { Right _ -> True; Left _ -> False }
+
+pub fn probe -> String = {
+  let parse: String -> Either<big.DecimalParseError, big.Decimal> = big.parse
+  let format: big.Decimal -> String = show
+  let fromInt: Int -> big.Decimal = big.fromInt
+  text.join "|" [
+    describe (parse "123456789012345678901234567890.0001"),
+    describe (parse "-123456789012345678901234567890.0001"),
+    describe (parse "+12.3400"), describe (parse "-0.000"),
+    describe (parse "1.25e3"), describe (parse "1.25E-3"),
+    describe (parse "-1000e-3"), describe (parse "1e+0002"),
+    describe (parse ""), describe (parse "+"), describe (parse "01"),
+    describe (parse "1."), describe (parse "1e+"), describe (parse "1.2雪🙂"),
+    describe (parse "12_3"), describe (parse "NaN"), describe (parse "Infinity"),
+    describe (parse " 1"), describe (parse "1 "), describe (parse "1e123雪"),
+    format (fromInt 9007199254740991), format (fromInt (-9007199254740991)),
+    format (fromInt 0), format (fromInt 1000),
+    show (accepted "1e99999999999999999999999999999999999999999"),
+    show (accepted "1e-99999999999999999999999999999999999999999"),
+    describe (parse "-0.00e99999999999999999999999999999999999999999")
+  ]
+}
+
+pub effect fn main = println (probe ())

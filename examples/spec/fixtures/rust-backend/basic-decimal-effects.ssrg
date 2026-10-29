@@ -1,0 +1,39 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as big from "std/decimal"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+fn reader text: String -> Unit -> String = match big.parse text {
+  Left _ -> \_: Unit -> "invalid"
+  Right value -> \_: Unit -> show value
+}
+
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (reader "900719925474099200000000000000001.001")
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    selected <- refs.get saved
+    say (selected ())
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\n -> n + 1) released
+          say "released"
+        }
+      )
+      cold
+      cold
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

@@ -43,6 +43,7 @@ struct Case<'a> {
     exit: i32,
     failure: Option<&'a str>,
     defect: bool,
+    native_defect: &'a str,
     hash_seed: Option<&'a str>,
 }
 impl<'a> Case<'a> {
@@ -55,6 +56,7 @@ impl<'a> Case<'a> {
             exit: 0,
             failure: None,
             defect: false,
+            native_defect: "deliberate",
             hash_seed: None,
         }
     }
@@ -185,7 +187,7 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
             if is_native {
                 assert!(stderr.contains("managed-live=0"), "{label}: {stderr}");
                 if case.defect {
-                    assert!(stderr.contains("deliberate"), "{label}: {stderr}");
+                    assert!(stderr.contains(case.native_defect), "{label}: {stderr}");
                 }
             } else if case.defect {
                 assert_eq!(stderr, "seseragi: runtime defect\n", "{label}");
@@ -572,6 +574,86 @@ fn basic_collections_path_package_keeps_generic_partial_and_saved_functions() {
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-collections"),
         &[Case::success(
             "[雫🙂]:[雫🙂, 🌊]:[🌊, 雫🙂]:True:False:True:42\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_decimal_keeps_exact_digits_exponents_errors_and_saved_operations() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_keeps_captured_values_cold_and_releases_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_defect_runs_the_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("decimal-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n900719925474099200000000000000001.001\ncold\n900719925474099200000000000000001.001\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_decimal_host_limit_defect_preserves_parse_and_runs_the_finalizer() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg");
+    let original = "900719925474099200000000000000001.001";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("decimal-host-limit.ssrg");
+    fs::write(
+        &path,
+        source.replace(original, "1e99999999999999999999999999999999999999999"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "host-limit",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Decimal canonical spelling exceeds host limits",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_decimal_path_package_keeps_opaque_values_and_saved_formatters() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal"),
+        &[Case::success(
+            b"42:900719925474099200000000000000001.001:True:False\n",
         )],
     );
 }

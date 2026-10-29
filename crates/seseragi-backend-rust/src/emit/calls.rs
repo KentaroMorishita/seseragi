@@ -61,6 +61,9 @@ impl Backend<'_> {
         if let Some(value) = self.big_int_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.decimal_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.collection_call(expr, scope)? {
             return Ok(value);
         }
@@ -99,6 +102,7 @@ impl Backend<'_> {
                 return self.equality_call(expr, scope);
             }
             self.validate_int_parse_show_call(expr, scope)?;
+            self.validate_decimal_show_call(expr, scope)?;
             self.validate_primitive_operator_call(expr, scope)?;
             if dispatch.method_contract.is_some() {
                 return self.method_call(expr, scope);
