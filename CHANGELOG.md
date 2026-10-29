@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.114] - 2026-10-29
+
+### Fixed
+
+- Preserve checked function, closed record and tuple alias constructors through instance selection, saved methods, nested invariant fields and renamed public reexports.
+- Apply native constrained functions and primary methods one source stage at a time when their results are functions. Retain canonical primitive owners under same-named binders, strict argument order, cold cleanup and positioned refusal of unproved Core inputs.
+- Keep namespace-qualified explicit type arguments valid and stable when formatting source.
+
 ## [0.61.113] - 2026-10-29
 
 ### Changed

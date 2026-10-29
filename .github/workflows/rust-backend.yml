@@ -214,6 +214,8 @@ jobs:
         run: |
           cargo test --locked -p seseragi-cli --test rust_backend list_prefix_
           cargo test --locked -p seseragi-cli --test rust_backend closed_display_
+      - name: Preserve alias identities and returned source stages on every host
+        run: cargo test --locked -p seseragi-cli --test alias_constructor_sections
       - name: Rebuild selected program dependencies and drain old browser owners
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
