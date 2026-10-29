@@ -10,6 +10,7 @@ use seseragi_lowering::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod array_operations;
 mod arrays;
 mod booleans;
 mod bytes;
@@ -171,6 +172,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_tuple.rs"));
     output.push_str(include_str!("runtime_array.rs"));
+    output.push_str(include_str!("runtime_array_operations.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
@@ -804,6 +806,11 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.bytes_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.array_operation_reference(name, evidence, type_ref, scope)?
+                {
                     return Ok(value);
                 }
                 if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {

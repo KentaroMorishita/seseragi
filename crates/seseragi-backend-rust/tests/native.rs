@@ -161,6 +161,68 @@ fn main() {{
 }
 
 #[test]
+fn named_array_filter_evaluates_each_source_stage_once_before_the_next_argument() {
+    let source = r#"
+import * as arrays from "std/array"
+fn predicate -> (Int -> Bool) = \value: Int -> value == 2
+fn values -> Array<Int> = [1, 2, 3]
+pub fn probe -> Array<Int> = arrays.filter (predicate ()) (values ())
+fn partial -> Array<Int> = { let saved = arrays.filter (predicate ()); saved (values ()) }
+fn referenced -> Array<Int> = {
+  let filter: (Int -> Bool) -> Array<Int> -> Array<Int> = arrays.filter
+  filter (predicate ()) (values ())
+}
+"#;
+    let artifact = emit(source);
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let mut generated = artifact.source[..main].to_owned();
+    // Observe only the two source-producing functions in this test copy.
+    // The generated Array application and its closure stages remain intact.
+    for name in ["predicate", "values"] {
+        let start = generated
+            .find(&format!(
+                "fn {}_direct(",
+                rust_id(&format!("native/main::{name}"))
+            ))
+            .unwrap();
+        let body = start + generated[start..].find("-> V {").unwrap() + "-> V {".len();
+        generated.insert_str(body, &format!(
+            " TRACE.with(|trace| trace.borrow_mut().push({name:?})); if {name:?} == \"predicate\" && FAIL_PREDICATE.with(Cell::get) {{ panic!(\"first source stage\") }} "
+        ));
+    }
+    generated.push_str("thread_local! { static TRACE: RefCell<Vec<&'static str>> = const { RefCell::new(vec![]) }; static FAIL_PREDICATE: Cell<bool> = const { Cell::new(false) }; }\nfn main() { std::panic::set_hook(Box::new(|_| {}));\n");
+    for name in ["probe", "partial", "referenced"] {
+        let entry = rust_id(&format!("native/main::{name}"));
+        generated.push_str(&format!(
+            r#"
+            TRACE.with(|trace| trace.borrow_mut().clear());
+            FAIL_PREDICATE.with(|fail| fail.set(false));
+            let output = {entry}(vec![]).apply(V::Unit);
+            assert_eq!(output.render(), "[2]");
+            assert_eq!(TRACE.with(|trace| trace.borrow().clone()), ["predicate", "values"]);
+            drop(output); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0);
+            TRACE.with(|trace| trace.borrow_mut().clear());
+            FAIL_PREDICATE.with(|fail| fail.set(true));
+            assert!(std::panic::catch_unwind(|| {entry}(vec![]).apply(V::Unit)).is_err());
+            assert_eq!(TRACE.with(|trace| trace.borrow().clone()), ["predicate"]);
+            clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0);
+        "#
+        ));
+    }
+    generated.push_str("}\n");
+    let scratch = Scratch::new();
+    let result = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        result.status.success(),
+        "{}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+}
+
+#[test]
 fn array_index_rejects_forged_owners_elements_arity_and_evidence() {
     use seseragi_lowering::CoreType;
     let source = "// 雫🙂\npub fn probe -> Maybe<Int> = [41, 42][0]\n";

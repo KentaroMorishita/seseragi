@@ -1,0 +1,47 @@
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn selected value: Maybe<Int> -> String = match value {
+  Nothing -> "none"
+  Just value -> show value
+}
+
+fn at<A> index: Int -> values: Array<A> -> Maybe<A> = arrays.get index values
+fn copy<A> values: Array<A> -> Array<A> = arrays.filter (\_: A -> True) values
+fn keep value: Int -> Bool = value == 2
+
+pub fn probe -> String = {
+  let values = [1, 2, 3, 2]
+  let filter: (Int -> Bool) -> Array<Int> -> Array<Int> = arrays.filter
+  let find: (Int -> Bool) -> Array<Int> -> Maybe<Int> = arrays.find
+  let middle = filter keep
+  let threshold = 2
+  let predicate = \value: Int -> value == threshold
+  let callbacks: Array<Int -> Int> = [\value: Int -> value + threshold]
+  let callback = match arrays.find (\_: (Int -> Int) -> True) callbacks {
+    Nothing -> -1
+    Just call -> call 40
+  }
+  text.join "|" [
+    show (middle values),
+    selected (find predicate values),
+    selected (at 2 values),
+    selected (arrays.get (-1) values),
+    selected (arrays.get 9007199254740991 values),
+    show (arrays.length values),
+    show (arrays.take 2 values),
+    show (arrays.drop 2 values),
+    show (arrays.take (-1) values),
+    show (arrays.drop (-1) values),
+    show (arrays.take 9007199254740991 values),
+    show (arrays.drop 9007199254740991 values),
+    show (copy ["雪", "🙂"]),
+    show (arrays.filter keep []),
+    selected (arrays.find keep []),
+    show (arrays.length (arrays.take 0 values)),
+    show callback,
+    show values
+  ]
+}
+
+pub effect fn main = println (probe ())

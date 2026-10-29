@@ -23,6 +23,14 @@ fresh Bun/Node/native、Refに保存したbufferと関数のcold再実行・Fail
 finalizer/root0を保ちます。新しいprogram WASM ABIやByte/Bytesの全標準辞書、
 残るBytes APIを受け入れたことにはしません。
 
+native Array filter/find/get/length/take/dropはbackendの`--test basic_array`、runtimeの
+`array_operation_tests`、CLIの`--test basic_standard basic_array_`で確認します。
+genericな要素型・canonical owner/kind・保存/部分適用とsource stageを検証し、
+元のraw TS両profileのstrict、fresh Bun/Node/nativeと通常path packageを比較します。
+filterの順序、findの途中停止、空入力、負/大indexとcount、入力不変と独立storage、
+関数要素のcapture・Ref cycle、cold再実行・Failure/Defect後のfinalizer/root0を保ちます。
+receiver-firstな既存Array index ABIを変えず、新6 APIのprogram WASMは位置付きで拒否します。
+
 List prefixの共有はloweringの`--test match_decision`、backendの
 `--test native list_prefix`、CLIの`--test rust_backend
 list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。

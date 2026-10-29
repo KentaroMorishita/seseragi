@@ -1,0 +1,7 @@
+import * as arrays from "std/array"
+
+pub fn keep<A> predicate: (A -> Bool) -> Array<A> -> Array<A> = arrays.filter predicate
+pub fn reader<A> values: Array<A> -> Int -> Maybe<A> = \index: Int -> arrays.get index values
+pub fn find<A> predicate: (A -> Bool) -> values: Array<A> -> Maybe<A> = arrays.find predicate values
+pub fn size<A> values: Array<A> -> Int = arrays.length values
+pub fn window<A> values: Array<A> -> Array<A> = arrays.take 3 (arrays.drop 1 values)
