@@ -6,6 +6,14 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Hashの標準Int/Bool/Char/String/Unit辞書はbackendの`--test basic_hash`、
+runtimeの`hashing_tests`、CLIの`--test basic_standard basic_hash_`で確認します。
+public hashにseedを混ぜず、safe Int・Unicode scalar FNV・選択済みの辞書・
+generic/保存methodのA -> Int契約を保持します。偽のowner/kind/child/段階/結果を
+元のUTF-8位置で拒否します。正式112で既に通るuser Hashのprogram WASMは元入力を
+保持してBun/Nodeで実行し、新しいprimitive辞書は未使用の制約でも受け入れません。
+共有runtimeの変更では既存basic APIと実program WASMも確認し、統合時に全体gateを通します。
+
 native BigInt parse/format/fromIntはbackendの`--test basic_big_int`、runtimeの
 `big_int_tests`、CLIの`--test basic_standard basic_big_int_`で確認します。
 任意桁数をFloatや固定幅整数へ丸めず、符号・zeroの正規化、strict decimal構文と

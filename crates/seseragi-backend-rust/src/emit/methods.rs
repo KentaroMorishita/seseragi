@@ -127,6 +127,9 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
+        if dispatch.trait_identity == "std/prelude::Hash" && dispatch.method == "hash" {
+            return Ok(()); // The complete A -> Int value is checked by validate_hash_call.
+        }
         if dispatch.trait_identity == "std/prelude::Ord" {
             return self.validate_ord_method_value(dispatch, selected, type_ref, scope);
         }
