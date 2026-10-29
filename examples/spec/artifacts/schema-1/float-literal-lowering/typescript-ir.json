@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/float-literal-lowering",
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_debug_tupleDebug",
+        "typeArguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_debug_floatDebug"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_debug_floatDebug"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.float64",
     "core.unit",
@@ -285,31 +317,9 @@
                   "value": {
                     "kind": "dictionary-call",
                     "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_debug_tupleDebug",
-                      "typeArguments": [
-                        {
-                          "kind": "tuple",
-                          "elements": [
-                            {
-                              "kind": "number"
-                            },
-                            {
-                              "kind": "number"
-                            }
-                          ]
-                        }
-                      ],
-                      "arguments": [
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_debug_floatDebug"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_debug_floatDebug"
-                        }
-                      ]
+                      "kind": "call",
+                      "callee": "$ssrg$closedDisplay$0",
+                      "arguments": []
                     },
                     "method": "debug",
                     "arguments": [

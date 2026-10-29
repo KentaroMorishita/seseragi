@@ -2,6 +2,68 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/local-rec",
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_tupleShow",
+        "typeArguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "boolean"
+              },
+              {
+                "kind": "boolean"
+              }
+            ]
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "$ssrg$closedDisplay$1",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_tupleShow",
+        "typeArguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "boolean"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "effect.core.type",
     "effect.console.service",
@@ -924,31 +986,9 @@
                         "value": {
                           "kind": "dictionary-call",
                           "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "_ssrg_show_tupleShow",
-                            "typeArguments": [
-                              {
-                                "kind": "tuple",
-                                "elements": [
-                                  {
-                                    "kind": "boolean"
-                                  },
-                                  {
-                                    "kind": "boolean"
-                                  }
-                                ]
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_boolShow"
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_boolShow"
-                              }
-                            ]
+                            "kind": "call",
+                            "callee": "$ssrg$closedDisplay$0",
+                            "arguments": []
                           },
                           "method": "show",
                           "arguments": [
@@ -1032,31 +1072,9 @@
                         "value": {
                           "kind": "dictionary-call",
                           "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "_ssrg_show_tupleShow",
-                            "typeArguments": [
-                              {
-                                "kind": "tuple",
-                                "elements": [
-                                  {
-                                    "kind": "boolean"
-                                  },
-                                  {
-                                    "kind": "number"
-                                  }
-                                ]
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_boolShow"
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_intShow"
-                              }
-                            ]
+                            "kind": "call",
+                            "callee": "$ssrg$closedDisplay$1",
+                            "arguments": []
                           },
                           "method": "show",
                           "arguments": [

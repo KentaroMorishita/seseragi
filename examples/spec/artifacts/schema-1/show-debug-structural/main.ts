@@ -5,6 +5,7 @@ import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { exclusive as _ssrg_range_exclusive, inclusive as _ssrg_range_inclusive } from "@seseragi/runtime/range"
 $ssrg$assertUnicodeVersion("17.0.0")
 
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, string]>(_ssrg_show_intShow, _ssrg_show_stringShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
 type Badge =
   | { readonly tag: "Active" }
   | { readonly tag: "Paused" };
@@ -12,7 +13,7 @@ const Active: Badge = { tag: "Active" } as const;
 const Paused: Badge = { tag: "Paused" } as const;
 export const __ssrg$instance$Show$0 = { "show": (value: Badge) => (($ssrg_match: Badge): string => $ssrg_match.tag === "Active" ? "active" : "paused")(value) } as const;
 export const __ssrg$instance$Debug$1 = { "debug": (value: Badge) => (($ssrg_match: Badge): string => $ssrg_match.tag === "Active" ? "Badge.Active" : "Badge.Paused")(value) } as const;
-export const showTuple = (value: readonly [number, string]) => ((_ssrg_show_tupleShow<readonly [number, string]>(_ssrg_show_intShow, _ssrg_show_stringShow)["show"](value)) as string)
+export const showTuple = (value: readonly [number, string]) => (($ssrg$closedDisplay$0()["show"](value)) as string)
 export const debugRecord = (value: { readonly "zeta"?: string; readonly "alpha": number }) => ((_ssrg_debug_recordDebug<{ readonly "zeta"?: string; readonly "alpha": number }>(["alpha", "zeta"] as const, [false, true] as const, _ssrg_debug_intDebug, _ssrg_debug_stringDebug)["debug"](value)) as string)
 export const debugNested = (value: { readonly "ranges": ReadonlyArray<readonly [Readonly<{ start: number; end: number; inclusive: boolean }>, boolean]>; readonly "label"?: string }) => ((_ssrg_debug_recordDebug<{ readonly "ranges": ReadonlyArray<readonly [Readonly<{ start: number; end: number; inclusive: boolean }>, boolean]>; readonly "label"?: string }>(["label", "ranges"] as const, [true, false] as const, _ssrg_debug_stringDebug, _ssrg_debug_arrayDebug<readonly [Readonly<{ start: number; end: number; inclusive: boolean }>, boolean]>(_ssrg_debug_tupleDebug<readonly [Readonly<{ start: number; end: number; inclusive: boolean }>, boolean]>(_ssrg_debug_rangeDebug<number>(_ssrg_debug_intDebug), _ssrg_debug_boolDebug)))["debug"](value)) as string)
 export const showGeneric = <A,>(value: readonly [A, { readonly "item": A }]) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ((_ssrg_show_tupleShow<readonly [A, { readonly "item": A }]>(__ssrg$evidence$0, _ssrg_show_recordShow<{ readonly "item": A }>(["item"] as const, [false] as const, __ssrg$evidence$0))["show"](value)) as string)

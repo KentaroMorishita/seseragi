@@ -2,6 +2,89 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-user-ord-operator::main",
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_tupleShow",
+        "typeArguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "boolean"
+              },
+              {
+                "kind": "boolean"
+              },
+              {
+                "kind": "boolean"
+              },
+              {
+                "kind": "boolean"
+              }
+            ]
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "$ssrg$closedDisplay$1",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_tupleShow",
+        "typeArguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "boolean"
+              },
+              {
+                "kind": "boolean"
+              },
+              {
+                "kind": "boolean"
+              }
+            ]
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.bool",
     "core.unit",
@@ -354,45 +437,9 @@
                   "value": {
                     "kind": "dictionary-call",
                     "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_tupleShow",
-                      "typeArguments": [
-                        {
-                          "kind": "tuple",
-                          "elements": [
-                            {
-                              "kind": "boolean"
-                            },
-                            {
-                              "kind": "boolean"
-                            },
-                            {
-                              "kind": "boolean"
-                            },
-                            {
-                              "kind": "boolean"
-                            }
-                          ]
-                        }
-                      ],
-                      "arguments": [
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_show_boolShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_show_boolShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_show_boolShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_show_boolShow"
-                        }
-                      ]
+                      "kind": "call",
+                      "callee": "$ssrg$closedDisplay$0",
+                      "arguments": []
                     },
                     "method": "show",
                     "arguments": [
@@ -568,38 +615,9 @@
               "value": {
                 "kind": "dictionary-call",
                 "dictionary": {
-                  "kind": "type-application-call",
-                  "callee": "_ssrg_show_tupleShow",
-                  "typeArguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "boolean"
-                        },
-                        {
-                          "kind": "boolean"
-                        },
-                        {
-                          "kind": "boolean"
-                        }
-                      ]
-                    }
-                  ],
-                  "arguments": [
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
-                    },
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
-                    },
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
-                    }
-                  ]
+                  "kind": "call",
+                  "callee": "$ssrg$closedDisplay$1",
+                  "arguments": []
                 },
                 "method": "show",
                 "arguments": [
