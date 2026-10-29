@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.117] - 2026-10-30
+
+### Added
+
+- Parse and stringify native JSON through the public Json, JsonPathSegment and JsonParseError constructors. Preserve exact Decimal numbers, insertion-order Map objects, UTF-8 syntax offsets, decoded duplicate field paths and Unicode surrogate validation. Use iterative parser and serializer frames, preserve cold saved functions and Ref cycles, and run scoped cleanup after typed failures or host-limit defects.
+- Transform JSON through ordinary path packages and UTF-8 files, keeping existing output intact on syntax, duplicate field or decoding failures. Keep JsonEncode/JsonDecode dictionaries, decoder combinators and the new program WASM ABI outside this basic scope.
+
 ## [0.61.116] - 2026-10-30
 
 ### Added

@@ -54,7 +54,7 @@ v0.61.116候補ではSetの`empty`／`singleton`／`contains`／`insert`／`remo
 表記は指数を使わず、負zeroと不要な末尾zeroを正規化する。表記がhost limitを超える場合は
 Defectとして扱う。Decimalの算術・丸め・全標準辞書はこの3操作に含めない。
 
-次の実装候補では`std/json`の`parse`／`stringify`と、Json、JsonPathSegment、
+v0.61.117候補では`std/json`の`parse`／`stringify`と、Json、JsonPathSegment、
 JsonParseErrorの公開constructorを追加する。numberは正確なDecimal、objectは標準の
 挿入順Mapを保持し、重複するdecoded field名はrootからのpath付きで拒否する。
 syntax errorは最初のUTF-8 byte位置とmessageを返す。Unicode escapeとsurrogate pairを
