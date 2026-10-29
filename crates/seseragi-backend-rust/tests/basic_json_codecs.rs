@@ -348,3 +348,89 @@ fn public_decode_and_read_error_constructors_check_owner_type_and_source_stages(
         );
     }
 }
+
+#[test]
+fn selected_user_json_dictionaries_check_implementation_even_when_forwarded_unused() {
+    for (trait_name, method) in [
+        (
+            "JsonEncode",
+            "fn encodeJson _value: Label -> json.Json = json.JsonNull",
+        ),
+        (
+            "JsonDecode",
+            "fn decodeJson _value: json.Json -> Either<json.DecodeError, Label> = Right Label",
+        ),
+    ] {
+        let source=format!("// 雪🙂\nimport * as json from \"std/json\"\ntype Label = | Label\ninstance {trait_name}<Label> {{ {method} }}\nfn ignore<A> _value: A -> Int where {trait_name}<A> = 1\npub fn probe -> Int = ignore Label\npub fn main -> Int = probe ()\n");
+        let core = checked(&source);
+        emit_rust_module(&core, "main").unwrap();
+        let index = core
+            .instances
+            .iter()
+            .position(|i| i.trait_name == trait_name)
+            .unwrap();
+        let consumer_origin = core_expr_origin(
+            &core
+                .functions
+                .iter()
+                .find(|f| f.symbol.ends_with("::probe"))
+                .unwrap()
+                .body,
+        )
+        .clone();
+        for mutation in 0..4 {
+            let mut bad = core.clone();
+            let seseragi_lowering::CoreInstanceImplementation::UserDefined { methods } =
+                &mut bad.instances[index].implementation
+            else {
+                panic!()
+            };
+            match mutation {
+                0 => {
+                    methods[0].body = CoreExpr::Integer {
+                        value: "42".into(),
+                        origin: core_expr_origin(&methods[0].body).clone(),
+                    }
+                }
+                1 => {
+                    methods[0].parameters[0].type_ref = CoreType::Named {
+                        name: "Unit".into(),
+                        arguments: vec![],
+                    }
+                }
+                2 => methods[0].name = "wrong".into(),
+                _ => methods[0]
+                    .type_parameters
+                    .push(seseragi_syntax::TypeParameter::value("Unused")),
+            }
+            // Omitted optional trait labels cannot bypass the canonical
+            // selected dictionary's implementation contract either.
+            if mutation == 0 {
+                let probe = bad
+                    .functions
+                    .iter_mut()
+                    .find(|f| f.symbol.ends_with("::probe"))
+                    .unwrap();
+                let CoreExpr::Call { evidence, .. } = &mut probe.body else {
+                    panic!()
+                };
+                evidence[0].constraint.trait_identity = None;
+            }
+            let error = emit_rust_module(&bad, "main").unwrap_err();
+            assert_eq!(error.code, "SES-RUST-0001");
+            assert_eq!(error.origin.as_ref(), Some(&consumer_origin));
+        }
+    }
+}
+
+#[test]
+fn new_error_kind_trust_does_not_admit_ignored_user_dictionary_to_program_wasm() {
+    // This exact source is refused on official115 with an unproven kind.
+    let core = checked(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-ignored-user.ssrg"
+    ));
+    emit_rust_module(&core, "main").unwrap();
+    let error = emit_program_wasm(&[&core], "native/json-codecs", &["probe".into()]).unwrap_err();
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert!(error.message.contains("unproven"), "{error:?}");
+}

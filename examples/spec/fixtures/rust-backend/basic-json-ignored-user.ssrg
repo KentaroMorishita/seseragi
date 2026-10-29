@@ -1,0 +1,6 @@
+import * as json from "std/json"
+type Label = | Label
+instance JsonDecode<Label> {fn decodeJson _value: json.Json -> Either<json.DecodeError, Label> = Right Label}
+fn ignore<A> _value: A -> Int where JsonDecode<A> = 1
+pub fn probe value: Int -> Int = ignore Label + value
+pub fn main -> Int = 0

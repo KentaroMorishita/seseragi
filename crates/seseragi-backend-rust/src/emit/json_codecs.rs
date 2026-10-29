@@ -36,6 +36,18 @@ impl Backend<'_> {
         selected: &CoreCallEvidence,
         scope: &Scope,
     ) -> Result<Option<String>> {
+        if matches!(&selected.evidence, CoreInstanceEvidence::Local { identity, .. } | CoreInstanceEvidence::Imported { identity, .. }
+            if identity.starts_with("std/prelude::JsonEncode<") || identity.starts_with("std/prelude::JsonDecode<"))
+            || (matches!(
+                selected.evidence,
+                CoreInstanceEvidence::Local { .. } | CoreInstanceEvidence::Imported { .. }
+            ) && matches!(
+                selected.constraint.trait_identity.as_deref(),
+                Some("std/prelude::JsonEncode" | "std/prelude::JsonDecode")
+            ))
+        {
+            self.validate_json_codec_user_dictionary(selected, scope)?;
+        }
         let CoreInstanceEvidence::Standard {
             identity,
             type_arguments,
@@ -79,6 +91,66 @@ impl Backend<'_> {
             quoted(kind),
             trait_name == "JsonEncode"
         )))
+    }
+
+    fn validate_json_codec_user_dictionary(
+        &self,
+        selected: &CoreCallEvidence,
+        scope: &Scope,
+    ) -> Result<()> {
+        let encode = selected.constraint.name == "JsonEncode";
+        let trait_name = if encode { "JsonEncode" } else { "JsonDecode" };
+        let [value] = selected.constraint.arguments.as_slice() else {
+            return Err("Rust backend: JSON codec constraint arity".into());
+        };
+        if !lists::standard_trait(selected, trait_name, value)
+            || self.declared_method_type_kind(value, scope) != Some(0)
+        {
+            return Err("Rust backend: unproven selected JSON codec type".into());
+        }
+        let identity = match &selected.evidence {
+            CoreInstanceEvidence::Local { identity, .. }
+            | CoreInstanceEvidence::Imported { identity, .. } => identity,
+            _ => unreachable!(),
+        };
+        let instance = self
+            .module
+            .instances
+            .iter()
+            .find(|i| &i.identity == identity)
+            .ok_or("Rust backend: unknown JSON codec dictionary")?;
+        let method_name = if encode { "encodeJson" } else { "decodeJson" };
+        if let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation {
+            let method = methods
+                .iter()
+                .find(|m| m.name == method_name)
+                .ok_or("Rust backend: missing selected JSON codec method")?;
+            if !method.type_parameters.is_empty() {
+                return Err("Rust backend: unproven JSON codec method type stages".into());
+            }
+        }
+        let json = named("std/json::Json", vec![]);
+        let method_type = if encode {
+            function(value.clone(), json)
+        } else {
+            function(
+                json,
+                named(
+                    "std/prelude::Either",
+                    vec![named("std/json::DecodeError", vec![]), value.clone()],
+                ),
+            )
+        };
+        self.validate_bare_method(
+            &seseragi_lowering::CoreTraitDispatch {
+                trait_identity: format!("std/prelude::{trait_name}"),
+                method: method_name.into(),
+                method_contract: None,
+            },
+            std::slice::from_ref(selected),
+            &method_type,
+            scope,
+        )
     }
 
     fn json_codec_signature(
