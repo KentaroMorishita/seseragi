@@ -497,10 +497,99 @@ fn basic_map_path_package_preserves_generic_evidence_and_saved_callbacks() {
 }
 
 #[test]
+fn basic_collections_set_preserves_order_representatives_snapshots_and_saved_functions() {
+    let output = include_bytes!("../../../examples/spec/fixtures/rust-backend/basic-set.stdout");
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set.ssrg"),
+        &[
+            Case::success(output),
+            Case {
+                name: "minimum-seed",
+                hash_seed: Some("-9223372036854775808"),
+                ..Case::success(output)
+            },
+            Case {
+                name: "maximum-seed",
+                hash_seed: Some("9223372036854775807"),
+                ..Case::success(output)
+            },
+            Case {
+                name: "zero-seed",
+                hash_seed: Some("+000"),
+                ..Case::success(output)
+            },
+        ],
+    );
+}
+
+#[test]
+fn basic_collections_map_contains_and_entries_preserve_order_snapshots_and_generic_evidence() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-entries.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-entries.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_collections_keep_cold_callbacks_and_release_reference_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-collections-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-collections-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_collections_defect_runs_the_finalizer_and_releases_reference_cycles() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-collections-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("collections-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42|42\ncold\n42|42\n84\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_collections_path_package_keeps_generic_partial_and_saved_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-collections"),
+        &[Case::success(
+            "[雫🙂]:[雫🙂, 🌊]:[🌊, 雫🙂]:True:False:True:42\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
 fn basic_map_invalid_seed_stops_before_application_effects() {
+    check_invalid_collection_seed("maps", "std/map", "maps.singleton \"snow\" 1", "maps.size");
+}
+
+#[test]
+fn basic_collections_set_invalid_seed_stops_before_application_effects() {
+    check_invalid_collection_seed("sets", "std/set", "sets.singleton \"snow\"", "sets.size");
+}
+
+fn check_invalid_collection_seed(alias: &str, module: &str, singleton: &str, size: &str) {
     let scratch = Scratch::new();
     let source = scratch.0.join("startup.ssrg");
-    fs::write(&source, "import * as maps from \"std/map\"\npub effect fn main = do {\n  println \"MUST_NOT_RUN\"\n  let values = maps.singleton \"snow\" 1\n  println (show (maps.size values))\n}\n").unwrap();
+    fs::write(&source, format!("import * as {alias} from \"{module}\"\npub effect fn main = do {{\n  println \"MUST_NOT_RUN\"\n  let values = {singleton}\n  println (show ({size} values))\n}}\n")).unwrap();
     let native = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))

@@ -1,0 +1,33 @@
+import * as maps from "std/map"
+import * as text from "std/text"
+
+fn has<K, V> key: K -> values: maps.Map<K, V> -> Bool where Eq<K>, Hash<K> =
+  maps.containsKey key values
+fn entries<K, V> values: maps.Map<K, V> -> Array<(K, V)> = maps.entries values
+fn saved -> (Int -> Bool) = {
+  let values = maps.singleton 41 "answer"
+  \key: Int -> maps.containsKey key values
+}
+
+pub fn probe -> String = {
+  let empty: maps.Map<Int, String> = maps.empty ()
+  let one = maps.singleton 2 "two"
+  let two = maps.insert 1 "one" one
+  let updated = maps.insert 2 "second" two
+  let removed = maps.remove 2 updated
+  let again = maps.insert 2 "last" removed
+  let contains: Int -> maps.Map<Int, String> -> Bool = maps.containsKey
+  let found = contains 2
+  let list: maps.Map<Int, String> -> Array<(Int, String)> = maps.entries
+  let units = maps.singleton "unit" ()
+  let read = saved ()
+  text.join "|" [
+    show (maps.entries empty), show (maps.containsKey 2 empty),
+    show (list two), show (entries updated), show (maps.entries one),
+    show (maps.entries again), show (found updated), show (has 9 updated),
+    show (maps.containsKey "unit" units), show (maps.entries units),
+    show (read 41), show (read 40)
+  ]
+}
+
+pub effect fn main = println (probe ())

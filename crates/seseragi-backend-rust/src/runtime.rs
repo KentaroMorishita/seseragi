@@ -179,6 +179,7 @@ enum V {
     Tuple(Shared<Vec<V>>),
     Array(Shared<Vec<V>>),
     Map(Shared<NativeMap>),
+    Set(Shared<NativeMap>),
     MapIndex(Shared<NativeMapIndex>),
     MapEntry(Shared<NativeMapEntry>),
     ListEmpty,
@@ -286,6 +287,7 @@ impl V {
                 V::Text(v) | V::BigInt(v) => output.push_str(v.get()),
                 V::Bytes(_) => output.push_str("<Bytes>"),
                 V::Map(_) => output.push_str("<Map>"),
+                V::Set(_) => output.push_str("<Set>"),
                 V::MapIndex(_) | V::MapEntry(_) => output.push_str("<Map internal>"),
                 V::ListEmpty => output.push_str("`[]"),
                 V::List(v) => {

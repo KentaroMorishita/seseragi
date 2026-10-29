@@ -2,12 +2,34 @@ use super::*;
 
 fn arity(name: &str) -> Option<usize> {
     Some(match name {
-        "std/map::empty" | "std/map::keys" | "std/map::values" | "std/map::size"
-        | "std/map::isEmpty" => 1,
-        "std/map::singleton" | "std/map::get" | "std/map::remove" => 2,
+        "std/map::empty" | "std/map::keys" | "std/map::values" | "std/map::entries"
+        | "std/map::size" | "std/map::isEmpty" | "std/set::empty" | "std/set::singleton"
+        | "std/set::toArray" | "std/set::size" | "std/set::isEmpty" => 1,
+        "std/map::singleton"
+        | "std/map::get"
+        | "std/map::containsKey"
+        | "std/map::remove"
+        | "std/set::contains"
+        | "std/set::insert"
+        | "std/set::remove" => 2,
         "std/map::insert" => 3,
         _ => return None,
     })
+}
+
+fn capability(name: &str) -> &'static str {
+    if name.starts_with("std/set::") {
+        "set"
+    } else {
+        "map"
+    }
+}
+fn operation(name: &str) -> &'static str {
+    if capability(name) == "set" {
+        "native_set_operation"
+    } else {
+        "native_map_operation"
+    }
 }
 
 fn function(parameters: &[CoreType], result: CoreType) -> CoreType {
@@ -21,7 +43,7 @@ fn function(parameters: &[CoreType], result: CoreType) -> CoreType {
 }
 
 impl Backend<'_> {
-    fn map_operation_type(
+    fn collection_operation_type(
         &self,
         name: &str,
         arguments: &[CoreExpr],
@@ -30,22 +52,24 @@ impl Backend<'_> {
         scope: &Scope,
     ) -> Result<usize> {
         if self.program_wasm_library {
-            return Err("program WASM: native Map requires a target-specific ABI proof".into());
+            return Err(
+                "program WASM: native collection requires a target-specific ABI proof".into(),
+            );
         }
-        let arity = arity(name).expect("known Map operation");
+        let arity = arity(name).expect("known collection operation");
         if scope.has_unproven_type_scope() || arguments.len() > arity {
-            return Err("Rust backend: unproven Map source application".into());
+            return Err("Rust backend: unproven collection source application".into());
         }
         let supplied = arguments
             .iter()
             .map(|argument| {
                 local::method_argument_type(argument)
-                    .ok_or_else(|| "Rust backend: missing Map source argument type".into())
+                    .ok_or_else(|| "Rust backend: missing collection source argument type".into())
             })
             .collect::<Result<Vec<_>>>()?;
         let full = function(&supplied, type_ref.clone());
         if self.declared_method_type_kind(&full, scope) != Some(0) {
-            return Err("Rust backend: unproven Map argument/result kind".into());
+            return Err("Rust backend: unproven collection argument/result kind".into());
         }
         let full = self.local_canonical_type(&full, scope)?;
         let mut result = &full;
@@ -56,12 +80,15 @@ impl Backend<'_> {
                 result: next,
             } = result
             else {
-                return Err("Rust backend: unproven Map source arity".into());
+                return Err("Rust backend: unproven collection source arity".into());
             };
             parameters.push(parameter.as_ref());
             result = next;
         }
-        let map = if matches!(name, "std/map::empty" | "std/map::singleton") {
+        let map = if matches!(
+            name,
+            "std/map::empty" | "std/map::singleton" | "std/set::empty" | "std/set::singleton"
+        ) {
             result
         } else {
             parameters[arity - 1]
@@ -73,10 +100,20 @@ impl Backend<'_> {
         else {
             return Err("Rust backend: missing canonical Map type".into());
         };
-        if owner != "std/map::Map" || slots.len() != 2 {
-            return Err("Rust backend: Map owner or type arity mismatch".into());
+        let (expected_owner, type_arity) = if capability(name) == "set" {
+            ("std/set::Set", 1)
+        } else {
+            ("std/map::Map", 2)
+        };
+        if owner != expected_owner || slots.len() != type_arity {
+            return Err("Rust backend: collection owner or type arity mismatch".into());
         }
-        let (key, value) = (&slots[0], &slots[1]);
+        let key = &slots[0];
+        let unit = CoreType::Named {
+            name: "std/prelude::Unit".into(),
+            arguments: vec![],
+        };
+        let value = slots.get(1).unwrap_or(&unit);
         let named = |name: &str, arguments| CoreType::Named {
             name: format!("std/prelude::{name}"),
             arguments,
@@ -89,6 +126,26 @@ impl Backend<'_> {
                 named("Maybe", vec![value.clone()]),
                 true,
             ),
+            "std/map::containsKey" => (vec![key.clone(), map.clone()], named("Bool", vec![]), true),
+            "std/map::entries" => (
+                vec![map.clone()],
+                named(
+                    "Array",
+                    vec![CoreType::Tuple {
+                        elements: vec![key.clone(), value.clone()],
+                    }],
+                ),
+                false,
+            ),
+            "std/set::empty" => (vec![unit.clone()], map.clone(), false),
+            "std/set::singleton" => (vec![key.clone()], map.clone(), true),
+            "std/set::contains" => (vec![key.clone(), map.clone()], named("Bool", vec![]), true),
+            "std/set::insert" | "std/set::remove" => {
+                (vec![key.clone(), map.clone()], map.clone(), true)
+            }
+            "std/set::toArray" => (vec![map.clone()], named("Array", vec![key.clone()]), false),
+            "std/set::size" => (vec![map.clone()], named("Int", vec![]), false),
+            "std/set::isEmpty" => (vec![map.clone()], named("Bool", vec![]), false),
             "std/map::insert" => (
                 vec![key.clone(), value.clone(), map.clone()],
                 map.clone(),
@@ -106,26 +163,28 @@ impl Backend<'_> {
             _ => unreachable!(),
         };
         if full != function(&expected, output) {
-            return Err("Rust backend: Map key/value/source contract mismatch".into());
+            return Err("Rust backend: collection element/source contract mismatch".into());
         }
         if needs_key {
             let [eq, hash] = evidence else {
-                return Err("Rust backend: Map requires selected Eq and Hash dictionaries".into());
+                return Err(
+                    "Rust backend: collection requires selected Eq and Hash dictionaries".into(),
+                );
             };
             self.validate_eq_evidence(eq, scope)?;
             self.validate_hash_evidence(hash, scope)?;
             for selected in [eq, hash] {
                 if self.local_canonical_type(&selected.constraint.arguments[0], scope)? != *key {
-                    return Err("Rust backend: Map key dictionary argument mismatch".into());
+                    return Err("Rust backend: collection key dictionary argument mismatch".into());
                 }
             }
         } else if !evidence.is_empty() {
-            return Err("Rust backend: unexpected Map dictionary".into());
+            return Err("Rust backend: unexpected collection dictionary".into());
         }
         Ok(arity)
     }
 
-    fn map_callable(
+    fn collection_callable(
         &mut self,
         name: &str,
         arity: usize,
@@ -140,7 +199,8 @@ impl Backend<'_> {
             .collect::<Vec<_>>()
             .join(",");
         let mut body = format!(
-            "native_map_operation({}, native_map_dictionaries(&{}), vec![{args}])",
+            "{}({}, native_map_dictionaries(&{}), vec![{args}])",
+            operation(name),
             quoted(name),
             id(&dictionary)
         );
@@ -156,7 +216,7 @@ impl Backend<'_> {
         ))
     }
 
-    pub(super) fn map_reference(
+    pub(super) fn collection_reference(
         &mut self,
         name: &str,
         evidence: &[CoreCallEvidence],
@@ -166,12 +226,18 @@ impl Backend<'_> {
         if arity(name).is_none() || scope.contains(name) {
             return Ok(None);
         }
-        let arity = self.map_operation_type(name, &[], type_ref, evidence, scope)?;
-        self.capabilities.insert("map".into());
-        Ok(Some(self.map_callable(name, arity, evidence, scope)?))
+        let arity = self.collection_operation_type(name, &[], type_ref, evidence, scope)?;
+        self.capabilities.insert(capability(name).into());
+        Ok(Some(
+            self.collection_callable(name, arity, evidence, scope)?,
+        ))
     }
 
-    pub(super) fn map_call(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<Option<String>> {
+    pub(super) fn collection_call(
+        &mut self,
+        expr: &CoreExpr,
+        scope: &Scope,
+    ) -> Result<Option<String>> {
         let CoreExpr::Call {
             callee,
             arguments,
@@ -193,41 +259,42 @@ impl Backend<'_> {
             || !deferred_evidence_type_constructor_parameters.is_empty()
             || evidence_argument_index.is_some()
         {
-            return Err("Rust backend: unproven Map source stages".into());
+            return Err("Rust backend: unproven collection source stages".into());
         }
-        let arity = self.map_operation_type(callee, arguments, type_ref, evidence, scope)?;
+        let arity = self.collection_operation_type(callee, arguments, type_ref, evidence, scope)?;
         // A generic partial application can retain its remaining source types.
         // Its selected dictionaries are already checked in the caller's scope;
         // the metadata must describe exactly the ordinary curried suffix.
         if !deferred_evidence_parameters.is_empty() {
             if arguments.len() + deferred_evidence_parameters.len() != arity {
-                return Err("Rust backend: Map deferred source arity mismatch".into());
+                return Err("Rust backend: collection deferred source arity mismatch".into());
             }
             let mut remaining = type_ref;
             for deferred in deferred_evidence_parameters {
                 let CoreType::Function { parameter, result } = remaining else {
-                    return Err("Rust backend: missing Map deferred source stage".into());
+                    return Err("Rust backend: missing collection deferred source stage".into());
                 };
                 if self.local_canonical_type(parameter, scope)?
                     != self.local_canonical_type(deferred, scope)?
                 {
-                    return Err("Rust backend: Map deferred source type mismatch".into());
+                    return Err("Rust backend: collection deferred source type mismatch".into());
                 }
                 remaining = result;
             }
         }
-        self.capabilities.insert("map".into());
+        self.capabilities.insert(capability(callee).into());
         if arguments.len() == arity {
             self.direct_calls += 1;
             let dictionaries = self.evidence(evidence, scope)?;
             return Ok(Some(format!(
-                "native_map_operation({}, {dictionaries}, vec![{}])",
+                "{}({}, {dictionaries}, vec![{}])",
+                operation(callee),
                 quoted(callee),
                 self.expressions(arguments, scope)?
             )));
         }
         let value = self.fresh();
-        let callable = self.map_callable(callee, arity, evidence, scope)?;
+        let callable = self.collection_callable(callee, arity, evidence, scope)?;
         let mut body = format!("{{ let mut {value}={callable};");
         for argument in arguments {
             body.push_str(&format!(

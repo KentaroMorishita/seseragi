@@ -1,0 +1,66 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+import * as sets from "std/set"
+import * as maps from "std/map"
+import { Ref } from "std/ref"
+
+type Key = | Key { identity: Int, state: Ref<sets.Set<Key>> }
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool = match left {
+    Key a -> match right { Key b -> a.identity == b.identity }
+  }
+}
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  let empty: sets.Set<Key> = sets.empty ()
+  cell <- refs.make empty
+  let key = Key ({ identity: 1, state: cell })
+  let original = sets.singleton key
+  let duplicate = sets.insert key original
+  refs.set duplicate cell
+  let selected = match arrays.get 0 (sets.toArray original) {
+    Just (Key detail) -> detail.state
+    Nothing -> cell
+  }
+  let read = \increment: Int -> do {
+    stored <- refs.get selected
+    effects.succeed (sets.size stored + increment)
+  }
+  saved <- refs.make read
+  let seed = 2
+  let functions = maps.singleton "answer" (\value: Int -> value + seed)
+  let callback = match arrays.get 0 (maps.entries functions) {
+    Just (_key, call) -> call
+    Nothing -> \value: Int -> value
+  }
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    current <- refs.get saved
+    result <- current 41
+    say (show result + "|" + show (callback 40))
+    effects.succeed result
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\n -> n + 1) released
+          say "released"
+        }
+      )
+      first <- cold
+      second <- cold
+      say (show (first + second))
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

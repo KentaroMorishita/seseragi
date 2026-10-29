@@ -61,7 +61,7 @@ impl Backend<'_> {
         if let Some(value) = self.big_int_call(expr, scope)? {
             return Ok(value);
         }
-        if let Some(value) = self.map_call(expr, scope)? {
+        if let Some(value) = self.collection_call(expr, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.array_operation_call(expr, scope)? {

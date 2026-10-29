@@ -43,6 +43,12 @@ Mapのkeyには選択済みの`Eq<K>`と`Hash<K>`を使う。標準HashはInt／
 keyとvalueを保持しない。内部seedはOS entropyまたは環境変数`SESERAGI_HASH_SEED`から生成し、
 publicなhash値や挿入順へ混ぜない。設定したseedはsigned 64-bit整数でなければアプリ開始前に拒否する。
 
+次の実装batchではSetの`empty`／`singleton`／`contains`／`insert`／`remove`／`toArray`／
+`size`／`isEmpty`と、Mapの`containsKey`／`entries`を追加する。SetはMapと区別する専用tagを
+持ち、同じpersistent storageと循環回収を使う。重複した要素は最初の代表と位置を保つ。
+`entries`は挿入順に対応するkeyとvalueのTupleを返す。これらの実装は115の配布候補とは
+別に検証し、正式配布の完了は後続のreleaseで確認する。
+
 Bytesは0〜255のbyteを独立したstorageに保持し、最初の範囲外Intを`ByteOutOfRange`として返す。
 BigIntのdecimal parse／formatはFloatや固定幅整数を経由しない。Text replaceはliteralの置換で、
 trimはUnicode 17のWhite_Spaceを使う。各APIの詳細は[標準library仕様](../spec/10-library-surface.md)を参照する。
@@ -58,7 +64,7 @@ seseragi experimental build-native \
 ```
 
 これらの新APIとprimitive Hash辞書をprogram WASMへ受け入れる変更は含めない。既存の
-user Hash program WASMは保持する。Mapの残るAPI、Set／JSON／Decimal／Regex、BigInt算術と
+user Hash program WASMは保持する。MapとSetの残るAPI、JSON／Decimal／Regex、BigInt算術と
 全標準辞書、一般provider ABIは未完了で、[基本APIのIssue](https://github.com/KentaroMorishita/seseragi/issues/812)に残る。
 
 ## pure program WASMとtypedな返却関数
