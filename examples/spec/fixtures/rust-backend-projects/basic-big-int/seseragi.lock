@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-big-int@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-big-int@0.0.0#workspace:."
+name = "fixture/basic-big-int"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:e6e25c11b3fa9e67126359e7a7c06f69a64e4313eece56802c4b077a04becc53"
+content_digest = "sha256:afa4af2b66f17114bd0ccb2cac9388f5d40b17b91a9931ec843698df7bce8f43"
+dependencies = [
+  { import = "exact", package = "fixture/exact-integers@0.0.0#path:vendor/exact" },
+]
+
+[[packages]]
+id = "fixture/exact-integers@0.0.0#path:vendor/exact"
+name = "fixture/exact-integers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/exact"
+manifest_digest = "sha256:70dc2af3413255000a701b5bbec9b29cd8efdd7953f84ccc64a4351086d62655"
+content_digest = "sha256:8eb5eca9be3a18326108cbe634313255dc84d73da21775bd6e7069188e75c7de"
+dependencies = []

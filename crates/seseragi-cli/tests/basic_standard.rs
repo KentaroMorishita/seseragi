@@ -240,6 +240,51 @@ fn basic_array_matches_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_big_int_matches_original_raw_strict_ts_and_native_without_precision_loss() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_int_keeps_saved_exact_values_cold_and_releases_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_int_defect_runs_the_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-big-int-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("big-int-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(&path,&[Case{name:"defect",stdout:b"created\nacquired\ncold\n900719925474099200000000000000001\ncold\n900719925474099200000000000000001\nreleased\n",exit:70,defect:true,..Case::success(b"")}]);
+}
+
+#[test]
+fn basic_big_int_path_package_preserves_opaque_values_and_captured_formatters() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-big-int"),
+        &[Case::success(
+            b"900719925474099200000000000001|900719925474099200000000000001|-9007199254740991\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_array_infix_descending_comparisons_match_original_raw_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-array-ordering.ssrg"),

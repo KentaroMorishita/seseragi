@@ -12,6 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod array_operations;
 mod arrays;
+mod big_int;
 mod booleans;
 mod bytes;
 mod calls;
@@ -175,6 +176,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_array_operations.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
+    output.push_str(include_str!("runtime_big_int.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));
@@ -806,6 +808,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.bytes_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.big_int_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) =

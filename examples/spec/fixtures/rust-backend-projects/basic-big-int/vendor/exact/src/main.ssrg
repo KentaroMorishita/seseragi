@@ -1,0 +1,6 @@
+import * as big from "std/big-int"
+
+pub fn parse text: String -> Either<big.BigIntParseError, big.BigInt> = big.parse text
+pub fn format value: big.BigInt -> String = big.format value
+pub fn fromInt value: Int -> big.BigInt = big.fromInt value
+pub fn reader value: big.BigInt -> Unit -> String = \_: Unit -> big.format value

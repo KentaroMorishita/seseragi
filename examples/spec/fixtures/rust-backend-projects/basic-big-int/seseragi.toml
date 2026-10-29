@@ -1,0 +1,11 @@
+[package]
+name = "fixture/basic-big-int"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+exact = { package = "fixture/exact-integers", path = "vendor/exact" }
