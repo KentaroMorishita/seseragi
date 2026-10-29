@@ -27,6 +27,7 @@ mod filesystem;
 mod floats;
 mod lists;
 mod local;
+mod math;
 mod methods;
 mod number_parse;
 mod operators;
@@ -165,6 +166,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_char.rs"));
     output.push_str(include_str!("runtime_float_display.rs"));
     output.push_str(include_str!("runtime_float.rs"));
+    output.push_str(include_str!("runtime_math.rs"));
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_tuple.rs"));
     output.push_str(include_str!("runtime_array.rs"));
@@ -797,6 +799,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.number_parse_reference(name, evidence, type_ref, scope)? {

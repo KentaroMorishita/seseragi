@@ -124,6 +124,7 @@ mod runtime {
     include!("runtime_char.rs");
     include!("runtime_float_display.rs");
     include!("runtime_float.rs");
+    include!("runtime_math.rs");
     include!("runtime_list.rs");
     include!("runtime_tuple.rs");
     include!("runtime_array.rs");

@@ -1454,6 +1454,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         ("float-convert", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Either<floats.FloatConversionError, Int> = floats.toInt numbers.HalfEven 1.5\n", "float-conversion"),
         ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n", "float"),
         ("float-named-power", "import * as floats from \"std/float\"\npub fn answer -> Float = floats.power 2.0 1.5\n", "float"),
+        ("float-math-sqrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.sqrt 4.0\n", "math"),
     ] {
         let path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&path, source).unwrap();
@@ -1466,7 +1467,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == capability));
     }
     for (name, source) in [
-        ("float-math-sqrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.sqrt 4.0\n"),
+        ("float-math-cbrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.cbrt 4.0\n"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n"),
         ("list-eq", "pub fn answer -> Bool = `[1] == `[1]\n"),
         ("list-sort", "import * as lists from \"std/list\"\npub fn answer -> List<Int> = lists.sort `[2, 1]\n"),

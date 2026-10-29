@@ -6,6 +6,15 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+nativeのText split/trim/contains/replaceとMath sqrt/sin/cos/logは、backendとCLIの
+`--test basic_standard`、runtimeの`math_tests`/`text_tests`で確認します。
+Unicode scalar・White_Space・literal replacement、canonical owner/kind/source stageの拒否、
+数学関数の特殊値と仕様の許容誤差、元のraw TS両profileのstrict、fresh Bun/Node/native、
+saved functionのcold再実行とFailure/Defect後のfinalizer/root0、通常path packageの
+CSV変換・不正入力時の旧出力保持を確認します。旧sqrt拒否sourceは成功対照へ保持し、
+未対応cbrtとList comprehensionの位置付き拒否を残します。新8 APIのprogram WASM受入は
+追加せず、target-specific proofを欠く入力を位置付きで拒否します。
+
 List prefixの共有はloweringの`--test match_decision`、backendの
 `--test native list_prefix`、CLIの`--test rust_backend
 list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。
