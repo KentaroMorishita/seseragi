@@ -165,7 +165,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     # Batch all CLI suites in one Cargo invocation to reuse compilation.
     # Preserve every test and its individual deadline, with cold-build headroom.
-    timeout-minutes: ${{ matrix.os == 'windows-latest' && 90 || matrix.os == 'macos-15' && 90 || 45 }}
+    # Ubuntu cold runs can exceed 45m after reaching the final rebuild suite.
+    # Keep every command and individual deadline; use the existing host budget.
+    timeout-minutes: 90
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
