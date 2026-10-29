@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.118] - 2026-10-30
+
+### Added
+
+- Generate native Array and List `findIndex`, `takeWhile`, `dropWhile`, `last`, `init`, `zip`, `zipWith`, `unzip`, `chunksOf`, `windows` and `reduceRight` with checked canonical types, generic saved functions and source stages. Preserve short-circuit callback order, left/right zip elements, right folds, empty and singleton values and immutable inputs.
+- Return canonical `NonPositiveSize` errors for nonpositive chunk/window sizes and expose the checked constructor. Keep strict results free of excluded Array edges or List prefixes/suffixes, captured callbacks, cold replay and scoped cleanup. New program WASM admission and SizeError Eq/Show dictionaries remain outside this slice.
+
 ## [0.61.117] - 2026-10-30
 
 ### Added
