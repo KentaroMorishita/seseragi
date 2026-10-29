@@ -744,6 +744,75 @@ fn basic_decimal_path_package_keeps_opaque_values_and_saved_formatters() {
 }
 
 #[test]
+fn basic_json_codecs_match_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-codecs.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-codecs.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_codecs_keep_cold_replay_domain_failures_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-codec-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-codec-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_codecs_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-json-codec-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("codec-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(&path,&[Case{name:"defect",stdout:"created\nacquired\ncold\n{\"answer\":9007199254740992000000000001.1,\"snow\":\"雪🙂\"}\ncold\n{\"answer\":9007199254740992000000000001.1,\"snow\":\"雪🙂\"}\nreleased\n".as_bytes(),exit:70,defect:true,..Case::success(b"")}]);
+}
+
+#[test]
+fn basic_json_codecs_package_keeps_opaque_values_and_saved_generic_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-codecs"),
+        &[Case::success("42:42:\"雪🙂\":True\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_codecs_encoding_defect_runs_finalizer_and_releases_captured_json() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-json-codec-effects.ssrg");
+    let original = "{\\\"answer\\\":9007199254740992000000000001.100,\\\"snow\\\":\\\"雪🙂\\\"}";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("codec-encoding-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace(original, "1e99999999999999999999999999999999999999999"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "encoding-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Decimal canonical spelling exceeds host limits",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
 fn basic_json_values_errors_paths_and_saved_functions_match_raw_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-json.ssrg"),

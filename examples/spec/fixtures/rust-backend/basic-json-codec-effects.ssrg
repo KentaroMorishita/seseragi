@@ -1,0 +1,50 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as json from "std/json"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+fn reader source: String -> Unit -> String = match json.decodeString<json.Json> source {
+  Left _ -> \_: Unit -> "invalid"
+  Right value -> \_: Unit -> json.encodeString value
+}
+effect fn failBody -> Unit fails String = match json.decodeString<Int> "1.5" {
+  Left (json.JsonDecodeFailure error) -> match error.kind {
+    json.InvalidJsonValue _ -> effects.fail "typed"
+    _ -> effects.die "unexpected domain error"
+  }
+  _ -> effects.die "expected domain failure"
+}
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (\_: Unit -> effects.succeed "")
+  let render = reader "{\"answer\":9007199254740992000000000001.100,\"snow\":\"雪🙂\"}"
+  let callback = \_: Unit -> do {
+    _ <- refs.get saved
+    effects.succeed (render ())
+  }
+  refs.set callback saved
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    selected <- refs.get saved
+    line <- selected ()
+    say line
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\n -> n + 1) released
+          say "released"
+        }
+      )
+      cold
+      cold
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

@@ -183,7 +183,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 if *exported {
                     output.push_str("export ");
                 }
-                let parameters = evidence_parameters(parameters, 0, constraints.len());
+                let parameters = evidence_parameters(parameters, 0, constraints);
                 let rendered_body = render_function_body(
                     type_parameters,
                     &parameters,
@@ -581,17 +581,36 @@ fn foreign_call_kind(kind: seseragi_syntax::ForeignCallKind) -> &'static str {
 pub(super) fn evidence_parameters(
     parameters: &[crate::TypeScriptParameter],
     start_index: usize,
-    evidence_count: usize,
+    constraints: &[crate::TypeScriptInstanceConstraint],
 ) -> Vec<crate::TypeScriptParameter> {
     let mut rendered = parameters.to_vec();
-    rendered.extend((start_index..start_index + evidence_count).map(|index| {
+    rendered.extend(constraints.iter().enumerate().map(|(offset, constraint)| {
         crate::TypeScriptParameter {
-            name: crate::typescript::evidence_parameter_name(index),
-            type_name: ERASED_EVIDENCE_TYPE.to_owned(),
+            name: crate::typescript::evidence_parameter_name(start_index + offset),
+            type_name: evidence_type(constraint),
             implicit: true,
         }
     }));
     rendered
+}
+
+pub(super) fn evidence_type(constraint: &crate::TypeScriptInstanceConstraint) -> String {
+    let dictionary = match constraint.trait_identity.as_deref() {
+        Some("std/prelude::JsonEncode") if constraint.name == "JsonEncode" => "JsonEncode",
+        Some("std/prelude::JsonDecode") if constraint.name == "JsonDecode" => "JsonDecode",
+        _ => return ERASED_EVIDENCE_TYPE.to_owned(),
+    };
+    let [argument] = constraint.arguments.as_slice() else {
+        return ERASED_EVIDENCE_TYPE.to_owned();
+    };
+    // Keep the selected value type at every evidence stage. An index signature
+    // does not promise the required method to the strict JSON runtime API.
+    // A type-only import also works in local functions and instance factories
+    // whose enclosing source signature does not otherwise mention Json.
+    format!(
+        "import(\"@seseragi/runtime/json\").{dictionary}<{}>",
+        render_typescript_type(argument)
+    )
 }
 
 fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
@@ -1500,7 +1519,7 @@ fn recursive_group_prefix(statements: &[TypeScriptStatement]) -> Option<(String,
         if member_group != group {
             break;
         }
-        let parameters = evidence_parameters(parameters, 0, constraints.len());
+        let parameters = evidence_parameters(parameters, 0, constraints);
         declarations.push(format!(
             "const {name} = {};",
             render_function_body_with_return(
@@ -1571,7 +1590,7 @@ fn render_monad_sequence(
             body,
             ..
         } => {
-            let parameters = evidence_parameters(parameters, 0, constraints.len());
+            let parameters = evidence_parameters(parameters, 0, constraints);
             let value = render_function_body(
                 type_parameters,
                 &parameters,
@@ -1652,7 +1671,7 @@ fn render_effect_sequence_with_result_renderer(
             body,
             ..
         } => {
-            let parameters = evidence_parameters(parameters, 0, constraints.len());
+            let parameters = evidence_parameters(parameters, 0, constraints);
             let value = render_function_body(
                 type_parameters,
                 &parameters,

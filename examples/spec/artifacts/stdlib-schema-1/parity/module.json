@@ -726,7 +726,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:c71f0d5b13e874c3",
+      "interfaceFingerprint": "fnv1a64:40a4d6a13234c549",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },

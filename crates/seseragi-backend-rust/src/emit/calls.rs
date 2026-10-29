@@ -67,6 +67,9 @@ impl Backend<'_> {
         if let Some(value) = self.json_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.json_codec_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.collection_call(expr, scope)? {
             return Ok(value);
         }

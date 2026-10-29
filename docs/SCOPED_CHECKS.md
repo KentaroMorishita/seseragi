@@ -6,6 +6,18 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native JSONのBool/String/Int/Decimal/Unit/Jsonの12標準codec辞書とstring wrapperは
+backendの`--test basic_json_codecs`、runtimeの`json_codec_tests`、CLIの
+`--test basic_standard basic_json_codecs_`で確認します。exact Decimalから整数性とsafe Int
+範囲を判定し、巨大指数をFloatや巨大Stringへ展開しません。wrong-type message、root pathと
+syntax/domain error、公開error constructor、generic/保存methodと明示user辞書、通常2 module
+packageを元raw TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeで比較します。
+cold/Failure/encoder内Defectとfinalizer/Ref cycle/root0、不正owner/kind/child/段階の位置付き
+拒否を保ちます。新しいprogram WASM受入は行いません。
+DecodeErrorの公開struct登録とgeneric JSON辞書のTS型・確認済み型引数の保持はshared frontendの
+修正です。driverの`--test json_decode_error --test struct_construction_kind`を通し、元fixtureと
+assertionを維持します。統合時は正規compiler WASMを更新し、全体gateを実行します。
+
 native Array/Listのsequence基本22操作はbackendの`--test basic_sequence`、runtimeの
 `sequence_tests`、CLIの`--test basic_standard basic_sequence_`で確認します。
 findIndex/takeWhile/dropWhileのcallback順とshort-circuit、zipの左右型と短い入力、

@@ -353,11 +353,11 @@ fn render_derived_json_factory(
         .constraints
         .iter()
         .enumerate()
-        .map(|(index, _)| {
+        .map(|(index, constraint)| {
             format!(
                 "{}: {}",
                 crate::typescript::evidence_parameter_name(index),
-                super::ERASED_EVIDENCE_TYPE,
+                super::evidence_type(constraint),
             )
         })
         .collect::<Vec<_>>()
@@ -449,11 +449,11 @@ fn render_derived_display_instance(
         .constraints
         .iter()
         .enumerate()
-        .map(|(index, _)| {
+        .map(|(index, constraint)| {
             format!(
                 "{}: {}",
                 crate::typescript::evidence_parameter_name(index),
-                super::ERASED_EVIDENCE_TYPE,
+                super::evidence_type(constraint),
             )
         })
         .collect::<Vec<_>>()
@@ -475,7 +475,7 @@ fn render_user_defined_instance(
             let parameters = super::evidence_parameters(
                 &method.parameters,
                 instance.constraints.len(),
-                method.constraints.len(),
+                &method.constraints,
             );
             let ordinary = format!(
                 "{:?}: {}",
@@ -525,11 +525,11 @@ fn render_user_defined_instance(
         .constraints
         .iter()
         .enumerate()
-        .map(|(index, _)| {
+        .map(|(index, constraint)| {
             format!(
                 "{}: {}",
                 crate::typescript::evidence_parameter_name(index),
-                super::ERASED_EVIDENCE_TYPE,
+                super::evidence_type(constraint),
             )
         })
         .collect::<Vec<_>>()

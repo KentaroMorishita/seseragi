@@ -890,6 +890,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     &type_ref,
                     &evidence,
                 );
+                let typed_json_evidence = has_typed_json_evidence(&evidence);
                 let evidence = evidence
                     .iter()
                     .map(|selected| {
@@ -997,7 +998,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     if let TypeScriptExpr::Call { type_arguments, .. } = &mut call {
                         *type_arguments = ordinary_call_type_arguments(
                             callee_signature.as_ref(),
-                            has_evidence,
+                            has_evidence && !typed_json_evidence,
                             imported_types,
                         );
                     }
@@ -1359,7 +1360,7 @@ pub(super) fn lower_core_expr_to_typescript(
                         arguments,
                         type_arguments: ordinary_call_type_arguments(
                             callee_signature.as_ref(),
-                            !evidence.is_empty(),
+                            !evidence.is_empty() && !has_typed_json_evidence(&evidence),
                             imported_types,
                         ),
                         checked_callee_type: None,
@@ -2398,8 +2399,25 @@ fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
     }
 }
 
-// Reify only a complete ordinary source instantiation. Higher-kinded erasure,
-// runtime intrinsics, foreign tasks and dictionary stages keep their ABI paths.
+fn has_typed_json_evidence(evidence: &[crate::CoreCallEvidence]) -> bool {
+    evidence.iter().any(|selected| {
+        selected.constraint.arguments.len() == 1
+            && matches!(
+                (
+                    selected.constraint.name.as_str(),
+                    selected.constraint.trait_identity.as_deref()
+                ),
+                ("JsonEncode", Some("std/prelude::JsonEncode"))
+                    | ("JsonDecode", Some("std/prelude::JsonDecode"))
+            )
+    })
+}
+
+// Reify only a complete ordinary source instantiation. Typed JSON dictionaries
+// need this before a source stage that cannot infer A (for example String ->
+// String where JsonDecode<A>, JsonEncode<A>). Otherwise TypeScript fixes A to
+// unknown before the later invariant dictionary stage. Higher-kinded erasure,
+// runtime intrinsics, foreign tasks and erased dictionaries retain their paths.
 fn ordinary_call_type_arguments(
     signature: Option<&crate::CoreCallSignature>,
     has_evidence: bool,

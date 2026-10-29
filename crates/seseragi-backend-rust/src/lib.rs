@@ -138,6 +138,7 @@ mod runtime {
     include!("runtime_map.rs");
     include!("runtime_set.rs");
     include!("runtime_json.rs");
+    include!("runtime_json_codecs.rs");
     include!("runtime_int_parse.rs");
     include!("runtime_float_parse.rs");
     include!("runtime_float_conversion.rs");

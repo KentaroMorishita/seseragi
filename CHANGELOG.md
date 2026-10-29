@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.119] - 2026-10-30
+
+### Added
+
+- Generate the twelve native Bool, String, Int, Decimal, Unit and Json codec dictionaries, their saved/generic methods, and encodeString/decodeString. Preserve exact safe Int conversion without expanding arbitrary exponents, root paths, standard messages, distinct syntax/domain failures, selected user dictionaries, ordinary packages and scoped cleanup after cold replay, typed failure or encoder defects.
+
+### Fixed
+
+- Expose DecodeError as the public struct specified by the JSON library so handwritten decoders can construct path-aware domain errors. Keep canonical generic JSON dictionary types and proven source type arguments in generated TypeScript, including saved methods and package boundaries, under strict checking.
+
 ## [0.61.118] - 2026-10-30
 
 ### Added

@@ -5659,7 +5659,7 @@ fn json_interface() -> ModuleInterface {
         ));
     }
     exports.extend([
-        record_type_export(
+        public_record_type_export(
             module,
             "DecodeError",
             [

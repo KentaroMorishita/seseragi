@@ -1,0 +1,13 @@
+import * as cells from "cells"
+import * as json from "std/json"
+
+pub fn probe -> String = {
+  let value = cells.make 42
+  let read: cells.Cell -> Either<json.DecodeError, Int> = cells.read
+  let render = cells.reader "雪🙂"
+  let parsed: Either<json.JsonReadError, Bool> = cells.decode "true"
+  let amount = match read value { Right n -> show n; Left _ -> "invalid" }
+  let active = match parsed { Right value -> show value; Left _ -> "invalid" }
+  cells.write value + ":" + amount + ":" + render () + ":" + active
+}
+pub effect fn main = println (probe ())
