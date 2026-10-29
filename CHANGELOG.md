@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.115] - 2026-10-29
+
+### Added
+
+- Generate native `std/text.split`, `trim`, `contains` and literal `replace` with Unicode scalar boundaries, pinned White_Space, first-class functions and checked source stages.
+- Generate native `std/math.sqrt`, `sin`, `cos` and `log`, preserving Float special values, signed zero and the specified representative tolerance. Keep new program WASM operations explicitly refused until their target proof is available.
+- Transform comma-separated text through ordinary path packages and UTF-8 files, preserving inputs and existing outputs on parse or decoding failure, cold replay and scoped cleanup.
+
+### Fixed
+
+- Format adjacent closing delimiters of nested parenthesized blocks at the correct depth in one pass, without changing source tokens or recovery scope.
+
 ## [0.61.114] - 2026-10-29
 
 ### Fixed
