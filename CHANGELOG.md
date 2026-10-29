@@ -4,6 +4,7 @@
 
 ### Added
 
+- Read and format arbitrary-precision native decimal integers through `std/big-int.parse`, `format` and `fromInt`, with distinct opaque storage, canonical sign/zero and precise UTF-8 parse errors.
 - Generate native `std/array.filter`, `find`, `get`, `length`, `take` and `drop` with checked generic element identities, saved functions and partial applications. Preserve source order, short-circuit search, bounds and captured element lifetimes; keep new program WASM operations explicitly refused.
 - Generate native `std/bytes.fromInts`, `toInts`, `get` and `toInt` with distinct immutable byte storage, first-error range checks and saved-buffer cleanup. Keep program WASM Bytes explicitly refused.
 - Generate native `std/text.split`, `trim`, `contains` and literal `replace` with Unicode scalar boundaries, pinned White_Space, first-class functions and checked source stages.

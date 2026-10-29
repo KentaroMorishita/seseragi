@@ -175,6 +175,7 @@ enum V {
     Bool(bool),
     Text(Shared<String>),
     Bytes(Shared<Vec<u8>>),
+    BigInt(Shared<String>),
     Tuple(Shared<Vec<V>>),
     Array(Shared<Vec<V>>),
     ListEmpty,
@@ -279,7 +280,7 @@ impl V {
                 V::Float(n) => output.push_str(&native_float_format(*n)),
                 V::Char(c) => output.push(*c),
                 V::Bool(v) => output.push_str(if *v { "True" } else { "False" }),
-                V::Text(v) => output.push_str(v.get()),
+                V::Text(v) | V::BigInt(v) => output.push_str(v.get()),
                 V::Bytes(_) => output.push_str("<Bytes>"),
                 V::ListEmpty => output.push_str("`[]"),
                 V::List(v) => {

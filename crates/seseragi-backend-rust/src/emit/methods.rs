@@ -402,6 +402,8 @@ impl Backend<'_> {
             | "std/bytes::Byte"
             | "std/bytes::Bytes"
             | "std/bytes::ByteError"
+            | "std/big-int::BigInt"
+            | "std/big-int::BigIntParseError"
             | "std/time::Duration"
             | "std/time::DurationError"
             | "std/clock::Clock"

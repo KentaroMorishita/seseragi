@@ -6,6 +6,14 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native BigInt parse/format/fromIntはbackendの`--test basic_big_int`、runtimeの
+`big_int_tests`、CLIの`--test basic_standard basic_big_int_`で確認します。
+任意桁数をFloatや固定幅整数へ丸めず、符号・zeroの正規化、strict decimal構文と
+最初の不正UTF-8 byte位置、canonical owner/kind/source stageを保ちます。
+元raw TS両profileのstrictとfresh Bun/Node/native、通常path packageのopaque値・
+保存formatter、Ref/cold再実行・Failure/Defect後のfinalizer/root0を比較します。
+radix指定・BigInt算術と全辞書、Decimal、program WASMの新しい受入は含めません。
+
 nativeのText split/trim/contains/replaceとMath sqrt/sin/cos/logは、backendとCLIの
 `--test basic_standard`、runtimeの`math_tests`/`text_tests`で確認します。
 Unicode scalar・White_Space・literal replacement、canonical owner/kind/source stageの拒否、
