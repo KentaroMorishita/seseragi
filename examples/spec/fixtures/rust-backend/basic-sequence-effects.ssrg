@@ -1,0 +1,59 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+fn selected<A> values: Array<A> -> Maybe<A> = match arrays.windows 1 values {
+  Left _ -> Nothing
+  Right windows -> match arrays.get 0 windows {
+    Nothing -> Nothing
+    Just first -> arrays.last first
+  }
+}
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (\_: Unit -> effects.succeed 0)
+  let callback = \_: Unit -> do {
+    _ <- refs.get saved
+    effects.succeed 42
+  }
+  let paired = arrays.zip [True] [callback]
+  let (callbacks, _flags) = arrays.unzip paired
+  let stored = match selected callbacks {
+    Nothing -> \_: Unit -> effects.succeed (-1)
+    Just call -> call
+  }
+  let chosen = match lists.chunksOf 1 `[stored] {
+    Left _ -> stored
+    Right chunks -> match lists.last chunks {
+      Nothing -> stored
+      Just chunk -> match lists.last chunk { Nothing -> stored; Just call -> call }
+    }
+  }
+  refs.set chosen saved
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    read <- refs.get saved
+    answer <- read ()
+    say (show answer)
+    effects.succeed answer
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    first <- cold
+    second <- cold
+    say (show (first + second))
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

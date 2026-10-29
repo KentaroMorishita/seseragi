@@ -1,0 +1,23 @@
+import * as sequences from "sequences"
+import * as text from "std/text"
+import { NonPositiveSize } from "std/collection"
+
+pub fn probe -> String = {
+  let pair: Array<Int> -> Array<(Int, Bool)> = sequences.pair [True, False]
+  let window = sequences.window<Int> 2
+  let position = sequences.index (\value: Int -> value == 2)
+  let captured = 40
+  let reader = sequences.last [\value: Int -> value + captured]
+  let answer = match reader () { Nothing -> -1; Just call -> call 2 }
+  let fold = sequences.fold 0 (\value: Int -> \acc: Int -> value - acc)
+  let chunks = match window `[1, 2, 3] {
+    Left (NonPositiveSize _size) -> "invalid"
+    Right chunks -> show chunks
+  }
+  text.join "|" [
+    show (pair [1, 2, 3]), chunks,
+    match position [1, 2, 3] { Nothing -> "none"; Just index -> show index },
+    show answer, show (fold `[1, 2, 3])
+  ]
+}
+pub effect fn main = println (probe ())

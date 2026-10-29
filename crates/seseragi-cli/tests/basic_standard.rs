@@ -302,6 +302,91 @@ fn basic_array_infix_descending_comparisons_match_original_raw_strict_ts_and_nat
 }
 
 #[test]
+fn basic_sequence_array_saved_and_generic_operations_match_original_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-array-sequence.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-array-sequence.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_sequence_list_saved_and_generic_operations_match_original_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-list-sequence.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-list-sequence.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_sequence_keeps_saved_callbacks_cold_and_releases_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_sequence_callback_defect_runs_original_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-sequence-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("sequence-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42\ncold\n42\n84\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_sequence_path_package_keeps_generic_saved_functions_and_captured_elements() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-sequence"),
+        &[Case::success(
+            b"[(1, True), (2, False)]|`[`[1, 2], `[2, 3]]|1|42|2\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_sequence_fault_inside_fold_callback_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-sequence-effects.ssrg");
+    assert_eq!(source.matches("effects.succeed 42").count(), 1);
+    let path = scratch.0.join("sequence-fold-callback-defect.ssrg");
+    fs::write(&path,source.replace("effects.succeed 42","effects.succeed (arrays.reduceRight 0 (\\value: Int -> \\acc: Int -> value / acc) [1])")).unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "callback-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
 fn basic_array_releases_saved_readers_after_cold_replay_and_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-array-effects.ssrg"),
@@ -656,6 +741,171 @@ fn basic_decimal_path_package_keeps_opaque_values_and_saved_formatters() {
             b"42:900719925474099200000000000000001.001:True:False\n",
         )],
     );
+}
+
+#[test]
+fn basic_json_values_errors_paths_and_saved_functions_match_raw_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_saved_documents_remain_cold_and_release_reference_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_defect_runs_the_finalizer_and_releases_reference_cycles() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-json-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("json-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: "created\nacquired\ncold\n{\"answer\":9007199254740992000000000001.1,\"snow\":\"雪🙂\"}\ncold\n{\"answer\":9007199254740992000000000001.1,\"snow\":\"雪🙂\"}\nreleased\n".as_bytes(),
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_json_host_limit_defect_keeps_cold_parse_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-json-effects.ssrg");
+    let original = "{\\\"answer\\\":9007199254740992000000000001.100,\\\"snow\\\":\\\"雪🙂\\\"}";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("json-host-limit.ssrg");
+    fs::write(
+        &path,
+        source.replace(original, "1e99999999999999999999999999999999999999999"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "host-limit",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Decimal canonical spelling exceeds host limits",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_json_path_package_keeps_public_values_and_saved_parsers_and_formatters() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json"),
+        &[Case::success(
+            "{\"n\":42}:{\"snow\":\"雪🙂\",\"n\":9007199254740992000000000001.1}:[null,0.00125]\n"
+                .as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_json_resolves_internal_object_seed_at_parse_time_and_runs_the_finalizer() {
+    let scratch = Scratch::new();
+    let path = scratch.0.join("json-seed.ssrg");
+    fs::write(&path, "import * as json from \"std/json\"\nimport * as effects from \"std/effect\"\neffect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()\neffect fn say message: String -> Unit with Console = println message |> effects.recover ignore\npub effect fn main = do {\n  say \"created\"\n  effects.scoped (do {\n    effects.acquireRelease (say \"acquired\") (\\_: Unit -> say \"released\")\n    let parsed = json.parse \"{}\"\n    match parsed { Right value -> say (json.stringify value); Left _ -> say \"syntax\" }\n  })\n}\n").unwrap();
+    // Process TS artifacts select their seed in the entry prelude and clear
+    // inherited environment overrides. Native artifacts read that environment
+    // directly, so this invalid-host-configuration probe is native-specific.
+    let native = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        &scratch.0,
+    ));
+    let result = bounded(
+        Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("PATH", "")
+            .env("SESERAGI_HASH_SEED", "invalid")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(70), "{result:?}");
+    assert_eq!(result.stdout, b"created\nacquired\nreleased\n");
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        stderr.contains("SESERAGI_HASH_SEED must be a signed 64-bit integer"),
+        "{stderr}"
+    );
+    assert!(stderr.contains("managed-live=0"), "{stderr}");
+}
+
+#[test]
+fn basic_json_file_package_preserves_exact_numbers_and_failed_outputs() {
+    let scratch = Scratch::new();
+    let package = scratch.0.join("package");
+    copy_package(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-files"),
+        &package,
+    );
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    let lock = fs::read(package.join("seseragi.lock")).unwrap();
+    compare(
+        &package,
+        &[
+            Case {
+                name: "exact-values",
+                input: Some(" { \"n\":9007199254740992000000000001.100, \"snow\":\"雪🙂\", \"values\":[null,1.25e-3] }\n".as_bytes()),
+                output: Some("{\"n\":9007199254740992000000000001.1,\"snow\":\"雪🙂\",\"values\":[null,0.00125]}\n".as_bytes()),
+                ..Case::success(b"")
+            },
+            Case {
+                name: "syntax",
+                input: Some(b"[1,]"),
+                exit: 1,
+                failure: Some("invalid JSON"),
+                ..Case::success(b"")
+            },
+            Case {
+                name: "duplicate",
+                input: Some("{\"雪\":1,\"\\u96EA\":2}".as_bytes()),
+                exit: 1,
+                failure: Some("invalid JSON"),
+                ..Case::success(b"")
+            },
+            Case {
+                name: "utf8",
+                input: Some(b"\xff"),
+                exit: 1,
+                failure: Some("read failure"),
+                ..Case::success(b"")
+            },
+        ],
+    );
+    assert_eq!(fs::read(package.join("seseragi.lock")).unwrap(), lock);
 }
 
 #[test]

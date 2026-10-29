@@ -1,0 +1,6 @@
+import * as json from "std/json"
+
+pub fn render source: String -> Either<String, String> = match json.parse source {
+  Left _ -> Left "invalid JSON"
+  Right value -> Right (json.stringify value + "\n")
+}

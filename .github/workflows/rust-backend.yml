@@ -165,7 +165,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     # Batch all CLI suites in one Cargo invocation to reuse compilation.
     # Preserve every test and its individual deadline, with cold-build headroom.
-    timeout-minutes: ${{ matrix.os == 'windows-latest' && 90 || matrix.os == 'macos-15' && 90 || 45 }}
+    # Ubuntu cold runs can exceed 45m after reaching the final rebuild suite.
+    # Keep every command and individual deadline; use the existing host budget.
+    timeout-minutes: 90
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -196,8 +198,10 @@ jobs:
           cargo test --locked -p seseragi-backend-rust --lib runtime::math_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::bytes_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::array_operation_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::sequence_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::big_int_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::decimal_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::json_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::hashing_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::map_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::set_tests
@@ -240,7 +244,9 @@ jobs:
 
   native:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # The 30m cold-run limit interrupted compilation after all 38 CLI tests passed.
+    # Preserve every test and individual deadline with cold-workspace headroom.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable

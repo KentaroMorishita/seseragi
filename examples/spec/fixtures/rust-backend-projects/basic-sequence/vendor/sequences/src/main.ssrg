@@ -1,0 +1,12 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import { SizeError } from "std/collection"
+
+pub fn pair<A,B> right: Array<B> -> Array<A> -> Array<(A,B)> = arrays.zip right
+pub fn window<A> size: Int -> List<A> -> Either<SizeError, List<List<A>>> = lists.windows size
+pub fn index<A> predicate: (A -> Bool) -> Array<A> -> Maybe<Int> = arrays.findIndex predicate
+pub fn last<A> values: Array<A> -> Unit -> Maybe<A> = {
+  let keep = arrays.takeWhile (\_: A -> True) values
+  \_: Unit -> arrays.last keep
+}
+pub fn fold<A,B> initial: B -> step: (A -> B -> B) -> List<A> -> B = lists.reduceRight initial step
