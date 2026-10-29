@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-json@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-json@0.0.0#workspace:."
+name = "fixture/basic-json"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:f2fd74ad01cead49aecfad38a5b2fd2789cef0eae36fbd8f3caae06a01e5734f"
+content_digest = "sha256:d66019b9cba4c3976f180e297b23eabaf4f7414e25d07753473964208b6f73da"
+dependencies = [
+  { import = "cells", package = "fixture/json-cells@0.0.0#path:vendor/cells" },
+]
+
+[[packages]]
+id = "fixture/json-cells@0.0.0#path:vendor/cells"
+name = "fixture/json-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:e2fdb384ac73fa4ff15fe0c14466cb49bdce29f6937497f999874ba4bcfc2206"
+content_digest = "sha256:b3a1cbbf6a1eada3f25bbee1c33ea11707f8ffbee8b2d13bec004679f26c8737"
+dependencies = []

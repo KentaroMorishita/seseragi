@@ -1,0 +1,12 @@
+import * as json from "std/json"
+import * as decimal from "std/decimal"
+import * as maps from "std/map"
+
+pub fn parse source: String -> Either<json.JsonParseError, json.Json> = json.parse source
+pub fn stringify value: json.Json -> String = json.stringify value
+pub fn number value: Int -> json.Json =
+  json.JsonObject (maps.singleton "n" (json.JsonNumber (decimal.fromInt value)))
+pub fn reader source: String -> Unit -> String = match json.parse source {
+  Right value -> \_: Unit -> json.stringify value
+  Left _ -> \_: Unit -> "invalid"
+}

@@ -6,6 +6,19 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native JSON parse/stringifyとJson/JsonPathSegment/JsonParseErrorの公開constructorは、
+backendの`--test basic_json`、runtimeの`json_tests`、CLIの
+`--test basic_standard basic_json_`で確認します。Decimalの正確な係数・scaleを保ち、
+objectは標準の挿入順Mapを使います。UTF-8 byte位置とsyntax message、decoded field名の
+重複とrootからのpath、Unicode escape、通常2 module path packageと実ファイル変換を
+元raw TS両profile strict・fresh Bun/Node/nativeで比較します。構文/重複/UTF-8の失敗時は
+既存出力を保持します。cold再実行・Failure/Defectのfinalizerとroot0、Jsonを捕捉する
+Ref cycle、host limitを確認します。parser/stringifierはheap frameで深さ20,000を検査します。
+nativeの内部Map seedはobject構築時に解決します。TS process entryは起動時にseedを選び
+環境overrideを消すため、不正環境seedのfinalizer検査はnative固有です。
+JsonEncode/JsonDecode辞書やdecoder combinator、新program WASMは追加しません。
+共有native runtimeの統合時は全体gateも通します。
+
 native Decimal parse/fromInt/Showはbackendの`--test basic_decimal`、runtimeの
 `decimal_tests`、CLIの`--test basic_standard basic_decimal_`で確認します。
 係数とscaleを任意精度の符号付き十進列として保ち、指数をFloatや固定幅整数へ丸めません。

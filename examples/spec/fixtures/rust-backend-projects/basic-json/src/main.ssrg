@@ -1,0 +1,14 @@
+import * as cells from "cells"
+
+pub fn probe -> String = {
+  let value = cells.number 42
+  let write = cells.stringify
+  let saved = cells.reader "{\"snow\":\"雪🙂\",\"n\":9007199254740992000000000001.10}"
+  let decoded = match cells.parse "[null,1.25e-3]" {
+    Right value -> write value
+    Left _ -> "invalid"
+  }
+  write value + ":" + saved () + ":" + decoded
+}
+
+pub effect fn main = println (probe ())

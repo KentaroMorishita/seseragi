@@ -1,0 +1,42 @@
+import * as json from "std/json"
+import * as decimal from "std/decimal"
+import * as maps from "std/map"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn segment index: Int -> path: Array<json.JsonPathSegment> -> String =
+  match arrays.get index path {
+    Nothing -> "root"
+    Just (json.JsonField name) -> name
+    Just (json.JsonIndex value) -> "[" + show value + "]"
+  }
+fn describe result: Either<json.JsonParseError, json.Json> -> String = match result {
+  Right value -> json.stringify value
+  Left (json.InvalidJsonSyntax detail) -> "invalid:" + show detail.offset + ":" + detail.message
+  Left (json.DuplicateJsonField detail) -> "duplicate:" + detail.field + ":" + segment 0 detail.path + ":" + segment 1 detail.path
+}
+
+pub fn probe -> String = {
+  let parse: String -> Either<json.JsonParseError, json.Json> = json.parse
+  let stringify: json.Json -> String = json.stringify
+  let makeString: String -> json.Json = json.JsonString
+  let original = maps.singleton "z" (json.JsonNumber (decimal.fromInt 42))
+  let current = maps.insert "雪" (makeString "🙂") original
+  let items = [json.JsonNull, json.JsonBool True, json.JsonNumber (decimal.fromInt (-1000)), makeString "\n\t\"\\/", json.JsonArray [], json.JsonObject current]
+  text.join "|" [
+    describe (parse "{ \"snow\":\"雪🙂\", \"a\":[true,null,1.200] }"),
+    stringify (json.JsonArray items), stringify (json.JsonObject original),
+    describe (parse "9007199254740992000000000000001.100"),
+    describe (parse "1.25E-3"), describe (parse "-0.00e999999999999999999999999999999999999"),
+    describe (parse "\"\\u96ea\\uD83D\\uDE42\\/\""),
+    describe (parse "[1,]"), describe (parse "{\"a\":1,}"),
+    describe (parse "{\"root\":[{\"雪\":1,\"\\u96EA\":}]}"),
+    describe (parse "\"\\uD800\""), describe (parse "[\"雫\",]"),
+    describe (parse "1e+"), describe (parse ""),
+    stringify (json.JsonArray [json.JsonNull, json.JsonBool False, json.JsonString "雫🙂"]),
+    describe (Left (json.InvalidJsonSyntax ({ offset: 7, message: "manual" }))),
+    describe (Left (json.DuplicateJsonField ({ path: [json.JsonField "root", json.JsonIndex 0], field: "雪" })))
+  ]
+}
+
+pub effect fn main = println (probe ())
