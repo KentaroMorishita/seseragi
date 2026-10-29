@@ -241,7 +241,9 @@ jobs:
 
   native:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # The 30m cold-run limit interrupted compilation after all 38 CLI tests passed.
+    # Preserve every test and individual deadline with cold-workspace headroom.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
