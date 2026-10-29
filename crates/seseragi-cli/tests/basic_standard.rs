@@ -744,6 +744,115 @@ fn basic_decimal_path_package_keeps_opaque_values_and_saved_formatters() {
 }
 
 #[test]
+fn basic_json_decoders_match_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-decoders.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-decoders.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_json_decoders_keep_cold_replay_domain_failure_and_captured_ref_cycle() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_json_decoders_defect_after_replay_runs_finalizer_and_releases_roots() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"
+    );
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("decoder-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42\ncold\n42\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+#[test]
+fn basic_json_decoders_fault_inside_mapper_runs_finalizer_and_releases_roots() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"
+    );
+    let original = "{\\\"n\\\":41}";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("decoder-mapper-defect.ssrg");
+    fs::write(&path, source.replace(original, "{\\\"n\\\":0}")).unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "mapper-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+#[test]
+fn basic_json_decoders_path_package_keeps_opaque_rules_and_saved_generic_stages() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-decoders"),
+        &[Case::success(b"2:Just 7:Just 9\n")],
+    );
+}
+#[test]
+fn basic_json_decoders_native_host_limit_is_defect_with_finalizer_and_root_cleanup() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"
+    );
+    let original = "let decoder = select input";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("decoder-host-limit.ssrg");
+    fs::write(
+        &path,
+        source.replace(original, "let decoder = chain 512 (select input)"),
+    )
+    .unwrap();
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = bounded(
+        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(70), "{result:?}");
+    assert_eq!(result.stdout, b"created\nacquired\ncold\nreleased\n");
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        stderr.contains("JSON decoder nesting exceeds host limits")
+            && stderr.contains("managed-live=0"),
+        "{stderr}"
+    );
+}
+
+#[test]
 fn basic_json_codecs_match_original_strict_ts_bun_node_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-json-codecs.ssrg"),

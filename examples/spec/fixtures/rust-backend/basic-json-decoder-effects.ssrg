@@ -1,0 +1,52 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as json from "std/json"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+fn parse source: String -> json.Json = match json.parse source { Left _ -> json.JsonNull; Right value -> value }
+fn select input: json.Decoder<Int> -> json.Decoder<Int> =
+  json.field "n" (json.map (\value: Int -> if value == 0 then value / 0 else value + 1) input)
+fn chain count: Int -> input: json.Decoder<Int> -> json.Decoder<Int> =
+  if count == 0 then input else chain (count - 1) (json.map (\value: Int -> value) input)
+effect fn failBody -> Unit fails String = match json.field "n" (decodeJson<Int>) (parse "{\"n\":false}") {
+  Left error -> match error.kind {
+    json.ExpectedJsonType _ -> effects.fail "typed"
+    _ -> effects.die "unexpected domain failure"
+  }
+  Right _ -> effects.die "expected domain failure"
+}
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (\_: Unit -> effects.succeed "")
+  let input: json.Decoder<Int> = \value: json.Json -> { let retained = saved; decodeJson value }
+  let decoder = select input
+  let callback = \_: Unit -> do {
+    _ <- refs.get saved
+    effects.succeed $ match decoder (parse "{\"n\":41}") {
+      Left _ -> "invalid"
+      Right value -> show value
+    }
+  }
+  refs.set callback saved
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    selected <- refs.get saved
+    line <- selected ()
+    say line
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\value -> value + 1) released
+          say "released"
+        }
+      )
+      cold
+      cold
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

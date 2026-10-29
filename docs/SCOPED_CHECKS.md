@@ -6,6 +6,18 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native JSON decoderのfield/optionalField/index/array/record/oneOf/map/flatMapはbackendの
+`--test basic_json_decoders`、runtimeの`json_decoder_tests`、CLIの
+`--test basic_standard basic_json_decoders_`で確認します。保存/部分適用と戻りdecoderの
+連続適用、canonical owner/kind/引数/結果と無辞書のsource段階を検証します。missingとchild
+failureのpath、recordのunknown先行拒否/指定順/重複指定、oneOfの最後の失敗と空入力、
+short-circuitとflatMapの元Jsonを保ちます。元raw TS両profile strict、fresh Bun/Node/native、
+通常2 module package、cold/Failure/mapper内Defect/finalizer/Ref cycle/root0を比較します。
+nativeの動的合成は同時128 decoder frameをhost limitとし、stack abortにせずDefectにします。
+このnative固有境界は元入力のstrict比較とは別に、finalizer/root0とframe復元を確認します。
+新program WASMは拒否します。compiler WASMの依存を変えない追加でも、最終候補で正規Linux
+freshnessと全体統合gateを通す必要があります。
+
 native JSONのBool/String/Int/Decimal/Unit/Jsonの12標準codec辞書とstring wrapperは
 backendの`--test basic_json_codecs`、runtimeの`json_codec_tests`、CLIの
 `--test basic_standard basic_json_codecs_`で確認します。exact Decimalから整数性とsafe Int

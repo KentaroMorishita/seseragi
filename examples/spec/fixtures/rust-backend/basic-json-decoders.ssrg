@@ -1,0 +1,80 @@
+import * as json from "std/json"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn parse source: String -> json.Json = match json.parse source { Right value -> value; Left _ -> json.JsonNull }
+fn path index: Int -> parts: Array<json.JsonPathSegment> -> String = match arrays.get index parts {
+  Nothing -> ""
+  Just (json.JsonField name) -> "." + name + path (index + 1) parts
+  Just (json.JsonIndex value) -> "[" + show value + "]" + path (index + 1) parts
+}
+fn kind value: json.DecodeErrorKind -> String = match value {
+  json.ExpectedJsonType name -> "expected:" + name
+  json.MissingJsonField name -> "missing:" + name
+  json.UnknownJsonField name -> "unknown-field:" + name
+  json.UnknownJsonTag name -> "unknown-tag:" + name
+  json.InvalidJsonValue message -> "invalid:" + message
+}
+fn run<A> render: (A -> String) -> decoder: json.Decoder<A> -> source: String -> String =
+  match decoder (parse source) {
+    Right value -> "ok:" + render value
+    Left error -> "error:" + path 0 error.path + ":" + kind error.kind
+  }
+fn numbersAt index: Int -> values: Array<Int> -> String = match arrays.get index values {
+  Nothing -> ""
+  Just value -> (if index == 0 then "" else ",") + show value + numbersAt (index + 1) values
+}
+fn pairsAt index: Int -> values: Array<(String, Int)> -> String = match arrays.get index values {
+  Nothing -> ""
+  Just (name, value) -> (if index == 0 then "" else ",") + name + "=" + show value + pairsAt (index + 1) values
+}
+fn maybe value: Maybe<Int> -> String = match value { Nothing -> "none"; Just value -> show value }
+fn get<A> decoder: json.Decoder<A> -> json.Decoder<A> = json.field "n" decoder
+fn guarded value: Int -> Int = if value == 3 then value / 0 else value
+fn choose flag: Bool -> json.Decoder<Int> = if flag then json.field "a" decodeJson else json.field "b" decodeJson
+
+pub fn probe -> String = {
+  let int: json.Decoder<Int> = decodeJson
+  let bool: json.Decoder<Bool> = decodeJson
+  let saved: String -> json.Decoder<Int> -> json.Decoder<Int> = json.field
+  let stage: json.Decoder<Int> -> json.Decoder<Int> = json.field "n"
+  let nested = json.field "outer" (json.index 1 (json.field "雪" int))
+  let records = json.record [("a", int), ("b", int), ("a", int)]
+  let alternatives = json.oneOf [json.field "a" int, json.field "b" int]
+  let selected = json.flatMap choose (json.field "flag" bool)
+  let callback = json.map (\value: Int -> \_: Unit -> value) int
+  text.join "|" [
+    run show (get int) "{\"n\":42}",
+    run show (saved "n" int) "{\"n\":7}",
+    run show (stage int) "{\"n\":8}",
+    run show nested "{\"outer\":[0,{\"雪\":9}]}",
+    run show nested "{\"outer\":[0,{\"雪\":false}]}",
+    run show nested "{\"outer\":[0,{}]}",
+    run show (get int) "[]", run show (get int) "{}",
+    run maybe (json.optionalField "n" int) "{}",
+    run maybe (json.optionalField "n" int) "{\"n\":12}",
+    run maybe (json.optionalField "n" int) "{\"n\":null}",
+    run show (json.index (-1) int) "[1]",
+    run show (json.index 9007199254740991 int) "[1]",
+    run show (json.index 0 int) "{}", run show (json.index 1 int) "[0,false]",
+    run (numbersAt 0) (json.array (json.map guarded int)) "[1,2]",
+    run (numbersAt 0) (json.array (json.map guarded int)) "[1,false,3]",
+    run (numbersAt 0) (json.array int) "[]",
+    run (pairsAt 0) records "{\"b\":2,\"a\":1}",
+    run (pairsAt 0) records "{\"z\":0,\"bad\":2}",
+    run (pairsAt 0) records "{\"a\":1}",
+    run (pairsAt 0) records "{\"a\":false,\"b\":2}",
+    run (pairsAt 0) (json.record<Int> []) "{}",
+    run show alternatives "{\"b\":2}", run show alternatives "{\"b\":false}",
+    run show (json.oneOf<Int> []) "null",
+    run show (json.map (\value: Int -> value + 10) int) "1",
+    run show (json.map (\value: Int -> value / 0) int) "false",
+    run show selected "{\"flag\":true,\"a\":7,\"b\":9}",
+    run show selected "{\"flag\":false,\"a\":7,\"b\":9}",
+    run show selected "{\"a\":7}",
+    run (\value: (Unit -> Int) -> show (value ())) callback "42",
+    run (\value: Maybe<Unit> -> match value { Nothing -> "none"; Just _ -> "unit" }) (json.optionalField "unit" decodeJson) "{\"unit\":null}",
+    match json.field "n" int (parse "{\"n\":99}") { Left _ -> "unexpected"; Right value -> "direct:" + show value }
+  ]
+}
+pub effect fn main = println (probe ())

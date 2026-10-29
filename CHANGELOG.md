@@ -4,6 +4,7 @@
 
 ### Added
 
+- Compose native JSON field, optionalField, index, array, record, oneOf, map and flatMap decoders with typed root-to-leaf errors, strict saved/generic source stages, ordered and short-circuit callbacks, and traced captures. Bound native dynamic decoder nesting to 128 active frames and close scopes after its host-limit Defect.
 - Generate the twelve native Bool, String, Int, Decimal, Unit and Json codec dictionaries, their saved/generic methods, and encodeString/decodeString. Preserve exact safe Int conversion without expanding arbitrary exponents, root paths, standard messages, distinct syntax/domain failures, selected user dictionaries, ordinary packages and scoped cleanup after cold replay, typed failure or encoder defects.
 
 ### Fixed

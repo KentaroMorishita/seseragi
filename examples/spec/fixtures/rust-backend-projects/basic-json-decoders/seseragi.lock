@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-json-decoders@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-json-decoders@0.0.0#workspace:."
+name = "fixture/basic-json-decoders"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:b96f58f699599f1532f58bffa41f55a5ed395f4917def6e806d1eee2fcf20906"
+content_digest = "sha256:f13f5725014f7ca7fb5d6f4a8868f73ba95033a71ee3225e18beb41a76bba25b"
+dependencies = [
+  { import = "rules", package = "fixture/json-rules@0.0.0#path:vendor/rules" },
+]
+
+[[packages]]
+id = "fixture/json-rules@0.0.0#path:vendor/rules"
+name = "fixture/json-rules"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/rules"
+manifest_digest = "sha256:5a3c54ba846bdca47eb43dacfb6a3bea54c6213dc8c4505d9aa52715209dd339"
+content_digest = "sha256:25ddf660e1600b4fe57b0d7da53925ee0635eea47b435a8691e6eb52e73ed0c9"
+dependencies = []

@@ -33,6 +33,7 @@ mod floats;
 mod hashing;
 mod json;
 mod json_codecs;
+mod json_decoders;
 mod lists;
 mod local;
 mod math;
@@ -190,6 +191,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_set.rs"));
     output.push_str(include_str!("runtime_json.rs"));
     output.push_str(include_str!("runtime_json_codecs.rs"));
+    output.push_str(include_str!("runtime_json_decoders.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));
@@ -858,6 +860,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.json_codec_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.json_decoder_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.collection_reference(name, evidence, type_ref, scope)? {

@@ -84,6 +84,15 @@ TS型を与える。source checkerが証明した通常型のinstantiationを最
 後続の辞書から型を推測できずunknownになる問題を避ける。collection/record/derived codec、
 decoder combinator、暗黙Float/BigInt codecと新program WASMは後続範囲。
 
+同じ119バッチでfield/optionalField/index/array/record/oneOf/map/flatMapも追加する。
+decoderは通常のtraced関数値で、source引数の一回評価と、返したdecoderを連続適用する段階を
+保つ。missing field/indexのroot errorと、実際のchild decode failureへ加えるpathを区別する。
+recordはunknown fieldをcallbackより先に検査し、指定順と重複指定を保つ。oneOfは成功で止まり、
+全失敗なら最後のerror、空なら標準messageを返す。flatMapは選択したdecoderへ元Jsonを渡す。
+nativeの動的なdecoder合成は同時128 frameでDefectにし、unwindでframeを戻す。
+128を超える合成の成功はこのnative sliceに含めず、finalizer/Ref cycle/root0を確認する。
+標準collection/record/derived codecと新program WASMは引き続き後続範囲。
+
 Bytesは0〜255のbyteを独立したstorageに保持し、最初の範囲外Intを`ByteOutOfRange`として返す。
 BigIntのdecimal parse／formatはFloatや固定幅整数を経由しない。Text replaceはliteralの置換で、
 trimはUnicode 17のWhite_Spaceを使う。各APIの詳細は[標準library仕様](../spec/10-library-surface.md)を参照する。
