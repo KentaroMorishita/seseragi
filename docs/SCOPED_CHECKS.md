@@ -25,6 +25,12 @@ ADT/newtype・primitive・opaque aliasをstruct構築構文でcastしてしま�
 aliasの固定・並替・重複した型引数、必須fieldと型、opaqueな表現の非公開境界も検査します。
 共有frontendの修復のためcanonical WASMを再生成し、統合時に全体gateを通します。
 
+recordのvarianceはdriverの`--test variance`でも確認します。ADTへのrecord payloadは
+`Box ({ ... })`として実際にconstructorへ渡し、field順の同一性と型引数内のwidth拒否を保ちます。
+旧`Box { ... }`の元入力はbyte不変のfixtureに残し、structを不正castできないことと
+compile/analysisの同じ位置付き診断を両profileで確認します。通常native CIにもこの二つの
+driver suiteを含め、統合時は全体gateの成功を確認します。
+
 native Hashの標準Int/Bool/Char/String/Unit辞書はbackendの`--test basic_hash`、
 runtimeの`hashing_tests`、CLIの`--test basic_standard basic_hash_`で確認します。
 public hashにseedを混ぜず、safe Int・Unicode scalar FNV・選択済みの辞書・

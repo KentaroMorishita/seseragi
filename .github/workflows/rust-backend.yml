@@ -165,7 +165,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     # Batch all CLI suites in one Cargo invocation to reuse compilation.
     # Preserve every test and its individual deadline, with cold-build headroom.
-    timeout-minutes: ${{ matrix.os == 'windows-latest' && 90 || matrix.os == 'macos-15' && 60 || 45 }}
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 90 || matrix.os == 'macos-15' && 90 || 45 }}
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -273,6 +273,7 @@ jobs:
       - name: Verify shared frontend boundary
         run: |
           cargo test --locked -p seseragi-driver --lib core_compile::tests
+          cargo test --locked -p seseragi-driver --test variance --test struct_construction_kind
           cargo test --locked -p seseragi-semantics --lib typed::let_inference_tests
           cargo test --locked -p seseragi-driver --test captured_primitive_identity
           cargo test --locked -p seseragi-lowering --lib core_analysis::scalar

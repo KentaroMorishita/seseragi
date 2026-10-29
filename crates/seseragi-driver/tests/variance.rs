@@ -1,4 +1,4 @@
-use seseragi_driver::{compile_module, CompileInput};
+use seseragi_driver::{analyze_module, compile_module, BuildProfile, CompileInput};
 
 fn compiles(source: &str) -> bool {
     let result = compile_module(CompileInput::new(
@@ -44,7 +44,7 @@ fn record_width_does_not_cross_collection_or_nominal_arguments() {
         (
             "type Box<A> = | Box A",
             "Box",
-            "Box { name: \"Aki\", id: 1 }",
+            "Box ({ name: \"Aki\", id: 1 })",
         ),
         (
             "struct Box<A> { value: A }",
@@ -56,6 +56,48 @@ fn record_width_does_not_cross_collection_or_nominal_arguments() {
         rejects_type(&source);
         let same = format!("{declaration}\nlet users: {container}<{{ name: String, id: Int }}> = {value}\npub let same: {container}<{{ id: Int, name: String }}> = users");
         assert!(compiles(&same), "reordered fields are identical: {same}");
+    }
+}
+
+#[test]
+fn unchecked_struct_syntax_is_not_a_nominal_variance_control() {
+    // Preserve the original three-line input. It used struct syntax for an ADT,
+    // so accepting it only cast a raw record instead of wrapping a Box payload.
+    let original = include_str!("fixtures/variance-unchecked-adt-construction.ssrg");
+    let wrong = original.replace(
+        "pub let same: Box<{ id: Int, name: String }>",
+        "pub let wrong: Box<{ name: String }>",
+    );
+    for source in [original, &wrong] {
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let input = || {
+                CompileInput::new("variance.ssrg", "fixture/variance", source).with_profile(profile)
+            };
+            let diagnostics = compile_module(input())
+                .expect_err("an ADT must not be built by casting an unchecked struct record");
+            let construction = diagnostics
+                .diagnostics
+                .iter()
+                .find(|diagnostic| diagnostic.message_key == "struct.construction-on-non-struct")
+                .unwrap_or_else(|| panic!("{source}\n{diagnostics:?}"));
+            assert_eq!(construction.code, "SES-T0101");
+            assert_eq!(construction.primary.start, 66);
+            assert_eq!(construction.primary.end, 69);
+            assert_eq!(
+                &source[construction.primary.start..construction.primary.end],
+                "Box"
+            );
+            assert!(diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.code == "SES-T0101"));
+            if source == wrong {
+                assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+                    diagnostic.message_key == "binding.annotation-type-mismatch"
+                }));
+            }
+            assert_eq!(analyze_module(input()).diagnostics, diagnostics);
+        }
     }
 }
 
