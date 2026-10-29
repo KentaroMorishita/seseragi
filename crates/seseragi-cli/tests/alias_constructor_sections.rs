@@ -58,6 +58,30 @@ fn unapplied_alias_type_functions_keep_raw_strict_saved_method_and_native_result
     );
 }
 
+#[test]
+fn structural_aliases_keep_raw_strict_returned_method_and_native_results() {
+    check_program(
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/structural-alias-functions.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/structural-alias-functions.stdout"
+        ),
+        0,
+    );
+    check_program(
+        include_str!("../../../examples/spec/fixtures/rust-backend/structural-alias-nested.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/structural-alias-nested.stdout"),
+        0,
+    );
+}
+
+#[test]
+fn structural_aliases_keep_renamed_and_namespace_facade_types_and_evidence() {
+    let fixture = root().join("examples/spec/fixtures/rust-backend-projects/structural-aliases");
+    check_case("", include_str!("../../../examples/spec/fixtures/rust-backend-projects/structural-aliases/expected.stdout"), 0, Some(&fixture), None);
+}
+
 fn copy_project(source: &Path, destination: &Path) {
     fs::create_dir_all(destination).unwrap();
     for entry in fs::read_dir(source).unwrap() {
@@ -152,6 +176,7 @@ fn check_case(
         // Check original driver bytes, without rewriting operators, dictionaries,
         // annotations, or the already-built process entry.
         let mut files = vec![];
+        let mut facade_directory = None;
         for module in raw {
             let relative = Path::new(&module.generated.metadata.outputs.typescript);
             assert!(
@@ -161,9 +186,20 @@ fn check_case(
                         .all(|component| matches!(component, std::path::Component::Normal(_)))
             );
             let path = output.join("raw").join(relative);
+            if module.generated.metadata.module.ends_with("::facade") {
+                facade_directory = Some(path.parent().unwrap().to_path_buf());
+            }
             fs::create_dir_all(path.parent().unwrap()).unwrap();
             fs::write(&path, module.generated.typescript).unwrap();
             files.push(path);
+        }
+        if let Some(project) = project.filter(|project| project.join("type-consumer.ts").is_file())
+        {
+            let consumer = facade_directory
+                .expect("consumer requires a generated facade")
+                .join("type-consumer.ts");
+            fs::copy(project.join("type-consumer.ts"), &consumer).unwrap();
+            files.push(consumer);
         }
         if label == "development" {
             files.push(output.join("entry.ts"));
@@ -273,6 +309,30 @@ fn alias_type_functions_keep_child_evidence_cold_replay_and_cleanup_on_failure_o
 }
 
 #[test]
+fn structural_aliases_keep_callback_evidence_cold_replay_and_cleanup() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/structural-alias-effects.ssrg");
+    assert_eq!(source.matches("body \"ready\" released").count(), 1);
+    check_program(
+        source,
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/structural-alias-effects.stdout"
+        ),
+        0,
+    );
+    check_program(
+        &source.replace("body \"ready\" released", "body \"fail\" released"),
+        "acquired\ncreated\ncold=10\nreleased\nFailure: body failure\nreleased: 1\n",
+        0,
+    );
+    check_program(
+        &source.replace("body \"ready\" released", "body \"defect\" released"),
+        "acquired\ncreated\ncold=10\nreleased\n",
+        70,
+    );
+}
+
+#[test]
 fn alias_section_selection_prefix_and_payload_evaluate_once_in_source_order() {
     check_source_order(include_str!(
         "../../../examples/spec/fixtures/rust-backend/alias-section-evaluation.ssrg"
@@ -283,19 +343,25 @@ fn alias_section_selection_prefix_and_payload_evaluate_once_in_source_order() {
 }
 
 fn check_source_order(source: &str) {
+    check_source_order_events(
+        source,
+        &[
+            "selected",
+            "prefix",
+            "payload",
+            "bodyValue",
+            "payload",
+            "bodyValue",
+        ],
+    );
+}
+
+fn check_source_order_events(source: &str, events: &[&str]) {
     let scratch = tempfile::Builder::new()
         .prefix("seseragi-alias-section-trace-")
         .tempdir()
         .unwrap();
     let directory = scratch.path();
-    let events = [
-        "selected",
-        "prefix",
-        "payload",
-        "bodyValue",
-        "payload",
-        "bodyValue",
-    ];
     let core = seseragi_driver::compile_core_module(CompileInput::new(
         "trace.ssrg",
         "proof/alias-section-trace",
@@ -402,4 +468,78 @@ fn check_source_order(source: &str) {
             assert!(result.stderr.is_empty(), "{result:?}");
         }
     }
+}
+
+#[test]
+fn returned_evidence_calls_apply_each_body_before_the_next_source_argument() {
+    let events = [
+        "prefix",
+        "bodyValue",
+        "payload",
+        "selected",
+        "prefix",
+        "bodyValue",
+        "payload",
+        "prefix",
+        "bodyValue",
+    ];
+    for (source, expected) in [
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/returned-function-evidence.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/returned-function-evidence.stdout"
+            ),
+        ),
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/returned-method-evidence.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/returned-method-evidence.stdout"
+            ),
+        ),
+    ] {
+        check_program(source, expected, 0);
+        check_source_order_events(source, &events);
+    }
+}
+
+#[test]
+fn returned_evidence_calls_keep_scoped_binders_and_cold_cleanup() {
+    check_program(
+        include_str!("../../../examples/spec/fixtures/rust-backend/returned-evidence-scopes.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/returned-evidence-scopes.stdout"
+        ),
+        0,
+    );
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/structural-alias-returned-effects.ssrg"
+    );
+    assert_eq!(source.matches("body \"ready\" released").count(), 1);
+    check_program(
+        source,
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/structural-alias-returned-effects.stdout"
+        ),
+        0,
+    );
+    check_program(
+        &source.replace("body \"ready\" released", "body \"fail\" released"),
+        "acquired\ncreated\ncold=10\nreleased\nFailure: body failure\nreleased: 1\n",
+        0,
+    );
+    check_program(
+        &source.replace("body \"ready\" released", "body \"defect\" released"),
+        "acquired\ncreated\ncold=10\nreleased\n",
+        70,
+    );
+}
+
+#[test]
+fn returned_evidence_calls_keep_first_stage_defect_before_later_argument() {
+    let source = "fn render<A> value:A -> (Unit -> String) where Show<A> = { let first:Int = 1 / 0; \\_:Unit -> show value }\nfn later -> Unit = { let second:Int = 9007199254740991 + 1; () }\npub effect fn main = println (render<Int> 42 (later ()))\n";
+    check_case(source, "", 70, None, Some("Int division by zero"));
 }

@@ -558,13 +558,17 @@ fn canonical_semantic_value(
                 fields.join(",")
             ))
         }
+        SemanticTypeKey::Function { parameter, result } => Some(format!(
+            "({}->{})",
+            canonical_semantic_value(parameter, resolution)?,
+            canonical_semantic_value(result, resolution)?,
+        )),
         SemanticTypeKey::Other | SemanticTypeKey::TypeFunction { .. } => {
             canonical_other_type(&value.type_ref, resolution)
         }
         SemanticTypeKey::Invalid
         | SemanticTypeKey::TypeParameter(_)
         | SemanticTypeKey::Application { .. }
-        | SemanticTypeKey::Function { .. }
         | SemanticTypeKey::SchemeParameter(_) => None,
     }
 }

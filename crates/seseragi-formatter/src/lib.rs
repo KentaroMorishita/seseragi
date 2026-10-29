@@ -78,6 +78,18 @@ mod tests {
         format_cst(&tokens, &cst)
     }
 
+    #[test]
+    fn qualified_explicit_type_arguments_keep_their_application_delimiters() {
+        for source in [
+            "let f = api.apply<api.Query, Int> value\n",
+            "let f = api.apply<deep.api.Query<Int>, api.Row<Bool>> value\n",
+            "let less = left < api.limit\n",
+            "let less = left < api.Type > right\n",
+        ] {
+            assert_safe_and_converged_fixture(source, source);
+        }
+    }
+
     fn format_with_width(source: &str, line_width: usize) -> FormattedSource {
         let tokens = lex("main.ssrg", source);
         let cst = parse_cst_from_tokens(tokens.clone());

@@ -5,13 +5,16 @@ use seseragi_syntax::{ByteSpan, ForeignCallKind, ForeignCallMode, TypeParameter,
 use std::collections::BTreeSet;
 
 mod adt;
+mod closed_display;
 mod decision;
 mod expr;
 mod instances;
+mod list_prefix;
 mod types;
 
 use adt::{lower_adt, AdtDeclInput};
 pub use adt::{CoreAdt, CoreAdtVariant};
+pub use closed_display::closed_standard_display_key;
 pub use decision::{
     CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest,
 };
@@ -21,6 +24,7 @@ pub use instances::{
     CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation,
     CoreInstanceMethod, CoreShowPayloadEvidence,
 };
+pub use list_prefix::{core_list_prefix_plan, CoreListPrefixPlan};
 pub use types::{CoreRecordField, CoreType};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

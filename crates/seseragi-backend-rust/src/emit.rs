@@ -12,6 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod arrays;
 mod booleans;
+mod calls;
 mod canonical;
 mod characters;
 mod clock;
@@ -29,6 +30,7 @@ mod local;
 mod methods;
 mod number_parse;
 mod operators;
+mod returned_calls;
 mod scalar;
 mod tail;
 mod text;
@@ -498,7 +500,18 @@ impl Backend<'_> {
                 }
             }
             if let Some(dictionary) = self.structural_display_dictionary(selected, scope)? {
-                values.push(dictionary);
+                if let Some(key) = seseragi_lowering::closed_standard_display_key(
+                    selected,
+                    scope.bound_type_names(),
+                ) {
+                    self.closed_dictionary_sites += 1;
+                    values.push(format!(
+                        "cached({}, || {dictionary})",
+                        quoted(&format!("closed-standard-display:{key}"))
+                    ));
+                } else {
+                    values.push(dictionary);
+                }
                 continue;
             }
             if let Some(dictionary) = self.filesystem_display_dictionary(selected, scope)? {
@@ -910,226 +923,7 @@ impl Backend<'_> {
                 output.push_str(&format!("V::text(&{text}) }}"));
                 output
             }
-            CoreExpr::Call {
-                callee,
-                arguments,
-                evidence,
-                trait_dispatch,
-                deferred_evidence_parameters,
-                deferred_evidence_type_constructor_parameters,
-                evidence_argument_index,
-                type_ref,
-                ..
-            } => {
-                if callee == "std/float::power" && !scope.contains(callee) {
-                    if !evidence.is_empty()
-                        || trait_dispatch.is_some()
-                        || !deferred_evidence_parameters.is_empty()
-                        || !deferred_evidence_type_constructor_parameters.is_empty()
-                        || evidence_argument_index.is_some()
-                    {
-                        return Err("Rust backend: unproven Float power evidence or staging".into());
-                    }
-                    self.validate_float_power_type(type_ref, arguments.len(), scope)?;
-                    for argument in arguments {
-                        let actual = local::method_argument_type(argument)
-                            .ok_or("Rust backend: unproven Float power argument type")?;
-                        self.validate_float_power_type(&actual, 2, scope)?;
-                    }
-                }
-                if let Some(value) = self.clock_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.console_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.die_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.concurrency_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.from_either_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.filesystem_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.text_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.number_parse_call(expr, scope)? {
-                    return Ok(value);
-                }
-                if matches!(callee.as_str(), "<$>" | "<*>" | ">>=") && !scope.contains(callee) {
-                    return Err("Rust backend: unproven trait operator source staging".into());
-                }
-                if callee == "builtin::array-index" {
-                    return self.array_index(expr, scope);
-                }
-                if comparisons::is_comparison(callee) && !scope.contains(callee) {
-                    return self.comparison_call(expr, scope);
-                }
-                if equality::is_equality(callee) && !scope.contains(callee) {
-                    return self.equality_call(expr, scope);
-                }
-                if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
-                    return self.local_call(expr, scope);
-                }
-                if trait_dispatch.is_none() && !scope.contains(callee) {
-                    if let Some(factory) = self.global_method_factory(callee)? {
-                        return self.call_local_value(expr, &factory, scope);
-                    }
-                }
-                if let Some(dispatch) = trait_dispatch {
-                    if dispatch.trait_identity == "std/prelude::Eq" {
-                        return self.equality_call(expr, scope);
-                    }
-                    self.validate_int_parse_show_call(expr, scope)?;
-                    self.validate_primitive_operator_call(expr, scope)?;
-                    if dispatch.method_contract.is_some() {
-                        return self.method_call(expr, scope);
-                    }
-                    self.reject_missing_method_contract(dispatch, evidence)?;
-                    if arguments.is_empty() {
-                        self.validate_bare_method(dispatch, evidence, type_ref, scope)?;
-                    }
-                }
-                let bound_primitive_partial = trait_dispatch.is_none()
-                    && !scope.contains(callee)
-                    && (characters::closed_character_partial(
-                        self.module,
-                        callee,
-                        arguments.len(),
-                        evidence,
-                        deferred_evidence_parameters,
-                    ) || floats::closed_float_partial(
-                        self.module,
-                        callee,
-                        arguments.len(),
-                        evidence,
-                        deferred_evidence_parameters,
-                    ) || display::closed_display_partial(
-                        self.module,
-                        callee,
-                        arguments.len(),
-                        evidence,
-                        deferred_evidence_parameters,
-                    ));
-                if (!deferred_evidence_parameters.is_empty() && !bound_primitive_partial)
-                    || !deferred_evidence_type_constructor_parameters.is_empty()
-                    || (evidence_argument_index.is_some() && !evidence.is_empty())
-                {
-                    return Err("Rust backend: deferred callable evidence is unsupported".into());
-                }
-                if trait_dispatch.is_none()
-                    && !scope.contains(callee)
-                    && evidence.is_empty()
-                    && deferred_evidence_parameters.is_empty()
-                    && evidence_argument_index.is_none()
-                    && lists::list_operation_arity(callee) == Some(arguments.len())
-                {
-                    self.capabilities.insert("list".into());
-                    self.direct_calls += 1;
-                    return Ok(format!(
-                        "native_list_operation({}, vec![{}])",
-                        quoted(callee),
-                        self.expressions(arguments, scope)?
-                    ));
-                }
-                if trait_dispatch.is_none()
-                    && !scope.contains(callee)
-                    && evidence.is_empty()
-                    && deferred_evidence_parameters.is_empty()
-                    && evidence_argument_index.is_none()
-                    && floats::float_operation_arity(callee) == Some(arguments.len())
-                {
-                    self.capabilities.insert("float".into());
-                    self.direct_calls += 1;
-                    return Ok(format!(
-                        "native_float_operation({}, vec![{}])",
-                        quoted(callee),
-                        self.expressions(arguments, scope)?
-                    ));
-                }
-                if trait_dispatch.is_none()
-                    && !scope.contains(callee)
-                    && evidence.is_empty()
-                    && deferred_evidence_parameters.is_empty()
-                    && evidence_argument_index.is_none()
-                    && arguments.len() == 1
-                {
-                    if let Some(function) = characters::character_operation(callee) {
-                        self.direct_calls += 1;
-                        return Ok(format!("{function}({})", self.expr(&arguments[0], scope)?));
-                    }
-                }
-                if trait_dispatch.is_none()
-                    && !scope.contains(callee)
-                    && known_pure_call_shape(self.module, callee, arguments.len())
-                        == Some(CoreCallShape::Saturated)
-                {
-                    let dictionaries = self.evidence(evidence, scope)?;
-                    let args = self.expressions(arguments, scope)?;
-                    self.direct_calls += 1;
-                    return Ok(format!(
-                        "{}_direct({dictionaries}{}{})",
-                        id(callee),
-                        if args.is_empty() { "" } else { "," },
-                        args
-                    ));
-                }
-                let function = if let Some(dispatch) = trait_dispatch {
-                    if evidence.len() != 1 {
-                        return Err("Rust backend: trait dispatch requires one dictionary".into());
-                    }
-                    if let CoreInstanceEvidence::Parameter { index } = evidence[0].evidence {
-                        self.validate_parameter_evidence(&evidence[0], scope)?;
-                        if scope.dictionaries[index].trait_identity.as_deref()
-                            != Some(dispatch.trait_identity.as_str())
-                        {
-                            return Err(
-                                "Rust backend: dictionary parameter dispatch identity mismatch"
-                                    .into(),
-                            );
-                        }
-                    }
-                    if !floats::valid_float_dispatch(
-                        &evidence[0],
-                        &dispatch.trait_identity,
-                        &dispatch.method,
-                    ) {
-                        return Err(
-                            "Rust backend: mismatched canonical Float trait dispatch".into()
-                        );
-                    }
-                    if !lists::valid_display_dispatch(
-                        &evidence[0],
-                        &dispatch.trait_identity,
-                        &dispatch.method,
-                    ) {
-                        return Err("Rust backend: mismatched canonical display dispatch".into());
-                    }
-                    let dictionary = self.evidence(evidence, scope)?;
-                    format!(
-                        "({dictionary}).remove(0).field({})",
-                        quoted(&dispatch.method)
-                    )
-                } else {
-                    self.reference(callee, evidence, scope)?
-                };
-                // Apply each stage before evaluating the next source argument.
-                let temporary = self.fresh();
-                let mut value = format!("{{ let mut {temporary} = {function};");
-                for arg in arguments {
-                    value.push_str(&format!(
-                        "{temporary} = {temporary}.apply({});",
-                        self.expr(arg, scope)?
-                    ));
-                }
-                value.push_str(&format!("{temporary} }}"));
-                value
-            }
+            CoreExpr::Call { .. } => self.call(expr, scope)?,
             CoreExpr::Lambda {
                 parameter, body, ..
             } => self.function(std::slice::from_ref(parameter), body, scope)?,
@@ -1304,6 +1098,7 @@ impl Backend<'_> {
             ),
             CoreExpr::Decision {
                 scrutinee,
+                scrutinee_type,
                 branches,
                 ..
             } => {
@@ -1314,10 +1109,28 @@ impl Backend<'_> {
                     self.expr(scrutinee, scope)?
                 );
                 for branch in branches {
+                    let plan = seseragi_lowering::core_list_prefix_plan(
+                        scrutinee_type,
+                        branch,
+                        scope.bound_type_names(),
+                    );
+                    let prefix = plan.as_ref().map(|plan| {
+                        let prefix = self.fresh();
+                        let branch_label = self.fresh();
+                        value.push_str(&Self::prefix_checks(
+                            plan,
+                            &temporary,
+                            &prefix,
+                            &branch_label,
+                        ));
+                        prefix
+                    });
+                    let prefix = prefix.as_deref();
                     let conditions = branch
                         .tests
                         .iter()
-                        .map(|test| self.test(test, &temporary))
+                        .skip(usize::from(plan.is_some()))
+                        .map(|test| self.test(test, &temporary, prefix))
                         .collect::<Result<Vec<_>>>()?;
                     value.push_str(&format!(
                         "if {} {{",
@@ -1332,7 +1145,7 @@ impl Backend<'_> {
                         value.push_str(&format!(
                             "let {} = {};",
                             id(&binding.name),
-                            Self::project(&temporary, &binding.path)?
+                            Self::project_prefix(&temporary, &binding.path, prefix)?
                         ));
                         inner.insert(binding.name.clone());
                     }
@@ -1347,6 +1160,9 @@ impl Backend<'_> {
                         "if {guard} {{ break '{label} {}; }} }}",
                         self.expr(&branch.value, &inner)?
                     ));
+                    if plan.is_some() {
+                        value.push('}');
+                    }
                 }
                 value.push_str("panic!(\"Rust backend: unmatched checked decision\"); } }");
                 value
@@ -1520,29 +1336,66 @@ impl Backend<'_> {
         Ok(value)
     }
 
-    fn test(&self, test: &CoreDecisionTest, root: &str) -> Result<String> {
+    fn prefix_checks(
+        plan: &seseragi_lowering::CoreListPrefixPlan,
+        root: &str,
+        prefix: &str,
+        label: &str,
+    ) -> String {
+        let mut body = format!("'{label}: {{ let {prefix}_0 = &{root};");
+        for index in 0..plan.length {
+            body.push_str(&format!(
+                "let Some({prefix}_cell{index}) = {prefix}_{index}.list_cell() else {{ break '{label}; }}; let {prefix}_{} = &{prefix}_cell{index}.tail;",
+                index+1
+            ));
+        }
+        if !plan.minimum {
+            body.push_str(&format!(
+                "if {prefix}_{}.list_cell().is_some() {{ break '{label}; }}",
+                plan.length
+            ));
+        }
+        body
+    }
+
+    fn project_prefix(
+        root: &str,
+        path: &[CoreDecisionProjection],
+        prefix: Option<&str>,
+    ) -> Result<String> {
+        if let Some(prefix) = prefix {
+            match path.first() {
+                Some(CoreDecisionProjection::ListElement { index }) => {
+                    return Self::project(&format!("{prefix}_cell{index}.head"), &path[1..]);
+                }
+                Some(CoreDecisionProjection::ListRest { start }) => {
+                    return Self::project(&format!("{prefix}_{start}"), &path[1..]);
+                }
+                _ => {}
+            }
+        }
+        Self::project(root, path)
+    }
+
+    fn test(&self, test: &CoreDecisionTest, root: &str, prefix: Option<&str>) -> Result<String> {
+        let project = |path: &[CoreDecisionProjection]| Self::project_prefix(root, path, prefix);
         Ok(match test {
             CoreDecisionTest::Constructor {
                 path, constructor, ..
-            } => format!(
-                "({}).tagged({})",
-                Self::project(root, path)?,
-                quoted(constructor)
-            ),
+            } => format!("({}).tagged({})", project(path)?, quoted(constructor)),
             CoreDecisionTest::Integer { path, value, .. } => format!(
                 "matches!({}, V::Int(n) if n == {}_i64)",
-                Self::project(root, path)?,
+                project(path)?,
                 value
                     .parse::<i64>()
                     .map_err(|_| "Rust backend: invalid decision integer")?
             ),
-            CoreDecisionTest::Boolean { path, value, .. } => format!(
-                "matches!({}, V::Bool(n) if n == {value})",
-                Self::project(root, path)?
-            ),
+            CoreDecisionTest::Boolean { path, value, .. } => {
+                format!("matches!({}, V::Bool(n) if n == {value})", project(path)?)
+            }
             CoreDecisionTest::String { path, value, .. } => format!(
                 "native_textual_literal_matches(&({}), {})",
-                Self::project(root, path)?,
+                project(path)?,
                 quoted(value)
             ),
             CoreDecisionTest::ListLength {
@@ -1552,7 +1405,7 @@ impl Backend<'_> {
                 ..
             } => format!(
                 "({}).list_length_matches({length}, {minimum})",
-                Self::project(root, path)?
+                project(path)?
             ),
             _ => return Err("Rust backend: unsupported decision test".into()),
         })

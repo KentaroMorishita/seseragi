@@ -70,7 +70,16 @@ pub(super) fn lower_core_decision(
     };
     let mut branches = branches
         .into_iter()
-        .map(|branch| lower_branch(branch, imported_values, imported_types))
+        .map(|branch| {
+            let plan = crate::core_list_prefix_plan(
+                &scrutinee_type,
+                &branch,
+                imported_types.bound_type_names(),
+            );
+            let mut lowered = lower_branch(branch, imported_values, imported_types);
+            lowered.list_prefix = plan;
+            lowered
+        })
         .collect::<Vec<_>>();
     if erases_newtype && branches.len() == 1 {
         let branch = &mut branches[0];
@@ -243,6 +252,7 @@ fn lower_branch(
         erase_projection(&mut binding.path, &erased_paths);
     }
     TypeScriptDecisionBranch {
+        list_prefix: None,
         tests: branch.tests.into_iter().map(lower_test).collect(),
         bindings: branch
             .bindings

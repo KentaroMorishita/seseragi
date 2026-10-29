@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.61.114] - 2026-10-29
+
+### Fixed
+
+- Preserve checked function, closed record and tuple alias constructors through instance selection, saved methods, nested invariant fields and renamed public reexports.
+- Apply native constrained functions and primary methods one source stage at a time when their results are functions. Retain canonical primitive owners under same-named binders, strict argument order, cold cleanup and positioned refusal of unproved Core inputs.
+- Keep namespace-qualified explicit type arguments valid and stable when formatting source.
+
+### Changed
+
+- Reduce native allocation for short-lived ADT values by retaining canonical constructor tags and directly reclaiming childless final owners. Preserve shared graphs, borrowed Refs, cycles and scoped cleanup.
+- Reuse proved List prefix cursors in TypeScript and native decisions while preserving short-circuit guards, one scrutinee evaluation, captured tails and binding snapshots.
+- Lazily reuse closed standard tuple Show/Debug dictionaries after checking canonical types and child evidence. Keep first reads cold, preserve changing inputs and module ownership, and retain the existing path for user, generic and unproved factories.
+
 ## [0.61.112] - 2026-10-29
 
 ### Added

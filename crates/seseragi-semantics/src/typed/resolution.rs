@@ -12,7 +12,7 @@ use super::functions::TopLevelPureFunction;
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
-use super::type_ref::{typed_type_contains_hole, typed_type_from_type_ref};
+use super::type_ref::typed_type_contains_hole;
 
 mod console;
 mod imported_effects;
@@ -2031,7 +2031,9 @@ fn collect_local_trait_methods(
                     arguments: constraint
                         .arguments
                         .iter()
-                        .map(typed_type_from_type_ref)
+                        .map(|argument| {
+                            semantic_typed_type_from_type_ref(argument, resolved, semantic_types)
+                        })
                         .collect(),
                 }
             }));
@@ -2054,7 +2056,13 @@ fn collect_local_trait_methods(
                     method
                         .parameters
                         .iter()
-                        .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+                        .map(|parameter| {
+                            semantic_typed_type_from_type_ref(
+                                &parameter.type_ref,
+                                resolved,
+                                semantic_types,
+                            )
+                        })
                         .collect(),
                     method
                         .parameters
@@ -2076,7 +2084,11 @@ fn collect_local_trait_methods(
                     constraint_identities,
                     parameters,
                     semantic_parameters,
-                    result: typed_type_from_type_ref(&method.return_type),
+                    result: semantic_typed_type_from_type_ref(
+                        &method.return_type,
+                        resolved,
+                        semantic_types,
+                    ),
                     semantic_result: semantic_types
                         .key_from_type_ref(resolved, &method.return_type),
                 },

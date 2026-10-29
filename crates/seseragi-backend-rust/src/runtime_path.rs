@@ -28,14 +28,17 @@ fn native_maybe(value: Option<V>) -> V {
         None => V::adt("std/prelude::Nothing", V::Unit),
     }
 }
-fn native_path_error(name: &str, payload: V) -> V {
-    V::adt(&format!("std/path::{name}"), payload)
+fn native_path_error(tag: &'static str, payload: V) -> V {
+    V::adt(tag, payload)
 }
 fn native_path_validation(text: &str) -> Option<V> {
     if text.is_empty() {
-        return Some(native_path_error("EmptyPath", V::Unit));
+        return Some(native_path_error("std/path::EmptyPath", V::Unit));
     }
-    for (character, name) in [('\0', "PathContainsNul"), ('\\', "PathContainsBackslash")] {
+    for (character, name) in [
+        ('\0', "std/path::PathContainsNul"),
+        ('\\', "std/path::PathContainsBackslash"),
+    ] {
         if let Some(index) = text.find(character) {
             let offset = text[..index].encode_utf16().count();
             return Some(native_path_error(
@@ -53,7 +56,7 @@ fn native_path_validation(text: &str) -> Option<V> {
         && bytes[1] == b':'
         && bytes.get(2) != Some(&b'/')
     {
-        return Some(native_path_error("InvalidDriveRoot", V::Unit));
+        return Some(native_path_error("std/path::InvalidDriveRoot", V::Unit));
     }
     if let Some(unc) = text.strip_prefix("//") {
         let mut parts = unc.split('/');
@@ -62,7 +65,7 @@ fn native_path_validation(text: &str) -> Option<V> {
                 .next()
                 .is_some_and(|p| !p.is_empty() && p != "." && p != "..")
         }) {
-            return Some(native_path_error("InvalidUncRoot", V::Unit));
+            return Some(native_path_error("std/path::InvalidUncRoot", V::Unit));
         }
     }
     None
@@ -151,7 +154,10 @@ fn native_path_operation(name: &str, args: &[V]) -> V {
             let base = native_path_text(&args[1]);
             if child.is_empty() || matches!(child, "." | "..") || child.contains(['/', '\\', '\0'])
             {
-                native_left(native_path_error("InvalidPathSegment", args[0].clone()))
+                native_left(native_path_error(
+                    "std/path::InvalidPathSegment",
+                    args[0].clone(),
+                ))
             } else {
                 native_right(native_path(&native_path_append(base, child)))
             }
@@ -160,7 +166,7 @@ fn native_path_operation(name: &str, args: &[V]) -> V {
             let child = native_path_text(&args[0]);
             let base = native_path_text(&args[1]);
             if !native_path_parts(child).relative {
-                native_left(native_path_error("AbsoluteChildPath", V::Unit))
+                native_left(native_path_error("std/path::AbsoluteChildPath", V::Unit))
             } else if child == "." {
                 native_right(args[1].clone())
             } else if base == "." {

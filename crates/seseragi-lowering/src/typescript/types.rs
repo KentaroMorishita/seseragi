@@ -18,6 +18,8 @@ pub(super) struct TypeScriptTypeContext {
     type_function_scopes: Vec<Vec<u32>>,
     kind_templates: BTreeMap<String, super::TypeScriptKindConstructor>,
     kind_requirements: Arc<Mutex<super::kinds::Requirements>>,
+    closed_display_dictionaries:
+        Arc<Mutex<BTreeMap<String, super::TypeScriptClosedDisplayDictionary>>>,
     value_parameters: BTreeSet<String>,
     arities: BTreeMap<String, u32>,
     private_struct_names: BTreeSet<String>,
@@ -37,6 +39,7 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
             type_function_scopes: Vec::new(),
             kind_templates: BTreeMap::new(),
             kind_requirements: Default::default(),
+            closed_display_dictionaries: Default::default(),
             value_parameters: BTreeSet::new(),
             arities: BTreeMap::new(),
             private_struct_names: BTreeSet::new(),
@@ -48,6 +51,40 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn closed_display_dictionary(
+        &self,
+        key: String,
+        factory: super::TypeScriptExpr,
+    ) -> String {
+        let mut entries = self
+            .closed_display_dictionaries
+            .lock()
+            .expect("closed display factories");
+        if let Some(entry) = entries.get(&key) {
+            return entry.name.clone();
+        }
+        let name = format!("$ssrg$closedDisplay${}", entries.len());
+        entries.insert(
+            key,
+            super::TypeScriptClosedDisplayDictionary {
+                name: name.clone(),
+                factory,
+            },
+        );
+        name
+    }
+
+    pub(super) fn closed_display_dictionaries(
+        &self,
+    ) -> Vec<super::TypeScriptClosedDisplayDictionary> {
+        self.closed_display_dictionaries
+            .lock()
+            .expect("closed display factories")
+            .values()
+            .cloned()
+            .collect()
+    }
+
     fn project_type_function(&self, value: &CoreType) -> Option<TypeScriptType> {
         let CoreType::TypeFunction {
             parameter_kinds,
@@ -491,6 +528,13 @@ impl TypeScriptTypeContext {
 
     pub(super) fn get(&self, canonical: &str) -> Option<&String> {
         self.imported_names.get(canonical)
+    }
+
+    pub(super) fn bound_type_names(&self) -> impl Iterator<Item = &str> {
+        self.value_parameters
+            .iter()
+            .chain(self.constructors.iter())
+            .map(String::as_str)
     }
 
     pub(super) fn with_parameters(&self, parameters: &[TypeParameter]) -> Self {
@@ -1001,6 +1045,17 @@ pub(super) fn type_ref_from_core_type_with_erasure(
 }
 
 pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
+    render_type(type_ref, false)
+}
+
+/// A generic helper supplies checked witness slots to inline object bodies.
+/// TypeScript's polymorphic `this` is not in scope inside those object types.
+pub(crate) fn render_typescript_kind_body(type_ref: &TypeScriptType) -> String {
+    render_type(type_ref, true)
+}
+
+fn render_type(type_ref: &TypeScriptType, kind_parameters: bool) -> String {
+    let render = |value: &TypeScriptType| render_type(value, kind_parameters);
     match type_ref {
         TypeScriptType::Bigint => "bigint".to_owned(),
         TypeScriptType::Number => "number".to_owned(),
@@ -1013,43 +1068,43 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
                 .to_owned()
         }
         TypeScriptType::Unknown => "unknown".to_owned(),
-        TypeScriptType::KindArgument { index } => format!("this[\"args\"][{index}]"),
+        TypeScriptType::KindArgument { index } => if kind_parameters { format!("$ssrg$T{index}") } else { format!("this[\"args\"][{index}]") },
         TypeScriptType::KindConstructor { name, arguments } if arguments.iter().any(Option::is_some) => format!(
             "{}<{}>", super::kinds::partial_name(&arguments.iter().map(Option::is_some).collect::<Vec<_>>()),
-            std::iter::once(name.clone()).chain(arguments.iter().flatten().map(render_typescript_type)).collect::<Vec<_>>().join(", ")
+            std::iter::once(name.clone()).chain(arguments.iter().flatten().map(render)).collect::<Vec<_>>().join(", ")
         ),
         TypeScriptType::KindConstructor { name, .. } => name.clone(),
         TypeScriptType::KindApplication { constructor, arguments } => format!(
             "$ssrg$Apply<{constructor}, readonly [{}]>",
-            arguments.iter().map(render_typescript_type).collect::<Vec<_>>().join(", ")
+            arguments.iter().map(render).collect::<Vec<_>>().join(", ")
         ),
         TypeScriptType::Reference { name, arguments } if arguments.is_empty() => name.clone(),
         TypeScriptType::Reference { name, arguments } => format!(
             "{name}<{}>",
             arguments
                 .iter()
-                .map(render_typescript_type)
+                .map(render)
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
         TypeScriptType::Maybe { element } => {
             format!(
                 "{{ readonly tag: \"Nothing\" }} | {{ readonly tag: \"Just\"; readonly value: {} }}",
-                render_typescript_type(element)
+                render(element)
             )
         }
         TypeScriptType::Either { error, value } => {
             format!(
                 "{{ readonly tag: \"Left\"; readonly value: {} }} | {{ readonly tag: \"Right\"; readonly value: {} }}",
-                render_typescript_type(error),
-                render_typescript_type(value)
+                render(error),
+                render(value)
             )
         }
         TypeScriptType::Tuple { elements } => format!(
             "readonly [{}]",
             elements
                 .iter()
-                .map(render_typescript_type)
+                .map(render)
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
@@ -1061,28 +1116,28 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
                     "readonly {}{}: {}",
                     format!("{:?}", field.name),
                     if field.optional { "?" } else { "" },
-                    render_typescript_type(&field.type_ref)
+                    render(&field.type_ref)
                 ))
                 .collect::<Vec<_>>()
                 .join("; ")
         ),
         TypeScriptType::Array { element } => {
-            format!("ReadonlyArray<{}>", render_typescript_type(element))
+            format!("ReadonlyArray<{}>", render(element))
         }
         TypeScriptType::List { element } => {
-            format!("List<{}>", render_typescript_type(element))
+            format!("List<{}>", render(element))
         }
         TypeScriptType::Range => {
             "Readonly<{ start: number; end: number; inclusive: boolean }>".to_owned()
         }
         TypeScriptType::Function { parameter, result } => format!(
             "(argument: {}) => {}",
-            render_typescript_type(parameter),
-            render_typescript_type(result)
+            render(parameter),
+            render(result)
         ),
         TypeScriptType::Intersection { operands } => operands
             .iter()
-            .map(render_typescript_type)
+            .map(render)
             .collect::<Vec<_>>()
             .join(" & "),
     }

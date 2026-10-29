@@ -29,6 +29,190 @@ fn cli() -> Command {
     Command::new(env!("CARGO_BIN_EXE_seseragi"))
 }
 
+#[path = "support/generic_impl_process.rs"]
+mod prefix_process;
+
+fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
+    use prefix_process::{bounded, runtime, successful};
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    for &(fixture, exit) in fixtures {
+        let original = root.join(format!(
+            "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
+        ));
+        let expected = fs::read(original.with_extension("stdout")).unwrap();
+        let source = fs::read_to_string(original).unwrap();
+        let effect = source.contains("pub effect fn main");
+        let directory = scratch.0.join(fixture);
+        fs::create_dir(&directory).unwrap();
+        let input = directory.join("main.ssrg");
+        fs::write(
+            &input,
+            if effect {
+                source.clone()
+            } else {
+                format!("{source}\npub effect fn main = println (show (probe ()))\n")
+            },
+        )
+        .unwrap();
+        let native = directory.join("native");
+        successful(bounded(
+            cli()
+                .args(["experimental", "build-native"])
+                .arg(&input)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            &directory,
+        ));
+        let output = bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &directory,
+        );
+        assert_eq!(output.status.code(), Some(exit), "{fixture}: {output:?}");
+        assert_eq!(output.stdout, expected, "{fixture}");
+        assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+        for (profile, build_profile) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let destination = directory.join(profile);
+            successful(bounded(
+                cli()
+                    .arg("build")
+                    .arg(&input)
+                    .args(["--target", "process", "--profile", profile, "--out-dir"])
+                    .arg(&destination),
+                &directory,
+            ));
+            let raw = seseragi_driver::compile_module(
+                seseragi_driver::CompileInput::new(
+                    "main.ssrg",
+                    "prefix/main",
+                    &fs::read_to_string(&input).unwrap(),
+                )
+                .with_profile(build_profile),
+            )
+            .unwrap();
+            let raw_path = destination.join("raw-original.ts");
+            fs::write(&raw_path, raw.generated.typescript).unwrap();
+            let config = serde_json::json!({"compilerOptions":{
+                "strict":true,"noEmit":true,"skipLibCheck":false,"target":"ES2022",
+                "module":"ESNext","moduleResolution":"Bundler","allowImportingTsExtensions":true,
+                "types":["bun","node"],"typeRoots":[root.join("node_modules/@types")],
+                "baseUrl":root,"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},
+                "lib":["ES2023","DOM","DOM.Iterable"]},"files":[raw_path]});
+            let config_path = destination.join("raw-tsconfig.json");
+            fs::write(&config_path, serde_json::to_vec(&config).unwrap()).unwrap();
+            successful(bounded(
+                Command::new(runtime("node", &directory))
+                    .arg(root.join("node_modules/typescript/bin/tsc"))
+                    .args(["--project"])
+                    .arg(&config_path),
+                &directory,
+            ));
+            let manifest: serde_json::Value = serde_json::from_slice(
+                &fs::read(destination.join("artifact-manifest.json")).unwrap(),
+            )
+            .unwrap();
+            let entry = destination.join(manifest["entry"].as_str().unwrap());
+            for engine in ["bun", "node"] {
+                let output = bounded(
+                    Command::new(runtime(engine, &directory))
+                        .arg(&entry)
+                        .env("PATH", ""),
+                    &directory,
+                );
+                assert_eq!(
+                    output.status.code(),
+                    Some(exit),
+                    "{fixture}/{profile}/{engine}: {output:?}"
+                );
+                assert_eq!(output.stdout, expected, "{fixture}/{profile}/{engine}");
+                if exit == 70 {
+                    assert_eq!(output.stderr, b"seseragi: runtime defect\n");
+                } else {
+                    assert!(output.stderr.is_empty(), "{output:?}");
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn list_prefix_decisions_and_effects_match_raw_strict_ts_and_native() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("list-prefix-kernel", 0),
+        ("list-prefix-decisions", 0),
+        ("list-prefix-effects", 0),
+    ]);
+}
+
+#[test]
+fn closed_display_dictionaries_keep_raw_types_values_cold_effects_and_cleanup() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("tuple-show-kernel", 0),
+        ("closed-display-values", 0),
+        ("tuple-display", 0),
+        ("tuple-nominal", 0),
+        ("closed-display-effects", 0),
+        ("tuple-effects", 0),
+        ("closed-display-defect", 70),
+        ("tuple-defect", 70),
+    ]);
+}
+
+#[test]
+fn closed_display_factories_are_lazy_on_fresh_bun_and_node_modules() {
+    use prefix_process::{bounded, runtime, successful};
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/tuple-show-kernel.ssrg");
+    for (name, profile) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("main.ssrg", "display/main", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        assert_eq!(compiled.typescript_ir.closed_display_dictionaries.len(), 1);
+        let directory = scratch.0.join(name);
+        fs::create_dir(&directory).unwrap();
+        let file = directory.join("original.ts");
+        fs::write(&file, compiled.generated.typescript).unwrap();
+        let output = bounded(
+            Command::new(runtime("bun", &directory))
+                .arg(root.join("scripts/closed-display-probe.ts"))
+                .arg(&file)
+                .current_dir(&root),
+            &directory,
+        );
+        successful(output.clone());
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout)
+                .matches("\"zeroStepCold\":true")
+                .count(),
+            2
+        );
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout)
+                .matches("\"changingInputs\":1000")
+                .count(),
+            2
+        );
+    }
+}
+
 #[test]
 fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
     let scratch = Scratch::new();
@@ -183,8 +367,24 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
 
 #[test]
 fn represented_repeated_alias_head_emits_without_changing_the_original_source() {
-    let scratch = Scratch::new();
     let declarations = "type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = \"box\" }\n";
+    assert_represented_alias_head(declarations);
+}
+
+#[test]
+fn represented_structural_alias_heads_emit_without_changing_the_original_sources() {
+    // Preserve the exact declarations that were formerly refused, including
+    // the contravariant function slot. Emission/build must not run the entry.
+    for declarations in [
+        "alias Arrow<A> = A -> Int\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Arrow> { fn tag<A> value: (A -> Int) -> String = \"arrow\" }\n",
+        "alias Fields<A> = { value: A }\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Fields> { fn tag<A> value: { value: A } -> String = \"fields\" }\n",
+    ] {
+        assert_represented_alias_head(declarations);
+    }
+}
+
+fn assert_represented_alias_head(declarations: &str) {
+    let scratch = Scratch::new();
     let source = format!("// 雫\n{declarations}\npub effect fn main = println \"MUST_NOT_RUN\"\n");
     let path = scratch.0.join("represented-constructor-λ.ssrg");
     fs::write(&path, &source).unwrap();
@@ -199,6 +399,7 @@ fn represented_repeated_alias_head_emits_without_changing_the_original_source() 
         .unwrap();
     assert!(output.status.success(), "{output:?}");
     assert!(output.stderr.is_empty(), "{output:?}");
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("MUST_NOT_RUN"));
     assert!(rust.is_file());
     assert!(rust.with_extension("rust-backend.json").is_file());
     for profile in ["development", "release"] {
@@ -211,6 +412,7 @@ fn represented_repeated_alias_head_emits_without_changing_the_original_source() 
             .output()
             .unwrap();
         assert!(output.status.success(), "{profile}: {output:?}");
+        assert!(!String::from_utf8_lossy(&output.stdout).contains("MUST_NOT_RUN"));
         let manifest: serde_json::Value =
             serde_json::from_slice(&fs::read(directory.join("artifact-manifest.json")).unwrap())
                 .unwrap();
@@ -237,8 +439,9 @@ fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
         ("standard-duplicate", "alias Number = Int\ninstance Show<Number> { fn show value: Int -> String = \"number\" }\n", "SES-T0202"),
         ("erased-parameter", "type Label = | Label\nalias Erased<A> = Label\ninstance<A> Show<Erased<A>> { fn show value: Label -> String = \"label\" }\n", "SES-T0101"),
         ("method-hole-contract", "alias Id<A> = A\ntrait Tag<A> { fn tag value: Int -> String }\ninstance Tag<Int> { fn tag value: Id<_> -> String = \"unused\" }\n", "SES-T0101"),
-        ("unrepresented-function-constructor", "alias Arrow<A> = A -> Int\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Arrow> { fn tag<A> value: (A -> Int) -> String = \"arrow\" }\n", "SES-T0101"),
-        ("unrepresented-record-constructor", "alias Fields<A> = { value: A }\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Fields> { fn tag<A> value: { value: A } -> String = \"fields\" }\n", "SES-T0101"),
+        ("invalid-function-method", "alias Arrow<A> = A -> Int\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Arrow> { fn tag<A> value: (Bool -> Int) -> String = \"arrow\" }\n", "SES-T0101"),
+        ("invalid-record-method", "alias Fields<A> = { value: A }\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Fields> { fn tag<A> value: { value: Bool } -> String = \"fields\" }\n", "SES-T0101"),
+        ("unrepresented-erased-prefix", "alias Shape<T, A> = { value: A }\ntrait Tag<F<_>> { fn tag<A, B> value: F<A> -> String }\ninstance<T> Tag<Shape<T>> { fn tag<A, B> value: { value: A } -> String = \"unused\" }\n", "SES-T0101"),
     ] {
         let path = scratch.0.join(format!("{name}-λ.ssrg"));
         let full_source = format!("// 雫\n{source}\npub effect fn main = println \"MUST_NOT_RUN\"\n");
@@ -265,22 +468,30 @@ fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
             let diagnostics: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
             assert!(diagnostics.to_string().contains(code));
             assert!(diagnostics.to_string().contains("utf-8"));
-            if name.starts_with("unrepresented-") {
+            if name.starts_with("unrepresented-") || name.starts_with("invalid-") {
                 let modules = diagnostics["diagnostics"].as_array().unwrap();
                 assert_eq!(modules.len(), 1);
                 assert_eq!(modules[0]["path"], path.to_str().unwrap());
                 let artifact = &modules[0]["diagnostics"];
                 assert_eq!(artifact["positionEncoding"], "utf-8");
+                let key = if name.starts_with("invalid-") {
+                    "trait.instance-method-signature-mismatch"
+                } else {
+                    "trait.instance-head-unresolved"
+                };
                 let error = artifact["diagnostics"].as_array().unwrap()
                     .iter()
-                    .find(|error| error["messageKey"] == "trait.instance-head-unresolved")
+                    .find(|error| error["messageKey"] == key)
                     .unwrap_or_else(|| panic!("{diagnostics}"));
                 let start = error["primary"]["start"].as_u64().unwrap() as usize;
                 let end = error["primary"]["end"].as_u64().unwrap() as usize;
-                assert_eq!(
-                    &full_source[start..end],
-                    source.lines().find(|line| line.starts_with("instance ")).unwrap()
-                );
+                let instance = source.lines().find(|line| line.starts_with("instance")).unwrap();
+                let expected = if name.starts_with("invalid-") {
+                    instance.split_once("{ ").unwrap().1.strip_suffix(" }").unwrap()
+                } else {
+                    instance
+                };
+                assert_eq!(&full_source[start..end], expected);
             }
         }
         assert_eq!(fs::read_to_string(path).unwrap(), full_source);

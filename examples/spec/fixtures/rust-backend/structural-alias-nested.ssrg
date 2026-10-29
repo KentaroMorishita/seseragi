@@ -1,0 +1,19 @@
+alias Inner<A> = { value: A, read: Int -> A }
+alias Nested<A> = { inner: Inner<A> }
+
+trait Take<F<_>> {
+  fn take<A> value: F<A> -> A
+}
+
+instance Take<Nested> {
+  fn take<A> value: { inner: Inner<A> } -> A = value.inner.value
+}
+
+fn read value: Int -> Int = value + 1
+
+pub fn probe -> Int = {
+  let fields: Inner<Int> = { value: 7, read }
+  take<Nested, Int> { inner: fields }
+}
+
+pub effect fn main = println (show (probe ()))

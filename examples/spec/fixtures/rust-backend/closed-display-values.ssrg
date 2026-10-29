@@ -1,0 +1,15 @@
+fn _ssrg_tupleShow value: Int -> Int = value + 1
+fn _ssrg_intShow value: Int -> Int = value + 2
+
+fn through<A> value: (A, Bool) -> String where Show<A> = show value
+
+fn retained seed: Int -> Unit -> String = \_ -> show (seed, seed + 1, True)
+
+pub fn probe -> Array<String> = {
+  let display: (Int, Int, Bool) -> String = show
+  let before = retained 41
+  let after = retained 7
+  let never = retained 9007199254740991
+  [display (1, 2, True), display (5, 6, False), before (), after (),
+    through (9, True), show (_ssrg_tupleShow 40), show (_ssrg_intShow 40)]
+}

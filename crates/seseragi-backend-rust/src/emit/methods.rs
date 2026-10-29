@@ -177,7 +177,7 @@ impl Backend<'_> {
         )
     }
 
-    fn validate_declared_parameter_method(
+    pub(super) fn validate_declared_parameter_method(
         &self,
         dispatch: &CoreTraitDispatch,
         selected: &CoreCallEvidence,

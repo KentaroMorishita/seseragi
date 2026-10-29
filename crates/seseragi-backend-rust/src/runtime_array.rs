@@ -22,7 +22,7 @@ fn native_maybe_display_dictionary(element: V, debug: bool) -> V {
             let V::Adt(value) = value else {
                 panic!("Rust ABI: expected Maybe")
             };
-            match value.get().0.as_str() {
+            match value.get().0 {
                 "std/prelude::Nothing" => V::text("Nothing"),
                 "std/prelude::Just" => {
                     let rendered = capture[0].apply(value.get().1.clone());

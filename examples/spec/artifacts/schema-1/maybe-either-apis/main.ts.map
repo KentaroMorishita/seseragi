@@ -9,6 +9,9 @@
     "import * as maybe from \"std/maybe\"\nimport * as either from \"std/either\"\nimport * as nonEmpty from \"std/non-empty-list\"\n\ntype Box<A> = | Box A\n\ninstance Functor<Box> {\n  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> = match value {\n    Box item -> Box (f item)\n  }\n}\n\ninstance Traversable<Box> {\n  fn traverse<G<_>, A, B> f: (A -> G<B>)\n    -> value: Box<A>\n    -> G<Box<B>>\n  where Applicative<G> =\n    map Box (f (unbox value))\n}\n\nfn unbox<A> value: Box<A> -> A = match value { Box item -> item }\n\ntype Token = | Token String\n\ninstance Semigroup<Token> {\n  fn append left: Token -> right: Token -> Token = match (left, right) {\n    (Token left, Token right) -> Token (left + right)\n  }\n}\n\nfn tokenText value: Token -> String = match value { Token text -> text }\n\nfn collect<F<_>, A> values: F<Maybe<A>> -> Maybe<F<A>> where Traversable<F> =\n  maybe.sequence values\n\nfn transform<F<_>, A, B> f: (A -> Maybe<B>)\n  -> values: F<A>\n  -> Maybe<F<B>>\nwhere Traversable<F> =\n  maybe.traverse f values\n\nfn checked value: Int -> Either<String, Int> =\n  if value < 0 then Left (show value) else Right (value + 1)\n\nfn aggregate<A> values: Array<Maybe<A>> -> Maybe<A> where Semigroup<A> = combine values\n\nfn callable unit: Unit -> (Int, Int) = {\n  let select: (Int -> Int) -> Maybe<Int -> Int> -> (Int -> Int) = maybe.withDefault\n  let partial: Maybe<Int -> Int> -> (Int -> Int) = select (\\n -> n + 1)\n  let chosen: Int -> Int = partial (Just (\\n -> n + 2))\n  let right: Either<String, Int> = Right 3\n  let result: Int -> Int =\n    either.fold (\\error: String -> \\n: Int -> n + 1) (\\value: Int -> \\n: Int -> n + value) right\n  (chosen 10, result 10)\n}\n\nfn partialTraversal unit: Unit -> Maybe<Array<Int>> = {\n  let run: (Int -> Maybe<Int>) -> Array<Int> -> Maybe<Array<Int>> = maybe.traverse\n  let finish: Array<Int> -> Maybe<Array<Int>> = run (\\n -> Just (n + 1))\n  finish [4, 5]\n}\n\npub effect fn main = do {\n  println $ show (maybe.withDefault 9 Nothing, maybe.withDefault 9 (Just 3))\n  println $ show (maybe.orElse (Just 9) Nothing, maybe.orElse (Just 9) (Just 3))\n  let left: Either<String, Int> = Left \"bad\"\n  let right: Either<String, Int> = Right 7\n  println $\n    show (either.mapLeft (\\error -> error + \"!\") left, either.mapRight (\\n -> n + 1) right)\n  println $\n    show (\n      either.bimap (\\error -> error + \"!\") (\\n: Int -> show n) left,\n      either.bimap (\\error -> error + \"!\") (\\n: Int -> show n) right\n    )\n  println $ either.fold (\\error -> \"error:\" + error) (\\n: Int -> show n) left\n  println $ show (either.swap left, either.swap right)\n  let values: Array<Maybe<Int>> = [Just 1, Just 2]\n  let absent: Array<Maybe<Int>> = [Just 1, Nothing, Just 3]\n  let emptyValues: Array<Maybe<Int>> = []\n  println $ show (collect values, maybe.sequence absent, maybe.sequence emptyValues)\n  println $ show (transform (\\n: Int -> Just (n + 1)) `[1, 2])\n  let nel: Either<String, nonEmpty.NonEmptyList<Int>> =\n    either.traverse checked (nonEmpty.cons 1 `[\n      2,\n      3\n    ])\n  println $ show nel\n  let list: List<Either<String, Int>> = `[Right 1, Left \"first\", Left \"second\"]\n  println $ show (either.sequence list)\n  println $ show (either.traverse checked `[1, -2, -3])\n  let box: Maybe<Box<Int>> = maybe.traverse (\\n: Int -> Just (n + 1)) (Box 3)\n  let unwrapped: Maybe<Int> = map unbox box\n  println $ show unwrapped\n  let tokens: Array<Maybe<Token>> = [Just (Token \"a\"), Nothing, Just (Token \"b\")]\n  println $ show (map tokenText (aggregate tokens))\n  let none: Maybe<Token> = empty ()\n  println $ show (map tokenText none)\n  let strings: Array<Maybe<String>> = [Just \"a\", Nothing, Just \"b\"]\n  println $ show (combine strings)\n  println $ show (append (Just \"left\") (Just \"right\"))\n  println $ show (callable ())\n  println $ show (partialTraversal ())\n}\n"
   ],
   "names": [
+    "tupleShow",
+    "intShow",
+    "intShow",
     "Box",
     "Box",
     "Token",
@@ -63,9 +66,7 @@
     "finish",
     "main",
     "println",
-    "tupleShow",
-    "intShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "_ssrg_maybe_withDefault",
     "Nothing",
     "_ssrg_maybe_withDefault",
@@ -239,9 +240,7 @@
     "Just",
     "Just",
     "println",
-    "tupleShow",
-    "intShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "callable",
     "println",
     "maybeShow",
@@ -249,5 +248,5 @@
     "intShow",
     "partialTraversal"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;AAIAA;;AAAgBC;AAkBhBC;;AAAeC;AAhBfC;AAMAC;AAYAC;AAJAC;AAUAE;AAEAE;AAGAE;AAMAE;AAGAM;AAEAI;AAUAkB;AAMAS"
+  "mappings": ";;;;;;;;;;;;;;;;;AAIAG;;AAAgBC;AAkBhBC;;AAAeC;AAhBfC;AAMAC;AAYAC;AAJAC;AAUAE;AAEAE;AAGAE;AAMAE;AAGAM;AAEAI;AAUAkB;AAMAS"
 }

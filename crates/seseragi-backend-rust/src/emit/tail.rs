@@ -136,16 +136,30 @@ impl Backend<'_> {
             )),
             CoreExpr::Decision {
                 scrutinee,
+                scrutinee_type,
                 branches,
                 ..
             } => {
                 let value = self.fresh();
                 let mut body = format!("{{ let {value} = {};", self.expr(scrutinee, scope)?);
                 for branch in branches {
+                    let plan = seseragi_lowering::core_list_prefix_plan(
+                        scrutinee_type,
+                        branch,
+                        scope.bound_type_names(),
+                    );
+                    let prefix = plan.as_ref().map(|plan| {
+                        let prefix = self.fresh();
+                        let label = self.fresh();
+                        body.push_str(&Self::prefix_checks(plan, &value, &prefix, &label));
+                        prefix
+                    });
+                    let prefix = prefix.as_deref();
                     let conditions = branch
                         .tests
                         .iter()
-                        .map(|test| self.test(test, &value))
+                        .skip(usize::from(plan.is_some()))
+                        .map(|test| self.test(test, &value, prefix))
                         .collect::<Result<Vec<_>>>()?;
                     body.push_str(&format!(
                         "if {} {{",
@@ -160,7 +174,7 @@ impl Backend<'_> {
                         body.push_str(&format!(
                             "let {} = {};",
                             id(&binding.name),
-                            Self::project(&value, &binding.path)?,
+                            Self::project_prefix(&value, &binding.path, prefix)?,
                         ));
                         inner.insert(binding.name.clone());
                     }
@@ -175,6 +189,9 @@ impl Backend<'_> {
                         "if {guard} {{ {} }} }}",
                         self.tail_body(&branch.value, &inner, target)?
                     ));
+                    if plan.is_some() {
+                        body.push('}');
+                    }
                 }
                 body.push_str("panic!(\"Rust backend: unmatched checked decision\"); }");
                 Ok(body)

@@ -1,0 +1,2 @@
+pub fn kernel value: Int -> String = show (value, value + 1, True)
+pub fn probe -> String = kernel 41

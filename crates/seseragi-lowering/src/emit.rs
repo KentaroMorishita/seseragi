@@ -1,4 +1,4 @@
-use crate::typescript::types::render_typescript_type;
+use crate::typescript::types::{render_typescript_kind_body, render_typescript_type};
 use crate::{
     TypeScriptAdt, TypeScriptAdtVariant, TypeScriptAlias, TypeScriptBinding, TypeScriptExpr,
     TypeScriptForeignMember, TypeScriptForeignNamespace, TypeScriptForeignOpaqueType,
@@ -139,6 +139,16 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     }
     render_foreign_modules(&mut output, module);
     output.push_str(&render_kind_declarations(module));
+    for dictionary in &module.closed_display_dictionaries {
+        // Only the getter is created at module initialization. Its complete
+        // proved factory stays at the original first evidence read. Storage
+        // belongs to this finite module, with no process-global cache or input
+        // values retained by the standard dictionary.
+        output.push_str(&format!(
+            "const {} = (() => {{ const create = () => {}; let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); }})()\n",
+            dictionary.name, render_typescript_expr(&dictionary.factory)
+        ));
+    }
     for adt in &module.adts {
         render_adt(&mut output, adt);
     }
@@ -828,13 +838,72 @@ fn render_kind_declarations(module: &TypeScriptModule) -> String {
             })
             .collect::<Vec<_>>()
             .join(", ");
+        let target = if constructor.identity.starts_with("type-function:")
+            && kind_body_has_object(&constructor.target)
+        {
+            // Inline object types introduce a scope where polymorphic `this`
+            // is unavailable. Pass each checked slot to a type-only helper;
+            // keep `this` at the enclosing witness interface's member.
+            let helper = format!("{}$body", constructor.name);
+            let parameters = constructor
+                .parameters
+                .iter()
+                .enumerate()
+                .map(|(index, parameter)| {
+                    if parameter.is_constructor() {
+                        format!(
+                            "$ssrg$T{index} extends {}",
+                            crate::typescript::kinds::kind_constraint(parameter.arity)
+                        )
+                    } else {
+                        format!("$ssrg$T{index}")
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join(", ");
+            output.push_str(&format!(
+                "type {helper}<{parameters}> = {};\n",
+                render_typescript_kind_body(&constructor.target)
+            ));
+            let arguments = (0..constructor.parameters.len())
+                .map(|index| format!("this[\"args\"][{index}]"))
+                .collect::<Vec<_>>()
+                .join(", ");
+            format!("{helper}<{arguments}>")
+        } else {
+            render_typescript_type(&constructor.target)
+        };
         output.push_str(&format!(
             "{}interface {} extends $ssrg$Kind<readonly [{parameter_kinds}]> {{ readonly type: {} }}\n",
             if constructor.exported { "export " } else { "" }, constructor.name,
-            render_typescript_type(&constructor.target),
+            target,
         ));
     }
     output
+}
+
+fn kind_body_has_object(value: &TypeScriptType) -> bool {
+    match value {
+        TypeScriptType::Record { .. }
+        | TypeScriptType::Maybe { .. }
+        | TypeScriptType::Either { .. } => true,
+        TypeScriptType::Function { parameter, result } => {
+            kind_body_has_object(parameter) || kind_body_has_object(result)
+        }
+        TypeScriptType::Array { element } | TypeScriptType::List { element } => {
+            kind_body_has_object(element)
+        }
+        TypeScriptType::Tuple { elements } => elements.iter().any(kind_body_has_object),
+        TypeScriptType::Reference { arguments, .. }
+        | TypeScriptType::KindApplication { arguments, .. } => {
+            arguments.iter().any(kind_body_has_object)
+        }
+        TypeScriptType::KindConstructor { arguments, .. } => {
+            arguments.iter().flatten().any(kind_body_has_object)
+        }
+        TypeScriptType::Intersection { operands } => operands.iter().any(kind_body_has_object),
+        _ => false,
+    }
 }
 
 fn render_function_body(

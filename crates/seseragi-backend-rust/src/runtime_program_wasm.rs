@@ -159,7 +159,7 @@ fn program_encode(
             program_encode(value.get().1.clone(), *codec, codes, out)
         }
         (ProgramCode::Either(left, right), V::Adt(value)) => {
-            let (tag, codec) = match value.get().0.as_str() {
+            let (tag, codec) = match value.get().0 {
                 "std/prelude::Left" => (0, *left),
                 "std/prelude::Right" => (1, *right),
                 _ => return Err("program ABI: unexpected Either owner"),

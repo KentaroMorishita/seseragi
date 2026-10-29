@@ -126,14 +126,6 @@ test("unused duplicate and unrepresented alias heads fail before generation", ()
       'type Label = | Label\nalias Erased<A> = Label\ninstance<A> Show<Erased<A>> { fn show value: Label -> String = "label" }\n',
       "trait.instance-head-unresolved",
     ],
-    [
-      'alias Arrow<A> = A -> Int\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Arrow> { fn tag<A> value: (A -> Int) -> String = "arrow" }\n',
-      "trait.instance-head-unresolved",
-    ],
-    [
-      'alias Fields<A> = { value: A }\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Fields> { fn tag<A> value: { value: A } -> String = "fields" }\n',
-      "trait.instance-head-unresolved",
-    ],
   ]) {
     const source = `// 雫🙂\n${declarations}\npub effect fn main = println "MUST_NOT_RUN"\n`
     const response = JSON.parse(
@@ -154,6 +146,39 @@ test("unused duplicate and unrepresented alias heads fail before generation", ()
         )
       ).not.toThrow()
     }
+  }
+})
+
+test("represented unused function and record heads compile without executing the original sentinel", async () => {
+  const assertGenerated = (source: string, file: string, module: string) => {
+    const response = JSON.parse(
+      compile_single_file(file, module, source)
+    ) as CompileResponse
+    expect(response.status).toBe("success")
+    expect(response.diagnostics.diagnostics).toEqual([])
+    if (response.status !== "success") throw new Error(JSON.stringify(response))
+    expect(response.generated.typescript).toContain("MUST_NOT_RUN")
+  }
+  // Keep the exact formerly rejected inputs, including the unused main body.
+  // Compilation is the acceptance boundary; never execute their sentinel.
+  for (const declarations of [
+    'alias Arrow<A> = A -> Int\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Arrow> { fn tag<A> value: (A -> Int) -> String = "arrow" }\n',
+    'alias Fields<A> = { value: A }\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Fields> { fn tag<A> value: { value: A } -> String = "fields" }\n',
+  ]) {
+    const source = `// 雫🙂\n${declarations}\npub effect fn main = println "MUST_NOT_RUN"\n`
+    assertGenerated(source, "λ.ssrg", "fixture/alias-negative")
+  }
+  for (const fixture of [
+    "alias-constructor-function",
+    "alias-constructor-record",
+  ]) {
+    const source = await Bun.file(
+      new URL(
+        `../../../examples/spec/artifacts/semantic-diagnostics-schema-1/${fixture}/main.ssrg`,
+        import.meta.url
+      )
+    ).text()
+    assertGenerated(source, "雫.ssrg", "fixture/constructor-coherence")
   }
 })
 
@@ -216,10 +241,16 @@ test("constructor overlap and unproved HKT heads fail without generated code", a
     ["constructor-section-duplicate", "trait.instance-duplicate"],
     ["constructor-coherence-unproved", "trait.instance-coherence-unproved"],
     ["alias-constructor-duplicate", "trait.instance-duplicate"],
-    ["alias-constructor-function", "trait.instance-head-unresolved"],
-    ["alias-constructor-record", "trait.instance-head-unresolved"],
+    [
+      "alias-constructor-function-wrong-method",
+      "trait.instance-method-signature-mismatch",
+    ],
+    [
+      "alias-constructor-record-wrong-method",
+      "trait.instance-method-signature-mismatch",
+    ],
     ["alias-method-hole-contract", "trait.instance-method-signature-mismatch"],
-  ]) {
+  ] as const) {
     const source = await Bun.file(
       new URL(
         `../../../examples/spec/artifacts/semantic-diagnostics-schema-1/${fixture}/main.ssrg`,
@@ -241,6 +272,11 @@ test("constructor overlap and unproved HKT heads fail without generated code", a
       new TextDecoder("utf-8", { fatal: true }).decode(
         bytes.slice(error.primary.start, error.primary.end)
       )
-    ).toStartWith(fixture === "alias-method-hole-contract" ? "fn" : "instance")
+    ).toStartWith(
+      fixture === "alias-method-hole-contract" ||
+        fixture.endsWith("-wrong-method")
+        ? "fn"
+        : "instance"
+    )
   }
 })

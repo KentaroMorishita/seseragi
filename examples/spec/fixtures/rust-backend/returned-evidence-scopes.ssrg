@@ -1,0 +1,42 @@
+alias Empty = Unit
+
+trait Render<A> {
+  fn render value: A -> (Empty -> String)
+}
+
+instance Render<Int> {
+  fn render value: Int -> (Empty -> String) = \_: Empty -> show value
+}
+
+fn call<A> value: A -> String where Render<A> = render<A> value ()
+fn renderBound<Unit> value: Unit -> (Empty -> String) where Show<Unit> =
+  \_: Empty -> show value
+fn caller<Int> value: Int -> String where Show<Int> = renderBound<Int> value ()
+
+fn showAlias<Unit> -> (Unit -> String) where Show<Unit> = {
+  let display: Unit -> String = show
+  \value -> display value
+}
+
+fn showAliasAlpha<A> -> (A -> String) where Show<A> = {
+  let display: A -> String = show
+  \value -> display value
+}
+
+fn invoke<A> callback: (Unit -> A) -> A = callback ()
+fn unitCallback<Unit> -> (Unit -> String) where Show<Unit> =
+  \value -> invoke (\_: Empty -> show value)
+fn unitCallbackAlpha<A> -> (A -> String) where Show<A> =
+  \value -> invoke (\_: Empty -> show value)
+
+pub effect fn main = do {
+  println (call<Int> 42)
+  println (renderBound<Int> 42 ())
+  println (caller<Int> 42)
+  let saved = renderBound<Int> 42
+  println (saved ())
+  println (showAlias<Int> () 7)
+  println (showAliasAlpha<Int> () 7)
+  println (unitCallback<Int> () 7)
+  println (unitCallbackAlpha<Int> () 7)
+}

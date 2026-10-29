@@ -69,6 +69,9 @@ fn module_names_and_mappings(
     let mut names = Vec::new();
     let mut mappings = Vec::new();
     let mut generated_line = generated_declaration_start_line(module);
+    for dictionary in &module.closed_display_dictionaries {
+        collect_expr_names(&dictionary.factory, helper_names, &mut names);
+    }
 
     for adt in &module.adts {
         push_declaration_mapping(
@@ -202,6 +205,7 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
     import_lines
         + 1 // Unicode ABI guard precedes every source declaration.
         + super::render_kind_declarations(module).lines().count()
+        + module.closed_display_dictionaries.len()
         + usize::from(
             import_lines > 0
                 && (!module.adts.is_empty()
@@ -610,6 +614,30 @@ mod tests {
     }
 
     #[test]
+    fn lazy_display_helpers_preserve_source_declaration_mappings() {
+        let source="pub fn kernel value: Int -> String = show (value, value + 1, True)\npub fn value -> Int = 42\n";
+        let module = crate::lower_core_module_to_typescript_ir(crate::lower_typed_module(
+            seseragi_semantics::type_module("display/main.ssrg", source),
+        ));
+        assert_eq!(module.closed_display_dictionaries.len(), 1);
+        let generated = super::super::render_typescript(&module);
+        let (names, mappings) =
+            module_names_and_mappings(&module, source, &runtime_helper_names(&module));
+        for (name, original_line) in [("kernel", 0), ("value", 1)] {
+            let actual = generated
+                .lines()
+                .position(|line| line.starts_with(&format!("export const {name}")))
+                .unwrap();
+            let mapping = mappings
+                .iter()
+                .find(|mapping| names[mapping.name_index] == name)
+                .unwrap();
+            assert_eq!(mapping.generated_line, actual, "{name}");
+            assert_eq!(mapping.original_line, original_line, "{name}");
+        }
+    }
+
+    #[test]
     fn counts_type_only_and_side_effect_source_import_lines_before_declarations() {
         let origin = SourceSpan {
             source: "main.ssrg".to_owned(),
@@ -618,6 +646,7 @@ mod tests {
         };
         let module = TypeScriptModule {
             higher_kinds: None,
+            closed_display_dictionaries: Vec::new(),
             foreign_modules: Vec::new(),
             schema: 1,
             stage: "typescript-ir".to_owned(),

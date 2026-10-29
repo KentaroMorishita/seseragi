@@ -138,17 +138,19 @@ fn alias_constructor_eta_keeps_represented_bodies_and_positioned_refusals() {
             "Pair<A, B>",
             Some("trait.instance-head-unresolved"),
         ),
+        // The head is now represented. This original unparenthesized source
+        // parameter still declares a different method signature and rejects.
         (
             "alias Arrow<A> = A -> Int",
             "Arrow",
             "A -> Int",
-            Some("trait.instance-head-unresolved"),
+            Some("trait.instance-method-signature-mismatch"),
         ),
         (
             "alias Fields<A> = { value: A }",
             "Fields",
             "{ value: A }",
-            Some("trait.instance-head-unresolved"),
+            None,
         ),
     ] {
         let source = format!("// 雫🙂\ntype Box<A> = | Box A\ntype Pair<A, B> = | Pair (A, B)\n{alias}\ntrait Tag<F<_>> {{ fn tag<A, B> value: F<A> -> String }}\ninstance Tag<{use_head}> {{ fn tag<A, B> value: {signature} -> String = \"unused\" }}\n");
@@ -173,6 +175,16 @@ fn alias_constructor_eta_keeps_represented_bodies_and_positioned_refusals() {
             &source[error.primary.start..error.primary.end],
             if refusal == "trait.instance-kind-mismatch" {
                 use_head
+            } else if refusal == "trait.instance-method-signature-mismatch" {
+                source
+                    .lines()
+                    .nth(5)
+                    .unwrap()
+                    .split_once("{ ")
+                    .unwrap()
+                    .1
+                    .strip_suffix(" }")
+                    .unwrap()
             } else {
                 source.lines().nth(5).unwrap()
             }

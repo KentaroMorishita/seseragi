@@ -71,6 +71,7 @@ on:
       - "scripts/float-probe.mjs"
       - "scripts/list-probe.ts"
       - "scripts/list-probe.mjs"
+      - "scripts/closed-display-probe.ts"
   push:
     branches: [main]
     paths:
@@ -142,6 +143,7 @@ on:
       - "scripts/float-probe.mjs"
       - "scripts/list-probe.ts"
       - "scripts/list-probe.mjs"
+      - "scripts/closed-display-probe.ts"
   workflow_dispatch:
     inputs:
       integration:
@@ -208,6 +210,12 @@ jobs:
           --test captured_primitive_identity
           --test program_wasm
           --test program_wasm_host_effect
+      - name: Preserve checked cursors and lazy standard display on every host
+        run: |
+          cargo test --locked -p seseragi-cli --test rust_backend list_prefix_
+          cargo test --locked -p seseragi-cli --test rust_backend closed_display_
+      - name: Preserve alias identities and returned source stages on every host
+        run: cargo test --locked -p seseragi-cli --test alias_constructor_sections
       - name: Rebuild selected program dependencies and drain old browser owners
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
@@ -317,11 +325,12 @@ jobs:
 
   integration-source-gate:
     if: github.event_name == 'workflow_dispatch' && inputs.integration
-    needs: [native, canonical-wasm]
     runs-on: macos-15
-    # Cold setup and workspace tests can reach conformance after 54m.
-    # Preserve the full lane and the individual command/test deadlines.
-    timeout-minutes: 90
+    # Every lane checks the same SHA in an isolated checkout. Run this source
+    # gate alongside native/canonical-wasm; all lanes still gate integration.
+    # Cold workspace + conformance reached native samples at 90m. Allow the
+    # complete lane to finish without changing individual test deadlines.
+    timeout-minutes: 120
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"

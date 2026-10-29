@@ -6,6 +6,23 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+List prefixの共有はloweringの`--test match_decision`、backendの
+`--test native list_prefix`、CLIの`--test rust_backend
+list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。
+元の生成TS両profileのstrictとfresh Bun/Node/nativeを比較し、guard失敗・長さ・
+nested payload・alias・tail捕捉・Ref cycle・Failure解放を保ちます。lexicalな
+`List` binderと未証明rootは認定しません。幅1/4/16/32はtrackedな
+`measure_list_prefix.py`で測り、targetごとに改善と速度回帰を区別します。
+
+閉じた標準tuple Show/Debug辞書のlazy reuseは、backendの`--test closed_display`と
+CLIの`--test rust_backend closed_display_`で確認します。canonical owner/type/child/
+arityとfactoryの純粋性を共有CoreIrで認定し、Parameter/user/generic/HKT/未証明factoryは
+元の経路を保ちます。raw TS両profileのstrict、fresh Bun/Node/native、first read・
+zero-step・別module・changing input・cache解放、helper名shadow・source map・reachability、
+Ref/cold/Failure/Defect/finalizerを確認します。`measure_display_runtime.py`の通常bodyを
+使うtimingと、別runのcold/warm allocator計数を分けます。両最適化の最終統合では、
+全体gateとcanonical compiler WASMの再生成も必要です。
+
 | 変更範囲 | コマンド | 含まれる検証 |
 | --- | --- | --- |
 | sample metadata / source | `bun run check:sample` | native CLI sample実行、全sampleのWASM compile / format、Playground sample manifestのfreshness |
@@ -107,10 +124,25 @@ renamed facade packageと保存methodのsource arityを保ちます。元のTS�
 fresh Bun／Nodeとnativeの出力・source一回評価、Ref・cold再実行・Failure／Defect後の
 finalizerとroot解放を比較します。使わない束縛parameterもconstructorのarityに数え、
 失われるfree instance parameter、不正owner／kind、未証明の選択は位置付きで拒否します。
-このproducerはcanonical nominal applicationとscoped value slotに限ります。structural
-function／record／row constructor、一般HKT逆推論、完全なtype-function同値判定と
+このproducerはcanonical nominal application、scoped value slotと、各要素がvalue kindを
+持つfunction・closed record・tupleを扱います。構造型aliasはdriverの
+`--test structural_aliases --test structural_alias_facades`とCLIの
+`--test alias_constructor_sections`で、renamed／namespace facade、返却method、元のTSの
+strictと公開型consumerの負例、callbackのRef保存・cold再実行・Failure／Defect後の
+finalizerとroot解放を確認します。共有semantics／lowering／driver全体の回帰も確認します。
+CLIの`--test rust_backend alias_head`で元のfunction／record拒否入力がsourceを変えずに
+emit／buildできることと、不正method型・失われるinstance parameterの位置付き拒否を確認します。
+非対応という旧期待値を残さず、非実行・出力なし・source保持の既存assertionを保ちます。
+row／requirement merge constructor、一般HKT逆推論、完全なtype-function同値判定と
 program WASMの受入拡張は含めません。共有型表現・投影の変更なので、統合前は必要な
 全体gateとcanonical compiler WASMの再生成・公開consumer検証も必要です。
+
+制約付き関数やprimary辞書のmethodが返す関数の連続適用は、backendの
+`--test returned_evidence_stages`とCLIの`--test alias_constructor_sections`で確認します。
+宣言のsource境界・完全な返却型・owner／kind・辞書を検証し、各本体を次のsource引数より先に
+実行します。保存・未使用部分適用、同名Unit／Int binder、Show aliasとUnit callback、
+最初の段階のDefect、構造型alias経由のRef・cold再実行・Failure／Defect後の解放を比較します。
+不正Core入力は位置付きで拒否し、program WASMの受入範囲は広げません。
 
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、

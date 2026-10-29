@@ -1367,8 +1367,11 @@ fn angle_tokens(tokens: &[Token]) -> HashSet<usize> {
                 .and_then(|position| significant.get(position))
                 .map(|index| &tokens[*index]);
             let next = significant.get(position + 1).map(|index| &tokens[*index]);
+            let qualified_argument = previous.is_some_and(|previous| previous.end == token.start)
+                && qualified_type_argument(tokens, &significant, position + 1);
             let type_like = previous
                 .is_some_and(|token| token.kind == TokenKind::IdentifierUpper || token.raw == ">")
+                || qualified_argument
                 || next.is_some_and(|token| {
                     matches!(
                         token.kind,
@@ -1386,6 +1389,32 @@ fn angle_tokens(tokens: &[Token]) -> HashSet<usize> {
         }
     }
     angles
+}
+
+fn qualified_type_argument(tokens: &[Token], significant: &[usize], mut at: usize) -> bool {
+    // A namespace starts with a lower identifier; the qualified type ends
+    // with an upper identifier. The caller also requires the source's tight
+    // application '<', so spaced comparisons keep their original role.
+    if significant
+        .get(at)
+        .is_none_or(|index| tokens[*index].kind != TokenKind::IdentifierLower)
+    {
+        return false;
+    }
+    loop {
+        if significant
+            .get(at + 1)
+            .is_none_or(|index| tokens[*index].kind != TokenKind::PunctuationDot)
+        {
+            return false;
+        }
+        at += 2;
+        match significant.get(at).map(|index| tokens[*index].kind) {
+            Some(TokenKind::IdentifierUpper) => return true,
+            Some(TokenKind::IdentifierLower) => {}
+            _ => return false,
+        }
+    }
 }
 
 #[derive(Default)]

@@ -9,6 +9,12 @@
     "fn silent -> Unit = {\n  effect fn ignored = println \"must stay cold\"\n}\nlet quiet = silent ()\n\npub effect fn main = {\n  let outer = 7\n  effect fn unused = println \"must stay cold\"\n  effect fn captured = pure outer\n  effect fn identity<A> value: A -> A = pure value\n  effect fn render<A> value: A -> String where Show<A> = pure (show value)\n  effect fn count n: Int -> Int = if n == 0 then pure 1 else count (n - 1)\n  effect fn log value: Int -> Unit with console: Console fails ConsoleError =\n    println (show value)\n  let fromPure = {\n    fn step -> Int = 1\n    effect fn step = pure 2\n    step ()\n  }\n  let fromEffect = {\n    effect fn step = pure 1\n    fn step -> Int = 3\n    step ()\n  }\n  do {\n    value <- captured ()\n    log value\n    first <- identity True\n    second <- identity 9\n    println $ show (first, second)\n    result <- count 3\n    println (show result)\n    rendered <- render 42\n    println rendered\n    shadowed <- fromPure\n    println $ show (shadowed, fromEffect)\n  }\n}\n"
   ],
   "names": [
+    "tupleShow",
+    "boolShow",
+    "intShow",
+    "tupleShow",
+    "intShow",
+    "intShow",
     "silent",
     "ignored",
     "println",
@@ -49,9 +55,7 @@
     "second",
     "identity",
     "println",
-    "tupleShow",
-    "boolShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "result",
     "count",
     "println",
@@ -62,11 +66,9 @@
     "println",
     "shadowed",
     "println",
-    "tupleShow",
-    "intShow",
-    "intShow",
+    "$ssrg$closedDisplay$1",
     "quiet",
     "silent"
   ],
-  "mappings": ";;;;;;;;AAAAA;AAKAG;AAFAqD"
+  "mappings": ";;;;;;;;;;AAAAM;AAKAG;AAFAiD"
 }

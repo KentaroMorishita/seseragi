@@ -319,34 +319,31 @@ fn native_file_error_code(error: &std::io::Error) -> &'static str {
         _ => "UNKNOWN",
     }
 }
-fn native_file_error(operation: &str, path: V, error: std::io::Error) -> V {
+fn native_file_error(operation: &'static str, path: V, error: std::io::Error) -> V {
     let code = native_file_error_code(&error);
     let kind = match code {
-        "ENOENT" => "FileNotFound",
-        "EEXIST" => "FileAlreadyExists",
-        "EPERM" | "EACCES" => "PermissionDenied",
-        "ENOTDIR" => "NotADirectory",
-        "EISDIR" => "IsADirectory",
-        "ENOTEMPTY" => "DirectoryNotEmpty",
-        "ELOOP" => "SymbolicLinkLoop",
-        "EXDEV" => "CrossDeviceMove",
-        "EINVAL" | "ENAMETOOLONG" => "PathNotSupported",
-        "ENOSYS" | "ENODEV" => "FileSystemUnavailable",
-        _ => "OtherFileSystemError",
+        "ENOENT" => "std/fs::FileNotFound",
+        "EEXIST" => "std/fs::FileAlreadyExists",
+        "EPERM" | "EACCES" => "std/fs::PermissionDenied",
+        "ENOTDIR" => "std/fs::NotADirectory",
+        "EISDIR" => "std/fs::IsADirectory",
+        "ENOTEMPTY" => "std/fs::DirectoryNotEmpty",
+        "ELOOP" => "std/fs::SymbolicLinkLoop",
+        "EXDEV" => "std/fs::CrossDeviceMove",
+        "EINVAL" | "ENAMETOOLONG" => "std/fs::PathNotSupported",
+        "ENOSYS" | "ENODEV" => "std/fs::FileSystemUnavailable",
+        _ => "std/fs::OtherFileSystemError",
     };
     let kind = V::adt(
-        &format!("std/fs::{kind}"),
-        if kind == "OtherFileSystemError" {
+        kind,
+        if kind == "std/fs::OtherFileSystemError" {
             V::text(code)
         } else {
             V::Unit
         },
     );
     V::Record(Shared::new(BTreeMap::from([
-        (
-            "operation".into(),
-            V::adt(&format!("std/fs::{operation}"), V::Unit),
-        ),
+        ("operation".into(), V::adt(operation, V::Unit)),
         ("path".into(), path),
         ("otherPath".into(), native_maybe(None)),
         ("kind".into(), kind),
@@ -358,7 +355,7 @@ fn native_read_text(host: &mut impl NativeFileHost, path: &V) -> NativeOutcome {
     let bytes = native_read_file(host, native_path_text(path)).map_err(|error| {
         NativeExit::Failure(V::adt(
             "std/fs::FileAccessFailure",
-            native_file_error("ReadFile", path.clone(), error),
+            native_file_error("std/fs::ReadFile", path.clone(), error),
         ))
     })?;
     native_decode_text(bytes)
@@ -378,7 +375,7 @@ fn native_decode_text(bytes: Vec<u8>) -> NativeOutcome {
         ))),
     }
 }
-fn native_filesystem_operation(name: &str, arguments: Vec<V>) -> V {
+fn native_filesystem_operation(name: &'static str, arguments: Vec<V>) -> V {
     if name.starts_with("std/path::") {
         return native_path_operation(name, &arguments);
     }
