@@ -13,6 +13,7 @@ fn basic_array_accepts_generic_saved_and_partial_callables_with_captured_element
     for source in [
         include_str!("../../../examples/spec/fixtures/rust-backend/basic-array.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/basic-array-effects.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-array-ordering.ssrg"),
     ] {
         let artifact = emit_rust_module(&checked(source), "main").unwrap();
         assert!(artifact

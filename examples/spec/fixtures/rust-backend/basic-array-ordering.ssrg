@@ -1,0 +1,27 @@
+import * as arrays from "std/array"
+fn keep value: Int -> Bool = value > 1
+pub fn probe -> Array<Int> = arrays.filter keep [1, 2]
+
+pub fn ordering -> Array<Bool> = {
+  let greater: Int -> Int -> Bool = (>)
+  let atLeast: Int -> Bool = (>=) 2
+  [
+    2 > 1,
+    2 > 2,
+    1 > 2,
+    2 >= 1,
+    2 >= 2,
+    1 >= 2,
+    9007199254740991 > -9007199254740991,
+    -9007199254740991 >= 9007199254740991,
+    greater 2 1,
+    greater 1 2,
+    atLeast 2,
+    atLeast 3
+  ]
+}
+
+pub effect fn main = do {
+  println (show (probe ()))
+  println (show (ordering ()))
+}
