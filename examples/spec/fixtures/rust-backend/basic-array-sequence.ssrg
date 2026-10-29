@@ -1,0 +1,61 @@
+import * as s from "std/array"
+import * as collection from "std/collection"
+import * as text from "std/text"
+
+fn maybe value: Maybe<Int> -> String = match value {
+  Nothing -> "none"
+  Just value -> show value
+}
+fn initial value: Maybe<Array<Int>> -> String = match value {
+  Nothing -> "none"
+  Just values -> show values
+}
+fn sized value: Either<collection.SizeError, Array<Array<Int>>> -> String = match value {
+  Left (collection.NonPositiveSize size) -> text.join "" ["size:", show size]
+  Right values -> show values
+}
+fn paired<A,B> right: Array<B> -> left: Array<A> -> Array<(A,B)> = s.zip right left
+fn prefix<A> predicate: (A -> Bool) -> values: Array<A> -> Array<A> = s.takeWhile predicate values
+fn step value: Int -> accumulated: String -> String =
+  text.join "" [show value, "(", accumulated, ")"]
+
+pub fn probe -> String = {
+  let values = [1, 2, 3]
+  let empty: Array<Int> = []
+  let singleton = [7]
+  let find: (Int -> Bool) -> Array<Int> -> Maybe<Int> = s.findIndex
+  let two = find (\value: Int -> value == 2)
+  let zip: (Int -> Int -> Int) -> Array<Int> -> Array<Int> -> Array<Int> = s.zipWith
+  let combine = zip (\a: Int -> \b: Int -> a * 10 + b)
+  let withRight = combine [4, 5]
+  let take = s.takeWhile (\value: Int -> value < 3)
+  let drop: (Int -> Bool) -> Array<Int> -> Array<Int> = s.dropWhile
+  let last: Array<Int> -> Maybe<Int> = s.last
+  let init: Array<Int> -> Maybe<Array<Int>> = s.init
+  let windows: Int -> Array<Int> -> Either<collection.SizeError, Array<Array<Int>>> = s.windows
+  let chunks = s.chunksOf<Int> 2
+  let fold: String -> (Int -> String -> String) -> Array<Int> -> String = s.reduceRight
+  let foldStep = fold "z" step
+  let badSize: Int -> collection.SizeError = collection.NonPositiveSize
+  let captured = 40
+  let callbacks: Array<Int -> Int> = [\value: Int -> value + captured]
+  let callback = match s.last callbacks { Nothing -> -1; Just call -> call 2 }
+  text.join "|" [
+    maybe (two values), maybe (s.findIndex (\_: Int -> False) values),
+    show (take values), show (drop (\value: Int -> value < 3) values),
+    maybe (last values), initial (init values),
+    show (paired [True, False] values),
+    show (withRight values),
+    show (s.unzip (paired [True, False] values)),
+    sized (chunks values), sized (windows 2 values),
+    foldStep values, foldStep empty,
+    maybe (last empty), initial (init empty), initial (init singleton),
+    sized (windows 4 values), sized (windows 0 values), sized (s.chunksOf (-2) values),
+    sized (windows 9007199254740991 values), sized (s.chunksOf 9007199254740991 values),
+    show (prefix (\_: String -> True) ["雪", "🙂"]),
+    show (s.zip empty values), show callback,
+    match badSize (-3) { collection.NonPositiveSize size -> show size },
+    show values
+  ]
+}
+pub effect fn main = println (probe ())

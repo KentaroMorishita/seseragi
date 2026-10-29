@@ -6,6 +6,17 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Array/Listのsequence基本22操作はbackendの`--test basic_sequence`、runtimeの
+`sequence_tests`、CLIの`--test basic_standard basic_sequence_`で確認します。
+findIndex/takeWhile/dropWhileのcallback順とshort-circuit、zipの左右型と短い入力、
+reduceRightの右からの評価、空入力・singleton・非正/巨大sizeとSizeError constructorを
+検査します。windowやprefixの結果に除外した要素を保持せず、Array lastのO(1)と
+Listの含まれるsuffix共有を保ちます。元raw TS両profile strict、fresh Bun/Node/native、
+通常2 module path package、保存関数・generic partial・cold replay・Failure/Defect後の
+finalizer/Ref cycle/root0と、canonical owner/kind/要素/段階/辞書の位置付き拒否を確認します。
+新しいprogram WASMとSizeError標準Eq/Show、sort/groupBy等は追加しません。
+共有runtimeの統合には全体gateと正規compiler WASMの更新も必要です。
+
 native JSON parse/stringifyとJson/JsonPathSegment/JsonParseErrorの公開constructorは、
 backendの`--test basic_json`、runtimeの`json_tests`、CLIの
 `--test basic_standard basic_json_`で確認します。Decimalの正確な係数・scaleを保ち、

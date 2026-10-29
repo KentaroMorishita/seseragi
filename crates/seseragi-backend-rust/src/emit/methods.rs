@@ -413,6 +413,7 @@ impl Backend<'_> {
             | "std/json::Json"
             | "std/json::JsonPathSegment"
             | "std/json::JsonParseError"
+            | "std/collection::SizeError"
             | "std/time::Duration"
             | "std/time::DurationError"
             | "std/clock::Clock"

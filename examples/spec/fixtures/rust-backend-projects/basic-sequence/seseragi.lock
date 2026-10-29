@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-sequence@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-sequence@0.0.0#workspace:."
+name = "fixture/basic-sequence"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:77a57260f8bc9f60e9db405cd3e67b76156a196775cff4c03b4960bb0d8cd03c"
+content_digest = "sha256:f0c06bc05f5d656087674f46a02bd83420f77b71e3075dcfa678e4f53f86bdfc"
+dependencies = [
+  { import = "sequences", package = "fixture/sequence-cells@0.0.0#path:vendor/sequences" },
+]
+
+[[packages]]
+id = "fixture/sequence-cells@0.0.0#path:vendor/sequences"
+name = "fixture/sequence-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/sequences"
+manifest_digest = "sha256:6641fc4d5196bdb05a19fa57807268d7467703e32bffb29584a9636be10314cf"
+content_digest = "sha256:cd9926716a797551266283e2f4d0dae1c3dedda900468752a429c5f2c30062c4"
+dependencies = []

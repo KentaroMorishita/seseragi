@@ -63,6 +63,16 @@ syntax errorは最初のUTF-8 byte位置とmessageを返す。Unicode escapeとs
 既存出力を上書きしない。この候補の配布は未完了で、JsonEncode/JsonDecode辞書や
 decoder combinatorは含めない。
 
+次のsequence候補はArray/Listそれぞれの`findIndex`、`takeWhile`、`dropWhile`、
+`last`、`init`、`zip`、`zipWith`、`unzip`、`chunksOf`、`windows`、`reduceRight`と、
+`std/collection.NonPositiveSize` constructorをnativeへ接続する。callbackはsource順に
+呼び、検索とprefix操作は結果が決まった時点で止める。`reduceRight`は末尾から
+`step element accumulator`を呼ぶ。zipは短い入力に合わせ、Tupleはleft/rightの順を保つ。
+非正sizeは`Left (NonPositiveSize size)`を返す。結果はstrictで、入力を変更せず、
+windowやprefixの結果に含まれない要素を保持しない。Arrayの`last`はO(1)、ListはO(n)。
+保存関数・genericな部分適用・通常path package、cold EffectとRef cycleを検査する。
+program WASM、残るcollection APIとSizeErrorの標準Eq/Show辞書はこの候補に含めない。
+
 Bytesは0〜255のbyteを独立したstorageに保持し、最初の範囲外Intを`ByteOutOfRange`として返す。
 BigIntのdecimal parse／formatはFloatや固定幅整数を経由しない。Text replaceはliteralの置換で、
 trimはUnicode 17のWhite_Spaceを使う。各APIの詳細は[標準library仕様](../spec/10-library-surface.md)を参照する。

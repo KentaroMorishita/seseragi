@@ -302,6 +302,91 @@ fn basic_array_infix_descending_comparisons_match_original_raw_strict_ts_and_nat
 }
 
 #[test]
+fn basic_sequence_array_saved_and_generic_operations_match_original_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-array-sequence.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-array-sequence.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_sequence_list_saved_and_generic_operations_match_original_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-list-sequence.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-list-sequence.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_sequence_keeps_saved_callbacks_cold_and_releases_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_sequence_callback_defect_runs_original_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-sequence-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("sequence-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42\ncold\n42\n84\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_sequence_path_package_keeps_generic_saved_functions_and_captured_elements() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-sequence"),
+        &[Case::success(
+            b"[(1, True), (2, False)]|`[`[1, 2], `[2, 3]]|1|42|2\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_sequence_fault_inside_fold_callback_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-sequence-effects.ssrg");
+    assert_eq!(source.matches("effects.succeed 42").count(), 1);
+    let path = scratch.0.join("sequence-fold-callback-defect.ssrg");
+    fs::write(&path,source.replace("effects.succeed 42","effects.succeed (arrays.reduceRight 0 (\\value: Int -> \\acc: Int -> value / acc) [1])")).unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "callback-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
 fn basic_array_releases_saved_readers_after_cold_replay_and_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-array-effects.ssrg"),

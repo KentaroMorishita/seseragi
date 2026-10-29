@@ -40,6 +40,7 @@ mod number_parse;
 mod operators;
 mod returned_calls;
 mod scalar;
+mod sequence_operations;
 mod tail;
 mod text;
 
@@ -178,6 +179,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_tuple.rs"));
     output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_array_operations.rs"));
+    output.push_str(include_str!("runtime_sequence.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int.rs"));
@@ -855,6 +857,9 @@ impl Backend<'_> {
                 if let Some(value) =
                     self.array_operation_reference(name, evidence, type_ref, scope)?
                 {
+                    return Ok(value);
+                }
+                if let Some(value) = self.sequence_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {
