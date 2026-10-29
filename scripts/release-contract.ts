@@ -279,7 +279,7 @@ async function bump(version: string | undefined): Promise<void> {
     `Set canonical toolchain version to ${version}; updated ${updated.length || "no"} package manifests.`
   )
   console.log(
-    "Regenerate the WASM package, add the CHANGELOG entry, then run bun run release:check."
+    "Synchronize Cargo.lock and toolchain-provider fixture locks with the new CLI, regenerate the WASM package, add the CHANGELOG entry, then run bun run release:check."
   )
 }
 
