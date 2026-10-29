@@ -1,0 +1,14 @@
+import * as bytes from "std/bytes"
+
+pub fn make values: Array<Int> -> Either<bytes.ByteError, bytes.Bytes> =
+  bytes.fromInts values
+
+pub fn reader buffer: bytes.Bytes -> Int -> Maybe<bytes.Byte> =
+  \index: Int -> bytes.get index buffer
+
+pub fn ints buffer: bytes.Bytes -> Array<Int> = bytes.toInts buffer
+
+pub fn code value: Maybe<bytes.Byte> -> Int = match value {
+  Nothing -> -1
+  Just byte -> bytes.toInt byte
+}

@@ -15,6 +15,14 @@ CSV変換・不正入力時の旧出力保持を確認します。旧sqrt拒否s
 未対応cbrtとList comprehensionの位置付き拒否を残します。新8 APIのprogram WASM受入は
 追加せず、target-specific proofを欠く入力を位置付きで拒否します。
 
+native Bytes fromInts/toInts/get/toIntはbackendの`--test basic_bytes`、runtimeの
+`bytes_tests`、CLIの`--test basic_standard basic_bytes_`で確認します。
+全unsigned byte・空入力・最初の範囲外Int・負/大index・入力不変・独立storage、
+canonical owner/kind/source stageと正確な位置、元raw TS両profileのstrict、
+fresh Bun/Node/native、Refに保存したbufferと関数のcold再実行・Failure/Defect後の
+finalizer/root0を保ちます。新しいprogram WASM ABIやByte/Bytesの全標準辞書、
+残るBytes APIを受け入れたことにはしません。
+
 List prefixの共有はloweringの`--test match_decision`、backendの
 `--test native list_prefix`、CLIの`--test rust_backend
 list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。
