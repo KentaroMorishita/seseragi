@@ -1,0 +1,26 @@
+import * as cells from "cells"
+import * as arrays from "std/array"
+import * as maps from "std/map"
+
+pub fn probe -> String = {
+  let original = cells.singleton "雫🙂"
+  let add = cells.add "🌊"
+  let current = add original
+  let read = cells.reader current
+  let remove = cells.remove "雫🙂"
+  let again = cells.add "雫🙂" (remove current)
+  let seed = 2
+  let callbacks = cells.put "callback" (\value: Int -> value + seed)
+  let entries = cells.entries callbacks
+  let callback = match arrays.get 0 entries {
+    Nothing -> \value: Int -> value
+    Just (_key, call) -> call
+  }
+  let contains: maps.Map<String, Int -> Int> -> Bool = cells.contains "callback"
+  show (cells.items original) + ":" + show (cells.items current)
+    + ":" + show (cells.items again) + ":" + show (read "雫🙂")
+    + ":" + show (read "missing") + ":" + show (contains callbacks)
+    + ":" + show (callback 40)
+}
+
+pub effect fn main = println (probe ())

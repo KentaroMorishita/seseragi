@@ -394,9 +394,13 @@ fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> 
     }
     let values = native_map_value(arguments.last().expect("Rust ABI: Map source arity"));
     match name {
-        "std/map::get" => {
+        "std/map::get" | "std/map::containsKey" => {
             let (eq, hash) = native_map_key_hash(values, &arguments[0], &dictionaries);
-            match native_map_find(values, &arguments[0], hash, &eq) {
+            let found = native_map_find(values, &arguments[0], hash, &eq);
+            if name == "std/map::containsKey" {
+                return V::Bool(found.is_some());
+            }
+            match found {
                 Some(id) => V::adt(
                     "std/prelude::Just",
                     native_map_entry(values, id).value.clone(),
@@ -469,7 +473,7 @@ fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> 
                 },
             }))
         }
-        "std/map::keys" | "std/map::values" => {
+        "std/map::keys" | "std/map::values" | "std/map::entries" => {
             assert!(dictionaries.is_empty());
             let mut output = Vec::new();
             let mut id = values.first;
@@ -481,8 +485,10 @@ fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> 
                 let entry = native_map_entry(values, current);
                 output.push(if name == "std/map::keys" {
                     entry.key.clone()
-                } else {
+                } else if name == "std/map::values" {
                     entry.value.clone()
+                } else {
+                    V::Tuple(Shared::new(vec![entry.key.clone(), entry.value.clone()]))
                 });
                 id = entry.next;
             }
@@ -765,6 +771,50 @@ mod map_tests {
         assert_eq!(selected.apply(V::Int(42)).render(), "42");
         drop((reference, selected));
         collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn contains_and_entries_preserve_pairing_order_and_dictionary_evaluation() {
+        let d = dictionaries();
+        events();
+        let first = native_map_operation(
+            "std/map::singleton",
+            d.clone(),
+            vec![V::Int(1), V::text("one")],
+        );
+        let values = native_map_operation(
+            "std/map::insert",
+            d.clone(),
+            vec![V::Int(3), V::text("three"), first.clone()],
+        );
+        events();
+        assert_eq!(
+            native_map_operation(
+                "std/map::containsKey",
+                d.clone(),
+                vec![V::Int(3), values.clone()]
+            )
+            .render(),
+            "True"
+        );
+        assert_eq!(events(), ["h3", "e1:3", "e3:3"]);
+        assert_eq!(
+            native_map_operation(
+                "std/map::containsKey",
+                d.clone(),
+                vec![V::Int(9), values.clone()]
+            )
+            .render(),
+            "False"
+        );
+        assert_eq!(events(), ["h9", "e1:9", "e3:9"]);
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![values.clone()]).render(),
+            "[(1, one), (3, three)]"
+        );
+        assert!(events().is_empty());
+        drop((d, first, values));
         assert_eq!(LIVE.with(Cell::get), 0);
     }
 }

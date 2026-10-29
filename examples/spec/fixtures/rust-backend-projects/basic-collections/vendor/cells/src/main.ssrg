@@ -1,0 +1,17 @@
+import * as sets from "std/set"
+import * as maps from "std/map"
+
+pub fn singleton<A> value: A -> sets.Set<A> where Eq<A>, Hash<A> =
+  sets.singleton value
+pub fn add<A> value: A -> sets.Set<A> -> sets.Set<A> where Eq<A>, Hash<A> =
+  sets.insert value
+pub fn remove<A> value: A -> sets.Set<A> -> sets.Set<A> where Eq<A>, Hash<A> =
+  sets.remove value
+pub fn reader<A> values: sets.Set<A> -> A -> Bool where Eq<A>, Hash<A> =
+  \value: A -> sets.contains value values
+pub fn items<A> values: sets.Set<A> -> Array<A> = sets.toArray values
+pub fn contains<K, V> key: K -> maps.Map<K, V> -> Bool where Eq<K>, Hash<K> =
+  maps.containsKey key
+pub fn entries<K, V> values: maps.Map<K, V> -> Array<(K, V)> = maps.entries values
+pub fn put<K, V> key: K -> value: V -> maps.Map<K, V> where Eq<K>, Hash<K> =
+  maps.singleton key value

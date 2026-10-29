@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-collections@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-collections@0.0.0#workspace:."
+name = "fixture/basic-collections"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:404cdfdc0543cf6f095cd27ee150fc478f8ba4097937fb24503aa6d3b4998280"
+content_digest = "sha256:03391ba1858bcb27c5e043da6c64c2191f77eb9a4a8394979a3441bda1474bef"
+dependencies = [
+  { import = "cells", package = "fixture/collection-cells@0.0.0#path:vendor/cells" },
+]
+
+[[packages]]
+id = "fixture/collection-cells@0.0.0#path:vendor/cells"
+name = "fixture/collection-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:8c2823bc9e02ebe375b2dfae934d68968858e93ffc8d2455a420d155661b85f3"
+content_digest = "sha256:a43d0527bf3d5ef2759bc5b2db18453153fe8d0b892a9beacf32b95d58967883"
+dependencies = []

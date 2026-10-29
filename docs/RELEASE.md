@@ -31,6 +31,11 @@ bun run release:check
 
 `release:bump`はcanonicalなCargo workspace versionと派生JavaScript manifestだけを
 更新します。WASM packageはRust crate metadataから生成されるため、必ずgeneratorを通します。
+Cargo.lockのworkspace versionも同期します。toolchain同梱providerを固定するfixtureは、
+新versionでbuildしたCLIの`lock update <package-root>`で明示的に更新します。
+providerのpackage version/sourceだけが変わり、contract・manifest・artifactのdigestや
+dependency graphは変わらないことを確認します。通常buildやidentity testでlockを更新して
+stale lockを隠してはいけません。
 `release:check`はCargo manifest / lock、runtime、Playground、WASM、extension、CHANGELOG
 のversion driftを拒否し、CIも同じgateを実行します。
 

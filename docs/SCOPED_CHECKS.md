@@ -6,6 +6,27 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Decimal parse/fromInt/Showはbackendの`--test basic_decimal`、runtimeの
+`decimal_tests`、CLIの`--test basic_standard basic_decimal_`で確認します。
+係数とscaleを任意精度の符号付き十進列として保ち、指数をFloatや固定幅整数へ丸めません。
+厳密なsyntax・最初の不正UTF-8位置・負zero/末尾zeroの正規化・canonical表記、
+opaque値と保存formatterを渡す通常2 module path package、raw TS両profile strictと
+fresh Bun/Node/nativeを比較します。巨大指数はparseでき、host limitを超える表記だけを
+Defectにします。cold再実行・Failure/Defect後のfinalizer/root0、Ref cycleと
+owner/kind/source段階の拒否も確認します。算術・丸め・全標準辞書や新program WASMは
+追加しません。共有native runtimeの統合時は全体gateも通します。
+
+native Set empty/singleton/contains/insert/remove/toArray/size/isEmptyと、Mapの
+containsKey/entriesはbackendの`--test basic_collections`、runtimeの`set_tests`と
+`map_tests`、CLIの`--test basic_standard basic_collections_`で確認します。
+Setは専用tagでMapのpersistent storageを共有し、canonicalな型owner・kind・要素型と
+選択済みEq/Hash、genericな部分適用のsource段階を検査します。順序・元key代表・snapshot、
+Unicode/Unit、Mapのkey/value対応、通常2 module path package、raw TS両profile strict、
+fresh Bun/Node/nativeを比較します。Set経由のRef cycle、列挙から取得するcallback、
+cold再実行・Failure/Defect後のfinalizerとroot0、削除済みkeyの非保持を確認します。
+Setを使うprogramも不正seedをアプリ開始前に拒否します。新10 APIのprogram WASM受入や
+Map/Set全APIは追加しません。共有native runtimeの統合時は全体gateも通します。
+
 native Map empty/singleton/get/insert/remove/keys/values/size/isEmptyはbackendの
 `--test basic_map`、runtimeの`map_tests`、CLIの`--test basic_standard basic_map_`で確認します。
 canonical owner/key/value・Eq/Hash・caller scopeと部分適用の残りsource段階を検査し、

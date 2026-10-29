@@ -1,0 +1,57 @@
+import * as sets from "std/set"
+import * as text from "std/text"
+
+type Key = | Key { identity: Int, label: String }
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool = match left {
+    Key a -> match right { Key b -> a.identity == b.identity }
+  }
+}
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key detail -> detail.label } }
+
+fn add<A> value: A -> values: sets.Set<A> -> sets.Set<A> where Eq<A>, Hash<A> =
+  sets.insert value values
+fn has<A> value: A -> values: sets.Set<A> -> Bool where Eq<A>, Hash<A> =
+  sets.contains value values
+fn saved -> (Int -> Bool) = {
+  let values = sets.singleton 41
+  \value: Int -> sets.contains value values
+}
+
+pub fn probe -> String = {
+  let empty: sets.Set<Int> = sets.empty ()
+  let one = sets.singleton 2
+  let two = sets.insert 1 one
+  let duplicate = sets.insert 2 two
+  let removed = sets.remove 2 duplicate
+  let again = add 2 removed
+  let contains: Int -> sets.Set<Int> -> Bool = sets.contains
+  let twoPresent = contains 2
+  let insert: Int -> sets.Set<Int> -> sets.Set<Int> = sets.insert
+  let three = insert 3
+  let first = Key ({ identity: 1, label: "original" })
+  let second = Key ({ identity: 2, label: "second" })
+  let equal = Key ({ identity: 1, label: "replacement" })
+  let keys = sets.singleton first |> sets.insert second
+  let replaced = sets.insert equal keys
+  let units = sets.singleton () |> sets.insert ()
+  let strings = sets.singleton "雫🙂" |> sets.insert "🌊" |> sets.insert "雫🙂"
+  let booleans = sets.singleton True |> sets.insert False |> sets.insert True
+  let chars = sets.singleton 'λ' |> sets.insert '雫'
+  let read = saved ()
+  text.join "|" [
+    show (sets.isEmpty empty), show (sets.size empty),
+    show (sets.toArray duplicate), show (sets.toArray one),
+    show (twoPresent duplicate), show (has 9 duplicate),
+    show (sets.toArray again), show (sets.size (sets.remove 9 duplicate)),
+    show (sets.toArray (three again)),
+    show (sets.toArray replaced), show (sets.toArray keys),
+    show (sets.contains equal replaced), show (sets.isEmpty (sets.remove first (sets.singleton first))),
+    show (sets.size units), show (sets.toArray units),
+    show (read 41), show (read 40),
+    show (sets.toArray strings), show (sets.toArray booleans), show (sets.toArray chars)
+  ]
+}
+
+pub effect fn main = println (probe ())

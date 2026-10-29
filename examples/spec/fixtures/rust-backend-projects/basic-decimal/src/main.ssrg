@@ -1,0 +1,12 @@
+import * as cells from "cells"
+
+pub fn probe -> String = {
+  let value = cells.fromInt 42
+  let saved = cells.reader "900719925474099200000000000000001.001"
+  let format = cells.format
+  format value + ":" + saved ()
+    + ":" + show (cells.accepted "1e99999999999999999999999999999999999999999")
+    + ":" + show (cells.accepted "1.2雪🙂")
+}
+
+pub effect fn main = println (probe ())

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-decimal@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-decimal@0.0.0#workspace:."
+name = "fixture/basic-decimal"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6c36e2305f1309fa9aa03effe35923d76902d5fc07fde60e97dd97ebb1524177"
+content_digest = "sha256:a98c768b447248c461457cdc391687b1ca1282cfeed575c09227959b31ce3296"
+dependencies = [
+  { import = "cells", package = "fixture/decimal-cells@0.0.0#path:vendor/cells" },
+]
+
+[[packages]]
+id = "fixture/decimal-cells@0.0.0#path:vendor/cells"
+name = "fixture/decimal-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:e1b142d33bf4e1e1ae27dad558a5daad7ef5048679cb7eef0ad3f2c12bac6cc3"
+content_digest = "sha256:b063059e28e8131202ffdd62609569672ec9d0c900ddea8040091235746d3841"
+dependencies = []

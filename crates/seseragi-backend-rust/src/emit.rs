@@ -19,9 +19,11 @@ mod calls;
 mod canonical;
 mod characters;
 mod clock;
+mod collections;
 mod comparisons;
 mod concurrency;
 mod console;
+mod decimal;
 mod display;
 mod effect_conversions;
 mod effect_defects;
@@ -31,7 +33,6 @@ mod floats;
 mod hashing;
 mod lists;
 mod local;
-mod maps;
 mod math;
 mod methods;
 mod number_parse;
@@ -179,8 +180,10 @@ fn emit_body(
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int.rs"));
+    output.push_str(include_str!("runtime_decimal.rs"));
     output.push_str(include_str!("runtime_hashing.rs"));
     output.push_str(include_str!("runtime_map.rs"));
+    output.push_str(include_str!("runtime_set.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));
@@ -344,11 +347,12 @@ fn emit_body(
         output.push_str(include_str!("runtime_effect_defect.rs"));
     }
     if let Some(entry) = entry {
-        let startup = if backend.capabilities.contains("map") {
-            "let _ = native_process_hash_seed(); "
-        } else {
-            ""
-        };
+        let startup =
+            if backend.capabilities.contains("map") || backend.capabilities.contains("set") {
+                "let _ = native_process_hash_seed(); "
+            } else {
+                ""
+            };
         if entry.is_effect {
             let runner = if backend.capabilities.contains("clock-sleep") {
                 "run_native_clock_entry"
@@ -547,6 +551,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.int_parse_show_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.decimal_show_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -833,7 +841,10 @@ impl Backend<'_> {
                 if let Some(value) = self.big_int_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
-                if let Some(value) = self.map_reference(name, evidence, type_ref, scope)? {
+                if let Some(value) = self.decimal_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.collection_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) =

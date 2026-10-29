@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.116] - 2026-10-30
+
+### Added
+
+- Generate native Set `empty`, `singleton`, `contains`, `insert`, `remove`, `toArray`, `size` and `isEmpty` with a distinct opaque identity over persistent Map storage. Preserve insertion order, original representatives, immutable snapshots, selected Eq/Hash evidence and saved generic source stages.
+- Generate native Map `containsKey` and `entries`, retaining one selected hash lookup and correctly paired entries in insertion order.
+- Parse and display exact arbitrary-precision Decimal values through `std/decimal.parse`, `fromInt` and the standard `Show` dictionary. Keep coefficients and signed scales exact without Float or fixed-width exponent conversion, precise UTF-8 parse errors, canonical zero and trailing-zero normalization. Preserve cold saved formatters and scoped cleanup when an expanded spelling exceeds host limits.
+
 ## [0.61.115] - 2026-10-29
 
 ### Added

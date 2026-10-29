@@ -30,6 +30,7 @@ impl Backend<'_> {
             evidence,
             scope,
         )?;
+        self.validate_decimal_show_value(dispatch, selected, type_ref, scope)?;
         if dispatch.trait_identity == "std/prelude::Ord" {
             self.validate_ord_method_value(dispatch, selected, type_ref, scope)?;
         }
@@ -407,6 +408,8 @@ impl Backend<'_> {
             | "std/bytes::ByteError"
             | "std/big-int::BigInt"
             | "std/big-int::BigIntParseError"
+            | "std/decimal::Decimal"
+            | "std/decimal::DecimalParseError"
             | "std/time::Duration"
             | "std/time::DurationError"
             | "std/clock::Clock"
@@ -428,9 +431,8 @@ impl Backend<'_> {
             | "std/prelude::Ordering"
             | "std/prelude::Console"
             | "std/prelude::ConsoleError" => Some(vec![]),
-            "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe" | "std/ref::Ref" => {
-                Some(vec![0])
-            }
+            "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe" | "std/ref::Ref"
+            | "std/set::Set" => Some(vec![0]),
             "std/prelude::Either"
             | "std/map::Map"
             | "std/effect::Fiber"
