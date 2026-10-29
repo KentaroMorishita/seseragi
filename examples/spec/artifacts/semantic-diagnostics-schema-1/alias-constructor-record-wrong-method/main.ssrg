@@ -1,0 +1,5 @@
+// 雫🙂
+alias Fields<A> = { value: A }
+trait Tag<F<_>> { fn tag<A> value: F<A> -> String }
+instance Tag<Fields> { fn tag<A> value: { value: Bool } -> String = "fields" }
+pub effect fn main = println "MUST_NOT_RUN"

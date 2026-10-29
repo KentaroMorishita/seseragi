@@ -1,0 +1,5 @@
+// 雫🙂
+alias Arrow<A> = A -> Int
+trait Tag<F<_>> { fn tag<A> value: F<A> -> String }
+instance Tag<Arrow> { fn tag<A> value: (Bool -> Int) -> String = "arrow" }
+pub effect fn main = println "MUST_NOT_RUN"

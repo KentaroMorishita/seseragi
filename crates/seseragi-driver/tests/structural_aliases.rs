@@ -2,6 +2,41 @@ use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 use seseragi_semantics::TypedType;
 
 #[test]
+fn formerly_unrepresented_structural_heads_keep_original_sources_and_method_rejections() {
+    for (source, wrong) in [
+        (
+            include_str!("../../../examples/spec/artifacts/semantic-diagnostics-schema-1/alias-constructor-function/main.ssrg"),
+            include_str!("../../../examples/spec/artifacts/semantic-diagnostics-schema-1/alias-constructor-function-wrong-method/main.ssrg"),
+        ),
+        (
+            include_str!("../../../examples/spec/artifacts/semantic-diagnostics-schema-1/alias-constructor-record/main.ssrg"),
+            include_str!("../../../examples/spec/artifacts/semantic-diagnostics-schema-1/alias-constructor-record-wrong-method/main.ssrg"),
+        ),
+    ] {
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let compiled = compile_module(
+                CompileInput::new("original-雫.ssrg", "fixture/structural", source)
+                    .with_profile(profile),
+            )
+            .unwrap_or_else(|error| panic!("{error:#?}"));
+            assert_eq!(compiled.typed_hir.instances.len(), 1);
+            let error = compile_module(
+                CompileInput::new("wrong-雫.ssrg", "fixture/structural", wrong)
+                    .with_profile(profile),
+            )
+            .unwrap_err();
+            assert!(error.diagnostics.iter().any(|diagnostic| {
+                diagnostic.message_key == "trait.instance-method-signature-mismatch"
+                    && diagnostic.primary.start < diagnostic.primary.end
+                    && wrong
+                        .get(diagnostic.primary.start..diagnostic.primary.end)
+                        .is_some()
+            }), "{error:#?}");
+        }
+    }
+}
+
+#[test]
 fn structural_alias_calls_keep_checked_bodies_in_both_profiles() {
     let source = include_str!(
         "../../../examples/spec/fixtures/rust-backend/structural-alias-functions.ssrg"
