@@ -1040,6 +1040,11 @@ impl Backend<'_> {
                 if equality::is_equality(operator) {
                     return self.equality_binary(operator, left, right, evidence, type_ref, scope);
                 }
+                if let Some(value) =
+                    self.descending_int_binary(operator, left, right, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
                 if characters::character_comparison(evidence, operator) {
                     return Ok(format!(
                         "native_char_binary({}, {}, {})",

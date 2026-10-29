@@ -240,6 +240,16 @@ fn basic_array_matches_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_array_infix_descending_comparisons_match_original_raw_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-array-ordering.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-array-ordering.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn basic_array_releases_saved_readers_after_cold_replay_and_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-array-effects.ssrg"),

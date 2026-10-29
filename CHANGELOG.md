@@ -12,6 +12,7 @@
 
 ### Fixed
 
+- Generate infix native Int `>` and `>=` after checking the canonical Ord, operand and Bool result types. Preserve left-to-right source evaluation and existing saved comparison functions.
 - Format adjacent closing delimiters of nested parenthesized blocks at the correct depth in one pass, without changing source tokens or recovery scope.
 
 ## [0.61.114] - 2026-10-29

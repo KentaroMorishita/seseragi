@@ -417,6 +417,8 @@ fn binary(op: &str, a: V, b: V) -> V {
         ("==", V::Text(a), V::Text(b)) => V::Bool(a.get() == b.get()),
         ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
         ("<=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(a, b)),
+        (">", V::Int(a), V::Int(b)) => V::Bool(int_less_value(b, a)),
+        (">=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(b, a)),
         ("+", V::Text(a), V::Text(b)) => V::Text(Shared::new(format!("{}{}", a.get(), b.get()))),
         _ => panic!("Rust ABI: unsupported binary operation"),
     }

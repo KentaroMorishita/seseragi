@@ -35,6 +35,50 @@ pub(super) fn int_ord_dictionary(selected: &CoreCallEvidence) -> Option<Result<S
 }
 
 impl Backend<'_> {
+    pub(super) fn descending_int_binary(
+        &mut self,
+        operator: &str,
+        left: &CoreExpr,
+        right: &CoreExpr,
+        evidence: &[CoreCallEvidence],
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<Option<String>> {
+        if !matches!(operator, ">" | ">=")
+            || !matches!(evidence, [CoreCallEvidence {
+                evidence: CoreInstanceEvidence::Standard { identity, .. }, ..
+            }] if identity == "std/int::Ord")
+        {
+            return Ok(None);
+        }
+        if self.program_wasm_library {
+            return Err("program WASM: native descending Int comparison requires a target-specific arithmetic proof".into());
+        }
+        let selected = &evidence[0];
+        int_ord_dictionary(selected).expect("selected standard Int Ord")?;
+        self.validate_ord_evidence(selected, scope)?;
+        self.comparison_result_type(type_ref, 2, evidence, scope)?;
+        for operand in [left, right] {
+            let actual = local::method_argument_type(operand)
+                .ok_or("Rust backend: missing descending Int comparison operand type")?;
+            self.match_local_type(
+                &selected.constraint.arguments[0],
+                &actual,
+                &BTreeMap::new(),
+                &mut BTreeMap::new(),
+                scope,
+            )?;
+        }
+        // Certify the standard primitive before using the direct runtime path.
+        // Reverse already evaluated values, never the source expressions.
+        Ok(Some(format!(
+            "binary({}, {}, {})",
+            quoted(operator),
+            self.expr(left, scope)?,
+            self.expr(right, scope)?
+        )))
+    }
+
     /// A named compare returns Ordering; comparison operator sections project
     /// that value to Bool elsewhere. Validate the selected method independently
     /// of its provider's actual source arity (one parameter may return a function).

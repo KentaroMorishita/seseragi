@@ -31,6 +31,12 @@ filterの順序、findの途中停止、空入力、負/大indexとcount、入�
 関数要素のcapture・Ref cycle、cold再実行・Failure/Defect後のfinalizer/root0を保ちます。
 receiver-firstな既存Array index ABIを変えず、新6 APIのprogram WASMは位置付きで拒否します。
 
+native Int infix `>` / `>=`の修復はbackendの`--test comparison_partials`とCLIの
+`--test basic_standard basic_array_infix_descending_`で確認します。
+正式112で拒否された元のArray filterのsource、整数境界と真偽、canonical Ordと
+同名binder・不正Coreの位置、既存の保存比較・user methodのstageを保ちます。
+新しいinfix経路のprogram WASM受入は追加しません。
+
 List prefixの共有はloweringの`--test match_decision`、backendの
 `--test native list_prefix`、CLIの`--test rust_backend
 list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。
