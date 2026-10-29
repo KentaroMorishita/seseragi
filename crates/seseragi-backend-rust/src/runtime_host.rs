@@ -57,7 +57,7 @@ impl NativeFileOperation {
                 let V::Adt(mode) = &captures[0] else {
                     panic!("Rust ABI: expected WriteMode")
                 };
-                let mode = match mode.get().0.as_str() {
+                let mode = match mode.get().0 {
                     "std/fs::Replace" => "Replace",
                     "std/fs::CreateNew" => "CreateNew",
                     "std/fs::Append" => "Append",
@@ -75,9 +75,9 @@ impl NativeFileOperation {
         NativeExit::Failure(match self {
             Self::ReadText => V::adt(
                 "std/fs::FileAccessFailure",
-                native_file_error("ReadFile", captures[0].clone(), error),
+                native_file_error("std/fs::ReadFile", captures[0].clone(), error),
             ),
-            Self::WriteText => native_file_error("WriteFile", captures[2].clone(), error),
+            Self::WriteText => native_file_error("std/fs::WriteFile", captures[2].clone(), error),
         })
     }
     fn outcome(

@@ -42,7 +42,7 @@ impl TraceValue for BTreeMap<String, V> {
         Ok(())
     }
 }
-impl TraceValue for (String, V) {
+impl TraceValue for (&'static str, V) {
     fn edges(&self, visit: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
         visit(&self.1);
         Ok(())

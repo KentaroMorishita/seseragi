@@ -134,12 +134,14 @@ fn pattern_predicate(
         scrutinee_type: pattern.scrutinee_type.clone(),
         branches: vec![
             TypeScriptDecisionBranch {
+                list_prefix: None,
                 tests: pattern.tests.clone(),
                 bindings: pattern.bindings.clone(),
                 guard,
                 value: TypeScriptExpr::Boolean { value: true },
             },
             TypeScriptDecisionBranch {
+                list_prefix: None,
                 tests: Vec::new(),
                 bindings: Vec::new(),
                 guard: None,
@@ -160,6 +162,7 @@ fn pattern_transform(
         scrutinee: Box::new(pattern_scrutinee(parameter, pattern)),
         scrutinee_type: pattern.scrutinee_type.clone(),
         branches: vec![TypeScriptDecisionBranch {
+            list_prefix: None,
             tests: pattern.tests.clone(),
             bindings: pattern.bindings.clone(),
             guard: None,

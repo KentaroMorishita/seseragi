@@ -139,6 +139,16 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     }
     render_foreign_modules(&mut output, module);
     output.push_str(&render_kind_declarations(module));
+    for dictionary in &module.closed_display_dictionaries {
+        // Only the getter is created at module initialization. Its complete
+        // proved factory stays at the original first evidence read. Storage
+        // belongs to this finite module, with no process-global cache or input
+        // values retained by the standard dictionary.
+        output.push_str(&format!(
+            "const {} = (() => {{ const create = () => {}; let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); }})()\n",
+            dictionary.name, render_typescript_expr(&dictionary.factory)
+        ));
+    }
     for adt in &module.adts {
         render_adt(&mut output, adt);
     }

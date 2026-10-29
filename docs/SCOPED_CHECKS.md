@@ -6,6 +6,23 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+List prefixの共有はloweringの`--test match_decision`、backendの
+`--test native list_prefix`、CLIの`--test rust_backend
+list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。
+元の生成TS両profileのstrictとfresh Bun/Node/nativeを比較し、guard失敗・長さ・
+nested payload・alias・tail捕捉・Ref cycle・Failure解放を保ちます。lexicalな
+`List` binderと未証明rootは認定しません。幅1/4/16/32はtrackedな
+`measure_list_prefix.py`で測り、targetごとに改善と速度回帰を区別します。
+
+閉じた標準tuple Show/Debug辞書のlazy reuseは、backendの`--test closed_display`と
+CLIの`--test rust_backend closed_display_`で確認します。canonical owner/type/child/
+arityとfactoryの純粋性を共有CoreIrで認定し、Parameter/user/generic/HKT/未証明factoryは
+元の経路を保ちます。raw TS両profileのstrict、fresh Bun/Node/native、first read・
+zero-step・別module・changing input・cache解放、helper名shadow・source map・reachability、
+Ref/cold/Failure/Defect/finalizerを確認します。`measure_display_runtime.py`の通常bodyを
+使うtimingと、別runのcold/warm allocator計数を分けます。両最適化の最終統合では、
+全体gateとcanonical compiler WASMの再生成も必要です。
+
 | 変更範囲 | コマンド | 含まれる検証 |
 | --- | --- | --- |
 | sample metadata / source | `bun run check:sample` | native CLI sample実行、全sampleのWASM compile / format、Playground sample manifestのfreshness |

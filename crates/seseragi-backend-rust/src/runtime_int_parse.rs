@@ -1,11 +1,11 @@
-fn native_int_parse_error(name: &str, value: V) -> V {
-    V::adt(&format!("std/int::{name}"), value)
+fn native_int_parse_error(tag: &'static str, value: V) -> V {
+    V::adt(tag, value)
 }
 
 fn native_int_invalid_digit(offset: usize) -> V {
     let offset = checked_int_value(i64::try_from(offset).expect("Int parse offset overflow"));
     native_int_parse_error(
-        "InvalidIntDigit",
+        "std/int::InvalidIntDigit",
         V::Record(Shared::new(BTreeMap::from([
             ("offset".into(), V::Int(offset)),
             ("radix".into(), V::Int(10)),
@@ -16,7 +16,7 @@ fn native_int_invalid_digit(offset: usize) -> V {
 fn native_decimal_int(text: &str) -> V {
     let bytes = text.as_bytes();
     if bytes.is_empty() {
-        return native_left(native_int_parse_error("EmptyInt", V::Unit));
+        return native_left(native_int_parse_error("std/int::EmptyInt", V::Unit));
     }
     let negative = bytes[0] == b'-';
     let start = usize::from(matches!(bytes[0], b'+' | b'-'));
@@ -38,7 +38,7 @@ fn native_decimal_int(text: &str) -> V {
             .and_then(|v| v.checked_add(i64::from(byte - b'0')))
             .filter(|v| *v <= 9_007_199_254_740_991);
         let Some(next) = next else {
-            return native_left(native_int_parse_error("IntOutsideRange", V::Unit));
+            return native_left(native_int_parse_error("std/int::IntOutsideRange", V::Unit));
         };
         value = next;
     }
@@ -48,13 +48,15 @@ fn native_decimal_int(text: &str) -> V {
 fn native_int_parse_operation(name: &str, arguments: Vec<V>) -> V {
     match (name, arguments.as_slice()) {
         ("std/int::parse", [text]) => native_decimal_int(native_text(text)),
-        ("std/int::EmptyInt", []) => native_int_parse_error("EmptyInt", V::Unit),
-        ("std/int::IntOutsideRange", []) => native_int_parse_error("IntOutsideRange", V::Unit),
+        ("std/int::EmptyInt", []) => native_int_parse_error("std/int::EmptyInt", V::Unit),
+        ("std/int::IntOutsideRange", []) => {
+            native_int_parse_error("std/int::IntOutsideRange", V::Unit)
+        }
         ("std/int::InvalidIntRadix", [value]) => {
-            native_int_parse_error("InvalidIntRadix", value.clone())
+            native_int_parse_error("std/int::InvalidIntRadix", value.clone())
         }
         ("std/int::InvalidIntDigit", [value]) => {
-            native_int_parse_error("InvalidIntDigit", value.clone())
+            native_int_parse_error("std/int::InvalidIntDigit", value.clone())
         }
         _ => panic!("Rust ABI: unsupported Int parse operation or arity"),
     }

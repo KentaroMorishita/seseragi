@@ -18,6 +18,10 @@ pub(super) struct Scope {
 }
 
 impl Scope {
+    pub(super) fn bound_type_names(&self) -> impl Iterator<Item = &str> {
+        self.type_parameters.keys().map(String::as_str)
+    }
+
     pub(super) fn type_parameter_arity(&self, name: &str) -> Option<u32> {
         self.type_parameters
             .get(name)

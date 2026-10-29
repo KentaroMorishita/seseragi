@@ -1,0 +1,13 @@
+import * as effects from "std/effect"
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do {
+    println "acquired"
+    effects.succeed ()
+  }) (
+    \_: Unit -> effects.recover (\_: ConsoleError -> effects.succeed ())
+      (println "released")
+  )
+  println (show (9007199254740991 + 1, True))
+  println "unreachable"
+}

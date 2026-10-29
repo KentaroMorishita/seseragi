@@ -1,0 +1,11 @@
+import * as char from "std/char"
+fn pointValue value: Maybe<Char> -> Int = match value {
+  Just scalar -> char.codePoint scalar
+  Nothing -> -1
+}
+fn sumPoints point: Int -> limit: Int -> total: Int -> Int =
+  if point == limit then total
+  else sumPoints (point + 1) limit (total + pointValue (char.fromCodePoint point))
+pub fn kernel limit: Int -> Int = sumPoints 0 limit 0
+pub fn probe -> Int = kernel 1114113
+pub effect fn main = println (show (probe ()))

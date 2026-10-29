@@ -499,7 +499,18 @@ impl Backend<'_> {
                 }
             }
             if let Some(dictionary) = self.structural_display_dictionary(selected, scope)? {
-                values.push(dictionary);
+                if let Some(key) = seseragi_lowering::closed_standard_display_key(
+                    selected,
+                    scope.bound_type_names(),
+                ) {
+                    self.closed_dictionary_sites += 1;
+                    values.push(format!(
+                        "cached({}, || {dictionary})",
+                        quoted(&format!("closed-standard-display:{key}"))
+                    ));
+                } else {
+                    values.push(dictionary);
+                }
                 continue;
             }
             if let Some(dictionary) = self.filesystem_display_dictionary(selected, scope)? {
@@ -1308,6 +1319,7 @@ impl Backend<'_> {
             ),
             CoreExpr::Decision {
                 scrutinee,
+                scrutinee_type,
                 branches,
                 ..
             } => {
@@ -1318,10 +1330,28 @@ impl Backend<'_> {
                     self.expr(scrutinee, scope)?
                 );
                 for branch in branches {
+                    let plan = seseragi_lowering::core_list_prefix_plan(
+                        scrutinee_type,
+                        branch,
+                        scope.bound_type_names(),
+                    );
+                    let prefix = plan.as_ref().map(|plan| {
+                        let prefix = self.fresh();
+                        let branch_label = self.fresh();
+                        value.push_str(&Self::prefix_checks(
+                            plan,
+                            &temporary,
+                            &prefix,
+                            &branch_label,
+                        ));
+                        prefix
+                    });
+                    let prefix = prefix.as_deref();
                     let conditions = branch
                         .tests
                         .iter()
-                        .map(|test| self.test(test, &temporary))
+                        .skip(usize::from(plan.is_some()))
+                        .map(|test| self.test(test, &temporary, prefix))
                         .collect::<Result<Vec<_>>>()?;
                     value.push_str(&format!(
                         "if {} {{",
@@ -1336,7 +1366,7 @@ impl Backend<'_> {
                         value.push_str(&format!(
                             "let {} = {};",
                             id(&binding.name),
-                            Self::project(&temporary, &binding.path)?
+                            Self::project_prefix(&temporary, &binding.path, prefix)?
                         ));
                         inner.insert(binding.name.clone());
                     }
@@ -1351,6 +1381,9 @@ impl Backend<'_> {
                         "if {guard} {{ break '{label} {}; }} }}",
                         self.expr(&branch.value, &inner)?
                     ));
+                    if plan.is_some() {
+                        value.push('}');
+                    }
                 }
                 value.push_str("panic!(\"Rust backend: unmatched checked decision\"); } }");
                 value
@@ -1524,29 +1557,66 @@ impl Backend<'_> {
         Ok(value)
     }
 
-    fn test(&self, test: &CoreDecisionTest, root: &str) -> Result<String> {
+    fn prefix_checks(
+        plan: &seseragi_lowering::CoreListPrefixPlan,
+        root: &str,
+        prefix: &str,
+        label: &str,
+    ) -> String {
+        let mut body = format!("'{label}: {{ let {prefix}_0 = &{root};");
+        for index in 0..plan.length {
+            body.push_str(&format!(
+                "let Some({prefix}_cell{index}) = {prefix}_{index}.list_cell() else {{ break '{label}; }}; let {prefix}_{} = &{prefix}_cell{index}.tail;",
+                index+1
+            ));
+        }
+        if !plan.minimum {
+            body.push_str(&format!(
+                "if {prefix}_{}.list_cell().is_some() {{ break '{label}; }}",
+                plan.length
+            ));
+        }
+        body
+    }
+
+    fn project_prefix(
+        root: &str,
+        path: &[CoreDecisionProjection],
+        prefix: Option<&str>,
+    ) -> Result<String> {
+        if let Some(prefix) = prefix {
+            match path.first() {
+                Some(CoreDecisionProjection::ListElement { index }) => {
+                    return Self::project(&format!("{prefix}_cell{index}.head"), &path[1..]);
+                }
+                Some(CoreDecisionProjection::ListRest { start }) => {
+                    return Self::project(&format!("{prefix}_{start}"), &path[1..]);
+                }
+                _ => {}
+            }
+        }
+        Self::project(root, path)
+    }
+
+    fn test(&self, test: &CoreDecisionTest, root: &str, prefix: Option<&str>) -> Result<String> {
+        let project = |path: &[CoreDecisionProjection]| Self::project_prefix(root, path, prefix);
         Ok(match test {
             CoreDecisionTest::Constructor {
                 path, constructor, ..
-            } => format!(
-                "({}).tagged({})",
-                Self::project(root, path)?,
-                quoted(constructor)
-            ),
+            } => format!("({}).tagged({})", project(path)?, quoted(constructor)),
             CoreDecisionTest::Integer { path, value, .. } => format!(
                 "matches!({}, V::Int(n) if n == {}_i64)",
-                Self::project(root, path)?,
+                project(path)?,
                 value
                     .parse::<i64>()
                     .map_err(|_| "Rust backend: invalid decision integer")?
             ),
-            CoreDecisionTest::Boolean { path, value, .. } => format!(
-                "matches!({}, V::Bool(n) if n == {value})",
-                Self::project(root, path)?
-            ),
+            CoreDecisionTest::Boolean { path, value, .. } => {
+                format!("matches!({}, V::Bool(n) if n == {value})", project(path)?)
+            }
             CoreDecisionTest::String { path, value, .. } => format!(
                 "native_textual_literal_matches(&({}), {})",
-                Self::project(root, path)?,
+                project(path)?,
                 quoted(value)
             ),
             CoreDecisionTest::ListLength {
@@ -1556,7 +1626,7 @@ impl Backend<'_> {
                 ..
             } => format!(
                 "({}).list_length_matches({length}, {minimum})",
-                Self::project(root, path)?
+                project(path)?
             ),
             _ => return Err("Rust backend: unsupported decision test".into()),
         })

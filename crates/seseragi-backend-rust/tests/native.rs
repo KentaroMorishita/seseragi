@@ -55,6 +55,39 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn scalar_adt_roundtrip_bounds_actual_system_allocations_and_releases_every_node() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/char-roundtrip-kernel.ssrg"
+    ));
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let mut generated = artifact.source[..main].to_owned();
+    generated.push_str(
+        &include_str!("../examples/native_lifetimes/char_allocation.rs")
+            .replace("KERNEL", &rust_id("native/main::kernel"))
+            .replace("ALLOCATION_BOUND", "1_114_113"),
+    );
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let measured: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(measured["checksum"], 620_506_872_831_i64);
+    assert_eq!(measured["managedLive"], 0);
+    assert_eq!(measured["allocations"], measured["deallocations"]);
+    assert_eq!(
+        measured["cumulativeRequestedBytes"],
+        measured["cumulativeReleasedBytes"]
+    );
+    assert!(measured["allocations"].as_u64().unwrap() <= 1_114_113);
+}
+
+#[test]
 fn array_index_keeps_maybe_bounds_generic_elements_and_saved_callables() {
     run(
         include_str!("../../../examples/spec/fixtures/rust-backend/array-index.ssrg"),
@@ -1022,6 +1055,53 @@ fn persistent_list_values_patterns_display_and_operations_execute() {
 }
 
 #[test]
+fn checked_list_prefixes_reuse_cursors_and_preserve_nested_guards_and_escaped_tails() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/list-prefix-decisions.ssrg"
+    ));
+    assert!(artifact.source.contains("_cell1.head.clone()"));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(output.stderr.is_empty());
+    assert_eq!(
+        output.stdout,
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/list-prefix-decisions.stdout")
+    );
+}
+
+#[test]
+fn wide_list_prefixes_do_not_repeat_root_walks() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/list-prefix-kernel.ssrg"
+    ));
+    assert!(artifact.source.contains("_cell31.head.clone()"));
+    assert!(!artifact.source.contains(".list_element(31)"));
+    assert!(!artifact.source.contains(".list_length_matches(32, true)"));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/list-prefix-kernel.stdout")
+    );
+}
+
+#[test]
 fn deep_list_construction_traversal_and_drop_are_separately_stack_safe() {
     let artifact = emit(include_str!(
         "../../../examples/spec/fixtures/rust-backend/list-tail.ssrg"
@@ -1823,6 +1903,7 @@ fn checked_effect_programs_run_on_a_small_stack_and_release_the_native_heap() {
         include_str!("../../../examples/spec/fixtures/rust-backend-research/deep-effect.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend-research/ref-cycle.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/list-effects.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/list-prefix-effects.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/local-dictionary-effects.ssrg"),
     ] {
         let core =

@@ -44,6 +44,9 @@ pub fn retain_application(
                 .or_default()
                 .extend(refs.into_iter().map(|name| (id.clone(), name)));
         };
+        for dictionary in &module.closed_display_dictionaries {
+            add(&dictionary.name, expression(&dictionary.factory));
+        }
         for TypeScriptBinding::Const {
             name,
             initializer,
@@ -241,6 +244,9 @@ pub fn retain_application(
         module
             .functions
             .retain(|TypeScriptFunction::ConstFunction { name, .. }| keep(name));
+        module
+            .closed_display_dictionaries
+            .retain(|dictionary| keep(&dictionary.name));
         module.aliases.retain(|alias| keep(&alias.name));
         module.structs.retain(|structure| keep(&structure.name));
         module.adts.retain(|adt| keep(&adt.name));
@@ -651,6 +657,39 @@ mod tests {
             id,
             "pub fn main value: Int -> Int = value\nfn unused value: Int -> Int = value\n",
         )))
+    }
+    #[test]
+    fn lazy_display_factories_retain_their_imports_only_with_a_live_reader() {
+        let source="pub fn main value: Int -> String = show (value, True)\nfn unused value: Int -> String = debug (value, True)";
+        let module = lower_core_module_to_typescript_ir(lower_typed_module(
+            seseragi_semantics::type_module("display/main.ssrg", source),
+        ));
+        assert_eq!(module.closed_display_dictionaries.len(), 2);
+        let mut modules = BTreeMap::from([("display".to_owned(), module)]);
+        retain_application(&mut modules, &[("display".into(), "main".into())]);
+        let module = &modules["display"];
+        assert_eq!(module.closed_display_dictionaries.len(), 1);
+        assert!(module
+            .imports
+            .iter()
+            .any(|import| import.feature == "core.tuple.show"));
+        assert!(!module
+            .imports
+            .iter()
+            .any(|import| import.feature == "core.tuple.debug"));
+
+        let source="pub fn main value: Int -> Int = value\nfn unused value: Int -> String = show (value, True)";
+        let module = lower_core_module_to_typescript_ir(lower_typed_module(
+            seseragi_semantics::type_module("display/main.ssrg", source),
+        ));
+        assert_eq!(module.closed_display_dictionaries.len(), 1);
+        let mut modules = BTreeMap::from([("display".to_owned(), module)]);
+        retain_application(&mut modules, &[("display".into(), "main".into())]);
+        assert!(modules["display"].closed_display_dictionaries.is_empty());
+        assert!(!modules["display"]
+            .imports
+            .iter()
+            .any(|import| import.feature == "core.tuple.show"));
     }
     #[test]
     fn visits_cyclic_symbol_edges_once_and_is_order_independent() {

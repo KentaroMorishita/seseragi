@@ -33,8 +33,8 @@ use seseragi_syntax::{
 };
 use std::collections::BTreeMap;
 
+use super::closed_display::selected_dictionary_expression;
 use super::decision::lower_core_decision;
-use super::dictionaries::local_dictionary_expression;
 use super::names::{local_name, safe_identifier};
 use super::types::{
     lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_expr,
@@ -117,11 +117,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 }
                 if let Some(method) = operator_trait_method(&name) {
                     if let Some(dictionary) = evidence.first().and_then(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
                     }) {
                         return checked_operator_reference(
                             curried_dictionary_method_reference(dictionary, method),
@@ -149,8 +145,8 @@ pub(super) fn lower_core_expr_to_typescript(
                     let dictionary = evidence
                         .first()
                         .and_then(|selected| {
-                            local_dictionary_expression(
-                                &selected.evidence,
+                            selected_dictionary_expression(
+                                &selected,
                                 imported_values,
                                 imported_types,
                             )
@@ -170,11 +166,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     Some(StandardOperatorKind::Equality)
                 ) {
                     if let Some(dictionary) = evidence.first().and_then(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
                     }) {
                         return checked_operator_reference(
                             if name == "!=" {
@@ -392,11 +384,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 let dictionary = evidence
                     .first()
                     .and_then(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
                     })
                     .expect("comparison application requires materialized Ord evidence");
                 lower_comparison_call(
@@ -415,21 +403,16 @@ pub(super) fn lower_core_expr_to_typescript(
                 let (selected, method_evidence) = evidence
                     .split_first()
                     .expect("trait operator requires primary instance evidence");
-                let selected = local_dictionary_expression(
-                    &selected.evidence,
-                    imported_values,
-                    imported_types,
-                )
-                .expect("trait operator requires materialized primary evidence");
+                let selected =
+                    selected_dictionary_expression(&selected, imported_values, imported_types)
+                        .expect("trait operator requires materialized primary evidence");
                 let method_evidence = method_evidence
                     .iter()
                     .map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("trait operator method constraint requires materialized evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect(
+                                "trait operator method constraint requires materialized evidence",
+                            )
                     })
                     .collect();
                 lower_trait_operator_call(selected, operator, arguments, method_evidence)
@@ -448,21 +431,14 @@ pub(super) fn lower_core_expr_to_typescript(
                 let (selected, method_evidence) = evidence
                     .split_first()
                     .expect("trait dispatch requires primary instance evidence");
-                let selected = local_dictionary_expression(
-                    &selected.evidence,
-                    imported_values,
-                    imported_types,
-                )
-                .expect("local trait dispatch requires materialized primary evidence");
+                let selected =
+                    selected_dictionary_expression(&selected, imported_values, imported_types)
+                        .expect("local trait dispatch requires materialized primary evidence");
                 let method_evidence = method_evidence
                     .iter()
                     .map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("trait method constraint requires materialized evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect("trait method constraint requires materialized evidence")
                     })
                     .collect::<Vec<_>>();
                 let mut deferred = Vec::new();
@@ -535,24 +511,18 @@ pub(super) fn lower_core_expr_to_typescript(
             } else if let Some(operation) =
                 runtime_collection_for_each_operation(&callee, &evidence)
             {
-                let dictionary = local_dictionary_expression(
-                    &evidence[0].evidence,
-                    imported_values,
-                    imported_types,
-                )
-                .expect("forEach requires materialized Iterable dictionary evidence");
+                let dictionary =
+                    selected_dictionary_expression(&evidence[0], imported_values, imported_types)
+                        .expect("forEach requires materialized Iterable dictionary evidence");
                 arguments.insert(0, dictionary);
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
             } else if let Some(operation) = runtime_collection_join_operation(&callee, &evidence) {
-                let dictionary = local_dictionary_expression(
-                    &evidence[0].evidence,
-                    imported_values,
-                    imported_types,
-                )
-                .expect("join requires materialized Reducible dictionary evidence");
+                let dictionary =
+                    selected_dictionary_expression(&evidence[0], imported_values, imported_types)
+                        .expect("join requires materialized Reducible dictionary evidence");
                 arguments.insert(0, dictionary);
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
@@ -562,12 +532,8 @@ pub(super) fn lower_core_expr_to_typescript(
                 let dictionaries = evidence
                     .iter()
                     .map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("sum requires materialized Reducible, Zero, and Add evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect("sum requires materialized Reducible, Zero, and Add evidence")
                     })
                     .collect::<Vec<_>>();
                 arguments.splice(0..0, dictionaries);
@@ -580,12 +546,10 @@ pub(super) fn lower_core_expr_to_typescript(
                 let dictionaries = evidence
                     .iter()
                     .map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("product requires materialized Reducible, One, and Mul evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect(
+                                "product requires materialized Reducible, One, and Mul evidence",
+                            )
                     })
                     .collect::<Vec<_>>();
                 arguments.splice(0..0, dictionaries);
@@ -598,12 +562,8 @@ pub(super) fn lower_core_expr_to_typescript(
                 let dictionaries = evidence
                     .iter()
                     .map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("combine requires materialized Reducible and Monoid evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect("combine requires materialized Reducible and Monoid evidence")
                     })
                     .collect::<Vec<_>>();
                 arguments.splice(0..0, dictionaries);
@@ -614,12 +574,9 @@ pub(super) fn lower_core_expr_to_typescript(
             } else if let Some(operation) =
                 runtime_collection_predicate_operation(&callee, &evidence)
             {
-                let dictionary = local_dictionary_expression(
-                    &evidence[0].evidence,
-                    imported_values,
-                    imported_types,
-                )
-                .expect("any/all require materialized Iterable dictionary evidence");
+                let dictionary =
+                    selected_dictionary_expression(&evidence[0], imported_values, imported_types)
+                        .expect("any/all require materialized Iterable dictionary evidence");
                 arguments.insert(0, dictionary);
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
@@ -667,12 +624,8 @@ pub(super) fn lower_core_expr_to_typescript(
                 let dictionaries = evidence
                     .iter()
                     .map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("standard call requires materialized evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect("standard call requires materialized evidence")
                     })
                     .collect::<Vec<_>>();
                 let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
@@ -705,12 +658,8 @@ pub(super) fn lower_core_expr_to_typescript(
             } else if let Some(operation) = runtime_stream_operation(&callee) {
                 if callee == "std/stream::fromIterable" {
                     arguments.extend(evidence.iter().map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("Stream.fromIterable requires materialized Iterable evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect("Stream.fromIterable requires materialized Iterable evidence")
                     }));
                 }
                 TypeScriptExpr::RuntimeCall {
@@ -720,12 +669,9 @@ pub(super) fn lower_core_expr_to_typescript(
             } else if callee == "std/prelude::reduce"
                 && matches!(evidence.as_slice(), [selected] if selected.constraint.name == "Reducible")
             {
-                let dictionary = local_dictionary_expression(
-                    &evidence[0].evidence,
-                    imported_values,
-                    imported_types,
-                )
-                .expect("user Reducible call requires materialized dictionary evidence");
+                let dictionary =
+                    selected_dictionary_expression(&evidence[0], imported_values, imported_types)
+                        .expect("user Reducible call requires materialized dictionary evidence");
                 TypeScriptExpr::DictionaryCall {
                     dictionary: Box::new(dictionary),
                     method: "reduce".to_owned(),
@@ -759,7 +705,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     .map(|arity| arguments.split_off(arity))
                     .unwrap_or_default();
                 arguments.extend(evidence.iter().map(|selected| {
-                    local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                    selected_dictionary_expression(&selected, imported_values, imported_types)
                         .expect("JSON operation requires materializable codec evidence")
                 }));
                 if let Some(arity) = factory_arity {
@@ -878,8 +824,8 @@ pub(super) fn lower_core_expr_to_typescript(
                         .iter()
                         .find(|selected| selected.constraint.name == "Debug")
                         .and_then(|selected| {
-                            local_dictionary_expression(
-                                &selected.evidence,
+                            selected_dictionary_expression(
+                                &selected,
                                 imported_values,
                                 imported_types,
                             )
@@ -888,12 +834,10 @@ pub(super) fn lower_core_expr_to_typescript(
                     dictionary_arguments.push(debug);
                 } else {
                     dictionary_arguments.extend(evidence.iter().map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("constrained standard effect call requires materializable evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect(
+                                "constrained standard effect call requires materializable evidence",
+                            )
                     }));
                 }
                 let mut parameters = Vec::new();
@@ -949,12 +893,8 @@ pub(super) fn lower_core_expr_to_typescript(
                 let evidence = evidence
                     .iter()
                     .map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                        .expect("constrained function call requires materializable evidence")
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .expect("constrained function call requires materializable evidence")
                     })
                     .collect::<Vec<_>>();
                 let callee = imported_values
@@ -1349,7 +1289,7 @@ pub(super) fn lower_core_expr_to_typescript(
         } => {
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
             arguments.extend(evidence.iter().map(|selected| {
-                local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                selected_dictionary_expression(&selected, imported_values, imported_types)
                     .expect("constrained effect call requires materializable evidence")
             }));
             if let Some(operation) = runtime_effect_operation(&callee) {
@@ -1449,7 +1389,7 @@ pub(super) fn lower_core_expr_to_typescript(
             ..
         } => TypeScriptExpr::MonadDo {
             dictionary: Box::new(
-                local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
+                selected_dictionary_expression(&evidence, imported_values, imported_types)
                     .expect("monad do requires materialized Monad evidence"),
             ),
             statements: statements
@@ -1550,12 +1490,9 @@ fn lower_template(
                 let evidence = evidence.expect(
                     "template interpolation must select Show evidence before TypeScript lowering",
                 );
-                let dictionary = local_dictionary_expression(
-                    &evidence.evidence,
-                    imported_values,
-                    imported_types,
-                )
-                .expect("template interpolation requires materializable Show evidence");
+                let dictionary =
+                    selected_dictionary_expression(&evidence, imported_values, imported_types)
+                        .expect("template interpolation requires materializable Show evidence");
                 TypeScriptExpr::DictionaryCall {
                     dictionary: Box::new(dictionary),
                     method: "show".to_owned(),
@@ -1916,14 +1853,14 @@ fn lower_binary(
         let dictionary = evidence
             .first()
             .and_then(|selected| {
-                local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                selected_dictionary_expression(&selected, imported_values, imported_types)
             })
             .expect("comparison requires materialized Ord evidence");
         return comparison_result(&operator, dictionary, left, right);
     }
     if matches!(operator.as_str(), "==" | "!=") {
         if let Some(selected) = evidence.first().and_then(|selected| {
-            local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+            selected_dictionary_expression(&selected, imported_values, imported_types)
         }) {
             let equals = TypeScriptExpr::DictionaryCall {
                 dictionary: Box::new(selected),
@@ -1950,7 +1887,7 @@ fn lower_binary(
     }
     if let Some(method) = operator_trait_method(&operator) {
         if let Some(selected) = evidence.first().and_then(|selected| {
-            local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+            selected_dictionary_expression(&selected, imported_values, imported_types)
         }) {
             return TypeScriptExpr::DictionaryCall {
                 dictionary: Box::new(selected),
@@ -2111,7 +2048,7 @@ fn equality_reference_from_evidence(
         return None;
     }
     if let Some(dictionary) =
-        local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+        selected_dictionary_expression(&selected, imported_values, imported_types)
     {
         return Some(curried_dictionary_method_reference(dictionary, "eq"));
     }
