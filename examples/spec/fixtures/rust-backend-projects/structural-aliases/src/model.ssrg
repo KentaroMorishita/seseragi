@@ -1,0 +1,21 @@
+pub alias Reader<A> = Int -> A
+pub alias Fields<A> = { value: A, read: Int -> A }
+pub alias Twice<A> = (A, A)
+
+pub trait Extract<F<_>> {
+  fn extract<A> value: F<A> -> A
+}
+
+instance Extract<Reader> {
+  fn extract<A> value: (Int -> A) -> A = value 42
+}
+
+instance Extract<Fields> {
+  fn extract<A> value: { value: A, read: Int -> A } -> A = value.value
+}
+
+instance Extract<Twice> {
+  fn extract<A> value: (A, A) -> A = match value { (left, _) -> left }
+}
+
+pub fn apply<F<_>, A> value: F<A> -> A where Extract<F> = extract<F, A> value

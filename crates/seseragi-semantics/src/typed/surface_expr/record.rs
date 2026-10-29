@@ -42,13 +42,19 @@ pub(super) fn type_record(
                     });
                 }
                 let expected = expected.get(name.as_str()).map(|type_ref| {
-                    match context.expected().map(|value| &value.key) {
+                    let mut expected = match context.expected().map(|value| &value.key) {
                         Some(SemanticTypeKey::Record(fields)) => fields
                             .get(name)
                             .cloned()
                             .unwrap_or_else(|| context.semantic_value_from_typed_type(type_ref)),
                         _ => context.semantic_value_from_typed_type(type_ref),
-                    }
+                    };
+                    // Application inference may have withheld unresolved
+                    // scheme slots in the field type. Keep that exact field
+                    // expectation while reconciling its checked identities;
+                    // the older key must not restore an unselected binder.
+                    expected.type_ref = type_ref.clone();
+                    context.hydrate_semantic_value(expected)
                 });
                 let analysis = type_surface_expression(value, &context.with_expected(expected));
                 let type_ref = inferred_type_from_expr(&analysis.value);

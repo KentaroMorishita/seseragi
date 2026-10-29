@@ -107,8 +107,13 @@ renamed facade packageと保存methodのsource arityを保ちます。元のTS�
 fresh Bun／Nodeとnativeの出力・source一回評価、Ref・cold再実行・Failure／Defect後の
 finalizerとroot解放を比較します。使わない束縛parameterもconstructorのarityに数え、
 失われるfree instance parameter、不正owner／kind、未証明の選択は位置付きで拒否します。
-このproducerはcanonical nominal applicationとscoped value slotに限ります。structural
-function／record／row constructor、一般HKT逆推論、完全なtype-function同値判定と
+このproducerはcanonical nominal application、scoped value slotと、各要素がvalue kindを
+持つfunction・closed record・tupleを扱います。構造型aliasはdriverの
+`--test structural_aliases --test structural_alias_facades`とCLIの
+`--test alias_constructor_sections`で、renamed／namespace facade、返却method、元のTSの
+strictと公開型consumerの負例、callbackのRef保存・cold再実行・Failure／Defect後の
+finalizerとroot解放を確認します。共有semantics／lowering／driver全体の回帰も確認します。
+row／requirement merge constructor、一般HKT逆推論、完全なtype-function同値判定と
 program WASMの受入拡張は含めません。共有型表現・投影の変更なので、統合前は必要な
 全体gateとcanonical compiler WASMの再生成・公開consumer検証も必要です。
 

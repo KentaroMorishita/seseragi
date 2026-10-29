@@ -1,0 +1,20 @@
+fn bodyValue value: String -> String = value
+
+fn render<A> prefix: String -> (A -> String) where Show<A> = {
+  let captured = bodyValue prefix
+  \value: A -> captured + show value
+}
+
+fn selected -> (String -> Int -> String) = render<Int>
+fn prefix -> String = "saved="
+fn payload -> Int = 42
+
+pub fn probe -> String = {
+  let first = render<Int> (prefix ()) (payload ())
+  let saved = selected ()
+  let second = saved (prefix ()) (payload ())
+  let ignored = render<Int> (prefix ())
+  first + "|" + second
+}
+
+pub effect fn main = println (probe ())

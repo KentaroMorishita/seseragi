@@ -1,0 +1,18 @@
+import { Query, Row, Pair, Extract, apply } from "./facade"
+import * as api from "./facade"
+
+alias Reader<A> = Bool -> A
+
+fn read value: Int -> Int = value + 1
+fn selected -> (Query<Int> -> Int) = apply<Query, Int>
+pub fn through value: api.Query<Int> -> Int = api.apply<api.Query, Int> value
+
+pub effect fn main = do {
+  let saved = selected ()
+  let fields: Row<Int> = { value: 7, read }
+  let pair: Pair<Int> = (9, 10)
+  println (show (saved read))
+  println (show (apply<Row, Int> fields))
+  println (show (apply<Pair, Int> pair))
+  println (show (through read))
+}

@@ -1,0 +1,26 @@
+trait Render<A> {
+  fn render prefix: String -> (A -> String)
+}
+
+fn bodyValue value: String -> String = value
+
+instance Render<Int> {
+  fn render prefix: String -> (Int -> String) = {
+    let captured = bodyValue prefix
+    \value: Int -> captured + show value
+  }
+}
+
+fn selected -> (String -> Int -> String) = render<Int>
+fn prefix -> String = "saved="
+fn payload -> Int = 42
+
+pub fn probe -> String = {
+  let first = render<Int> (prefix ()) (payload ())
+  let saved = selected ()
+  let second = saved (prefix ()) (payload ())
+  let ignored = render<Int> (prefix ())
+  first + "|" + second
+}
+
+pub effect fn main = println (probe ())

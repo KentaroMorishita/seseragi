@@ -1,0 +1,31 @@
+alias Reader<A> = Int -> A
+alias Fields<A> = { value: A, read: Int -> A }
+alias Twice<A> = (A, A)
+
+trait Extract<F<_>> {
+  fn extract<A> value: F<A> -> A
+}
+
+instance Extract<Reader> {
+  fn extract<A> value: (Int -> A) -> A = value 42
+}
+
+instance Extract<Fields> {
+  fn extract<A> value: { value: A, read: Int -> A } -> A = value.value
+}
+
+instance Extract<Twice> {
+  fn extract<A> value: (A, A) -> A = match value { (left, _) -> left }
+}
+
+fn read value: Int -> Int = value + 1
+fn selected -> (Reader<Int> -> Int) = extract<Reader, Int>
+
+pub fn probe -> String = {
+  let saved = selected ()
+  let fields: Fields<Int> = { value: 7, read }
+  let pair: Twice<Int> = (9, 10)
+  show (saved read) + ":" + show (extract<Fields, Int> fields) + ":" + show (extract<Twice, Int> pair)
+}
+
+pub effect fn main = println (probe ())

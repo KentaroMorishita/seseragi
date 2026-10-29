@@ -148,9 +148,36 @@ fn template_kinds(
             }
             kinds[arguments.len()..].to_vec()
         }
-        // The finite producer accepts canonical constructor applications and
-        // scoped value slots. Structural function/record/row constructors need
-        // their own admission proof; no unknown body is silently exported.
+        ContractType::Function { parameter, result } => {
+            if !template_kinds(resolved, parameter, owner, parameters)?.is_empty()
+                || !template_kinds(resolved, result, owner, parameters)?.is_empty()
+            {
+                return None;
+            }
+            vec![]
+        }
+        ContractType::Tuple(elements) => {
+            for element in elements {
+                if !template_kinds(resolved, element, owner, parameters)?.is_empty() {
+                    return None;
+                }
+            }
+            vec![]
+        }
+        ContractType::Record {
+            closed: true,
+            fields,
+        } => {
+            for (_, _, field) in fields {
+                if !template_kinds(resolved, field, owner, parameters)?.is_empty() {
+                    return None;
+                }
+            }
+            vec![]
+        }
+        // Structural bodies have a value kind only when every component
+        // proves that kind in the same alias-slot scope. An open row, merge,
+        // private slot or higher-order domain still has no closed-body proof.
         // No wildcard, unresolved free binder or nested unproved function is
         // evidence of the required closed constructor kind.
         _ => return None,

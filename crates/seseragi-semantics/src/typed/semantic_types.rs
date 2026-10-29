@@ -213,17 +213,19 @@ pub(crate) fn semantic_values_are_compatible(
         },
     ) = (&expected.type_ref, &actual.type_ref)
     {
-        return record_is_compatible(expected_fields, actual_fields)
-            && match (&expected.key, &actual.key) {
-                (SemanticTypeKey::Record(expected), SemanticTypeKey::Record(actual)) => {
-                    expected.iter().all(|(name, value)| {
-                        actual
-                            .get(name)
-                            .is_none_or(|actual| semantic_values_have_same_identity(value, actual))
-                    })
-                }
-                _ => true,
-            };
+        return match (&expected.key, &actual.key) {
+            (SemanticTypeKey::Record(expected), SemanticTypeKey::Record(actual)) => {
+                record_is_compatible_with(expected_fields, actual_fields, |field, _| {
+                    expected
+                        .get(&field.name)
+                        .zip(actual.get(&field.name))
+                        .is_some_and(|(expected, actual)| {
+                            semantic_values_have_same_identity(expected, actual)
+                        })
+                })
+            }
+            _ => record_is_compatible(expected_fields, actual_fields),
+        };
     }
     match (&expected.key, &actual.key) {
         (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => true,
@@ -686,17 +688,22 @@ fn record_is_compatible(
     expected: &[crate::TypedRecordField],
     actual: &[crate::TypedRecordField],
 ) -> bool {
+    record_is_compatible_with(expected, actual, |required, found| {
+        structural_types_have_same_identity(&required.type_ref, &found.type_ref)
+    })
+}
+
+fn record_is_compatible_with(
+    expected: &[crate::TypedRecordField],
+    actual: &[crate::TypedRecordField],
+    same: impl Fn(&crate::TypedRecordField, &crate::TypedRecordField) -> bool,
+) -> bool {
     expected.iter().all(|required| {
         let found = actual.iter().find(|field| field.name == required.name);
         if required.optional {
-            return found.is_none_or(|field| {
-                structural_types_have_same_identity(&required.type_ref, &field.type_ref)
-            });
+            return found.is_none_or(|field| same(required, field));
         }
-        found.is_some_and(|field| {
-            !field.optional
-                && structural_types_have_same_identity(&required.type_ref, &field.type_ref)
-        })
+        found.is_some_and(|field| !field.optional && same(required, field))
     })
 }
 
@@ -1312,9 +1319,17 @@ impl SemanticTypeCatalog {
                     })
                     .collect(),
             ),
-            TypedType::Function { .. } | TypedType::RequirementMerge { .. } => {
-                SemanticTypeKey::Other
-            }
+            TypedType::Function { parameter, result } => SemanticTypeKey::Function {
+                parameter: Box::new(SemanticValueType {
+                    type_ref: (**parameter).clone(),
+                    key: self.key_from_typed_type(resolved, parameter),
+                }),
+                result: Box::new(SemanticValueType {
+                    type_ref: (**result).clone(),
+                    key: self.key_from_typed_type(resolved, result),
+                }),
+            },
+            TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
         }
     }
 
@@ -1682,7 +1697,17 @@ fn semantic_key_from_expanded_type(
                 })
                 .collect(),
         ),
-        TypedType::Function { .. } | TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
+        TypedType::Function { parameter, result } => SemanticTypeKey::Function {
+            parameter: Box::new(SemanticValueType {
+                type_ref: (**parameter).clone(),
+                key: semantic_key_from_expanded_type(resolved, owners, struct_owners, parameter),
+            }),
+            result: Box::new(SemanticValueType {
+                type_ref: (**result).clone(),
+                key: semantic_key_from_expanded_type(resolved, owners, struct_owners, result),
+            }),
+        },
+        TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
     }
 }
 

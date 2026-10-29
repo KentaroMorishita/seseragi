@@ -29,6 +29,7 @@ mod local;
 mod methods;
 mod number_parse;
 mod operators;
+mod returned_calls;
 mod scalar;
 mod tail;
 mod text;
@@ -1016,9 +1017,12 @@ impl Backend<'_> {
                         evidence,
                         deferred_evidence_parameters,
                     ));
+                let returned_evidence_call = self.validate_returned_evidence_call(expr, scope)?;
                 if (!deferred_evidence_parameters.is_empty() && !bound_primitive_partial)
                     || !deferred_evidence_type_constructor_parameters.is_empty()
-                    || (evidence_argument_index.is_some() && !evidence.is_empty())
+                    || (evidence_argument_index.is_some()
+                        && !evidence.is_empty()
+                        && !returned_evidence_call)
                 {
                     return Err("Rust backend: deferred callable evidence is unsupported".into());
                 }

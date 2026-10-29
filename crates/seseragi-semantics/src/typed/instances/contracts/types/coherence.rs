@@ -276,11 +276,25 @@ fn term_scoped(
     })
 }
 
-fn rigid_root(value: &Term) -> Option<&TypeIdentity> {
+#[derive(Eq, PartialEq)]
+enum RigidRoot<'a> {
+    Nominal(&'a TypeIdentity),
+    Function,
+    Record,
+    Tuple,
+}
+
+fn rigid_root(value: &Term) -> Option<RigidRoot<'_>> {
     match value {
-        Term::Named(identity) => Some(identity),
+        Term::Named(identity) => Some(RigidRoot::Nominal(identity)),
         Term::Apply(constructor, _) => rigid_root(constructor),
         Term::Section { body, .. } => rigid_root(body),
+        // These outer constructors cannot become one another through slot
+        // substitution. Equal structural roots still use the conservative
+        // section relaxation; this does not infer a higher-order inverse.
+        Term::Function(..) => Some(RigidRoot::Function),
+        Term::Record { .. } => Some(RigidRoot::Record),
+        Term::Tuple(_) => Some(RigidRoot::Tuple),
         _ => None,
     }
 }
@@ -458,6 +472,52 @@ fn unify_all(left: Vec<Term>, right: Vec<Term>, substitutions: &mut Substitution
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn structural_section_roots_are_disjoint_without_inverting_their_slots() {
+        let slot = ContractType::TypeFunctionParameter { depth: 0, index: 0 };
+        let int = ContractType::Named(TypeIdentity::Canonical("std/prelude::Int".into()));
+        let section = |body| {
+            head(
+                ContractType::TypeFunction {
+                    parameter_kinds: vec![0],
+                    body: Box::new(body),
+                },
+                vec![],
+            )
+        };
+        let function = section(ContractType::Function {
+            parameter: Box::new(int.clone()),
+            result: Box::new(slot.clone()),
+        });
+        let record = section(ContractType::Record {
+            closed: true,
+            fields: vec![("value".into(), false, slot.clone())],
+        });
+        let tuple = section(ContractType::Tuple(vec![slot.clone(), int.clone()]));
+        for (left, right) in [(&function, &record), (&record, &tuple), (&tuple, &function)] {
+            assert_eq!(
+                left.relation(right, "fixture/types::Tag"),
+                HeadRelation::Disjoint
+            );
+            assert_eq!(
+                right.relation(left, "fixture/types::Tag"),
+                HeadRelation::Disjoint
+            );
+        }
+        assert_eq!(
+            function.relation(&function, "fixture/types::Tag"),
+            HeadRelation::Overlap
+        );
+        let inverse = section(ContractType::Function {
+            parameter: Box::new(slot),
+            result: Box::new(int),
+        });
+        assert_eq!(
+            function.relation(&inverse, "fixture/types::Tag"),
+            HeadRelation::Unproved
+        );
+    }
 
     fn nominal(name: &str) -> ContractType {
         ContractType::Named(TypeIdentity::Canonical(name.into()))

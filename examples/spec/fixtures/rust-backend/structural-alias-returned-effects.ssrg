@@ -1,0 +1,62 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+alias Repeat<A> = { value: A, callback: Unit -> A }
+
+trait Label<F<_>, A> {
+  fn label prefix: String -> value: F<A> -> (Unit -> String)
+}
+
+instance<A> Label<Repeat, A> where Show<A> {
+  fn label prefix: String -> value: Repeat<A> -> (Unit -> String) =
+    \_: Unit -> prefix + show (value.callback ())
+}
+
+fn invoke<F<_>, A> prefix: String -> value: F<A> -> String where Label<F, A> =
+  label<F, A> prefix value ()
+
+fn retained<A> value: Repeat<A> -> (String -> String) where Show<A> =
+  \prefix -> invoke<Repeat, A> prefix value
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+effect fn body mode: String -> released: Ref<Int> -> String with Console fails String =
+  effects.scoped $
+  do {
+  callback <- refs.make (retained { value: 10, callback: \_: Unit -> 10 })
+  effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.set 1 released
+      say "released"
+    }
+  )
+  let cold = effects.defer $ \_: Unit -> do {
+    saved <- refs.get callback
+    say (saved "cold=")
+    if mode == "fail" then
+      effects.fail "body failure"
+    else if mode == "defect" then
+      effects.die "body defect"
+    else
+      effects.succeed (saved "result=")
+  }
+  say "created"
+  first <- cold
+  refs.set (retained { value: 20, callback: \_: Unit -> 20 }) callback
+  second <- cold
+  effects.succeed (first + ":" + second)
+}
+
+effect fn report error: String -> String with Console =
+  effects.succeed ("Failure: " + error)
+
+pub effect fn main = do {
+  released <- refs.make 0
+  result <- body "ready" released |> effects.recover report
+  println result
+  count <- refs.get released
+  println ("released: " + show count)
+}

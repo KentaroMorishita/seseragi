@@ -7,6 +7,7 @@ use seseragi_syntax::InterfaceType;
 mod alias_constructors;
 mod alias_heads;
 mod overlap;
+mod structural_aliases;
 
 #[test]
 fn selects_non_generic_derived_show_as_typed_evidence() {
