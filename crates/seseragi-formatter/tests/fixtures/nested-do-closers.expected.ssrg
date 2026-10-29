@@ -1,0 +1,12 @@
+import * as effects from "std/effect"
+
+pub effect fn main = do {
+  effects.scoped (do {
+      effects.acquireRelease (effects.succeed ()) (\_: Unit -> do {
+          effects.succeed ()
+        }
+      )
+      effects.succeed ()
+    }
+  )
+}

@@ -1,0 +1,21 @@
+import * as floats from "std/float"
+import * as math from "std/math"
+import * as text from "std/text"
+
+pub fn renderCells output: String
+  -> remaining: List<String>
+  -> Either<floats.FloatParseError, String> =
+  match remaining {
+    `[] -> Right output
+    `[head, ...tail] -> {
+      let cell = text.trim head
+      if cell == ""
+        || text.contains "#" cell then
+        renderCells output tail
+      else
+        match floats.parse (text.replace "m" "" cell) {
+        Left error -> Left error
+        Right value -> renderCells (output + floats.format (math.sqrt value) + "\n") tail
+      }
+    }
+  }

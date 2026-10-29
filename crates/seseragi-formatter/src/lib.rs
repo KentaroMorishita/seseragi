@@ -90,6 +90,14 @@ mod tests {
         }
     }
 
+    #[test]
+    fn nested_do_closers_remove_one_indent_level_per_closing_token() {
+        assert_safe_and_converged_fixture(
+            include_str!("../tests/fixtures/nested-do-closers.input.ssrg"),
+            include_str!("../tests/fixtures/nested-do-closers.expected.ssrg"),
+        );
+    }
+
     fn format_with_width(source: &str, line_width: usize) -> FormattedSource {
         let tokens = lex("main.ssrg", source);
         let cst = parse_cst_from_tokens(tokens.clone());

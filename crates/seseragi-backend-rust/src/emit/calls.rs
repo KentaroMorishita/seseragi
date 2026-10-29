@@ -55,6 +55,9 @@ impl Backend<'_> {
         if let Some(value) = self.text_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.math_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.number_parse_call(expr, scope)? {
             return Ok(value);
         }
