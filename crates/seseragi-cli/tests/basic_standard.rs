@@ -230,6 +230,58 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_array_matches_original_raw_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-array.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-array.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_array_releases_saved_readers_after_cold_replay_and_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-array-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-array-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_array_defect_runs_the_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-array-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("array-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n128\ncold\n128\n256\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_array_path_package_preserves_generic_stages_and_captured_callbacks() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-array"),
+        &[Case::success(b"[2, 2]:3:4:42\n")],
+    );
+}
+
+#[test]
 fn basic_bytes_path_package_keeps_canonical_buffers_and_saved_readers() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-bytes"),

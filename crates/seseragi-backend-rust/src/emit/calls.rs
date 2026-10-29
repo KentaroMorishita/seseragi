@@ -58,6 +58,9 @@ impl Backend<'_> {
         if let Some(value) = self.bytes_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.array_operation_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.math_call(expr, scope)? {
             return Ok(value);
         }

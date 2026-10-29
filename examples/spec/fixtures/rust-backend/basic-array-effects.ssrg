@@ -1,0 +1,44 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+fn reader values: Array<Int> -> Int -> Int = {
+  let selected = arrays.filter (\value: Int -> value == 128) values
+  let copied = arrays.take 1 (arrays.drop 0 selected)
+  \index: Int -> match arrays.get index copied {
+    Nothing -> -1
+    Just value -> value
+  }
+}
+
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (reader [0, 128, 255])
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    selected <- refs.get saved
+    say (show (selected 0))
+    effects.succeed (selected 0)
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\n -> n + 1) released
+          say "released"
+        }
+      )
+      first <- cold
+      second <- cold
+      say (show (first + second))
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}
