@@ -6,6 +6,12 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+ADT/newtypeをstruct構築構文でcastしてしまう既存不具合はdriverの
+`--test struct_construction_kind`とsemanticsで確認します。元のMap入力を変更せず
+拒否対照に保存し、両profileのcompile/analysisで同じSES-T0101とUTF-8位置を確認します。
+通常struct・struct alias・括弧付きrecord payloadのconstructor適用は保持します。
+共有frontendの修復のためcanonical WASMを再生成し、統合時に全体gateを通します。
+
 native Hashの標準Int/Bool/Char/String/Unit辞書はbackendの`--test basic_hash`、
 runtimeの`hashing_tests`、CLIの`--test basic_standard basic_hash_`で確認します。
 public hashにseedを混ぜず、safe Int・Unicode scalar FNV・選択済みの辞書・
