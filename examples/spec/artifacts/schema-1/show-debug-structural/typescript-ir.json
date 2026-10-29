@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/show-debug-structural",
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_tupleShow",
+        "typeArguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "string"
+              }
+            ]
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_stringShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -289,31 +321,9 @@
         "value": {
           "kind": "dictionary-call",
           "dictionary": {
-            "kind": "type-application-call",
-            "callee": "_ssrg_show_tupleShow",
-            "typeArguments": [
-              {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "number"
-                  },
-                  {
-                    "kind": "string"
-                  }
-                ]
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_stringShow"
-              }
-            ]
+            "kind": "call",
+            "callee": "$ssrg$closedDisplay$0",
+            "arguments": []
           },
           "method": "show",
           "arguments": [

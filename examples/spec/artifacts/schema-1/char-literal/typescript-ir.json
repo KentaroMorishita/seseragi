@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/char-literal",
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_tupleShow",
+        "typeArguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "string"
+              },
+              {
+                "kind": "string"
+              }
+            ]
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_charShow"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_charShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "core.maybe",
@@ -193,31 +225,9 @@
               "left": {
                 "kind": "dictionary-call",
                 "dictionary": {
-                  "kind": "type-application-call",
-                  "callee": "_ssrg_show_tupleShow",
-                  "typeArguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "string"
-                        },
-                        {
-                          "kind": "string"
-                        }
-                      ]
-                    }
-                  ],
-                  "arguments": [
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_charShow"
-                    },
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_charShow"
-                    }
-                  ]
+                  "kind": "call",
+                  "callee": "$ssrg$closedDisplay$0",
+                  "arguments": []
                 },
                 "method": "show",
                 "arguments": [
