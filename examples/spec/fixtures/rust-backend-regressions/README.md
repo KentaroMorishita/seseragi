@@ -1,9 +1,13 @@
 `json-decoder-inferred-partial-main.ssrg` preserves the original implicit
-imported partial that compiles in the language and native backend but currently
-emits `Rules<unknown>` under strict TypeScript (TS2322). It belongs in place of
+imported partial that compiled in the language and native backend but emitted
+`Rules<unknown>` under strict TypeScript (TS2322) in official115 and119. It belongs in place of
 `src/main.ssrg` in `rust-backend-projects/basic-json-decoders`, with the same
 vendor module. The working acceptance package supplies the type argument
 explicitly and still tests the saved partial and generic opaque boundary.
 
-The inferred variant is an unresolved shared frontend case #1003 under #887, reproduced with official v0.61.115. Retaining
-it here does not claim it is repaired by the native decoder implementation.
+The inferred variant is #1003 under #887. The120 candidate keeps the registered
+Prelude sum owner while importing callable aliases, so the original inferred
+type reaches the first curried stage. Its driver and CLI tests use this exact
+input, without adding explicit type arguments or changing the expected output.
+The explicit119 package remains a comparison. Broader partial-application
+contracts and the unrecovered historical native inputs remain separate work.

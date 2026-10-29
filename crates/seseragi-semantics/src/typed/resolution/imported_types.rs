@@ -13,6 +13,7 @@ pub(super) struct ImportedTypeContext {
     canonical_names: BTreeMap<String, String>,
     owners: BTreeMap<(String, String), SymbolId>,
     canonical_owners: BTreeMap<String, SymbolId>,
+    prelude_owners: BTreeMap<(String, usize), SymbolId>,
     struct_owners: BTreeSet<SymbolId>,
 }
 
@@ -62,6 +63,22 @@ impl ImportedTypeContext {
             })
             .map(|import| (import.export.symbol.clone(), import.symbol))
             .collect();
+        // Public aliases can contain an implicit Prelude sum without an
+        // explicit import binding. Keep its registered canonical owner so
+        // inference through a callable alias can retain the selected child.
+        let prelude_owners = crate::prelude::SUM_TYPES
+            .iter()
+            .filter_map(|contract| {
+                let owner = resolved.symbols.iter().find(|symbol| {
+                    symbol.kind == crate::SymbolKind::Type
+                        && symbol.canonical.as_deref() == Some(contract.canonical)
+                })?;
+                Some((
+                    (contract.name.to_owned(), contract.type_parameters.len()),
+                    owner.id,
+                ))
+            })
+            .collect();
         let struct_owners = resolved
             .imports
             .iter()
@@ -83,6 +100,7 @@ impl ImportedTypeContext {
             canonical_names,
             owners,
             canonical_owners,
+            prelude_owners,
             struct_owners,
         }
     }
@@ -357,6 +375,10 @@ impl ImportedTypeContext {
                 }
                 if let Some(owner) = self.owners.get(&(module.to_owned(), name.clone())) {
                     Some(self.owner_key(*owner, arguments))
+                } else if let Some(owner) =
+                    self.prelude_owners.get(&(name.clone(), arguments.len()))
+                {
+                    Some(self.owner_key(*owner, arguments))
                 } else if arguments.is_empty() {
                     Some(SemanticTypeKey::Other)
                 } else {
@@ -498,6 +520,80 @@ pub(super) fn flatten_function(type_ref: InterfaceType) -> (Vec<InterfaceType>, 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn implicit_prelude_sum_aliases_keep_their_owner_and_respect_source_bindings() {
+        for source in ["", "type Either<L, R> = | LocalEither L\n"] {
+            let resolved = crate::resolve_module(
+                "sum-import.ssrg",
+                &format!("{source}let original = Right 42\n"),
+            );
+            let types = ImportedTypeContext::new(&resolved);
+            let named = InterfaceType::Named {
+                name: "Either".into(),
+                arguments: ["String", "Int"]
+                    .map(|name| InterfaceType::Named {
+                        name: name.into(),
+                        arguments: vec![],
+                    })
+                    .into(),
+            };
+            let selected = types
+                .semantic_value(named.clone(), "fixture/model", &BTreeSet::new(), &[])
+                .unwrap();
+            let SemanticTypeKey::Adt { owner, arguments } = selected.key else {
+                panic!("a closed Prelude alias retains its registered sum owner")
+            };
+            assert_eq!(arguments.len(), 2);
+            assert_eq!(
+                resolved
+                    .symbols
+                    .iter()
+                    .find(|symbol| symbol.id == owner)
+                    .unwrap()
+                    .canonical
+                    .as_deref(),
+                Some("std/prelude::Either")
+            );
+
+            let binding = ExternalTypeBinding {
+                arity: Some(2),
+                spelling: "Either".into(),
+                canonical: "fixture/model::Either".into(),
+                provider: None,
+            };
+            let nominal = types
+                .semantic_value(named.clone(), "fixture/model", &BTreeSet::new(), &[binding])
+                .unwrap();
+            assert!(
+                matches!(nominal.key, SemanticTypeKey::ExternalNominal { canonical, .. } if canonical == "fixture/model::Either")
+            );
+            let quantified = types
+                .semantic_value(
+                    named,
+                    "fixture/model",
+                    &BTreeSet::from(["Either".into()]),
+                    &[],
+                )
+                .unwrap();
+            assert!(
+                matches!(quantified.key, SemanticTypeKey::Application { constructor, .. } if matches!(constructor.key, SemanticTypeKey::SchemeParameter(ref name) if name == "Either"))
+            );
+        }
+        let unresolved = crate::resolve_module("no-owner.ssrg", "");
+        let value = ImportedTypeContext::new(&unresolved)
+            .semantic_value(
+                InterfaceType::Named {
+                    name: "Either".into(),
+                    arguments: vec![InterfaceType::Hole, InterfaceType::Hole],
+                },
+                "fixture/model",
+                &BTreeSet::new(),
+                &[],
+            )
+            .unwrap();
+        assert!(matches!(value.key, SemanticTypeKey::NamedGeneric { .. }));
+    }
 
     #[test]
     fn an_anonymous_unit_binding_does_not_change_a_primitive_return_or_a_scheme_slot() {

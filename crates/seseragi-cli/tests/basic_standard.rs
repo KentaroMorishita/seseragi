@@ -814,6 +814,28 @@ fn basic_json_decoders_path_package_keeps_opaque_rules_and_saved_generic_stages(
         &[Case::success(b"2:Just 7:Just 9\n")],
     );
 }
+
+#[test]
+fn inferred_json_decoder_package_keeps_original_input_and_passes_strict_ts() {
+    let scratch = Scratch::new();
+    let package = scratch.0.join("inferred-json-decoders");
+    copy_package(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-decoders"),
+        &package,
+    );
+    let original = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend-regressions/json-decoder-inferred-partial-main.ssrg"
+    );
+    fs::write(package.join("src/main.ssrg"), original).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    compare(&package, &[Case::success(b"2:Just 7:Just 9\n")]);
+    assert_eq!(fs::read(package.join("src/main.ssrg")).unwrap(), original);
+}
 #[test]
 fn basic_json_decoders_native_host_limit_is_defect_with_finalizer_and_root_cleanup() {
     let scratch = Scratch::new();

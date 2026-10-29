@@ -6,6 +6,15 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+importしたcallable alias内のPrelude sumから推論した型引数は、driverの
+`--test generic_call_instantiation --test hkt_erasure --test strict_partials`と、
+CLIの`--test basic_standard inferred_json_decoder_package`で確認します。#1003の元入力と
+opaque module境界を保持し、元生成TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeを
+通します。Preludeのcanonical owner・arityを登録から選び、明示source binding・同名nominal・
+量化したconstructor slotを優先します。登録のない同名typeをPreludeと推測しません。
+shared frontendの変更なのでsemantics/loweringの対象確認後、canonical compiler WASMを更新し、
+最終候補でrepository-wide gateを通します。
+
 native JSON decoderのfield/optionalField/index/array/record/oneOf/map/flatMapはbackendの
 `--test basic_json_decoders`、runtimeの`json_decoder_tests`、CLIの
 `--test basic_standard basic_json_decoders_`で確認します。保存/部分適用と戻りdecoderの

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.120] - 2026-10-30
+
+### Fixed
+
+- Preserve inferred type arguments before the first curried stage of imported generic functions whose parameters use callable aliases over Prelude sums. Keep the registered canonical sum owner and original implicit source, so the generated TypeScript passes strict checking across an opaque module boundary without explicit replacement type arguments.
+
 ## [0.61.119] - 2026-10-30
 
 ### Added
