@@ -130,6 +130,9 @@ finalizerとroot解放を比較します。使わない束縛parameterもconstru
 `--test alias_constructor_sections`で、renamed／namespace facade、返却method、元のTSの
 strictと公開型consumerの負例、callbackのRef保存・cold再実行・Failure／Defect後の
 finalizerとroot解放を確認します。共有semantics／lowering／driver全体の回帰も確認します。
+CLIの`--test rust_backend alias_head`で元のfunction／record拒否入力がsourceを変えずに
+emit／buildできることと、不正method型・失われるinstance parameterの位置付き拒否を確認します。
+非対応という旧期待値を残さず、非実行・出力なし・source保持の既存assertionを保ちます。
 row／requirement merge constructor、一般HKT逆推論、完全なtype-function同値判定と
 program WASMの受入拡張は含めません。共有型表現・投影の変更なので、統合前は必要な
 全体gateとcanonical compiler WASMの再生成・公開consumer検証も必要です。
