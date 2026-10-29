@@ -6,6 +6,15 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Map empty/singleton/get/insert/remove/keys/values/size/isEmptyはbackendの
+`--test basic_map`、runtimeの`map_tests`、CLIの`--test basic_standard basic_map_`で確認します。
+canonical owner/key/value・Eq/Hash・caller scopeと部分適用の残りsource段階を検査し、
+元raw TS両profile strict、fresh Bun/Node/native、通常2 module path packageを比較します。
+挿入順・置換前keyの保持・collision callback・古いsnapshot・全signed 64-bit seed、
+boundedなpath共有、削除済みkey/valueの非保持、cold再実行・Failure/Defect・Ref cycleの
+回収を保ちます。OS entropyが取得できない場合は代替seedを作らず、固定seedの不正値も
+アプリ開始前に拒否します。新9 APIのprogram WASM受入とMap全APIは追加しません。
+
 ADT/newtype・primitive・opaque aliasをstruct構築構文でcastしてしまう既存不具合はdriverの
 `--test struct_construction_kind`とsemanticsで確認します。元のMap入力を変更せず
 拒否対照に保存し、両profileのcompile/analysisで同じSES-T0101とUTF-8位置を確認します。

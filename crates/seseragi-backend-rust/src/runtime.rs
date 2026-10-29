@@ -178,6 +178,9 @@ enum V {
     BigInt(Shared<String>),
     Tuple(Shared<Vec<V>>),
     Array(Shared<Vec<V>>),
+    Map(Shared<NativeMap>),
+    MapIndex(Shared<NativeMapIndex>),
+    MapEntry(Shared<NativeMapEntry>),
     ListEmpty,
     List(Shared<ListCell>),
     Record(Shared<BTreeMap<String, V>>),
@@ -282,6 +285,8 @@ impl V {
                 V::Bool(v) => output.push_str(if *v { "True" } else { "False" }),
                 V::Text(v) | V::BigInt(v) => output.push_str(v.get()),
                 V::Bytes(_) => output.push_str("<Bytes>"),
+                V::Map(_) => output.push_str("<Map>"),
+                V::MapIndex(_) | V::MapEntry(_) => output.push_str("<Map internal>"),
                 V::ListEmpty => output.push_str("`[]"),
                 V::List(v) => {
                     output.push_str("`[");

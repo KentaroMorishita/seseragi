@@ -198,6 +198,7 @@ jobs:
           cargo test --locked -p seseragi-backend-rust --lib runtime::array_operation_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::big_int_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::hashing_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::map_tests
       - name: Compare complete file, numeric, identity and program WASM suites
         run: >-
           cargo test --locked -p seseragi-cli

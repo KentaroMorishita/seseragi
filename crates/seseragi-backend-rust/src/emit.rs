@@ -31,6 +31,7 @@ mod floats;
 mod hashing;
 mod lists;
 mod local;
+mod maps;
 mod math;
 mod methods;
 mod number_parse;
@@ -179,6 +180,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int.rs"));
     output.push_str(include_str!("runtime_hashing.rs"));
+    output.push_str(include_str!("runtime_map.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));
@@ -342,15 +344,20 @@ fn emit_body(
         output.push_str(include_str!("runtime_effect_defect.rs"));
     }
     if let Some(entry) = entry {
+        let startup = if backend.capabilities.contains("map") {
+            "let _ = native_process_hash_seed(); "
+        } else {
+            ""
+        };
         if entry.is_effect {
             let runner = if backend.capabilities.contains("clock-sleep") {
                 "run_native_clock_entry"
             } else {
                 "run_native_entry"
             };
-            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         } else {
-            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         }
     }
     Ok(RustArtifact {
@@ -824,6 +831,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.big_int_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.map_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) =

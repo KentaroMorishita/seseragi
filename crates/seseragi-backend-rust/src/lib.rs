@@ -133,6 +133,7 @@ mod runtime {
     include!("runtime_bytes.rs");
     include!("runtime_big_int.rs");
     include!("runtime_hashing.rs");
+    include!("runtime_map.rs");
     include!("runtime_int_parse.rs");
     include!("runtime_float_parse.rs");
     include!("runtime_float_conversion.rs");
