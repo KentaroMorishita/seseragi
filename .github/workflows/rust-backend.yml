@@ -190,10 +190,11 @@ jobs:
         run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
       - name: Keep locked provider identities identical across checkout hosts
         run: cargo test --locked -p seseragi-runtime --test provider_catalog_identity
-      - name: Verify native text boundaries and portable math values on every host
+      - name: Verify native text, byte boundaries and portable math values on every host
         run: |
           cargo test --locked -p seseragi-backend-rust --lib runtime::text_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::math_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::bytes_tests
       - name: Compare complete file, numeric, identity and program WASM suites
         run: >-
           cargo test --locked -p seseragi-cli

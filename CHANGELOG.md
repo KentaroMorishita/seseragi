@@ -4,6 +4,7 @@
 
 ### Added
 
+- Generate native `std/bytes.fromInts`, `toInts`, `get` and `toInt` with distinct immutable byte storage, first-error range checks and saved-buffer cleanup. Keep program WASM Bytes explicitly refused.
 - Generate native `std/text.split`, `trim`, `contains` and literal `replace` with Unicode scalar boundaries, pinned White_Space, first-class functions and checked source stages.
 - Generate native `std/math.sqrt`, `sin`, `cos` and `log`, preserving Float special values, signed zero and the specified representative tolerance. Keep new program WASM operations explicitly refused until their target proof is available.
 - Transform comma-separated text through ordinary path packages and UTF-8 files, preserving inputs and existing outputs on parse or decoding failure, cold replay and scoped cleanup.

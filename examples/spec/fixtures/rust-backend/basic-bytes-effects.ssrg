@@ -1,0 +1,43 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as bytes from "std/bytes"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+fn reader values: Array<Int> -> Int -> Int = match bytes.fromInts values {
+  Left (bytes.ByteOutOfRange value) -> \_: Int -> value
+  Right buffer -> \index: Int -> match bytes.get index buffer {
+    Nothing -> -1
+    Just byte -> bytes.toInt byte
+  }
+}
+
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (reader [0, 128, 255])
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    selected <- refs.get saved
+    say (show (selected 1))
+    effects.succeed (selected 2)
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\n -> n + 1) released
+          say "released"
+        }
+      )
+      first <- cold
+      second <- cold
+      say (show (first + second))
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

@@ -129,6 +129,7 @@ mod runtime {
     include!("runtime_tuple.rs");
     include!("runtime_array.rs");
     include!("runtime_text.rs");
+    include!("runtime_bytes.rs");
     include!("runtime_int_parse.rs");
     include!("runtime_float_parse.rs");
     include!("runtime_float_conversion.rs");
