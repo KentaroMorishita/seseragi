@@ -1250,6 +1250,14 @@ fn binary_formats_dogfood_indentation_with_the_shared_formatter() {
     );
 }
 
+#[test]
+fn binary_formats_nested_do_closers_once_and_preserves_recovery_documents() {
+    assert_document_formatting(
+        include_str!("../../seseragi-formatter/tests/fixtures/nested-do-closers.input.ssrg"),
+        include_str!("../../seseragi-formatter/tests/fixtures/nested-do-closers.expected.ssrg"),
+    );
+}
+
 fn assert_document_formatting(source: &str, expected: &str) {
     let uri = "file:///formatting.ssrg";
     let formatted = format_module(uri, source).expect("valid source");
