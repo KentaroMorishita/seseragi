@@ -1,0 +1,3 @@
+type Box<A> = | Box A
+let users: Box<{ name: String, id: Int }> = Box { name: "Aki", id: 1 }
+pub let same: Box<{ id: Int, name: String }> = users

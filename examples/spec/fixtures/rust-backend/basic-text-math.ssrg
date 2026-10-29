@@ -1,0 +1,15 @@
+import * as text from "std/text"
+import * as floats from "std/float"
+import * as math from "std/math"
+
+pub fn probe -> String = {
+  let split: String -> String -> Array<String> = text.split
+  let comma = split ","
+  let trim: String -> String = text.trim
+  let contains = text.contains "🙂"
+  let replace = text.replace "a" "$&$1"
+  let root: Float -> Float = math.sqrt
+  text.join "|" (comma ",雫🙂,,") + ":" + text.join "|" (split "" "雫🙂é") + ":" + trim "\u{85} 雫🙂 \u{3000}" + ":" + show (contains "雫🙂") + ":" + replace "aba" + ":" + text.replace "" "🙂" "雫" + ":" + floats.format (root 9.0) + ":" + floats.format (math.sin (-0.0)) + ":" + floats.format (math.cos 0.0) + ":" + floats.format (math.log 1.0)
+}
+
+pub effect fn main = println (probe ())

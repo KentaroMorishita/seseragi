@@ -10,8 +10,11 @@ use seseragi_lowering::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod array_operations;
 mod arrays;
+mod big_int;
 mod booleans;
+mod bytes;
 mod calls;
 mod canonical;
 mod characters;
@@ -25,8 +28,11 @@ mod effect_defects;
 mod equality;
 mod filesystem;
 mod floats;
+mod hashing;
 mod lists;
 mod local;
+mod maps;
+mod math;
 mod methods;
 mod number_parse;
 mod operators;
@@ -165,10 +171,16 @@ fn emit_body(
     output.push_str(include_str!("runtime_char.rs"));
     output.push_str(include_str!("runtime_float_display.rs"));
     output.push_str(include_str!("runtime_float.rs"));
+    output.push_str(include_str!("runtime_math.rs"));
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_tuple.rs"));
     output.push_str(include_str!("runtime_array.rs"));
+    output.push_str(include_str!("runtime_array_operations.rs"));
     output.push_str(include_str!("runtime_text.rs"));
+    output.push_str(include_str!("runtime_bytes.rs"));
+    output.push_str(include_str!("runtime_big_int.rs"));
+    output.push_str(include_str!("runtime_hashing.rs"));
+    output.push_str(include_str!("runtime_map.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));
@@ -238,6 +250,9 @@ fn emit_body(
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
         backend
             .validate_eq_instance(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
+        backend
+            .validate_hash_instance(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
         let mut values = Vec::new();
         if backend
@@ -329,15 +344,20 @@ fn emit_body(
         output.push_str(include_str!("runtime_effect_defect.rs"));
     }
     if let Some(entry) = entry {
+        let startup = if backend.capabilities.contains("map") {
+            "let _ = native_process_hash_seed(); "
+        } else {
+            ""
+        };
         if entry.is_effect {
             let runner = if backend.capabilities.contains("clock-sleep") {
                 "run_native_clock_entry"
             } else {
                 "run_native_entry"
             };
-            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         } else {
-            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         }
     }
     Ok(RustArtifact {
@@ -480,6 +500,14 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Hash") {
+                self.validate_hash_evidence(selected, scope)?;
+            }
+            if let Some(dictionary) = self.primitive_hash_dictionary(selected, scope)? {
+                self.capabilities.insert("hash".into());
+                values.push(dictionary);
+                continue;
+            }
             if selected.constraint.name == "Ord" {
                 self.validate_ord_evidence(selected, scope)?;
             }
@@ -799,6 +827,23 @@ impl Backend<'_> {
                 if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
+                if let Some(value) = self.bytes_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.big_int_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.map_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.array_operation_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.number_parse_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
@@ -1022,6 +1067,11 @@ impl Backend<'_> {
                 }
                 if equality::is_equality(operator) {
                     return self.equality_binary(operator, left, right, evidence, type_ref, scope);
+                }
+                if let Some(value) =
+                    self.descending_int_binary(operator, left, right, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
                 }
                 if characters::character_comparison(evidence, operator) {
                     return Ok(format!(

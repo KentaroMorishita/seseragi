@@ -1,0 +1,27 @@
+import * as cells from "cells"
+
+fn integer value: Maybe<Int> -> String = match value {
+  Nothing -> "none"
+  Just value -> show value
+}
+
+pub fn probe -> String = {
+  let original = cells.singleton "snow" 1
+  let add = cells.put "wave" 2
+  let current = add original
+  let read = cells.reader current
+  let changed = cells.put "snow" 3 current
+  let removed = cells.remove "snow" changed
+  let again = cells.put "snow" 4 removed
+  let seed = 2
+  let callbacks = cells.singleton "callback" (\value: Int -> value + seed)
+  let callback = match (cells.reader callbacks) "callback" {
+    Nothing -> \value: Int -> value
+    Just call -> call
+  }
+  integer (read "snow") + ":" + integer ((cells.reader changed) "snow")
+    + ":" + show (cells.keys again) + ":" + show (cells.size again)
+    + ":" + show (callback 40)
+}
+
+pub effect fn main = println (probe ())

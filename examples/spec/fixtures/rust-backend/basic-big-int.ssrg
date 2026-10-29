@@ -1,0 +1,36 @@
+import * as big from "std/big-int"
+import * as text from "std/text"
+
+fn describe result: Either<big.BigIntParseError, big.BigInt> -> String = match result {
+  Right value -> big.format value
+  Left big.EmptyBigInt -> "empty"
+  Left (big.InvalidBigIntRadix radix) -> "radix:" + show radix
+  Left (big.InvalidBigIntDigit detail) -> "digit:" + show detail.offset + ":" + show detail.radix
+}
+
+pub fn probe -> String = {
+  let parse: String -> Either<big.BigIntParseError, big.BigInt> = big.parse
+  let format: big.BigInt -> String = big.format
+  let fromInt: Int -> big.BigInt = big.fromInt
+  text.join "|" [
+    describe (parse "900719925474099200000000000000000000001"),
+    describe (parse "-900719925474099200000000000000000000001"),
+    describe (parse "+42"),
+    describe (parse "-0"),
+    describe (parse "+0"),
+    describe (parse ""),
+    describe (parse "+"),
+    describe (parse "01"),
+    describe (parse "-01"),
+    describe (parse "1雪🙂"),
+    describe (parse "0x10"),
+    describe (parse "1e2"),
+    describe (parse " 1"),
+    describe (parse "1 "),
+    describe (parse "90071992547409929999999999999x"),
+    format (fromInt 9007199254740991),
+    format (big.fromInt (-9007199254740991))
+  ]
+}
+
+pub effect fn main = println (probe ())

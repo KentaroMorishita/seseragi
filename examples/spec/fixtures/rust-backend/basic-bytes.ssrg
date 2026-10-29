@@ -1,0 +1,36 @@
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+
+fn selected value: Maybe<bytes.Byte> -> String = match value {
+  Nothing -> "none"
+  Just byte -> show (bytes.toInt byte)
+}
+
+fn encoded values: Array<Int> -> String = match bytes.fromInts values {
+  Left (bytes.ByteOutOfRange value) -> "bad:" + show value
+  Right buffer -> show (bytes.toInts buffer)
+}
+
+pub fn probe -> String = {
+  let convert: Array<Int> -> Either<bytes.ByteError, bytes.Bytes> = bytes.fromInts
+  let read: Int -> bytes.Bytes -> Maybe<bytes.Byte> = bytes.get
+  match convert [0, 1, 127, 128, 255] {
+    Left (bytes.ByteOutOfRange value) -> "unexpected:" + show value
+    Right buffer -> {
+      let middle = read 2
+      text.join "|" [
+        show (bytes.toInts buffer),
+        selected (read 0 buffer),
+        selected (middle buffer),
+        selected (bytes.get 4 buffer),
+        selected (bytes.get (-1) buffer),
+        selected (bytes.get 9007199254740991 buffer),
+        encoded [-1, 256],
+        encoded [0, 256, -1],
+        encoded []
+      ]
+    }
+  }
+}
+
+pub effect fn main = println (probe ())

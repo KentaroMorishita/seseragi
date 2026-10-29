@@ -18,12 +18,43 @@ pub(super) fn type_struct(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let Some(owner) = context.type_target(name_span) else {
+    let Some(source_owner) = context.type_target(name_span) else {
         return invalid_struct(name, items, span, context);
     };
-    let Some(struct_type) = context.semantic_types().struct_type(owner) else {
-        return invalid_struct(name, items, span, context);
+    let (owner, alias_arguments) = if context.semantic_types().struct_type(source_owner).is_some() {
+        (source_owner, None)
+    } else {
+        // Resolve a transparent alias before field checking. Never cast an
+        // arbitrary record to an opaque, primitive or unproved source name.
+        let target = context.semantic_value_from_type_ref(&TypeRef::Named {
+            name: name.to_owned(),
+            arguments: type_arguments.unwrap_or_default().to_vec(),
+            span: name_span,
+        });
+        match target.key {
+            SemanticTypeKey::Struct { owner, arguments }
+                if context.semantic_types().struct_type(owner).is_some() =>
+            {
+                (owner, Some(arguments))
+            }
+            _ => {
+                return invalid_struct_with_issue(
+                    name,
+                    items,
+                    span,
+                    context,
+                    RecordIssue::ConstructionOnNonStruct {
+                        structure: name_span,
+                        name: name.to_owned(),
+                    },
+                )
+            }
+        }
     };
+    let struct_type = context
+        .semantic_types()
+        .struct_type(owner)
+        .expect("checked struct owner");
     if !struct_type.construction_allowed {
         return invalid_struct_with_issue(
             name,
@@ -37,11 +68,13 @@ pub(super) fn type_struct(
         );
     }
 
-    let explicit_arguments = type_arguments.map(|arguments| {
-        arguments
-            .iter()
-            .map(|argument| context.semantic_value_from_type_ref(argument))
-            .collect::<Vec<_>>()
+    let explicit_arguments = alias_arguments.or_else(|| {
+        type_arguments.map(|arguments| {
+            arguments
+                .iter()
+                .map(|argument| context.semantic_value_from_type_ref(argument))
+                .collect::<Vec<_>>()
+        })
     });
     let arity_issue = explicit_arguments.as_ref().and_then(|arguments| {
         (arguments.len() != struct_type.type_parameters.len()).then(|| {

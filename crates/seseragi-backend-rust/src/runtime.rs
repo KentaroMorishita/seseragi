@@ -169,12 +169,18 @@ fn clear_globals() {
 enum V {
     Unit,
     Int(i64),
+    Byte(u8),
     Float(f64),
     Char(char),
     Bool(bool),
     Text(Shared<String>),
+    Bytes(Shared<Vec<u8>>),
+    BigInt(Shared<String>),
     Tuple(Shared<Vec<V>>),
     Array(Shared<Vec<V>>),
+    Map(Shared<NativeMap>),
+    MapIndex(Shared<NativeMapIndex>),
+    MapEntry(Shared<NativeMapEntry>),
     ListEmpty,
     List(Shared<ListCell>),
     Record(Shared<BTreeMap<String, V>>),
@@ -273,10 +279,14 @@ impl V {
             match value {
                 V::Unit => output.push_str("()"),
                 V::Int(n) => output.push_str(&n.to_string()),
+                V::Byte(n) => output.push_str(&n.to_string()),
                 V::Float(n) => output.push_str(&native_float_format(*n)),
                 V::Char(c) => output.push(*c),
                 V::Bool(v) => output.push_str(if *v { "True" } else { "False" }),
-                V::Text(v) => output.push_str(v.get()),
+                V::Text(v) | V::BigInt(v) => output.push_str(v.get()),
+                V::Bytes(_) => output.push_str("<Bytes>"),
+                V::Map(_) => output.push_str("<Map>"),
+                V::MapIndex(_) | V::MapEntry(_) => output.push_str("<Map internal>"),
                 V::ListEmpty => output.push_str("`[]"),
                 V::List(v) => {
                     output.push_str("`[");
@@ -413,6 +423,8 @@ fn binary(op: &str, a: V, b: V) -> V {
         ("==", V::Text(a), V::Text(b)) => V::Bool(a.get() == b.get()),
         ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
         ("<=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(a, b)),
+        (">", V::Int(a), V::Int(b)) => V::Bool(int_less_value(b, a)),
+        (">=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(b, a)),
         ("+", V::Text(a), V::Text(b)) => V::Text(Shared::new(format!("{}{}", a.get(), b.get()))),
         _ => panic!("Rust ABI: unsupported binary operation"),
     }

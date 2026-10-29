@@ -1,12 +1,27 @@
 # Change Log
 
-## [0.61.114] - 2026-10-29
+## [0.61.115] - 2026-10-29
+
+### Added
+
+- Generate native `Hash<Int/Bool/Char/String/Unit>` dictionaries with safe integer results, Unicode scalar FNV hashing and checked generic or saved method stages. Preserve existing user-defined Hash program WASM; the newly admitted primitive dictionaries remain explicitly refused there.
+- Generate native Map `empty`, `singleton`, `get`, `insert`, `remove`, `keys`, `values`, `size` and `isEmpty`. Keep immutable snapshots, insertion order and selected generic Eq/Hash evidence in saved or partially applied functions. Share bounded persistent index paths and release removed entries without tombstones. Initialize the internal process seed from OS entropy or a checked signed 64-bit fixed seed before application code.
+- Read and format arbitrary-precision native decimal integers through `std/big-int.parse`, `format` and `fromInt`, with distinct opaque storage, canonical sign/zero and precise UTF-8 parse errors.
+- Generate native `std/array.filter`, `find`, `get`, `length`, `take` and `drop` with checked generic element identities, saved functions and partial applications. Preserve source order, short-circuit search, bounds and captured element lifetimes; keep new program WASM operations explicitly refused.
+- Generate native `std/bytes.fromInts`, `toInts`, `get` and `toInt` with distinct immutable byte storage, first-error range checks and saved-buffer cleanup. Keep program WASM Bytes explicitly refused.
+- Generate native `std/text.split`, `trim`, `contains` and literal `replace` with Unicode scalar boundaries, pinned White_Space, first-class functions and checked source stages.
+- Generate native `std/math.sqrt`, `sin`, `cos` and `log`, preserving Float special values, signed zero and the specified representative tolerance. Keep new program WASM operations explicitly refused until their target proof is available.
+- Transform comma-separated text through ordinary path packages and UTF-8 files, preserving inputs and existing outputs on parse or decoding failure, cold replay and scoped cleanup.
 
 ### Fixed
 
+- Reject struct construction syntax for ADTs, newtypes, primitives and opaque aliases before generating an invalid record cast. Check struct aliases against their canonical owner, fixed and reordered type arguments and required fields. Preserve actual structs and explicit constructor applications to record payloads.
+- Generate infix native Int `>` and `>=` after checking the canonical Ord, operand and Bool result types. Preserve left-to-right source evaluation and existing saved comparison functions.
+- Format adjacent closing delimiters of nested parenthesized blocks at the correct depth in one pass, without changing source tokens or recovery scope.
 - Preserve checked function, closed record and tuple alias constructors through instance selection, saved methods, nested invariant fields and renamed public reexports.
 - Apply native constrained functions and primary methods one source stage at a time when their results are functions. Retain canonical primitive owners under same-named binders, strict argument order, cold cleanup and positioned refusal of unproved Core inputs.
 - Keep namespace-qualified explicit type arguments valid and stable when formatting source.
+- Stop the dev server before draining further queued requests or starting another watch/rebuild cycle after shutdown is requested. Preserve recovery from an invalid path dependency or manifest and the existing graceful-shutdown bound.
 
 ### Changed
 

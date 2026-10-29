@@ -1,0 +1,19 @@
+import * as buffers from "buffers"
+import * as bytes from "std/bytes"
+
+pub fn probe -> String = {
+  let success = match buffers.make [0, 128, 255] {
+    Left (bytes.ByteOutOfRange value) -> "unexpected:" + show value
+    Right buffer -> {
+      let read: Int -> Maybe<bytes.Byte> = buffers.reader buffer
+      show (buffers.ints buffer) + ":" + show (buffers.code (read 0)) + ":" + show (buffers.code (read 1)) + ":" + show (buffers.code (read 2)) + ":" + show (buffers.code (read 3))
+    }
+  }
+  let failure = match buffers.make [0, 256, -1] {
+    Left (bytes.ByteOutOfRange value) -> "bad:" + show value
+    Right buffer -> show (buffers.ints buffer)
+  }
+  success + "\n" + failure
+}
+
+pub effect fn main = println (probe ())

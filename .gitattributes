@@ -21,6 +21,9 @@ examples/spec/fixtures/rust-backend-projects/decimal-file-aggregate/** text eol=
 examples/spec/fixtures/rust-backend-projects/float-file-aggregate/** text eol=lf
 examples/spec/fixtures/rust-backend-projects/int-remainders/** text eol=lf
 
+# Basic native API packages also pin manifest and source bytes in their locks.
+examples/spec/fixtures/rust-backend-projects/basic-*/** text eol=lf
+
 # Fiber/Deferred acceptance traces compare source bytes across hosts.
 examples/spec/fixtures/rust-backend/fiber-* text eol=lf
 examples/spec/fixtures/rust-backend/deferred-* text eol=lf

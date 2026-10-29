@@ -55,6 +55,21 @@ impl Backend<'_> {
         if let Some(value) = self.text_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.bytes_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.big_int_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.map_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.array_operation_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.math_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.number_parse_call(expr, scope)? {
             return Ok(value);
         }
@@ -79,6 +94,7 @@ impl Backend<'_> {
             }
         }
         if let Some(dispatch) = trait_dispatch {
+            self.validate_hash_call(expr, scope)?;
             if dispatch.trait_identity == "std/prelude::Eq" {
                 return self.equality_call(expr, scope);
             }

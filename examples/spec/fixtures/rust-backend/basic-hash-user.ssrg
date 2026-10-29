@@ -1,0 +1,4 @@
+type Key = | Key Int
+instance Hash<Key> { fn hash value: Key -> Int = match value { Key number -> number + 100 } }
+pub fn probe value: Int -> Int = hash (Key value)
+pub fn main -> Int = probe 42

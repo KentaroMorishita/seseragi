@@ -30,6 +30,11 @@ impl TraceValue for String {
         Ok(())
     }
 }
+impl TraceValue for Vec<u8> {
+    fn edges(&self, _: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
+        Ok(())
+    }
+}
 impl TraceValue for Vec<V> {
     fn edges(&self, visit: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
         self.iter().for_each(visit);
@@ -82,12 +87,17 @@ impl V {
         Some(match self {
             Self::Unit
             | Self::Int(_)
+            | Self::Byte(_)
             | Self::Float(_)
             | Self::Bool(_)
             | Self::Char(_)
             | Self::ListEmpty => return None,
-            Self::Text(v) => v.id(),
+            Self::Text(v) | Self::BigInt(v) => v.id(),
+            Self::Bytes(v) => v.id(),
             Self::Tuple(v) | Self::Array(v) => v.id(),
+            Self::Map(v) => v.id(),
+            Self::MapIndex(v) => v.id(),
+            Self::MapEntry(v) => v.id(),
             Self::List(v) => v.id(),
             Self::Record(v) | Self::Dict(v) => v.id(),
             Self::Adt(v) => v.id(),

@@ -1,0 +1,35 @@
+import * as text from "std/text"
+
+type Key = | Key Int
+instance Hash<Key> {
+  fn hash value: Key -> Int = match value { Key number -> number + 100 }
+}
+
+fn digest<A> value: A -> Int where Hash<A> = hash value
+fn saved<A> _value: A -> (A -> Int) where Hash<A> = hash
+
+pub fn probe -> String = {
+  let integer: Int -> Int = hash
+  let string: String -> Int = hash
+  let character: Char -> Int = hash
+  let generic = saved "unused"
+  let local = saved (Key 0)
+  text.join "|" [
+    show (integer 9007199254740991),
+    show (integer (-9007199254740991)),
+    show (hash True),
+    show (hash False),
+    show (hash ()),
+    show (string ""),
+    show (string "a"),
+    show (string "雫🙂"),
+    show (character '雫'),
+    show (character '🙂'),
+    show (digest "雫🙂"),
+    show (generic "a"),
+    show (digest (Key 42)),
+    show (local (Key 7))
+  ]
+}
+
+pub effect fn main = println (probe ())

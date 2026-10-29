@@ -40,6 +40,7 @@ on:
       - "crates/seseragi-cli/tests/float_conversion.rs"
       - "crates/seseragi-cli/tests/int_remainder.rs"
       - "crates/seseragi-cli/tests/native_power.rs"
+      - "crates/seseragi-cli/tests/basic_standard.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -112,6 +113,7 @@ on:
       - "crates/seseragi-cli/tests/float_conversion.rs"
       - "crates/seseragi-cli/tests/int_remainder.rs"
       - "crates/seseragi-cli/tests/native_power.rs"
+      - "crates/seseragi-cli/tests/basic_standard.rs"
       - "crates/seseragi-cli/tests/fixtures/computed-callee-trace.mjs"
       - "crates/seseragi-cli/tests/build.rs"
       - "crates/seseragi-cli/tests/dev.rs"
@@ -163,7 +165,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     # Batch all CLI suites in one Cargo invocation to reuse compilation.
     # Preserve every test and its individual deadline, with cold-build headroom.
-    timeout-minutes: ${{ matrix.os == 'windows-latest' && 90 || matrix.os == 'macos-15' && 60 || 45 }}
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 90 || matrix.os == 'macos-15' && 90 || 45 }}
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -188,6 +190,15 @@ jobs:
         run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
       - name: Keep locked provider identities identical across checkout hosts
         run: cargo test --locked -p seseragi-runtime --test provider_catalog_identity
+      - name: Verify native text, byte and Array boundaries and portable math values on every host
+        run: |
+          cargo test --locked -p seseragi-backend-rust --lib runtime::text_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::math_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::bytes_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::array_operation_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::big_int_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::hashing_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::map_tests
       - name: Compare complete file, numeric, identity and program WASM suites
         run: >-
           cargo test --locked -p seseragi-cli
@@ -202,6 +213,7 @@ jobs:
           --test float_conversion
           --test int_remainder
           --test native_power
+          --test basic_standard
           --test process_entry_strict
           --test public_aliases
           --test namespace_results
@@ -261,6 +273,7 @@ jobs:
       - name: Verify shared frontend boundary
         run: |
           cargo test --locked -p seseragi-driver --lib core_compile::tests
+          cargo test --locked -p seseragi-driver --test variance --test struct_construction_kind
           cargo test --locked -p seseragi-semantics --lib typed::let_inference_tests
           cargo test --locked -p seseragi-driver --test captured_primitive_identity
           cargo test --locked -p seseragi-lowering --lib core_analysis::scalar
@@ -328,9 +341,10 @@ jobs:
     runs-on: macos-15
     # Every lane checks the same SHA in an isolated checkout. Run this source
     # gate alongside native/canonical-wasm; all lanes still gate integration.
-    # Cold workspace + conformance reached native samples at 90m. Allow the
-    # complete lane to finish without changing individual test deadlines.
-    timeout-minutes: 120
+    # The complete macOS workspace runs test artifacts sequentially. The 120m
+    # job limit interrupted namespace_results after 734 passes and no failures.
+    # Keep every check and individual deadline with cold-workspace headroom.
+    timeout-minutes: 240
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"

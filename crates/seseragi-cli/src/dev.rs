@@ -58,21 +58,18 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     }
 
     while !stopping.load(Ordering::SeqCst) {
-        loop {
-            match listener.accept() {
-                Ok((stream, _)) => {
-                    if let Err(error) =
-                        serve(stream, &output, &version, build_available, &options.host)
-                    {
-                        eprintln!("seseragi dev: {error}");
-                    }
-                }
-                Err(error) if error.kind() == ErrorKind::WouldBlock => break,
-                Err(error) => return Err(format!("dev server accept failed: {error}")),
+        if !serve_pending_requests(&listener, &stopping, |stream| {
+            if let Err(error) = serve(stream, &output, &version, build_available, &options.host) {
+                eprintln!("seseragi dev: {error}");
             }
+        })? {
+            break;
         }
 
         let next = watch_snapshot(&watch_roots)?;
+        if stopping.load(Ordering::SeqCst) {
+            break;
+        }
         if next != files {
             let mut rebuilt = match rebuild(&project, &output, &version) {
                 Ok(rebuilt) => rebuilt,
@@ -82,6 +79,9 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
                     false
                 }
             };
+            if stopping.load(Ordering::SeqCst) {
+                break;
+            }
             let (refreshed_roots, refresh_succeeded) = refresh_watch_roots(&project, &watch_roots);
             let roots_changed = refreshed_roots != watch_roots;
             for root in refreshed_roots
@@ -95,7 +95,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
             // rebuild once against the stable graph before consuming its
             // snapshot; otherwise the dependency change has no later event to
             // trigger recovery.
-            if !rebuilt && refresh_succeeded && roots_changed {
+            if !rebuilt && refresh_succeeded && roots_changed && !stopping.load(Ordering::SeqCst) {
                 rebuilt = match rebuild(&project, &output, &version) {
                     Ok(rebuilt) => rebuilt,
                     Err(error) => {
@@ -119,6 +119,25 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     }
     println!("Stopped dev server");
     Ok(0)
+}
+
+fn serve_pending_requests(
+    listener: &TcpListener,
+    stopping: &AtomicBool,
+    mut serve: impl FnMut(TcpStream),
+) -> Result<bool, String> {
+    loop {
+        if stopping.load(Ordering::SeqCst) {
+            return Ok(false);
+        }
+        match listener.accept() {
+            Ok((stream, _)) => serve(stream),
+            Err(error) if error.kind() == ErrorKind::WouldBlock => {
+                return Ok(!stopping.load(Ordering::SeqCst));
+            }
+            Err(error) => return Err(format!("dev server accept failed: {error}")),
+        }
+    }
 }
 
 struct DevOptions {
@@ -713,6 +732,50 @@ fn open_browser(url: &str) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn queued_connections(count: usize) -> (TcpListener, Vec<TcpStream>) {
+        let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let clients = (0..count)
+            .map(|_| TcpStream::connect(listener.local_addr().unwrap()).unwrap())
+            .collect();
+        (listener, clients)
+    }
+
+    #[test]
+    fn queued_requests_stop_before_the_next_request_or_change_poll() {
+        let (listener, _clients) = queued_connections(2);
+        let stopping = AtomicBool::new(false);
+        let mut served = 0;
+        let poll_changes = serve_pending_requests(&listener, &stopping, |_| {
+            served += 1;
+            stopping.store(true, Ordering::SeqCst);
+        })
+        .unwrap();
+        assert!(
+            !poll_changes,
+            "shutdown must not begin another watch/build cycle"
+        );
+        assert_eq!(served, 1, "queued requests must not delay shutdown");
+    }
+
+    #[test]
+    fn shutdown_before_accept_leaves_queued_requests_unprocessed() {
+        let (listener, _clients) = queued_connections(1);
+        let stopping = AtomicBool::new(true);
+        let mut served = 0;
+        assert!(!serve_pending_requests(&listener, &stopping, |_| served += 1).unwrap());
+        assert_eq!(served, 0);
+    }
+
+    #[test]
+    fn drained_requests_continue_to_the_change_poll_without_shutdown() {
+        let (listener, _clients) = queued_connections(2);
+        let stopping = AtomicBool::new(false);
+        let mut served = 0;
+        assert!(serve_pending_requests(&listener, &stopping, |_| served += 1).unwrap());
+        assert_eq!(served, 2);
+    }
 
     #[test]
     fn authorizes_only_explicit_or_connected_hosts() {

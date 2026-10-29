@@ -461,11 +461,9 @@ fn format_logical_line(
             .iter()
             .enumerate()
             .map(|(position, index)| {
-                let indent = if position == 0 {
-                    base_indent + leading
-                } else {
-                    base_indent + leading - position - 1
-                };
+                // The base already excludes every leading closer. Re-add
+                // only the delimiters that remain open after this token.
+                let indent = base_indent + leading - position - 1;
                 format!("{}{}", "  ".repeat(indent), tokens[*index].raw.trim_end())
             })
             .collect();

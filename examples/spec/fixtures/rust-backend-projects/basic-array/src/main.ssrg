@@ -1,0 +1,21 @@
+import * as sequences from "sequences"
+
+pub fn probe -> String = {
+  let values = [1, 2, 3, 2]
+  let seed = 2
+  let predicate = \value: Int -> value == seed
+  let selected = sequences.keep predicate
+  let read = sequences.reader (sequences.window values)
+  let second = match read 1 {
+    Nothing -> -1
+    Just value -> value
+  }
+  let callbacks: Array<Int -> Int> = [\value: Int -> value + seed]
+  let answer = match sequences.find (\_: (Int -> Int) -> True) callbacks {
+    Nothing -> -1
+    Just callback -> callback 40
+  }
+  show (selected values) + ":" + show second + ":" + show (sequences.size values) + ":" + show answer
+}
+
+pub effect fn main = println (probe ())

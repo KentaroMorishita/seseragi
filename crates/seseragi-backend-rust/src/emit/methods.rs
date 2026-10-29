@@ -127,6 +127,9 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
+        if dispatch.trait_identity == "std/prelude::Hash" && dispatch.method == "hash" {
+            return Ok(()); // The complete A -> Int value is checked by validate_hash_call.
+        }
         if dispatch.trait_identity == "std/prelude::Ord" {
             return self.validate_ord_method_value(dispatch, selected, type_ref, scope);
         }
@@ -399,6 +402,11 @@ impl Backend<'_> {
         }
         match name.as_str() {
             "std/path::Path"
+            | "std/bytes::Byte"
+            | "std/bytes::Bytes"
+            | "std/bytes::ByteError"
+            | "std/big-int::BigInt"
+            | "std/big-int::BigIntParseError"
             | "std/time::Duration"
             | "std/time::DurationError"
             | "std/clock::Clock"
@@ -424,6 +432,7 @@ impl Backend<'_> {
                 Some(vec![0])
             }
             "std/prelude::Either"
+            | "std/map::Map"
             | "std/effect::Fiber"
             | "std/effect::FiberExit"
             | "std/deferred::Deferred" => Some(vec![0, 0]),

@@ -1,0 +1,12 @@
+import * as exact from "exact"
+import * as big from "std/big-int"
+
+pub fn probe -> String = match exact.parse "900719925474099200000000000001" {
+  Left _ -> "unexpected"
+  Right value -> {
+    let saved: Unit -> String = exact.reader value
+    exact.format value + "|" + saved () + "|" + exact.format (exact.fromInt (-9007199254740991))
+  }
+}
+
+pub effect fn main = println (probe ())

@@ -2,6 +2,156 @@ use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_core_module, CompileInput};
 
 #[test]
+fn descending_int_infix_rejects_unproved_owners_operands_and_results_at_the_original_span() {
+    use seseragi_lowering::{core_expr_origin, CoreExpr, CoreInstanceEvidence, CoreType};
+    for operator in [">", ">="] {
+        let source = format!("// 雪🙂\npub fn probe -> Bool = 2 {operator} 1\n");
+        let core = compile_core_module(CompileInput::new(
+            "descending-雪🙂.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        let origin = core_expr_origin(&core.functions[0].body).clone();
+        for mutation in 0..15 {
+            let mut changed = core.clone();
+            let CoreExpr::Binary {
+                left,
+                right,
+                evidence,
+                type_ref,
+                ..
+            } = &mut changed.functions[0].body
+            else {
+                panic!()
+            };
+            match mutation {
+                0 => evidence[0].constraint.trait_identity = Some("fake::Ord".into()),
+                1 => evidence[0].constraint.name = "Eq".into(),
+                2 => evidence[0].constraint.arguments.clear(),
+                3 => evidence[0].constraint.arguments[0] = CoreType::Hole,
+                4 => {
+                    evidence[0].constraint.arguments[0] = CoreType::ExternalNamed {
+                        name: "Int".into(),
+                        canonical: "fake::Int".into(),
+                        arguments: vec![],
+                    }
+                }
+                5 => {
+                    let CoreInstanceEvidence::Standard { type_arguments, .. } =
+                        &mut evidence[0].evidence
+                    else {
+                        panic!()
+                    };
+                    type_arguments.push(CoreType::Hole);
+                }
+                6 => {
+                    let child = evidence[0].clone();
+                    let CoreInstanceEvidence::Standard {
+                        evidence_arguments, ..
+                    } = &mut evidence[0].evidence
+                    else {
+                        panic!()
+                    };
+                    evidence_arguments.push(child);
+                }
+                7 => {
+                    let CoreInstanceEvidence::Standard { identity, .. } = &mut evidence[0].evidence
+                    else {
+                        panic!()
+                    };
+                    *identity = "std/char::Ord".into();
+                }
+                8 => *type_ref = CoreType::Hole,
+                9 => {
+                    *type_ref = CoreType::Named {
+                        name: "Int".into(),
+                        arguments: vec![],
+                    }
+                }
+                10 => {
+                    **left = CoreExpr::Unit {
+                        origin: core_expr_origin(left).clone(),
+                    }
+                }
+                11 => {
+                    **right = CoreExpr::Boolean {
+                        value: true,
+                        origin: core_expr_origin(right).clone(),
+                    }
+                }
+                12 => evidence.clear(),
+                13 => evidence.push(evidence[0].clone()),
+                _ => evidence[0].constraint.arguments.push(CoreType::Hole),
+            }
+            let error = emit_rust_module(&changed, "probe")
+                .err()
+                .unwrap_or_else(|| panic!("unproved {operator}/{mutation} accepted"));
+            assert_eq!(error.code, "SES-RUST-0001");
+            assert_eq!(error.origin.unwrap(), origin, "{operator}/{mutation}");
+        }
+    }
+}
+
+#[test]
+fn descending_int_infix_does_not_replace_a_same_named_type_binder() {
+    use seseragi_lowering::{core_expr_origin, CoreExpr};
+    let mut core = compile_core_module(CompileInput::new(
+        "scope.ssrg",
+        "native/main",
+        "fn identity<Int> value: Int -> Int = value\npub fn probe -> Bool = 2 > 1\n",
+    ))
+    .unwrap()
+    .core_ir;
+    let identity = core
+        .functions
+        .iter()
+        .position(|f| f.symbol.ends_with("::identity"))
+        .unwrap();
+    let probe = core
+        .functions
+        .iter()
+        .position(|f| f.symbol.ends_with("::probe"))
+        .unwrap();
+    let mut call = core.functions[probe].body.clone();
+    let origin = core_expr_origin(&call).clone();
+    let CoreExpr::Binary { left, .. } = &mut call else {
+        panic!()
+    };
+    **left = core.functions[identity].body.clone();
+    core.functions[identity].body = call;
+    let error = emit_rust_module(&core, "probe").unwrap_err();
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert_eq!(error.origin.unwrap(), origin);
+}
+
+#[test]
+fn descending_int_infix_keeps_program_wasm_admission_explicit() {
+    use seseragi_lowering::core_expr_origin;
+    for operator in [">", ">="] {
+        let source = format!("pub fn probe value: Int -> Bool = value {operator} 1\n");
+        let core =
+            compile_core_module(CompileInput::new("descending.ssrg", "native/main", &source))
+                .unwrap()
+                .core_ir;
+        let error =
+            seseragi_backend_rust::emit_program_wasm(&[&core], "native/main", &["probe".into()])
+                .unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert!(
+            error.message.contains("requires a target-specific"),
+            "{operator}: {error}"
+        );
+        assert_eq!(
+            error.origin.unwrap(),
+            *core_expr_origin(&core.functions[0].body)
+        );
+    }
+}
+
+#[test]
 fn canonical_int_comparison_partial_is_a_bool_callable() {
     let source = "pub fn probe -> Bool = { let less: Int -> Bool = (<) 1; less 2 }";
     let core = compile_core_module(CompileInput::new(

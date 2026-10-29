@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-bytes@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-bytes@0.0.0#workspace:."
+name = "fixture/basic-bytes"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:23a5190f6eac1757552ea4263821faf9f1096095b95a63d3012f06c3026aa551"
+content_digest = "sha256:ecf84f23cdefe78ef9b8c2934e48f6c23fcf0bf813d752c30cadcda4df9e7dfd"
+dependencies = [
+  { import = "buffers", package = "fixture/buffer-cells@0.0.0#path:vendor/buffers" },
+]
+
+[[packages]]
+id = "fixture/buffer-cells@0.0.0#path:vendor/buffers"
+name = "fixture/buffer-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/buffers"
+manifest_digest = "sha256:50f739c29a6907efee01d06f5c502b1eaa9ccb243d9786c9b42b81d9d2d1acbd"
+content_digest = "sha256:bbbd969439b11c1294a7868853907ab96ec004833b5ae0954ed507a48c4ffe52"
+dependencies = []

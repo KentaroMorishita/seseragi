@@ -1,0 +1,46 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as maps from "std/map"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+
+fn reader seed: Int -> Int -> Int = {
+  let original = maps.singleton "snow" seed
+  let updated = maps.insert "snow" (seed + 1) original
+  let withOther = maps.insert "wave" 99 updated
+  let values = maps.remove "wave" withOther
+  \increment: Int -> match maps.get "snow" values {
+    Nothing -> -1
+    Just value -> value + increment
+  }
+}
+
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (reader 40)
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    selected <- refs.get saved
+    say (show (selected 1))
+    effects.succeed (selected 1)
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\n -> n + 1) released
+          say "released"
+        }
+      )
+      first <- cold
+      second <- cold
+      say (show (first + second))
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}
