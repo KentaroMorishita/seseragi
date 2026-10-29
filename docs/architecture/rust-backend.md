@@ -43,13 +43,13 @@ Mapのkeyには選択済みの`Eq<K>`と`Hash<K>`を使う。標準HashはInt／
 keyとvalueを保持しない。内部seedはOS entropyまたは環境変数`SESERAGI_HASH_SEED`から生成し、
 publicなhash値や挿入順へ混ぜない。設定したseedはsigned 64-bit整数でなければアプリ開始前に拒否する。
 
-次の実装batchではSetの`empty`／`singleton`／`contains`／`insert`／`remove`／`toArray`／
+v0.61.116候補ではSetの`empty`／`singleton`／`contains`／`insert`／`remove`／`toArray`／
 `size`／`isEmpty`と、Mapの`containsKey`／`entries`を追加する。SetはMapと区別する専用tagを
 持ち、同じpersistent storageと循環回収を使う。重複した要素は最初の代表と位置を保つ。
 `entries`は挿入順に対応するkeyとvalueのTupleを返す。これらの実装は115の配布候補とは
 別に検証し、正式配布の完了は後続のreleaseで確認する。
 
-同じ次batchにDecimalの`parse`／`fromInt`と標準`Show`を追加する。係数とscaleを任意精度の
+同じ候補にDecimalの`parse`／`fromInt`と標準`Show`を追加する。係数とscaleを任意精度の
 符号付き十進列として保持し、巨大な指数もFloatや固定幅整数へ変換せずにparseする。
 表記は指数を使わず、負zeroと不要な末尾zeroを正規化する。表記がhost limitを超える場合は
 Defectとして扱う。Decimalの算術・丸め・全標準辞書はこの3操作に含めない。
