@@ -76,6 +76,8 @@ fn rejects_every_external_representation_route_including_empty_patterns() {
         "pub fn spread x: Secret -> Secret = Secret { ...x }",
         "pub fn updateOutside x: Secret -> Secret = Secret { ...x, value: 2 }",
         "pub fn genericOutside x: Box<Int> -> Int = x.value",
+        "alias Hidden = Secret\npub fn forgeAlias -> Hidden = Hidden { value: 1 }",
+        "alias Hidden<A> = Box<A>\npub fn forgeGenericAlias -> Hidden<Int> = Hidden<Int> { value: 1 }",
     ] {
         let source = format!("import {{ Secret, Box }} from \"./facade\"\n{body}");
         let failure = project(&source).unwrap_err();
