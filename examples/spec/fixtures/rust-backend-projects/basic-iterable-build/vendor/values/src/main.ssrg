@@ -1,0 +1,20 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as iterator from "std/iterator"
+pub opaque newtype Values = Array<Int>
+pub opaque newtype Key = Int
+pub opaque newtype Rows = Array<(Key,String)>
+pub alias Items<A> = List<A>
+instance Eq<Key> { fn eq left:Key -> right:Key -> Bool = match left { Key a -> match right { Key b -> a == b } } }
+instance Hash<Key> { fn hash _value:Key -> Int = 0 }
+instance Show<Key> { fn show value:Key -> String = match value { Key n -> "key:" + show n } }
+instance Iterable<Values,Int> { fn iterate input:Values -> iterator.Iterator<Int> = match input { Values values -> iterator.unfold (\index:Int -> match arrays.get index values { Nothing -> Nothing; Just value -> Just (value,index + 1) }) 0 } }
+instance Iterable<Rows,(Key,String)> { fn iterate input:Rows -> iterator.Iterator<(Key,String)> = match input { Rows values -> iterator.unfold (\index:Int -> match arrays.get index values { Nothing -> Nothing; Just value -> Just (value,index + 1) }) 0 } }
+pub fn values -> Values = Values [3,1,3,2]
+pub fn rows -> Rows = Rows [(Key 1,"old"),(Key 2,"second"),(Key 1,"new")]
+pub fn arrayOf<C,A> input:C -> Array<A> where Iterable<C,A> = arrays.fromIterable input
+pub fn listOf<C,A> -> (C -> Items<A>) where Iterable<C,A> = lists.fromIterable
+pub fn setOf<C,A> -> (C -> sets.Set<A>) where Iterable<C,A>,Eq<A>,Hash<A> = sets.fromIterable
+pub fn mapOf<C,K,V> -> (C -> maps.Map<K,V>) where Iterable<C,(K,V)>,Eq<K>,Hash<K> = maps.fromEntries

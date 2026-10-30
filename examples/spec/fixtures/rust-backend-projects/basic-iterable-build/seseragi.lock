@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/iterable-build@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/iterable-build-values@0.0.0#path:vendor/values"
+name = "fixture/iterable-build-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:3a90bdb725b26a837f240dd4d0cd4222a556dc16e224f633e3b8b74213daa811"
+content_digest = "sha256:96958733b6a2ed72474a02a3835ccf4a05fe1abdfe23076d0c7fb04035541baa"
+dependencies = []
+
+[[packages]]
+id = "fixture/iterable-build@0.0.0#workspace:."
+name = "fixture/iterable-build"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:1ab4f3101203c5bcd8b82e046121397d18165ec2b8700ca0209a79ec335628d2"
+content_digest = "sha256:221454b8338edf5568d26d61f62448638acc24a5b1c8d62ef52835e08acd3007"
+dependencies = [
+  { import = "values", package = "fixture/iterable-build-values@0.0.0#path:vendor/values" },
+]

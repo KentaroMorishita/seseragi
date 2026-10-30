@@ -314,6 +314,47 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_iterable_build_keeps_custom_standard_saved_sources_order_duplicates_and_empty_inputs() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-iterable-build.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-iterable-build.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_iterable_build_keeps_cold_captured_dictionaries_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-iterable-build-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-iterable-build-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_iterable_build_iterate_step_hash_eq_and_source_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-iterable-build-effects.ssrg"
+    );
+    let needle = "arrays.fromIterable (iterator.unfold advance 0)";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "arrays.fromIterable (iterator.unfold (\\state:Int -> if state == 1 then Just (42 / 0,state + 1) else Just (state,state + 1)) 0)",
+        "lists.fromIterable (Broken ())",
+        "sets.fromIterable [BadHash 1]",
+        "maps.fromEntries [(BadEq 1,\"first\"),(BadEq 2,\"second\")]",
+        "lists.fromIterable (if 42 / 0 == 0 then [1] else [2])",
+    ] {
+        let scratch=Scratch::new();let path=scratch.0.join("iterable-build-defect.ssrg");fs::write(&path,original.replace(needle,expression)).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n[1, 2, 1]|`[1, 2, 1]|[1, 2]|[(1, new), (2, second)]\ncold\n[1, 2, 1]|`[1, 2, 1]|[1, 2]|[(1, new), (2, second)]\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_iterable_build_path_package_keeps_imported_opaque_sources_keys_and_generic_factories() {
+    compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-iterable-build"),&[Case::success(b"[3, 1, 3, 2]\n`[3, 1, 3, 2]\n[3, 1, 2]\n[(key:1, new), (key:2, second)]\n[(key:1, new), (key:2, second)]\n[3, 1, 3, 2]\n")]);
+}
+
+#[test]
 fn basic_iterator_original_minimal_saved_runtime_regression_matches_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-regressions/iterator-saved-runtime.ssrg"),

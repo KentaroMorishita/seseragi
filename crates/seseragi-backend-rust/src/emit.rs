@@ -32,6 +32,7 @@ mod equality;
 mod filesystem;
 mod floats;
 mod hashing;
+mod iterable;
 mod iterator;
 mod json;
 mod json_codecs;
@@ -191,6 +192,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_sequence.rs"));
     output.push_str(include_str!("runtime_sequence_order.rs"));
     output.push_str(include_str!("runtime_iterator.rs"));
+    output.push_str(include_str!("runtime_iterable.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int_value.rs"));
@@ -549,6 +551,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.big_int_trait_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.iterable_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -929,6 +935,11 @@ impl Backend<'_> {
                 }
                 if let Some(value) =
                     self.iterator_operation_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.iterable_build_reference(name, evidence, type_ref, scope)?
                 {
                     return Ok(value);
                 }

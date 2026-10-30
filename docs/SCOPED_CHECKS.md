@@ -1,5 +1,16 @@
 # Scoped checks
 
+native Array/List/Set.fromIterableとMap.fromEntriesはbackendの
+`--test iterable_build --test iterator`、runtimeの`iterable_tests`、CLIの
+`basic_iterable_build_`で確認します。選択した一般Iterableの辞書を一度呼び、
+Iteratorの終端まで読みます。標準Array/List/Iterator/Map/Setと独自/輸入/parameter辞書、
+空入力、順序、重複keyの値更新と最初のkey保持、選択済みEq/Hashを扱います。
+標準辞書のinstantiationはchecked constraintから照合し、未証明providerは拒否します。
+88件の偽造とunused program WASM4件、opaque2module/alias/generic/保存、元raw TS
+両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
+iterate/step/Hash/Eq/最終sourceのDefect・finalizer/root0、10万要素List生成を検証します。
+最終SDKとrepository-wide gate・配布はcollection batchへ集約します。
+
 native Iteratorのunfold/nextはbackendの`--test iterator`、runtimeの
 `iterator_tests`、CLIの`basic_iterator_`で確認します。生成時のstep省略、
 同じcursorの再観測、返されたtailだけの前進、終端の再観測と10万stepの状態解放、
