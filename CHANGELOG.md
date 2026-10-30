@@ -1,45 +1,33 @@
 # Change Log
 
-## [0.61.123] - 2026-10-30
+## [0.61.124] - 2026-10-30
 
 ### Added
 
 - Run native Decimal Eq, Ord and Hash dictionaries through saved, generic and imported methods, including Map/Set keys and all comparison operators. Keep normalized arbitrary-precision coefficients and scales, the public signed 32-bit limb hash, zero/sign ordering and virtual digit alignment without expanding huge scales. Preserve inherited Eq, opaque provider keys, cold partials, reference cycles and scoped cleanup. New program WASM Decimal admission remains outside this slice.
+- Run native Array/List concat and text startsWith/endsWith through checked saved and generic source stages, preserving input order, Unicode boundaries, cold callbacks and scoped cleanup.
+- Run native Set filter/map/union/intersection/difference/isSubsetOf/toList and Map filter/mapValues/upsert/mergeWith/mapKeysWith. Keep insertion order, first key representatives, immutable snapshots and selected output-key dictionaries. Preserve callback and Hash/Eq order, source seeds, reference cycles and cleanup after failures or defects. New program WASM collection admission remains outside this slice.
+- Run typed JSON natively with primitive codec dictionaries, saved generic methods, encodeString/decodeString and the field, optionalField, index, array, record, oneOf, map and flatMap decoder combinators. Preserve exact Decimal and safe Int semantics, distinct syntax/domain errors and root-to-leaf paths.
+- Compose native Array, List, Maybe, Either, Tuple, Map, Set and closed-record JSON codecs, including optional field absence, selected Eq/Hash dictionaries, duplicate-key representatives and insertion order.
+- Derive native JSON codecs for named structs, transparent newtypes and tagged ADTs across generic, recursive, opaque and imported package boundaries. Construct child dictionaries lazily, preserve cold replay and scope finalizers, trace captured reference cycles and bound recursive codec/decoder frames. New program WASM admission remains outside this slice.
+- Run native Int radix parsing, decimal/radix formatting and safe bounds, preserving canonical decimal spelling, first-error byte positions and saved source stages.
+- Run native checked and saturating Int arithmetic, bounded integer powers, typed division/power errors and numeric helpers. Preserve exact safe-integer results, partial application and scoped cleanup after invalid clamp bounds.
+- Run native Math constants and the remaining elementary functions, including atan2 and scaled hypot. Preserve signed zero, NaN/Infinity, portable finite tolerances and first-class binary functions across opaque package boundaries.
 
 ### Fixed
 
 - Order Decimal zero before every positive value, including fractions below one and values with unbounded negative exponents. Keep negative zero and equivalent spellings equal, and retain the existing nonzero comparison order.
-
-## [0.61.122] - 2026-10-30
-
-### Added
-
-- Run native Array/List concat and text startsWith/endsWith through checked saved and generic source stages, preserving input order, Unicode boundaries, cold callbacks and scoped cleanup.
-- Run native Set filter/map/union/intersection/difference/isSubsetOf/toList and Map filter/mapValues/upsert/mergeWith/mapKeysWith. Keep insertion order, first key representatives, immutable snapshots and selected output-key dictionaries. Preserve callback and Hash/Eq order, source seeds, reference cycles and cleanup after failures or defects. New program WASM collection admission remains outside this slice.
-
-### Fixed
-
 - Infer the element type of leading empty nested Array/List arguments from their later siblings before checking a generic call.
 - Preserve checked later callback types when the first argument is also a callback, and insert dictionaries at the declared source boundary before applying a returned function. Validate imported native partials against declaration owners, remaining arguments, result types and dictionary identities.
-
-### Changed
-
-- Cancel superseded Rust backend and portable DTS pull-request workflows automatically while retaining separate manual integration and canonical artifact runs.
-
-## [0.61.121] - 2026-10-30
-
-### Added
-
-- Run typed JSON natively with primitive codec dictionaries, saved generic methods, encodeString/decodeString and the field, optionalField, index, array, record, oneOf, map and flatMap decoder combinators. Preserve exact Decimal and safe Int semantics, distinct syntax/domain errors and root-to-leaf paths.
-- Compose native Array, List, Maybe, Either, Tuple, Map, Set and closed-record JSON codecs, including optional field absence, selected Eq/Hash dictionaries, duplicate-key representatives and insertion order.
-- Derive native JSON codecs for named structs, transparent newtypes and tagged ADTs across generic, recursive, opaque and imported package boundaries. Construct child dictionaries lazily, preserve cold replay and scope finalizers, trace captured reference cycles and bound recursive codec/decoder frames. New program WASM admission remains outside this slice.
-
-### Fixed
-
 - Expose DecodeError as its specified public struct and retain typed generic JSON dictionaries and checked source type arguments in generated TypeScript. Preserve inferred type arguments before the first curried stage of imported callable aliases over Prelude sums.
 - Restore JSON fields such as __proto__ as ordinary own data properties while preserving object prototypes, optional absence and strict error ordering.
 - Keep nested record types and following fields inside struct declarations, including their checked construction types and UTF-8 diagnostic ranges.
 - Keep release-profile newtype construction from record, array and tuple literals strict-type-correct through the existing private-representation bridge, after checking the source payload and nominal boundary.
+- Retain checked source function types for returned curried runtime references so raw generated TypeScript remains strict-type-correct without an outer annotation.
+
+### Changed
+
+- Cancel superseded Rust backend and portable DTS pull-request workflows automatically while retaining separate manual integration and canonical artifact runs.
 
 ## [0.61.118] - 2026-10-30
 
