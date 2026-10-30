@@ -1,6 +1,19 @@
 # Scoped checks
 
 
+native Arrayのempty/singleton/append/reverse/isEmpty/head/tail/filterMap/flatMapは、
+backendの`--test array_rest --test basic_array`、runtimeの`array_`、CLIの
+`basic_array_rest_`と元`basic_array_matches_original_raw_strict_ts_and_native`で確認します。
+appendのsuffix-first順、Nothingとsingleton tailのJust-empty、異なる出力型のcallback、
+空入力のcallback省略、immutable入力、再入、最初のDefect後の停止とRef cycle/root0を検証します。
+129件の偽造とunused program WASM9件を拒否し、元raw TS両profile strict/skipLibCheck:false・
+fresh Bun/Node/nativeとopaque2module・保存/generic/partial・cold/Failure/finalizerを比較します。
+共有修復はdriverの`--test array_alias_elements --test alias_type_functions
+--test inferred_collection_owner`で、qualifiedなopaque要素と異なる同名ownerの区別を保ちます。
+empty/appendの生成callにはchecked Array要素型を保持し、alias展開後も選択済みimport symbolを使います。
+SDKと全体gate・配布は次のbatchのintegration pointへ集約します。
+
+
 実ファイル/実FIFOの非同期I/Oだけをhost間で切り分ける場合は、
 `rust-backend.yml`のmanual input `async_io_only=true`を使います。
 Linux/macOS/Windowsで元の`cargo test --locked -p seseragi-cli --test async_filesystem`

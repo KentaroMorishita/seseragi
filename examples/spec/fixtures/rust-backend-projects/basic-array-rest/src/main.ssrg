@@ -1,0 +1,18 @@
+import * as values from "values"
+fn optional value:Maybe<values.Value> -> String = match value { Nothing -> "none"; Just value -> "cell:" + show (values.number value) }
+fn optionalItems value:Maybe<values.Items<values.Value>> -> String = match value { Nothing -> "none"; Just value -> show (values.labels value) }
+pub effect fn main = do {
+  let input = [values.item 1,values.item 2,values.item 3]
+  let make:values.Value -> values.Items<values.Value> = values.maker ()
+  let append = values.append (make (values.item 4))
+  let output = append (values.selected input)
+  let empty:values.Items<values.Value> = values.blank ()
+  println (show (values.labels output))
+  println (show (values.labels (values.reverse output)))
+  println (optional (values.head output))
+  println (optionalItems (values.tail output))
+  println (optional (values.head empty))
+  println (optionalItems (values.tail empty))
+  println (show (values.isEmpty empty))
+  println (show (values.labels input))
+}

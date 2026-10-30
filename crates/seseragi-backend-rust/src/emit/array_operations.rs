@@ -2,9 +2,21 @@ use super::*;
 
 fn arity(name: &str) -> Option<usize> {
     match name {
-        "std/array::length" => Some(1),
-        "std/array::filter" | "std/array::find" | "std/array::get" | "std/array::take"
-        | "std/array::drop" => Some(2),
+        "std/array::length"
+        | "std/array::empty"
+        | "std/array::singleton"
+        | "std/array::reverse"
+        | "std/array::isEmpty"
+        | "std/array::head"
+        | "std/array::tail" => Some(1),
+        "std/array::filter"
+        | "std/array::find"
+        | "std/array::get"
+        | "std/array::take"
+        | "std/array::drop"
+        | "std/array::append"
+        | "std/array::filterMap"
+        | "std/array::flatMap" => Some(2),
         _ => None,
     }
 }
@@ -60,29 +72,56 @@ impl Backend<'_> {
             parameters.push(parameter.as_ref());
             remainder = result;
         }
-        let CoreType::Named {
-            name: array,
-            arguments: elements,
-        } = parameters[arity - 1]
-        else {
-            return Err("Rust backend: unproven canonical Array parameter".into());
+        let array_element = |ty: &CoreType| -> Result<CoreType> {
+            match ty {
+                CoreType::Named { name, arguments }
+                    if name == "std/prelude::Array" && arguments.len() == 1 =>
+                {
+                    Ok(arguments[0].clone())
+                }
+                _ => Err("Rust backend: unproven canonical Array owner or arity".into()),
+            }
         };
-        if array != "std/prelude::Array" || elements.len() != 1 {
-            return Err("Rust backend: unproven canonical Array owner or arity".into());
-        }
+        let element = array_element(
+            if matches!(name, "std/array::empty" | "std/array::singleton") {
+                remainder
+            } else {
+                parameters[arity - 1]
+            },
+        )?;
         let named = |name: &str, arguments: Vec<CoreType>| CoreType::Named {
             name: format!("std/prelude::{name}"),
             arguments,
         };
-        let array = named("Array", elements.clone());
+        let array = named("Array", vec![element.clone()]);
         let int = named("Int", vec![]);
-        let predicate = function(&elements[..1], named("Bool", vec![]));
+        let predicate = function(&[element.clone()], named("Bool", vec![]));
         let (expected, result) = match name {
+            "std/array::empty" => (vec![named("Unit", vec![])], array),
+            "std/array::singleton" => (vec![element], array),
+            "std/array::append" => (vec![array.clone(), array.clone()], array),
+            "std/array::reverse" => (vec![array.clone()], array),
+            "std/array::isEmpty" => (vec![array], named("Bool", vec![])),
+            "std/array::head" => (vec![array], named("Maybe", vec![element])),
+            "std/array::tail" => (vec![array.clone()], named("Maybe", vec![array])),
             "std/array::filter" => (vec![predicate, array.clone()], array),
-            "std/array::find" => (vec![predicate, array], named("Maybe", elements.clone())),
-            "std/array::get" => (vec![int, array], named("Maybe", elements.clone())),
+            "std/array::find" => (vec![predicate, array], named("Maybe", vec![element])),
+            "std/array::get" => (vec![int, array], named("Maybe", vec![element])),
             "std/array::take" | "std/array::drop" => (vec![int, array.clone()], array),
             "std/array::length" => (vec![array], int),
+            "std/array::filterMap" | "std/array::flatMap" => {
+                let output = array_element(remainder)?;
+                let callback_result = named(
+                    if name == "std/array::filterMap" {
+                        "Maybe"
+                    } else {
+                        "Array"
+                    },
+                    vec![output.clone()],
+                );
+                let callback = function(&[element], callback_result);
+                (vec![callback, array], named("Array", vec![output]))
+            }
             _ => unreachable!(),
         };
         if full != function(&expected, result) {

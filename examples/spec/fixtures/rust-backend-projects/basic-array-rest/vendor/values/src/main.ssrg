@@ -1,0 +1,14 @@
+import * as arrays from "std/array"
+pub opaque newtype Value = Int
+pub alias Items<A> = Array<A>
+pub fn item number:Int -> Value = Value number
+pub fn number value:Value -> Int = match value { Value number -> number }
+pub fn maker<A> -> (A -> Items<A>) = arrays.singleton
+pub fn blank<A> _unit:Unit -> Items<A> = arrays.empty ()
+pub fn append<A> suffix:Items<A> -> (Items<A> -> Items<A>) = arrays.append suffix
+pub fn reverse<A> values:Items<A> -> Items<A> = arrays.reverse values
+pub fn selected values:Items<Value> -> Items<Value> = arrays.filterMap (\value:Value -> if number value % 2 == 0 then Nothing else Just value) values
+pub fn labels values:Items<Value> -> Array<String> = arrays.flatMap (\value:Value -> ["cell:" + show (number value)]) values
+pub fn head<A> values:Items<A> -> Maybe<A> = arrays.head values
+pub fn tail<A> values:Items<A> -> Maybe<Items<A>> = arrays.tail values
+pub fn isEmpty<A> values:Items<A> -> Bool = arrays.isEmpty values
