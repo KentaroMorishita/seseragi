@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.61.125] - 2026-10-30
+
+### Added
+
+- Run native BigInt radix parsing/formatting, safe Int conversion, exact arithmetic, checked division/remainder/power and the standard Eq/Ord/Hash/Zero/One/Show/Debug dictionaries. Preserve canonical binary32 limbs, signed public hashes, truncation toward zero and dividend-signed remainders through saved generic methods, opaque packages and immutable Map/Set keys.
+- Run native Decimal Context, precision and rounding getters, exact Add/Sub/Mul, Zero/One/Debug, checked exact or precision-based division and quantize. Preserve arbitrary coefficient/scale precision, six rounding modes, typed zero/nonterminating errors, saved partial stages, cold effects and scoped cleanup.
+- Convert native Decimal to exact safe Int or nearest finite Float, and round exact Float bit values through an explicit Decimal Context. Preserve exact maximum-Float boundaries, signed underflow, nonfinite conversion errors and source evaluation before numeric failures.
+
+### Fixed
+
+- Preserve canonical owners when imported standard numeric aliases select operator instances, and infer arithmetic section operands from their checked supplied arguments while reusing the first argument analysis.
+- Provide compile-time recursion headroom in generated Rust crates so long Effect sequences compile, retaining every source statement and its output.
+- Verify previously admitted cbrt and BigInt hash sources as successful empty-PATH native emission while retaining the remaining unsupported target refusals.
+
 ## [0.61.124] - 2026-10-30
 
 ### Added
