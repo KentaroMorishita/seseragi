@@ -1290,6 +1290,9 @@ impl SemanticTypeCatalog {
                         key: self.key_from_typed_type(resolved, argument),
                     })
                     .collect::<Vec<_>>();
+                if canonical == "std/prelude::Array" && arguments.len() == 1 {
+                    return named_generic_key("Array", arguments);
+                }
                 let mut owners = resolved
                     .symbols
                     .iter()
@@ -1672,7 +1675,10 @@ fn semantic_key_from_expanded_type(
                     type_ref: argument.clone(),
                     key: semantic_key_from_expanded_type(resolved, owners, struct_owners, argument),
                 })
-                .collect();
+                .collect::<Vec<_>>();
+            if canonical == "std/prelude::Array" && arguments.len() == 1 {
+                return named_generic_key("Array", arguments);
+            }
             // Alias expansion has already selected a canonical owner. Recover
             // only a registered closed family; an opaque representation with
             // no visible constructor remains an external nominal.
