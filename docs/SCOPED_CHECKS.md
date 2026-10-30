@@ -6,6 +6,16 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Map.filter/mapValuesはbackendの`--test basic_map_operations --test basic_map`、runtimeの
+`map_tests`、CLIの`--test basic_standard basic_map_operations_`で確認します。filterのcached hash/
+seedとbulk再構築はSetと共有するため`set_tests`とCLIの`basic_set_operations_`も回帰確認します。
+挿入順のcallback、元key代表・snapshot・空入力、mapValuesのvalue型変更とbucket共有、
+除外key/value・置換前value・元containerの非保持を保ちます。通常2 module packageのopaque値・
+imported generic partialと保存callback、元raw TS両profile strictとfresh Bun/Node/native、
+cold/Failure/predicate・mapper内Defect/finalizer/Ref cycle/root0を比較します。
+callback/結果/owner/kind/型/辞書/段階と未使用保存関数のprogram WASMを拒否します。
+公開面はstandard.rsとspecに従い、reduceはstd/map関数として追加しません。SDK/全体gateは最終batchです。
+
 native Setのfilter/union/intersection/difference/isSubsetOf/toListはbackendの
 `--test basic_set_operations --test basic_collections`、runtimeの`set_tests`、CLIの
 `--test basic_standard basic_set_operations_`で確認します。選択済みEq/Hash、挿入順と元key代表、

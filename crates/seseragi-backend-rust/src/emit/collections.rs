@@ -9,6 +9,8 @@ fn arity(name: &str) -> Option<usize> {
         | "std/map::get"
         | "std/map::containsKey"
         | "std/map::remove"
+        | "std/map::filter"
+        | "std/map::mapValues"
         | "std/set::contains"
         | "std/set::insert"
         | "std/set::remove"
@@ -132,6 +134,41 @@ impl Backend<'_> {
                 true,
             ),
             "std/map::containsKey" => (vec![key.clone(), map.clone()], named("Bool", vec![]), true),
+            "std/map::filter" => (
+                vec![
+                    function(&[key.clone(), value.clone()], named("Bool", vec![])),
+                    map.clone(),
+                ],
+                map.clone(),
+                false,
+            ),
+            "std/map::mapValues" => {
+                let CoreType::Named {
+                    name: output_owner,
+                    arguments: output_slots,
+                } = result
+                else {
+                    return Err(
+                        "Rust backend: Map mapValues requires a canonical result Map".into(),
+                    );
+                };
+                if output_owner != "std/map::Map"
+                    || output_slots.len() != 2
+                    || output_slots[0] != *key
+                {
+                    return Err(
+                        "Rust backend: Map mapValues result key/owner/arity mismatch".into(),
+                    );
+                }
+                (
+                    vec![
+                        function(&[value.clone()], output_slots[1].clone()),
+                        map.clone(),
+                    ],
+                    result.clone(),
+                    false,
+                )
+            }
             "std/map::entries" => (
                 vec![map.clone()],
                 named(

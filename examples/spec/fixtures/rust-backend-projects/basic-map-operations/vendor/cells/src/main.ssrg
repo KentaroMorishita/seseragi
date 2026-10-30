@@ -1,0 +1,7 @@
+import * as maps from "std/map"
+
+pub opaque newtype Item = Int
+pub fn item value: Int -> Item = Item value
+pub fn read value: Item -> Int = match value { Item number -> number }
+pub fn select<K,V> predicate: (K -> V -> Bool) -> maps.Map<K,V> -> maps.Map<K,V> = maps.filter predicate
+pub fn transform<K,A,B> mapper: (A -> B) -> maps.Map<K,A> -> maps.Map<K,B> = maps.mapValues mapper

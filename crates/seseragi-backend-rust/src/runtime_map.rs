@@ -378,6 +378,53 @@ fn native_map_append(values: &NativeMap, key: V, value: V, hash: u32) -> V {
         last: Some(id),
     }))
 }
+// Rebuild only selected entries, retaining their cached hashes and seed. Build
+// each collision bucket once; repeated append would copy a large bucket for
+// every selected key. No source container or excluded key enters the result.
+fn native_map_select(values: &NativeMap, mut keep: impl FnMut(&V, &V) -> bool) -> V {
+    let mut selected = Vec::new();
+    let mut id = values.first;
+    let mut visited = 0;
+    while let Some(current) = id {
+        assert!(
+            visited < native_map_index_size(&values.order),
+            "Rust ABI: cyclic Map order"
+        );
+        visited += 1;
+        let entry = native_map_entry(values, current);
+        if keep(&entry.key, &entry.value) {
+            selected.push(entry.clone());
+        }
+        id = entry.next;
+    }
+    let count = selected.len();
+    let mut order = V::Unit;
+    let mut bucket_entries = std::collections::BTreeMap::<u32, Vec<V>>::new();
+    for (id, mut entry) in selected.into_iter().enumerate() {
+        let id = u64::try_from(id).expect("Map address fits u64");
+        bucket_entries
+            .entry(entry.hash)
+            .or_default()
+            .push(checked_int(
+                i64::try_from(id).expect("Map address fits Int"),
+            ));
+        entry.previous = id.checked_sub(1);
+        entry.next = (id + 1 < count as u64).then_some(id + 1);
+        order = native_map_index_set(&order, id, V::MapEntry(Shared::new(entry)));
+    }
+    let mut buckets = V::Unit;
+    for (hash, ids) in bucket_entries {
+        buckets = native_map_index_set(&buckets, u64::from(hash), V::Array(Shared::new(ids)));
+    }
+    V::Map(Shared::new(NativeMap {
+        seed: values.seed,
+        buckets,
+        order,
+        first: (count != 0).then_some(0),
+        last: count.checked_sub(1).map(|id| id as u64),
+    }))
+}
+
 fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> V {
     if name == "std/map::empty" {
         assert!(dictionaries.is_empty());
@@ -394,6 +441,41 @@ fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> 
     }
     let values = native_map_value(arguments.last().expect("Rust ABI: Map source arity"));
     match name {
+        "std/map::filter" => {
+            assert!(dictionaries.is_empty());
+            assert_eq!(arguments.len(), 2, "Rust ABI: Map filter arity");
+            native_map_select(values, |key, value| {
+                arguments[0]
+                    .apply(key.clone())
+                    .apply(value.clone())
+                    .boolean()
+            })
+        }
+        "std/map::mapValues" => {
+            assert!(dictionaries.is_empty());
+            assert_eq!(arguments.len(), 2, "Rust ABI: Map mapValues arity");
+            let mut order = V::Unit;
+            let mut id = values.first;
+            let mut visited = 0;
+            while let Some(current) = id {
+                assert!(
+                    visited < native_map_index_size(&values.order),
+                    "Rust ABI: cyclic Map order"
+                );
+                visited += 1;
+                let mut entry = native_map_entry(values, current).clone();
+                entry.value = arguments[0].apply(entry.value.clone());
+                id = entry.next;
+                order = native_map_index_set(&order, current, V::MapEntry(Shared::new(entry)));
+            }
+            V::Map(Shared::new(NativeMap {
+                seed: values.seed,
+                buckets: values.buckets.clone(),
+                order,
+                first: values.first,
+                last: values.last,
+            }))
+        }
         "std/map::get" | "std/map::containsKey" => {
             let (eq, hash) = native_map_key_hash(values, &arguments[0], &dictionaries);
             let found = native_map_find(values, &arguments[0], hash, &eq);
@@ -509,6 +591,205 @@ fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> 
 #[cfg(test)]
 mod map_tests {
     use super::*;
+
+    #[test]
+    fn filter_and_map_values_keep_order_cached_hashes_gapped_addresses_and_snapshots() {
+        enable_cycle_collection();
+        let d = dictionaries();
+        let source =
+            native_map_operation("std/map::singleton", d.clone(), vec![V::Int(3), V::Int(30)]);
+        let source = native_map_operation(
+            "std/map::insert",
+            d.clone(),
+            vec![V::Int(1), V::Int(10), source],
+        );
+        let source = native_map_operation(
+            "std/map::insert",
+            d.clone(),
+            vec![V::Int(2), V::Int(20), source],
+        );
+        let source = native_map_operation("std/map::remove", d.clone(), vec![V::Int(1), source]);
+        events();
+        let predicate = V::fun(vec![], |_, key| {
+            EVENTS.with(|events| events.borrow_mut().push(format!("k{}", key.render())));
+            V::fun(vec![key], |captures, value| {
+                EVENTS.with(|events| {
+                    events.borrow_mut().push(format!(
+                        "v{}:{}",
+                        captures[0].render(),
+                        value.render()
+                    ))
+                });
+                V::Bool(matches!(captures[0], V::Int(2)))
+            })
+        });
+        let filtered = native_map_operation(
+            "std/map::filter",
+            vec![],
+            vec![predicate.clone(), source.clone()],
+        );
+        assert_eq!(events(), ["k3", "v3:30", "k2", "v2:20"]);
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![filtered.clone()]).render(),
+            "[(2, 20)]"
+        );
+        assert_eq!(
+            native_map_value(&filtered).seed,
+            native_map_value(&source).seed
+        );
+        assert!(native_map_operation(
+            "std/map::containsKey",
+            d.clone(),
+            vec![V::Int(2), filtered.clone()]
+        )
+        .boolean());
+        assert_eq!(events(), ["h2", "e2:2"]);
+        let mapper = V::fun(vec![], |_, value| {
+            EVENTS.with(|events| events.borrow_mut().push(format!("m{}", value.render())));
+            V::text(&format!("v{}", value.render()))
+        });
+        let mapped = native_map_operation(
+            "std/map::mapValues",
+            vec![],
+            vec![mapper.clone(), source.clone()],
+        );
+        assert_eq!(events(), ["m30", "m20"]);
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![mapped.clone()]).render(),
+            "[(3, v30), (2, v20)]"
+        );
+        assert!(native_map_same_index(
+            &native_map_value(&mapped).buckets,
+            &native_map_value(&source).buckets
+        ));
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![source.clone()]).render(),
+            "[(3, 30), (2, 20)]"
+        );
+        let empty = native_map_operation("std/map::empty", vec![], vec![V::Unit]);
+        let never = V::fun(vec![], |_, _| panic!("empty Map must not call a callback"));
+        for name in ["std/map::filter", "std/map::mapValues"] {
+            let result = native_map_operation(name, vec![], vec![never.clone(), empty.clone()]);
+            assert_eq!(
+                native_map_operation("std/map::size", vec![], vec![result]).render(),
+                "0"
+            );
+        }
+        assert!(events().is_empty());
+        drop((d, source, predicate, filtered, mapper, mapped, empty, never));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn selected_maps_release_excluded_keys_values_and_replaced_values() {
+        enable_cycle_collection();
+        clear_dictionaries();
+        let d = vec![
+            native_operator_dictionary("std/string::Eq"),
+            native_hash_dictionary("std/string::Hash"),
+        ];
+        let key = V::text("discarded");
+        let value = V::reference(V::Unit);
+        let (V::Text(key_node), V::Reference(value_node)) = (&key, &value) else {
+            panic!()
+        };
+        let key_weak = Rc::downgrade(key_node.0.as_ref().unwrap());
+        let value_weak = Rc::downgrade(value_node.0.as_ref().unwrap());
+        let source = native_map_operation(
+            "std/map::singleton",
+            d.clone(),
+            vec![key.clone(), value.clone()],
+        );
+        let source = native_map_operation(
+            "std/map::insert",
+            d.clone(),
+            vec![V::text("keep"), V::Int(7), source],
+        );
+        let source_id = source.node_id().unwrap();
+        let predicate = V::fun(vec![], |_, key| {
+            V::fun(vec![key], |captures, _| {
+                V::Bool(native_text(&captures[0]) == "keep")
+            })
+        });
+        let filtered =
+            native_map_operation("std/map::filter", vec![], vec![predicate, source.clone()]);
+        drop((key, value, source));
+        collect_cycles().unwrap();
+        assert!(key_weak.upgrade().is_none() && value_weak.upgrade().is_none());
+        assert!(!NODES.with(|nodes| nodes.borrow().contains_key(&source_id)));
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![filtered.clone()]).render(),
+            "[(keep, 7)]"
+        );
+        drop(filtered);
+        let old = V::reference(V::Unit);
+        let V::Reference(old_node) = &old else {
+            panic!()
+        };
+        let old_weak = Rc::downgrade(old_node.0.as_ref().unwrap());
+        let source = native_map_operation(
+            "std/map::singleton",
+            d.clone(),
+            vec![V::text("same-key"), old.clone()],
+        );
+        let source_id = source.node_id().unwrap();
+        let mapper = V::fun(vec![], |_, _| V::Int(42));
+        let mapped =
+            native_map_operation("std/map::mapValues", vec![], vec![mapper, source.clone()]);
+        drop((source, old));
+        collect_cycles().unwrap();
+        assert!(old_weak.upgrade().is_none());
+        assert!(!NODES.with(|nodes| nodes.borrow().contains_key(&source_id)));
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![mapped.clone()]).render(),
+            "[(same-key, 42)]"
+        );
+        drop((mapped, d));
+        clear_dictionaries();
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn filter_and_mapper_defects_unwind_partial_results_and_captured_ref_cycles() {
+        enable_cycle_collection();
+        for name in ["std/map::filter", "std/map::mapValues"] {
+            let d = dictionaries();
+            let source =
+                native_map_operation("std/map::singleton", d.clone(), vec![V::Int(1), V::Int(1)]);
+            let source = native_map_operation(
+                "std/map::insert",
+                d.clone(),
+                vec![V::Int(2), V::Int(2), source],
+            );
+            let cell = V::reference(V::Unit);
+            let callback = if name == "std/map::filter" {
+                V::fun(vec![cell.clone()], |captures, key| {
+                    V::fun(vec![captures[0].clone(), key], |captures, _| {
+                        assert!(
+                            !matches!(captures[1], V::Int(2)),
+                            "deliberate predicate defect"
+                        );
+                        V::Bool(true)
+                    })
+                })
+            } else {
+                V::fun(vec![cell.clone()], |captures, value| {
+                    assert!(!matches!(value, V::Int(2)), "deliberate mapper defect");
+                    captures[0].clone()
+                })
+            };
+            cell.write_reference(callback.clone());
+            let failed = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                native_map_operation(name, vec![], vec![callback.clone(), source.clone()])
+            }));
+            assert!(failed.is_err());
+            drop((d, source, cell, callback));
+            collect_cycles().unwrap();
+            assert_eq!(LIVE.with(Cell::get), 0, "{name}");
+        }
+    }
     #[test]
     fn hash_entropy_requires_all_bytes_and_never_uses_a_fallback() {
         assert_eq!(

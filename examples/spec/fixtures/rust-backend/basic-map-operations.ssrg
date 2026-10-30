@@ -1,0 +1,37 @@
+import * as maps from "std/map"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+type Key = | Key { identity: Int, label: String }
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = match left { Key a -> match right { Key b -> a.identity == b.identity } } }
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key detail -> detail.label } }
+fn selected key: Key -> value: Int -> Bool = match key { Key detail -> detail.identity > 1 && value > 20 }
+fn formatted value: Int -> String = "v" + show value
+fn filtered<K,V> predicate: (K -> V -> Bool) -> maps.Map<K,V> -> maps.Map<K,V> = maps.filter predicate
+fn mapped<K,A,B> mapper: (A -> B) -> maps.Map<K,A> -> maps.Map<K,B> = maps.mapValues mapper
+
+pub fn probe -> String = {
+  let first = Key ({ identity: 1, label: "first" })
+  let equal = Key ({ identity: 1, label: "replacement" })
+  let removed = Key ({ identity: 2, label: "removed" })
+  let fourth = Key ({ identity: 4, label: "fourth" })
+  let original = maps.singleton first 10
+  let input = maps.insert equal 11 original |> maps.insert removed 20 |> maps.insert fourth 40 |> maps.remove removed
+  let filter: (Key -> Int -> Bool) -> maps.Map<Key,Int> -> maps.Map<Key,Int> = maps.filter
+  let savedFilter = filter selected
+  let mapper: (Int -> String) -> maps.Map<Key,Int> -> maps.Map<Key,String> = maps.mapValues
+  let savedMapper = mapper formatted
+  let functions = mapped (\value: Int -> \increment: Int -> value + increment) input
+  let answer = match arrays.get 0 (maps.values functions) { Nothing -> -1; Just call -> call 2 }
+  let empty: maps.Map<Key,Int> = maps.empty ()
+  text.join "|" [
+    show (maps.entries (savedFilter input)), show (maps.entries (savedMapper input)),
+    show (maps.entries (filtered selected input)), show (maps.entries (mapped formatted input)),
+    show (maps.entries original), show (maps.entries input), show answer,
+    show (maps.entries (maps.filter (\_: Key -> \_: Int -> (42 / 0) == 0) empty)),
+    show (maps.entries (maps.mapValues (\_: Int -> show (42 / 0)) empty)),
+    show (maps.values (maps.mapValues (\_: Int -> ()) input))
+  ]
+}
+pub effect fn main = println (probe ())

@@ -1,0 +1,15 @@
+import * as cells from "cells"
+import * as maps from "std/map"
+import * as text from "std/text"
+
+fn integer value: Maybe<Int> -> Int = match value { Nothing -> 0; Just number -> number }
+pub effect fn main = {
+  let input = maps.singleton "first" (cells.item 40) |> maps.insert "second" (cells.item 2)
+  let selected = cells.select (\_: String -> \item: cells.Item -> cells.read item > 2)
+  let transform: maps.Map<String,cells.Item> -> maps.Map<String,Int> = cells.transform cells.read
+  let mapped = transform input
+  let captured = 2
+  let functions = cells.transform (\item: cells.Item -> \increment: Int -> cells.read item + increment + captured) input
+  let answer = match maps.get "first" functions { Nothing -> -1; Just call -> call 0 }
+  println (text.join "|" [show (maps.values (transform (selected input))), show (maps.entries mapped), show (integer (maps.get "first" mapped) + integer (maps.get "second" mapped)), show answer])
+}

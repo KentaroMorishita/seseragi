@@ -13,51 +13,8 @@ fn native_set_from_map(value: V) -> V {
     V::Set(storage)
 }
 
-// Rebuild only selected entries, retaining their cached hashes and seed. Build
-// each collision bucket once; repeated append would copy a large bucket for
-// every selected key. No source container or excluded key enters the result.
 fn native_set_select(values: &NativeMap, mut keep: impl FnMut(&V) -> bool) -> V {
-    let mut selected = Vec::new();
-    let mut id = values.first;
-    let mut visited = 0;
-    while let Some(current) = id {
-        assert!(
-            visited < native_map_index_size(&values.order),
-            "Rust ABI: cyclic Set order"
-        );
-        visited += 1;
-        let entry = native_map_entry(values, current);
-        if keep(&entry.key) {
-            selected.push(entry.clone());
-        }
-        id = entry.next;
-    }
-    let count = selected.len();
-    let mut order = V::Unit;
-    let mut bucket_entries = std::collections::BTreeMap::<u32, Vec<V>>::new();
-    for (id, mut entry) in selected.into_iter().enumerate() {
-        let id = u64::try_from(id).expect("Set address fits u64");
-        bucket_entries
-            .entry(entry.hash)
-            .or_default()
-            .push(checked_int(
-                i64::try_from(id).expect("Set address fits Int"),
-            ));
-        entry.previous = id.checked_sub(1);
-        entry.next = (id + 1 < count as u64).then_some(id + 1);
-        order = native_map_index_set(&order, id, V::MapEntry(Shared::new(entry)));
-    }
-    let mut buckets = V::Unit;
-    for (hash, ids) in bucket_entries {
-        buckets = native_map_index_set(&buckets, u64::from(hash), V::Array(Shared::new(ids)));
-    }
-    V::Set(Shared::new(NativeMap {
-        seed: values.seed,
-        buckets,
-        order,
-        first: (count != 0).then_some(0),
-        last: count.checked_sub(1).map(|id| id as u64),
-    }))
+    native_set_from_map(native_map_select(values, |key, _| keep(key)))
 }
 
 fn native_set_operation(name: &str, dictionaries: Vec<V>, mut arguments: Vec<V>) -> V {

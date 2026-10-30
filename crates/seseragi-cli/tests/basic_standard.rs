@@ -389,6 +389,69 @@ fn basic_set_operations_keep_order_representatives_snapshots_and_generic_saved_f
 }
 
 #[test]
+fn basic_map_operations_keep_key_representatives_order_snapshots_and_changed_value_types() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_operations_path_package_keeps_opaque_values_imported_generic_partials_and_captures() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-map-operations"),
+        &[Case::success(b"[40]|[(first, 40), (second, 2)]|42|42\n")],
+    );
+}
+
+#[test]
+fn basic_map_operations_keep_cold_replay_and_release_callback_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-operation-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-operation-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_operations_callback_defects_unwind_partial_results_and_run_finalizers() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-map-operation-effects.ssrg"
+    );
+    for (name, old, replacement) in [
+        (
+            "predicate",
+            "value > 0",
+            "if value == 21 then value / 0 > 0 else value > 0",
+        ),
+        (
+            "mapper",
+            "value + 1",
+            "if value == 21 then value / 0 else value + 1",
+        ),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("map-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: b"created\nacquired\ncold\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
 fn basic_set_operations_path_package_keeps_opaque_keys_and_imported_selected_dictionaries() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-set-operations"),

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/map-operations@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/map-operation-cells@0.0.0#path:vendor/cells"
+name = "fixture/map-operation-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:1977e9be060fe19617dcd2626cf9f4fa5f8f4b98d5bf3e3e48cd63067fd6ea81"
+content_digest = "sha256:7287f8ed3bd1ff48e2bf1799a3a26287a0615ca572127641acd91f14f1a32020"
+dependencies = []
+
+[[packages]]
+id = "fixture/map-operations@0.0.0#workspace:."
+name = "fixture/map-operations"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:fb7e22d4c69524b2aa0c043b390fe2293d5cf9cceb509c2dca3e8462c2067ba2"
+content_digest = "sha256:63f1635b66096cb22f8820739bbe68eef47df6d5e561e6e9e5ba43bc68af89e8"
+dependencies = [
+  { import = "cells", package = "fixture/map-operation-cells@0.0.0#path:vendor/cells" },
+]
