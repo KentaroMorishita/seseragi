@@ -421,9 +421,23 @@ mod fifo {
             drop(data.take());
         }
         until(&mut child, "scope must enter its masked finalizer", || {
-            read_trace(&directory)
-                .contains("scope-close\n")
-                .then_some(())
+            let trace = read_trace(&directory);
+            if case == "cancel" && !trace.contains("scope-close\n") {
+                // The trace is written before interrupt is scheduled. A first
+                // chunk may be consumed before that request reaches the worker,
+                // which can then be waiting in another uninterruptible OS read.
+                // Keep driving bounded read checkpoints without supplying EOF.
+                match data.as_mut().unwrap().write(b"x") {
+                    Ok(_) => {}
+                    Err(error)
+                        if matches!(
+                            error.kind(),
+                            std::io::ErrorKind::WouldBlock | std::io::ErrorKind::BrokenPipe
+                        ) => {}
+                    Err(error) => panic!("{}-{case}: waking pending read: {error}", program.name),
+                }
+            }
+            trace.contains("scope-close\n").then_some(())
         });
         assert!(child.child.try_wait().unwrap().is_none());
         assert!(
