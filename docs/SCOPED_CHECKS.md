@@ -6,6 +6,11 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+JSON recordのprototype名のfieldはPlaygroundの`json-record-runtime.test.ts`とCLIの
+`--test basic_standard json_record_prototype_field_`で確認します。structural/derived decoderが
+own data propertyを作り、通常objectのprototype、optional不在、unknown先行拒否を保持します。
+#1010の元sourceはbyte不変で保存し、両profileのraw TS strict・fresh Bun/Node/nativeで比較します。
+
 native JSONのArray/List/Maybe/Either/Tuple/Map/Set/closed record codecはbackendの
 `--test basic_json_containers`、runtimeの`json_container_codec_tests`、CLIの
 `--test basic_standard basic_json_containers_`で確認します。optional fieldの不在とnull、

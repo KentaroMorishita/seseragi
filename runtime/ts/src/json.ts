@@ -943,7 +943,12 @@ export const recordJsonDecode = <R extends Readonly<Record<string, unknown>>>(
           dictionaries[position] as JsonDecode<unknown>
         ).decodeJson(fieldValue)
         if (decoded.tag === "Left") return prependPath(JsonField(name), decoded)
-        result[name] = decoded.value
+        Object.defineProperty(result, name, {
+          value: decoded.value,
+          enumerable: true,
+          configurable: true,
+          writable: true,
+        })
       }
       return Right(result as R)
     },
@@ -1000,7 +1005,12 @@ export const derivedStructJsonDecode = <A>(
           dictionaries[position] as JsonDecodeThunk
         ).decodeJson(fieldValue)
         if (decoded.tag === "Left") return prependPath(JsonField(name), decoded)
-        result[name] = decoded.value
+        Object.defineProperty(result, name, {
+          value: decoded.value,
+          enumerable: true,
+          configurable: true,
+          writable: true,
+        })
       }
       return Right(result as A)
     },

@@ -928,6 +928,16 @@ fn basic_json_containers_preserve_original_strict_ts_bun_node_and_native_results
 }
 
 #[test]
+fn json_record_prototype_field_keeps_the_original_source_and_strict_cross_target_results() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/json-record-prototype-field.ssrg",
+        ),
+        &[Case::success(b"{\"__proto__\":\"snow\"}\n")],
+    );
+}
+
+#[test]
 fn basic_json_containers_keep_cold_replay_failures_finalizers_and_ref_cycles() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"),
