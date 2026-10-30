@@ -138,7 +138,31 @@ effect fn order item: String -> quantity: Int -> String fails Never =
     |> effects.recover (\error -> succeed $ explain error)
 ```
 
-純粋な計算では `Maybe` と `Either` を使い、`do` 記法で順番につなげられます。
+副作用のない計算では、失敗するかもしれない値を `Maybe` や `Either` で表します。
+`do` 記法を使うと、失敗しうる処理を上から順に書けます。途中で失敗したら、そこで止まります。
+
+```seseragi
+import * as either from "std/either"
+import * as int from "std/int"
+
+fn parseNumber text: String -> Either<String, Int> =
+  int.parse text |> either.mapLeft (\_ -> `not a number: ${text}`)
+
+fn divide total: Int -> count: Int -> Either<String, Int> = match count {
+  0 -> Left "cannot divide by zero"
+  _ -> Right (total / count)
+}
+
+fn calculate left: String -> right: String -> Either<String, Int> = do {
+  total <- parseNumber left
+  count <- parseNumber right
+  divide total count
+}
+
+// calculate "84" "2"    => Right 42
+// calculate "84" "zero" => Left not a number: zero
+// calculate "84" "0"    => Left cannot divide by zero
+```
 
 ### UI も同じ言語で
 
