@@ -1,0 +1,42 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as decimal from "std/decimal"
+import * as numbers from "std/number"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+fn value source: String -> decimal.Decimal = match decimal.parse source { Right result -> result; Left _ -> decimal.fromInt (42 / 0) }
+fn arithmeticWith number: decimal.Decimal -> (Unit -> String) = {
+  let sum: decimal.Decimal -> decimal.Decimal = (+) number
+  let multiply: decimal.Decimal -> decimal.Decimal = (*) number
+  let display: decimal.Decimal -> String = debug
+  \_: Unit -> display (sum number) + ":" + show (multiply number)
+}
+effect fn failBody -> Unit fails decimal.DecimalContextError = do {
+  let _sum = add (decimal.fromInt 1) (decimal.fromInt 2)
+  _value <- decimal.context 0 numbers.HalfEven |> effects.fromEither
+  effects.succeed ()
+}
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (arithmeticWith (value "1.25"))
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    operation <- refs.get saved
+    say (operation ())
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\_error: decimal.DecimalContextError -> say "recovered: precision")
+  count <- refs.get released
+  say ("released: " + show count)
+}

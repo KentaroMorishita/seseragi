@@ -1330,6 +1330,65 @@ fn basic_big_arithmetic_path_package_keeps_opaque_generic_stages_and_error_owner
 }
 
 #[test]
+fn basic_decimal_arithmetic_keeps_exact_signed_operations_and_saved_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-arithmetic.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-arithmetic.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_decimal_arithmetic_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-arithmetic-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-arithmetic-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_decimal_arithmetic_defects_preserve_final_argument_and_resource_failure_cleanup() {
+    for (expression, message) in [
+        (
+            "add (decimal.fromInt 1) (decimal.fromInt (42 / 0))",
+            "Int division by zero",
+        ),
+        (
+            "add (value \"1e100000000000000000000000\") (decimal.fromInt 2)",
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let scratch = Scratch::new();
+        let source = include_str!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-arithmetic-effects.ssrg"
+        )
+        .replace("add (decimal.fromInt 1) (decimal.fromInt 2)", expression);
+        let path = scratch.0.join("decimal-arithmetic-defect.ssrg");
+        fs::write(&path, source).unwrap();
+        compare(
+            &path,
+            &[Case {
+                stdout: b"created\nacquired\ncold\n2.5:1.5625\ncold\n2.5:1.5625\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+#[test]
+fn basic_decimal_arithmetic_path_package_keeps_opaque_values_and_imported_generic_methods() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-arithmetic"),
+        &[Case::success(
+            b"cell:-1.25|cell:3.75|cell:-3.125\n0:1:cell:1.25\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_decimal_context_keeps_modes_safe_int_precision_and_saved_getters() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-context.ssrg"),

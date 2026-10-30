@@ -196,6 +196,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_decimal.rs"));
     output.push_str(include_str!("runtime_decimal_context.rs"));
     output.push_str(include_str!("runtime_decimal_conversion.rs"));
+    output.push_str(include_str!("runtime_decimal_arithmetic.rs"));
     output.push_str(include_str!("runtime_hashing.rs"));
     output.push_str(include_str!("runtime_map.rs"));
     output.push_str(include_str!("runtime_set.rs"));
@@ -637,6 +638,10 @@ impl Backend<'_> {
                 if matches!(&selected.evidence, CoreInstanceEvidence::Standard { identity, .. } if identity.starts_with("std/big-int::"))
                 {
                     self.capabilities.insert("big-int".into());
+                }
+                if matches!(&selected.evidence, CoreInstanceEvidence::Standard { identity, .. } if identity.starts_with("std/decimal::"))
+                {
+                    self.capabilities.insert("decimal".into());
                 }
                 values.push(dictionary?);
                 continue;
@@ -1114,7 +1119,12 @@ impl Backend<'_> {
                             .into(),
                     );
                 }
-                self.validate_big_int_operator_provider(operator, [left, right], evidence, scope)?;
+                self.validate_opaque_numeric_operator_provider(
+                    operator,
+                    [left, right],
+                    evidence,
+                    scope,
+                )?;
                 if operators::big_int_binary(evidence, operator) {
                     self.validate_primitive_operator_binary(
                         operator,
@@ -1126,6 +1136,22 @@ impl Backend<'_> {
                     self.capabilities.insert("big-int".into());
                     return Ok(format!(
                         "native_big_int_arithmetic({}, {}, {})",
+                        quoted(operator),
+                        self.expr(left, scope)?,
+                        self.expr(right, scope)?
+                    ));
+                }
+                if operators::decimal_binary(evidence, operator) {
+                    self.validate_primitive_operator_binary(
+                        operator,
+                        [left, right],
+                        evidence,
+                        type_ref,
+                        scope,
+                    )?;
+                    self.capabilities.insert("decimal".into());
+                    return Ok(format!(
+                        "native_decimal_arithmetic({}, {}, {})",
                         quoted(operator),
                         self.expr(left, scope)?,
                         self.expr(right, scope)?

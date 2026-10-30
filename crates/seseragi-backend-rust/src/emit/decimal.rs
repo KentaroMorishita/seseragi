@@ -112,6 +112,8 @@ impl Backend<'_> {
             "std/decimal::Eq" => "native_decimal_eq_dictionary()",
             "std/decimal::Hash" => "native_decimal_hash_dictionary()",
             "std/decimal::Ord" => "native_decimal_ord_dictionary()",
+            "std/decimal::Zero" => "native_decimal_constant_dictionary(false)",
+            "std/decimal::One" => "native_decimal_constant_dictionary(true)",
             _ => return Ok(None),
         };
         if self.program_wasm_library || !type_arguments.is_empty() || !evidence_arguments.is_empty()
@@ -124,8 +126,28 @@ impl Backend<'_> {
             self.validate_eq_evidence(selected, scope)?;
         } else if identity == "std/decimal::Hash" {
             self.validate_hash_evidence(selected, scope)?;
-        } else {
+        } else if identity == "std/decimal::Ord" {
             self.validate_ord_evidence(selected, scope)?;
+        } else {
+            let [actual] = selected.constraint.arguments.as_slice() else {
+                return Err("Rust backend: Decimal constant constraint arity".into());
+            };
+            let name = if identity == "std/decimal::Zero" {
+                "Zero"
+            } else {
+                "One"
+            };
+            if !lists::standard_trait(selected, name, actual) {
+                return Err("Rust backend: unproven Decimal constant trait owner".into());
+            }
+            self.decimal_type(
+                actual,
+                &CoreType::Named {
+                    name: "std/decimal::Decimal".into(),
+                    arguments: vec![],
+                },
+                scope,
+            )?;
         }
         self.capabilities.insert("decimal".into());
         Ok(Some(function.into()))
@@ -155,6 +177,8 @@ impl Backend<'_> {
             "std/decimal::Eq" => ("std/prelude::Eq", "eq"),
             "std/decimal::Hash" => ("std/prelude::Hash", "hash"),
             "std/decimal::Ord" => ("std/prelude::Ord", "compare"),
+            "std/decimal::Zero" => ("std/prelude::Zero", "zero"),
+            "std/decimal::One" => ("std/prelude::One", "one"),
             _ => return Ok(()),
         };
         if evidence.len() != 1
@@ -164,7 +188,27 @@ impl Backend<'_> {
         {
             return Err("Rust backend: Decimal dictionary dispatch mismatch".into());
         }
-        if method == "compare" {
+        if matches!(method, "zero" | "one") {
+            if arguments.len() > 1
+                || !deferred_evidence_parameters.is_empty()
+                || !deferred_evidence_type_constructor_parameters.is_empty()
+                || evidence_argument_index.is_some()
+            {
+                return Err("Rust backend: unproven Decimal constant source stages".into());
+            }
+            let full = if let Some(argument) = arguments.first() {
+                CoreType::Function {
+                    parameter: Box::new(
+                        local::method_argument_type(argument)
+                            .ok_or("Rust backend: unproven Decimal constant Unit argument")?,
+                    ),
+                    result: Box::new(type_ref.clone()),
+                }
+            } else {
+                type_ref.clone()
+            };
+            self.validate_decimal_constant_value(dispatch, selected, &full, scope)?;
+        } else if method == "compare" {
             if arguments.len() > 2
                 || !deferred_evidence_parameters.is_empty()
                 || !deferred_evidence_type_constructor_parameters.is_empty()
@@ -187,6 +231,43 @@ impl Backend<'_> {
             self.validate_ord_method_value(dispatch, selected, &full, scope)?;
         }
         Ok(())
+    }
+
+    pub(super) fn validate_decimal_constant_value(
+        &self,
+        dispatch: &seseragi_lowering::CoreTraitDispatch,
+        selected: &CoreCallEvidence,
+        actual: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        let CoreInstanceEvidence::Standard { identity, .. } = &selected.evidence else {
+            return Ok(());
+        };
+        let (name, method) = match identity.as_str() {
+            "std/decimal::Zero" => ("Zero", "zero"),
+            "std/decimal::One" => ("One", "one"),
+            _ => return Ok(()),
+        };
+        if dispatch.trait_identity != format!("std/prelude::{name}")
+            || dispatch.method != method
+            || dispatch.method_contract.is_some()
+        {
+            return Err("Rust backend: unproven Decimal constant dispatch".into());
+        }
+        self.decimal_type(
+            actual,
+            &CoreType::Function {
+                parameter: Box::new(CoreType::Named {
+                    name: "std/prelude::Unit".into(),
+                    arguments: vec![],
+                }),
+                result: Box::new(CoreType::Named {
+                    name: "std/decimal::Decimal".into(),
+                    arguments: vec![],
+                }),
+            },
+            scope,
+        )
     }
     pub(super) fn decimal_comparison_binary(
         &mut self,
@@ -256,15 +337,17 @@ impl Backend<'_> {
         else {
             return Ok(None);
         };
-        if identity != "Show<std/decimal::Decimal>" {
-            return Ok(None);
-        }
+        let method = match identity.as_str() {
+            "Show<std/decimal::Decimal>" => "Show",
+            "Debug<std/decimal::Decimal>" => "Debug",
+            _ => return Ok(None),
+        };
         let [actual] = selected.constraint.arguments.as_slice() else {
             return Err("Rust backend: Decimal Show constraint arity".into());
         };
         if !type_arguments.is_empty()
             || !evidence_arguments.is_empty()
-            || !lists::standard_trait(selected, "Show", actual)
+            || !lists::standard_trait(selected, method, actual)
         {
             return Err("Rust backend: unproven Decimal Show evidence".into());
         }
@@ -277,7 +360,10 @@ impl Backend<'_> {
             scope,
         )?;
         self.capabilities.insert("decimal".into());
-        Ok(Some("native_decimal_show_dictionary()".into()))
+        Ok(Some(format!(
+            "native_decimal_display_dictionary({})",
+            method == "Debug"
+        )))
     }
     pub(super) fn validate_decimal_show_value(
         &self,
@@ -286,15 +372,29 @@ impl Backend<'_> {
         actual: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
-        if !matches!(&selected.evidence,CoreInstanceEvidence::Standard {identity,..} if identity=="Show<std/decimal::Decimal>")
-        {
-            return Ok(());
-        }
-        if dispatch.trait_identity != "std/prelude::Show"
-            || dispatch.method != "show"
+        let method = match &selected.evidence {
+            CoreInstanceEvidence::Standard { identity, .. }
+                if identity == "Show<std/decimal::Decimal>" =>
+            {
+                "show"
+            }
+            CoreInstanceEvidence::Standard { identity, .. }
+                if identity == "Debug<std/decimal::Decimal>" =>
+            {
+                "debug"
+            }
+            _ => return Ok(()),
+        };
+        let expected = if method == "show" {
+            "std/prelude::Show"
+        } else {
+            "std/prelude::Debug"
+        };
+        if dispatch.trait_identity != expected
+            || dispatch.method != method
             || dispatch.method_contract.is_some()
         {
-            return Err("Rust backend: unproven Decimal Show dispatch".into());
+            return Err("Rust backend: unproven Decimal display dispatch".into());
         }
         self.decimal_type(
             actual,
@@ -325,7 +425,7 @@ impl Backend<'_> {
         else {
             return Ok(());
         };
-        if !evidence.iter().any(|selected| matches!(&selected.evidence,CoreInstanceEvidence::Standard {identity,..} if identity=="Show<std/decimal::Decimal>")) {return Ok(());}
+        if !evidence.iter().any(|selected| matches!(&selected.evidence,CoreInstanceEvidence::Standard {identity,..} if matches!(identity.as_str(),"Show<std/decimal::Decimal>"|"Debug<std/decimal::Decimal>"))) {return Ok(());}
         let [selected] = evidence.as_slice() else {
             return Err("Rust backend: Decimal Show dictionary arity".into());
         };

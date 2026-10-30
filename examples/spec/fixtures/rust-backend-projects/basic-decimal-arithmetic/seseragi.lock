@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/decimal-arithmetic@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/decimal-arithmetic-numbers@0.0.0#path:vendor/numbers"
+name = "fixture/decimal-arithmetic-numbers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/numbers"
+manifest_digest = "sha256:dcd5d0def527e0b57d8bc715009f33d0de8af210f78ffc531375af5557b0d3ca"
+content_digest = "sha256:1d57df94e953bd57b16e0e687bb2ede28dac416c8ed7c51d25f748ec1de45dd6"
+dependencies = []
+
+[[packages]]
+id = "fixture/decimal-arithmetic@0.0.0#workspace:."
+name = "fixture/decimal-arithmetic"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:f97f6b29fd4494d2f328ddc02ff3b072141838c028966d22814bfdbafde81e41"
+content_digest = "sha256:ed741d3f8f80cc294921722e96cd1bb1d1daab696f59e737df0d7c80594a196a"
+dependencies = [
+  { import = "numbers", package = "fixture/decimal-arithmetic-numbers@0.0.0#path:vendor/numbers" },
+]

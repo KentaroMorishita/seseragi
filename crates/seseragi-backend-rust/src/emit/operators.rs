@@ -15,6 +15,9 @@ fn primitive_operator(identity: &str) -> Option<(&'static str, &'static str, &'s
         "std/big-int::Div" => ("Div", "div", "BigInt"),
         "std/big-int::Rem" => ("Rem", "rem", "BigInt"),
         "std/big-int::Pow" => ("Pow", "pow", "BigInt"),
+        "std/decimal::Add" => ("Add", "add", "Decimal"),
+        "std/decimal::Sub" => ("Sub", "sub", "Decimal"),
+        "std/decimal::Mul" => ("Mul", "mul", "Decimal"),
         "std/string::Add" => ("Add", "add", "String"),
         _ => return None,
     })
@@ -22,6 +25,11 @@ fn primitive_operator(identity: &str) -> Option<(&'static str, &'static str, &'s
 
 pub(super) fn big_int_binary(evidence: &[CoreCallEvidence], operator: &str) -> bool {
     matches!(evidence, [CoreCallEvidence { evidence: CoreInstanceEvidence::Standard { identity, .. }, .. }] if identity.starts_with("std/big-int::"))
+        && primitive_reference(operator, evidence).is_some()
+}
+
+pub(super) fn decimal_binary(evidence: &[CoreCallEvidence], operator: &str) -> bool {
+    matches!(evidence, [CoreCallEvidence { evidence: CoreInstanceEvidence::Standard { identity, .. }, .. }] if identity.starts_with("std/decimal::"))
         && primitive_reference(operator, evidence).is_some()
 }
 
@@ -55,7 +63,7 @@ pub(super) fn valid_dispatch(selected: &CoreCallEvidence, identity: &str, method
 }
 
 impl Backend<'_> {
-    pub(super) fn validate_big_int_operator_provider(
+    pub(super) fn validate_opaque_numeric_operator_provider(
         &self,
         operator: &str,
         operands: [&CoreExpr; 2],
@@ -64,15 +72,16 @@ impl Backend<'_> {
     ) -> Result<()> {
         if !matches!(operator, "+" | "-" | "*" | "/" | "%" | "**")
             || big_int_binary(evidence, operator)
+            || decimal_binary(evidence, operator)
         {
             return Ok(());
         }
         if (evidence.is_empty() || evidence.iter().any(|e| matches!(e.evidence, CoreInstanceEvidence::Standard { .. })))
             && operands.iter().any(|argument| {
                 let Some(actual) = local::method_argument_type(argument) else { return false; };
-                matches!(self.local_canonical_type(&actual, scope), Ok(CoreType::Named { name, arguments }) if name == "std/big-int::BigInt" && arguments.is_empty())
+                matches!(self.local_canonical_type(&actual, scope), Ok(CoreType::Named { name, arguments }) if matches!(name.as_str(), "std/big-int::BigInt" | "std/decimal::Decimal") && arguments.is_empty())
             }) {
-            return Err("Rust backend: BigInt arithmetic requires its canonical selected provider".into());
+            return Err("Rust backend: opaque numeric arithmetic requires its canonical selected provider".into());
         }
         Ok(())
     }
@@ -171,6 +180,17 @@ impl Backend<'_> {
                 );
             }
             for (index, ty) in selected.constraint.arguments.iter().enumerate() {
+                if primitive == "Decimal" {
+                    self.decimal_type(
+                        ty,
+                        &CoreType::Named {
+                            name: "std/decimal::Decimal".into(),
+                            arguments: vec![],
+                        },
+                        scope,
+                    )?;
+                    continue;
+                }
                 if primitive == "BigInt" {
                     let expected = if method == "pow" && index == 1 {
                         "std/prelude::Int"
@@ -195,6 +215,7 @@ impl Backend<'_> {
             let factory = match primitive {
                 "Float" => "native_float_dictionary",
                 "BigInt" => "native_big_int_arithmetic_dictionary",
+                "Decimal" => "native_decimal_arithmetic_dictionary",
                 _ => "native_operator_dictionary",
             };
             Ok(format!("{factory}({})", quoted(identity)))

@@ -1,0 +1,41 @@
+import * as decimal from "std/decimal"
+
+fn value source: String -> decimal.Decimal = match decimal.parse source { Right result -> result; Left _ -> decimal.fromInt (42 / 0) }
+fn plus<A> left: A -> (A -> A) where Add<A,A,A> = add left
+fn difference<A> left: A -> (A -> A) where Sub<A,A,A> = sub left
+fn product<A> left: A -> (A -> A) where Mul<A,A,A> = mul left
+fn empty<A> _unit: Unit -> A where Zero<A> = zero ()
+fn unit<A> _unit: Unit -> A where One<A> = one ()
+fn printer<A> -> (A -> String) where Debug<A> = debug
+fn multiplication -> (decimal.Decimal -> decimal.Decimal -> decimal.Decimal) = mul
+newtype Decimal = Int
+fn local value: Decimal -> Int = match value { Decimal number -> number }
+
+pub effect fn main = do {
+  let a = value "-123456789012345678901234567890.123456789"
+  let b = value "98765432109876543210.000000001"
+  let zeroValue: decimal.Decimal = empty ()
+  let oneValue: decimal.Decimal = unit ()
+  let addTo = plus a
+  let subtractFrom = difference a
+  let multiplyBy = product a
+  let display: decimal.Decimal -> String = printer ()
+  let times: decimal.Decimal -> decimal.Decimal = (*) b
+  let saved = multiplication ()
+  println (display (addTo b))
+  println (display (subtractFrom b))
+  println (display (multiplyBy b))
+  println (show (times oneValue))
+  println (show (saved a oneValue))
+  println (show (a + b))
+  println (show (a - b))
+  println (show (a * b))
+  println (show (zeroValue + oneValue))
+  println (debug (oneValue * zeroValue))
+  println (show (value "1e100000000000000000000000" - value "1e100000000000000000000000"))
+  println (debug (value "1e-100000000000000000000000" * zeroValue))
+  println (show (value "-1.25" + value "1.25"))
+  println (show (value "0.000001" - value "1000000"))
+  println (show (value "-123.45" * value "-0.08"))
+  println (show (local (Decimal 42)))
+}

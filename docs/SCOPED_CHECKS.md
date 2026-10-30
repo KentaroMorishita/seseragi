@@ -1,5 +1,16 @@
 # Scoped checks
 
+
+native DecimalのexactなAdd/Sub/Mul・Zero/One・Debugは、backendの
+`--test decimal_arithmetic`、runtimeの`decimal_arithmetic_tests`、CLIの
+`basic_decimal_arithmetic_`で確認します。任意桁scaleと符号付き係数を保ち、
+185件の偽造したowner/kind・辞書・引数/結果・source stageを拒否します。
+元raw TS両profileをstrict・skipLibCheck:falseで検査し、fresh Bun/Node/nativeで
+独立したPython Decimal期待値、opaqueな2module package、保存/generic/部分適用、
+cold再実行・typed Failure・最終引数とmaterializationのDefect・finalizer/Ref cycle/root0を比較します。
+共有演算子のBigInt/Int/Float・既存Decimal辞書も回帰検査し、program WASMへは広げません。
+SDKと全体gate・配布は最終batchのintegration pointで行います。
+
 Seseragiの検証は、変更範囲に対応するscoped laneを先に実行します。`bun run check`
 は、各laneを日常作業で無条件に繰り返すためのコマンドではなく、repository-wideな
 最終統合gateです。
