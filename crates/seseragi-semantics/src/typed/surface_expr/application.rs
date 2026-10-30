@@ -1862,10 +1862,12 @@ fn type_unknown_application(
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     let child_context = context.without_expected();
+    let mut operator_argument = None;
     let callee_context = child_context.with_expected(operator_application_expectation(
         callee,
-        arguments.len(),
+        arguments,
         context,
+        &mut operator_argument,
     ));
     let mut callee_analysis = type_surface_expression(callee, &callee_context);
     if matches!(
@@ -1879,7 +1881,11 @@ fn type_unknown_application(
             span,
             None,
             context,
-            &mut type_surface_expression,
+            &mut |argument, argument_context| {
+                operator_argument
+                    .take()
+                    .unwrap_or_else(|| type_surface_expression(argument, argument_context))
+            },
         );
     }
     for argument in arguments {
@@ -1899,8 +1905,9 @@ fn type_unknown_application(
 
 fn operator_application_expectation(
     callee: &SurfaceExpr,
-    argument_count: usize,
+    arguments: &[&SurfaceExpr],
     context: &PureExpressionContext<'_>,
+    preview: &mut Option<SurfaceExpressionAnalysis>,
 ) -> Option<SemanticValueType> {
     let SurfaceExpr::Name { name, .. } = callee else {
         return None;
@@ -1911,7 +1918,37 @@ fn operator_application_expectation(
     if symbol.canonical.as_deref() != Some(format!("std/prelude::{}", operator.spelling).as_str()) {
         return None;
     }
-    if argument_count != 1
+    if arguments.len() != 1 {
+        return None;
+    }
+    if operator.kind == seseragi_syntax::StandardOperatorKind::Arithmetic {
+        let first = type_surface_expression(arguments[0], &context.without_expected());
+        let parameter = SemanticValueType {
+            type_ref: application_argument_type_from_expr(&first.value),
+            key: first.semantic_type.clone(),
+        };
+        if typed_type_contains_hole(&parameter.type_ref) {
+            return None;
+        }
+        let hole = || SemanticValueType {
+            type_ref: TypedType::Hole,
+            key: SemanticTypeKey::Invalid,
+        };
+        let remaining = context
+            .expected()
+            .filter(|value| value.function_parts().is_some())
+            .cloned()
+            .unwrap_or_else(|| SemanticValueType::function(hole(), hole()));
+        let parameter = SemanticValueType {
+            type_ref: context.evidence_type(&parameter),
+            key: parameter.key,
+        };
+        // Reuse this checked argument; a nested operator section must not
+        // recursively analyze its first argument twice.
+        *preview = Some(first);
+        return Some(SemanticValueType::function(parameter, remaining));
+    }
+    if arguments.len() != 1
         || !matches!(
             operator.kind,
             seseragi_syntax::StandardOperatorKind::Equality

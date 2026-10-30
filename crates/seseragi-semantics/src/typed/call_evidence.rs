@@ -1504,7 +1504,13 @@ pub(crate) fn standard_binary_output(
     standard_binary_heads(trait_name)
         .into_iter()
         .find(|[candidate_left, candidate_right, _]| {
-            candidate_left == &left && candidate_right == &right
+            let same = |candidate: &TypedType, actual: &TypedType| {
+                candidate == actual || matches!((candidate, actual),
+                    (TypedType::ExternalNamed { canonical: candidate, arguments: candidate_arguments, .. },
+                     TypedType::ExternalNamed { canonical: actual, arguments: actual_arguments, .. })
+                    if candidate == actual && candidate_arguments == actual_arguments)
+            };
+            same(candidate_left, &left) && same(candidate_right, &right)
         })
         .map(|[_, _, output]| output)
 }
