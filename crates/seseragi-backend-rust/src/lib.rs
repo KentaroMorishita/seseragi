@@ -131,6 +131,7 @@ mod runtime {
     include!("runtime_array_operations.rs");
     include!("runtime_sequence.rs");
     include!("runtime_sequence_order.rs");
+    include!("runtime_iterator.rs");
     include!("runtime_text.rs");
     include!("runtime_bytes.rs");
     include!("runtime_big_int_value.rs");

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/iterator@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/iterator-values@0.0.0#path:vendor/values"
+name = "fixture/iterator-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:8039bb68d98bb08ac4d9bd8ed01d969fcef85bab5300e83d8d179011f471abde"
+content_digest = "sha256:6a01e506bd4236405c1cd9e790bc43fdc1f1178f4053e31ab4ab665dc816669d"
+dependencies = []
+
+[[packages]]
+id = "fixture/iterator@0.0.0#workspace:."
+name = "fixture/iterator"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:a2cf0292164f8ce6e28078d80a69c4da21815aa25dbf58877c7222cca324b014"
+content_digest = "sha256:ecb14949a622c1d22c1c0b4f02b3d95eb3309759eac5e8e0fbb23b843a572336"
+dependencies = [
+  { import = "values", package = "fixture/iterator-values@0.0.0#path:vendor/values" },
+]

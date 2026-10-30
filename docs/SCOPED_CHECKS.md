@@ -1,5 +1,16 @@
 # Scoped checks
 
+native Iteratorのunfold/nextはbackendの`--test iterator`、runtimeの
+`iterator_tests`、CLIの`basic_iterator_`で確認します。生成時のstep省略、
+同じcursorの再観測、返されたtailだけの前進、終端の再観測と10万stepの状態解放、
+保存/generic/partial・関数をyieldするケース・opaque2module/aliasを扱います。
+29件の偽造とunused program WASM2件を拒否し、元raw TS両profile strictとfresh
+Bun/Node/native、cold/Failure/4種Defect/finalizer/Ref cycle/root0を比較します。
+共有TSの保存参照/currying修復はdriverの`--test iterator_saved_functions`で
+同名user関数との区別を保ち、配布118でも再現した元の最小sourceもCLI比較します。
+source arityで既存のchecked runtime-call helperを使い、元SSRG/stdoutは変えません。
+共有loweringを変更したため最終SDKとrepository-wide gate・配布はbatchへ集約します。
+
 native Array/Listのsort/sortBy/groupByはbackendの`--test sequence_order`、
 runtimeの`sequence_order_tests`、CLIの`basic_sequence_order_`で確認します。
 TSと同じbottom-up stable mergeとキーの入力順一回評価、selected Ord/Eq/Hash、

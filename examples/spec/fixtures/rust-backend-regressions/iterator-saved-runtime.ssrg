@@ -1,0 +1,10 @@
+import * as iterator from "std/iterator"
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 2 then Nothing else Just (state,state + 1)
+fn maker<S,A> callback:(S -> Maybe<(A,S)>) -> (S -> iterator.Iterator<A>) = iterator.unfold callback
+fn nextOf<A> -> (iterator.Iterator<A> -> Maybe<(A,iterator.Iterator<A>)>) = iterator.next
+pub fn probe -> Int = {
+  let make = maker advance
+  let next:iterator.Iterator<Int> -> Maybe<(Int,iterator.Iterator<Int>)> = nextOf ()
+  match next (make 0) { Nothing -> -1; Just (value,_rest) -> value }
+}
+pub effect fn main = println (show (probe ()))

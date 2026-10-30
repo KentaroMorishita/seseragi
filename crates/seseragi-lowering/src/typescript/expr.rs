@@ -68,7 +68,9 @@ pub(super) fn lower_core_expr_to_typescript(
             origin,
         } => {
             if matches!(type_ref, CoreType::Function { .. }) {
-                if runtime_standard_operation(&name).is_some() {
+                if runtime_standard_operation(&name).is_some()
+                    || runtime_iterator_operation(&name).is_some()
+                {
                     // A bare function reference is a partial application with
                     // no source arguments. Keep evidence and currying identical
                     // to ordinary calls instead of emitting an unbound name.
@@ -689,10 +691,18 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_iterator_operation(&callee) {
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
+                let remaining = operation.source_arity.saturating_sub(arguments.len());
+                lower_uncurried_runtime_call(
+                    operation.local_name.to_owned(),
                     arguments,
-                }
+                    &type_ref,
+                    imported_types,
+                    "iterator",
+                    Vec::new(),
+                    Some(remaining),
+                    checked_argument_types.iter().cloned().enumerate().collect(),
+                    origin,
+                )
             } else if let Some(operation) = runtime_bytes_operation(&callee)
                 .or_else(|| runtime_text_operation(&callee))
                 .or_else(|| runtime_regex_operation(&callee))

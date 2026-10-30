@@ -1,0 +1,7 @@
+import * as iterator from "std/iterator"
+pub opaque newtype State = Int
+pub alias Cursor<A> = iterator.Iterator<A>
+pub fn state n:Int -> State = State n
+pub fn advance state:State -> Maybe<(String,State)> = match state { State n -> if n >= 2 then Nothing else Just ("cell:" + show n,State (n + 1)) }
+pub fn maker<S,A> callback:(S -> Maybe<(A,S)>) -> (S -> Cursor<A>) = iterator.unfold callback
+pub fn nextOf<A> -> (Cursor<A> -> Maybe<(A,Cursor<A>)>) = iterator.next

@@ -1,0 +1,37 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as iterator from "std/iterator"
+
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+fn advance offset:Int -> (Int -> Maybe<(Int,Int)>) = \state:Int -> if state >= 2 then Nothing else Just (offset + state,state + 1)
+fn describe values:iterator.Iterator<Int> -> String = match iterator.next values {
+  Nothing -> "end"
+  Just (first,rest) -> show first + ":" + (match iterator.next rest { Nothing -> "end"; Just (second,_) -> show second })
+}
+effect fn failBody -> Unit fails String = do {
+  let _computed = iterator.next (iterator.unfold (advance 42) 1)
+  effects.fail "typed"
+}
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (iterator.unfold (advance 42) 0)
+  let cold = effects.defer $ \_:Unit -> do {
+    say "cold"
+    values <- refs.get saved
+    say (describe values)
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\message:String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

@@ -1,0 +1,33 @@
+import * as iterator from "std/iterator"
+
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 3 then Nothing else Just (state,state + 1)
+fn infinite state:Int -> Maybe<(Int,Int)> = Just (state,state + 1)
+fn words state:Int -> Maybe<(String,Int)> = if state >= 2 then Nothing else Just ("雪" + show state,state + 1)
+fn first<A> values:iterator.Iterator<A> -> String where Show<A> = match iterator.next values { Nothing -> "end"; Just (value,_rest) -> show value }
+fn tail<A> values:iterator.Iterator<A> -> iterator.Iterator<A> = match iterator.next values { Nothing -> values; Just (_value,rest) -> rest }
+fn maker<S,A> callback:(S -> Maybe<(A,S)>) -> (S -> iterator.Iterator<A>) = iterator.unfold callback
+fn nextOf<A> -> (iterator.Iterator<A> -> Maybe<(A,iterator.Iterator<A>)>) = iterator.next
+fn take count:Int -> values:iterator.Iterator<Int> -> List<Int> = if count <= 0 then `[] else match iterator.next values { Nothing -> `[]; Just (value,rest) -> value : (take (count - 1) rest) }
+fn retained state:String -> Maybe<(Unit -> String,String)> = if state == "" then Nothing else Just ((\_:Unit -> "saved:" + state),"")
+
+pub effect fn main = do {
+  let build = iterator.unfold advance
+  let source = build 0
+  let generic = maker words
+  let next:iterator.Iterator<String> -> Maybe<(String,iterator.Iterator<String>)> = nextOf ()
+  let text = generic 0
+  println (first source)
+  println (first source)
+  println (first (tail source))
+  println (first (tail (tail source)))
+  println (first (tail (tail (tail source))))
+  println (first (tail (tail (tail source))))
+  println (show (take 8 source))
+  println (show (take 6 (iterator.unfold infinite 10)))
+  println (show (take 0 (iterator.unfold (\state:Int -> Just (state / 0,state)) 1)))
+  println (first text)
+  println (match next text { Nothing -> "end"; Just (value,rest) -> value + ":" + first rest })
+  println (match iterator.next (iterator.unfold retained "🙂") { Nothing -> "end"; Just (operation,rest) -> operation () + ":" + (match iterator.next rest { Nothing -> "end"; Just (_,_)-> "unexpected" }) })
+  println (first (iterator.unfold (\state:Unit -> Just ("unit",state)) ()))
+  println (first (iterator.unfold (\state:(Int,String) -> match state { (n,label) -> Just (label + show n,(n + 1,label)) }) (7,"λ")))
+}
