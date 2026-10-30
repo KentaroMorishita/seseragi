@@ -6,6 +6,11 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+TS Decimal zero比較の修復はruntimeの`decimal.test.ts`と`decimal-zero-order.test.ts`、CLIの
+`--test decimal_zero_order`で確認します。元SSRG入力を保ち、development/release両profileの
+fresh Bun/Nodeでzero/負zero・巨大正負scale・正負/同値/非zero順序を比較します。
+native Ordの追加は別leafとし、runtimeの最終integrationはRelease batchへ集約します。
+
 native Decimal Eq/Hashはbackendの`--test decimal_keys --test basic_decimal`、runtimeの
 `decimal_tests`、CLIの`basic_decimal_keys_`で確認します。正規化した任意精度coefficient/scale、
 TSと同じsigned little-endian 32-bit limb hash、等値spellingと実hash衝突を持つMap/Set、

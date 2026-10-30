@@ -1,0 +1,21 @@
+import * as decimal from "std/decimal"
+import * as text from "std/text"
+
+fn value source: String -> decimal.Decimal = match decimal.parse source { Right result -> result; Left _ -> decimal.fromInt (42 / 0) }
+fn order left: String -> right: String -> String = match compare (value left) (value right) {
+  Less -> "Less"
+  Equal -> "Equal"
+  Greater -> "Greater"
+}
+pub effect fn main = text.join "|" [
+  order "0" "0.01", order "0.01" "0",
+  order "0" "1e-999999999999999999999999999999999999",
+  order "1e-999999999999999999999999999999999999" "0",
+  order "0" "-1e-999999999999999999999999999999999999",
+  order "-1e-999999999999999999999999999999999999" "0",
+  order "0" "1e999999999999999999999999999999999999",
+  order "1e999999999999999999999999999999999999" "0",
+  order "-0.000e999999999999999999999999999999999999" "+0",
+  order "0e-999999999999999999999999999999999999" "-0",
+  order "-1.21" "-1.2", order "1.200" "12e-1"
+] |> println
