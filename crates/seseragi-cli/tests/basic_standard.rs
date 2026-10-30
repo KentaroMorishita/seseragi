@@ -2101,3 +2101,69 @@ fn standard_text_math_path_package_transforms_files_and_preserves_failed_outputs
     compare(&package, &cases);
     assert_eq!(fs::read(package.join("seseragi.lock")).unwrap(), lock);
 }
+
+#[test]
+fn basic_decimal_keys_keep_exact_public_hashes_saved_methods_shadowing_and_colliding_map_keys() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-keys.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-keys.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_keys_path_package_keeps_opaque_keys_and_saved_imported_generic_methods() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-keys"),
+        &[Case::success(
+            b"Just 10|Just 42|[10, 20]|[42, 20]|True|True\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_decimal_keys_keep_cold_replay_typed_failure_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-key-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-key-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_keys_argument_and_returned_callback_defects_run_finalizers_and_release_roots() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-decimal-key-effects.ssrg");
+    for (name, old, replacement, stdout) in [
+        (
+            "key",
+            "maps.get (value \"1.200\") stored",
+            "maps.get (value \"invalid\") stored",
+            &b"created\nacquired\ncold\nreleased\n"[..],
+        ),
+        (
+            "returned",
+            "effects.succeed 42",
+            "effects.succeed (42 / 0)",
+            &b"created\nacquired\ncold\nTrue\nTrue\nreleased\n"[..],
+        ),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("decimal-key-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout,
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}

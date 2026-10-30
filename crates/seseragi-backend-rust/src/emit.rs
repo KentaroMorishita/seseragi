@@ -531,6 +531,10 @@ impl Backend<'_> {
             if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Hash") {
                 self.validate_hash_evidence(selected, scope)?;
             }
+            if let Some(dictionary) = self.decimal_key_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.primitive_hash_dictionary(selected, scope)? {
                 self.capabilities.insert("hash".into());
                 values.push(dictionary);

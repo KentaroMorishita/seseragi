@@ -1,0 +1,14 @@
+import * as decimal from "std/decimal"
+import * as maps from "std/map"
+
+pub opaque newtype Key = { value: decimal.Decimal, label: String }
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = match left { Key a -> match right { Key b -> a.value == b.value } } }
+instance Hash<Key> { fn hash value: Key -> Int = match value { Key detail -> hash detail.value } }
+pub fn make text: String -> label: String -> Key = match decimal.parse text {
+  Right value -> Key ({ value: value, label: label })
+  Left _ -> Key ({ value: decimal.fromInt (42 / 0), label: label })
+}
+pub fn source -> maps.Map<Key,Int> = maps.singleton (make "1.20" "first") 10 |> maps.insert (make "2" "second") 20
+pub fn lookup<K,V> key: K -> maps.Map<K,V> -> Maybe<V> where Eq<K>, Hash<K> = maps.get key
+pub fn same<A> left: A -> A -> Bool where Eq<A> = eq left
+pub fn digest<A> value: A -> Int where Hash<A> = hash value

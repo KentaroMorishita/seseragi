@@ -1,0 +1,11 @@
+[package]
+name = "fixture/decimal-keys"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+cells = { package = "fixture/decimal-key-cells", path = "vendor/cells" }

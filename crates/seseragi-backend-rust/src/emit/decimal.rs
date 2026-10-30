@@ -21,6 +21,38 @@ fn signature(name: &str) -> Option<(CoreType, CoreType)> {
 }
 
 impl Backend<'_> {
+    pub(super) fn decimal_key_dictionary(
+        &mut self,
+        selected: &CoreCallEvidence,
+        scope: &Scope,
+    ) -> Result<Option<String>> {
+        let CoreInstanceEvidence::Standard {
+            identity,
+            type_arguments,
+            evidence_arguments,
+        } = &selected.evidence
+        else {
+            return Ok(None);
+        };
+        let function = match identity.as_str() {
+            "std/decimal::Eq" => "native_decimal_eq_dictionary()",
+            "std/decimal::Hash" => "native_decimal_hash_dictionary()",
+            _ => return Ok(None),
+        };
+        if self.program_wasm_library || !type_arguments.is_empty() || !evidence_arguments.is_empty()
+        {
+            return Err(
+                "Rust backend: unproven native Decimal dictionary type, children or target".into(),
+            );
+        }
+        if identity == "std/decimal::Eq" {
+            self.validate_eq_evidence(selected, scope)?;
+        } else {
+            self.validate_hash_evidence(selected, scope)?;
+        }
+        self.capabilities.insert("decimal".into());
+        Ok(Some(function.into()))
+    }
     pub(super) fn decimal_show_dictionary(
         &mut self,
         selected: &CoreCallEvidence,
@@ -130,7 +162,12 @@ impl Backend<'_> {
         };
         self.validate_decimal_show_value(dispatch, selected, &full, scope)
     }
-    fn decimal_type(&self, actual: &CoreType, expected: &CoreType, scope: &Scope) -> Result<()> {
+    pub(super) fn decimal_type(
+        &self,
+        actual: &CoreType,
+        expected: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
         if self.program_wasm_library {
             return Err("program WASM: native Decimal requires a target-specific ABI proof".into());
         }

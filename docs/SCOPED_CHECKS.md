@@ -6,6 +6,13 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Decimal Eq/Hashはbackendの`--test decimal_keys --test basic_decimal`、runtimeの
+`decimal_tests`、CLIの`basic_decimal_keys_`で確認します。正規化した任意精度coefficient/scale、
+TSと同じsigned little-endian 32-bit limb hash、等値spellingと実hash衝突を持つMap/Set、
+同名nominalとimported opaque key、保存generic methodとsource段階を保ちます。元raw TS両profile
+strictとfresh Bun/Node/native、cold/typed Failure/Defect/finalizer/Ref cycle/root0、偽造owner/
+kind/引数/結果/辞書/dispatch42通りと未使用program WASM拒否を確認します。Ord/算術は別leafです。
+
 native Set.mapはbackendの`--test basic_set_map`、runtimeの`set_tests`、CLIの
 `--test basic_standard basic_set_map_`で確認します。Map.mapKeysWithと実装を共有し、
 出力BのEq/Hash、mapper→Hash→必要なEq、最初の出力代表/順・seed・snapshotを保持します。
