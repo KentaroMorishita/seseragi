@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.123] - 2026-10-30
+
+### Added
+
+- Run native Decimal Eq, Ord and Hash dictionaries through saved, generic and imported methods, including Map/Set keys and all comparison operators. Keep normalized arbitrary-precision coefficients and scales, the public signed 32-bit limb hash, zero/sign ordering and virtual digit alignment without expanding huge scales. Preserve inherited Eq, opaque provider keys, cold partials, reference cycles and scoped cleanup. New program WASM Decimal admission remains outside this slice.
+
+### Fixed
+
+- Order Decimal zero before every positive value, including fractions below one and values with unbounded negative exponents. Keep negative zero and equivalent spellings equal, and retain the existing nonzero comparison order.
+
 ## [0.61.122] - 2026-10-30
 
 ### Added
