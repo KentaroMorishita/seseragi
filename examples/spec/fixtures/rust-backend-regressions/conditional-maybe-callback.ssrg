@@ -1,0 +1,5 @@
+import * as maybe from "std/maybe"
+pub effect fn main = do {
+  let selected = maybe.traverse (\value:Int -> if value == 2 then Just (value + 10) else Nothing) [1,2,3]
+  println (match selected { Nothing -> "none"; Just values -> show values })
+}

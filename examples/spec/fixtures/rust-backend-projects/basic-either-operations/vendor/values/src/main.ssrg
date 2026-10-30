@@ -1,0 +1,20 @@
+import * as either from "std/either"
+pub opaque type Box<A> = | Empty | Box A
+pub opaque newtype Value = Int
+pub opaque newtype Error = String
+pub alias Wrapped<A> = Box<A>
+instance Functor<Box> { fn map<A,B> callback:(A -> B) -> value:Box<A> -> Box<B> = match value { Empty -> Empty; Box item -> Box (callback item) } }
+instance Traversable<Box> {
+  fn traverse<G<_>,A,B> callback:(A -> G<B>) -> value:Box<A> -> G<Box<B>> where Applicative<G> = match value { Empty -> pure Empty; Box item -> map Box (callback item) }
+}
+pub fn make n:Int -> Box<Value> = Box (Value n)
+pub fn optional n:Int -> Box<Either<Error,Value>> = Box (Right (Value n))
+pub fn missing -> Box<Either<Error,Value>> = Box (Left (Error "missing"))
+pub fn blank -> Box<Either<Error,Value>> = Empty
+pub fn render box:Box<Value> -> String = match box { Empty -> "empty"; Box value -> match value { Value n -> "box:" + show n } }
+pub fn errorText error:Error -> String = match error { Error message -> message }
+pub fn increment value:Value -> Either<Error,Value> = match value { Value n -> Right (Value (n + 1)) }
+pub fn collect<F<_>,E,A> -> (F<Either<E,A>> -> Either<E,F<A>>) where Traversable<F> = either.sequence
+pub fn transform<F<_>,E,A,B> callback:(A -> Either<E,B>) -> (F<A> -> Either<E,F<B>>) where Traversable<F> = either.traverse callback
+pub fn mapError<E,F,A> callback:(E -> F) -> (Either<E,A> -> Either<F,A>) = either.mapLeft callback
+pub fn fold<E,A,B> -> ((E -> B) -> (A -> B) -> Either<E,A> -> B) = either.fold

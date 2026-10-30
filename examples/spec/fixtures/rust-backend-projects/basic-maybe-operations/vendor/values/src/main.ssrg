@@ -1,0 +1,17 @@
+import * as maybe from "std/maybe"
+pub opaque type Box<A> = | Empty | Box A
+pub opaque newtype Value = Int
+pub alias Wrapped<A> = Box<A>
+instance Functor<Box> { fn map<A,B> callback:(A -> B) -> value:Box<A> -> Box<B> = match value { Empty -> Empty; Box item -> Box (callback item) } }
+instance Traversable<Box> {
+  fn traverse<G<_>,A,B> callback:(A -> G<B>) -> value:Box<A> -> G<Box<B>> where Applicative<G> = match value { Empty -> pure Empty; Box item -> map Box (callback item) }
+}
+pub fn make n:Int -> Box<Value> = Box (Value n)
+pub fn optional n:Int -> Box<Maybe<Value>> = Box (Just (Value n))
+pub fn missing -> Box<Maybe<Value>> = Box Nothing
+pub fn blank -> Box<Maybe<Value>> = Empty
+pub fn render box:Box<Value> -> String = match box { Empty -> "empty"; Box value -> match value { Value n -> "box:" + show n } }
+pub fn increment value:Value -> Maybe<Value> = match value { Value n -> Just (Value (n + 1)) }
+pub fn collect<F<_>,A> -> (F<Maybe<A>> -> Maybe<F<A>>) where Traversable<F> = maybe.sequence
+pub fn transform<F<_>,A,B> callback:(A -> Maybe<B>) -> (F<A> -> Maybe<F<B>>) where Traversable<F> = maybe.traverse callback
+pub fn fallback<A> value:A -> (Maybe<A> -> A) = maybe.withDefault value

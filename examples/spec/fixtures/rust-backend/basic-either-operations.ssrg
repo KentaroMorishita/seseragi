@@ -1,0 +1,62 @@
+import * as either from "std/either"
+
+type Box<A> = | Empty | Box A
+instance Functor<Box> { fn map<A,B> callback:(A -> B) -> value:Box<A> -> Box<B> = match value { Empty -> Empty; Box item -> Box (callback item) } }
+instance Traversable<Box> {
+  fn traverse<G<_>,A,B> callback:(A -> G<B>) -> value:Box<A> -> G<Box<B>> where Applicative<G> = match value { Empty -> pure Empty; Box item -> map Box (callback item) }
+}
+fn output<E,A> error:(E -> String) -> value:(A -> String) -> result:Either<E,A> -> String = match result { Left found -> "left:" + error found; Right found -> "right:" + value found }
+fn boxText value:Box<Int> -> String = match value { Empty -> "empty"; Box item -> "box:" + show item }
+fn choose value:Int -> Either<String,Int> = if value == 0 then Left "first" else if value == 2 then Left "second" else Right (value + 10)
+fn collect<F<_>,E,A> values:F<Either<E,A>> -> Either<E,F<A>> where Traversable<F> = either.sequence values
+fn transform<F<_>,E,A,B> callback:(A -> Either<E,B>) -> values:F<A> -> Either<E,F<B>> where Traversable<F> = either.traverse callback values
+fn mapError<E,F,A> callback:(E -> F) -> (Either<E,A> -> Either<F,A>) = either.mapLeft callback
+fn unusedLeft message:String -> String = {let _bad = 42 / 0;message}
+fn unusedRight value:Int -> Int = value / 0
+
+pub effect fn main = do {
+  let left:Either<String,Int> = Left "雪"
+  let right:Either<String,Int> = Right 7
+  let mapLeft:Either<String,Int> -> Either<String,Int> = mapError (\message:String -> "error:" + message)
+  let mapRight:(Int -> Int) -> Either<String,Int> -> Either<String,Int> = either.mapRight
+  let saved = mapRight (\value:Int -> value + 1)
+  let bimap:(String -> String) -> (Int -> Int) -> Either<String,Int> -> Either<String,Int> = either.bimap
+  let both = bimap (\message:String -> message + "!") (\value:Int -> value * 2)
+  let sequence:Array<Either<String,Int>> -> Either<String,Array<Int>> = either.sequence
+  let empty:Array<Either<String,Int>> = []
+  let linked:List<Either<String,Int>> = `[]
+  let populated:List<Either<String,Int>> = `[Right 1,Right 2]
+  let blank:Box<Either<String,Int>> = Empty
+  let fold:(String -> String) -> (Int -> String) -> Either<String,Int> -> String = either.fold
+  let folded = fold (\message:String -> "error:" + message) show
+  let swap:Either<String,Int> -> Either<Int,String> = either.swap
+  println (output (\value:String -> value) show (mapLeft left))
+  println (output (\value:String -> value) show (mapLeft right))
+  println (output (\value:String -> value) show (saved left))
+  println (output (\value:String -> value) show (saved right))
+  println (output (\value:String -> value) show (both left))
+  println (output (\value:String -> value) show (both right))
+  println (folded left)
+  println (folded right)
+  println (output show (\value:String -> value) (swap left))
+  println (output show (\value:String -> value) (swap right))
+  println (output (\value:String -> value) show (sequence [Right 1,Right 2]))
+  println (output (\value:String -> value) show (sequence [Right 1,Left "first",Left "second"]))
+  println (output (\value:String -> value) show (collect populated))
+  println (output (\value:String -> value) show (transform choose [1,3]))
+  println (output (\value:String -> value) show (transform choose `[0,2,3]))
+  println (output (\value:String -> value) show (sequence empty))
+  println (output (\value:String -> value) show (collect linked))
+  println (output (\value:String -> value) boxText (collect (Box right)))
+  println (output (\value:String -> value) boxText (collect (Box left)))
+  println (output (\value:String -> value) boxText (collect blank))
+  println (output (\value:String -> value) boxText (transform choose (Box 3)))
+  println (show (either.fold (\message:String -> \value:Int -> value + 1) (\number:Int -> \value:Int -> number + value) right 35))
+  println (show (either.fold (\message:String -> \left:Int -> \right:Int -> left + right) (\number:Int -> \left:Int -> \right:Int -> number + left + right) right 10 25))
+  println (output (\value:String -> value) show (either.mapLeft unusedLeft right))
+  println (output (\value:String -> value) show (either.mapRight unusedRight left))
+  println (output (\value:String -> value) show (either.bimap unusedLeft (\value:Int -> value) right))
+  println (output (\value:String -> value) show (either.bimap (\message:String -> message) unusedRight left))
+  println (either.fold unusedLeft show right)
+  println (either.fold (\message:String -> message) (\value:Int -> show (unusedRight value)) left)
+}

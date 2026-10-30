@@ -40,6 +40,11 @@ const RESERVED_TYPESCRIPT_WORDS: &[&str] = &[
 ];
 
 pub(super) fn safe_identifier(name: &str) -> String {
+    // Compiler intrinsics use the host global namespace. `$` cannot occur in
+    // a source identifier, so this binding cannot collide with a user name.
+    if name == "globalThis" {
+        return "__ssrg$source$globalThis".to_owned();
+    }
     let mut output = String::with_capacity(name.len());
     for (index, char) in name.chars().enumerate() {
         let valid = if index == 0 {

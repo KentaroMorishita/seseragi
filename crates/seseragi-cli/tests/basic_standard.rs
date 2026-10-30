@@ -314,6 +314,163 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_either_operations_keep_original_selected_branches_traversals_and_returned_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-either-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-either-operations.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_either_operations_keep_cold_captured_callbacks_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-either-operations-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-either-operations-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_either_operations_source_callback_and_returned_stage_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-either-operations-effects.ssrg"
+    );
+    let needle = "either.traverse choose [1,2,3]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "either.traverse (callback (42 / 0)) [1,2,3]",
+        "either.traverse choose (if 42 / 0 == 0 then [1] else [2])",
+        "either.traverse (\\value:Int -> if value == 2 then Right (value / 0) else Left \"first\") [1,2,3]",
+        "{let _selected = either.mapLeft (\\message:String -> message + show (42 / 0)) (left ());Right [1]}",
+        "{let _selected = either.mapRight (\\value:Int -> value / 0) (right ());Right [1]}",
+        "{let _selected = either.bimap (errorCallback (42 / 0)) (\\value:Int -> value + 1) (right ());Right [1]}",
+        "{let _selected = either.bimap (\\message:String -> message) (\\value:Int -> value + 1) (if 42 / 0 == 0 then left () else right ());Right [1]}",
+        "{let _selected = either.fold (\\message:String -> \\value:Int -> value + 1) (\\number:Int -> \\value:Int -> number + value / 0) (right ()) 42;Right [1]}",
+    ] {
+        let expression = format!("{{let result:Either<String,Array<Int>> = {expression};result}}");
+        let scratch=Scratch::new();let path=scratch.0.join("either-defect.ssrg");fs::write(&path,original.replace(needle,&expression)).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n[11, 12, 13]\ncold\n[11, 12, 13]\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_either_operations_path_package_preserves_opaque_error_element_hkt_alias_and_dictionaries()
+{
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-either-operations"),
+        &[Case::success(
+            b"right:box:7\nleft:missing\nright:empty\nright:box:9\nright:box:9\nerror:missing\n",
+        )],
+    );
+}
+#[test]
+fn basic_either_operations_original_hkt_partial_sum_context_matches_strict_ts_and_native() {
+    compare(
+        &root()
+            .join("examples/spec/fixtures/rust-backend-regressions/hkt-partial-sum-context.ssrg"),
+        &[Case::success("42\n雪\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_either_operations_original_saved_runtime_type_regression_matches_strict_ts_and_native() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/either-saved-runtime-types.ssrg",
+        ),
+        &[Case::success(b"[2, 3]\n")],
+    );
+}
+#[test]
+fn basic_either_operations_host_error_and_global_this_source_names_keep_raw_strict_and_runtime_behavior(
+) {
+    for name in ["host-error-shadow", "host-global-this-binding"] {
+        compare(
+            &root().join(format!(
+                "examples/spec/fixtures/rust-backend-regressions/{name}.ssrg"
+            )),
+            &[Case::success(b"42\n")],
+        );
+    }
+}
+
+#[test]
+fn basic_maybe_operations_keep_original_fallbacks_traversals_saved_and_returned_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-maybe-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-maybe-operations.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_maybe_operations_keep_cold_captured_callbacks_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-maybe-operations-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-maybe-operations-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_maybe_operations_source_callback_and_returned_stage_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-maybe-operations-effects.ssrg"
+    );
+    let needle = "maybe.traverse choose [1,2,3]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "maybe.traverse (callback (42 / 0)) [1,2,3]",
+        "maybe.traverse choose (if 42 / 0 == 0 then [1] else [2])",
+        "maybe.traverse (\\value:Int -> if value == 2 then Just (value / 0) else Nothing) [1,2,3]",
+        "{let _selected = maybe.withDefault (42 / 0) (Just 7);Just [1]}",
+        "{let _selected = maybe.orElse (Just (42 / 0)) (Just 7);Just [1]}",
+        "{let _selected = maybe.withDefault (\\value:Int -> value + 1) (Just (\\value:Int -> value / 0)) 42;Just [1]}",
+        "{let _selected = maybe.withDefault (\\value:Int -> value + 1) (Just (\\value:Int -> value + 2)) (42 / 0);Just [1]}",
+        "{let _selected = maybe.withDefault (\\left:Int -> \\right:Int -> left + right) (Just (\\left:Int -> if left / 0 == 0 then (\\right:Int -> right) else (\\right:Int -> right))) 1 (42 / 0);Just [1]}",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("maybe-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created\nacquired\ncold\n[11, 12, 13]\ncold\n[11, 12, 13]\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }]);
+    }
+}
+#[test]
+fn basic_maybe_operations_path_package_preserves_opaque_hkt_alias_and_imported_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-maybe-operations"),
+        &[Case::success(
+            "box:7\nnone\nempty\nbox:9\nbox:9\n雪🙂\n".as_bytes(),
+        )],
+    );
+}
+#[test]
+fn basic_standard_returned_application_original_regression_matches_strict_ts_and_native() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/standard-returned-application.ssrg",
+        ),
+        &[Case::success(b"42\n43\n")],
+    );
+}
+
+#[test]
+fn basic_standard_conditional_maybe_callback_original_regression_matches_strict_ts_and_native() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/conditional-maybe-callback.ssrg",
+        ),
+        &[Case::success(b"none\n")],
+    );
+}
+
+#[test]
 fn basic_reduce_until_keeps_early_stop_empty_saved_generic_and_function_accumulators() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-reduce-until.ssrg"),

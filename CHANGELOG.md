@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.127] - 2026-10-30
+
+### Added
+
+- Run native Maybe and Either standard functions (mapLeft, mapRight, bimap, fold, swap, sequence, traverse) over Array, List and user-defined Traversable instances, preserving callback order and the first Left.
+
+### Fixed
+
+- Infer type arguments when a higher-kinded expected type is only partially known, without breaking Applicative chains such as `pure f <*> a <*> b`.
+- Keep generated TypeScript strict-valid when Either-returning callbacks or saved partial applications are passed to constrained generic functions.
+- Reference the host `globalThis.Error` in generated guards so a user-defined `Error` type cannot shadow it.
+
 ## [0.61.126] - 2026-10-30
 
 ### Added

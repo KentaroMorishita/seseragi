@@ -42,8 +42,14 @@ pub(crate) fn type_if_with(
     let else_span = else_branch.span();
     let condition_context = context.without_expected();
     let condition = type_surface_expression(condition, &condition_context);
-    let then_branch = type_body(then_branch, context);
-    let else_branch = type_body(else_branch, context);
+    let inferred = context
+        .expected()
+        .is_none_or(|value| typed_type_contains_hole(&value.type_ref))
+        .then(|| super::let_inference::infer_branch_result(then_branch, else_branch, context))
+        .flatten();
+    let branch_context = context.with_expected(inferred.or_else(|| context.expected().cloned()));
+    let then_branch = type_body(then_branch, &branch_context);
+    let else_branch = type_body(else_branch, &branch_context);
     let condition_type = inferred_type_from_expr(&condition.value);
     let then_type = application_argument_type_from_expr(&then_branch.value);
     let else_type = application_argument_type_from_expr(&else_branch.value);

@@ -1,0 +1,11 @@
+[package]
+name = "fixture/either-operations"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+values = { package = "fixture/either-operation-values", path = "vendor/values" }

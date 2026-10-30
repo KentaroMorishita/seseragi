@@ -600,6 +600,14 @@ pub(super) fn lower_core_expr_to_typescript(
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
                 let type_arguments = match (callee.as_str(), evidence.first()) {
+                    (name, _) if name.starts_with("std/either::") => {
+                        checked_either_runtime_arguments(
+                            name,
+                            &checked_argument_types,
+                            &type_ref,
+                            imported_types,
+                        )
+                    }
                     ("std/array::empty" | "std/array::append", _) => {
                         checked_array_result_element(&type_ref, imported_types)
                             .into_iter()
@@ -642,6 +650,8 @@ pub(super) fn lower_core_expr_to_typescript(
                     })
                     .collect::<Vec<_>>();
                 let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
+                let returned_arguments =
+                    arguments.split_off(arguments.len().min(operation.source_arity));
                 let dictionary_count = dictionaries.len();
                 arguments.splice(0..0, dictionaries);
                 let result = lower_uncurried_runtime_call(
@@ -654,12 +664,52 @@ pub(super) fn lower_core_expr_to_typescript(
                     Some(remaining_parameters),
                     checked_argument_types
                         .iter()
+                        .take(operation.source_arity)
                         .cloned()
                         .enumerate()
                         .map(|(index, ty)| (index + dictionary_count, ty))
                         .collect(),
-                    origin,
+                    origin.clone(),
                 );
+                let result = if returned_arguments.is_empty() {
+                    result
+                } else {
+                    let name = "__ssrg$collection$returned".to_owned();
+                    let callable_type = checked_argument_types[operation.source_arity..]
+                        .iter()
+                        .rev()
+                        .fold(
+                            type_ref_from_core_type(&type_ref, imported_types),
+                            |result, parameter| super::TypeScriptType::Function {
+                                parameter: Box::new(parameter.clone()),
+                                result: Box::new(result),
+                            },
+                        );
+                    let initializer = if operation.result_erased {
+                        TypeScriptExpr::CheckedResult {
+                            value: Box::new(result),
+                            type_ref: callable_type.clone(),
+                        }
+                    } else {
+                        result
+                    };
+                    TypeScriptExpr::Sequence {
+                        statements: vec![TypeScriptStatement::PureLet {
+                            type_parameters: Vec::new(),
+                            name: name.clone(),
+                            type_ref: callable_type,
+                            initializer,
+                            initializer_in_outer_scope: false,
+                            origin,
+                        }],
+                        result: Box::new(TypeScriptExpr::Call {
+                            callee: name,
+                            arguments: returned_arguments,
+                            type_arguments: Vec::new(),
+                            checked_callee_type: None,
+                        }),
+                    }
+                };
                 if operation.result_erased {
                     TypeScriptExpr::CheckedResult {
                         value: Box::new(result),
@@ -950,9 +1000,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     );
                     let check_late_callback = has_evidence
                         && deferred_evidence_parameters.is_empty()
-                        && checked_argument_types.iter().skip(1).any(|argument| {
+                        && (checked_argument_types.iter().skip(1).any(|argument| {
                             matches!(argument, super::TypeScriptType::Function { .. })
-                        });
+                        }) || checked_argument_types
+                            .first()
+                            .is_some_and(callback_returns_either));
                     let hkt_callee = (!has_evidence)
                         .then(|| callee_signature.as_ref())
                         .flatten()
@@ -1009,6 +1061,7 @@ pub(super) fn lower_core_expr_to_typescript(
                             evidence_argument_index,
                             imported_types,
                             checked_result.clone(),
+                            &checked_argument_types,
                             origin,
                         )
                     };
@@ -1023,7 +1076,7 @@ pub(super) fn lower_core_expr_to_typescript(
                         // TypeScript fixes generic parameters at the first
                         // curried argument. The source checker used every
                         // argument and evidence; retain that instantiated
-                        // callable type before applying a later callback. A
+                        // callable type before applying any callback. A
                         // returned source function follows the dictionaries;
                         // its arguments must not shift that checked boundary.
                         let mut parameters = checked_argument_types;
@@ -1533,6 +1586,15 @@ fn lower_template(
         })
 }
 
+fn callback_returns_either(type_ref: &super::TypeScriptType) -> bool {
+    let mut result = type_ref;
+    while let super::TypeScriptType::Function { result: next, .. } = result {
+        result = next;
+    }
+    matches!(type_ref, super::TypeScriptType::Function { .. })
+        && matches!(result, super::TypeScriptType::Either { .. })
+}
+
 fn lower_constrained_call(
     callee: String,
     mut arguments: Vec<TypeScriptExpr>,
@@ -1542,6 +1604,7 @@ fn lower_constrained_call(
     evidence_argument_index: Option<usize>,
     imported_types: &TypeScriptTypeContext,
     mut result_type: super::TypeScriptType,
+    supplied_types: &[super::TypeScriptType],
     origin: crate::SourceSpan,
 ) -> TypeScriptExpr {
     if deferred_parameters.is_empty() {
@@ -1575,11 +1638,33 @@ fn lower_constrained_call(
     let initializer = if arguments.is_empty() {
         TypeScriptExpr::Identifier { name: callee }
     } else {
+        // Check the supplied prefix before TS infers its generic parameters
+        // from a callback's Either union. The remaining source parameters still
+        // precede dictionaries, which precede any returned function's stages.
+        let checked_callee_type = supplied_types.iter().any(callback_returns_either).then(|| {
+            supplied_types
+                .iter()
+                .cloned()
+                .chain(parameters.iter().map(|(_, ty)| ty.clone()))
+                .chain(std::iter::repeat_n(
+                    super::TypeScriptType::Unknown,
+                    evidence.len(),
+                ))
+                .collect::<Vec<_>>()
+                .into_iter()
+                .rev()
+                .fold(result_type.clone(), |result, parameter| {
+                    super::TypeScriptType::Function {
+                        parameter: Box::new(parameter),
+                        result: Box::new(result),
+                    }
+                })
+        });
         TypeScriptExpr::Call {
             callee,
             arguments,
             type_arguments: Vec::new(),
-            checked_callee_type: None,
+            checked_callee_type,
         }
     };
     stage_deferred_call(initializer, parameters, evidence, result_type, origin)
@@ -1818,6 +1903,79 @@ fn lower_core_expressions(
 
 // Empty inputs cannot supply a host generic argument. Keep the element
 // already selected by the source checker before TypeScript infers unknown.
+fn checked_either_runtime_arguments(
+    name: &str,
+    supplied: &[super::TypeScriptType],
+    result: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+) -> Vec<super::TypeScriptType> {
+    use super::TypeScriptType as Ty;
+    let arity = runtime_standard_operation(name)
+        .expect("checked Either operation")
+        .source_arity;
+    let full = supplied.iter().rev().fold(
+        type_ref_from_core_type(result, imported_types),
+        |result, parameter| Ty::Function {
+            parameter: Box::new(parameter.clone()),
+            result: Box::new(result),
+        },
+    );
+    let mut remaining = &full;
+    let mut parameters = Vec::new();
+    for _ in 0..arity {
+        let Ty::Function { parameter, result } = remaining else {
+            return Vec::new();
+        };
+        parameters.push(parameter.as_ref());
+        remaining = result;
+    }
+    let arrow = |value: &Ty| match value {
+        Ty::Function { parameter, result } => {
+            Some((parameter.as_ref().clone(), result.as_ref().clone()))
+        }
+        _ => None,
+    };
+    let sum = |value: &Ty| match value {
+        Ty::Either { error, value } => Some((error.as_ref().clone(), value.as_ref().clone())),
+        _ => None,
+    };
+    let selected = (|| {
+        Some(match name {
+            "std/either::mapLeft" => {
+                let (error, value) = sum(parameters[1])?;
+                let (_, mapped) = arrow(parameters[0])?;
+                vec![error, mapped, value]
+            }
+            "std/either::mapRight" => {
+                let (error, value) = sum(parameters[1])?;
+                let (_, mapped) = arrow(parameters[0])?;
+                vec![error, value, mapped]
+            }
+            "std/either::bimap" => {
+                let (error, value) = sum(parameters[2])?;
+                let (_, mapped_error) = arrow(parameters[0])?;
+                let (_, mapped_value) = arrow(parameters[1])?;
+                vec![error, mapped_error, value, mapped_value]
+            }
+            "std/either::fold" => {
+                let (error, value) = sum(parameters[2])?;
+                vec![error, value, remaining.clone()]
+            }
+            "std/either::swap" => {
+                let (error, value) = sum(parameters[0])?;
+                vec![error, value]
+            }
+            "std/either::traverse" => {
+                let (input, output) = arrow(parameters[0])?;
+                let (error, value) = sum(&output)?;
+                vec![error, input, value]
+            }
+            _ => return None,
+        })
+    })();
+    selected.unwrap_or_default()
+}
+
 fn checked_array_result_element(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,

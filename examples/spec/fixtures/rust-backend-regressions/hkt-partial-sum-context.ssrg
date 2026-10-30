@@ -1,0 +1,14 @@
+import * as either from "std/either"
+type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> callback:(A -> B) -> value:Box<A> -> Box<B> = match value { Box item -> Box (callback item) } }
+instance Traversable<Box> {
+  fn traverse<G<_>,A,B> callback:(A -> G<B>) -> value:Box<A> -> G<Box<B>> where Applicative<G> = match value { Box item -> map Box (callback item) }
+}
+fn collect<F<_>,E,A> values:F<Either<E,A>> -> Either<E,F<A>> where Traversable<F> = either.sequence values
+fn render<E> error:(E -> String) -> result:Either<E,Box<Int>> -> String = match result { Left found -> error found; Right (Box value) -> show value }
+pub effect fn main = do {
+  let right:Either<String,Int> = Right 42
+  let left:Either<String,Int> = Left "雪"
+  println (render (\error:String -> error) (collect (Box right)))
+  println (render (\error:String -> error) (collect (Box left)))
+}

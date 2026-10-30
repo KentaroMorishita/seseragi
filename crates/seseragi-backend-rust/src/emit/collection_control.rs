@@ -37,7 +37,7 @@ impl Backend<'_> {
             );
         }
         let arity = arity(name).expect("known collection control");
-        if scope.has_unproven_type_scope() || arguments.len() > arity {
+        if scope.has_unproven_type_scope() {
             return Err("Rust backend: unproven collection control source stage".into());
         }
         let supplied = arguments
@@ -172,7 +172,8 @@ impl Backend<'_> {
         }
         if trait_dispatch.is_some()
             || !deferred_evidence_type_constructor_parameters.is_empty()
-            || evidence_argument_index.is_some()
+            || *evidence_argument_index
+                != (arguments.len() > arity(callee).unwrap()).then_some(arity(callee).unwrap())
         {
             return Err("Rust backend: unproven collection source stages".into());
         }

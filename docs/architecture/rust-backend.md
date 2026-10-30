@@ -24,6 +24,13 @@ Source → shared frontend → TypedHir → CoreCompilation / CoreIr
 
 ## nativeで使える標準moduleの基本操作
 
+次のsum候補は`std/maybe`の`withDefault`／`orElse`／`sequence`／`traverse`を
+nativeへ接続する。fallbackは通常のstrictなsource値であり、sequence/traverseは
+選択済みTraversableへMaybeのApplicativeを渡す。標準Array/List、独自・輸入・
+parameter辞書とFunctor継承を検証し、Nothing後もTSと同じ順にcallbackを評価する。
+NonEmptyListの標準providerは、そのnative表現を実装する#1048/#1101で扱う。
+実装の確認と正規SDK・全体gate・配布の確認は分け、後者は#1148へ集約する。
+
 v0.61.115では、既存の文字列・整数・Float・List・ファイル操作に加え、次の30 APIを
 nativeへ接続する。通常のsource、保存関数・部分適用、検証した複数moduleのpath packageから
 呼び出せる。標準module全体のnative対応を意味する一覧ではない。

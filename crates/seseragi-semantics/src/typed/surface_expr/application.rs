@@ -1061,8 +1061,8 @@ pub(crate) fn type_known_application_with_explicit(
                 )
             })
             .map(|mut expected| {
-                expected.type_ref = mask_unresolved_type_parameters(
-                    &expected.type_ref,
+                mask_unresolved_semantic_type_parameters(
+                    &mut expected,
                     &signature.type_parameters,
                     &partial_application.resolved_type_parameters,
                 );
@@ -1113,7 +1113,7 @@ pub(crate) fn type_known_application_with_explicit(
     let mut issue = explicit_issue.or_else(|| {
         call_issue(
             callee_span,
-            signature.parameters.len(),
+            application.parameters.len(),
             &application.parameters,
             argument_nodes,
             &arguments,
@@ -1328,7 +1328,7 @@ pub(crate) fn type_known_application_with_explicit(
     };
     let semantic_type = if issue.is_some() {
         SemanticTypeKey::Invalid
-    } else if arguments.len() >= signature.parameters.len() {
+    } else if arguments.len() >= application.parameters.len() {
         application.result.key.clone()
     } else if arguments.is_empty() {
         // Dictionary-only callable selection retains its checked function
@@ -2043,6 +2043,75 @@ fn is_unresolved_parameter_expectation(
         | TypedType::Function { .. }
         | TypedType::RequirementMerge { .. } => false,
     }
+}
+
+fn mask_unresolved_semantic_type_parameters(
+    value: &mut SemanticValueType,
+    parameters: &[seseragi_syntax::TypeParameter],
+    resolved: &std::collections::BTreeSet<String>,
+) {
+    let masked = mask_unresolved_type_parameters(&value.type_ref, parameters, resolved);
+    if masked == value.type_ref {
+        return;
+    }
+    if matches!(masked, TypedType::Hole) {
+        // This is an inference slot, not an invalid source expression. An
+        // Invalid key would survive after display inference fills the hole,
+        // poisoning a partially known function returned by Applicative.apply.
+        value.key = SemanticTypeKey::Other;
+    } else {
+        // Preserve checked owners and binders; only mask the unresolved slots.
+        // Rebuilding the entire key from display names can recapture an owner.
+        match &mut value.key {
+            SemanticTypeKey::TypeFunction { body, .. } => {
+                mask_unresolved_semantic_type_parameters(body, parameters, resolved);
+            }
+            SemanticTypeKey::Adt { arguments, .. }
+            | SemanticTypeKey::Struct { arguments, .. }
+            | SemanticTypeKey::ExternalNominal { arguments, .. }
+            | SemanticTypeKey::NamedGeneric { arguments, .. } => {
+                for argument in arguments {
+                    mask_unresolved_semantic_type_parameters(argument, parameters, resolved);
+                }
+            }
+            SemanticTypeKey::Application {
+                constructor,
+                arguments,
+            } => {
+                mask_unresolved_semantic_type_parameters(constructor, parameters, resolved);
+                for argument in arguments {
+                    mask_unresolved_semantic_type_parameters(argument, parameters, resolved);
+                }
+            }
+            SemanticTypeKey::Function { parameter, result } => {
+                mask_unresolved_semantic_type_parameters(parameter, parameters, resolved);
+                mask_unresolved_semantic_type_parameters(result, parameters, resolved);
+            }
+            SemanticTypeKey::Record(fields) => {
+                for field in fields.values_mut() {
+                    mask_unresolved_semantic_type_parameters(field, parameters, resolved);
+                }
+            }
+            SemanticTypeKey::Tuple(keys) => {
+                if let TypedType::Tuple { elements } = &value.type_ref {
+                    for (key, type_ref) in keys.iter_mut().zip(elements) {
+                        let mut element = SemanticValueType {
+                            type_ref: type_ref.clone(),
+                            key: key.clone(),
+                        };
+                        mask_unresolved_semantic_type_parameters(
+                            &mut element,
+                            parameters,
+                            resolved,
+                        );
+                        *key = element.key;
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    value.type_ref = masked;
 }
 
 fn mask_unresolved_type_parameters(

@@ -1351,8 +1351,25 @@
               }
             },
             "initializer": {
-              "kind": "runtime-call",
+              "kind": "type-application-call",
               "callee": "_ssrg_either_fold",
+              "typeArguments": [
+                {
+                  "kind": "string"
+                },
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "number"
+                  }
+                }
+              ],
               "arguments": [
                 {
                   "kind": "lambda",
@@ -1965,8 +1982,19 @@
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "runtime-call",
+                            "kind": "type-application-call",
                             "callee": "_ssrg_either_mapLeft",
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ],
                             "arguments": [
                               {
                                 "kind": "lambda",
@@ -1997,8 +2025,19 @@
                             ]
                           },
                           {
-                            "kind": "runtime-call",
+                            "kind": "type-application-call",
                             "callee": "_ssrg_either_mapRight",
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "number"
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ],
                             "arguments": [
                               {
                                 "kind": "lambda",
@@ -2126,8 +2165,22 @@
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "runtime-call",
+                            "kind": "type-application-call",
                             "callee": "_ssrg_either_bimap",
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "number"
+                              },
+                              {
+                                "kind": "string"
+                              }
+                            ],
                             "arguments": [
                               {
                                 "kind": "lambda",
@@ -2182,8 +2235,22 @@
                             ]
                           },
                           {
-                            "kind": "runtime-call",
+                            "kind": "type-application-call",
                             "callee": "_ssrg_either_bimap",
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "number"
+                              },
+                              {
+                                "kind": "string"
+                              }
+                            ],
                             "arguments": [
                               {
                                 "kind": "lambda",
@@ -2255,8 +2322,19 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "runtime-call",
+                  "kind": "type-application-call",
                   "callee": "_ssrg_either_fold",
+                  "typeArguments": [
+                    {
+                      "kind": "string"
+                    },
+                    {
+                      "kind": "number"
+                    },
+                    {
+                      "kind": "string"
+                    }
+                  ],
                   "arguments": [
                     {
                       "kind": "lambda",
@@ -2404,8 +2482,16 @@
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "runtime-call",
+                            "kind": "type-application-call",
                             "callee": "_ssrg_either_swap",
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ],
                             "arguments": [
                               {
                                 "kind": "identifier",
@@ -2414,8 +2500,16 @@
                             ]
                           },
                           {
-                            "kind": "runtime-call",
+                            "kind": "type-application-call",
                             "callee": "_ssrg_either_swap",
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ],
                             "arguments": [
                               {
                                 "kind": "identifier",
@@ -2908,8 +3002,19 @@
               }
             },
             "initializer": {
-              "kind": "runtime-call",
+              "kind": "type-application-call",
               "callee": "_ssrg_either_traverse",
+              "typeArguments": [
+                {
+                  "kind": "string"
+                },
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ],
               "arguments": [
                 {
                   "kind": "runtime-reference",
@@ -3216,8 +3321,19 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
+                        "kind": "type-application-call",
                         "callee": "_ssrg_either_traverse",
+                        "typeArguments": [
+                          {
+                            "kind": "string"
+                          },
+                          {
+                            "kind": "number"
+                          },
+                          {
+                            "kind": "number"
+                          }
+                        ],
                         "arguments": [
                           {
                             "kind": "runtime-reference",

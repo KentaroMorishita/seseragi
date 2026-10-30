@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/either-operations@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/either-operation-values@0.0.0#path:vendor/values"
+name = "fixture/either-operation-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:2ebc6b815e05867a63ede7c06b17eba82d72087fe4c8da48e5c26ada387d597b"
+content_digest = "sha256:75da8375f8e209de9a14d3f4747cf63bc04f400f43c169c5a587caee6d5b17b6"
+dependencies = []
+
+[[packages]]
+id = "fixture/either-operations@0.0.0#workspace:."
+name = "fixture/either-operations"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:cf4fadf1ff798cf95b0331f2c29861d8d14322312f23723177853702c03d6e3e"
+content_digest = "sha256:213906d3ff80e8d9a3e937e352de528e782d5ffb46fb2f0ad58723eb84805111"
+dependencies = [
+  { import = "values", package = "fixture/either-operation-values@0.0.0#path:vendor/values" },
+]

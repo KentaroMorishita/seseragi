@@ -45,6 +45,11 @@ pub(crate) fn instantiated_application_indexed(
     arguments: &[(usize, SemanticValueType)],
     evidence_type: &impl Fn(&SemanticValueType) -> TypedType,
 ) -> InstantiatedApplication {
+    // A generic result may become callable only after its source arguments
+    // have been inferred. The context describes the result of the *whole*
+    // application, not that intermediate callable.
+    let expected_application =
+        expected_application.filter(|_| application_argument_count <= signature.parameters.len());
     let mut substitutions = BTreeMap::new();
     if let Some(expected_application) = expected_application {
         let remaining = application_result_type_from(
@@ -207,7 +212,7 @@ pub(crate) fn instantiated_application_indexed(
             &mut instantiated_type_arguments,
         );
     }
-    InstantiatedApplication {
+    let mut application = InstantiatedApplication {
         instantiated_type_arguments,
         parameters: parameter_types
             .into_iter()
@@ -225,7 +230,15 @@ pub(crate) fn instantiated_application_indexed(
         evidence_constraints,
         constraint_identities: signature.constraint_identities.clone(),
         resolved_type_parameters: substitutions.keys().cloned().collect(),
+    };
+    while application.parameters.len() < application_argument_count {
+        let Some((parameter, result)) = application.result.function_parts() else {
+            break;
+        };
+        application.parameters.push(parameter);
+        application.result = result;
     }
+    application
 }
 
 pub(crate) fn evidence_type(value: &SemanticValueType) -> TypedType {

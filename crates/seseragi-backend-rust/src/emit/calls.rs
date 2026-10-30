@@ -79,6 +79,12 @@ impl Backend<'_> {
         if let Some(value) = self.array_operation_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.maybe_operation_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.either_operation_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.collection_control_call(expr, scope)? {
             return Ok(value);
         }
@@ -135,8 +141,30 @@ impl Backend<'_> {
                 return self.method_call(expr, scope);
             }
             self.reject_missing_method_contract(dispatch, evidence)?;
-            if arguments.is_empty() {
-                self.validate_bare_method(dispatch, evidence, type_ref, scope)?;
+            let projected_hkt = evidence.first().is_some_and(|selected| {
+                let CoreInstanceEvidence::Parameter { index } = selected.evidence else {
+                    return false;
+                };
+                matches!(
+                    dispatch.trait_identity.as_str(),
+                    "std/prelude::Functor" | "std/prelude::Applicative" | "std/prelude::Monad"
+                ) && (dispatch.method == "pure"
+                    || scope.dictionaries.get(index).is_some_and(|formal| {
+                        formal.trait_identity.as_deref() != Some(dispatch.trait_identity.as_str())
+                    }))
+            });
+            if arguments.is_empty() || projected_hkt {
+                let mut full_type = type_ref.clone();
+                for argument in arguments.iter().rev() {
+                    full_type = CoreType::Function {
+                        parameter: Box::new(
+                            local::method_argument_type(argument)
+                                .ok_or("Rust backend: missing projected HKT source type")?,
+                        ),
+                        result: Box::new(full_type),
+                    };
+                }
+                self.validate_bare_method(dispatch, evidence, &full_type, scope)?;
             }
         }
         let bound_primitive_partial = trait_dispatch.is_none()
@@ -236,6 +264,14 @@ impl Backend<'_> {
                 self.validate_parameter_evidence(&evidence[0], scope)?;
                 if scope.dictionaries[index].trait_identity.as_deref()
                     != Some(dispatch.trait_identity.as_str())
+                    && !(!self.program_wasm_library
+                        && evidence[0].constraint.trait_identity.as_deref()
+                            == Some(dispatch.trait_identity.as_str())
+                        && self.inherited_parameter_constraint(
+                            &scope.dictionaries[index],
+                            &evidence[0].constraint,
+                            scope,
+                        ))
                 {
                     return Err(
                         "Rust backend: dictionary parameter dispatch identity mismatch".into(),

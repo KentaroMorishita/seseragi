@@ -1,0 +1,8 @@
+import * as either from "std/either"
+pub fn saved -> ((Int -> Either<String,Int>) -> Array<Int> -> Either<String,Array<Int>>) = either.traverse
+pub fn mapError<E,F,A> callback:(E -> F) -> (Either<E,A> -> Either<F,A>) = either.mapLeft callback
+pub effect fn main = do {
+  let traverse = saved ()
+  let values = traverse (\value:Int -> Right (value + 1)) [1,2]
+  println (match values { Left message -> message; Right values -> show values })
+}
