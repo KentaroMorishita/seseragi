@@ -15,23 +15,9 @@
   · <a href="./extensions/seseragi/README.md">VS Code</a>
 </p>
 
-> [!IMPORTANT]
-> Seseragi は開発中の実験的な言語です。構文・型・ランタイムの仕様は今後も変わる可能性があり、
-> 本番環境での利用はまだ想定していません。
-
-# Seseragi
-
-Seseragi は、データの定義から値の変換、状態の管理、UI の構築までを、
-ひとつの型システムと構文で書けるプログラミング言語です。
-パターンマッチ、パイプライン、ジェネリクスを中心に、
-「データがどんな形をしていて、どう流れていくか」がコードから素直に読めることを大切にしています。
-
-コンパイラは Rust で書かれていて、生成先は TypeScript / JavaScript です。
-Rust のネイティブバイナリを生成するターゲットも開発中です。
-
-## コードの例
-
-[`examples/samples/fizzbuzz/main.ssrg`](./examples/samples/fizzbuzz/main.ssrg) より:
+Seseragi（せせらぎ）は、データの形と処理の流れが、コードを読むだけで分かることを目指したプログラミング言語です。
+型でデータを定義し、パターンマッチで場合分けし、パイプラインで処理をつなぎます。
+副作用や失敗も型に現れるので、関数のシグネチャを見ればその関数が何をするのかが分かります。
 
 <!-- canonical-example: path=examples/samples/fizzbuzz/main.ssrg -->
 ```seseragi
@@ -57,30 +43,142 @@ Fizz
 4
 Buzz
 ...
-14
-FizzBuzz
-...
 ```
 
-3 と 5 で割った余りをタプルにまとめ、ひとつの `match` で場合分けしています。
-`for` で 1 から 30 までを順に処理し、`println` で結果を出力します。
+> [!NOTE]
+> Seseragi は開発中の実験的な言語です。構文や仕様は今後も変わる可能性があります。
 
-## 書けるもの
+## 特徴
 
-| 分野 | 内容 |
-| --- | --- |
-| データと型 | ADT、struct、record、ジェネリクス、パターンマッチ、newtype、型エイリアス |
-| 関数の合成 | 関数、パイプライン、独自の演算子、Functor / Applicative / Monad |
-| 副作用 | `effect fn`、`do` 記法、型付きのエラー、標準入出力 |
-| リアクティブ UI | `Signal`、HTML の記述、関数コンポーネント、DOM イベント、フォーム |
-| 開発ツール | CLI、フォーマッタ、LSP、VS Code 拡張、ブラウザで動く Playground |
+### データの形を型で書き、漏れはコンパイラが見つける
 
-どこまで実装済みかは [STATUS](./docs/STATUS.md) にまとめています。
-仕様に書かれていても、まだ動かない機能があります。
+取りうる値を `type` で列挙し、`match` で場合分けします。
+扱っていないケースがあれば、実行する前にコンパイラが教えてくれます。
+
+```seseragi
+type Shape =
+  | Circle Float
+  | Rect (Float, Float)
+
+fn area shape: Shape -> Float = match shape {
+  Circle radius -> 3.14 * radius * radius
+  Rect (width, height) -> width * height
+}
+```
+
+`Rect` の行を消すと:
+
+```text
+error[SES-T0301]: This match does not cover every possible value
+  | fn area shape: Shape -> Float = match shape {
+  |                                 ^ missing patterns: Rect _
+  = help: Add the missing pattern arms, or add a final _ arm when a catch-all is intended.
+```
+
+### 処理は左から右へ流れる
+
+`|>` で値を次の関数へ渡していきます。
+関数はカリー化されているので、引数の一部だけを渡した関数をそのままパイプラインに置けます。
+
+```seseragi
+pub effect fn main =
+  [Circle 1.0, Rect (2.0, 3.0)]
+    |> map area
+    |> sum
+    |> show
+    |> println
+// => 9.14
+```
+
+### 副作用は型で区別される
+
+画面への出力やファイルの読み書きのような副作用は、`effect fn` の中でしか起こせません。
+ふつうの `fn` で `println` を呼ぶと、型エラーになります。
+
+```seseragi
+fn greet name: String -> Unit = println `Hello, ${name}`
+```
+
+```text
+error[SES-T0101]: Expression type does not match the expected type
+  = expected: Unit
+  = actual: Effect<{ console: Console }, ConsoleError, Unit>
+```
+
+エラーの中の `Effect<{ console: Console }, ConsoleError, Unit>` は、
+「コンソールを使い、`ConsoleError` で失敗することがあり、成功すると `Unit` を返す処理」という意味です。
+必要なものと失敗の種類が、型を見るだけで分かります。
+
+### 失敗も型の一部
+
+失敗の種類は自分で `type` として設計し、`fails` で宣言します。
+例外はありません。失敗を処理しないまま放っておくと、それも型に残ります。
+
+```seseragi
+import * as effects from "std/effect"
+
+type OrderError =
+  | OutOfStock String
+  | TooMany Int
+
+effect fn reserve item: String -> quantity: Int -> String fails OrderError =
+  match item {
+    "tea" -> fail $ OutOfStock item
+    _ -> if quantity > 10 then fail $ TooMany quantity else succeed `${quantity} x ${item}`
+  }
+
+fn explain error: OrderError -> String = match error {
+  OutOfStock item -> `${item} is out of stock`
+  TooMany quantity -> `cannot reserve ${quantity} at once`
+}
+
+// 失敗をすべて処理したので、この関数は失敗しない（fails Never）
+effect fn order item: String -> quantity: Int -> String fails Never =
+  reserve item quantity
+    |> effects.recover (\error -> succeed $ explain error)
+```
+
+純粋な計算では `Maybe` と `Either` を使い、`do` 記法で順番につなげられます。
+
+### UI も同じ言語で
+
+状態・操作・画面を、ここまでと同じ型と関数で書きます。
+画面は状態から作られ、ボタンを押すと `Action` が `update` に渡されて新しい状態になります。
+
+```seseragi
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+type Action =
+  | Increment
+  | Reset
+
+fn update action: Action -> count: Int -> Int = match action {
+  Increment -> count + 1
+  Reset -> 0
+}
+
+fn view count: Int -> html.Html<Action> = html.div {
+  children: [
+    html.p { children: `Count: ${count}` },
+    html.button { onClick: Increment, children: "+1" },
+    html.button { onClick: Reset, children: "Reset" }
+  ]
+}
+
+pub effect fn main = dom.app { target: "#app", initial: 0, update, view }
+```
+
+より細かく状態を扱いたいときは、値の変化を追いかける `Signal` を使えます。
+
+### エディタとコンパイラが同じ答えを出す
+
+CLI、エディタ用の LSP、フォーマッタ、ブラウザの Playground は、すべて同じコンパイラ本体を使っています。
+エディタに表示される型やエラーと、実際にビルドしたときの結果が食い違いません。
 
 ## 試してみる
 
-インストールせずに試すなら、ブラウザから使えます。
+インストールせずに、ブラウザからすぐ試せます。
 
 - **[Playground](https://seseragi.vercel.app/)** — コードを書いて、型チェック・実行・HTML のプレビューまでできます
 - **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello world から Effect、Signal、Web UI までを順番に学べます
@@ -90,103 +188,62 @@ FizzBuzz
 
 [GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から、
 OS と CPU に合ったアーカイブをダウンロードしてください。CLI と LSP が入っています。
+生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です。
 
-生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です（Rust は不要です）。
+```sh
+seseragi run hello.ssrg          # ファイルを実行する
+seseragi new web my-app          # Web アプリのプロジェクトを作る
+seseragi dev my-app              # 開発サーバーを起動する
+seseragi build hello.ssrg        # ビルドする
+seseragi format hello.ssrg       # 整形する
+```
+
+Web アプリを作るなら [はじめての Web アプリ](./docs/GETTING_STARTED.md) へ。
+VS Code 拡張（ID: `seseragi-dev.seseragi`）は、同じ GitHub Releases にある VSIX からインストールできます。
+詳しくは [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。
 
 > [!NOTE]
 > Bun 1.4.3 以前には脆弱性（CVE-2026-111497）があります。
 > Node.js で実行する場合も、2026年10月のセキュリティ修正を含むバージョン
 > （22.23.4 / 24.22.1 / 26.12.1 以降）を使ってください。
 
-インストールできたら、次のように使います。
-
-```sh
-seseragi --version
-
-# ファイルを実行する
-seseragi run hello.ssrg
-
-# Web アプリのプロジェクトを作って、開発サーバーを起動する
-seseragi new web my-app
-seseragi dev my-app
-
-# ビルド・整形・テスト
-seseragi build hello.ssrg --out-dir dist
-seseragi format hello.ssrg
-seseragi test my-app
-```
-
-Web アプリを作る場合は [Getting Started](./docs/GETTING_STARTED.md) に、
-プロジェクトの作成から VS Code の設定、本番ビルドまでの手順があります。
-配布物の構成やチェックサムについては [リリース手順](./docs/RELEASE.md) を参照してください。
-
-## VS Code
-
-拡張機能の ID は `seseragi-dev.seseragi` です。
-GitHub Releases から OS と CPU に合った VSIX をダウンロードし、
-コマンドパレットの `Extensions: Install from VSIX...` でインストールします。
-LSP は VSIX に同梱されています。
-
-設定やフォーマッタについては [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。
-
 ## 開発状況
 
-- コンパイラ、CLI、LSP、フォーマッタ、Playground は、ひとつのコンパイラ本体を共有しています。エディタで見える型と、実際にコンパイルされる結果が食い違いません
-- TypeScript ターゲットでは、ADT、パターンマッチ、Effect、Signal、Web UI がサンプルとテストで動作を確認できています
-- [Rust ネイティブターゲット](./docs/architecture/rust-backend.md)は、TypeScript ターゲットと同じ機能を使えるようにする作業を進めています（進捗: [#809](https://github.com/KentaroMorishita/seseragi/issues/809)）
+- TypeScript / JavaScript を生成するターゲットでは、ここに載せた機能はすべて動きます
+- Rust のネイティブバイナリを生成するターゲットを開発中です。TypeScript ターゲットと同じ機能を使えるようにする作業を進めています（進捗: [#809](https://github.com/KentaroMorishita/seseragi/issues/809)）
 - TypeScript との相互運用、ファイル・HTTP、Stream などは未実装か、一部だけ実装されています
 
-詳しくは [STATUS](./docs/STATUS.md)（現状）、[ROADMAP](./docs/ROADMAP.md)（今後の予定）、
-[SPEC COVERAGE](./docs/SPEC_COVERAGE.md)（仕様のテスト状況）を参照してください。
+どこまで実装済みかは [STATUS](./docs/STATUS.md)、今後の予定は [ROADMAP](./docs/ROADMAP.md) を参照してください。
+仕様に書かれていても、まだ動かない機能があります。
 
 ## コンパイラの開発に参加する
 
-ソースからビルドするには Rust と Bun が必要です。
-Rust のバージョンは `rust-toolchain.toml` で固定されています。
-
-> [!NOTE]
-> rustup は 1.29.2 以降を使ってください（それより前のバージョンには証明書検証の脆弱性 CVE-2026-111943 があります）。
-> Homebrew で入れた場合は `brew upgrade rustup` で更新できます。
+コンパイラは Rust で書かれています。ソースからビルドするには Rust と Bun が必要です
+（Rust のバージョンは `rust-toolchain.toml` で固定されています）。
 
 ```sh
 # main ブランチから CLI をインストールする（リリース版ではありません）
-cargo install \
-  --git https://github.com/KentaroMorishita/seseragi \
-  --locked \
-  seseragi-cli
-```
+cargo install --git https://github.com/KentaroMorishita/seseragi --locked seseragi-cli
 
-よく使うコマンド:
-
-```sh
 # Playground をローカルで起動する
 bun run dev:playground
 
-# 変更した範囲に応じてチェックする
-bun run check:sample
-bun run check:playground
+# 変更した範囲に応じてチェックする（check:sample / check:playground / check:extension / check:release もあります）
 bun run check:rust
-bun run check:extension
-bun run check:release
-
-# 複数の範囲にまたがる変更のときだけ、全体をチェックする
-bun run check
-
-# コンパイラやランタイムを変更したときに、Playground の WASM を作り直す
-bun run build:playground:wasm
 ```
 
-どのチェックを使うかは [Scoped checks](./docs/SCOPED_CHECKS.md) に、
-コンパイラ内部の構成は [IMPLEMENTATION](./docs/IMPLEMENTATION.md) にまとめています。
+> [!NOTE]
+> rustup は 1.29.2 以降を使ってください（それより前のバージョンには証明書検証の脆弱性 CVE-2026-111943 があります）。
 
-### ディレクトリ構成
+どのチェックを使うかは [Scoped checks](./docs/SCOPED_CHECKS.md)、
+コンパイラの内部構成は [IMPLEMENTATION](./docs/IMPLEMENTATION.md) にまとめています。
 
 | パス | 内容 |
 | --- | --- |
-| `crates/` | Rust 製のコンパイラ、CLI、LSP、WASM、テストランナー |
+| `crates/` | コンパイラ、CLI、LSP、WASM、テストランナー |
 | `runtime/ts/` | 生成された TypeScript が使うランタイム |
 | `apps/playground/` | Playground と Tour |
-| `examples/samples/` | 動作するサンプル集（Playground の Discover にも表示されます） |
+| `examples/samples/` | 動作するサンプル集 |
 | `examples/tour/` | Tour の各レッスン |
 | `examples/spec/` | 言語仕様のテストケース |
 | `docs/spec/` | 言語仕様 |
