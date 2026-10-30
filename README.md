@@ -11,42 +11,27 @@
 <p align="center">
   <a href="https://seseragi.vercel.app/">Playground</a>
   · <a href="https://seseragi.vercel.app/tour/">Tour</a>
-  · <a href="./docs/README.md">Language specification</a>
+  · <a href="./docs/README.md">言語仕様</a>
   · <a href="./extensions/seseragi/README.md">VS Code</a>
 </p>
 
 > [!IMPORTANT]
-> Seseragiは現在 **experimental / pre-release** です。Rust compiler、CLI、LSP、WASM
-> Playground、Signal / DOM runtimeを同じdriverから育てている段階で、production利用を
-> 前提とした互換性はまだ保証していません。
+> Seseragi は開発中の実験的な言語です。構文・型・ランタイムの仕様は今後も変わる可能性があり、
+> 本番環境での利用はまだ想定していません。
 
 # Seseragi
 
-Seseragiは、データの定義、値の変換、状態の更新、UIの構築までを、
-一貫した型と構文で書けるプログラミング言語です。式、pattern match、pipeline、
-genericな抽象化を土台に、データの形と処理の流れがコードから読めることを重視します。
+Seseragi は、データの定義から値の変換、状態の管理、UI の構築までを、
+ひとつの型システムと構文で書けるプログラミング言語です。
+パターンマッチ、パイプライン、ジェネリクスを中心に、
+「データがどんな形をしていて、どう流れていくか」がコードから素直に読めることを大切にしています。
 
-TypeScript / JavaScriptは実行targetの一つであり、言語の意味と構文は
-[Seseragi言語仕様](./docs/README.md)を正本とします。
+コンパイラは Rust で書かれていて、生成先は TypeScript / JavaScript です。
+Rust のネイティブバイナリを生成するターゲットも開発中です。
 
-現行compilerはRust実装です。parser、型検査、lowering、CLI、LSP、WASM Playgroundが
-同じdriver境界を共有するため、editorで見える型と実行時にcompileされるprogramを
-別実装へ分岐させません。
+## コードの例
 
-## まず試す
-
-- **[Playground](https://seseragi.vercel.app/)** — browser上で編集・型検査・実行・HTML Preview
-- **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello worldからEffect、Signal、Web UIまで順に試す
-- **[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases)** — OS / CPU別のCLI、LSP、VS Code拡張の配布
-- **[Local Web Getting Started](./docs/GETTING_STARTED.md)** — project作成からVS Code、dev、production buildまで
-- **[Runnable samples](./examples/samples/README.md)** — 現行compilerで実行されるsample catalog
-- **[VS Code extension](./extensions/seseragi/README.md)** — syntax highlight、hover、completion、diagnostic、formatter
-
-## 言語の形
-
-次の例は、PlaygroundのDiscoverからそのまま実行できる
-[`examples/samples/fizzbuzz/main.ssrg`](./examples/samples/fizzbuzz/main.ssrg)
-を掲載しています。
+[`examples/samples/fizzbuzz/main.ssrg`](./examples/samples/fizzbuzz/main.ssrg) より:
 
 <!-- canonical-example: path=examples/samples/fizzbuzz/main.ssrg -->
 ```seseragi
@@ -71,139 +56,142 @@ pub effect fn main = for number <- 1 ..= 30 {
 Fizz
 4
 Buzz
-Fizz
-7
-8
-Fizz
-Buzz
-11
-Fizz
-13
+...
 14
 FizzBuzz
 ...
 ```
 
-Tuple patternで3と5の剰余を一度の`match`で分類し、`Range`をeffectful `for`で順に処理して、
-最後に`println`で結果を出力します。
+3 と 5 で割った余りをタプルにまとめ、ひとつの `match` で場合分けしています。
+`for` で 1 から 30 までを順に処理し、`println` で結果を出力します。
 
-## Seseragiで扱うsurface
+## 書けるもの
 
-| Surface | 現在書けるもの |
+| 分野 | 内容 |
 | --- | --- |
-| Data / types | ADT、Struct、Record、generic、pattern match、newtype、type alias |
-| Composition | function、pipeline、custom operator、Functor / Applicative / Monad instance |
-| Effects | `effect fn`、`do`、typed failure、Console / Stdin、resource境界の一部 |
-| Reactive UI | `Signal`、pure HTML、function component、browser DOM event、form、IME composition |
-| Tooling | Rust CLI、formatter、native LSP、VS Code extension、WASM Playground |
+| データと型 | ADT、struct、record、ジェネリクス、パターンマッチ、newtype、型エイリアス |
+| 関数の合成 | 関数、パイプライン、独自の演算子、Functor / Applicative / Monad |
+| 副作用 | `effect fn`、`do` 記法、型付きのエラー、標準入出力 |
+| リアクティブ UI | `Signal`、HTML の記述、関数コンポーネント、DOM イベント、フォーム |
+| 開発ツール | CLI、フォーマッタ、LSP、VS Code 拡張、ブラウザで動く Playground |
 
-実装済み範囲と未接続領域は[STATUS](./docs/STATUS.md)に明記しています。
-仕様に存在することと、現行compilerで動くことは同一ではありません。
+どこまで実装済みかは [STATUS](./docs/STATUS.md) にまとめています。
+仕様に書かれていても、まだ動かない機能があります。
 
-## Quick start
+## 試してみる
 
-CLIは[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases)から
-OS / CPUに合うnative archiveを取得してください。archiveにはCLIとLSPが含まれます。
-生成したprogramの実行にはBun 1.4.4以降も必要です。コンパイル済みのnative archiveを使う場合、
-Rustは不要です。
+インストールせずに試すなら、ブラウザから使えます。
 
-Bun 1.4.3以前のBrotli decoderにはCVE-2026-111497があるため、
-[修正済みのBun](https://github.com/oven-sh/bun/pull/46392)へ更新してください。
-Nodeで生成物を実行する場合も、22.23.4 / 24.22.1 / 26.12.1以降の
-[対応系列の修正版](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)を使います。
+- **[Playground](https://seseragi.vercel.app/)** — コードを書いて、型チェック・実行・HTML のプレビューまでできます
+- **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello world から Effect、Signal、Web UI までを順番に学べます
+- **[サンプル集](./examples/samples/README.md)** — 現在のコンパイラで実際に動くサンプルです
 
-Web appを作る場合は、別の[Local Web Getting Started](./docs/GETTING_STARTED.md)を使います。
-project作成、VS Code、development server、production buildを扱う手順です。
-OS別archive・checksum・release identityの詳細は[release contract](./docs/RELEASE.md)が正本です。
+## インストール
 
-main branchからcompilerをbuildして開発する場合に限り、RustとBunを用意してCLIをinstallします。
-これは公開済みreleaseを固定する導入方法ではありません。
+[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から、
+OS と CPU に合ったアーカイブをダウンロードしてください。CLI と LSP が入っています。
 
-Rustのtoolchain managerには、証明書検証のCVE-2026-111943を修正した
-[rustup 1.29.2以降](https://blog.rust-lang.org/2026/10/20/Rustup-1.29.2/)を使います。
-Homebrew管理の場合は`brew upgrade rustup`で更新します。
-compiler自体のversionは`rust-toolchain.toml`で固定しています。
+生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です（Rust は不要です）。
+
+> [!NOTE]
+> Bun 1.4.3 以前には脆弱性（CVE-2026-111497）があります。
+> Node.js で実行する場合も、2026年10月のセキュリティ修正を含むバージョン
+> （22.23.4 / 24.22.1 / 26.12.1 以降）を使ってください。
+
+インストールできたら、次のように使います。
 
 ```sh
+seseragi --version
+
+# ファイルを実行する
+seseragi run hello.ssrg
+
+# Web アプリのプロジェクトを作って、開発サーバーを起動する
+seseragi new web my-app
+seseragi dev my-app
+
+# ビルド・整形・テスト
+seseragi build hello.ssrg --out-dir dist
+seseragi format hello.ssrg
+seseragi test my-app
+```
+
+Web アプリを作る場合は [Getting Started](./docs/GETTING_STARTED.md) に、
+プロジェクトの作成から VS Code の設定、本番ビルドまでの手順があります。
+配布物の構成やチェックサムについては [リリース手順](./docs/RELEASE.md) を参照してください。
+
+## VS Code
+
+拡張機能の ID は `seseragi-dev.seseragi` です。
+GitHub Releases から OS と CPU に合った VSIX をダウンロードし、
+コマンドパレットの `Extensions: Install from VSIX...` でインストールします。
+LSP は VSIX に同梱されています。
+
+設定やフォーマッタについては [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。
+
+## 開発状況
+
+- コンパイラ、CLI、LSP、フォーマッタ、Playground は、ひとつのコンパイラ本体を共有しています。エディタで見える型と、実際にコンパイルされる結果が食い違いません
+- TypeScript ターゲットでは、ADT、パターンマッチ、Effect、Signal、Web UI がサンプルとテストで動作を確認できています
+- [Rust ネイティブターゲット](./docs/architecture/rust-backend.md)は、TypeScript ターゲットと同じ機能を使えるようにする作業を進めています（進捗: [#809](https://github.com/KentaroMorishita/seseragi/issues/809)）
+- TypeScript との相互運用、ファイル・HTTP、Stream などは未実装か、一部だけ実装されています
+
+詳しくは [STATUS](./docs/STATUS.md)（現状）、[ROADMAP](./docs/ROADMAP.md)（今後の予定）、
+[SPEC COVERAGE](./docs/SPEC_COVERAGE.md)（仕様のテスト状況）を参照してください。
+
+## コンパイラの開発に参加する
+
+ソースからビルドするには Rust と Bun が必要です。
+Rust のバージョンは `rust-toolchain.toml` で固定されています。
+
+> [!NOTE]
+> rustup は 1.29.2 以降を使ってください（それより前のバージョンには証明書検証の脆弱性 CVE-2026-111943 があります）。
+> Homebrew で入れた場合は `brew upgrade rustup` で更新できます。
+
+```sh
+# main ブランチから CLI をインストールする（リリース版ではありません）
 cargo install \
   --git https://github.com/KentaroMorishita/seseragi \
   --locked \
   seseragi-cli
-
-seseragi --version
 ```
 
-repositoryの開発用commandは、以下のPlayground / Development節を参照してください。
-
-## Playground
+よく使うコマンド:
 
 ```sh
-# local development
+# Playground をローカルで起動する
 bun run dev:playground
 
-# sample、Tour、test、typecheck、bundleを検証
-bun run check:playground
-
-# compiler / runtime contract変更時にWASMを再生成
-bun run build:playground:wasm
-```
-
-Playgroundの順序付き学習は`examples/tour/`を正本とするTour、目的別のRecipe / Showcase探索は
-`examples/samples/`を正本とするDiscoverに分離します。READMEやUIへだけ動かないsampleを複製しません。
-初回はcanonical Hello Worldから始まり、desktop / mobileのNew blankから空の`main.ssrg`も作成できます。
-
-## VS Code
-
-正式extension IDは`seseragi-dev.seseragi`です。GitHub ReleaseからOS / CPUに合うVSIXを取得し、
-`Extensions: Install from VSIX...`で導入します。VSIXには対応するnative `seseragi-lsp`が
-一つだけ同梱されます。
-
-導入方法、formatter設定、旧preview IDからのmigrationは
-[Seseragi for VS Code](./extensions/seseragi/README.md)を参照してください。
-
-## Project status
-
-- compiler / runtimeはRust再実装の縦sliceを継続中
-- CLI、LSP、formatter、WASM Playgroundは同じcompiler driverへ接続済み
-- [実験的Rustバックエンド](./docs/architecture/rust-backend.md)は純粋計算と同期Effect / Ref / scopeのnative実行を実装中。[実用化の進捗](https://github.com/KentaroMorishita/seseragi/issues/809)を公開
-- ADT、match、Effect、Signal、SSR / DOMの実行可能範囲をsampleとconformance fixtureで固定
-- TypeScript interop、filesystem / HTTP、Stream、hydration等は未着手または部分実装
-- release前のため、構文・型・runtime contractは変更される可能性あり
-
-正確な現在地は[STATUS](./docs/STATUS.md)、実装順は[ROADMAP](./docs/ROADMAP.md)、
-仕様の検証範囲は[SPEC COVERAGE](./docs/SPEC_COVERAGE.md)を参照してください。
-
-## Repository guide
-
-| Path | Role |
-| --- | --- |
-| `crates/` | Rust compiler、driver、CLI、LSP、WASM、conformance |
-| `runtime/ts/` | 生成codeが接続するversioned TypeScript runtime |
-| `apps/playground/` | CodeMirror / WASM PlaygroundとTour |
-| `examples/samples/` | 現行compilerで動くsample catalog |
-| `examples/tour/` | Playground Tourのcanonical lesson |
-| `examples/spec/` | specification lesson、fixture、execution artifact |
-| `docs/spec/` | normative language specification |
-| `extensions/seseragi/` | 正式なVS Code extension |
-
-## Development
-
-変更範囲に応じてscoped gateを選びます。
-
-```sh
+# 変更した範囲に応じてチェックする
 bun run check:sample
 bun run check:playground
 bun run check:rust
 bun run check:extension
 bun run check:release
 
-# 複数領域を横断する統合時のみ
+# 複数の範囲にまたがる変更のときだけ、全体をチェックする
 bun run check
+
+# コンパイラやランタイムを変更したときに、Playground の WASM を作り直す
+bun run build:playground:wasm
 ```
 
-検証laneの選択基準は[Scoped checks](./docs/SCOPED_CHECKS.md)、compiler / runtimeの責務境界は
-[IMPLEMENTATION](./docs/IMPLEMENTATION.md)を参照してください。
+どのチェックを使うかは [Scoped checks](./docs/SCOPED_CHECKS.md) に、
+コンパイラ内部の構成は [IMPLEMENTATION](./docs/IMPLEMENTATION.md) にまとめています。
 
-## License
+### ディレクトリ構成
+
+| パス | 内容 |
+| --- | --- |
+| `crates/` | Rust 製のコンパイラ、CLI、LSP、WASM、テストランナー |
+| `runtime/ts/` | 生成された TypeScript が使うランタイム |
+| `apps/playground/` | Playground と Tour |
+| `examples/samples/` | 動作するサンプル集（Playground の Discover にも表示されます） |
+| `examples/tour/` | Tour の各レッスン |
+| `examples/spec/` | 言語仕様のテストケース |
+| `docs/spec/` | 言語仕様 |
+| `extensions/seseragi/` | VS Code 拡張 |
+
+## ライセンス
 
 Apache-2.0
