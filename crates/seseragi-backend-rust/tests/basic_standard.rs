@@ -41,6 +41,25 @@ fn basic_standard_operations_keep_saved_callables_and_the_former_sqrt_refusal() 
 }
 
 #[test]
+fn text_boundaries_keep_saved_stages_and_reject_unused_program_wasm_references() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-text-boundaries.ssrg");
+    emit_rust_module(&checked(source), "main").unwrap();
+    for operation in ["startsWith", "endsWith"] {
+        let source = format!("// 雪🙂\nimport * as text from \"std/text\"\npub fn probe value: Int -> Int = {{ let saved: String -> String -> Bool = text.{operation}; value }}\n");
+        let core = checked(&source);
+        let error = emit_program_wasm(&[&core], "native/standard", &["probe".into()]).unwrap_err();
+        assert!(
+            error
+                .message
+                .contains("native text extension requires a target-specific proof"),
+            "{error}"
+        );
+        assert_eq!(error.origin.unwrap().source, "standard-雪🙂.ssrg");
+    }
+}
+
+#[test]
 fn basic_standard_calls_reject_forged_types_evidence_and_source_stages() {
     let eq = checked("pub fn probe -> Bool = 1 == 1");
     let CoreExpr::Binary {
@@ -57,6 +76,8 @@ fn basic_standard_calls_reject_forged_types_evidence_and_source_stages() {
         ("text", "split \",\" \"雫🙂\"", "Array<String>"),
         ("text", "trim \"雫🙂\"", "String"),
         ("text", "contains \"雫\" \"雫🙂\"", "Bool"),
+        ("text", "startsWith \"雫\" \"雫🙂\"", "Bool"),
+        ("text", "endsWith \"🙂\" \"雫🙂\"", "Bool"),
         ("text", "replace \"雫\" \"川\" \"雫🙂\"", "String"),
     ] {
         let source = format!(
@@ -65,7 +86,10 @@ fn basic_standard_calls_reject_forged_types_evidence_and_source_stages() {
         let core = checked(&source);
         emit_rust_module(&core, "probe").unwrap();
         let expected_origin = core_expr_origin(&core.functions[0].body).clone();
-        for mutation in 0..10 {
+        let CoreExpr::Call { arguments, .. } = &core.functions[0].body else {
+            panic!()
+        };
+        for mutation in 0..9 + arguments.len() {
             let mut changed = core.clone();
             let CoreExpr::Call {
                 arguments,
@@ -101,8 +125,9 @@ fn basic_standard_calls_reject_forged_types_evidence_and_source_stages() {
                 7 => deferred_evidence_type_constructor_parameters.push("F".into()),
                 8 => *evidence_argument_index = Some(0),
                 _ => {
-                    arguments[0] = CoreExpr::Unit {
-                        origin: core_expr_origin(&arguments[0]).clone(),
+                    let index = mutation - 9;
+                    arguments[index] = CoreExpr::Unit {
+                        origin: core_expr_origin(&arguments[index]).clone(),
                     }
                 }
             }
@@ -158,6 +183,8 @@ fn native_basic_extensions_do_not_silently_expand_program_wasm_admission() {
         ("text", "split \",\" \"雫🙂\""),
         ("text", "trim \"雫🙂\""),
         ("text", "contains \"雫\" \"雫🙂\""),
+        ("text", "startsWith \"雫\" \"雫🙂\""),
+        ("text", "endsWith \"🙂\" \"雫🙂\""),
         ("text", "replace \"雫\" \"川\" \"雫🙂\""),
     ] {
         let source = format!("import * as api from \"std/{module}\"\npub fn probe value: Int -> Int = {{ let result = api.{expression}; value }}\npub fn main -> Int = probe 1\n");

@@ -227,6 +227,63 @@ fn basic_text_and_math_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_text_boundaries_keep_original_unicode_empty_saved_and_generic_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-text-boundaries.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-text-boundaries.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_text_boundaries_path_package_keeps_opaque_imported_saved_predicates() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-text-boundaries"),
+        &[Case::success(b"True|True|True|False|True\n")],
+    );
+}
+
+#[test]
+fn basic_text_boundaries_keep_cold_replay_and_release_ref_cycles_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-text-boundary-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-text-boundary-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_text_boundaries_argument_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-text-boundary-effects.ssrg"
+    );
+    assert_eq!(original.matches("prefix \"雪🙂\"").count(), 1);
+    let path = scratch.0.join("text-boundary-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace(
+            "prefix \"雪🙂\"",
+            "text.startsWith (show (42 / 0)) \"雪🙂\"",
+        ),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "argument-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
 fn basic_bytes_match_original_raw_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-bytes.ssrg"),

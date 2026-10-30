@@ -1,0 +1,26 @@
+import * as text from "std/text"
+
+fn through<A> convert: (A -> String) -> predicate: (String -> Bool) -> value: A -> Bool = predicate (convert value)
+
+pub fn probe -> String = {
+  let starts: String -> String -> Bool = text.startsWith
+  let ends: String -> String -> Bool = text.endsWith
+  let prefix = starts "雪"
+  let suffix = ends "🙂"
+  text.join "|" [
+    show (starts "" ""), show (ends "" ""),
+    show (starts "" "雪🙂"), show (ends "" "雪🙂"),
+    show (starts "雪" ""), show (ends "雪" ""),
+    show (prefix "雪🙂"), show (suffix "雪🙂"),
+    show (starts "🙂" "雪🙂"), show (ends "雪" "雪🙂"),
+    show (starts "中" "前中後"), show (ends "中" "前中後"),
+    show (starts "longer" "long"), show (ends "longer" "long"),
+    show (starts "é" "é"), show (ends "é" "é"),
+    show (starts "e" "é"), show (ends "́" "é"),
+    show (starts "\u{0}" "\u{0}雪\u{0}"), show (ends "\u{0}" "\u{0}雪\u{0}"),
+    show (starts "snow" "Snow"), show (ends "snow" "Snow"),
+    show (through (\value: String -> value) prefix "雪🙂"),
+    show (through (\value: Int -> show value) (starts "4") 42)
+  ]
+}
+pub effect fn main = println (probe ())

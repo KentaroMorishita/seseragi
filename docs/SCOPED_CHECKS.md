@@ -6,6 +6,14 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native text.startsWith/endsWithはbackendの`--test basic_standard`、runtimeの`text_tests`、
+CLIの`--test basic_standard basic_text_boundaries_`で確認します。prefix/suffix先・本文後の
+signature、保存/部分適用・generic caller、空文字・Unicode・結合文字・NULと非正規化を保ちます。
+通常2 module packageのopaque値、元raw TS両profile strict/skipLibCheck:falseとfresh
+Bun/Node/native、cold/Failure/引数内Defect/finalizer/Ref cycle/root0を比較します。
+不正な引数/結果/kind/段階/辞書と未使用保存関数のprogram WASMを拒否し、SDK/全体gateは
+共有runtimeへの変更をまとめた最終batchで確認します。
+
 generic callに渡す先頭空の入れ子Array/Listはdriverの`--test nested_empty_call_inference`、
 既存の`generic_call_instantiation`/`hkt_erasure`/`strict_partials`、semanticsのlib、CLIの
 `inferred_nested_empty_collection_`で確認します。元入力をbyte不変で保持し、raw TS両profile

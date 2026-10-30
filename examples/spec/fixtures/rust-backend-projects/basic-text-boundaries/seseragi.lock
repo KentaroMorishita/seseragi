@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/text-boundaries@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/text-boundaries@0.0.0#workspace:."
+name = "fixture/text-boundaries"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:271582849b7229688c34f4fd489e8ce536631ee4939bbc5ab5a3e0aed264b32c"
+content_digest = "sha256:c4d266a4ad013ea0847d4c1bdfdc271f93cec0f03382d96ca8563282a0f115bf"
+dependencies = [
+  { import = "predicates", package = "fixture/text-predicates@0.0.0#path:vendor/predicates" },
+]
+
+[[packages]]
+id = "fixture/text-predicates@0.0.0#path:vendor/predicates"
+name = "fixture/text-predicates"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/predicates"
+manifest_digest = "sha256:a24458ec2118f6623517daea80434ba0e8c376dc7b1f5a2a14cabfd09a50405a"
+content_digest = "sha256:ff3f43aa1ffb7bea1aa74473ce686309f45ea44304b86a4395d73523066a1a89"
+dependencies = []

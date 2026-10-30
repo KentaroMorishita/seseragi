@@ -1,0 +1,11 @@
+[package]
+name = "fixture/text-boundaries"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+predicates = { package = "fixture/text-predicates", path = "vendor/predicates" }
