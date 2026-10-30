@@ -1,0 +1,48 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as maps from "std/map"
+
+newtype Broken = Int
+instance Eq<Broken> { fn eq _left:Broken -> _right:Broken -> Bool = True }
+instance Ord<Broken> { fn compare _left:Broken -> _right:Broken -> Ordering = if 42 / 0 == 0 then Less else Greater }
+newtype BadHash = Int
+instance Eq<BadHash> { fn eq _left:BadHash -> _right:BadHash -> Bool = True }
+instance Hash<BadHash> { fn hash _value:BadHash -> Int = 42 / 0 }
+newtype BadEq = Int
+instance Eq<BadEq> { fn eq _left:BadEq -> _right:BadEq -> Bool = 42 / 0 == 0 }
+instance Hash<BadEq> { fn hash _value:BadEq -> Int = 0 }
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+fn transformWith values:Array<Int> -> linked:List<Int> -> (Unit -> String) = {
+  let sorted = arrays.sortBy (\value:Int -> value % 10)
+  let grouped = lists.groupBy (\value:Int -> value % 2)
+  \_:Unit -> show (sorted values) + "|" + show (maps.entries (grouped linked))
+}
+effect fn failBody -> Unit fails String = do {
+  let _computed = arrays.sortBy (\value:Int -> value % 10) [22,11,42,31]
+  effects.fail "typed"
+}
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (transformWith [22,11,42,31] `[22,11,42,31])
+  let cold = effects.defer $ \_:Unit -> do {
+    say "cold"
+    operation <- refs.get saved
+    say (operation ())
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\message:String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

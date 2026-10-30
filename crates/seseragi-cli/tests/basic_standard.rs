@@ -314,6 +314,50 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_sequence_order_keeps_stable_ties_selected_dictionaries_saved_and_empty_inputs() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-order.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-order.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_sequence_order_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-order-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-order-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_sequence_order_key_compare_hash_eq_and_final_argument_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-sequence-order-effects.ssrg"
+    );
+    let needle = "arrays.sortBy (\\value:Int -> value % 10) [22,11,42,31]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "arrays.sortBy (\\value:Int -> value / 0) [1,2,3]",
+        "lists.groupBy (\\value:Int -> value / 0) `[1,2,3]",
+        "arrays.sort [Broken 1,Broken 2]",
+        "arrays.groupBy (\\value:Int -> BadHash value) [1,2]",
+        "lists.groupBy (\\value:Int -> BadEq value) `[1,2]",
+        "lists.sortBy (\\value:Int -> value) (if 42 / 0 == 0 then `[1] else `[2])",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("sequence-order-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n[11, 31, 22, 42]|[(0, `[22, 42]), (1, `[11, 31])]\ncold\n[11, 31, 22, 42]|[(0, `[22, 42]), (1, `[11, 31])]\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_sequence_order_path_package_keeps_opaque_keys_aliases_and_generic_factories() {
+    compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-sequence-order"),&[Case::success(b"`[cell:3, cell:2, cell:1, cell:1]\n[22, 42, 11, 31]\n[(key:1, `[cell:1, cell:3, cell:1]), (key:0, `[cell:2])]\n`[cell:1, cell:3, cell:2, cell:1]\n")]);
+}
+
+#[test]
 fn basic_list_transform_keeps_order_output_types_empty_inputs_and_saved_callbacks() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-list-transform.ssrg"),

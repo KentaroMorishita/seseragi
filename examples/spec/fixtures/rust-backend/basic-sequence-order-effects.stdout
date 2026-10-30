@@ -1,0 +1,9 @@
+created
+acquired
+cold
+[11, 31, 22, 42]|[(0, `[22, 42]), (1, `[11, 31])]
+cold
+[11, 31, 22, 42]|[(0, `[22, 42]), (1, `[11, 31])]
+released
+recovered: typed
+released: 1

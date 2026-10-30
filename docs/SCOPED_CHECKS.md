@@ -1,5 +1,15 @@
 # Scoped checks
 
+native Array/Listのsort/sortBy/groupByはbackendの`--test sequence_order`、
+runtimeの`sequence_order_tests`、CLIの`basic_sequence_order_`で確認します。
+TSと同じbottom-up stable mergeとキーの入力順一回評価、selected Ord/Eq/Hash、
+同値要素と最初のgroup keyの順序、collisionと独自の比較/等価性を保ちます。
+124件の偽造とunused program WASM6件、opaque2module/alias/generic/保存/partial、
+元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
+キー/比較/Hash/Eq/最終引数のDefect・finalizer/root0、10万要素groupを検証します。
+実装済みList sortの元拒否入力はそのままempty-PATHのemit成功側で確認します。
+最終SDKと全体gate・配布はArray/List batchへ集約します。
+
 native ListのfilterMap/flatMapはbackendの`--test list_transform
 --test basic_sequence`、runtimeの`list_transform_tests`、CLIの
 `basic_list_transform_`と元`basic_sequence_list_`で確認します。

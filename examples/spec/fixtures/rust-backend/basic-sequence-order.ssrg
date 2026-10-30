@@ -1,0 +1,56 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as maps from "std/map"
+import * as big from "std/big-int"
+import * as decimal from "std/decimal"
+
+type Key = | Key { identity:Int, label:String }
+instance Eq<Key> { fn eq left:Key -> right:Key -> Bool = match left { Key a -> match right { Key b -> a.identity == b.identity } } }
+instance Hash<Key> { fn hash _value:Key -> Int = 0 }
+instance Show<Key> { fn show value:Key -> String = match value { Key detail -> detail.label } }
+newtype Rank = Int
+instance Eq<Rank> { fn eq left:Rank -> right:Rank -> Bool = match left { Rank a -> match right { Rank b -> a == b } } }
+instance Ord<Rank> { fn compare left:Rank -> right:Rank -> Ordering = match left { Rank a -> match right { Rank b -> compare b a } } }
+instance Show<Rank> { fn show value:Rank -> String = match value { Rank n -> show n } }
+fn key n:Int -> Key = Key ({ identity:n % 2, label:"k" + show n })
+fn rank n:Int -> Int = n % 10
+fn priority value:String -> Int = if value == "urgent" then 0 else 1
+fn sorter<A> -> (Array<A> -> Array<A>) where Ord<A> = arrays.sort
+fn by<A,K> callback:(A -> K) -> (List<A> -> List<A>) where Ord<K> = lists.sortBy callback
+fn groups<A,K> callback:(A -> K) -> (List<A> -> maps.Map<K,List<A>>) where Eq<K>,Hash<K> = lists.groupBy callback
+fn dec source:String -> decimal.Decimal = match decimal.parse source { Left _ -> decimal.fromInt 0; Right value -> value }
+
+pub effect fn main = do {
+  let input = [22,11,42,31]
+  let linked = `[22,11,42,31]
+  let empty:Array<Int> = []
+  let none:List<Int> = `[]
+  let sorted:Array<Int> -> Array<Int> = sorter ()
+  let saved = arrays.sortBy rank
+  let selected = by rank
+  let grouped = groups key
+  println (show (arrays.sort [3,-1,3,0]))
+  println (show (lists.sort `[3,-1,3,0]))
+  println (show (saved input))
+  println (show (selected linked))
+  println (show (arrays.sortBy priority ["later","urgent","normal","urgent"]))
+  println (show (lists.sortBy priority `["later","urgent","normal","urgent"]))
+  println (show (arrays.sort [Rank 1,Rank 3,Rank 2]))
+  println (show (lists.sort `[Rank 1,Rank 3,Rank 2]))
+  println (show (maps.entries (arrays.groupBy key [1,2,3,4])))
+  println (show (maps.entries (grouped `[1,2,3,4])))
+  println (show (maps.entries (arrays.groupBy (\value:String -> value) ["雪","🙂","雪"])))
+  println (show (maps.entries (lists.groupBy (\value:String -> value) `["雪","🙂","雪"])))
+  println (show (sorted empty))
+  println (show (lists.sort none))
+  println (show (arrays.sortBy (\value:Int -> value / 0) empty))
+  println (show (maps.entries (lists.groupBy (\value:Int -> value / 0) none)))
+  println (show (arrays.sort [42]))
+  println (show (lists.sort `[42]))
+  println (show (sorted input))
+  println (show input)
+  println (show linked)
+  println (show (arrays.sort [big.fromInt 3,big.fromInt (-4),big.fromInt 3]))
+  println (show (lists.sort `[dec "1.20",dec "-2",dec "12e-1"]))
+  println (show (maps.entries (arrays.groupBy dec ["1.20","12e-1","-2"])))
+}

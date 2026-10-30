@@ -1,0 +1,15 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as maps from "std/map"
+pub opaque newtype Value = Int
+pub alias Items<A> = List<A>
+instance Eq<Value> { fn eq left:Value -> right:Value -> Bool = match left { Value a -> match right { Value b -> a == b } } }
+instance Ord<Value> { fn compare left:Value -> right:Value -> Ordering = match left { Value a -> match right { Value b -> compare b a } } }
+instance Hash<Value> { fn hash _value:Value -> Int = 0 }
+instance Show<Value> { fn show value:Value -> String = match value { Value n -> "key:" + show n } }
+pub fn item n:Int -> Value = Value n
+pub fn number value:Value -> Int = match value { Value n -> n }
+pub fn sorter<A> -> (Items<A> -> Items<A>) where Ord<A> = lists.sort
+pub fn by<A,K> callback:(A -> K) -> (Array<A> -> Array<A>) where Ord<K> = arrays.sortBy callback
+pub fn groups<A,K> callback:(A -> K) -> (Items<A> -> maps.Map<K,Items<A>>) where Eq<K>,Hash<K> = lists.groupBy callback
+pub fn labels values:Items<Value> -> Items<String> = lists.flatMap (\value:Value -> `["cell:" + show (number value)]) values

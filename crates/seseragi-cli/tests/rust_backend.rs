@@ -1450,6 +1450,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
     // Newly admitted native operations retain the empty-PATH emission proof;
     // the remaining unsupported targets below keep their original refusals.
     for (name, source, capability) in [
+        ("list-sort", "import * as lists from \"std/list\"\npub fn answer -> List<Int> = lists.sort `[2, 1]\n", "sequence-order"),
         ("float-rounding", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Float = floats.roundIntegral numbers.HalfEven 1.5\n", "float-conversion"),
         ("float-convert", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Either<floats.FloatConversionError, Int> = floats.toInt numbers.HalfEven 1.5\n", "float-conversion"),
         ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n", "float"),
@@ -1471,9 +1472,14 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
     }
     for (name, source) in [
         ("list-eq", "pub fn answer -> Bool = `[1] == `[1]\n"),
-        ("list-sort", "import * as lists from \"std/list\"\npub fn answer -> List<Int> = lists.sort `[2, 1]\n"),
-        ("list-comprehension", "pub fn answer -> List<Int> = `[n | n <- `[1, 2]]\n"),
-        ("list-functor", "pub fn answer -> List<Int> = map (\\n: Int -> n + 1) `[1, 2]\n"),
+        (
+            "list-comprehension",
+            "pub fn answer -> List<Int> = `[n | n <- `[1, 2]]\n",
+        ),
+        (
+            "list-functor",
+            "pub fn answer -> List<Int> = map (\\n: Int -> n + 1) `[1, 2]\n",
+        ),
     ] {
         let bad_path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&bad_path, source).unwrap();
