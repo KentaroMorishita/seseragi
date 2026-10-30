@@ -1330,6 +1330,58 @@ fn basic_big_arithmetic_path_package_keeps_opaque_generic_stages_and_error_owner
 }
 
 #[test]
+fn basic_decimal_context_keeps_modes_safe_int_precision_and_saved_getters() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-context.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-context.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_context_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-context-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-context-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_context_checks_its_final_rounding_argument_before_nonpositive_failure() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-decimal-context-effects.ssrg"
+    )
+    .replace(
+        "decimal.context 0 numbers.Ceiling",
+        "decimal.context 0 (if 42 / 0 == 0 then numbers.Ceiling else numbers.HalfEven)",
+    );
+    let path = scratch.0.join("decimal-context-defect.ssrg");
+    fs::write(&path, source).unwrap();
+    compare(
+        &path,
+        &[Case {
+            stdout: b"created\nacquired\ncold\n34\ncold\n34\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_decimal_context_path_package_keeps_opaque_values_and_canonical_mode_error_aliases() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-context"),
+        &[Case::success(b"34:Ceiling:0\n")],
+    );
+}
+
+#[test]
 fn basic_big_keys_path_package_keeps_opaque_values_and_imported_generic_methods() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-big-int-keys"),

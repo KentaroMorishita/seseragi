@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/decimal-context@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/decimal-context-numbers@0.0.0#path:vendor/numbers"
+name = "fixture/decimal-context-numbers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/numbers"
+manifest_digest = "sha256:b5955f34ffd1bb989ea39f4f3a6741369c8cf6a416568b7f8001e03949953da2"
+content_digest = "sha256:2a69f8fda31fe5a9af8ad1320b82472a46e6428a4c30bede620421640cb64d15"
+dependencies = []
+
+[[packages]]
+id = "fixture/decimal-context@0.0.0#workspace:."
+name = "fixture/decimal-context"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:bfebe8469b0b3ab99f7dcaaf6c72c8a08092d9bacba024c598c243321dd1d933"
+content_digest = "sha256:5d2ba4fdcd2a6b24cd27f74341f81c7ac633c1bb4fd3092ca407093bf730ed8d"
+dependencies = [
+  { import = "numbers", package = "fixture/decimal-context-numbers@0.0.0#path:vendor/numbers" },
+]

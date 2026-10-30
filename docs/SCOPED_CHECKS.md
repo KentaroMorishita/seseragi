@@ -6,6 +6,14 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native DecimalContextのcontext/precision/roundingとprecision error constructorは
+backendの`--test decimal_context`、runtimeの`decimal_context_tests`、CLIの
+`basic_decimal_context_`で確認します。既存のstd/number RoundingMode 6種を共有し、
+safe Int precision・nonpositive error・保存/partial/generic・opaque2moduleと標準aliasを保持します。
+最後のrounding引数を評価してから結果を作り、cold/Failure/Defect/finalizer/Ref cycle/root0を
+元raw TS両profile strict・fresh Bun/Node/nativeで比較します。元Decimalのparse/fromInt/Eq/Ord/Hash/
+表示も確認し、新program WASMは受け入れません。最終SDKと全体gateはRelease batchへ集約します。
+
 native BigInt算術/Zero/Oneとchecked APIはbackendの`--test big_arithmetic`、runtimeの
 `big_int_arithmetic_tests`、CLIの`basic_big_arithmetic_`で確認します。binary32のexactな
 加減乗除・剰余・Int指数、0方向の商と被除数と同符号の剰余、typed zero/negative error、

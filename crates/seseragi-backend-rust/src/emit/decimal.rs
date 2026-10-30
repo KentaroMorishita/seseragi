@@ -1,6 +1,6 @@
 use super::*;
 
-fn signature(name: &str) -> Option<(CoreType, CoreType)> {
+fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let named = |name: &str, arguments| CoreType::Named {
         name: name.into(),
         arguments,
@@ -9,15 +9,50 @@ fn signature(name: &str) -> Option<(CoreType, CoreType)> {
     let text = named("std/prelude::String", vec![]);
     Some(match name {
         "std/decimal::parse" => (
-            text,
+            vec![text],
             named(
                 "std/prelude::Either",
                 vec![named("std/decimal::DecimalParseError", vec![]), decimal],
             ),
         ),
-        "std/decimal::fromInt" => (named("std/prelude::Int", vec![]), decimal),
+        "std/decimal::fromInt" => (vec![named("std/prelude::Int", vec![])], decimal),
+        "std/decimal::context" => (
+            vec![
+                named("std/prelude::Int", vec![]),
+                named("std/number::RoundingMode", vec![]),
+            ],
+            named(
+                "std/prelude::Either",
+                vec![
+                    named("std/decimal::DecimalContextError", vec![]),
+                    named("std/decimal::DecimalContext", vec![]),
+                ],
+            ),
+        ),
+        "std/decimal::precision" => (
+            vec![named("std/decimal::DecimalContext", vec![])],
+            named("std/prelude::Int", vec![]),
+        ),
+        "std/decimal::rounding" => (
+            vec![named("std/decimal::DecimalContext", vec![])],
+            named("std/number::RoundingMode", vec![]),
+        ),
+        "std/decimal::NonPositiveDecimalPrecision" => (
+            vec![named("std/prelude::Int", vec![])],
+            named("std/decimal::DecimalContextError", vec![]),
+        ),
         _ => return None,
     })
+}
+
+fn remaining_type(parameters: &[CoreType], result: &CoreType) -> CoreType {
+    parameters
+        .iter()
+        .rev()
+        .fold(result.clone(), |result, parameter| CoreType::Function {
+            parameter: Box::new(parameter.clone()),
+            result: Box::new(result),
+        })
 }
 
 impl Backend<'_> {
@@ -295,11 +330,23 @@ impl Backend<'_> {
         Ok(())
     }
 
-    fn decimal_callable(name: &str) -> String {
-        format!(
-            "V::fun(vec![], |_, value| native_decimal_operation({}, value))",
+    fn decimal_callable(name: &str, arity: usize) -> String {
+        let names: Vec<_> = (0..arity)
+            .map(|i| format!("\0decimal_argument_{i}"))
+            .collect();
+        let arguments = names
+            .iter()
+            .map(|name| format!("{}.clone()", id(name)))
+            .collect::<Vec<_>>()
+            .join(",");
+        let mut body = format!(
+            "native_decimal_standard_operation({}, vec![{arguments}])",
             quoted(name)
-        )
+        );
+        for i in (0..arity).rev() {
+            body = Self::closure(&names[i], &body, &names[..i].iter().cloned().collect());
+        }
+        body
     }
 
     pub(super) fn decimal_reference(
@@ -309,7 +356,7 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<Option<String>> {
-        let Some((parameter, result)) = signature(name) else {
+        let Some((parameters, result)) = signature(name) else {
             return Ok(None);
         };
         if scope.contains(name) {
@@ -318,16 +365,9 @@ impl Backend<'_> {
         if !evidence.is_empty() {
             return Err("Rust backend: Decimal operation with unsupported evidence".into());
         }
-        self.decimal_type(
-            type_ref,
-            &CoreType::Function {
-                parameter: Box::new(parameter),
-                result: Box::new(result),
-            },
-            scope,
-        )?;
+        self.decimal_type(type_ref, &remaining_type(&parameters, &result), scope)?;
         self.capabilities.insert("decimal".into());
-        Ok(Some(Self::decimal_callable(name)))
+        Ok(Some(Self::decimal_callable(name, parameters.len())))
     }
 
     pub(super) fn decimal_call(
@@ -349,13 +389,13 @@ impl Backend<'_> {
         else {
             return Ok(None);
         };
-        let Some((parameter, result)) = signature(callee) else {
+        let Some((parameters, result)) = signature(callee) else {
             return Ok(None);
         };
         if scope.contains(callee) {
             return Ok(None);
         }
-        if arguments.len() > 1
+        if arguments.len() > parameters.len()
             || !evidence.is_empty()
             || trait_dispatch.is_some()
             || !deferred_evidence_parameters.is_empty()
@@ -364,19 +404,37 @@ impl Backend<'_> {
         {
             return Err("Rust backend: unproven Decimal source application".into());
         }
-        let Some(argument) = arguments.first() else {
-            return self.decimal_reference(callee, evidence, type_ref, scope);
-        };
-        let actual = local::method_argument_type(argument)
-            .ok_or("Rust backend: missing Decimal argument type")?;
-        self.decimal_type(&actual, &parameter, scope)?;
-        self.decimal_type(type_ref, &result, scope)?;
+        for (argument, expected) in arguments.iter().zip(&parameters) {
+            let actual = local::method_argument_type(argument)
+                .ok_or("Rust backend: missing Decimal argument type")?;
+            self.decimal_type(&actual, expected, scope)?;
+        }
+        self.decimal_type(
+            type_ref,
+            &remaining_type(&parameters[arguments.len()..], &result),
+            scope,
+        )?;
         self.capabilities.insert("decimal".into());
-        self.direct_calls += 1;
-        Ok(Some(format!(
-            "native_decimal_operation({}, {})",
-            quoted(callee),
-            self.expr(argument, scope)?
-        )))
+        if arguments.len() == parameters.len() {
+            self.direct_calls += 1;
+            return Ok(Some(format!(
+                "native_decimal_standard_operation({}, vec![{}])",
+                quoted(callee),
+                self.expressions(arguments, scope)?
+            )));
+        }
+        let value = self.fresh();
+        let mut output = format!(
+            "{{ let mut {value} = {};",
+            Self::decimal_callable(callee, parameters.len())
+        );
+        for argument in arguments {
+            output.push_str(&format!(
+                "{value} = {value}.apply({});",
+                self.expr(argument, scope)?
+            ));
+        }
+        output.push_str(&format!("{value} }}"));
+        Ok(Some(output))
     }
 }

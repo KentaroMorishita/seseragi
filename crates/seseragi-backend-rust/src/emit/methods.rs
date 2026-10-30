@@ -443,6 +443,8 @@ impl Backend<'_> {
             | "std/big-int::BigIntPowerError"
             | "std/decimal::Decimal"
             | "std/decimal::DecimalParseError"
+            | "std/decimal::DecimalContext"
+            | "std/decimal::DecimalContextError"
             | "std/json::Json"
             | "std/json::JsonPathSegment"
             | "std/json::JsonParseError"

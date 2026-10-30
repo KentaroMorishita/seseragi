@@ -1,0 +1,39 @@
+import * as decimal from "std/decimal"
+import * as numbers from "std/number"
+import * as ints from "std/int"
+
+fn mode value: numbers.RoundingMode -> String = match value {
+  numbers.HalfEven -> "HalfEven"
+  numbers.HalfUp -> "HalfUp"
+  numbers.TowardZero -> "TowardZero"
+  numbers.AwayFromZero -> "AwayFromZero"
+  numbers.Floor -> "Floor"
+  numbers.Ceiling -> "Ceiling"
+}
+fn describe value: Either<decimal.DecimalContextError,decimal.DecimalContext> -> String = match value {
+  Right context -> ints.format (decimal.precision context) + ":" + mode (decimal.rounding context)
+  Left (decimal.NonPositiveDecimalPrecision digits) -> "precision:" + ints.format digits
+}
+fn factory -> (Int -> numbers.RoundingMode -> Either<decimal.DecimalContextError,decimal.DecimalContext>) = decimal.context
+fn apply<A,B> operation: (A -> B) -> value: A -> B = operation value
+newtype DecimalContext = Int
+fn local value: DecimalContext -> Int = match value { DecimalContext number -> number }
+
+pub effect fn main = do {
+  let make = factory ()
+  let zero = make 0
+  let getter: decimal.DecimalContext -> numbers.RoundingMode = decimal.rounding
+  println (describe (make 34 numbers.HalfEven))
+  println (describe (make 34 numbers.HalfUp))
+  println (describe (make 34 numbers.TowardZero))
+  println (describe (make 34 numbers.AwayFromZero))
+  println (describe (make 34 numbers.Floor))
+  println (describe (make 34 numbers.Ceiling))
+  println (describe (make 1 numbers.HalfUp))
+  println (describe (make 9007199254740991 numbers.Floor))
+  println (describe (zero numbers.HalfEven))
+  println (describe (make (-9007199254740991) numbers.Ceiling))
+  println (describe (Left (decimal.NonPositiveDecimalPrecision (-7))))
+  println (match make 6 numbers.Ceiling { Right context -> mode (apply getter context); Left _ -> "missing" })
+  println (ints.format (local (DecimalContext 7)))
+}
