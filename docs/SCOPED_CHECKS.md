@@ -6,6 +6,15 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+transparent newtypeの派生JSON codecはbackendの`--test basic_json_derived_newtypes`とCLIの
+`--test basic_standard basic_json_derived_newtypes_`で確認します。generic/recursive・保存method・
+opaque/importedの通常2 module packageと、tagを加えないwireと失敗path、cold/Failure/Defect/
+finalizer/Ref cycle/root0、encode/decode両方の128 frame host limitを比較します。
+releaseのchecked newtype constructorは既存のprivate representation変換を使います。
+driverの`--test newtype_literal_profiles`、CLIの`newtype_literal_representations_`で元の
+record/array/tuple literalをraw TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeで
+通し、別nominalや誤ったrepresentationのsource拒否を保ちます。正規WASMと全体gateは最終batchです。
+
 named structの派生JSON codecはbackendの`--test basic_json_derived_structs`、CLIの
 `--test basic_standard basic_json_derived_structs_`で確認します。declaration順・generic/recursive
 struct・保存method・opaque/importedの通常2 module package、unknown先行拒否とnested path、

@@ -35,6 +35,7 @@ mod json;
 mod json_codecs;
 mod json_container_codecs;
 mod json_decoders;
+mod json_derived_newtypes;
 mod json_derived_structs;
 mod lists;
 mod local;
@@ -256,7 +257,7 @@ fn emit_body(
         );
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
         if let Some(dictionary) = backend
-            .json_derived_struct_dictionary(instance, &scope)
+            .json_derived_dictionary(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
         {
             output.push_str(&format!(

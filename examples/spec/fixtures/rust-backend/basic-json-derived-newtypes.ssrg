@@ -1,0 +1,52 @@
+import * as json from "std/json"
+import * as arrays from "std/array"
+import * as text from "std/text"
+newtype Id deriving JsonEncode, JsonDecode = Int
+newtype Wrap<A> deriving JsonEncode, JsonDecode = A
+newtype Rows<A> deriving JsonEncode, JsonDecode = { z: A, a: Maybe<Id> }
+newtype Chain deriving JsonEncode, JsonDecode = Maybe<Chain>
+fn path index: Int -> parts: Array<json.JsonPathSegment> -> String = match arrays.get index parts {
+  Nothing -> ""
+  Just (json.JsonField name) -> "." + name + path (index + 1) parts
+  Just (json.JsonIndex value) -> "[" + show value + "]" + path (index + 1) parts
+}
+fn kind value: json.DecodeErrorKind -> String = match value {
+  json.ExpectedJsonType name -> "expected:" + name
+  json.MissingJsonField name -> "missing:" + name
+  json.UnknownJsonField name -> "unknown-field:" + name
+  json.UnknownJsonTag name -> "unknown-tag:" + name
+  json.InvalidJsonValue message -> "invalid:" + message
+}
+fn read<A> source: String -> String where JsonDecode<A>, JsonEncode<A> = {
+  let decode: String -> Either<json.JsonReadError, A> = json.decodeString
+  let encode: A -> String = json.encodeString
+  match decode source {
+    Left (json.JsonDecodeFailure error) -> "error:" + path 0 error.path + ":" + kind error.kind
+    Left _ -> "syntax"
+    Right value -> "ok:" + encode value
+  }
+}
+fn methods<A> value: A -> String where JsonEncode<A>, JsonDecode<A> = {
+  let encode: A -> json.Json = encodeJson
+  let decode: json.Json -> Either<json.DecodeError, A> = decodeJson
+  match decode (encode value) { Left error -> kind error.kind; Right result -> json.stringify (encode result) }
+}
+pub fn probe -> String = text.join "|" [
+  read<Id> "7",
+  read<Wrap<Array<Maybe<Int>>>> "[1,null,2]",
+  read<Wrap<Unit>> "null",
+  read<Wrap<Either<String,Id>>> "{\"tag\":\"Right\",\"value\":42}",
+  read<Rows<List<Int>>> "{\"z\":[1,2],\"a\":7}",
+  read<Chain> "null",
+  read<Id> "\"bad\"",
+  read<Wrap<Array<Id>>> "[1,false]",
+  read<Rows<Int>> "{\"a\":null,\"z\":false}",
+  read<Rows<Int>> "{\"a\":null}",
+  read<Rows<Int>> "{\"z\":42,\"extra\":true}",
+  read<Wrap<(Id,String)>> "[42,false]",
+  methods (Id 42),
+  methods (Wrap `[Id 1,Id 2]),
+  methods (Chain (Just (Chain Nothing))),
+  methods (Rows ({ z: ["雪🙂"], a: Just (Id 7) }))
+]
+pub effect fn main = println (probe ())

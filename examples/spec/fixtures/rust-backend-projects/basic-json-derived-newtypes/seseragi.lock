@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-json-derived-newtypes@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-json-derived-newtypes@0.0.0#workspace:."
+name = "fixture/basic-json-derived-newtypes"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:006b3063402372d879b1b38a31c57a77de67d7c9bf818eb9814176bf82394876"
+content_digest = "sha256:29300059a0163d28acf4c94afe767a39fb68f21a6e91734231d5975f5bcb38e4"
+dependencies = [
+  { import = "cells", package = "fixture/json-newtype-cells@0.0.0#path:vendor/cells" },
+]
+
+[[packages]]
+id = "fixture/json-newtype-cells@0.0.0#path:vendor/cells"
+name = "fixture/json-newtype-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:47b2a3d27e6649f1f14dd0826e0e67a6aa4a7e1260b1c153e7838be940e03468"
+content_digest = "sha256:d6258bc79f7948c95fe1e729d5f01c681d8d39fd17cc9543767043f937fa1a90"
+dependencies = []

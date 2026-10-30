@@ -351,14 +351,14 @@ pub(super) fn lower_core_expr_to_typescript(
                 };
             }
             if imported_types.is_erased_newtype(&callee) && arguments.len() == 1 {
-                return TypeScriptExpr::CheckedResult {
-                    value: Box::new(lower_core_expr_to_typescript(
+                return super::types::assert_private_representation(
+                    lower_core_expr_to_typescript(
                         arguments.into_iter().next().expect("newtype payload"),
                         imported_values,
                         imported_types,
-                    )),
-                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
-                };
+                    ),
+                    type_ref_from_core_type(&type_ref, imported_types),
+                );
             }
             let signal_operation = runtime_signal_operation(&callee);
             let checked_argument_types = arguments

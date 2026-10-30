@@ -1,0 +1,9 @@
+import * as json from "std/json"
+newtype Row<A> deriving JsonEncode = { value: A }
+newtype Items<A> deriving JsonEncode = Array<A>
+newtype Pair<A> deriving JsonEncode = (A, String)
+pub fn probe -> String =
+  json.encodeString (Row ({ value: ["雪🙂"] })) + "|" +
+  json.encodeString (Items ["雪🙂"]) + "|" +
+  json.encodeString (Pair ([1,2], "雪🙂"))
+pub effect fn main = println (probe ())

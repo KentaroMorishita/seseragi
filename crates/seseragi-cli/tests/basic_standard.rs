@@ -948,6 +948,124 @@ fn basic_json_derived_structs_keep_original_strict_ts_bun_node_and_native_result
 }
 
 #[test]
+fn basic_json_derived_newtypes_keep_transparent_original_cross_target_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-derived-newtypes.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-derived-newtypes.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn newtype_literal_representations_keep_original_strict_release_types_and_values() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/newtype-literal-representations.ssrg",
+        ),
+        &[Case::success(
+            "{\"value\":[\"雪🙂\"]}|[\"雪🙂\"]|[[1,2],\"雪🙂\"]\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_json_derived_newtypes_package_keeps_generic_opaque_and_saved_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-derived-newtypes"),
+        &[Case::success(
+            "{\"a\":7,\"z\":[1,null,2]}:{\"a\":7,\"z\":[1,null,2]}:[{\"a\":7,\"z\":\"雪🙂\"}]\n"
+                .as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_json_derived_newtypes_keep_cold_replay_failure_defects_and_captured_ref_cycles() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let declaration = "alias Rows = { rows: Array<(Int, List<Maybe<json.Json>>)> }";
+    assert_eq!(original.matches(declaration).count(), 1);
+    let source=original.replace(declaration,"newtype Rows deriving JsonEncode, JsonDecode = { rows: Array<(Int, List<Maybe<json.Json>>)> }");
+    let expected = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let prefix = expected
+        .windows(b"recovered: typed".len())
+        .position(|part| part == b"recovered: typed")
+        .unwrap();
+    for (name, changed, output, defect, message) in [
+        (
+            "cold-replay",
+            source.clone(),
+            expected.as_slice(),
+            false,
+            "",
+        ),
+        (
+            "body-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected[..prefix],
+            true,
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            true,
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("newtype-{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: if defect { 70 } else { 0 },
+                defect,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_derived_newtypes_recursive_encode_and_decode_unwind_the_host_limit() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declaration="newtype Deep deriving JsonEncode, JsonDecode = Maybe<Deep>\nfn deep n: Int -> Deep = Deep (if n <= 0 then Nothing else Just (deep (n - 1)))\n";
+    for (name,render) in [
+        ("encode","  let render = \\_: Unit -> json.encodeString (deep 512)"),
+        ("decode","  let render = \\_: Unit -> match json.decodeString<Deep> \"1\" { Left _ -> \"domain\"; Right value -> json.encodeString value }"),
+    ] {
+        let path=scratch.0.join(format!("newtype-host-limit-{name}.ssrg"));
+        fs::write(&path,format!("{declaration}{}",original.replace(old,render))).unwrap();
+        let out=scratch.0.join(format!("native-{name}"));
+        successful(bounded(Command::new(env!("CARGO_BIN_EXE_seseragi")).args(["experimental","build-native"]).arg(&path).args(["--entry","main","--out-dir"]).arg(&out),&scratch.0));
+        let result=bounded(Command::new(out.join(format!("program{}",std::env::consts::EXE_SUFFIX))).env("SESERAGI_NATIVE_METRICS","1"),&scratch.0);
+        assert_eq!(result.status.code(),Some(70),"{name}:{result:?}");
+        assert_eq!(result.stdout,b"created\nacquired\ncold\nreleased\n");
+        let stderr=String::from_utf8_lossy(&result.stderr);
+        assert!(stderr.contains("JSON codec nesting exceeds host limits") && stderr.contains("managed-live=0"),"{name}:{stderr}");
+    }
+}
+
+#[test]
 fn basic_json_derived_structs_package_keeps_saved_generic_opaque_dictionaries() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-derived-structs"),

@@ -1,7 +1,7 @@
 use super::*;
 
 impl Backend<'_> {
-    pub(super) fn json_derived_struct_identity(
+    pub(super) fn json_derived_identity(
         &self,
         instance: &seseragi_lowering::CoreInstance,
         trait_identity: &str,
@@ -15,22 +15,35 @@ impl Backend<'_> {
         }
         let CoreInstanceImplementation::DerivedJson {
             adt_symbol,
-            transparent_newtype: false,
+            transparent_newtype,
             ..
         } = &instance.implementation
         else {
             return false;
         };
-        let Some(structure) = self.module.structs.iter().find(|s| s.symbol == *adt_symbol) else {
+        let declaration = if *transparent_newtype {
+            self.module
+                .adts
+                .iter()
+                .find(|a| a.symbol == *adt_symbol && a.newtype)
+                .map(|a| (&a.symbol, &a.type_parameters))
+        } else {
+            self.module
+                .structs
+                .iter()
+                .find(|s| s.symbol == *adt_symbol)
+                .map(|s| (&s.symbol, &s.type_parameters))
+        };
+        let Some((symbol, parameters)) = declaration else {
             return false;
         };
-        let head = if structure.type_parameters.is_empty() {
-            structure.symbol.clone()
+        let head = if parameters.is_empty() {
+            symbol.clone()
         } else {
             format!(
                 "{}<{}>",
-                structure.symbol,
-                (0..structure.type_parameters.len())
+                symbol,
+                (0..parameters.len())
                     .map(|n| format!("${n}"))
                     .collect::<Vec<_>>()
                     .join(",")
@@ -69,10 +82,8 @@ impl Backend<'_> {
             _ => return Err("Rust backend: unproven derived JSON trait".into()),
         };
         if *transparent_newtype
-            || !self.json_derived_struct_identity(
-                instance,
-                &format!("std/prelude::{}", instance.trait_name),
-            )
+            || !self
+                .json_derived_identity(instance, &format!("std/prelude::{}", instance.trait_name))
             || instance.supertrait_count != 0
             || instance.type_parameters.len() != structure.type_parameters.len()
             || instance
