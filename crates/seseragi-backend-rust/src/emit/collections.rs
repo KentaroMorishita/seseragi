@@ -4,14 +4,19 @@ fn arity(name: &str) -> Option<usize> {
     Some(match name {
         "std/map::empty" | "std/map::keys" | "std/map::values" | "std/map::entries"
         | "std/map::size" | "std/map::isEmpty" | "std/set::empty" | "std/set::singleton"
-        | "std/set::toArray" | "std/set::size" | "std/set::isEmpty" => 1,
+        | "std/set::toArray" | "std/set::toList" | "std/set::size" | "std/set::isEmpty" => 1,
         "std/map::singleton"
         | "std/map::get"
         | "std/map::containsKey"
         | "std/map::remove"
         | "std/set::contains"
         | "std/set::insert"
-        | "std/set::remove" => 2,
+        | "std/set::remove"
+        | "std/set::filter"
+        | "std/set::union"
+        | "std/set::intersection"
+        | "std/set::difference"
+        | "std/set::isSubsetOf" => 2,
         "std/map::insert" => 3,
         _ => return None,
     })
@@ -144,6 +149,16 @@ impl Backend<'_> {
                 (vec![key.clone(), map.clone()], map.clone(), true)
             }
             "std/set::toArray" => (vec![map.clone()], named("Array", vec![key.clone()]), false),
+            "std/set::toList" => (vec![map.clone()], named("List", vec![key.clone()]), false),
+            "std/set::filter" => (
+                vec![function(&[key.clone()], named("Bool", vec![])), map.clone()],
+                map.clone(),
+                false,
+            ),
+            "std/set::union" | "std/set::intersection" | "std/set::difference" => {
+                (vec![map.clone(), map.clone()], map.clone(), true)
+            }
+            "std/set::isSubsetOf" => (vec![map.clone(), map.clone()], named("Bool", vec![]), true),
             "std/set::size" => (vec![map.clone()], named("Int", vec![]), false),
             "std/set::isEmpty" => (vec![map.clone()], named("Bool", vec![]), false),
             "std/map::insert" => (

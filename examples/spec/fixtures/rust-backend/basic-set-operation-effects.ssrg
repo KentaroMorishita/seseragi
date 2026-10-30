@@ -1,0 +1,57 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as sets from "std/set"
+import * as lists from "std/list"
+import { Ref } from "std/ref"
+
+type Key = | Key { identity: Int, state: Ref<sets.Set<Key>> }
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool = match left {
+    Key a -> match right { Key b -> a.identity == b.identity }
+  }
+}
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+fn selected key: Key -> Bool = match key { Key detail -> detail.identity == 2 }
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  let empty: sets.Set<Key> = sets.empty ()
+  cell <- refs.make empty
+  let first = Key ({ identity: 1, state: cell })
+  let second = Key ({ identity: 2, state: cell })
+  let original = sets.singleton first |> sets.insert second
+  let right = sets.singleton second
+  refs.set original cell
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    current <- refs.get cell
+    let filtered = sets.filter selected current
+    let union = sets.union right filtered
+    let intersection = sets.intersection right current
+    let difference = sets.difference right current
+    let subset = sets.isSubsetOf current union
+    let saved = match lists.last (sets.toList intersection) {
+      Nothing -> cell
+      Just (Key detail) -> detail.state
+    }
+    snapshot <- refs.get saved
+    say (show (sets.size filtered) + "|" + show (sets.size difference) + "|" + show subset + "|" + show (sets.size snapshot))
+    effects.succeed (sets.size union)
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    first <- cold
+    second <- cold
+    say (show (first + second))
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

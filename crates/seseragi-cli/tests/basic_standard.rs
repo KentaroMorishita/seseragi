@@ -379,6 +379,60 @@ fn basic_concat_keeps_order_empty_inputs_generic_saved_functions_and_original_st
 }
 
 #[test]
+fn basic_set_operations_keep_order_representatives_snapshots_and_generic_saved_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_operations_path_package_keeps_opaque_keys_and_imported_selected_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-set-operations"),
+        &[Case::success(b"40|2|3|2|True|3\n")],
+    );
+}
+
+#[test]
+fn basic_set_operations_keep_cold_replay_and_release_ref_cycles_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-operation-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-operation-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_operations_predicate_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-set-operation-effects.ssrg"
+    );
+    assert_eq!(original.matches("detail.identity == 2").count(), 1);
+    let path = scratch.0.join("set-predicate-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace("detail.identity == 2", "detail.identity / 0 == 2"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "predicate-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
 fn inferred_nested_empty_collection_keeps_original_strict_ts_bun_node_and_native() {
     compare(
         &root().join(

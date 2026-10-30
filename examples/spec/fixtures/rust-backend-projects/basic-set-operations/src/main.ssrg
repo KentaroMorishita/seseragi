@@ -1,0 +1,21 @@
+import * as cells from "cells"
+import * as sets from "std/set"
+import * as lists from "std/list"
+import * as text from "std/text"
+
+fn read value: Maybe<cells.Item> -> Int = match value { Nothing -> -1; Just item -> cells.read item }
+pub effect fn main = {
+  let left = sets.singleton (cells.item 40) |> sets.insert (cells.item 2)
+  let right = sets.singleton (cells.item 40) |> sets.insert (cells.item 3)
+  let combine: sets.Set<cells.Item> -> sets.Set<cells.Item> = cells.combine right
+  let union = combine left
+  let list = cells.items union
+  let difference = cells.subtract right left
+  let common = cells.common right left
+  let selected = cells.select (\item: cells.Item -> cells.read item != 40) union
+  println (text.join "|" [
+    show (read (lists.get 0 list)), show (read (lists.get 1 list)), show (read (lists.last list)),
+    show (read (lists.last (cells.items difference))), show (cells.within union common),
+    show (read (lists.last (cells.items selected)))
+  ])
+}

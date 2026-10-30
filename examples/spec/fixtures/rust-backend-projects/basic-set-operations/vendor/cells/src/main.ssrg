@@ -1,0 +1,13 @@
+import * as sets from "std/set"
+
+pub opaque newtype Item = Int
+instance Eq<Item> { fn eq left: Item -> right: Item -> Bool = match left { Item a -> match right { Item b -> a == b } } }
+instance Hash<Item> { fn hash _value: Item -> Int = 0 }
+pub fn item value: Int -> Item = Item value
+pub fn read value: Item -> Int = match value { Item number -> number }
+pub fn combine<A> right: sets.Set<A> -> sets.Set<A> -> sets.Set<A> where Eq<A>, Hash<A> = sets.union right
+pub fn common<A> right: sets.Set<A> -> sets.Set<A> -> sets.Set<A> where Eq<A>, Hash<A> = sets.intersection right
+pub fn subtract<A> right: sets.Set<A> -> sets.Set<A> -> sets.Set<A> where Eq<A>, Hash<A> = sets.difference right
+pub fn within<A> right: sets.Set<A> -> sets.Set<A> -> Bool where Eq<A>, Hash<A> = sets.isSubsetOf right
+pub fn select<A> predicate: (A -> Bool) -> sets.Set<A> -> sets.Set<A> = sets.filter predicate
+pub fn items<A> values: sets.Set<A> -> List<A> = sets.toList values

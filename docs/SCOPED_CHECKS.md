@@ -6,6 +6,16 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Setのfilter/union/intersection/difference/isSubsetOf/toListはbackendの
+`--test basic_set_operations --test basic_collections`、runtimeの`set_tests`、CLIの
+`--test basic_standard basic_set_operations_`で確認します。選択済みEq/Hash、挿入順と元key代表、
+snapshot、predicate順とsubsetのshort-circuit、filter系のcached hashとseedを保持します。
+collision bucketを一度ずつ構築し、除外要素と元containerを隠れて保持しません。
+通常2 module packageのopaque key/imported辞書と保存generic partial、元raw TS両profile strictと
+fresh Bun/Node/native、cold/Failure/predicate内Defect/finalizer/Ref cycle/root0を比較します。
+Hash/Eq内Defectと循環辞書のunwindはruntimeで各binary演算を確認し、owner/kind/要素/結果/
+辞書/段階と未使用保存関数のprogram WASMを拒否します。SDK/全体gateは最終batchです。
+
 native text.startsWith/endsWithはbackendの`--test basic_standard`、runtimeの`text_tests`、
 CLIの`--test basic_standard basic_text_boundaries_`で確認します。prefix/suffix先・本文後の
 signature、保存/部分適用・generic caller、空文字・Unicode・結合文字・NULと非正規化を保ちます。

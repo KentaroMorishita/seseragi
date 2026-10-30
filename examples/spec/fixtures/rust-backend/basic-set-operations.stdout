@@ -1,0 +1,1 @@
+`[left-first, left-second, right-third]|`[left-first]|`[left-second]|`[left-second]|`[left-first, left-second, right-third]|True|False|True|True|`[]|`[right-same, right-third]|`[]|`[left-first, left-second]|`[]|`[left-first, left-second]|`[2, 1, 3]|`[1]|`[2]|`[🙂]|`[()]|`[left-first, left-second]|`[right-same, right-third]

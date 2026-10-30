@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/set-operations@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/set-operation-cells@0.0.0#path:vendor/cells"
+name = "fixture/set-operation-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:0947e96cd53a891c5e2bbac3060f86483cc6fe7ea10b40b5a85fe232f0f307b2"
+content_digest = "sha256:e4888ab38b5f7d0733623b5f20de66737169d18e58ab48e5bda84f83c73d481e"
+dependencies = []
+
+[[packages]]
+id = "fixture/set-operations@0.0.0#workspace:."
+name = "fixture/set-operations"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6f2defbd912a3ac80a53cec8fe63369cb44efb2074c9d602557b222622881b89"
+content_digest = "sha256:1b2512c8b4298e414b390496fb2153f0a72f2aab5b5a4ae7742fd6cb09f7b503"
+dependencies = [
+  { import = "cells", package = "fixture/set-operation-cells@0.0.0#path:vendor/cells" },
+]
