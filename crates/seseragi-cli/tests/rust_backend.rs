@@ -1457,6 +1457,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         ("float-math-sqrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.sqrt 4.0\n", "math"),
         ("float-math-cbrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.cbrt 4.0\n", "math"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n", "hash"),
+        ("hash-big-int", "import * as big from \"std/big-int\"\npub fn answer -> Int = hash (big.fromInt 1)\n", "big-int"),
     ] {
         let path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&path, source).unwrap();
@@ -1469,7 +1470,6 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == capability));
     }
     for (name, source) in [
-        ("hash-big-int", "import * as big from \"std/big-int\"\npub fn answer -> Int = hash (big.fromInt 1)\n"),
         ("list-eq", "pub fn answer -> Bool = `[1] == `[1]\n"),
         ("list-sort", "import * as lists from \"std/list\"\npub fn answer -> List<Int> = lists.sort `[2, 1]\n"),
         ("list-comprehension", "pub fn answer -> List<Int> = `[n | n <- `[1, 2]]\n"),
