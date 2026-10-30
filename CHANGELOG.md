@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.61.122] - 2026-10-30
+
+### Added
+
+- Run native Array/List concat and text startsWith/endsWith through checked saved and generic source stages, preserving input order, Unicode boundaries, cold callbacks and scoped cleanup.
+- Run native Set filter/map/union/intersection/difference/isSubsetOf/toList and Map filter/mapValues/upsert/mergeWith/mapKeysWith. Keep insertion order, first key representatives, immutable snapshots and selected output-key dictionaries. Preserve callback and Hash/Eq order, source seeds, reference cycles and cleanup after failures or defects. New program WASM collection admission remains outside this slice.
+
+### Fixed
+
+- Infer the element type of leading empty nested Array/List arguments from their later siblings before checking a generic call.
+- Preserve checked later callback types when the first argument is also a callback, and insert dictionaries at the declared source boundary before applying a returned function. Validate imported native partials against declaration owners, remaining arguments, result types and dictionary identities.
+
+### Changed
+
+- Cancel superseded Rust backend and portable DTS pull-request workflows automatically while retaining separate manual integration and canonical artifact runs.
+
 ## [0.61.121] - 2026-10-30
 
 ### Added
