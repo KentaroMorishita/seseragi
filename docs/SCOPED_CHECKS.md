@@ -6,6 +6,14 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Set.mapはbackendの`--test basic_set_map`、runtimeの`set_tests`、CLIの
+`--test basic_standard basic_set_map_`で確認します。Map.mapKeysWithと実装を共有し、
+出力BのEq/Hash、mapper→Hash→必要なEq、最初の出力代表/順・seed・snapshotを保持します。
+入力keyと元containerの非保持、通常2module opaque packageと保存imported generic partial、
+元raw TS両profile strictとfresh Bun/Node/native、cold/typed Failure/mapperと戻りcallback内
+Defect/finalizer/Ref cycle/root0、Hash/Eq Defectと循環辞書のunwind、偽造contract22通りと
+未使用program WASM拒否を確認します。Map runtime/対象backendも回帰確認し、最終SDK/gateはbatchです。
+
 制約付きglobal partial/戻り関数とTSのcallback型はbackendの`--test returned_evidence_stages
 --test strict_partials`、driverの`--test strict_partials --test generic_call_instantiation
 --test hkt_erasure`、CLIの元`basic_map_upsert_`入力で確認します。元入力の両profile raw TS strictと

@@ -1,0 +1,33 @@
+import * as sets from "std/set"
+import * as text from "std/text"
+
+type Key = | Key { identity: Int, label: String }
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = match left { Key a -> match right { Key b -> a.identity == b.identity } } }
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key detail -> detail.label } }
+fn mapped source: String -> Key = match source {
+  "a" -> Key ({ identity: 1, label: "first-key" })
+  "b" -> Key ({ identity: 1, label: "second-key" })
+  _ -> Key ({ identity: 2, label: "third-key" })
+}
+fn transform<A,B> callback: (A -> B) -> sets.Set<A> -> sets.Set<B> where Eq<B>, Hash<B> = sets.map callback
+
+pub fn probe -> String = {
+  let source = sets.singleton "a" |> sets.insert "b" |> sets.insert "c"
+  let mapping: (String -> Key) -> sets.Set<String> -> sets.Set<Key> = sets.map
+  let saved = mapping mapped
+  let changed = saved source
+  let empty: sets.Set<String> = sets.empty ()
+  let numbers = transform (\key: String -> if key == "c" then 2 else 1) source
+  let strings = sets.singleton "雪" |> sets.insert "🙂"
+  text.join "|" [
+    show (sets.toArray changed), show (sets.toList changed),
+    show (sets.toArray (transform mapped source)), show (sets.toArray numbers),
+    show (sets.toArray (transform (\_: String -> 42 / 0) empty)),
+    show (sets.toArray (sets.map (\_: String -> ()) strings)),
+    show (sets.toArray (sets.map (\_: Unit -> "雪🙂") (sets.singleton ()))),
+    show (sets.toArray (sets.map (\n: Int -> n == 1) numbers)),
+    show (sets.toArray source), show (sets.toArray strings), show (sets.size changed)
+  ]
+}
+pub effect fn main = println (probe ())

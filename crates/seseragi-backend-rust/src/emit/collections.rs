@@ -15,6 +15,7 @@ fn arity(name: &str) -> Option<usize> {
         | "std/set::insert"
         | "std/set::remove"
         | "std/set::filter"
+        | "std/set::map"
         | "std/set::union"
         | "std/set::intersection"
         | "std/set::difference"
@@ -138,6 +139,18 @@ impl Backend<'_> {
                 );
             }
             &output_slots[0]
+        } else if name == "std/set::map" {
+            let CoreType::Named {
+                name: output_owner,
+                arguments: output_slots,
+            } = result
+            else {
+                return Err("Rust backend: Set map requires a canonical result Set".into());
+            };
+            if output_owner != "std/set::Set" || output_slots.len() != 1 {
+                return Err("Rust backend: Set map result owner/arity mismatch".into());
+            }
+            &output_slots[0]
         } else {
             key
         };
@@ -238,6 +251,14 @@ impl Backend<'_> {
                 vec![function(&[key.clone()], named("Bool", vec![])), map.clone()],
                 map.clone(),
                 false,
+            ),
+            "std/set::map" => (
+                vec![
+                    function(&[key.clone()], dictionary_key.clone()),
+                    map.clone(),
+                ],
+                result.clone(),
+                true,
             ),
             "std/set::union" | "std/set::intersection" | "std/set::difference" => {
                 (vec![map.clone(), map.clone()], map.clone(), true)

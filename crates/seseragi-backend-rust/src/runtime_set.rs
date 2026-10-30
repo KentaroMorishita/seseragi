@@ -35,6 +35,15 @@ fn native_set_operation(name: &str, dictionaries: Vec<V>, mut arguments: Vec<V>)
         ));
     }
     let values = native_set_into_map(arguments.pop().expect("Rust ABI: Set source arity"));
+    if name == "std/set::map" {
+        assert_eq!(arguments.len(), 1, "Rust ABI: Set map arity");
+        let resolve = V::fun(vec![], |_, _| V::fun(vec![], |_, _| V::Unit));
+        return native_set_from_map(native_map_operation(
+            "std/map::mapKeysWith",
+            dictionaries,
+            vec![resolve, arguments.pop().unwrap(), values],
+        ));
+    }
     if name == "std/set::filter" {
         assert!(dictionaries.is_empty());
         assert_eq!(arguments.len(), 1, "Rust ABI: Set filter arity");
@@ -169,6 +178,144 @@ mod set_tests {
             );
         }
         result
+    }
+
+    #[test]
+    fn map_keeps_mapper_hash_eq_order_seed_snapshots_and_empty_callback_boundary() {
+        clear_dictionaries();
+        enable_cycle_collection();
+        let d = dictionaries();
+        let source = ints(&[1, 3, 2], &d);
+        events();
+        let mapper = V::fun(vec![], |_, key| {
+            let V::Int(key) = key else { panic!() };
+            EVENTS.with(|events| events.borrow_mut().push(format!("m{key}")));
+            V::Int(key % 2)
+        });
+        let mapped = native_set_operation(
+            "std/set::map",
+            d.clone(),
+            vec![mapper.clone(), source.clone()],
+        );
+        assert_eq!(events(), ["m1", "h1", "m3", "h1", "e1:1", "m2", "h0"]);
+        let (V::Set(original), V::Set(result)) = (&source, &mapped) else {
+            panic!()
+        };
+        assert_eq!(original.get().seed, result.get().seed);
+        assert_eq!(
+            native_set_operation("std/set::toArray", vec![], vec![mapped.clone()]).render(),
+            "[1, 0]"
+        );
+        assert_eq!(
+            native_set_operation("std/set::toArray", vec![], vec![source.clone()]).render(),
+            "[1, 3, 2]"
+        );
+        let empty = native_set_operation("std/set::empty", vec![], vec![V::Unit]);
+        let empty = native_set_operation("std/set::map", d.clone(), vec![mapper.clone(), empty]);
+        assert_eq!(
+            native_set_operation("std/set::size", vec![], vec![empty.clone()]).render(),
+            "0"
+        );
+        assert!(events().is_empty());
+        drop((source, mapped, empty, mapper, d));
+        clear_dictionaries();
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn map_result_keeps_no_input_key_or_source_container() {
+        clear_dictionaries();
+        enable_cycle_collection();
+        let input = vec![
+            native_operator_dictionary("std/string::Eq"),
+            native_hash_dictionary("std/string::Hash"),
+        ];
+        let output = dictionaries();
+        let key = V::text("discarded-input-雪🙂");
+        let V::Text(node) = &key else { panic!() };
+        let weak = Rc::downgrade(node.0.as_ref().unwrap());
+        let source = native_set_operation("std/set::singleton", input.clone(), vec![key.clone()]);
+        let source_id = source.node_id().unwrap();
+        let mapper = V::fun(vec![], |_, _| V::Int(42));
+        let mapped =
+            native_set_operation("std/set::map", output.clone(), vec![mapper, source.clone()]);
+        drop((key, source, input));
+        collect_cycles().unwrap();
+        assert!(weak.upgrade().is_none());
+        assert!(!NODES.with(|nodes| nodes.borrow().contains_key(&source_id)));
+        assert_eq!(
+            native_set_operation("std/set::toArray", vec![], vec![mapped.clone()]).render(),
+            "[42]"
+        );
+        drop((mapped, output));
+        clear_dictionaries();
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn map_unwinds_mapper_hash_and_eq_defects_with_partial_results_and_ref_cycles() {
+        enable_cycle_collection();
+        for phase in 0..3 {
+            let normal = dictionaries();
+            let source = ints(&[1, 3], &normal);
+            let cell = V::reference(V::Unit);
+            let mapper = V::fun(vec![cell.clone(), V::Int(phase)], |captures, key| {
+                assert!(
+                    captures[1].render() != "0" || !matches!(key, V::Int(3)),
+                    "mapper Defect"
+                );
+                key
+            });
+            let eq = V::dict(vec![(
+                "eq",
+                V::fun(vec![cell.clone(), V::Int(phase)], |captures, left| {
+                    V::fun(
+                        vec![captures[0].clone(), captures[1].clone(), left],
+                        |captures, right| {
+                            assert!(
+                                captures[1].render() != "2" || !matches!(right, V::Int(3)),
+                                "Eq Defect"
+                            );
+                            V::Bool(captures[2].render() == right.render())
+                        },
+                    )
+                }),
+            )]);
+            let hash = V::dict(vec![(
+                "hash",
+                V::fun(vec![cell.clone(), V::Int(phase)], |captures, key| {
+                    assert!(
+                        captures[1].render() != "1" || !matches!(key, V::Int(3)),
+                        "Hash Defect"
+                    );
+                    V::Int(0)
+                }),
+            )]);
+            let bad = vec![eq, hash];
+            cell.write_reference(V::Tuple(Shared::new(vec![
+                mapper.clone(),
+                bad[0].clone(),
+                bad[1].clone(),
+            ])));
+            let failed = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                native_set_operation(
+                    "std/set::map",
+                    bad.clone(),
+                    vec![mapper.clone(), source.clone()],
+                )
+            }));
+            assert!(failed.is_err(), "phase{phase}");
+            assert_eq!(
+                native_set_operation("std/set::toArray", vec![], vec![source.clone()]).render(),
+                "[1, 3]"
+            );
+            drop((normal, source, mapper, cell, bad));
+            clear_dictionaries();
+            collect_cycles().unwrap();
+            assert_eq!(LIVE.with(Cell::get), 0, "phase{phase}");
+        }
     }
 
     #[test]

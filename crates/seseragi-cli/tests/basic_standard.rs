@@ -409,6 +409,50 @@ fn basic_map_upsert_keeps_representatives_order_snapshots_and_noncommutative_res
 }
 
 #[test]
+fn basic_set_map_keeps_first_output_representatives_order_snapshots_and_output_key_types() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-map.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-map.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_map_path_package_keeps_opaque_keys_and_saved_imported_generic_stages() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-set-map"),
+        &[Case::success(b"1|2|1|2|True|True\n")],
+    );
+}
+
+#[test]
+fn basic_set_map_keeps_returned_callbacks_cold_and_releases_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-map-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-map-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_map_mapper_and_returned_callback_defects_release_partial_results_and_run_finalizers() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-set-map-effects.ssrg");
+    for (name, old, replacement) in [
+        ("mapper", "sets.map (item callback) source", "sets.map (\\value: Int -> if value == 3 then item callback (42 / 0) else item callback value) source"),
+        ("returned", "effects.succeed 42", "effects.succeed (42 / 0)"),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("set-map-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(&path, &[Case { name, stdout: b"created\nacquired\ncold\nreleased\n", exit: 70, defect: true, native_defect: "Int division by zero", ..Case::success(b"") }]);
+    }
+}
+
+#[test]
 fn basic_map_upsert_path_package_keeps_opaque_input_output_keys_and_saved_generic_stages() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-map-upsert"),
