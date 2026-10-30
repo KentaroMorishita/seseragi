@@ -1,21 +1,19 @@
 # Change Log
 
-## [0.61.120] - 2026-10-30
-
-### Fixed
-
-- Preserve inferred type arguments before the first curried stage of imported generic functions whose parameters use callable aliases over Prelude sums. Keep the registered canonical sum owner and original implicit source, so the generated TypeScript passes strict checking across an opaque module boundary without explicit replacement type arguments.
-
-## [0.61.119] - 2026-10-30
+## [0.61.121] - 2026-10-30
 
 ### Added
 
-- Compose native JSON field, optionalField, index, array, record, oneOf, map and flatMap decoders with typed root-to-leaf errors, strict saved/generic source stages, ordered and short-circuit callbacks, and traced captures. Bound native dynamic decoder nesting to 128 active frames and close scopes after its host-limit Defect.
-- Generate the twelve native Bool, String, Int, Decimal, Unit and Json codec dictionaries, their saved/generic methods, and encodeString/decodeString. Preserve exact safe Int conversion without expanding arbitrary exponents, root paths, standard messages, distinct syntax/domain failures, selected user dictionaries, ordinary packages and scoped cleanup after cold replay, typed failure or encoder defects.
+- Run typed JSON natively with primitive codec dictionaries, saved generic methods, encodeString/decodeString and the field, optionalField, index, array, record, oneOf, map and flatMap decoder combinators. Preserve exact Decimal and safe Int semantics, distinct syntax/domain errors and root-to-leaf paths.
+- Compose native Array, List, Maybe, Either, Tuple, Map, Set and closed-record JSON codecs, including optional field absence, selected Eq/Hash dictionaries, duplicate-key representatives and insertion order.
+- Derive native JSON codecs for named structs, transparent newtypes and tagged ADTs across generic, recursive, opaque and imported package boundaries. Construct child dictionaries lazily, preserve cold replay and scope finalizers, trace captured reference cycles and bound recursive codec/decoder frames. New program WASM admission remains outside this slice.
 
 ### Fixed
 
-- Expose DecodeError as the public struct specified by the JSON library so handwritten decoders can construct path-aware domain errors. Keep canonical generic JSON dictionary types and proven source type arguments in generated TypeScript, including saved methods and package boundaries, under strict checking.
+- Expose DecodeError as its specified public struct and retain typed generic JSON dictionaries and checked source type arguments in generated TypeScript. Preserve inferred type arguments before the first curried stage of imported callable aliases over Prelude sums.
+- Restore JSON fields such as __proto__ as ordinary own data properties while preserving object prototypes, optional absence and strict error ordering.
+- Keep nested record types and following fields inside struct declarations, including their checked construction types and UTF-8 diagnostic ranges.
+- Keep release-profile newtype construction from record, array and tuple literals strict-type-correct through the existing private-representation bridge, after checking the source payload and nominal boundary.
 
 ## [0.61.118] - 2026-10-30
 
