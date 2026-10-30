@@ -1,5 +1,12 @@
 # Scoped checks
 
+
+実ファイル/実FIFOの非同期I/Oだけをhost間で切り分ける場合は、
+`rust-backend.yml`のmanual input `async_io_only=true`を使います。
+Linux/macOS/Windowsで元の`cargo test --locked -p seseragi-cli --test async_filesystem`
+を実行し、既存の15秒deadlineとhandle close/worker join/finalizer/出力保護を保ちます。
+`integration=true`はこのinputより優先し、従来どおり全体gateを実行します。
+
 Seseragiの検証は、変更範囲に対応するscoped laneを先に実行します。`bun run check`
 は、各laneを日常作業で無条件に繰り返すためのコマンドではなく、repository-wideな
 最終統合gateです。
