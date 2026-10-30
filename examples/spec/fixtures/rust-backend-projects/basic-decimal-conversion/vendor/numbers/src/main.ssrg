@@ -1,0 +1,14 @@
+import * as decimal from "std/decimal"
+import * as rounds from "std/number"
+
+pub opaque newtype Value = decimal.Decimal
+pub alias Failure = decimal.DecimalConversionError
+pub fn convert number: Float -> Either<Failure,Value> = match decimal.context 17 rounds.HalfEven {
+  Left _ -> Left decimal.FloatNotFinite
+  Right context -> match decimal.fromFloat context number { Left error -> Left error; Right value -> Right (Value value) }
+}
+pub fn read value: Value -> Either<Failure,Float> = match value { Value number -> decimal.toFloat number }
+pub fn integer value: Value -> Either<Failure,Int> = match value { Value number -> decimal.toIntExact number }
+pub fn render value: Value -> String = match value { Value number -> "cell:" + show number }
+pub fn captured value: Value -> (Unit -> String) = \_: Unit -> render value
+pub fn apply<A,B> operation: (A -> B) -> value: A -> B = operation value

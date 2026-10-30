@@ -1,0 +1,26 @@
+import * as values from "numbers"
+import * as decimal from "std/decimal"
+import * as floats from "std/float"
+import * as ints from "std/int"
+
+fn failure error: values.Failure -> String = match error {
+  decimal.DecimalNotIntegral -> "not-integral"
+  decimal.DecimalOutsideIntRange -> "outside-int"
+  decimal.DecimalOutsideFloatRange -> "outside-float"
+  decimal.FloatNotFinite -> "not-finite"
+}
+fn getter -> (values.Value -> Either<values.Failure,Float>) = values.read
+fn report number: Float -> String = match values.convert number {
+  Left error -> failure error
+  Right value -> {
+    let captured = values.captured value
+    let read = getter ()
+    values.apply captured () + "|" + (match read value { Right result -> floats.format result; Left error -> failure error }) + "|" +
+      (match values.integer value { Right result -> ints.format result; Left error -> failure error })
+  }
+}
+pub effect fn main = do {
+  println (report 0.1)
+  println (report 2.0)
+  println (report (1.0 / 0.0))
+}

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/decimal-conversion@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/decimal-conversion-numbers@0.0.0#path:vendor/numbers"
+name = "fixture/decimal-conversion-numbers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/numbers"
+manifest_digest = "sha256:a8643af6bf139b6903ed02886526332e02d6a188a3fadfeaf3a082865ceafe11"
+content_digest = "sha256:f6abd9c2cc9e42f0024f8c9648dab4f9ed0543cb88f5f8e6cab1555f7a8acc51"
+dependencies = []
+
+[[packages]]
+id = "fixture/decimal-conversion@0.0.0#workspace:."
+name = "fixture/decimal-conversion"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:eec65408791946d1c568518839b8c4424b35da69b4d5f6ae72132ef416b85fa4"
+content_digest = "sha256:636a4890ccf5901bb613293c13e72a45e761191aa06397f96f858bbb1304d431"
+dependencies = [
+  { import = "numbers", package = "fixture/decimal-conversion-numbers@0.0.0#path:vendor/numbers" },
+]

@@ -1382,6 +1382,57 @@ fn basic_decimal_context_path_package_keeps_opaque_values_and_canonical_mode_err
 }
 
 #[test]
+fn basic_decimal_conversion_preserves_integer_float_bounds_and_exact_rounding() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-conversion.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-conversion.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_conversion_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-conversion-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-conversion-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_conversion_evaluates_the_final_float_argument_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-decimal-conversion-effects.ssrg"
+    )
+    .replace(
+        "decimal.fromFloat context (1.0 / 0.0)",
+        "decimal.fromFloat context (if 42 / 0 == 0 then 0.1 else 0.2)",
+    );
+    let path = scratch.0.join("decimal-conversion-defect.ssrg");
+    fs::write(&path, source).unwrap();
+    compare(&path, &[Case {
+        stdout: b"created\nacquired\ncold\n0.10000000000000001\ncold\n0.10000000000000001\nreleased\n",
+        exit: 70,
+        defect: true,
+        native_defect: "Int division by zero",
+        ..Case::success(b"")
+    }]);
+}
+
+#[test]
+fn basic_decimal_conversion_path_package_preserves_opaque_values_and_error_aliases() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-conversion"),
+        &[Case::success(
+            b"cell:0.10000000000000001|0.1|not-integral\ncell:2|2.0|2\nnot-finite\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_big_keys_path_package_keeps_opaque_values_and_imported_generic_methods() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-big-int-keys"),

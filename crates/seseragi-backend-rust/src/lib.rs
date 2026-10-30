@@ -138,6 +138,7 @@ mod runtime {
     include!("runtime_big_int_traits.rs");
     include!("runtime_decimal.rs");
     include!("runtime_decimal_context.rs");
+    include!("runtime_decimal_conversion.rs");
     include!("runtime_hashing.rs");
     include!("runtime_map.rs");
     include!("runtime_set.rs");

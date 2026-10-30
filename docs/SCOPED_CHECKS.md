@@ -6,6 +6,15 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native DecimalのtoIntExact/fromFloat/toFloatとconversion error constructorはbackendの
+`--test decimal_conversion`、runtimeの`decimal_conversion_tests`、CLIの
+`basic_decimal_conversion_`で確認します。Float bitからexactな係数/scaleを作ってから
+6種の丸めを適用し、巨大指数の整数化はrange確認後に限定して展開します。exactなFloat最大値の
+直上拒否、signed underflow、256有限Floatの17桁往復と独立Python Decimal期待値も確認します。
+保存/partial/generic・opaque2module/error alias、元raw TS両profile strict・fresh Bun/Node/native、
+cold/Failure/Defect/finalizer/root0と元入力を保持し、新program WASMは受け入れません。
+最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
+
 native DecimalContextのcontext/precision/roundingとprecision error constructorは
 backendの`--test decimal_context`、runtimeの`decimal_context_tests`、CLIの
 `basic_decimal_context_`で確認します。既存のstd/number RoundingMode 6種を共有し、

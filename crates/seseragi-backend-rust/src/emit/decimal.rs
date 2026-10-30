@@ -16,6 +16,45 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
             ),
         ),
         "std/decimal::fromInt" => (vec![named("std/prelude::Int", vec![])], decimal),
+        "std/decimal::toIntExact" => (
+            vec![decimal],
+            named(
+                "std/prelude::Either",
+                vec![
+                    named("std/decimal::DecimalConversionError", vec![]),
+                    named("std/prelude::Int", vec![]),
+                ],
+            ),
+        ),
+        "std/decimal::toFloat" => (
+            vec![decimal],
+            named(
+                "std/prelude::Either",
+                vec![
+                    named("std/decimal::DecimalConversionError", vec![]),
+                    named("std/prelude::Float", vec![]),
+                ],
+            ),
+        ),
+        "std/decimal::fromFloat" => (
+            vec![
+                named("std/decimal::DecimalContext", vec![]),
+                named("std/prelude::Float", vec![]),
+            ],
+            named(
+                "std/prelude::Either",
+                vec![
+                    named("std/decimal::DecimalConversionError", vec![]),
+                    decimal,
+                ],
+            ),
+        ),
+        "std/decimal::DecimalNotIntegral"
+        | "std/decimal::DecimalOutsideIntRange"
+        | "std/decimal::DecimalOutsideFloatRange"
+        | "std/decimal::FloatNotFinite" => {
+            (vec![], named("std/decimal::DecimalConversionError", vec![]))
+        }
         "std/decimal::context" => (
             vec![
                 named("std/prelude::Int", vec![]),

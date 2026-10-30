@@ -23,6 +23,23 @@ fn native_decimal_rounding_value(mode: NativeRoundingMode) -> V {
 
 fn native_decimal_standard_operation(name: &str, arguments: Vec<V>) -> V {
     match (name, arguments.as_slice()) {
+        ("std/decimal::toIntExact", [V::Decimal(value)]) => {
+            native_decimal_to_int_exact(value.get())
+        }
+        ("std/decimal::toFloat", [V::Decimal(value)]) => native_decimal_to_float(value.get()),
+        ("std/decimal::fromFloat", [V::DecimalContext(context), V::Float(value)]) => {
+            native_decimal_from_float(context.get(), *value)
+        }
+        ("std/decimal::DecimalNotIntegral", []) => {
+            V::adt("std/decimal::DecimalNotIntegral", V::Unit)
+        }
+        ("std/decimal::DecimalOutsideIntRange", []) => {
+            V::adt("std/decimal::DecimalOutsideIntRange", V::Unit)
+        }
+        ("std/decimal::DecimalOutsideFloatRange", []) => {
+            V::adt("std/decimal::DecimalOutsideFloatRange", V::Unit)
+        }
+        ("std/decimal::FloatNotFinite", []) => V::adt("std/decimal::FloatNotFinite", V::Unit),
         ("std/decimal::parse" | "std/decimal::fromInt", [value]) => {
             native_decimal_operation(name, value.clone())
         }
