@@ -303,6 +303,12 @@ pub(super) fn lower_core_expr_to_typescript(
                         .cloned()
                         .unwrap_or_else(|| local_name(&name)),
                 });
+            if matches!(value, TypeScriptExpr::CurriedRuntimeReference { .. }) {
+                // A returned runtime function may have no surrounding TS
+                // annotation. Its checked source type also types the generated
+                // curried parameters without changing their runtime stages.
+                return checked_operator_reference(value, &type_ref, imported_types);
+            }
             if let Some(signature) = callable_signature {
                 let checked = type_ref_from_core_type(&type_ref, imported_types);
                 if super::types::instantiated_hkt_callee(&signature, &[], &checked).is_some() {

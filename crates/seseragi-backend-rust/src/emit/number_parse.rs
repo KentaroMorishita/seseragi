@@ -80,6 +80,27 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
                 arguments: vec![error, named("std/prelude::Int")],
             },
         ),
+        "std/int::parseRadix" => (
+            vec![named("std/prelude::Int"), named("std/prelude::String")],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![error, named("std/prelude::Int")],
+            },
+        ),
+        "std/int::minValue" | "std/int::maxValue" => {
+            (vec![named("std/prelude::Unit")], named("std/prelude::Int"))
+        }
+        "std/int::format" => (
+            vec![named("std/prelude::Int")],
+            named("std/prelude::String"),
+        ),
+        "std/int::formatRadix" => (
+            vec![named("std/prelude::Int"), named("std/prelude::Int")],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![error, named("std/prelude::String")],
+            },
+        ),
         "std/int::EmptyInt" | "std/int::IntOutsideRange" => (vec![], error),
         "std/int::InvalidIntRadix" => (vec![named("std/prelude::Int")], error),
         "std/int::InvalidIntDigit" => (
@@ -103,6 +124,11 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
 // Called only after the exact canonical signature above was admitted.
 fn parse_capability(name: &str) -> &'static str {
     match name {
+        "std/int::minValue"
+        | "std/int::maxValue"
+        | "std/int::parseRadix"
+        | "std/int::format"
+        | "std/int::formatRadix" => "int-text",
         "std/float::toInt"
         | "std/float::roundIntegral"
         | "std/float::FloatNotFinite"
@@ -278,6 +304,11 @@ impl Backend<'_> {
         if self.program_wasm_library && parse_capability(name) == "float-conversion" {
             return Err("Rust backend: Float conversion is not admitted in program WASM".into());
         }
+        if self.program_wasm_library && parse_capability(name) == "int-text" {
+            return Err(
+                "Rust backend: Int text operations are not admitted in program WASM".into(),
+            );
+        }
         if !evidence.is_empty() {
             return Err("Rust backend: number parse operation with unsupported evidence".into());
         }
@@ -313,6 +344,11 @@ impl Backend<'_> {
         }
         if self.program_wasm_library && parse_capability(callee) == "float-conversion" {
             return Err("Rust backend: Float conversion is not admitted in program WASM".into());
+        }
+        if self.program_wasm_library && parse_capability(callee) == "int-text" {
+            return Err(
+                "Rust backend: Int text operations are not admitted in program WASM".into(),
+            );
         }
         if arguments.len() > parameters.len()
             || !evidence.is_empty()

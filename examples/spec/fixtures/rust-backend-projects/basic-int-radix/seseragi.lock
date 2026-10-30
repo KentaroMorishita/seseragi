@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/int-radix@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/int-radix-numbers@0.0.0#path:vendor/numbers"
+name = "fixture/int-radix-numbers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/numbers"
+manifest_digest = "sha256:5a5b2db909106e962613fb5a845fc425fea0ff382bd4b18584faac729b2fe25d"
+content_digest = "sha256:7756921181df36ab421548e3538c661ea09db8f1655b9fcaf0a7fc3b6fe106ab"
+dependencies = []
+
+[[packages]]
+id = "fixture/int-radix@0.0.0#workspace:."
+name = "fixture/int-radix"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:f9a679060b5c8b07019c33ac1bff5a372e1d6d0016783015b5eeb7748dcac51f"
+content_digest = "sha256:eb2d044f850080b49e1c649a4b0353f13ab8b1b5efcfe57b018612ae94988ef3"
+dependencies = [
+  { import = "numbers", package = "fixture/int-radix-numbers@0.0.0#path:vendor/numbers" },
+]

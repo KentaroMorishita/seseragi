@@ -1,0 +1,14 @@
+import * as numbers from "numbers"
+import * as ints from "std/int"
+
+fn apply<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn label result: Either<ints.IntParseError, String> -> String = match result { Left error -> show error; Right value -> value }
+
+pub effect fn main = do {
+  let parse: String -> Either<ints.IntParseError, numbers.Value> = numbers.read 16
+  let format: numbers.Value -> Either<ints.IntParseError, String> = numbers.formatting 36
+  println (match apply parse "002a" { Left error -> show error; Right value -> label (apply format value) })
+  println (numbers.decimal (numbers.minimum ()))
+  println (label (format (numbers.maximum ())))
+  println (match numbers.read 1 "" { Left error -> show error; Right value -> numbers.decimal value })
+}

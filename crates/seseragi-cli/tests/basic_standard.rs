@@ -1009,6 +1009,60 @@ fn basic_decimal_keeps_exact_digits_exponents_errors_and_saved_operations() {
 }
 
 #[test]
+fn basic_int_radix_keeps_boundaries_errors_and_saved_partial_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-radix.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-radix.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_radix_keeps_cold_partial_captures_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-radix-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-radix-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_radix_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-int-radix-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("int-radix-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42\ncold\n42\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_int_radix_path_package_keeps_opaque_values_and_imported_partial_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-int-radix"),
+        &[Case::success(
+            b"16\n-9007199254740991\n2gosa7pa2gv\nInvalidIntRadix 1\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_decimal_keeps_captured_values_cold_and_releases_after_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg"),

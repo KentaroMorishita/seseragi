@@ -6,6 +6,17 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Intの基数変換・format・上下限はbackendの`--test int_text --test int_parse`、
+runtimeの`int_parse_tests`、CLIの`--test basic_standard basic_int_radix_`で確認します。
+radix 2〜36、safe Int範囲、符号・leading zero・大小文字、UTF-8 byte位置と最初の失敗を
+TSに揃え、既存十進parseのcanonical spellingを保ちます。保存/部分適用・generic関数・
+opaque 2module package、元raw TS両profile strict/skipLibCheck:false、fresh Bun/Node/native、
+cold/Failure/Defect/finalizer/root0、偽造owner/kind/型/辞書/段階の位置付き拒否を確認します。
+新program WASMは未使用の保存関数でも拒否し、最終SDK/gateはRelease batchへ集約します。
+標準curried関数を返す元Int入力のTS7006回帰は両profileの元raw TS strictでも確認し、
+driverの`--test strict_partials --test generic_call_instantiation --test hkt_erasure`で
+checkedな型とsource段階を保持します。共有lowering修復の正規WASMも最終batchで更新します。
+
 native Decimal Ordと比較演算はbackendの`--test decimal_ord --test decimal_keys
 --test basic_decimal --test method_references`、runtimeの`decimal_tests`、CLIの
 `basic_decimal_ord_`で確認します。符号/zero/任意精度の桁指数/仮想末尾zeroを比較し、
