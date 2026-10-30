@@ -2074,8 +2074,13 @@
               }
             },
             "initializer": {
-              "kind": "runtime-call",
+              "kind": "type-application-call",
               "callee": "_ssrg_array_empty",
+              "typeArguments": [
+                {
+                  "kind": "number"
+                }
+              ],
               "arguments": [
                 {
                   "kind": "undefined"

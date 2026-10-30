@@ -7,7 +7,7 @@ $ssrg$assertUnicodeVersion("17.0.0")
 export type Score =
   | { readonly tag: "Score"; readonly value: number };
 export const Score = (value: number): Score => ({ tag: "Score", value } as const);
-export const __ssrg$instance$Add$0 = { "add": (left: Score) => (right: number) => (($ssrg_match: Score): Score => $ssrg_match.tag === "Score" ? ((value: number): Score => Score(_ssrg_int_add(value, right)))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(left) } as const;
+export const __ssrg$instance$Add$0 = { "add": (left: Score) => (right: number) => (($ssrg_match: Score): Score => $ssrg_match.tag === "Score" ? ((value: number): Score => Score(_ssrg_int_add(value, right)))($ssrg_match.value) : ((): never => { throw new globalThis.Error("non-exhaustive Seseragi match"); })())(left) } as const;
 const addBonus = (bonus: number) => (score: Score) => __ssrg$instance$Add$0["add"](score)(bonus)
 const total = (values: ReadonlyArray<number>) => addBonus(0)(_ssrg_array_reduce(Score(0), ((__ssrg$instance$Add$0["add"]) as (argument: Score) => (argument: number) => Score), values))
 const render = (score: Score) => (($ssrg_match: Score): string => $ssrg_match.tag === "Score" && $ssrg_match.value === 42 ? "User Add: 42" : "unexpected score")(score)
