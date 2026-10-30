@@ -1,5 +1,15 @@
 # Scoped checks
 
+native collection.reduceUntilとNext/Doneはbackendの`--test reduce_until
+--test iterable_build`、runtimeの`collection_control_tests`、CLIの
+`basic_reduce_until_`で確認します。Done後のnext省略、空入力のcallback省略と
+同じinitial返却、curried callback各段階の一回評価、未使用tailを保持しない結果、
+選択した一般Iterableを保ちます。54件の偽造とunused program WASM3件を拒否し、
+function accumulator・保存/generic/partial・opaque2module/公開ReduceStep alias、
+元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
+3 source段階/iterate/next/両callback段階の7種Defect・finalizer/root0を検証します。
+最終SDKとrepository-wide gate・配布はcollection batchへ集約します。
+
 native Array/List/Set.fromIterableとMap.fromEntriesはbackendの
 `--test iterable_build --test iterator`、runtimeの`iterable_tests`、CLIの
 `basic_iterable_build_`で確認します。選択した一般Iterableの辞書を一度呼び、

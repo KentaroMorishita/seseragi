@@ -1,0 +1,13 @@
+import * as control from "std/collection"
+import * as arrays from "std/array"
+import * as iterator from "std/iterator"
+pub opaque newtype Values = Array<Int>
+pub opaque newtype Total = Int
+pub alias Decision<A> = control.ReduceStep<A>
+instance Iterable<Values,Int> { fn iterate input:Values -> iterator.Iterator<Int> = match input { Values values -> iterator.unfold (\index:Int -> match arrays.get index values { Nothing -> Nothing; Just value -> Just (value,index + 1) }) 0 } }
+pub fn values -> Values = Values [1,2,3]
+pub fn initial n:Int -> Total = Total n
+pub fn amount total:Total -> Int = match total { Total n -> n }
+pub fn step total:Total -> value:Int -> Decision<Total> = if value == 2 then control.Done (Total (amount total + value)) else control.Next (Total (amount total + value))
+pub fn maker<C,A,B> initial:B -> ((B -> A -> Decision<B>) -> C -> B) where Iterable<C,A> = control.reduceUntil initial
+pub fn wrap<A> -> (A -> Decision<A>) = control.Done

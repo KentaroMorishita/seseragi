@@ -26,7 +26,11 @@ fn named(name: &str, arguments: Vec<CoreType>) -> CoreType {
     }
 }
 impl Backend<'_> {
-    fn validate_iterable_evidence(&self, selected: &CoreCallEvidence, scope: &Scope) -> Result<()> {
+    pub(super) fn validate_iterable_evidence(
+        &self,
+        selected: &CoreCallEvidence,
+        scope: &Scope,
+    ) -> Result<()> {
         if selected.constraint.trait_identity.as_deref() != Some("std/prelude::Iterable")
             || !self.valid_constraint_label(&selected.constraint)
             || selected.constraint.arguments.len() != 2

@@ -481,7 +481,8 @@ impl Backend<'_> {
             | "std/prelude::Maybe"
             | "std/ref::Ref"
             | "std/set::Set"
-            | "std/prelude::Iterator" => Some(vec![0]),
+            | "std/prelude::Iterator"
+            | "std/collection::ReduceStep" => Some(vec![0]),
             "std/prelude::Either"
             | "std/map::Map"
             | "std/effect::Fiber"

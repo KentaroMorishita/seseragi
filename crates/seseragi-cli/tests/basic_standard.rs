@@ -314,6 +314,52 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_reduce_until_keeps_early_stop_empty_saved_generic_and_function_accumulators() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-reduce-until.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-reduce-until.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_reduce_until_keeps_cold_captured_callbacks_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-reduce-until-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-reduce-until-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_reduce_until_source_iterate_next_and_both_callback_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-reduce-until-effects.ssrg"
+    );
+    let needle = "control.reduceUntil 0 add [1,2,3]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "control.reduceUntil (42 / 0) add [1,2,3]",
+        "control.reduceUntil 0 (callback (42 / 0)) [1,2,3]",
+        "control.reduceUntil 0 add (if 42 / 0 == 0 then [1] else [2])",
+        "control.reduceUntil 0 add (Broken ())",
+        "control.reduceUntil 0 add (iterator.unfold (\\state:Int -> Just (42 / 0,state + 1)) 0)",
+        "control.reduceUntil 0 (\\total:Int -> \\value:Int -> control.Next (total + value / 0)) [1,2,3]",
+        "control.reduceUntil 0 brokenCallback [1,2,3]",
+    ] {
+        let scratch=Scratch::new();let path=scratch.0.join("reduce-until-defect.ssrg");fs::write(&path,original.replace(needle,expression)).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n141\ncold\n141\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_reduce_until_path_package_keeps_imported_opaque_source_accumulator_and_control_aliases() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-reduce-until"),
+        &[Case::success("3\n3\n13\ndone:雪\n".as_bytes())],
+    );
+}
+
+#[test]
 fn basic_iterable_build_keeps_custom_standard_saved_sources_order_duplicates_and_empty_inputs() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-iterable-build.ssrg"),

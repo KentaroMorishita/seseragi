@@ -1,0 +1,39 @@
+import * as control from "std/collection"
+import * as arrays from "std/array"
+import * as sets from "std/set"
+import * as maps from "std/map"
+import * as iterator from "std/iterator"
+
+newtype Bag = Array<Int>
+instance Iterable<Bag,Int> { fn iterate bag:Bag -> iterator.Iterator<Int> = match bag { Bag values -> iterator.unfold (\index:Int -> match arrays.get index values { Nothing -> Nothing; Just value -> Just (value,index + 1) }) 0 } }
+fn add total:Int -> value:Int -> control.ReduceStep<Int> = control.Next (total + value)
+fn bounded total:Int -> value:Int -> control.ReduceStep<Int> = if value == 3 then control.Done (total + value) else control.Next (total + value)
+fn infinite state:Int -> Maybe<(Int,Int)> = Just (state,state + 1)
+fn maker<C,A,B> initial:B -> ((B -> A -> control.ReduceStep<B>) -> C -> B) where Iterable<C,A> = control.reduceUntil initial
+fn nextOf<A> -> (A -> control.ReduceStep<A>) = control.Next
+fn doneOf<A> -> (A -> control.ReduceStep<A>) = control.Done
+
+pub effect fn main = do {
+  let input = [1,2,3]
+  let first:(Int -> Int -> control.ReduceStep<Int>) -> Array<Int> -> Int = control.reduceUntil 0
+  let saved = first add
+  let linked:(Int -> Int -> control.ReduceStep<Int>) -> List<Int> -> Int = maker 10
+  let next:Int -> control.ReduceStep<Int> = nextOf ()
+  let done:String -> control.ReduceStep<String> = doneOf ()
+  let empty:Array<Int> = []
+  println (show (saved input))
+  println (show (linked add `[1,2,3]))
+  println (show (control.reduceUntil 0 add (Bag input)))
+  println (show (control.reduceUntil 0 bounded (iterator.unfold infinite 1)))
+  println (show (control.reduceUntil 42 (\total:Int -> \value:Int -> control.Next (total + value / 0)) empty))
+  println (show (control.reduceUntil 7 (\total:Int -> \value:Int -> control.Next (total + value / 0)) (Bag [])))
+  println (show (control.reduceUntil 0 (\_total:Int -> \value:Int -> control.Done value) (iterator.unfold (\state:Int -> if state > 1 then Just (42 / 0,state + 1) else Just (state,state + 1)) 1)))
+  println (match next 7 { control.Next value -> "Next:" + show value; control.Done value -> "Done:" + show value })
+  println (match done "雪" { control.Next value -> "Next:" + value; control.Done value -> "Done:" + value })
+  println (control.reduceUntil "start" (\total:String -> \value:Int -> control.Next (total + ":" + show value)) input)
+  println (control.reduceUntil "" (\total:String -> \value:Int -> control.Next (total + show value)) (sets.fromIterable [2,1,2]))
+  println (control.reduceUntil "start" (\total:String -> \entry:(Int,String) -> match entry { (key,value) -> control.Next (total + ":" + show key + value) }) (maps.fromEntries [(1,"a"),(2,"b")]))
+  let accumulated:Unit -> Int = control.reduceUntil (\_:Unit -> 40) (\operation:(Unit -> Int) -> \value:Int -> control.Next (\_:Unit -> operation () + value)) [1,2]
+  println (show (accumulated ()))
+  println (show input)
+}
