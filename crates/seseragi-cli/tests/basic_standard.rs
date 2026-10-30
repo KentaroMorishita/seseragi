@@ -348,7 +348,8 @@ fn basic_either_operations_source_callback_and_returned_stage_defects_release_ev
         "{let _selected = either.bimap (\\message:String -> message) (\\value:Int -> value + 1) (if 42 / 0 == 0 then left () else right ());Right [1]}",
         "{let _selected = either.fold (\\message:String -> \\value:Int -> value + 1) (\\number:Int -> \\value:Int -> number + value / 0) (right ()) 42;Right [1]}",
     ] {
-        let scratch=Scratch::new();let path=scratch.0.join("either-defect.ssrg");fs::write(&path,original.replace(needle,expression)).unwrap();
+        let expression = format!("{{let result:Either<String,Array<Int>> = {expression};result}}");
+        let scratch=Scratch::new();let path=scratch.0.join("either-defect.ssrg");fs::write(&path,original.replace(needle,&expression)).unwrap();
         compare(&path,&[Case {stdout:b"created\nacquired\ncold\n[11, 12, 13]\ncold\n[11, 12, 13]\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
     }
 }
