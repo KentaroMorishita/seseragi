@@ -1,0 +1,17 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  cell <- refs.make (\n: Int -> effects.succeed n)
+  let recursive = {
+    fn loop n: Int -> Effect<{}, Never, Int> = {
+      let retained = cell
+      if n == 0 then effects.succeed 42 else loop (n - 1)
+    }
+    loop
+  }
+  refs.set recursive cell
+  callback <- refs.get cell
+  result <- callback 100000
+  println $ `answer: ${result}`
+}

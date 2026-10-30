@@ -1,7 +1,8 @@
 // Trial deletion for the mutable native slice. Pure programs keep ordinary Rc
 // costs: the registry is enabled before their first allocation only when the
 // checked module uses Ref, Fiber or Deferred. Cycles cross their mutable edges;
-// local recursive closures and opaque foreign captures remain unsupported.
+// lifted local recursion has no cyclic edges; opaque foreign captures remain
+// unsupported.
 thread_local! {
     static CYCLE_TRACKING: Cell<bool> = const { Cell::new(false) };
     static NODES: RefCell<BTreeMap<usize, Weak<dyn TraceNode>>> = const { RefCell::new(BTreeMap::new()) };

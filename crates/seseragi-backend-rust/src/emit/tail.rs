@@ -5,6 +5,7 @@ struct TailTarget<'a> {
     symbol: &'a str,
     slots: Vec<String>,
     label: String,
+    local: Option<(LocalCallable, String)>,
 }
 
 impl Backend<'_> {
@@ -25,6 +26,7 @@ impl Backend<'_> {
             symbol: &function.symbol,
             slots: function.parameters.iter().map(|_| self.fresh()).collect(),
             label: self.fresh(),
+            local: None,
         };
         let before = self.self_tail_calls;
         let body = if function.is_effect {
@@ -69,6 +71,41 @@ impl Backend<'_> {
         ))
     }
 
+    pub(super) fn local_tail_body(
+        &mut self,
+        callable: &LocalCallable,
+        body: &CoreExpr,
+        scope: &Scope,
+    ) -> Result<String> {
+        let name = callable.self_name.as_ref().expect("recursive local name");
+        let target = TailTarget {
+            symbol: name,
+            slots: callable.parameters.iter().map(|_| self.fresh()).collect(),
+            label: self.fresh(),
+            local: Some((callable.clone(), scope.recursive[name].factory.clone())),
+        };
+        let before = self.self_tail_calls;
+        let value = self.tail_body(body, scope, &target)?;
+        if self.self_tail_calls == before {
+            return Ok(format!("{{ {value} }}"));
+        }
+        let mut setup = String::new();
+        let mut restore = String::new();
+        for (parameter, slot) in callable.parameters.iter().zip(&target.slots) {
+            setup.push_str(&format!("let mut {slot} = {}.clone();", id(&parameter.id)));
+            restore.push_str(&format!("let {} = {slot}.clone();", id(&parameter.id)));
+        }
+        let dictionaries = (0..callable.constraints.len())
+            .map(|index| {
+                let name = id(&format!("\0dictionary_{index}"));
+                restore.push_str(&format!("let {name} = dicts[{index}].clone();"));
+                format!("{name}.clone()")
+            })
+            .collect::<Vec<_>>()
+            .join(",");
+        Ok(format!("{{ {setup} let mut dicts: Vec<V> = vec![{dictionaries}]; '{}: loop {{ {restore} {value} }} }}", target.label))
+    }
+
     fn tail_body(&mut self, expr: &CoreExpr, scope: &Scope, target: &TailTarget) -> Result<String> {
         self.tail_inner(expr, scope, target).map_err(|mut error| {
             if error.origin.is_none() {
@@ -95,17 +132,33 @@ impl Backend<'_> {
                 evidence_argument_index,
                 ..
             } if callee == target.symbol
-                && !scope.contains(callee)
                 && trait_dispatch.is_none()
                 && deferred_evidence_parameters.is_empty()
                 && deferred_evidence_type_constructor_parameters.is_empty()
                 && !(evidence_argument_index.is_some() && !evidence.is_empty())
-                && known_pure_call_shape(self.module, callee, arguments.len())
-                    == Some(CoreCallShape::Saturated) =>
+                && match &target.local {
+                    Some((callable, factory)) => {
+                        scope
+                            .recursive
+                            .get(callee)
+                            .is_some_and(|recursive| &recursive.factory == factory)
+                            && arguments.len() == callable.parameters.len()
+                            && evidence_argument_index
+                                .is_none_or(|index| index == callable.parameters.len())
+                    }
+                    None => {
+                        !scope.contains(callee)
+                            && known_pure_call_shape(self.module, callee, arguments.len())
+                                == Some(CoreCallShape::Saturated)
+                    }
+                } =>
             {
                 // Evaluate evidence, then every source argument, before any
                 // loop storage changes. Captures and later arguments must see
                 // the caller's values, and defects must preserve source order.
+                if let Some((callable, _)) = &target.local {
+                    self.validate_local_arguments(callable, arguments, evidence, scope)?;
+                }
                 let dictionaries = self.evidence(evidence, scope)?;
                 let next_dicts = self.fresh();
                 let mut body = format!("let {next_dicts} = {dictionaries};");
@@ -215,6 +268,14 @@ impl Backend<'_> {
         let Some((first, rest)) = statements.split_first() else {
             return self.tail_body(result, scope, target);
         };
+        if let Some((declarations, inner, count)) =
+            self.recursive_local_prefix(statements, scope)?
+        {
+            return Ok(format!(
+                "{{ {declarations} {} }}",
+                self.tail_sequence(&statements[count..], result, &inner, target)?
+            ));
+        }
         let mut inner = scope.clone();
         let (name, value) = match first {
             CoreStatement::PureLet { name, value, .. } => {

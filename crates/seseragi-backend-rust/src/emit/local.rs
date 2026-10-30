@@ -3,6 +3,7 @@ use seseragi_lowering::CoreInstanceConstraint;
 
 mod evidence;
 mod factory;
+mod recursion;
 mod types;
 use types::argument_type;
 pub(super) use types::argument_type as method_argument_type;
@@ -11,6 +12,7 @@ pub(super) use types::argument_type as method_argument_type;
 pub(super) struct Scope {
     names: BTreeSet<String>,
     blocked: BTreeSet<String>,
+    pub(super) recursive: BTreeMap<String, RecursiveLocal>,
     pub(super) callables: BTreeMap<String, LocalCallable>,
     pub(super) dictionaries: Vec<CoreInstanceConstraint>,
     type_parameters: BTreeMap<String, (u32, CoreType)>,
@@ -64,16 +66,18 @@ impl Scope {
         }
     }
     pub(super) fn contains(&self, name: &str) -> bool {
-        self.names.contains(name)
+        self.names.contains(name) || self.recursive.contains_key(name)
     }
     pub(super) fn insert(&mut self, name: String) {
         self.callables.remove(&name);
+        self.recursive.remove(&name);
         self.blocked.remove(&name);
         self.names.insert(name);
     }
     pub(super) fn block(&mut self, name: String) {
         self.names.remove(&name);
         self.callables.remove(&name);
+        self.recursive.remove(&name);
         self.blocked.insert(name);
     }
     pub(super) fn is_blocked(&self, name: &str) -> bool {
@@ -90,7 +94,8 @@ impl Scope {
     }
     pub(super) fn retain(&mut self, keep: impl FnMut(&String) -> bool) {
         self.names.retain(keep);
-        self.callables.retain(|name, _| self.names.contains(name));
+        self.callables
+            .retain(|name, _| self.names.contains(name) || self.recursive.contains_key(name));
     }
 }
 impl FromIterator<String> for Scope {
@@ -103,11 +108,17 @@ impl FromIterator<String> for Scope {
 }
 
 #[derive(Clone)]
+pub(super) struct RecursiveLocal {
+    pub(super) factory: String,
+    pub(super) environment: String,
+}
+
+#[derive(Clone)]
 pub(super) struct LocalCallable {
     pub(super) self_name: Option<String>,
     variables: BTreeMap<String, u32>,
-    constraints: Vec<CoreInstanceConstraint>,
-    parameters: Vec<CoreParameter>,
+    pub(super) constraints: Vec<CoreInstanceConstraint>,
+    pub(super) parameters: Vec<CoreParameter>,
     /// A let factory introduces only dictionaries and returns this checked
     /// method type. It has no implicit Unit or eta-expanded source stages.
     pub(super) method_value: Option<CoreType>,
@@ -140,7 +151,9 @@ impl Backend<'_> {
         }
         let mut typed_scope = scope.clone();
         if let Some(name) = &callable.self_name {
-            typed_scope.block(name.clone());
+            if !typed_scope.recursive.contains_key(name) {
+                typed_scope.block(name.clone());
+            }
         }
         if !callable.variables.is_empty() {
             let declaration = self.fresh();
@@ -154,7 +167,7 @@ impl Backend<'_> {
         }
         let scope = &typed_scope;
         if callable.constraints.is_empty() {
-            return self.function(&callable.parameters, body, scope);
+            return self.local_source_function(callable, body, scope);
         }
         if scope.unproven_type_scope {
             return Err("Rust backend: unproven overlapping local type parameter scope".into());
@@ -176,7 +189,7 @@ impl Backend<'_> {
             for parameter in &callable.parameters {
                 free.names.remove(&parameter.id);
             }
-            factory.retain(|name| free.names.contains(name));
+            factory.retain_free(&free.names);
         }
         let mut inner = factory.clone();
         inner.dictionaries = callable.constraints.clone();
@@ -186,7 +199,7 @@ impl Backend<'_> {
         if callable.method_value.is_some() {
             self.validate_method_factory(callable, body, &inner)?;
         }
-        let mut value = self.function(&callable.parameters, body, &inner)?;
+        let mut value = self.local_source_function(callable, body, &inner)?;
         // These are implementation-only stages, never source parameters. Both
         // dictionaries and source captures remain ordinary traceable V edges.
         for index in (0..callable.constraints.len()).rev() {
