@@ -1,6 +1,13 @@
 # Scoped checks
 
 
+実ファイル/実FIFOの非同期I/Oだけをhost間で切り分ける場合は、
+`rust-backend.yml`のmanual input `async_io_only=true`を使います。
+Linux/macOS/Windowsで元の`cargo test --locked -p seseragi-cli --test async_filesystem`
+を実行し、既存の15秒deadlineとhandle close/worker join/finalizer/出力保護を保ちます。
+`integration=true`はこのinputより優先し、従来どおり全体gateを実行します。
+
+
 native DecimalのdivideExact/divide/quantizeと算術error constructorはbackendの
 `--test decimal_division --test decimal_context --test decimal_conversion`、runtimeの
 `decimal_division_tests`、CLIの`basic_decimal_division_`で確認します。

@@ -341,7 +341,14 @@ mod fifo {
                     fs::read_to_string(&child.stderr).unwrap()
                 );
             }
-            assert!(Instant::now() < deadline, "{label}");
+            assert!(
+                Instant::now() < deadline,
+                "{label}: owned PID {} in {}\ntrace: {:?}\nstderr: {}",
+                child.child.id(),
+                child.stderr.parent().unwrap().display(),
+                read_trace(child.stderr.parent().unwrap()),
+                fs::read_to_string(&child.stderr).unwrap_or_default(),
+            );
             std::thread::sleep(Duration::from_millis(10));
         }
     }
