@@ -217,6 +217,16 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
 }
 
 #[test]
+fn basic_long_effect_sequence_keeps_every_statement_in_both_profiles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-long-effect-sequence.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-long-effect-sequence.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn inferred_builtin_array_owner_keeps_original_strict_ts_bun_node_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-regressions/inferred-builtin-array-owner.ssrg"),
