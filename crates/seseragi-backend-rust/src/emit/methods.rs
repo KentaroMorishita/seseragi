@@ -435,6 +435,7 @@ impl Backend<'_> {
             | "std/bytes::ByteError"
             | "std/big-int::BigInt"
             | "std/big-int::BigIntParseError"
+            | "std/big-int::BigIntConversionError"
             | "std/decimal::Decimal"
             | "std/decimal::DecimalParseError"
             | "std/json::Json"

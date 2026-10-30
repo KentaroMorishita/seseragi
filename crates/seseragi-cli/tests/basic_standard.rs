@@ -1165,6 +1165,52 @@ fn basic_math_remaining_path_package_keeps_opaque_values_and_saved_binary_functi
 }
 
 #[test]
+fn basic_big_radix_keeps_exact_values_errors_and_saved_partial_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-radix.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-radix.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_radix_keeps_cold_captured_values_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-radix-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-radix-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_radix_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-big-int-radix-effects.ssrg"
+    );
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("big-radix-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(&path,&[Case {name:"defect",stdout:b"created\nacquired\ncold\nffffffffffffffffffffffffffffffff\ncold\nffffffffffffffffffffffffffffffff\nreleased\n",exit:70,defect:true,..Case::success(b"") }]);
+}
+
+#[test]
+fn basic_big_radix_path_package_keeps_opaque_values_and_imported_error_owners() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-big-int-radix"),
+        &[Case::success(
+            b"f5lxx1zz5pnorynqglhzmsp33\n9007199254740991\noutside\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_decimal_keeps_captured_values_cold_and_releases_after_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg"),

@@ -1,0 +1,34 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as big from "std/big-int"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+fn render text: String -> (Unit -> String) = match big.parse text {
+  Left _ -> \_: Unit -> "invalid"
+  Right value -> \_: Unit -> match big.formatRadix 16 value { Left _ -> "invalid radix"; Right text -> text }
+}
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (render "340282366920938463463374607431768211455")
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    format <- refs.get saved
+    say (format ())
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

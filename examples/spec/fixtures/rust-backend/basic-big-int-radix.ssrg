@@ -1,0 +1,47 @@
+import * as big from "std/big-int"
+import * as ints from "std/int"
+
+fn value text: String -> big.BigInt = match big.parse text { Left _ -> big.fromInt 0; Right value -> value }
+fn error reason: big.BigIntParseError -> String = match reason {
+  big.EmptyBigInt -> "empty"
+  big.InvalidBigIntRadix radix -> "radix:" + ints.format radix
+  big.InvalidBigIntDigit detail -> "digit:" + ints.format detail.offset + ":" + ints.format detail.radix
+}
+fn parsed result: Either<big.BigIntParseError, big.BigInt> -> String = match result { Left reason -> error reason; Right number -> big.format number }
+fn formatted result: Either<big.BigIntParseError, String> -> String = match result { Left reason -> error reason; Right text -> text }
+fn converted result: Either<big.BigIntConversionError, Int> -> String = match result { Left big.BigIntOutsideIntRange -> "outside"; Right number -> ints.format number }
+fn parser -> (Int -> String -> Either<big.BigIntParseError, big.BigInt>) = big.parseRadix
+fn apply<A, B> operation: (A -> B) -> value: A -> B = operation value
+
+pub effect fn main = do {
+  let parse = parser ()
+  let hex = parse 16
+  let format: Int -> big.BigInt -> Either<big.BigIntParseError, String> = big.formatRadix
+  let binary = format 2
+  let toInt: big.BigInt -> Either<big.BigIntConversionError, Int> = big.toInt
+  let huge = value "340282366920938463463374607431768211455"
+  println (parsed (parse 36 "ZZ"))
+  println (parsed (apply hex "ffffffffffffffffffffffffffffffff"))
+  println (formatted (format 16 huge))
+  println (formatted (format 36 huge))
+  println (converted (toInt (value "9007199254740991")))
+  println (converted (toInt (value "-9007199254740991")))
+  println (converted (toInt (value "9007199254740992")))
+  println (converted (toInt (value "-9007199254740992")))
+  println (converted (toInt huge))
+  println (parsed (parse 10 "+00042"))
+  println (parsed (big.parse "01"))
+  println (parsed (parse 1 ""))
+  println (parsed (parse 37 "🙂"))
+  println (parsed (parse 2 "+"))
+  println (parsed (hex "+0x10"))
+  println (parsed (parse 36 "12雪🙂"))
+  println (parsed (parse 2 ""))
+  println (parsed (parse 36 "-00000"))
+  println (formatted (format 1 huge))
+  println (formatted (binary (big.fromInt (-42))))
+  println (converted (Left big.BigIntOutsideIntRange))
+  println (parsed (Left (big.InvalidBigIntRadix 1)))
+  println (formatted (Left big.EmptyBigInt))
+  println (parsed (Left (big.InvalidBigIntDigit { offset: 2, radix: 36 })))
+}

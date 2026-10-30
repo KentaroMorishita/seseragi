@@ -1,0 +1,15 @@
+import * as numbers from "numbers"
+import * as big from "std/big-int"
+import * as ints from "std/int"
+
+fn apply<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn formatted result: Either<big.BigIntParseError, String> -> String = match result { Left _ -> "parse error"; Right value -> value }
+fn converted result: Either<big.BigIntConversionError, Int> -> String = match result { Left big.BigIntOutsideIntRange -> "outside"; Right value -> ints.format value }
+
+pub effect fn main = do {
+  let parse: String -> Either<big.BigIntParseError, numbers.Value> = numbers.read 16
+  let format: numbers.Value -> Either<big.BigIntParseError, String> = numbers.formatting 36
+  println (match apply parse "ffffffffffffffffffffffffffffffff" { Left _ -> "parse error"; Right value -> formatted (apply format value) })
+  println (match parse "1fffffffffffff" { Left _ -> "parse error"; Right value -> converted (numbers.toInt value) })
+  println (match parse "20000000000000" { Left _ -> "parse error"; Right value -> converted (numbers.toInt value) })
+}

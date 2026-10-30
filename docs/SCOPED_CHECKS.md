@@ -6,6 +6,13 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native BigIntのradix変換/toIntはbackendの`--test big_radix --test basic_big_int`、runtimeの
+`big_int_tests`、CLIの`basic_big_radix_`で確認します。base-10^9 limbで2〜36進を正確に変換し、
+safe Int外をtyped errorにします。元10万桁decimalの線形parse、canonical spellingとradix版の
+leading zero、UTF-8位置、保存/部分適用・opaque2module・元raw TS両profile strict・fresh
+Bun/Node/native・cold/Failure/Defect/finalizer/root0を保持します。元位置の偽造拒否と未使用
+program WASM拒否も確認し、最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
+
 native Mathの定数・残りの単項関数・atan2/hypotはbackendの`--test math_remaining`、runtimeの
 `math_tests`、CLIの`basic_math_remaining_`で確認します。定数はvalue、atan2はyが先で、
 hypotは中間二乗のoverflow/underflowを避けます。NaN/Infinity/±0とspecの有限代表点の許容誤差、
