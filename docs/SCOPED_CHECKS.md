@@ -1,5 +1,14 @@
 # Scoped checks
 
+native ListのfilterMap/flatMapはbackendの`--test list_transform
+--test basic_sequence`、runtimeの`list_transform_tests`、CLIの
+`basic_list_transform_`と元`basic_sequence_list_`で確認します。
+異なる出力型、空入力のcallback省略、保存/generic/partial・opaque2module、
+source順とimmutable入力、最初のDefect後の停止を保ちます。元raw TS両profileの
+strict/skipLibCheck:falseとfresh Bun/Node/native、cold/Failure/3種Defect/finalizer/root0、
+included edgeだけの保持と10万nodeの反復破棄、36件の偽造とunused program WASM2件を
+検証します。SDKと全体gate・配布はArray/List batchの最終integration pointで行います。
+
 
 native Arrayのempty/singleton/append/reverse/isEmpty/head/tail/filterMap/flatMapは、
 backendの`--test array_rest --test basic_array`、runtimeの`array_`、CLIの

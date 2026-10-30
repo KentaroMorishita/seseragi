@@ -1,0 +1,35 @@
+import * as lists from "std/list"
+
+fn choose value:Int -> Maybe<String> = if value % 2 == 0 then Nothing else Just ("n" + show value)
+fn expand value:Int -> List<Int> = `[value, value * 10]
+fn nested value:Int -> Maybe<List<Int>> = if value % 2 == 0 then Nothing else Just `[value, value * 2]
+fn selective value:Int -> List<Int> = if value == 2 then `[] else `[value,-value]
+fn select<A,B> callback:(A -> Maybe<B>) -> (List<A> -> List<B>) = lists.filterMap callback
+fn factory<A,B> -> ((A -> List<B>) -> List<A> -> List<B>) = lists.flatMap
+fn captured prefix:String -> (Unit -> String) = \_:Unit -> prefix
+fn first values:List<(Unit -> String)> -> String = match lists.head values { Nothing -> "none"; Just operation -> operation () }
+
+pub effect fn main = do {
+  let input = `[1,2,3]
+  let empty:List<Int> = `[]
+  let keep = lists.filterMap choose
+  let flatten = lists.flatMap expand
+  let generic = select choose
+  let returned:(Int -> List<Int>) -> List<Int> -> List<Int> = factory ()
+  println (show (keep input))
+  println (show (flatten input))
+  println (show (keep empty))
+  println (show (flatten empty))
+  println (show (lists.filterMap (\value:Int -> Just (value / 0)) empty))
+  println (show (lists.flatMap (\value:Int -> `[value / 0]) empty))
+  println (show (lists.filterMap nested input))
+  println (show (lists.flatMap selective input))
+  println (show (generic input))
+  println (show (returned expand input))
+  println (show input)
+  println (show (lists.filterMap (\value:String -> Just (value + "!")) `["雪","🙂","λ"]))
+  println (show (lists.flatMap (\value:String -> `[value,value]) `["雪","🙂"]))
+  println (first (lists.filterMap (\operation:(Unit -> String) -> Just operation) `[captured "saved:🙂"]))
+  println (first (lists.flatMap (\operation:(Unit -> String) -> `[operation]) `[captured "flat:雪"]))
+  println (show (lists.filterMap (\value:Int -> if value == 3 then Just () else Nothing) input))
+}

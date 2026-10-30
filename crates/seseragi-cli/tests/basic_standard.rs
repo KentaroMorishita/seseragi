@@ -314,6 +314,51 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_list_transform_keeps_order_output_types_empty_inputs_and_saved_callbacks() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-list-transform.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-list-transform.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_list_transform_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-list-transform-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-list-transform-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_list_transform_callback_and_final_argument_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-list-transform-effects.ssrg"
+    );
+    let needle = "lists.flatMap (\\value:Int -> `[value,value + 1]) `[1,2,3]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "lists.flatMap (\\value:Int -> if value == 2 then `[42 / 0] else `[value]) `[1,2,3]",
+        "lists.filterMap (\\value:Int -> if value == 2 then Just (42 / 0) else Just value) `[1,2,3]",
+        "lists.flatMap (\\value:Int -> `[value]) (if 42 / 0 == 0 then `[1] else `[2])",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("list-transform-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created\nacquired\ncold\n`[129, -129, 131, -131]\ncold\n`[129, -129, 131, -131]\nreleased\n",
+            exit: 70, defect: true, native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }]);
+    }
+}
+#[test]
+fn basic_list_transform_path_package_keeps_opaque_elements_aliases_and_generic_factories() {
+    compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-list-transform"), &[Case::success(b"`[cell:1, cell:10, cell:3, cell:30]\n`[saved:1, saved:2, saved:3]\n`[cell:1, cell:2, cell:3]\n`[]\n")]);
+}
+
+#[test]
 fn basic_array_rest_keeps_constructors_order_callbacks_and_immutable_inputs() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-array-rest.ssrg"),

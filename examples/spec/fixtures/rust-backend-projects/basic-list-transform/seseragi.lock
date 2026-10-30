@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/list-transform@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/list-transform-values@0.0.0#path:vendor/values"
+name = "fixture/list-transform-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:ac0e2cdf1b6bc040b3b319866cbfafd9125682292e886fb74a431408f922f952"
+content_digest = "sha256:f4557d1eba3e09c54454ac2f569992e5a64eb7c47197458755e35c6153ca7a1b"
+dependencies = []
+
+[[packages]]
+id = "fixture/list-transform@0.0.0#workspace:."
+name = "fixture/list-transform"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:a59a26e2a1785f10b85e8982516730e44c4f738d5766f5682507c84a998f36e4"
+content_digest = "sha256:0e9cd39d476669fc7a93ec41bec138bbdda286ca0dff61699712a657cbaba506"
+dependencies = [
+  { import = "values", package = "fixture/list-transform-values@0.0.0#path:vendor/values" },
+]
