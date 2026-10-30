@@ -1,0 +1,27 @@
+import * as contexts from "numbers"
+import * as decimal from "std/decimal"
+import * as rounds from "std/number"
+import * as ints from "std/int"
+
+fn mode value: contexts.Policy -> String = match value {
+  rounds.HalfEven -> "HalfEven"
+  rounds.HalfUp -> "HalfUp"
+  rounds.TowardZero -> "TowardZero"
+  rounds.AwayFromZero -> "AwayFromZero"
+  rounds.Floor -> "Floor"
+  rounds.Ceiling -> "Ceiling"
+}
+pub effect fn main = {
+  let make: Int -> contexts.Policy -> Either<contexts.Failure,contexts.Context> = contexts.create
+  let withDigits = make 34
+  match contexts.apply withDigits rounds.Ceiling {
+    Left _ -> println "unexpected"
+    Right context -> {
+      let saved = contexts.captured context
+      let selected = contexts.apply contexts.rounding context
+      ints.format (saved ()) + ":" + mode selected + ":" +
+        match make 0 rounds.HalfEven { Left (decimal.NonPositiveDecimalPrecision digits) -> ints.format digits; Right _ -> "unexpected" }
+      |> println
+    }
+  }
+}

@@ -31,6 +31,10 @@ impl Backend<'_> {
             scope,
         )?;
         self.validate_decimal_show_value(dispatch, selected, type_ref, scope)?;
+        self.validate_decimal_constant_value(dispatch, selected, type_ref, scope)?;
+        self.validate_big_int_display_value(dispatch, selected, type_ref, scope)?;
+        self.validate_big_int_constant_value(dispatch, selected, type_ref, scope)?;
+        self.validate_primitive_operator_value(dispatch, selected, type_ref, scope)?;
         if dispatch.trait_identity == "std/prelude::Ord" {
             self.validate_ord_method_value(dispatch, selected, type_ref, scope)?;
         }
@@ -435,8 +439,15 @@ impl Backend<'_> {
             | "std/bytes::ByteError"
             | "std/big-int::BigInt"
             | "std/big-int::BigIntParseError"
+            | "std/big-int::BigIntConversionError"
+            | "std/big-int::BigIntDivisionError"
+            | "std/big-int::BigIntPowerError"
             | "std/decimal::Decimal"
             | "std/decimal::DecimalParseError"
+            | "std/decimal::DecimalContext"
+            | "std/decimal::DecimalContextError"
+            | "std/decimal::DecimalConversionError"
+            | "std/decimal::DecimalArithmeticError"
             | "std/json::Json"
             | "std/json::JsonPathSegment"
             | "std/json::JsonParseError"

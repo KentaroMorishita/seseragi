@@ -1,0 +1,16 @@
+import * as values from "numbers"
+fn operation -> (values.Number -> values.Number -> values.Number) = values.product
+pub effect fn main = do {
+  let a = values.parse "1.25"
+  let b = values.parse "-2.5"
+  let first = values.number a
+  let second = values.number b
+  let sum = values.sum first
+  let difference = values.difference first
+  let zeroValue:values.Number = values.empty ()
+  let oneValue:values.Number = values.unit ()
+  let display:values.Number -> String = debug
+  let captured = values.captured a
+  println (values.render (sum second) + "|" + values.render (difference second) + "|" + values.render (operation () first second))
+  println (display zeroValue + ":" + display oneValue + ":" + values.apply captured ())
+}

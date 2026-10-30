@@ -185,6 +185,19 @@ impl Backend<'_> {
                     scope,
                 )?;
             }
+            if identity == "std/big-int::Ord" {
+                if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
+                    return Err("Rust backend: unproven BigInt Ord type or child evidence".into());
+                }
+                self.big_int_type(
+                    &selected.constraint.arguments[0],
+                    &CoreType::Named {
+                        name: "std/big-int::BigInt".into(),
+                        arguments: vec![],
+                    },
+                    scope,
+                )?;
+            }
         }
         let primitive = match &selected.evidence {
             CoreInstanceEvidence::Standard { identity, .. } => match identity.as_str() {

@@ -1,0 +1,13 @@
+import * as decimal from "std/decimal"
+pub alias Number = decimal.Decimal
+pub opaque newtype Value = Number
+pub fn parse text: String -> Value = match decimal.parse text { Right number -> Value number; Left _ -> Value (decimal.fromInt (42 / 0)) }
+pub fn sum<A> left:A -> (A -> A) where Add<A,A,A> = add left
+pub fn difference<A> left:A -> (A -> A) where Sub<A,A,A> = sub left
+pub fn product<A> left:A -> (A -> A) where Mul<A,A,A> = mul left
+pub fn empty<A> _unit:Unit -> A where Zero<A> = zero ()
+pub fn unit<A> _unit:Unit -> A where One<A> = one ()
+pub fn number value:Value -> Number = match value { Value number -> number }
+pub fn render value:Number -> String = "cell:" + debug value
+pub fn captured value:Value -> (Unit -> String) = \_: Unit -> render (number value)
+pub fn apply<A,B> operation:(A -> B) -> value:A -> B = operation value

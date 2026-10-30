@@ -1,0 +1,12 @@
+import * as big from "std/big-int"
+
+pub opaque newtype Key = big.BigInt
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = match left { Key a -> match right { Key b -> a == b } } }
+instance Ord<Key> { fn compare left: Key -> right: Key -> Ordering = match left { Key a -> match right { Key b -> compare a b } } }
+instance Hash<Key> { fn hash key: Key -> Int = match key { Key value -> hash value } }
+instance Show<Key> { fn show key: Key -> String = match key { Key value -> "key:" + show value } }
+instance Debug<Key> { fn debug key: Key -> String = match key { Key value -> "key:" + debug value } }
+pub fn make text: String -> Key = match big.parse text { Right value -> Key value; Left _ -> Key (big.fromInt (42 / 0)) }
+pub fn order<A> left: A -> (A -> Ordering) where Ord<A> = compare left
+pub fn same<A> left: A -> (A -> Bool) where Ord<A> = eq left
+pub fn digest<A> key: A -> Int where Hash<A> = hash key

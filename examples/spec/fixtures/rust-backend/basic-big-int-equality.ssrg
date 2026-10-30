@@ -1,0 +1,21 @@
+import * as big from "std/big-int"
+import * as text from "std/text"
+
+fn number source: String -> big.BigInt = match big.parse source {
+  Right value -> value
+  Left _ -> big.fromInt (42 / 0)
+}
+
+pub effect fn main = {
+  let first = number "343591635"
+  let collision = number "4294967296"
+  let alternate = number "+343591635"
+  let equal: big.BigInt -> big.BigInt -> Bool = (==)
+  let different: big.BigInt -> big.BigInt -> Bool = (!=)
+  let sameFirst = equal first
+  let differentFirst = different first
+  text.join "|" [show (first == alternate), show (first != collision),
+    show (first == collision), show (first != alternate), show (sameFirst alternate),
+    show (differentFirst collision), show (number "-0" == big.fromInt 0)]
+  |> println
+}

@@ -1,0 +1,18 @@
+import * as cells from "cells"
+import * as big from "std/big-int"
+import * as text from "std/text"
+
+fn division result: Either<cells.DivisionError,cells.Key> -> String = match result { Left big.BigIntDivisionByZero -> "zero"; Right key -> show key }
+pub effect fn main = {
+  let first = cells.make "343591635"
+  let second = cells.make "4294967296"
+  let sum: cells.Key -> cells.Key -> cells.Key = cells.combine
+  let saved = sum first
+  let raised = cells.raised (cells.make "-2")
+  let product = first * second
+  let zeroValue: cells.Key = zero ()
+  let oneValue: cells.Key = one ()
+  text.join "|" [show (saved second), show product, show (raised 129), show zeroValue,
+    show oneValue, division (cells.divide second product), division (cells.divide zeroValue first)]
+  |> println
+}

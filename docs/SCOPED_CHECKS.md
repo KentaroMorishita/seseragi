@@ -7,11 +7,77 @@ Linux/macOS/Windowsで元の`cargo test --locked -p seseragi-cli --test async_fi
 を実行し、既存の15秒deadlineとhandle close/worker join/finalizer/出力保護を保ちます。
 `integration=true`はこのinputより優先し、従来どおり全体gateを実行します。
 
+
+native DecimalのdivideExact/divide/quantizeと算術error constructorはbackendの
+`--test decimal_division --test decimal_context --test decimal_conversion`、runtimeの
+`decimal_division_tests`、CLIの`basic_decimal_division_`で確認します。
+約分後の有限小数判定、8080個の小さい有理数、6modeのtie/sign/carry、
+任意桁scaleの相殺・展開しないquantize、135個の独立Python Fraction/Decimal期待値を使います。
+元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/nativeで、opaque2moduleと
+保存した各partial stage・cold再実行・typed Failure・source各段階とmaterializationのDefect・
+finalizer/Ref cycle/root0を比較します。78件の偽造とunused program WASM5件も拒否します。
+長いdoのnative生成は`basic_long_effect_sequence_`で元140行と全出力を確認し、
+生成crateのcompile-time recursion headroomを検証します。workspaceのRust設定は変更しません。
+SDK/全体gate/配布は最終batchのintegration pointで行います。
+
+
+native DecimalのexactなAdd/Sub/Mul・Zero/One・Debugは、backendの
+`--test decimal_arithmetic`、runtimeの`decimal_arithmetic_tests`、CLIの
+`basic_decimal_arithmetic_`で確認します。任意桁scaleと符号付き係数を保ち、
+185件の偽造したowner/kind・辞書・引数/結果・source stageを拒否します。
+元raw TS両profileをstrict・skipLibCheck:falseで検査し、fresh Bun/Node/nativeで
+独立したPython Decimal期待値、opaqueな2module package、保存/generic/部分適用、
+cold再実行・typed Failure・最終引数とmaterializationのDefect・finalizer/Ref cycle/root0を比較します。
+共有演算子のBigInt/Int/Float・既存Decimal辞書も回帰検査し、program WASMへは広げません。
+SDKと全体gate・配布は最終batchのintegration pointで行います。
+
 Seseragiの検証は、変更範囲に対応するscoped laneを先に実行します。`bun run check`
 は、各laneを日常作業で無条件に繰り返すためのコマンドではなく、repository-wideな
 最終統合gateです。
 
 ## Lane matrix
+
+native DecimalのtoIntExact/fromFloat/toFloatとconversion error constructorはbackendの
+`--test decimal_conversion`、runtimeの`decimal_conversion_tests`、CLIの
+`basic_decimal_conversion_`で確認します。Float bitからexactな係数/scaleを作ってから
+6種の丸めを適用し、巨大指数の整数化はrange確認後に限定して展開します。exactなFloat最大値の
+直上拒否、signed underflow、256有限Floatの17桁往復と独立Python Decimal期待値も確認します。
+保存/partial/generic・opaque2module/error alias、元raw TS両profile strict・fresh Bun/Node/native、
+cold/Failure/Defect/finalizer/root0と元入力を保持し、新program WASMは受け入れません。
+最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
+
+native DecimalContextのcontext/precision/roundingとprecision error constructorは
+backendの`--test decimal_context`、runtimeの`decimal_context_tests`、CLIの
+`basic_decimal_context_`で確認します。既存のstd/number RoundingMode 6種を共有し、
+safe Int precision・nonpositive error・保存/partial/generic・opaque2moduleと標準aliasを保持します。
+最後のrounding引数を評価してから結果を作り、cold/Failure/Defect/finalizer/Ref cycle/root0を
+元raw TS両profile strict・fresh Bun/Node/nativeで比較します。元Decimalのparse/fromInt/Eq/Ord/Hash/
+表示も確認し、新program WASMは受け入れません。最終SDKと全体gateはRelease batchへ集約します。
+
+native BigInt算術/Zero/Oneとchecked APIはbackendの`--test big_arithmetic`、runtimeの
+`big_int_arithmetic_tests`、CLIの`basic_big_arithmetic_`で確認します。binary32のexactな
+加減乗除・剰余・Int指数、0方向の商と被除数と同符号の剰余、typed zero/negative error、
+保存/generic/opaque2module、元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/
+Defect/finalizer/Ref cycle/root0を保持します。signed i128と独立Python多word期待値も比較し、
+新program WASMは受け入れません。共有operator validatorの変更では元scalar/partial checksを使います。
+canonical ownerのalias照合と算術sectionの最初の引数型もdriverで確認し、previewしたanalysisは
+再利用します。最終sourceの正規SDKと共有frontend/runtimeのrepository-wide gateはRelease batchへ集約します。
+
+native BigIntのEq/Ord/Hash/Show/Debugはbackendの
+`--test big_int_keys --test big_int_ord --test big_int_display`、
+runtimeの`big_int_dictionary_tests`と`big_int_tests`、CLIの`basic_big_keys_`で確認します。
+binary32 limbと必要時のdecimal cacheでEq/Ord/HashをO(n)にし、parse/formatはspecのO(d²)内で
+元10万桁入力と正確なradix/Int変換を保持します。TSと同じsigned FNV hash・実衝突、OrdのEq継承、
+保存/generic・opaque2module・元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/Defect/
+finalizer/Ref cycle/root0、位置付き偽造拒否と未使用program WASM拒否を確認します。
+算術/Zero/Oneは別leafで続け、最終SDKと全体gateはRelease batchへ集約します。
+
+native BigIntのradix変換/toIntはbackendの`--test big_radix --test basic_big_int`、runtimeの
+`big_int_tests`、CLIの`basic_big_radix_`で確認します。binary32 limbで2〜36進を正確に変換し、
+safe Int外をtyped errorにします。元10万桁decimal入力、canonical spellingとradix版の
+leading zero、UTF-8位置、保存/部分適用・opaque2module・元raw TS両profile strict・fresh
+Bun/Node/native・cold/Failure/Defect/finalizer/root0を保持します。元位置の偽造拒否と未使用
+program WASM拒否も確認し、最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
 
 native Mathの定数・残りの単項関数・atan2/hypotはbackendの`--test math_remaining`、runtimeの
 `math_tests`、CLIの`basic_math_remaining_`で確認します。定数はvalue、atan2はyが先で、

@@ -1,0 +1,46 @@
+import * as big from "std/big-int"
+import * as ints from "std/int"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as text from "std/text"
+
+newtype BigInt = String
+instance Eq<BigInt> { fn eq left: BigInt -> right: BigInt -> Bool = match left { BigInt a -> match right { BigInt b -> a == b } } }
+
+fn value source: String -> big.BigInt = match big.parse source { Left _ -> big.fromInt 0; Right result -> result }
+fn label result: Ordering -> String = match result { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
+fn same<A> left: A -> right: A -> Bool where Ord<A> = left == right
+fn order<A> left: A -> (A -> Ordering) where Ord<A> = compare left
+fn hashed<A> key: A -> Int where Hash<A> = hash key
+fn shown<A> key: A -> String where Show<A> = show key
+fn diagnosed<A> key: A -> String where Debug<A> = debug key
+
+pub fn probe -> String = {
+  let equal: big.BigInt -> big.BigInt -> Bool = eq
+  let comparator: big.BigInt -> big.BigInt -> Ordering = compare
+  let before: big.BigInt -> big.BigInt -> Bool = (<)
+  let atLeast: big.BigInt -> big.BigInt -> Bool = (>=)
+  let hasher: big.BigInt -> Int = hash
+  let display: big.BigInt -> String = show
+  let inspect: big.BigInt -> String = debug
+  let collision = value "343591635"
+  let other = value "4294967296"
+  let entries = maps.singleton collision "first" |> maps.insert other "second" |> maps.insert (value "+343591635") "updated"
+  let keys = sets.singleton collision |> sets.insert other |> sets.insert (value "+343591635")
+  let huge = value "340282366920938463463374607431768211455"
+  text.join "|" [
+    show (equal (value "-0") (value "+0")), show (same (value "+42") (value "42")),
+    label (comparator (value "-4294967296") (value "-343591635")), label (order other collision),
+    show (before collision other), show (atLeast huge other),
+    show (collision <= other), show (other > collision),
+    ints.format (hasher (value "0")), ints.format (hasher (value "1")), ints.format (hasher (value "-1")),
+    ints.format (hashed (value "42")), ints.format (hasher (value "4294967295")),
+    ints.format (hasher other), ints.format (hasher huge), ints.format (hasher (value "-340282366920938463463374607431768211456")),
+    show (hasher collision == hasher other), ints.format (maps.size entries),
+    match maps.get collision entries { Just result -> result; Nothing -> "missing" },
+    match maps.get other entries { Just result -> result; Nothing -> "missing" },
+    ints.format (sets.size keys), display huge, inspect (value "-42"), shown (value "42"), diagnosed (value "42"),
+    show [value "42", value "-42"], debug [value "42", value "-42"], show (BigInt "1" != BigInt "01")
+  ]
+}
+pub effect fn main = println (probe ())

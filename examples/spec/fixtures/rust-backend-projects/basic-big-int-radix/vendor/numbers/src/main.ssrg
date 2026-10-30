@@ -1,0 +1,12 @@
+import * as big from "std/big-int"
+
+pub opaque newtype Value = big.BigInt
+pub fn read radix: Int -> (String -> Either<big.BigIntParseError, Value>) = {
+  let parse = big.parseRadix radix
+  \text -> match parse text { Left error -> Left error; Right value -> Right (Value value) }
+}
+pub fn formatting radix: Int -> (Value -> Either<big.BigIntParseError, String>) = {
+  let format = big.formatRadix radix
+  \wrapped -> match wrapped { Value value -> format value }
+}
+pub fn toInt wrapped: Value -> Either<big.BigIntConversionError, Int> = match wrapped { Value value -> big.toInt value }

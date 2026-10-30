@@ -1,0 +1,21 @@
+import * as decimal from "std/decimal"
+import * as numbers from "std/number"
+pub alias Failure = decimal.DecimalArithmeticError
+pub opaque newtype Value = decimal.Decimal
+pub fn parse text:String -> Value = match decimal.parse text { Right value -> Value value; Left _ -> Value (decimal.fromInt (42 / 0)) }
+fn context precision:Int -> decimal.DecimalContext = match decimal.context precision numbers.HalfEven { Right value -> value; Left _ -> context 1 }
+fn wrap result:Either<Failure,decimal.Decimal> -> Either<Failure,Value> = match result { Right number -> Right (Value number); Left error -> Left error }
+pub fn exact divisor:Value -> (Value -> Either<Failure,Value>) = match divisor { Value divisor -> {
+  let operation = decimal.divideExact divisor
+  \dividend -> match dividend { Value number -> wrap (operation number) }
+} }
+pub fn divideWith precision:Int -> (Value -> Value -> Either<Failure,Value>) = {
+  let operation = decimal.divide (context precision)
+  \divisor -> \dividend -> match divisor { Value divisor -> match dividend { Value dividend -> wrap (operation divisor dividend) } }
+}
+pub fn quantizer scale:Int -> (Value -> Value) = {
+  let operation = decimal.quantize scale numbers.HalfEven
+  \value -> match value { Value number -> Value (operation number) }
+}
+pub fn render value:Value -> String = match value { Value number -> "cell:" + debug number }
+pub fn apply<A,B> operation:(A -> B) -> value:A -> B = operation value

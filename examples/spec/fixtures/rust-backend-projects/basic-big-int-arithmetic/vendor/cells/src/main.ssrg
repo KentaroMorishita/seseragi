@@ -1,0 +1,14 @@
+import * as big from "std/big-int"
+
+pub opaque newtype Key = big.BigInt
+pub alias DivisionError = big.BigIntDivisionError
+instance Show<Key> { fn show key: Key -> String = match key { Key value -> "key:" + big.format value } }
+instance Add<Key,Key,Key> { fn add left: Key -> right: Key -> Key = match left { Key a -> match right { Key b -> Key (a + b) } } }
+instance Mul<Key,Key,Key> { fn mul left: Key -> right: Key -> Key = match left { Key a -> match right { Key b -> Key (a * b) } } }
+instance Pow<Key,Int,Key> { fn pow base: Key -> exponent: Int -> Key = match base { Key value -> Key (value ** exponent) } }
+instance Zero<Key> { fn zero _unit: Unit -> Key = Key (zero ()) }
+instance One<Key> { fn one _unit: Unit -> Key = Key (one ()) }
+pub fn make text: String -> Key = match big.parse text { Right value -> Key value; Left _ -> Key (big.fromInt (42 / 0)) }
+pub fn combine<A> left: A -> (A -> A) where Add<A,A,A> = add left
+pub fn raised<A> base: A -> (Int -> A) where Pow<A,Int,A> = pow base
+pub fn divide divisor: Key -> dividend: Key -> Either<DivisionError,Key> = match divisor { Key d -> match dividend { Key n -> match big.checkedDivide d n { Left error -> Left error; Right value -> Right (Key value) } } }

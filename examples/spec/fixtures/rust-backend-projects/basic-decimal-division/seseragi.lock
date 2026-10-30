@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/decimal-division@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/decimal-division-numbers@0.0.0#path:vendor/numbers"
+name = "fixture/decimal-division-numbers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/numbers"
+manifest_digest = "sha256:55d42c8e2d43b01da8a5c72350944009139758c2b8e9b9cc3b6fb07e95c45323"
+content_digest = "sha256:14224faf87f3af783acefe92719b99bcd15907e0f771f4f4dab4eaeb4db516a0"
+dependencies = []
+
+[[packages]]
+id = "fixture/decimal-division@0.0.0#workspace:."
+name = "fixture/decimal-division"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:92538109648e21ceb18e4b434f96890413ab54cc9aaccf6b80f260bc2ea322ad"
+content_digest = "sha256:f4a152ea2d1ec65a21e5b9430d2c38e089380cfb7a39428939431096b6428c15"
+dependencies = [
+  { import = "numbers", package = "fixture/decimal-division-numbers@0.0.0#path:vendor/numbers" },
+]

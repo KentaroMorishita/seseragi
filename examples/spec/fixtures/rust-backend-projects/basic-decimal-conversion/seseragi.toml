@@ -1,0 +1,11 @@
+[package]
+name = "fixture/decimal-conversion"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+numbers = { package = "fixture/decimal-conversion-numbers", path = "vendor/numbers" }

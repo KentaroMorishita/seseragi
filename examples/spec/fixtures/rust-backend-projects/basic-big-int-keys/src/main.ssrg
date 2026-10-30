@@ -1,0 +1,21 @@
+import * as cells from "cells"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as ints from "std/int"
+import * as text from "std/text"
+
+fn label value: Ordering -> String = match value { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
+pub effect fn main = {
+  let first = cells.make "343591635"
+  let second = cells.make "4294967296"
+  let order: cells.Key -> cells.Key -> Ordering = cells.order
+  let withFirst = order first
+  let same: cells.Key -> Bool = cells.same first
+  let values = maps.singleton first "first" |> maps.insert second "second" |> maps.insert (cells.make "+343591635") "updated"
+  let keys = sets.singleton first |> sets.insert second
+  text.join "|" [label (withFirst second), show (same (cells.make "+343591635")),
+    ints.format (cells.digest first), ints.format (cells.digest second), ints.format (maps.size values), ints.format (sets.size keys),
+    match maps.get first values { Just value -> value; Nothing -> "missing" },
+    match maps.get second values { Just value -> value; Nothing -> "missing" }, show first, debug second]
+  |> println
+}

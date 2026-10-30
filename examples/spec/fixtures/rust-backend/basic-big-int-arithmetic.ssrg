@@ -1,0 +1,46 @@
+import * as big from "std/big-int"
+import * as ints from "std/int"
+
+fn value source: String -> big.BigInt = match big.parse source { Right result -> result; Left _ -> big.fromInt (42 / 0) }
+fn division result: Either<big.BigIntDivisionError, big.BigInt> -> String = match result { Left big.BigIntDivisionByZero -> "zero"; Right result -> big.format result }
+fn power result: Either<big.BigIntPowerError, big.BigInt> -> String = match result { Left (big.NegativeBigIntExponent exponent) -> "negative:" + ints.format exponent; Right result -> big.format result }
+fn divider -> (big.BigInt -> big.BigInt -> Either<big.BigIntDivisionError, big.BigInt>) = big.checkedDivide
+fn sum<A> left: A -> (A -> A) where Add<A,A,A> = add left
+fn raised<A> left: A -> (Int -> A) where Pow<A,Int,A> = pow left
+fn empty<A> _unit: Unit -> A where Zero<A> = zero ()
+fn unit<A> _unit: Unit -> A where One<A> = one ()
+
+pub effect fn main = do {
+  let a = value "231584178474632390847141970017375815707220534065123005005841917230689795715129"
+  let b = value "79228162514264337593543950433"
+  let negative = value "-231584178474632390847141970017375815707220534065123005005841917230689795715129"
+  let zeroValue: big.BigInt = empty ()
+  let oneValue: big.BigInt = unit ()
+  let plus = sum a
+  let quotient = divider () b
+  let powerOf = raised (big.fromInt (-2))
+  let negativePower = big.checkedPower (-3)
+  let zeroDivision = big.checkedDivide zeroValue
+  println (big.format (plus b))
+  println (big.format (a - b))
+  println (big.format (a * b))
+  println (big.format (a / b))
+  println (big.format (negative / b))
+  println (big.format (a % b))
+  println (big.format (negative % b))
+  println (division (quotient negative))
+  println (division (big.checkedRemainder b negative))
+  println (division (zeroDivision a))
+  println (division (big.checkedRemainder zeroValue a))
+  println (power (negativePower a))
+  println (power (big.checkedPower 0 zeroValue))
+  println (big.format (powerOf 129))
+  println (big.format (value "-1" ** 9007199254740991))
+  println (big.format (big.abs negative))
+  println (ints.format (big.sign negative))
+  println (ints.format (big.sign zeroValue))
+  println (ints.format (big.sign a))
+  println (big.format (zeroValue + oneValue))
+  println (division (Left big.BigIntDivisionByZero))
+  println (power (Left (big.NegativeBigIntExponent (-2))))
+}

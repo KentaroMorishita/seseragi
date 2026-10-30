@@ -206,10 +206,7 @@ fn native_decimal_display(value: V) -> V {
 }
 
 fn native_decimal_show_dictionary() -> V {
-    V::dict(vec![(
-        "show",
-        V::fun(vec![], |_, value| native_decimal_display(value)),
-    )])
+    native_decimal_display_dictionary(false)
 }
 
 fn native_decimal_equal(left: V, right: V) -> V {

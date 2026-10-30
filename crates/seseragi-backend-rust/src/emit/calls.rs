@@ -109,6 +109,7 @@ impl Backend<'_> {
             }
         }
         self.validate_decimal_dispatch(expr, scope)?;
+        self.validate_big_int_dispatch(expr, scope)?;
         if let Some(dispatch) = trait_dispatch {
             self.validate_hash_call(expr, scope)?;
             if dispatch.trait_identity == "std/prelude::Eq" {
@@ -116,6 +117,7 @@ impl Backend<'_> {
             }
             self.validate_int_parse_show_call(expr, scope)?;
             self.validate_decimal_show_call(expr, scope)?;
+            self.validate_big_int_display_call(expr, scope)?;
             self.validate_primitive_operator_call(expr, scope)?;
             if dispatch.method_contract.is_some() {
                 return self.method_call(expr, scope);

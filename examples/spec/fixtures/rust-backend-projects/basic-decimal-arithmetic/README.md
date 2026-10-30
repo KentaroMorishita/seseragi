@@ -1,0 +1,1 @@
+Decimal exact arithmetic across a frozen two-module path package. Opaque values, canonical type aliases, generic dictionaries, saved methods, partial application and Debug are checked by basic_standard.

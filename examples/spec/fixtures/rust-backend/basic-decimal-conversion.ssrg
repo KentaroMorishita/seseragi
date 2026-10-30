@@ -1,0 +1,65 @@
+import * as decimal from "std/decimal"
+import * as rounds from "std/number"
+import * as ints from "std/int"
+import * as floats from "std/float"
+
+fn value source: String -> decimal.Decimal = match decimal.parse source { Right number -> number; Left _ -> decimal.fromInt (42 / 0) }
+fn context digits: Int -> mode: rounds.RoundingMode -> decimal.DecimalContext = match decimal.context digits mode { Right result -> result; Left _ -> context (42 / 0) mode }
+fn error value: decimal.DecimalConversionError -> String = match value {
+  decimal.DecimalNotIntegral -> "not-integral"
+  decimal.DecimalOutsideIntRange -> "outside-int"
+  decimal.DecimalOutsideFloatRange -> "outside-float"
+  decimal.FloatNotFinite -> "not-finite"
+}
+fn integer result: Either<decimal.DecimalConversionError,Int> -> String = match result { Left failure -> error failure; Right number -> ints.format number }
+fn floating result: Either<decimal.DecimalConversionError,Float> -> String = match result { Left failure -> error failure; Right number -> floats.format number }
+fn converted result: Either<decimal.DecimalConversionError,decimal.Decimal> -> String = match result { Left failure -> error failure; Right number -> show number }
+fn converter -> (decimal.DecimalContext -> Float -> Either<decimal.DecimalConversionError,decimal.Decimal>) = decimal.fromFloat
+fn parsed source: String -> Float = match floats.parse source { Right number -> number; Left _ -> 0.0 }
+
+pub effect fn main = do {
+  let convert = converter ()
+  let saved = convert (context 17 rounds.HalfEven)
+  println (integer (decimal.toIntExact (value "42.000")))
+  println (integer (decimal.toIntExact (value "-42e0")))
+  println (integer (decimal.toIntExact (value "9007199254740991")))
+  println (integer (decimal.toIntExact (value "-9007199254740991")))
+  println (integer (decimal.toIntExact (value "9007199254740992")))
+  println (integer (decimal.toIntExact (value "-9007199254740992")))
+  println (integer (decimal.toIntExact (value "1.25")))
+  println (integer (decimal.toIntExact (value "1e100000000000000000000000000000000000000000")))
+  println (integer (decimal.toIntExact (value "1e-100000000000000000000000000000000000000000")))
+  println (floating (decimal.toFloat (value "0")))
+  println (floating (decimal.toFloat (value "-0")))
+  println (floating (decimal.toFloat (value "-1e-100000000000000000000000")))
+  println (floating (decimal.toFloat (value "4.9406564584124654e-324")))
+  println (floating (decimal.toFloat (value "1.7976931348623157e308")))
+  println (floating (decimal.toFloat (value "179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858369")))
+  println (floating (decimal.toFloat (value "1e309")))
+  println (converted (saved 0.1))
+  println (converted (convert (context 9007199254740991 rounds.HalfEven) 0.1))
+  println (converted (convert (context 1 rounds.Ceiling) 0.1))
+  println (converted (convert (context 1 rounds.Floor) (-0.1)))
+  println (converted (convert (context 1 rounds.HalfEven) (2.5)))
+  println (converted (convert (context 1 rounds.HalfEven) (-2.5)))
+  println (converted (convert (context 1 rounds.HalfUp) (2.5)))
+  println (converted (convert (context 1 rounds.HalfUp) (-2.5)))
+  println (converted (convert (context 1 rounds.TowardZero) (2.5)))
+  println (converted (convert (context 1 rounds.TowardZero) (-2.5)))
+  println (converted (convert (context 1 rounds.AwayFromZero) (2.5)))
+  println (converted (convert (context 1 rounds.AwayFromZero) (-2.5)))
+  println (converted (convert (context 1 rounds.Floor) (2.5)))
+  println (converted (convert (context 1 rounds.Floor) (-2.5)))
+  println (converted (convert (context 1 rounds.Ceiling) (2.5)))
+  println (converted (convert (context 1 rounds.Ceiling) (-2.5)))
+  println (converted (saved (0.0 / 0.0)))
+  println (converted (saved (1.0 / 0.0)))
+  println (converted (saved (-1.0 / 0.0)))
+  println (converted (saved (-0.0)))
+  println (converted (saved (parsed "5e-324")))
+  println (converted (convert (context 3 rounds.HalfEven) (parsed "1.7976931348623157e308")))
+  println (converted (Left decimal.DecimalNotIntegral))
+  println (converted (Left decimal.DecimalOutsideIntRange))
+  println (converted (Left decimal.DecimalOutsideFloatRange))
+  println (converted (Left decimal.FloatNotFinite))
+}

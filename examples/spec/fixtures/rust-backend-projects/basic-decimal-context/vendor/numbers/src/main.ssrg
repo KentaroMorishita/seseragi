@@ -1,0 +1,11 @@
+import * as decimal from "std/decimal"
+import * as rounds from "std/number"
+
+pub opaque newtype Context = decimal.DecimalContext
+pub alias Policy = rounds.RoundingMode
+pub alias Failure = decimal.DecimalContextError
+pub fn create digits: Int -> mode: Policy -> Either<Failure,Context> = match decimal.context digits mode { Left error -> Left error; Right context -> Right (Context context) }
+pub fn precision context: Context -> Int = match context { Context value -> decimal.precision value }
+pub fn rounding context: Context -> Policy = match context { Context value -> decimal.rounding value }
+pub fn captured context: Context -> (Unit -> Int) = \_: Unit -> precision context
+pub fn apply<A,B> operation: (A -> B) -> value: A -> B = operation value

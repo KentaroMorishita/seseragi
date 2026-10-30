@@ -1,0 +1,40 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as decimal from "std/decimal"
+import * as numbers from "std/number"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+fn render operation: (Float -> Either<decimal.DecimalConversionError,decimal.Decimal>) -> String = match operation 0.1 {
+  Right value -> show value
+  Left _ -> "unexpected"
+}
+fn context -> decimal.DecimalContext = match decimal.context 17 numbers.HalfEven { Right value -> value; Left _ -> context () }
+effect fn failBody context: decimal.DecimalContext -> Unit fails decimal.DecimalConversionError = do {
+  _value <- decimal.fromFloat context (1.0 / 0.0) |> effects.fromEither
+  effects.succeed ()
+}
+
+pub effect fn main = do {
+  let selected = context ()
+  released <- refs.make 0
+  saved <- refs.make (decimal.fromFloat selected)
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    operation <- refs.get saved
+    say (render operation)
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody selected
+  }) |> effects.recover (\_error: decimal.DecimalConversionError -> say "recovered: non-finite")
+  count <- refs.get released
+  say ("released: " + show count)
+}

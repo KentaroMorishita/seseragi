@@ -1,0 +1,15 @@
+import * as values from "numbers"
+import * as decimal from "std/decimal"
+fn report result:Either<values.Failure,values.Value> -> String = match result { Right value -> values.render value; Left decimal.DecimalDivisionByZero -> "zero"; Left decimal.NonTerminatingDecimal -> "non-terminating" }
+fn operation -> (values.Value -> values.Value -> Either<values.Failure,values.Value>) = values.exact
+pub effect fn main = do {
+  let a = values.parse "1.25"
+  let three = values.parse "3"
+  let exact = operation () (values.parse "0.08")
+  let divide = values.divideWith 4
+  let dividedByThree = divide three
+  let rounded = values.quantizer 1
+  println (report (values.apply exact a) + "|" + report (values.apply dividedByThree a) + "|" + values.render (values.apply rounded a))
+  println (report (values.exact (values.parse "0") a))
+  println (report (values.exact three (values.parse "1")))
+}
