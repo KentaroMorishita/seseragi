@@ -9,6 +9,26 @@ pub(crate) fn at(message: &str, origin: &SourceSpan, module: &str) -> RustBacken
     error
 }
 
+fn function_owner<'a>(module: &'a CoreModule, symbol: &'a str) -> Option<&'a str> {
+    let (owner, name) = symbol.rsplit_once("::")?;
+    if name.is_empty() {
+        return None;
+    }
+    // Inherent methods use Type::method identities. Resolve their defining
+    // module through a declared nominal type, never through an arbitrary prefix.
+    if module
+        .structs
+        .iter()
+        .map(|s| &s.symbol)
+        .chain(module.adts.iter().map(|a| &a.symbol))
+        .any(|symbol| symbol == owner)
+    {
+        owner.rsplit_once("::").map(|(module, _)| module)
+    } else {
+        Some(owner)
+    }
+}
+
 pub(crate) fn emit(
     modules: &[&CoreModule],
     entry_module: &str,
@@ -106,21 +126,28 @@ fn emit_body(
                 &module.module,
             ));
         }
-        for (symbol, origin) in module
+        for (symbol, origin, owner) in module
             .functions
             .iter()
-            .map(|f| (&f.symbol, &f.origin))
-            .chain(module.bindings.iter().map(|b| (&b.symbol, &b.origin)))
-            .chain(
-                module
-                    .adts
-                    .iter()
-                    .flat_map(|a| a.variants.iter().map(|v| (&v.symbol, &v.origin))),
-            )
+            .map(|f| (&f.symbol, &f.origin, function_owner(module, &f.symbol)))
+            .chain(module.bindings.iter().map(|b| {
+                (
+                    &b.symbol,
+                    &b.origin,
+                    b.symbol.rsplit_once("::").map(|(owner, _)| owner),
+                )
+            }))
+            .chain(module.adts.iter().flat_map(|a| {
+                a.variants.iter().map(|v| {
+                    (
+                        &v.symbol,
+                        &v.origin,
+                        v.symbol.rsplit_once("::").map(|(owner, _)| owner),
+                    )
+                })
+            }))
         {
-            if symbol.rsplit_once("::").map(|(owner, _)| owner) != Some(module.module.as_str())
-                || !symbols.insert(symbol.clone())
-            {
+            if owner != Some(module.module.as_str()) || !symbols.insert(symbol.clone()) {
                 return Err(at(
                     "Rust backend: invalid or duplicate canonical symbol owner",
                     origin,

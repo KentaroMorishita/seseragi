@@ -1,0 +1,18 @@
+struct Box<A> { value: A, }
+
+impl<A> Box<A> {
+  fn map<B> self: Box<A> -> transform: (A -> B) -> Box<B> = Box {
+    value: transform self.value
+  }
+
+  fn get self: Box<A> -> A = self.value
+}
+
+fn double value: Int -> Int = value * 2
+
+pub fn probe -> (Int, Bool, Int, Bool) = {
+  let box = Box { value: 21 }
+  let mapped = box.map double
+  let changed = box.map (\value: Int -> value == 21)
+  (mapped.get, changed.get, box.get, (Box { value: False }).get)
+}
