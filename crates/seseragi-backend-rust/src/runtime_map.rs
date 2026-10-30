@@ -378,6 +378,36 @@ fn native_map_append(values: &NativeMap, key: V, value: V, hash: u32) -> V {
         last: Some(id),
     }))
 }
+
+fn native_map_replace(values: &NativeMap, id: u64, value: V) -> V {
+    let mut entry = native_map_entry(values, id).clone();
+    entry.value = value;
+    let order = native_map_index_set(&values.order, id, V::MapEntry(Shared::new(entry)));
+    V::Map(Shared::new(NativeMap {
+        seed: values.seed,
+        buckets: values.buckets.clone(),
+        order,
+        first: values.first,
+        last: values.last,
+    }))
+}
+
+// The lookup and update share one mixed hash. All original entries and source
+// arguments stay owned by the caller while arbitrary user code runs.
+fn native_map_upsert(
+    values: &NativeMap,
+    dictionaries: &[V],
+    key: &V,
+    update: impl FnOnce(Option<&V>) -> V,
+) -> V {
+    let (eq, hash) = native_map_key_hash(values, key, dictionaries);
+    let found = native_map_find(values, key, hash, &eq);
+    let value = update(found.map(|id| &native_map_entry(values, id).value));
+    match found {
+        Some(id) => native_map_replace(values, id, value),
+        None => native_map_append(values, key.clone(), value, hash),
+    }
+}
 // Rebuild only selected entries, retaining their cached hashes and seed. Build
 // each collision bucket once; repeated append would copy a large bucket for
 // every selected key. No source container or excluded key enters the result.
@@ -490,23 +520,60 @@ fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> 
                 None => V::adt("std/prelude::Nothing", V::Unit),
             }
         }
-        "std/map::insert" => {
-            let (eq, hash) = native_map_key_hash(values, &arguments[0], &dictionaries);
-            if let Some(id) = native_map_find(values, &arguments[0], hash, &eq) {
-                let mut entry = native_map_entry(values, id).clone();
-                entry.value = arguments[1].clone();
-                let order =
-                    native_map_index_set(&values.order, id, V::MapEntry(Shared::new(entry)));
-                V::Map(Shared::new(NativeMap {
-                    seed: values.seed,
-                    buckets: values.buckets.clone(),
-                    order,
-                    first: values.first,
-                    last: values.last,
-                }))
+        "std/map::insert" => native_map_upsert(values, &dictionaries, &arguments[0], |_| {
+            arguments[1].clone()
+        }),
+        "std/map::upsert" => {
+            assert_eq!(arguments.len(), 3, "Rust ABI: Map upsert arity");
+            native_map_upsert(values, &dictionaries, &arguments[0], |current| {
+                let current = current.map_or_else(
+                    || V::adt("std/prelude::Nothing", V::Unit),
+                    |value| V::adt("std/prelude::Just", value.clone()),
+                );
+                arguments[1].apply(current)
+            })
+        }
+        "std/map::mergeWith" | "std/map::mapKeysWith" => {
+            assert_eq!(
+                arguments.len(),
+                3,
+                "Rust ABI: Map merge/key transform arity"
+            );
+            let rekey = name == "std/map::mapKeysWith";
+            let source = if rekey {
+                values
             } else {
-                native_map_append(values, arguments[0].clone(), arguments[1].clone(), hash)
+                native_map_value(&arguments[1])
+            };
+            let mut result = if rekey {
+                V::Map(Shared::new(NativeMap::empty(source.seed)))
+            } else {
+                arguments[2].clone()
+            };
+            let mut id = source.first;
+            let mut visited = 0;
+            while let Some(current) = id {
+                assert!(
+                    visited < native_map_index_size(&source.order),
+                    "Rust ABI: cyclic Map order"
+                );
+                visited += 1;
+                let entry = native_map_entry(source, current);
+                let key = if rekey {
+                    arguments[1].apply(entry.key.clone())
+                } else {
+                    entry.key.clone()
+                };
+                result =
+                    native_map_upsert(native_map_value(&result), &dictionaries, &key, |current| {
+                        current.map_or_else(
+                            || entry.value.clone(),
+                            |value| arguments[0].apply(value.clone()).apply(entry.value.clone()),
+                        )
+                    });
+                id = entry.next;
             }
+            result
         }
         "std/map::remove" => {
             let (eq, hash) = native_map_key_hash(values, &arguments[0], &dictionaries);
@@ -591,6 +658,206 @@ fn native_map_operation(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> 
 #[cfg(test)]
 mod map_tests {
     use super::*;
+
+    #[test]
+    fn upsert_merge_and_rekey_call_hash_once_and_callbacks_in_source_order() {
+        enable_cycle_collection();
+        let d = dictionaries();
+        let original =
+            native_map_operation("std/map::singleton", d.clone(), vec![V::Int(1), V::Int(10)]);
+        events();
+        let update = V::fun(vec![], |_, current| {
+            if current.tagged("std/prelude::Nothing") {
+                EVENTS.with(|events| events.borrow_mut().push("u:none".into()));
+                V::Int(42)
+            } else {
+                let V::Int(value) = current.payload() else {
+                    panic!()
+                };
+                EVENTS.with(|events| events.borrow_mut().push(format!("u:{value}")));
+                V::Int(value + 1)
+            }
+        });
+        let changed = native_map_operation(
+            "std/map::upsert",
+            d.clone(),
+            vec![V::Int(1), update.clone(), original.clone()],
+        );
+        assert_eq!(events(), ["h1", "e1:1", "u:10"]);
+        let changed = native_map_operation(
+            "std/map::upsert",
+            d.clone(),
+            vec![V::Int(3), update.clone(), changed],
+        );
+        assert_eq!(events(), ["h3", "e1:3", "u:none"]);
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![changed.clone()]).render(),
+            "[(1, 11), (3, 42)]"
+        );
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![original.clone()]).render(),
+            "[(1, 10)]"
+        );
+        let left = native_map_operation(
+            "std/map::insert",
+            d.clone(),
+            vec![V::Int(3), V::Int(30), original.clone()],
+        );
+        let right =
+            native_map_operation("std/map::singleton", d.clone(), vec![V::Int(3), V::Int(7)]);
+        let right = native_map_operation(
+            "std/map::insert",
+            d.clone(),
+            vec![V::Int(2), V::Int(2), right],
+        );
+        let resolve = V::fun(vec![], |_, left| {
+            let V::Int(left) = left else { panic!() };
+            EVENTS.with(|events| events.borrow_mut().push(format!("r:{left}")));
+            V::fun(vec![V::Int(left)], |captures, right| {
+                let (V::Int(left), V::Int(right)) = (&captures[0], right) else {
+                    panic!()
+                };
+                EVENTS.with(|events| events.borrow_mut().push(format!("i:{right}")));
+                V::Int(left * 10 + right)
+            })
+        });
+        events();
+        let merged = native_map_operation(
+            "std/map::mergeWith",
+            d.clone(),
+            vec![resolve.clone(), right.clone(), left.clone()],
+        );
+        assert_eq!(events(), ["h3", "e1:3", "e3:3", "r:30", "i:7", "h2"]);
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![merged.clone()]).render(),
+            "[(1, 10), (3, 307), (2, 2)]"
+        );
+        let source = native_map_operation(
+            "std/map::insert",
+            d.clone(),
+            vec![V::Int(2), V::Int(20), left.clone()],
+        );
+        let key = V::fun(vec![], |_, key| {
+            let V::Int(key) = key else { panic!() };
+            EVENTS.with(|events| events.borrow_mut().push(format!("k:{key}")));
+            V::Int(key % 2)
+        });
+        events();
+        let rekeyed = native_map_operation(
+            "std/map::mapKeysWith",
+            d.clone(),
+            vec![resolve.clone(), key.clone(), source.clone()],
+        );
+        assert_eq!(
+            events(),
+            ["k:1", "h1", "k:3", "h1", "e1:1", "r:10", "i:30", "k:2", "h0"]
+        );
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![rekeyed.clone()]).render(),
+            "[(1, 130), (0, 20)]"
+        );
+        assert_eq!(
+            native_map_value(&rekeyed).seed,
+            native_map_value(&source).seed
+        );
+        let empty = V::Map(Shared::new(NativeMap::empty(1234)));
+        let never = V::fun(vec![], |_, _| {
+            panic!("empty merge/rekey must not call a callback")
+        });
+        let output = native_map_operation(
+            "std/map::mapKeysWith",
+            d.clone(),
+            vec![never.clone(), never.clone(), empty.clone()],
+        );
+        assert_eq!(native_map_value(&output).seed, 1234);
+        let same = native_map_operation(
+            "std/map::mergeWith",
+            d.clone(),
+            vec![never.clone(), empty.clone(), original.clone()],
+        );
+        assert_eq!(
+            native_map_operation("std/map::entries", vec![], vec![same.clone()]).render(),
+            "[(1, 10)]"
+        );
+        assert!(events().is_empty());
+        drop((
+            d, original, update, changed, left, right, resolve, merged, source, key, rekeyed,
+            empty, never, output, same,
+        ));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn update_merge_key_and_resolver_defects_release_partial_maps_and_ref_cycles() {
+        enable_cycle_collection();
+        for phase in 0..4 {
+            let d = dictionaries();
+            let cell = V::reference(V::Unit);
+            let source = native_map_operation(
+                "std/map::singleton",
+                d.clone(),
+                vec![V::Int(1), cell.clone()],
+            );
+            let source = native_map_operation(
+                "std/map::insert",
+                d.clone(),
+                vec![V::Int(2), cell.clone(), source],
+            );
+            let update = V::fun(vec![cell.clone()], |_, _| {
+                panic!("deliberate updater defect")
+            });
+            let resolve = V::fun(
+                vec![cell.clone(), V::Bool(phase == 1 || phase == 3)],
+                |captures, left| {
+                    V::fun(
+                        vec![captures[0].clone(), captures[1].clone(), left],
+                        |captures, right| {
+                            assert!(!captures[1].boolean(), "deliberate resolver defect");
+                            right
+                        },
+                    )
+                },
+            );
+            let key = V::fun(vec![cell.clone(), V::Bool(phase == 2)], |captures, key| {
+                assert!(
+                    !captures[1].boolean() || !matches!(key, V::Int(2)),
+                    "deliberate key mapper defect"
+                );
+                V::Int(1)
+            });
+            cell.write_reference(V::Tuple(Shared::new(vec![
+                update.clone(),
+                resolve.clone(),
+                key.clone(),
+            ])));
+            let failed = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| match phase {
+                0 => native_map_operation(
+                    "std/map::upsert",
+                    d.clone(),
+                    vec![V::Int(1), update.clone(), source.clone()],
+                ),
+                1 => native_map_operation(
+                    "std/map::mergeWith",
+                    d.clone(),
+                    vec![resolve.clone(), source.clone(), source.clone()],
+                ),
+                _ => native_map_operation(
+                    "std/map::mapKeysWith",
+                    d.clone(),
+                    vec![resolve.clone(), key.clone(), source.clone()],
+                ),
+            }));
+            assert!(failed.is_err(), "phase{phase}");
+            assert_eq!(
+                native_map_operation("std/map::keys", vec![], vec![source.clone()]).render(),
+                "[1, 2]"
+            );
+            drop((d, cell, source, update, resolve, key));
+            collect_cycles().unwrap();
+            assert_eq!(LIVE.with(Cell::get), 0, "phase{phase}");
+        }
+    }
 
     #[test]
     fn filter_and_map_values_keep_order_cached_hashes_gapped_addresses_and_snapshots() {

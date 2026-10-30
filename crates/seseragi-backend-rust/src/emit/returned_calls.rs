@@ -1,6 +1,6 @@
-//! Apply a checked returned function at its ordinary source stage. Primary
-//! dictionaries and global function captures already use native's value ABI;
-//! no new dictionary stage is inserted between these source applications.
+//! Prove constrained global source stages against their declaration. Native
+//! dictionaries precede source arguments in the value ABI, so partial and
+//! returned source functions retain their ordinary traceable captures.
 use super::*;
 
 impl Backend<'_> {
@@ -14,7 +14,7 @@ impl Backend<'_> {
             arguments,
             evidence,
             trait_dispatch,
-            evidence_argument_index: Some(index),
+            evidence_argument_index,
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
             type_ref,
@@ -23,6 +23,7 @@ impl Backend<'_> {
         else {
             return Ok(false);
         };
+        let partial = !deferred_evidence_parameters.is_empty();
         if self.program_wasm_library {
             return Ok(false);
         }
@@ -31,18 +32,45 @@ impl Backend<'_> {
             .functions
             .iter()
             .find(|function| function.symbol == *callee);
+        if evidence_argument_index.is_none() && !partial {
+            if trait_dispatch.is_none()
+                && function.is_some_and(|function| {
+                    !function.constraints.is_empty() && arguments.len() < function.parameters.len()
+                })
+            {
+                return Err("Rust backend: missing global partial source stages".into());
+            }
+            return Ok(false);
+        }
         if trait_dispatch.is_none()
             && function.is_none_or(|function| function.constraints.is_empty())
         {
             return Ok(false);
         }
-        if *index == 0
-            || *index >= arguments.len()
-            || !deferred_evidence_parameters.is_empty()
-            || !deferred_evidence_type_constructor_parameters.is_empty()
-        {
+        if !deferred_evidence_type_constructor_parameters.is_empty() {
             return Err("Rust backend: unproven returned callable source stages".into());
         }
+        let index = if partial {
+            let Some(function) = function.filter(|_| trait_dispatch.is_none()) else {
+                return Err("Rust backend: unproven partial callable declaration".into());
+            };
+            if evidence_argument_index.is_some()
+                || arguments.len() + deferred_evidence_parameters.len() != function.parameters.len()
+                || function
+                    .type_parameters
+                    .iter()
+                    .any(|parameter| parameter.arity != 0)
+            {
+                return Err("Rust backend: partial function source boundary mismatch".into());
+            }
+            function.parameters.len()
+        } else {
+            let index = evidence_argument_index.expect("checked returned source boundary");
+            if index == 0 || index >= arguments.len() {
+                return Err("Rust backend: unproven returned callable source stages".into());
+            }
+            index
+        };
         let call_type = arguments
             .iter()
             .rev()
@@ -67,7 +95,7 @@ impl Backend<'_> {
                         && declaration.method == dispatch.method
                 })
                 .ok_or("Rust backend: missing returned method declaration")?;
-            if declaration.signature.parameters.len() != *index {
+            if declaration.signature.parameters.len() != index {
                 return Err("Rust backend: returned method source boundary mismatch".into());
             }
             self.validate_declared_parameter_method(dispatch, selected, &call_type, scope)?;
@@ -75,7 +103,7 @@ impl Backend<'_> {
             return Ok(true);
         }
         let function = function.expect("checked constrained function");
-        if scope.contains(callee) || function.is_effect || function.parameters.len() != *index {
+        if scope.contains(callee) || function.is_effect || function.parameters.len() != index {
             return Err("Rust backend: returned function source boundary mismatch".into());
         }
         let owner = self
@@ -137,6 +165,19 @@ impl Backend<'_> {
             .collect::<Result<Vec<_>>>()?;
         let callable = LocalCallable::new(variables.clone().into_iter(), &constraints, &parameters);
         let mut bindings = self.validate_local_arguments(&callable, arguments, evidence, scope)?;
+        for (parameter, actual) in parameters
+            .iter()
+            .skip(arguments.len())
+            .zip(deferred_evidence_parameters)
+        {
+            self.match_local_type(
+                &parameter.type_ref,
+                actual,
+                &variables,
+                &mut bindings,
+                scope,
+            )?;
+        }
         self.match_local_type(&value_type, &call_type, &variables, &mut bindings, scope)?;
         Ok(true)
     }

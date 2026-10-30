@@ -19,7 +19,7 @@ fn arity(name: &str) -> Option<usize> {
         | "std/set::intersection"
         | "std/set::difference"
         | "std/set::isSubsetOf" => 2,
-        "std/map::insert" => 3,
+        "std/map::insert" | "std/map::upsert" | "std/map::mergeWith" | "std/map::mapKeysWith" => 3,
         _ => return None,
     })
 }
@@ -121,6 +121,26 @@ impl Backend<'_> {
             arguments: vec![],
         };
         let value = slots.get(1).unwrap_or(&unit);
+        let dictionary_key = if name == "std/map::mapKeysWith" {
+            let CoreType::Named {
+                name: output_owner,
+                arguments: output_slots,
+            } = result
+            else {
+                return Err("Rust backend: Map mapKeysWith requires a canonical result Map".into());
+            };
+            if output_owner != "std/map::Map"
+                || output_slots.len() != 2
+                || output_slots[1] != *value
+            {
+                return Err(
+                    "Rust backend: Map mapKeysWith result value/owner/arity mismatch".into(),
+                );
+            }
+            &output_slots[0]
+        } else {
+            key
+        };
         let named = |name: &str, arguments| CoreType::Named {
             name: format!("std/prelude::{name}"),
             arguments,
@@ -134,6 +154,33 @@ impl Backend<'_> {
                 true,
             ),
             "std/map::containsKey" => (vec![key.clone(), map.clone()], named("Bool", vec![]), true),
+            "std/map::upsert" => (
+                vec![
+                    key.clone(),
+                    function(&[named("Maybe", vec![value.clone()])], value.clone()),
+                    map.clone(),
+                ],
+                map.clone(),
+                true,
+            ),
+            "std/map::mergeWith" => (
+                vec![
+                    function(&[value.clone(), value.clone()], value.clone()),
+                    map.clone(),
+                    map.clone(),
+                ],
+                map.clone(),
+                true,
+            ),
+            "std/map::mapKeysWith" => (
+                vec![
+                    function(&[value.clone(), value.clone()], value.clone()),
+                    function(&[key.clone()], dictionary_key.clone()),
+                    map.clone(),
+                ],
+                result.clone(),
+                true,
+            ),
             "std/map::filter" => (
                 vec![
                     function(&[key.clone(), value.clone()], named("Bool", vec![])),
@@ -226,7 +273,9 @@ impl Backend<'_> {
             self.validate_eq_evidence(eq, scope)?;
             self.validate_hash_evidence(hash, scope)?;
             for selected in [eq, hash] {
-                if self.local_canonical_type(&selected.constraint.arguments[0], scope)? != *key {
+                if self.local_canonical_type(&selected.constraint.arguments[0], scope)?
+                    != *dictionary_key
+                {
                     return Err("Rust backend: collection key dictionary argument mismatch".into());
                 }
             }

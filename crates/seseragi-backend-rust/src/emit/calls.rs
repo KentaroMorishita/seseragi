@@ -146,7 +146,9 @@ impl Backend<'_> {
                 deferred_evidence_parameters,
             ));
         let returned_evidence_call = self.validate_returned_evidence_call(expr, scope)?;
-        if (!deferred_evidence_parameters.is_empty() && !bound_primitive_partial)
+        if (!deferred_evidence_parameters.is_empty()
+            && !bound_primitive_partial
+            && !returned_evidence_call)
             || !deferred_evidence_type_constructor_parameters.is_empty()
             || (evidence_argument_index.is_some()
                 && !evidence.is_empty()

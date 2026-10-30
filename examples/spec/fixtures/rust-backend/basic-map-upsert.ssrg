@@ -1,0 +1,46 @@
+import * as maps from "std/map"
+import * as text from "std/text"
+
+type Key = | Key { identity: Int, label: String }
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = match left { Key a -> match right { Key b -> a.identity == b.identity } } }
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key detail -> detail.label } }
+fn update current: Maybe<Int> -> Int = match current { Nothing -> 7; Just value -> value + 1 }
+fn resolve current: Int -> incoming: Int -> Int = current * 10 + incoming
+fn mapped source: String -> Key = match source {
+  "a" -> Key ({ identity: 1, label: "first-key" })
+  "b" -> Key ({ identity: 1, label: "second-key" })
+  _ -> Key ({ identity: 2, label: "third-key" })
+}
+fn upsert<K,V> key: K -> callback: (Maybe<V> -> V) -> maps.Map<K,V> -> maps.Map<K,V> where Eq<K>, Hash<K> = maps.upsert key callback
+fn merge<K,V> callback: (V -> V -> V) -> right: maps.Map<K,V> -> maps.Map<K,V> -> maps.Map<K,V> where Eq<K>, Hash<K> = maps.mergeWith callback right
+fn rekey<K1,K2,V> callback: (V -> V -> V) -> key: (K1 -> K2) -> maps.Map<K1,V> -> maps.Map<K2,V> where Eq<K2>, Hash<K2> = maps.mapKeysWith callback key
+
+pub fn probe -> String = {
+  let first = Key ({ identity: 1, label: "original" })
+  let equal = Key ({ identity: 1, label: "replacement" })
+  let other = Key ({ identity: 2, label: "other" })
+  let fresh = Key ({ identity: 3, label: "fresh" })
+  let original = maps.singleton first 10 |> maps.insert other 20
+  let setter: Key -> (Maybe<Int> -> Int) -> maps.Map<Key,Int> -> maps.Map<Key,Int> = maps.upsert
+  let saved = setter equal update
+  let changed = upsert fresh update (saved original)
+  let right = maps.singleton equal 3 |> maps.insert fresh 4
+  let merger: (Int -> Int -> Int) -> maps.Map<Key,Int> -> maps.Map<Key,Int> -> maps.Map<Key,Int> = maps.mergeWith
+  let withRight = merger resolve right
+  let source = maps.singleton "a" 10 |> maps.insert "b" 20 |> maps.insert "c" 3
+  let keys: (Int -> Int -> Int) -> (String -> Key) -> maps.Map<String,Int> -> maps.Map<Key,Int> = maps.mapKeysWith
+  let keyMapper = keys resolve mapped
+  let numeric = rekey resolve (\key: String -> if key == "c" then 2 else 1) source
+  let empty: maps.Map<Key,Int> = maps.empty ()
+  let emptySource: maps.Map<String,Int> = maps.empty ()
+  text.join "|" [
+    show (maps.entries changed), show (maps.entries original),
+    show (maps.entries (withRight original)), show (maps.entries (merge resolve original right)),
+    show (maps.entries (keyMapper source)), show (maps.entries numeric), show (maps.entries source),
+    show (maps.entries (maps.mergeWith (\_: Int -> \_: Int -> 42 / 0) empty original)),
+    show (maps.entries (rekey (\_: Int -> \_: Int -> 42 / 0) (\_: String -> 42 / 0) emptySource)),
+    show (maps.entries (maps.upsert () (\_: Maybe<Int> -> 5) (maps.singleton () 1)))
+  ]
+}
+pub effect fn main = println (probe ())

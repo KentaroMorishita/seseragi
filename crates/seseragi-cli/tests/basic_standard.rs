@@ -399,6 +399,52 @@ fn basic_map_operations_keep_key_representatives_order_snapshots_and_changed_val
 }
 
 #[test]
+fn basic_map_upsert_keeps_representatives_order_snapshots_and_noncommutative_resolvers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-upsert.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-upsert.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_upsert_path_package_keeps_opaque_input_output_keys_and_saved_generic_stages() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-map-upsert"),
+        &[Case::success(b"1|2|[120, 3]|[121, 3]|[121, 34]|[120, 3]\n")],
+    );
+}
+
+#[test]
+fn basic_map_upsert_keeps_returned_functions_cold_and_releases_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-upsert-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-upsert-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_upsert_callback_defects_run_finalizers_and_release_partial_results() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-map-upsert-effects.ssrg");
+    for (name, old, replacement) in [
+        ("update", "maps.upsert \"callback\" (keep callback) stored", "maps.upsert \"callback\" (\\_current -> if (42 / 0) == 0 then callback else callback) stored"),
+        ("merge", "maps.mergeWith resolve right updated", "maps.mergeWith (\\_left -> \\_right -> if (42 / 0) == 0 then callback else callback) right updated"),
+        ("key", "maps.mapKeysWith resolve (\\_key: String -> 1) merged", "maps.mapKeysWith resolve (\\_key: String -> 1 / 0) merged"),
+        ("collision", "maps.mapKeysWith resolve (\\_key: String -> 1) merged", "maps.mapKeysWith (\\_left -> \\_right -> if (42 / 0) == 0 then callback else callback) (\\_key: String -> 1) merged"),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("map-upsert-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(&path, &[Case { name, stdout: b"created\nacquired\ncold\nreleased\n", exit: 70, defect: true, native_defect: "Int division by zero", ..Case::success(b"") }]);
+    }
+}
+
+#[test]
 fn basic_map_operations_path_package_keeps_opaque_values_imported_generic_partials_and_captures() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-map-operations"),

@@ -6,6 +6,21 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+制約付きglobal partial/戻り関数とTSのcallback型はbackendの`--test returned_evidence_stages
+--test strict_partials`、driverの`--test strict_partials --test generic_call_instantiation
+--test hkt_erasure`、CLIの元`basic_map_upsert_`入力で確認します。元入力の両profile raw TS strictと
+Bun/Node/nativeを比較し、確定済みcallback型・宣言のsource境界・辞書位置を保ちます。
+残り引数/結果/owner/kind/辞書の偽造を拒否し、共有loweringのSDK/全体gateは最終batchで確認します。
+
+native Map.upsert/mergeWith/mapKeysWithはbackendの`--test basic_map_upsert`、runtimeの`map_tests`、
+CLIの`--test basic_standard basic_map_upsert_`で確認します。Hash一度→Eq検索→update一度の順、
+mergeのleft代表/順とright-only末尾、key変換と衝突resolveのsource順・最初の出力代表を保ちます。
+mapKeysWithの辞書はinput K1ではなくoutput K2を検証し、seedとV型を保持します。
+元raw TS両profile strictとfresh Bun/Node/native、通常2 module packageのopaque input/output keyと
+保存generic partial、cold/Failure/update・merge・key・collision callback内Defect/finalizer/Ref cycle/
+root0、owner/kind/型/辞書/段階の元位置付き拒否と未使用program WASM拒否を確認します。
+insertの置換/lookupを共有するため既存Map/Set runtimeと対象CLIも回帰確認します。SDK/全体gateは最終batchです。
+
 native Map.filter/mapValuesはbackendの`--test basic_map_operations --test basic_map`、runtimeの
 `map_tests`、CLIの`--test basic_standard basic_map_operations_`で確認します。filterのcached hash/
 seedとbulk再構築はSetと共有するため`set_tests`とCLIの`basic_set_operations_`も回帰確認します。

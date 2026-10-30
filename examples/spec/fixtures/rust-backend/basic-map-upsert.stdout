@@ -1,0 +1,1 @@
+[(original, 11), (other, 20), (fresh, 7)]|[(original, 10), (other, 20)]|[(original, 103), (other, 20), (fresh, 4)]|[(replacement, 40), (fresh, 4), (other, 20)]|[(first-key, 120), (third-key, 3)]|[(1, 120), (2, 3)]|[(a, 10), (b, 20), (c, 3)]|[(original, 10), (other, 20)]|[]|[((), 5)]

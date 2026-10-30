@@ -927,13 +927,9 @@ pub(super) fn lower_core_expr_to_typescript(
                         imported_types,
                         &deferred_evidence_type_constructor_parameters,
                     );
-                    let check_late_callback = has_evidence
+                    let check_callback = has_evidence
                         && deferred_evidence_parameters.is_empty()
-                        && !matches!(
-                            checked_argument_types.first(),
-                            Some(super::TypeScriptType::Function { .. })
-                        )
-                        && checked_argument_types.iter().skip(1).any(|argument| {
+                        && checked_argument_types.iter().any(|argument| {
                             matches!(argument, super::TypeScriptType::Function { .. })
                         });
                     let hkt_callee = (!has_evidence)
@@ -1002,18 +998,19 @@ pub(super) fn lower_core_expr_to_typescript(
                             imported_types,
                         );
                     }
-                    if check_late_callback {
+                    if check_callback {
                         // TypeScript fixes generic parameters at the first
                         // curried argument. The source checker used every
                         // argument and evidence; retain that instantiated
-                        // callable type before applying a later callback.
-                        let parameters = checked_argument_types
-                            .into_iter()
-                            .chain(std::iter::repeat_n(
-                                super::TypeScriptType::Unknown,
-                                evidence_count,
-                            ))
-                            .collect::<Vec<_>>();
+                        // callable type before applying any callback. A
+                        // returned source function follows the dictionaries;
+                        // its arguments must not shift that checked boundary.
+                        let mut parameters = checked_argument_types;
+                        let index = evidence_argument_index.unwrap_or(parameters.len());
+                        parameters.splice(
+                            index..index,
+                            std::iter::repeat_n(super::TypeScriptType::Unknown, evidence_count),
+                        );
                         let instantiated = parameters.into_iter().rev().fold(
                             checked_result.clone(),
                             |result, parameter| super::TypeScriptType::Function {
