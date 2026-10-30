@@ -9,22 +9,34 @@ fn label_matches(declared: &CoreInstanceConstraint, label: &str) -> bool {
 }
 
 impl Backend<'_> {
-    fn inherited_eq_parameter(
+    pub(in crate::emit) fn inherited_parameter_constraint(
         &self,
         declared: &CoreInstanceConstraint,
         selected: &CoreInstanceConstraint,
         scope: &Scope,
     ) -> bool {
-        // The canonical Ord ABI carries its selected Eq method. This is a
-        // projection of the same scoped argument, not a second dictionary or
-        // permission to substitute traits with the same displayed name.
-        declared.trait_identity.as_deref() == Some("std/prelude::Ord")
-            && selected.trait_identity.as_deref() == Some("std/prelude::Eq")
-            && self.valid_constraint_label(selected)
-            && matches!(declared.arguments.as_slice(), [argument]
-                if self.declared_method_type_kind(argument, scope) == Some(0))
-            && matches!(selected.arguments.as_slice(), [argument]
-                if self.declared_method_type_kind(argument, scope) == Some(0))
+        // Canonical supertraits project fields from the same scoped frame.
+        // Argument equality is checked by the caller, never by display name.
+        let kind = match (
+            declared.trait_identity.as_deref(),
+            selected.trait_identity.as_deref(),
+        ) {
+            (Some("std/prelude::Ord"), Some("std/prelude::Eq")) => 0,
+            (Some("std/prelude::Applicative"), Some("std/prelude::Functor"))
+            | (
+                Some("std/prelude::Monad"),
+                Some("std/prelude::Applicative" | "std/prelude::Functor"),
+            )
+            | (Some("std/prelude::Traversable"), Some("std/prelude::Functor"))
+                if !self.program_wasm_library =>
+            {
+                1
+            }
+            _ => return false,
+        };
+        self.valid_constraint_label(selected)
+            && matches!(declared.arguments.as_slice(),[argument] if self.declared_method_type_kind(argument,scope)==Some(kind))
+            && matches!(selected.arguments.as_slice(),[argument] if self.declared_method_type_kind(argument,scope)==Some(kind))
     }
 
     pub(in crate::emit) fn valid_constraint_label(
@@ -65,10 +77,10 @@ impl Backend<'_> {
             .iter()
             .map(|ty| self.local_canonical_type(ty, scope))
             .collect::<Result<Vec<_>>>()?;
-        let inherited_eq = self.inherited_eq_parameter(declared, &selected.constraint, scope);
+        let inherited = self.inherited_parameter_constraint(declared, &selected.constraint, scope);
         if !self.valid_constraint_label(declared)
             || declared_arguments != selected_arguments
-            || (!inherited_eq
+            || (!inherited
                 && (!label_matches(declared, &selected.constraint.name)
                     || selected
                         .constraint
@@ -115,8 +127,11 @@ impl Backend<'_> {
                 CoreInstanceEvidence::Parameter { index } => {
                     let parameter = &scope.dictionaries[*index];
                     if parameter.trait_identity != declared.trait_identity
-                        && !(declared.trait_identity.as_deref() == Some("std/prelude::Eq")
-                            && self.inherited_eq_parameter(parameter, &selected.constraint, scope))
+                        && !self.inherited_parameter_constraint(
+                            parameter,
+                            &selected.constraint,
+                            scope,
+                        )
                     {
                         return Err("Rust backend: local callable parameter trait mismatch".into());
                     }

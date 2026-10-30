@@ -1,0 +1,13 @@
+import * as values from "values"
+fn output value:Maybe<values.Wrapped<values.Value>> -> String = match value { Nothing -> "none"; Just box -> values.render box }
+pub effect fn main = do {
+  let collect:values.Wrapped<Maybe<values.Value>> -> Maybe<values.Wrapped<values.Value>> = values.collect ()
+  let saved:values.Wrapped<values.Value> -> Maybe<values.Wrapped<values.Value>> = values.transform values.increment
+  let fallback = values.fallback "雪🙂"
+  println (output (collect (values.optional 7)))
+  println (output (collect (values.missing ())))
+  println (output (collect (values.blank ())))
+  println (output (saved (values.make 8)))
+  println (output (saved (values.make 8)))
+  println (fallback Nothing)
+}

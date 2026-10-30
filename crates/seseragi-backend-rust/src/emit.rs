@@ -45,6 +45,7 @@ mod json_derived_structs;
 mod lists;
 mod local;
 mod math;
+mod maybe;
 mod methods;
 mod number_parse;
 mod operators;
@@ -195,6 +196,8 @@ fn emit_body(
     output.push_str(include_str!("runtime_iterator.rs"));
     output.push_str(include_str!("runtime_iterable.rs"));
     output.push_str(include_str!("runtime_collection_control.rs"));
+    output.push_str(include_str!("runtime_traversable.rs"));
+    output.push_str(include_str!("runtime_maybe.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int_value.rs"));
@@ -300,6 +303,14 @@ fn emit_body(
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
         let mut values = Vec::new();
         if backend
+            .traversable_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            values.push(format!(
+                "(\"map\", {}.field(\"map\"))",
+                id("\0dictionary_0")
+            ));
+        } else if backend
             .ord_supertrait(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
         {
@@ -557,6 +568,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.iterable_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.traversable_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -947,6 +962,11 @@ impl Backend<'_> {
                 }
                 if let Some(value) =
                     self.collection_control_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.maybe_operation_reference(name, evidence, type_ref, scope)?
                 {
                     return Ok(value);
                 }

@@ -1,0 +1,22 @@
+9
+3
+just:9
+just:3
+none
+just:[1, 2]
+none
+just:`[1, 2]
+just:[11, 12, 13]
+none
+just:[]
+just:`[]
+just:box:7
+none
+just:empty
+just:box:13
+just:empty
+just:`[11, 12]
+fallback
+42
+42
+42

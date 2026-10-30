@@ -401,6 +401,30 @@ pub(super) fn infer_call_arguments(
     )
 }
 
+/// Refine an absent/partial branch expectation without generalizing locals.
+/// The ordinary checker still validates both branches and their identities.
+pub(super) fn infer_branch_result(
+    then_branch: &SurfaceExpr,
+    else_branch: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+) -> Option<SemanticValueType> {
+    let environment = inference_environment(context);
+    let mut inference = Inference {
+        prefix: then_branch.span().start,
+        next: 0,
+        substitutions: BTreeMap::new(),
+        obligations: Vec::new(),
+        context,
+    };
+    let yes = inference.expression(then_branch, &environment)?;
+    let no = inference.expression(else_branch, &environment)?;
+    inference.unify(&yes, &no)?;
+    inference.solve_outputs()?;
+    let value = inference.resolve(&yes);
+    (variables(&value).is_empty() && !typed_type_contains_hole(&value))
+        .then(|| context.semantic_value_from_typed_type(&value))
+}
+
 fn inference_environment(context: &PureExpressionContext<'_>) -> BTreeMap<SymbolId, Scheme> {
     context
         .parameters

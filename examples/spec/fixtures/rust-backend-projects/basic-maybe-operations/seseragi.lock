@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/maybe-operations@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/maybe-operation-values@0.0.0#path:vendor/values"
+name = "fixture/maybe-operation-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:fb4a6a4d289d2ae8eb508a2bd8be69faf2c0658d8d3231a7a72a13496ba9f811"
+content_digest = "sha256:5dc21950adc3dd22df478f3946c489509da74e9a93c3f010c1949aadbe0a5de5"
+dependencies = []
+
+[[packages]]
+id = "fixture/maybe-operations@0.0.0#workspace:."
+name = "fixture/maybe-operations"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:a1e6da4d616afe21a94e08420d7a632f9b744922681da7436ad78a7d13fa2c2e"
+content_digest = "sha256:efab43e989dd6b55b7dc20136f41f83b9edcbba68318dd7dc68ca26b2c3f2ba4"
+dependencies = [
+  { import = "values", package = "fixture/maybe-operation-values@0.0.0#path:vendor/values" },
+]

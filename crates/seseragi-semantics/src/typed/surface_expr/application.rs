@@ -1113,7 +1113,7 @@ pub(crate) fn type_known_application_with_explicit(
     let mut issue = explicit_issue.or_else(|| {
         call_issue(
             callee_span,
-            signature.parameters.len(),
+            application.parameters.len(),
             &application.parameters,
             argument_nodes,
             &arguments,
@@ -1328,7 +1328,7 @@ pub(crate) fn type_known_application_with_explicit(
     };
     let semantic_type = if issue.is_some() {
         SemanticTypeKey::Invalid
-    } else if arguments.len() >= signature.parameters.len() {
+    } else if arguments.len() >= application.parameters.len() {
         application.result.key.clone()
     } else if arguments.is_empty() {
         // Dictionary-only callable selection retains its checked function

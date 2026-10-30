@@ -1,5 +1,19 @@
 # Scoped checks
 
+native MaybeのwithDefault/orElse/sequence/traverseはbackendの
+`--test maybe_operations --test hkt_projections --test reduce_until`、runtimeの
+`maybe_operation_tests`、CLIの`basic_maybe_operations_`で確認します。
+標準Array/Listと独自・輸入・parameter Traversable、canonicalなFunctor継承と
+rank2 Applicative method、Nothing後も残るcallback評価、空入力、保存・partial・
+関数返り値、opaqueな2module/HKT alias、cold/Failure/Defect/finalizer/root0を保ちます。
+元raw TS両profile strict/skipLibCheck:falseとfresh Bun/Node/nativeを比較します。
+NonEmptyList providerは#1048/#1101でABIを確認するまで拒否を保ちます。
+共有compilerの返る関数への適用とif分岐推論はdriverの
+`standard_returned_application`/`conditional_branch_inference`、CLIの
+`basic_standard_returned_application_`/`basic_standard_conditional_maybe_callback_`で
+配布118でも失敗した元の最小sourceを保持して確認します。
+共有compiler基盤を変更するため最終SDK・repository-wide gate・配布は#1148へ集約します。
+
 native collection.reduceUntilとNext/Doneはbackendの`--test reduce_until
 --test iterable_build`、runtimeの`collection_control_tests`、CLIの
 `basic_reduce_until_`で確認します。Done後のnext省略、空入力のcallback省略と

@@ -1,0 +1,48 @@
+import * as maybe from "std/maybe"
+
+type Box<A> = | Empty | Box A
+instance Functor<Box> { fn map<A,B> callback:(A -> B) -> value:Box<A> -> Box<B> = match value { Empty -> Empty; Box item -> Box (callback item) } }
+instance Traversable<Box> {
+  fn traverse<G<_>,A,B> callback:(A -> G<B>) -> value:Box<A> -> G<Box<B>> where Applicative<G> = match value { Empty -> pure Empty; Box item -> map Box (callback item) }
+}
+fn optional<A> render:(A -> String) -> value:Maybe<A> -> String = match value { Nothing -> "none"; Just item -> "just:" + render item }
+fn boxText value:Box<Int> -> String = match value { Empty -> "empty"; Box item -> "box:" + show item }
+fn choose value:Int -> Maybe<Int> = if value == 0 then Nothing else Just (value + 10)
+fn collect<F<_>,A> values:F<Maybe<A>> -> Maybe<F<A>> where Traversable<F> = maybe.sequence values
+fn transform<F<_>,A,B> callback:(A -> Maybe<B>) -> values:F<A> -> Maybe<F<B>> where Traversable<F> = maybe.traverse callback values
+fn default<A> fallback:A -> (Maybe<A> -> A) = maybe.withDefault fallback
+
+pub effect fn main = do {
+  let fallback = default "fallback"
+  let sequence:Array<Maybe<Int>> -> Maybe<Array<Int>> = maybe.sequence
+  let traverse:(Int -> Maybe<Int>) -> List<Int> -> Maybe<List<Int>> = maybe.traverse
+  let saved = traverse choose
+  let empty:Array<Maybe<Int>> = []
+  let linked:List<Maybe<Int>> = `[]
+  let emptyBox:Box<Maybe<Int>> = Empty
+  let emptyValue:Box<Int> = Empty
+  let none:Maybe<Int> = Nothing
+  println (show (maybe.withDefault 9 Nothing))
+  println (show (maybe.withDefault 9 (Just 3)))
+  println (optional show (maybe.orElse (Just 9) Nothing))
+  println (optional show (maybe.orElse (Just 9) (Just 3)))
+  println (optional show (maybe.orElse Nothing none))
+  println (optional show (sequence [Just 1,Just 2]))
+  println (optional show (sequence [Just 1,Nothing,Just 3]))
+  println (optional show (collect `[Just 1,Just 2]))
+  println (optional show (transform choose [1,2,3]))
+  println (optional show (transform choose [1,0,3]))
+  println (optional show (sequence empty))
+  println (optional show (collect linked))
+  println (optional boxText (collect (Box (Just 7))))
+  println (optional boxText (collect (Box none)))
+  println (optional boxText (collect emptyBox))
+  println (optional boxText (transform choose (Box 3)))
+  println (optional boxText (transform choose emptyValue))
+  println (optional show (saved `[1,2]))
+  println (fallback Nothing)
+  let picked:Int -> Int = maybe.withDefault (\value:Int -> value + 1) (Just (\value:Int -> value + 2))
+  println (show (picked 40))
+  println (show (maybe.withDefault (\value:Int -> value + 1) (Just (\value:Int -> value + 2)) 40))
+  println (match maybe.orElse (Just (\value:Int -> value + 1)) (Just (\value:Int -> value + 2)) { Nothing -> "none"; Just operation -> show (operation 40) })
+}

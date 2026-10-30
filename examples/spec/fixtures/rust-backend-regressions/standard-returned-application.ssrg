@@ -1,0 +1,6 @@
+import * as maybe from "std/maybe"
+import * as control from "std/collection"
+pub effect fn main = do {
+  println (show (maybe.withDefault (\value:Int -> value + 1) (Just (\value:Int -> value + 2)) 40))
+  println (show (control.reduceUntil (\_:Unit -> 40) (\operation:(Unit -> Int) -> \value:Int -> control.Next (\_:Unit -> operation () + value)) [1,2] ()))
+}

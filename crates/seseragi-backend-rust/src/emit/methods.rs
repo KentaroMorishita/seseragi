@@ -163,7 +163,7 @@ impl Backend<'_> {
         if matches!(
             (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
             ("std/prelude::Functor", "map")
-                | ("std/prelude::Applicative", "apply")
+                | ("std/prelude::Applicative", "apply" | "pure")
                 | ("std/prelude::Monad", "flatMap")
         ) {
             return self.validate_hkt_parameter_method_value(dispatch, selected, type_ref, scope);
@@ -537,6 +537,21 @@ impl Backend<'_> {
             parameter: Box::new(parameter),
             result: Box::new(result),
         };
+        if dispatch.method == "pure" {
+            if self.program_wasm_library {
+                return Err(
+                    "program WASM: native Applicative pure requires a target-specific ABI proof"
+                        .into(),
+                );
+            }
+            return self.match_local_type(
+                &arrow(a.clone(), applied(a)),
+                type_ref,
+                &BTreeMap::from([("\0hkt_method_a".into(), 0)]),
+                &mut BTreeMap::new(),
+                scope,
+            );
+        }
         let (first, output) = match dispatch.method.as_str() {
             "map" => (arrow(a.clone(), b.clone()), applied(b.clone())),
             "apply" => (applied(arrow(a.clone(), b.clone())), applied(b.clone())),
