@@ -133,11 +133,18 @@ fn expected_element(
     context: &PureExpressionContext<'_>,
     kind: CollectionKind,
 ) -> Option<SemanticValueType> {
-    let TypedType::Named { name, arguments } = &context.expected()?.type_ref else {
-        return None;
+    let arguments = match &context.expected()?.type_ref {
+        TypedType::Named { name, arguments } if name == kind.name() => arguments,
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if matches!(kind, CollectionKind::Array) && canonical == "std/prelude::Array" => {
+            arguments
+        }
+        _ => return None,
     };
-    (name == kind.name() && arguments.len() == 1)
-        .then(|| context.semantic_value_from_typed_type(&arguments[0]))
+    (arguments.len() == 1).then(|| context.semantic_value_from_typed_type(&arguments[0]))
 }
 
 fn empty_collection(

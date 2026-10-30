@@ -761,15 +761,30 @@ impl Inference<'_, '_> {
                     let value = self.expression(value, environment)?;
                     self.unify(&element, &value)?;
                 }
-                Some(TypedType::Named {
-                    name: if matches!(expression, SurfaceExpr::Array { .. }) {
-                        "Array"
-                    } else {
-                        "List"
-                    }
-                    .to_owned(),
-                    arguments: vec![self.resolve(&element)],
-                })
+                let name = if matches!(expression, SurfaceExpr::Array { .. }) {
+                    "Array"
+                } else {
+                    "List"
+                }
+                .to_owned();
+                let arguments = vec![self.resolve(&element)];
+                let value = SemanticValueType {
+                    type_ref: TypedType::Named {
+                        name: name.clone(),
+                        arguments: arguments.clone(),
+                    },
+                    key: SemanticTypeKey::NamedGeneric {
+                        name,
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| self.context.semantic_value_from_typed_type(argument))
+                            .collect(),
+                    },
+                };
+                // A literal already proves its collection owner. Retain that
+                // identity before the solver drops its semantic key, as for
+                // captured values in inference_environment.
+                Some(self.context.evidence_type(&value))
             }
             SurfaceExpr::If {
                 condition,

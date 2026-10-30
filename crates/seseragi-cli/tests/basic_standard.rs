@@ -217,6 +217,16 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
 }
 
 #[test]
+fn inferred_builtin_array_owner_keeps_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/inferred-builtin-array-owner.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/inferred-builtin-array-owner.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn basic_text_and_math_match_original_raw_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-text-math.ssrg"),
