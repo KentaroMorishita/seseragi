@@ -2113,6 +2113,80 @@ fn basic_decimal_keys_keep_exact_public_hashes_saved_methods_shadowing_and_colli
 }
 
 #[test]
+fn basic_decimal_ord_keeps_exact_sign_scale_order_saved_methods_and_inherited_eq() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-ord.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-ord.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_keeps_the_original_zero_regression_input_on_every_target() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/decimal-zero-order.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/decimal-zero-order.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_path_package_keeps_opaque_keys_imported_partials_and_inherited_eq() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-ord"),
+        &[Case::success(b"Less|Less|True|True|True\n")],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_keeps_cold_partials_typed_failure_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-ord-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-ord-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_argument_and_returned_callback_defects_release_roots_and_run_finalizers() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-decimal-ord-effects.ssrg");
+    for (name, old, replacement, stdout) in [
+        (
+            "argument",
+            "withZero (value \"0.01\")",
+            "withZero (value \"invalid\")",
+            &b"created\nacquired\ncold\nreleased\n"[..],
+        ),
+        (
+            "returned",
+            "effects.succeed 42",
+            "effects.succeed (42 / 0)",
+            &b"created\nacquired\ncold\nLess\nTrue\nreleased\n"[..],
+        ),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("decimal-ord-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout,
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
 fn basic_decimal_keys_path_package_keeps_opaque_keys_and_saved_imported_generic_methods() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-keys"),

@@ -21,7 +21,7 @@ fn signature(name: &str) -> Option<(CoreType, CoreType)> {
 }
 
 impl Backend<'_> {
-    pub(super) fn decimal_key_dictionary(
+    pub(super) fn decimal_trait_dictionary(
         &mut self,
         selected: &CoreCallEvidence,
         scope: &Scope,
@@ -37,6 +37,7 @@ impl Backend<'_> {
         let function = match identity.as_str() {
             "std/decimal::Eq" => "native_decimal_eq_dictionary()",
             "std/decimal::Hash" => "native_decimal_hash_dictionary()",
+            "std/decimal::Ord" => "native_decimal_ord_dictionary()",
             _ => return Ok(None),
         };
         if self.program_wasm_library || !type_arguments.is_empty() || !evidence_arguments.is_empty()
@@ -47,12 +48,127 @@ impl Backend<'_> {
         }
         if identity == "std/decimal::Eq" {
             self.validate_eq_evidence(selected, scope)?;
-        } else {
+        } else if identity == "std/decimal::Hash" {
             self.validate_hash_evidence(selected, scope)?;
+        } else {
+            self.validate_ord_evidence(selected, scope)?;
         }
         self.capabilities.insert("decimal".into());
         Ok(Some(function.into()))
     }
+
+    pub(super) fn validate_decimal_dispatch(&self, expr: &CoreExpr, scope: &Scope) -> Result<()> {
+        let CoreExpr::Call {
+            arguments,
+            evidence,
+            trait_dispatch: Some(dispatch),
+            type_ref,
+            deferred_evidence_parameters,
+            deferred_evidence_type_constructor_parameters,
+            evidence_argument_index,
+            ..
+        } = expr
+        else {
+            return Ok(());
+        };
+        let Some(selected) = evidence.first() else {
+            return Ok(());
+        };
+        let CoreInstanceEvidence::Standard { identity, .. } = &selected.evidence else {
+            return Ok(());
+        };
+        let (trait_identity, method) = match identity.as_str() {
+            "std/decimal::Eq" => ("std/prelude::Eq", "eq"),
+            "std/decimal::Hash" => ("std/prelude::Hash", "hash"),
+            "std/decimal::Ord" => ("std/prelude::Ord", "compare"),
+            _ => return Ok(()),
+        };
+        if evidence.len() != 1
+            || dispatch.trait_identity != trait_identity
+            || dispatch.method != method
+            || dispatch.method_contract.is_some()
+        {
+            return Err("Rust backend: Decimal dictionary dispatch mismatch".into());
+        }
+        if method == "compare" {
+            if arguments.len() > 2
+                || !deferred_evidence_parameters.is_empty()
+                || !deferred_evidence_type_constructor_parameters.is_empty()
+                || evidence_argument_index.is_some()
+            {
+                return Err("Rust backend: unproven Decimal Ord source stages".into());
+            }
+            let full = arguments
+                .iter()
+                .rev()
+                .try_fold(type_ref.clone(), |result, argument| {
+                    Ok::<_, RustBackendError>(CoreType::Function {
+                        parameter: Box::new(
+                            local::method_argument_type(argument)
+                                .ok_or("Rust backend: unproven Decimal Ord argument")?,
+                        ),
+                        result: Box::new(result),
+                    })
+                })?;
+            self.validate_ord_method_value(dispatch, selected, &full, scope)?;
+        }
+        Ok(())
+    }
+    pub(super) fn decimal_comparison_binary(
+        &mut self,
+        operator: &str,
+        left: &CoreExpr,
+        right: &CoreExpr,
+        evidence: &[CoreCallEvidence],
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<Option<String>> {
+        if !comparisons::is_comparison(operator) {
+            return Ok(None);
+        }
+        let standard = evidence
+            .first()
+            .and_then(|selected| match &selected.evidence {
+                CoreInstanceEvidence::Standard { identity, .. } => Some(identity.as_str()),
+                _ => None,
+            });
+        if standard != Some("std/decimal::Ord") {
+            let decimal_operand = [left, right].iter().any(|argument| {
+                let Some(actual) = local::method_argument_type(argument) else { return false; };
+                matches!(self.local_canonical_type(&actual, scope), Ok(CoreType::Named { name, arguments }) if name == "std/decimal::Decimal" && arguments.is_empty())
+            });
+            if (standard.is_some() || evidence.is_empty()) && decimal_operand {
+                return Err(
+                    "Rust backend: Decimal operand requires its selected canonical Ord provider"
+                        .into(),
+                );
+            }
+            return Ok(None);
+        }
+        let [selected] = evidence else {
+            return Err("Rust backend: Decimal comparison dictionary arity".into());
+        };
+        self.validate_ord_evidence(selected, scope)?;
+        self.comparison_result_type(type_ref, 2, evidence, scope)?;
+        for argument in [left, right] {
+            let actual = local::method_argument_type(argument)
+                .ok_or("Rust backend: unproven Decimal comparison argument")?;
+            self.decimal_type(
+                &actual,
+                &CoreType::Named {
+                    name: "std/decimal::Decimal".into(),
+                    arguments: vec![],
+                },
+                scope,
+            )?;
+        }
+        let dictionary = self
+            .decimal_trait_dictionary(selected, scope)?
+            .expect("proved Decimal Ord");
+        let stage = self.fresh();
+        Ok(Some(format!("{{ let {stage}=({dictionary}).field(\"compare\").apply({}); native_ordering_comparison({}, {stage}.apply({})) }}", self.expr(left,scope)?,quoted(operator),self.expr(right,scope)?)))
+    }
+
     pub(super) fn decimal_show_dictionary(
         &mut self,
         selected: &CoreCallEvidence,

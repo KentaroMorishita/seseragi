@@ -1,0 +1,15 @@
+import * as cells from "cells"
+import * as text from "std/text"
+
+fn label value: Ordering -> String = match value { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
+pub effect fn main = {
+  let order: cells.Key -> cells.Key -> Ordering = cells.order
+  let withOne = order (cells.make "1.20")
+  let same: cells.Key -> cells.Key -> Bool = cells.same
+  text.join "|" [
+    label (withOne (cells.make "1.21")), label (order (cells.make "-1.21") (cells.make "-1.2")),
+    show (same (cells.make "1.20") (cells.make "1.2")),
+    show (cells.below (cells.make "-0.01") (cells.make "0")),
+    show (cells.below (cells.make "0") (cells.make "1.0"))
+  ] |> println
+}

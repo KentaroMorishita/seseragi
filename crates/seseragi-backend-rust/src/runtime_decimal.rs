@@ -232,6 +232,101 @@ fn native_decimal_eq_dictionary() -> V {
     )])
 }
 
+fn native_decimal_signed_compare(left: &str, right: &str) -> std::cmp::Ordering {
+    let negative = left.starts_with('-');
+    if negative != right.starts_with('-') {
+        return if negative {
+            std::cmp::Ordering::Less
+        } else {
+            std::cmp::Ordering::Greater
+        };
+    }
+    let left = left.trim_start_matches('-');
+    let right = right.trim_start_matches('-');
+    let order = (left.len(), left).cmp(&(right.len(), right));
+    if negative {
+        order.reverse()
+    } else {
+        order
+    }
+}
+
+fn native_decimal_compare_values(
+    left: &NativeDecimal,
+    right: &NativeDecimal,
+) -> std::cmp::Ordering {
+    use std::cmp::Ordering::{Equal, Greater, Less};
+    if left.coefficient == right.coefficient && left.scale == right.scale {
+        return Equal;
+    }
+    if left.coefficient == "0" {
+        return if right.coefficient.starts_with('-') {
+            Greater
+        } else {
+            Less
+        };
+    }
+    if right.coefficient == "0" {
+        return if left.coefficient.starts_with('-') {
+            Less
+        } else {
+            Greater
+        };
+    }
+    let negative = left.coefficient.starts_with('-');
+    if negative != right.coefficient.starts_with('-') {
+        return if negative { Less } else { Greater };
+    }
+    let a = left.coefficient.trim_start_matches('-').as_bytes();
+    let b = right.coefficient.trim_start_matches('-').as_bytes();
+    let a_exponent = native_decimal_add(&a.len().to_string(), &native_decimal_negate(&left.scale));
+    let b_exponent = native_decimal_add(&b.len().to_string(), &native_decimal_negate(&right.scale));
+    let mut order = native_decimal_signed_compare(&a_exponent, &b_exponent);
+    if order == Equal {
+        for index in 0..a.len().max(b.len()) {
+            order = a
+                .get(index)
+                .copied()
+                .unwrap_or(b'0')
+                .cmp(&b.get(index).copied().unwrap_or(b'0'));
+            if order != Equal {
+                break;
+            }
+        }
+    }
+    if negative {
+        order.reverse()
+    } else {
+        order
+    }
+}
+
+fn native_decimal_order(left: V, right: V) -> V {
+    let (V::Decimal(left), V::Decimal(right)) = (left, right) else {
+        panic!("Rust ABI: expected Decimal Ord arguments")
+    };
+    let tag = match native_decimal_compare_values(left.get(), right.get()) {
+        std::cmp::Ordering::Less => "std/prelude::Less",
+        std::cmp::Ordering::Equal => "std/prelude::Equal",
+        std::cmp::Ordering::Greater => "std/prelude::Greater",
+    };
+    V::adt(tag, V::Unit)
+}
+
+fn native_decimal_ord_dictionary() -> V {
+    V::dict(vec![
+        ("eq", native_decimal_eq_dictionary().field("eq")),
+        (
+            "compare",
+            V::fun(vec![], |_, left| {
+                V::fun(vec![left], |captures, right| {
+                    native_decimal_order(captures[0].clone(), right)
+                })
+            }),
+        ),
+    ])
+}
+
 // Hash the same signed, little-endian base-2^32 limbs as the TypeScript BigInt
 // runtime. Long division keeps arbitrary coefficients/scales exact without a
 // host-integer or Float conversion of the complete value.
@@ -287,6 +382,70 @@ fn native_decimal_operation(name: &str, value: V) -> V {
 #[cfg(test)]
 mod decimal_tests {
     use super::*;
+
+    #[test]
+    fn decimal_ord_keeps_zero_sign_exponent_alignment_and_inherited_eq() {
+        let ordered = [
+            "-1e999999999999999999999999999999999999",
+            "-100",
+            "-1.21",
+            "-1.2",
+            "-1e-999999999999999999999999999999999999",
+            "0",
+            "1e-999999999999999999999999999999999999",
+            "1.2",
+            "1.21",
+            "100",
+            "1e999999999999999999999999999999999999",
+        ];
+        let d = native_decimal_ord_dictionary();
+        for (i, a) in ordered.iter().enumerate() {
+            for (j, b) in ordered.iter().enumerate() {
+                let left = native_decimal_parse(a).payload();
+                let right = native_decimal_parse(b).payload();
+                let result = d.field("compare").apply(left.clone()).apply(right.clone());
+                let tag = match i.cmp(&j) {
+                    std::cmp::Ordering::Less => "std/prelude::Less",
+                    std::cmp::Ordering::Equal => "std/prelude::Equal",
+                    std::cmp::Ordering::Greater => "std/prelude::Greater",
+                };
+                assert!(result.tagged(tag), "{a}/{b}: {}", result.render());
+                assert_eq!(d.field("eq").apply(left).apply(right).boolean(), i == j);
+            }
+        }
+        assert!(d
+            .field("compare")
+            .apply(native_decimal_parse("1.20").payload())
+            .apply(native_decimal_parse("12e-1").payload())
+            .tagged("std/prelude::Equal"));
+        drop(d);
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn decimal_ord_does_not_expand_unformattable_scales_and_traces_partial_ref_cycles() {
+        enable_cycle_collection();
+        let exponent = "9".repeat(1000);
+        let large = native_decimal_parse(&format!("1e{exponent}")).payload();
+        let tiny = native_decimal_parse(&format!("1e-{exponent}")).payload();
+        let zero = native_decimal_parse("-0").payload();
+        assert!(native_decimal_order(large.clone(), tiny.clone()).tagged("std/prelude::Greater"));
+        assert!(native_decimal_order(zero.clone(), tiny.clone()).tagged("std/prelude::Less"));
+        let partial = native_decimal_ord_dictionary()
+            .field("compare")
+            .apply(large.clone());
+        drop(large);
+        assert!(partial.apply(tiny.clone()).tagged("std/prelude::Greater"));
+        let cell = V::reference(V::Unit);
+        let callback = V::fun(vec![cell.clone(), partial.clone()], |captures, right| {
+            captures[1].apply(right)
+        });
+        cell.write_reference(callback.clone());
+        drop((tiny, zero, partial, cell, callback));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
 
     #[test]
     fn decimal_eq_and_hash_keep_normalized_values_and_public_ts_limb_hashes() {

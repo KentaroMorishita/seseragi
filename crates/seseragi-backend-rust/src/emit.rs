@@ -531,7 +531,7 @@ impl Backend<'_> {
             if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Hash") {
                 self.validate_hash_evidence(selected, scope)?;
             }
-            if let Some(dictionary) = self.decimal_key_dictionary(selected, scope)? {
+            if let Some(dictionary) = self.decimal_trait_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -1135,6 +1135,11 @@ impl Backend<'_> {
                         self.expr(left, scope)?,
                         self.expr(right, scope)?
                     ));
+                }
+                if let Some(value) = self
+                    .decimal_comparison_binary(operator, left, right, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
                 }
                 if characters::dictionary_comparison(evidence, operator) {
                     let dictionary = self.evidence(evidence, scope)?;

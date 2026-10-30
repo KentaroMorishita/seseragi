@@ -108,27 +108,8 @@ impl Backend<'_> {
                 return self.call_local_value(expr, &factory, scope);
             }
         }
+        self.validate_decimal_dispatch(expr, scope)?;
         if let Some(dispatch) = trait_dispatch {
-            if let Some(CoreCallEvidence {
-                evidence: CoreInstanceEvidence::Standard { identity, .. },
-                ..
-            }) = evidence.first()
-            {
-                let expected = match identity.as_str() {
-                    "std/decimal::Eq" => Some(("std/prelude::Eq", "eq")),
-                    "std/decimal::Hash" => Some(("std/prelude::Hash", "hash")),
-                    _ => None,
-                };
-                if let Some((trait_identity, method)) = expected {
-                    if evidence.len() != 1
-                        || dispatch.trait_identity != trait_identity
-                        || dispatch.method != method
-                        || dispatch.method_contract.is_some()
-                    {
-                        return Err("Rust backend: Decimal dictionary dispatch mismatch".into());
-                    }
-                }
-            }
             self.validate_hash_call(expr, scope)?;
             if dispatch.trait_identity == "std/prelude::Eq" {
                 return self.equality_call(expr, scope);
