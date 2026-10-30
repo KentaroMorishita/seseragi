@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/big-int-arithmetic@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/big-int-arithmetic-cells@0.0.0#path:vendor/cells"
+name = "fixture/big-int-arithmetic-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:bc474a3f69558580ce9e0374a30695b02b0304078d3a3cf1b2c50d12d4bf1bad"
+content_digest = "sha256:30f6e6a6dbf90d0fb739a9ece492ca4da123777a5e2db47dbb8962352bbdc466"
+dependencies = []
+
+[[packages]]
+id = "fixture/big-int-arithmetic@0.0.0#workspace:."
+name = "fixture/big-int-arithmetic"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:da8f0d0de12c75c5c522b4eac5c47ebd9ecb5783e4dc2cca69cb76650241cd83"
+content_digest = "sha256:bc171a9e665b28ae2cb40932bafd7953da0aa3d785a0a47405f6fa2da2837ad0"
+dependencies = [
+  { import = "cells", package = "fixture/big-int-arithmetic-cells@0.0.0#path:vendor/cells" },
+]

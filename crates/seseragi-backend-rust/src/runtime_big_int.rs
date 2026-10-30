@@ -76,6 +76,58 @@ fn native_big_int_operation(name: &str, value: V) -> V {
 
 fn native_big_int_standard_operation(name: &str, arguments: Vec<V>) -> V {
     match (name, arguments.as_slice()) {
+        ("std/big-int::abs", [V::BigInt(value)]) => {
+            if value.get().negative {
+                V::BigInt(Shared::new(NativeBigInt::from_limbs(
+                    false,
+                    value.get().limbs.clone(),
+                )))
+            } else {
+                arguments[0].clone()
+            }
+        }
+        ("std/big-int::sign", [V::BigInt(value)]) => V::Int(if value.get().is_zero() {
+            0
+        } else if value.get().negative {
+            -1
+        } else {
+            1
+        }),
+        (
+            "std/big-int::checkedDivide" | "std/big-int::checkedRemainder",
+            [V::BigInt(divisor), V::BigInt(dividend)],
+        ) => {
+            if divisor.get().is_zero() {
+                native_left(V::adt("std/big-int::BigIntDivisionByZero", V::Unit))
+            } else {
+                let (quotient, remainder) = dividend.get().quotient_remainder(divisor.get());
+                native_right(V::BigInt(Shared::new(
+                    if name == "std/big-int::checkedDivide" {
+                        quotient
+                    } else {
+                        remainder
+                    },
+                )))
+            }
+        }
+        ("std/big-int::checkedPower", [V::Int(exponent), V::BigInt(base)]) => {
+            checked_int_value(*exponent);
+            if *exponent < 0 {
+                native_left(V::adt(
+                    "std/big-int::NegativeBigIntExponent",
+                    V::Int(*exponent),
+                ))
+            } else {
+                native_right(V::BigInt(Shared::new(base.get().power(*exponent))))
+            }
+        }
+        ("std/big-int::BigIntDivisionByZero", []) => {
+            V::adt("std/big-int::BigIntDivisionByZero", V::Unit)
+        }
+        ("std/big-int::NegativeBigIntExponent", [V::Int(exponent)]) => V::adt(
+            "std/big-int::NegativeBigIntExponent",
+            checked_int(*exponent),
+        ),
         ("std/big-int::parseRadix", [V::Int(radix), text]) => {
             native_big_int_parse_radix(*radix, native_text(text), false)
         }

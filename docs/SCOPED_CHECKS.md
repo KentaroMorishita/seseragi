@@ -6,6 +6,15 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native BigInt算術/Zero/Oneとchecked APIはbackendの`--test big_arithmetic`、runtimeの
+`big_int_arithmetic_tests`、CLIの`basic_big_arithmetic_`で確認します。binary32のexactな
+加減乗除・剰余・Int指数、0方向の商と被除数と同符号の剰余、typed zero/negative error、
+保存/generic/opaque2module、元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/
+Defect/finalizer/Ref cycle/root0を保持します。signed i128と独立Python多word期待値も比較し、
+新program WASMは受け入れません。共有operator validatorの変更では元scalar/partial checksを使います。
+canonical ownerのalias照合と算術sectionの最初の引数型もdriverで確認し、previewしたanalysisは
+再利用します。最終sourceの正規SDKと共有frontend/runtimeのrepository-wide gateはRelease batchへ集約します。
+
 native BigIntのEq/Ord/Hash/Show/Debugはbackendの
 `--test big_int_keys --test big_int_ord --test big_int_display`、
 runtimeの`big_int_dictionary_tests`と`big_int_tests`、CLIの`basic_big_keys_`で確認します。

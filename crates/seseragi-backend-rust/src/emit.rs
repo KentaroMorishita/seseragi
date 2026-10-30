@@ -190,6 +190,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int_value.rs"));
+    output.push_str(include_str!("runtime_big_int_arithmetic.rs"));
     output.push_str(include_str!("runtime_big_int.rs"));
     output.push_str(include_str!("runtime_big_int_traits.rs"));
     output.push_str(include_str!("runtime_decimal.rs"));
@@ -631,6 +632,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.primitive_operator_dictionary(selected, scope) {
+                if matches!(&selected.evidence, CoreInstanceEvidence::Standard { identity, .. } if identity.starts_with("std/big-int::"))
+                {
+                    self.capabilities.insert("big-int".into());
+                }
                 values.push(dictionary?);
                 continue;
             }
@@ -1106,6 +1111,23 @@ impl Backend<'_> {
                         "program WASM: native power requires a target-specific arithmetic proof"
                             .into(),
                     );
+                }
+                self.validate_big_int_operator_provider(operator, [left, right], evidence, scope)?;
+                if operators::big_int_binary(evidence, operator) {
+                    self.validate_primitive_operator_binary(
+                        operator,
+                        [left, right],
+                        evidence,
+                        type_ref,
+                        scope,
+                    )?;
+                    self.capabilities.insert("big-int".into());
+                    return Ok(format!(
+                        "native_big_int_arithmetic({}, {}, {})",
+                        quoted(operator),
+                        self.expr(left, scope)?,
+                        self.expr(right, scope)?
+                    ));
                 }
                 if floats::float_binary(evidence, operator) {
                     if operator == "**" {

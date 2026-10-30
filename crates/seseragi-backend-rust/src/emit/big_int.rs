@@ -19,6 +19,28 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         ),
         "std/big-int::format" => (vec![big], text),
         "std/big-int::fromInt" => (vec![int], big),
+        "std/big-int::abs" => (vec![big.clone()], big),
+        "std/big-int::sign" => (vec![big], int),
+        "std/big-int::checkedDivide" | "std/big-int::checkedRemainder" => (
+            vec![big.clone(), big.clone()],
+            named(
+                "std/prelude::Either",
+                vec![named("std/big-int::BigIntDivisionError", vec![]), big],
+            ),
+        ),
+        "std/big-int::checkedPower" => (
+            vec![int, big.clone()],
+            named(
+                "std/prelude::Either",
+                vec![named("std/big-int::BigIntPowerError", vec![]), big],
+            ),
+        ),
+        "std/big-int::BigIntDivisionByZero" => {
+            (vec![], named("std/big-int::BigIntDivisionError", vec![]))
+        }
+        "std/big-int::NegativeBigIntExponent" => {
+            (vec![int], named("std/big-int::BigIntPowerError", vec![]))
+        }
         "std/big-int::parseRadix" => (
             vec![int, text],
             named("std/prelude::Either", vec![error, big]),

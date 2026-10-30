@@ -18,6 +18,8 @@ impl Backend<'_> {
             "std/big-int::Eq" => "native_big_int_eq_dictionary()",
             "std/big-int::Hash" => "native_big_int_hash_dictionary()",
             "std/big-int::Ord" => "native_big_int_ord_dictionary()",
+            "std/big-int::Zero" => "native_big_int_constant_dictionary(false)",
+            "std/big-int::One" => "native_big_int_constant_dictionary(true)",
             _ => return Ok(None),
         };
         if self.program_wasm_library || !type_arguments.is_empty() || !evidence_arguments.is_empty()
@@ -30,8 +32,28 @@ impl Backend<'_> {
             self.validate_eq_evidence(selected, scope)?;
         } else if identity == "std/big-int::Hash" {
             self.validate_hash_evidence(selected, scope)?;
-        } else {
+        } else if identity == "std/big-int::Ord" {
             self.validate_ord_evidence(selected, scope)?;
+        } else {
+            let [actual] = selected.constraint.arguments.as_slice() else {
+                return Err("Rust backend: BigInt constant constraint arity".into());
+            };
+            let name = if identity == "std/big-int::Zero" {
+                "Zero"
+            } else {
+                "One"
+            };
+            if !lists::standard_trait(selected, name, actual) {
+                return Err("Rust backend: unproven BigInt constant trait owner".into());
+            }
+            self.big_int_type(
+                actual,
+                &CoreType::Named {
+                    name: "std/big-int::BigInt".into(),
+                    arguments: vec![],
+                },
+                scope,
+            )?;
         }
         self.capabilities.insert("big-int".into());
         Ok(Some(function.into()))
@@ -61,6 +83,8 @@ impl Backend<'_> {
             "std/big-int::Eq" => ("std/prelude::Eq", "eq"),
             "std/big-int::Hash" => ("std/prelude::Hash", "hash"),
             "std/big-int::Ord" => ("std/prelude::Ord", "compare"),
+            "std/big-int::Zero" => ("std/prelude::Zero", "zero"),
+            "std/big-int::One" => ("std/prelude::One", "one"),
             _ => return Ok(()),
         };
         if evidence.len() != 1
@@ -70,7 +94,27 @@ impl Backend<'_> {
         {
             return Err("Rust backend: BigInt dictionary dispatch mismatch".into());
         }
-        if method == "compare" {
+        if matches!(method, "zero" | "one") {
+            if arguments.len() > 1
+                || !deferred_evidence_parameters.is_empty()
+                || !deferred_evidence_type_constructor_parameters.is_empty()
+                || evidence_argument_index.is_some()
+            {
+                return Err("Rust backend: unproven BigInt constant source stages".into());
+            }
+            let full = if let Some(argument) = arguments.first() {
+                CoreType::Function {
+                    parameter: Box::new(
+                        local::method_argument_type(argument)
+                            .ok_or("Rust backend: unproven BigInt constant Unit argument")?,
+                    ),
+                    result: Box::new(type_ref.clone()),
+                }
+            } else {
+                type_ref.clone()
+            };
+            self.validate_big_int_constant_value(dispatch, selected, &full, scope)?;
+        } else if method == "compare" {
             if arguments.len() > 2
                 || !deferred_evidence_parameters.is_empty()
                 || !deferred_evidence_type_constructor_parameters.is_empty()
@@ -93,6 +137,43 @@ impl Backend<'_> {
             self.validate_ord_method_value(dispatch, selected, &full, scope)?;
         }
         Ok(())
+    }
+
+    pub(super) fn validate_big_int_constant_value(
+        &self,
+        dispatch: &seseragi_lowering::CoreTraitDispatch,
+        selected: &CoreCallEvidence,
+        actual: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        let CoreInstanceEvidence::Standard { identity, .. } = &selected.evidence else {
+            return Ok(());
+        };
+        let (name, method) = match identity.as_str() {
+            "std/big-int::Zero" => ("Zero", "zero"),
+            "std/big-int::One" => ("One", "one"),
+            _ => return Ok(()),
+        };
+        if dispatch.trait_identity != format!("std/prelude::{name}")
+            || dispatch.method != method
+            || dispatch.method_contract.is_some()
+        {
+            return Err("Rust backend: unproven BigInt constant dispatch".into());
+        }
+        self.big_int_type(
+            actual,
+            &CoreType::Function {
+                parameter: Box::new(CoreType::Named {
+                    name: "std/prelude::Unit".into(),
+                    arguments: vec![],
+                }),
+                result: Box::new(CoreType::Named {
+                    name: "std/big-int::BigInt".into(),
+                    arguments: vec![],
+                }),
+            },
+            scope,
+        )
     }
     pub(super) fn big_int_comparison_binary(
         &mut self,

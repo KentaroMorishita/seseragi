@@ -1275,6 +1275,61 @@ fn basic_big_keys_equality_operators_preserve_exact_values_saved_stages_and_hash
 }
 
 #[test]
+fn basic_big_arithmetic_keeps_exact_operations_constants_and_checked_errors() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-arithmetic.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-arithmetic.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_arithmetic_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-arithmetic-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-arithmetic-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_arithmetic_defects_keep_each_final_argument_and_release_every_root() {
+    for (expression, message) in [
+        ("big.fromInt 7 / big.fromInt 0", "BigInt division by zero"),
+        ("big.fromInt 7 % big.fromInt 0", "BigInt remainder by zero"),
+        ("big.fromInt 7 ** (-1)", "BigInt negative exponent"),
+    ] {
+        let scratch = Scratch::new();
+        let source = include_str!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-arithmetic-effects.ssrg"
+        )
+        .replace(
+            "big.checkedDivide (big.fromInt 0) (big.fromInt 7)",
+            &format!("big.checkedDivide ({expression}) (big.fromInt 7)"),
+        );
+        let path = scratch.0.join("big-arithmetic-defect.ssrg");
+        fs::write(&path, source).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created\nacquired\ncold\n4294967296:18446744073709551616\ncold\n4294967296:18446744073709551616\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: message,
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
+fn basic_big_arithmetic_path_package_keeps_opaque_generic_stages_and_error_owners() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-big-int-arithmetic"),
+        &[Case::success(b"key:4638558931|key:1475714835504168960|key:-680564733841876926926749214863536422912|key:0|key:1|key:343591635|zero\n")],
+    );
+}
+
+#[test]
 fn basic_big_keys_path_package_keeps_opaque_values_and_imported_generic_methods() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-big-int-keys"),

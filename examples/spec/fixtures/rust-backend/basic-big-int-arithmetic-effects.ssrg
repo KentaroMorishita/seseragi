@@ -1,0 +1,44 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as big from "std/big-int"
+import * as ints from "std/int"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+fn value source: String -> big.BigInt = match big.parse source { Left _ -> big.fromInt 0; Right result -> result }
+fn arithmeticWith number: big.BigInt -> (Unit -> String) = {
+  let divide = big.checkedDivide number
+  let multiply: big.BigInt -> big.BigInt = (*) number
+  let power = big.checkedPower 2
+  \_: Unit -> match divide (multiply number) {
+    Right quotient -> match power number { Right squared -> big.format quotient + ":" + big.format squared; Left _ -> "unexpected-power" }
+    Left _ -> "unexpected-division"
+  }
+}
+effect fn failBody -> Unit fails big.BigIntDivisionError = do {
+  _value <- big.checkedDivide (big.fromInt 0) (big.fromInt 7) |> effects.fromEither
+  effects.succeed ()
+}
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (arithmeticWith (value "4294967296"))
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    operation <- refs.get saved
+    say (operation ())
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\error: big.BigIntDivisionError -> match error { big.BigIntDivisionByZero -> say "recovered: zero" })
+  count <- refs.get released
+  say ("released: " + show count)
+}
