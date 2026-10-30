@@ -1,7 +1,7 @@
 {
   "name": "seseragi-wasm",
   "type": "module",
-  "version": "0.61.121",
+  "version": "0.61.122",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
