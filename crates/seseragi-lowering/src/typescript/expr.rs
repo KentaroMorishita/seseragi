@@ -1000,9 +1000,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     );
                     let check_late_callback = has_evidence
                         && deferred_evidence_parameters.is_empty()
-                        && checked_argument_types.iter().skip(1).any(|argument| {
+                        && (checked_argument_types.iter().skip(1).any(|argument| {
                             matches!(argument, super::TypeScriptType::Function { .. })
-                        });
+                        }) || checked_argument_types
+                            .first()
+                            .is_some_and(callback_returns_either));
                     let hkt_callee = (!has_evidence)
                         .then(|| callee_signature.as_ref())
                         .flatten()
@@ -1059,6 +1061,7 @@ pub(super) fn lower_core_expr_to_typescript(
                             evidence_argument_index,
                             imported_types,
                             checked_result.clone(),
+                            &checked_argument_types,
                             origin,
                         )
                     };
@@ -1073,7 +1076,7 @@ pub(super) fn lower_core_expr_to_typescript(
                         // TypeScript fixes generic parameters at the first
                         // curried argument. The source checker used every
                         // argument and evidence; retain that instantiated
-                        // callable type before applying a later callback. A
+                        // callable type before applying any callback. A
                         // returned source function follows the dictionaries;
                         // its arguments must not shift that checked boundary.
                         let mut parameters = checked_argument_types;
@@ -1583,6 +1586,15 @@ fn lower_template(
         })
 }
 
+fn callback_returns_either(type_ref: &super::TypeScriptType) -> bool {
+    let mut result = type_ref;
+    while let super::TypeScriptType::Function { result: next, .. } = result {
+        result = next;
+    }
+    matches!(type_ref, super::TypeScriptType::Function { .. })
+        && matches!(result, super::TypeScriptType::Either { .. })
+}
+
 fn lower_constrained_call(
     callee: String,
     mut arguments: Vec<TypeScriptExpr>,
@@ -1592,6 +1604,7 @@ fn lower_constrained_call(
     evidence_argument_index: Option<usize>,
     imported_types: &TypeScriptTypeContext,
     mut result_type: super::TypeScriptType,
+    supplied_types: &[super::TypeScriptType],
     origin: crate::SourceSpan,
 ) -> TypeScriptExpr {
     if deferred_parameters.is_empty() {
@@ -1625,11 +1638,33 @@ fn lower_constrained_call(
     let initializer = if arguments.is_empty() {
         TypeScriptExpr::Identifier { name: callee }
     } else {
+        // Check the supplied prefix before TS infers its generic parameters
+        // from a callback's Either union. The remaining source parameters still
+        // precede dictionaries, which precede any returned function's stages.
+        let checked_callee_type = supplied_types.iter().any(callback_returns_either).then(|| {
+            supplied_types
+                .iter()
+                .cloned()
+                .chain(parameters.iter().map(|(_, ty)| ty.clone()))
+                .chain(std::iter::repeat_n(
+                    super::TypeScriptType::Unknown,
+                    evidence.len(),
+                ))
+                .collect::<Vec<_>>()
+                .into_iter()
+                .rev()
+                .fold(result_type.clone(), |result, parameter| {
+                    super::TypeScriptType::Function {
+                        parameter: Box::new(parameter),
+                        result: Box::new(result),
+                    }
+                })
+        });
         TypeScriptExpr::Call {
             callee,
             arguments,
             type_arguments: Vec::new(),
-            checked_callee_type: None,
+            checked_callee_type,
         }
     };
     stage_deferred_call(initializer, parameters, evidence, result_type, origin)
