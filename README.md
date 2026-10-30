@@ -9,9 +9,9 @@
 <p align="center"><strong>データの形から状態、UIまでを、ひとつの言語として組み立てる。</strong></p>
 
 <p align="center">
-  <a href="https://seseragi.vercel.app/">Playground</a>
+  <a href="https://seseragi-docs.vercel.app/">ドキュメント</a>
+  · <a href="https://seseragi.vercel.app/">Playground</a>
   · <a href="https://seseragi.vercel.app/tour/">Tour</a>
-  · <a href="./docs/README.md">言語仕様</a>
   · <a href="./extensions/seseragi/README.md">VS Code</a>
 </p>
 
@@ -242,12 +242,14 @@ TypeScript の既存のコードや npm パッケージを Seseragi から呼ぶ
 | `{ ...user, name: "Aoi" }` | `{ ...user, name: "Aoi" }` |
 | `` `Hello, ${name}` `` | `` `Hello, ${name}` `` |
 
-言語の機能を順番に学ぶなら [A Tour of Seseragi](https://seseragi.vercel.app/tour/) がおすすめです。
+関数、データ、失敗、非同期処理、React との違いまで、TypeScript と並べた詳しい比較は
+ドキュメントの [TypeScript から Seseragi へ](https://seseragi-docs.vercel.app/docs/guides/typescript-to-seseragi) にあります。
 
 ## 試してみる
 
 インストールせずに、ブラウザからすぐ試せます。
 
+- **[ドキュメント](https://seseragi-docs.vercel.app/)** — 言語を順番に学ぶ「学ぶ」、目的別の「用途別ガイド」、規則を調べる「リファレンス」があります
 - **[Playground](https://seseragi.vercel.app/)** — コードを書いて、型チェック・実行・HTML のプレビューまでできます
 - **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello world から Effect、Signal、Web UI までを順番に学べます
 - **[サンプル集](./examples/samples/README.md)** — 現在のコンパイラで実際に動くサンプルです
@@ -285,7 +287,7 @@ seseragi build hello.ssrg        # ビルドする
 seseragi format hello.ssrg       # 整形する
 ```
 
-Web アプリを作るなら [はじめての Web アプリ](./docs/GETTING_STARTED.md) へ。
+詳しい手順はドキュメントの [ローカルで使う](https://seseragi-docs.vercel.app/docs/learn/local-development)、Web アプリを作るなら [Web アプリを作る](https://seseragi-docs.vercel.app/docs/guides/web-app) を参照してください。
 VS Code 拡張（ID: `seseragi-dev.seseragi`）は、同じ GitHub Releases にある VSIX からインストールできます。
 詳しくは [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。
 
