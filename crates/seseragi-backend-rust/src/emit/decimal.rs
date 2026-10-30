@@ -55,6 +55,41 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         | "std/decimal::FloatNotFinite" => {
             (vec![], named("std/decimal::DecimalConversionError", vec![]))
         }
+        "std/decimal::divideExact" => (
+            vec![decimal.clone(), decimal.clone()],
+            named(
+                "std/prelude::Either",
+                vec![
+                    named("std/decimal::DecimalArithmeticError", vec![]),
+                    decimal,
+                ],
+            ),
+        ),
+        "std/decimal::divide" => (
+            vec![
+                named("std/decimal::DecimalContext", vec![]),
+                decimal.clone(),
+                decimal.clone(),
+            ],
+            named(
+                "std/prelude::Either",
+                vec![
+                    named("std/decimal::DecimalArithmeticError", vec![]),
+                    decimal,
+                ],
+            ),
+        ),
+        "std/decimal::quantize" => (
+            vec![
+                named("std/prelude::Int", vec![]),
+                named("std/number::RoundingMode", vec![]),
+                decimal.clone(),
+            ],
+            decimal,
+        ),
+        "std/decimal::DecimalDivisionByZero" | "std/decimal::NonTerminatingDecimal" => {
+            (vec![], named("std/decimal::DecimalArithmeticError", vec![]))
+        }
         "std/decimal::context" => (
             vec![
                 named("std/prelude::Int", vec![]),

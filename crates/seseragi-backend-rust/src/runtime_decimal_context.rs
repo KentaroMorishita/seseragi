@@ -23,6 +23,26 @@ fn native_decimal_rounding_value(mode: NativeRoundingMode) -> V {
 
 fn native_decimal_standard_operation(name: &str, arguments: Vec<V>) -> V {
     match (name, arguments.as_slice()) {
+        ("std/decimal::divideExact", [V::Decimal(divisor), V::Decimal(dividend)]) => {
+            native_decimal_divide_exact(divisor.get(), dividend.get())
+        }
+        (
+            "std/decimal::divide",
+            [V::DecimalContext(context), V::Decimal(divisor), V::Decimal(dividend)],
+        ) => native_decimal_divide(context.get(), divisor.get(), dividend.get()),
+        ("std/decimal::quantize", [V::Int(scale), mode, V::Decimal(value)]) => {
+            V::Decimal(Shared::new(native_decimal_quantize(
+                *scale,
+                native_rounding_mode(mode),
+                value.get(),
+            )))
+        }
+        ("std/decimal::DecimalDivisionByZero", []) => {
+            V::adt("std/decimal::DecimalDivisionByZero", V::Unit)
+        }
+        ("std/decimal::NonTerminatingDecimal", []) => {
+            V::adt("std/decimal::NonTerminatingDecimal", V::Unit)
+        }
         ("std/decimal::toIntExact", [V::Decimal(value)]) => {
             native_decimal_to_int_exact(value.get())
         }

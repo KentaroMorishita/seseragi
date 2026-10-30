@@ -197,6 +197,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_decimal_context.rs"));
     output.push_str(include_str!("runtime_decimal_conversion.rs"));
     output.push_str(include_str!("runtime_decimal_arithmetic.rs"));
+    output.push_str(include_str!("runtime_decimal_division.rs"));
     output.push_str(include_str!("runtime_hashing.rs"));
     output.push_str(include_str!("runtime_map.rs"));
     output.push_str(include_str!("runtime_set.rs"));

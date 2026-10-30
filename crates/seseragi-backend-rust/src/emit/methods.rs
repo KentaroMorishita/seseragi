@@ -447,6 +447,7 @@ impl Backend<'_> {
             | "std/decimal::DecimalContext"
             | "std/decimal::DecimalContextError"
             | "std/decimal::DecimalConversionError"
+            | "std/decimal::DecimalArithmeticError"
             | "std/json::Json"
             | "std/json::JsonPathSegment"
             | "std/json::JsonParseError"

@@ -1399,6 +1399,52 @@ fn basic_decimal_arithmetic_path_package_keeps_opaque_values_and_imported_generi
 }
 
 #[test]
+fn basic_decimal_division_keeps_exact_and_rounded_results_and_quantize_modes() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-division.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-division.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_decimal_division_keeps_cold_partial_factories_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-division-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-division-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_decimal_division_defects_keep_source_stages_and_resource_failure_cleanup() {
+    for (expression,message) in [
+        ("decimal.divide (chosen (42 / 0)) (decimal.fromInt 0) (decimal.fromInt 7)", "Int division by zero"),
+        ("decimal.divide (chosen 4) (decimal.fromInt (42 / 0)) (decimal.fromInt 7)", "Int division by zero"),
+        ("decimal.divide (chosen 4) (decimal.fromInt 0) (decimal.fromInt (42 / 0))", "Int division by zero"),
+        ("decimal.divideExact (decimal.fromInt 2) (decimal.quantize 1 numbers.HalfEven (decimal.fromInt (42 / 0)))", "Int division by zero"),
+        ("decimal.divide (chosen 9007199254740991) (value \"1000000000000000000001\") (decimal.fromInt 1)", "Decimal canonical spelling exceeds host limits"),
+    ] {
+        let scratch=Scratch::new();
+        let source=include_str!("../../../examples/spec/fixtures/rust-backend/basic-decimal-division-effects.ssrg").replace("decimal.divide (chosen 4) (decimal.fromInt 0) (decimal.fromInt 7)",expression);
+        let path=scratch.0.join("decimal-division-defect.ssrg");fs::write(&path, source).unwrap();
+        compare(&path,&[Case {
+            stdout:b"created\nacquired\ncold\n0.4167:1.2:15.625\ncold\n0.4167:1.2:15.625\nreleased\n",
+            exit:70,defect:true,native_defect:message,..Case::success(b"")
+        }]);
+    }
+}
+#[test]
+fn basic_decimal_division_path_package_keeps_opaque_values_aliases_and_returned_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-division"),
+        &[Case::success(
+            b"cell:15.625|cell:0.4167|cell:1.2\nzero\nnon-terminating\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_decimal_context_keeps_modes_safe_int_precision_and_saved_getters() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-context.ssrg"),

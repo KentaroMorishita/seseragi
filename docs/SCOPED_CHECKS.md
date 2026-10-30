@@ -1,6 +1,19 @@
 # Scoped checks
 
 
+native DecimalのdivideExact/divide/quantizeと算術error constructorはbackendの
+`--test decimal_division --test decimal_context --test decimal_conversion`、runtimeの
+`decimal_division_tests`、CLIの`basic_decimal_division_`で確認します。
+約分後の有限小数判定、8080個の小さい有理数、6modeのtie/sign/carry、
+任意桁scaleの相殺・展開しないquantize、135個の独立Python Fraction/Decimal期待値を使います。
+元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/nativeで、opaque2moduleと
+保存した各partial stage・cold再実行・typed Failure・source各段階とmaterializationのDefect・
+finalizer/Ref cycle/root0を比較します。78件の偽造とunused program WASM5件も拒否します。
+長いdoのnative生成は`basic_long_effect_sequence_`で元140行と全出力を確認し、
+生成crateのcompile-time recursion headroomを検証します。workspaceのRust設定は変更しません。
+SDK/全体gate/配布は最終batchのintegration pointで行います。
+
+
 native DecimalのexactなAdd/Sub/Mul・Zero/One・Debugは、backendの
 `--test decimal_arithmetic`、runtimeの`decimal_arithmetic_tests`、CLIの
 `basic_decimal_arithmetic_`で確認します。任意桁scaleと符号付き係数を保ち、
