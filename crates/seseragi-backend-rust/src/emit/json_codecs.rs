@@ -62,6 +62,22 @@ impl Backend<'_> {
         if !matches!(trait_name, "JsonEncode" | "JsonDecode") {
             return Ok(None);
         }
+        self.json_codec_target()?;
+        if matches!(
+            owner,
+            "std/array"
+                | "std/list"
+                | "std/maybe"
+                | "std/either"
+                | "std/tuple"
+                | "std/map"
+                | "std/set"
+                | "std/record"
+        ) {
+            return self
+                .json_container_codec_dictionary(selected, owner, trait_name, scope)
+                .map(Some);
+        }
         let (kind, canonical) = match owner {
             "std/bool" => ("Bool", "std/prelude::Bool"),
             "std/string" => ("String", "std/prelude::String"),
@@ -71,7 +87,6 @@ impl Backend<'_> {
             "std/json" => ("Json", "std/json::Json"),
             _ => return Err("Rust backend: unsupported standard JSON codec dictionary".into()),
         };
-        self.json_codec_target()?;
         let [actual] = selected.constraint.arguments.as_slice() else {
             return Err("Rust backend: JSON codec constraint arity".into());
         };

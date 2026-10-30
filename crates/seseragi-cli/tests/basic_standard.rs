@@ -918,6 +918,134 @@ fn basic_json_codecs_package_keeps_opaque_values_and_saved_generic_dictionaries(
 }
 
 #[test]
+fn basic_json_containers_preserve_original_strict_ts_bun_node_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-containers.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-containers.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_containers_keep_cold_replay_failures_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_containers_defects_release_the_captured_values_and_every_root() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let expected = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let prefix = expected
+        .windows(b"recovered: typed".len())
+        .position(|part| part == b"recovered: typed")
+        .unwrap();
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    assert_eq!(
+        source.matches("9007199254740992000000000001.100").count(),
+        1
+    );
+    for (name, changed, output, message) in [
+        (
+            "body-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected[..prefix],
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: 70,
+                defect: true,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_containers_package_keeps_opaque_elements_and_imported_user_codecs() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-containers"),
+        &[Case::success(
+            b"{\"flags\":[true,false],\"rows\":[[1,\"one\"],[2,null]]}:[1,2]:[1,2]:[2,null,3]\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_json_containers_native_host_limit_unwinds_with_finalizer_and_root_cleanup() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let original = source
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declaration = "type Deep = | Bottom | Next Deep\nfn deep n: Int -> Deep = if n <= 0 then Bottom else Next (deep (n - 1))\ninstance JsonEncode<Deep> { fn encodeJson value: Deep -> json.Json = match value { Bottom -> json.JsonNull; Next inner -> encodeJson<Maybe<Deep>> (Just inner) } }\n";
+    let path = scratch.0.join("container-host-limit.ssrg");
+    fs::write(
+        &path,
+        format!(
+            "{declaration}{}",
+            source.replace(
+                original,
+                "  let render = \\_: Unit -> json.encodeString (deep 512)"
+            )
+        ),
+    )
+    .unwrap();
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = bounded(
+        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(70), "{result:?}");
+    assert_eq!(result.stdout, b"created\nacquired\ncold\nreleased\n");
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        stderr.contains("JSON codec nesting exceeds host limits")
+            && stderr.contains("managed-live=0"),
+        "{stderr}"
+    );
+}
+
+#[test]
 fn basic_json_codecs_encoding_defect_runs_finalizer_and_releases_captured_json() {
     let scratch = Scratch::new();
     let source =

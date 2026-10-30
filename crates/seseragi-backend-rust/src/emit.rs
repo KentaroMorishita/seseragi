@@ -33,6 +33,7 @@ mod floats;
 mod hashing;
 mod json;
 mod json_codecs;
+mod json_container_codecs;
 mod json_decoders;
 mod lists;
 mod local;
@@ -192,6 +193,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_json.rs"));
     output.push_str(include_str!("runtime_json_codecs.rs"));
     output.push_str(include_str!("runtime_json_decoders.rs"));
+    output.push_str(include_str!("runtime_json_container_codecs.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));

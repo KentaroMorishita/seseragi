@@ -1,0 +1,101 @@
+import * as json from "std/json"
+import * as arrays from "std/array"
+import * as text from "std/text"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as decimal from "std/decimal"
+
+alias Row = { name: String, count: Int }
+alias Optional = { a: Int, b?: String }
+alias Nested = { rows: Array<(Int, Maybe<String>)> }
+fn path index: Int -> parts: Array<json.JsonPathSegment> -> String = match arrays.get index parts {
+  Nothing -> ""
+  Just (json.JsonField name) -> "." + name + path (index + 1) parts
+  Just (json.JsonIndex value) -> "[" + show value + "]" + path (index + 1) parts
+}
+fn kind value: json.DecodeErrorKind -> String = match value {
+  json.ExpectedJsonType name -> "expected:" + name
+  json.MissingJsonField name -> "missing:" + name
+  json.UnknownJsonField name -> "unknown-field:" + name
+  json.UnknownJsonTag name -> "unknown-tag:" + name
+  json.InvalidJsonValue message -> "invalid:" + message
+}
+fn read<A> source: String -> String where JsonDecode<A>, JsonEncode<A> = {
+  let decode: String -> Either<json.JsonReadError, A> = json.decodeString
+  let encode: A -> String = json.encodeString
+  match decode source {
+    Left (json.JsonDecodeFailure error) -> "error:" + path 0 error.path + ":" + kind error.kind
+    Left _ -> "syntax"
+    Right value -> "ok:" + encode value
+  }
+}
+fn methods<A> value: A -> String where JsonEncode<A>, JsonDecode<A> = {
+  let encode: A -> json.Json = encodeJson
+  let decode: json.Json -> Either<json.DecodeError, A> = decodeJson
+  match decode (encode value) { Left error -> kind error.kind; Right result -> json.stringify (encode result) }
+}
+type Guard = | Guard Int
+instance JsonEncode<Guard> { fn encodeJson value: Guard -> json.Json = match value { Guard n -> encodeJson n } }
+instance JsonDecode<Guard> {
+  fn decodeJson value: json.Json -> Either<json.DecodeError, Guard> = match decodeJson<Int> value {
+    Left error -> Left error
+    Right n -> Right (Guard (if n == 3 then n / 0 else n))
+  }
+}
+type Key = | Key Int
+fn absolute n: Int -> Int = if n < 0 then 0 - n else n
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = match (left,right) { (Key a,Key b) -> absolute a == absolute b } }
+instance Hash<Key> { fn hash value: Key -> Int = match value { Key n -> if n == 999 then n / 0 else 0 } }
+instance JsonEncode<Key> { fn encodeJson value: Key -> json.Json = match value { Key n -> encodeJson n } }
+instance JsonDecode<Key> { fn decodeJson value: json.Json -> Either<json.DecodeError, Key> = match decodeJson<Int> value { Left error -> Left error; Right n -> Right (Key n) } }
+
+pub fn probe -> String = text.join "|" [
+  read<Array<Int>> "[1,2,3]",
+  read<List<Int>> "[1,2,3]",
+  read<Array<Int>> "[]",
+  read<List<Int>> "[]",
+  read<Maybe<Int>> "null",
+  read<Maybe<Int>> "42",
+  read<Either<String,Int>> "{\"tag\":\"Left\",\"value\":\"bad\"}",
+  read<Either<String,Int>> "{\"tag\":\"Right\",\"value\":42,\"ignored\":true}",
+  read<(Int,String,Array<Maybe<Int>>)> "[42,\"雪🙂\",[1,null,2]]",
+  read<Row> "{\"name\":\"雪🙂\",\"count\":42}",
+  read<Optional> "{\"a\":1}",
+  read<Optional> "{\"b\":\"snow\",\"a\":1}",
+  read<Nested> "{\"rows\":[[1,\"one\"],[2,null]]}",
+  read<maps.Map<Int,String>> "[[2,\"two\"],[1,\"one\"],[2,\"updated\"]]",
+  read<sets.Set<Int>> "[2,1,2]",
+  read<maps.Map<Int,String>> "[]",
+  read<sets.Set<Int>> "[]",
+  read<maps.Map<Key,String>> "[[2,\"two\"],[1,\"one\"],[-2,\"updated\"]]",
+  read<sets.Set<Key>> "[2,1,-2]",
+  read<Array<decimal.Decimal>> "[12345678901234567890.001]",
+  read<Array<Array<Int>>> "[[1],[],[2,3]]",
+  read<Array<Guard>> "[1,\"bad\",3]",
+  read<(Guard,Guard)> "[3]",
+  read<maps.Map<Key,String>> "[[999,\"good\"],[1,false]]",
+  read<sets.Set<Key>> "[999,false]",
+  read<{ a: Guard }> "{\"a\":3,\"z\":0}",
+  read<Array<Int>> "false",
+  read<List<Int>> "[1,false]",
+  read<Maybe<Int>> "false",
+  read<Either<Int,Int>> "{\"tag\":\"Other\",\"value\":3}",
+  read<Either<Int,Int>> "{\"tag\":false,\"value\":3}",
+  read<Either<Int,Int>> "{\"tag\":\"Right\"}",
+  read<Either<Int,Int>> "{\"tag\":\"Right\",\"value\":false}",
+  read<(Int,String)> "[1]",
+  read<(Int,String)> "[1,false]",
+  read<Optional> "{\"a\":1,\"b\":null}",
+  read<Optional> "{\"z\":0,\"extra\":1}",
+  read<Row> "{\"count\":42}",
+  read<Nested> "{\"rows\":[[1,\"one\"],[false,null]]}",
+  read<maps.Map<Int,Int>> "[[1,2],[3]]",
+  methods [1,2,3],
+  methods<List<Int>> `[1,2],
+  methods (Just 7),
+  methods<Maybe<Int>> Nothing,
+  methods<Either<String,Int>> (Right 42),
+  methods ((1,"snow")),
+  methods<Row> ({ name: "snow", count: 7 })
+]
+pub effect fn main = println (probe ())

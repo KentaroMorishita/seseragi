@@ -6,6 +6,17 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native JSONのArray/List/Maybe/Either/Tuple/Map/Set/closed record codecはbackendの
+`--test basic_json_containers`、runtimeの`json_container_codec_tests`、CLIの
+`--test basic_standard basic_json_containers_`で確認します。optional fieldの不在とnull、
+tuple長の先行検査、recordのunknown先行拒否、全要素decode後のEq/Hash、重複keyの
+最初の代表と最後の値を保持します。保存generic method・入れ子・opaque要素とimported
+user辞書を通常2 module package、元raw TS両profile strict/skipLibCheck:false、fresh
+Bun/Node/nativeで比較します。cold再実行・Failure/encoder内Defectのfinalizer/Ref cycle/root0、
+128 codec frameのhost limitと復元、owner/kind/子辞書と元UTF-8位置の拒否も確認します。
+新program WASMは未使用の辞書でも拒否します。共有native runtimeへの追加なので、
+最終batch候補で正規compiler WASMの更新とrepository-wide統合gateを行います。
+
 importしたcallable alias内のPrelude sumから推論した型引数は、driverの
 `--test generic_call_instantiation --test hkt_erasure --test strict_partials`と、
 CLIの`--test basic_standard inferred_json_decoder_package`で確認します。#1003の元入力と
