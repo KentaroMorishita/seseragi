@@ -322,6 +322,24 @@ fn basic_concat_keeps_order_empty_inputs_generic_saved_functions_and_original_st
 }
 
 #[test]
+fn inferred_nested_empty_collection_keeps_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/inferred-nested-empty-collection.ssrg",
+        ),
+        &[Case::success(
+            b"[[], [\xe9\x9b\xaa, \xf0\x9f\x99\x82], [e\xcc\x81], []]\n",
+        )],
+    );
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/inferred-empty-concat.ssrg"),
+        &[Case::success(
+            b"[\xe9\x9b\xaa, \xf0\x9f\x99\x82, e\xcc\x81]\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_concat_path_package_keeps_opaque_elements_imported_generic_functions_and_captures() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-projects/basic-concat"),

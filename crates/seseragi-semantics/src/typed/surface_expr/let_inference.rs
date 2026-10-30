@@ -352,12 +352,17 @@ pub(super) fn infer_call_arguments(
         while let SurfaceExpr::Grouped { value, .. } = argument {
             argument = value;
         }
-        matches!(argument, SurfaceExpr::Lambda { .. })
-            || context
-                .target(argument.span())
-                .or_else(|| context.operator_target(argument.span()))
-                .and_then(|target| context.callable_value(target))
-                .is_some_and(|callable| !callable.type_parameters.is_empty())
+        // Collection siblings share inference variables too: an empty inner
+        // literal needs the type learned from later siblings before the
+        // ordinary checker commits to its left-to-right expectations.
+        matches!(
+            argument,
+            SurfaceExpr::Lambda { .. } | SurfaceExpr::Array { .. } | SurfaceExpr::List { .. }
+        ) || context
+            .target(argument.span())
+            .or_else(|| context.operator_target(argument.span()))
+            .and_then(|target| context.callable_value(target))
+            .is_some_and(|callable| !callable.type_parameters.is_empty())
     }) {
         return None;
     }

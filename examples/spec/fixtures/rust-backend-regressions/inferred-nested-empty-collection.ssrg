@@ -1,0 +1,2 @@
+fn keep<A> values: Array<Array<A>> -> Array<Array<A>> = values
+pub effect fn main = println (show (keep [[], ["雪", "🙂"], ["é"], []]))

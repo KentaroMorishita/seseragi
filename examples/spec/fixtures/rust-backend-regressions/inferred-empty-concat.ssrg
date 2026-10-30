@@ -1,0 +1,9 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as text from "std/text"
+
+fn flatten<A> values: Array<Array<A>> -> Array<A> = {
+  let concat: Array<Array<A>> -> Array<A> = arrays.concat
+  concat values
+}
+pub effect fn main = println (show (flatten [[], ["雪", "🙂"], ["é"], []]))

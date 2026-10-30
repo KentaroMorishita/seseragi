@@ -6,6 +6,14 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+generic callに渡す先頭空の入れ子Array/Listはdriverの`--test nested_empty_call_inference`、
+既存の`generic_call_instantiation`/`hkt_erasure`/`strict_partials`、semanticsのlib、CLIの
+`inferred_nested_empty_collection_`で確認します。元入力をbyte不変で保持し、raw TS両profile
+strict/skipLibCheck:falseとfresh Bun/Node/nativeで比較します。既存rank-1 solverへcollection
+literalも渡し、後続siblingの型を通常checkerより先に共有します。nominal/collectionの不一致と
+UTF-8範囲、全要素が空でcontextもない場合の拒否、明示型引数対照を保ちます。
+shared frontendの変更なので正規compiler WASMと全体gateは最終batchで更新・確認します。
+
 native Array/Listのconcatはbackendの`--test basic_sequence`、runtimeの`sequence_tests`、
 CLIの`--test basic_standard basic_concat_`で確認します。内外両方のcanonical collectionと
 要素型・kind・保存generic関数を照合し、順序・空入力・一段だけの連結を保ちます。
