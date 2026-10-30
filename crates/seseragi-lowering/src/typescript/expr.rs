@@ -600,6 +600,14 @@ pub(super) fn lower_core_expr_to_typescript(
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
                 let type_arguments = match (callee.as_str(), evidence.first()) {
+                    (name, _) if name.starts_with("std/either::") => {
+                        checked_either_runtime_arguments(
+                            name,
+                            &checked_argument_types,
+                            &type_ref,
+                            imported_types,
+                        )
+                    }
                     ("std/array::empty" | "std/array::append", _) => {
                         checked_array_result_element(&type_ref, imported_types)
                             .into_iter()
@@ -1860,6 +1868,79 @@ fn lower_core_expressions(
 
 // Empty inputs cannot supply a host generic argument. Keep the element
 // already selected by the source checker before TypeScript infers unknown.
+fn checked_either_runtime_arguments(
+    name: &str,
+    supplied: &[super::TypeScriptType],
+    result: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+) -> Vec<super::TypeScriptType> {
+    use super::TypeScriptType as Ty;
+    let arity = runtime_standard_operation(name)
+        .expect("checked Either operation")
+        .source_arity;
+    let full = supplied.iter().rev().fold(
+        type_ref_from_core_type(result, imported_types),
+        |result, parameter| Ty::Function {
+            parameter: Box::new(parameter.clone()),
+            result: Box::new(result),
+        },
+    );
+    let mut remaining = &full;
+    let mut parameters = Vec::new();
+    for _ in 0..arity {
+        let Ty::Function { parameter, result } = remaining else {
+            return Vec::new();
+        };
+        parameters.push(parameter.as_ref());
+        remaining = result;
+    }
+    let arrow = |value: &Ty| match value {
+        Ty::Function { parameter, result } => {
+            Some((parameter.as_ref().clone(), result.as_ref().clone()))
+        }
+        _ => None,
+    };
+    let sum = |value: &Ty| match value {
+        Ty::Either { error, value } => Some((error.as_ref().clone(), value.as_ref().clone())),
+        _ => None,
+    };
+    let selected = (|| {
+        Some(match name {
+            "std/either::mapLeft" => {
+                let (error, value) = sum(parameters[1])?;
+                let (_, mapped) = arrow(parameters[0])?;
+                vec![error, mapped, value]
+            }
+            "std/either::mapRight" => {
+                let (error, value) = sum(parameters[1])?;
+                let (_, mapped) = arrow(parameters[0])?;
+                vec![error, value, mapped]
+            }
+            "std/either::bimap" => {
+                let (error, value) = sum(parameters[2])?;
+                let (_, mapped_error) = arrow(parameters[0])?;
+                let (_, mapped_value) = arrow(parameters[1])?;
+                vec![error, mapped_error, value, mapped_value]
+            }
+            "std/either::fold" => {
+                let (error, value) = sum(parameters[2])?;
+                vec![error, value, remaining.clone()]
+            }
+            "std/either::swap" => {
+                let (error, value) = sum(parameters[0])?;
+                vec![error, value]
+            }
+            "std/either::traverse" => {
+                let (input, output) = arrow(parameters[0])?;
+                let (error, value) = sum(&output)?;
+                vec![error, input, value]
+            }
+            _ => return None,
+        })
+    })();
+    selected.unwrap_or_default()
+}
+
 fn checked_array_result_element(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,

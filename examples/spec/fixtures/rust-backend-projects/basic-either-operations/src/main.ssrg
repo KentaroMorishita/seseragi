@@ -1,0 +1,14 @@
+import * as values from "values"
+fn output value:Either<values.Error,values.Wrapped<values.Value>> -> String = match value { Left error -> "left:" + values.errorText error; Right box -> "right:" + values.render box }
+pub effect fn main = do {
+  let collect:values.Wrapped<Either<values.Error,values.Value>> -> Either<values.Error,values.Wrapped<values.Value>> = values.collect ()
+  let saved:values.Wrapped<values.Value> -> Either<values.Error,values.Wrapped<values.Value>> = values.transform values.increment
+  let mapError:Either<values.Error,values.Wrapped<values.Value>> -> Either<String,values.Wrapped<values.Value>> = values.mapError values.errorText
+  let fold:(String -> String) -> (values.Wrapped<values.Value> -> String) -> Either<String,values.Wrapped<values.Value>> -> String = values.fold ()
+  println (output (collect (values.optional 7)))
+  println (output (collect (values.missing ())))
+  println (output (collect (values.blank ())))
+  println (output (saved (values.make 8)))
+  println (output (saved (values.make 8)))
+  println (fold (\error:String -> "error:" + error) values.render (mapError (collect (values.missing ()))))
+}

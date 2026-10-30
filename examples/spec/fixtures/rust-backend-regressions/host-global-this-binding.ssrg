@@ -1,0 +1,6 @@
+type Value = | Value Int
+fn globalThis value:Int -> Int = value + 1
+pub effect fn main = do {
+  let record = {globalThis:41}
+  println (show (match Value (globalThis record.globalThis) { Value number -> number }))
+}

@@ -138,7 +138,7 @@ impl Backend<'_> {
         Ok(true)
     }
 
-    fn validate_traversable_evidence(
+    pub(super) fn validate_traversable_evidence(
         &self,
         selected: &CoreCallEvidence,
         scope: &Scope,

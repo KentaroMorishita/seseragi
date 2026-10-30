@@ -1061,11 +1061,25 @@ pub(crate) fn type_known_application_with_explicit(
                 )
             })
             .map(|mut expected| {
-                expected.type_ref = mask_unresolved_type_parameters(
+                let masked = mask_unresolved_type_parameters(
                     &expected.type_ref,
                     &signature.type_parameters,
                     &partial_application.resolved_type_parameters,
                 );
+                if masked != expected.type_ref {
+                    // A display hole must also be a semantic hole. Keeping an
+                    // unresolved scheme key would constrain a nested constructor
+                    // before its own arguments can infer that position. Project
+                    // checked owners first so lexical names cannot recapture them.
+                    let canonical = context.evidence_type(&expected);
+                    let canonical = mask_unresolved_type_parameters(
+                        &canonical,
+                        &signature.type_parameters,
+                        &partial_application.resolved_type_parameters,
+                    );
+                    expected.key = context.semantic_value_from_typed_type(&canonical).key;
+                    expected.type_ref = masked;
+                }
                 expected
             });
         let expected = inferred_arguments

@@ -136,6 +136,7 @@ mod runtime {
     include!("runtime_collection_control.rs");
     include!("runtime_traversable.rs");
     include!("runtime_maybe.rs");
+    include!("runtime_either.rs");
     include!("runtime_text.rs");
     include!("runtime_bytes.rs");
     include!("runtime_big_int_value.rs");

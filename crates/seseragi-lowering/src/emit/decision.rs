@@ -66,7 +66,7 @@ fn render_prefix_branch_expression(
     render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
 ) -> String {
     let Some((branch, rest)) = branches.split_first() else {
-        return "((): never => { throw new Error(\"non-exhaustive Seseragi match\"); })()"
+        return "((): never => { throw new globalThis.Error(\"non-exhaustive Seseragi match\"); })()"
             .to_owned();
     };
     let Some(plan) = &branch.list_prefix else {
@@ -121,7 +121,7 @@ fn render_branches(
     render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
 ) -> String {
     let Some((branch, rest)) = branches.split_first() else {
-        return "((): never => { throw new Error(\"non-exhaustive Seseragi match\"); })()"
+        return "((): never => { throw new globalThis.Error(\"non-exhaustive Seseragi match\"); })()"
             .to_owned();
     };
     let value = render_with_bindings(&branch.bindings, &render_value(branch), result);

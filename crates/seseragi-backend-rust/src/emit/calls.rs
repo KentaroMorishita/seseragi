@@ -82,6 +82,9 @@ impl Backend<'_> {
         if let Some(value) = self.maybe_operation_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.either_operation_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.collection_control_call(expr, scope)? {
             return Ok(value);
         }

@@ -146,7 +146,7 @@ fn render_structural_instance(
                 body.push_str(&format!("case {:?}: {{ ", variant.tag));
                 if method != "hash" {
                     body.push_str(&format!(
-                        "if (right.tag !== {:?}) throw new Error(\"invalid derived comparison\"); ",
+                        "if (right.tag !== {:?}) throw new globalThis.Error(\"invalid derived comparison\"); ",
                         variant.tag
                     ));
                 }
@@ -168,7 +168,7 @@ fn render_structural_instance(
                 ));
                 body.push_str(" } ");
             }
-            body.push_str("} throw new Error(\"invalid derived value\");");
+            body.push_str("} throw new globalThis.Error(\"invalid derived value\");");
             body
         }
     } else {

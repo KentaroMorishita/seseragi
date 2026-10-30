@@ -29,6 +29,7 @@ mod decimal;
 mod display;
 mod effect_conversions;
 mod effect_defects;
+mod either;
 mod equality;
 mod filesystem;
 mod floats;
@@ -198,6 +199,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_collection_control.rs"));
     output.push_str(include_str!("runtime_traversable.rs"));
     output.push_str(include_str!("runtime_maybe.rs"));
+    output.push_str(include_str!("runtime_either.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int_value.rs"));
@@ -967,6 +969,11 @@ impl Backend<'_> {
                 }
                 if let Some(value) =
                     self.maybe_operation_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.either_operation_reference(name, evidence, type_ref, scope)?
                 {
                     return Ok(value);
                 }
