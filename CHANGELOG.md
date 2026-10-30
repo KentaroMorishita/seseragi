@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.129] - 2026-10-31
+
+### Added
+
+- Run Prelude `sum`, `forEach` and `join` natively through the selected Reducible, Iterable, Zero and Add instances, so effectful `for` loops over collections build natively.
+
 ## [0.61.128] - 2026-10-31
 
 ### Fixed
