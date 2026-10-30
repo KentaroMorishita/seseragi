@@ -41,59 +41,59 @@ CLI ツールも Web アプリの画面も、同じ言語、同じ考え方で�
 
 ## TypeScript で、こんなことはありませんか
 
-- 「円か長方形か」のように種類で分かれるデータに新しい種類を足したのに、`switch` の分岐を足し忘れた
+- 読み込み中・成功・失敗の状態を管理していたら、画面に「Hello, undefined」と表示されてしまった
 - ある関数がエラーを投げるのかどうか、型を見ても分からない。`catch` で受け取る値の型も `unknown` で、中身は実行してみるまで分からない
 - ただの計算に見える関数が、裏で通信やログ出力をしていた
 
 Seseragi では、どれもコンパイラが実行前に見つけます。順番に見ていきます。
 
-### 場合分けの漏れ
+### ありえない状態と、場合分けの漏れ
 
-TypeScript では、種類で分かれるデータを、ユニオン型と `kind` のような目印のプロパティで表し、`switch` で分岐するのが定番です。
-ただ、分岐の書き忘れを確実に見つけるには、`default` で `never` 型の変数に代入するテクニックが必要です。
+React などでデータを読み込むとき、状態をこんなふうに書くことがよくあります。
 
 ```ts
-type Shape =
-  | { kind: "circle"; radius: number }
-  | { kind: "rect"; width: number; height: number }
+type UserState = {
+  isLoading: boolean
+  user?: { name: string }
+  error?: string
+}
 
-function area(shape: Shape): number {
-  switch (shape.kind) {
-    case "circle":
-      return 3.14 * shape.radius * shape.radius
-    case "rect":
-      return shape.width * shape.height
-    default: {
-      const unreachable: never = shape
-      throw new Error(`unknown shape: ${unreachable}`)
-    }
-  }
+function message(state: UserState): string {
+  if (state.isLoading) return "Loading..."
+  if (state.error) return `Error: ${state.error}`
+  return `Hello, ${state.user?.name}`
 }
 ```
 
-Seseragi では、種類ごとに名前（`Circle`、`Rect`）を付けて型を定義し、`match` で場合分けします。
-`match` は、すべての種類を扱っているかを必ずチェックします。特別なテクニックは要りません。
+この型は、「読み込み中なのにエラーもある」のような、ありえない組み合わせも許してしまいます。
+`{ isLoading: false }` を渡すと `Hello, undefined` と表示されますが、strict モードでもコンパイルは通ります。
+
+Seseragi では、状態を「どれか一つ」として型に書き出します。
 
 ```seseragi
-type Shape =
-  | Circle Float
-  | Rect (Float, Float)
+type UserState =
+  | Loading
+  | Loaded String
+  | Failed String
 
-fn area shape: Shape -> Float = match shape {
-  Circle radius -> 3.14 * radius * radius
-  Rect (width, height) -> width * height
-}
+fn message state: UserState -> String =
+  match state {
+    Loading -> "Loading..."
+    Loaded name -> `Hello, ${name}`
+    Failed reason -> `Error: ${reason}`
+  }
 ```
 
-`Rect` の行を消すと、ビルドする前にエラーになります。
+名前があるのは `Loaded` のときだけなので、`undefined` を表示してしまうことはありません。
+さらに `match` は、すべての状態を扱っているかを必ずチェックします。新しい状態を足したのに処理を書き忘れると、ビルドする前にエラーになります。
 
 ```text
 error[SES-T0301]: This match does not cover every possible value
-  | fn area shape: Shape -> Float = match shape {
-  |                                 ^ missing patterns: Rect _
+  |   match state {
+  |   ^ missing patterns: Failed _
 ```
 
-[▶ Playground で開く](https://seseragi.vercel.app/?source=type%20Shape%20%3D%0A%20%20%7C%20Circle%20Float%0A%20%20%7C%20Rect%20%28Float%2C%20Float%29%0A%0Afn%20area%20shape%3A%20Shape%20-%3E%20Float%20%3D%20match%20shape%20%7B%0A%20%20Circle%20radius%20-%3E%203.14%20%2A%20radius%20%2A%20radius%0A%20%20Rect%20%28width%2C%20height%29%20-%3E%20width%20%2A%20height%0A%7D%0A%0Apub%20effect%20fn%20main%20%3D%0A%20%20%5BCircle%201.0%2C%20Rect%20%282.0%2C%203.0%29%5D%0A%20%20%20%20%7C%3E%20map%20area%0A%20%20%20%20%7C%3E%20sum%0A%20%20%20%20%7C%3E%20show%0A%20%20%20%20%7C%3E%20println%0A)
+[▶ Playground で開く](https://seseragi.vercel.app/?source=type%20UserState%20%3D%0A%20%20%7C%20Loading%0A%20%20%7C%20Loaded%20String%0A%20%20%7C%20Failed%20String%0A%0Afn%20message%20state%3A%20UserState%20-%3E%20String%20%3D%0A%20%20match%20state%20%7B%0A%20%20%20%20Loading%20-%3E%20%22Loading...%22%0A%20%20%20%20Loaded%20name%20-%3E%20%60Hello%2C%20%24%7Bname%7D%60%0A%20%20%20%20Failed%20reason%20-%3E%20%60Error%3A%20%24%7Breason%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20Loading%20%7C%3E%20message%20%7C%3E%20println%0A%20%20Loaded%20%22Aoi%22%20%7C%3E%20message%20%7C%3E%20println%0A%20%20Failed%20%22timeout%22%20%7C%3E%20message%20%7C%3E%20println%0A%7D%0A)
 
 ### 例外のかわりに、失敗を型で表す
 
@@ -181,13 +181,18 @@ effect fn reserve item: String -> quantity: Int -> String fails OrderError =
 関数はカリー化されているので、引数の一部だけを渡した関数をそのままパイプラインに置けます。
 
 ```seseragi
+import * as arrays from "std/array"
+
+fn double n: Int -> Int = n * 2
+
 pub effect fn main =
-  [Circle 1.0, Rect (2.0, 3.0)]
-    |> map area
+  [1, 2, 3, 4]
+    |> arrays.filter (\n: Int -> n > 2)
+    |> map double
     |> sum
     |> show
     |> println
-// => 9.14
+// => 14
 ```
 
 ### UI も同じ言語で
@@ -237,12 +242,13 @@ CLI、エディタ用の LSP、フォーマッタ、ブラウザの Playground �
 ### 生成されるのは普通の TypeScript
 
 Seseragi のコードは TypeScript にコンパイルされ、Bun・Node.js・ブラウザで動きます。
-たとえば上の `type Shape` は、`tag` プロパティで種類を見分ける、TypeScript でおなじみのユニオン型になります。
+たとえば上の `type UserState` は、`tag` プロパティで状態を見分けるユニオン型になります。
 
 ```ts
-type Shape =
-  | { readonly tag: "Circle"; readonly value: number }
-  | { readonly tag: "Rect"; readonly value: readonly [number, number] };
+type UserState =
+  | { readonly tag: "Loading" }
+  | { readonly tag: "Loaded"; readonly value: string }
+  | { readonly tag: "Failed"; readonly value: string };
 ```
 
 TypeScript の既存のコードや npm パッケージを Seseragi から呼ぶ仕組みは、まだ開発中です（[開発状況](#開発状況)）。
