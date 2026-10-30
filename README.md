@@ -142,34 +142,40 @@ effect fn order item: String -> quantity: Int -> String fails Never =
 
 ### UI も同じ言語で
 
-状態・操作・画面を、ここまでと同じ型と関数で書きます。
-画面は状態から作られ、ボタンを押すと `Action` が `update` に渡されて新しい状態になります。
+画面も、ここまでと同じ型と関数で書きます。
+状態は `Signal` に持たせ、`signals.map` で状態から画面を作ります。
+ボタンを押して状態が変わると、画面も自動で更新されます。
 
 ```seseragi
 import * as dom from "std/web/dom"
 import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
 
-type Action =
-  | Increment
-  | Reset
+fn label current: Int -> html.Html<Task<Unit>> = html.p { children: `Count: ${current}` }
 
-fn update action: Action -> count: Int -> Int = match action {
-  Increment -> count + 1
-  Reset -> 0
+fn view count: MutableSignal<Int> -> current: Int -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+      label current,
+      html.button {
+        onClick: signals.update (\n: Int -> n + 1) count,
+        children: "+1"
+      },
+      html.button { onClick: signals.set 0 count, children: "Reset" }
+    ]
+  }
+
+fn perform action: Task<Unit> -> Task<Unit> = action
+
+pub effect fn main -> Unit with dom: dom.Dom fails String = do {
+  count <- signals.make 0
+  target <- dom.query "#app"
+    |> mapError (\error: dom.DomError -> "#app not found")
+  dom.run (dom.defaultOptions ()) target perform (signals.map (view count) count)
+    |> mapError (\error: dom.DomRuntimeError<Never> -> "render failed")
 }
-
-fn view count: Int -> html.Html<Action> = html.div {
-  children: [
-    html.p { children: `Count: ${count}` },
-    html.button { onClick: Increment, children: "+1" },
-    html.button { onClick: Reset, children: "Reset" }
-  ]
-}
-
-pub effect fn main = dom.app { target: "#app", initial: 0, update, view }
 ```
-
-より細かく状態を扱いたいときは、値の変化を追いかける `Signal` を使えます。
 
 ### エディタとコンパイラが同じ答えを出す
 
