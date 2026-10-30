@@ -1106,6 +1106,65 @@ fn basic_int_checked_path_package_keeps_opaque_values_and_imported_error_owners(
 }
 
 #[test]
+fn basic_math_remaining_keeps_complete_surface_and_original_math_contract() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-math-remaining.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-math-remaining.stdout"
+        ))],
+    );
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-text-math.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-text-math.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_math_remaining_keeps_cold_partial_captures_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-math-remaining-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-math-remaining-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_math_remaining_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-math-remaining-effects.ssrg"
+    );
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("math-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n5.0\ncold\n5.0\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_math_remaining_path_package_keeps_opaque_values_and_saved_binary_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-math-remaining"),
+        &[Case::success(b"5.0\n-0.0\n6.283185307179586\nTrue\n")],
+    );
+}
+
+#[test]
 fn basic_decimal_keeps_captured_values_cold_and_releases_after_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg"),

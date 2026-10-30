@@ -6,6 +6,13 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Mathの定数・残りの単項関数・atan2/hypotはbackendの`--test math_remaining`、runtimeの
+`math_tests`、CLIの`basic_math_remaining_`で確認します。定数はvalue、atan2はyが先で、
+hypotは中間二乗のoverflow/underflowを避けます。NaN/Infinity/±0とspecの有限代表点の許容誤差、
+保存/部分適用・opaque2module・元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/
+Defect/finalizer/root0と位置付き偽造拒否を確認します。元の4 Math操作も実行比較し、
+新しいprogram WASM受入は追加しません。最終SDKと全体gateはRelease batchへ集約します。
+
 native Intのchecked/saturating演算とhelperはbackendの`--test int_checked --test int_text
 --test int_parse`、runtimeの`int_checked_tests`、CLIの`basic_int_checked_`で確認します。
 safe Int範囲の正確な演算、右引数先行の順序、巨大指数でも有界なpower、typedな除算/

@@ -1,0 +1,19 @@
+import * as math from "std/math"
+import * as floats from "std/float"
+
+pub opaque newtype Measure = Float
+pub fn make value: Float -> Measure = Measure value
+pub fn format wrapped: Measure -> String = match wrapped { Measure value -> floats.format value }
+pub fn distance first: Measure -> (Measure -> Measure) = match first {
+  Measure x -> {
+    let length = math.hypot x
+    \second -> match second { Measure y -> Measure (length y) }
+  }
+}
+pub fn angle first: Measure -> (Measure -> Measure) = match first {
+  Measure y -> {
+    let direction = math.atan2 y
+    \second -> match second { Measure x -> Measure (direction x) }
+  }
+}
+pub fn turn -> Measure = Measure math.tau
