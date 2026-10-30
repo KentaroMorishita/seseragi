@@ -15,6 +15,20 @@ impl Backend<'_> {
         selected: &CoreInstanceConstraint,
         scope: &Scope,
     ) -> bool {
+        if declared.trait_identity.as_deref() == Some("std/prelude::Reducible")
+            && selected.trait_identity.as_deref() == Some("std/prelude::Iterable")
+            && !self.program_wasm_library
+        {
+            return self.valid_constraint_label(declared)
+                && self.valid_constraint_label(selected)
+                && declared.arguments.len() == 2
+                && selected.arguments.len() == 2
+                && declared
+                    .arguments
+                    .iter()
+                    .chain(&selected.arguments)
+                    .all(|ty| self.declared_method_type_kind(ty, scope) == Some(0));
+        }
         // Canonical supertraits project fields from the same scoped frame.
         // Argument equality is checked by the caller, never by display name.
         let kind = match (
