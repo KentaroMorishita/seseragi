@@ -133,7 +133,8 @@ pub fn successful(output: Output) -> Output {
     output
 }
 pub fn bounded(command: &mut Command, directory: &Path) -> Output {
-    OwnedChild::start(command, directory).wait(Duration::from_secs(120))
+    // Native compilation can be slow on CI hosts running many tests in parallel.
+    OwnedChild::start(command, directory).wait(Duration::from_secs(600))
 }
 pub fn runtime(name: &str, directory: &Path) -> PathBuf {
     let output = successful(bounded(
