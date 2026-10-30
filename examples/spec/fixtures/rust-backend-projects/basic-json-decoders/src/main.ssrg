@@ -1,0 +1,17 @@
+import * as rules from "rules"
+import * as json from "std/json"
+import * as arrays from "std/array"
+
+pub fn probe -> String = {
+  let item = rules.field<Int> "n" (decodeJson<Int>)
+  let stage: rules.Rules<Array<Int>> -> rules.Rules<Array<Int>> = rules.named<Array<Int>> "items"
+  let selected = stage (rules.array<Int> item)
+  match json.parse "{\"items\":[{\"n\":7},{\"n\":9}]}" {
+    Left _ -> "invalid syntax"
+    Right value -> match rules.read selected value {
+      Left _ -> "invalid domain"
+      Right values -> show (arrays.length values) + ":" + show (arrays.get 0 values) + ":" + show (arrays.get 1 values)
+    }
+  }
+}
+pub effect fn main = println (probe ())

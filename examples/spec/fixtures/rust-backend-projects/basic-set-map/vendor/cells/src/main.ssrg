@@ -1,0 +1,12 @@
+import * as sets from "std/set"
+
+pub opaque newtype Input = String
+pub opaque newtype Output = Int
+instance Eq<Input> { fn eq left: Input -> right: Input -> Bool = match left { Input a -> match right { Input b -> a == b } } }
+instance Hash<Input> { fn hash _value: Input -> Int = 0 }
+instance Eq<Output> { fn eq left: Output -> right: Output -> Bool = match left { Output a -> match right { Output b -> a == b } } }
+instance Hash<Output> { fn hash _value: Output -> Int = 0 }
+pub fn read value: Output -> Int = match value { Output number -> number }
+pub fn key value: Input -> Output = match value { Input text -> Output (if text == "c" then 2 else 1) }
+pub fn source -> sets.Set<Input> = sets.singleton (Input "a") |> sets.insert (Input "b") |> sets.insert (Input "c")
+pub fn transform<A,B> callback: (A -> B) -> sets.Set<A> -> sets.Set<B> where Eq<B>, Hash<B> = sets.map callback

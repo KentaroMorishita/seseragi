@@ -1,10 +1,207 @@
 # Scoped checks
 
+
+実ファイル/実FIFOの非同期I/Oだけをhost間で切り分ける場合は、
+`rust-backend.yml`のmanual input `async_io_only=true`を使います。
+Linux/macOS/Windowsで元の`cargo test --locked -p seseragi-cli --test async_filesystem`
+を実行し、既存の15秒deadlineとhandle close/worker join/finalizer/出力保護を保ちます。
+`integration=true`はこのinputより優先し、従来どおり全体gateを実行します。
+
 Seseragiの検証は、変更範囲に対応するscoped laneを先に実行します。`bun run check`
 は、各laneを日常作業で無条件に繰り返すためのコマンドではなく、repository-wideな
 最終統合gateです。
 
 ## Lane matrix
+
+native Mathの定数・残りの単項関数・atan2/hypotはbackendの`--test math_remaining`、runtimeの
+`math_tests`、CLIの`basic_math_remaining_`で確認します。定数はvalue、atan2はyが先で、
+hypotは中間二乗のoverflow/underflowを避けます。NaN/Infinity/±0とspecの有限代表点の許容誤差、
+保存/部分適用・opaque2module・元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/
+Defect/finalizer/root0と位置付き偽造拒否を確認します。元の4 Math操作も実行比較し、
+新しいprogram WASM受入は追加しません。最終SDKと全体gateはRelease batchへ集約します。
+
+native Intのchecked/saturating演算とhelperはbackendの`--test int_checked --test int_text
+--test int_parse`、runtimeの`int_checked_tests`、CLIの`basic_int_checked_`で確認します。
+safe Int範囲の正確な演算、右引数先行の順序、巨大指数でも有界なpower、typedな除算/
+power errorとclampのDefectを保ちます。保存/部分適用・opaque 2module・元raw TS両profile
+strict・fresh Bun/Node/native・cold/Failure/finalizer/root0、位置付き偽造拒否と未使用program
+WASM拒否を確認します。最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
+
+native Intの基数変換・format・上下限はbackendの`--test int_text --test int_parse`、
+runtimeの`int_parse_tests`、CLIの`--test basic_standard basic_int_radix_`で確認します。
+radix 2〜36、safe Int範囲、符号・leading zero・大小文字、UTF-8 byte位置と最初の失敗を
+TSに揃え、既存十進parseのcanonical spellingを保ちます。保存/部分適用・generic関数・
+opaque 2module package、元raw TS両profile strict/skipLibCheck:false、fresh Bun/Node/native、
+cold/Failure/Defect/finalizer/root0、偽造owner/kind/型/辞書/段階の位置付き拒否を確認します。
+新program WASMは未使用の保存関数でも拒否し、最終SDK/gateはRelease batchへ集約します。
+標準curried関数を返す元Int入力のTS7006回帰は両profileの元raw TS strictでも確認し、
+driverの`--test strict_partials --test generic_call_instantiation --test hkt_erasure`で
+checkedな型とsource段階を保持します。共有lowering修復の正規WASMも最終batchで更新します。
+
+native Decimal Ordと比較演算はbackendの`--test decimal_ord --test decimal_keys
+--test basic_decimal --test method_references`、runtimeの`decimal_tests`、CLIの
+`basic_decimal_ord_`で確認します。符号/zero/任意精度の桁指数/仮想末尾zeroを比較し、
+1000桁のscaleを展開せず、OrdのEq継承・保存/部分適用・opaque2module packageを保ちます。
+元zero回帰入力はbyte不変で、raw TS両profile strictとfresh Bun/Node/native、cold/Failure/
+引数・戻りcallback Defect/finalizer/Ref cycle/root0、method22とbinary32通りの偽造拒否、
+未使用compare/4比較演算のprogram WASM拒否を確認します。最終SDK/gateはRelease batchです。
+
+TS Decimal zero比較の修復はruntimeの`decimal.test.ts`と`decimal-zero-order.test.ts`、CLIの
+`--test decimal_zero_order`で確認します。元SSRG入力を保ち、development/release両profileの
+fresh Bun/Nodeでzero/負zero・巨大正負scale・正負/同値/非zero順序を比較します。
+native Ordの追加は別leafとし、runtimeの最終integrationはRelease batchへ集約します。
+
+native Decimal Eq/Hashはbackendの`--test decimal_keys --test basic_decimal`、runtimeの
+`decimal_tests`、CLIの`basic_decimal_keys_`で確認します。正規化した任意精度coefficient/scale、
+TSと同じsigned little-endian 32-bit limb hash、等値spellingと実hash衝突を持つMap/Set、
+同名nominalとimported opaque key、保存generic methodとsource段階を保ちます。元raw TS両profile
+strictとfresh Bun/Node/native、cold/typed Failure/Defect/finalizer/Ref cycle/root0、偽造owner/
+kind/引数/結果/辞書/dispatch42通りと未使用program WASM拒否を確認します。Ord/算術は別leafです。
+
+native Set.mapはbackendの`--test basic_set_map`、runtimeの`set_tests`、CLIの
+`--test basic_standard basic_set_map_`で確認します。Map.mapKeysWithと実装を共有し、
+出力BのEq/Hash、mapper→Hash→必要なEq、最初の出力代表/順・seed・snapshotを保持します。
+入力keyと元containerの非保持、通常2module opaque packageと保存imported generic partial、
+元raw TS両profile strictとfresh Bun/Node/native、cold/typed Failure/mapperと戻りcallback内
+Defect/finalizer/Ref cycle/root0、Hash/Eq Defectと循環辞書のunwind、偽造contract22通りと
+未使用program WASM拒否を確認します。Map runtime/対象backendも回帰確認し、最終SDK/gateはbatchです。
+
+制約付きglobal partial/戻り関数とTSのcallback型はbackendの`--test returned_evidence_stages
+--test strict_partials`、driverの`--test strict_partials --test generic_call_instantiation
+--test hkt_erasure`、CLIの元`basic_map_upsert_`入力で確認します。元入力の両profile raw TS strictと
+Bun/Node/nativeを比較し、確定済みcallback型・宣言のsource境界・辞書位置を保ちます。
+残り引数/結果/owner/kind/辞書の偽造を拒否し、共有loweringのSDK/全体gateは最終batchで確認します。
+
+native Map.upsert/mergeWith/mapKeysWithはbackendの`--test basic_map_upsert`、runtimeの`map_tests`、
+CLIの`--test basic_standard basic_map_upsert_`で確認します。Hash一度→Eq検索→update一度の順、
+mergeのleft代表/順とright-only末尾、key変換と衝突resolveのsource順・最初の出力代表を保ちます。
+mapKeysWithの辞書はinput K1ではなくoutput K2を検証し、seedとV型を保持します。
+元raw TS両profile strictとfresh Bun/Node/native、通常2 module packageのopaque input/output keyと
+保存generic partial、cold/Failure/update・merge・key・collision callback内Defect/finalizer/Ref cycle/
+root0、owner/kind/型/辞書/段階の元位置付き拒否と未使用program WASM拒否を確認します。
+insertの置換/lookupを共有するため既存Map/Set runtimeと対象CLIも回帰確認します。SDK/全体gateは最終batchです。
+
+native Map.filter/mapValuesはbackendの`--test basic_map_operations --test basic_map`、runtimeの
+`map_tests`、CLIの`--test basic_standard basic_map_operations_`で確認します。filterのcached hash/
+seedとbulk再構築はSetと共有するため`set_tests`とCLIの`basic_set_operations_`も回帰確認します。
+挿入順のcallback、元key代表・snapshot・空入力、mapValuesのvalue型変更とbucket共有、
+除外key/value・置換前value・元containerの非保持を保ちます。通常2 module packageのopaque値・
+imported generic partialと保存callback、元raw TS両profile strictとfresh Bun/Node/native、
+cold/Failure/predicate・mapper内Defect/finalizer/Ref cycle/root0を比較します。
+callback/結果/owner/kind/型/辞書/段階と未使用保存関数のprogram WASMを拒否します。
+公開面はstandard.rsとspecに従い、reduceはstd/map関数として追加しません。SDK/全体gateは最終batchです。
+
+native Setのfilter/union/intersection/difference/isSubsetOf/toListはbackendの
+`--test basic_set_operations --test basic_collections`、runtimeの`set_tests`、CLIの
+`--test basic_standard basic_set_operations_`で確認します。選択済みEq/Hash、挿入順と元key代表、
+snapshot、predicate順とsubsetのshort-circuit、filter系のcached hashとseedを保持します。
+collision bucketを一度ずつ構築し、除外要素と元containerを隠れて保持しません。
+通常2 module packageのopaque key/imported辞書と保存generic partial、元raw TS両profile strictと
+fresh Bun/Node/native、cold/Failure/predicate内Defect/finalizer/Ref cycle/root0を比較します。
+Hash/Eq内Defectと循環辞書のunwindはruntimeで各binary演算を確認し、owner/kind/要素/結果/
+辞書/段階と未使用保存関数のprogram WASMを拒否します。SDK/全体gateは最終batchです。
+
+native text.startsWith/endsWithはbackendの`--test basic_standard`、runtimeの`text_tests`、
+CLIの`--test basic_standard basic_text_boundaries_`で確認します。prefix/suffix先・本文後の
+signature、保存/部分適用・generic caller、空文字・Unicode・結合文字・NULと非正規化を保ちます。
+通常2 module packageのopaque値、元raw TS両profile strict/skipLibCheck:falseとfresh
+Bun/Node/native、cold/Failure/引数内Defect/finalizer/Ref cycle/root0を比較します。
+不正な引数/結果/kind/段階/辞書と未使用保存関数のprogram WASMを拒否し、SDK/全体gateは
+共有runtimeへの変更をまとめた最終batchで確認します。
+
+generic callに渡す先頭空の入れ子Array/Listはdriverの`--test nested_empty_call_inference`、
+既存の`generic_call_instantiation`/`hkt_erasure`/`strict_partials`、semanticsのlib、CLIの
+`inferred_nested_empty_collection_`で確認します。元入力をbyte不変で保持し、raw TS両profile
+strict/skipLibCheck:falseとfresh Bun/Node/nativeで比較します。既存rank-1 solverへcollection
+literalも渡し、後続siblingの型を通常checkerより先に共有します。nominal/collectionの不一致と
+UTF-8範囲、全要素が空でcontextもない場合の拒否、明示型引数対照を保ちます。
+shared frontendの変更なので正規compiler WASMと全体gateは最終batchで更新・確認します。
+
+native Array/Listのconcatはbackendの`--test basic_sequence`、runtimeの`sequence_tests`、
+CLIの`--test basic_standard basic_concat_`で確認します。内外両方のcanonical collectionと
+要素型・kind・保存generic関数を照合し、順序・空入力・一段だけの連結を保ちます。
+通常2 module packageのopaque要素とcapture、元raw TS両profile strictとfresh Bun/Node/native、
+cold replay・返されたcallback内Defect・Failure・finalizer/Ref cycle/root0を確認します。
+結果は元の外側/内側containerを隠れて保持せず、新program WASMは未使用の保存関数でも
+拒否します。正規SDKと全体gateは最終batchへ集約します。
+
+tagged ADTの派生JSON codecはbackendの`--test basic_json_derived_adts`、runtimeの
+`json_derived_adt_tests`、CLIの`--test basic_standard basic_json_derived_adts_`で確認します。
+payloadなしとUnit payload、generic/recursive、opaque/importedと保存methodを区別します。
+tag→unknown field→payloadの検査順・path、選択branchだけの遅延辞書構築、canonicalな
+variant owner/kind/子evidence、元UTF-8位置の拒否、新program WASM拒否を保ちます。
+元31ケースと既存canonical spec、通常2 module packageをraw TS両profile strictとfresh
+Bun/Node/nativeで比較し、cold/Failure/Defect/finalizer/Ref cycle/root0、encode/decode両方の
+128 frame host limitを確認します。正規WASMとrepository-wide gateは最終batchで行います。
+
+transparent newtypeの派生JSON codecはbackendの`--test basic_json_derived_newtypes`とCLIの
+`--test basic_standard basic_json_derived_newtypes_`で確認します。generic/recursive・保存method・
+opaque/importedの通常2 module packageと、tagを加えないwireと失敗path、cold/Failure/Defect/
+finalizer/Ref cycle/root0、encode/decode両方の128 frame host limitを比較します。
+releaseのchecked newtype constructorは既存のprivate representation変換を使います。
+driverの`--test newtype_literal_profiles`、CLIの`newtype_literal_representations_`で元の
+record/array/tuple literalをraw TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeで
+通し、別nominalや誤ったrepresentationのsource拒否を保ちます。正規WASMと全体gateは最終batchです。
+
+named structの派生JSON codecはbackendの`--test basic_json_derived_structs`、CLIの
+`--test basic_standard basic_json_derived_structs_`で確認します。declaration順・generic/recursive
+struct・保存method・opaque/importedの通常2 module package、unknown先行拒否とnested path、
+cold/Failure/Defect/finalizer/Ref cycle/root0、128 frameのhost limitを元raw TS strictと
+fresh Bun/Node/nativeで比較します。短いderived identityはcanonicalなnominal headから
+検証し、一般のuser辞書や同名traitへの信頼を広げません。新program WASMは拒否します。
+struct内のrecord型と後続fieldはsyntaxの`nested_record_types_keep_their_struct_fields`、
+driverの`--test struct_construction_kind`、CLIの`nested_record_struct_fields_`で確認します。
+#1012の元sourceとUTF-8範囲・型errorを保ち、shared parser修復の正規WASMと全体gateは
+最終batchで行います。
+
+JSON recordのprototype名のfieldはPlaygroundの`json-record-runtime.test.ts`とCLIの
+`--test basic_standard json_record_prototype_field_`で確認します。structural/derived decoderが
+own data propertyを作り、通常objectのprototype、optional不在、unknown先行拒否を保持します。
+#1010の元sourceはbyte不変で保存し、両profileのraw TS strict・fresh Bun/Node/nativeで比較します。
+
+native JSONのArray/List/Maybe/Either/Tuple/Map/Set/closed record codecはbackendの
+`--test basic_json_containers`、runtimeの`json_container_codec_tests`、CLIの
+`--test basic_standard basic_json_containers_`で確認します。optional fieldの不在とnull、
+tuple長の先行検査、recordのunknown先行拒否、全要素decode後のEq/Hash、重複keyの
+最初の代表と最後の値を保持します。保存generic method・入れ子・opaque要素とimported
+user辞書を通常2 module package、元raw TS両profile strict/skipLibCheck:false、fresh
+Bun/Node/nativeで比較します。cold再実行・Failure/encoder内Defectのfinalizer/Ref cycle/root0、
+128 codec frameのhost limitと復元、owner/kind/子辞書と元UTF-8位置の拒否も確認します。
+新program WASMは未使用の辞書でも拒否します。共有native runtimeへの追加なので、
+最終batch候補で正規compiler WASMの更新とrepository-wide統合gateを行います。
+
+importしたcallable alias内のPrelude sumから推論した型引数は、driverの
+`--test generic_call_instantiation --test hkt_erasure --test strict_partials`と、
+CLIの`--test basic_standard inferred_json_decoder_package`で確認します。#1003の元入力と
+opaque module境界を保持し、元生成TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeを
+通します。Preludeのcanonical owner・arityを登録から選び、明示source binding・同名nominal・
+量化したconstructor slotを優先します。登録のない同名typeをPreludeと推測しません。
+shared frontendの変更なのでsemantics/loweringの対象確認後、canonical compiler WASMを更新し、
+最終候補でrepository-wide gateを通します。
+
+native JSON decoderのfield/optionalField/index/array/record/oneOf/map/flatMapはbackendの
+`--test basic_json_decoders`、runtimeの`json_decoder_tests`、CLIの
+`--test basic_standard basic_json_decoders_`で確認します。保存/部分適用と戻りdecoderの
+連続適用、canonical owner/kind/引数/結果と無辞書のsource段階を検証します。missingとchild
+failureのpath、recordのunknown先行拒否/指定順/重複指定、oneOfの最後の失敗と空入力、
+short-circuitとflatMapの元Jsonを保ちます。元raw TS両profile strict、fresh Bun/Node/native、
+通常2 module package、cold/Failure/mapper内Defect/finalizer/Ref cycle/root0を比較します。
+nativeの動的合成は同時128 decoder frameをhost limitとし、stack abortにせずDefectにします。
+このnative固有境界は元入力のstrict比較とは別に、finalizer/root0とframe復元を確認します。
+新program WASMは拒否します。compiler WASMの依存を変えない追加でも、最終候補で正規Linux
+freshnessと全体統合gateを通す必要があります。
+
+native JSONのBool/String/Int/Decimal/Unit/Jsonの12標準codec辞書とstring wrapperは
+backendの`--test basic_json_codecs`、runtimeの`json_codec_tests`、CLIの
+`--test basic_standard basic_json_codecs_`で確認します。exact Decimalから整数性とsafe Int
+範囲を判定し、巨大指数をFloatや巨大Stringへ展開しません。wrong-type message、root pathと
+syntax/domain error、公開error constructor、generic/保存methodと明示user辞書、通常2 module
+packageを元raw TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeで比較します。
+cold/Failure/encoder内Defectとfinalizer/Ref cycle/root0、不正owner/kind/child/段階の位置付き
+拒否を保ちます。新しいprogram WASM受入は行いません。
+DecodeErrorの公開struct登録とgeneric JSON辞書のTS型・確認済み型引数の保持はshared frontendの
+修正です。driverの`--test json_decode_error --test struct_construction_kind`を通し、元fixtureと
+assertionを維持します。統合時は正規compiler WASMを更新し、全体gateを実行します。
 
 native Array/Listのsequence基本22操作はbackendの`--test basic_sequence`、runtimeの
 `sequence_tests`、CLIの`--test basic_standard basic_sequence_`で確認します。

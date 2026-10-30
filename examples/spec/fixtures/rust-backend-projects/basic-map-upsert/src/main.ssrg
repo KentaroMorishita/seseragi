@@ -1,0 +1,20 @@
+import * as cells from "cells"
+import * as maps from "std/map"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn resolve current: Int -> incoming: Int -> Int = current * 10 + incoming
+fn update current: Maybe<Int> -> Int = match current { Nothing -> 0; Just value -> value + 1 }
+fn key value: Maybe<cells.Output> -> Int = match value { Nothing -> -1; Just item -> cells.read item }
+pub effect fn main = {
+  let source = cells.source ()
+  let rekey: (cells.Input -> cells.Output) -> maps.Map<cells.Input,Int> -> maps.Map<cells.Output,Int> = cells.rekey resolve
+  let mapped = rekey cells.key source
+  let updated = cells.update (cells.output 1) update mapped
+  let merged = cells.merge resolve (maps.singleton (cells.output 2) 4) updated
+  let keys = maps.keys mapped
+  println (text.join "|" [
+    show (key (arrays.get 0 keys)), show (key (arrays.get 1 keys)),
+    show (maps.values mapped), show (maps.values updated), show (maps.values merged), show (maps.values mapped)
+  ])
+}

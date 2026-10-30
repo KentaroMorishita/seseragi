@@ -1,0 +1,22 @@
+import * as json from "std/json"
+
+pub opaque struct Cell { value: json.Json }
+pub opaque struct Token { value: Int }
+pub fn token value: Int -> Token = Token { value: value }
+instance JsonEncode<Token> {
+  fn encodeJson value: Token -> json.Json = encodeJson value.value
+}
+instance JsonDecode<Token> {
+  fn decodeJson value: json.Json -> Either<json.DecodeError, Token> = match decodeJson<Int> value {
+    Left error -> Left error
+    Right n -> Right (token n)
+  }
+}
+pub fn make<A> value: A -> Cell where JsonEncode<A> = Cell { value: encodeJson value }
+pub fn read<A> value: Cell -> Either<json.DecodeError, A> where JsonDecode<A> = decodeJson value.value
+pub fn write value: Cell -> String = json.encodeString value.value
+pub fn reader<A> value: A -> Unit -> String where JsonEncode<A> = {
+  let cell = make value
+  \_: Unit -> write cell
+}
+pub fn decode<A> text: String -> Either<json.JsonReadError, A> where JsonDecode<A> = json.decodeString text

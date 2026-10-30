@@ -1,0 +1,18 @@
+import * as cells from "cells"
+import * as maps from "std/map"
+import * as text from "std/text"
+
+pub effect fn main = {
+  let original = cells.source ()
+  let key = cells.make "1.2000" "replacement"
+  let lookup: cells.Key -> maps.Map<cells.Key,Int> -> Maybe<Int> = cells.lookup
+  let saved = lookup key
+  let changed = maps.insert key 42 original
+  let equal: cells.Key -> cells.Key -> Bool = cells.same
+  let digest: cells.Key -> Int = cells.digest
+  text.join "|" [
+    show (saved original), show (saved changed), show (maps.values original),
+    show (maps.values changed), show (equal key (cells.make "12e-1" "other")),
+    show (digest key == digest (cells.make "1.2" "again"))
+  ] |> println
+}

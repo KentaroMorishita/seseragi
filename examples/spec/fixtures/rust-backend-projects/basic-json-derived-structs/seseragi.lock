@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-json-derived-structs@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-json-derived-structs@0.0.0#workspace:."
+name = "fixture/basic-json-derived-structs"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:a71d50059deeb44d26825b830e4bd001b3847c28779cef1ee67a3ca2b06e6941"
+content_digest = "sha256:3dbe0ce23f01528b1ed0b31efb6d88fbb97ce3958b1fbad664cfba152ccf3874"
+dependencies = [
+  { import = "cells", package = "fixture/json-derived-cells@0.0.0#path:vendor/cells" },
+]
+
+[[packages]]
+id = "fixture/json-derived-cells@0.0.0#path:vendor/cells"
+name = "fixture/json-derived-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:4ab29d72d4ac921afcfeda964e76e38d8068fd835138120ce3ba5b019b6644eb"
+content_digest = "sha256:b9015381cd179d6b668ada21244f1ae071194ea28cefdd36c28caab21f752c8c"
+dependencies = []

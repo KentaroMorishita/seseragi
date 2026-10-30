@@ -1,0 +1,20 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as ints from "std/int"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+
+pub effect fn main = do {
+  released <- refs.make 0
+  let invalid: Int -> Int = ints.clamp 3 1
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    let ignored = invalid 0
+    effects.succeed ()
+  })
+}

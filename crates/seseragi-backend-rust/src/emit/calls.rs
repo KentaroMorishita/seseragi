@@ -67,6 +67,12 @@ impl Backend<'_> {
         if let Some(value) = self.json_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.json_codec_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.json_decoder_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.collection_call(expr, scope)? {
             return Ok(value);
         }
@@ -102,6 +108,7 @@ impl Backend<'_> {
                 return self.call_local_value(expr, &factory, scope);
             }
         }
+        self.validate_decimal_dispatch(expr, scope)?;
         if let Some(dispatch) = trait_dispatch {
             self.validate_hash_call(expr, scope)?;
             if dispatch.trait_identity == "std/prelude::Eq" {
@@ -140,7 +147,9 @@ impl Backend<'_> {
                 deferred_evidence_parameters,
             ));
         let returned_evidence_call = self.validate_returned_evidence_call(expr, scope)?;
-        if (!deferred_evidence_parameters.is_empty() && !bound_primitive_partial)
+        if (!deferred_evidence_parameters.is_empty()
+            && !bound_primitive_partial
+            && !returned_evidence_call)
             || !deferred_evidence_type_constructor_parameters.is_empty()
             || (evidence_argument_index.is_some()
                 && !evidence.is_empty()

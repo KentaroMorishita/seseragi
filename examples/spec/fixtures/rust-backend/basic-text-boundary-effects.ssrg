@@ -1,0 +1,38 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as text from "std/text"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (\_: Unit -> effects.succeed False)
+  let callback = \_: Unit -> do {
+    _ <- refs.get saved
+    let prefix = text.startsWith "雪"
+    let suffix = text.endsWith "🙂"
+    effects.succeed (prefix "雪🙂" && suffix "雪🙂")
+  }
+  refs.set callback saved
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    selected <- refs.get saved
+    answer <- selected ()
+    say (show answer)
+    effects.succeed answer
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    _ <- cold
+    _ <- cold
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

@@ -1,0 +1,14 @@
+import * as json from "std/json"
+pub opaque struct Cell { value: json.Json }
+pub opaque struct Token deriving JsonEncode, JsonDecode { value: Int }
+pub opaque struct Envelope<A> deriving JsonEncode, JsonDecode { z: A, a: Maybe<Token> }
+pub fn token value: Int -> Token = Token { value: value }
+pub fn wrap<A> value: A -> Envelope<A> = Envelope { z: value, a: Just (token 7) }
+pub fn make<A> value: A -> Cell where JsonEncode<A> = Cell { value: encodeJson value }
+pub fn read<A> value: Cell -> Either<json.DecodeError, A> where JsonDecode<A> = decodeJson value.value
+pub fn write value: Cell -> String = json.encodeString value.value
+pub fn reader<A> value: A -> Unit -> String where JsonEncode<A> = {
+  let cell = make value
+  \_: Unit -> write cell
+}
+pub fn decode<A> text: String -> Either<json.JsonReadError, A> where JsonDecode<A> = json.decodeString text

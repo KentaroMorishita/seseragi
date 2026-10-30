@@ -84,6 +84,16 @@ impl Backend<'_> {
             if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
                 return Err("Rust backend: unexpected Eq type or child evidence arguments".into());
             }
+            if identity == "std/decimal::Eq" {
+                return self.decimal_type(
+                    &selected.constraint.arguments[0],
+                    &CoreType::Named {
+                        name: "std/decimal::Decimal".into(),
+                        arguments: vec![],
+                    },
+                    scope,
+                );
+            }
             let primitive = match identity.as_str() {
                 "std/int::Eq" => "Int",
                 "std/bool::Eq" => "Bool",
@@ -297,6 +307,19 @@ impl Backend<'_> {
                     self.expr(left, scope)?,
                     self.expr(right, scope)?
                 ));
+            }
+            if identity == "std/decimal::Eq" {
+                self.capabilities.insert("decimal".into());
+                let value = format!(
+                    "native_decimal_equal({}, {})",
+                    self.expr(left, scope)?,
+                    self.expr(right, scope)?
+                );
+                return Ok(if operator == "==" {
+                    value
+                } else {
+                    format!("V::Bool(!({value}).boolean())")
+                });
             }
             let value = format!(
                 "binary(\"==\", {}, {})",

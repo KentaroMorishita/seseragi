@@ -1,0 +1,7 @@
+type Array<A> = | LocalArray A
+type Box<A> = | Box A
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> show item }
+}
+pub fn probe -> String = show [Box [1, 2]]
+pub effect fn main = println (probe ())

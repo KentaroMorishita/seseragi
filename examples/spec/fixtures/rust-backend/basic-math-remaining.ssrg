@@ -1,0 +1,45 @@
+import * as math from "std/math"
+import * as floats from "std/float"
+
+let turn: Float = math.tau
+fn near actual: Float -> expected: Float -> Bool = {
+  let tolerance = 0.00000000000001 * floats.maximumNumber 1.0 (floats.abs expected)
+  match floats.totalCompare (floats.abs (actual - expected)) tolerance { Greater -> False; _ -> True }
+}
+fn length -> (Float -> Float -> Float) = math.hypot
+
+pub effect fn main = do {
+  let angle: Float -> Float -> Float = math.atan2
+  let vertical = angle 1.0
+  let length = length ()
+  let infinity = floats.positiveInfinity ()
+  let nan = floats.nan ()
+  println ("pi:" + show (floats.ieeeEq math.pi 3.141592653589793))
+  println ("e:" + show (floats.ieeeEq math.e 2.718281828459045))
+  println ("tau:" + show (floats.ieeeEq turn 6.283185307179586))
+  println ("tan:" + show (near (math.tan 0.5) 0.5463024898437905))
+  println ("asin:" + show (near (math.asin 0.5) 0.5235987755982988))
+  println ("acos:" + show (near (math.acos 0.5) 1.0471975511965979))
+  println ("atan:" + show (near (math.atan 1.0) 0.7853981633974483))
+  println ("exp:" + show (near (math.exp 1.0) math.e))
+  println ("log2:" + show (near (math.log2 8.0) 3.0))
+  println ("log10:" + show (near (math.log10 100.0) 2.0))
+  println ("cbrt:" + show (near (math.cbrt (-27.0)) (-3.0)))
+  println ("sinh:" + show (near (math.sinh 0.5) 0.5210953054937474))
+  println ("cosh:" + show (near (math.cosh 0.5) 1.1276259652063807))
+  println ("tanh:" + show (near (math.tanh 0.5) 0.46211715726000974))
+  println ("atan2-order:" + show (near (vertical 0.0) 1.5707963267948966))
+  println ("hypot:" + show (near (length 3.0 4.0) 5.0))
+  println ("tan-zero:" + show (floats.isNegativeZero (math.tan (-0.0))))
+  println ("asin-zero:" + show (floats.isNegativeZero (math.asin (-0.0))))
+  println ("atan2-zero:" + show (floats.isNegativeZero (angle (-0.0) 0.0)))
+  println ("cbrt-zero:" + show (floats.isNegativeZero (math.cbrt (-0.0))))
+  println ("sinh-zero:" + show (floats.isNegativeZero (math.sinh (-0.0))))
+  println ("tanh-zero:" + show (floats.isNegativeZero (math.tanh (-0.0))))
+  println ("domain:" + show (floats.isNaN (math.acos 2.0)))
+  println ("nan:" + show (floats.isNaN (math.exp nan)))
+  println ("hypot-infinity-nan:" + show (floats.ieeeEq (length infinity nan) infinity))
+  println ("hypot-nan-infinity:" + show (floats.ieeeEq (length nan (-infinity)) infinity))
+  println ("hypot-large:" + show (near (length 1e308 1e308 / 1e308) 1.4142135623730951))
+  println ("hypot-small:" + show (near (length 1e-308 1e-308 / 1e-308) 1.4142135623730951))
+}

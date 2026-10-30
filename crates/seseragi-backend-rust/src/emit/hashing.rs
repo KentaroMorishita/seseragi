@@ -27,19 +27,20 @@ impl Backend<'_> {
             evidence_arguments,
         } = &selected.evidence
         {
-            let primitive = match identity.as_str() {
-                "std/int::Hash" => "Int",
-                "std/bool::Hash" => "Bool",
-                "std/char::Hash" => "Char",
-                "std/string::Hash" => "String",
-                "std/unit::Hash" => "Unit",
+            let canonical = match identity.as_str() {
+                "std/int::Hash" => "std/prelude::Int",
+                "std/bool::Hash" => "std/prelude::Bool",
+                "std/char::Hash" => "std/prelude::Char",
+                "std/string::Hash" => "std/prelude::String",
+                "std/unit::Hash" => "std/prelude::Unit",
+                "std/decimal::Hash" => "std/decimal::Decimal",
                 _ => return Err("Rust backend: unsupported canonical Hash provider".into()),
             };
             if !type_arguments.is_empty()
                 || !evidence_arguments.is_empty()
                 || self.local_canonical_type(argument, scope)?
                     != (CoreType::Named {
-                        name: format!("std/prelude::{primitive}"),
+                        name: canonical.into(),
                         arguments: vec![],
                     })
             {

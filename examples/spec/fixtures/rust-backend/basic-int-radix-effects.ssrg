@@ -1,0 +1,34 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as ints from "std/int"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+fn parse parser: (String -> Either<ints.IntParseError, Int>) -> String = match parser "2a" {
+  Left error -> show error
+  Right value -> ints.format value
+}
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (ints.parseRadix 16)
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    parser <- refs.get saved
+    say (parse parser)
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

@@ -57,6 +57,22 @@ impl Backend<'_> {
             .find(|i| &i.identity == identity)
             .ok_or("Rust backend: unknown bare method instance")?;
         let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            if matches!(
+                instance.implementation,
+                CoreInstanceImplementation::DerivedJson { .. }
+            ) {
+                let operation = match (dispatch.trait_identity.as_str(), dispatch.method.as_str()) {
+                    ("std/prelude::JsonEncode", "encodeJson") => {
+                        "std/prelude::JsonEncode::encodeJson"
+                    }
+                    ("std/prelude::JsonDecode", "decodeJson") => {
+                        "std/prelude::JsonDecode::decodeJson"
+                    }
+                    _ => return Err("Rust backend: unproven derived JSON method".into()),
+                };
+                self.json_codec_signature(operation, evidence, type_ref, scope)?;
+                return Ok(());
+            }
             return if dispatch.trait_identity == "std/prelude::Show" && dispatch.method == "show" {
                 Ok(())
             } else {
@@ -385,6 +401,17 @@ impl Backend<'_> {
         let CoreType::Named { name, .. } = self.local_canonical_type(head, scope).ok()? else {
             return None;
         };
+        // Native codec error types are new trusted nominal kinds. Do not let
+        // that trust widen program WASM through an ignored user dictionary
+        // whose body only constructs an Either and never calls a JSON API.
+        if self.program_wasm_library
+            && matches!(
+                name.as_str(),
+                "std/json::DecodeErrorKind" | "std/json::DecodeError" | "std/json::JsonReadError"
+            )
+        {
+            return None;
+        }
         if let Some(parameters) = self
             .module
             .adts
@@ -413,6 +440,9 @@ impl Backend<'_> {
             | "std/json::Json"
             | "std/json::JsonPathSegment"
             | "std/json::JsonParseError"
+            | "std/json::DecodeErrorKind"
+            | "std/json::DecodeError"
+            | "std/json::JsonReadError"
             | "std/collection::SizeError"
             | "std/time::Duration"
             | "std/time::DurationError"

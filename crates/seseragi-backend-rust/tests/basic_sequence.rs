@@ -19,6 +19,7 @@ fn expressions() -> Vec<(&'static str, &'static str)> {
         ("dropWhile (\\x: Int -> x == 1) [1, 2]", "Array<Int>"),
         ("last [1, 2]", "Maybe<Int>"),
         ("init [1, 2]", "Maybe<Array<Int>>"),
+        ("concat [[1], [], [2, 3]]", "Array<Int>"),
         ("zip [True] [1, 2]", "Array<(Int, Bool)>"),
         (
             "zipWith (\\x: Int -> \\y: Int -> x + y) [3] [1, 2]",
@@ -53,7 +54,7 @@ fn source(module: &str, expression: &str, result: &str) -> String {
 }
 
 #[test]
-fn sequence_accepts_all_twenty_two_operations_with_exact_result_types() {
+fn sequence_accepts_all_twenty_four_operations_with_exact_result_types() {
     for module in ["array", "list"] {
         for (expression, result) in expressions() {
             let source = source(module, expression, result);
@@ -182,6 +183,72 @@ fn sequence_keeps_saved_generic_and_partially_applied_source_stages() {
 }
 
 #[test]
+fn concat_keeps_generic_saved_functions_and_rejects_forged_inner_collection_types() {
+    for module in ["array", "list"] {
+        let kind = if module == "array" { "Array" } else { "List" };
+        let literal = if module == "array" {
+            "[[1], [], [2]]"
+        } else {
+            "`[`[1], `[], `[2]]"
+        };
+        let saved = format!("import * as s from \"std/{module}\"\nfn flatten<A> values: {kind}<{kind}<A>> -> {kind}<A> = {{ let saved: {kind}<{kind}<A>> -> {kind}<A> = s.concat; saved values }}\npub fn probe -> {kind}<Int> = flatten {literal}\n");
+        emit_rust_module(&checked(&saved), "probe").unwrap();
+
+        let core = checked(&source(module, "concat [[1], [], [2, 3]]", "Array<Int>"));
+        let original = core_expr_origin(&core.functions[0].body).clone();
+        let int = CoreType::Named {
+            name: "std/prelude::Int".into(),
+            arguments: vec![],
+        };
+        for inner in [
+            CoreType::Hole,
+            int.clone(),
+            CoreType::Named {
+                name: "fake::Array".into(),
+                arguments: vec![int.clone()],
+            },
+            CoreType::Named {
+                name: format!(
+                    "std/prelude::{}",
+                    if module == "array" { "List" } else { "Array" }
+                ),
+                arguments: vec![int.clone()],
+            },
+            CoreType::Named {
+                name: format!("std/prelude::{kind}"),
+                arguments: vec![],
+            },
+            CoreType::Named {
+                name: format!("std/prelude::{kind}"),
+                arguments: vec![int.clone(), int.clone()],
+            },
+            CoreType::ExternalNamed {
+                name: kind.into(),
+                canonical: "fake::Array".into(),
+                arguments: vec![int.clone()],
+            },
+        ] {
+            let mut changed = core.clone();
+            let CoreExpr::Call { arguments, .. } = &mut changed.functions[0].body else {
+                panic!()
+            };
+            let (CoreExpr::Array { type_ref, .. } | CoreExpr::List { type_ref, .. }) =
+                &mut arguments[0]
+            else {
+                panic!()
+            };
+            *type_ref = CoreType::Named {
+                name: format!("std/prelude::{kind}"),
+                arguments: vec![inner],
+            };
+            let error = emit_rust_module(&changed, "probe").unwrap_err();
+            assert_eq!(error.code, "SES-RUST-0001");
+            assert_eq!(error.origin.unwrap(), original);
+        }
+    }
+}
+
+#[test]
 fn sequence_size_error_constructor_rejects_wrong_owner_kind_arity_and_payload_at_original_span() {
     let core = checked("// 雪🙂\nimport * as c from \"std/collection\"\ntype SizeError = | FakeError Int\npub fn probe -> c.SizeError = c.NonPositiveSize 0\n");
     emit_rust_module(&core, "probe").unwrap();
@@ -263,6 +330,16 @@ fn sequence_and_size_error_references_remain_refused_in_program_wasm() {
             "import * as s from \"std/list\"",
             "s.zip",
             "List<Bool> -> List<Int> -> List<(Int,Bool)>",
+        ),
+        (
+            "import * as s from \"std/array\"",
+            "s.concat",
+            "Array<Array<Int>> -> Array<Int>",
+        ),
+        (
+            "import * as s from \"std/list\"",
+            "s.concat",
+            "List<List<Int>> -> List<Int>",
         ),
     ] {
         let core = checked(&format!("{import}\npub fn probe value: Int -> Int = {{ let saved: {signature} = {expression}; value }}\n"));

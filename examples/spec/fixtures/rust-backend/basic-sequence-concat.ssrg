@@ -1,0 +1,42 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as text from "std/text"
+
+fn flatten<A> values: Array<Array<A>> -> Array<A> = {
+  let concat: Array<Array<A>> -> Array<A> = arrays.concat
+  concat values
+}
+fn flattenList<A> values: List<List<A>> -> List<A> = {
+  let concat: List<List<A>> -> List<A> = lists.concat
+  concat values
+}
+
+pub fn probe -> String = {
+  let input = [[1, 2], [], [-3], [4]]
+  let empty: Array<Array<Int>> = []
+  let emptyList: List<List<Int>> = `[]
+  let concat: Array<Array<Int>> -> Array<Int> = arrays.concat
+  let concatList: List<List<Int>> -> List<Int> = lists.concat
+  let captured = 40
+  let call = \value: Int -> value + captured
+  let callback = match arrays.get 0 (flatten<Int -> Int> [[], [call], []]) {
+    Nothing -> -1
+    Just callback -> callback 2
+  }
+  let listCallback = match lists.last (flattenList<Int -> Int> `[`[], `[call], `[]]) {
+    Nothing -> -1
+    Just callback -> callback 3
+  }
+  text.join "|" [
+    show (concat input), show (concat empty), show (concat [[], []]),
+    show (flatten<String> [[], ["雪", "🙂"], ["é"], []]),
+    show (flatten<(Int, Bool)> [[(1, True)], [], [(2, False)]]),
+    show (flatten<Array<Int>> [[[1], []], [], [[2, 3]]]),
+    show (concatList `[`[1, 2], `[], `[(-3)], `[4]]),
+    show (concatList emptyList), show (concatList `[`[], `[]]),
+    show (flattenList<String> `[`[], `["雪", "🙂"], `["é"], `[]]),
+    show callback, show listCallback, show input
+  ]
+}
+
+pub effect fn main = println (probe ())

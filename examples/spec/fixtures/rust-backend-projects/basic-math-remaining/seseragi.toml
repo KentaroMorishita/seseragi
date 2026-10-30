@@ -1,0 +1,11 @@
+[package]
+name = "fixture/math-remaining"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+measures = { package = "fixture/math-measures", path = "vendor/measures" }

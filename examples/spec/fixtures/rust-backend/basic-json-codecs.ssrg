@@ -1,0 +1,65 @@
+import * as json from "std/json"
+import { DecodeError } from "std/json"
+import * as decimal from "std/decimal"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn kind value: json.DecodeErrorKind -> String = match value {
+  json.ExpectedJsonType name -> "expected:" + name
+  json.MissingJsonField name -> "missing:" + name
+  json.UnknownJsonField name -> "unknown-field:" + name
+  json.UnknownJsonTag name -> "unknown-tag:" + name
+  json.InvalidJsonValue message -> "invalid:" + message
+}
+fn readError value: json.JsonReadError -> String = match value {
+  json.JsonSyntaxFailure (json.InvalidJsonSyntax detail) -> "syntax:" + show detail.offset + ":" + detail.message
+  json.JsonSyntaxFailure (json.DuplicateJsonField detail) -> "duplicate:" + detail.field
+  json.JsonDecodeFailure detail -> "decode:" + show (arrays.length detail.path) + ":" + kind detail.kind
+}
+fn read<A> source: String -> String where JsonDecode<A>, JsonEncode<A> = {
+  let decode: String -> Either<json.JsonReadError, A> = json.decodeString
+  let encode: A -> String = json.encodeString
+  match decode source {
+    Left error -> readError error
+    Right value -> encode value
+  }
+}
+type Label = | Label String
+instance JsonEncode<Label> {
+  fn encodeJson value: Label -> json.Json = match value { Label name -> encodeJson name }
+}
+instance JsonDecode<Label> {
+  fn decodeJson value: json.Json -> Either<json.DecodeError, Label> = match decodeJson<String> value {
+    Left error -> Left error
+    Right name -> Right (Label name)
+  }
+}
+fn methods<A> value: A -> String where JsonEncode<A>, JsonDecode<A> = {
+  let encode: A -> json.Json = encodeJson
+  let decode: json.Json -> Either<json.DecodeError, A> = decodeJson
+  match decode (encode value) {
+    Left error -> kind error.kind
+    Right decoded -> json.stringify (encode decoded)
+  }
+}
+pub fn probe -> String = {
+  let error = DecodeError { path: [json.JsonField "雪", json.JsonIndex 1], kind: json.MissingJsonField "name" }
+  let savedKind: String -> json.DecodeErrorKind = json.UnknownJsonTag
+  let savedRead: json.DecodeError -> json.JsonReadError = json.JsonDecodeFailure
+  text.join "|" [
+    read<Bool> "true", read<Bool> "false", read<String> "\"雪🙂\\n\"",
+    read<Int> "-9007199254740991", read<Int> "9007199254740991.000",
+    read<Int> "100.00e-2", read<Int> "-0e99999999999999999999999999999",
+    read<decimal.Decimal> "9007199254740992000000000000001.100",
+    read<Unit> "null", read<json.Json> "{\"z\":[true,null],\"a\":1.25e-3}",
+    read<Bool> "null", read<String> "42", read<decimal.Decimal> "false", read<Unit> "0",
+    read<Int> "1.01", read<Int> "9007199254740992", read<Int> "-9007199254740992",
+    read<Int> "1e99999999999999999999999999999999", read<Int> "1e-99999999999999999999999999999999",
+    read<Int> "[1,]", read<Int> "{\"x\":1,\"x\":2}",
+    methods True, methods "雫🙂", methods (-42), methods (decimal.fromInt 42), methods (), methods (json.JsonString "雪🙂"),
+    methods (Label "custom"), read<Label> "\"saved\"", read<Label> "false",
+    kind error.kind, kind (savedKind "Manual"), kind (json.UnknownJsonField "extra"), kind (json.InvalidJsonValue "manual"),
+    readError (savedRead error), readError (json.JsonSyntaxFailure (json.InvalidJsonSyntax ({ offset: 7, message: "manual" })))
+  ]
+}
+pub effect fn main = println (probe ())

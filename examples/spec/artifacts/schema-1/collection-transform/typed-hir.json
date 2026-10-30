@@ -1863,6 +1863,18 @@
                         }
                       ]
                     }
+                  ],
+                  "instantiatedTypeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
                   ]
                 },
                 "type": {
@@ -2121,6 +2133,18 @@
                           "arguments": []
                         }
                       ]
+                    }
+                  ],
+                  "instantiatedTypeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
                     }
                   ]
                 },

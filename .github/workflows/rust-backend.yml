@@ -152,12 +152,22 @@ on:
         description: Verify canonical Linux WASM and the repository-wide source gate
         type: boolean
         default: false
+      async_io_only:
+        description: Run only the real async file suite on all hosts; integration=true always runs the full gate
+        type: boolean
+        default: false
+
+# Manual canonical runs have unique groups; only superseded PR runs cancel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 jobs:
   file-transform:
+    if: github.event_name != 'workflow_dispatch' || !inputs.async_io_only || inputs.integration
     strategy:
       fail-fast: false
       matrix:
@@ -202,6 +212,10 @@ jobs:
           cargo test --locked -p seseragi-backend-rust --lib runtime::big_int_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::decimal_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::json_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::json_codec_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::json_decoder_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::json_container_codec_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::json_derived_adt_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::hashing_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::map_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::set_tests
@@ -243,6 +257,7 @@ jobs:
           bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts
 
   native:
+    if: github.event_name != 'workflow_dispatch' || !inputs.async_io_only || inputs.integration
     runs-on: ubuntu-24.04
     # The 30m cold-run limit interrupted compilation after all 38 CLI tests passed.
     # Preserve every test and individual deadline with cold-workspace headroom.
@@ -312,6 +327,33 @@ jobs:
             target/native-lifetimes/report.json
             target/native-wasm/report.json
             target/native-wasm/compute.wasm
+
+  async-io:
+    if: github.event_name == 'workflow_dispatch' && inputs.async_io_only && !inputs.integration
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_PROFILE_DEV_DEBUG: "0"
+      CARGO_PROFILE_TEST_DEBUG: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.22.1"
+      - run: bun install --frozen-lockfile
+      - name: Compare original async file results, cancellation and cleanup
+        run: cargo test --locked -p seseragi-cli --test async_filesystem -- --test-threads=1
 
   canonical-wasm:
     if: github.event_name == 'workflow_dispatch' && inputs.integration

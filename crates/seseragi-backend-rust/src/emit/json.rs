@@ -41,6 +41,16 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
             vec![record(vec![("field", text), ("path", array(path))])],
             error,
         ),
+        "std/json::ExpectedJsonType"
+        | "std/json::MissingJsonField"
+        | "std/json::UnknownJsonField"
+        | "std/json::UnknownJsonTag"
+        | "std/json::InvalidJsonValue" => (vec![text], named("std/json::DecodeErrorKind", vec![])),
+        "std/json::JsonSyntaxFailure" => (vec![error], named("std/json::JsonReadError", vec![])),
+        "std/json::JsonDecodeFailure" => (
+            vec![named("std/json::DecodeError", vec![])],
+            named("std/json::JsonReadError", vec![]),
+        ),
         _ => return None,
     })
 }

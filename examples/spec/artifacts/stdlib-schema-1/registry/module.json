@@ -88714,7 +88714,7 @@
             "namespace": "type",
             "name": "DecodeError",
             "visibility": "public",
-            "declarationKind": "opaque-struct",
+            "declarationKind": "struct",
             "declaration": {
               "start": 0,
               "end": 0

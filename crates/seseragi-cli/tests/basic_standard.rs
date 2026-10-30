@@ -217,12 +217,79 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
 }
 
 #[test]
+fn inferred_builtin_array_owner_keeps_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/inferred-builtin-array-owner.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/inferred-builtin-array-owner.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn basic_text_and_math_match_original_raw_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-text-math.ssrg"),
         &[Case::success(include_bytes!(
             "../../../examples/spec/fixtures/rust-backend/basic-text-math.stdout"
         ))],
+    );
+}
+
+#[test]
+fn basic_text_boundaries_keep_original_unicode_empty_saved_and_generic_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-text-boundaries.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-text-boundaries.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_text_boundaries_path_package_keeps_opaque_imported_saved_predicates() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-text-boundaries"),
+        &[Case::success(b"True|True|True|False|True\n")],
+    );
+}
+
+#[test]
+fn basic_text_boundaries_keep_cold_replay_and_release_ref_cycles_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-text-boundary-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-text-boundary-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_text_boundaries_argument_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-text-boundary-effects.ssrg"
+    );
+    assert_eq!(original.matches("prefix \"雪🙂\"").count(), 1);
+    let path = scratch.0.join("text-boundary-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace(
+            "prefix \"雪🙂\"",
+            "text.startsWith (show (42 / 0)) \"雪🙂\"",
+        ),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "argument-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
     );
 }
 
@@ -308,6 +375,284 @@ fn basic_sequence_array_saved_and_generic_operations_match_original_strict_ts_an
         &[Case::success(include_bytes!(
             "../../../examples/spec/fixtures/rust-backend/basic-array-sequence.stdout"
         ))],
+    );
+}
+
+#[test]
+fn basic_concat_keeps_order_empty_inputs_generic_saved_functions_and_original_strict_ts() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-concat.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-concat.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_operations_keep_order_representatives_snapshots_and_generic_saved_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_operations_keep_key_representatives_order_snapshots_and_changed_value_types() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_upsert_keeps_representatives_order_snapshots_and_noncommutative_resolvers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-upsert.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-upsert.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_map_keeps_first_output_representatives_order_snapshots_and_output_key_types() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-map.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-map.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_map_path_package_keeps_opaque_keys_and_saved_imported_generic_stages() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-set-map"),
+        &[Case::success(b"1|2|1|2|True|True\n")],
+    );
+}
+
+#[test]
+fn basic_set_map_keeps_returned_callbacks_cold_and_releases_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-map-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-map-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_map_mapper_and_returned_callback_defects_release_partial_results_and_run_finalizers() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-set-map-effects.ssrg");
+    for (name, old, replacement) in [
+        ("mapper", "sets.map (item callback) source", "sets.map (\\value: Int -> if value == 3 then item callback (42 / 0) else item callback value) source"),
+        ("returned", "effects.succeed 42", "effects.succeed (42 / 0)"),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("set-map-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(&path, &[Case { name, stdout: b"created\nacquired\ncold\nreleased\n", exit: 70, defect: true, native_defect: "Int division by zero", ..Case::success(b"") }]);
+    }
+}
+
+#[test]
+fn basic_map_upsert_path_package_keeps_opaque_input_output_keys_and_saved_generic_stages() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-map-upsert"),
+        &[Case::success(b"1|2|[120, 3]|[121, 3]|[121, 34]|[120, 3]\n")],
+    );
+}
+
+#[test]
+fn basic_map_upsert_keeps_returned_functions_cold_and_releases_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-upsert-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-upsert-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_upsert_callback_defects_run_finalizers_and_release_partial_results() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-map-upsert-effects.ssrg");
+    for (name, old, replacement) in [
+        ("update", "maps.upsert \"callback\" (keep callback) stored", "maps.upsert \"callback\" (\\_current -> if (42 / 0) == 0 then callback else callback) stored"),
+        ("merge", "maps.mergeWith resolve right updated", "maps.mergeWith (\\_left -> \\_right -> if (42 / 0) == 0 then callback else callback) right updated"),
+        ("key", "maps.mapKeysWith resolve (\\_key: String -> 1) merged", "maps.mapKeysWith resolve (\\_key: String -> 1 / 0) merged"),
+        ("collision", "maps.mapKeysWith resolve (\\_key: String -> 1) merged", "maps.mapKeysWith (\\_left -> \\_right -> if (42 / 0) == 0 then callback else callback) (\\_key: String -> 1) merged"),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("map-upsert-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(&path, &[Case { name, stdout: b"created\nacquired\ncold\nreleased\n", exit: 70, defect: true, native_defect: "Int division by zero", ..Case::success(b"") }]);
+    }
+}
+
+#[test]
+fn basic_map_operations_path_package_keeps_opaque_values_imported_generic_partials_and_captures() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-map-operations"),
+        &[Case::success(b"[40]|[(first, 40), (second, 2)]|42|42\n")],
+    );
+}
+
+#[test]
+fn basic_map_operations_keep_cold_replay_and_release_callback_ref_cycles_after_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-map-operation-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-map-operation-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_map_operations_callback_defects_unwind_partial_results_and_run_finalizers() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-map-operation-effects.ssrg"
+    );
+    for (name, old, replacement) in [
+        (
+            "predicate",
+            "value > 0",
+            "if value == 21 then value / 0 > 0 else value > 0",
+        ),
+        (
+            "mapper",
+            "value + 1",
+            "if value == 21 then value / 0 else value + 1",
+        ),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("map-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: b"created\nacquired\ncold\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_set_operations_path_package_keeps_opaque_keys_and_imported_selected_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-set-operations"),
+        &[Case::success(b"40|2|3|2|True|3\n")],
+    );
+}
+
+#[test]
+fn basic_set_operations_keep_cold_replay_and_release_ref_cycles_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-set-operation-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-set-operation-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_set_operations_predicate_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-set-operation-effects.ssrg"
+    );
+    assert_eq!(original.matches("detail.identity == 2").count(), 1);
+    let path = scratch.0.join("set-predicate-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace("detail.identity == 2", "detail.identity / 0 == 2"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "predicate-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn inferred_nested_empty_collection_keeps_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/inferred-nested-empty-collection.ssrg",
+        ),
+        &[Case::success(
+            b"[[], [\xe9\x9b\xaa, \xf0\x9f\x99\x82], [e\xcc\x81], []]\n",
+        )],
+    );
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/inferred-empty-concat.ssrg"),
+        &[Case::success(
+            b"[\xe9\x9b\xaa, \xf0\x9f\x99\x82, e\xcc\x81]\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_concat_path_package_keeps_opaque_elements_imported_generic_functions_and_captures() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-concat"),
+        &[Case::success(b"40|2|41|3|42\n")],
+    );
+}
+
+#[test]
+fn basic_concat_keeps_callbacks_cold_and_releases_ref_cycles_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-concat-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-concat-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_concat_returned_callback_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-concat-effects.ssrg");
+    assert_eq!(original.matches("effects.succeed 42").count(), 1);
+    let path = scratch.0.join("concat-callback-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace("effects.succeed 42", "effects.succeed (42 / 0)"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "callback-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
     );
 }
 
@@ -674,6 +1019,162 @@ fn basic_decimal_keeps_exact_digits_exponents_errors_and_saved_operations() {
 }
 
 #[test]
+fn basic_int_radix_keeps_boundaries_errors_and_saved_partial_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-radix.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-radix.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_radix_keeps_cold_partial_captures_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-radix-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-radix-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_radix_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-int-radix-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("int-radix-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42\ncold\n42\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_int_radix_path_package_keeps_opaque_values_and_imported_partial_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-int-radix"),
+        &[Case::success(
+            b"16\n-9007199254740991\n2gosa7pa2gv\nInvalidIntRadix 1\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_int_checked_keeps_exact_arithmetic_errors_and_saved_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-checked.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-checked.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_checked_keeps_cold_captured_functions_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-checked-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-checked-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_checked_clamp_defect_keeps_partial_stages_finalizer_and_root_zero() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-clamp-defect.ssrg"),
+        &[Case {
+            name: "clamp-defect",
+            stdout: b"created\nacquired\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Seseragi Int clamp lower bound exceeds upper bound",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_int_checked_path_package_keeps_opaque_values_and_imported_error_owners() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-int-checked"),
+        &[Case::success(b"overflow\n42\npower overflow\n")],
+    );
+}
+
+#[test]
+fn basic_math_remaining_keeps_complete_surface_and_original_math_contract() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-math-remaining.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-math-remaining.stdout"
+        ))],
+    );
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-text-math.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-text-math.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_math_remaining_keeps_cold_partial_captures_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-math-remaining-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-math-remaining-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_math_remaining_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-math-remaining-effects.ssrg"
+    );
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("math-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n5.0\ncold\n5.0\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_math_remaining_path_package_keeps_opaque_values_and_saved_binary_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-math-remaining"),
+        &[Case::success(b"5.0\n-0.0\n6.283185307179586\nTrue\n")],
+    );
+}
+
+#[test]
 fn basic_decimal_keeps_captured_values_cold_and_releases_after_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg"),
@@ -740,6 +1241,732 @@ fn basic_decimal_path_package_keeps_opaque_values_and_saved_formatters() {
         &[Case::success(
             b"42:900719925474099200000000000000001.001:True:False\n",
         )],
+    );
+}
+
+#[test]
+fn basic_json_decoders_match_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-decoders.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-decoders.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_json_decoders_keep_cold_replay_domain_failure_and_captured_ref_cycle() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_json_decoders_defect_after_replay_runs_finalizer_and_releases_roots() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"
+    );
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("decoder-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\n42\ncold\n42\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+#[test]
+fn basic_json_decoders_fault_inside_mapper_runs_finalizer_and_releases_roots() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"
+    );
+    let original = "{\\\"n\\\":41}";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("decoder-mapper-defect.ssrg");
+    fs::write(&path, source.replace(original, "{\\\"n\\\":0}")).unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "mapper-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+#[test]
+fn basic_json_decoders_path_package_keeps_opaque_rules_and_saved_generic_stages() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-decoders"),
+        &[Case::success(b"2:Just 7:Just 9\n")],
+    );
+}
+
+#[test]
+fn inferred_json_decoder_package_keeps_original_input_and_passes_strict_ts() {
+    let scratch = Scratch::new();
+    let package = scratch.0.join("inferred-json-decoders");
+    copy_package(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-decoders"),
+        &package,
+    );
+    let original = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend-regressions/json-decoder-inferred-partial-main.ssrg"
+    );
+    fs::write(package.join("src/main.ssrg"), original).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    compare(&package, &[Case::success(b"2:Just 7:Just 9\n")]);
+    assert_eq!(fs::read(package.join("src/main.ssrg")).unwrap(), original);
+}
+#[test]
+fn basic_json_decoders_native_host_limit_is_defect_with_finalizer_and_root_cleanup() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-decoder-effects.ssrg"
+    );
+    let original = "let decoder = select input";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("decoder-host-limit.ssrg");
+    fs::write(
+        &path,
+        source.replace(original, "let decoder = chain 512 (select input)"),
+    )
+    .unwrap();
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = bounded(
+        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(70), "{result:?}");
+    assert_eq!(result.stdout, b"created\nacquired\ncold\nreleased\n");
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        stderr.contains("JSON decoder nesting exceeds host limits")
+            && stderr.contains("managed-live=0"),
+        "{stderr}"
+    );
+}
+
+#[test]
+fn basic_json_codecs_match_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-codecs.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-codecs.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_codecs_keep_cold_replay_domain_failures_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-codec-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-codec-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_codecs_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-json-codec-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("codec-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(&path,&[Case{name:"defect",stdout:"created\nacquired\ncold\n{\"answer\":9007199254740992000000000001.1,\"snow\":\"雪🙂\"}\ncold\n{\"answer\":9007199254740992000000000001.1,\"snow\":\"雪🙂\"}\nreleased\n".as_bytes(),exit:70,defect:true,..Case::success(b"")}]);
+}
+
+#[test]
+fn basic_json_codecs_package_keeps_opaque_values_and_saved_generic_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-codecs"),
+        &[Case::success("42:42:\"雪🙂\":True\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_containers_preserve_original_strict_ts_bun_node_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-containers.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-containers.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn json_record_prototype_field_keeps_the_original_source_and_strict_cross_target_results() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/json-record-prototype-field.ssrg",
+        ),
+        &[Case::success(b"{\"__proto__\":\"snow\"}\n")],
+    );
+}
+
+#[test]
+fn basic_json_derived_structs_keep_original_strict_ts_bun_node_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-derived-structs.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-derived-structs.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_derived_newtypes_keep_transparent_original_cross_target_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-derived-newtypes.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-derived-newtypes.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_derived_adts_keep_original_strict_ts_bun_node_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-derived-adts.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-derived-adts.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_derived_adts_keep_the_original_canonical_spec_source() {
+    compare(
+        &root().join("examples/spec/artifacts/schema-1/derived-json-codecs/main.ssrg"),
+        &[Case::success(concat!(
+            "{\"name\":\"count\",\"value\":3}\n",
+            "{\"name\":\"count\",\"value\":3}\n",
+            "7\n",
+            "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}\n",
+            "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}\n",
+            "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}\n",
+            "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}\n"
+        ).as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_derived_adts_package_keeps_generic_opaque_and_saved_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-derived-adts"),
+        &[Case::success("{\"tag\":\"Both\",\"value\":[7,[1,null,2]]}:{\"tag\":\"Both\",\"value\":[7,[1,null,2]]}:[{\"tag\":\"Both\",\"value\":[7,\"雪🙂\"]}]\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_derived_adts_keep_cold_replay_failure_defects_and_captured_ref_cycles() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = reader<Rows> "))
+        .unwrap();
+    let literal = old.split_once("reader<Rows> ").unwrap().1;
+    let wire: String = serde_json::from_str(literal).unwrap();
+    let wrapped = format!("{{\"tag\":\"Wrapped\",\"value\":{wire}}}");
+    let replacement = format!(
+        "  let render = reader<Wrapped<Rows>> {}",
+        serde_json::to_string(&wrapped).unwrap()
+    );
+    let source = format!(
+        "type Wrapped<A> deriving JsonEncode, JsonDecode = | Wrapped A\n{}",
+        original.replace(old, &replacement)
+    );
+    let original_expected = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let expected = original_expected
+        .lines()
+        .map(|line| {
+            if line.starts_with('{') {
+                format!("{{\"tag\":\"Wrapped\",\"value\":{line}}}\n")
+            } else {
+                format!("{line}\n")
+            }
+        })
+        .collect::<String>();
+    let prefix = expected.find("recovered: typed").unwrap();
+    for (name, changed, output, defect, message) in [
+        (
+            "cold-replay",
+            source.clone(),
+            expected.as_bytes(),
+            false,
+            "",
+        ),
+        (
+            "body-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected.as_bytes()[..prefix],
+            true,
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            true,
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("adt-{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: if defect { 70 } else { 0 },
+                defect,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_derived_adts_recursive_encode_and_decode_unwind_the_host_limit() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declaration="type Deep deriving JsonEncode, JsonDecode = | End | Next Deep\nfn deep n: Int -> Deep = if n <= 0 then End else Next (deep (n - 1))\nfn wire n: Int -> String = if n <= 0 then \"{\\\"tag\\\":\\\"End\\\"}\" else \"{\\\"tag\\\":\\\"Next\\\",\\\"value\\\":\" + wire (n - 1) + \"}\"\n";
+    for (name,render) in [
+        ("encode","  let render = \\_: Unit -> json.encodeString (deep 512)"),
+        ("decode","  let render = \\_: Unit -> match json.decodeString<Deep> (wire 512) { Left _ -> \"domain\"; Right value -> json.encodeString value }"),
+    ] {
+        let path=scratch.0.join(format!("adt-host-limit-{name}.ssrg"));fs::write(&path,format!("{declaration}{}",original.replace(old,render))).unwrap();
+        let out=scratch.0.join(format!("native-{name}"));
+        successful(bounded(Command::new(env!("CARGO_BIN_EXE_seseragi")).args(["experimental","build-native"]).arg(&path).args(["--entry","main","--out-dir"]).arg(&out),&scratch.0));
+        let result=bounded(Command::new(out.join(format!("program{}",std::env::consts::EXE_SUFFIX))).env("SESERAGI_NATIVE_METRICS","1"),&scratch.0);
+        assert_eq!(result.status.code(),Some(70),"{name}:{result:?}");assert_eq!(result.stdout,b"created\nacquired\ncold\nreleased\n");
+        let stderr=String::from_utf8_lossy(&result.stderr);assert!(stderr.contains("JSON codec nesting exceeds host limits")&&stderr.contains("managed-live=0"),"{name}:{stderr}");
+    }
+}
+
+#[test]
+fn newtype_literal_representations_keep_original_strict_release_types_and_values() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/newtype-literal-representations.ssrg",
+        ),
+        &[Case::success(
+            "{\"value\":[\"雪🙂\"]}|[\"雪🙂\"]|[[1,2],\"雪🙂\"]\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_json_derived_newtypes_package_keeps_generic_opaque_and_saved_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-derived-newtypes"),
+        &[Case::success(
+            "{\"a\":7,\"z\":[1,null,2]}:{\"a\":7,\"z\":[1,null,2]}:[{\"a\":7,\"z\":\"雪🙂\"}]\n"
+                .as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_json_derived_newtypes_keep_cold_replay_failure_defects_and_captured_ref_cycles() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let declaration = "alias Rows = { rows: Array<(Int, List<Maybe<json.Json>>)> }";
+    assert_eq!(original.matches(declaration).count(), 1);
+    let source=original.replace(declaration,"newtype Rows deriving JsonEncode, JsonDecode = { rows: Array<(Int, List<Maybe<json.Json>>)> }");
+    let expected = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let prefix = expected
+        .windows(b"recovered: typed".len())
+        .position(|part| part == b"recovered: typed")
+        .unwrap();
+    for (name, changed, output, defect, message) in [
+        (
+            "cold-replay",
+            source.clone(),
+            expected.as_slice(),
+            false,
+            "",
+        ),
+        (
+            "body-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected[..prefix],
+            true,
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            true,
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("newtype-{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: if defect { 70 } else { 0 },
+                defect,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_derived_newtypes_recursive_encode_and_decode_unwind_the_host_limit() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declaration="newtype Deep deriving JsonEncode, JsonDecode = Maybe<Deep>\nfn deep n: Int -> Deep = Deep (if n <= 0 then Nothing else Just (deep (n - 1)))\n";
+    for (name,render) in [
+        ("encode","  let render = \\_: Unit -> json.encodeString (deep 512)"),
+        ("decode","  let render = \\_: Unit -> match json.decodeString<Deep> \"1\" { Left _ -> \"domain\"; Right value -> json.encodeString value }"),
+    ] {
+        let path=scratch.0.join(format!("newtype-host-limit-{name}.ssrg"));
+        fs::write(&path,format!("{declaration}{}",original.replace(old,render))).unwrap();
+        let out=scratch.0.join(format!("native-{name}"));
+        successful(bounded(Command::new(env!("CARGO_BIN_EXE_seseragi")).args(["experimental","build-native"]).arg(&path).args(["--entry","main","--out-dir"]).arg(&out),&scratch.0));
+        let result=bounded(Command::new(out.join(format!("program{}",std::env::consts::EXE_SUFFIX))).env("SESERAGI_NATIVE_METRICS","1"),&scratch.0);
+        assert_eq!(result.status.code(),Some(70),"{name}:{result:?}");
+        assert_eq!(result.stdout,b"created\nacquired\ncold\nreleased\n");
+        let stderr=String::from_utf8_lossy(&result.stderr);
+        assert!(stderr.contains("JSON codec nesting exceeds host limits") && stderr.contains("managed-live=0"),"{name}:{stderr}");
+    }
+}
+
+#[test]
+fn basic_json_derived_structs_package_keeps_saved_generic_opaque_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-derived-structs"),
+        &[Case::success("{\"z\":[1,null,2],\"a\":{\"value\":7}}:{\"z\":[1,null,2],\"a\":{\"value\":7}}:[{\"z\":\"雪🙂\",\"a\":{\"value\":7}}]\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_derived_structs_keep_cold_replay_and_unwind_typed_and_encoder_defects() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let declaration = "alias Rows = { rows: Array<(Int, List<Maybe<json.Json>>)> }";
+    assert_eq!(original.matches(declaration).count(), 1);
+    let source = original.replace(declaration, "struct Rows deriving JsonEncode, JsonDecode { rows: Array<(Int, List<Maybe<json.Json>>)> }");
+    let expected = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let prefix = expected
+        .windows(b"recovered: typed".len())
+        .position(|part| part == b"recovered: typed")
+        .unwrap();
+    for (name, changed, output, defect, message) in [
+        (
+            "cold-replay",
+            source.clone(),
+            expected.as_slice(),
+            false,
+            "",
+        ),
+        (
+            "typed-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected[..prefix],
+            true,
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            true,
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("derived-{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: if defect { 70 } else { 0 },
+                defect,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_derived_structs_recursive_codec_limit_unwinds_with_finalizer_and_root_cleanup() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declarations = "struct Deep deriving JsonEncode { next: Maybe<Deep> }\nfn deep n: Int -> Deep = Deep { next: if n <= 0 then Nothing else Just (deep (n - 1)) }\n";
+    let path = scratch.0.join("derived-host-limit.ssrg");
+    fs::write(
+        &path,
+        format!(
+            "{declarations}{}",
+            original.replace(
+                old,
+                "  let render = \\_: Unit -> json.encodeString (deep 512)"
+            )
+        ),
+    )
+    .unwrap();
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = bounded(
+        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(70), "{result:?}");
+    assert_eq!(result.stdout, b"created\nacquired\ncold\nreleased\n");
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        stderr.contains("JSON codec nesting exceeds host limits")
+            && stderr.contains("managed-live=0"),
+        "{stderr}"
+    );
+}
+
+#[test]
+fn nested_record_struct_fields_keep_the_original_cross_target_input() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/nested-record-struct-field.ssrg",
+        ),
+        &[Case::success(
+            "{\"first\":7,\"payload\":{\"label\":\"雪🙂\"},\"after\":true}\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_json_containers_keep_cold_replay_failures_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_containers_defects_release_the_captured_values_and_every_root() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let expected = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let prefix = expected
+        .windows(b"recovered: typed".len())
+        .position(|part| part == b"recovered: typed")
+        .unwrap();
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    assert_eq!(
+        source.matches("9007199254740992000000000001.100").count(),
+        1
+    );
+    for (name, changed, output, message) in [
+        (
+            "body-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected[..prefix],
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: 70,
+                defect: true,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_containers_package_keeps_opaque_elements_and_imported_user_codecs() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-containers"),
+        &[Case::success(
+            b"{\"flags\":[true,false],\"rows\":[[1,\"one\"],[2,null]]}:[1,2]:[1,2]:[2,null,3]\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_json_containers_native_host_limit_unwinds_with_finalizer_and_root_cleanup() {
+    let scratch = Scratch::new();
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let original = source
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declaration = "type Deep = | Bottom | Next Deep\nfn deep n: Int -> Deep = if n <= 0 then Bottom else Next (deep (n - 1))\ninstance JsonEncode<Deep> { fn encodeJson value: Deep -> json.Json = match value { Bottom -> json.JsonNull; Next inner -> encodeJson<Maybe<Deep>> (Just inner) } }\n";
+    let path = scratch.0.join("container-host-limit.ssrg");
+    fs::write(
+        &path,
+        format!(
+            "{declaration}{}",
+            source.replace(
+                original,
+                "  let render = \\_: Unit -> json.encodeString (deep 512)"
+            )
+        ),
+    )
+    .unwrap();
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = bounded(
+        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(70), "{result:?}");
+    assert_eq!(result.stdout, b"created\nacquired\ncold\nreleased\n");
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        stderr.contains("JSON codec nesting exceeds host limits")
+            && stderr.contains("managed-live=0"),
+        "{stderr}"
+    );
+}
+
+#[test]
+fn basic_json_codecs_encoding_defect_runs_finalizer_and_releases_captured_json() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-json-codec-effects.ssrg");
+    let original = "{\\\"answer\\\":9007199254740992000000000001.100,\\\"snow\\\":\\\"雪🙂\\\"}";
+    assert_eq!(source.matches(original).count(), 1);
+    let path = scratch.0.join("codec-encoding-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace(original, "1e99999999999999999999999999999999999999999"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "encoding-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Decimal canonical spelling exceeds host limits",
+            ..Case::success(b"")
+        }],
     );
 }
 
@@ -1039,4 +2266,144 @@ fn standard_text_math_path_package_transforms_files_and_preserves_failed_outputs
     ];
     compare(&package, &cases);
     assert_eq!(fs::read(package.join("seseragi.lock")).unwrap(), lock);
+}
+
+#[test]
+fn basic_decimal_keys_keep_exact_public_hashes_saved_methods_shadowing_and_colliding_map_keys() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-keys.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-keys.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_keeps_exact_sign_scale_order_saved_methods_and_inherited_eq() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-ord.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-ord.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_keeps_the_original_zero_regression_input_on_every_target() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/decimal-zero-order.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/decimal-zero-order.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_path_package_keeps_opaque_keys_imported_partials_and_inherited_eq() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-ord"),
+        &[Case::success(b"Less|Less|True|True|True\n")],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_keeps_cold_partials_typed_failure_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-ord-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-ord-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_ord_argument_and_returned_callback_defects_release_roots_and_run_finalizers() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-decimal-ord-effects.ssrg");
+    for (name, old, replacement, stdout) in [
+        (
+            "argument",
+            "withZero (value \"0.01\")",
+            "withZero (value \"invalid\")",
+            &b"created\nacquired\ncold\nreleased\n"[..],
+        ),
+        (
+            "returned",
+            "effects.succeed 42",
+            "effects.succeed (42 / 0)",
+            &b"created\nacquired\ncold\nLess\nTrue\nreleased\n"[..],
+        ),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("decimal-ord-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout,
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_decimal_keys_path_package_keeps_opaque_keys_and_saved_imported_generic_methods() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-decimal-keys"),
+        &[Case::success(
+            b"Just 10|Just 42|[10, 20]|[42, 20]|True|True\n",
+        )],
+    );
+}
+
+#[test]
+fn basic_decimal_keys_keep_cold_replay_typed_failure_finalizers_and_ref_cycles() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-decimal-key-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-decimal-key-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_decimal_keys_argument_and_returned_callback_defects_run_finalizers_and_release_roots() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-decimal-key-effects.ssrg");
+    for (name, old, replacement, stdout) in [
+        (
+            "key",
+            "maps.get (value \"1.200\") stored",
+            "maps.get (value \"invalid\") stored",
+            &b"created\nacquired\ncold\nreleased\n"[..],
+        ),
+        (
+            "returned",
+            "effects.succeed 42",
+            "effects.succeed (42 / 0)",
+            &b"created\nacquired\ncold\nTrue\nTrue\nreleased\n"[..],
+        ),
+    ] {
+        assert_eq!(original.matches(old).count(), 1);
+        let path = scratch.0.join(format!("decimal-key-{name}-defect.ssrg"));
+        fs::write(&path, original.replace(old, replacement)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout,
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
 }

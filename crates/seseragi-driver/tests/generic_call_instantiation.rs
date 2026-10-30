@@ -161,3 +161,82 @@ fn imported_generic_effect_factory_retains_checked_call_instantiation() {
         }
     }
 }
+
+#[test]
+fn inferred_imported_decoder_alias_keeps_selected_type_before_first_curried_stage() {
+    use seseragi_driver::{compile_project, ProjectModuleInput};
+    use seseragi_project::ModuleGraph;
+
+    // Keep the original #1003 input, including its inferred call, unchanged.
+    let caller = include_str!(
+        "../../../examples/spec/fixtures/rust-backend-regressions/json-decoder-inferred-partial-main.ssrg"
+    );
+    let rules = include_str!(
+        "../../../examples/spec/fixtures/rust-backend-projects/basic-json-decoders/vendor/rules/src/main.ssrg"
+    );
+    for (name, profile) in [
+        ("development", BuildProfile::Development),
+        ("release", BuildProfile::Release),
+    ] {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/inferred::rules".into(),
+                std::iter::empty::<(String, String)>(),
+            )
+            .unwrap();
+        graph
+            .add_module(
+                "fixture/inferred::main".into(),
+                [("rules".into(), "fixture/inferred::rules".into())],
+            )
+            .unwrap();
+        let compiled = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "rules.ssrg",
+                    "fixture/inferred::rules",
+                    rules,
+                    "dist/rules.js",
+                )
+                .with_profile(profile),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/inferred::main",
+                    caller,
+                    "dist/main.js",
+                )
+                .with_profile(profile),
+            ],
+        )
+        .expect("the original implicit decoder package is checked language source");
+        let main = &compiled.modules["fixture/inferred::main"];
+        if let Some(directory) = std::env::var_os("SESERAGI_GENERIC_CALL_CAPTURE_DIR") {
+            let directory = std::path::PathBuf::from(directory).join(format!("inferred-{name}"));
+            std::fs::create_dir_all(&directory).unwrap();
+            std::fs::write(
+                directory.join("main.core.json"),
+                serde_json::to_string_pretty(&main.core_ir).unwrap(),
+            )
+            .unwrap();
+            std::fs::write(
+                directory.join("main.typed.json"),
+                serde_json::to_string_pretty(&main.typed_hir).unwrap(),
+            )
+            .unwrap();
+            for (module, compiled) in &compiled.modules {
+                std::fs::write(
+                    directory.join(format!("{}.ts", module.rsplit("::").next().unwrap())),
+                    &compiled.generated.typescript,
+                )
+                .unwrap();
+            }
+        }
+        assert!(
+            main.generated.typescript.contains("field<number>(\"n\")"),
+            "{name}: selected Int must reach the first curried source stage:\n{}",
+            main.generated.typescript
+        );
+    }
+}

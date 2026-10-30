@@ -1,0 +1,11 @@
+[package]
+name = "fixture/set-operations"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+
+[dependencies]
+cells = { package = "fixture/set-operation-cells", path = "vendor/cells" }

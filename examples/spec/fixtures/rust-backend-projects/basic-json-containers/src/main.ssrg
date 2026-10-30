@@ -1,0 +1,19 @@
+import * as cells from "cells"
+import * as json from "std/json"
+
+alias Row = { flags: List<Bool>, rows: Array<(Int, Maybe<String>)> }
+pub fn probe -> String = {
+  let cell = cells.make<Row> ({ flags: `[True,False], rows: [(1,Just "one"),(2,Nothing)] })
+  let read: cells.Cell -> Either<json.DecodeError, Row> = cells.read
+  let render = cells.reader [cells.token 1,cells.token 2]
+  let parsed: Either<json.JsonReadError, Array<Maybe<Int>>> = cells.decode "[2,null,3]"
+  let row = match read cell { Right value -> json.encodeString value; Left _ -> "invalid" }
+  let tokens = cells.make [cells.token 1,cells.token 2]
+  let values = match cells.read<Array<cells.Token>> tokens {
+    Left _ -> "invalid"
+    Right value -> json.encodeString value
+  }
+  let numbers = match parsed { Right value -> json.encodeString value; Left _ -> "invalid" }
+  row + ":" + render () + ":" + values + ":" + numbers
+}
+pub effect fn main = println (probe ())

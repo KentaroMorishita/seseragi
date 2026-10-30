@@ -1,0 +1,14 @@
+import * as predicates from "predicates"
+import * as text from "std/text"
+
+pub effect fn main = {
+  let starts: predicates.Label -> Bool = predicates.starts "雪"
+  let ends = predicates.ends "🙂"
+  let value = predicates.label "雪🙂"
+  println (text.join "|" [
+    show (starts value), show (ends value),
+    show (predicates.through predicates.label starts "雪🙂"),
+    show (predicates.through predicates.label ends "雪"),
+    show (predicates.starts "" (predicates.label ""))
+  ])
+}

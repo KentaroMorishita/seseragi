@@ -32,6 +32,12 @@ mod filesystem;
 mod floats;
 mod hashing;
 mod json;
+mod json_codecs;
+mod json_container_codecs;
+mod json_decoders;
+mod json_derived_adts;
+mod json_derived_newtypes;
+mod json_derived_structs;
 mod lists;
 mod local;
 mod math;
@@ -188,7 +194,12 @@ fn emit_body(
     output.push_str(include_str!("runtime_map.rs"));
     output.push_str(include_str!("runtime_set.rs"));
     output.push_str(include_str!("runtime_json.rs"));
+    output.push_str(include_str!("runtime_json_codecs.rs"));
+    output.push_str(include_str!("runtime_json_decoders.rs"));
+    output.push_str(include_str!("runtime_json_container_codecs.rs"));
+    output.push_str(include_str!("runtime_json_derived_adts.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
+    output.push_str(include_str!("runtime_int_checked.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
@@ -239,13 +250,6 @@ fn emit_body(
                 backend.owner,
             ));
         }
-        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
-            return Err(crate::project::at(
-                "Rust backend: derived instances are unsupported",
-                &instance.origin,
-                backend.owner,
-            ));
-        };
         let mut scope = Scope::new();
         scope.type_parameters(
             instance
@@ -255,6 +259,23 @@ fn emit_body(
             &instance.identity,
         );
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
+        if let Some(dictionary) = backend
+            .json_derived_dictionary(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
+                id(&instance.identity)
+            ));
+            continue;
+        }
+        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            return Err(crate::project::at(
+                "Rust backend: derived instances are unsupported",
+                &instance.origin,
+                backend.owner,
+            ));
+        };
         backend
             .validate_eq_instance(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
@@ -511,6 +532,10 @@ impl Backend<'_> {
             if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Hash") {
                 self.validate_hash_evidence(selected, scope)?;
             }
+            if let Some(dictionary) = self.decimal_trait_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.primitive_hash_dictionary(selected, scope)? {
                 self.capabilities.insert("hash".into());
                 values.push(dictionary);
@@ -559,6 +584,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.decimal_show_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.json_codec_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -851,6 +880,12 @@ impl Backend<'_> {
                 if let Some(value) = self.json_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
+                if let Some(value) = self.json_codec_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.json_decoder_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.collection_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
@@ -1101,6 +1136,11 @@ impl Backend<'_> {
                         self.expr(left, scope)?,
                         self.expr(right, scope)?
                     ));
+                }
+                if let Some(value) = self
+                    .decimal_comparison_binary(operator, left, right, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
                 }
                 if characters::dictionary_comparison(evidence, operator) {
                     let dictionary = self.evidence(evidence, scope)?;

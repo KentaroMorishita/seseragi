@@ -1,0 +1,14 @@
+import * as ints from "std/int"
+
+pub opaque newtype Value = Int
+pub fn read radix: Int -> (String -> Either<ints.IntParseError, Value>) = {
+  let parser = ints.parseRadix radix
+  \source -> match parser source { Left error -> Left error; Right value -> Right (Value value) }
+}
+pub fn formatting radix: Int -> (Value -> Either<ints.IntParseError, String>) = {
+  let formatter = ints.formatRadix radix
+  \wrapped -> match wrapped { Value value -> formatter value }
+}
+pub fn decimal wrapped: Value -> String = match wrapped { Value value -> ints.format value }
+pub fn minimum -> Value = Value (ints.minValue ())
+pub fn maximum -> Value = Value (ints.maxValue ())

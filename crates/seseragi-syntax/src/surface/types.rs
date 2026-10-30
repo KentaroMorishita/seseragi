@@ -152,11 +152,7 @@ impl SurfaceParser<'_> {
         let body_start = self.find_significant_token(after_deriving, end, |kind| {
             kind == TokenKind::PunctuationBraceLeft
         })?;
-        let body_end = self
-            .find_significant_token(body_start + 1, end, |kind| {
-                kind == TokenKind::PunctuationBraceRight
-            })
-            .unwrap_or(end);
+        let body_end = self.find_matching_brace(body_start, end).unwrap_or(end);
 
         Some(SurfaceDecl::Struct {
             visibility,

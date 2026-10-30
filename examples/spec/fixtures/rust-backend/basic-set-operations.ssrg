@@ -1,0 +1,53 @@
+import * as sets from "std/set"
+import * as text from "std/text"
+
+type Key = | Key { identity: Int, label: String }
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool = match left {
+    Key a -> match right { Key b -> a.identity == b.identity }
+  }
+}
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key detail -> detail.label } }
+
+fn combine<A> right: sets.Set<A> -> sets.Set<A> -> sets.Set<A> where Eq<A>, Hash<A> = sets.union right
+fn select<A> predicate: (A -> Bool) -> values: sets.Set<A> -> sets.Set<A> = sets.filter predicate values
+
+pub fn probe -> String = {
+  let left = sets.singleton (Key ({ identity: 1, label: "left-first" }))
+    |> sets.insert (Key ({ identity: 2, label: "left-second" }))
+  let right = sets.singleton (Key ({ identity: 1, label: "right-same" }))
+    |> sets.insert (Key ({ identity: 3, label: "right-third" }))
+  let union: sets.Set<Key> -> sets.Set<Key> -> sets.Set<Key> = sets.union
+  let withRight = union right
+  let intersection = sets.intersection right
+  let difference: sets.Set<Key> -> sets.Set<Key> -> sets.Set<Key> = sets.difference
+  let subset: sets.Set<Key> -> sets.Set<Key> -> Bool = sets.isSubsetOf
+  let filtered = select (\key: Key -> match key { Key detail -> detail.identity != 1 }) left
+  let empty: sets.Set<Key> = sets.empty ()
+  let ints = sets.singleton 2 |> sets.insert 1
+  let more = sets.singleton 1 |> sets.insert 3
+  let strings = sets.singleton "雪" |> sets.insert "🙂"
+  let units = sets.singleton ()
+  text.join "|" [
+    show (sets.toList (withRight left)),
+    show (sets.toList (intersection left)),
+    show (sets.toList (difference right left)),
+    show (sets.toList filtered),
+    show (sets.toList (combine right left)),
+    show (subset (withRight left) left), show (subset right left),
+    show (subset right empty), show (subset empty empty),
+    show (sets.toList empty), show (sets.toList (withRight empty)),
+    show (sets.toList (sets.intersection empty left)),
+    show (sets.toList (sets.difference empty left)),
+    show (sets.toList (sets.filter (\_: Key -> False) left)),
+    show (sets.toList (sets.filter (\_: Key -> True) left)),
+    show (sets.toList (sets.union more ints)),
+    show (sets.toList (sets.intersection more ints)),
+    show (sets.toList (sets.difference more ints)),
+    show (sets.toList (sets.filter (\value: String -> value != "雪") strings)),
+    show (sets.toList (sets.union units units)),
+    show (sets.toList left), show (sets.toList right)
+  ]
+}
+pub effect fn main = println (probe ())

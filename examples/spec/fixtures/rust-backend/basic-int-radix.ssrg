@@ -1,0 +1,41 @@
+import * as ints from "std/int"
+
+fn parsed result: Either<ints.IntParseError, Int> -> String = match result {
+  Left error -> show error
+  Right value -> "right:" + ints.format value
+}
+fn formatted result: Either<ints.IntParseError, String> -> String = match result {
+  Left error -> show error
+  Right value -> "right:" + value
+}
+fn apply<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn parser -> (Int -> String -> Either<ints.IntParseError, Int>) = ints.parseRadix
+
+pub effect fn main = do {
+  let maximum: Unit -> Int = ints.maxValue
+  let format: Int -> String = ints.format
+  let parse = parser ()
+  let hex = parse 16
+  let toHex: Int -> Either<ints.IntParseError, String> = ints.formatRadix 16
+  println (format (ints.minValue ()))
+  println (format (apply maximum ()))
+  println (parsed (parse 2 "+000101010"))
+  println (parsed (hex "-2A"))
+  println (parsed (parse 36 "Zz"))
+  println (parsed (parse 10 "01"))
+  println (parsed (ints.parse "01"))
+  println (parsed (parse 16 "+0x2a"))
+  println (parsed (parse 16 "12🙂"))
+  println (parsed (parse 1 ""))
+  println (parsed (parse 37 "🙂"))
+  println (parsed (parse 2 ""))
+  println (parsed (parse 2 "+"))
+  println (parsed (parse 10 "9007199254740992z"))
+  println (parsed (parse 36 "2gosa7pa2gw!"))
+  println (parsed (parse 36 "2go!sa7pa2gw"))
+  println (parsed (hex "-0"))
+  println (formatted (toHex (-42)))
+  println (formatted (ints.formatRadix 36 (maximum ())))
+  println (formatted (ints.formatRadix 2 (ints.minValue ())))
+  println (formatted (ints.formatRadix 1 42))
+}

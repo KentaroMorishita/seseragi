@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/set-map@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/set-map-cells@0.0.0#path:vendor/cells"
+name = "fixture/set-map-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:18aa51aaf3c315bb8d244acacc0d8a061f8896ace62e1036034965582ef73f6b"
+content_digest = "sha256:9b2fed388816a271a54b8e0cbcb518b57e3edd284d10241d8eb7c4c733e6995b"
+dependencies = []
+
+[[packages]]
+id = "fixture/set-map@0.0.0#workspace:."
+name = "fixture/set-map"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:ebb4b287b5126697ef160fd0d30718d849e86baacba72f9215a950d16d22b9e3"
+content_digest = "sha256:118f31734120c78400436a760eccbcde9b0eae7e36b4bdbb3945e3f4465d8907"
+dependencies = [
+  { import = "cells", package = "fixture/set-map-cells@0.0.0#path:vendor/cells" },
+]

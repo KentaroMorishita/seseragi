@@ -1,0 +1,45 @@
+import * as decimal from "std/decimal"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as text from "std/text"
+
+newtype Decimal = String
+instance Eq<Decimal> { fn eq left: Decimal -> right: Decimal -> Bool = match left { Decimal a -> match right { Decimal b -> a == b } } }
+fn value source: String -> decimal.Decimal = match decimal.parse source {
+  Right result -> result
+  Left _ -> decimal.fromInt (42 / 0)
+}
+fn equal<A> left: A -> right: A -> Bool where Eq<A> = left == right
+fn digest<A> value: A -> Int where Hash<A> = hash value
+fn same<A> left: A -> (A -> Bool) where Eq<A> = eq left
+
+pub fn probe -> String = {
+  let equality: decimal.Decimal -> decimal.Decimal -> Bool = eq
+  let withOne = equality (value "1.20")
+  let hashed: decimal.Decimal -> Int = hash
+  let values = maps.singleton (value "1.20") "first"
+    |> maps.insert (value "1.2") "replacement"
+    |> maps.insert (value "2.0") "two"
+  let keys = sets.singleton (value "1.20")
+    |> sets.insert (value "1.2") |> sets.insert (value "2.0")
+  let collisions = maps.singleton (value "1") "left" |> maps.insert (value "3881521128e-1") "right"
+  text.join "|" [
+    show (value "0" == value "-0.000e999999999999999999999999999999999999"),
+    show (withOne (value "12e-1")), show (same (value "1.2") (value "1.200")),
+    show (equal (value "900719925474099200000001.001") (value "900719925474099200000001001e-3")),
+    show (value "1.2" != value "-1.2"), show (Decimal "1.2" != Decimal "1.20"),
+    show (maps.get (value "1.2000") values), show (maps.values values),
+    show (sets.toArray keys), show (maps.size values), show (sets.size keys),
+    show (hash (value "1") == hash (value "3881521128e-1")),
+    show (value "1" != value "3881521128e-1"), show (maps.values collisions),
+    show (maps.get (value "1.000") collisions), show (maps.get (value "388152112.8") collisions),
+    show [
+      hashed (value "0"), digest (value "-0"), hashed (value "1.20"), digest (value "-1.2"),
+      hashed (value "4294967296"), digest (value "18446744073709551617"),
+      hashed (value "900719925474099200000001.001"),
+      digest (value "1e999999999999999999999999999999999999"),
+      hashed (value "1e-999999999999999999999999999999999999")
+    ]
+  ]
+}
+pub effect fn main = println (probe ())

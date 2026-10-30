@@ -1,0 +1,28 @@
+import * as decimal from "std/decimal"
+import * as text from "std/text"
+
+fn value source: String -> decimal.Decimal = match decimal.parse source { Right result -> result; Left _ -> decimal.fromInt (42 / 0) }
+fn label value: Ordering -> String = match value { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
+fn ordering<A> left: A -> (A -> Ordering) where Ord<A> = compare left
+fn equal<A> left: A -> right: A -> Bool where Ord<A> = left == right
+fn less<A> left: A -> right: A -> Bool where Ord<A> = left < right
+
+pub fn probe -> String = {
+  let comparator: decimal.Decimal -> decimal.Decimal -> Ordering = compare
+  let fromOne = comparator (value "1.20")
+  let lessThan: decimal.Decimal -> decimal.Decimal -> Bool = (<)
+  let atLeast: decimal.Decimal -> decimal.Decimal -> Bool = (>=)
+  let small = value "1e-999999999999999999999999999999999999"
+  let large = value "1e999999999999999999999999999999999999"
+  text.join "|" [
+    label (fromOne (value "1.21")), label (ordering (value "-1.21") (value "-1.2")),
+    label (comparator (value "1.200") (value "12e-1")), label (comparator small large),
+    label (comparator large small), label (comparator (value "0") small),
+    show (equal (value "1.20") (value "1.2")), show (less small large),
+    show (lessThan (value "-1.21") (value "-1.2")),
+    show (atLeast (value "1.200") (value "1.2")),
+    show (value "1.2" <= value "1.21"), show (value "1.2" > value "-1.2"),
+    show (value "0" >= value "-0.001"), show (value "0" < small)
+  ]
+}
+pub effect fn main = println (probe ())

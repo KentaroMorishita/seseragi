@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/math-remaining@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/math-measures@0.0.0#path:vendor/measures"
+name = "fixture/math-measures"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/measures"
+manifest_digest = "sha256:b23bfdb090e0d12575e4d7c3c1e39ba57119f2e2228cc19889318591ada2fede"
+content_digest = "sha256:76c77fd652ef9f35bb84521fe8ba140a35fbe8762c606f3c84185bb0929ea213"
+dependencies = []
+
+[[packages]]
+id = "fixture/math-remaining@0.0.0#workspace:."
+name = "fixture/math-remaining"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:cf5b4fd6288eedbe981d1947a97fef718c9ee3b6206098de8b374ce9ae95d217"
+content_digest = "sha256:a352ccea6380b34a489f3a200b575eddde24766937b51c4abf9f9452b8d6e906"
+dependencies = [
+  { import = "measures", package = "fixture/math-measures@0.0.0#path:vendor/measures" },
+]

@@ -1,0 +1,7 @@
+import * as json from "std/json"
+pub opaque struct Rules<A> { decoder: json.Decoder<A> }
+pub fn make<A> decoder: json.Decoder<A> -> Rules<A> = Rules { decoder }
+pub fn field<A> name: String -> decoder: json.Decoder<A> -> Rules<A> = make (json.field name decoder)
+pub fn array<A> rules: Rules<A> -> Rules<Array<A>> = make (json.array rules.decoder)
+pub fn named<A> name: String -> rules: Rules<A> -> Rules<A> = make (json.field name rules.decoder)
+pub fn read<A> rules: Rules<A> -> value: json.Json -> Either<json.DecodeError, A> = rules.decoder value

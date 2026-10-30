@@ -59,6 +59,20 @@ fn native_text_operation(name: &str, arguments: Vec<V>) -> V {
             assert_eq!(arguments.len(), 2, "Rust ABI: text.contains arity");
             V::Bool(native_text(&arguments[1]).contains(native_text(&arguments[0])))
         }
+        "std/text::startsWith" | "std/text::endsWith" => {
+            assert_eq!(
+                arguments.len(),
+                2,
+                "Rust ABI: text boundary predicate arity"
+            );
+            let pattern = native_text(&arguments[0]);
+            let text = native_text(&arguments[1]);
+            V::Bool(if name == "std/text::startsWith" {
+                text.starts_with(pattern)
+            } else {
+                text.ends_with(pattern)
+            })
+        }
         "std/text::replace" => {
             assert_eq!(arguments.len(), 3, "Rust ABI: text.replace arity");
             V::text(&native_text(&arguments[2]).replacen(
@@ -82,6 +96,39 @@ fn native_text_whitespace(scalar: char) -> bool {
 #[cfg(test)]
 mod text_tests {
     use super::*;
+
+    #[test]
+    fn prefix_and_suffix_are_literal_and_keep_unicode_empty_and_nul_boundaries() {
+        clear_dictionaries();
+        for (pattern, text, starts, ends) in [
+            ("", "", true, true),
+            ("", "雪🙂", true, true),
+            ("雪", "", false, false),
+            ("雪🙂", "雪🙂", true, true),
+            ("雪", "雪🙂", true, false),
+            ("🙂", "雪🙂", false, true),
+            ("中", "前中後", false, false),
+            ("longer", "long", false, false),
+            ("é", "e\u{301}", false, false),
+            ("e", "e\u{301}", true, false),
+            ("\u{301}", "e\u{301}", false, true),
+            ("\0", "\0雪\0", true, true),
+            ("snow", "Snow", false, false),
+        ] {
+            for (operation, expected) in [("startsWith", starts), ("endsWith", ends)] {
+                let output = native_text_operation(
+                    &format!("std/text::{operation}"),
+                    vec![V::text(pattern), V::text(text)],
+                );
+                assert_eq!(
+                    output.boolean(),
+                    expected,
+                    "{operation}/{pattern:?}/{text:?}"
+                );
+            }
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
 
     fn strings(value: V) -> Vec<String> {
         let V::Array(values) = value else { panic!() };

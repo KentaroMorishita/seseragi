@@ -18,7 +18,9 @@ fn text_signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         "std/text::join" => Some((vec![string.clone(), strings], string)),
         "std/text::split" => Some((vec![string.clone(), string], strings)),
         "std/text::trim" => Some((vec![string.clone()], string)),
-        "std/text::contains" => Some((vec![string.clone(), string], boolean)),
+        "std/text::contains" | "std/text::startsWith" | "std/text::endsWith" => {
+            Some((vec![string.clone(), string], boolean))
+        }
         "std/text::replace" => Some((vec![string.clone(); 3], string)),
         _ => None,
     }

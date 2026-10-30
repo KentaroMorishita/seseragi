@@ -4,6 +4,85 @@ use seseragi_lowering::{CoreExpr, CoreType};
 
 const METHOD: &str = "trait Render<A> { fn render value:A -> (Unit -> String) }\ninstance Render<Int> { fn render value:Int -> (Unit -> String) = \\_:Unit -> show value }\npub fn probe -> String = render<Int> 42 ()\n";
 const FUNCTION: &str = "fn render<A> value:A -> (Unit -> String) where Show<A> = \\_:Unit -> show value\npub fn probe -> String = render<Int> 42 ()\n";
+const PARTIAL: &str = "fn select<A,B,C> callback:(A -> A) -> mapping:(B -> C) -> (B -> C) where Eq<C>, Hash<C> = mapping\npub fn probe -> ((String -> Int) -> String -> Int) = select (\\value:Int -> value)\n";
+
+#[test]
+fn global_partial_checks_binders_remaining_source_stages_result_and_evidence() {
+    let core = compile_core_module(CompileInput::new(
+        "partial-global-雪🙂.ssrg",
+        "fixture/partial",
+        PARTIAL,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    for mutation in 0..19 {
+        let mut changed = core.clone();
+        if mutation < 13 {
+            let probe = changed
+                .functions
+                .iter_mut()
+                .find(|function| function.symbol.ends_with("::probe"))
+                .unwrap();
+            let CoreExpr::Call {
+                arguments,
+                evidence,
+                evidence_argument_index,
+                deferred_evidence_parameters,
+                deferred_evidence_type_constructor_parameters,
+                type_ref,
+                ..
+            } = &mut probe.body
+            else {
+                panic!("{probe:#?}")
+            };
+            match mutation {
+                0 => deferred_evidence_parameters.clear(),
+                1 => deferred_evidence_parameters.push(CoreType::Hole),
+                2 => deferred_evidence_parameters[0] = CoreType::Hole,
+                3 => arguments.clear(),
+                4 => arguments.push(arguments[0].clone()),
+                5 => evidence.clear(),
+                6 => evidence.swap(0, 1),
+                7 => evidence[0].constraint.trait_identity = Some("fake::Eq".into()),
+                8 => evidence[0].constraint.arguments[0] = CoreType::Hole,
+                9 => *evidence_argument_index = Some(1),
+                10 => deferred_evidence_type_constructor_parameters.push("F".into()),
+                11 => *type_ref = CoreType::Hole,
+                12 => {
+                    *type_ref = CoreType::Named {
+                        name: "Bool".into(),
+                        arguments: vec![],
+                    }
+                }
+                _ => unreachable!(),
+            }
+        } else {
+            let function = changed
+                .functions
+                .iter_mut()
+                .find(|function| function.symbol.ends_with("::select"))
+                .unwrap();
+            match mutation {
+                13 => function.value_type = None,
+                14 => function.value_type = Some(CoreType::Hole),
+                15 => function.type_parameters[0].arity = 1,
+                16 => function.is_effect = true,
+                17 => function.parameters.pop().map(|_| ()).unwrap(),
+                18 => function.constraints[0].trait_identity = Some("fake::Eq".into()),
+                _ => unreachable!(),
+            }
+        }
+        let error = emit_rust_module(&changed, "probe")
+            .expect_err(&format!("global partial mutation {mutation}"));
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert_eq!(
+            error.origin.unwrap().source,
+            "partial-global-雪🙂.ssrg",
+            "mutation {mutation}"
+        );
+    }
+}
 
 #[test]
 fn continuous_returned_calls_keep_checked_dictionary_and_source_stages() {

@@ -50,9 +50,10 @@ pub effect fn main -> Unit with FileSystem fails String = do {
   command <- fs.readTextUtf8 control |> effects.mapError show
   match command {
     "cancel" -> do {
+      // Finalization can start as soon as the child observes cancellation.
+      append "cancel-request\n"
       stopper <- effects.fork (effects.interrupt reader)
       effects.yieldNow ()
-      append "cancel-request\n"
       effects.join stopper
       effects.interrupt reader
       exit <- effects.await reader

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-json-codecs@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-json-codecs@0.0.0#workspace:."
+name = "fixture/basic-json-codecs"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:f6611d63ec6ee4bf12c4daa74e5bed83259a0d7a64ecca7043e79ffc5b88db7e"
+content_digest = "sha256:6b270b2784c5eed7d4648311cdc1079a7bf2528663dde3225d3705c02a0ee2c8"
+dependencies = [
+  { import = "cells", package = "fixture/json-codec-cells@0.0.0#path:vendor/cells" },
+]
+
+[[packages]]
+id = "fixture/json-codec-cells@0.0.0#path:vendor/cells"
+name = "fixture/json-codec-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:e3a2ce5999a3e2ffb66b6c2c5472e87a9748e216d14d7aa26163408acf854bdf"
+content_digest = "sha256:a6bbf82f89e84db9794f45275612ae1869ebc907a8b447ea2bc6078270650c38"
+dependencies = []

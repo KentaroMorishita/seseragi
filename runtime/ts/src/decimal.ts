@@ -472,6 +472,8 @@ function compareDecimal(left: Decimal, right: Decimal): number {
   if (left.coefficient === right.coefficient && left.scale === right.scale) {
     return 0
   }
+  if (left.coefficient === 0n) return right.coefficient < 0n ? 1 : -1
+  if (right.coefficient === 0n) return left.coefficient < 0n ? -1 : 1
   if (left.coefficient < 0n && right.coefficient >= 0n) return -1
   if (left.coefficient >= 0n && right.coefficient < 0n) return 1
   const polarity = left.coefficient < 0n ? -1 : 1

@@ -166,6 +166,26 @@ impl Backend<'_> {
             std::slice::from_ref(selected),
             scope,
         )?;
+        if let CoreInstanceEvidence::Standard {
+            identity,
+            type_arguments,
+            evidence_arguments,
+        } = &selected.evidence
+        {
+            if identity == "std/decimal::Ord" {
+                if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
+                    return Err("Rust backend: unproven Decimal Ord type or child evidence".into());
+                }
+                self.decimal_type(
+                    &selected.constraint.arguments[0],
+                    &CoreType::Named {
+                        name: "std/decimal::Decimal".into(),
+                        arguments: vec![],
+                    },
+                    scope,
+                )?;
+            }
+        }
         let primitive = match &selected.evidence {
             CoreInstanceEvidence::Standard { identity, .. } => match identity.as_str() {
                 "std/int::Ord" => Some("Int"),

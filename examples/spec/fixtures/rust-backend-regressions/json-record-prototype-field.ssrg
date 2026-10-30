@@ -1,0 +1,3 @@
+import * as json from "std/json"
+pub fn probe -> String = match json.decodeString<{ __proto__: String }> "{\"__proto__\":\"snow\"}" { Left _ -> "invalid"; Right value -> json.encodeString value }
+pub effect fn main = println (probe ())

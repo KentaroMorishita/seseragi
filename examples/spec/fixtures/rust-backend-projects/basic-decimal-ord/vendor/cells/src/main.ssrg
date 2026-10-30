@@ -1,0 +1,9 @@
+import * as decimal from "std/decimal"
+
+pub opaque newtype Key = decimal.Decimal
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = match left { Key a -> match right { Key b -> a == b } } }
+instance Ord<Key> { fn compare left: Key -> right: Key -> Ordering = match left { Key a -> match right { Key b -> compare a b } } }
+pub fn make text: String -> Key = match decimal.parse text { Right value -> Key value; Left _ -> Key (decimal.fromInt (42 / 0)) }
+pub fn order<A> left: A -> (A -> Ordering) where Ord<A> = compare left
+pub fn same<A> left: A -> (A -> Bool) where Ord<A> = eq left
+pub fn below<A> left: A -> right: A -> Bool where Ord<A> = left < right

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/map-upsert@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/map-upsert-cells@0.0.0#path:vendor/cells"
+name = "fixture/map-upsert-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:111edbdaed29bea0c72cd63a81a92d802cc11b5e32157fe284a43e26d974c996"
+content_digest = "sha256:8d794a86fe0254f9cced6e9c796c572a1a3b847a5991d9931fc729ad1c90babd"
+dependencies = []
+
+[[packages]]
+id = "fixture/map-upsert@0.0.0#workspace:."
+name = "fixture/map-upsert"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:4deb8d4c65cc397fd0bbf43ccf689164c0cf41685f49f060eaa5be11aa56c6e7"
+content_digest = "sha256:a4cfa590442beadea2b60a1b7cd39313efeff5381314f497a3d7d1b3c31575dd"
+dependencies = [
+  { import = "cells", package = "fixture/map-upsert-cells@0.0.0#path:vendor/cells" },
+]

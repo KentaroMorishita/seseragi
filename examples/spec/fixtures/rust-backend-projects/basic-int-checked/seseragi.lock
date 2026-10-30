@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/int-checked@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/int-checked-numbers@0.0.0#path:vendor/numbers"
+name = "fixture/int-checked-numbers"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/numbers"
+manifest_digest = "sha256:78c23cacc81751d831a8122a6daeb887771317effa224a6d4f6cf4e4d7c7882f"
+content_digest = "sha256:f8c226e89aebde2019ab0aa8879585a2f3402c75814b797fd30f391c4f1a5176"
+dependencies = []
+
+[[packages]]
+id = "fixture/int-checked@0.0.0#workspace:."
+name = "fixture/int-checked"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:385a0a45860192421584b2117efc357d7391e5028634e4e69da7598381a67a83"
+content_digest = "sha256:45e3175da355b5f896e821cc1f9bbb1745bb2064f4c44f2eabf5646947eb4d9b"
+dependencies = [
+  { import = "numbers", package = "fixture/int-checked-numbers@0.0.0#path:vendor/numbers" },
+]

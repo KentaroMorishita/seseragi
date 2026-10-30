@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/decimal-ord@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/decimal-ord-cells@0.0.0#path:vendor/cells"
+name = "fixture/decimal-ord-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:609bd92c5ed5c89f5124b55f73d1a5be8ad96e8b53a312735b968ff69401a960"
+content_digest = "sha256:07831ba14325b039d81d8e6ed431f24a35df4465854df0ac984b021c4c34d186"
+dependencies = []
+
+[[packages]]
+id = "fixture/decimal-ord@0.0.0#workspace:."
+name = "fixture/decimal-ord"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:363c621190a775e4908dd6fde03b41b5e87b590768afb49251c1f376e66e856b"
+content_digest = "sha256:1cea0c59c7fff9c6580e26d161686422d05eac30aaf2bbae698d993104836e35"
+dependencies = [
+  { import = "cells", package = "fixture/decimal-ord-cells@0.0.0#path:vendor/cells" },
+]

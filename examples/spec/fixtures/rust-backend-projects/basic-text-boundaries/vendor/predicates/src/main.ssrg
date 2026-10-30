@@ -1,0 +1,13 @@
+import * as text from "std/text"
+
+pub opaque newtype Label = String
+pub fn label value: String -> Label = Label value
+pub fn starts prefix: String -> Label -> Bool = {
+  let predicate = text.startsWith prefix
+  \value: Label -> match value { Label text -> predicate text }
+}
+pub fn ends suffix: String -> Label -> Bool = {
+  let predicate: String -> Bool = text.endsWith suffix
+  \value: Label -> match value { Label text -> predicate text }
+}
+pub fn through<A> convert: (A -> Label) -> predicate: (Label -> Bool) -> value: A -> Bool = predicate (convert value)

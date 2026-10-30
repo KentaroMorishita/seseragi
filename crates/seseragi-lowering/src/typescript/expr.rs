@@ -303,6 +303,12 @@ pub(super) fn lower_core_expr_to_typescript(
                         .cloned()
                         .unwrap_or_else(|| local_name(&name)),
                 });
+            if matches!(value, TypeScriptExpr::CurriedRuntimeReference { .. }) {
+                // A returned runtime function may have no surrounding TS
+                // annotation. Its checked source type also types the generated
+                // curried parameters without changing their runtime stages.
+                return checked_operator_reference(value, &type_ref, imported_types);
+            }
             if let Some(signature) = callable_signature {
                 let checked = type_ref_from_core_type(&type_ref, imported_types);
                 if super::types::instantiated_hkt_callee(&signature, &[], &checked).is_some() {
@@ -351,14 +357,14 @@ pub(super) fn lower_core_expr_to_typescript(
                 };
             }
             if imported_types.is_erased_newtype(&callee) && arguments.len() == 1 {
-                return TypeScriptExpr::CheckedResult {
-                    value: Box::new(lower_core_expr_to_typescript(
+                return super::types::assert_private_representation(
+                    lower_core_expr_to_typescript(
                         arguments.into_iter().next().expect("newtype payload"),
                         imported_values,
                         imported_types,
-                    )),
-                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
-                };
+                    ),
+                    type_ref_from_core_type(&type_ref, imported_types),
+                );
             }
             let signal_operation = runtime_signal_operation(&callee);
             let checked_argument_types = arguments
@@ -890,6 +896,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     &type_ref,
                     &evidence,
                 );
+                let typed_json_evidence = has_typed_json_evidence(&evidence);
                 let evidence = evidence
                     .iter()
                     .map(|selected| {
@@ -928,10 +935,6 @@ pub(super) fn lower_core_expr_to_typescript(
                     );
                     let check_late_callback = has_evidence
                         && deferred_evidence_parameters.is_empty()
-                        && !matches!(
-                            checked_argument_types.first(),
-                            Some(super::TypeScriptType::Function { .. })
-                        )
                         && checked_argument_types.iter().skip(1).any(|argument| {
                             matches!(argument, super::TypeScriptType::Function { .. })
                         });
@@ -997,7 +1000,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     if let TypeScriptExpr::Call { type_arguments, .. } = &mut call {
                         *type_arguments = ordinary_call_type_arguments(
                             callee_signature.as_ref(),
-                            has_evidence,
+                            has_evidence && !typed_json_evidence,
                             imported_types,
                         );
                     }
@@ -1005,14 +1008,15 @@ pub(super) fn lower_core_expr_to_typescript(
                         // TypeScript fixes generic parameters at the first
                         // curried argument. The source checker used every
                         // argument and evidence; retain that instantiated
-                        // callable type before applying a later callback.
-                        let parameters = checked_argument_types
-                            .into_iter()
-                            .chain(std::iter::repeat_n(
-                                super::TypeScriptType::Unknown,
-                                evidence_count,
-                            ))
-                            .collect::<Vec<_>>();
+                        // callable type before applying a later callback. A
+                        // returned source function follows the dictionaries;
+                        // its arguments must not shift that checked boundary.
+                        let mut parameters = checked_argument_types;
+                        let index = evidence_argument_index.unwrap_or(parameters.len());
+                        parameters.splice(
+                            index..index,
+                            std::iter::repeat_n(super::TypeScriptType::Unknown, evidence_count),
+                        );
                         let instantiated = parameters.into_iter().rev().fold(
                             checked_result.clone(),
                             |result, parameter| super::TypeScriptType::Function {
@@ -1359,7 +1363,7 @@ pub(super) fn lower_core_expr_to_typescript(
                         arguments,
                         type_arguments: ordinary_call_type_arguments(
                             callee_signature.as_ref(),
-                            !evidence.is_empty(),
+                            !evidence.is_empty() && !has_typed_json_evidence(&evidence),
                             imported_types,
                         ),
                         checked_callee_type: None,
@@ -2398,8 +2402,25 @@ fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
     }
 }
 
-// Reify only a complete ordinary source instantiation. Higher-kinded erasure,
-// runtime intrinsics, foreign tasks and dictionary stages keep their ABI paths.
+fn has_typed_json_evidence(evidence: &[crate::CoreCallEvidence]) -> bool {
+    evidence.iter().any(|selected| {
+        selected.constraint.arguments.len() == 1
+            && matches!(
+                (
+                    selected.constraint.name.as_str(),
+                    selected.constraint.trait_identity.as_deref()
+                ),
+                ("JsonEncode", Some("std/prelude::JsonEncode"))
+                    | ("JsonDecode", Some("std/prelude::JsonDecode"))
+            )
+    })
+}
+
+// Reify only a complete ordinary source instantiation. Typed JSON dictionaries
+// need this before a source stage that cannot infer A (for example String ->
+// String where JsonDecode<A>, JsonEncode<A>). Otherwise TypeScript fixes A to
+// unknown before the later invariant dictionary stage. Higher-kinded erasure,
+// runtime intrinsics, foreign tasks and erased dictionaries retain their paths.
 fn ordinary_call_type_arguments(
     signature: Option<&crate::CoreCallSignature>,
     has_evidence: bool,

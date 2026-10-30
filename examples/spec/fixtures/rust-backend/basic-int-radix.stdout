@@ -1,0 +1,21 @@
+-9007199254740991
+9007199254740991
+right:42
+right:-42
+right:1295
+right:1
+InvalidIntDigit { offset: 1, radix: 10 }
+InvalidIntDigit { offset: 2, radix: 16 }
+InvalidIntDigit { offset: 2, radix: 16 }
+InvalidIntRadix 1
+InvalidIntRadix 37
+EmptyInt
+InvalidIntDigit { offset: 1, radix: 2 }
+IntOutsideRange
+IntOutsideRange
+InvalidIntDigit { offset: 3, radix: 36 }
+right:0
+right:-2a
+right:2gosa7pa2gv
+right:-11111111111111111111111111111111111111111111111111111
+InvalidIntRadix 1

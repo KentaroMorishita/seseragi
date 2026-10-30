@@ -4,15 +4,23 @@ fn arity(name: &str) -> Option<usize> {
     Some(match name {
         "std/map::empty" | "std/map::keys" | "std/map::values" | "std/map::entries"
         | "std/map::size" | "std/map::isEmpty" | "std/set::empty" | "std/set::singleton"
-        | "std/set::toArray" | "std/set::size" | "std/set::isEmpty" => 1,
+        | "std/set::toArray" | "std/set::toList" | "std/set::size" | "std/set::isEmpty" => 1,
         "std/map::singleton"
         | "std/map::get"
         | "std/map::containsKey"
         | "std/map::remove"
+        | "std/map::filter"
+        | "std/map::mapValues"
         | "std/set::contains"
         | "std/set::insert"
-        | "std/set::remove" => 2,
-        "std/map::insert" => 3,
+        | "std/set::remove"
+        | "std/set::filter"
+        | "std/set::map"
+        | "std/set::union"
+        | "std/set::intersection"
+        | "std/set::difference"
+        | "std/set::isSubsetOf" => 2,
+        "std/map::insert" | "std/map::upsert" | "std/map::mergeWith" | "std/map::mapKeysWith" => 3,
         _ => return None,
     })
 }
@@ -114,6 +122,38 @@ impl Backend<'_> {
             arguments: vec![],
         };
         let value = slots.get(1).unwrap_or(&unit);
+        let dictionary_key = if name == "std/map::mapKeysWith" {
+            let CoreType::Named {
+                name: output_owner,
+                arguments: output_slots,
+            } = result
+            else {
+                return Err("Rust backend: Map mapKeysWith requires a canonical result Map".into());
+            };
+            if output_owner != "std/map::Map"
+                || output_slots.len() != 2
+                || output_slots[1] != *value
+            {
+                return Err(
+                    "Rust backend: Map mapKeysWith result value/owner/arity mismatch".into(),
+                );
+            }
+            &output_slots[0]
+        } else if name == "std/set::map" {
+            let CoreType::Named {
+                name: output_owner,
+                arguments: output_slots,
+            } = result
+            else {
+                return Err("Rust backend: Set map requires a canonical result Set".into());
+            };
+            if output_owner != "std/set::Set" || output_slots.len() != 1 {
+                return Err("Rust backend: Set map result owner/arity mismatch".into());
+            }
+            &output_slots[0]
+        } else {
+            key
+        };
         let named = |name: &str, arguments| CoreType::Named {
             name: format!("std/prelude::{name}"),
             arguments,
@@ -127,6 +167,68 @@ impl Backend<'_> {
                 true,
             ),
             "std/map::containsKey" => (vec![key.clone(), map.clone()], named("Bool", vec![]), true),
+            "std/map::upsert" => (
+                vec![
+                    key.clone(),
+                    function(&[named("Maybe", vec![value.clone()])], value.clone()),
+                    map.clone(),
+                ],
+                map.clone(),
+                true,
+            ),
+            "std/map::mergeWith" => (
+                vec![
+                    function(&[value.clone(), value.clone()], value.clone()),
+                    map.clone(),
+                    map.clone(),
+                ],
+                map.clone(),
+                true,
+            ),
+            "std/map::mapKeysWith" => (
+                vec![
+                    function(&[value.clone(), value.clone()], value.clone()),
+                    function(&[key.clone()], dictionary_key.clone()),
+                    map.clone(),
+                ],
+                result.clone(),
+                true,
+            ),
+            "std/map::filter" => (
+                vec![
+                    function(&[key.clone(), value.clone()], named("Bool", vec![])),
+                    map.clone(),
+                ],
+                map.clone(),
+                false,
+            ),
+            "std/map::mapValues" => {
+                let CoreType::Named {
+                    name: output_owner,
+                    arguments: output_slots,
+                } = result
+                else {
+                    return Err(
+                        "Rust backend: Map mapValues requires a canonical result Map".into(),
+                    );
+                };
+                if output_owner != "std/map::Map"
+                    || output_slots.len() != 2
+                    || output_slots[0] != *key
+                {
+                    return Err(
+                        "Rust backend: Map mapValues result key/owner/arity mismatch".into(),
+                    );
+                }
+                (
+                    vec![
+                        function(&[value.clone()], output_slots[1].clone()),
+                        map.clone(),
+                    ],
+                    result.clone(),
+                    false,
+                )
+            }
             "std/map::entries" => (
                 vec![map.clone()],
                 named(
@@ -144,6 +246,24 @@ impl Backend<'_> {
                 (vec![key.clone(), map.clone()], map.clone(), true)
             }
             "std/set::toArray" => (vec![map.clone()], named("Array", vec![key.clone()]), false),
+            "std/set::toList" => (vec![map.clone()], named("List", vec![key.clone()]), false),
+            "std/set::filter" => (
+                vec![function(&[key.clone()], named("Bool", vec![])), map.clone()],
+                map.clone(),
+                false,
+            ),
+            "std/set::map" => (
+                vec![
+                    function(&[key.clone()], dictionary_key.clone()),
+                    map.clone(),
+                ],
+                result.clone(),
+                true,
+            ),
+            "std/set::union" | "std/set::intersection" | "std/set::difference" => {
+                (vec![map.clone(), map.clone()], map.clone(), true)
+            }
+            "std/set::isSubsetOf" => (vec![map.clone(), map.clone()], named("Bool", vec![]), true),
             "std/set::size" => (vec![map.clone()], named("Int", vec![]), false),
             "std/set::isEmpty" => (vec![map.clone()], named("Bool", vec![]), false),
             "std/map::insert" => (
@@ -174,7 +294,9 @@ impl Backend<'_> {
             self.validate_eq_evidence(eq, scope)?;
             self.validate_hash_evidence(hash, scope)?;
             for selected in [eq, hash] {
-                if self.local_canonical_type(&selected.constraint.arguments[0], scope)? != *key {
+                if self.local_canonical_type(&selected.constraint.arguments[0], scope)?
+                    != *dictionary_key
+                {
                     return Err("Rust backend: collection key dictionary argument mismatch".into());
                 }
             }

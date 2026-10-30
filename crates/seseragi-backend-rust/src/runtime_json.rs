@@ -452,7 +452,14 @@ fn native_json_operation(name: &'static str, mut arguments: Vec<V>) -> V {
         | "std/json::JsonField"
         | "std/json::JsonIndex"
         | "std/json::InvalidJsonSyntax"
-        | "std/json::DuplicateJsonField" => V::adt(name, arguments.remove(0)),
+        | "std/json::DuplicateJsonField"
+        | "std/json::ExpectedJsonType"
+        | "std/json::MissingJsonField"
+        | "std/json::UnknownJsonField"
+        | "std/json::UnknownJsonTag"
+        | "std/json::InvalidJsonValue"
+        | "std/json::JsonSyntaxFailure"
+        | "std/json::JsonDecodeFailure" => V::adt(name, arguments.remove(0)),
         _ => panic!("Rust ABI: unsupported JSON operation"),
     }
 }

@@ -1,0 +1,13 @@
+import * as measures from "measures"
+import * as floats from "std/float"
+
+fn apply<A, B> operation: (A -> B) -> value: A -> B = operation value
+
+pub effect fn main = do {
+  let length: measures.Measure -> measures.Measure = measures.distance (measures.make 3.0)
+  let angle: measures.Measure -> measures.Measure = measures.angle (measures.make (-0.0))
+  println (measures.format (apply length (measures.make 4.0)))
+  println (measures.format (angle (measures.make 1.0)))
+  println (measures.format (measures.turn ()))
+  println (show (floats.isNegativeZero (-0.0)))
+}

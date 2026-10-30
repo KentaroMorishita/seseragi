@@ -1,0 +1,21 @@
+import * as cells from "cells"
+import * as sets from "std/set"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn number value: Maybe<cells.Output> -> Int = match value { Nothing -> -1; Just output -> cells.read output }
+
+pub effect fn main = {
+  let source = cells.source ()
+  let transform: (cells.Input -> cells.Output) -> sets.Set<cells.Input> -> sets.Set<cells.Output> = cells.transform
+  let saved = transform cells.key
+  let mapped = saved source
+  let again = sets.map cells.key source
+  text.join "|" [
+    show (number (arrays.get 0 (sets.toArray mapped))),
+    show (number (arrays.get 1 (sets.toArray mapped))),
+    show (number (arrays.get 0 (sets.toArray again))),
+    show (number (arrays.get 1 (sets.toArray again))),
+    show (sets.size source == 3), show (sets.size mapped == 2)
+  ] |> println
+}

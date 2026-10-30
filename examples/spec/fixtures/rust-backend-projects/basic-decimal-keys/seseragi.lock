@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/decimal-keys@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/decimal-key-cells@0.0.0#path:vendor/cells"
+name = "fixture/decimal-key-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:aade85935d4ab49fe693d97c48b22aae0f20aa25faa9bb4e9ea8362f0065d6de"
+content_digest = "sha256:eacef6b20f613c7bff83ca0ae0a0398029e00f0744774213011ba9f7c3a9a123"
+dependencies = []
+
+[[packages]]
+id = "fixture/decimal-keys@0.0.0#workspace:."
+name = "fixture/decimal-keys"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:061d39f14eb668fc4490c7754ecdf3758ab89f59994995023cdca669f2bc7a8c"
+content_digest = "sha256:712595791ef23fd7d156c52b38534c6b9d499d5faf75da40e2d037db69e14b26"
+dependencies = [
+  { import = "cells", package = "fixture/decimal-key-cells@0.0.0#path:vendor/cells" },
+]

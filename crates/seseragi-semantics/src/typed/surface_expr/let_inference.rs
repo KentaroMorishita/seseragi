@@ -352,12 +352,17 @@ pub(super) fn infer_call_arguments(
         while let SurfaceExpr::Grouped { value, .. } = argument {
             argument = value;
         }
-        matches!(argument, SurfaceExpr::Lambda { .. })
-            || context
-                .target(argument.span())
-                .or_else(|| context.operator_target(argument.span()))
-                .and_then(|target| context.callable_value(target))
-                .is_some_and(|callable| !callable.type_parameters.is_empty())
+        // Collection siblings share inference variables too: an empty inner
+        // literal needs the type learned from later siblings before the
+        // ordinary checker commits to its left-to-right expectations.
+        matches!(
+            argument,
+            SurfaceExpr::Lambda { .. } | SurfaceExpr::Array { .. } | SurfaceExpr::List { .. }
+        ) || context
+            .target(argument.span())
+            .or_else(|| context.operator_target(argument.span()))
+            .and_then(|target| context.callable_value(target))
+            .is_some_and(|callable| !callable.type_parameters.is_empty())
     }) {
         return None;
     }
@@ -756,15 +761,30 @@ impl Inference<'_, '_> {
                     let value = self.expression(value, environment)?;
                     self.unify(&element, &value)?;
                 }
-                Some(TypedType::Named {
-                    name: if matches!(expression, SurfaceExpr::Array { .. }) {
-                        "Array"
-                    } else {
-                        "List"
-                    }
-                    .to_owned(),
-                    arguments: vec![self.resolve(&element)],
-                })
+                let name = if matches!(expression, SurfaceExpr::Array { .. }) {
+                    "Array"
+                } else {
+                    "List"
+                }
+                .to_owned();
+                let arguments = vec![self.resolve(&element)];
+                let value = SemanticValueType {
+                    type_ref: TypedType::Named {
+                        name: name.clone(),
+                        arguments: arguments.clone(),
+                    },
+                    key: SemanticTypeKey::NamedGeneric {
+                        name,
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| self.context.semantic_value_from_typed_type(argument))
+                            .collect(),
+                    },
+                };
+                // A literal already proves its collection owner. Retain that
+                // identity before the solver drops its semantic key, as for
+                // captured values in inference_environment.
+                Some(self.context.evidence_type(&value))
             }
             SurfaceExpr::If {
                 condition,

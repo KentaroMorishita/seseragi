@@ -1,0 +1,45 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as maps from "std/map"
+
+fn keep<A> fallback: A -> current: Maybe<A> -> A = match current { Nothing -> fallback; Just value -> value }
+fn resolve<A> left: A -> _right: A -> A = left
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (\_: Unit -> effects.succeed 0)
+  let callback = \_: Unit -> do {
+    _ <- refs.get saved
+    effects.succeed 42
+  }
+  refs.set callback saved
+  let stored = maps.singleton "callback" callback |> maps.insert "other" callback
+  let right = maps.singleton "callback" callback
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    let updated = maps.upsert "callback" (keep callback) stored
+    let merged = maps.mergeWith resolve right updated
+    let rekeyed = maps.mapKeysWith resolve (\_key: String -> 1) merged
+    let selected = match maps.get 1 rekeyed { Nothing -> callback; Just call -> call }
+    refs.set selected saved
+    answer <- selected ()
+    say (show answer)
+    effects.succeed answer
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    first <- cold
+    second <- cold
+    say (show (first + second))
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

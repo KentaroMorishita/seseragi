@@ -52,6 +52,13 @@ fn native_sequence_operation(name: &str, arguments: Vec<V>) -> V {
     let nothing = || V::adt("std/prelude::Nothing", V::Unit);
     let just = |value| V::adt("std/prelude::Just", value);
     match operation {
+        "concat" => {
+            let mut output = Vec::new();
+            for inner in native_sequence_iter(input, list) {
+                output.extend(native_sequence_iter(inner, list).cloned());
+            }
+            native_sequence_collect(output, list)
+        }
         "last" => {
             let value = if list {
                 native_sequence_iter(input, true).last()
@@ -199,6 +206,60 @@ mod sequence_tests {
     }
     fn name(list: bool, operation: &str) -> String {
         format!("std/{}::{operation}", if list { "list" } else { "array" })
+    }
+
+    #[test]
+    fn concat_flattens_in_order_without_retaining_outer_or_inner_containers() {
+        enable_cycle_collection();
+        for list in [false, true] {
+            let cell = V::reference(V::Int(40));
+            let callback = V::fun(vec![cell.clone()], |captures, value| {
+                let (V::Int(captured), V::Int(value)) = (captures[0].read_reference(), value)
+                else {
+                    panic!()
+                };
+                V::Int(captured + value)
+            });
+            let inner = native_sequence_collect(vec![callback.clone()], list);
+            let inner_id = inner.node_id().unwrap();
+            let input = native_sequence_collect(
+                vec![seq(list, &[]), inner.clone(), seq(list, &[]), inner.clone()],
+                list,
+            );
+            let input_id = input.node_id().unwrap();
+            let output = native_sequence_operation(&name(list, "concat"), vec![input.clone()]);
+            drop((input, inner, callback, cell));
+            collect_cycles().unwrap();
+            assert!(!NODES.with(|nodes| nodes.borrow().contains_key(&input_id)));
+            assert!(!NODES.with(|nodes| nodes.borrow().contains_key(&inner_id)));
+            let calls: Vec<_> = native_sequence_iter(&output, list).collect();
+            assert_eq!(calls.len(), 2);
+            assert_eq!(calls[0].apply(V::Int(2)).render(), "42");
+            assert_eq!(calls[1].apply(V::Int(3)).render(), "43");
+            drop(output);
+            collect_cycles().unwrap();
+            assert_eq!(LIVE.with(Cell::get), 0);
+
+            let chunks = (0..10_000)
+                .map(|index| seq(list, &[index, -index]))
+                .collect();
+            let flattened = native_sequence_operation(
+                &name(list, "concat"),
+                vec![native_sequence_collect(chunks, list)],
+            );
+            let expected: Vec<_> = (0..10_000).flat_map(|index| [index, -index]).collect();
+            assert_eq!(values(&flattened, list), expected);
+            drop(flattened);
+            for input in [
+                seq(list, &[]),
+                native_sequence_collect(vec![seq(list, &[])], list),
+            ] {
+                let empty = native_sequence_operation(&name(list, "concat"), vec![input]);
+                assert!(values(&empty, list).is_empty());
+            }
+            collect_cycles().unwrap();
+            assert_eq!(LIVE.with(Cell::get), 0);
+        }
     }
 
     #[test]

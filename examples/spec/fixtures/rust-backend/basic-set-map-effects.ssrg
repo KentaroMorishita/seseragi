@@ -1,0 +1,48 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as sets from "std/set"
+import * as arrays from "std/array"
+
+type Item<A> = | Item { key: Int, value: A }
+instance<A> Eq<Item<A>> { fn eq left: Item<A> -> right: Item<A> -> Bool = match left { Item a -> match right { Item b -> a.key == b.key } } }
+instance<A> Hash<Item<A>> { fn hash _value: Item<A> -> Int = 0 }
+fn item<A> value: A -> key: Int -> Item<A> = Item ({ key: key % 2, value: value })
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (\_: Unit -> effects.succeed 0)
+  let callback = \_: Unit -> do {
+    _ <- refs.get saved
+    effects.succeed 42
+  }
+  refs.set callback saved
+  let source = sets.singleton 1 |> sets.insert 3 |> sets.insert 2
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    let mapped = sets.map (item callback) source
+    let selected = match arrays.get 0 (sets.toArray mapped) {
+      Nothing -> callback
+      Just (Item entry) -> entry.value
+    }
+    refs.set selected saved
+    answer <- selected ()
+    say (show answer)
+    effects.succeed answer
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    first <- cold
+    second <- cold
+    say (show (first + second))
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

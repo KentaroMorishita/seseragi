@@ -11,7 +11,7 @@ fn operation(name: &str) -> Option<(&str, usize)> {
     Some((
         name,
         match name {
-            "last" | "init" | "unzip" => 1,
+            "last" | "init" | "unzip" | "concat" => 1,
             "findIndex" | "takeWhile" | "dropWhile" | "zip" | "chunksOf" | "windows" => 2,
             "zipWith" | "reduceRight" => 3,
             _ => return None,
@@ -105,6 +105,10 @@ impl Backend<'_> {
                 }
                 "last" => (vec![collection(a.clone())], maybe(a)),
                 "init" => (vec![collection(a.clone())], maybe(collection(a))),
+                "concat" => {
+                    let inner = element(&a, owner)?.clone();
+                    (vec![collection(a)], collection(inner))
+                }
                 "zip" => {
                     let b = element(&parameters[0], owner)?.clone();
                     (
