@@ -312,6 +312,59 @@ fn basic_sequence_array_saved_and_generic_operations_match_original_strict_ts_an
 }
 
 #[test]
+fn basic_concat_keeps_order_empty_inputs_generic_saved_functions_and_original_strict_ts() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-concat.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-concat.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_concat_path_package_keeps_opaque_elements_imported_generic_functions_and_captures() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-concat"),
+        &[Case::success(b"40|2|41|3|42\n")],
+    );
+}
+
+#[test]
+fn basic_concat_keeps_callbacks_cold_and_releases_ref_cycles_after_typed_failure() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-concat-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-concat-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_concat_returned_callback_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-concat-effects.ssrg");
+    assert_eq!(original.matches("effects.succeed 42").count(), 1);
+    let path = scratch.0.join("concat-callback-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace("effects.succeed 42", "effects.succeed (42 / 0)"),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "callback-defect",
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
 fn basic_sequence_list_saved_and_generic_operations_match_original_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-list-sequence.ssrg"),

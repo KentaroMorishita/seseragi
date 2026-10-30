@@ -6,6 +6,14 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Array/Listのconcatはbackendの`--test basic_sequence`、runtimeの`sequence_tests`、
+CLIの`--test basic_standard basic_concat_`で確認します。内外両方のcanonical collectionと
+要素型・kind・保存generic関数を照合し、順序・空入力・一段だけの連結を保ちます。
+通常2 module packageのopaque要素とcapture、元raw TS両profile strictとfresh Bun/Node/native、
+cold replay・返されたcallback内Defect・Failure・finalizer/Ref cycle/root0を確認します。
+結果は元の外側/内側containerを隠れて保持せず、新program WASMは未使用の保存関数でも
+拒否します。正規SDKと全体gateは最終batchへ集約します。
+
 tagged ADTの派生JSON codecはbackendの`--test basic_json_derived_adts`、runtimeの
 `json_derived_adt_tests`、CLIの`--test basic_standard basic_json_derived_adts_`で確認します。
 payloadなしとUnit payload、generic/recursive、opaque/importedと保存methodを区別します。

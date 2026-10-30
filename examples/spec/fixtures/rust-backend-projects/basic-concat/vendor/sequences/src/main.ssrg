@@ -1,0 +1,18 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+pub opaque newtype Cell = Int
+pub fn cell value: Int -> Cell = Cell value
+pub fn read value: Cell -> Int = match value { Cell number -> number }
+pub fn flatten<A> values: Array<Array<A>> -> Array<A> = {
+  let saved: Array<Array<A>> -> Array<A> = arrays.concat
+  saved values
+}
+pub fn flattenList<A> values: List<List<A>> -> List<A> = {
+  let saved: List<List<A>> -> List<A> = lists.concat
+  saved values
+}
+pub fn keep<A> values: Array<Array<A>> -> Unit -> Array<A> = {
+  let flattened = flatten values
+  \_: Unit -> flattened
+}

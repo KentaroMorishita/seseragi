@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-concat@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-concat@0.0.0#workspace:."
+name = "fixture/basic-concat"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:c15aa265d44352d9ece40bd24d2d5395981eae998bf22f9b59061b01ddec0f4b"
+content_digest = "sha256:1aa2a5ee8c0416e74c9975a66bca9c6dfbdc0a867555d181d451e391d13fcac2"
+dependencies = [
+  { import = "sequences", package = "fixture/concat-cells@0.0.0#path:vendor/sequences" },
+]
+
+[[packages]]
+id = "fixture/concat-cells@0.0.0#path:vendor/sequences"
+name = "fixture/concat-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/sequences"
+manifest_digest = "sha256:fe21956dd7c791d71be717808444d2af7c91d8907b48305fdafd03ac208fe86e"
+content_digest = "sha256:801033611283aa7626e5585e1ad2e2a591b96f1e868215754a98b4cd59bf9936"
+dependencies = []

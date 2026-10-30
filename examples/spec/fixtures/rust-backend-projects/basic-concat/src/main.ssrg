@@ -1,0 +1,25 @@
+import * as sequences from "sequences"
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as text from "std/text"
+
+fn read value: Maybe<sequences.Cell> -> Int = match value {
+  Nothing -> -1
+  Just cell -> sequences.read cell
+}
+
+pub effect fn main = {
+  let saved: Array<Array<sequences.Cell>> -> Array<sequences.Cell> = sequences.flatten
+  let cells = saved [[], [sequences.cell 40, sequences.cell 2], []]
+  let list = sequences.flattenList<sequences.Cell> `[`[], `[sequences.cell 41], `[sequences.cell 3]]
+  let captured = 40
+  let reader = sequences.keep<Int -> Int> [[], [\value: Int -> value + captured], []]
+  let answer = match arrays.get 0 (reader ()) {
+    Nothing -> -1
+    Just call -> call 2
+  }
+  println (text.join "|" [
+    show (read (arrays.get 0 cells)), show (read (arrays.get 1 cells)),
+    show (read (lists.get 0 list)), show (read (lists.last list)), show answer
+  ])
+}
