@@ -1063,6 +1063,49 @@ fn basic_int_radix_path_package_keeps_opaque_values_and_imported_partial_functio
 }
 
 #[test]
+fn basic_int_checked_keeps_exact_arithmetic_errors_and_saved_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-checked.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-checked.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_checked_keeps_cold_captured_functions_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-checked-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-int-checked-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_int_checked_clamp_defect_keeps_partial_stages_finalizer_and_root_zero() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-int-clamp-defect.ssrg"),
+        &[Case {
+            name: "clamp-defect",
+            stdout: b"created\nacquired\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Seseragi Int clamp lower bound exceeds upper bound",
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_int_checked_path_package_keeps_opaque_values_and_imported_error_owners() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-int-checked"),
+        &[Case::success(b"overflow\n42\npower overflow\n")],
+    );
+}
+
+#[test]
 fn basic_decimal_keeps_captured_values_cold_and_releases_after_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg"),

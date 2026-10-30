@@ -6,6 +6,13 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native Intのchecked/saturating演算とhelperはbackendの`--test int_checked --test int_text
+--test int_parse`、runtimeの`int_checked_tests`、CLIの`basic_int_checked_`で確認します。
+safe Int範囲の正確な演算、右引数先行の順序、巨大指数でも有界なpower、typedな除算/
+power errorとclampのDefectを保ちます。保存/部分適用・opaque 2module・元raw TS両profile
+strict・fresh Bun/Node/native・cold/Failure/finalizer/root0、位置付き偽造拒否と未使用program
+WASM拒否を確認します。最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
+
 native Intの基数変換・format・上下限はbackendの`--test int_text --test int_parse`、
 runtimeの`int_parse_tests`、CLIの`--test basic_standard basic_int_radix_`で確認します。
 radix 2〜36、safe Int範囲、符号・leading zero・大小文字、UTF-8 byte位置と最初の失敗を

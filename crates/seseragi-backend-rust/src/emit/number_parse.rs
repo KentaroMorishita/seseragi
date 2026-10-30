@@ -6,6 +6,8 @@ pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {
     matches!(
         name,
         "std/int::IntParseError"
+            | "std/int::IntDivisionError"
+            | "std/int::IntPowerError"
             | "std/float::FloatParseError"
             | "std/float::FloatConversionError"
             | "std/number::RoundingMode"
@@ -24,7 +26,37 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     };
     let error = named("std/int::IntParseError");
     let float_error = named("std/float::FloatParseError");
+    let int = named("std/prelude::Int");
+    let either_int = |error: &str| CoreType::Named {
+        name: "std/prelude::Either".into(),
+        arguments: vec![named(error), int.clone()],
+    };
     Some(match name {
+        "std/int::checkedAdd" | "std/int::checkedSubtract" | "std/int::checkedMultiply" => (
+            vec![int.clone(), int.clone()],
+            CoreType::Named {
+                name: "std/prelude::Maybe".into(),
+                arguments: vec![int],
+            },
+        ),
+        "std/int::saturatingAdd"
+        | "std/int::saturatingSubtract"
+        | "std/int::saturatingMultiply"
+        | "std/int::minimum"
+        | "std/int::maximum" => (vec![int.clone(), int.clone()], int),
+        "std/int::checkedDivide" | "std/int::checkedRemainder" => (
+            vec![int.clone(), int.clone()],
+            either_int("std/int::IntDivisionError"),
+        ),
+        "std/int::checkedPower" | "std/int::saturatingPower" => (
+            vec![int.clone(), int.clone()],
+            either_int("std/int::IntPowerError"),
+        ),
+        "std/int::abs" | "std/int::sign" => (vec![int.clone()], int),
+        "std/int::clamp" => (vec![int.clone(), int.clone(), int.clone()], int),
+        "std/int::IntDivisionByZero" => (vec![], named("std/int::IntDivisionError")),
+        "std/int::IntPowerOverflow" => (vec![], named("std/int::IntPowerError")),
+        "std/int::NegativeIntExponent" => (vec![int], named("std/int::IntPowerError")),
         "std/float::toInt" => (
             vec![
                 named("std/number::RoundingMode"),
@@ -124,6 +156,24 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
 // Called only after the exact canonical signature above was admitted.
 fn parse_capability(name: &str) -> &'static str {
     match name {
+        "std/int::checkedAdd"
+        | "std/int::checkedSubtract"
+        | "std/int::checkedMultiply"
+        | "std/int::saturatingAdd"
+        | "std/int::saturatingSubtract"
+        | "std/int::saturatingMultiply"
+        | "std/int::minimum"
+        | "std/int::maximum"
+        | "std/int::checkedDivide"
+        | "std/int::checkedRemainder"
+        | "std/int::checkedPower"
+        | "std/int::saturatingPower"
+        | "std/int::abs"
+        | "std/int::clamp"
+        | "std/int::sign"
+        | "std/int::IntDivisionByZero"
+        | "std/int::IntPowerOverflow"
+        | "std/int::NegativeIntExponent" => "int-checked",
         "std/int::minValue"
         | "std/int::maxValue"
         | "std/int::parseRadix"
@@ -304,9 +354,10 @@ impl Backend<'_> {
         if self.program_wasm_library && parse_capability(name) == "float-conversion" {
             return Err("Rust backend: Float conversion is not admitted in program WASM".into());
         }
-        if self.program_wasm_library && parse_capability(name) == "int-text" {
+        if self.program_wasm_library && matches!(parse_capability(name), "int-text" | "int-checked")
+        {
             return Err(
-                "Rust backend: Int text operations are not admitted in program WASM".into(),
+                "Rust backend: Int standard operations are not admitted in program WASM".into(),
             );
         }
         if !evidence.is_empty() {
@@ -345,9 +396,11 @@ impl Backend<'_> {
         if self.program_wasm_library && parse_capability(callee) == "float-conversion" {
             return Err("Rust backend: Float conversion is not admitted in program WASM".into());
         }
-        if self.program_wasm_library && parse_capability(callee) == "int-text" {
+        if self.program_wasm_library
+            && matches!(parse_capability(callee), "int-text" | "int-checked")
+        {
             return Err(
-                "Rust backend: Int text operations are not admitted in program WASM".into(),
+                "Rust backend: Int standard operations are not admitted in program WASM".into(),
             );
         }
         if arguments.len() > parameters.len()

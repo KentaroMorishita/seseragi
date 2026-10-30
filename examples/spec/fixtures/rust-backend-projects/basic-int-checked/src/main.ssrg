@@ -1,0 +1,13 @@
+import * as numbers from "numbers"
+import * as ints from "std/int"
+
+fn apply<A, B> operation: (A -> B) -> value: A -> B = operation value
+
+pub effect fn main = do {
+  let add: numbers.Value -> Maybe<numbers.Value> = numbers.add 1
+  let clamp: numbers.Value -> numbers.Value = numbers.clamp 0 42
+  let power: numbers.Value -> Either<ints.IntPowerError, numbers.Value> = numbers.power 53
+  println (match apply add (numbers.make (ints.maxValue ())) { Nothing -> "overflow"; Just value -> numbers.format value })
+  println (numbers.format (clamp (numbers.make 99)))
+  println (match power (numbers.make 2) { Left error -> match error { ints.IntPowerOverflow -> "power overflow"; ints.NegativeIntExponent value -> ints.format value }; Right value -> numbers.format value })
+}

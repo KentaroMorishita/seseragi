@@ -1,0 +1,50 @@
+import * as ints from "std/int"
+
+fn optional value: Maybe<Int> -> String = match value { Nothing -> "nothing"; Just n -> ints.format n }
+fn division result: Either<ints.IntDivisionError, Int> -> String = match result {
+  Left ints.IntDivisionByZero -> "zero"
+  Right value -> ints.format value
+}
+fn power result: Either<ints.IntPowerError, Int> -> String = match result {
+  Left error -> match error { ints.NegativeIntExponent n -> "negative:" + ints.format n; ints.IntPowerOverflow -> "overflow" }
+  Right value -> ints.format value
+}
+fn multiply -> (Int -> Int -> Maybe<Int>) = ints.checkedMultiply
+fn apply<A, B> operation: (A -> B) -> value: A -> B = operation value
+
+pub effect fn main = do {
+  let max = ints.maxValue ()
+  let min = ints.minValue ()
+  let add = ints.checkedAdd 1
+  let multiply = multiply ()
+  println (optional (apply add max))
+  println (optional (add (-1)))
+  println (optional (ints.checkedSubtract 2 10))
+  println (optional (multiply 3 7))
+  println (ints.format (ints.saturatingAdd 1 max))
+  println (ints.format (ints.saturatingSubtract 1 min))
+  println (ints.format (ints.saturatingMultiply min 2))
+  println (ints.format (ints.minimum 3 (-4)))
+  println (ints.format (ints.maximum 3 (-4)))
+  println (division (ints.checkedDivide (-3) 10))
+  println (division (ints.checkedRemainder 3 (-10)))
+  println (division (ints.checkedDivide 0 42))
+  println (division (ints.checkedRemainder 0 42))
+  println (power (ints.checkedPower 52 2))
+  println (power (ints.checkedPower 53 2))
+  println (power (ints.checkedPower (-1) 2))
+  println (power (ints.saturatingPower 53 (-2)))
+  println (power (ints.saturatingPower 54 (-2)))
+  println (power (ints.saturatingPower (-2) 2))
+  println (power (ints.checkedPower max (-1)))
+  println (power (ints.saturatingPower max 0))
+  println (power (ints.checkedPower 0 0))
+  println (ints.format (ints.abs min))
+  println (ints.format (ints.clamp (-2) 3 10))
+  println (ints.format (ints.sign min))
+  println (ints.format (ints.sign 0))
+  println (ints.format (ints.sign max))
+  println (division (Left ints.IntDivisionByZero))
+  println (power (Left ints.IntPowerOverflow))
+  println (power (Left (ints.NegativeIntExponent (-3))))
+}

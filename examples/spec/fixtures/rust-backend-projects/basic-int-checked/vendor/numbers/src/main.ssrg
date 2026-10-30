@@ -1,0 +1,17 @@
+import * as ints from "std/int"
+
+pub opaque newtype Value = Int
+pub fn make value: Int -> Value = Value value
+pub fn format wrapped: Value -> String = match wrapped { Value value -> ints.format value }
+pub fn add right: Int -> (Value -> Maybe<Value>) = {
+  let operation = ints.checkedAdd right
+  \wrapped -> match wrapped { Value value -> match operation value { Nothing -> Nothing; Just n -> Just (Value n) } }
+}
+pub fn clamp lower: Int -> upper: Int -> (Value -> Value) = {
+  let operation = ints.clamp lower upper
+  \wrapped -> match wrapped { Value value -> Value (operation value) }
+}
+pub fn power exponent: Int -> (Value -> Either<ints.IntPowerError, Value>) = {
+  let operation = ints.checkedPower exponent
+  \wrapped -> match wrapped { Value value -> match operation value { Left error -> Left error; Right n -> Right (Value n) } }
+}

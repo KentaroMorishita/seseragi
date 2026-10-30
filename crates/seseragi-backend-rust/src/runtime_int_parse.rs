@@ -85,6 +85,9 @@ fn native_format_int(value: i64, radix: i64) -> String {
 }
 
 fn native_int_parse_operation(name: &str, arguments: Vec<V>) -> V {
+    if let Some(value) = native_int_checked_operation(name, &arguments) {
+        return value;
+    }
     match (name, arguments.as_slice()) {
         ("std/int::parse", [text]) => native_decimal_int(native_text(text)),
         ("std/int::parseRadix", [V::Int(radix), text]) => {
