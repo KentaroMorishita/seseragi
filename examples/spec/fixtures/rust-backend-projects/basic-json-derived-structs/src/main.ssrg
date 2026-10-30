@@ -1,0 +1,13 @@
+import * as cells from "cells"
+import * as json from "std/json"
+pub fn probe -> String = {
+  let value = cells.wrap<List<Maybe<Int>>> `[Just 1,Nothing,Just 2]
+  let cell = cells.make value
+  let read: cells.Cell -> Either<json.DecodeError, cells.Envelope<List<Maybe<Int>>>> = cells.read
+  let render = cells.reader value
+  let restored = match read cell { Left _ -> "invalid"; Right item -> json.encodeString item }
+  let parsed = cells.decode<Array<cells.Envelope<String>>> "[{\"z\":\"雪🙂\",\"a\":{\"value\":7}}]"
+  let rows = match parsed { Left _ -> "invalid"; Right item -> json.encodeString item }
+  render () + ":" + restored + ":" + rows
+}
+pub effect fn main = println (probe ())

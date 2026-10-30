@@ -23,7 +23,7 @@ fn function(parameter: CoreType, result: CoreType) -> CoreType {
 }
 
 impl Backend<'_> {
-    fn json_codec_target(&self) -> Result<()> {
+    pub(super) fn json_codec_target(&self) -> Result<()> {
         if self.program_wasm_library {
             return Err(
                 "program WASM: native JSON codecs require a target-specific ABI proof".into(),
@@ -168,7 +168,7 @@ impl Backend<'_> {
         )
     }
 
-    fn json_codec_signature(
+    pub(super) fn json_codec_signature(
         &self,
         name: &str,
         evidence: &[CoreCallEvidence],

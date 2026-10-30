@@ -6,6 +6,17 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+named structの派生JSON codecはbackendの`--test basic_json_derived_structs`、CLIの
+`--test basic_standard basic_json_derived_structs_`で確認します。declaration順・generic/recursive
+struct・保存method・opaque/importedの通常2 module package、unknown先行拒否とnested path、
+cold/Failure/Defect/finalizer/Ref cycle/root0、128 frameのhost limitを元raw TS strictと
+fresh Bun/Node/nativeで比較します。短いderived identityはcanonicalなnominal headから
+検証し、一般のuser辞書や同名traitへの信頼を広げません。新program WASMは拒否します。
+struct内のrecord型と後続fieldはsyntaxの`nested_record_types_keep_their_struct_fields`、
+driverの`--test struct_construction_kind`、CLIの`nested_record_struct_fields_`で確認します。
+#1012の元sourceとUTF-8範囲・型errorを保ち、shared parser修復の正規WASMと全体gateは
+最終batchで行います。
+
 JSON recordのprototype名のfieldはPlaygroundの`json-record-runtime.test.ts`とCLIの
 `--test basic_standard json_record_prototype_field_`で確認します。structural/derived decoderが
 own data propertyを作り、通常objectのprototype、optional不在、unknown先行拒否を保持します。

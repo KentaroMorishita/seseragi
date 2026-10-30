@@ -138,12 +138,11 @@ impl Backend<'_> {
                         .iter()
                         .find(|item| &item.identity == identity)
                         .ok_or("Rust backend: unknown local callable dictionary")?;
-                    if declared
-                        .trait_identity
-                        .as_ref()
-                        .is_none_or(|trait_id| !identity.starts_with(&format!("{trait_id}<")))
-                        || (!label_matches(declared, &selected.constraint.name)
-                            && instance.trait_name != selected.constraint.name)
+                    if declared.trait_identity.as_ref().is_none_or(|trait_id| {
+                        !identity.starts_with(&format!("{trait_id}<"))
+                            && !self.json_derived_struct_identity(instance, trait_id)
+                    }) || (!label_matches(declared, &selected.constraint.name)
+                        && instance.trait_name != selected.constraint.name)
                         || instance.type_parameters.len() != type_arguments.len()
                         || instance.constraints.len() != evidence_arguments.len()
                     {

@@ -57,6 +57,22 @@ impl Backend<'_> {
             .find(|i| &i.identity == identity)
             .ok_or("Rust backend: unknown bare method instance")?;
         let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            if matches!(
+                instance.implementation,
+                CoreInstanceImplementation::DerivedJson { .. }
+            ) {
+                let operation = match (dispatch.trait_identity.as_str(), dispatch.method.as_str()) {
+                    ("std/prelude::JsonEncode", "encodeJson") => {
+                        "std/prelude::JsonEncode::encodeJson"
+                    }
+                    ("std/prelude::JsonDecode", "decodeJson") => {
+                        "std/prelude::JsonDecode::decodeJson"
+                    }
+                    _ => return Err("Rust backend: unproven derived JSON method".into()),
+                };
+                self.json_codec_signature(operation, evidence, type_ref, scope)?;
+                return Ok(());
+            }
             return if dispatch.trait_identity == "std/prelude::Show" && dispatch.method == "show" {
                 Ok(())
             } else {

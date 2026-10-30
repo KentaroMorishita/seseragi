@@ -938,6 +938,141 @@ fn json_record_prototype_field_keeps_the_original_source_and_strict_cross_target
 }
 
 #[test]
+fn basic_json_derived_structs_keep_original_strict_ts_bun_node_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-derived-structs.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-derived-structs.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_derived_structs_package_keeps_saved_generic_opaque_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-derived-structs"),
+        &[Case::success("{\"z\":[1,null,2],\"a\":{\"value\":7}}:{\"z\":[1,null,2],\"a\":{\"value\":7}}:[{\"z\":\"雪🙂\",\"a\":{\"value\":7}}]\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_derived_structs_keep_cold_replay_and_unwind_typed_and_encoder_defects() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let declaration = "alias Rows = { rows: Array<(Int, List<Maybe<json.Json>>)> }";
+    assert_eq!(original.matches(declaration).count(), 1);
+    let source = original.replace(declaration, "struct Rows deriving JsonEncode, JsonDecode { rows: Array<(Int, List<Maybe<json.Json>>)> }");
+    let expected = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let prefix = expected
+        .windows(b"recovered: typed".len())
+        .position(|part| part == b"recovered: typed")
+        .unwrap();
+    for (name, changed, output, defect, message) in [
+        (
+            "cold-replay",
+            source.clone(),
+            expected.as_slice(),
+            false,
+            "",
+        ),
+        (
+            "typed-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected[..prefix],
+            true,
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            true,
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("derived-{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: if defect { 70 } else { 0 },
+                defect,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_derived_structs_recursive_codec_limit_unwinds_with_finalizer_and_root_cleanup() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declarations = "struct Deep deriving JsonEncode { next: Maybe<Deep> }\nfn deep n: Int -> Deep = Deep { next: if n <= 0 then Nothing else Just (deep (n - 1)) }\n";
+    let path = scratch.0.join("derived-host-limit.ssrg");
+    fs::write(
+        &path,
+        format!(
+            "{declarations}{}",
+            original.replace(
+                old,
+                "  let render = \\_: Unit -> json.encodeString (deep 512)"
+            )
+        ),
+    )
+    .unwrap();
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = bounded(
+        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(70), "{result:?}");
+    assert_eq!(result.stdout, b"created\nacquired\ncold\nreleased\n");
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        stderr.contains("JSON codec nesting exceeds host limits")
+            && stderr.contains("managed-live=0"),
+        "{stderr}"
+    );
+}
+
+#[test]
+fn nested_record_struct_fields_keep_the_original_cross_target_input() {
+    compare(
+        &root().join(
+            "examples/spec/fixtures/rust-backend-regressions/nested-record-struct-field.ssrg",
+        ),
+        &[Case::success(
+            "{\"first\":7,\"payload\":{\"label\":\"雪🙂\"},\"after\":true}\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
 fn basic_json_containers_keep_cold_replay_failures_finalizers_and_ref_cycles() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"),

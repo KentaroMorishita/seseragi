@@ -1,0 +1,11 @@
+import * as json from "std/json"
+struct Envelope deriving JsonEncode, JsonDecode {
+  first: Int,
+  payload: { label: String },
+  after: Bool,
+}
+pub fn probe -> String = match json.decodeString<Envelope> "{\"first\":7,\"payload\":{\"label\":\"雪🙂\"},\"after\":true}" {
+  Left _ -> "invalid"
+  Right value -> json.encodeString value
+}
+pub effect fn main = println (probe ())

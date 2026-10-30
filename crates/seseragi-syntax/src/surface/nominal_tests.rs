@@ -188,3 +188,47 @@ fn parses_struct_declarations() {
         }
     );
 }
+
+#[test]
+fn nested_record_types_keep_their_struct_fields_and_following_utf8_ranges() {
+    let source = "// 雪🙂\npub struct Envelope<A> { first: A, payload: { inner: { label: String }, note?: Bool }, after: Bool }\n";
+    let module = parse_surface_ast("nested-雪🙂.ssrg", source);
+    let SurfaceDecl::Struct { fields, span, .. } = &module.declarations[0] else {
+        panic!()
+    };
+    assert_eq!(
+        fields.iter().map(|f| f.name.as_str()).collect::<Vec<_>>(),
+        ["first", "payload", "after"]
+    );
+    for field in fields {
+        assert_eq!(
+            &source[field.name_span.start..field.name_span.end],
+            field.name
+        );
+    }
+    let TypeRef::Record {
+        closed: true,
+        fields: record_fields,
+        span: record_span,
+    } = &fields[1].type_ref
+    else {
+        panic!()
+    };
+    assert_eq!(
+        &source[record_span.start..record_span.end],
+        "{ inner: { label: String }, note?: Bool }"
+    );
+    assert_eq!(
+        record_fields
+            .iter()
+            .map(|f| f.name.as_str())
+            .collect::<Vec<_>>(),
+        ["inner", "note"]
+    );
+    assert!(record_fields[1].optional);
+    assert!(matches!(record_fields[0].type_ref, TypeRef::Record { .. }));
+    assert_eq!(
+        &source[span.start..span.end],
+        source.trim_end().trim_start_matches("// 雪🙂\n")
+    );
+}

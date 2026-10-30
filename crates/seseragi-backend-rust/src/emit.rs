@@ -35,6 +35,7 @@ mod json;
 mod json_codecs;
 mod json_container_codecs;
 mod json_decoders;
+mod json_derived_structs;
 mod lists;
 mod local;
 mod math;
@@ -245,13 +246,6 @@ fn emit_body(
                 backend.owner,
             ));
         }
-        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
-            return Err(crate::project::at(
-                "Rust backend: derived instances are unsupported",
-                &instance.origin,
-                backend.owner,
-            ));
-        };
         let mut scope = Scope::new();
         scope.type_parameters(
             instance
@@ -261,6 +255,23 @@ fn emit_body(
             &instance.identity,
         );
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
+        if let Some(dictionary) = backend
+            .json_derived_struct_dictionary(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
+                id(&instance.identity)
+            ));
+            continue;
+        }
+        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            return Err(crate::project::at(
+                "Rust backend: derived instances are unsupported",
+                &instance.origin,
+                backend.owner,
+            ));
+        };
         backend
             .validate_eq_instance(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;

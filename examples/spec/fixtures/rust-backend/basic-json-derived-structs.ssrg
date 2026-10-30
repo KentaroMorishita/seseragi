@@ -1,0 +1,64 @@
+import * as json from "std/json"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+struct Row<A> deriving JsonEncode, JsonDecode { z: A, a: Int }
+struct Link deriving JsonEncode, JsonDecode { value: Int, next: Maybe<Link> }
+struct Envelope<A> deriving JsonEncode, JsonDecode {
+  rows: Array<Row<A>>,
+  meta: { labels: List<Maybe<A>>, note?: String },
+}
+struct Names deriving JsonEncode, JsonDecode { __proto__: String, constructor: String, toString: String }
+struct Empty deriving JsonEncode, JsonDecode {}
+type Guard = | Guard Int
+instance JsonEncode<Guard> { fn encodeJson value: Guard -> json.Json = match value { Guard n -> encodeJson n } }
+instance JsonDecode<Guard> {
+  fn decodeJson value: json.Json -> Either<json.DecodeError, Guard> = match decodeJson<Int> value {
+    Left error -> Left error
+    Right n -> Right (Guard (if n == 3 then n / 0 else n))
+  }
+}
+fn path index: Int -> parts: Array<json.JsonPathSegment> -> String = match arrays.get index parts {
+  Nothing -> ""
+  Just (json.JsonField name) -> "." + name + path (index + 1) parts
+  Just (json.JsonIndex value) -> "[" + show value + "]" + path (index + 1) parts
+}
+fn kind value: json.DecodeErrorKind -> String = match value {
+  json.ExpectedJsonType name -> "expected:" + name
+  json.MissingJsonField name -> "missing:" + name
+  json.UnknownJsonField name -> "unknown-field:" + name
+  json.UnknownJsonTag name -> "unknown-tag:" + name
+  json.InvalidJsonValue message -> "invalid:" + message
+}
+fn read<A> source: String -> String where JsonDecode<A>, JsonEncode<A> = {
+  let decode: String -> Either<json.JsonReadError, A> = json.decodeString
+  let encode: A -> String = json.encodeString
+  match decode source {
+    Left (json.JsonDecodeFailure error) -> "error:" + path 0 error.path + ":" + kind error.kind
+    Left _ -> "syntax"
+    Right value -> "ok:" + encode value
+  }
+}
+fn methods<A> value: A -> String where JsonEncode<A>, JsonDecode<A> = {
+  let encode: A -> json.Json = encodeJson
+  let decode: json.Json -> Either<json.DecodeError, A> = decodeJson
+  match decode (encode value) { Left error -> kind error.kind; Right result -> json.stringify (encode result) }
+}
+pub fn probe -> String = text.join "|" [
+  read<Row<String>> "{\"a\":42,\"z\":\"雪🙂\"}",
+  read<Link> "{\"next\":{\"next\":null,\"value\":2},\"value\":1}",
+  read<Envelope<Int>> "{\"meta\":{\"labels\":[1,null,2]},\"rows\":[{\"a\":7,\"z\":42}]}",
+  read<Names> "{\"__proto__\":\"snow\",\"constructor\":\"ctor\",\"toString\":\"text\"}",
+  read<Empty> "{}",
+  read<Row<String>> "{\"z\":false,\"extra\":1}",
+  read<Row<String>> "{\"z\":false,\"a\":1}",
+  read<Row<String>> "{\"z\":\"snow\"}",
+  read<Link> "{\"value\":1,\"next\":{\"value\":false,\"next\":null}}",
+  read<Envelope<Int>> "{\"meta\":{\"labels\":[]},\"rows\":[{\"a\":7,\"z\":42,\"extra\":false}]}",
+  read<Envelope<Int>> "{\"meta\":{\"labels\":[]},\"rows\":[{\"z\":42}]}",
+  read<Row<Guard>> "{\"z\":3,\"a\":1,\"extra\":false}",
+  read<Empty> "{\"extra\":1}",
+  methods (Row { z: "saved", a: 7 }),
+  methods (Link { value: 1, next: Just (Link { value: 2, next: Nothing }) })
+]
+pub effect fn main = println (probe ())

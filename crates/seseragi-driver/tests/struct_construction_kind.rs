@@ -1,6 +1,51 @@
 use seseragi_driver::{analyze_module, compile_module, BuildProfile, CompileInput};
 
 #[test]
+fn nested_record_struct_fields_survive_compile_and_analysis_in_both_profiles() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend-regressions/nested-record-struct-field.ssrg"
+    );
+    let construction = "// 雪🙂\nstruct Envelope<A> { first: A, payload: { label: String }, after: Bool }\nlet value = Envelope { first: 7, payload: { label: \"雪🙂\" }, after: True }\nfn probe value: Envelope<Int> -> Bool = value.after\n";
+    for source in [original, construction] {
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let input = || {
+                CompileInput::new("nested-雪🙂.ssrg", "proof/struct", source).with_profile(profile)
+            };
+            let compiled = compile_module(input()).unwrap();
+            assert!(analyze_module(input()).diagnostics.diagnostics.is_empty());
+            assert_eq!(
+                compiled.core_ir.structs[0]
+                    .fields
+                    .iter()
+                    .map(|f| f.name.as_str())
+                    .collect::<Vec<_>>(),
+                ["first", "payload", "after"]
+            );
+        }
+    }
+}
+
+#[test]
+fn fields_after_nested_records_keep_their_actual_type_error_and_utf8_span() {
+    let source = "// 雪🙂\nstruct Envelope { payload: { label: String }, after: Bool }\nlet value = Envelope { payload: { label: \"雪🙂\" }, after: 42 }\n";
+    for profile in [BuildProfile::Development, BuildProfile::Release] {
+        let input =
+            || CompileInput::new("nested-雪🙂.ssrg", "proof/struct", source).with_profile(profile);
+        let error = compile_module(input()).unwrap_err();
+        let diagnostic = error
+            .diagnostics
+            .iter()
+            .find(|d| d.message_key == "struct.field-type-mismatch")
+            .unwrap_or_else(|| panic!("{error:?}"));
+        assert_eq!(
+            &source[diagnostic.primary.start..diagnostic.primary.end],
+            "42"
+        );
+        assert_eq!(analyze_module(input()).diagnostics, error);
+    }
+}
+
+#[test]
 fn adts_and_newtypes_are_not_unchecked_struct_record_casts() {
     for source in [
         "// 雫🙂\ntype Key = | Key { value: Int }\nlet invalid = Key { value: 42 }\n",
