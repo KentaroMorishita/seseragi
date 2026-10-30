@@ -52,6 +52,23 @@ fn native_sequence_operation(name: &str, arguments: Vec<V>) -> V {
     let nothing = || V::adt("std/prelude::Nothing", V::Unit);
     let just = |value| V::adt("std/prelude::Just", value);
     match operation {
+        "filterMap" | "flatMap" => {
+            let mut output = Vec::new();
+            for value in native_sequence_iter(input, list) {
+                let mapped = arguments[0].apply(value.clone());
+                if operation == "flatMap" {
+                    output.extend(native_sequence_iter(&mapped, list).cloned());
+                } else if mapped.tagged("std/prelude::Just") {
+                    output.push(mapped.payload());
+                } else {
+                    assert!(
+                        mapped.tagged("std/prelude::Nothing"),
+                        "Rust ABI: sequence filterMap callback must return Maybe"
+                    );
+                }
+            }
+            native_sequence_collect(output, list)
+        }
         "concat" => {
             let mut output = Vec::new();
             for inner in native_sequence_iter(input, list) {
@@ -520,5 +537,172 @@ mod sequence_tests {
             assert!(collect_cycles().unwrap().reclaimed > 0);
             assert_eq!(LIVE.with(Cell::get), 0);
         }
+    }
+}
+
+#[cfg(test)]
+mod list_transform_tests {
+    use super::*;
+    fn input(values: &[i64]) -> V {
+        V::list_from_values(values.iter().map(|n| V::Int(*n)).collect())
+    }
+    fn values(value: &V) -> Vec<String> {
+        native_sequence_iter(value, true).map(V::render).collect()
+    }
+    #[test]
+    fn list_transformations_keep_source_order_empty_skips_and_output_types() {
+        enable_cycle_collection();
+        let source = input(&[1, 2, 3]);
+        let calls = V::reference(V::Int(0));
+        let keep = V::fun(vec![calls.clone()], |captures, value| {
+            let V::Int(n) = value else { panic!() };
+            let V::Int(old) = captures[0].read_reference() else {
+                panic!()
+            };
+            captures[0].write_reference(V::Int(old * 10 + n));
+            if n == 2 {
+                V::adt("std/prelude::Nothing", V::Unit)
+            } else {
+                V::adt("std/prelude::Just", V::text(&format!("n{n}")))
+            }
+        });
+        assert_eq!(
+            values(&native_sequence_operation(
+                "std/list::filterMap",
+                vec![keep.clone(), source.clone()]
+            )),
+            ["n1", "n3"]
+        );
+        assert_eq!(calls.read_reference().render(), "123");
+        calls.write_reference(V::Int(0));
+        let expand = V::fun(vec![calls.clone()], |captures, value| {
+            let V::Int(n) = value else { panic!() };
+            let V::Int(old) = captures[0].read_reference() else {
+                panic!()
+            };
+            captures[0].write_reference(V::Int(old * 10 + n));
+            V::list_from_values(vec![
+                V::text(&n.to_string()),
+                V::text(&(n * 10).to_string()),
+            ])
+        });
+        assert_eq!(
+            values(&native_sequence_operation(
+                "std/list::flatMap",
+                vec![expand.clone(), source.clone()]
+            )),
+            ["1", "10", "2", "20", "3", "30"]
+        );
+        assert_eq!(calls.read_reference().render(), "123");
+        calls.write_reference(V::Int(0));
+        for (name, callback) in [("std/list::filterMap", keep), ("std/list::flatMap", expand)] {
+            assert!(values(&native_sequence_operation(
+                name,
+                vec![callback, V::ListEmpty]
+            ))
+            .is_empty());
+        }
+        assert_eq!(calls.read_reference().render(), "0");
+        assert_eq!(values(&source), ["1", "2", "3"]);
+        let reenter = V::fun(vec![source.clone()], |captures, _| {
+            native_list_operation("std/list::reverse", vec![captures[0].clone()])
+        });
+        assert_eq!(
+            values(&native_sequence_operation(
+                "std/list::flatMap",
+                vec![reenter, source.clone()]
+            )),
+            ["3", "2", "1", "3", "2", "1", "3", "2", "1"]
+        );
+        drop((source, calls));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    #[test]
+    fn list_callback_defects_stop_before_later_values_and_release_captures() {
+        enable_cycle_collection();
+        let source = input(&[1, 2, 3, 4]);
+        let calls = V::reference(V::Int(0));
+        for name in ["std/list::filterMap", "std/list::flatMap"] {
+            calls.write_reference(V::Int(0));
+            let callback = V::fun(
+                vec![calls.clone(), V::Bool(name == "std/list::flatMap")],
+                |captures, value| {
+                    let V::Int(n) = value else { panic!() };
+                    let V::Int(old) = captures[0].read_reference() else {
+                        panic!()
+                    };
+                    captures[0].write_reference(V::Int(old * 10 + n));
+                    assert_ne!(n, 3, "callback stop");
+                    if matches!(captures[1], V::Bool(true)) {
+                        input(&[n])
+                    } else {
+                        V::adt("std/prelude::Just", V::Int(n))
+                    }
+                },
+            );
+            assert!(std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                native_sequence_operation(name, vec![callback, source.clone()])
+            }))
+            .is_err());
+            assert_eq!(calls.read_reference().render(), "123");
+        }
+        assert_eq!(values(&source), ["1", "2", "3", "4"]);
+        drop((source, calls));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    #[test]
+    fn strict_list_results_retain_only_included_edges_and_drop_deep_outputs_iteratively() {
+        enable_cycle_collection();
+        for flat in [false, true] {
+            let refs: Vec<_> = (0..5).map(|n| V::reference(V::Int(n))).collect();
+            let ids: Vec<_> = refs.iter().map(|value| value.node_id().unwrap()).collect();
+            let source = V::list_from_values(refs.clone());
+            let callback = V::fun(vec![V::Bool(flat)], |captures, value| {
+                let V::Int(n) = value.read_reference() else {
+                    panic!()
+                };
+                let keep = n % 2 == 1;
+                if matches!(captures[0], V::Bool(true)) {
+                    if keep {
+                        V::list_from_values(vec![value])
+                    } else {
+                        V::ListEmpty
+                    }
+                } else if keep {
+                    V::adt("std/prelude::Just", value)
+                } else {
+                    V::adt("std/prelude::Nothing", V::Unit)
+                }
+            });
+            let result = native_sequence_operation(
+                if flat {
+                    "std/list::flatMap"
+                } else {
+                    "std/list::filterMap"
+                },
+                vec![callback, source.clone()],
+            );
+            drop((refs, source));
+            collect_cycles().unwrap();
+            for (index, id) in ids.iter().enumerate() {
+                assert_eq!(
+                    NODES.with(|nodes| nodes.borrow().contains_key(id)),
+                    index % 2 == 1,
+                    "retained excluded edge{index}"
+                );
+            }
+            drop(result);
+            collect_cycles().unwrap();
+            assert_eq!(LIVE.with(Cell::get), 0);
+        }
+        let source = V::list_from_values((0..100_000).map(V::Int).collect());
+        let callback = V::fun(vec![], |_, value| V::adt("std/prelude::Just", value));
+        let output = native_sequence_operation("std/list::filterMap", vec![callback, source]);
+        assert_eq!(native_sequence_iter(&output, true).count(), 100_000);
+        drop(output);
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
     }
 }

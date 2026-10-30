@@ -1,0 +1,13 @@
+import * as values from "values"
+import * as maps from "std/map"
+pub effect fn main = do {
+  let input = `[values.item 1,values.item 3,values.item 2,values.item 1]
+  let sorted:values.Items<values.Value> -> values.Items<values.Value> = values.sorter ()
+  let byKey = values.by (\n:Int -> values.item (n % 10))
+  let group = values.groups (\value:values.Value -> values.item (values.number value % 2))
+  let grouped = group input
+  println (show (values.labels (sorted input)))
+  println (show (byKey [22,11,42,31]))
+  println (show (maps.entries (maps.mapValues values.labels grouped)))
+  println (show (values.labels input))
+}

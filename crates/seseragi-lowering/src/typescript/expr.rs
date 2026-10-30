@@ -68,7 +68,9 @@ pub(super) fn lower_core_expr_to_typescript(
             origin,
         } => {
             if matches!(type_ref, CoreType::Function { .. }) {
-                if runtime_standard_operation(&name).is_some() {
+                if runtime_standard_operation(&name).is_some()
+                    || runtime_iterator_operation(&name).is_some()
+                {
                     // A bare function reference is a partial application with
                     // no source arguments. Keep evidence and currying identical
                     // to ordinary calls instead of emitting an unbound name.
@@ -598,6 +600,11 @@ pub(super) fn lower_core_expr_to_typescript(
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
                 let type_arguments = match (callee.as_str(), evidence.first()) {
+                    ("std/array::empty" | "std/array::append", _) => {
+                        checked_array_result_element(&type_ref, imported_types)
+                            .into_iter()
+                            .collect()
+                    }
                     ("std/prelude:::", _) => {
                         vec![list_cons_element_type(&type_ref, imported_types)]
                     }
@@ -684,10 +691,18 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_iterator_operation(&callee) {
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
+                let remaining = operation.source_arity.saturating_sub(arguments.len());
+                lower_uncurried_runtime_call(
+                    operation.local_name.to_owned(),
                     arguments,
-                }
+                    &type_ref,
+                    imported_types,
+                    "iterator",
+                    Vec::new(),
+                    Some(remaining),
+                    checked_argument_types.iter().cloned().enumerate().collect(),
+                    origin,
+                )
             } else if let Some(operation) = runtime_bytes_operation(&callee)
                 .or_else(|| runtime_text_operation(&callee))
                 .or_else(|| runtime_regex_operation(&callee))
@@ -1799,6 +1814,35 @@ fn lower_core_expressions(
             lower_core_expr_to_typescript(expression, imported_values, imported_types)
         })
         .collect()
+}
+
+// Empty inputs cannot supply a host generic argument. Keep the element
+// already selected by the source checker before TypeScript infers unknown.
+fn checked_array_result_element(
+    type_ref: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+) -> Option<super::TypeScriptType> {
+    let mut result = type_ref;
+    while let CoreType::Function { result: next, .. } = result {
+        result = next;
+    }
+    let arguments = match result {
+        CoreType::Named { name, arguments }
+            if matches!(name.as_str(), "Array" | "std/prelude::Array") =>
+        {
+            arguments
+        }
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == "std/prelude::Array" => arguments,
+        _ => return None,
+    };
+    let [element] = arguments.as_slice() else {
+        return None;
+    };
+    (!matches!(element, CoreType::Hole)).then(|| type_ref_from_core_type(element, imported_types))
 }
 
 fn list_cons_element_type(

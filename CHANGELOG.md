@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.126] - 2026-10-30
+
+### Added
+
+- Run the remaining native Array operations, List filterMap/flatMap, stable Array/List sorting and grouping, general Iterable collection constructors and early-stopping reductions. Preserve immutable input, tie and insertion order, selected dictionaries, duplicate keys, strict source stages and scoped cleanup.
+- Run persistent native Iterator unfold/next without evaluating a step eagerly or consuming the original cursor. Preserve saved generic functions, opaque package boundaries, bounded iteration state and reference tracing.
+
+### Fixed
+
+- Preserve checked Array element types in empty/append calls and resolve qualified opaque elements in public aliases through their selected import owners.
+- Keep the declared source arity and runtime imports when saving, partially applying or returning Iterator functions in generated TypeScript.
+
 ## [0.61.125] - 2026-10-30
 
 ### Added

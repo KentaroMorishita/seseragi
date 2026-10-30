@@ -11,6 +11,7 @@ fn operation(name: &str) -> Option<(&str, usize)> {
     Some((
         name,
         match name {
+            "filterMap" | "flatMap" if owner == "std/list" => 2,
             "last" | "init" | "unzip" | "concat" => 1,
             "findIndex" | "takeWhile" | "dropWhile" | "zip" | "chunksOf" | "windows" => 2,
             "zipWith" | "reduceRight" => 3,
@@ -99,6 +100,18 @@ impl Backend<'_> {
             let maybe = |a| named("std/prelude::Maybe", vec![a]);
             let predicate = function(&[a.clone()], named("std/prelude::Bool", vec![]));
             match operation {
+                "filterMap" | "flatMap" => {
+                    let b = element(remaining, owner)?.clone();
+                    let result = if operation == "filterMap" {
+                        maybe(b.clone())
+                    } else {
+                        collection(b.clone())
+                    };
+                    (
+                        vec![function(&[a.clone()], result), collection(a)],
+                        collection(b),
+                    )
+                }
                 "findIndex" => (vec![predicate, collection(a)], maybe(int)),
                 "takeWhile" | "dropWhile" => {
                     (vec![predicate, collection(a.clone())], collection(a))

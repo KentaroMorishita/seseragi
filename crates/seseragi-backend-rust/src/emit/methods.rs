@@ -476,8 +476,13 @@ impl Backend<'_> {
             | "std/prelude::Ordering"
             | "std/prelude::Console"
             | "std/prelude::ConsoleError" => Some(vec![]),
-            "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe" | "std/ref::Ref"
-            | "std/set::Set" => Some(vec![0]),
+            "std/prelude::Array"
+            | "std/prelude::List"
+            | "std/prelude::Maybe"
+            | "std/ref::Ref"
+            | "std/set::Set"
+            | "std/prelude::Iterator"
+            | "std/collection::ReduceStep" => Some(vec![0]),
             "std/prelude::Either"
             | "std/map::Map"
             | "std/effect::Fiber"

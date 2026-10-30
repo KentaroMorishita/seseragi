@@ -1,0 +1,9 @@
+created
+acquired
+cold
+[1, 2, 1]|`[1, 2, 1]|[1, 2]|[(1, new), (2, second)]
+cold
+[1, 2, 1]|`[1, 2, 1]|[1, 2]|[(1, new), (2, second)]
+released
+recovered: typed
+released: 1

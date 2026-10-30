@@ -1,0 +1,12 @@
+import * as values from "values"
+import * as control from "std/collection"
+pub effect fn main = do {
+  let source = values.values ()
+  let factory:(values.Total -> Int -> values.Decision<values.Total>) -> values.Values -> values.Total = values.maker (values.initial 0)
+  let saved = factory values.step
+  let wrap:String -> values.Decision<String> = values.wrap ()
+  println (show (values.amount (saved source)))
+  println (show (values.amount (saved source)))
+  println (show (values.amount (values.maker (values.initial 10) values.step source)))
+  println (match wrap "雪" { control.Next value -> "next:" + value; control.Done value -> "done:" + value })
+}

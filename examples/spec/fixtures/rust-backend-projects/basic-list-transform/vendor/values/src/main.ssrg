@@ -1,0 +1,9 @@
+import * as lists from "std/list"
+pub opaque newtype Value = Int
+pub alias Items<A> = List<A>
+pub fn item number:Int -> Value = Value number
+pub fn number value:Value -> Int = match value { Value number -> number }
+pub fn selector<A,B> callback:(A -> Maybe<B>) -> (Items<A> -> Items<B>) = lists.filterMap callback
+pub fn factory<A,B> -> ((A -> Items<B>) -> Items<A> -> Items<B>) = lists.flatMap
+pub fn selected values:Items<Value> -> Items<Value> = selector (\value:Value -> if number value % 2 == 0 then Nothing else Just value) values
+pub fn labels values:Items<Value> -> Items<String> = lists.flatMap (\value:Value -> `["cell:" + show (number value)]) values

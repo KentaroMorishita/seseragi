@@ -1,0 +1,45 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as control from "std/collection"
+import * as iterator from "std/iterator"
+
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 3 then Nothing else Just (state,state + 1)
+fn add total:Int -> value:Int -> control.ReduceStep<Int> = control.Next (total + value)
+fn choose offset:Int -> (Int -> Int -> control.ReduceStep<Int>) = \total:Int -> \value:Int -> if value == 2 then control.Done (total + value + offset) else control.Next (total + value)
+fn callback seed:Int -> (Int -> Int -> control.ReduceStep<Int>) = if seed == 0 then add else add
+fn brokenCallback total:Int -> (Int -> control.ReduceStep<Int>) = if 42 / 0 == 0 then add total else add total
+newtype Broken = Unit
+instance Iterable<Broken,Int> { fn iterate _value:Broken -> iterator.Iterator<Int> = if 42 / 0 == 0 then iterator.unfold advance 0 else iterator.unfold advance 1 }
+fn transformWith values:Array<Int> -> (Unit -> String) = {
+  let fold:(Int -> Int -> control.ReduceStep<Int>) -> Array<Int> -> Int = control.reduceUntil 10
+  let saved = fold (choose 128)
+  \_:Unit -> show (saved values)
+}
+effect fn failBody -> Unit fails String = do {
+  let _computed = control.reduceUntil 0 add [1,2,3]
+  effects.fail "typed"
+}
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (transformWith [1,2,3])
+  let cold = effects.defer $ \_:Unit -> do {
+    say "cold"
+    operation <- refs.get saved
+    say (operation ())
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\message:String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

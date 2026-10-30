@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/sequence-order@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/sequence-order-values@0.0.0#path:vendor/values"
+name = "fixture/sequence-order-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:cf9f3c390c61b807e7aa4af24f750791c6161dbbb24c2397068b9da3227055ac"
+content_digest = "sha256:1aa6008bec3595ed27febe7fba0d8b229801add76510507083b25ce8ef9c6c96"
+dependencies = []
+
+[[packages]]
+id = "fixture/sequence-order@0.0.0#workspace:."
+name = "fixture/sequence-order"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:131b449718b9b4784812a138f3059ae2922c7a1059adc0921b2cfb479922117a"
+content_digest = "sha256:baa4817796c012c71c2b748c85322ff0b13c8cd5eae5a83fa20bb3270011e390"
+dependencies = [
+  { import = "values", package = "fixture/sequence-order-values@0.0.0#path:vendor/values" },
+]

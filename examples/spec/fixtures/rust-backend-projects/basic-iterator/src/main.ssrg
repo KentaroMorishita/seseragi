@@ -1,0 +1,11 @@
+import * as values from "values"
+fn first cursor:values.Cursor<String> -> String = match values.nextOf () cursor { Nothing -> "end"; Just (value,_rest) -> value }
+pub effect fn main = do {
+  let make = values.maker values.advance
+  let source = make (values.state 0)
+  let next:values.Cursor<String> -> Maybe<(String,values.Cursor<String>)> = values.nextOf ()
+  println (first source)
+  println (first source)
+  println (match next source { Nothing -> "end"; Just (value,rest) -> value + ":" + first rest })
+  println (match next source { Nothing -> "end"; Just (_,rest) -> match next rest { Nothing -> "end"; Just (_,end) -> first end } })
+}

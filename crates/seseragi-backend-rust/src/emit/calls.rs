@@ -79,6 +79,18 @@ impl Backend<'_> {
         if let Some(value) = self.array_operation_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.collection_control_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.iterable_build_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.iterator_operation_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.sequence_order_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.sequence_call(expr, scope)? {
             return Ok(value);
         }

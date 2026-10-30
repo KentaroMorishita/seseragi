@@ -1,0 +1,45 @@
+import * as arrays from "std/array"
+
+fn optional<A> render:(A -> String) -> value:Maybe<A> -> String = match value { Nothing -> "none"; Just value -> "just:" + render value }
+fn choose value:Int -> Maybe<String> = if value % 2 == 0 then Nothing else Just ("n" + show value)
+fn expand value:Int -> Array<Int> = [value, value * 10]
+fn nested value:Int -> Maybe<Array<Int>> = if value % 2 == 0 then Nothing else Just [value, value * 2]
+fn selective value:Int -> Array<Int> = if value == 2 then [] else [value, -value]
+fn preserve<A> values:Array<A> -> Array<A> = arrays.append (arrays.empty ()) (arrays.reverse (arrays.reverse values))
+fn maker<A> -> (A -> Array<A>) = arrays.singleton
+fn captured prefix:String -> (Unit -> String) = \_:Unit -> prefix
+
+pub effect fn main = do {
+  let empty:Array<Int> = arrays.empty ()
+  let input = [1,2,3]
+  let suffix = [4,5]
+  let append = arrays.append suffix
+  let keep = arrays.filterMap choose
+  let flatten = arrays.flatMap expand
+  let make:String -> Array<String> = maker ()
+  println (show empty)
+  println (show (arrays.singleton 42))
+  println (show (append input))
+  println (show (arrays.reverse input))
+  println (show (arrays.isEmpty empty))
+  println (show (arrays.isEmpty input))
+  println (optional show (arrays.head input))
+  println (optional show (arrays.head empty))
+  println (optional show (arrays.tail input))
+  println (optional show (arrays.tail (arrays.singleton 42)))
+  println (optional show (arrays.tail empty))
+  println (show (keep input))
+  println (show (flatten input))
+  println (show (keep empty))
+  println (show (flatten empty))
+  println (show input)
+  println (show suffix)
+  println (show (preserve input))
+  println (show (arrays.reverse ["雪","🙂","λ"]))
+  println (match arrays.head (arrays.singleton (captured "saved:🙂")) { Nothing -> "none"; Just operation -> operation () })
+  println (show (make "雪"))
+  println (show (arrays.filterMap nested input))
+  println (show (arrays.flatMap selective input))
+  println (match arrays.head (arrays.singleton { name:"雪" }) { Nothing -> "none"; Just value -> value.name })
+  println (show (arrays.length (arrays.singleton ())))
+}

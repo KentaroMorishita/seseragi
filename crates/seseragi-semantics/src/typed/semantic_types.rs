@@ -1646,9 +1646,23 @@ fn semantic_key_from_expanded_type(
         },
         TypedType::TypeFunctionParameter { .. } => SemanticTypeKey::Other,
         TypedType::Named { name, arguments } => {
-            let owner = resolved.symbols.iter().find_map(|symbol| {
-                (symbol.kind == SymbolKind::Type && symbol.spelling == *name).then_some(symbol.id)
+            // Expanded alias arguments no longer carry a TypeRef span. Use
+            // the checked import's local name and symbol, just as typed values
+            // do, so a qualified opaque element keeps its nominal owner.
+            let mut candidates = resolved.symbols.iter().filter(|symbol| {
+                symbol.kind == SymbolKind::Type
+                    && (symbol.spelling == *name
+                        || resolved.imports.iter().any(|import| {
+                            import.in_scope
+                                && import.symbol == symbol.id
+                                && import.local_name == *name
+                        }))
+                    && (owners.contains(&symbol.id) || struct_owners.contains(&symbol.id))
             });
+            let owner = candidates
+                .next()
+                .filter(|_| candidates.next().is_none())
+                .map(|symbol| symbol.id);
             let arguments = arguments
                 .iter()
                 .map(|argument| SemanticValueType {

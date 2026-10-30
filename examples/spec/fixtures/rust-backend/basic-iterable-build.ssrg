@@ -1,0 +1,65 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as iterator from "std/iterator"
+
+newtype Bag = { label:String, values:Array<Int> }
+instance Iterable<Bag,Int> {
+  fn iterate bag:Bag -> iterator.Iterator<Int> = match bag { Bag detail -> iterator.unfold (\index:Int -> match arrays.get index detail.values { Nothing -> Nothing; Just value -> Just (value,index + 1) }) 0 }
+}
+type Key = | Key { identity:Int, label:String }
+instance Eq<Key> { fn eq left:Key -> right:Key -> Bool = match left { Key a -> match right { Key b -> a.identity == b.identity } } }
+instance Hash<Key> { fn hash _value:Key -> Int = 0 }
+instance Show<Key> { fn show value:Key -> String = match value { Key detail -> detail.label } }
+newtype Rows = List<(Key,String)>
+instance Iterable<Rows,(Key,String)> {
+  fn iterate rows:Rows -> iterator.Iterator<(Key,String)> = match rows { Rows values -> iterator.unfold (\remaining:List<(Key,String)> -> match lists.head remaining { Nothing -> Nothing; Just value -> match lists.tail remaining { Nothing -> Nothing; Just rest -> Just (value,rest) } }) values }
+}
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 3 then Nothing else Just (state,state + 1)
+fn arrayOf<C,A> values:C -> Array<A> where Iterable<C,A> = arrays.fromIterable values
+fn listOf<C,A> -> (C -> List<A>) where Iterable<C,A> = lists.fromIterable
+fn setOf<C,A> -> (C -> sets.Set<A>) where Iterable<C,A>,Eq<A>,Hash<A> = sets.fromIterable
+fn mapOf<C,K,V> -> (C -> maps.Map<K,V>) where Iterable<C,(K,V)>,Eq<K>,Hash<K> = maps.fromEntries
+
+pub effect fn main = do {
+  let input = [3,1,3,2]
+  let linked = `[3,1,3,2]
+  let bag = Bag ({ label:"雪", values:input })
+  let makeList:Bag -> List<Int> = listOf ()
+  let makeSet:Bag -> sets.Set<Int> = setOf ()
+  let first = Key ({ identity:1,label:"first" })
+  let second = Key ({ identity:2,label:"second" })
+  let equal = Key ({ identity:1,label:"replacement" })
+  let rows = Rows `[(first,"old"),(second,"middle"),(equal,"new")]
+  let makeMap:Rows -> maps.Map<Key,String> = mapOf ()
+  let mapped = makeMap rows
+  let selected = makeSet bag
+  let source = iterator.unfold advance 0
+  println (show (arrays.fromIterable input))
+  println (show (lists.fromIterable input))
+  println (show (arrays.fromIterable linked))
+  println (show (lists.fromIterable linked))
+  println (show (arrayOf bag))
+  println (show (makeList bag))
+  println (show (sets.toArray selected))
+  println (show (arrays.fromIterable selected))
+  println (show (lists.fromIterable selected))
+  println (show (arrays.fromIterable source))
+  println (show (arrays.fromIterable source))
+  println (show (lists.fromIterable source))
+  println (show (sets.toArray (sets.fromIterable source)))
+  println (show (maps.entries mapped))
+  println (show (arrays.fromIterable mapped))
+  println (show (lists.fromIterable mapped))
+  println (show (maps.entries (maps.fromEntries `[(1,"old"),(2,"second"),(1,"new")])))
+  println (show (sets.toArray (sets.fromIterable [first,second,equal])))
+  println (show (sets.toArray (sets.fromIterable `["雪","🙂","雪"])))
+  println (show (maps.entries (maps.fromEntries (iterator.unfold (\state:Int -> if state >= 3 then Nothing else Just ((state % 2,"v" + show state),state + 1)) 0))))
+  println (show input)
+  println (show linked)
+  println (show (arrays.fromIterable (Bag ({ label:"empty",values:[] }))))
+  println (show (lists.fromIterable (Bag ({ label:"empty",values:[] }))))
+  println (show (sets.toArray (sets.fromIterable (Bag ({ label:"empty",values:[] })))))
+  println (show (maps.entries (makeMap (Rows `[]))))
+}

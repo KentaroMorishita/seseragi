@@ -1,0 +1,11 @@
+import * as values from "values"
+pub effect fn main = do {
+  let input = `[values.item 1,values.item 2,values.item 3]
+  let flatten:(values.Value -> values.Items<values.Value>) -> values.Items<values.Value> -> values.Items<values.Value> = values.factory ()
+  let output = flatten (\value:values.Value -> `[value,values.item (values.number value * 10)]) (values.selected input)
+  let keep = values.selector (\value:values.Value -> Just ("saved:" + show (values.number value)))
+  println (show (values.labels output))
+  println (show (keep input))
+  println (show (values.labels input))
+  println (show (values.labels (values.selected `[])))
+}

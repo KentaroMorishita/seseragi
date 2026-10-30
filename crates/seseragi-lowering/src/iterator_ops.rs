@@ -1,6 +1,7 @@
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct RuntimeIteratorOperation {
     pub(crate) runtime_feature: &'static str,
+    pub(crate) source_arity: usize,
     pub(crate) local_name: &'static str,
     pub(crate) module: &'static str,
     pub(crate) export_name: &'static str,
@@ -8,6 +9,7 @@ pub(crate) struct RuntimeIteratorOperation {
 }
 
 const ITERATOR_UNFOLD: RuntimeIteratorOperation = RuntimeIteratorOperation {
+    source_arity: 2,
     runtime_feature: "core.iterator.unfold",
     local_name: "_ssrg_iterator_unfold",
     module: "@seseragi/runtime/iterator",
@@ -16,6 +18,7 @@ const ITERATOR_UNFOLD: RuntimeIteratorOperation = RuntimeIteratorOperation {
 };
 
 const ITERATOR_NEXT: RuntimeIteratorOperation = RuntimeIteratorOperation {
+    source_arity: 1,
     runtime_feature: "core.iterator.next",
     local_name: "_ssrg_iterator_next",
     module: "@seseragi/runtime/iterator",
@@ -24,6 +27,7 @@ const ITERATOR_NEXT: RuntimeIteratorOperation = RuntimeIteratorOperation {
 };
 
 const ITERATOR_COMPREHEND: RuntimeIteratorOperation = RuntimeIteratorOperation {
+    source_arity: 3,
     runtime_feature: "core.iterator.comprehend",
     local_name: "_ssrg_iterator_comprehend",
     module: "@seseragi/runtime/iterator",
@@ -32,6 +36,7 @@ const ITERATOR_COMPREHEND: RuntimeIteratorOperation = RuntimeIteratorOperation {
 };
 
 const ITERATOR_COMPREHEND_FLAT: RuntimeIteratorOperation = RuntimeIteratorOperation {
+    source_arity: 3,
     runtime_feature: "core.iterator.comprehend.flat",
     local_name: "_ssrg_iterator_comprehend_flat",
     module: "@seseragi/runtime/iterator",

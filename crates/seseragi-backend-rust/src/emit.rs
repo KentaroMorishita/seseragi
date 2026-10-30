@@ -20,6 +20,7 @@ mod calls;
 mod canonical;
 mod characters;
 mod clock;
+mod collection_control;
 mod collections;
 mod comparisons;
 mod concurrency;
@@ -32,6 +33,8 @@ mod equality;
 mod filesystem;
 mod floats;
 mod hashing;
+mod iterable;
+mod iterator;
 mod json;
 mod json_codecs;
 mod json_container_codecs;
@@ -48,6 +51,7 @@ mod operators;
 mod returned_calls;
 mod scalar;
 mod sequence_operations;
+mod sequence_order;
 mod tail;
 mod text;
 
@@ -187,6 +191,10 @@ fn emit_body(
     output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_array_operations.rs"));
     output.push_str(include_str!("runtime_sequence.rs"));
+    output.push_str(include_str!("runtime_sequence_order.rs"));
+    output.push_str(include_str!("runtime_iterator.rs"));
+    output.push_str(include_str!("runtime_iterable.rs"));
+    output.push_str(include_str!("runtime_collection_control.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
     output.push_str(include_str!("runtime_big_int_value.rs"));
@@ -545,6 +553,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.big_int_trait_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.iterable_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -915,6 +927,26 @@ impl Backend<'_> {
                 }
                 if let Some(value) =
                     self.array_operation_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.sequence_order_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.iterator_operation_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.iterable_build_reference(name, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) =
+                    self.collection_control_reference(name, evidence, type_ref, scope)?
                 {
                     return Ok(value);
                 }

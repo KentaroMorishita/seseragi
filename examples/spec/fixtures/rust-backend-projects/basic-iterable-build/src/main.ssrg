@@ -1,0 +1,18 @@
+import * as values from "values"
+import * as arrays from "std/array"
+import * as sets from "std/set"
+import * as maps from "std/map"
+pub effect fn main = do {
+  let source = values.values ()
+  let linked:values.Values -> values.Items<Int> = values.listOf ()
+  let unique:values.Values -> sets.Set<Int> = values.setOf ()
+  let entries:values.Rows -> maps.Map<values.Key,String> = values.mapOf ()
+  let rows = values.rows ()
+  let mapped = entries rows
+  println (show (values.arrayOf source))
+  println (show (linked source))
+  println (show (sets.toArray (unique source)))
+  println (show (maps.entries mapped))
+  println (show (arrays.fromIterable mapped))
+  println (show (values.arrayOf source))
+}

@@ -78,6 +78,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_standard_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
+            if let Some(operation) = runtime_iterator_operation(name) {
+                push_unique(requirements, operation.runtime_feature);
+            }
             if let Some(operation) = runtime_bytes_operation(name)
                 .or_else(|| runtime_text_operation(name))
                 .or_else(|| runtime_regex_operation(name))
@@ -565,6 +568,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 collect_evidence_runtime_imports(evidence, imports);
             }
             if let Some(operation) = runtime_standard_operation(name) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
+            if let Some(operation) = runtime_iterator_operation(name) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

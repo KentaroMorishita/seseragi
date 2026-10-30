@@ -314,6 +314,299 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_reduce_until_keeps_early_stop_empty_saved_generic_and_function_accumulators() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-reduce-until.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-reduce-until.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_reduce_until_keeps_cold_captured_callbacks_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-reduce-until-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-reduce-until-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_reduce_until_source_iterate_next_and_both_callback_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-reduce-until-effects.ssrg"
+    );
+    let needle = "control.reduceUntil 0 add [1,2,3]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "control.reduceUntil (42 / 0) add [1,2,3]",
+        "control.reduceUntil 0 (callback (42 / 0)) [1,2,3]",
+        "control.reduceUntil 0 add (if 42 / 0 == 0 then [1] else [2])",
+        "control.reduceUntil 0 add (Broken ())",
+        "control.reduceUntil 0 add (iterator.unfold (\\state:Int -> Just (42 / 0,state + 1)) 0)",
+        "control.reduceUntil 0 (\\total:Int -> \\value:Int -> control.Next (total + value / 0)) [1,2,3]",
+        "control.reduceUntil 0 brokenCallback [1,2,3]",
+    ] {
+        let scratch=Scratch::new();let path=scratch.0.join("reduce-until-defect.ssrg");fs::write(&path,original.replace(needle,expression)).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n141\ncold\n141\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_reduce_until_path_package_keeps_imported_opaque_source_accumulator_and_control_aliases() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-reduce-until"),
+        &[Case::success("3\n3\n13\ndone:雪\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_iterable_build_keeps_custom_standard_saved_sources_order_duplicates_and_empty_inputs() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-iterable-build.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-iterable-build.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_iterable_build_keeps_cold_captured_dictionaries_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-iterable-build-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-iterable-build-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_iterable_build_iterate_step_hash_eq_and_source_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-iterable-build-effects.ssrg"
+    );
+    let needle = "arrays.fromIterable (iterator.unfold advance 0)";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "arrays.fromIterable (iterator.unfold (\\state:Int -> if state == 1 then Just (42 / 0,state + 1) else Just (state,state + 1)) 0)",
+        "lists.fromIterable (Broken ())",
+        "sets.fromIterable [BadHash 1]",
+        "maps.fromEntries [(BadEq 1,\"first\"),(BadEq 2,\"second\")]",
+        "lists.fromIterable (if 42 / 0 == 0 then [1] else [2])",
+    ] {
+        let scratch=Scratch::new();let path=scratch.0.join("iterable-build-defect.ssrg");fs::write(&path,original.replace(needle,expression)).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n[1, 2, 1]|`[1, 2, 1]|[1, 2]|[(1, new), (2, second)]\ncold\n[1, 2, 1]|`[1, 2, 1]|[1, 2]|[(1, new), (2, second)]\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_iterable_build_path_package_keeps_imported_opaque_sources_keys_and_generic_factories() {
+    compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-iterable-build"),&[Case::success(b"[3, 1, 3, 2]\n`[3, 1, 3, 2]\n[3, 1, 2]\n[(key:1, new), (key:2, second)]\n[(key:1, new), (key:2, second)]\n[3, 1, 3, 2]\n")]);
+}
+
+#[test]
+fn basic_iterator_original_minimal_saved_runtime_regression_matches_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/iterator-saved-runtime.ssrg"),
+        &[Case::success(b"0\n")],
+    );
+}
+
+#[test]
+fn basic_iterator_keeps_lazy_persistent_replay_tails_generic_saved_and_returned_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-iterator.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-iterator.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_iterator_keeps_cold_captured_state_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-iterator-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-iterator-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_iterator_step_source_arguments_and_first_observation_defects_release_every_root() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-iterator-effects.ssrg");
+    let needle = "iterator.next (iterator.unfold (advance 42) 1)";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "iterator.next (iterator.unfold (\\state:Int -> Just (42 / 0,state + 1)) 0)",
+        "iterator.unfold (advance (42 / 0)) 0",
+        "iterator.unfold (advance 42) (42 / 0)",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("iterator-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                stdout: b"created\nacquired\ncold\n42:43\ncold\n42:43\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+    let needle = "refs.make (iterator.unfold (advance 42) 0)";
+    assert_eq!(original.matches(needle).count(), 1);
+    let scratch = Scratch::new();
+    let path = scratch.0.join("iterator-lazy-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace(
+            needle,
+            "refs.make (iterator.unfold (\\state:Int -> Just (42 / 0,state + 1)) 0)",
+        ),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            stdout: b"created\nacquired\ncold\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}
+#[test]
+fn basic_iterator_path_package_keeps_opaque_state_aliases_and_generic_factories() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-iterator"),
+        &[Case::success(b"cell:0\ncell:0\ncell:0:cell:1\nend\n")],
+    );
+}
+
+#[test]
+fn basic_sequence_order_keeps_stable_ties_selected_dictionaries_saved_and_empty_inputs() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-order.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-order.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_sequence_order_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-sequence-order-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-sequence-order-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_sequence_order_key_compare_hash_eq_and_final_argument_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-sequence-order-effects.ssrg"
+    );
+    let needle = "arrays.sortBy (\\value:Int -> value % 10) [22,11,42,31]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "arrays.sortBy (\\value:Int -> value / 0) [1,2,3]",
+        "lists.groupBy (\\value:Int -> value / 0) `[1,2,3]",
+        "arrays.sort [Broken 1,Broken 2]",
+        "arrays.groupBy (\\value:Int -> BadHash value) [1,2]",
+        "lists.groupBy (\\value:Int -> BadEq value) `[1,2]",
+        "lists.sortBy (\\value:Int -> value) (if 42 / 0 == 0 then `[1] else `[2])",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("sequence-order-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n[11, 31, 22, 42]|[(0, `[22, 42]), (1, `[11, 31])]\ncold\n[11, 31, 22, 42]|[(0, `[22, 42]), (1, `[11, 31])]\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_sequence_order_path_package_keeps_opaque_keys_aliases_and_generic_factories() {
+    compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-sequence-order"),&[Case::success(b"`[cell:3, cell:2, cell:1, cell:1]\n[22, 42, 11, 31]\n[(key:1, `[cell:1, cell:3, cell:1]), (key:0, `[cell:2])]\n`[cell:1, cell:3, cell:2, cell:1]\n")]);
+}
+
+#[test]
+fn basic_list_transform_keeps_order_output_types_empty_inputs_and_saved_callbacks() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-list-transform.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-list-transform.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_list_transform_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-list-transform-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-list-transform-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_list_transform_callback_and_final_argument_defects_release_every_root() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-list-transform-effects.ssrg"
+    );
+    let needle = "lists.flatMap (\\value:Int -> `[value,value + 1]) `[1,2,3]";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "lists.flatMap (\\value:Int -> if value == 2 then `[42 / 0] else `[value]) `[1,2,3]",
+        "lists.filterMap (\\value:Int -> if value == 2 then Just (42 / 0) else Just value) `[1,2,3]",
+        "lists.flatMap (\\value:Int -> `[value]) (if 42 / 0 == 0 then `[1] else `[2])",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("list-transform-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created\nacquired\ncold\n`[129, -129, 131, -131]\ncold\n`[129, -129, 131, -131]\nreleased\n",
+            exit: 70, defect: true, native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }]);
+    }
+}
+#[test]
+fn basic_list_transform_path_package_keeps_opaque_elements_aliases_and_generic_factories() {
+    compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-list-transform"), &[Case::success(b"`[cell:1, cell:10, cell:3, cell:30]\n`[saved:1, saved:2, saved:3]\n`[cell:1, cell:2, cell:3]\n`[]\n")]);
+}
+
+#[test]
+fn basic_array_rest_keeps_constructors_order_callbacks_and_immutable_inputs() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-array-rest.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-array-rest.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_array_rest_keeps_cold_captures_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-array-rest-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-array-rest-effects.stdout"
+        ))],
+    );
+}
+#[test]
+fn basic_array_rest_callback_and_final_argument_defects_release_every_root() {
+    for expression in [
+        "arrays.flatMap (\\value:Int -> if value == 2 then [42 / 0] else [value]) [1,2,3]",
+        "arrays.filterMap (\\value:Int -> if value == 2 then Just (42 / 0) else Just value) [1,2,3]",
+        "arrays.flatMap (\\value:Int -> [value]) (if 42 / 0 == 0 then [1] else [2])",
+    ] {
+        let scratch=Scratch::new();let source=include_str!("../../../examples/spec/fixtures/rust-backend/basic-array-rest-effects.ssrg").replace("arrays.flatMap (\\value:Int -> [value,value + 1]) [1,2,3]",expression);
+        let path=scratch.0.join("array-rest-defect.ssrg");fs::write(&path,source).unwrap();
+        compare(&path,&[Case {stdout:b"created\nacquired\ncold\n[129, -129, 131, -131, 99]\ncold\n[129, -129, 131, -131, 99]\nreleased\n",exit:70,defect:true,native_defect:"Int division by zero",..Case::success(b"")}]);
+    }
+}
+#[test]
+fn basic_array_rest_path_package_keeps_opaque_elements_aliases_and_generic_factories() {
+    compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-array-rest"),&[Case::success(b"[cell:1, cell:3, cell:4]\n[cell:4, cell:3, cell:1]\ncell:1\n[cell:3, cell:4]\nnone\nnone\nTrue\n[cell:1, cell:2, cell:3]\n")]);
+}
+
+#[test]
 fn basic_array_matches_original_raw_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-array.ssrg"),

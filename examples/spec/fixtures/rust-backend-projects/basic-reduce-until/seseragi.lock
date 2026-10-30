@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/reduce-until@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/reduce-until-values@0.0.0#path:vendor/values"
+name = "fixture/reduce-until-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:f5526c3a5a7b3606972ae0cb2532f13751e6044d238cc9a652b1ba72e66b6f32"
+content_digest = "sha256:285051f2d02126e9a89200d1ca6dd0c916b91257f822133655a7bf38f021b5e3"
+dependencies = []
+
+[[packages]]
+id = "fixture/reduce-until@0.0.0#workspace:."
+name = "fixture/reduce-until"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:76040358f9200ca7819350bd10cc887c7101b98ee9b064574e2e60ead045ee1c"
+content_digest = "sha256:6bec80d4115805bb569c910b108731cb39f9c5f6f9b48e4a896bff31e972abd2"
+dependencies = [
+  { import = "values", package = "fixture/reduce-until-values@0.0.0#path:vendor/values" },
+]

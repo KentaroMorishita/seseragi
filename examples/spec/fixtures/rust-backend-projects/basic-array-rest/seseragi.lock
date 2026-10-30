@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/array-rest@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/array-rest-values@0.0.0#path:vendor/values"
+name = "fixture/array-rest-values"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/values"
+manifest_digest = "sha256:a14d883ad4980fe2e948d4f035883a80549ea0609c5fdebb8a2df65a9ac379cb"
+content_digest = "sha256:e859fe49cb4c9413889611b98594dc1d5e283a7d1515c926e81d6d5c7c8015a3"
+dependencies = []
+
+[[packages]]
+id = "fixture/array-rest@0.0.0#workspace:."
+name = "fixture/array-rest"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:d11604b604a826b50ba5173419ac14bdbf71e9e9db5fa041ee3e7cd6b78128a9"
+content_digest = "sha256:329494de1bc3f40f58e24909145d393b793fed59b0ce65412c79ebb848e68a73"
+dependencies = [
+  { import = "values", package = "fixture/array-rest-values@0.0.0#path:vendor/values" },
+]

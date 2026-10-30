@@ -1,5 +1,69 @@
 # Scoped checks
 
+native collection.reduceUntilとNext/Doneはbackendの`--test reduce_until
+--test iterable_build`、runtimeの`collection_control_tests`、CLIの
+`basic_reduce_until_`で確認します。Done後のnext省略、空入力のcallback省略と
+同じinitial返却、curried callback各段階の一回評価、未使用tailを保持しない結果、
+選択した一般Iterableを保ちます。54件の偽造とunused program WASM3件を拒否し、
+function accumulator・保存/generic/partial・opaque2module/公開ReduceStep alias、
+元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
+3 source段階/iterate/next/両callback段階の7種Defect・finalizer/root0を検証します。
+最終SDKとrepository-wide gate・配布はcollection batchへ集約します。
+
+native Array/List/Set.fromIterableとMap.fromEntriesはbackendの
+`--test iterable_build --test iterator`、runtimeの`iterable_tests`、CLIの
+`basic_iterable_build_`で確認します。選択した一般Iterableの辞書を一度呼び、
+Iteratorの終端まで読みます。標準Array/List/Iterator/Map/Setと独自/輸入/parameter辞書、
+空入力、順序、重複keyの値更新と最初のkey保持、選択済みEq/Hashを扱います。
+標準辞書のinstantiationはchecked constraintから照合し、未証明providerは拒否します。
+88件の偽造とunused program WASM4件、opaque2module/alias/generic/保存、元raw TS
+両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
+iterate/step/Hash/Eq/最終sourceのDefect・finalizer/root0、10万要素List生成を検証します。
+最終SDKとrepository-wide gate・配布はcollection batchへ集約します。
+
+native Iteratorのunfold/nextはbackendの`--test iterator`、runtimeの
+`iterator_tests`、CLIの`basic_iterator_`で確認します。生成時のstep省略、
+同じcursorの再観測、返されたtailだけの前進、終端の再観測と10万stepの状態解放、
+保存/generic/partial・関数をyieldするケース・opaque2module/aliasを扱います。
+29件の偽造とunused program WASM2件を拒否し、元raw TS両profile strictとfresh
+Bun/Node/native、cold/Failure/4種Defect/finalizer/Ref cycle/root0を比較します。
+共有TSの保存参照/currying修復はdriverの`--test iterator_saved_functions`で
+同名user関数との区別を保ち、配布118でも再現した元の最小sourceもCLI比較します。
+source arityで既存のchecked runtime-call helperを使い、元SSRG/stdoutは変えません。
+共有loweringを変更したため最終SDKとrepository-wide gate・配布はbatchへ集約します。
+
+native Array/Listのsort/sortBy/groupByはbackendの`--test sequence_order`、
+runtimeの`sequence_order_tests`、CLIの`basic_sequence_order_`で確認します。
+TSと同じbottom-up stable mergeとキーの入力順一回評価、selected Ord/Eq/Hash、
+同値要素と最初のgroup keyの順序、collisionと独自の比較/等価性を保ちます。
+124件の偽造とunused program WASM6件、opaque2module/alias/generic/保存/partial、
+元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
+キー/比較/Hash/Eq/最終引数のDefect・finalizer/root0、10万要素groupを検証します。
+実装済みList sortの元拒否入力はそのままempty-PATHのemit成功側で確認します。
+最終SDKと全体gate・配布はArray/List batchへ集約します。
+
+native ListのfilterMap/flatMapはbackendの`--test list_transform
+--test basic_sequence`、runtimeの`list_transform_tests`、CLIの
+`basic_list_transform_`と元`basic_sequence_list_`で確認します。
+異なる出力型、空入力のcallback省略、保存/generic/partial・opaque2module、
+source順とimmutable入力、最初のDefect後の停止を保ちます。元raw TS両profileの
+strict/skipLibCheck:falseとfresh Bun/Node/native、cold/Failure/3種Defect/finalizer/root0、
+included edgeだけの保持と10万nodeの反復破棄、36件の偽造とunused program WASM2件を
+検証します。SDKと全体gate・配布はArray/List batchの最終integration pointで行います。
+
+
+native Arrayのempty/singleton/append/reverse/isEmpty/head/tail/filterMap/flatMapは、
+backendの`--test array_rest --test basic_array`、runtimeの`array_`、CLIの
+`basic_array_rest_`と元`basic_array_matches_original_raw_strict_ts_and_native`で確認します。
+appendのsuffix-first順、Nothingとsingleton tailのJust-empty、異なる出力型のcallback、
+空入力のcallback省略、immutable入力、再入、最初のDefect後の停止とRef cycle/root0を検証します。
+129件の偽造とunused program WASM9件を拒否し、元raw TS両profile strict/skipLibCheck:false・
+fresh Bun/Node/nativeとopaque2module・保存/generic/partial・cold/Failure/finalizerを比較します。
+共有修復はdriverの`--test array_alias_elements --test alias_type_functions
+--test inferred_collection_owner`で、qualifiedなopaque要素と異なる同名ownerの区別を保ちます。
+empty/appendの生成callにはchecked Array要素型を保持し、alias展開後も選択済みimport symbolを使います。
+SDKと全体gate・配布は次のbatchのintegration pointへ集約します。
+
 
 実ファイル/実FIFOの非同期I/Oだけをhost間で切り分ける場合は、
 `rust-backend.yml`のmanual input `async_io_only=true`を使います。
