@@ -1,23 +1,39 @@
-# Runnable sample catalog
+# サンプル集
 
-このdirectoryは、現行Rust版Seseragiでcompile・実行できる人向けsampleの正本です。
-PlaygroundとCLI sample checkは同じ`main.ssrg`を読みます。compilerの最小回帰caseは
-`examples/spec/artifacts/`、完成言語仕様の設計教材は`examples/spec/lessons/`に分離します。
+現在のコンパイラで実際に動くサンプルを集めたディレクトリです。
+Playground の「Discover」とCLI のサンプルチェックは、どちらもここにある同じ `main.ssrg` を読みます。
 
-## sampleを追加する
+## サンプルを動かす
 
-stable slugのdirectoryを一つ追加し、次を置きます。
+- **ブラウザで**: [Playground](https://seseragi.vercel.app/) の Discover から開けます
+- **CLI で**: `seseragi run examples/samples/<サンプル名>/main.ssrg`
+
+関連するディレクトリ:
+
+| ディレクトリ | 内容 |
+| --- | --- |
+| [`../tour/`](../tour/) | 言語を順番に学ぶ Tour のレッスン |
+| `../spec/artifacts/` | コンパイラの回帰テスト用の最小ケース |
+| `../spec/lessons/` | 言語仕様の説明用プログラム |
+
+---
+
+以下は、サンプルを追加・編集する人向けの説明です。
+
+## サンプルを追加する
+
+サンプル名（後から変えない ID）のディレクトリを作り、次のファイルを置きます。
 
 ```text
 examples/samples/<sample-id>/
   main.ssrg
   sample.json
   guide.md
-  stdin.txt       # stdinを使う場合だけ
-  stdout.txt      # interactive以外
+  stdin.txt       # 標準入力を使う場合だけ
+  stdout.txt      # 対話型でない場合
 ```
 
-複数fileのproject sampleは、通常のSeseragi packageと同じ構造を正本にします。
+複数ファイルからなるサンプルは、通常の Seseragi パッケージと同じ構成にします。
 
 ```text
 examples/samples/<sample-id>/
@@ -27,13 +43,13 @@ examples/samples/<sample-id>/
     feature/helper.ssrg
   sample.json
   guide.md
-  stdin.txt       # stdinを使う場合だけ
-  stdout.txt      # interactive以外
+  stdin.txt       # 標準入力を使う場合だけ
+  stdout.txt      # 対話型でない場合
 ```
 
-`seseragi.toml`の`layout.source`と`run.entry`、および`src/`以下がpackage topologyの
-SSOTです。generatorはsource treeを再帰的に検出します。`sample.json.workspace`は
-Playgroundで最初に開くtabと展開するfolderだけを保持し、entryやfile一覧を重複させません。
+ファイル構成は `seseragi.toml` の `layout.source` と `run.entry`、そして `src/` 以下のファイルで決まります。
+`sample.json` の `workspace` には、Playground で最初に開くタブと展開するフォルダだけを書きます。
+エントリやファイル一覧をここに重ねて書かないでください。
 
 ```json
 {
@@ -50,75 +66,89 @@ Playgroundで最初に開くtabと展開するfolderだけを保持し、entry�
 }
 ```
 
-現在のproject sampleは`project-flow-app`、`project-greeting`、
-`seseragi-landing-page`、`web-starter`の4件で、いずれもこのcanonical package形式です。
+現在の複数ファイルのサンプルは `project-flow-app`、`project-greeting`、
+`seseragi-landing-page`、`web-starter` の4つです。
 
-`sample.json`は[`sample.schema.json`](./sample.schema.json)に従います。基礎学習の正本は
-[`../tour/`](../tour/)の14 lessonです。通常PlaygroundのDiscoverへ出すRecipe / Showcaseは
-[`discover-groups.json`](./discover-groups.json)へ目的別に一度だけ配置します。Tour作成の根拠として
-保持する`lesson` sampleはDiscoverへ表示しません。
+### sample.json と Discover への表示
 
-`outputMode: "html"`のsampleは、Previewが注入するutility CSSと`class`のtokenを
-`samples:check`で照合します。静的なclassは直接の文字列または`cx [...]`へ置きます。
-任意式が返すutilityは`preview.dynamicUtilities`、見た目を持たないsemantic classは
-`preview.customClasses`へtoken単位で宣言します。custom classへCSSは追加されないため、
-固有の視覚値は`html.Style`を使います。
+- `sample.json` の形式は [`sample.schema.json`](./sample.schema.json) で決まっています。
+- 言語の基礎を順に学ぶ教材は [`../tour/`](../tour/) が担当します。
+- Discover に出すサンプル（レシピやショーケース）は、[`discover-groups.json`](./discover-groups.json) のどれか1つのグループに置きます。
+- Tour を作る元になった `lesson` 種別のサンプルは、Discover には表示しません。
 
-## Web UI catalog contract
+### HTML サンプルの CSS クラス
 
-`outputMode: "html"`のsampleは、見た目だけでなく「どの段階で、どの実行方式を、何のために
-選ぶか」をmanifestへ宣言します。
+`outputMode: "html"` のサンプルでは、Preview が用意するユーティリティ CSS と、ソース中の `class` が一致するかを `samples:check` が確かめます。
 
-- `experience`: `minimal` / `guided` / `showcase`
-- `architecture`: `static` / `dom-app` / `signal-run` / `signal-mount` /
-  `multi-module`
-- `focus`: `component` / `state` / `form` / `event` / `composition` / `project`
-- `difficulty`: sourceを読むために必要な言語知識
-- `prerequisites`: 先に開くsampleへのstable ID
-- `featured`: 現在のWeb UI能力を代表し、最初に選ぶ理由があるsampleだけ
+- 固定のクラスは、文字列か `cx [...]` に直接書きます。
+- 式で組み立てるユーティリティクラスは `preview.dynamicUtilities` に宣言します。
+- 見た目を持たない意味付けだけのクラスは `preview.customClasses` に宣言します。CSS は付かないので、見た目を変えたいときは `html.Style` を使います。
 
-text outputのsampleはWeb固有の三項目を宣言しません。HTML sampleは三項目をすべて必須とし、
-generatorが次の役割を一件以上要求します。
+## Web UI サンプルの分類
 
-| sample | experience | architecture | focus | 選ぶ理由 |
+`outputMode: "html"` のサンプルは、「どの段階の人が、どの書き方を、何のために見るサンプルか」を `sample.json` に書きます。
+
+| 項目 | 値 | 意味 |
+| --- | --- | --- |
+| `experience` | `minimal` / `guided` / `showcase` | 入門・解説付き・完成例 |
+| `architecture` | `static` / `dom-app` / `signal-run` / `signal-mount` / `multi-module` | 画面の動かし方 |
+| `focus` | `component` / `state` / `form` / `event` / `composition` / `project` | 主に見せたいもの |
+| `difficulty` | — | ソースを読むのに必要な言語知識 |
+| `prerequisites` | サンプル ID | 先に見ておくとよいサンプル |
+| `featured` | — | 今の Web UI 機能を代表する、最初に見るべきサンプルにだけ付ける |
+
+テキストを出力するサンプルには、`experience`・`architecture`・`focus` を書きません。
+HTML サンプルではこの3つが必須で、生成スクリプトは各役割のサンプルが1つ以上あることを確かめます。
+
+現在の HTML サンプル:
+
+| サンプル | experience | architecture | focus | 見どころ |
 | --- | --- | --- | --- | --- |
-| `html-components` | minimal | static | component | stateなしでprops / children / SSRを確認する |
-| `interactive-app` | minimal | dom-app | state | pure reducerをconvenience APIへ渡す |
-| `signal-run-route` | minimal | signal-run | state | 同じappのSignal・query・runを明示する |
-| `feature-composition` | guided | signal-run | composition | 複数Signalとcustom実行境界を明示する |
-| `form-todo` | showcase | signal-run | form | form・validation・複数eventを統合する |
-| `project-flow-app` | showcase | multi-module | project | feature ownershipをExplorerとmodule境界で追う |
-| `seseragi-landing-page` | showcase | multi-module | composition | 完成pageのsection・state・styleをmodule境界と一緒に追う |
+| `html-components` | minimal | static | component | 状態なしで props・子要素・サーバー側描画を確認する |
+| `interactive-app` | minimal | dom-app | state | 純粋な更新関数を簡易 API に渡す |
+| `signal-run-route` | minimal | signal-run | state | 同じアプリを Signal・クエリ・`run` で明示的に書く |
+| `feature-composition` | guided | signal-run | composition | 複数の Signal と、実行範囲の指定を組み合わせる |
+| `form-todo` | showcase | signal-run | form | フォーム・入力チェック・複数のイベントをまとめる |
+| `project-flow-app` | showcase | multi-module | project | 機能ごとのモジュール分割を Explorer で追う |
+| `seseragi-landing-page` | showcase | multi-module | composition | 完成したページのセクション・状態・スタイルをモジュール単位で追う |
 
-`signal-state`はDOMを持たないSignal foundationであり、このWeb分類には重ねません。現行7 sampleは
-静的component、対になる二つのruntime接続、feature合成、advanced form、projectという別の役割を持つため、
-obsoleteな重複として削除しません。各`guide.md`の先頭に「このsampleを選ぶ理由」を置き、
-minimalからguided、single-file Showcase、multi-moduleへ進むIDを明記します。
+`signal-state` は DOM を使わない Signal の基礎なので、この分類には入れません。
+上の7つはそれぞれ役割が違うので、似ていても重複として削除しないでください。
+各サンプルの `guide.md` の冒頭には「このサンプルを選ぶ理由」を書き、
+入門 → 解説付き → 1ファイルの完成例 → 複数モジュール、の順に次に見るサンプルを示します。
 
-## Showcase quality contract
+## ショーケースの品質基準
 
-`kind: "showcase"`かつ`outputMode: "html"`のsampleは、sample directoryへ
-`showcase-review.json`を置き、[`showcase-review.schema.json`](./showcase-review.schema.json)と
-[`docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md)に従います。Issue #244で指定されたlanding page
-screenshotとsource zipを実際に確認し、first view、layout rhythm、visual identity、interaction、
-code structureの意図を記録します。
+`kind: "showcase"` で `outputMode: "html"` のサンプルには、`showcase-review.json` を置きます。
+形式は [`showcase-review.schema.json`](./showcase-review.schema.json)、
+基準は [`docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md) に従います。
+最初の画面、レイアウトのリズム、見た目の個性、操作、コード構成について、意図を記録します。
 
-desktop、iPhone 390px、Android 360px、initial以外の代表state、Preview、mobile Codeを人間が
-reviewし、evidenceを保存してから`approval.status`を`approved`にします。CI green、genericな
-card-grid、placeholderだけではShowcaseを追加できません。承認後のreview artifactは#219の
-`visual-baselines.review.json`へPNGと一緒にSHA-256を固定します。
+人がデスクトップ、iPhone（幅390px）、Android（幅360px）、初期状態以外の代表的な状態、Preview、モバイルのコード表示を確認し、
+その記録を保存してから `approval.status` を `approved` にします。
+CI が通っただけ、よくあるカードの並び、プレースホルダーだけ、という状態ではショーケースとして追加できません。
+承認したら、スクリーンショットの PNG とその SHA-256 を `visual-baselines.review.json` に記録します。
 
-## Web UI source readability contract
+## HTML サンプルのソースの書き方
 
-HTML sampleのsource自体を、利用者がコピーできるcanonical exampleとして扱います。基本のsection順は
-`import`、domainの`type` / `struct`、`update`、style helper、画面上の意味単位のcomponent、
-`mount` / `main`です。説明は長いinline commentへ詰めず、関数名・型と`guide.md`へ分けます。
+HTML サンプルのソースは、利用者がそのままコピーして使うお手本です。読みやすさを優先してください。
 
-### utility class
+基本の並び順は次のとおりです。
 
-1〜4 tokenで80文字以内の局所的な`class`は直接のliteralで構いません。5 token以上、または
-propertyを含む行が80文字を超える場合は、sample内の実在する`cx` helperとnamed valueへ分けます。
-`cx [...]`は一行一tokenにし、formatter後も縦の配列をcanonical sourceとして保持します。
+1. `import`
+2. データの型（`type` / `struct`）
+3. `update`
+4. スタイルの補助関数
+5. 画面の部品（意味のまとまりごとのコンポーネント）
+6. `mount` / `main`
+
+説明は長いコメントにせず、関数名・型名と `guide.md` で伝えます。
+
+### クラスの書き方
+
+1〜4個で80文字以内に収まるクラスは、文字列のまま書いて構いません。
+5個以上になる場合や、行が80文字を超える場合は、`cx` 関数と名前付きの値に分けます。
+`cx [...]` は1行に1クラスずつ書きます（フォーマッタをかけてもこの形が保たれます）。
 
 ```seseragi
 fn cx classes: Array<String> -> String =
@@ -133,33 +163,42 @@ let cardClass =
   ]
 ```
 
-single-file sampleは`cx`を同じsource内へ定義します。multi-file sampleはworkspaceの
-`styles.ssrg`から`pub fn cx`を公開し、利用moduleが明示importします。これによりExplorerから
-helperの実装へ辿れます。巨大なtemplate literalで動的classを組み立てず、状態ごとの意味を持つ
-named class valueを`match` / `if`で選びます。
+- 1ファイルのサンプルでは、`cx` を同じファイルに定義します。
+- 複数ファイルのサンプルでは、`styles.ssrg` に `pub fn cx` を置き、使う側で明示的に import します。Explorer から実装をたどれるようにするためです。
+- 状態によって変わるクラスは、大きなテンプレート文字列で組み立てず、意味のある名前を付けた値を `match` や `if` で選びます。
 
-### `html.Style`
+### `html.Style` を使う場面
 
-utility contractにない値、動的な色・幅・transition、CSS custom propertyのような意味を持つ
-visual tokenには`html.style`を使います。同じstyle objectを二回以上使う場合、またはelement内で
-複数propertyを持つ場合は、`heroStyle`、`progressStyle mode`のようなnamed value / functionへ
-抽出します。URLを含むsecurity-sensitive attributeはstyleへ逃がさず、`WebUrl`の公開契約を使います。
+ユーティリティ CSS にない値や、動的に変わる色・幅・トランジション、CSS カスタムプロパティには `html.style` を使います。
+同じスタイルを2回以上使う場合や、1つの要素に複数のプロパティを指定する場合は、
+`heroStyle` や `progressStyle mode` のように名前を付けた値・関数に切り出します。
+URL を含む属性はスタイルで回避せず、`WebUrl` を使ってください（セキュリティのため）。
 
-### component boundary
+### コンポーネントの分け方
 
-page全体を一つの巨大な`view`へ置かず、hero、form、summary、item list、empty state、action groupなど
-画面上の意味単位へ分けます。単なる一行wrapperは増やさず、propsの意味が関数名と型から読める境界を
-選びます。`samples:check`は長大な直接`class`、横に圧縮された大きな`cx`配列、所在が追えない
-`cx` helperを拒否します。
+ページ全体を1つの大きな `view` に詰め込まず、ヒーロー、フォーム、サマリー、一覧、空のときの表示、ボタン群など、
+画面上の意味のまとまりごとに分けます。
+ただし、1行だけの薄いラッパーを増やす必要はありません。関数名と型を見れば props の意味が分かる単位で区切ります。
+
+`samples:check` は、長すぎる `class` の直書き、1行に詰め込まれた大きな `cx`、定義元をたどれない `cx` を拒否します。
+
+## 生成とチェック
 
 ```sh
 cd apps/playground
 bun run samples:generate
 ```
 
-generatorはdirectoryを自動発見し、metadata schema、ID重複、source/output欠落、前提graphの
-循環、Discover groupのkind・参照・一意配置を検査します。生成manifestはsource hashを持ち、
-`samples:check`がstaleを検出します。中央のimport一覧やID対応表は手で編集しません。
+生成スクリプトはディレクトリを自動で見つけ、次をチェックします。
 
-`stdout.txt`はbrowser/CLI hostが返すstdoutとbyte単位で一致させ、不要な末尾newlineを
-追加しません。説明はsourceへ大量に埋め込まず`guide.md`へ書きます。
+- `sample.json` の形式
+- ID の重複
+- ソースや期待出力ファイルの不足
+- `prerequisites` の循環
+- Discover のグループ設定（種別・参照先・重複なく1か所に置かれているか）
+
+生成されるマニフェストにはソースのハッシュが入っていて、古くなっていれば `samples:check` が検出します。
+ID の対応表などを手で編集する必要はありません。
+
+`stdout.txt` は、実際の標準出力とバイト単位で一致させます。余分な末尾の改行は入れないでください。
+説明はソースに書き込まず、`guide.md` に書きます。
