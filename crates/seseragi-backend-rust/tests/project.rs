@@ -36,6 +36,46 @@ fn canonical_project_owners_and_entry_module_are_checked() {
     assert!(emit_rust_project(&duplicate, &entry, "probe").is_err());
 }
 
+#[test]
+fn inherent_method_owners_require_a_local_nominal_declaration_and_unique_symbols() {
+    let module = seseragi_driver::compile_core_module(seseragi_driver::CompileInput::new(
+        "methods.ssrg",
+        "fixture/methods::main",
+        include_str!("../../../examples/spec/fixtures/rust-backend/generic-struct-methods.ssrg"),
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_project(&[&module], &module.module, "probe").unwrap();
+    let index = module
+        .functions
+        .iter()
+        .position(|function| function.symbol.ends_with("::Box::map"))
+        .unwrap();
+    for symbol in [
+        "other/main::Box::map",
+        "fixture/methods::main::Unknown::map",
+        "fixture/methods::main::Box::map::nested",
+        "fixture/methods::main::Box::",
+    ] {
+        let mut forged = module.clone();
+        forged.functions[index].symbol = symbol.into();
+        let error = emit_rust_project(&[&forged], &forged.module, "probe").unwrap_err();
+        assert_eq!(
+            error.message, "Rust backend: invalid or duplicate canonical symbol owner",
+            "{symbol}"
+        );
+        assert_eq!(error.origin, Some(forged.functions[index].origin.clone()));
+        assert_eq!(error.module.as_deref(), Some(forged.module.as_str()));
+    }
+    let mut duplicate = module.clone();
+    duplicate.functions.push(module.functions[index].clone());
+    let error = emit_rust_project(&[&duplicate], &duplicate.module, "probe").unwrap_err();
+    assert_eq!(
+        error.message,
+        "Rust backend: invalid or duplicate canonical symbol owner"
+    );
+}
+
 fn counterfeit_import(value: &mut serde_json::Value, kind: usize) -> usize {
     match value {
         serde_json::Value::Object(fields) => {

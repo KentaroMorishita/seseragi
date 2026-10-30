@@ -46,6 +46,24 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
   complete only when parser/semantics/lowering/runtime behavior and diagnostics
   are verified at the appropriate boundaries.
 
+## Writing documentation and comments
+
+Docs are read by people who did not see your work. Write for that reader.
+
+- Decide the reader first (a first-time user, a contributor, a spec reader)
+  and write only what that reader needs, in the order they need it.
+- Japanese docs are written in natural Japanese. Do not leave English jargon
+  in Japanese sentences (e.g. "canonical", "contract", "slice", "boundary",
+  "正本", "縦slice"); use plain words or explain the term once. Proper names,
+  language keywords, commands, and type names stay as they are.
+- Never put work logs in docs, issues, PR bodies, or code comments: no CI run
+  IDs, PIDs, byte counts freed, digests, commit hashes, or "verified X then Y"
+  narratives. State the behaviour, the reason, and how to check it.
+- Prefer short sentences, one idea per sentence, and lists or tables for
+  parallel items. Put details behind links instead of inlining everything.
+- Keep `docs/spec/` normative: change wording without changing a rule unless
+  the change is intended, and say so in the PR when a rule changes.
+
 ## Testing and commits
 
 - Add focused Rust tests and execution fixtures for compiler changes.

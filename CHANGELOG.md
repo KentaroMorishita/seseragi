@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.128] - 2026-10-31
+
+### Fixed
+
+- Build inherent methods of generic structs and ADTs natively, including methods with their own type parameters, instead of failing with an invalid canonical symbol owner.
+
 ## [0.61.127] - 2026-10-30
 
 ### Added

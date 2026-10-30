@@ -55,6 +55,15 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn generic_struct_impl_methods_keep_impl_and_method_type_parameters() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/generic-struct-methods.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/generic-struct-methods.stdout")
+            .trim_end(),
+    );
+}
+
+#[test]
 fn scalar_adt_roundtrip_bounds_actual_system_allocations_and_releases_every_node() {
     let artifact = emit(include_str!(
         "../../../examples/spec/fixtures/rust-backend/char-roundtrip-kernel.ssrg"

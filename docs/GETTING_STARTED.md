@@ -1,64 +1,72 @@
-# Getting Started: local Web app
+# はじめての Web アプリ
 
-この手順は、SeseragiのWeb projectを作成し、VS Codeで編集し、browserで確認して、
-production buildを作るまでの最短経路です。project固有のpackage managerや依存installは
-必要ありません。
+Seseragi で Web アプリのプロジェクトを作り、VS Code で編集して、ブラウザで動作を確かめ、
+本番用にビルドするまでの手順です。npm などのパッケージマネージャや、プロジェクトごとの依存関係のインストールは要りません。
 
-## 1. toolchainをinstallする
+## 1. ツールをインストールする
 
-hostにはSeseragi CLIとBunが必要です。CLIは
-[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases)から
-OS / CPUに合うnative archiveを取得し、展開した`seseragi`をPATHの通った場所へ配置します。
-Bunは[公式のインストール手順](https://bun.sh/docs/installation)に従って導入してください。
-native archiveを使う場合、Rustは不要です。Rustが必要なのはCLIをsourceからbuildする場合です。
-すでに導入済みなら、同じ端末で両方のversionを確認して次へ進みます。
+必要なのは Seseragi の CLI と [Bun](https://bun.sh/) の2つです。
+
+- **CLI**: [GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から OS と CPU に合ったアーカイブをダウンロードし、
+  中の `seseragi` を PATH の通った場所に置きます。
+- **Bun**: [公式のインストール手順](https://bun.sh/docs/installation)に従ってインストールします。
+
+Rust は要りません（CLI をソースからビルドする場合だけ必要です）。
+インストールできたら、バージョンが表示されることを確認します。
 
 ```sh
 seseragi --version
 bun --version
 ```
 
-VS Codeを使う場合は、GitHub ReleaseからOS / CPUに合う
-`seseragi-v<version>-vscode-<platform>.vsix`を取得し、
-**Extensions: Install from VSIX...** でinstallします。VSIXには対応するnative LSPが
-同梱されるため、別のlanguage server installは不要です。
+VS Code を使う場合は、同じ GitHub Releases から OS と CPU に合った
+`seseragi-v<version>-vscode-<platform>.vsix` をダウンロードし、
+コマンドパレットの **Extensions: Install from VSIX...** でインストールします。
+LSP は VSIX に入っているので、別途インストールする必要はありません。
 
-## 2. Web projectを作る
+## 2. プロジェクトを作る
 
-存在しないdestinationを指定します。package名には小文字ASCII、数字、途中の`-`が使えます。
+まだ存在しないディレクトリ名を指定します。
+名前には小文字の英字、数字、`-`（先頭と末尾以外）が使えます。
 
 ```sh
 seseragi new web hello-web
 cd hello-web
 ```
 
-生成されるのは通常のfilesystem packageです。
+次のファイルが作られます。
 
 ```text
 hello-web/
-├── seseragi.toml
-├── seseragi.lock
+├── seseragi.toml   # プロジェクトの設定
+├── seseragi.lock   # 依存関係を固定するファイル
 └── src/
-    ├── app.ssrg
-    └── main.ssrg
+    ├── app.ssrg    # アプリ本体（状態・更新・画面）
+    └── main.ssrg   # ブラウザの DOM につなぐ入口
 ```
 
-`seseragi.toml`は通常のproject manifestで、`run.target = "web"`を持ちます。
-sourceはPlaygroundのcanonical `web-starter` sampleと同一で、scaffold専用の別実装では
-ありません。既存のfileやdirectoryは上書きしません。
+中身は Playground のサンプル `web-starter` と同じです。
+既にあるファイルやディレクトリを上書きすることはありません。
 
-`seseragi.lock`はpackage graph、toolchain database、Provider選択をexactに固定します。
-manifestやpath dependencyを変更したときだけ、明示的に更新してcommitします。
+### seseragi.lock について
+
+`seseragi.lock` は、依存しているパッケージや使うランタイムを固定するファイルです。
+Git にコミットしてください。
+
+`seseragi.toml` や依存関係を変えたときは、次のコマンドで更新します。
+自動では更新されません。
 
 ```sh
 seseragi lock update
 ```
 
-`run` / `build` / `dev`はlockfileがない、またはmanifestとずれていると
-`SES-K0102`で停止し、自動更新しません。`dev`中の通常のsource編集は許可しますが、
-dependency graphやProvider要件が変わった場合は再度`seseragi lock update`が必要です。
+lock ファイルがない場合や設定と食い違っている場合、`run` / `build` / `dev` は
+エラー `SES-K0102` で止まります。そのときは上のコマンドを実行してください。
+`dev` の実行中にソースを編集するだけなら、更新は要りません。
 
-独自のtitle/meta/faviconを使う場合は、生成projectへ次を追加できます。
+### タイトルや favicon を変えたいとき
+
+`seseragi.toml` に次を追加すると、自分で用意した HTML と静的ファイルを使えます。
 
 ```toml
 [web]
@@ -66,45 +74,52 @@ index = "web/index.html"
 public = "public"
 ```
 
-`web/index.html`のheadに `<!-- seseragi:head -->`、bodyの`<div id="app"></div>`の後へ
-`<!-- seseragi:entry -->` を一つずつ置くと、CLIがCSS/JSを接続します。`public/images/favicon.svg`等は
-同じ相対pathで配信されます。設定追加後に`seseragi lock update`を実行します。dev中はHTMLとassetの編集も
-rebuildされ、通常buildの前には変更したcontentのlockを更新します。詳細は
-[Web document contract](spec/11-packages-and-projects.md#web-documentとpublic-assets)を参照してください。
+`web/index.html` には、次の2つの目印を1つずつ置きます。
 
-## 3. VS Codeで開く
+- `<head>` の中に `<!-- seseragi:head -->`（CSS が入ります）
+- `<div id="app"></div>` の後に `<!-- seseragi:entry -->`（JavaScript が入ります）
+
+`public/` に置いたファイル（例: `public/images/favicon.svg`）は、同じパスで配信されます。
+設定を追加したら `seseragi lock update` を実行してください。
+詳しくは [言語仕様の該当節](spec/11-packages-and-projects.md#web-documentとpublic-assets) を参照してください。
+
+## 3. VS Code で開く
 
 ```sh
 code .
 ```
 
-`src/app.ssrg`を開くと、installed VSIXのLSPがmanifestと二つのmoduleを同じprojectとして
-解析します。`StarterState`、`StarterAction`、`update`、Signal viewがapp側にあり、
-`main.ssrg`はDOM targetへ接続します。
+`src/app.ssrg` を開くと、補完・ホバー・エラー表示が使えます。
+アプリの状態（`StarterState`）、操作（`StarterAction`）、状態を更新する `update`、
+画面を作る Signal は `app.ssrg` にあり、`main.ssrg` がそれをブラウザに表示します。
 
-## 4. browserで開発する
+## 4. ブラウザで確認しながら開発する
 
-package rootでdevelopment serverを起動します。
+プロジェクトのディレクトリで開発サーバーを起動します。
 
 ```sh
 seseragi dev --open
 ```
 
-既定では`http://127.0.0.1:3000/`を開きます。`src/**/*.ssrg`を保存するとrebuild後に
-browserがreloadされます。compile error中は最後に成功した画面を維持し、修正すると自動で
-復旧します。VS Codeからは **Seseragi: Start Development Server** でも同じCLIを起動できます。
+ブラウザで `http://127.0.0.1:3000/` が開きます。
+`src/` のファイルを保存すると、自動でビルドし直してページを再読み込みします。
+コンパイルエラーがある間は最後にビルドできた画面のままで、直すと元に戻ります。
 
-## 5. production buildを作る
+VS Code のコマンド **Seseragi: Start Development Server** からも起動できます。
 
-development serverを`Ctrl-C`で停止し、同じpackageをbuildします。
+## 5. 本番用にビルドする
+
+開発サーバーを `Ctrl-C` で止めてから、ビルドします。
 
 ```sh
 seseragi build .
 ```
 
-自己完結した静的siteが`dist/`へ生成されます。`index.html`、bundled JavaScript、CSS、
-source mapを含み、repositoryやPlaygroundを参照しません。VS Codeの
-**Seseragi: Build Web App** も同じbuild commandを使います。
+`dist/` に、そのまま公開できる静的サイトが出力されます。
+`index.html`、JavaScript、CSS、ソースマップが入っています。
+VS Code のコマンド **Seseragi: Build Web App** でも同じことができます。
 
-次は、[Runnable samples](../examples/samples/README.md)でより大きなSignal appを開くか、
-[A Tour of Seseragi](https://seseragi.vercel.app/tour/)で言語機能を順に確認できます。
+## 次のステップ
+
+- [サンプル集](../examples/samples/README.md) — もっと大きな Signal アプリの例があります
+- [A Tour of Seseragi](https://seseragi.vercel.app/tour/) — 言語の機能を順番に学べます
