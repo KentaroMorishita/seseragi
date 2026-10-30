@@ -6,6 +6,15 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+tagged ADTの派生JSON codecはbackendの`--test basic_json_derived_adts`、runtimeの
+`json_derived_adt_tests`、CLIの`--test basic_standard basic_json_derived_adts_`で確認します。
+payloadなしとUnit payload、generic/recursive、opaque/importedと保存methodを区別します。
+tag→unknown field→payloadの検査順・path、選択branchだけの遅延辞書構築、canonicalな
+variant owner/kind/子evidence、元UTF-8位置の拒否、新program WASM拒否を保ちます。
+元31ケースと既存canonical spec、通常2 module packageをraw TS両profile strictとfresh
+Bun/Node/nativeで比較し、cold/Failure/Defect/finalizer/Ref cycle/root0、encode/decode両方の
+128 frame host limitを確認します。正規WASMとrepository-wide gateは最終batchで行います。
+
 transparent newtypeの派生JSON codecはbackendの`--test basic_json_derived_newtypes`とCLIの
 `--test basic_standard basic_json_derived_newtypes_`で確認します。generic/recursive・保存method・
 opaque/importedの通常2 module packageと、tagを加えないwireと失敗path、cold/Failure/Defect/

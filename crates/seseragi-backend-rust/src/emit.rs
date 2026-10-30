@@ -35,6 +35,7 @@ mod json;
 mod json_codecs;
 mod json_container_codecs;
 mod json_decoders;
+mod json_derived_adts;
 mod json_derived_newtypes;
 mod json_derived_structs;
 mod lists;
@@ -196,6 +197,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_json_codecs.rs"));
     output.push_str(include_str!("runtime_json_decoders.rs"));
     output.push_str(include_str!("runtime_json_container_codecs.rs"));
+    output.push_str(include_str!("runtime_json_derived_adts.rs"));
     output.push_str(include_str!("runtime_int_parse.rs"));
     output.push_str(include_str!("runtime_float_parse.rs"));
     output.push_str(include_str!("runtime_float_conversion.rs"));

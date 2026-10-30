@@ -1,0 +1,69 @@
+import * as json from "std/json"
+import * as arrays from "std/array"
+import * as text from "std/text"
+type State<A> deriving JsonEncode, JsonDecode = | Empty | Loaded A | Pair (A,A) | Clear Unit
+type Tree<A> deriving JsonEncode, JsonDecode = | Leaf A | Branch (Tree<A>,Tree<A>)
+type Event deriving JsonEncode, JsonDecode = | Idle | Named { label: String, count: Int }
+type Guard = | Guard Int
+instance JsonEncode<Guard> { fn encodeJson value: Guard -> json.Json = match value { Guard n -> encodeJson n } }
+instance JsonDecode<Guard> { fn decodeJson value: json.Json -> Either<json.DecodeError, Guard> = match decodeJson<Int> value { Left error -> Left error; Right n -> Right (Guard (if n == 3 then n / 0 else n)) } }
+fn path index: Int -> parts: Array<json.JsonPathSegment> -> String = match arrays.get index parts {
+  Nothing -> ""
+  Just (json.JsonField name) -> "." + name + path (index + 1) parts
+  Just (json.JsonIndex value) -> "[" + show value + "]" + path (index + 1) parts
+}
+fn kind value: json.DecodeErrorKind -> String = match value {
+  json.ExpectedJsonType name -> "expected:" + name
+  json.MissingJsonField name -> "missing:" + name
+  json.UnknownJsonField name -> "unknown-field:" + name
+  json.UnknownJsonTag name -> "unknown-tag:" + name
+  json.InvalidJsonValue message -> "invalid:" + message
+}
+fn read<A> source: String -> String where JsonDecode<A>, JsonEncode<A> = {
+  let decode: String -> Either<json.JsonReadError, A> = json.decodeString
+  let encode: A -> String = json.encodeString
+  match decode source {
+    Left (json.JsonDecodeFailure error) -> "error:" + path 0 error.path + ":" + kind error.kind
+    Left _ -> "syntax"
+    Right value -> "ok:" + encode value
+  }
+}
+fn methods<A> value: A -> String where JsonEncode<A>, JsonDecode<A> = {
+  let encode: A -> json.Json = encodeJson
+  let decode: json.Json -> Either<json.DecodeError, A> = decodeJson
+  match decode (encode value) { Left error -> kind error.kind; Right result -> json.stringify (encode result) }
+}
+pub fn probe -> String = text.join "|" [
+  read<State<Int>> "{\"tag\":\"Empty\"}",
+  read<State<String>> "{\"value\":\"雪🙂\",\"tag\":\"Loaded\"}",
+  read<State<Int>> "{\"value\":[1,2],\"tag\":\"Pair\"}",
+  read<State<Int>> "{\"tag\":\"Clear\",\"value\":null}",
+  read<Tree<Int>> "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":2},{\"tag\":\"Leaf\",\"value\":3}]}]}",
+  read<Event> "{\"tag\":\"Idle\"}",
+  read<Event> "{\"tag\":\"Named\",\"value\":{\"label\":\"雪🙂\",\"count\":42}}",
+  read<Array<State<Int>>> "[{\"tag\":\"Loaded\",\"value\":7},{\"tag\":\"Empty\"}]",
+  read<State<Maybe<Int>>> "{\"tag\":\"Loaded\",\"value\":null}",
+  read<State<Int>> "false",
+  read<State<Int>> "{}",
+  read<State<Int>> "{\"extra\":false}",
+  read<State<Int>> "{\"tag\":false,\"extra\":1}",
+  read<State<Int>> "{\"tag\":\"Other\",\"extra\":1}",
+  read<State<Int>> "{\"tag\":\"Empty\",\"value\":null}",
+  read<State<Int>> "{\"tag\":\"Empty\",\"z\":1,\"a\":2}",
+  read<State<Int>> "{\"tag\":\"Loaded\"}",
+  read<State<Int>> "{\"tag\":\"Loaded\",\"extra\":1}",
+  read<State<Int>> "{\"tag\":\"Loaded\",\"value\":false}",
+  read<State<Guard>> "{\"tag\":\"Pair\",\"value\":[3]}",
+  read<State<Int>> "{\"tag\":\"Pair\",\"value\":[1,false]}",
+  read<State<Int>> "{\"tag\":\"Clear\",\"value\":7}",
+  read<Tree<Int>> "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\"}]}",
+  read<Tree<Int>> "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":false}]}",
+  read<Event> "{\"tag\":\"Named\",\"value\":{\"label\":3,\"count\":1,\"extra\":false}}",
+  read<State<Guard>> "{\"tag\":\"Loaded\",\"value\":3,\"extra\":false}",
+  read<State<Guard>> "{\"tag\":\"Empty\"}",
+  methods (Loaded [1,2]),
+  methods<Tree<String>> (Branch (Leaf "a",Leaf "b")),
+  methods<State<Int>> Empty,
+  methods<State<String>> (Clear ())
+]
+pub effect fn main = println (probe ())

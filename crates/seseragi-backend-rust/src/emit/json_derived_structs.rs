@@ -33,6 +33,13 @@ impl Backend<'_> {
                 .iter()
                 .find(|s| s.symbol == *adt_symbol)
                 .map(|s| (&s.symbol, &s.type_parameters))
+                .or_else(|| {
+                    self.module
+                        .adts
+                        .iter()
+                        .find(|a| a.symbol == *adt_symbol && !a.newtype)
+                        .map(|a| (&a.symbol, &a.type_parameters))
+                })
         };
         let Some((symbol, parameters)) = declaration else {
             return false;

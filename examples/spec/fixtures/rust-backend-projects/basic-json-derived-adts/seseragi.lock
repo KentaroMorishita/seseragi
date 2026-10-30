@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/basic-json-derived-adts@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/basic-json-derived-adts@0.0.0#workspace:."
+name = "fixture/basic-json-derived-adts"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:375c1190cb223fcafc4efbf4bcc11bd1147457b66feb342c046fa02a7e53d16d"
+content_digest = "sha256:6d7580da95c3f7c9c0342dc44237dbd318903e65775ed967382a1f7f693efa4e"
+dependencies = [
+  { import = "cells", package = "fixture/json-adt-cells@0.0.0#path:vendor/cells" },
+]
+
+[[packages]]
+id = "fixture/json-adt-cells@0.0.0#path:vendor/cells"
+name = "fixture/json-adt-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:2d55684af7d052cbab111dd007f870e1242851b338930573885481ecc7200ecf"
+content_digest = "sha256:2ffdc99535832049fc36a7922349b4e92422ee03582c64ade50cf573a85ed0ee"
+dependencies = []

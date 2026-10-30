@@ -12,6 +12,16 @@ impl Backend<'_> {
             transparent_newtype: true,
         } = &instance.implementation
         else {
+            if let CoreInstanceImplementation::DerivedJson {
+                adt_symbol,
+                transparent_newtype: false,
+                ..
+            } = &instance.implementation
+            {
+                if self.module.adts.iter().any(|a| a.symbol == *adt_symbol) {
+                    return self.json_derived_adt_dictionary(instance, scope).map(Some);
+                }
+            }
             return self.json_derived_struct_dictionary(instance, scope);
         };
         self.json_codec_target()?;

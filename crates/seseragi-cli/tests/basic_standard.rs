@@ -958,6 +958,141 @@ fn basic_json_derived_newtypes_keep_transparent_original_cross_target_results() 
 }
 
 #[test]
+fn basic_json_derived_adts_keep_original_strict_ts_bun_node_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-json-derived-adts.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-json-derived-adts.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_json_derived_adts_keep_the_original_canonical_spec_source() {
+    compare(
+        &root().join("examples/spec/artifacts/schema-1/derived-json-codecs/main.ssrg"),
+        &[Case::success(concat!(
+            "{\"name\":\"count\",\"value\":3}\n",
+            "{\"name\":\"count\",\"value\":3}\n",
+            "7\n",
+            "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}\n",
+            "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}\n",
+            "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}\n",
+            "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}\n"
+        ).as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_derived_adts_package_keeps_generic_opaque_and_saved_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-json-derived-adts"),
+        &[Case::success("{\"tag\":\"Both\",\"value\":[7,[1,null,2]]}:{\"tag\":\"Both\",\"value\":[7,[1,null,2]]}:[{\"tag\":\"Both\",\"value\":[7,\"雪🙂\"]}]\n".as_bytes())],
+    );
+}
+
+#[test]
+fn basic_json_derived_adts_keep_cold_replay_failure_defects_and_captured_ref_cycles() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = reader<Rows> "))
+        .unwrap();
+    let literal = old.split_once("reader<Rows> ").unwrap().1;
+    let wire: String = serde_json::from_str(literal).unwrap();
+    let wrapped = format!("{{\"tag\":\"Wrapped\",\"value\":{wire}}}");
+    let replacement = format!(
+        "  let render = reader<Wrapped<Rows>> {}",
+        serde_json::to_string(&wrapped).unwrap()
+    );
+    let source = format!(
+        "type Wrapped<A> deriving JsonEncode, JsonDecode = | Wrapped A\n{}",
+        original.replace(old, &replacement)
+    );
+    let original_expected = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.stdout"
+    );
+    let expected = original_expected
+        .lines()
+        .map(|line| {
+            if line.starts_with('{') {
+                format!("{{\"tag\":\"Wrapped\",\"value\":{line}}}\n")
+            } else {
+                format!("{line}\n")
+            }
+        })
+        .collect::<String>();
+    let prefix = expected.find("recovered: typed").unwrap();
+    for (name, changed, output, defect, message) in [
+        (
+            "cold-replay",
+            source.clone(),
+            expected.as_bytes(),
+            false,
+            "",
+        ),
+        (
+            "body-defect",
+            source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+            &expected.as_bytes()[..prefix],
+            true,
+            "deliberate",
+        ),
+        (
+            "encoder-defect",
+            source.replace(
+                "9007199254740992000000000001.100",
+                "1e99999999999999999999999999999999999999999",
+            ),
+            b"created\nacquired\ncold\nreleased\n".as_slice(),
+            true,
+            "Decimal canonical spelling exceeds host limits",
+        ),
+    ] {
+        let path = scratch.0.join(format!("adt-{name}.ssrg"));
+        fs::write(&path, changed).unwrap();
+        compare(
+            &path,
+            &[Case {
+                name,
+                stdout: output,
+                exit: if defect { 70 } else { 0 },
+                defect,
+                native_defect: message,
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_json_derived_adts_recursive_encode_and_decode_unwind_the_host_limit() {
+    let scratch = Scratch::new();
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-json-container-effects.ssrg"
+    );
+    let old = original
+        .lines()
+        .find(|line| line.starts_with("  let render = "))
+        .unwrap();
+    let declaration="type Deep deriving JsonEncode, JsonDecode = | End | Next Deep\nfn deep n: Int -> Deep = if n <= 0 then End else Next (deep (n - 1))\nfn wire n: Int -> String = if n <= 0 then \"{\\\"tag\\\":\\\"End\\\"}\" else \"{\\\"tag\\\":\\\"Next\\\",\\\"value\\\":\" + wire (n - 1) + \"}\"\n";
+    for (name,render) in [
+        ("encode","  let render = \\_: Unit -> json.encodeString (deep 512)"),
+        ("decode","  let render = \\_: Unit -> match json.decodeString<Deep> (wire 512) { Left _ -> \"domain\"; Right value -> json.encodeString value }"),
+    ] {
+        let path=scratch.0.join(format!("adt-host-limit-{name}.ssrg"));fs::write(&path,format!("{declaration}{}",original.replace(old,render))).unwrap();
+        let out=scratch.0.join(format!("native-{name}"));
+        successful(bounded(Command::new(env!("CARGO_BIN_EXE_seseragi")).args(["experimental","build-native"]).arg(&path).args(["--entry","main","--out-dir"]).arg(&out),&scratch.0));
+        let result=bounded(Command::new(out.join(format!("program{}",std::env::consts::EXE_SUFFIX))).env("SESERAGI_NATIVE_METRICS","1"),&scratch.0);
+        assert_eq!(result.status.code(),Some(70),"{name}:{result:?}");assert_eq!(result.stdout,b"created\nacquired\ncold\nreleased\n");
+        let stderr=String::from_utf8_lossy(&result.stderr);assert!(stderr.contains("JSON codec nesting exceeds host limits")&&stderr.contains("managed-live=0"),"{name}:{stderr}");
+    }
+}
+
+#[test]
 fn newtype_literal_representations_keep_original_strict_release_types_and_values() {
     compare(
         &root().join(

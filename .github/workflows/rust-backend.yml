@@ -205,6 +205,7 @@ jobs:
           cargo test --locked -p seseragi-backend-rust --lib runtime::json_codec_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::json_decoder_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::json_container_codec_tests
+          cargo test --locked -p seseragi-backend-rust --lib runtime::json_derived_adt_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::hashing_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::map_tests
           cargo test --locked -p seseragi-backend-rust --lib runtime::set_tests
