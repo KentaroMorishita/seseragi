@@ -13,6 +13,7 @@ use std::collections::{BTreeMap, BTreeSet};
 mod array_operations;
 mod arrays;
 mod big_int;
+mod big_int_traits;
 mod booleans;
 mod bytes;
 mod calls;
@@ -188,7 +189,9 @@ fn emit_body(
     output.push_str(include_str!("runtime_sequence.rs"));
     output.push_str(include_str!("runtime_text.rs"));
     output.push_str(include_str!("runtime_bytes.rs"));
+    output.push_str(include_str!("runtime_big_int_value.rs"));
     output.push_str(include_str!("runtime_big_int.rs"));
+    output.push_str(include_str!("runtime_big_int_traits.rs"));
     output.push_str(include_str!("runtime_decimal.rs"));
     output.push_str(include_str!("runtime_hashing.rs"));
     output.push_str(include_str!("runtime_map.rs"));
@@ -536,6 +539,10 @@ impl Backend<'_> {
                 values.push(dictionary);
                 continue;
             }
+            if let Some(dictionary) = self.big_int_trait_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.primitive_hash_dictionary(selected, scope)? {
                 self.capabilities.insert("hash".into());
                 values.push(dictionary);
@@ -584,6 +591,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.decimal_show_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.big_int_display_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -1139,6 +1150,11 @@ impl Backend<'_> {
                 }
                 if let Some(value) = self
                     .decimal_comparison_binary(operator, left, right, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) = self
+                    .big_int_comparison_binary(operator, left, right, evidence, type_ref, scope)?
                 {
                     return Ok(value);
                 }

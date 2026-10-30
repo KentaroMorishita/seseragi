@@ -24,62 +24,14 @@ fn native_big_int_digit(byte: u8) -> Option<u32> {
     }
 }
 
-const NATIVE_BIG_INT_LIMB_BASE: u64 = 1_000_000_000;
-
-// Base-10^9 limbs keep each radix multiply/divide within u64. The complete
-// value is never converted to a fixed-width integer or a Float.
-fn native_big_int_radix_decimal(digits: &[u8], radix: u32) -> String {
-    let mut limbs = vec![0_u32];
-    for byte in digits {
-        let mut carry = u64::from(native_big_int_digit(*byte).expect("validated BigInt digit"));
-        for limb in &mut limbs {
-            let value = u64::from(*limb) * u64::from(radix) + carry;
-            *limb = (value % NATIVE_BIG_INT_LIMB_BASE) as u32;
-            carry = value / NATIVE_BIG_INT_LIMB_BASE;
-        }
-        if carry != 0 {
-            limbs.push(carry as u32);
-        }
-    }
-    let mut output = limbs.last().unwrap().to_string();
-    for limb in limbs.iter().rev().skip(1) {
-        output.push_str(&format!("{limb:09}"));
-    }
-    output
-}
-
+#[cfg(test)]
 fn native_big_int_format_radix(value: &str, radix: u32) -> String {
-    if radix == 10 || value == "0" {
-        return value.into();
-    }
-    let negative = value.starts_with('-');
-    let digits = value.trim_start_matches('-').as_bytes();
-    let mut limbs: Vec<u32> = digits
-        .rchunks(9)
-        .map(|chunk| {
-            chunk
-                .iter()
-                .fold(0_u32, |value, digit| value * 10 + u32::from(digit - b'0'))
-        })
-        .collect();
-    let mut output = Vec::new();
-    while !(limbs.len() == 1 && limbs[0] == 0) {
-        let mut remainder = 0_u64;
-        for limb in limbs.iter_mut().rev() {
-            let value = remainder * NATIVE_BIG_INT_LIMB_BASE + u64::from(*limb);
-            *limb = (value / u64::from(radix)) as u32;
-            remainder = value % u64::from(radix);
-        }
-        while limbs.len() > 1 && limbs.last() == Some(&0) {
-            limbs.pop();
-        }
-        output.push(b"0123456789abcdefghijklmnopqrstuvwxyz"[remainder as usize]);
-    }
-    if negative {
-        output.push(b'-');
-    }
-    output.reverse();
-    String::from_utf8(output).expect("ASCII BigInt radix output")
+    NativeBigInt::from_digits(
+        value.starts_with('-'),
+        value.trim_start_matches('-').as_bytes(),
+        10,
+    )
+    .format_radix(radix)
 }
 
 fn native_big_int_parse_radix(radix: i64, text: &str, canonical_decimal: bool) -> V {
@@ -104,32 +56,20 @@ fn native_big_int_parse_radix(radix: i64, text: &str, canonical_decimal: bool) -
             return native_big_int_invalid_digit(offset, radix);
         }
     }
-    // Preserve the linear decimal fast path, including very long inputs.
-    let magnitude = if radix == 10 {
-        let digits = text[start..].trim_start_matches('0');
-        if digits.is_empty() {
-            "0".into()
-        } else {
-            digits.to_owned()
-        }
-    } else {
-        native_big_int_radix_decimal(&bytes[start..], radix as u32)
-    };
-    let canonical = if bytes[0] == b'-' && magnitude != "0" {
-        format!("-{magnitude}")
-    } else {
-        magnitude
-    };
-    native_right(V::BigInt(Shared::new(canonical)))
+    native_right(V::BigInt(Shared::new(NativeBigInt::from_digits(
+        bytes[0] == b'-',
+        &bytes[start..],
+        radix as u32,
+    ))))
 }
 
 fn native_big_int_operation(name: &str, value: V) -> V {
     match (name, value) {
         ("std/big-int::parse", V::Text(text)) => native_big_int_parse(text.get()),
-        ("std/big-int::format", V::BigInt(value)) => V::text(value.get()),
-        ("std/big-int::fromInt", V::Int(value)) => {
-            V::BigInt(Shared::new(checked_int_value(value).to_string()))
-        }
+        ("std/big-int::format", V::BigInt(value)) => V::text(value.get().decimal()),
+        ("std/big-int::fromInt", V::Int(value)) => V::BigInt(Shared::new(NativeBigInt::from_i64(
+            checked_int_value(value),
+        ))),
         _ => panic!("Rust ABI: unsupported BigInt operation or type"),
     }
 }
@@ -143,23 +83,13 @@ fn native_big_int_standard_operation(name: &str, arguments: Vec<V>) -> V {
             if !(2..=36).contains(radix) {
                 native_left(V::adt("std/big-int::InvalidBigIntRadix", V::Int(*radix)))
             } else {
-                native_right(V::text(&native_big_int_format_radix(
-                    value.get(),
-                    *radix as u32,
-                )))
+                native_right(V::text(&value.get().format_radix(*radix as u32)))
             }
         }
-        ("std/big-int::toInt", [V::BigInt(value)]) => {
-            match value
-                .get()
-                .parse::<i64>()
-                .ok()
-                .filter(|n| (-9_007_199_254_740_991..=9_007_199_254_740_991).contains(n))
-            {
-                Some(value) => native_right(V::Int(value)),
-                None => native_left(V::adt("std/big-int::BigIntOutsideIntRange", V::Unit)),
-            }
-        }
+        ("std/big-int::toInt", [V::BigInt(value)]) => match value.get().to_safe_int() {
+            Some(value) => native_right(V::Int(value)),
+            None => native_left(V::adt("std/big-int::BigIntOutsideIntRange", V::Unit)),
+        },
         ("std/big-int::EmptyBigInt", []) => V::adt("std/big-int::EmptyBigInt", V::Unit),
         ("std/big-int::BigIntOutsideIntRange", []) => {
             V::adt("std/big-int::BigIntOutsideIntRange", V::Unit)

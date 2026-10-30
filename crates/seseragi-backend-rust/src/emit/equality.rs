@@ -94,6 +94,16 @@ impl Backend<'_> {
                     scope,
                 );
             }
+            if identity == "std/big-int::Eq" {
+                return self.big_int_type(
+                    &selected.constraint.arguments[0],
+                    &CoreType::Named {
+                        name: "std/big-int::BigInt".into(),
+                        arguments: vec![],
+                    },
+                    scope,
+                );
+            }
             let primitive = match identity.as_str() {
                 "std/int::Eq" => "Int",
                 "std/bool::Eq" => "Bool",
@@ -308,10 +318,15 @@ impl Backend<'_> {
                     self.expr(right, scope)?
                 ));
             }
-            if identity == "std/decimal::Eq" {
-                self.capabilities.insert("decimal".into());
+            if matches!(identity.as_str(), "std/decimal::Eq" | "std/big-int::Eq") {
+                let (capability, operation) = if identity == "std/decimal::Eq" {
+                    ("decimal", "native_decimal_equal")
+                } else {
+                    ("big-int", "native_big_int_equal")
+                };
+                self.capabilities.insert(capability.into());
                 let value = format!(
-                    "native_decimal_equal({}, {})",
+                    "{operation}({}, {})",
                     self.expr(left, scope)?,
                     self.expr(right, scope)?
                 );

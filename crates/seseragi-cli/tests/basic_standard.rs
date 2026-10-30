@@ -1211,6 +1211,70 @@ fn basic_big_radix_path_package_keeps_opaque_values_and_imported_error_owners() 
 }
 
 #[test]
+fn basic_big_keys_keeps_standard_dictionaries_collision_and_original_radix_contract() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-keys.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-keys.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_keys_keeps_cold_partial_captures_and_typed_failure_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-key-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-key-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_keys_defect_runs_finalizer_and_releases_every_root() {
+    let scratch = Scratch::new();
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-big-int-key-effects.ssrg");
+    assert_eq!(source.matches("effects.fail \"typed\"").count(), 1);
+    let path = scratch.0.join("big-key-defect.ssrg");
+    fs::write(
+        &path,
+        source.replace("effects.fail \"typed\"", "effects.die \"deliberate\""),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "defect",
+            stdout: b"created\nacquired\ncold\nLess:1236334116\ncold\nLess:1236334116\nreleased\n",
+            exit: 70,
+            defect: true,
+            ..Case::success(b"")
+        }],
+    );
+}
+
+#[test]
+fn basic_big_keys_equality_operators_preserve_exact_values_saved_stages_and_hash_collisions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-big-int-equality.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-big-int-equality.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_big_keys_path_package_keeps_opaque_values_and_imported_generic_methods() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/basic-big-int-keys"),
+        &[Case::success(
+            b"Less|True|1236334116|1236334116|2|2|updated|second|key:343591635|key:4294967296\n",
+        )],
+    );
+}
+
+#[test]
 fn basic_decimal_keeps_captured_values_cold_and_releases_after_typed_failure() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-decimal-effects.ssrg"),

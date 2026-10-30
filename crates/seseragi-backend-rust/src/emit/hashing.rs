@@ -34,6 +34,7 @@ impl Backend<'_> {
                 "std/string::Hash" => "std/prelude::String",
                 "std/unit::Hash" => "std/prelude::Unit",
                 "std/decimal::Hash" => "std/decimal::Decimal",
+                "std/big-int::Hash" => "std/big-int::BigInt",
                 _ => return Err("Rust backend: unsupported canonical Hash provider".into()),
             };
             if !type_arguments.is_empty()

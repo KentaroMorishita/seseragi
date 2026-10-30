@@ -1,0 +1,37 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as big from "std/big-int"
+import * as ints from "std/int"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+fn value source: String -> big.BigInt = match big.parse source { Left _ -> big.fromInt 0; Right result -> result }
+fn compareWith number: big.BigInt -> (Unit -> String) = {
+  let comparator = compare number
+  let hasher: big.BigInt -> Int = hash
+  \_: Unit -> match comparator (value "4294967296") { Less -> "Less:" + ints.format (hasher number); Equal -> "Equal"; Greater -> "Greater" }
+}
+effect fn failBody -> Unit fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (compareWith (value "343591635"))
+  let cold = effects.defer $ \_: Unit -> do {
+    say "cold"
+    operation <- refs.get saved
+    say (operation ())
+    effects.succeed ()
+  }
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold
+    cold
+    failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

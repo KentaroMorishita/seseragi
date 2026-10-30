@@ -132,7 +132,9 @@ mod runtime {
     include!("runtime_sequence.rs");
     include!("runtime_text.rs");
     include!("runtime_bytes.rs");
+    include!("runtime_big_int_value.rs");
     include!("runtime_big_int.rs");
+    include!("runtime_big_int_traits.rs");
     include!("runtime_decimal.rs");
     include!("runtime_hashing.rs");
     include!("runtime_map.rs");

@@ -6,9 +6,18 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 ## Lane matrix
 
+native BigIntのEq/Ord/Hash/Show/Debugはbackendの
+`--test big_int_keys --test big_int_ord --test big_int_display`、
+runtimeの`big_int_dictionary_tests`と`big_int_tests`、CLIの`basic_big_keys_`で確認します。
+binary32 limbと必要時のdecimal cacheでEq/Ord/HashをO(n)にし、parse/formatはspecのO(d²)内で
+元10万桁入力と正確なradix/Int変換を保持します。TSと同じsigned FNV hash・実衝突、OrdのEq継承、
+保存/generic・opaque2module・元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/Defect/
+finalizer/Ref cycle/root0、位置付き偽造拒否と未使用program WASM拒否を確認します。
+算術/Zero/Oneは別leafで続け、最終SDKと全体gateはRelease batchへ集約します。
+
 native BigIntのradix変換/toIntはbackendの`--test big_radix --test basic_big_int`、runtimeの
-`big_int_tests`、CLIの`basic_big_radix_`で確認します。base-10^9 limbで2〜36進を正確に変換し、
-safe Int外をtyped errorにします。元10万桁decimalの線形parse、canonical spellingとradix版の
+`big_int_tests`、CLIの`basic_big_radix_`で確認します。binary32 limbで2〜36進を正確に変換し、
+safe Int外をtyped errorにします。元10万桁decimal入力、canonical spellingとradix版の
 leading zero、UTF-8位置、保存/部分適用・opaque2module・元raw TS両profile strict・fresh
 Bun/Node/native・cold/Failure/Defect/finalizer/root0を保持します。元位置の偽造拒否と未使用
 program WASM拒否も確認し、最終SDKと共有runtimeの全体gateはRelease batchへ集約します。

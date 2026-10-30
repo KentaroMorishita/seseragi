@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/big-int-keys@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/big-int-key-cells@0.0.0#path:vendor/cells"
+name = "fixture/big-int-key-cells"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/cells"
+manifest_digest = "sha256:bcc5938a28957b5527a858f9502b1325ae031d69241954633fc5b2ddb901d7dd"
+content_digest = "sha256:449e67218a4e57f623445b4678325c1f5cfcbef3ab9c696b01695601e0175ee7"
+dependencies = []
+
+[[packages]]
+id = "fixture/big-int-keys@0.0.0#workspace:."
+name = "fixture/big-int-keys"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:3d109e5f05e9c57e2b9030f6dc12dc6f1d20b6b3ee1cdb919ba7cbe892e49ce7"
+content_digest = "sha256:40fa88ba9127a8e2da51486e15d9c6c4c749e8d6301f44e3a8b49f66edd8c7c2"
+dependencies = [
+  { import = "cells", package = "fixture/big-int-key-cells@0.0.0#path:vendor/cells" },
+]

@@ -68,7 +68,12 @@ fn remaining_type(parameters: &[CoreType], result: &CoreType) -> CoreType {
 }
 
 impl Backend<'_> {
-    fn big_int_type(&self, actual: &CoreType, expected: &CoreType, scope: &Scope) -> Result<()> {
+    pub(super) fn big_int_type(
+        &self,
+        actual: &CoreType,
+        expected: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
         if self.program_wasm_library {
             return Err("program WASM: native BigInt requires a target-specific ABI proof".into());
         }

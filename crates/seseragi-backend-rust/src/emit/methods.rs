@@ -31,6 +31,7 @@ impl Backend<'_> {
             scope,
         )?;
         self.validate_decimal_show_value(dispatch, selected, type_ref, scope)?;
+        self.validate_big_int_display_value(dispatch, selected, type_ref, scope)?;
         if dispatch.trait_identity == "std/prelude::Ord" {
             self.validate_ord_method_value(dispatch, selected, type_ref, scope)?;
         }
