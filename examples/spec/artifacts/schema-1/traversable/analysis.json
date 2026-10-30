@@ -7169,7 +7169,7 @@
       "name": "DecodeError",
       "module": "std/json",
       "category": "JSON",
-      "kind": "opaque-struct",
+      "kind": "struct",
       "signature": "DecodeError",
       "description": "Reports the root-to-leaf path and kind of a decode failure.",
       "typeParameters": [],
