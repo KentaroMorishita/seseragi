@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-polymorphic-globals@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-polymorphic-globals@0.0.0#workspace:."
+name = "fixture/native-polymorphic-globals"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:ff0badeaae515de2b3bfa0b12d4fd6b5569e29a708024a91f1604005ec52ed22"
+content_digest = "sha256:86e920e78936198113aad448253f002f75f64e98e24b60c143a607f9704b59d5"
+dependencies = []

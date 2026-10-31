@@ -18,6 +18,18 @@ impl Backend<'_> {
         else {
             unreachable!("call dispatch");
         };
+        if let Some(value) =
+            self.standard_error_constructor(callee, arguments, evidence, type_ref, scope)?
+        {
+            if trait_dispatch.is_some()
+                || !deferred_evidence_parameters.is_empty()
+                || !deferred_evidence_type_constructor_parameters.is_empty()
+                || evidence_argument_index.is_some()
+            {
+                return Err("Rust backend: unproven standard error constructor staging".into());
+            }
+            return Ok(value);
+        }
         if callee == "std/float::power" && !scope.contains(callee) {
             if !evidence.is_empty()
                 || trait_dispatch.is_some()
@@ -35,6 +47,9 @@ impl Backend<'_> {
             }
         }
         if let Some(value) = self.clock_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.stdin_call(expr, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.console_call(expr, scope)? {
@@ -129,6 +144,38 @@ impl Backend<'_> {
         self.validate_decimal_dispatch(expr, scope)?;
         self.validate_big_int_dispatch(expr, scope)?;
         if let Some(dispatch) = trait_dispatch {
+            if !self.program_wasm_library {
+                if let [selected] = evidence.as_slice() {
+                    if self.validate_standard_error_evidence(selected, scope)? {
+                        if arguments.len()
+                            > if selected.constraint.name == "Eq" {
+                                2
+                            } else {
+                                1
+                            }
+                            || !deferred_evidence_parameters.is_empty()
+                            || !deferred_evidence_type_constructor_parameters.is_empty()
+                            || evidence_argument_index.is_some()
+                        {
+                            return Err(
+                                "Rust backend: unproven standard error method staging".into()
+                            );
+                        }
+                        let mut full_type = type_ref.clone();
+                        for argument in arguments.iter().rev() {
+                            full_type = CoreType::Function {
+                                parameter: Box::new(
+                                    local::method_argument_type(argument).ok_or(
+                                        "Rust backend: missing error method argument type",
+                                    )?,
+                                ),
+                                result: Box::new(full_type),
+                            };
+                        }
+                        self.validate_derived_method(dispatch, selected, &full_type, scope)?;
+                    }
+                }
+            }
             self.validate_hash_call(expr, scope)?;
             if dispatch.trait_identity == "std/prelude::Eq" {
                 return self.equality_call(expr, scope);

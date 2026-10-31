@@ -26,6 +26,7 @@ mod comparisons;
 mod concurrency;
 mod console;
 mod decimal;
+mod derived;
 mod display;
 mod effect_conversions;
 mod effect_defects;
@@ -51,12 +52,16 @@ mod methods;
 mod number_parse;
 mod operators;
 mod prelude_collections;
+mod prelude_effects;
+mod range;
 mod returned_calls;
 mod scalar;
 mod sequence_operations;
 mod sequence_order;
+mod standard_errors;
 mod tail;
 mod text;
+mod variables;
 
 use local::{LocalCallable, Scope};
 type Result<T> = std::result::Result<T, RustBackendError>;
@@ -191,11 +196,14 @@ fn emit_body(
     output.push_str(include_str!("runtime_math.rs"));
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_tuple.rs"));
+    output.push_str(include_str!("runtime_derived.rs"));
+    output.push_str(include_str!("runtime_standard_errors.rs"));
     output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_array_operations.rs"));
     output.push_str(include_str!("runtime_sequence.rs"));
     output.push_str(include_str!("runtime_sequence_order.rs"));
     output.push_str(include_str!("runtime_iterator.rs"));
+    output.push_str(include_str!("runtime_range.rs"));
     output.push_str(include_str!("runtime_iterable.rs"));
     output.push_str(include_str!("runtime_collection_control.rs"));
     output.push_str(include_str!("runtime_prelude_collections.rs"));
@@ -227,6 +235,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_float_conversion.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
+    output.push_str(include_str!("runtime_stdin.rs"));
     output.push_str(include_str!("runtime_scheduler.rs"));
     output.push_str(include_str!("runtime_path.rs"));
     output.push_str(include_str!("runtime_filesystem.rs"));
@@ -235,14 +244,15 @@ fn emit_body(
     let mut initialization = String::new();
     for (index, binding) in module.bindings.iter().enumerate() {
         backend.owner = &owners[&binding.symbol];
-        if !binding.type_parameters.is_empty() {
-            return Err(crate::project::at(
-                "Rust backend: polymorphic global bindings are unsupported",
-                &binding.origin,
-                backend.owner,
-            ));
-        }
-        let value = backend.expr(&binding.value, &Scope::new())?;
+        let mut scope = Scope::new();
+        scope.type_parameters(
+            binding
+                .type_parameters
+                .iter()
+                .map(|p| (p.name.clone(), p.arity)),
+            &binding.symbol,
+        );
+        let value = backend.expr(&binding.value, &scope)?;
         initialization.push_str(&format!("set_global({index}, {value});\n"));
     }
     output.push_str(&format!(
@@ -283,6 +293,16 @@ fn emit_body(
         );
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
         if let Some(dictionary) = backend
+            .derived_dictionary(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
+                id(&instance.identity)
+            ));
+            continue;
+        }
+        if let Some(dictionary) = backend
             .json_derived_dictionary(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
         {
@@ -320,6 +340,14 @@ fn emit_body(
         {
             values.push(format!(
                 "(\"iterate\", {}.field(\"iterate\"))",
+                id("\0dictionary_0")
+            ));
+        } else if backend
+            .monoid_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            values.push(format!(
+                "(\"append\", {}.field(\"append\"))",
                 id("\0dictionary_0")
             ));
         } else if backend
@@ -580,6 +608,10 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if let Some(dictionary) = self.derived_structural_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Hash") {
                 self.validate_hash_evidence(selected, scope)?;
             }
@@ -655,6 +687,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.big_int_display_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.standard_error_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -922,115 +958,7 @@ impl Backend<'_> {
             CoreExpr::String { value, .. } => format!("V::text({})", quoted(value)),
             CoreExpr::Char { value, .. } => characters::character_literal(value)?,
             CoreExpr::Boolean { value, .. } => format!("V::Bool({value})"),
-            CoreExpr::Variable {
-                name,
-                evidence,
-                type_ref,
-                ..
-            } => {
-                if let Some(value) =
-                    self.clock_reference(name, evidence, type_ref, core_expr_origin(expr), scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) = self.console_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.die_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.concurrency_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.from_either_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.filesystem_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.bytes_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.big_int_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.decimal_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.json_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.json_codec_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.json_decoder_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.collection_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.array_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.sequence_order_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.iterator_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.iterable_build_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.collection_control_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.maybe_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.either_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) = self.sequence_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.number_parse_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if equality::is_equality(name) && !scope.contains(name) {
-                    self.equality_result_type(type_ref, 0, evidence, scope)?;
-                }
-                if comparisons::is_comparison(name) && !scope.contains(name) {
-                    self.comparison_result_type(type_ref, 0, evidence, scope)?;
-                }
-                if operators::primitive_reference(name, evidence).is_some() && !scope.contains(name)
-                {
-                    self.validate_primitive_operator_result(&evidence[0], 0, type_ref, scope)?;
-                }
-                if name == "std/float::power" && !scope.contains(name) {
-                    self.validate_float_power_type(type_ref, 0, scope)?;
-                }
-                self.reference(name, evidence, scope)?
-            }
+            CoreExpr::Variable { .. } => self.variable(expr, scope)?,
             CoreExpr::EffectOperation {
                 operation,
                 arguments,
@@ -1040,7 +968,7 @@ impl Backend<'_> {
                 if let Some(value) = self.clock_call(expr, scope)? {
                     return Ok(value);
                 }
-                if let Some(value) = self.console_call(expr, scope)? {
+                if let Some(value) = self.prelude_effect_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.die_operation(expr, scope)? {
@@ -1084,7 +1012,7 @@ impl Backend<'_> {
                 if let Some(value) = self.clock_call(expr, scope)? {
                     return Ok(value);
                 }
-                if let Some(value) = self.console_call(expr, scope)? {
+                if let Some(value) = self.prelude_effect_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.die_call(expr, scope)? {
@@ -1164,23 +1092,14 @@ impl Backend<'_> {
             CoreExpr::FieldAccess {
                 receiver, field, ..
             } => format!("({}).field({})", self.expr(receiver, scope)?, quoted(field)),
-            CoreExpr::Record { items, .. } => {
-                let mut values = Vec::new();
-                for item in items {
-                    match item {
-                        CoreRecordValueItem::Field { name, value, .. } => values.push(format!(
-                            "({}.to_owned(), {})",
-                            quoted(name),
-                            self.expr(value, scope)?
-                        )),
-                        _ => return Err("Rust backend: record spread is unsupported".into()),
-                    }
-                }
-                format!(
-                    "V::Record(Shared::new(BTreeMap::from([{}])))",
-                    values.join(",")
-                )
-            }
+            CoreExpr::OptionalFieldAccess {
+                receiver, field, ..
+            } => format!(
+                "({}).optional_field({})",
+                self.expr(receiver, scope)?,
+                quoted(field)
+            ),
+            CoreExpr::Record { items, .. } => self.record(items, scope)?,
             CoreExpr::Binary {
                 operator,
                 left,
@@ -1189,6 +1108,15 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if matches!(operator.as_str(), ".." | "..=") {
+                    return self.range_expression(
+                        operator,
+                        [left, right],
+                        evidence,
+                        type_ref,
+                        scope,
+                    );
+                }
                 if operator == ":" {
                     if !evidence.is_empty() || lists::list_element(type_ref).is_none() {
                         return Err(
@@ -1445,7 +1373,6 @@ impl Backend<'_> {
                         CoreExpr::Char { .. } => "Char",
                         CoreExpr::List { .. } => "List",
                         CoreExpr::Template { .. } => "template",
-                        CoreExpr::OptionalFieldAccess { .. } => "optional field access",
                         CoreExpr::ArrayComprehension { .. }
                         | CoreExpr::ListComprehension { .. } => "comprehension",
                         CoreExpr::Unary { .. } => "unary operator",
@@ -1458,6 +1385,29 @@ impl Backend<'_> {
                 .into())
             }
         })
+    }
+
+    fn record(&mut self, items: &[CoreRecordValueItem], scope: &Scope) -> Result<String> {
+        let record = self.fresh();
+        let mut output = format!("{{ let mut {record} = BTreeMap::new();");
+        for item in items {
+            match item {
+                CoreRecordValueItem::Field { name, value, .. } => output.push_str(&format!(
+                    "{record}.insert({}.to_owned(), {});",
+                    quoted(name),
+                    self.expr(value, scope)?
+                )),
+                CoreRecordValueItem::Spread { value, .. } => {
+                    let spread = self.fresh();
+                    output.push_str(&format!(
+                        "{{ let V::Record({spread}) = {} else {{ panic!(\"Rust ABI: expected record\") }}; {record}.extend({spread}.get().iter().map(|(key, value)| (key.clone(), value.clone()))); }}",
+                        self.expr(value, scope)?
+                    ));
+                }
+            }
+        }
+        output.push_str(&format!("V::Record(Shared::new({record})) }}"));
+        Ok(output)
     }
 
     fn require_operation(&mut self, name: &str) {

@@ -230,6 +230,15 @@ impl V {
             _ => panic!("Rust ABI: expected dictionary or record"),
         }
     }
+    fn optional_field(&self, key: &str) -> V {
+        let Self::Record(fields) = self else {
+            panic!("Rust ABI: expected record")
+        };
+        match fields.get().get(key) {
+            Some(value) => Self::adt("std/prelude::Just", value.clone()),
+            None => Self::adt("std/prelude::Nothing", Self::Unit),
+        }
+    }
     fn index(&self, index: usize) -> V {
         match self {
             Self::Tuple(v) | Self::Array(v) => v.get()[index].clone(),

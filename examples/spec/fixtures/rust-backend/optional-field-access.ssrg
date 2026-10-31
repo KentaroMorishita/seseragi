@@ -1,0 +1,25 @@
+alias Row = { note ?: String }
+
+fn read row: Row -> Maybe<String> = row.note
+
+fn describe row: Row -> String = match row.note {
+  Just value -> value
+  Nothing -> "absent"
+}
+
+fn fromMatch row: Row -> Maybe<String> = match row {
+  {} -> row.note
+}
+
+pub fn probe -> String = {
+  let absent: Row = {}
+  let present: Row = { note: "present" }
+  show (
+    [absent.note, present.note, read absent, read present,
+     absent |> read, present |> read, fromMatch absent, fromMatch present,
+     absent |> (\row: Row -> row.note), present |> (\row: Row -> row.note)],
+    [describe absent, describe present]
+  )
+}
+
+pub effect fn main = println (probe ())

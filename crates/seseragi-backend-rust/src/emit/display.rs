@@ -19,6 +19,8 @@ impl Backend<'_> {
             "std/tuple::Debug" => ("Debug", None),
             "std/array::Show" => ("Show", Some("Array")),
             "std/array::Debug" => ("Debug", Some("Array")),
+            "std/range::Show" => ("Show", Some("Range")),
+            "std/range::Debug" => ("Debug", Some("Range")),
             "std/maybe::Show" => ("Show", Some("Maybe")),
             "std/maybe::Debug" => ("Debug", Some("Maybe")),
             _ => return Ok(None),
@@ -124,7 +126,8 @@ impl Backend<'_> {
                     .ok_or("Rust backend: unknown display child dictionary")?;
                 let owner = &self.owners[identity];
                 let trait_identity = format!("std/prelude::{method}");
-                if !identity.starts_with(&format!("{trait_identity}<"))
+                if (!identity.starts_with(&format!("{trait_identity}<"))
+                    && !self.derived_identity(instance, &trait_identity))
                     || type_arguments.len() != instance.type_parameters.len()
                     || evidence_arguments.len() != instance.constraints.len()
                 {
@@ -263,6 +266,7 @@ pub(super) fn canonical_type(
                         | "Ordering"
                         | "List"
                         | "Array"
+                        | "Range"
                         | "Maybe"
                         | "Either"
                         | "Ref"
@@ -291,6 +295,7 @@ pub(super) fn canonical_type(
                         | "Ordering"
                         | "List"
                         | "Array"
+                        | "Range"
                         | "Maybe"
                         | "Either"
                         | "Ref"

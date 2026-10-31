@@ -1,0 +1,1 @@
+pub let seed: Int = 42

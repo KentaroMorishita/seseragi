@@ -1,0 +1,16 @@
+alias Row = { name: String, note ?: String }
+
+fn copy row: Row -> Row = { ...row }
+fn fallback row: Row -> Row = { note: "fallback", ...row }
+
+pub fn probe -> (Row, Row, Row, Row, Row) = {
+  let absent: Row = { name: "Mio" }
+  let present: Row = { name: "Aoi", note: "present" }
+  (
+    copy absent,
+    copy present,
+    fallback absent,
+    fallback present,
+    { ...present, ...absent }
+  )
+}

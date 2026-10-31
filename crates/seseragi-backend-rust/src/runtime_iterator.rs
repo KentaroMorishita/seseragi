@@ -31,10 +31,12 @@ fn native_iterator_unfold(step: V, initial: V) -> V {
 }
 fn native_iterator_operation(name: &str, arguments: Vec<V>) -> V {
     match (name, arguments.as_slice()) {
-        ("std/iterator::unfold", [step, initial]) => {
+        ("std/iterator::unfold" | "std/prelude::unfold", [step, initial]) => {
             native_iterator_unfold(step.clone(), initial.clone())
         }
-        ("std/iterator::next", [iterator]) => iterator.field("next").apply(V::Unit),
+        ("std/iterator::next" | "std/prelude::next", [iterator]) => {
+            iterator.field("next").apply(V::Unit)
+        }
         _ => panic!("Rust ABI: Iterator operation or source arity"),
     }
 }

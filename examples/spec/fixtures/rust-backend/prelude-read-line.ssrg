@@ -1,0 +1,16 @@
+import * as effects from "std/effect"
+fn render line:Maybe<String> -> String = match line { Nothing -> "EOF"; Just text -> `line:${text}` }
+effect fn say text:String -> Unit with console:Console fails String = println text |> effects.mapError (\error:ConsoleError -> "console failed")
+
+pub effect fn main = do {
+  let cold = readLine ()
+  say "created"
+  first <- cold |> effects.mapError (\error:StdinError -> "input failed")
+  say (render first)
+  second <- cold |> effects.mapError (\error:StdinError -> "input failed")
+  say (render second)
+  third <- readLine () |> effects.mapError (\error:StdinError -> "input failed")
+  say (render third)
+  fourth <- readLine () |> effects.mapError (\error:StdinError -> "input failed")
+  say (render fourth)
+}

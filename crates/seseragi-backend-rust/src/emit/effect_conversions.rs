@@ -8,7 +8,11 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<Option<String>> {
-        if name != "std/effect::fromEither" || scope.contains(name) {
+        if !matches!(
+            name,
+            "std/effect::fromEither" | "std/prelude::fromEither" | "effect.fromEither"
+        ) || scope.contains(name)
+        {
             return Ok(None);
         }
         if self.declared_method_type_kind(type_ref, scope) != Some(0) {
@@ -97,9 +101,30 @@ impl Backend<'_> {
                 },
                 evidence.is_empty(),
             ),
+            CoreExpr::EffectOperation {
+                operation,
+                arguments,
+                requirements,
+                failure,
+                success,
+                ..
+            } => (
+                operation,
+                arguments,
+                CoreType::ExternalNamed {
+                    name: "Effect".into(),
+                    canonical: "std/prelude::Effect".into(),
+                    arguments: vec![requirements.clone(), failure.clone(), success.clone()],
+                },
+                true,
+            ),
             _ => return Ok(None),
         };
-        if callee != "std/effect::fromEither" || scope.contains(callee) {
+        if !matches!(
+            callee.as_str(),
+            "std/effect::fromEither" | "std/prelude::fromEither" | "effect.fromEither"
+        ) || scope.contains(callee)
+        {
             return Ok(None);
         }
         if !valid || arguments.len() != 1 {

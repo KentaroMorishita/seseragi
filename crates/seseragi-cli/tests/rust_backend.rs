@@ -144,6 +144,55 @@ fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
 }
 
 #[test]
+fn native_polymorphic_globals_match_ts_in_both_profiles() {
+    use prefix_process::{bounded, successful};
+    let scratch = Scratch(std::env::temp_dir().join(format!(
+        "seseragi-polymorphic-globals-{}-{}",
+        std::process::id(),
+        SERIAL.fetch_add(1, Ordering::Relaxed)
+    )));
+    fs::create_dir(&scratch.0).unwrap();
+    let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec/fixtures");
+    for (input, expected) in [
+        (
+            fixtures.join("rust-backend/polymorphic-globals.ssrg"),
+            fixtures.join("rust-backend/polymorphic-globals.stdout"),
+        ),
+        (
+            fixtures.join("rust-backend-projects/polymorphic-globals"),
+            fixtures.join("rust-backend-projects/polymorphic-globals/expected.stdout"),
+        ),
+    ] {
+        let directory = scratch
+            .0
+            .join(if input.is_dir() { "package" } else { "file" });
+        successful(bounded(
+            cli()
+                .args(["experimental", "build-native"])
+                .arg(&input)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&directory),
+            &scratch.0,
+        ));
+        let native = successful(bounded(
+            Command::new(directory.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &scratch.0,
+        ));
+        assert_eq!(native.stdout, fs::read(expected).unwrap());
+        assert!(String::from_utf8_lossy(&native.stderr).contains("managed-live=0"));
+        for profile in ["development", "release"] {
+            let ts = successful(bounded(
+                cli().arg("run").arg(&input).args(["--profile", profile]),
+                &scratch.0,
+            ));
+            assert_eq!(native.stdout, ts.stdout, "{input:?}: {profile}");
+        }
+    }
+}
+
+#[test]
 fn list_prefix_decisions_and_effects_match_raw_strict_ts_and_native() {
     compare_raw_ts_and_native_fixtures(&[
         ("list-prefix-kernel", 0),
@@ -787,14 +836,7 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
     let scratch = Scratch::new();
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../examples/spec/fixtures/rust-backend-projects/linked");
-    for kind in [
-        "private",
-        "opaque",
-        "unsupported",
-        "polymorphic-global",
-        "stale",
-        "missing",
-    ] {
+    for kind in ["private", "opaque", "unsupported", "stale", "missing"] {
         let project = scratch.0.join(kind);
         copy_project(&fixture, &project);
         let library = project.join("vendor/model/src/lib.ssrg");
@@ -813,21 +855,13 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 .unwrap();
                 ("error[", Some(main.clone()), "value")
             }
-            "unsupported" | "polymorphic-global" => {
-                let addition = if kind == "unsupported" {
-                    "\npub fn unsupported -> List<Int> = `[n | n <- `[1, 2]]\n"
-                } else {
-                    "\nlet initial = \\value -> value\n"
-                };
+            "unsupported" => {
+                let addition = "\npub fn unsupported -> List<Int> = `[n | n <- `[1, 2]]\n";
                 fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
                 (
                     "SES-RUST-0001",
                     Some(library.clone()),
-                    if kind == "unsupported" {
-                        "`[n | n <- `[1, 2]]"
-                    } else {
-                        "initial"
-                    },
+                    "`[n | n <- `[1, 2]]",
                 )
             }
             _ => ("SES-K0102", None, ""),

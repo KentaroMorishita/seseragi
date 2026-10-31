@@ -1,0 +1,32 @@
+alias Row = { note ?: String }
+
+fn read row: Row -> Maybe<String> = row.note
+fn copy row: Row -> Row = { ...row }
+fn fallback row: Row -> Row = { note: "fallback", ...row }
+fn override row: Row -> Row = { ...row, note: "override" }
+fn merge left: Row -> right: Row -> Row = { ...left, ...right }
+
+pub fn probe -> String = {
+  let absent: Row = {}
+  let present: Row = { note: "present" }
+  let copiedAbsent: Row = copy absent
+  let copiedPresent: Row = copy present
+  let fallbackAbsent: Row = fallback absent
+  let fallbackPresent: Row = fallback present
+  let overriddenAbsent: Row = override absent
+  let overriddenPresent: Row = override present
+  let mergedAbsent: Row = merge present absent
+  let mergedPresent: Row = merge absent present
+  show [
+    read copiedAbsent,
+    read copiedPresent,
+    read fallbackAbsent,
+    read fallbackPresent,
+    read overriddenAbsent,
+    read overriddenPresent,
+    read mergedAbsent,
+    read mergedPresent
+  ]
+}
+
+pub effect fn main = println (probe ())

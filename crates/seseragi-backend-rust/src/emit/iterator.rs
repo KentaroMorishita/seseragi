@@ -2,8 +2,8 @@ use super::*;
 
 fn arity(name: &str) -> Option<usize> {
     match name {
-        "std/iterator::unfold" => Some(2),
-        "std/iterator::next" => Some(1),
+        "std/iterator::unfold" | "std/prelude::unfold" => Some(2),
+        "std/iterator::next" | "std/prelude::next" => Some(1),
         _ => None,
     }
 }
@@ -74,7 +74,7 @@ impl Backend<'_> {
                 _ => Err("Rust backend: unproven canonical Iterator owner or arity".into()),
             }
         };
-        let (expected, result) = if name == "std/iterator::unfold" {
+        let (expected, result) = if matches!(name, "std/iterator::unfold" | "std/prelude::unfold") {
             let element = iterator_element(remainder)?;
             let state = parameters[1].clone();
             let step = function(
