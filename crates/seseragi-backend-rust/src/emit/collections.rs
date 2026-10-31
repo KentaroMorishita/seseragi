@@ -345,6 +345,10 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<Option<String>> {
+        // Keep Prelude dispatch off the recursive expression frame.
+        if let Some(value) = self.prelude_collection_reference(name, evidence, type_ref, scope)? {
+            return Ok(Some(value));
+        }
         if arity(name).is_none() || scope.contains(name) {
             return Ok(None);
         }
@@ -360,6 +364,9 @@ impl Backend<'_> {
         expr: &CoreExpr,
         scope: &Scope,
     ) -> Result<Option<String>> {
+        if let Some(value) = self.prelude_collection_call(expr, scope)? {
+            return Ok(Some(value));
+        }
         let CoreExpr::Call {
             callee,
             arguments,

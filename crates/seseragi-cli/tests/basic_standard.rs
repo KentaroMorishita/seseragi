@@ -3240,3 +3240,53 @@ fn basic_decimal_keys_argument_and_returned_callback_defects_run_finalizers_and_
         );
     }
 }
+
+#[test]
+fn prelude_collections_match_ts_with_selected_dictionaries_saved_stages_and_cold_replay() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/prelude-collections.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/prelude-collections.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn prelude_collections_keep_cold_failure_stop_finalizers_and_root_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/prelude-collections-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/prelude-collections-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn prelude_collections_callback_defect_keeps_finalizer_and_root_cleanup() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/prelude-collections-effects.ssrg"
+    );
+    let needle = "if value == 2 then effects.fail \"typed\" else effects.succeed ()";
+    assert_eq!(original.matches(needle).count(), 1);
+    let scratch = Scratch::new();
+    let path = scratch.0.join("for-each-defect.ssrg");
+    fs::write(
+        &path,
+        original.replace(
+            needle,
+            "if value == 2 then say (show (42 / 0)) else effects.succeed ()",
+        ),
+    )
+    .unwrap();
+    compare(
+        &path,
+        &[Case {
+            name: "callback-defect",
+            stdout: b"created\nacquired\n0\n1\n2\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }],
+    );
+}

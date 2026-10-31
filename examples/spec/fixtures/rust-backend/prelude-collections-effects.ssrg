@@ -1,0 +1,27 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as iterator from "std/iterator"
+
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 4 then Nothing else Just (state,state + 1)
+effect fn action value:Int -> Unit with Console fails String = do {
+  say (show value)
+  if value == 2 then effects.fail "typed" else effects.succeed ()
+}
+pub effect fn main = do {
+  released <- refs.make 0
+  let saved:(Int -> Effect<{console:Console},String,Unit>) -> iterator.Iterator<Int> -> Effect<{console:Console},String,Unit> = forEach
+  let cold = saved action (iterator.unfold advance 0)
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    cold |> effects.recover (\message:String -> say ("recovered: " + message))
+    cold
+  }) |> effects.recover (\message:String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}
