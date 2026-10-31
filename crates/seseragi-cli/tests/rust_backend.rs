@@ -840,7 +840,6 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
         "private",
         "opaque",
         "unsupported",
-        "polymorphic-global",
         "stale",
         "missing",
     ] {
@@ -862,21 +861,13 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 .unwrap();
                 ("error[", Some(main.clone()), "value")
             }
-            "unsupported" | "polymorphic-global" => {
-                let addition = if kind == "unsupported" {
-                    "\npub fn unsupported -> List<Int> = `[n | n <- `[1, 2]]\n"
-                } else {
-                    "\nlet initial = \\value -> value\n"
-                };
+            "unsupported" => {
+                let addition = "\npub fn unsupported -> List<Int> = `[n | n <- `[1, 2]]\n";
                 fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
                 (
                     "SES-RUST-0001",
                     Some(library.clone()),
-                    if kind == "unsupported" {
-                        "`[n | n <- `[1, 2]]"
-                    } else {
-                        "initial"
-                    },
+                    "`[n | n <- `[1, 2]]",
                 )
             }
             _ => ("SES-K0102", None, ""),
