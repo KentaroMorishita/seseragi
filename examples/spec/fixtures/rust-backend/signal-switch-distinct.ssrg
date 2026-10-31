@@ -1,0 +1,39 @@
+import * as signals from "std/signal"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+
+newtype Bucket = Int
+instance Eq<Bucket> {
+  fn eq left:Bucket -> right:Bucket -> Bool = match left {
+    Bucket a -> match right { Bucket b -> a % 10 == b % 10 }
+  }
+}
+fn add log:refs.Ref<Array<Int>> -> value:Int -> Task<Unit> = refs.update (arrays.append [value]) log
+fn bucket log:refs.Ref<Array<Int>> -> value:Bucket -> Task<Unit> = match value { Bucket n -> add log n }
+
+pub effect fn main = do {
+  old <- signals.make 10
+  next <- signals.make 20
+  outer <- signals.make False
+  let selected = signals.switchMap (\flag:Bool -> if flag then next else old) outer
+  let empty:Array<Int> = []
+  log <- refs.make empty
+  subscription <- signals.subscribe (add log) selected
+  signals.transaction [signals.planSet True outer, signals.planSet 11 old, signals.planSet 21 next]
+  old := 12
+  next := 22
+  signals.unsubscribe subscription
+  values <- refs.get log
+  println (show values)
+  source <- signals.make (Bucket 1)
+  let unique = signals.distinct source
+  buckets <- refs.make empty
+  seen <- signals.subscribe (bucket buckets) unique
+  source := Bucket 11
+  source := Bucket 2
+  source := Bucket 12
+  source := Bucket 3
+  signals.unsubscribe seen
+  result <- refs.get buckets
+  println (show result)
+}

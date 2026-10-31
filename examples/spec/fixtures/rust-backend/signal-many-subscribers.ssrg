@@ -1,0 +1,27 @@
+import * as signals from "std/signal"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+
+effect fn register source:signals.MutableSignal<Int> -> total:refs.Ref<Int> -> subscriptions:refs.Ref<Array<signals.Subscription>> -> _index:Int -> Unit = do {
+  subscription <- signals.subscribe (\n:Int -> refs.update (\acc:Int -> acc + n) total) source
+  refs.update (arrays.append [subscription]) subscriptions
+}
+effect fn cancel subscription:signals.Subscription -> Unit = do {
+  signals.unsubscribe subscription
+  signals.unsubscribe subscription
+}
+
+pub effect fn main = do {
+  source <- signals.make 0
+  total <- refs.make 0
+  let empty:Array<signals.Subscription> = []
+  subscriptions <- refs.make empty
+  for i <- 1 ..= 256 { register source total subscriptions i }
+  source := 1
+  source := 2
+  all <- refs.get subscriptions
+  for subscription <- all { cancel subscription }
+  source := 100
+  result <- refs.get total
+  println (show result)
+}

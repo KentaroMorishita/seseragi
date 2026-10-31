@@ -21,6 +21,8 @@ enum Instruction {
     Release,
     Concurrent(ConcurrentOperation),
     FileSystem(NativeFileOperation),
+    SignalTransaction,
+    SignalSubscribe,
 }
 struct EffectPlan {
     instruction: Instruction,
@@ -62,6 +64,8 @@ fn catch_native(action: impl FnOnce() -> NativeOutcome) -> NativeOutcome {
         .unwrap_or_else(|error| Err(native_panic(error)))
 }
 enum NativeFrame {
+    SignalPublication(SignalPublication),
+    SignalSubscribe(V, V),
     Bind(V),
     Recover(V),
     MapError(V),
@@ -143,7 +147,11 @@ impl NativeContext {
             });
             NativeState::Evaluate(next)
         } else {
-            let root = self.scopes.pop().expect("closing native scope").root;
+            let scope = self.scopes.pop().expect("closing native scope");
+            for subscription in scope.subscriptions {
+                signal_unsubscribe(&subscription);
+            }
+            let root = scope.root;
             self.masked = previous_mask;
             NativeState::Return(if defects.is_empty() {
                 if root {
@@ -166,6 +174,7 @@ struct NativeScope {
     root: bool,
     finalizers: Vec<V>,
     children: Vec<V>,
+    subscriptions: Vec<V>,
 }
 struct NativeMachine {
     context: NativeContext,
@@ -211,6 +220,20 @@ impl NativeMachine {
                     // instruction boundary or a call to user code.
                     let (instruction, c) = plan.plan();
                     match instruction {
+                        Instruction::SignalTransaction => {
+                            signal_transaction(c[0].clone(), context, stack)
+                        }
+                        Instruction::SignalSubscribe => match context
+                            .checkpoint()
+                            .and_then(|_| catch_native(|| Ok(c[0].apply(signal_current(&c[1])))))
+                        {
+                            Ok(plan) => {
+                                stack
+                                    .push(NativeFrame::SignalSubscribe(c[1].clone(), c[0].clone()));
+                                NativeState::Evaluate(plan)
+                            }
+                            Err(error) => NativeState::Return(Err(error)),
+                        },
                         Instruction::Native(code) => NativeState::Return(
                             context
                                 .checkpoint()
@@ -270,6 +293,14 @@ impl NativeMachine {
                         return NativeTurn::Complete(result);
                     };
                     match frame {
+                        NativeFrame::SignalPublication(publication) => {
+                            publication.resume(result, context, stack)
+                        }
+                        NativeFrame::SignalSubscribe(source, observer) => {
+                            NativeState::Return(result.and_then(|_| {
+                                catch_native(|| Ok(signal_subscribe(source, observer, context)))
+                            }))
+                        }
                         NativeFrame::Bind(next) => match result {
                             Ok(value) => match context
                                 .checkpoint()

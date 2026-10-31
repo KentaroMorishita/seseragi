@@ -67,6 +67,9 @@ impl Backend<'_> {
         if let Some(value) = self.sequence_order_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.signal_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.iterator_operation_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }

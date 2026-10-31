@@ -58,6 +58,7 @@ mod returned_calls;
 mod scalar;
 mod sequence_operations;
 mod sequence_order;
+mod signal;
 mod standard_errors;
 mod tail;
 mod text;
@@ -204,6 +205,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_sequence_order.rs"));
     output.push_str(include_str!("runtime_iterator.rs"));
     output.push_str(include_str!("runtime_range.rs"));
+    output.push_str(include_str!("runtime_signal.rs"));
     output.push_str(include_str!("runtime_iterable.rs"));
     output.push_str(include_str!("runtime_collection_control.rs"));
     output.push_str(include_str!("runtime_prelude_collections.rs"));
@@ -628,6 +630,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.iterable_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.signal_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
