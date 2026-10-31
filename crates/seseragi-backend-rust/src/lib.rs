@@ -140,6 +140,11 @@ mod runtime {
     include!("runtime_traversable.rs");
     include!("runtime_maybe.rs");
     include!("runtime_either.rs");
+    include!("runtime_monad.rs");
+    include!("runtime_stream.rs");
+    include!("runtime_validation.rs");
+    include!("runtime_standard_values.rs");
+    include!("runtime_transformer.rs");
     include!("runtime_text.rs");
     include!("runtime_bytes.rs");
     include!("runtime_big_int_value.rs");

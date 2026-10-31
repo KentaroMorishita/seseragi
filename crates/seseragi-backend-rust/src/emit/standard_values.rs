@@ -23,7 +23,7 @@ impl Backend<'_> {
             ("std/either", "Show" | "Debug") => ("std/prelude::Either", 2),
             ("std/map", "Show" | "Debug") => ("std/map::Map", 2),
             ("std/set", "Show" | "Debug") => ("std/set::Set", 1),
-            ("std/validation", "Show" | "Debug") => ("std/validation::Validation", 2),
+            ("std/validation", "Show" | "Debug" | "Eq") => ("std/validation::Validation", 2),
             ("std/non-empty-list", "Show" | "Debug" | "Semigroup") => {
                 ("std/non-empty-list::NonEmptyList", 1)
             }
@@ -56,7 +56,8 @@ impl Backend<'_> {
         if name != owner || arguments.len() != slots {
             return Err("Rust backend: standard dictionary provider type mismatch".into());
         }
-        let factory = display || matches!(provider, "std/maybe" | "std/sum" | "std/product");
+        let factory =
+            display || class == "Eq" || matches!(provider, "std/maybe" | "std/sum" | "std/product");
         let types = type_arguments
             .iter()
             .map(|ty| self.local_canonical_type(ty, scope))
@@ -64,7 +65,7 @@ impl Backend<'_> {
         if types != if factory { arguments.clone() } else { vec![] } {
             return Err("Rust backend: standard dictionary factory type mismatch".into());
         }
-        let contracts = if display {
+        let contracts = if display || class == "Eq" {
             arguments
                 .iter()
                 .map(|ty| (class, vec![ty.clone()]))
@@ -106,12 +107,17 @@ impl Backend<'_> {
                     "Rust backend: standard dictionary child type or trait mismatch".into(),
                 );
             }
+            if *class == "Eq" {
+                self.validate_eq_evidence(child, scope)?;
+            }
             if display {
                 self.validate_display_child(child, class, scope)?;
             }
         }
         let children = self.evidence(evidence_arguments, scope)?;
-        Ok(Some(if display {
+        Ok(Some(if class == "Eq" {
+            format!("native_validation_eq({children})")
+        } else if display {
             format!(
                 "native_standard_display_dictionary({}, {children}, {})",
                 quoted(provider),

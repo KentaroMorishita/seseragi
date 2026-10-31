@@ -498,9 +498,7 @@ mod tests {
     #[test]
     fn array_pattern_length_is_constant_time_and_rest_copies_each_remaining_element_once() {
         let count = 100_000;
-        let values = V::Array(Shared::new(
-            (0..count).map(|_| V::text("雪")).collect(),
-        ));
+        let values = V::Array(Shared::new((0..count).map(|_| V::text("雪")).collect()));
         let shares = SHARES.with(Cell::get);
         let allocations = ALLOCATIONS.with(Cell::get);
         assert!(values.array_length_matches(count, false));

@@ -63,8 +63,10 @@ mod sequence_order;
 mod signal;
 mod standard_errors;
 mod standard_values;
+mod stream;
 mod tail;
 mod text;
+mod validation;
 mod variables;
 
 use local::{LocalCallable, Scope};
@@ -214,6 +216,8 @@ fn emit_body(
     output.push_str(include_str!("runtime_prelude_collections.rs"));
     output.push_str(include_str!("runtime_traversable.rs"));
     output.push_str(include_str!("runtime_monad.rs"));
+    output.push_str(include_str!("runtime_stream.rs"));
+    output.push_str(include_str!("runtime_validation.rs"));
     output.push_str(include_str!("runtime_standard_values.rs"));
     output.push_str(include_str!("runtime_transformer.rs"));
     output.push_str(include_str!("runtime_maybe.rs"));
@@ -1042,6 +1046,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.stream_operation_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.clock_call(expr, scope)? {
                     return Ok(value);
                 }

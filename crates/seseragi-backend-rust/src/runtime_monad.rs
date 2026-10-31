@@ -50,11 +50,7 @@ fn native_monad_pure(kind: i64, value: V) -> V {
         3 => V::adt("std/prelude::Right", value),
         5 => V::leaf(vec![value], |captures, _| Ok(captures[0].clone())),
         6 => V::adt("std/validation::Valid", value),
-        8 => V::fun(vec![value], |captures, emit| {
-            native_stream_defer(vec![emit, captures[0].clone()], |captures, _| {
-                captures[0].apply(captures[1].clone())
-            })
-        }),
+        8 => native_stream_singleton(value),
         _ => panic!("Rust ABI: monad pure"),
     }
 }
@@ -352,33 +348,4 @@ fn native_monad_do(dictionary: V, program: V, mut index: usize, mut environment:
             None => return native_monad_collect(kind.unwrap(), output),
         }
     }
-}
-
-// A Stream is a cold consumer function returning an Effect. Defer each source
-// and callback application so sequential composition uses the Effect machine.
-fn native_stream_defer(captures: Vec<V>, code: fn(&[V], V) -> V) -> V {
-    V::effect(Instruction::Defer, vec![V::fun(captures, code)])
-}
-fn native_stream_bind(callback: V, source: V) -> V {
-    V::fun(vec![callback, source], |captures, emit| {
-        native_stream_defer(
-            vec![captures[0].clone(), captures[1].clone(), emit],
-            |captures, _| {
-                let next = V::fun(
-                    vec![captures[0].clone(), captures[2].clone()],
-                    |captures, value| {
-                        native_stream_defer(
-                            vec![captures[0].clone(), captures[1].clone(), value],
-                            |captures, _| {
-                                captures[0]
-                                    .apply(captures[2].clone())
-                                    .apply(captures[1].clone())
-                            },
-                        )
-                    },
-                );
-                captures[1].apply(next)
-            },
-        )
-    })
 }
