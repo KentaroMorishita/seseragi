@@ -51,6 +51,8 @@ mod methods;
 mod number_parse;
 mod operators;
 mod prelude_collections;
+mod prelude_effects;
+mod range;
 mod returned_calls;
 mod scalar;
 mod sequence_operations;
@@ -196,6 +198,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_sequence.rs"));
     output.push_str(include_str!("runtime_sequence_order.rs"));
     output.push_str(include_str!("runtime_iterator.rs"));
+    output.push_str(include_str!("runtime_range.rs"));
     output.push_str(include_str!("runtime_iterable.rs"));
     output.push_str(include_str!("runtime_collection_control.rs"));
     output.push_str(include_str!("runtime_prelude_collections.rs"));
@@ -227,6 +230,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_float_conversion.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
+    output.push_str(include_str!("runtime_stdin.rs"));
     output.push_str(include_str!("runtime_scheduler.rs"));
     output.push_str(include_str!("runtime_path.rs"));
     output.push_str(include_str!("runtime_filesystem.rs"));
@@ -320,6 +324,14 @@ fn emit_body(
         {
             values.push(format!(
                 "(\"iterate\", {}.field(\"iterate\"))",
+                id("\0dictionary_0")
+            ));
+        } else if backend
+            .monoid_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            values.push(format!(
+                "(\"append\", {}.field(\"append\"))",
                 id("\0dictionary_0")
             ));
         } else if backend
@@ -933,7 +945,9 @@ impl Backend<'_> {
                 {
                     return Ok(value);
                 }
-                if let Some(value) = self.console_reference(name, evidence, type_ref, scope)? {
+                if let Some(value) =
+                    self.prelude_effect_reference(name, evidence, type_ref, scope)?
+                {
                     return Ok(value);
                 }
                 if let Some(value) = self.die_reference(name, evidence, type_ref, scope)? {
@@ -1040,7 +1054,7 @@ impl Backend<'_> {
                 if let Some(value) = self.clock_call(expr, scope)? {
                     return Ok(value);
                 }
-                if let Some(value) = self.console_call(expr, scope)? {
+                if let Some(value) = self.prelude_effect_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.die_operation(expr, scope)? {
@@ -1084,7 +1098,7 @@ impl Backend<'_> {
                 if let Some(value) = self.clock_call(expr, scope)? {
                     return Ok(value);
                 }
-                if let Some(value) = self.console_call(expr, scope)? {
+                if let Some(value) = self.prelude_effect_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.die_call(expr, scope)? {
@@ -1180,6 +1194,15 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if matches!(operator.as_str(), ".." | "..=") {
+                    return self.range_expression(
+                        operator,
+                        [left, right],
+                        evidence,
+                        type_ref,
+                        scope,
+                    );
+                }
                 if operator == ":" {
                     if !evidence.is_empty() || lists::list_element(type_ref).is_none() {
                         return Err(

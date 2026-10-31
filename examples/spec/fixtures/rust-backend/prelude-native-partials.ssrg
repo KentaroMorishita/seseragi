@@ -1,0 +1,7 @@
+fn digits acc:Int -> value:Int -> Int = acc * 10 + value
+pub effect fn main = do {
+  let staged:Array<Int> -> Int = reduce 0 digits
+  println (show (staged [7,8]))
+  let savedAll:Array<Int> -> Bool = all (\n:Int -> n > 0)
+  println (show (savedAll [1,2,3]))
+}

@@ -132,6 +132,7 @@ mod runtime {
     include!("runtime_sequence.rs");
     include!("runtime_sequence_order.rs");
     include!("runtime_iterator.rs");
+    include!("runtime_range.rs");
     include!("runtime_iterable.rs");
     include!("runtime_collection_control.rs");
     include!("runtime_prelude_collections.rs");
@@ -163,6 +164,7 @@ mod runtime {
     include!("runtime_float_conversion.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
+    include!("runtime_stdin.rs");
     include!("runtime_effect_defect.rs");
     include!("runtime_scheduler.rs");
     include!("runtime_path.rs");
