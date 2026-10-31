@@ -235,14 +235,15 @@ fn emit_body(
     let mut initialization = String::new();
     for (index, binding) in module.bindings.iter().enumerate() {
         backend.owner = &owners[&binding.symbol];
-        if !binding.type_parameters.is_empty() {
-            return Err(crate::project::at(
-                "Rust backend: polymorphic global bindings are unsupported",
-                &binding.origin,
-                backend.owner,
-            ));
-        }
-        let value = backend.expr(&binding.value, &Scope::new())?;
+        let mut scope = Scope::new();
+        scope.type_parameters(
+            binding
+                .type_parameters
+                .iter()
+                .map(|p| (p.name.clone(), p.arity)),
+            &binding.symbol,
+        );
+        let value = backend.expr(&binding.value, &scope)?;
         initialization.push_str(&format!("set_global({index}, {value});\n"));
     }
     output.push_str(&format!(
