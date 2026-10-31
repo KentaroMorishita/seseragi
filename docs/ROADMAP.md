@@ -1,83 +1,55 @@
-# Seseragi roadmap
+# ロードマップ
 
-このroadmapは、言語能力の完成順と、その能力を人間が利用・検証するproduct surfaceを別軸として扱います。
-CLI、LSP、playgroundは完成後に載せる別製品ではありません。各Phaseのcompiler entrypoint、structured
-diagnostics、runtime boundaryを実際の利用経路から検証する縦sliceです。
+このページは、Seseragi のこれからの予定をまとめたものです。いまの状況は [STATUS](./STATUS.md) を見てください。
 
-## 言語能力のPhase
+最終更新: 2026-10-31
 
-| Phase | 利用者が書けるprogram | 主な一般機構 |
-| ----- | --------------------- | ------------ |
-| 0 compiler基盤 | sourceを全artifactへ変換し、同じ診断を再現できる | source / CST / AST / resolver / TypedHir / CoreIr / backend / diagnostics |
-| 1 single-file言語 | 一つの`.ssrg`でADT、match、typed Effect、Console / Stdinを組み合わせたprogram | single-module driver、cold Effect、host runtime、user-facing file execution |
-| 2 module / package | Phase 1 programを複数moduleとpackageへ分割できる | module identity、manifest、filesystem discovery、link、instance closure、package entry |
-| 3 generic抽象化 | user定義generic ADT、HKT、trait、instance、Functor / Applicative / Monadを組み合わせられる | kind inference、constraint solving、coherence、dictionary evidence、generic lowering |
-| 4 resource / concurrency | resource lifetimeと並行taskをtyped Effect内で安全に構成できる | scope、acquire / release、cancellation、structured concurrency、Stream / Signal runtime |
-| 5 stdlib / interop | 実用的なapplicationを標準APIとTypeScript / JavaScript境界へ接続できる | collection、filesystem、HTTP、codec、foreign ABI、DOM / SSR |
+## いまの目標
 
-Phase番号は言語能力の依存順です。product surfaceの実装をPhase 5の後まで待つ意味ではありません。
+TypeScript ターゲットで使える言語機能と標準ライブラリを、ネイティブターゲットでも同じように使えるようにします。
+生成したネイティブバイナリは、Bun・Node.js・TypeScript のランタイムなしで動きます。利用者に Rust の所有権のような注釈を書かせることはしません。
 
-## Phaseごとのproduct surface gate
+ブラウザの UI は、これからも TypeScript ターゲットが担当します。ネイティブで GUI を作る予定はありません。
 
-| Surface | Phase 0 | Phase 1 | Phase 2以降の伸ばし方 |
-| ------- | ------- | ------- | --------------------- |
-| CLI | structured diagnosticsを表示するthin adapter | **`seseragi run path/to/app.ssrg`**でsingle-fileをcompile / run | **local Package CLI完了:** manifest entryとlocal module graphを`seseragi run .`でcompile / run。dependency package対応を後続追加 |
-| LSP | **LSP-0完了:** open documentを同じdriverでparse / resolve / typeし、source range付きdiagnosticsを返す | Phase 1構文のdocument diagnostics | module graph、cross-file definition / reference、package diagnostics |
-| playground / WASM | **Playground-0完了:** single-file sourceを同じdriverでcompileし、実行結果またはdiagnosticsを表示する | **Playground-1実装済み:** mobile-first editor、専用highlight、任意Stdin、structured diagnosticsを新UIで提供 | module input、resource制限、stdlibのbrowser capability |
-| formatter | lossless CSTを共有し、parse recoveryを壊さない | Phase 1構文をround-trip | 各Phaseの新構文をgrammarと同じcommitで追加 |
-| conformance | stage schemaとpositive / negative fixture | Phase 1累積programとactual execution | 小さい機能fixture＋過去能力を残した累積goal program |
+全体の進み具合は [#809](https://github.com/KentaroMorishita/seseragi/issues/809) で追っています。
 
-CLI / LSP / WASM adapterはparser、resolver、type checker、loweringを所有しません。`seseragi-driver`のpublic
-entrypointとstructured diagnosticsを使います。process executionは`seseragi-runtime`のhost boundaryを使い、
-language semanticsをtarget adapterへ委譲しません。
+## マイルストーン
 
-## 現在のgate
+| マイルストーン | ゴール |
+| --- | --- |
+| M1 言語機能と公式サンプル | Web UI 以外の公式サンプルがすべてネイティブで動き、`seseragi run --target native` が使える |
+| M2 CLI ツールが書ける | ファイル・プロセス・テキスト・正規表現・日時・テストなどがネイティブで使える |
+| M3 サーバーと並行処理 | HTTP・WebSocket・Effect の並行処理・Stream がネイティブで使える |
+| M4 WASM と外部連携 | program WASM の対応を広げ、`foreign`・Provider・データベースの adapter を使えるようにする |
 
-- Phase 0: Rust compiler pipelineとconformance artifactの最小経路は接続済み。
-- Phase 1: 型付きじゃんけんprogramのcompiler / runtime fixtureに加え、fixture metadataなしの
-  `seseragi run path/to/app.ssrg`を接続済み。
-- Phase 2: linked compileとproject executionは進行中です。strict manifest、canonical local discovery、shared project driver、
-  multi-module runtimeを接続し、分割じゃんけんpackageを`seseragi run .`で実行できます。registry / alias / path dependencyの
-  typed manifest contractに加え、canonical path dependencyを再帰発見するlocal package graphを接続済みです。依存先manifestの
-  name / language照合、cycle、同名同versionの別source混入をproject layerで拒否します。bare importはimporterの宣言済み
-  dependency keyを最長prefixで選び、exact package identityの公開export subpathへ解決します。複数packageのcanonical source
-  discoveryとshared driver compileまで接続し、path dependencyをまたぐ閉じた`ModuleIdentity` graphを通常pipelineへ渡します。
-  `seseragi run package-path-dependency-basic`はdependencyの公開functionを呼ぶEffect entryを生成runtimeで実行します。
-  全source rootのNFC / case / symlink / physical alias auditもentry discovery前に接続済みです。registry / lockfile resolutionと
-  full collection fixtureは未完了です。immutable Array literal、generic higher-order callback、checked Int arithmetic
-  operator section `(+)`に加え、標準`Reducible<Array<A>, A>` evidenceを選択するgeneric `reduce`を全compiler stageと
-  actual executionへ接続済みです。binary `+`と期待型を持つoperator section `(+)`は`Add<L, R, O>`のlocal / imported /
-  scoped user instanceを一般的なselection / dictionary passingへ接続し、user `Add` callbackをstandard Array
-  `reduce`でactual executionします。generic `Reducible<C,A>` parameter evidenceもlocal / imported user dictionaryの
-  `reduce` methodへdispatchし、標準Array / Range / Listは専用operation ABIを維持します。newtype valueはlocal / generic /
-  imported constructor、pattern unwrap、nominal non-coercion、actual executionまで接続済みです。structural Recordは
-  explicit / shorthand literal、required field access、optional field accessの`Maybe` presence、width subtypingをresolver境界から
-  actual executionまで接続済みです。record spreadもsource-order evaluation、後勝ちのfield型更新、optional presence継承を
-  actual executionまで接続済みです。次はrecord patternを同じvalue modelへ追加し、その上へnominal structの
-  constructor / field / visibilityを接続します。struct / newtypeの`operator`糖衣はこのvalue基盤の後に扱います。
-  user-defined `Eq<A>`は`==` / `!=`からlocal / scoped / imported dictionaryへdispatch済みで、標準型名だけで通る
-  偽の完了条件を排除しています。
-- LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
-  diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
-- Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS
-  parserではなくWASM compile、generated TypeScript、browser Console / Stdin hostを通ります。lesson 01と
-  Phase 1累積じゃんけんの実行をintegration testで固定済みです。
-- Playground-1: `apps/playground`へ旧UIと独立したCodeMirror 6のmobile-first surfaceを実装済みです。
-  diagnosticsのUTF-8 range変換、専用syntax highlight、任意Stdin、responsive panelを小さいmoduleへ分離し、
-  Vercelはversioned WASM deployment artifactをViteでbundleするためbuild hostのRust toolchainへ依存しません。
-- formatter-0: `seseragi-formatter`がlossless token / CSTを入力にし、shared driver経由の
-  `seseragi format [--check] path.ssrg`を提供済みです。Phase 1累積programのidempotent round-tripと
-  compile artifact不変、CRLFからLF、2-space indent、trailing whitespace、末尾newlineを固定しました。
-  parse recovery treeはtokenを変更せず、CLIはshared structured diagnosticsを返します。resolved fixityを
-  必要とするoperator spacing / line wrappingとrange / stdin formatは、独自precedenceを作らず後続gateで接続します。
+マイルストーンごとの Issue は、GitHub の [Milestones](https://github.com/KentaroMorishita/seseragi/milestones) にあります。
 
-## 完了判定
+### M1 の残り
 
-各言語Phaseは、小さいpositive / negative fixtureだけでなく、過去Phaseの能力を残した累積goal programを
-compile、diagnostics、CoreIr、TypeScriptIr、generated code、該当runtime executionまで通して完了とします。
-標準型の名前やcompiler-private helperだけをhardcodeしてuser-defined programへ同等の表現力が渡らない経路は、
-完了条件に含めません。
+公式サンプルを動かすために残っているもの:
 
-single-fileとbrowser runtimeで実行可能な言語機能は、compiler縦sliceが安定した時点でPlaygroundへ学習・実行用sampleを
-追加します。module / package機能はsingle-file sourceへ擬似的に埋め込まず、Playgroundがshared driverのmodule inputを
-受け取れるgateで累積sampleへ接続します。
+- `std/signal`（#1076）
+- Array と List の内包表記（#1096、#1097）
+- Effect 以外の Monad での `do` 記法（#1103）
+- Array の固定長パターンと rest パターン（#1093）
+
+そのほかの M1 の作業:
+
+- `seseragi run` / `build` / `dev` でネイティブターゲットを選べるようにする（#1122、#1125）
+- 実行時エラーを元のソースの位置で表示する（#1124）
+- 標準の instance と、辞書を後から渡す関数をそろえる（#1101、#1102、#1104）
+
+## TypeScript ターゲットで続けること
+
+ネイティブの作業と並行して、TypeScript ターゲットでも次を進めます。
+
+- 省略可能なフィールドのパターン（#1174）
+- 多相なトップレベル値の生成コードの修正（#1173）
+- ファイル・HTTP・Stream など、標準ライブラリの残り
+- TypeScript の既存コードや npm パッケージとの連携の拡充
+
+## 進め方
+
+- 機能ごとに、TypeScript とネイティブで同じ出力になることを fixture で確かめます
+- 型の付いたプログラムをランダムに作って両方で実行する差分テストで、書いていない組み合わせのずれも探します（#1170）
+- CLI・LSP・Playground は同じコンパイラー本体を使います。言語の機能を足したら、これらからも同じように使えるようにします

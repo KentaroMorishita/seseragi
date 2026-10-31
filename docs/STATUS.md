@@ -1,624 +1,83 @@
-# Seseragi 現在地
+# 開発状況
 
-この文書は、新しいSeseragi仕様が「何を決め、どこまで検証され、何がまだ動かないか」を
-一か所で確認するための非規範な進捗表です。言語の意味は [`spec/`](./spec/README.md) を、
-機能ごとの検証対象は [`../examples/spec/COVERAGE.md`](../examples/spec/COVERAGE.md) を正とします。
+このページは、Seseragi のいまの実装状況を、コンパイラーの開発に参加する人向けにまとめたものです。
+言語の使い方は[ドキュメントサイト](https://seseragi-docs.vercel.app/)、言語の決まりは[言語仕様](./spec/README.md)、
+これからの予定は[ROADMAP](./ROADMAP.md)を見てください。
 
-## 現在の結論
+最終更新: 2026-10-31
 
-新しいSeseragiは、言語と標準ライブラリの**仕様初稿がおおむね揃い、Rust再実装を縦sliceで進めている段階**です。
-compiler全体は未完成ですが、lexer / SurfaceAst / resolver / typed HIR / CoreIr / TypeScriptIr / emitterと
-versioned runtimeの最小経路は実際に動作しています。
+## ひと目で
 
-lessonやfixture全体が実装済みという意味ではありません。実装済み範囲はRust conformance artifactを正規生成・比較し、
-未接続のlesson / project fixtureは引き続き「新実装が満たすべき契約」です。
+| 部分 | 状況 |
+| --- | --- |
+| 言語仕様 | 全章の初稿があります。実装しながら直しています |
+| TypeScript ターゲット | 日常的に使える状態です。README とドキュメントサイトに載せた機能はすべて動きます |
+| ネイティブターゲット（Rust） | 開発中です。Web UI 以外の公式サンプル23本のうち16本が動きます |
+| CLI | `run`・`build`・`dev`・`test`・`format`・`lint` などが使えます |
+| エディター | VS Code 拡張と LSP があります |
+| Playground | ブラウザで書いて実行できます。Tour もあります |
 
-ロードマップは[`ROADMAP.md`](./ROADMAP.md)の「言語能力Phase × product surface」二軸で管理します。
-CLI / LSP / playgroundを言語完成後の一括product化Phaseへ延期せず、同じdriverを検証する縦sliceとして進めます。
+## TypeScript ターゲット
 
-## 状態の意味
+コンパイラーは Rust で書かれていて、TypeScript を生成します。生成したコードは Bun・Node.js・ブラウザで動きます。
 
-| 状態                | 意味                                                  |
-| ------------------- | ----------------------------------------------------- |
-| 仕様化済み          | `docs/spec/` に構文、型、評価、失敗、境界の規則がある |
-| design exampleあり  | 学習用programまたは最小fixtureがある                  |
-| fixture契約あり     | 入力と期待結果の形式が機械検証可能な形で置かれている  |
-| conformance検証済み | 新仕様compilerを実際に通し、期待結果と比較できる      |
-| 実装済み            | compiler、runtimeまたはtoolingが新仕様どおりに動く    |
+使える主な機能は次のとおりです。
 
-`cargo run -p seseragi-conformance -- .` がlesson / fixture discovery、artifact contract、
-Seseragi sourceのparse、型検査、lowering、生成物比較を一つのcanonical runnerで検査します。
-Effectおよびpure execution fixtureについては生成moduleとversioned runtimeも実行します。
+- ADT、struct、レコード、newtype、パターンマッチ（網羅性の検査つき）
+- ジェネリクス、型クラス（trait と instance）、`deriving`
+- `Maybe`・`Either`・Effect と `do` 記法、型で表した失敗
+- Signal と、Signal を使った Web UI
+- モジュール、パッケージ、ロックファイル
+- TypeScript の関数を呼ぶ `foreign` と、`.d.ts` からの binding 生成
 
-## 領域別の現在地
+まだ足りないものは次のとおりです。
 
-| 領域                                       | 仕様          | example / fixture                          | 新仕様実装         |
-| ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
-| 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
-| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Struct + local inherent method実行まで部分実装 |
-| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array・List・Effect instance実行まで部分実装 |
-| custom infix operator                      | 初稿あり      | local / imported positive・negative・execution fixtureあり | local / imported宣言・fixity・generic constrained関数値参照・部分適用・型検査・TS実行まで実装 |
-| Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
-| Signal、Stream                             | 初稿あり      | Signal transaction / subscription / switchMap execution fixtureあり | Signalのmake / map / update / transaction / switchMap、Functor / Applicativeまで部分実装。Streamは未着手 |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict manifest + canonical local discovery + exact lock graph / Provider selection + linked compile / executionまで実装 |
-| TypeScript interop、`.d.ts`変換            | 初稿あり      | pure / task / failure / single-flight実行、ABI・変換snapshot fixtureあり | `foreign "typescript"`構文、typed interface、relative host staging、pure / task・境界codec・callback実行まで部分実装。`.d.ts`変換は未着手 |
-| collection、text、number、JSON             | 初稿あり      | Range / Array execution、persistent List traversalあり、他は境界fixture不足 | Array / `Range<Int>`のreduce・comprehensionとArray / ListのPrelude Monadまで部分実装 |
-| Bytes、Decimal、Regex、timezone            | 初稿あり      | portable parity、runtime・provider・execution fixtureあり | compiler / runtime共通経路まで実装 |
-| filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |
-| pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR / component / style / interactive DOM / typed form fixtureあり | SSR、function component、inline style、browser DOM runtime、input / change snapshot、IME compositionとform submitまで部分実装。hydrationは未着手 |
-| 性能モデル、最適化境界                     | 初稿あり      | shape・profile差分・stack fixtureあり      | 未着手             |
-| diagnostics、formatter、LSP                | 縦slice進行中 | diagnostic fixture + stdio / CLI integration | LSP-1とformatter-0を実装              |
-| syntax highlight                           | token契約あり | spec preview拡張あり                       | 仮実装あり         |
-| playground                                 | 共有契約あり  | 17 sampleのWASM / native CLI execution      | Learn / Discover catalog、mobile / deploy surface実装済み |
+- 標準ライブラリのうち、ファイル・HTTP・Stream などは一部だけです
+- 省略可能なフィールドのパターン（`{ id? }`）は型検査が未対応です（#1174）
+- 多相なトップレベル値を複数の型で使うと、生成したコードが読み込めません（#1173）
 
-ここでいう「未着手」はcanonical Rust compiler / runtime境界にまだ接続されていない状態です。
-移行前のroot TypeScript compilerは削除済みで、機能の実装済み判定には使いません。
+## ネイティブターゲット
 
-## いま存在する成果物
+TypeScript ターゲットと同じプログラムを、Bun や Node.js なしで動くネイティブバイナリにする作業を進めています。
+全体の進み具合は [#809](https://github.com/KentaroMorishita/seseragi/issues/809) で追っています。
 
-- 規範仕様: `docs/spec/00-language.md` から `14-performance.md` とAppendix grammar
-- 学習教材: `examples/spec/lessons/` の31 lesson
-- 現行compilerで動くsample catalog: `examples/samples/` のmetadata / source / guide / snapshot
-- versioned conformance入力: positive / diagnostic / runtime artifactとproject fixture
-- coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
-- grammar対応表: `examples/spec/grammar-coverage.json`
-- token / stage / execution artifact契約: `examples/spec/artifacts/token-schema-1/`、
-  `schema-1/`、`stage-schema-1/`、`execution-schema-1/`
-- 横断監査記録: `docs/SPEC_AUDIT.md`
-- canonical artifact / execution runner: `cargo run -p seseragi-conformance -- .`
-- Rust compiler crates: syntax、source、project identity、diagnostic、semantics、lowering、single-module driver、runtime / conformance boundary
-- TokenStreamからgenerated TypeScriptまでのschema-1 artifact producer / conformance比較
-- cold Effect valueをversioned TypeScript runtimeで実行するConsole / Stdin execution fixture
-- typed ADT、tuple、match、exhaustivenessを通す`rock-paper-scissors-domain` artifact
-- standard `Maybe` / `Either`と、正常・不正入力を実行する`parse-hand-either` artifact
-- pure `parseHand`をcold typed Effectへ変換し、success payloadを実行比較する`effect-parse-hand` artifact
-- ADT / match / typed failure / Stdin / Consoleを統合し、正常・不正・EOFを実行比較する
-  `rock-paper-scissors-cli` artifact
-- strict manifestの`run.entry`からrelative importを辿り、分割じゃんけんの3 source moduleをcanonical filesystem pathと
-  structural package / module identityへ対応付けるlocal package loader
-- 同じCLIでConsole operation trace、Stdin / Console host failureのtyped変換、derived `Show`によるstderrと
-  exit code 1まで比較するexecution artifact
-- cross-module ADT / pure callを実行する`project-schema-1/rock-paper-scissors-domain-split`、namespace constructorと
-  generic callを実行する`namespace-generic-call`、imported cold EffectとConsole traceを実行する`imported-effect-console`
-- imported typed failureをmainのADTへmapし、dependencyのderived `Show` dictionary import、stderr、exit 1まで実行する
-  `project-schema-1/imported-effect-failure`
-- 物理source pathと論理module identityを分離し、Phase 1の累積programをTokenStreamからgenerated
-  TypeScriptまで一つのcompile結果として返すpublic Rust driver
-- fixture metadataなしでPhase 1 sourceをcompile / executeする`seseragi run path/to/app.ssrg`と、compiler outputから
-  entry contractを検証して埋め込みTypeScript runtimeを実行するpublic Rust runtime boundary
-- 全`.ssrg`のsyntax highlight、同梱native LSP、状態/再起動導線を持つ正式なVS Code extension:
-  `extensions/seseragi/`
+いまは `seseragi experimental build-native` でビルドします。`seseragi run --target native` で選べるようにする作業は #1122 です。
 
-数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
-揃うまでは、その機能をconformance検証済みとは扱いません。
+### 公式サンプルの状況
 
-## まだ終わっていないこと
+`examples/samples` の31本を、ネイティブでビルドして TypeScript ターゲットと出力を比べた結果です。
 
-### 1. 仕様の横断監査
+| 状況 | 本数 | 内容 |
+| --- | --- | --- |
+| 動く（TS と出力が一致） | 16 | fizzbuzz、records、stdin-greeting、project-greeting など |
+| Web UI（ネイティブの対象外） | 8 | `std/web/html` を使うサンプル。画面は TypeScript ターゲットが担当します |
+| まだ動かない | 7 | 下の表のとおり |
 
-章ごとの初稿はありますが、同じ概念を複数章から参照する箇所について、型signature、failure、
-resource lifetime、grammar、exampleの最終突合が必要です。最初の型構文・性能境界passは完了し、結果を
-`docs/SPEC_AUDIT.md`へ記録しています。新機能を増やすより先に残りの矛盾を減らします。
+| 止まる理由 | サンプル | Issue |
+| --- | --- | --- |
+| `std/signal` が未対応 | signal-state、signal-composition、type-aliases | #1076 |
+| 内包表記が未対応 | collections、typeclass-operator-parity | #1096、#1097 |
+| Effect 以外の `do` が未対応 | either-and-monad | #1103 |
+| パターンの判定の一部が未対応 | collection-patterns | #1093 |
 
-### 2. conformance fixtureの拡充
+### TS とネイティブの一致を確かめる方法
 
-single-file / project fixtureは継続的に拡充中です。特に次が不足しています。
+- `examples/spec/fixtures/rust-backend/` の fixture は、Bun・Node.js・ネイティブの出力を、同じ期待値と比べています
+- 型の付いたプログラムをランダムに作って両方で実行し、結果を比べる差分テストを準備しています（#1170）
 
-- operator precedence、型推論、kind、coherenceのpositive / negative case
-- Signal transaction、Stream backpressureのruntime trace
-- DOM reconciliation、event cleanup、hydration mismatchのproject fixture
-- trait specialization、fusionのquality profile fixture
-- formatter、LSP、semantic token、playgroundで共有するsnapshot
+## 開発用ツール
 
-### 3. 新仕様compilerの実装
+| ツール | 状況 |
+| --- | --- |
+| CLI | `new`・`run`・`build`・`dev`・`lock update`・`test`・`benchmark`・`format`・`lint`・`doc --test`・`dts convert` |
+| LSP | 同じコンパイラー本体で、エディター上にエラーを表示します |
+| フォーマッター | `seseragi format` で整形できます。スタイルの設定はありません |
+| VS Code 拡張 | GitHub Releases の VSIX からインストールできます。LSP を同梱しています |
+| Playground | コンパイラーを WASM にしてブラウザで動かしています。Tour と公式サンプルを開けます |
 
-実装計画は`IMPLEMENTATION.md`を正本とし、lexer / lossless CST、parser、名前解決、型検査、
-意味を単純化した内部表現、TypeScript出力、runtime adapterを分離して進めています。
-TypeScriptは出力先であり、Seseragiの型やEffectの意味を決める正本にはしません。
+## 関連する文書
 
-### 4. productとしてのtooling
-
-single-file CLIはshared driverとstructured diagnosticsへ接続済みです。LSP-0も`seseragi-lsp`のstdio JSON-RPCから
-同じdriverを呼び、UTF-8 / UTF-16 / UTF-32へ変換したparse / resolve / type diagnosticsをopen documentへ返します。
-diagnosticの最初のhuman-readable sliceはunresolved name、arity、型不一致、missing instance、field typo、
-Effect必須位置、non-exhaustive match、parser errorを共通 `message` / labels / notes / helps / fixes / type差分へ
-変換します。CLIはsnippetとcaret、LSPはrelated informationとdata、Playgroundはeditorへ戻れるcardを表示し、
-内部 `messageKey` をuser-facing textへ出しません。
-shared Analysis APIは同じlinked frontendとTyped HIRからdiagnostic、position上のsymbol / type / callable、
-definition、scope内のvisible symbol、標準Referenceを一つの`AnalysisDocument`へ統合しました。部分適用は完全signatureと
-残parameterを併記し、標準ReferenceはPrelude、Effect operation、operator、standard module interfaceの既存registryから
-生成します。Playgroundはdebounceとrevision照合を行い、Runなしのlive diagnostic、hover、検索可能なReferenceを
-WASM経由で表示します。analysis経路はlowering、code generation、Effect実行、DOM mountを呼びません。
-LSP-1は同じAnalysis snapshotからhover、scope / namespace completion、curried signature help、definition、diagnostic
-quick fix、semantic tokenを返します。`workspaceFolders`ではcurrent documentから到達するrelative module graphを
-`seseragi-project`で解決し、`seseragi.toml` projectではlocal path dependency / package importも同じgraphへ接続します。
-open bufferはfilesystem sourceをshadowし、dependency edit、source / manifestのcreate・delete・renameで影響するgraphを
-再解析します。workspace外とuntitled documentはsingle-file解析へfallbackします。stdio integrationで主要4機能、UTF-16、不正positionのnull responseを固定し、
-VS Code extensionはmacOS arm64/x64、Linux x64、Windows x64ごとのVSIXへ
-`seseragi-lsp`を一つだけ同梱します。packageはarchive内のUnix実行mode、展開後の
-`--version-json`、version / target tripleを検証し、起動前とinitialize後にprotocol /
-analysis schema versionを検査します。status bar、専用Output Channel、restart commandから
-状態と復旧方法を確認できます。
-`seseragi.languageServer.path`は独自build用overrideとしてだけ残します。
-Playground-0も`seseragi-wasm`から同じdriverとruntime entry contractを利用し、lesson sourceを手作業で複製せず
-WASM compile、generated TypeScript、browser host runtimeへ接続済みです。Phase 1累積じゃんけんもdeterministic Stdinで
-browser host実行しています。formatter-0はlossless token / CST、shared driver、native CLIを接続し、Phase 1
-累積programのround-tripを固定しました。resolved fixity依存の整形とrange / stdin formatは独立した後続surface
-gateとして進め、Phase 2完了後へ一括延期しません。
-package directoryの`seseragi run .`はlocal filesystem discovery、shared project driver、multi-module runtimeへ接続済みです。
-manifestのlanguage rangeもsource読込前に実装versionへ照合します。path dependencyはcanonical rootとtyped manifestから
-structural package graphへ解決し、dependency name不一致、cycle、同名同versionの別source混入を拒否します。各dependencyの
-bare importは宣言済みdependency keyの最長prefixとtarget export mapを使い、未宣言dependencyを`SES-K0103`、非公開subpathを
-`SES-N0104`で拒否します。root entryからrelative / `self/` / path dependency importを辿るcanonical source discoveryも
-`ModuleIdentity` graphへ接続済みです。driverはopaque package scopeでpublic/private境界を維持し、packageごとのoutput pathを
-計画します。CLIとruntimeは`package-path-dependency-basic`の公開function callを実行して`42`を確認済みです。entryから到達しない
-`.ssrg`も含むsource root auditがNFC / case collision、root escape、physical aliasをcompile前に拒否します。
-`seseragi.lock`はschema 1 reader / canonical writer、workspace / path / registry exact identity、manifest /
-content digest、SemVer / language / toolchain database stale検証、Provider selection metadata統合へ接続済みです。
-CLIのproject run / build / devはmissing / stale lockを`SES-K0102`で拒否し、`seseragi lock update`以外で
-書き換えません。公開registryのHTTP / hosting / artifact cacheとfull collection fixtureは独立した後続境界です。
-Array literal自体は通常pipelineへ接続済みで、
-generic higher-order parameter callとchecked Int arithmetic operator section `(+)`も通常pipelineへ接続済みです。
-低優先順位適用`$`と左結合pipeline`|>`もSurfaceAstで通常applicationへ消去し、部分適用を右辺に置くchainを
-全IR、generated TypeScript、actual executionへ接続済みです。行頭`|>`による継続行はbind、pure let、
-do blockのresultで同じ構文規則を使い、indentを意味へ含めません。専用runtime dispatchは生成しません。
-Playgroundは同じfixtureを`関数適用とパイプライン`として実行し、サンプル選択を`基本`、`アプリ`、
-`型と抽象化`へ分類しました。類似したconstraint実装fixtureはconformanceには残しつつ、利用者向けcatalogでは
-代表例へ絞り、内部機構の差だけでサンプル一覧が偏らないようにしています。
-標準`Reducible<Array<A>, A>`を使うgeneric `reduce`は`schema-1/array-reduce`で選択済みevidenceを
-TypedHir / CoreIrへ保持し、checked `(+)` callback、TypeScript runtime、actual executionまで接続済みです。
-Playgroundでも`Arrayスコア集計`として同じdriver / browser runtimeを実行できます。
-`1..10`と`1..=10`は算術より低く比較より高いbinding powerを持つ`Range<Int>` literalとして通常pipelineへ
-接続しました。両端はIntに限定し、誤った端点は`range.endpoint-not-int`でsource range付きdiagnosticを返します。
-backendはRangeをArrayへ偽装せず、`start / end / inclusive`を持つ有限値と`std/range::Reducible` evidenceを保持します。
-`schema-1/range-reduce`と同名execution fixtureはexclusive 45 / inclusive 55、空・降順・safe integer最大端をruntime ABIで
-検証します。Array / Range comprehensionは同じ`Iterable<C, A>` evidenceをTypedHir / CoreIrへ保持し、guardを
-純粋なpredicate、複数generatorをnested flat-mapとしてTypeScript runtimeへlowerします。
-`schema-1/{range-comprehension,array-comprehension}`は単一generatorとguard、およびArray同士の複数generatorを固定します。
-`schema-1/comprehension-pattern-filter`はconstructor payloadとtuple literal patternを同じdecision loweringへ接続し、不一致を
-diagnosticやruntime defectではなくgenerator filterとして扱います。pattern bindingを使うguardも一致後のscopeで評価します。
-同名execution fixtureとPlayground sampleは、`Just` payloadとtupleの選別結果をactual executionで固定します。
-非Iterable sourceは`SES-T0201 instance.missing`で停止します。仕様10.7のpersistent pure pull `Iterator<A>`も
-`unfold` / `next`とともに通常pipeline、versioned runtime ABI、Node executionへ接続済みです。
-`schema-1/iterator-unfold`はstepの状態型と要素型を別々に具体化し、同じIteratorを複数回観測しても同じ先頭を返すこと、
-restから次の値へ進めることを固定します。runtime probeは`unfold`がeagerにstepを呼ばず、各`next`がちょうど一度
-stepを呼ぶことも検証します。user-defined `Iterable<C, A>`もこのIterator境界へ接続済みです。
-`schema-1/user-iterable-comprehension`はlocal instanceからelement型を推論し、選択済みdictionaryの`iterate`を呼んで
-返されたIteratorを共通collectorへ流します。同じuser collectionへ`Reducible<Countdown, Int>`も定義し、generic
-`total<C> where Reducible<C, Int>`のbodyではparameter evidenceの`reduce` method、具体callではlocal dictionaryを実行します。
-generic `where Iterable<C, A>`もparameter evidenceを同じTypedHir / CoreIr shapeで保持します。
-`project-schema-1/imported-iterable-comprehension`はprovider moduleのIterable / Reducible dictionary exportをconsumerへimportし、
-両経路をactual executionします。標準Array / Range / List evidenceは従来の専用runtime ABIを維持し、user collectionを
-runtime shapeで判定しません。missing concrete instanceは`semantic-diagnostics-schema-1/reducible-missing`で
-`SES-T0201 instance.missing`になります。Playgroundの`自作Collectionの流れ`でも同じschema sourceをbrowser runtimeで実行できます。
-仕様3.8のbacktick List literalは`schema-1/list-literal`で通常pipelineへ接続済みです。
-`` `[1, 2, 3] ``はArrayの別表記にはせず、TypeScript runtimeのimmutable `Empty / Cons` nodeへ
-`core.list.from-array` ABIを介して構築します。空Listのelement型はArrayと同じく期待型から決め、異種elementは
-collection名を保ったdiagnosticにします。`schema-1/list-comprehension`はstandard
-`Iterable<List<A>, A>` / `Reducible<List<A>, A>` evidenceをTypedHir / CoreIrへ保持し、List sourceとList resultの
-内包表記、generic `reduce`、Node / browser executionへ接続します。generated moduleはListをArrayへ公開同一化せず、
-collector内部の一時Arrayだけを`fromArray`でpersistent Listへ戻します。同名execution fixtureとPlaygroundの
-`永続Listの流れ`はodd squareの合計`35`を固定し、runtime ABI probeは順序、空、node凍結、reduce、comprehensionを検証します。
-backtick templateもList literalと共有する字句境界から通常pipelineへ接続済みです。`${expression}`は
-SurfaceAstで任意の式として構造化し、各値の`Show<A>` evidenceを型検査時に選択してTypedHir / CoreIrへ保持します。
-backendは選択済みstandard / local dictionaryの`show`を左から右へ一度ずつ呼び、String連結へlowerします。
-`schema-1/template-interpolation`は`Show<String>`とlocal `Badge deriving Show`を同じtemplateで使用し、
-`schema-1/struct-profile`は`Show<Int>`をStruct member / pattern bindingの補間から選択します。同名execution
-fixtureとPlaygroundの`型安全なtemplate`が`Hello, Seseragi: Active`を固定します。同じsourceはUnicode XIDと末尾`'`を
-持つidentifierをlexerから生成TypeScript / Node実行まで通し、backendはUnicodeを保持して`'`をsource identifierと衝突しない
-`$prime`へ符号化します。Playgroundはtemplate textと`${...}`の式を分離して通常のidentifier / type / operator色を適用します。対応instanceがない補間値は
-`SES-T0201 instance.missing`、不正escapeはexact escape rangeの`SES-P0201`で停止し、textを黙って欠落させません。
-Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みevidenceをTypedHir / CoreIrへ保持し、
-backendはそのevidenceを確認してchecked runtime helperを選択します。
-`String + String`も`Add<String, String, String>`のstandard instanceとして全IRとactual executionへ接続済みで、
-数値への暗黙変換は行いません。operator resultをIntだけに固定しない標準evidence selectionを証明し、
-Playgroundでも`Stringで招待状`として同じfixtureを実行できます。
-Int、Bool、Stringの`==` / `!=`もstandard `Eq<A>`の選択結果をTypedHir / CoreIrへ保持し、Stringの
-pure comparisonをactual executionへ接続済みです。`schema-1/user-eq-operator`はlocal `Eq<Status>` dictionaryの
-`eq`を`==`から呼び、generic `different<T> where Eq<T>`の`!=`はscoped dictionary結果を否定します。
-同名execution fixtureと`project-schema-1/imported-user-eq-operator`がlocal / parameter / imported evidenceを実行し、
-`semantic-diagnostics-schema-1/eq-missing`はinstanceのないADT比較を`SES-T0201`で拒否します。
-Playgroundの`自作の等価比較`でも同じsourceを実行できます。`deriving Eq`は後続gateです。
-`schema-1/equality-operator-section`は`(==)` / `(!=)`を期待されるcurried関数型から型付けし、local
-`Eq<Status>`、generic scoped `Eq<T>`、standard `Eq<Int>`の選択済みevidenceを関数値へ保持します。backendは
-dictionaryの`eq`をcurried callbackとして呼び、`!=`はその結果を否定します。同名execution fixtureが全経路をactual executionし、
-`semantic-diagnostics-schema-1/equality-operator-section-missing`はinstanceのないsectionを`SES-T0201`で停止します。
-`schema-1/type-class-operator-section`は`(<$>)` / `(<*>)` / `(>>=)`をsource順のcurried関数値として扱い、
-bare / 一引数部分適用 / 二引数飽和callを同じregistry-driven adapterへlowerします。Prelude Maybeの
-Functor / Applicative / Monad evidence、generic `where Monad<M>` parameter evidence、lexicalなuserland同名traitを
-通常infixと共有し、actual executionでmap / apply / bind / Nothing short-circuitを固定します。
-`semantic-diagnostics-schema-1/type-class-operator-section-missing`はMonad instanceのない`Box`を`SES-T0201`で停止します。
-`schema-1/operator-section-forbidden`は短絡、pipeline、`$`、Signal set、prefix、rangeと未接続の
-`Ord` / cons sectionを共通policyでSurface errorにし、`SES-P0001`でcompileを停止します。valid custom candidateは
-引き続きoperator namespaceへ進み、`SES-P0101 operator.unknown`との責務を混ぜません。
-`schema-1/newtype-user-id`は`newtype UserId = Int`を一constructorのnominal valueとして通常pipelineへ接続し、
-constructor適用、irrefutableなpayload pattern、TypedHir / CoreIr / TypeScriptIr、tagged TypeScript表現を固定します。
-同名execution fixtureがactual outputを検証し、`semantic-diagnostics-schema-1/newtype-no-coercion`は`UserId`から`Int`への
-暗黙unwrapを拒否します。generic newtypeのpayload inferenceもlowering testで固定しています。
-`project-schema-1/imported-newtype`は公開newtypeのtype / constructorを一つのnamed importから導入し、consumerでconstruct / unwrapして
-actual executionします。Playgroundの`newtypeでUserId`でも同じsourceを実行できます。newtype derivingは後続です。
-`schema-1/record-profile`はstructural Recordのexplicit / shorthand / spread literal、required / optional field access、width subtypingを
-SurfaceAst / resolver / TypedHir / CoreIr / TypeScriptIr / readonly TypeScript objectへ接続します。resolverは同じ`.`構文を、
-左辺がmodule bindingならnamespace-qualified value、通常値ならrecord memberとして分離し、型付け層へ新しい名前解決を
-持ち込みません。同名execution fixtureとPlaygroundの`Recordでプロフィール`が、余分な`score` fieldを持つ値を
-`{ name: String }`へ渡す経路と、`{ label?: String }`のabsent / presentを`Nothing` / `Just`として分岐する経路を固定します。
-optional accessはown-property presenceを一度だけ評価し、explicit `undefined`とmissingを統合しません。duplicate / missing /
-non-record accessとnon-record spreadは`SES-T0101`で停止します。spreadはsource順に一度ずつ評価し、後続fieldでimmutableに
-上書きします。required fieldのrecord patternは`{ name }` shorthand、`{ label: "Player", name }`のnested literal、
-structural subset matching、binding / testのnamed decision projectionまで同じfixtureへ接続済みです。存在しないpattern fieldも
-`SES-T0101`で停止します。optional query pattern (`{ id? }`) は、missingを`Maybe`へ投影する後続gateです。
-`schema-1/struct-profile`はnominal `struct Player { name: String, score: Int }`を通常pipelineへ接続し、
-explicit / shorthand construction、同じnominal ownerからのspread update、member access、named struct patternと
-nested literal testをactual executionまで固定します。Structは`SemanticTypeKey::Struct`で宣言ownerを保持するため、
-同じfield集合のstructural Recordや別Structとは暗黙互換になりません。backendはfield objectの生成機構だけをRecordと共有し、
-TypeScript typeへunique-symbol brandを加え、型検査済みのconstructionだけをnominal型へassertします。
-`semantic-diagnostics-schema-1/struct-field-errors`はmissing / unknown / mismatched fieldと別nominal型からのspreadを拒否します。
-非opaqueな公開Structはfield contractをinterfaceへ残し、`project-schema-1/imported-struct`がconsumerでのconstruct / update /
-patternとtype-only import、actual executionを固定します。`schema-1/generic-struct`はfield制約から
-`Box { value: 41 }`を`Box<Int>`へ推論し、generic member / pattern / same-argument spread updateをactual executionまで通します。
-同じparameterへ矛盾するfield型が集まる場合と、field / expected typeのどちらからもargumentを決められない場合は
-`SES-T0101`で停止します。opaque Structはrepresentationを公開せず、別moduleからの空literalとfield付きliteralを
-`struct.representation-private`で型検査中に停止します。定義module内のconstructionと公開factoryはそのまま利用できます。
-明示`Box<String> { ... }` constructionもparserからresolver / type checker / loweringへ接続済みです。明示引数を
-expected typeとfield inferenceより優先し、arity不一致とhole残存をcompile diagnosticで停止します。
-`schema-1/explicit-generic-struct`はnested `Marker<Array<String>>`から空Array fieldを型付けし、actual executionを固定します。
-`schema-1/inherent-method`は`impl<A> Box<A>`のgeneric `map`とparameterなしの`get`をreceiverの
-nominal ownerから選択し、通常の静的function callとしてTypedHir / CoreIr / TypeScriptIrへlowerします。
-contextual lambdaを含む`box.map (\value -> value + value)`から`.get`までactual executionで42を固定します。
-local nominal以外のtarget、不正な第一`self` parameter、同じownerでのmethod名重複はbackend前に停止します。
-method選択に`Box`などの個別型名は使いません。
-`project-schema-1/imported-inherent-method`はpublic inherent methodをnominal型exportのmethod contractへ載せ、
-method自体をnamed value exportへ漏らさず、opaque generic `Box`をfactoryから受け取ったconsumerで
-`map`から`get`までactual executionして42を固定します。provider / consumerはcanonical ownerでmethodを共有し、
-backendではownerを含むcompiler-private bindingへ落とすため、別型の同名methodやtop-level関数と衝突しません。
-`schema-1/impl-operator`は`impl Score`内の`operator +`と`operator ==`を、それぞれ通常の
-`Add<Score, Int, Score>` / `Eq<Score>` instanceへ展開します。既存のinstance contract、coherence、
-dictionary loweringを再利用し、actual executionで加算と比較の両方を通して42を固定します。
-operator / trait / method対応は共通registryに集約し、generic `impl<A>`のconstraintもinstance factoryへ保持します。
-標準traitと一致しないsignature、個別overloadを持たない`!=`宣言、同じheadの明示instanceとの重複は
-backend前に停止します。
-`schema-1/custom-infix-operator`はtop-levelの`infixl` / `infixr`宣言を、宣言位置より前の式を含む
-flat operator chainからfixity-awareに再結合します。custom operatorは通常のcurried function callへ正規化し、
-既存のgeneric application typing、constraint evidence、CoreIr / TypeScriptIr loweringを再利用します。
-backend bindingはoperator spellingのUTF-8 bytesを衝突なく符号化し、raw operatorをJavaScriptへ流しません。
-同名execution fixtureは右結合の`10 <^> 3 <^> 2 = 9`と左結合の`10 <~> 3 <~> 2 = 5`を実行し、
-dot入りspellingも共通raw operator分類で保持します。unknown operatorと非結合fixity conflictは
-`SES-P0101` / `SES-P0102`、不正spellingと非二項宣言は`SES-P0001`でbackend前に停止します。
-`project-schema-1/imported-custom-infix-operator`はdependency interfaceのfixityと型schemeだけでconsumerの
-右結合chainを解決し、providerのbyte-encoded operator exportを通常のES module importとして呼び出します。
-closed TypeScript checkとactual project executionで9を固定します。`schema-1/custom-operator-section`は
-`(<^>)`を同じcurried function値としてhigher-order parameterへ渡し、部分適用できることをactual executionで固定します。
-期待関数型からgeneric argumentを具体化し、local / imported / scoped constraint evidenceを残りのvalue parameterの後へ
-捕捉するため、constrained operatorもdictionary待ちの関数をruntimeへ漏らしません。imported sectionも同じencoded
-ES module bindingとprovider evidenceを値として渡します。未知のsectionは`SES-P0101 operator.unknown`、期待型も
-scoped evidenceもない未具体化constraintは`SES-T0201 instance.missing`でlowering前に停止します。
-opaque smart constructor / field visibility、struct derivingも後続gateです。
-`schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
-curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は
-standard `Reducible` runtimeへこのuser-defined callbackを渡し、actual executionで42を固定します。
-`project-schema-1/imported-user-add-operator`は同じsection選択をmodule ABIへ伸ばし、consumerがproviderのdictionary
-exportをimportするため、backendの型名・runtime tag分岐では完了できません。scoped `Add<T,T,T>`も期待関数型から
-parameter evidenceを選びます。対応instanceがないbinary / sectionは
-`semantic-diagnostics-schema-1/{user-add-missing,operator-reference-missing}`で`SES-T0201 instance.missing`になります。
-同じsourceはPlaygroundの`自作の足し算`から実行できます。期待型なしで未解決constraintを保持するgeneralized value scheme、
-`impl` block内の標準`operator`糖衣は接続済みです。struct / newtype宣言bodyへ直接operatorを置く別構文を採る場合は後続gateです。
-user-defined instanceのmethodはSurfaceAstで
-signature / body / spanを保持し、resolverのinstance / method scopeで名前解決されるところまで接続済みです。public traitの
-method contractもSurfaceAst / ModuleInterfaceで構造化schemeとして保持します。instance headと各`where` constraintの
-trait名は独立したtrait namespaceでlocal / import / prelude symbolへ解決し、後続の契約照合が文字列比較へ戻らない境界まで
-接続済みです。local user-defined instanceはmethodの不足・余分・重複・body不足・signature不一致をresolved symbol identityと
-trait type argument substitutionで検査し、alpha-renamed generic methodと部分適用型構築子も契約一致として扱います。
-imported public traitもdependency interfaceのmethod schemeを使い、provider nominal型のcanonical identity、
-trait type argument substitution、alpha-renamed generic method、部分適用型構築子、prelude constraintを同じ契約modelで検査します。
-provider-localまたはproviderがimportした別traitをmethod constraintが参照する場合も、provider interfaceからcanonical trait identityを
-consumerのresolved importへ運び、consumer側の同名traitへ綴りで取り違えません。
-TypedHir / CoreIr / TypeScriptIr / generated moduleのinstance headは、単一`head`型ではなくordered `arguments`として保持します。
-これにより`Show<A>`の現在のdictionary経路を維持しながら、`Add<L, R, O>`や`Iterable<C, A>`を第一引数へ潰さず後続へ運べます。
-`typeIdentity`はderived `Show`などprimary nominal typeを必要とする専用runtime consumer向けのoptional metadataであり、
-一般instance identityの代用にはしません。module interfaceはcanonical `traitIdentity`とordered `argumentIdentities`も保持し、
-同名traitやmulti-parameter instanceを`identity`文字列のparseへ戻さずtransportします。
-instance method bodyにはtop-level pure `fn`と同じreturn type / call / conditional / array / match diagnosticsを適用し、
-契約signatureだけ正しい不正bodyがTypedHir以降へ流れる経路を閉じています。
-`project-schema-1/imported-trait-instance-contract`がclosed multi-module compilerの全IR / generated TypeScript gateを固定します。
-local concrete user-defined instanceはmethod parameter / bodyをTypedHir、CoreIr、TypeScriptIrへ保持し、
-`schema-1/user-instance-dictionary`でcustom dictionary objectを生成します。custom dictionaryはderived `Show`のruntime type importを
-要求せず、canonical identityは全head argumentから構成します。同fixtureの`render value`はargument型からlocal concrete instanceを
-選び、selected evidenceをTypedHir / CoreIrへ保持してTypeScriptのdictionary method callまで生成します。
-`schema-1/trait-method-candidates`は同名methodをargument型とlocal instance evidenceで選び分け、選べないcaseを
-`SES-T0202`に固定します。`schema-1/generic-instance-dispatch`はconstraintなしgeneric headの型引数を選択済みevidenceへ残し、
-TypeScriptのdictionary factory具体化とmethod callまで生成します。
-`schema-1/constrained-instance-dispatch`はconstraint付きgeneric local instanceに必要なlocal evidenceを再帰選択し、
-TypedHir / CoreIrのevidence tree、TypeScriptIrのfactory argument、生成TSのdictionary引数、actual executionまで接続します。
-instance method bodyのtrait callもresolved constraint scopeから`parameter` evidenceを選び、factory closureのdictionaryを
-実際に消費します。循環evidenceは`instance.missing`で停止します。trait method固有の`where`も
-`schema-1/method-constraint-dispatch`でprimary dictionaryの後ろへordered evidenceとして選択し、method closureの
-compiler-private parameterから消費してactual executionまで接続済みです。instance-levelとmethod-levelのparameter indexは
-offsetで分離します。runtime dictionaryが実在するstandard `Show<Int>` / `Show<String>`は
-`schema-1/standard-show-evidence`でgeneric factory引数へ接続済みです。`Add` / `Eq` / `Iterable` / `Reducible`は
-引き続き専用operation ABIであり、first-class dictionaryとしてmaterialize済みとは扱いません。
-public constrained pure functionはmodule interfaceのconstraintをprovider-local canonical trait identityとともに運び、
-consumer側のlocal instanceをimported callへ渡せます。`project-schema-1/imported-constrained-function`はproviderの
-`describe<T> where Ready<T>`とconsumerの`Ready<Badge>`を通常project pipelineへ通し、生成ESMのclosed TypeScript check、
-Console trace、stdoutまで固定します。`project-schema-1/imported-instance-dispatch`はproviderがexportしたconcrete
-`Ready<Badge>` dictionaryを同じcallへ選択し、TypeScript source importとactual dispatchまで固定します。
-`project-schema-1/transitive-instance-dispatch`はsource上はfacadeだけをimportするmainへoriginal provider dictionaryを計画し、
-三moduleのclosed TypeScript checkとactual dispatchまで固定します。
-`project-schema-1/imported-generic-instance-dispatch`はproviderの`instance<T> Inspect<Maybe<T>>`をconsumerの
-`Inspect<Maybe<Int>>`へsubstituteし、template identityのdictionary exportをimportして`<number>()`でfactoryを
-具体化します。TypedHir / CoreIrはordered type argumentsを保持し、closed TypeScript checkとactual dispatchまで
-接続済みです。`project-schema-1/imported-constrained-instance-dispatch`はさらにproviderの
-`instance<T> Inspect<Maybe<T>> where Ready<T>`を選び、final interfaceへ保存したconstraintのcanonical trait identityから
-`Ready<Int>` evidenceを再帰materializeします。consumer ESMはInspect factoryとReady dictionaryをともにimportし、
-`Inspect<Int>(Ready<Int>)`のactual dispatchまで固定します。missing requirementは`instance.missing`で停止します。
-`project-schema-1/transitive-constrained-instance-dispatch`はmainのsource edgeをfacadeだけに保ちながら、facade final interfaceが
-transportしたgeneric / constraint付きinstance metadataからoriginal providerのInspect factoryとReady dictionaryを計画します。
-生成main ESMはfacadeのvalueとproviderのnested dictionariesを別々にimportし、三moduleのclosed TypeScript checkとactual
-dispatchまで固定します。
-local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
-`schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
-生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-期待関数型からHKTを具体化するfirst-class partial trait methodは`schema-1/partial-functor-value`で接続済みです。
-`map increment`を`Maybe<Int> -> Maybe<Int>`としてhigher-order関数へ渡し、選択済み`Functor<Maybe>` dictionaryを
-closureへ保持したactual executionまで固定します。concrete evidenceを選べる通常のconstrained top-level functionも
-`schema-1/partial-constrained-function`で接続済みです。TypedHir / CoreIrは残りのvalue parameterを明示し、生成TSは
-eta expansionによってdictionaryをその後ろへ渡します。`schema-1/polymorphic-partial-constrained-function`はさらに
-generic callerの`where Ready<T>` parameter evidenceをpartial closureへ捕捉し、callerが具体化されるまで`T`を保ちます。
-conditional imported dictionary selectionはdirect / transitive providerまで接続済みで、materializableなstandard `Show`
-dictionaryもlocal generic factoryへ渡せます。独立してgeneralizeしたvalue scheme自体へconstraintを保存する経路と、
-operation-only standard traitをdictionaryとして公開する場合のABI設計は残るgateです。
-
-`F<_>`は通常type parameterとは別にarityを持つtype-constructor parameterとしてSurfaceAstとModuleInterfaceへ
-保持します。`schema-1/functor-maybe`は`F<A> ~ Maybe<Int>`から`F = Maybe`と要素型を推論し、generic
-`transform<F<_>, A, B> where Functor<F>`のbodyではparameter evidence、call siteではlocal
-`Functor<Maybe>` dictionaryを選択します。選択結果はTypedHir / CoreIr / TypeScriptIrへ残り、
-`execution-schema-1/functor-maybe`が`Just 41 |> transform increment`の`Just 42`をactual executionで固定します。
-`schema-1/partial-functor-value`は期待関数型`Maybe<Int> -> Maybe<Int>`を残りのmethod型`F<A> -> F<B>`へ照合し、
-`map increment`だけで`F = Maybe`を決めます。生成TSは選択済みdictionary methodの部分適用をhigher-order引数として渡します。
-`schema-1/polymorphic-partial-functor`は`transform f`をgeneric `where Functor<F>` scopeのfirst-class mapperとして
-`applyMapper`へ渡します。closureはouter Functor dictionary parameterを捕捉し、deferred `F<A>` parameterはCoreIrまで
-kind情報を保持した後、TypeScript ABIだけ`unknown`へ消去します。`F<A>`を不正なTypeScript型として漏らしたり、
-Maybe名からdictionaryを選び直したりしません。同名execution fixtureとPlaygroundの`Functorを渡す`が`Just 42`を固定します。
-`project-schema-1/imported-functor-dispatch`はpublic function schemeの`F<_>` arityをfinal TypedInterfaceへ保持し、consumerで
-`F = Maybe`を推論してproviderの`Functor<Maybe>` dictionaryをimportします。二moduleのclosed TypeScript checkとEffect
-executionが`Imported Functor: Just 42`を固定するため、single-fileだけのHKT実装では完了になりません。
-`project-schema-1/imported-higher-order-functor`はさらにpublic `transform`の`(A -> B)` parameterをmodule interfaceから
-consumerのcallable catalogへ復元します。consumer-local `increment`をfunction valueとして渡し、`Maybe<Int>`と
-provider dictionaryを同時に具体化したactual executionが`Imported mapper: Just 42`を固定します。
-`project-schema-1/imported-generic-adt-functor`はuser-defined `Box<A>`、`Boxed A` constructor、`Functor<Box>`をproviderに
-置き、consumerの`Boxed 41 |> transform increment`をactual executionまで通します。imported ADT parameterはowner由来の
-canonical symbolを持ち、direct / nested payload substitutionとexhaustivenessをconsumer側で再構築します。
-`project-schema-1/imported-generic-adt-monad`は同じ`Box<A>`へFunctor / Applicative / Monadをproviderで定義し、consumerへ
-三段のsupertrait dictionary factoryを運びます。consumerはimported `bind`にlocal higher-order functionを渡す経路と、
-imported `Monad<Box>`を選ぶpure `do`の両方を実行します。生成ESMは
-`Monad(Applicative(Functor))` evidence treeの`flatMap`を呼び、二つの`Imported Box Monad: 42`をactual executionで固定します。
-したがってMonad gateはMaybe / Eitherというprelude型やsingle-fileのlocal dictionaryだけには閉じていません。
-`type-constructor-kind-mismatch`は`Type -> Type`を要求するtrait parameterへ`Int : Type`を渡すinstanceを
-`trait.instance-kind-mismatch`で拒否します。TypeScriptはHKTを直接表せないため、型検査済みの`F<A>` parameter
-annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのkind、constraint、dictionary選択は消去しません。
-`schema-1/applicative-maybe`は`Applicative<F>`が要求する`Functor<F>`をinstance contractとして検査し、
-親dictionaryをApplicative factoryへ渡して生成dictionaryへspreadします。したがって
-`where Applicative<F>`だけを持つgeneric functionでも、同じparameter evidenceから`map`、`pure`、`apply`を呼べます。
-`lifted increment`のような制約付きcallを別のHKT callの引数へ置いた場合も、外側の期待型と左から確定した引数型を
-使って`F = Maybe`を具体化し、内側と外側の両方へdictionaryを渡します。
-`execution-schema-1/applicative-maybe`は`mapped`、`lifted`、`applyWrapped`を組み合わせた`Just 42`を固定します。
-`schema-1/applicative-validation`はuser-defined `Validation<E, _>`とrecursive `Errors<E>`を使い、二つの独立validatorを
-`pure makeUser <*> validateName name <*> validateAge age`で合成します。両側Invalidの`apply`はleftからrightの順でerrorを
-連結し、actual executionは`NameRequired, AgeMustBePositive`と成功側の`Valid user`を固定します。ValidationへMonadを
-定義せず、Applicativeの蓄積とMonadの依存・短絡を別の意味として保ちます。同じprogramはPlayground sampleにも公開済みです。
-標準`std/validation` moduleは別のstdlib gateです。`NonEmptyList<E>`は`std/non-empty-list`の公開APIと
-Eq / Ord / Hash / Show / Debug / Semigroup / Functor / Applicative / Monad / Iterable / Reducibleを接続済みで、
-`schema-1/non-empty-list-instances`のactual executionが非空性とsource順を固定します。
-`schema-1/monad-maybe`はsupertrait chainを`Monad<M> -> Applicative<M> -> Functor<M>`へ伸ばします。
-Monad factoryは具体化済みApplicative dictionaryを継承し、`where Monad<M>`だけを持つgeneric functionから
-`pure`と`flatMap`を同じparameter evidenceで呼び出せます。calleeとcallerの型構築子parameterが同じ綴りでも
-別scopeに属する場合、実引数で確定したsubstitutionを明示的に保持するため、入れ子の`pure value |> flatMap f`も
-未解決型へ戻りません。`execution-schema-1/monad-maybe`は成功するbind列と`Nothing`のshort-circuitを実行します。
-同じfixtureで`f <$> value`、`wrapped <*> value`、`value >>= f`をそれぞれ`map f value`、
-`apply wrapped value`、`flatMap f value`へSurface ASTでdesugarし、通常の名前解決・型検査・dictionary dispatchを
-再利用します。3演算子は`|>`と同じ低優先順位・左結合で、先頭演算子による複数行継続もformatterまで固定済みです。
-pure functionの`do`は宣言済みreturn typeから`M<_>`を求め、`Monad<M>` evidenceを一度選択して
-TypedHir / CoreIr / TypeScriptIrへ保持します。bindは選択済みdictionaryの`flatMap`、pure letはcontinuation内の
-通常のbindingへlowerするため、Effect専用`Sequence`やeffect runtime helperを再利用しません。
-`addMaybe (Just 20) (Just 22)`と`addMaybe (Just 20) Nothing`のactual executionが成功と短絡を固定します。
-`semantic-diagnostics-schema-1/monad-do-invalid`はrefutable bind pattern、異なるmonad constructor、
-final monadic expression欠落を、それぞれ専用の`do.*` diagnosticとsource rangeで固定します。
-`schema-1/monad-either`はPreludeの標準`Monad<Either<E, _>>`を選び、`Either<String, A>`から
-`M = Either<String, _>`とpayload `A`を分離します。do loweringは同じruntime dictionaryの`flatMap`を使い、
-明示lambdaを使う`left >>= (\first -> ...)`もSurface AST、名前解決、型付け、Core IR、TypeScript IRを通して
-同じdictionary callへlowerします。execution fixtureはdo版と明示`>>=`版の`Right 42`と`Left "stopped"`を
-同じ出力として固定します。lambda parameterを注釈または期待関数型から決められない場合は
-`lambda.parameter-type-unresolved`でcompileを止めます。method解決や型推論にEither名・runtime tagの個別分岐は
-ありません。
-
-Prelude化の現状調査では、従来のresolverはFunctor / Applicative / Monadのtrait名だけを知り、method scheme、
-標準instance選択、materializable runtime dictionaryが未接続でした。最小sliceとしてtrait / method / supertraitと
-Maybe / Eitherの6 instanceを共通registryへ置き、semantic evidenceからruntime ABIまで接続しました。通常の
-Playground `MonadとEither`はsource内でtrait / instanceを再定義しません。一方`schema-1/monad-maybe`は
-`型クラスを定義する`sampleとしてuserland定義を残し、標準Prelude経路と一般trait実装経路を別々に回帰します。
-`schema-1/array-monad`は同じregistry境界へArrayの3標準instanceを追加します。Functorはsource-order map、
-Applicativeの`pure`はsingleton、`apply`はfunction-majorのCartesian product、Monadの`flatMap`はsource-order連結です。
-executionとPlayground sampleが`map` / `pure` + `apply` / `flatMap`をすべてPrelude宣言だけで実行します。
-`schema-1/list-monad`はpersistent `Empty` / `Cons`表現を維持したListの3標準instanceを同じ境界へ追加します。
-`map`は要素順を維持し、`pure`はsingleton、`apply`はfunction-majorのCartesian product、`flatMap`はList結果を
-source-orderで連結します。execution、Playground、runtime package probeが辞書の型選択と永続表現を固定します。
-`schema-1/effect-monad`は`Effect<R, E, _>`を同じ部分適用HKT推論へ載せ、coldなFunctor / Applicative / Monad辞書、
-first-class Effect値を受ける通常application、do bindでのsuccess型抽出を接続します。`Effect`型のruntime importと
-`Never`のTypeScript bottom typeもABIで固定し、execution / runtime probe / Playgroundで実行します。
-`stdlib-schema-1/prelude/module.json`は同じregistryから`std/prelude`のFunctor / Applicative /
-Monad、4 method scheme、Maybe / Either / Array / List / Effectの15 instanceをmachine-readableな
-package / documentation artifactとして固定します。標準instance headはsealedで、同じPrelude traitと型構築子へ
-user instanceを宣言すると`trait.instance-duplicate`でbackend前に停止します。部分適用Either / Effectも型構築子arityと
-末尾のopen argumentから同じ判定を使い、型名別のcoherence分岐は追加しません。次のstdlib gateはこの公開surfaceを
-通常のpackage export / import graphへ載せることと、標準以外を含むorphan rule全体の完了です。
-
-`schema-1/monad-laws`と`execution-schema-1/monad-laws`は同じuser-defined
-Maybe dictionaryを使い、Functorのidentity / composition、Applicativeのidentity / homomorphism、
-Monadのleft identity / right identity / associativityをactual executionで固定します。これは全instanceのlawfulnessを
-compilerが証明する機能ではなく、現在のdictionary selectionと生成コードが代表的なlawful instanceの意味を壊さないための
-回帰gateです。
-
-explicit standard moduleのproduct parityは`stdlib-schema-1/parity`で固定済みです。12 available moduleを
-canonical registry、lowering/runtime実装inventory、public interface fingerprint、実product routeへ一対一で対応させます。
-代表portable packageはCLI build/runとsingle-file fallback、LSP、WASM、Playgroundで同じstandard identityと実行結果を
-検証します。target差は同一negative packageからCLIとWASM Analyze/Compileへ
-`SES-K0203 provider.target-mismatch`として運びます。contract-only entryはこのgateの実装証拠に含めません。
-
-local Web packageは`seseragi dev`で通常のfilesystem projectをbuild、watch、static serveできます。
-既存Web target resolverとproduction build pathを共有し、managed `.seseragi/dev`からsource mapを配信します。
-source / manifest変更後はfull reloadし、compile error中もserverと最後の成功buildを維持、修正後に復旧します。
-canonical `project-flow-app`の実process E2Eがinitial render artifact、rebuild、error recovery、port conflict、
-SIGINT cleanupを固定し、実browserでもrender、interaction、stateを初期化するreloadを確認しています。
-
-VS Code extensionから同じpackageをRun / Web Build / Dev / Stop / Open Browserで操作できます。
-extensionはCLIを直接spawnし、LSPはlanguage intelligenceだけを所有します。
-`seseragi --version-json`のidentity / version / target handshake、nearest manifest root、Output Channel、
-dev status / URL、duplicate prevention、deactivate cleanupをextension integration testで固定し、
-native release archive smokeもCLIのmachine-readable metadataを実行検証します。
-
-実配布相当のnative archive / VSIXを使うLocal Web product E2Eが、canonical multi-module
-`web-starter`を`seseragi new web`から生成し、install済みVS Code extension、bundled LSP、CLI Dev、実Chromium、production
-build / standalone static serverまで同一sourceで通します。edit / reload、Signal interaction、
-LSPとCLIの`SES-N0001` path/range整合、error中のlast-success保持と復旧、source map、Stop
-cleanupを確認し、tag release publishはdownload済みartifactでの再実行成功を必須にします。
-
-local Web開発の入口は`seseragi new web <destination>`です。canonical Playground sampleと
-同じ二つのsource、通常のmanifest Web targetだけを生成し、既存destinationを上書きしません。
-Getting Startedはinstall、VS Code/LSP、`dev --open`、edit/reload、`build .`までこの一経路で
-完結します。
-
-Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mobile panel、任意Stdin、
-driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため
-Rust installを要求しません。Rust移行完了後に旧React / Monaco Playgroundは削除し、
-`apps/playground`とdeployment configを唯一のbrowser surfaceにしました。
-実機仕上げではmobile topbarをSample / Run / overflowへ整理し、InputをOutput側へ移動しました。analysis tooltipは
-touch cursor、visual viewport、既存Seseragi highlightを再利用し、diagnostic cardはbyte rangeを保持したまま
-Unicode対応の1-based行列を表示します。空白表示は初期OFFで、行頭indentだけを点・矢印、trailing whitespaceを
-より強い背景として切替表示します。
-sample catalogはstable slugのdirectoryを自動発見し、複数のlearning pathと検索・filterを分離しました。
-schema、欠落file、重複、prerequisite cycle、source hash、生成物stalenessをgateにし、同じsourceを
-Playground WASMとnative CLIで実行します。各sampleのguideはworkspaceの行数を増やさないoverlayで確認できます。
-`Interactive Web App`は`Ready` / `Focusing` / `Resting`のtyped state machine、再利用する
-`html.Style`、関数component、pure reducerを受け取る`dom.app`を一つのinteractive browser sampleで固定します。
-interactive previewはWebKitでも親pageが登録したbutton listenerを配送できるsandbox tokenを使い、同時に
-preview documentのCSPを`script-src 'none'`としてiframe-owned scriptを拒否します。
-typed form sliceは`InputEvent { value }`と`ChangeEvent { value, checked }`をbrowser Eventから一度だけ
-immutable snapshot化し、`onSubmit`を同期的に`preventDefault`してからtyped Actionへ配送します。rootのdelegated
-listenerはrenderごとに増やさずhandler tableだけを交換し、controlled input / textareaはstable `id`からfocusと
-selectionを復元します。`schema-1/web-form-events`、runtime unit test、`Typed formでTodoを追加` sampleで
-compiler interface、lowering、runtime ABI、Reference、browser interactionを固定します。
-IME compositionは`compositionstart` / `compositionupdate` / `compositionend`とnative `InputEvent.isComposing`を
-browser adapter内部で調停します。composition中のinputとcontrolled rerenderを保留し、browserごとの最終input順序を
-吸収して確定valueを一度だけActionへ変換します。公開`InputEvent { value }` ABIは維持し、未確定のままsubmitされた場合は
-Input Actionをsource順にcommitしてからSubmit ActionをFIFOへ流します。runtime event-order testと`form-todo` sampleで
-input / textareaの同じ契約を固定しました。
-stateful feature compositionは新しいcompiler組み込み型を加えず、module-privateなState / Action / MutableSignalを
-Effect constructor内へ閉じ、親には`Signal<Html<Effect<{}, Never, Unit>>>`だけを公開するsurfaceで固定しました。
-`feature-module-composition` project fixtureは独立Counter、Todo Form / Listのshared state、root-owned app-wide stateを、
-`feature-module-lifetime`はhide / re-show、並べ替え、差し替えを固定します。imported componentの外部nominal resultは
-provider provenanceをinterfaceへ保持し、親moduleが子のprivate型やAction variantを参照せずに合成できます。
-2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
-<https://seseragi.vercel.app/>で確認しました。
-local custom traitのvertical sliceは`Traitバッジ`としてsample catalogにも追加し、同じWASM driverとbrowser runtimeで
-dictionary dispatchの実行結果を確認できます。
-constraintなしgeneric local instanceのvertical sliceも`Generic instance`として追加し、`Maybe<Int>`に対する
-generic dictionary factoryの具体化と、`Nothing` / `Just`両方のdispatchを同じsurfaceで実行できます。
-constraint付きgeneric local instanceも`Constraint付きinstance`として追加し、必要なlocal evidenceを持つ
-`Maybe<Badge>`の`Nothing` / `Just`両方を同じWASM driverとbrowser runtimeで実行できます。
-local constrained functionとtrait method固有constraintもsample catalogへ追加し、通常のvalue引数に続く
-compiler-private dictionary parameterと、primary method dictionaryに続くordered evidenceを同じWASM実行で確認できます。
-
-userland type aliasはconcrete / generic、record、function、ADT、imported type、Effectを透明に展開し、
-`pub alias`をmodule interface越しに利用できます。型identity、互換性、loweringでは展開後の正規型を使い、
-TypedHirとtoolingは元のalias宣言名・spanを保持します。arity、direct / indirect cycle、public aliasからの
-private nominal露出は専用diagnosticでbackend前に停止します。Preludeの`Task<A>`は
-`Effect<{}, Never, A>`へ正規化され、専用runtime ABIを持ちません。
-`schema-1/higher-kinded-alias`は`StateT<S, M<_>, A>`、`Maybe`、`Either<E, _>`、user `Box`を
-同じsubstitutionへ接続し、TypedHir / final interface / CoreIr / TypeScript生成までaliasを消去した正規型を固定します。
-public HKT aliasのparameter arityはimport先へ保持し、consumer側でもstandard / user constructorを同じ意味で展開します。
-kind不一致は`SES-T0604`でbackend前に停止し、hoverは型構築子parameterのarityを構造化type documentへ保持します。
-
-IntはTypeScript safe integerと同じ`-9007199254740991..9007199254740991`へ移行済みです。
-literalは範囲外を`SES-P0203`で停止し、CoreIrの`integer`からTypeScript `number`へlowerして`n` suffixを生成しません。
-runtime ABI / helperは`core.int`と`@seseragi/runtime/int`へ統一し、算術overflow、0除算、負指数をdefectにします。
-divisionは0方向へ丸め、division / remainderを含む全Int演算のnegative zeroを`0`へ正規化します。
-canonical single-module / project / execution artifactとruntime package probeはsafe境界・overflow・division・negative zeroを固定します。
-`std/int` はsafe範囲のparse / format、checked / saturating arithmetic、total absを公開し、wrappingと
-checked / saturating negate・absを公開しません。`std/float.fromInt` は全Intでexact、`toInt` は明示した
-RoundingModeで丸めた後にsafe範囲を検査します。`schema-1/numeric-safe-api`とruntime numeric probeが
-標準surface、runtime import、境界値、division、rounding、conversionを固定します。
-public generated TypeScriptでもIntは`number`として公開し、foreign / JavaScript JSON value adapterは
-finite・integral・safe integerを順に検査してhost `-0`を`0`へ正規化します。runtime ABIの
-`core.int.{foreign,json}.{decode,encode}`、package export、driverのpublic Int出力・metadata・source map test、
-runtime probeでこの境界を固定します。BigIntはhost `bigint`の独立した型としてこの経路へ混在させません。
-
-Formatterは`seseragi-formatter`へcanonical layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
-Playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
-所有します。syntax errorはcompilerと同じsource range付きdiagnosticsを返し、recovery nodeをformatter都合で
-書き換えません。共有lossless token / CSTから空白を正規化し、短い構造は一行へ収め、指定されたline width
-（未指定時88 source columns）を超えるsignature、operator chain、collection、nested blockを構文境界で展開します。
-CLI / LSPは従来どおりdefault 88を使い、WASM経由のPlayground / Tourだけが明示的なlayout optionを渡せます。
-range / on-type / paste formatとproject別style optionは提供しません。
-
-### 5. 一般機能の未定義項目
-
-standard API監査で再発見した`BigInt`の公開surface未定義は、`std/big-int`のmodule API、arithmetic
-semantics、TypeScript境界、cost contract、lesson、compile fixtureへ移して解決しました。現時点で再登録中の
-未定義項目はありません。
-
-## 次の進行順
-
-Phase 1のsingle-file累積programは完了gateを満たしました。次は同じprogramを捨てず、module / packageの
-一般機構を加える順で進めます。
-
-1. project resolverがpackage rootとsource rootからcanonical module identityを決め、driverへ物理pathとは別に渡す。
-2. project layerが`ModuleGraph`のtopological orderでdependency interfaceをcompileし、generated output pathから
-   `TypeScriptOutputPlan`を構築する。driverのlinked compile APIと、projectのentry / dependency output pathからimporter相対
-   specifierへ変換するhelper、閉じたgraphをcompileする`compile_project`、backend側のalias、同名export、type-only edge、source
-   map contractは固定済み。graphは実cycle witnessを返し、driverはgraph/source edge不一致、extra input、global output path衝突を
-   拒否する。`project-schema-1`のconformance/writerで分割RPS domainを全IR・生成artifactまで固定し、planned output pathへ
-   stageしたmodule setのTypeScript type-checkも行う。pure entry、imported Effect / Console entryに加え、domain / input / mainへ
-   分割したじゃんけんCLIの正常・不正・EOF・Stdin host failure・Console host failureを同じ生成module setからBunで実行済み。
-   project descriptorの複数case discoveryは実装済み。core manifestのpackage / layout / exports / runに加え、short registry、
-   alias付きregistry、local path dependencyをtyped modelへparseできる。canonical local module discoveryとmanifest entryから
-   一package graphを構築するloaderに加え、path dependency manifestを再帰解決する複数package identity graphも接続済み。
-   package importからexact dependency identity / export subpathへの解決、path dependencyをまたぐsource graph、shared driver compile、
-   generated runtime executionと全source root identity auditまで接続済み。full collection fixtureの分解を開始し、
-   immutable Array literal、generic higher-order callback、checked Int arithmetic operator sectionは全IRとgenerated codeへ
-   接続済み。標準Arrayのgeneric `reduce`もregistry / lockfile resolutionとは独立にactual executionまで回収済み。
-   Int算術とoperator sectionは`Add<Int, Int, Int>`等のevidenceを全IRへ保持済み。binary `+`と期待関数型を持つ`(+)`は
-   local / imported / scoped user-defined `Add<L, R, O>`のfunctional dependencyを解き、通常dictionary dispatchと
-   actual executionへ接続済み。generic `Reducible<C,A>`のparameter evidenceもlocal / imported user dictionaryの
-   `reduce` method callへ接続済み。user-defined `Eq<A>`も`==` / `!=`からlocal / scoped / imported dictionaryへ
-   dispatchします。`impl` block内の`operator`糖衣も同じ辞書経路へ接続済み。固定論理operatorの`&&` / `||`は
-   comparisonより低くpipelineより高い左結合として解決し、Bool operandを検査した後にCore `if`へdesugarするため、
-   TypeScript backendへ依存せず右辺を必要時だけ一度評価します。custom再定義とoperator sectionも禁止済みです。
-   次は`Ord` comparison / list consの残りを小さいsliceで回収する。
-3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
-4. direct dependencyとfacade越しのconcrete user-defined evidence、およびdirect / facade越しproviderのgeneric / constraint付きfactoryは
-   canonical trait / argument / constraint identitiesでResolvedAstからTypedHir / CoreIr / TypeScript source import /
-   driver output plan、actual executionまで保持済み。materializableなstandard `Show<Int>` / `Show<String>`もlocal factory引数からactual executionまで
-   保持済み。partial trait method valueとconcrete top-level constrained valueも、期待関数型からevidenceを選択して
-   actual executionまで接続済み。未解決constraintを保持するpolymorphic value schemeは後続gateとする。
-5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
-   canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
-6. imported trait method contract、local concrete dictionary dispatch、同名trait methodのlocal candidate選択、
-   unconstrained / constrained generic local / imported dictionary factory、local constrained function、method固有constraintは接続済み。
-   constraint付きhigher-order callableとgeneric imported ADTもmodule executionへ接続済み。nested namespaceと
-   generalized constrained value schemeは独立gateで回収する。
-
-namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと
-`project-schema-1/namespace-generic-call`の実行経路まで接続済みです。このため次の累積goalではnamespace機能を増やすこと自体を
-目的化せず、Phase 1のCLIを複数moduleへ移したときに必要になるEffect contractとinstance closureを優先します。
-
-## 完了と呼ぶ条件
-
-言語機能を「完了」と呼べるのは、次をすべて満たしたときです。
-
-- 規範仕様とAppendix grammarが一致する。
-- 学習用exampleがあり、前提順に読める。
-- 必要なpositive / negative / runtime fixtureがある。
-- 新仕様compilerがfixtureを実際に検証する。
-- formatter、LSP、highlight、playgroundが同じfrontendを使う。
-- host resourceやinteropを含む場合、cleanupとfailureが検証される。
-
-この条件を満たす前は、「仕様化済み」「fixtureあり」のように到達点を限定して表現します。
+- [IMPLEMENTATION](./IMPLEMENTATION.md): コンパイラーの内部構成
+- [Scoped checks](./SCOPED_CHECKS.md): 変更に応じてどのチェックを実行するか
+- [RELEASE](./RELEASE.md): リリースの手順
+- [SPEC_COVERAGE](./SPEC_COVERAGE.md): 仕様と fixture の対応表
