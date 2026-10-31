@@ -6,50 +6,50 @@
   </picture>
 </p>
 
-<p align="center"><strong>データの形から状態、UIまでを、ひとつの言語として組み立てる。</strong></p>
+<p align="center"><strong>One language for data shapes, state and UI.</strong></p>
 
 <p align="center">
-  <a href="https://seseragi-docs.vercel.app/">ドキュメント</a>
+  <a href="https://seseragi-docs.vercel.app/en">Docs</a>
   · <a href="https://seseragi.vercel.app/">Playground</a>
   · <a href="https://seseragi.vercel.app/tour/">Tour</a>
   · <a href="./extensions/seseragi/README.md">VS Code</a>
 </p>
 
-## 複雑なアプリを、美しいまま書く。
+## Write complex apps and keep the code clear
 
-アプリは育つほど、コードが濁っていきます。
-状態が増え、例外があちこちから飛んでくる。ただの計算に見える関数が、裏で通信している。
-いつのまにか、コードを読んでも、何が起きるのか分からなくなっていきます。
+As an app grows, its code gets murky.
+State piles up and exceptions come from everywhere. A function that looks like a plain calculation turns out to make network calls.
+Before long, reading the code no longer tells you what will happen.
 
-Seseragi は、それに抗うための言語です。
-複雑なアプリを、どこまで美しいコードのまま書けるか。それを本気で突き詰めています。
+Seseragi is a language built to push back against that.
+Its goal is to see how far a complex app can go while its code stays clear.
 
-目指すのは、せせらぎのように澄んだコードです。
-データは上流から下流へ、パイプラインを通って流れていく。どこで形を変え、どこで失敗しうるのか、水底まで見通せる。
-そのために、Seseragi は次のことを約束します。
+The name means "a babbling brook", and that is the kind of code it aims for.
+Data flows downstream through pipelines, and you can see to the bottom: where each value changes shape, and where things can fail.
+To get there, Seseragi makes these promises:
 
-- **危険を隠さない** — `null` も `undefined` も例外もありません。欠けるかもしれない値は `Maybe`、失敗するかもしれない処理は `Either` や `Effect` として、型の上にはっきり現れます
-- **魔法を使わない** — 型推論も暗黙の選択も、コンパイラが理由を一つに説明できるときだけ成功します。迷うときは、勝手に選ばずにエラーで教えてくれます
-- **依存は推論し、失敗は設計する** — 関数が使うサービス（コンソール、時計、HTTP など）はコンパイラが集めて型にします。どんな失敗がありうるかは、あなたが型として設計します
-- **抽象化しても、読めるまま** — 目指すのは短さではありません。データの形と処理の流れが一目で読めることです
+- **Nothing dangerous is hidden** — there is no `null`, no `undefined` and no exceptions. A value that may be missing is a `Maybe`; work that may fail is an `Either` or an `Effect`, and it shows in the type
+- **No magic** — type inference and implicit choices succeed only when the compiler can give a single reason. When it is unsure, it reports an error instead of guessing
+- **Dependencies are inferred; failures are designed** — the compiler collects the services a function uses (console, clock, HTTP and so on) into its type. Which failures can happen is a type you design
+- **Abstractions stay readable** — the goal is not shorter code. It is code where the shape of the data and the flow of the work can be read at a glance
 
-Seseragi のコードは TypeScript にコンパイルされ、Bun、Node.js、ブラウザで動きます。
-CLI ツールも Web アプリの画面も、同じ言語、同じ考え方で書けます。
+Seseragi compiles to TypeScript and runs on Bun, Node.js and in the browser.
+CLI tools and web app UIs are written in the same language, with the same ideas.
 
 > [!NOTE]
-> Seseragi は開発中の実験的な言語です。構文や仕様は今後も変わる可能性があります。
+> Seseragi is an experimental language under development. Its syntax and semantics may still change.
 
-## TypeScript で、こんなことはありませんか
+## Sound familiar from TypeScript?
 
-- 状態を `?` 付きのプロパティで表すと、「読み込みは終わったのにデータもエラーもない」ような、ありえない状態まで型チェックを通ってしまう
-- ある関数がエラーを投げるのかどうか、型を見ても分からない。`catch` で受け取る値の型も `unknown` で、中身は実行してみるまで分からない
-- ただの計算に見える関数が、裏で通信やログ出力をしていた
+- You model state with optional `?` properties, and impossible states such as "finished loading, but no data and no error" still pass the type checker
+- The type does not tell you whether a function throws. The value in `catch` is `unknown`, and you only find out what it is at run time
+- A function that looks like a plain calculation was doing network calls or logging behind your back
 
-Seseragi では、どれもコンパイラが実行前に見つけます。順番に見ていきます。
+Seseragi catches all of these before the program runs. Let's go through them.
 
-### ありえない状態と、場合分けの漏れ
+### Impossible states and missed cases
 
-React などでデータを読み込むとき、状態をこんなふうに書くことがよくあります。
+When loading data in React and similar libraries, state is often written like this:
 
 ```ts
 type UserState = {
@@ -65,10 +65,10 @@ function message(state: UserState): string {
 }
 ```
 
-この型は、「読み込み中なのにエラーもある」のような、ありえない組み合わせも許してしまいます。
-`{ isLoading: false }` を渡すと `Hello, undefined` と表示されますが、strict モードでもコンパイルは通ります。
+This type also allows impossible combinations, such as "loading, but with an error".
+Passing `{ isLoading: false }` prints `Hello, undefined`, and it still compiles in strict mode.
 
-Seseragi では、状態を「どれか一つ」として型に書き出します。
+In Seseragi, you write the state as "exactly one of these":
 
 ```seseragi
 type UserState =
@@ -84,8 +84,8 @@ fn message state: UserState -> String =
   }
 ```
 
-名前があるのは `Loaded` のときだけなので、`undefined` を表示してしまうことはありません。
-さらに `match` は、すべての状態を扱っているかを必ずチェックします。新しい状態を足したのに処理を書き忘れると、ビルドする前にエラーになります。
+A name exists only in `Loaded`, so you can never print `undefined`.
+On top of that, `match` always checks that every state is handled. Add a new state and forget to handle it, and you get an error before the build.
 
 ```text
 error[SES-T0301]: This match does not cover every possible value
@@ -93,11 +93,11 @@ error[SES-T0301]: This match does not cover every possible value
   |   ^ missing patterns: Failed _
 ```
 
-[▶ Playground で開く](https://seseragi.vercel.app/?source=type%20UserState%20%3D%0A%20%20%7C%20Loading%0A%20%20%7C%20Loaded%20String%0A%20%20%7C%20Failed%20String%0A%0Afn%20message%20state%3A%20UserState%20-%3E%20String%20%3D%0A%20%20match%20state%20%7B%0A%20%20%20%20Loading%20-%3E%20%22Loading...%22%0A%20%20%20%20Loaded%20name%20-%3E%20%60Hello%2C%20%24%7Bname%7D%60%0A%20%20%20%20Failed%20reason%20-%3E%20%60Error%3A%20%24%7Breason%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20Loading%20%7C%3E%20message%20%7C%3E%20println%0A%20%20Loaded%20%22Aoi%22%20%7C%3E%20message%20%7C%3E%20println%0A%20%20Failed%20%22timeout%22%20%7C%3E%20message%20%7C%3E%20println%0A%7D%0A)
+[▶ Open in Playground](https://seseragi.vercel.app/?source=type%20UserState%20%3D%0A%20%20%7C%20Loading%0A%20%20%7C%20Loaded%20String%0A%20%20%7C%20Failed%20String%0A%0Afn%20message%20state%3A%20UserState%20-%3E%20String%20%3D%0A%20%20match%20state%20%7B%0A%20%20%20%20Loading%20-%3E%20%22Loading...%22%0A%20%20%20%20Loaded%20name%20-%3E%20%60Hello%2C%20%24%7Bname%7D%60%0A%20%20%20%20Failed%20reason%20-%3E%20%60Error%3A%20%24%7Breason%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20Loading%20%7C%3E%20message%20%7C%3E%20println%0A%20%20Loaded%20%22Aoi%22%20%7C%3E%20message%20%7C%3E%20println%0A%20%20Failed%20%22timeout%22%20%7C%3E%20message%20%7C%3E%20println%0A%7D%0A)
 
-### 例外のかわりに、失敗を型で表す
+### Failures as types instead of exceptions
 
-TypeScript では、関数が失敗するかどうかはシグネチャに現れません。
+In TypeScript, whether a function can fail does not show in its signature.
 
 ```ts
 function parseNumber(text: string): number {
@@ -107,11 +107,11 @@ function parseNumber(text: string): number {
 }
 ```
 
-Seseragi では、失敗するかもしれない処理は `Either<エラーの型, 成功したときの型>` を返します。
-成功なら `Right 値`、失敗なら `Left エラー` です。呼ぶ側は、型を見れば失敗しうることが分かります。
+In Seseragi, work that may fail returns `Either<ErrorType, SuccessType>`.
+Success is `Right value` and failure is `Left error`. Callers can see from the type that it may fail.
 
-失敗しうる処理を続けて呼ぶときは `do` 記法を使います。`<-` は「成功していれば中の値を取り出す」という意味で、
-どこかで `Left` が返ると、そこで止まってその `Left` が全体の結果になります。`try/catch` を書かずに、成功する流れだけを上から順に書けます。
+To call several steps that may fail, use `do` notation. `<-` means "take the value out if it succeeded".
+If any step returns a `Left`, the block stops there and that `Left` becomes the result. You write only the success path, top to bottom, without `try/catch`.
 
 ```seseragi
 import * as either from "std/either"
@@ -136,12 +136,12 @@ fn calculate left: String -> right: String -> Either<String, Int> = do {
 // calculate "84" "0"    => Left cannot divide by zero
 ```
 
-[▶ Playground で開く](https://seseragi.vercel.app/?source=import%20%2A%20as%20either%20from%20%22std%2Feither%22%0Aimport%20%2A%20as%20int%20from%20%22std%2Fint%22%0A%0Afn%20parseNumber%20text%3A%20String%20-%3E%20Either%3CString%2C%20Int%3E%20%3D%0A%20%20int.parse%20text%20%7C%3E%20either.mapLeft%20%28%5C_%20-%3E%20%60not%20a%20number%3A%20%24%7Btext%7D%60%29%0A%0Afn%20divide%20total%3A%20Int%20-%3E%20count%3A%20Int%20-%3E%20Either%3CString%2C%20Int%3E%20%3D%20match%20count%20%7B%0A%20%200%20-%3E%20Left%20%22cannot%20divide%20by%20zero%22%0A%20%20_%20-%3E%20Right%20%28total%20%2F%20count%29%0A%7D%0A%0A%2F%2F%20%E3%81%A9%E3%81%93%E3%81%8B%E3%81%A7%20Left%20%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%9F%E3%82%89%E3%80%81%E3%81%9D%E3%81%93%E3%81%A7%E6%AD%A2%E3%81%BE%E3%81%A3%E3%81%A6%E3%81%9D%E3%81%AE%20Left%20%E3%81%8C%E7%B5%90%E6%9E%9C%E3%81%AB%E3%81%AA%E3%82%8B%0Afn%20calculate%20left%3A%20String%20-%3E%20right%3A%20String%20-%3E%20Either%3CString%2C%20Int%3E%20%3D%20do%20%7B%0A%20%20total%20%3C-%20parseNumber%20left%0A%20%20count%20%3C-%20parseNumber%20right%0A%20%20divide%20total%20count%0A%7D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%24%20show%20%28calculate%20%2284%22%20%222%22%29%0A%20%20println%20%24%20show%20%28calculate%20%2284%22%20%22zero%22%29%0A%20%20println%20%24%20show%20%28calculate%20%2284%22%20%220%22%29%0A%7D%0A)
+[▶ Open in Playground](https://seseragi.vercel.app/?source=import%20%2A%20as%20either%20from%20%22std%2Feither%22%0Aimport%20%2A%20as%20int%20from%20%22std%2Fint%22%0A%0Afn%20parseNumber%20text%3A%20String%20-%3E%20Either%3CString%2C%20Int%3E%20%3D%0A%20%20int.parse%20text%20%7C%3E%20either.mapLeft%20%28%5C_%20-%3E%20%60not%20a%20number%3A%20%24%7Btext%7D%60%29%0A%0Afn%20divide%20total%3A%20Int%20-%3E%20count%3A%20Int%20-%3E%20Either%3CString%2C%20Int%3E%20%3D%20match%20count%20%7B%0A%20%200%20-%3E%20Left%20%22cannot%20divide%20by%20zero%22%0A%20%20_%20-%3E%20Right%20%28total%20%2F%20count%29%0A%7D%0A%0A%2F%2F%20The%20first%20Left%20stops%20the%20block%20and%20becomes%20the%20result%0Afn%20calculate%20left%3A%20String%20-%3E%20right%3A%20String%20-%3E%20Either%3CString%2C%20Int%3E%20%3D%20do%20%7B%0A%20%20total%20%3C-%20parseNumber%20left%0A%20%20count%20%3C-%20parseNumber%20right%0A%20%20divide%20total%20count%0A%7D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%24%20show%20%28calculate%20%2284%22%20%222%22%29%0A%20%20println%20%24%20show%20%28calculate%20%2284%22%20%22zero%22%29%0A%20%20println%20%24%20show%20%28calculate%20%2284%22%20%220%22%29%0A%7D%0A)
 
-### 副作用が型に出る
+### Side effects show in the type
 
-画面への出力や通信のような副作用は、`effect fn` の中でしか起こせません。
-ふつうの `fn` で `println` を呼ぶと、型エラーになります。
+Side effects such as printing or network calls can only happen inside an `effect fn`.
+Calling `println` from a plain `fn` is a type error.
 
 ```seseragi
 fn greet name: String -> Unit = println `Hello, ${name}`
@@ -153,11 +153,11 @@ error[SES-T0101]: Expression type does not match the expected type
   = actual: Effect<{ console: Console }, ConsoleError, Unit>
 ```
 
-`Effect<{ console: Console }, ConsoleError, Unit>` は、
-「コンソールを使い、`ConsoleError` で失敗することがあり、成功すると `Unit` を返す処理」という意味です。
-何に依存し、どう失敗するかが、型を見るだけで分かります。
+`Effect<{ console: Console }, ConsoleError, Unit>` means
+"work that uses the console, may fail with `ConsoleError`, and returns `Unit` on success".
+The type alone tells you what it depends on and how it can fail.
 
-`effect fn` の失敗の種類は、自分で型として設計して `fails` で宣言します。
+You design the failures of an `effect fn` as a type and declare them with `fails`.
 
 ```seseragi
 type OrderError =
@@ -171,14 +171,14 @@ effect fn reserve item: String -> quantity: Int -> String fails OrderError =
   }
 ```
 
-[▶ Playground で開く](https://seseragi.vercel.app/?source=import%20%2A%20as%20effects%20from%20%22std%2Feffect%22%0A%0Atype%20OrderError%20%3D%0A%20%20%7C%20OutOfStock%20String%0A%20%20%7C%20TooMany%20Int%0A%0Aeffect%20fn%20reserve%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20OrderError%20%3D%0A%20%20match%20item%20%7B%0A%20%20%20%20%22tea%22%20-%3E%20fail%20%24%20OutOfStock%20item%0A%20%20%20%20_%20-%3E%20if%20quantity%20%3E%2010%20then%20fail%20%24%20TooMany%20quantity%20else%20succeed%20%60%24%7Bquantity%7D%20x%20%24%7Bitem%7D%60%0A%20%20%7D%0A%0Afn%20explain%20error%3A%20OrderError%20-%3E%20String%20%3D%20match%20error%20%7B%0A%20%20OutOfStock%20item%20-%3E%20%60%24%7Bitem%7D%20is%20out%20of%20stock%60%0A%20%20TooMany%20quantity%20-%3E%20%60cannot%20reserve%20%24%7Bquantity%7D%20at%20once%60%0A%7D%0A%0Aeffect%20fn%20order%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20Never%20%3D%0A%20%20reserve%20item%20quantity%0A%20%20%20%20%7C%3E%20effects.recover%20%28%5Cerror%20-%3E%20succeed%20%24%20explain%20error%29%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20coffee%20%3C-%20order%20%22coffee%22%202%0A%20%20println%20coffee%0A%20%20tea%20%3C-%20order%20%22tea%22%201%0A%20%20println%20tea%0A%7D%0A)
+[▶ Open in Playground](https://seseragi.vercel.app/?source=import%20%2A%20as%20effects%20from%20%22std%2Feffect%22%0A%0Atype%20OrderError%20%3D%0A%20%20%7C%20OutOfStock%20String%0A%20%20%7C%20TooMany%20Int%0A%0Aeffect%20fn%20reserve%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20OrderError%20%3D%0A%20%20match%20item%20%7B%0A%20%20%20%20%22tea%22%20-%3E%20fail%20%24%20OutOfStock%20item%0A%20%20%20%20_%20-%3E%20if%20quantity%20%3E%2010%20then%20fail%20%24%20TooMany%20quantity%20else%20succeed%20%60%24%7Bquantity%7D%20x%20%24%7Bitem%7D%60%0A%20%20%7D%0A%0Afn%20explain%20error%3A%20OrderError%20-%3E%20String%20%3D%20match%20error%20%7B%0A%20%20OutOfStock%20item%20-%3E%20%60%24%7Bitem%7D%20is%20out%20of%20stock%60%0A%20%20TooMany%20quantity%20-%3E%20%60cannot%20reserve%20%24%7Bquantity%7D%20at%20once%60%0A%7D%0A%0Aeffect%20fn%20order%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20Never%20%3D%0A%20%20reserve%20item%20quantity%0A%20%20%20%20%7C%3E%20effects.recover%20%28%5Cerror%20-%3E%20succeed%20%24%20explain%20error%29%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20coffee%20%3C-%20order%20%22coffee%22%202%0A%20%20println%20coffee%0A%20%20tea%20%3C-%20order%20%22tea%22%201%0A%20%20println%20tea%0A%7D%0A)
 
-## ほかの特徴
+## More features
 
-### パイプライン
+### Pipelines
 
-`|>` で値を次の関数へ渡していきます。
-関数はカリー化されているので、引数の一部だけを渡した関数をそのままパイプラインに置けます。
+`|>` passes a value on to the next function.
+Functions are curried, so a function given only some of its arguments can go straight into a pipeline.
 
 ```seseragi
 import * as arrays from "std/array"
@@ -195,11 +195,11 @@ pub effect fn main =
 // => 14
 ```
 
-### UI も同じ言語で
+### UI in the same language
 
-画面も、ここまでと同じ型と関数で書きます。
-状態は `Signal` に持たせ、`signals.map` で状態から画面を作ります。
-ボタンを押して状態が変わると、画面も自動で更新されます。React も JSX も要りません。
+The UI is written with the same types and functions as everything above.
+State lives in a `Signal`, and `signals.map` builds the view from the state.
+When a button changes the state, the view updates automatically. No React, no JSX.
 
 ```seseragi
 import * as dom from "std/web/dom"
@@ -232,17 +232,17 @@ pub effect fn main -> Unit with dom: dom.Dom fails String = do {
 }
 ```
 
-[▶ Playground で開く](https://seseragi.vercel.app/?source=import%20%2A%20as%20dom%20from%20%22std%2Fweb%2Fdom%22%0Aimport%20%2A%20as%20html%20from%20%22std%2Fweb%2Fhtml%22%0Aimport%20%2A%20as%20signals%20from%20%22std%2Fsignal%22%0Aimport%20%7B%20MutableSignal%20%7D%20from%20%22std%2Fsignal%22%0A%0Afn%20label%20current%3A%20Int%20-%3E%20html.Html%3CTask%3CUnit%3E%3E%20%3D%20html.p%20%7B%20children%3A%20%60Count%3A%20%24%7Bcurrent%7D%60%20%7D%0A%0Afn%20view%20count%3A%20MutableSignal%3CInt%3E%20-%3E%20current%3A%20Int%20-%3E%20html.Html%3CTask%3CUnit%3E%3E%20%3D%0A%20%20html.div%20%7B%0A%20%20%20%20children%3A%20%5B%0A%20%20%20%20%20%20label%20current%2C%0A%20%20%20%20%20%20html.button%20%7B%0A%20%20%20%20%20%20%20%20onClick%3A%20signals.update%20%28%5Cn%3A%20Int%20-%3E%20n%20%2B%201%29%20count%2C%0A%20%20%20%20%20%20%20%20children%3A%20%22%2B1%22%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20html.button%20%7B%20onClick%3A%20signals.set%200%20count%2C%20children%3A%20%22Reset%22%20%7D%0A%20%20%20%20%5D%0A%20%20%7D%0A%0Afn%20perform%20action%3A%20Task%3CUnit%3E%20-%3E%20Task%3CUnit%3E%20%3D%20action%0A%0Apub%20effect%20fn%20main%20-%3E%20Unit%20with%20dom%3A%20dom.Dom%20fails%20String%20%3D%20do%20%7B%0A%20%20count%20%3C-%20signals.make%200%0A%20%20target%20%3C-%20dom.query%20%22%23app%22%0A%20%20%20%20%7C%3E%20mapError%20%28%5Cerror%3A%20dom.DomError%20-%3E%20%22%23app%20not%20found%22%29%0A%20%20dom.run%20%28dom.defaultOptions%20%28%29%29%20target%20perform%20%28signals.map%20%28view%20count%29%20count%29%0A%20%20%20%20%7C%3E%20mapError%20%28%5Cerror%3A%20dom.DomRuntimeError%3CNever%3E%20-%3E%20%22render%20failed%22%29%0A%7D%0A)
+[▶ Open in Playground](https://seseragi.vercel.app/?source=import%20%2A%20as%20dom%20from%20%22std%2Fweb%2Fdom%22%0Aimport%20%2A%20as%20html%20from%20%22std%2Fweb%2Fhtml%22%0Aimport%20%2A%20as%20signals%20from%20%22std%2Fsignal%22%0Aimport%20%7B%20MutableSignal%20%7D%20from%20%22std%2Fsignal%22%0A%0Afn%20label%20current%3A%20Int%20-%3E%20html.Html%3CTask%3CUnit%3E%3E%20%3D%20html.p%20%7B%20children%3A%20%60Count%3A%20%24%7Bcurrent%7D%60%20%7D%0A%0Afn%20view%20count%3A%20MutableSignal%3CInt%3E%20-%3E%20current%3A%20Int%20-%3E%20html.Html%3CTask%3CUnit%3E%3E%20%3D%0A%20%20html.div%20%7B%0A%20%20%20%20children%3A%20%5B%0A%20%20%20%20%20%20label%20current%2C%0A%20%20%20%20%20%20html.button%20%7B%0A%20%20%20%20%20%20%20%20onClick%3A%20signals.update%20%28%5Cn%3A%20Int%20-%3E%20n%20%2B%201%29%20count%2C%0A%20%20%20%20%20%20%20%20children%3A%20%22%2B1%22%0A%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20html.button%20%7B%20onClick%3A%20signals.set%200%20count%2C%20children%3A%20%22Reset%22%20%7D%0A%20%20%20%20%5D%0A%20%20%7D%0A%0Afn%20perform%20action%3A%20Task%3CUnit%3E%20-%3E%20Task%3CUnit%3E%20%3D%20action%0A%0Apub%20effect%20fn%20main%20-%3E%20Unit%20with%20dom%3A%20dom.Dom%20fails%20String%20%3D%20do%20%7B%0A%20%20count%20%3C-%20signals.make%200%0A%20%20target%20%3C-%20dom.query%20%22%23app%22%0A%20%20%20%20%7C%3E%20mapError%20%28%5Cerror%3A%20dom.DomError%20-%3E%20%22%23app%20not%20found%22%29%0A%20%20dom.run%20%28dom.defaultOptions%20%28%29%29%20target%20perform%20%28signals.map%20%28view%20count%29%20count%29%0A%20%20%20%20%7C%3E%20mapError%20%28%5Cerror%3A%20dom.DomRuntimeError%3CNever%3E%20-%3E%20%22render%20failed%22%29%0A%7D%0A)
 
-### エディタとコンパイラが同じ答えを出す
+### The editor and the compiler give the same answer
 
-CLI、エディタ用の LSP、フォーマッタ、ブラウザの Playground は、すべて同じコンパイラ本体を使っています。
-エディタに表示される型やエラーと、実際にビルドしたときの結果が食い違いません。
+The CLI, the editor's LSP, the formatter and the browser Playground all use the same compiler core.
+The types and errors your editor shows never disagree with what an actual build reports.
 
-### 生成されるのは普通の TypeScript
+### The output is plain TypeScript
 
-Seseragi のコードは TypeScript にコンパイルされ、Bun・Node.js・ブラウザで動きます。
-たとえば上の `type UserState` は、`tag` プロパティで状態を見分けるユニオン型になります。
+Seseragi compiles to TypeScript and runs on Bun, Node.js and in the browser.
+For example, the `type UserState` above becomes a union type distinguished by its `tag` property.
 
 ```ts
 type UserState =
@@ -251,9 +251,9 @@ type UserState =
   | { readonly tag: "Failed"; readonly value: string };
 ```
 
-TypeScript の既存のコードや npm パッケージを Seseragi から呼ぶ仕組みは、まだ開発中です（[開発状況](#開発状況)）。
+Calling existing TypeScript code and npm packages from Seseragi is still in development (see [Status](#status)).
 
-## TypeScript との対応表
+## TypeScript to Seseragi at a glance
 
 | TypeScript | Seseragi |
 | --- | --- |
@@ -263,26 +263,26 @@ TypeScript の既存のコードや npm パッケージを Seseragi から呼ぶ
 | `format(parse(text))` | `text \|> parse \|> format` |
 | `{ kind: "a" } \| { kind: "b"; value: number }` | `type T = \| A \| B Int` |
 | `switch (value.kind) { ... }` | `match value { ... }` |
-| `T \| undefined` | `Maybe<T>`（`Just value` / `Nothing`） |
-| `throw` / `try ... catch` | `Either<E, A>`、`effect fn ... fails E` |
-| `async function` | `effect fn`（非同期処理も Effect で表します） |
-| `interface` と、その実装 | `trait` と `instance` |
+| `T \| undefined` | `Maybe<T>` (`Just value` / `Nothing`) |
+| `throw` / `try ... catch` | `Either<E, A>`, `effect fn ... fails E` |
+| `async function` | `effect fn` (async work is an Effect too) |
+| `interface` and its implementations | `trait` and `instance` |
 | `{ ...user, name: "Aoi" }` | `{ ...user, name: "Aoi" }` |
 | `` `Hello, ${name}` `` | `` `Hello, ${name}` `` |
 
-関数、データ、失敗、非同期処理、React との違いまで、TypeScript と並べた詳しい比較は
-ドキュメントの [TypeScript から Seseragi へ](https://seseragi-docs.vercel.app/docs/guides/typescript-to-seseragi) にあります。
+A detailed side-by-side comparison with TypeScript, covering functions, data, failures, async work and how it differs from React,
+is in the docs guide [From TypeScript to Seseragi](https://seseragi-docs.vercel.app/en/docs/guides/typescript-to-seseragi).
 
-## 試してみる
+## Try it
 
-インストールせずに、ブラウザからすぐ試せます。
+You can try it in the browser right away, without installing anything.
 
-- **[ドキュメント](https://seseragi-docs.vercel.app/)** — 言語を順番に学ぶ「学ぶ」、目的別の「用途別ガイド」、規則を調べる「リファレンス」があります
-- **[Playground](https://seseragi.vercel.app/)** — コードを書いて、型チェック・実行・HTML のプレビューまでできます
-- **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello world から Effect、Signal、Web UI までを順番に学べます
-- **[サンプル集](./examples/samples/README.md)** — 現在のコンパイラで実際に動くサンプルです
+- **[Docs](https://seseragi-docs.vercel.app/en)** — Learn the language step by step, find task-based guides, and look up rules in the reference
+- **[Playground](https://seseragi.vercel.app/)** — Write code, type-check it, run it and preview HTML
+- **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Go from Hello world through Effect, Signal and web UI, one step at a time
+- **[Samples](./examples/samples/README.md)** — Programs that run on the current compiler
 
-たとえば、FizzBuzz はこう書けます。
+For example, FizzBuzz looks like this:
 
 <!-- canonical-example: path=examples/samples/fizzbuzz/main.ssrg -->
 ```seseragi
@@ -301,71 +301,70 @@ pub effect fn main = for number <- 1 ..= 30 {
 ```
 <!-- /canonical-example -->
 
-## インストール
+## Install
 
-[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から、
-OS と CPU に合ったアーカイブをダウンロードしてください。CLI と LSP が入っています。
-生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です。
+Download the archive for your OS and CPU from [GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases).
+It contains the CLI and the LSP. Running generated programs requires [Bun](https://bun.sh/) 1.4.4 or later.
 
 ```sh
-seseragi run hello.ssrg          # ファイルを実行する
-seseragi new web my-app          # Web アプリのプロジェクトを作る
-seseragi dev my-app              # 開発サーバーを起動する
-seseragi build hello.ssrg        # ビルドする
-seseragi format hello.ssrg       # 整形する
+seseragi run hello.ssrg          # run a file
+seseragi new web my-app          # create a web app project
+seseragi dev my-app              # start the dev server
+seseragi build hello.ssrg        # build
+seseragi format hello.ssrg       # format
 ```
 
-詳しい手順はドキュメントの [ローカルで使う](https://seseragi-docs.vercel.app/docs/learn/local-development)、Web アプリを作るなら [Web アプリを作る](https://seseragi-docs.vercel.app/docs/guides/web-app) を参照してください。
-VS Code 拡張（ID: `seseragi-dev.seseragi`）は、同じ GitHub Releases にある VSIX からインストールできます。
-詳しくは [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。
+For step-by-step instructions, see [Local development](https://seseragi-docs.vercel.app/en/docs/learn/local-development) in the docs; to build a web app, see [Build a Web application](https://seseragi-docs.vercel.app/en/docs/guides/web-app).
+The VS Code extension (ID: `seseragi-dev.seseragi`) installs from the VSIX in the same GitHub Releases.
+See [Seseragi for VS Code](./extensions/seseragi/README.md) for details.
 
 > [!NOTE]
-> Bun 1.4.3 以前には脆弱性（CVE-2026-111497）があります。
-> Node.js で実行する場合も、2026年10月のセキュリティ修正を含むバージョン
-> （22.23.4 / 24.22.1 / 26.12.1 以降）を使ってください。
+> Bun 1.4.3 and earlier have a vulnerability (CVE-2026-111497).
+> If you run on Node.js, use a version that includes the October 2026 security fixes
+> (22.23.4 / 24.22.1 / 26.12.1 or later).
 
-## 開発状況
+## Status
 
-- TypeScript を生成するターゲットでは、この README に載せた機能はすべて動きます
-- TypeScript の既存コードや npm パッケージとの相互運用は開発中です
-- ファイル・HTTP・Stream などの標準ライブラリは、一部だけ実装されています
-- Rust のネイティブバイナリを生成するターゲットも開発中です（進捗: [#809](https://github.com/KentaroMorishita/seseragi/issues/809)）
+- On the TypeScript target, every feature shown in this README works
+- Interop with existing TypeScript code and npm packages is in development
+- The standard library for files, HTTP, Stream and so on is only partly implemented
+- A target that produces native Rust binaries is also in development (progress: [#809](https://github.com/KentaroMorishita/seseragi/issues/809))
 
-詳しくは [STATUS](./docs/STATUS.md)（今動くもの）と [ROADMAP](./docs/ROADMAP.md)（これからの予定）を参照してください。
+See [STATUS](./docs/STATUS.md) for what works today and [ROADMAP](./docs/ROADMAP.md) for what comes next.
 
-## コンパイラの開発に参加する
+## Contributing to the compiler
 
-コンパイラは Rust で書かれています。ソースからビルドするには Rust と Bun が必要です
-（Rust のバージョンは `rust-toolchain.toml` で固定されています）。
+The compiler is written in Rust. Building from source requires Rust and Bun
+(the Rust version is pinned in `rust-toolchain.toml`).
 
 ```sh
-# main ブランチから CLI をインストールする（リリース版ではありません）
+# Install the CLI from the main branch (not a release build)
 cargo install --git https://github.com/KentaroMorishita/seseragi --locked seseragi-cli
 
-# Playground をローカルで起動する
+# Start the Playground locally
 bun run dev:playground
 
-# 変更した範囲に応じてチェックする（check:sample / check:playground / check:extension / check:release もあります）
+# Run the checks for what you changed (there are also check:sample / check:playground / check:extension / check:release)
 bun run check:rust
 ```
 
 > [!NOTE]
-> rustup は 1.29.2 以降を使ってください（それより前のバージョンには証明書検証の脆弱性 CVE-2026-111943 があります）。
+> Use rustup 1.29.2 or later (earlier versions have a certificate validation vulnerability, CVE-2026-111943).
 
-どのチェックを使うかは [Scoped checks](./docs/SCOPED_CHECKS.md)、
-コンパイラの内部構成は [IMPLEMENTATION](./docs/IMPLEMENTATION.md) にまとめています。
+[Scoped checks](./docs/SCOPED_CHECKS.md) explains which check to run,
+and [IMPLEMENTATION](./docs/IMPLEMENTATION.md) describes how the compiler is organized.
 
-| パス | 内容 |
+| Path | Contents |
 | --- | --- |
-| `crates/` | コンパイラ、CLI、LSP、WASM、テストランナー |
-| `runtime/ts/` | 生成された TypeScript が使うランタイム |
-| `apps/playground/` | Playground と Tour |
-| `examples/samples/` | 動作するサンプル集 |
-| `examples/tour/` | Tour の各レッスン |
-| `examples/spec/` | 言語仕様のテストケース |
-| `docs/spec/` | 言語仕様 |
-| `extensions/seseragi/` | VS Code 拡張 |
+| `crates/` | Compiler, CLI, LSP, WASM and test runner |
+| `runtime/ts/` | Runtime used by the generated TypeScript |
+| `apps/playground/` | Playground and Tour |
+| `examples/samples/` | Working samples |
+| `examples/tour/` | Tour lessons |
+| `examples/spec/` | Language specification test cases |
+| `docs/spec/` | Language specification |
+| `extensions/seseragi/` | VS Code extension |
 
-## ライセンス
+## License
 
 Apache-2.0
