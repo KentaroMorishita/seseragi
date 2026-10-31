@@ -1,0 +1,14 @@
+pub fn probe -> (String, String, String, String, String) = {
+  let first = { name: "Mio", role: "Engineer" }
+  let second = { name: "Aoi", city: "Kyoto" }
+  let spreadThenField = { ...first, name: "Ren" }
+  let fieldThenSpread = { name: "Ren", ...first }
+  let twoSpreads = { ...first, ...second }
+  (
+    spreadThenField.name,
+    fieldThenSpread.name,
+    twoSpreads.name,
+    twoSpreads.role,
+    twoSpreads.city
+  )
+}

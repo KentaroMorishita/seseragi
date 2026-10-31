@@ -1164,23 +1164,14 @@ impl Backend<'_> {
             CoreExpr::FieldAccess {
                 receiver, field, ..
             } => format!("({}).field({})", self.expr(receiver, scope)?, quoted(field)),
-            CoreExpr::Record { items, .. } => {
-                let mut values = Vec::new();
-                for item in items {
-                    match item {
-                        CoreRecordValueItem::Field { name, value, .. } => values.push(format!(
-                            "({}.to_owned(), {})",
-                            quoted(name),
-                            self.expr(value, scope)?
-                        )),
-                        _ => return Err("Rust backend: record spread is unsupported".into()),
-                    }
-                }
-                format!(
-                    "V::Record(Shared::new(BTreeMap::from([{}])))",
-                    values.join(",")
-                )
-            }
+            CoreExpr::OptionalFieldAccess {
+                receiver, field, ..
+            } => format!(
+                "({}).optional_field({})",
+                self.expr(receiver, scope)?,
+                quoted(field)
+            ),
+            CoreExpr::Record { items, .. } => self.record(items, scope)?,
             CoreExpr::Binary {
                 operator,
                 left,
@@ -1445,7 +1436,6 @@ impl Backend<'_> {
                         CoreExpr::Char { .. } => "Char",
                         CoreExpr::List { .. } => "List",
                         CoreExpr::Template { .. } => "template",
-                        CoreExpr::OptionalFieldAccess { .. } => "optional field access",
                         CoreExpr::ArrayComprehension { .. }
                         | CoreExpr::ListComprehension { .. } => "comprehension",
                         CoreExpr::Unary { .. } => "unary operator",
@@ -1458,6 +1448,29 @@ impl Backend<'_> {
                 .into())
             }
         })
+    }
+
+    fn record(&mut self, items: &[CoreRecordValueItem], scope: &Scope) -> Result<String> {
+        let record = self.fresh();
+        let mut output = format!("{{ let mut {record} = BTreeMap::new();");
+        for item in items {
+            match item {
+                CoreRecordValueItem::Field { name, value, .. } => output.push_str(&format!(
+                    "{record}.insert({}.to_owned(), {});",
+                    quoted(name),
+                    self.expr(value, scope)?
+                )),
+                CoreRecordValueItem::Spread { value, .. } => {
+                    let spread = self.fresh();
+                    output.push_str(&format!(
+                        "{{ let V::Record({spread}) = {} else {{ panic!(\"Rust ABI: expected record\") }}; {record}.extend({spread}.get().iter().map(|(key, value)| (key.clone(), value.clone()))); }}",
+                        self.expr(value, scope)?
+                    ));
+                }
+            }
+        }
+        output.push_str(&format!("V::Record(Shared::new({record})) }}"));
+        Ok(output)
     }
 
     fn require_operation(&mut self, name: &str) {

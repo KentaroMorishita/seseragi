@@ -1,0 +1,23 @@
+alias Row = { note ?: Maybe<String> }
+
+fn read row: Row -> Maybe<Maybe<String>> = row.note
+fn copy row: Row -> Row = { ...row }
+
+fn distinguish value: Maybe<Maybe<String>> -> String = match value {
+  Nothing -> "absent"
+  Just Nothing -> "present Nothing"
+  Just (Just text) -> "present Just " + text
+}
+
+pub fn probe -> String = {
+  let absent: Row = {}
+  let nothing: Row = { note: Nothing }
+  let just: Row = { note: Just "value" }
+  show (
+    [absent.note, nothing.note, just.note, read nothing, read just,
+     (copy absent).note, (copy nothing).note, (copy just).note],
+    [distinguish absent.note, distinguish nothing.note, distinguish just.note]
+  )
+}
+
+pub effect fn main = println (probe ())
