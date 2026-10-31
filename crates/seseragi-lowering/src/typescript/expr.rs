@@ -1,10 +1,5 @@
 use crate::bytes_ops::runtime_bytes_operation;
-use crate::collection_ops::runtime_collection_for_each_operation;
-use crate::collection_ops::{
-    runtime_collection_combine_operation, runtime_collection_join_operation,
-    runtime_collection_operation, runtime_collection_predicate_operation,
-    runtime_collection_product_operation, runtime_collection_sum_operation,
-};
+use crate::collection_ops::{runtime_collection_operation, runtime_prelude_collection_operation};
 use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
 use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
@@ -68,7 +63,8 @@ pub(super) fn lower_core_expr_to_typescript(
             origin,
         } => {
             if matches!(type_ref, CoreType::Function { .. }) {
-                if runtime_standard_operation(&name).is_some()
+                if runtime_prelude_collection_operation(&name, &evidence).is_some()
+                    || runtime_standard_operation(&name).is_some()
                     || runtime_iterator_operation(&name).is_some()
                 {
                     // A bare function reference is a partial application with
@@ -516,86 +512,9 @@ pub(super) fn lower_core_expr_to_typescript(
                         parameter: format!("{name}: {}", render_typescript_type(&ty)),
                         body: Box::new(body),
                     })
-            } else if let Some(operation) =
-                runtime_collection_for_each_operation(&callee, &evidence)
+            } else if let Some(operation) = runtime_prelude_collection_operation(&callee, &evidence)
+                .or_else(|| runtime_standard_operation(&callee))
             {
-                let dictionary =
-                    selected_dictionary_expression(&evidence[0], imported_values, imported_types)
-                        .expect("forEach requires materialized Iterable dictionary evidence");
-                arguments.insert(0, dictionary);
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
-                }
-            } else if let Some(operation) = runtime_collection_join_operation(&callee, &evidence) {
-                let dictionary =
-                    selected_dictionary_expression(&evidence[0], imported_values, imported_types)
-                        .expect("join requires materialized Reducible dictionary evidence");
-                arguments.insert(0, dictionary);
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
-                }
-            } else if let Some(operation) = runtime_collection_sum_operation(&callee, &evidence) {
-                let dictionaries = evidence
-                    .iter()
-                    .map(|selected| {
-                        selected_dictionary_expression(&selected, imported_values, imported_types)
-                            .expect("sum requires materialized Reducible, Zero, and Add evidence")
-                    })
-                    .collect::<Vec<_>>();
-                arguments.splice(0..0, dictionaries);
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
-                }
-            } else if let Some(operation) = runtime_collection_product_operation(&callee, &evidence)
-            {
-                let dictionaries = evidence
-                    .iter()
-                    .map(|selected| {
-                        selected_dictionary_expression(&selected, imported_values, imported_types)
-                            .expect(
-                                "product requires materialized Reducible, One, and Mul evidence",
-                            )
-                    })
-                    .collect::<Vec<_>>();
-                arguments.splice(0..0, dictionaries);
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
-                }
-            } else if let Some(operation) = runtime_collection_combine_operation(&callee, &evidence)
-            {
-                let dictionaries = evidence
-                    .iter()
-                    .map(|selected| {
-                        selected_dictionary_expression(&selected, imported_values, imported_types)
-                            .expect("combine requires materialized Reducible and Monoid evidence")
-                    })
-                    .collect::<Vec<_>>();
-                arguments.splice(0..0, dictionaries);
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
-                }
-            } else if let Some(operation) =
-                runtime_collection_predicate_operation(&callee, &evidence)
-            {
-                let dictionary =
-                    selected_dictionary_expression(&evidence[0], imported_values, imported_types)
-                        .expect("any/all require materialized Iterable dictionary evidence");
-                arguments.insert(0, dictionary);
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
-                }
-            } else if let Some(operation) = runtime_collection_operation(&callee, &evidence) {
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
-                }
-            } else if let Some(operation) = runtime_standard_operation(&callee) {
                 // Rank-polymorphic Iterable dictionaries do not let TypeScript
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
@@ -642,13 +561,22 @@ pub(super) fn lower_core_expr_to_typescript(
                 };
                 // Standard functions receive their canonical where
                 // dictionaries before user arguments, in interface order.
-                let dictionaries = evidence
-                    .iter()
-                    .map(|selected| {
-                        selected_dictionary_expression(&selected, imported_values, imported_types)
-                            .expect("standard call requires materialized evidence")
-                    })
-                    .collect::<Vec<_>>();
+                let dictionaries = if runtime_collection_operation(&callee, &evidence).is_some() {
+                    // Concrete reduce exports take only source arguments.
+                    Vec::new()
+                } else {
+                    evidence
+                        .iter()
+                        .map(|selected| {
+                            selected_dictionary_expression(
+                                selected,
+                                imported_values,
+                                imported_types,
+                            )
+                            .expect("collection call requires materialized evidence")
+                        })
+                        .collect::<Vec<_>>()
+                };
                 let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
                 let returned_arguments =
                     arguments.split_off(arguments.len().min(operation.source_arity));
