@@ -441,7 +441,10 @@ impl Backend<'_> {
         }
         if !self.program_wasm_library {
             match name.as_str() {
-                "std/signal::Signal" | "std/signal::MutableSignal" => return Some(vec![0]),
+                "std/signal::Signal"
+                | "std/signal::MutableSignal"
+                | "std/prelude::Sum"
+                | "std/prelude::Product" => return Some(vec![0]),
                 "std/signal::SignalChange" | "std/signal::Subscription" => return Some(vec![]),
                 _ => {}
             }

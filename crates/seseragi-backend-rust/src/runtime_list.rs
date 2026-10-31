@@ -206,6 +206,18 @@ fn native_list_display_dictionary(element: V, debug: bool) -> V {
 }
 
 fn native_primitive_display_dictionary(identity: &'static str) -> V {
+    if identity.ends_with("::Never>") {
+        return V::dict(vec![(
+            if identity.starts_with("Debug<") {
+                "debug"
+            } else {
+                "show"
+            },
+            V::fun(vec![], |_, _| {
+                panic!("Rust ABI: Never display received a value")
+            }),
+        )]);
+    }
     let debug = identity.starts_with("Debug<");
     let method = if debug { "debug" } else { "show" };
     let string = identity.ends_with("::String>");

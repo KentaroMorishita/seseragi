@@ -62,6 +62,7 @@ mod sequence_operations;
 mod sequence_order;
 mod signal;
 mod standard_errors;
+mod standard_values;
 mod tail;
 mod text;
 mod variables;
@@ -213,6 +214,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_prelude_collections.rs"));
     output.push_str(include_str!("runtime_traversable.rs"));
     output.push_str(include_str!("runtime_monad.rs"));
+    output.push_str(include_str!("runtime_standard_values.rs"));
     output.push_str(include_str!("runtime_transformer.rs"));
     output.push_str(include_str!("runtime_maybe.rs"));
     output.push_str(include_str!("runtime_either.rs"));
@@ -627,6 +629,10 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if let Some(dictionary) = self.standard_value_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.monad_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
