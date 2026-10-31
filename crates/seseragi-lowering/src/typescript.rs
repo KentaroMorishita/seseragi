@@ -1007,6 +1007,13 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             origin: structure.origin.clone(),
         })
         .collect();
+    module_imports.type_names = module_imports.type_names.with_polymorphic_bindings(
+        module
+            .bindings
+            .iter()
+            .filter(|binding| !binding.type_parameters.is_empty())
+            .flat_map(|binding| [binding.symbol.clone(), local_name(&binding.symbol)]),
+    );
     let mut expression_value_names = module_imports.value_names.clone();
     collect_foreign_task_markers(
         &module.module,

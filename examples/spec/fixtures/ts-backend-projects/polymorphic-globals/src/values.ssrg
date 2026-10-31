@@ -1,0 +1,9 @@
+let absent = Nothing
+let identity = \value -> value
+let render = \value -> show value
+let defaultValue = zero
+
+pub fn missing<A> -> Maybe<A> = absent
+pub fn applyIdentity<A> value: A -> A = identity value
+pub fn renderValue<A> value: A -> String where Show<A> = render value
+pub fn zeroValue<A> -> A where Zero<A> = defaultValue ()
