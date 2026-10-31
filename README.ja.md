@@ -17,26 +17,20 @@
   · <a href="./extensions/seseragi/README.md">VS Code</a>
 </p>
 
-## 複雑なアプリを、美しいまま書く。
+## 複雑なアプリを、明快なコードのまま書く。
 
-アプリは育つほど、コードが濁っていきます。
-状態が増え、例外があちこちから飛んでくる。ただの計算に見える関数が、裏で通信している。
-いつのまにか、コードを読んでも、何が起きるのか分からなくなっていきます。
+アプリは育つほど、コードが濁っていきます。状態が増え、例外があちこちから飛んでくる。ただの計算に見える関数が、裏で通信している。いつのまにか、コードを読んでも、何が起きるのか分からなくなっていきます。
 
-Seseragi は、それに抗うための言語です。
-複雑なアプリを、どこまで美しいコードのまま書けるか。それを本気で突き詰めています。
+Seseragi は、それに抗うための言語です。複雑なアプリを、どこまで明快なコードのまま書けるか。それを突き詰めています。
 
-目指すのは、せせらぎのように澄んだコードです。
-データは上流から下流へ、パイプラインを通って流れていく。どこで形を変え、どこで失敗しうるのか、水底まで見通せる。
-そのために、Seseragi は次のことを約束します。
+目指すのは、せせらぎのように澄んだコードです。データは上流から下流へ、パイプラインを通って流れていく。どこで形を変え、どこで失敗しうるのか、水底まで見通せる。そのために、Seseragi は次のことを約束します。
 
 - **危険を隠さない** — `null` も `undefined` も例外もありません。欠けるかもしれない値は `Maybe`、失敗するかもしれない処理は `Either` や `Effect` として、型の上にはっきり現れます
 - **魔法を使わない** — 型推論も暗黙の選択も、コンパイラが理由を一つに説明できるときだけ成功します。迷うときは、勝手に選ばずにエラーで教えてくれます
 - **依存は推論し、失敗は設計する** — 関数が使うサービス（コンソール、時計、HTTP など）はコンパイラが集めて型にします。どんな失敗がありうるかは、あなたが型として設計します
 - **抽象化しても、読めるまま** — 目指すのは短さではありません。データの形と処理の流れが一目で読めることです
 
-Seseragi のコードは TypeScript にコンパイルされ、Bun、Node.js、ブラウザで動きます。
-CLI ツールも Web アプリの画面も、同じ言語、同じ考え方で書けます。
+Seseragi のコードは TypeScript にコンパイルされ、Bun、Node.js、ブラウザで動きます。CLI ツールも Web アプリの画面も、同じ言語、同じ考え方で書けます。
 
 > [!NOTE]
 > Seseragi は開発中の実験的な言語です。構文や仕様は今後も変わる可能性があります。
@@ -67,8 +61,7 @@ function message(state: UserState): string {
 }
 ```
 
-この型は、「読み込み中なのにエラーもある」のような、ありえない組み合わせも許してしまいます。
-`{ isLoading: false }` を渡すと `Hello, undefined` と表示されますが、strict モードでもコンパイルは通ります。
+この型は、「読み込み中なのにエラーもある」のような、ありえない組み合わせも許してしまいます。`{ isLoading: false }` を渡すと `Hello, undefined` と表示されますが、strict モードでもコンパイルは通ります。
 
 Seseragi では、状態を「どれか一つ」として型に書き出します。
 
@@ -86,8 +79,7 @@ fn message state: UserState -> String =
   }
 ```
 
-名前があるのは `Loaded` のときだけなので、`undefined` を表示してしまうことはありません。
-さらに `match` は、すべての状態を扱っているかを必ずチェックします。新しい状態を足したのに処理を書き忘れると、ビルドする前にエラーになります。
+名前があるのは `Loaded` のときだけなので、`undefined` を表示してしまうことはありません。さらに `match` は、すべての状態を扱っているかを必ずチェックします。新しい状態を足したのに処理を書き忘れると、ビルドする前にエラーになります。
 
 ```text
 error[SES-T0301]: This match does not cover every possible value
@@ -109,11 +101,9 @@ function parseNumber(text: string): number {
 }
 ```
 
-Seseragi では、失敗するかもしれない処理は `Either<エラーの型, 成功したときの型>` を返します。
-成功なら `Right 値`、失敗なら `Left エラー` です。呼ぶ側は、型を見れば失敗しうることが分かります。
+Seseragi では、失敗するかもしれない処理は `Either<エラーの型, 成功したときの型>` を返します。成功なら `Right 値`、失敗なら `Left エラー` です。呼ぶ側は、型を見れば失敗しうることが分かります。
 
-失敗しうる処理を続けて呼ぶときは `do` 記法を使います。`<-` は「成功していれば中の値を取り出す」という意味で、
-どこかで `Left` が返ると、そこで止まってその `Left` が全体の結果になります。`try/catch` を書かずに、成功する流れだけを上から順に書けます。
+失敗しうる処理を続けて呼ぶときは `do` 記法を使います。`<-` は「成功していれば中の値を取り出す」という意味で、どこかで `Left` が返ると、そこで止まってその `Left` が全体の結果になります。`try/catch` を書かずに、成功する流れだけを上から順に書けます。
 
 ```seseragi
 import * as either from "std/either"
@@ -142,8 +132,7 @@ fn calculate left: String -> right: String -> Either<String, Int> = do {
 
 ### 副作用が型に出る
 
-画面への出力や通信のような副作用は、`effect fn` の中でしか起こせません。
-ふつうの `fn` で `println` を呼ぶと、型エラーになります。
+画面への出力や通信のような副作用は、`effect fn` の中でしか起こせません。ふつうの `fn` で `println` を呼ぶと、型エラーになります。
 
 ```seseragi
 fn greet name: String -> Unit = println `Hello, ${name}`
@@ -155,9 +144,7 @@ error[SES-T0101]: Expression type does not match the expected type
   = actual: Effect<{ console: Console }, ConsoleError, Unit>
 ```
 
-`Effect<{ console: Console }, ConsoleError, Unit>` は、
-「コンソールを使い、`ConsoleError` で失敗することがあり、成功すると `Unit` を返す処理」という意味です。
-何に依存し、どう失敗するかが、型を見るだけで分かります。
+`Effect<{ console: Console }, ConsoleError, Unit>` は、「コンソールを使い、`ConsoleError` で失敗することがあり、成功すると `Unit` を返す処理」という意味です。何に依存し、どう失敗するかが、型を見るだけで分かります。
 
 `effect fn` の失敗の種類は、自分で型として設計して `fails` で宣言します。
 
@@ -180,8 +167,7 @@ effect fn reserve item: String -> quantity: Int -> String fails OrderError =
 
 ### パイプライン
 
-`|>` で値を次の関数へ渡していきます。
-関数はカリー化されているので、引数の一部だけを渡した関数をそのままパイプラインに置けます。
+`|>` で値を次の関数へ渡していきます。関数はカリー化されているので、引数の一部だけを渡した関数をそのままパイプラインに置けます。
 
 ```seseragi
 import * as arrays from "std/array"
@@ -200,9 +186,7 @@ pub effect fn main =
 
 ### UI も同じ言語で
 
-画面も、ここまでと同じ型と関数で書きます。
-状態は `Signal` に持たせ、`signals.map` で状態から画面を作ります。
-ボタンを押して状態が変わると、画面も自動で更新されます。React も JSX も要りません。
+画面も、ここまでと同じ型と関数で書きます。状態は `Signal` に持たせ、`signals.map` で状態から画面を作ります。ボタンを押して状態が変わると、画面も自動で更新されます。React も JSX も要りません。
 
 ```seseragi
 import * as dom from "std/web/dom"
@@ -239,13 +223,11 @@ pub effect fn main -> Unit with dom: dom.Dom fails String = do {
 
 ### エディタとコンパイラが同じ答えを出す
 
-CLI、エディタ用の LSP、フォーマッタ、ブラウザの Playground は、すべて同じコンパイラ本体を使っています。
-エディタに表示される型やエラーと、実際にビルドしたときの結果が食い違いません。
+CLI、エディタ用の LSP、フォーマッタ、ブラウザの Playground は、すべて同じコンパイラ本体を使っています。エディタに表示される型やエラーと、実際にビルドしたときの結果が食い違いません。
 
 ### 生成されるのは普通の TypeScript
 
-Seseragi のコードは TypeScript にコンパイルされ、Bun・Node.js・ブラウザで動きます。
-たとえば上の `type UserState` は、`tag` プロパティで状態を見分けるユニオン型になります。
+Seseragi のコードは TypeScript にコンパイルされ、Bun・Node.js・ブラウザで動きます。たとえば上の `type UserState` は、`tag` プロパティで状態を見分けるユニオン型になります。
 
 ```ts
 type UserState =
@@ -273,8 +255,7 @@ TypeScript の既存のコードや npm パッケージを Seseragi から呼ぶ
 | `{ ...user, name: "Aoi" }` | `{ ...user, name: "Aoi" }` |
 | `` `Hello, ${name}` `` | `` `Hello, ${name}` `` |
 
-関数、データ、失敗、非同期処理、React との違いまで、TypeScript と並べた詳しい比較は
-ドキュメントの [TypeScript から Seseragi へ](https://seseragi-docs.vercel.app/docs/guides/typescript-to-seseragi) にあります。
+関数、データ、失敗、非同期処理、React との違いまで、TypeScript と並べた詳しい比較はドキュメントの [TypeScript から Seseragi へ](https://seseragi-docs.vercel.app/docs/guides/typescript-to-seseragi) にあります。
 
 ## 試してみる
 
@@ -306,9 +287,7 @@ pub effect fn main = for number <- 1 ..= 30 {
 
 ## インストール
 
-[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から、
-OS と CPU に合ったアーカイブをダウンロードしてください。CLI と LSP が入っています。
-生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です。
+[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から、OS と CPU に合ったアーカイブをダウンロードしてください。CLI と LSP が入っています。生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です。
 
 ```sh
 seseragi run hello.ssrg          # ファイルを実行する
@@ -318,14 +297,10 @@ seseragi build hello.ssrg        # ビルドする
 seseragi format hello.ssrg       # 整形する
 ```
 
-詳しい手順はドキュメントの [ローカルで使う](https://seseragi-docs.vercel.app/docs/learn/local-development)、Web アプリを作るなら [Web アプリを作る](https://seseragi-docs.vercel.app/docs/guides/web-app) を参照してください。
-VS Code 拡張（ID: `seseragi-dev.seseragi`）は、同じ GitHub Releases にある VSIX からインストールできます。
-詳しくは [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。
+詳しい手順はドキュメントの [ローカルで使う](https://seseragi-docs.vercel.app/docs/learn/local-development)、Web アプリを作るなら [Web アプリを作る](https://seseragi-docs.vercel.app/docs/guides/web-app) を参照してください。VS Code 拡張（ID: `seseragi-dev.seseragi`）は、同じ GitHub Releases にある VSIX からインストールできます。詳しくは [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。
 
 > [!NOTE]
-> Bun 1.4.3 以前には脆弱性（CVE-2026-111497）があります。
-> Node.js で実行する場合も、2026年10月のセキュリティ修正を含むバージョン
-> （22.23.4 / 24.22.1 / 26.12.1 以降）を使ってください。
+> Bun 1.4.3 以前には脆弱性（CVE-2026-111497）があります。Node.js で実行する場合も、2026年10月のセキュリティ修正を含むバージョン（22.23.4 / 24.22.1 / 26.12.1 以降）を使ってください。
 
 ## 開発状況
 
@@ -338,8 +313,7 @@ VS Code 拡張（ID: `seseragi-dev.seseragi`）は、同じ GitHub Releases に�
 
 ## コンパイラの開発に参加する
 
-コンパイラは Rust で書かれています。ソースからビルドするには Rust と Bun が必要です
-（Rust のバージョンは `rust-toolchain.toml` で固定されています）。
+コンパイラは Rust で書かれています。ソースからビルドするには Rust と Bun が必要です（Rust のバージョンは `rust-toolchain.toml` で固定されています）。
 
 ```sh
 # main ブランチから CLI をインストールする（リリース版ではありません）
@@ -355,8 +329,7 @@ bun run check:rust
 > [!NOTE]
 > rustup は 1.29.2 以降を使ってください（それより前のバージョンには証明書検証の脆弱性 CVE-2026-111943 があります）。
 
-どのチェックを使うかは [Scoped checks](./docs/SCOPED_CHECKS.md)、
-コンパイラの内部構成は [IMPLEMENTATION](./docs/IMPLEMENTATION.md) にまとめています。
+どのチェックを使うかは [Scoped checks](./docs/SCOPED_CHECKS.md)、コンパイラの内部構成は [IMPLEMENTATION](./docs/IMPLEMENTATION.md) にまとめています。
 
 | パス | 内容 |
 | --- | --- |
