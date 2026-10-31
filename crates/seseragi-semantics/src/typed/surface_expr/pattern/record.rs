@@ -29,19 +29,13 @@ pub(super) fn type_record_pattern(
                 format!("record pattern repeats field {}", field.name),
             );
         }
-        if field.optional {
-            return invalid(
-                field.span,
-                "optional query record patterns are not connected yet",
-            );
-        }
         let Some(available) = available.iter().find(|item| item.name == field.name) else {
             return invalid(
                 field.name_span,
                 format!("record pattern field {} does not exist", field.name),
             );
         };
-        if available.optional {
+        if available.optional && !field.optional {
             return invalid(
                 field.name_span,
                 format!(
@@ -55,10 +49,23 @@ pub(super) fn type_record_pattern(
             _ => None,
         }
         .unwrap_or_else(|| context.semantic_value_from_typed_type(&available.type_ref));
-        children.push((
-            field,
-            type_pattern(&field.pattern, &nested_expected, context),
-        ));
+        let query_expected = if field.optional {
+            super::super::fallback::maybe_type(nested_expected, context)
+        } else {
+            nested_expected
+        };
+        let mut child = type_pattern(&field.pattern, &query_expected, context);
+        if field.optional && !available.optional && !child.invalid {
+            child.coverage = match child.coverage {
+                CoveragePattern::Constructor {
+                    argument: Some(argument),
+                    ..
+                } => *argument,
+                CoveragePattern::Constructor { argument: None, .. } => CoveragePattern::Never,
+                coverage => coverage,
+            };
+        }
+        children.push((field, child));
     }
 
     let invalid = children.iter().any(|(_, child)| child.invalid);
@@ -87,7 +94,7 @@ pub(super) fn type_record_pattern(
                 .into_iter()
                 .map(|(field, child)| TypedRecordPatternField {
                     name: field.name.clone(),
-                    optional: false,
+                    optional: field.optional,
                     pattern: child.typed,
                     origin: field.span,
                 })

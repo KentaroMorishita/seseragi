@@ -668,6 +668,7 @@ fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
                 .into_iter()
                 .map(|field| super::CoreRecordPatternField {
                     name: field.name,
+                    optional: field.optional,
                     pattern: lower_pattern(source, field.pattern),
                     origin: source_span(source, field.origin),
                 })

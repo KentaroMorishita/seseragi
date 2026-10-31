@@ -975,6 +975,28 @@ fn parses_rps_match_with_tuple_constructor_patterns_and_wildcard() {
 }
 
 #[test]
+fn parses_optional_query_patterns_with_attached_and_separated_colons() {
+    for field in [
+        "note?: Just value",
+        "note? : Just value",
+        "note ? : Just value",
+    ] {
+        let source = format!("fn inspect row: {{ note?: Int }} -> Int = match row {{ {{ {field} }} -> value; _ -> 0 }}\n");
+        let SurfaceExpr::Match { arms, .. } = first_body(&source) else {
+            panic!("expected match");
+        };
+        let SurfacePattern::Record { fields, .. } = &arms[0].pattern else {
+            panic!("expected record");
+        };
+        assert!(fields[0].optional);
+        assert!(
+            matches!(&fields[0].pattern, SurfacePattern::Constructor { name, argument: Some(argument), .. }
+            if name == "Just" && matches!(argument.as_ref(), SurfacePattern::Name { name, .. } if name == "value"))
+        );
+    }
+}
+
+#[test]
 fn parses_record_patterns_with_shorthand_explicit_and_optional_fields() {
     let body = first_body(
         "fn describe value: { status: String, name: String, score?: Int } -> String =\n  match value {\n    { status: \"ok\", name, score? } -> name\n    _ -> \"missing\"\n  }\n",
