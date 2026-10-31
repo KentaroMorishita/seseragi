@@ -6,6 +6,8 @@
   </picture>
 </p>
 
+<p align="center">English | <a href="./README.ja.md">日本語</a></p>
+
 <p align="center"><strong>One language for data shapes, state and UI.</strong></p>
 
 <p align="center">
