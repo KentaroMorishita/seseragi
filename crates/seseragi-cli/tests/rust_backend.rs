@@ -836,13 +836,7 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
     let scratch = Scratch::new();
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../examples/spec/fixtures/rust-backend-projects/linked");
-    for kind in [
-        "private",
-        "opaque",
-        "unsupported",
-        "stale",
-        "missing",
-    ] {
+    for kind in ["private", "opaque", "unsupported", "stale", "missing"] {
         let project = scratch.0.join(kind);
         copy_project(&fixture, &project);
         let library = project.join("vendor/model/src/lib.ssrg");
