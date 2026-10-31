@@ -57,6 +57,7 @@ impl Backend<'_> {
             let (owner, count) = match identity.as_str() {
                 "std/array::Iterable" => ("std/prelude::Array", 1),
                 "std/list::Iterable" => ("std/prelude::List", 1),
+                "std/range::Iterable" => ("std/prelude::Range", 1),
                 "std/iterator::Iterable" => ("std/prelude::Iterator", 1),
                 "std/map::Iterable" => ("std/map::Map", 2),
                 "std/set::Iterable" => ("std/set::Set", 1),
@@ -96,6 +97,9 @@ impl Backend<'_> {
             };
             if actual[1] != element {
                 return Err("Rust backend: Iterable provider element mismatch".into());
+            }
+            if identity == "std/range::Iterable" && element != named("std/prelude::Int", vec![]) {
+                return Err("Rust backend: Range Iterable requires canonical Int elements".into());
             }
         }
         Ok(())

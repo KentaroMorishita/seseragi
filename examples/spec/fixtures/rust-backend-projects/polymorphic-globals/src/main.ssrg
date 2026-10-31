@@ -1,0 +1,16 @@
+import * as numbers from "./numbers"
+import * as texts from "./texts"
+import { label } from "./values"
+
+type Badge = | Badge
+instance Show<Badge> {
+  fn show value: Badge -> String = "badge"
+}
+
+pub effect fn main = do {
+  println (show numbers.result)
+  println (show texts.result)
+  println (label 9)
+  println (label True)
+  println (label Badge)
+}

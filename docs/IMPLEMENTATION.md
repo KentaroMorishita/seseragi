@@ -11,9 +11,8 @@
 - 複数laneが同時に進んでも、共有AST fileやdiagnostic文字列の編集競合を常態化させない。
 - 各段階をstable artifactとconformance fixtureで接続し、未完成な後段なしで前段を検証できる。
 
-言語能力とproduct surfaceの二軸roadmapは[`ROADMAP.md`](./ROADMAP.md)を参照します。CLI、LSP、
-playground、formatter、conformanceは最終Phaseへ延期せず、各言語Phaseを人間が利用・検証するthin adapterとして
-同じdriver / diagnosticsを使います。
+これからの予定は[`ROADMAP.md`](./ROADMAP.md)を参照します。CLI、LSP、playground、formatter、conformanceは、
+どれも同じdriver / diagnosticsを使うthin adapterです。
 
 ## 2. compiler pipeline
 

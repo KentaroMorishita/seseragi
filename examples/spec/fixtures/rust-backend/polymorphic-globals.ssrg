@@ -1,0 +1,22 @@
+let base: Int = 40
+let identity = \value -> value
+let retained = identity
+let paired = \left -> \right -> (left, right)
+let attach = \value -> (base + 2, retained value)
+let render = \value -> show value
+let renderAgain = render
+let origin = zero
+
+pub effect fn main = do {
+  println (show (identity 42))
+  println (retained "hello")
+  println (show (attach True))
+  println (show (attach "world"))
+  println (show (paired 9 "pair"))
+  println (show (paired False 10))
+  println (renderAgain 7)
+  println (renderAgain 8)
+  println (renderAgain False)
+  println (show (origin<Int> ()))
+  println (show (origin<Float> ()))
+}

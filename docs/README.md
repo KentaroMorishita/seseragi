@@ -7,7 +7,8 @@
 
 ## 仕様の読み方
 
-- [現在地――仕様、検証、実装を分けた進捗表](./STATUS.md)
+- [開発状況――いま動くものと動かないもの](./STATUS.md)
+- [ロードマップ――これからの予定](./ROADMAP.md)
 - [仕様横断監査――章をまたぐ矛盾の確認記録](./SPEC_AUDIT.md)
 - [仕様索引・feature map・cross-cutting invariants](./spec/README.md)
 - [仕様カバレッジと未定義項目](./SPEC_COVERAGE.md)

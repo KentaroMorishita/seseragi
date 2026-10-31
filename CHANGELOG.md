@@ -1,5 +1,22 @@
 # Change Log
 
+## [0.61.131] - 2026-10-31
+
+### Added
+
+- Build record spread natively: later fields win, each spread source is evaluated once in order, and optional fields are copied only when present.
+- Read optional record fields natively as `Just value` or `Nothing`, without flattening a field whose value is itself a `Maybe`.
+- Build `..` and `..=` over Int natively as lazy Iterable and Reducible values with Show and Debug.
+- Run Prelude `reduce`, `product`, `combine`, `any`, `all`, `unfold`, `next`, `readLine` and `fromEither` natively; `any` and `all` stop pulling once the result is decided.
+- Build polymorphic top-level values natively, initialized once and used at every type.
+- Build derived Eq, Ord, Hash, Show and Debug natively for ADTs, structs, newtypes and records, including members of standard error types such as `StdinError`.
+
+## [0.61.130] - 2026-10-31
+
+### Added
+
+- Build recursive and mutually recursive local functions natively, including ones that capture surrounding variables; self tail calls run as loops.
+
 ## [0.61.129] - 2026-10-31
 
 ### Added

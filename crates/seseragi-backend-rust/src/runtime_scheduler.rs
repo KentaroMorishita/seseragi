@@ -365,6 +365,7 @@ impl NativeScheduler {
                 let child = self.spawn(
                     NativeContext {
                         gc_every: task.machine.context.gc_every,
+                        stdin_offset: task.machine.context.stdin_offset.clone(),
                         ..NativeContext::default()
                     },
                     c[0].clone(),

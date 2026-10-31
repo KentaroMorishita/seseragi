@@ -1,7 +1,8 @@
 use seseragi_backend_rust::{emit_rust_module, RustArtifact};
 use seseragi_driver::{compile_core_module, CompileInput};
 use seseragi_lowering::{
-    core_free_variables, is_closed_local_evidence, known_pure_call_shape, CoreCallShape, CoreExpr,
+    core_expr_origin, core_free_variables, is_closed_local_evidence, known_pure_call_shape,
+    CoreCallShape, CoreExpr,
 };
 use std::{
     fs,
@@ -60,6 +61,137 @@ fn generic_struct_impl_methods_keep_impl_and_method_type_parameters() {
         include_str!("../../../examples/spec/fixtures/rust-backend/generic-struct-methods.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/generic-struct-methods.stdout")
             .trim_end(),
+    );
+}
+
+#[test]
+fn optional_field_access_preserves_presence_in_parameters_pipelines_and_matches() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/optional-field-access.ssrg"),
+        "([Nothing, Just present, Nothing, Just present, Nothing, Just present, Nothing, Just present, Nothing, Just present], [absent, present])",
+    );
+}
+
+#[test]
+fn optional_field_access_after_spread_preserves_missing_present_and_overridden_fields() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/optional-field-spread.ssrg"),
+        "[Nothing, Just present, Just fallback, Just present, Just override, Just override, Just present, Just present]",
+    );
+}
+
+#[test]
+fn optional_field_access_wraps_present_maybe_values_without_flattening() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/optional-field-nested-maybe.ssrg"),
+        "([Nothing, Just Nothing, Just Just value, Just Nothing, Just Just value, Nothing, Just Nothing, Just Just value], [absent, present Nothing, present Just value])",
+    );
+}
+
+#[test]
+fn optional_field_access_evaluates_the_receiver_once_and_retains_the_selected_value() {
+    let artifact = emit(
+        "fn source -> { note ?: String } = { note: \"present\" }\npub fn probe -> Maybe<String> = (source ()).note\n",
+    );
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let mut generated = artifact.source[..main].to_owned();
+    let start = generated
+        .find(&format!("fn {}_direct(", rust_id("native/main::source")))
+        .unwrap();
+    let body = start + generated[start..].find("-> V {").unwrap() + "-> V {".len();
+    generated.insert_str(body, " CALLS.with(|calls| calls.set(calls.get() + 1)); ");
+    generated.push_str(&format!(
+        r#"
+thread_local! {{ static CALLS: Cell<usize> = const {{ Cell::new(0) }}; }}
+fn main() {{
+ let result = {}(vec![]).apply(V::Unit);
+ assert!(result.tagged("std/prelude::Just"));
+ assert_eq!(result.payload().render(), "present");
+ CALLS.with(|calls| assert_eq!(calls.get(), 1));
+ drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0);
+}}
+"#,
+        rust_id(&artifact.metadata.entry)
+    ));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[test]
+fn record_spread_overrides_fields_in_source_order_and_keeps_other_fields() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/record-spread.ssrg"),
+        "(Ren, Mio, Aoi, Engineer, Kyoto)",
+    );
+}
+
+#[test]
+fn record_spread_copies_optional_fields_only_when_present() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/record-spread-optional.ssrg"),
+        "({name: Mio}, {name: Aoi, note: present}, {name: Mio, note: fallback}, {name: Aoi, note: present}, {name: Mio, note: present})",
+    );
+}
+
+#[test]
+fn record_spread_evaluates_each_source_once_in_order_with_fields() {
+    let artifact = emit(
+        r#"
+fn before -> Int = 1
+fn source -> { value: Int, other: Int } = { value: 2, other: 3 }
+fn field -> Int = 4
+fn later -> { value: Int } = { value: 5 }
+fn after -> Int = 6
+pub fn probe -> { before: Int, value: Int, other: Int, after: Int } = {
+  before: before (), ...source (), value: field (), ...later (), after: after ()
+}
+"#,
+    );
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let mut generated = artifact.source[..main].to_owned();
+    // Observe source functions without changing the generated record expression.
+    for name in ["before", "source", "field", "later", "after"] {
+        let start = generated
+            .find(&format!(
+                "fn {}_direct(",
+                rust_id(&format!("native/main::{name}"))
+            ))
+            .unwrap();
+        let body = start + generated[start..].find("-> V {").unwrap() + "-> V {".len();
+        generated.insert_str(
+            body,
+            &format!(" TRACE.with(|trace| trace.borrow_mut().push({name:?})); "),
+        );
+    }
+    generated.push_str(&format!(
+        r#"
+thread_local! {{ static TRACE: RefCell<Vec<&'static str>> = const {{ RefCell::new(Vec::new()) }}; }}
+fn main() {{
+ let result = {}(vec![]).apply(V::Unit);
+ assert_eq!(result.render(), "{{after: 6, before: 1, other: 3, value: 5}}");
+ TRACE.with(|trace| assert_eq!(&*trace.borrow(), &["before", "source", "field", "later", "after"]));
+ drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0);
+}}
+"#,
+        rust_id(&artifact.metadata.entry)
+    ));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
     );
 }
 
@@ -419,21 +551,180 @@ fn recursive_named_locals_cannot_capture_a_same_named_global_or_outer_local() {
                 ""
             }
         );
-        let core = compile_core_module(CompileInput::new(
-            "recursive-λ.ssrg",
-            "native/main",
-            &source,
-        ))
+        run(&source, "0");
+    }
+}
+
+#[test]
+fn recursive_locals_keep_self_mutual_captures_and_partial_calls() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/local-recursion.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/local-recursion.stdout")
+            .trim_end(),
+    );
+}
+
+#[test]
+fn recursive_local_tail_calls_keep_snapshots_and_evidence_on_a_small_stack() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/local-tail-recursion.ssrg"
+    ));
+    assert!(artifact.metadata.self_tail_calls >= 3);
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let expected =
+        include_str!("../../../examples/spec/fixtures/rust-backend/local-tail-recursion.stdout")
+            .trim_end();
+    let generated = format!("{}\nfn main() {{ std::thread::Builder::new().stack_size(256 * 1024).spawn(|| {{ let result = {}(vec![]).apply(V::Unit); assert_eq!(result.render(), {expected:?}); drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0); }}).unwrap().join().unwrap(); }}", &artifact.source[..main], rust_id(&artifact.metadata.entry));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[test]
+fn escaped_recursive_locals_release_their_environments() {
+    for source in [
+        r#"
+pub fn probe -> (Int -> String) = {
+  let payload = "retained"
+  fn loop n: Int -> String = if n == 0 then payload else loop (n - 1)
+  loop
+}
+"#,
+        r#"
+pub fn probe -> (Int -> String) = {
+  let payload = "retained"
+  rec {
+    fn even n: Int -> String = if n == 0 then payload else odd (n - 1)
+    fn odd n: Int -> String = if n == 0 then payload else even (n - 1)
+  }
+  even
+}
+"#,
+    ] {
+        let artifact = emit(source);
+        let main = artifact.source.rfind("fn main()").unwrap();
+        let harness = format!(
+            r#"
+fn main() {{
+    enable_cycle_collection();
+    let callback = {}(vec![]).apply(V::Unit);
+    assert_eq!(callback.apply(checked_int(10)).render(), "retained");
+    assert_eq!(collect_cycles().unwrap().reclaimed, 0);
+    drop(callback);
+    clear_dictionaries();
+    assert_eq!(LIVE.with(Cell::get), 0, "recursive closures have no ownership cycle");
+}}
+"#,
+            rust_id(&artifact.metadata.entry)
+        );
+        let scratch = Scratch::new();
+        let output =
+            Command::new(scratch.compile(&format!("{}\n{harness}", &artifact.source[..main])))
+                .env("PATH", "")
+                .output()
+                .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+}
+
+#[test]
+fn recursive_local_captures_participate_in_ref_cycle_collection() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/local-recursion-effects.ssrg");
+    let core = compile_core_module(CompileInput::new("main.ssrg", "native/main", source)).unwrap();
+    let artifact = emit_rust_module(&core.core_ir, "main").unwrap();
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let generated = format!("{}\nfn main() {{ std::thread::Builder::new().stack_size(256 * 1024).spawn(|| {{ assert_eq!(run_native_entry(|| {}(vec![]).apply(V::Unit), true), 0); assert_eq!(LIVE.with(Cell::get), 0); }}).unwrap().join().unwrap(); }}", &artifact.source[..main], rust_id(&artifact.metadata.entry));
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/local-recursion-effects.stdout"
+        )
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("managed-live=0"), "{stderr}");
+    let reclaimed: usize = stderr
+        .split("collected=")
+        .nth(1)
+        .unwrap()
+        .split_whitespace()
+        .next()
+        .unwrap()
+        .parse()
+        .unwrap();
+    assert!(
+        reclaimed >= 3,
+        "must reclaim the Ref, recursive closure and captured environment: {stderr}"
+    );
+}
+
+#[test]
+fn recursive_local_tail_calls_reject_forged_arguments_and_staging() {
+    use seseragi_lowering::{CoreStatement, CoreType};
+    let source = "pub fn probe -> Int = { fn loop n: Int -> Int = if n == 0 then 0 else loop (n - 1); loop 5 }\n";
+    let core = compile_core_module(CompileInput::new("recursive-λ.ssrg", "native/main", source))
         .unwrap()
         .core_ir;
-        let result = emit_rust_module(&core, "probe");
-        assert!(
-            result.is_err(),
-            "named self reference was rebound to an outer value"
-        );
-        let error = result.unwrap_err();
-        assert!(error.message.contains("recursive local function"));
-        assert!(error.origin.is_some());
+    for case in 0..4 {
+        let mut changed = core.clone();
+        let CoreExpr::Sequence { statements, .. } = &mut changed.functions[0].body else {
+            panic!("sequence")
+        };
+        let CoreStatement::LocalFunction { body, .. } = &mut statements[0] else {
+            panic!("local")
+        };
+        let CoreExpr::If { else_branch, .. } = body else {
+            panic!("if")
+        };
+        let CoreExpr::Call {
+            arguments,
+            evidence_argument_index,
+            deferred_evidence_parameters,
+            deferred_evidence_type_constructor_parameters,
+            ..
+        } = &mut **else_branch
+        else {
+            panic!("self call")
+        };
+        match case {
+            0 => *evidence_argument_index = Some(99),
+            1 => deferred_evidence_parameters.push(CoreType::Hole),
+            2 => deferred_evidence_type_constructor_parameters.push("F".into()),
+            3 => {
+                arguments[0] = CoreExpr::Boolean {
+                    value: true,
+                    origin: core_expr_origin(&arguments[0]).clone(),
+                }
+            }
+            _ => unreachable!(),
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001", "case {case}");
+        let origin = error.origin.unwrap();
+        assert_eq!(origin.source, "recursive-λ.ssrg");
+        assert!(origin.start < origin.end && origin.end <= source.len());
     }
 }
 
@@ -2081,13 +2372,94 @@ pub fn probe -> (Int, Int, Int) = (base, retained (), partial pair.right)
 }
 
 #[test]
-fn globals_reject_unproved_polymorphism_before_emission() {
-    let source = "let identity = \\x -> x\npub fn probe -> Int = identity 42\n";
-    let core =
-        compile_core_module(CompileInput::new("global.ssrg", "native/main", source)).unwrap();
-    let error = emit_rust_module(&core.core_ir, "probe").err().unwrap();
-    assert!(error.message.contains("global"), "{error:?}");
-    assert!(error.origin.is_some());
+fn polymorphic_globals_keep_erased_values_and_per_use_dictionaries() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/polymorphic-globals.ssrg");
+    let core = compile_core_module(CompileInput::new("global.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    let artifact = emit_rust_module(&core, "main").unwrap();
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(
+        output.stdout,
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/polymorphic-globals.stdout")
+    );
+    assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+}
+
+#[test]
+fn polymorphic_globals_share_one_initialized_value_across_types() {
+    let artifact = emit(
+        "let identity = \\value -> value\nlet retained = identity\nfn number -> (Int -> Int) = identity\nfn text -> (String -> String) = retained\npub fn probe -> Int = 42\n",
+    );
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let generated = format!(
+        r#"{}
+fn main() {{
+    initialize_globals();
+    let original = get_global(0).node_id().unwrap();
+    assert_eq!(get_global(1).node_id(), Some(original));
+    for _ in 0..100 {{
+        let number = {}(vec![]).apply(V::Unit);
+        let text = {}(vec![]).apply(V::Unit);
+        assert_eq!(number.node_id(), Some(original));
+        assert_eq!(text.node_id(), Some(original));
+        assert_eq!(number.apply(V::Int(42)).render(), "42");
+        assert_eq!(text.apply(V::text("hello")).render(), "hello");
+    }}
+    clear_globals();
+    clear_dictionaries();
+    assert_eq!(LIVE.with(Cell::get), 0);
+}}
+"#,
+        &artifact.source[..main],
+        rust_id("native/main::number"),
+        rust_id("native/main::text"),
+    );
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+}
+
+#[test]
+fn polymorphic_globals_link_in_dependency_order_and_keep_dictionary_owners() {
+    let loaded = seseragi_project::load_local_project(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/spec/fixtures/rust-backend-projects/polymorphic-globals"
+    ))
+    .unwrap();
+    let checked = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+    let modules = checked
+        .compiled
+        .order
+        .iter()
+        .map(|id| &checked.compiled.modules[id].core_ir)
+        .collect::<Vec<_>>();
+    let artifact =
+        seseragi_backend_rust::emit_rust_project(&modules, &checked.entry_module, "main").unwrap();
+    assert_eq!(artifact.metadata.modules.len(), 5);
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(output.stdout, include_bytes!("../../../examples/spec/fixtures/rust-backend-projects/polymorphic-globals/expected.stdout"));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+}
+
+#[test]
+fn globals_reject_erased_source_parameters_before_emission() {
     // Ordinary constrained aliases keep their source parameters and evidence
     // ABI. Erasing them cannot turn the body into a certified method factory.
     let source = "fn render<A> value: A -> String where Show<A> = show value\nlet retainedValue = render\npub fn probe -> String = retainedValue 42\n";

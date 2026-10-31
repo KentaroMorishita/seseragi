@@ -1,0 +1,2 @@
+import { text } from "./values"
+pub let result: (Int, String) = text "hello"

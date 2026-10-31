@@ -1,0 +1,52 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as sets from "std/set"
+import * as iterator from "std/iterator"
+import * as collection from "std/collection"
+
+fn total<C> values:C -> Int where Reducible<C,Int> = sum values
+fn first values:iterator.Iterator<Int> -> String = match iterator.next values {
+  Nothing -> "end"
+  Just (value,_rest) -> show value
+}
+fn second values:iterator.Iterator<Int> -> String = match iterator.next values {
+  Nothing -> "end"
+  Just (_value,rest) -> first rest
+}
+fn rangeText<A> value:Range<A> -> String where Show<A> = show value
+
+pub effect fn main = do {
+  println (show (1 .. 4))
+  println (show (1 ..= 4))
+  println (show (4 .. 4))
+  println (rangeText (4 ..= 1))
+  println (debug (-2 ..= 2))
+  println (show [(1 .. 3),(3 ..= 1)])
+  println (show (arrays.fromIterable (1 .. 4)))
+  println (show (lists.fromIterable (1 ..= 4)))
+  println (show (sets.toArray (sets.fromIterable (1 ..= 3))))
+  println (show (arrays.fromIterable (4 .. 4)))
+  println (show (arrays.fromIterable (4 ..= 4)))
+  println (show (arrays.fromIterable (4 .. 1)))
+  println (show (arrays.fromIterable (4 ..= 1)))
+  println (show (arrays.fromIterable (-2 .. 2)))
+  println (show (arrays.fromIterable (9007199254740991 ..= 9007199254740991)))
+  println (show (arrays.fromIterable (9007199254740991 .. 9007199254740991)))
+  println (show (arrays.fromIterable (-9007199254740991 ..= -9007199254740990)))
+  println (show (sum (1 .. 4)))
+  println (show (total (1 ..= 4)))
+  println (show (sum (4 ..= 1)))
+  let saved:Range<Int> -> Int = sum
+  println (show (saved (1 ..= 100000)))
+  println (show (collection.reduceUntil 0 (\acc:Int -> \n:Int -> if n == 3 then collection.Done acc else collection.Next (acc + n)) (1 ..= 1000000)))
+  let source = iterate (1 ..= 1000000)
+  println (first source)
+  println (first source)
+  println (second source)
+  let cold = forEach (\n:Int -> println (show n)) (1 ..= 2)
+  println "created"
+  cold
+  cold
+  for n <- 3 .. 5 { println (show n) }
+  for n <- 5 ..= 3 { println (show n) }
+}

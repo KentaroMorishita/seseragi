@@ -36,6 +36,11 @@ impl Backend<'_> {
             selected.trait_identity.as_deref(),
         ) {
             (Some("std/prelude::Ord"), Some("std/prelude::Eq")) => 0,
+            (Some("std/prelude::Monoid"), Some("std/prelude::Semigroup"))
+                if !self.program_wasm_library =>
+            {
+                0
+            }
             (Some("std/prelude::Applicative"), Some("std/prelude::Functor"))
             | (
                 Some("std/prelude::Monad"),
@@ -170,6 +175,7 @@ impl Backend<'_> {
                     if declared.trait_identity.as_ref().is_none_or(|trait_id| {
                         !identity.starts_with(&format!("{trait_id}<"))
                             && !self.json_derived_identity(instance, trait_id)
+                            && !self.derived_identity(instance, trait_id)
                     }) || (!label_matches(declared, &selected.constraint.name)
                         && instance.trait_name != selected.constraint.name)
                         || instance.type_parameters.len() != type_arguments.len()

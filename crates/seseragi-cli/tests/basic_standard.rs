@@ -3300,3 +3300,93 @@ fn prelude_collections_callback_defect_keeps_finalizer_and_root_cleanup() {
         }],
     );
 }
+
+#[test]
+fn remaining_prelude_matches_ts_with_selected_providers_short_circuit_and_saved_stages() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/prelude-remaining.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/prelude-remaining.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn prelude_read_line_matches_ts_with_remaining_stdin_and_eof() {
+    let scratch = Scratch::new();
+    let source = root().join("examples/spec/fixtures/rust-backend/prelude-read-line.ssrg");
+    let native = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&source)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        &scratch.0,
+    ));
+    for (index, (input, expected)) in [
+        (b"".as_slice(), "created\nEOF\nEOF\nEOF\nEOF\n"),
+        (
+            "\u{feff}first\n\u{feff}last".as_bytes(),
+            "created\nline:first\nline:last\nEOF\nEOF\n",
+        ),
+        (
+            "雪🙂\r\n\nlast\r".as_bytes(),
+            "created\nline:雪🙂\nline:\nline:last\r\nEOF\n",
+        ),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let input_path = scratch.0.join(format!("input-{index}"));
+        fs::write(&input_path, input).unwrap();
+        for is_native in [false, true] {
+            let mut command = if is_native {
+                Command::new(native.join("program"))
+            } else {
+                let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+                command.arg("run").arg(&source);
+                command
+            };
+            command.stdin(std::process::Stdio::from(
+                fs::File::open(&input_path).unwrap(),
+            ));
+            let result = successful(bounded(&mut command, &scratch.0));
+            assert_eq!(
+                result.stdout,
+                expected.as_bytes(),
+                "native={is_native}, input={index}"
+            );
+            assert!(result.stderr.is_empty(), "{result:?}");
+        }
+    }
+}
+
+#[test]
+fn remaining_prelude_native_partials_keep_original_source_and_output() {
+    let scratch = Scratch::new();
+    let source = root().join("examples/spec/fixtures/rust-backend/prelude-native-partials.ssrg");
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&source)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = successful(bounded(
+        Command::new(out.join("program")).env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    ));
+    assert_eq!(
+        result.stdout,
+        include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/prelude-native-partials.stdout"
+        )
+    );
+    assert!(
+        String::from_utf8_lossy(&result.stderr).contains("managed-live=0"),
+        "{result:?}"
+    );
+}

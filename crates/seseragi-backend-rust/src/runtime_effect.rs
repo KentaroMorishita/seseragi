@@ -85,6 +85,7 @@ struct NativeContext {
     gc_every: usize,
     reclaimed: usize,
     peak_frames: usize,
+    stdin_offset: Rc<Cell<u64>>,
 }
 impl Default for NativeContext {
     fn default() -> Self {
@@ -96,6 +97,7 @@ impl Default for NativeContext {
             gc_every: 512,
             reclaimed: 0,
             peak_frames: 0,
+            stdin_offset: Rc::new(Cell::new(0)),
         }
     }
 }
@@ -352,16 +354,26 @@ fn native_operation(name: &str, args: Vec<V>) -> V {
         return V::effect(Instruction::Concurrent(operation), args);
     }
     match name {
-        "std/effect::fromEither" => V::leaf(args, |c, _| {
-            let V::Adt(value) = &c[0] else {
-                panic!("Rust ABI: expected Either")
-            };
-            match value.get().0 {
-                "std/prelude::Left" => Err(NativeExit::Failure(value.get().1.clone())),
-                "std/prelude::Right" => Ok(value.get().1.clone()),
-                _ => panic!("Rust ABI: Either owner"),
-            }
-        }),
+        "std/effect::fromEither" | "std/prelude::fromEither" | "effect.fromEither" => {
+            V::leaf(args, |c, _| {
+                let V::Adt(value) = &c[0] else {
+                    panic!("Rust ABI: expected Either")
+                };
+                match value.get().0 {
+                    "std/prelude::Left" => Err(NativeExit::Failure(value.get().1.clone())),
+                    "std/prelude::Right" => Ok(value.get().1.clone()),
+                    _ => panic!("Rust ABI: Either owner"),
+                }
+            })
+        }
+        "stdin.readLine" | "std/prelude::readLine" | "std/stdin::readLine" => {
+            V::leaf(args, |_, context| {
+                let mut offset = context.stdin_offset.get();
+                let result = native_read_line(&mut std::io::stdin().lock(), &mut offset);
+                context.stdin_offset.set(offset);
+                result
+            })
+        }
         "std/effect::succeed" | "effect.succeed" => V::leaf(args, |c, _| Ok(c[0].clone())),
         "std/effect::fail" | "effect.fail" => {
             V::leaf(args, |c, _| Err(NativeExit::Failure(c[0].clone())))
@@ -661,5 +673,41 @@ mod effect_tests {
         };
         assert_eq!(error.field("kind").render(), "console-error");
         assert!(!error.field("message").render().is_empty());
+    }
+}
+
+#[cfg(test)]
+mod prelude_effect_tests {
+    use super::*;
+
+    #[test]
+    fn prelude_from_either_is_cold_and_preserves_the_left_value() {
+        for name in ["std/prelude::fromEither", "effect.fromEither"] {
+            for left in [false, true] {
+                let payload =
+                    V::Record(Shared::new(BTreeMap::from([("value".into(), V::Int(42))])));
+                let plan = native_operation(
+                    name,
+                    vec![V::adt(
+                        if left {
+                            "std/prelude::Left"
+                        } else {
+                            "std/prelude::Right"
+                        },
+                        payload.clone(),
+                    )],
+                );
+                for _ in 0..2 {
+                    let result = NativeContext::default().root(plan.clone());
+                    let value = match result {
+                        Ok(value) if !left => value,
+                        Err(NativeExit::Failure(value)) if left => value,
+                        _ => panic!("wrong Either outcome"),
+                    };
+                    assert_eq!(value.field("value").render(), "42");
+                    assert_eq!(value.node_id(), payload.node_id());
+                }
+            }
+        }
     }
 }
