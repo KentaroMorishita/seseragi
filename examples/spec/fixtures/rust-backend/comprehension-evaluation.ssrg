@@ -1,0 +1,18 @@
+newtype Maybes = Array<Maybe<Int>>
+fn start values:Maybes -> Iterator<Maybe<Int>> = match values {
+  Maybes items -> iterate items
+}
+instance Iterable<Maybes,Maybe<Int>> {
+  fn iterate values:Maybes -> Iterator<Maybe<Int>> = start values
+}
+
+fn outer -> Array<Int> = [1,2,3]
+fn keep x:Int -> Bool = x != 2
+fn inner x:Int -> Maybes = Maybes [Just x,Nothing,Just (x + 10)]
+fn accept y:Int -> Bool = y < 10
+fn element x:Int -> y:Int -> Int = x * 10 + y
+
+pub fn probe -> Array<Int> =
+  [element x y | x <- outer (), keep x, Just y <- inner x, accept y]
+
+pub effect fn main = println (show (probe ()))

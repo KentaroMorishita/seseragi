@@ -25,6 +25,9 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
+      - "crates/seseragi-cli/tests/differential.rs"
+      - "crates/seseragi-cli/tests/support/differential/**"
+      - "crates/seseragi-cli/tests/support/generic_impl_process.rs"
       - "crates/seseragi-cli/tests/inherited_equality.rs"
       - "crates/seseragi-cli/tests/process_entry_strict.rs"
       - "crates/seseragi-cli/tests/public_aliases.rs"
@@ -98,6 +101,9 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
+      - "crates/seseragi-cli/tests/differential.rs"
+      - "crates/seseragi-cli/tests/support/differential/**"
+      - "crates/seseragi-cli/tests/support/generic_impl_process.rs"
       - "crates/seseragi-cli/tests/inherited_equality.rs"
       - "crates/seseragi-cli/tests/process_entry_strict.rs"
       - "crates/seseragi-cli/tests/public_aliases.rs"
@@ -305,6 +311,8 @@ jobs:
         run: cargo test --locked -p seseragi-backend-rust
       - name: Compare the CLI Rust target with TypeScript execution
         run: cargo test --locked -p seseragi-cli --test rust_backend
+      - name: Compare fixed-seed generated programs on Bun, Node and native
+        run: cargo test --locked -p seseragi-cli --test differential -- --nocapture
       - name: Verify canonical reexport process builds on Bun and Node
         run: cargo test --locked -p seseragi-cli --test build process_reexports_share_bindings_and_preserve_facade_initialization
       - name: Verify opt-in cycle collection and resource research

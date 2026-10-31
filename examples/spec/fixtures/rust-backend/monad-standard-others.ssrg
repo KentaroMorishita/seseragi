@@ -1,0 +1,52 @@
+import { MaybeT } from "std/transformer/maybe"
+import { EitherT } from "std/transformer/either"
+import { ReaderT } from "std/transformer/reader"
+import { StateT } from "std/transformer/state"
+import { WriterT } from "std/transformer/writer"
+import { NonEmptyList } from "std/non-empty-list"
+import { Validation, Valid, Invalid } from "std/validation"
+import * as maps from "std/map"
+import * as lists from "std/list"
+import * as effects from "std/effect"
+import * as streams from "std/stream"
+
+type Log = | Log String
+instance Semigroup<Log> {
+  fn append left: Log -> right: Log -> Log =
+    match (left, right) { (Log a, Log b) -> Log (a + b) }
+}
+instance Monoid<Log> {
+  fn empty unit: Unit -> Log = Log ""
+}
+
+fn twice<M<_>> value: M<Int> -> M<Int> where Monad<M> = do {
+  x <- value
+  pure (x * 2)
+}
+fn lifted<F<_>> value: F<Int> -> F<Int> where Functor<F> = (\x -> x + 1) <$> value
+pub fn nonEmpty -> NonEmptyList<Int> = {
+  let initial: NonEmptyList<Int> = pure 20
+  let result = twice (lifted initial)
+  result
+}
+pub fn validation -> Int = {
+  let initial: Validation<String, Int> = pure 40
+  match lifted (lifted initial) {
+    Valid value -> value
+    Invalid _ -> 0
+  }
+}
+pub fn effectValue -> Effect<{}, Never, Int> = twice (lifted (pure 20))
+pub fn streamValue -> streams.Stream<{}, Never, Int> = twice (lifted (pure 20))
+fn transformed<M<_>> value: M<Int> -> M<Int> where Monad<M> = do {
+  let functions: M<Int -> Int> = pure (\n: Int -> n + 1)
+  x <- apply functions value
+  pure (x * 2)
+}
+pub fn maybeValue -> MaybeT<Maybe, Int> = transformed (pure 20)
+pub fn eitherValue -> EitherT<String, Array, Int> = transformed (pure 20)
+pub fn readerValue -> ReaderT<String, Maybe, Int> = transformed (pure 20)
+pub fn stateValue -> StateT<Int, Maybe, Int> = transformed (pure 20)
+pub fn writerValue -> WriterT<Log, Maybe, Int> = transformed (pure 20)
+pub fn probe -> String = show (maps.get 1 (lifted (maps.singleton 1 41)))
+pub effect fn main = println (probe ())

@@ -1,0 +1,26 @@
+empty
+one
+other
+(2, 3)
+other
+empty
+(1, [])
+guarded
+fallback
+(4, [5, 6, 7])
+[]
+[雪, 🙂]
+([4], `[5], [Nothing])
+guarded
+other
+other
+record
+other
+empty
+fixed
+guarded
+(1, [2, 3], `[[4]])
+other
+`[1, 2, 3]
+`[]
+once
