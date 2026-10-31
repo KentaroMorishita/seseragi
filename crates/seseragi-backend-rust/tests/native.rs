@@ -56,6 +56,15 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn generic_struct_impl_methods_keep_impl_and_method_type_parameters() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/generic-struct-methods.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/generic-struct-methods.stdout")
+            .trim_end(),
+    );
+}
+
+#[test]
 fn scalar_adt_roundtrip_bounds_actual_system_allocations_and_releases_every_node() {
     let artifact = emit(include_str!(
         "../../../examples/spec/fixtures/rust-backend/char-roundtrip-kernel.ssrg"
@@ -2307,4 +2316,31 @@ fn main() {
     );
     assert_eq!(output.stdout, b"again\n");
     assert!(String::from_utf8_lossy(&output.stderr).contains("initializer stopped"));
+}
+
+#[test]
+fn prelude_reducible_parent_projects_the_selected_iterable() {
+    // The TS standard Reducible dictionaries currently omit iterate. Keep
+    // this native parent-projection regression separate from parity fixtures.
+    let source = r#"
+fn visit<C,A> action:(A -> Effect<{console:Console},ConsoleError,Unit>) -> values:C -> Effect<{console:Console},ConsoleError,Unit> where Reducible<C,A> = forEach action values
+pub effect fn probe = do {
+  visit (\n:Int -> println (show n)) [6,7]
+  visit (\n:Int -> println (show n)) `[8,9]
+}
+"#;
+    let artifact = emit(source);
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"6\n7\n8\n9\n");
+    assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
 }

@@ -134,6 +134,7 @@ mod runtime {
     include!("runtime_iterator.rs");
     include!("runtime_iterable.rs");
     include!("runtime_collection_control.rs");
+    include!("runtime_prelude_collections.rs");
     include!("runtime_traversable.rs");
     include!("runtime_maybe.rs");
     include!("runtime_either.rs");

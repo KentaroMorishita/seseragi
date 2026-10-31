@@ -199,3 +199,129 @@ fn native_basic_extensions_do_not_silently_expand_program_wasm_admission() {
         assert_eq!(error.origin.unwrap().source, "standard-雪🙂.ssrg");
     }
 }
+
+#[test]
+fn prelude_collections_keep_selected_dictionaries_and_saved_stages() {
+    let core = checked(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/prelude-collections.ssrg"
+    ));
+    emit_rust_module(&core, "main").unwrap();
+}
+
+#[test]
+fn prelude_collections_reject_forged_source_types_dictionaries_kinds_and_stages() {
+    for (result, expression) in [
+        ("Int", "sum [1,2]"),
+        ("String", "join \",\" [\"a\",\"b\"]"),
+        (
+            "Effect<{},Never,Unit>",
+            "forEach (\\n:Int -> effects.succeed ()) [1,2]",
+        ),
+    ] {
+        let core = checked(&format!(
+            "import * as effects from \"std/effect\"\npub fn probe -> {result} = {expression}\n"
+        ));
+        emit_rust_module(&core, "probe").unwrap();
+        let origin = core_expr_origin(&core.functions[0].body).clone();
+        for mutation in 0..12 {
+            let mut changed = core.clone();
+            let CoreExpr::Call {
+                type_ref,
+                evidence,
+                arguments,
+                deferred_evidence_parameters,
+                deferred_evidence_type_constructor_parameters,
+                evidence_argument_index,
+                ..
+            } = &mut changed.functions[0].body
+            else {
+                panic!("{expression}")
+            };
+            match mutation {
+                0 => *type_ref = CoreType::Hole,
+                1 => evidence.clear(),
+                2 => evidence[0].constraint.trait_identity = Some("fake::Reducible".into()),
+                3 => evidence[0].constraint.arguments[0] = CoreType::Hole,
+                4 => {
+                    evidence[0].constraint.arguments[1] = CoreType::Named {
+                        name: "std/prelude::String".into(),
+                        arguments: vec![CoreType::Hole],
+                    }
+                }
+                5 => evidence[0].constraint.arguments.swap(0, 1),
+                6 => {
+                    let seseragi_lowering::CoreInstanceEvidence::Standard { identity, .. } =
+                        &mut evidence[0].evidence
+                    else {
+                        panic!()
+                    };
+                    *identity = "std/set::Reducible".into();
+                }
+                7 => evidence.push(evidence[0].clone()),
+                8 => deferred_evidence_parameters.push(CoreType::Hole),
+                9 => deferred_evidence_type_constructor_parameters.push("F".into()),
+                10 => *evidence_argument_index = Some(0),
+                _ => {
+                    arguments[0] = CoreExpr::Unit {
+                        origin: core_expr_origin(&arguments[0]).clone(),
+                    }
+                }
+            }
+            let error = emit_rust_module(&changed, "probe")
+                .expect_err(&format!("{expression}: mutation {mutation}"));
+            assert_eq!(
+                error.origin.as_ref(),
+                Some(&origin),
+                "{expression}: {mutation}: {error}"
+            );
+        }
+    }
+}
+
+#[test]
+fn prelude_collections_keep_reducible_parent_and_rank_polymorphic_method_proofs() {
+    let core = checked(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/prelude-collections.ssrg"
+    ));
+    let index = core
+        .instances
+        .iter()
+        .position(|instance| instance.identity.starts_with("std/prelude::Reducible<"))
+        .unwrap();
+    for mutation in 0..6 {
+        let mut changed = core.clone();
+        let instance = &mut changed.instances[index];
+        match mutation {
+            0 => instance.supertrait_count = 0,
+            1 => instance.constraints[0].trait_identity = Some("fake::Iterable".into()),
+            2 => instance.constraints[0].arguments.swap(0, 1),
+            _ => {
+                let seseragi_lowering::CoreInstanceImplementation::UserDefined { methods } =
+                    &mut instance.implementation
+                else {
+                    panic!()
+                };
+                match mutation {
+                    3 => methods[0].type_parameters[0].arity = 1,
+                    4 => methods[0].name = "iterate".into(),
+                    _ => methods[0].parameters[0].type_ref = CoreType::Hole,
+                }
+            }
+        }
+        emit_rust_module(&changed, "main").expect_err(&format!("mutation {mutation}"));
+    }
+}
+
+#[test]
+fn prelude_collections_do_not_expand_program_wasm_admission() {
+    for (result, expression) in [("Int", "sum [1]"), ("String", "join \",\" [\"a\"]")] {
+        let core = checked(&format!("pub fn probe -> {result} = {expression}\n"));
+        let error = emit_program_wasm(&[&core], "native/standard", &["probe".into()]).unwrap_err();
+        assert!(
+            error
+                .message
+                .contains("native Prelude collection requires a target-specific ABI proof"),
+            "{error}"
+        );
+    }
+}

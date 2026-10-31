@@ -50,6 +50,7 @@ mod maybe;
 mod methods;
 mod number_parse;
 mod operators;
+mod prelude_collections;
 mod returned_calls;
 mod scalar;
 mod sequence_operations;
@@ -197,6 +198,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_iterator.rs"));
     output.push_str(include_str!("runtime_iterable.rs"));
     output.push_str(include_str!("runtime_collection_control.rs"));
+    output.push_str(include_str!("runtime_prelude_collections.rs"));
     output.push_str(include_str!("runtime_traversable.rs"));
     output.push_str(include_str!("runtime_maybe.rs"));
     output.push_str(include_str!("runtime_either.rs"));
@@ -310,6 +312,14 @@ fn emit_body(
         {
             values.push(format!(
                 "(\"map\", {}.field(\"map\"))",
+                id("\0dictionary_0")
+            ));
+        } else if backend
+            .reducible_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            values.push(format!(
+                "(\"iterate\", {}.field(\"iterate\"))",
                 id("\0dictionary_0")
             ));
         } else if backend
@@ -578,6 +588,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.big_int_trait_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.prelude_collection_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }

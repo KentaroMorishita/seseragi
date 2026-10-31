@@ -1,0 +1,48 @@
+import * as arrays from "std/array"
+import * as iterator from "std/iterator"
+
+newtype Mark = Int
+instance Zero<Mark> { fn zero _unit:Unit -> Mark = Mark 10 }
+instance Add<Mark,Mark,Mark> {
+  fn add left:Mark -> right:Mark -> Mark = match left { Mark a -> match right { Mark b -> Mark (a * 10 + b) } }
+}
+newtype Reverse<A> = Array<A>
+instance<A> Iterable<Reverse<A>,A> {
+  fn iterate values:Reverse<A> -> iterator.Iterator<A> = match values { Reverse items -> iterator.unfold (\index:Int -> match arrays.get index items { Nothing -> Nothing; Just value -> Just (value,index + 1) }) 0 }
+}
+instance<A> Reducible<Reverse<A>,A> {
+  fn reduce<B> initial:B -> step:(B -> A -> B) -> values:Reverse<A> -> B = match values { Reverse items -> arrays.reduceRight initial (\item:A -> \acc:B -> step acc item) items }
+}
+fn total<C,A> values:C -> A where Reducible<C,A>,Zero<A>,Add<A,A,A> = sum values
+fn joined<C> separator:String -> values:C -> String where Reducible<C,String> = join separator values
+fn visit<C,A> action:(A -> Effect<{console:Console},ConsoleError,Unit>) -> values:C -> Effect<{console:Console},ConsoleError,Unit> where Iterable<C,A> = forEach action values
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 3 then Nothing else Just (state,state + 1)
+
+pub effect fn main = do {
+  println (show (sum [1,2,3]))
+  let emptyInts:List<Int> = `[]
+  println (show (sum emptyInts))
+  println (show (total `[4,5]))
+  let savedSum:Array<Int> -> Int = sum
+  println (show (savedSum [7,8]))
+  println (show (sum [1.5,2.25]))
+  let Mark custom = total (Reverse [Mark 1,Mark 2,Mark 3])
+  println (show custom)
+  println (join "🙂" ["雪","","end"])
+  let emptyText:List<String> = `[]
+  println (join "," emptyText)
+  println (join ":" `["","a",""])
+  let saved:String -> Array<String> -> String = join
+  println (saved "/" ["a","b"])
+  let reversed:Reverse<String> -> String = joined "|"
+  println (reversed (Reverse ["a","b","c"]))
+  let cold = forEach (\n:Int -> println (show n)) (iterator.unfold advance 0)
+  println "created"
+  cold
+  cold
+  let each:(Int -> Effect<{console:Console},ConsoleError,Unit>) -> List<Int> -> Effect<{console:Console},ConsoleError,Unit> = forEach
+  each (\n:Int -> println (show n)) `[8,9]
+  let emptyArray:Array<Int> = []
+  visit (\n:Int -> println (show n)) emptyArray
+  for n <- [4,5] { println (show n) }
+}
