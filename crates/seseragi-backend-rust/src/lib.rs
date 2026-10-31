@@ -132,6 +132,7 @@ mod runtime {
     include!("runtime_sequence.rs");
     include!("runtime_sequence_order.rs");
     include!("runtime_iterator.rs");
+    include!("runtime_range.rs");
     include!("runtime_iterable.rs");
     include!("runtime_collection_control.rs");
     include!("runtime_prelude_collections.rs");

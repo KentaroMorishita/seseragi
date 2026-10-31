@@ -478,6 +478,7 @@ impl Backend<'_> {
             | "std/prelude::ConsoleError" => Some(vec![]),
             "std/prelude::Array"
             | "std/prelude::List"
+            | "std/prelude::Range"
             | "std/prelude::Maybe"
             | "std/ref::Ref"
             | "std/set::Set"

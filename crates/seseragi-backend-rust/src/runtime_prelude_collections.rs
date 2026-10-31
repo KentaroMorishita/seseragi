@@ -5,6 +5,7 @@ fn native_prelude_reducible_dictionary(identity: &'static str) -> V {
         let iterable = match identity {
             "std/array::Reducible" => "std/array::Iterable",
             "std/list::Reducible" => "std/list::Iterable",
+            "std/range::Reducible" => "std/range::Iterable",
             "std/map::Reducible" => "std/map::Iterable",
             "std/set::Reducible" => "std/set::Iterable",
             _ => panic!("Rust ABI: unproven Reducible provider"),

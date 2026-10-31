@@ -51,6 +51,7 @@ mod methods;
 mod number_parse;
 mod operators;
 mod prelude_collections;
+mod range;
 mod returned_calls;
 mod scalar;
 mod sequence_operations;
@@ -196,6 +197,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_sequence.rs"));
     output.push_str(include_str!("runtime_sequence_order.rs"));
     output.push_str(include_str!("runtime_iterator.rs"));
+    output.push_str(include_str!("runtime_range.rs"));
     output.push_str(include_str!("runtime_iterable.rs"));
     output.push_str(include_str!("runtime_collection_control.rs"));
     output.push_str(include_str!("runtime_prelude_collections.rs"));
@@ -1173,6 +1175,15 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if matches!(operator.as_str(), ".." | "..=") {
+                    return self.range_expression(
+                        operator,
+                        [left, right],
+                        evidence,
+                        type_ref,
+                        scope,
+                    );
+                }
                 if operator == ":" {
                     if !evidence.is_empty() || lists::list_element(type_ref).is_none() {
                         return Err(

@@ -19,6 +19,8 @@ impl Backend<'_> {
             "std/tuple::Debug" => ("Debug", None),
             "std/array::Show" => ("Show", Some("Array")),
             "std/array::Debug" => ("Debug", Some("Array")),
+            "std/range::Show" => ("Show", Some("Range")),
+            "std/range::Debug" => ("Debug", Some("Range")),
             "std/maybe::Show" => ("Show", Some("Maybe")),
             "std/maybe::Debug" => ("Debug", Some("Maybe")),
             _ => return Ok(None),
@@ -263,6 +265,7 @@ pub(super) fn canonical_type(
                         | "Ordering"
                         | "List"
                         | "Array"
+                        | "Range"
                         | "Maybe"
                         | "Either"
                         | "Ref"
@@ -291,6 +294,7 @@ pub(super) fn canonical_type(
                         | "Ordering"
                         | "List"
                         | "Array"
+                        | "Range"
                         | "Maybe"
                         | "Either"
                         | "Ref"
