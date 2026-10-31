@@ -1,0 +1,41 @@
+import * as signals from "std/signal"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+
+fn record log:refs.Ref<Array<Int>> -> value:Int -> Task<Unit> =
+  refs.update (arrays.append [value]) log
+fn mapped<F<_>> value:F<Int> -> F<Int> where Functor<F> = map (\n:Int -> n * 2) value
+fn point<F<_>> value:Int -> F<Int> where Applicative<F> = pure value
+
+pub effect fn main = do {
+  left <- signals.make 1
+  right <- signals.make 10
+  let empty:Array<Int> = []
+  log <- refs.make empty
+  let values = signals.map (\n:Int -> n) left
+  let doubled = mapped values
+  let total = signals.combine (+) doubled right
+  subscription <- signals.subscribe (record log) total
+  let planned:Int -> signals.MutableSignal<Int> -> signals.SignalChange = signals.planSet
+  signals.transaction [planned 2 left, signals.planUpdate (\n:Int -> n + 1) left, planned 20 right]
+  signals.transaction []
+  signals.set 20 right
+  signals.unsubscribe subscription
+  signals.unsubscribe subscription
+  left := 99
+  observed <- refs.get log
+  println (show observed)
+  let fixed:signals.Signal<Int> = point 7
+  let applied = signals.constant (\n:Int -> n + 3) <*> fixed
+  value <- *applied
+  println (show value)
+  let savedMake:Int -> Task<signals.MutableSignal<Int>> = signals.make
+  let cold = savedMake 4
+  first <- cold
+  second <- cold
+  let savedUpdate = signals.update (\n:Int -> n * 2)
+  savedUpdate first
+  a <- signals.read first
+  b <- *second
+  println (show (a,b))
+}

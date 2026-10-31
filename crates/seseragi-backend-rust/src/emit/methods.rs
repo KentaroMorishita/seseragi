@@ -33,6 +33,7 @@ impl Backend<'_> {
         if !self.program_wasm_library && self.validate_standard_error_evidence(selected, scope)? {
             return self.validate_derived_method(dispatch, selected, type_ref, scope);
         }
+        self.validate_signal_method(dispatch, selected, type_ref, scope)?;
         self.validate_decimal_show_value(dispatch, selected, type_ref, scope)?;
         self.validate_decimal_constant_value(dispatch, selected, type_ref, scope)?;
         self.validate_big_int_display_value(dispatch, selected, type_ref, scope)?;
@@ -439,6 +440,11 @@ impl Backend<'_> {
             return Some(parameters.iter().map(|p| p.arity).collect());
         }
         if !self.program_wasm_library {
+            match name.as_str() {
+                "std/signal::Signal" | "std/signal::MutableSignal" => return Some(vec![0]),
+                "std/signal::SignalChange" | "std/signal::Subscription" => return Some(vec![]),
+                _ => {}
+            }
             if let Some(slots) = super::standard_errors::constructor_slots(&name) {
                 return Some(slots);
             }
@@ -507,7 +513,7 @@ impl Backend<'_> {
         }
     }
 
-    fn validate_hkt_parameter_method_value(
+    pub(super) fn validate_hkt_parameter_method_value(
         &self,
         dispatch: &CoreTraitDispatch,
         selected: &CoreCallEvidence,

@@ -1,0 +1,27 @@
+import * as effects from "std/effect"
+import * as signals from "std/signal"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+
+effect fn observe source:signals.MutableSignal<Int> -> log:refs.Ref<Array<Int>> -> value:Int -> Unit = do {
+  refs.update (arrays.append [value]) log
+  if value > 0 && value < 3 then
+    signals.transaction [signals.planSet (value + 1) source]
+  else effects.succeed ()
+}
+
+pub effect fn main = do {
+  source <- signals.make 0
+  let empty:Array<Int> = []
+  log <- refs.make empty
+  other <- refs.make empty
+  first <- signals.subscribe (observe source log) source
+  second <- signals.subscribe (\n:Int -> refs.update (arrays.append [n]) other) source
+  source := 1
+  signals.unsubscribe first
+  signals.unsubscribe second
+  values <- refs.get log
+  remaining <- refs.get other
+  println (show values)
+  println (show remaining)
+}
