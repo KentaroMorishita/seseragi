@@ -498,7 +498,7 @@ fn standard_web_program_text_line_filter_matches_native_and_strict_bridge() {
         for engine in ["bun", "node"] {
             let result = successful(bounded(
                 Command::new(runtime(engine, &scratch.0))
-                    .arg(root().join("scripts/program-wasm-text-line-filter-probe.mjs"))
+                    .arg(root().join("scripts/probes/program-wasm-text-line-filter-probe.mjs"))
                     .arg(&directory),
                 &scratch.0,
             ));
