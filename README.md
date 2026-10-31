@@ -165,13 +165,14 @@ type OrderError =
   | TooMany Int
 
 effect fn reserve item: String -> quantity: Int -> String fails OrderError =
-  match item {
-    "tea" -> fail $ OutOfStock item
-    _ -> if quantity > 10 then fail $ TooMany quantity else succeed `${quantity} x ${item}`
+  match (item, quantity) {
+    ("tea", _) -> fail $ OutOfStock item
+    (_, n) when n > 10 -> fail $ TooMany n
+    _ -> succeed `${quantity} x ${item}`
   }
 ```
 
-[▶ Open in Playground](https://seseragi.vercel.app/?source=import%20%2A%20as%20effects%20from%20%22std%2Feffect%22%0A%0Atype%20OrderError%20%3D%0A%20%20%7C%20OutOfStock%20String%0A%20%20%7C%20TooMany%20Int%0A%0Aeffect%20fn%20reserve%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20OrderError%20%3D%0A%20%20match%20item%20%7B%0A%20%20%20%20%22tea%22%20-%3E%20fail%20%24%20OutOfStock%20item%0A%20%20%20%20_%20-%3E%20if%20quantity%20%3E%2010%20then%20fail%20%24%20TooMany%20quantity%20else%20succeed%20%60%24%7Bquantity%7D%20x%20%24%7Bitem%7D%60%0A%20%20%7D%0A%0Afn%20explain%20error%3A%20OrderError%20-%3E%20String%20%3D%20match%20error%20%7B%0A%20%20OutOfStock%20item%20-%3E%20%60%24%7Bitem%7D%20is%20out%20of%20stock%60%0A%20%20TooMany%20quantity%20-%3E%20%60cannot%20reserve%20%24%7Bquantity%7D%20at%20once%60%0A%7D%0A%0Aeffect%20fn%20order%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20Never%20%3D%0A%20%20reserve%20item%20quantity%0A%20%20%20%20%7C%3E%20effects.recover%20%28%5Cerror%20-%3E%20succeed%20%24%20explain%20error%29%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20coffee%20%3C-%20order%20%22coffee%22%202%0A%20%20println%20coffee%0A%20%20tea%20%3C-%20order%20%22tea%22%201%0A%20%20println%20tea%0A%7D%0A)
+[▶ Open in Playground](https://seseragi.vercel.app/?source=import%20%2A%20as%20effects%20from%20%22std%2Feffect%22%0A%0Atype%20OrderError%20%3D%0A%20%20%7C%20OutOfStock%20String%0A%20%20%7C%20TooMany%20Int%0A%0Aeffect%20fn%20reserve%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20OrderError%20%3D%0A%20%20match%20%28item%2C%20quantity%29%20%7B%0A%20%20%20%20%28%22tea%22%2C%20_%29%20-%3E%20fail%20%24%20OutOfStock%20item%0A%20%20%20%20%28_%2C%20n%29%20when%20n%20%3E%2010%20-%3E%20fail%20%24%20TooMany%20n%0A%20%20%20%20_%20-%3E%20succeed%20%60%24%7Bquantity%7D%20x%20%24%7Bitem%7D%60%0A%20%20%7D%0A%0Afn%20explain%20error%3A%20OrderError%20-%3E%20String%20%3D%20match%20error%20%7B%0A%20%20OutOfStock%20item%20-%3E%20%60%24%7Bitem%7D%20is%20out%20of%20stock%60%0A%20%20TooMany%20quantity%20-%3E%20%60cannot%20reserve%20%24%7Bquantity%7D%20at%20once%60%0A%7D%0A%0Aeffect%20fn%20order%20item%3A%20String%20-%3E%20quantity%3A%20Int%20-%3E%20String%20fails%20Never%20%3D%0A%20%20reserve%20item%20quantity%0A%20%20%7C%3E%20effects.recover%20%28%5Cerror%20-%3E%20succeed%20%24%20explain%20error%29%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20coffee%20%3C-%20order%20%22coffee%22%202%0A%20%20println%20coffee%0A%20%20tea%20%3C-%20order%20%22tea%22%201%0A%20%20println%20tea%0A%20%20many%20%3C-%20order%20%22coffee%22%2020%0A%20%20println%20many%0A%7D%0A)
 
 ## More features
 
