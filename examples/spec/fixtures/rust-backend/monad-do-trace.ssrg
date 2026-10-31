@@ -1,0 +1,85 @@
+type Box<A> = | Box A
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> =
+    match value { Box item -> Box (f item) }
+}
+instance Applicative<Box> {
+  fn pure<A> value: A -> Box<A> = Box value
+
+  fn apply<A, B> functions: Box<A -> B> -> value: Box<A> -> Box<B> =
+    match (functions, value) { (Box f, Box item) -> Box (f item) }
+}
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> (Box<A> -> Box<B>) = {
+    let entered = mark 700
+    \value -> match value { Box item -> f item }
+  }
+}
+type Audit<A> = | Audit (String, A)
+instance Functor<Audit> {
+  fn map<A, B> f: (A -> B) -> value: Audit<A> -> Audit<B> =
+    match value { Audit (events, item) -> Audit (events, f item) }
+}
+instance Applicative<Audit> {
+  fn pure<A> value: A -> Audit<A> = Audit ("", value)
+
+  fn apply<A, B> functions: Audit<A -> B> -> value: Audit<A> -> Audit<B> =
+    match (functions, value) {
+      (Audit (first, f), Audit (second, item)) -> Audit (first + second, f item)
+    }
+}
+instance Monad<Audit> {
+  fn flatMap<A, B> f: (A -> Audit<B>) -> value: Audit<A> -> Audit<B> = match value {
+    Audit (first, item) -> match f item {
+      Audit (second, result) -> { let observed = mark 800;
+        Audit (first + second, result) }
+    }
+  }
+}
+fn auditDo -> Audit<Int> = do {
+  x <- Audit ("a", mark 7)
+  y <- Audit ("b", mark 8)
+  pure (mark (x + y))
+}
+fn auditResult -> String =
+  match auditDo () { Audit (events, value) -> events + show value }
+fn mark value: Int -> Int = value
+fn emptyMaybe -> Maybe<Int> = Nothing
+fn leftEither -> Either<String, Int> = Left "stop"
+fn nextEither value: Int -> Either<String, Int> = Right (mark value)
+fn maybeStop -> Maybe<Int> = do {
+  first <- Just (mark 1)
+  second <- emptyMaybe ()
+  let later = mark 99
+  pure (first + second + later)
+}
+fn eitherStop -> Either<String, Int> = do {
+  first <- nextEither 2
+  second <- leftEither ()
+  third <- nextEither 98
+  pure (first + second + third)
+}
+fn arrayOrder -> Array<Int> = do {
+  x <- [1, 2]
+  let a = mark x
+  y <- [mark (x * 10), mark (x * 10 + 1)]
+  let b = mark y
+  pure (mark (a + b))
+}
+fn userDo -> Box<Int> = do {
+  x <- Box (mark 3)
+  let y = mark (x + 1)
+  z <- Box (mark (y + 1))
+  pure (mark (z + 1))
+}
+fn userOrder -> Int = match userDo () { Box value -> value }
+fn renderEither value: Either<String, Int> -> String =
+  match value { Left error -> error; Right item -> show item }
+pub fn probe -> String = show [
+  show (maybeStop ()),
+  renderEither (eitherStop ()),
+  show (arrayOrder ()),
+  show (userOrder ()),
+  auditResult ()
+]
+pub effect fn main = println (probe ())

@@ -493,16 +493,23 @@ impl Backend<'_> {
             | "std/prelude::List"
             | "std/prelude::Range"
             | "std/prelude::Maybe"
+            | "std/non-empty-list::NonEmptyList"
             | "std/ref::Ref"
             | "std/set::Set"
             | "std/prelude::Iterator"
             | "std/collection::ReduceStep" => Some(vec![0]),
             "std/prelude::Either"
+            | "std/validation::Validation"
             | "std/map::Map"
             | "std/effect::Fiber"
             | "std/effect::FiberExit"
             | "std/deferred::Deferred" => Some(vec![0, 0]),
-            "std/prelude::Effect" => Some(vec![0, 0, 0]),
+            "std/prelude::Effect" | "std/stream::Stream" => Some(vec![0, 0, 0]),
+            "std/transformer/maybe::MaybeT" => Some(vec![1, 0]),
+            "std/transformer/either::EitherT"
+            | "std/transformer/reader::ReaderT"
+            | "std/transformer/state::StateT"
+            | "std/transformer/writer::WriterT" => Some(vec![0, 1, 0]),
             _ => number_parse::constructor_slots(&name),
         }
     }
