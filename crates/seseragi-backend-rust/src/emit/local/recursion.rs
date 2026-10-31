@@ -59,6 +59,7 @@ impl Backend<'_> {
             initializer_in_outer_scope,
             rec_group,
             name,
+            parameters,
             body,
             origin,
             ..
@@ -76,8 +77,13 @@ impl Backend<'_> {
             }
             return Ok(None);
         }
+        // A parameter with the function's own name shadows it, so a call
+        // through that parameter is not recursion.
         if rec_group.is_none()
-            && core_free_variables(body).is_some_and(|free| !free.names.contains(name))
+            && core_free_variables(body).is_some_and(|free| {
+                !free.names.contains(name)
+                    || parameters.iter().any(|parameter| &parameter.id == name)
+            })
         {
             return Ok(None);
         }
