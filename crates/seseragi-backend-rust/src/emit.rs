@@ -23,6 +23,7 @@ mod clock;
 mod collection_control;
 mod collections;
 mod comparisons;
+mod comprehension;
 mod concurrency;
 mod console;
 mod decimal;
@@ -1365,6 +1366,18 @@ impl Backend<'_> {
             CoreExpr::Sequence {
                 statements, result, ..
             } => self.sequence(statements, result, scope)?,
+            CoreExpr::ArrayComprehension {
+                element,
+                clauses,
+                type_ref,
+                ..
+            } => self.comprehension(element, clauses, type_ref, false, scope)?,
+            CoreExpr::ListComprehension {
+                element,
+                clauses,
+                type_ref,
+                ..
+            } => self.comprehension(element, clauses, type_ref, true, scope)?,
             _ => {
                 return Err(format!(
                     "Rust backend: unsupported {} expression",
@@ -1373,8 +1386,6 @@ impl Backend<'_> {
                         CoreExpr::Char { .. } => "Char",
                         CoreExpr::List { .. } => "List",
                         CoreExpr::Template { .. } => "template",
-                        CoreExpr::ArrayComprehension { .. }
-                        | CoreExpr::ListComprehension { .. } => "comprehension",
                         CoreExpr::Unary { .. } => "unary operator",
                         CoreExpr::EffectOperation { .. } | CoreExpr::EffectInvoke { .. } =>
                             "Effect",
