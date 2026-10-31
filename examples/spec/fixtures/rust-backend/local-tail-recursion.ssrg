@@ -1,0 +1,25 @@
+type Box = | Box Int
+trait Read<A> { fn read value: A -> Int }
+instance Read<Int> { fn read value: Int -> Int = value }
+instance Read<Box> { fn read value: Box -> Int = match value { Box n -> n + 7 } }
+
+fn captured seed: Int -> (Int -> (Unit -> Int) -> Int) = {
+  fn loop remaining: Int -> snapshot: (Unit -> Int) -> Int = match remaining {
+    0 -> snapshot ()
+    n -> {
+      let current = \_: Unit -> seed + n
+      let seed = 999
+      loop (n - 1) current
+    }
+  }
+  loop
+}
+
+pub fn probe -> (Int, Int, Int) = {
+  fn sum n: Int -> total: Int -> Int =
+    if n == 0 then total else sum (n - 1) (total + n)
+  fn alternate<A, B> n: Int -> left: A -> right: B -> Int where Read<A>, Read<B> =
+    if n == 0 then read left else alternate (n - 1) right left
+  let saved = captured 41
+  (sum 100000 0, saved 100000 (\_: Unit -> -1), alternate 100001 35 (Box 35))
+}

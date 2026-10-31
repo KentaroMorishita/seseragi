@@ -1,0 +1,48 @@
+fn factorial value: Int -> Int = {
+  fn loop n: Int -> Int = if n == 0 then 1 else n * loop (n - 1)
+  loop value
+}
+
+fn parity seed: Int -> (Int -> Int) = {
+  rec {
+    fn even seed: Int -> Int = if seed == 0 then odd 0 else odd (seed - 1)
+    fn odd n: Int -> Int = if n == 0 then seed else even (n - 1)
+  }
+  even
+}
+
+fn captured base: Int -> (Int -> Int -> Int) = {
+  let bonus = 2
+  fn loop n: Int -> total: Int -> Int =
+    if n == 0 then base + bonus + total else 1 + loop (n - 1) total
+  loop
+}
+
+fn shadow seed: Int -> Int = {
+  fn loop n: Int -> Int = {
+    let seed = 100
+    if n == 0 then seed else helper (loop (n - 1))
+  }
+  loop 1
+}
+fn helper n: Int -> Int = n + 1
+
+fn delayed seed: Int -> Int = {
+  fn loop n: Int -> (Unit -> Int) =
+    \_: Unit -> if n == 0 then seed else loop (n - 1) ()
+  loop 5 ()
+}
+
+fn nested seed: Int -> Int = {
+  fn outer n: Int -> Int = if n == 0 then seed else {
+    fn inner k: Int -> Int = if k == 0 then outer (n - 1) else inner (k - 1)
+    inner 2
+  }
+  outer 3
+}
+
+pub fn probe -> (Int, Int, Int, Int, Int, Int, Int) = {
+  let escaped = parity 42
+  let partial = captured 30 3
+  (factorial 6, escaped 10, partial 7, (captured 10) 2 3, shadow 5, delayed 42, nested 42)
+}

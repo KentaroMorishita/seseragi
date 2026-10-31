@@ -521,6 +521,16 @@ impl Backend<'_> {
         body: &CoreExpr,
         scope: &Scope,
     ) -> Result<String> {
+        self.function_inner(parameters, body, scope, None)
+    }
+
+    fn function_inner(
+        &mut self,
+        parameters: &[CoreParameter],
+        body: &CoreExpr,
+        scope: &Scope,
+        local: Option<&LocalCallable>,
+    ) -> Result<String> {
         if let Some((parameter, rest)) = parameters.split_first() {
             let mut inner = scope.clone();
             inner.insert(parameter.id.clone());
@@ -532,10 +542,12 @@ impl Backend<'_> {
                 for index in free.evidence_parameters {
                     free.names.insert(format!("\0dictionary_{index}"));
                 }
-                captures.retain(|name| free.names.contains(name));
+                captures.retain_free(&free.names);
             }
-            let body = self.function(rest, body, &inner)?;
+            let body = self.function_inner(rest, body, &inner, local)?;
             Ok(Self::closure(&parameter.id, &body, &captures))
+        } else if let Some(callable) = local {
+            self.local_tail_body(callable, body, scope)
         } else {
             self.expr(body, scope)
         }
@@ -761,7 +773,11 @@ impl Backend<'_> {
                 self.validate_local_evidence(callable, evidence, scope)?;
                 let values = self.evidence(evidence, scope)?;
                 let value = self.fresh();
-                Ok(format!("{{ let mut {value} = {}.clone(); for dictionary in {values} {{ {value} = {value}.apply(dictionary); }} {value} }}", id(name)))
+                let function = scope.recursive.get(name).map_or_else(
+                    || format!("{}.clone()", id(name)),
+                    |recursive| recursive.reference(),
+                );
+                Ok(format!("{{ let mut {value} = {function}; for dictionary in {values} {{ {value} = {value}.apply(dictionary); }} {value} }}"))
             } else if evidence.is_empty() {
                 Ok(format!("{}.clone()", id(name)))
             } else {
@@ -1466,6 +1482,14 @@ impl Backend<'_> {
         let Some((statement, rest)) = statements.split_first() else {
             return self.expr(result, scope);
         };
+        if let Some((declarations, inner, count)) =
+            self.recursive_local_prefix(statements, scope)?
+        {
+            return Ok(format!(
+                "{{ {declarations} {} }}",
+                self.sequence(&statements[count..], result, &inner)?
+            ));
+        }
         match statement {
             CoreStatement::PureLet { name, value, .. } => {
                 let value = self.expr(value, scope)?;
@@ -1546,7 +1570,7 @@ impl Backend<'_> {
             for index in free.evidence_parameters {
                 free.names.insert(format!("\0dictionary_{index}"));
             }
-            captures.retain(|name| free.names.contains(name));
+            captures.retain_free(&free.names);
         }
         let next = Self::closure(name, &body, &captures);
         let temporary = self.fresh();

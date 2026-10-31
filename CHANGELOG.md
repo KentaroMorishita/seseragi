@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.130] - 2026-10-31
+
+### Added
+
+- Build recursive and mutually recursive local functions natively, including ones that capture surrounding variables; self tail calls run as loops.
+
 ## [0.61.129] - 2026-10-31
 
 ### Added
