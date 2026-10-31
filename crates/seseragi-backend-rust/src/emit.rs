@@ -1555,7 +1555,9 @@ impl Backend<'_> {
                 CoreDecisionProjection::ListRest { start } => {
                     format!("({value}).list_rest({start})")
                 }
-                _ => return Err("Rust backend: unsupported decision projection".into()),
+                CoreDecisionProjection::ArrayRest { start } => {
+                    format!("({value}).array_rest({start})")
+                }
             };
         }
         Ok(value)
@@ -1630,6 +1632,15 @@ impl Backend<'_> {
                 ..
             } => format!(
                 "({}).list_length_matches({length}, {minimum})",
+                project(path)?
+            ),
+            CoreDecisionTest::ArrayLength {
+                path,
+                length,
+                minimum,
+                ..
+            } => format!(
+                "({}).array_length_matches({length}, {minimum})",
                 project(path)?
             ),
             _ => return Err("Rust backend: unsupported decision test".into()),

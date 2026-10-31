@@ -1,0 +1,16 @@
+import * as arrays from "std/array"
+import * as iterator from "std/iterator"
+
+fn advance value: Int -> Maybe<(Int, Int)> =
+  if value >= 100000 then Nothing else Just (value, value + 1)
+
+pub effect fn main = do {
+  let values = arrays.fromIterable (iterator.unfold advance 0)
+  println (match values {
+    [] -> "empty"
+    [0, 1, ...tail] when arrays.length tail == 0 -> "guarded"
+    [0, 1, ...tail] -> show (arrays.length tail, arrays.head tail)
+    _ -> "other"
+  })
+  println (show (arrays.length values))
+}
