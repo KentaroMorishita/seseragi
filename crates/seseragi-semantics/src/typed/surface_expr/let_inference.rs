@@ -3,7 +3,9 @@
 //! selects required dictionaries before a binding acquires a scheme.
 use super::PureExpressionContext;
 use crate::typed::functions::{substitute_type_parameters, TopLevelPureFunction};
-use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
+use crate::typed::semantic_types::{
+    semantic_values_have_same_identity, SemanticTypeKey, SemanticValueType,
+};
 use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 use crate::{SymbolId, TypedConstraint, TypedRecordField, TypedType};
 use seseragi_syntax::{
@@ -357,7 +359,10 @@ pub(super) fn infer_call_arguments(
         // ordinary checker commits to its left-to-right expectations.
         matches!(
             argument,
-            SurfaceExpr::Lambda { .. } | SurfaceExpr::Array { .. } | SurfaceExpr::List { .. }
+            SurfaceExpr::Lambda { .. }
+                | SurfaceExpr::Array { .. }
+                | SurfaceExpr::List { .. }
+                | SurfaceExpr::Record { .. }
         ) || context
             .target(argument.span())
             .or_else(|| context.operator_target(argument.span()))
@@ -425,6 +430,35 @@ pub(super) fn infer_branch_result(
         .then(|| context.semantic_value_from_typed_type(&value))
 }
 
+/// Keep generic element instantiations fresh until every sibling contributes
+/// its equations. The ordinary checker still validates each inferred element.
+pub(super) fn infer_collection_element(
+    elements: &[SurfaceExpr],
+    expected: Option<&SemanticValueType>,
+    context: &PureExpressionContext<'_>,
+) -> Option<SemanticValueType> {
+    let environment = inference_environment(context);
+    let mut inference = Inference {
+        prefix: elements.first()?.span().start,
+        next: 0,
+        substitutions: BTreeMap::new(),
+        obligations: Vec::new(),
+        context,
+    };
+    let element = inference.fresh();
+    for expression in elements {
+        let actual = inference.expression(expression, &environment)?;
+        inference.unify(&element, &actual)?;
+    }
+    if let Some(expected) = expected.filter(|value| !typed_type_contains_hole(&value.type_ref)) {
+        inference.unify(&element, &expected.type_ref)?;
+    }
+    inference.solve_outputs()?;
+    let value = inference.resolve(&element);
+    (variables(&value).is_empty() && !typed_type_contains_hole(&value))
+        .then(|| context.semantic_value_from_typed_type(&value))
+}
+
 fn inference_environment(context: &PureExpressionContext<'_>) -> BTreeMap<SymbolId, Scheme> {
     context
         .parameters
@@ -466,6 +500,7 @@ fn inference_environment(context: &PureExpressionContext<'_>) -> BTreeMap<Symbol
         .collect()
 }
 
+#[derive(Clone)]
 struct Inference<'a, 'b> {
     prefix: usize,
     next: usize,
@@ -474,10 +509,124 @@ struct Inference<'a, 'b> {
     context: &'a PureExpressionContext<'b>,
 }
 impl Inference<'_, '_> {
+    fn instance_heads(
+        &self,
+        constraint: &TypedConstraint,
+        identity: Option<&str>,
+    ) -> Vec<crate::standard::StandardInstanceHead> {
+        let mut heads = crate::standard::standard_module_instance_heads(identity, &constraint.name)
+            .into_iter()
+            .map(|(head, _)| head)
+            .collect::<Vec<_>>();
+        let Some(identity) = identity else {
+            return heads;
+        };
+        let resolution = self.context.resolution;
+        for declaration in &resolution.resolved().declarations {
+            let seseragi_syntax::SurfaceDecl::Instance {
+                type_parameters,
+                trait_name_span,
+                arguments,
+                ..
+            } = declaration
+            else {
+                continue;
+            };
+            let canonical = resolution
+                .target(*trait_name_span, crate::SymbolNamespace::Trait)
+                .and_then(|target| resolution.symbol(target))
+                .and_then(|symbol| symbol.canonical.as_deref());
+            if canonical == Some(identity) {
+                heads.push(crate::standard::StandardInstanceHead {
+                    parameters: type_parameters.clone(),
+                    arguments: arguments
+                        .iter()
+                        .map(|argument| resolution.semantic_value_from_type_ref(argument).type_ref)
+                        .collect(),
+                });
+            }
+        }
+        for instance in &resolution.resolved().dependency_instances {
+            if instance.trait_identity != identity {
+                continue;
+            }
+            let seseragi_syntax::InterfaceType::Apply { arguments, .. } = &instance.head else {
+                continue;
+            };
+            let arguments = arguments
+                .iter()
+                .map(|argument| {
+                    resolution
+                        .semantic_value_from_imported_type(
+                            argument.clone(),
+                            &instance.provider_module,
+                            &instance.type_parameters,
+                        )
+                        .map(|value| value.type_ref)
+                })
+                .collect::<Option<Vec<_>>>();
+            if let Some(arguments) = arguments {
+                heads.push(crate::standard::StandardInstanceHead {
+                    parameters: instance.type_parameters.clone(),
+                    arguments,
+                });
+            }
+        }
+        heads
+    }
+
     fn solve_outputs(&mut self) -> Option<()> {
         for _ in 0..self.obligations.len() {
             let before = self.substitutions.clone();
-            for (constraint, _) in self.obligations.clone() {
+            for (constraint, identity) in self.obligations.clone() {
+                let variables = constraint
+                    .arguments
+                    .iter()
+                    .flat_map(|argument| variables(&self.resolve(argument)))
+                    .collect::<BTreeSet<_>>();
+                let mut candidates = Vec::new();
+                // A known input shape can relate unresolved outputs. Do not
+                // choose an input type merely because one instance is visible.
+                let heads = if constraint.arguments.len() > 1
+                    && !variables.is_empty()
+                    && variable(&self.resolve(&constraint.arguments[0])).is_none()
+                {
+                    self.instance_heads(&constraint, identity.as_deref())
+                } else {
+                    Vec::new()
+                };
+                for head in heads {
+                    if head.parameters.iter().any(TypeParameter::is_constructor) {
+                        continue;
+                    }
+                    let mut candidate = self.clone();
+                    let substitutions = head
+                        .parameters
+                        .iter()
+                        .map(|parameter| (parameter.name.clone(), candidate.fresh()))
+                        .collect();
+                    let arguments = head
+                        .arguments
+                        .iter()
+                        .map(|argument| substitute_type_parameters(argument, &substitutions))
+                        .collect::<Vec<_>>();
+                    if candidate
+                        .unify_many(&arguments, &constraint.arguments)
+                        .is_some()
+                    {
+                        candidates.push(candidate);
+                    }
+                }
+                if let [candidate] = candidates.as_slice() {
+                    // These equations supply expectations only. The ordinary
+                    // checker still proves the selected instance's constraints.
+                    if variables
+                        .iter()
+                        .any(|name| self.resolve(&named(name)) != candidate.resolve(&named(name)))
+                    {
+                        *self = candidate.clone();
+                    }
+                }
                 if let [left, right, output] = constraint.arguments.as_slice() {
                     if let Ok((actual, _)) = self.context.select_binary_operator_evidence(
                         &constraint.name,
@@ -612,14 +761,28 @@ impl Inference<'_, '_> {
                     fields: rf,
                     closed: rc,
                 },
-            ) if lc == rc && lf.len() == rf.len() => {
+            ) if lc == rc => {
                 for l in lf {
-                    let r = rf
-                        .iter()
-                        .find(|r| r.name == l.name && r.optional == l.optional)?;
-                    self.unify(&l.type_ref, &r.type_ref)?;
+                    if let Some(r) = rf.iter().find(|r| r.name == l.name) {
+                        self.unify(&l.type_ref, &r.type_ref)?;
+                    } else if !l.optional {
+                        return None;
+                    }
                 }
-                Some(())
+                rf.iter()
+                    .all(|r| r.optional || lf.iter().any(|l| l.name == r.name))
+                    .then_some(())
+            }
+            _ if variables(&left).is_empty()
+                && variables(&right).is_empty()
+                && !typed_type_contains_hole(&left)
+                && !typed_type_contains_hole(&right) =>
+            {
+                semantic_values_have_same_identity(
+                    &self.context.semantic_value_from_typed_type(&left),
+                    &self.context.semantic_value_from_typed_type(&right),
+                )
+                .then_some(())
             }
             _ => None,
         }
