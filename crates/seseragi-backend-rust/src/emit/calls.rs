@@ -106,6 +106,10 @@ impl Backend<'_> {
         if let Some(value) = self.iterable_build_call(expr, scope)? {
             return Ok(value);
         }
+        self.validate_signal_method_call(expr, scope)?;
+        if let Some(value) = self.signal_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.iterator_operation_call(expr, scope)? {
             return Ok(value);
         }

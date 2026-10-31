@@ -1,0 +1,34 @@
+import * as signals from "std/signal"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as deferred from "std/deferred"
+
+effect fn observe total:refs.Ref<Int> -> value:Int -> Unit = refs.update (\n:Int -> n + value) total
+
+effect fn scoped source:signals.MutableSignal<Int> -> total:refs.Ref<Int> -> fail:Bool -> Unit fails String = do {
+  effects.acquireRelease (signals.subscribe (observe total) source) signals.unsubscribe
+  source := 1
+  if fail then effects.fail "failed" else effects.succeed ()
+}
+
+pub effect fn main = do {
+  source <- signals.make 0
+  total <- refs.make 0
+  effects.recover (\_error:String -> effects.succeed ()) (effects.scoped (scoped source total False))
+  source := 2
+  effects.recover (\_error:String -> effects.succeed ()) (effects.scoped (scoped source total True))
+  source := 3
+  ready <- deferred.make<Never, Unit> ()
+  gate <- deferred.make<Never, Unit> ()
+  worker <- effects.fork $ do {
+    effects.acquireRelease (signals.subscribe (observe total) source) signals.unsubscribe
+    deferred.succeed () ready
+    deferred.await gate
+  }
+  deferred.await ready
+  effects.interrupt worker
+  effects.await worker
+  source := 4
+  result <- refs.get total
+  println (show result)
+}

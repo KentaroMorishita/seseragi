@@ -1,0 +1,10 @@
+fn reject n:Int -> Bool = n < 0
+fn rejectedArray -> Array<Int> = [n | n <- 1..=100000, reject n]
+fn rejectedList -> List<Int> = `[n | n <- 1..=100000, reject n]
+
+pub effect fn main = do {
+  println (show (sum [n | n <- 1..=100000]))
+  println (show (sum `[n | n <- 1..=100000]))
+  println (show (rejectedArray ()))
+  println (show (rejectedList ()))
+}

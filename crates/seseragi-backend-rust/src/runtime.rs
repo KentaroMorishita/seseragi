@@ -245,6 +245,22 @@ impl V {
             _ => panic!("Rust ABI: expected tuple or array"),
         }
     }
+    fn array_length_matches(&self, length: usize, minimum: bool) -> bool {
+        let Self::Array(values) = self else {
+            panic!("Rust ABI: expected Array")
+        };
+        if minimum {
+            values.get().len() >= length
+        } else {
+            values.get().len() == length
+        }
+    }
+    fn array_rest(&self, start: usize) -> V {
+        let Self::Array(values) = self else {
+            panic!("Rust ABI: expected Array")
+        };
+        Self::Array(Shared::new(values.get()[start..].to_vec()))
+    }
     fn payload(&self) -> V {
         match self {
             Self::Adt(v) => v.get().1.clone(),
@@ -478,6 +494,28 @@ fn native_operator_dictionary(identity: &'static str) -> V {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn array_pattern_length_is_constant_time_and_rest_copies_each_remaining_element_once() {
+        let count = 100_000;
+        let values = V::Array(Shared::new((0..count).map(|_| V::text("雪")).collect()));
+        let shares = SHARES.with(Cell::get);
+        let allocations = ALLOCATIONS.with(Cell::get);
+        assert!(values.array_length_matches(count, false));
+        assert!(values.array_length_matches(count - 1, true));
+        assert!(!values.array_length_matches(count - 1, false));
+        assert!(!values.array_length_matches(count + 1, true));
+        assert_eq!(SHARES.with(Cell::get), shares);
+        assert_eq!(ALLOCATIONS.with(Cell::get), allocations);
+        let rest = values.array_rest(2);
+        assert!(rest.array_length_matches(count - 2, false));
+        assert_eq!(SHARES.with(Cell::get) - shares, count - 2);
+        assert_eq!(ALLOCATIONS.with(Cell::get) - allocations, 1);
+        assert!(values.array_rest(count).array_length_matches(0, false));
+        assert!(values.array_rest(0).array_length_matches(count, false));
+        assert!(values.array_length_matches(count, false));
+        assert_eq!(rest.index(0).render(), "雪");
+    }
 
     fn released_while_the_drop_queue_is_busy<T: TraceValue + 'static>(value: Shared<T>) -> bool {
         assert!(DROP_QUEUE.with(|queue| queue.borrow().is_empty()));

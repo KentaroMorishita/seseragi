@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.133] - 2026-11-01
+
+### Added
+
+- Build `std/signal` natively: `make`, `update`, `:=`, `*`, `map`, `combine`, `distinct`, `switchMap`, transactions and subscriptions, with the same notification order as the TS target and subscriptions released when their scope closes.
+- Build Array and List comprehensions natively over any Iterable source, with guards, refutable patterns that skip non-matching elements, and bounded memory on large inputs.
+- Build `do` natively for Either, Maybe, Array, List and user-defined monads; Nothing and Left stop the remaining steps.
+- Pass the standard Functor, Applicative and Monad dictionaries natively, so generic code with these constraints, `<$>`, `<*>` and `>>=` works with standard types.
+- Match fixed-length and rest Array patterns natively, including nested patterns and guards that fall through to the next arm.
+- Add differential tests that generate programs and compare TS and native output for Int edge cases, Float formatting, Unicode text, ordering and Map/Set insertion order.
+
 ## [0.61.132] - 2026-10-31
 
 ### Fixed
