@@ -1,8 +1,11 @@
 use super::*;
 fn arity(name: &str) -> Option<usize> {
     match name {
-        "std/prelude::sum" => Some(1),
-        "std/prelude::join" | "std/prelude::forEach" => Some(2),
+        "std/prelude::sum" | "std/prelude::product" | "std/prelude::combine" => Some(1),
+        "std/prelude::reduce" => Some(3),
+        "std/prelude::join" | "std/prelude::forEach" | "std/prelude::any" | "std/prelude::all" => {
+            Some(2)
+        }
         _ => None,
     }
 }
@@ -22,6 +25,67 @@ fn function(parameters: &[CoreType], result: CoreType) -> CoreType {
         })
 }
 impl Backend<'_> {
+    pub(super) fn monoid_supertrait(
+        &self,
+        instance: &seseragi_lowering::CoreInstance,
+        scope: &Scope,
+    ) -> Result<bool> {
+        if !instance.identity.starts_with("std/prelude::Monoid<") {
+            return Ok(false);
+        }
+        if self.program_wasm_library {
+            return Err("program WASM: native Monoid instance needs an ABI proof".into());
+        }
+        let Some(parent) = instance.constraints.first() else {
+            return Err("Rust backend: missing Monoid parent".into());
+        };
+        if instance.trait_name != "Monoid"
+            || instance.supertrait_count != 1
+            || instance.arguments.len() != 1
+            || parent.arguments.len() != 1
+            || parent.name != "Semigroup"
+            || parent.trait_identity.as_deref() != Some("std/prelude::Semigroup")
+        {
+            return Err("Rust backend: unproven canonical Monoid supertrait".into());
+        }
+        let element = &instance.arguments[0];
+        if self.declared_method_type_kind(element, scope) != Some(0)
+            || self.declared_method_type_kind(&parent.arguments[0], scope) != Some(0)
+            || self.local_canonical_type(element, scope)?
+                != self.local_canonical_type(&parent.arguments[0], scope)?
+        {
+            return Err("Rust backend: Monoid parent type/kind mismatch".into());
+        }
+        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            return Err("Rust backend: unproven Monoid implementation".into());
+        };
+        let [method] = methods.as_slice() else {
+            return Err("Rust backend: Monoid method count".into());
+        };
+        if method.name != "empty"
+            || !method.type_parameters.is_empty()
+            || !method.constraints.is_empty()
+            || method.parameters.len() != 1
+        {
+            return Err("Rust backend: unproven Monoid method scheme".into());
+        }
+        let actual = function(
+            &[method.parameters[0].type_ref.clone()],
+            local::method_argument_type(&method.body)
+                .ok_or("Rust backend: missing Monoid result type")?,
+        );
+        let expected = function(
+            &[named("Unit", vec![])],
+            self.local_canonical_type(element, scope)?,
+        );
+        if self.declared_method_type_kind(&actual, scope) != Some(0)
+            || self.local_canonical_type(&actual, scope)? != expected
+        {
+            return Err("Rust backend: Monoid method signature mismatch".into());
+        }
+        Ok(true)
+    }
+
     pub(super) fn reducible_supertrait(
         &self,
         instance: &seseragi_lowering::CoreInstance,
@@ -202,19 +266,27 @@ impl Backend<'_> {
                 quoted(identity)
             )));
         }
-        if identity == "std/int::Zero" {
+        if matches!(identity.as_str(), "std/int::Zero" | "std/int::One") {
+            let (trait_name, method, value) = if identity == "std/int::Zero" {
+                ("Zero", "zero", 0)
+            } else {
+                ("One", "one", 1)
+            };
             if self.program_wasm_library {
+                return Err(format!(
+                    "program WASM: native Int {trait_name} requires a target-specific ABI proof"
+                )
+                .into());
+            }
+            self.validate_prelude_constraint(selected, trait_name, &[named("Int", vec![])], scope)?;
+            if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
                 return Err(
-                    "program WASM: native Int Zero requires a target-specific ABI proof".into(),
+                    format!("Rust backend: Int {trait_name} provider arity mismatch").into(),
                 );
             }
-            self.validate_prelude_constraint(selected, "Zero", &[named("Int", vec![])], scope)?;
-            if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
-                return Err("Rust backend: Int Zero provider arity mismatch".into());
-            }
-            return Ok(Some(
-                "V::dict(vec![(\"zero\", V::fun(vec![], |_, _| V::Int(0)))])".into(),
-            ));
+            return Ok(Some(format!(
+                "V::dict(vec![(\"{method}\", V::fun(vec![], |_, _| V::Int({value})))])"
+            )));
         }
         Ok(None)
     }
@@ -263,7 +335,10 @@ impl Backend<'_> {
         let first = evidence
             .first()
             .ok_or("Rust backend: Prelude collection requires selected evidence")?;
-        let iterable = name == "std/prelude::forEach";
+        let iterable = matches!(
+            name,
+            "std/prelude::forEach" | "std/prelude::any" | "std/prelude::all"
+        );
         if iterable {
             self.validate_iterable_evidence(first, scope)?;
         } else {
@@ -272,17 +347,58 @@ impl Backend<'_> {
         let collection = self.local_canonical_type(&first.constraint.arguments[0], scope)?;
         let element = self.local_canonical_type(&first.constraint.arguments[1], scope)?;
         let (expected, output) = match name {
-            "std/prelude::sum" => {
+            "std/prelude::sum" | "std/prelude::product" => {
                 if evidence.len() != 3 {
-                    return Err("Rust backend: sum requires Reducible/Zero/Add".into());
+                    return Err(format!("Rust backend: {name} requires Reducible and selected identity/operation dictionaries").into());
                 }
+                let (identity, operation) = if name == "std/prelude::sum" {
+                    ("Zero", "Add")
+                } else {
+                    ("One", "Mul")
+                };
                 for (selected, trait_name, arguments) in [
-                    (&evidence[1], "Zero", vec![element.clone()]),
-                    (&evidence[2], "Add", vec![element.clone(); 3]),
+                    (&evidence[1], identity, vec![element.clone()]),
+                    (&evidence[2], operation, vec![element.clone(); 3]),
                 ] {
                     self.validate_prelude_constraint(selected, trait_name, &arguments, scope)?;
                 }
                 (vec![collection], element)
+            }
+            "std/prelude::reduce" => {
+                if evidence.len() != 1 {
+                    return Err("Rust backend: reduce requires one Reducible dictionary".into());
+                }
+                let accumulator = remaining.clone();
+                (
+                    vec![
+                        accumulator.clone(),
+                        function(&[accumulator.clone(), element], accumulator.clone()),
+                        collection,
+                    ],
+                    accumulator,
+                )
+            }
+            "std/prelude::combine" => {
+                if evidence.len() != 2 {
+                    return Err("Rust backend: combine requires Reducible/Monoid".into());
+                }
+                self.validate_prelude_constraint(
+                    &evidence[1],
+                    "Monoid",
+                    &[element.clone()],
+                    scope,
+                )?;
+                (vec![collection], element)
+            }
+            "std/prelude::any" | "std/prelude::all" => {
+                if evidence.len() != 1 {
+                    return Err("Rust backend: any/all requires one Iterable dictionary".into());
+                }
+                let boolean = named("Bool", vec![]);
+                (
+                    vec![function(&[element], boolean.clone()), collection],
+                    boolean,
+                )
             }
             "std/prelude::join" => {
                 if evidence.len() != 1 || element != named("String", vec![]) {

@@ -164,6 +164,7 @@ mod runtime {
     include!("runtime_float_conversion.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
+    include!("runtime_stdin.rs");
     include!("runtime_effect_defect.rs");
     include!("runtime_scheduler.rs");
     include!("runtime_path.rs");

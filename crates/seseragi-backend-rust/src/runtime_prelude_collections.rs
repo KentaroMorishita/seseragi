@@ -72,7 +72,7 @@ fn native_prelude_for_each_step(action: V, iterator: V) -> V {
 
 fn native_prelude_collection(name: &str, dictionaries: Vec<V>, arguments: Vec<V>) -> V {
     match name {
-        "std/prelude::sum" => {
+        "std/prelude::sum" | "std/prelude::product" => {
             let [reducible, zero, add] = dictionaries.as_slice() else {
                 panic!("Rust ABI: sum dictionaries")
             };
@@ -81,9 +81,64 @@ fn native_prelude_collection(name: &str, dictionaries: Vec<V>, arguments: Vec<V>
                 .unwrap_or_else(|_| panic!("Rust ABI: sum arity"));
             reducible
                 .field("reduce")
-                .apply(zero.field("zero").apply(V::Unit))
-                .apply(add.field("add"))
+                .apply(
+                    zero.field(if name == "std/prelude::sum" {
+                        "zero"
+                    } else {
+                        "one"
+                    })
+                    .apply(V::Unit),
+                )
+                .apply(add.field(if name == "std/prelude::sum" {
+                    "add"
+                } else {
+                    "mul"
+                }))
                 .apply(source)
+        }
+        "std/prelude::reduce" => {
+            let [reducible] = dictionaries.as_slice() else {
+                panic!("Rust ABI: reduce dictionary")
+            };
+            let [initial, step, source]: [V; 3] = arguments
+                .try_into()
+                .unwrap_or_else(|_| panic!("Rust ABI: reduce arity"));
+            reducible
+                .field("reduce")
+                .apply(initial)
+                .apply(step)
+                .apply(source)
+        }
+        "std/prelude::combine" => {
+            let [reducible, monoid] = dictionaries.as_slice() else {
+                panic!("Rust ABI: combine dictionaries")
+            };
+            let [source]: [V; 1] = arguments
+                .try_into()
+                .unwrap_or_else(|_| panic!("Rust ABI: combine arity"));
+            reducible
+                .field("reduce")
+                .apply(monoid.field("empty").apply(V::Unit))
+                .apply(monoid.field("append"))
+                .apply(source)
+        }
+        "std/prelude::any" | "std/prelude::all" => {
+            let [iterable] = dictionaries.as_slice() else {
+                panic!("Rust ABI: any/all dictionary")
+            };
+            let [predicate, source]: [V; 2] = arguments
+                .try_into()
+                .unwrap_or_else(|_| panic!("Rust ABI: any/all arity"));
+            let all = name == "std/prelude::all";
+            let mut iterator = iterable.field("iterate").apply(source);
+            while let Some((value, rest)) = native_prelude_pull(iterator) {
+                let accepted = predicate.apply(value).boolean();
+                if accepted != all {
+                    return V::Bool(accepted);
+                }
+                iterator = rest;
+            }
+            V::Bool(all)
         }
         "std/prelude::join" => {
             let [reducible] = dictionaries.as_slice() else {
@@ -140,6 +195,155 @@ fn native_prelude_collection(name: &str, dictionaries: Vec<V>, arguments: Vec<V>
 #[cfg(test)]
 mod prelude_collection_tests {
     use super::*;
+
+    fn integer_operation(multiply: bool) -> V {
+        V::fun(vec![V::Bool(multiply)], |c, left| {
+            V::fun(vec![c[0].clone(), left], |c, right| {
+                binary(if c[0].boolean() { "*" } else { "+" }, c[1].clone(), right)
+            })
+        })
+    }
+
+    #[test]
+    fn reduce_large_range_bounds_live_values_and_effect_frames() {
+        enable_cycle_collection();
+        let step = V::fun(vec![], |_, accumulator| {
+            assert!(LIVE.with(Cell::get) < 100, "retained reduction cursors");
+            V::fun(vec![accumulator], |c, value| {
+                binary("+", c[0].clone(), value)
+            })
+        });
+        let plan = V::leaf(vec![step], |c, _| {
+            Ok(native_prelude_collection(
+                "std/prelude::reduce",
+                vec![native_prelude_reducible_dictionary("std/range::Reducible")],
+                vec![
+                    V::Int(0),
+                    c[0].clone(),
+                    native_range(V::Int(0), V::Int(100_000), false),
+                ],
+            ))
+        });
+        let mut context = NativeContext::default();
+        let result = context
+            .root(plan)
+            .unwrap_or_else(|_| panic!("reduce failed"));
+        assert_eq!(result.render(), "4999950000");
+        let baseline = NativeMachine::new(
+            NativeContext::default(),
+            V::leaf(vec![], |_, _| Ok(V::Unit)),
+        );
+        assert_eq!(context.peak_frames, baseline.stack.len());
+        drop(baseline);
+        drop(result);
+        let empty = native_prelude_collection(
+            "std/prelude::reduce",
+            vec![native_prelude_reducible_dictionary("std/range::Reducible")],
+            vec![
+                V::Int(9),
+                integer_operation(false),
+                native_range(V::Int(0), V::Int(0), false),
+            ],
+        );
+        assert_eq!(empty.render(), "9");
+        drop(empty);
+        clear_dictionaries();
+        assert_eq!(collect_cycles().unwrap().reclaimed, 0);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn product_and_combine_use_selected_identity_and_step_including_empty_input() {
+        enable_cycle_collection();
+        for name in ["std/prelude::product", "std/prelude::combine"] {
+            for empty in [false, true] {
+                let identity = V::fun(vec![], |_, _| V::Int(7));
+                let append = V::fun(vec![], |_, left| {
+                    V::fun(vec![left], |c, right| {
+                        binary("+", binary("*", c[0].clone(), V::Int(10)), right)
+                    })
+                });
+                let reducible = native_prelude_reducible_dictionary("std/range::Reducible");
+                let dictionaries = if name == "std/prelude::product" {
+                    vec![
+                        reducible,
+                        V::dict(vec![("one", identity)]),
+                        V::dict(vec![("mul", append)]),
+                    ]
+                } else {
+                    vec![
+                        reducible,
+                        V::dict(vec![("empty", identity), ("append", append)]),
+                    ]
+                };
+                let result = native_prelude_collection(
+                    name,
+                    dictionaries,
+                    vec![native_range(
+                        V::Int(1),
+                        V::Int(if empty { 1 } else { 4 }),
+                        false,
+                    )],
+                );
+                assert_eq!(result.render(), if empty { "7" } else { "7123" });
+                drop(result);
+            }
+        }
+        clear_dictionaries();
+        assert_eq!(collect_cycles().unwrap().reclaimed, 0);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn any_and_all_stop_source_pulls_and_predicates_at_the_deciding_element() {
+        enable_cycle_collection();
+        for all in [false, true] {
+            let calls = V::reference(V::Int(0));
+            let iterator = native_iterator_unfold(
+                V::fun(vec![calls.clone()], |c, state| {
+                    assert_eq!(state.render(), "0", "pulled beyond deciding element");
+                    c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
+                    V::adt(
+                        "std/prelude::Just",
+                        V::Tuple(Shared::new(vec![V::Int(42), V::Int(1)])),
+                    )
+                }),
+                V::Int(0),
+            );
+            assert_eq!(calls.read_reference().render(), "0");
+            let predicate = V::fun(vec![V::Bool(!all), calls.clone()], |c, value| {
+                assert_eq!(value.render(), "42");
+                c[1].write_reference(binary("+", c[1].read_reference(), V::Int(10)));
+                c[0].clone()
+            });
+            let name = if all {
+                "std/prelude::all"
+            } else {
+                "std/prelude::any"
+            };
+            let result = native_prelude_collection(
+                name,
+                vec![native_iterable_dictionary("std/iterator::Iterable")],
+                vec![predicate, iterator],
+            );
+            assert_eq!(result.boolean(), !all);
+            assert_eq!(calls.read_reference().render(), "11");
+            drop((result, calls));
+            let empty = native_prelude_collection(
+                name,
+                vec![native_iterable_dictionary("std/range::Iterable")],
+                vec![
+                    V::fun(vec![], |_, _| panic!("empty predicate")),
+                    native_range(V::Int(0), V::Int(0), false),
+                ],
+            );
+            assert_eq!(empty.boolean(), all);
+            drop(empty);
+        }
+        clear_dictionaries();
+        assert_eq!(collect_cycles().unwrap().reclaimed, 0);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
 
     #[test]
     fn join_large_collection_uses_selected_reduce_order_and_releases_pieces() {

@@ -475,7 +475,9 @@ impl Backend<'_> {
             | "std/prelude::String"
             | "std/prelude::Ordering"
             | "std/prelude::Console"
-            | "std/prelude::ConsoleError" => Some(vec![]),
+            | "std/prelude::ConsoleError"
+            | "std/prelude::Stdin"
+            | "std/prelude::StdinError" => Some(vec![]),
             "std/prelude::Array"
             | "std/prelude::List"
             | "std/prelude::Range"

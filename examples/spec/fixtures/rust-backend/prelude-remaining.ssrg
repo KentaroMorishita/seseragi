@@ -1,0 +1,87 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+
+newtype Mark = Int
+instance One<Mark> { fn one _unit:Unit -> Mark = Mark 10 }
+instance Mul<Mark,Mark,Mark> {
+  fn mul left:Mark -> right:Mark -> Mark = match left { Mark a -> match right { Mark b -> Mark (a * 10 + b) } }
+}
+instance Semigroup<Mark> {
+  fn append left:Mark -> right:Mark -> Mark = match left { Mark a -> match right { Mark b -> Mark (a * 10 + b) } }
+}
+instance Monoid<Mark> { fn empty _unit:Unit -> Mark = Mark 7 }
+newtype Reverse<A> = Array<A>
+instance<A> Iterable<Reverse<A>,A> {
+  fn iterate values:Reverse<A> -> Iterator<A> = match values { Reverse items -> unfold (\index:Int -> match arrays.get index items { Nothing -> Nothing; Just value -> Just (value,index + 1) }) 0 }
+}
+instance<A> Reducible<Reverse<A>,A> {
+  fn reduce<B> initial:B -> step:(B -> A -> B) -> values:Reverse<A> -> B = match values { Reverse items -> arrays.reduceRight initial (\item:A -> \acc:B -> step acc item) items }
+}
+fn fold<C,A,B> initial:B -> step:(B -> A -> B) -> values:C -> B where Reducible<C,A> = reduce initial step values
+fn multiplied<C,A> values:C -> A where Reducible<C,A>,One<A>,Mul<A,A,A> = product values
+fn combined<C,A> values:C -> A where Reducible<C,A>,Monoid<A> = combine values
+fn exists<C,A> predicate:(A -> Bool) -> values:C -> Bool where Iterable<C,A> = any predicate values
+fn every<C,A> predicate:(A -> Bool) -> values:C -> Bool where Iterable<C,A> = all predicate values
+fn digits acc:Int -> value:Int -> Int = acc * 10 + value
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 2 then Nothing else Just (state,state + 1)
+fn guarded state:Int -> Maybe<(Int,Int)> = if state == 0 then Just (42,1) else Just (42 / 0,2)
+fn observe source:Iterator<Int> -> String = match next source {
+  Nothing -> "empty"
+  Just (value,_) -> show value
+}
+
+effect fn say text:String -> Unit with console:Console fails String = println text |> effects.mapError (\error:ConsoleError -> "console failed")
+
+pub effect fn main = do {
+  say (show (reduce 0 digits [1,2,3]))
+  let empty:Array<Int> = []
+  say (show (reduce 9 digits empty))
+  let saved:Int -> (Int -> Int -> Int) -> Array<Int> -> Int = reduce
+  say (show (saved 4 digits [5,6]))
+  let staged:Array<Int> -> Int = \values:Array<Int> -> reduce 0 digits values
+  say (show (staged [7,8]))
+  say (show (fold 0 digits (Reverse [1,2,3])))
+  say (show (reduce 0 (\acc:Int -> \n:Int -> acc + n) (0..100000)))
+  say (show (product [2,3,4]))
+  say (show (product empty))
+  say (show (product `[1.5,2.0]))
+  let savedProduct:Array<Int> -> Int = product
+  say (show (savedProduct [3,5]))
+  let Mark multiplication = multiplied (Reverse [Mark 1,Mark 2])
+  say (show multiplication)
+  let Mark merged = combined (Reverse [Mark 1,Mark 2])
+  say (show merged)
+  let noMarks:List<Mark> = `[]
+  let savedCombine:List<Mark> -> Mark = combine
+  let Mark identity = savedCombine noMarks
+  say (show identity)
+  say (show (any (\n:Int -> n == 42) (unfold guarded 0)))
+  say (show (all (\n:Int -> n != 42) (unfold guarded 0)))
+  say (show (exists (\n:Int -> n > 0) empty))
+  say (show (every (\n:Int -> n > 0) empty))
+  let savedAny:(Int -> Bool) -> Array<Int> -> Bool = any
+  let savedAll:Array<Int> -> Bool = \values:Array<Int> -> all (\n:Int -> n > 0) values
+  say (show (savedAny (\n:Int -> n == 2) [1,2,3]))
+  say (show (savedAll [1,2,3]))
+  let savedUnfold:(Int -> Maybe<(Int,Int)>) -> Int -> Iterator<Int> = unfold
+  let source = savedUnfold advance 0
+  let savedNext:Iterator<Int> -> Maybe<(Int,Iterator<Int>)> = next
+  say (observe source)
+  say (observe source)
+  match savedNext source {
+    Nothing -> say "unexpected"
+    Just (_,rest) -> do {
+      say (observe rest)
+      match next rest { Nothing -> say "unexpected"; Just (_,end) -> say (observe end) }
+    }
+  }
+  say (observe (unfold advance 2))
+  let dormant = unfold (\n:Int -> Just (42 / n,n)) 0
+  say "lazy"
+  let good:Either<String,Int> = Right 42
+  value <- fromEither good
+  say (show value)
+  let bad:Either<String,Int> = Left "left-value"
+  fromEither bad |> effects.recover (\message:String -> do { say message; effects.succeed 0 })
+  effects.succeed ()
+}

@@ -212,6 +212,10 @@ fn prelude_collections_keep_selected_dictionaries_and_saved_stages() {
 fn prelude_collections_reject_forged_source_types_dictionaries_kinds_and_stages() {
     for (result, expression) in [
         ("Int", "sum [1,2]"),
+        ("Int", "product [1,2]"),
+        ("Int", "reduce 0 (\\a:Int -> \\b:Int -> a + b) [1,2]"),
+        ("Bool", "any (\\n:Int -> n > 0) [1,2]"),
+        ("Bool", "all (\\n:Int -> n > 0) [1,2]"),
         ("String", "join \",\" [\"a\",\"b\"]"),
         (
             "Effect<{},Never,Unit>",
@@ -323,5 +327,103 @@ fn prelude_collections_do_not_expand_program_wasm_admission() {
                 .contains("native Prelude collection requires a target-specific ABI proof"),
             "{error}"
         );
+    }
+}
+
+#[test]
+fn remaining_prelude_functions_keep_checked_providers_and_saved_stages() {
+    for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend/prelude-remaining.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/prelude-read-line.ssrg"),
+    ] {
+        let artifact = emit_rust_module(&checked(source), "main").unwrap();
+        if source.contains("readLine") {
+            assert!(artifact
+                .metadata
+                .capabilities
+                .iter()
+                .any(|capability| capability == "stdin"));
+        }
+    }
+}
+
+#[test]
+fn combine_keeps_canonical_monoid_parent_and_empty_method_proofs() {
+    let core = checked(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/prelude-remaining.ssrg"
+    ));
+    let index = core
+        .instances
+        .iter()
+        .position(|instance| instance.identity.starts_with("std/prelude::Monoid<"))
+        .unwrap();
+    for mutation in 0..7 {
+        let mut changed = core.clone();
+        let instance = &mut changed.instances[index];
+        match mutation {
+            0 => instance.supertrait_count = 0,
+            1 => instance.constraints[0].trait_identity = Some("fake::Semigroup".into()),
+            2 => instance.constraints[0].arguments[0] = CoreType::Hole,
+            _ => {
+                let seseragi_lowering::CoreInstanceImplementation::UserDefined { methods } =
+                    &mut instance.implementation
+                else {
+                    panic!()
+                };
+                match mutation {
+                    3 => methods[0].name = "append".into(),
+                    4 => methods[0].parameters[0].type_ref = CoreType::Hole,
+                    5 => methods.clear(),
+                    _ => methods[0]
+                        .type_parameters
+                        .push(seseragi_syntax::TypeParameter::value("B")),
+                }
+            }
+        }
+        emit_rust_module(&changed, "main").expect_err(&format!("Monoid mutation {mutation}"));
+    }
+}
+
+#[test]
+fn read_line_and_from_either_reject_forged_operation_types_and_arities() {
+    for (source, entry) in [
+        ("pub effect fn main = readLine ()", "main"),
+        (
+            "fn candidate -> Either<String,Int> = Right 42\npub effect fn main = fromEither (candidate ())",
+            "main",
+        ),
+    ] {
+        let core = checked(source);
+        let index = core.functions.iter().position(|function| function.symbol.ends_with(&format!("::{entry}"))).unwrap();
+        emit_rust_module(&core, entry).unwrap();
+        for mutation in 0..5 {
+            let mut changed = core.clone();
+            let CoreExpr::EffectOperation {
+                arguments,
+                requirements,
+                failure,
+                success,
+                ..
+            } = &mut changed.functions[index].body
+            else {
+                panic!("{source}")
+            };
+            match mutation {
+                0 => *requirements = CoreType::Hole,
+                1 => *failure = CoreType::Hole,
+                2 => *success = CoreType::Hole,
+                3 => arguments.push(CoreExpr::Unit {
+                    origin: core_expr_origin(&core.functions[index].body).clone(),
+                }),
+                _ => {
+                    *success = CoreType::ExternalNamed {
+                        name: "Maybe".into(),
+                        canonical: "fake::Maybe".into(),
+                        arguments: vec![],
+                    }
+                }
+            }
+            assert!(emit_rust_module(&changed, entry).is_err(), "{source}: mutation {mutation}");
+        }
     }
 }
