@@ -126,7 +126,8 @@ impl Backend<'_> {
                     .ok_or("Rust backend: unknown display child dictionary")?;
                 let owner = &self.owners[identity];
                 let trait_identity = format!("std/prelude::{method}");
-                if !identity.starts_with(&format!("{trait_identity}<"))
+                if (!identity.starts_with(&format!("{trait_identity}<"))
+                    && !self.derived_identity(instance, &trait_identity))
                     || type_arguments.len() != instance.type_parameters.len()
                     || evidence_arguments.len() != instance.constraints.len()
                 {

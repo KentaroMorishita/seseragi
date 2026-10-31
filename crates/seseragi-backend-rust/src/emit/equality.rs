@@ -75,6 +75,12 @@ impl Backend<'_> {
             std::slice::from_ref(&normalized),
             scope,
         )?;
+        if self.validate_derived_structural_evidence(selected, scope)? {
+            return Ok(());
+        }
+        if self.validate_standard_error_evidence(selected, scope)? {
+            return Ok(());
+        }
         if let CoreInstanceEvidence::Standard {
             identity,
             type_arguments,
@@ -336,16 +342,21 @@ impl Backend<'_> {
                     format!("V::Bool(!({value}).boolean())")
                 });
             }
-            let value = format!(
-                "binary(\"==\", {}, {})",
-                self.expr(left, scope)?,
-                self.expr(right, scope)?
-            );
-            return Ok(if operator == "==" {
-                value
-            } else {
-                format!("V::Bool(!({value}).boolean())")
-            });
+            if matches!(
+                identity.as_str(),
+                "std/int::Eq" | "std/bool::Eq" | "std/unit::Eq" | "std/string::Eq"
+            ) {
+                let value = format!(
+                    "binary(\"==\", {}, {})",
+                    self.expr(left, scope)?,
+                    self.expr(right, scope)?
+                );
+                return Ok(if operator == "==" {
+                    value
+                } else {
+                    format!("V::Bool(!({value}).boolean())")
+                });
+            }
         }
         let function = self.equality_reference(operator, evidence, scope)?;
         let stage = self.fresh();

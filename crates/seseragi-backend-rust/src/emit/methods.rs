@@ -30,6 +30,9 @@ impl Backend<'_> {
             evidence,
             scope,
         )?;
+        if !self.program_wasm_library && self.validate_standard_error_evidence(selected, scope)? {
+            return self.validate_derived_method(dispatch, selected, type_ref, scope);
+        }
         self.validate_decimal_show_value(dispatch, selected, type_ref, scope)?;
         self.validate_decimal_constant_value(dispatch, selected, type_ref, scope)?;
         self.validate_big_int_display_value(dispatch, selected, type_ref, scope)?;
@@ -61,6 +64,9 @@ impl Backend<'_> {
             .find(|i| &i.identity == identity)
             .ok_or("Rust backend: unknown bare method instance")?;
         let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            if self.derived_identity(instance, &dispatch.trait_identity) {
+                return self.validate_derived_method(dispatch, selected, type_ref, scope);
+            }
             if matches!(
                 instance.implementation,
                 CoreInstanceImplementation::DerivedJson { .. }
@@ -431,6 +437,11 @@ impl Backend<'_> {
             })
         {
             return Some(parameters.iter().map(|p| p.arity).collect());
+        }
+        if !self.program_wasm_library {
+            if let Some(slots) = super::standard_errors::constructor_slots(&name) {
+                return Some(slots);
+            }
         }
         match name.as_str() {
             "std/path::Path"
