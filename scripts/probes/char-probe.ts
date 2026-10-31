@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url"
 import ts from "typescript"
 
 const input = process.argv[2]
-assert(input, "expected an emitted TypeScript Float fixture")
+assert(input, "expected an emitted TypeScript Char fixture")
 const program = ts.createProgram([input], {
   noEmit: true,
   strict: true,
@@ -30,9 +30,9 @@ const built = await Bun.build({
 })
 assert(built.success, built.logs.map(String).join("\n"))
 assert.equal(built.outputs.length, 1)
-const output = path.join(path.dirname(input), "float-module.mjs")
+const output = path.join(path.dirname(input), "char-module.mjs")
 await Bun.write(output, built.outputs[0])
-const harness = path.resolve("scripts/float-probe.mjs")
+const harness = path.resolve("scripts/probes/char-probe.mjs")
 let expected: unknown
 for (const runtime of [process.execPath, "node"]) {
   const result = Bun.spawnSync([runtime, harness, pathToFileURL(output).href], {
