@@ -269,6 +269,8 @@ pub(super) fn canonical_type(
                         | "Range"
                         | "Maybe"
                         | "Either"
+                        | "Sum"
+                        | "Product"
                         | "Ref"
                         | "Effect"
                 );
@@ -298,6 +300,8 @@ pub(super) fn canonical_type(
                         | "Range"
                         | "Maybe"
                         | "Either"
+                        | "Sum"
+                        | "Product"
                         | "Ref"
                         | "Effect"
                 ) {

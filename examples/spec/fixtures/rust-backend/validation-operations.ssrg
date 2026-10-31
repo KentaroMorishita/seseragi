@@ -1,0 +1,49 @@
+import { Validation, Valid, Invalid } from "std/validation"
+import * as validation from "std/validation"
+import { NonEmptyList } from "std/non-empty-list"
+fn increment value:Int -> Int = value + 1
+fn render value:Validation<String,Int> -> String = match value {
+  Valid n when n > 0 -> `ok:${n}`
+  Valid _ -> "zero"
+  Invalid errors -> show errors
+}
+pub effect fn main = do {
+  let valid:Validation<String,Int> = Valid 1
+  let errors:NonEmptyList<String> = pure "first"
+  let many:NonEmptyList<String> = pure "many"
+  let bad:Validation<String,Int> = Invalid errors
+  let badFunction:Validation<String,(Int -> Int)> = validation.invalid "function"
+  let goodFunction:Validation<String,(Int -> Int)> = Valid increment
+  let makeValid:Int -> Validation<String,Int> = Valid
+  let makeInvalid:NonEmptyList<String> -> Validation<String,Int> = Invalid
+  println (show (makeValid 8))
+  println (debug (makeInvalid errors))
+  println (render valid)
+  println (render bad)
+  println (render (validation.valid 0))
+  println (render (validation.invalidMany many))
+  println (show (increment <$> valid))
+  println (show (increment <$> bad))
+  println (show (goodFunction <*> valid))
+  println (show (goodFunction <*> bad))
+  println (show (badFunction <*> valid))
+  println (show (badFunction <*> bad))
+  let lifted:Validation<String,Int> = pure 3
+  println (show lifted)
+  let fromLeft:Validation<String,Int> = validation.fromEither (Left "left")
+  println (show fromLeft)
+  let fromRight:Validation<String,Int> = validation.fromEither (Right 4)
+  println (show fromRight)
+  println (show (validation.toEither bad))
+  println (show (validation.toEither valid))
+  let same:Validation<String,Int> = validation.valid 1
+  println (show (valid == same))
+  let sameBad:Validation<String,Int> = validation.invalid "first"
+  println (show (bad == sameBad))
+  println (show (bad == valid))
+  let expected:Validation<String,Int> = validation.invalid "first"
+  println (show ((badFunction <*> bad) == expected))
+  let reverseFunction:Validation<String,(Int -> Int)> = validation.invalid "first"
+  let last:Validation<String,Int> = validation.invalid "function"
+  println (show ((badFunction <*> bad) == (reverseFunction <*> last)))
+}

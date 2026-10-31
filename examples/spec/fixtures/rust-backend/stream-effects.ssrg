@@ -1,0 +1,31 @@
+import * as streams from "std/stream"
+import * as effects from "std/effect"
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+effect fn acquire value:Int -> Int with Console = do {
+  effects.acquireRelease (say (`open:${value}`)) (\_:Unit -> say (`close:${value}`))
+  effects.succeed value
+}
+effect fn bad -> Int with Console fails String = do {
+  acquire 9
+  effects.fail "failed"
+}
+pub effect fn main = do {
+  let source = streams.fromEffect (acquire 1)
+  let terminal = streams.runCollect source
+  say "created"
+  first <- terminal
+  say (show first)
+  second <- terminal
+  say (show second)
+  empty <- streams.take 0 source |> streams.runCollect
+  say (show empty)
+  let nested = streams.flatMap (\n:Int -> streams.fromEffect (acquire (n + 1))) source
+  streams.runForEach (\n:Int -> say (`value:${n}`)) nested
+  let failed = streams.fromEffect (bad ()) |> streams.mapError (\message:String -> "mapped:" + message)
+  recovered <- effects.recover (\message:String -> do { say message; effects.succeed [] }) (streams.runCollect failed)
+  say (show recovered)
+  let suffix = streams.fromEffect (acquire 100)
+  prefix <- streams.concat suffix source |> streams.take 1 |> streams.runCollect
+  say (show prefix)
+}

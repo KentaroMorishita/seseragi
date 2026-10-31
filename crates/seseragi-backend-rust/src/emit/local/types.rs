@@ -122,7 +122,10 @@ impl Backend<'_> {
                     .map(|ty| ty.type_parameters.len())
             })
             .or_else(|| match name.as_str() {
-                "std/signal::Signal" | "std/signal::MutableSignal"
+                "std/signal::Signal"
+                | "std/signal::MutableSignal"
+                | "std/prelude::Sum"
+                | "std/prelude::Product"
                     if !self.program_wasm_library =>
                 {
                     Some(1)

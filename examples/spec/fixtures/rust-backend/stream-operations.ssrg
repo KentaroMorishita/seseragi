@@ -1,0 +1,49 @@
+import * as streams from "std/stream"
+
+fn advance state:Int -> Maybe<(Int,Int)> = Just (state,state + 1)
+fn split value:Int -> streams.Stream<{},Never,Int> = streams.fromArray [value,value + 10]
+fn add total:Int -> value:Int -> Int = total + value
+fn increment value:Int -> Int = value + 1
+fn double value:Int -> Int = value * 2
+
+fn mapped<R,E> source:streams.Stream<R,E,Int> -> streams.Stream<R,E,Int> = {
+  let saved:(Int -> Int) -> streams.Stream<R,E,Int> -> streams.Stream<R,E,Int> = streams.map
+  saved increment source
+}
+
+pub effect fn main = do {
+  let source:streams.Stream<{},Never,Int> = streams.fromArray [1,2,3]
+  mapped <- streams.runCollect (mapped source)
+  println (show mapped)
+  filtered <- source |> streams.filter (\n:Int -> n % 2 == 1) |> streams.runCollect
+  println (show filtered)
+  chosen <- source |> streams.filterMap (\n:Int -> if n == 2 then Nothing else Just (n * 10)) |> streams.runCollect
+  println (show chosen)
+  bound <- streams.flatMap split source |> streams.runCollect
+  println (show bound)
+  let functions:streams.Stream<{},Never,(Int -> Int)> = streams.fromArray [increment,double]
+  applied <- apply functions source |> streams.runCollect
+  println (show applied)
+  let lifted:streams.Stream<{},Never,Int> = pure 7
+  one <- streams.runCollect lifted
+  println (show one)
+  let none:streams.Stream<{},Never,Int> = streams.fromArray []
+  emptyValues <- streams.runCollect none
+  println (show emptyValues)
+  zero <- streams.take 0 source |> streams.runCollect
+  println (show zero)
+  negative <- streams.take (-1) source |> streams.runCollect
+  println (show negative)
+  kept <- streams.drop (-2) source |> streams.runCollect
+  println (show kept)
+  let infinite:streams.Stream<{},Never,Int> = streams.unfold advance 0
+  few <- infinite |> streams.drop 3 |> streams.take 4 |> streams.runCollect
+  println (show few)
+  total <- source |> streams.runFold 10 add
+  println (show total)
+  let suffix:streams.Stream<{},Never,Int> = streams.singleton 4
+  joined <- streams.concat suffix source |> streams.runCollect
+  println (show joined)
+  repeated <- streams.runCollect source
+  println (show repeated)
+}

@@ -1,0 +1,8 @@
+import * as streams from "std/stream"
+fn advance state:Int -> Maybe<(Int,Int)> = if state >= 100000 then Nothing else Just (state,state + 1)
+fn add total:Int -> value:Int -> Int = total + value
+pub effect fn main = do {
+  let source:streams.Stream<{},Never,Int> = streams.unfold advance 0
+  total <- source |> streams.map (\n:Int -> n) |> streams.runFold 0 add
+  println (show total)
+}

@@ -1,0 +1,68 @@
+import * as maps from "std/map"
+import * as sets from "std/set"
+import { NonEmptyList } from "std/non-empty-list"
+import { Validation } from "std/validation"
+
+type Mark = | Mark Int
+instance Show<Mark> { fn show value: Mark -> String = match value { Mark n -> `mark:${n}` } }
+instance Debug<Mark> { fn debug value: Mark -> String = match value { Mark n -> `debug:${n}` } }
+instance Semigroup<Mark> {
+  fn append left: Mark -> right: Mark -> Mark = match (left, right) { (Mark a, Mark b) -> Mark (a + b) }
+}
+fn display<A> value: A -> String where Show<A> = show value
+fn inspect<A> value: A -> String where Debug<A> = debug value
+fn merge<A> left: A -> right: A -> A where Semigroup<A> = append left right
+fn optionalMerge<A> left: A -> right: A -> Maybe<A> where Semigroup<A> = merge (Just left) (Just right)
+fn optionalIdentity<A> value: A -> Maybe<A> where Semigroup<A> = empty ()
+fn identity<A> -> A where Monoid<A> = empty ()
+fn withIdentity<A> value: A -> A where Monoid<A> = merge (identity ()) value
+fn singleton<A> value: A -> NonEmptyList<A> = pure value
+fn nested<A> value: A -> String where Show<A> = display (Just [value])
+
+pub fn invalidProbe value: Validation<Mark, Int> -> String = display value + "|" + inspect value
+pub fn sumProbe value: Sum<Int> -> String = match withIdentity (merge value value) { Sum n -> show n }
+pub fn productProbe value: Product<Int> -> String = match withIdentity (merge value value) { Product n -> show n }
+pub fn probe -> String = {
+  let left: Either<String, Int> = Left "bad\nvalue"
+  let right: Either<String, Mark> = Right (Mark 4)
+  let never: Either<Never, Int> = Right 9
+  let neverMaybe: Maybe<Never> = Nothing
+  let none: Maybe<Array<Int>> = Nothing
+  let valid: Validation<Mark, String> = pure "ok"
+  let map = maps.insert "a" (Just `[Mark 5]) (maps.singleton "z" Nothing)
+  let set = sets.insert "a" (sets.singleton "z")
+  let emptyMap: maps.Map<String, Int> = maps.empty ()
+  let emptySet: sets.Set<Int> = sets.empty ()
+  let maybe: Maybe<Array<Int>> = merge (Just [1]) (Just [2, 3])
+  let sum: Sum<Int> = identity ()
+  let product: Product<Int> = identity ()
+  let sumValue = match sum { Sum value -> value }
+  let productValue = match product { Product value -> value }
+  let nestedMaybe: Maybe<Maybe<String>> = withIdentity (merge (Just (Just "a")) (Just (Just "b")))
+  let saved: Array<Int> -> Array<Int> -> Array<Int> = merge
+  let emptyString: String = identity ()
+  let emptyArray: Array<Int> = identity ()
+  let emptyList: List<Int> = identity ()
+  let emptyMaybe: Maybe<String> = identity ()
+  join "\n" [
+    display never, inspect never, display neverMaybe, inspect neverMaybe,
+    display left, inspect left, display right, inspect right,
+    nested right, inspect (Just [right]), display none, inspect none,
+    display `[left], inspect `[left], display (merge (singleton left) (singleton left)),
+    inspect (singleton right),
+    display valid, inspect valid, display map, inspect map,
+    display set, inspect set, display emptyMap, inspect emptyMap,
+    display emptySet, inspect emptySet,
+    display (left, Just [Mark 6]), inspect (left, Just [Mark 6]),
+    display (withIdentity "abc"), display (withIdentity (saved [1] [2])),
+    display (withIdentity (merge `[1] `[2, 3])), display (withIdentity maybe),
+    display (merge none maybe), display (merge maybe none),
+    display nestedMaybe, display (optionalMerge "a" "b"), display (optionalIdentity "unused"),
+    display (merge (Just (Mark 2)) (Just (Mark 3))),
+    display (merge (merge (singleton 1) (singleton 2)) (merge (singleton 3) (singleton 4))),
+    show sumValue, show productValue,
+    display emptyString, display emptyArray,
+    display emptyList, display emptyMaybe
+  ]
+}
+pub effect fn main = println (probe ())

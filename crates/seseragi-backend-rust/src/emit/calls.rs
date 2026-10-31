@@ -107,6 +107,12 @@ impl Backend<'_> {
             return Ok(value);
         }
         self.validate_signal_method_call(expr, scope)?;
+        if let Some(value) = self.stream_operation_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.validation_operation_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.signal_call(expr, scope)? {
             return Ok(value);
         }
