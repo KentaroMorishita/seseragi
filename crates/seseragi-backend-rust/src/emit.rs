@@ -1134,6 +1134,13 @@ impl Backend<'_> {
             CoreExpr::FieldAccess {
                 receiver, field, ..
             } => format!("({}).field({})", self.expr(receiver, scope)?, quoted(field)),
+            CoreExpr::OptionalFieldAccess {
+                receiver, field, ..
+            } => format!(
+                "({}).optional_field({})",
+                self.expr(receiver, scope)?,
+                quoted(field)
+            ),
             CoreExpr::Record { items, .. } => self.record(items, scope)?,
             CoreExpr::Binary {
                 operator,
@@ -1399,7 +1406,6 @@ impl Backend<'_> {
                         CoreExpr::Char { .. } => "Char",
                         CoreExpr::List { .. } => "List",
                         CoreExpr::Template { .. } => "template",
-                        CoreExpr::OptionalFieldAccess { .. } => "optional field access",
                         CoreExpr::ArrayComprehension { .. }
                         | CoreExpr::ListComprehension { .. } => "comprehension",
                         CoreExpr::Unary { .. } => "unary operator",
