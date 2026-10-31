@@ -11,6 +11,7 @@ use crate::runtime_types::runtime_type_import_for_surface;
 #[derive(Clone, Debug, Default)]
 pub(super) struct TypeScriptTypeContext {
     imported_names: Arc<BTreeMap<String, String>>,
+    polymorphic_bindings: BTreeSet<String>,
     constructors: BTreeSet<String>,
     constructor_kinds: BTreeMap<String, u32>,
     project_higher_kinds: bool,
@@ -32,6 +33,7 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
     fn from(imported_names: BTreeMap<String, String>) -> Self {
         Self {
             imported_names: Arc::new(imported_names),
+            polymorphic_bindings: Default::default(),
             constructors: BTreeSet::new(),
             constructor_kinds: BTreeMap::new(),
             project_higher_kinds: false,
@@ -51,6 +53,19 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn with_polymorphic_bindings(
+        &self,
+        symbols: impl IntoIterator<Item = String>,
+    ) -> Self {
+        let mut scoped = self.clone();
+        scoped.polymorphic_bindings.extend(symbols);
+        scoped
+    }
+
+    pub(super) fn is_polymorphic_binding(&self, symbol: &str) -> bool {
+        self.polymorphic_bindings.contains(symbol)
+    }
+
     pub(super) fn closed_display_dictionary(
         &self,
         key: String,

@@ -27,8 +27,8 @@ The committed, network-free probe uses a smaller deterministic payload with a
 partial final chunk. It records submitted/received byte counts and hashes:
 
 ```sh
-bun scripts/local-web-product-e2e-transport-probe.cjs target/pipe-bun.json
-node scripts/local-web-product-e2e-transport-probe.cjs target/pipe-node.json
+bun scripts/probes/local-web-product-e2e-transport-probe.cjs target/pipe-bun.json
+node scripts/probes/local-web-product-e2e-transport-probe.cjs target/pipe-node.json
 ```
 
 Bun loss is recorded as diagnostic evidence. Node loss fails the control,

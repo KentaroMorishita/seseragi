@@ -1,9 +1,6 @@
 use crate::bytes_ops::runtime_bytes_operation;
 use crate::collection_ops::{
-    runtime_collection_combine_operation, runtime_collection_for_each_operation,
-    runtime_collection_join_operation, runtime_collection_operation,
-    runtime_collection_predicate_operation, runtime_collection_product_operation,
-    runtime_collection_sum_operation, runtime_iterable_operation,
+    runtime_collection_operation, runtime_iterable_operation, runtime_prelude_collection_operation,
 };
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
@@ -66,7 +63,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             let int_operation = matches!(type_ref, CoreType::Function { .. })
                 .then(|| runtime_int_operation_with_evidence(name, evidence))
                 .flatten();
-            if int_operation.is_none() {
+            if int_operation.is_none() && runtime_collection_operation(name, evidence).is_none() {
                 collect_evidence_runtime_requirements(evidence, requirements);
             }
             if let Some(operation) = int_operation {
@@ -75,7 +72,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_numeric_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
-            if let Some(operation) = runtime_standard_operation(name) {
+            if let Some(operation) = runtime_prelude_collection_operation(name, evidence)
+                .or_else(|| runtime_standard_operation(name))
+            {
                 push_unique(requirements, operation.runtime_feature);
             }
             if let Some(operation) = runtime_iterator_operation(name) {
@@ -132,23 +131,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 trait_method_operation
             {
                 push_unique(requirements, dictionary.runtime_feature);
-            } else if let Some(operation) = runtime_collection_for_each_operation(callee, evidence)
+            } else if let Some(operation) = runtime_prelude_collection_operation(callee, evidence)
+                .or_else(|| runtime_standard_operation(callee))
             {
-                push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
-                push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_collection_sum_operation(callee, evidence) {
-                push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_collection_product_operation(callee, evidence) {
-                push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_collection_combine_operation(callee, evidence) {
-                push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_collection_predicate_operation(callee, evidence)
-            {
-                push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_collection_operation(callee, evidence) {
-                push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_standard_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_stream_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
@@ -564,10 +549,12 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             let int_operation = matches!(type_ref, CoreType::Function { .. })
                 .then(|| runtime_int_operation_with_evidence(name, evidence))
                 .flatten();
-            if int_operation.is_none() {
+            if int_operation.is_none() && runtime_collection_operation(name, evidence).is_none() {
                 collect_evidence_runtime_imports(evidence, imports);
             }
-            if let Some(operation) = runtime_standard_operation(name) {
+            if let Some(operation) = runtime_prelude_collection_operation(name, evidence)
+                .or_else(|| runtime_standard_operation(name))
+            {
                 push_import_unique(
                     imports,
                     TypeScriptImport {
@@ -706,65 +693,9 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                         local: dictionary.local_name.to_owned(),
                     },
                 );
-            } else if let Some(operation) = runtime_collection_for_each_operation(callee, evidence)
+            } else if let Some(operation) = runtime_prelude_collection_operation(callee, evidence)
+                .or_else(|| runtime_standard_operation(callee))
             {
-                push_import_unique(
-                    imports,
-                    TypeScriptImport {
-                        feature: operation.runtime_feature.to_owned(),
-                        local: operation.local_name.to_owned(),
-                    },
-                );
-            } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
-                push_import_unique(
-                    imports,
-                    TypeScriptImport {
-                        feature: operation.runtime_feature.to_owned(),
-                        local: operation.local_name.to_owned(),
-                    },
-                );
-            } else if let Some(operation) = runtime_collection_sum_operation(callee, evidence) {
-                push_import_unique(
-                    imports,
-                    TypeScriptImport {
-                        feature: operation.runtime_feature.to_owned(),
-                        local: operation.local_name.to_owned(),
-                    },
-                );
-            } else if let Some(operation) = runtime_collection_product_operation(callee, evidence) {
-                push_import_unique(
-                    imports,
-                    TypeScriptImport {
-                        feature: operation.runtime_feature.to_owned(),
-                        local: operation.local_name.to_owned(),
-                    },
-                );
-            } else if let Some(operation) = runtime_collection_combine_operation(callee, evidence) {
-                push_import_unique(
-                    imports,
-                    TypeScriptImport {
-                        feature: operation.runtime_feature.to_owned(),
-                        local: operation.local_name.to_owned(),
-                    },
-                );
-            } else if let Some(operation) = runtime_collection_predicate_operation(callee, evidence)
-            {
-                push_import_unique(
-                    imports,
-                    TypeScriptImport {
-                        feature: operation.runtime_feature.to_owned(),
-                        local: operation.local_name.to_owned(),
-                    },
-                );
-            } else if let Some(operation) = runtime_collection_operation(callee, evidence) {
-                push_import_unique(
-                    imports,
-                    TypeScriptImport {
-                        feature: operation.runtime_feature.to_owned(),
-                        local: operation.local_name.to_owned(),
-                    },
-                );
-            } else if let Some(operation) = runtime_standard_operation(callee) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

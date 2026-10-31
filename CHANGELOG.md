@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.132] - 2026-10-31
+
+### Fixed
+
+- Partially applied Prelude collection functions now compile to typed curried TypeScript functions instead of failing the generated type check.
+- Standard `Reducible` dictionaries on the TS target now expose their parent `Iterable`, so generic code that needs both constraints works with Array, List and Range.
+- Polymorphic top-level values such as `let absent = Nothing` can be used at several types on the TS target; the generated TypeScript loads and type-checks.
+
+### Changed
+
+- The probe harnesses moved from `scripts/` to `scripts/probes/`.
+
 ## [0.61.131] - 2026-10-31
 
 ### Added

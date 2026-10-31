@@ -403,6 +403,7 @@ export function reduce<K, V, A>(
 
 export const mapIterable = /* @__PURE__ */ Object.freeze({ iterate })
 export const mapReducible = /* @__PURE__ */ Object.freeze({
+  ...mapIterable,
   reduce:
     <A>(initial: A) =>
     <K, V>(step: (accumulator: A) => (entry: readonly [K, V]) => A) =>

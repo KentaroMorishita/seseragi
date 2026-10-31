@@ -1,0 +1,23 @@
+import * as values from "./values"
+import * as facade from "./facade"
+
+let absent = Nothing
+
+pub effect fn main = do {
+  let a: Maybe<Int> = absent
+  let b: Maybe<String> = absent
+  let c: Maybe<Int> = values.missing ()
+  let d: Maybe<String> = facade.missing ()
+  println (show a)
+  println (show b)
+  println (show c)
+  println (show d)
+  println (show (values.applyIdentity 42))
+  println (facade.applyIdentity "hello")
+  println (values.renderValue 42)
+  println (facade.renderValue "hello")
+  let e: Int = values.zeroValue ()
+  let f: Float = facade.zeroValue ()
+  println (show e)
+  println (show f)
+}

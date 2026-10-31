@@ -214,12 +214,26 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 if *exported {
                     output.push_str("export ");
                 }
-                output.push_str(&format!(
-                    "const {name}: {}{} = {};\n",
-                    render_type_parameters(type_parameters),
-                    render_typescript_type(type_ref),
-                    render_generic_initializer(initializer, type_parameters)
-                ));
+                if !type_parameters.is_empty()
+                    && !matches!(type_ref, crate::TypeScriptType::Function { .. })
+                {
+                    // TS quantifies call signatures, not data types. Check the
+                    // initializer in a generic scope, then evaluate it once in
+                    // source order. Reads retain their checked source monotype.
+                    output.push_str(&format!(
+                        "const {name} = ({}(): {} => ({}))();\n",
+                        render_arrow_type_parameters(type_parameters),
+                        render_typescript_type(type_ref),
+                        render_typescript_expr(initializer),
+                    ));
+                } else {
+                    output.push_str(&format!(
+                        "const {name}: {}{} = {};\n",
+                        render_type_parameters(type_parameters),
+                        render_typescript_type(type_ref),
+                        render_generic_initializer(initializer, type_parameters)
+                    ));
+                }
             }
         }
     }

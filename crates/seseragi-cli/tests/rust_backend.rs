@@ -241,7 +241,7 @@ fn closed_display_factories_are_lazy_on_fresh_bun_and_node_modules() {
         fs::write(&file, compiled.generated.typescript).unwrap();
         let output = bounded(
             Command::new(runtime("bun", &directory))
-                .arg(root.join("scripts/closed-display-probe.ts"))
+                .arg(root.join("scripts/probes/closed-display-probe.ts"))
                 .arg(&file)
                 .current_dir(&root),
             &directory,
@@ -1095,7 +1095,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
             let emitted = directory.join("generated.ts");
             fs::write(&emitted, compiled.generated.typescript).unwrap();
             let output = Command::new("bun")
-                .arg(root.join("scripts/list-probe.ts"))
+                .arg(root.join("scripts/probes/list-probe.ts"))
                 .arg(&emitted)
                 .arg(fixture_path.with_extension("stdout"))
                 .current_dir(&root)
@@ -1135,7 +1135,7 @@ fn unicode_character_fixture_agrees_on_bun_and_node() {
         let emitted = directory.join("generated.ts");
         fs::write(&emitted, compiled.generated.typescript).unwrap();
         let output = Command::new("bun")
-            .arg(root.join("scripts/char-probe.ts"))
+            .arg(root.join("scripts/probes/char-probe.ts"))
             .arg(&emitted)
             .current_dir(&root)
             .output()
@@ -1237,7 +1237,7 @@ fn main() {
         let emitted = directory.join("generated.ts");
         fs::write(&emitted, compiled.generated.typescript).unwrap();
         let output = Command::new("bun")
-            .arg(root.join("scripts/float-probe.ts"))
+            .arg(root.join("scripts/probes/float-probe.ts"))
             .arg(&emitted)
             .current_dir(&root)
             .output()
@@ -1410,7 +1410,7 @@ fn scalar_tail_loops_preserve_primitive_traces_on_bun_and_node() {
             let emitted = directory.join("generated.ts");
             fs::write(&emitted, compiled.generated.typescript).unwrap();
             let output = Command::new("bun")
-                .arg(root.join("scripts/scalar-tail-probe.ts"))
+                .arg(root.join("scripts/probes/scalar-tail-probe.ts"))
                 .arg(&emitted)
                 .args(if fixture == "scalar-global" {
                     vec!["globals"]

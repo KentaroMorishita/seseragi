@@ -390,7 +390,7 @@ fn private_data_host_effect_factory_retains_state_and_drains_cleanup() {
     for engine in ["bun", "node"] {
         let result = successful(bounded(
             Command::new(runtime(engine, &scratch.0))
-                .arg(root().join("scripts/program-wasm-host-ref-probe.mjs"))
+                .arg(root().join("scripts/probes/program-wasm-host-ref-probe.mjs"))
                 .arg(&output)
                 .env("PATH", ""),
             &scratch.0,
@@ -526,7 +526,7 @@ fn private_data_host_effect_standard_package_keeps_the_original_typed_bridge() {
         for engine in ["bun", "node"] {
             let result = successful(bounded(
                 Command::new(runtime(engine, &scratch.0))
-                    .arg(root().join("scripts/program-wasm-host-ref-probe.mjs"))
+                    .arg(root().join("scripts/probes/program-wasm-host-ref-probe.mjs"))
                     .arg(&directory)
                     .arg("package")
                     .env("PATH", ""),

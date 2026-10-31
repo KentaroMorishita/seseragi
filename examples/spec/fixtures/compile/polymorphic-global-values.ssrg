@@ -1,0 +1,18 @@
+let absent = Nothing
+let savedAbsent = absent
+let identity = \value -> value
+let savedIdentity = identity
+
+pub fn intIdentity -> (Int -> Int) = identity
+pub fn stringIdentity -> (String -> String) = identity
+
+pub effect fn main = do {
+  let a: Maybe<Int> = absent
+  let b: Maybe<String> = savedAbsent
+  println (show a)
+  println (show b)
+  println (show (identity 42))
+  println (identity "identity")
+  println (show (savedIdentity True))
+  println (savedIdentity "saved")
+}

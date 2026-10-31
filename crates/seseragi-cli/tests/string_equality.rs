@@ -755,7 +755,7 @@ fn standard_web_program_string_predicate_matches_native_and_strict_bridge() {
         for engine in ["bun", "node"] {
             let result = successful(bounded(
                 Command::new(runtime(engine, &scratch.0))
-                    .arg(root().join("scripts/program-wasm-string-equality-probe.mjs"))
+                    .arg(root().join("scripts/probes/program-wasm-string-equality-probe.mjs"))
                     .arg(&directory),
                 &scratch.0,
             ));
