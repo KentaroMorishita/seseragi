@@ -1,0 +1,10 @@
+import { seed } from "./seed"
+
+let identity = \value -> value
+let retained = identity
+let tagged = \value -> (seed, retained value)
+let render = \value -> show value
+
+pub let number: Int -> (Int, Int) = tagged
+pub let text: String -> (Int, String) = tagged
+pub fn label<A> value: A -> String where Show<A> = render value

@@ -2372,13 +2372,94 @@ pub fn probe -> (Int, Int, Int) = (base, retained (), partial pair.right)
 }
 
 #[test]
-fn globals_reject_unproved_polymorphism_before_emission() {
-    let source = "let identity = \\x -> x\npub fn probe -> Int = identity 42\n";
-    let core =
-        compile_core_module(CompileInput::new("global.ssrg", "native/main", source)).unwrap();
-    let error = emit_rust_module(&core.core_ir, "probe").err().unwrap();
-    assert!(error.message.contains("global"), "{error:?}");
-    assert!(error.origin.is_some());
+fn polymorphic_globals_keep_erased_values_and_per_use_dictionaries() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/polymorphic-globals.ssrg");
+    let core = compile_core_module(CompileInput::new("global.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    let artifact = emit_rust_module(&core, "main").unwrap();
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(
+        output.stdout,
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/polymorphic-globals.stdout")
+    );
+    assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+}
+
+#[test]
+fn polymorphic_globals_share_one_initialized_value_across_types() {
+    let artifact = emit(
+        "let identity = \\value -> value\nlet retained = identity\nfn number -> (Int -> Int) = identity\nfn text -> (String -> String) = retained\npub fn probe -> Int = 42\n",
+    );
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let generated = format!(
+        r#"{}
+fn main() {{
+    initialize_globals();
+    let original = get_global(0).node_id().unwrap();
+    assert_eq!(get_global(1).node_id(), Some(original));
+    for _ in 0..100 {{
+        let number = {}(vec![]).apply(V::Unit);
+        let text = {}(vec![]).apply(V::Unit);
+        assert_eq!(number.node_id(), Some(original));
+        assert_eq!(text.node_id(), Some(original));
+        assert_eq!(number.apply(V::Int(42)).render(), "42");
+        assert_eq!(text.apply(V::text("hello")).render(), "hello");
+    }}
+    clear_globals();
+    clear_dictionaries();
+    assert_eq!(LIVE.with(Cell::get), 0);
+}}
+"#,
+        &artifact.source[..main],
+        rust_id("native/main::number"),
+        rust_id("native/main::text"),
+    );
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&generated))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+}
+
+#[test]
+fn polymorphic_globals_link_in_dependency_order_and_keep_dictionary_owners() {
+    let loaded = seseragi_project::load_local_project(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/spec/fixtures/rust-backend-projects/polymorphic-globals"
+    ))
+    .unwrap();
+    let checked = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+    let modules = checked
+        .compiled
+        .order
+        .iter()
+        .map(|id| &checked.compiled.modules[id].core_ir)
+        .collect::<Vec<_>>();
+    let artifact =
+        seseragi_backend_rust::emit_rust_project(&modules, &checked.entry_module, "main").unwrap();
+    assert_eq!(artifact.metadata.modules.len(), 5);
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(output.stdout, include_bytes!("../../../examples/spec/fixtures/rust-backend-projects/polymorphic-globals/expected.stdout"));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+}
+
+#[test]
+fn globals_reject_erased_source_parameters_before_emission() {
     // Ordinary constrained aliases keep their source parameters and evidence
     // ABI. Erasing them cannot turn the body into a certified method factory.
     let source = "fn render<A> value: A -> String where Show<A> = show value\nlet retainedValue = render\npub fn probe -> String = retainedValue 42\n";

@@ -1,0 +1,2 @@
+import { number } from "./values"
+pub let result: (Int, Int) = number 7

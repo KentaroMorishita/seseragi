@@ -17,7 +17,8 @@ outside the scalar slice retain the ordinary implementation.
 Computed initializers, polymorphic values, Ref/Effect values, nominal types
 and unknown canonical owners do not supply scalar global facts. This bounded
 proof does not authorize constant propagation, read hoisting or moving an
-initializer. General polymorphic native globals remain separate work.
+initializer. Polymorphic native globals use ordinary shared value storage
+rather than this scalar proof.
 
 `scalar-global.ssrg` compares the recognized loop with an ordinary loop,
 including reusable partials and local/parameter shadowing. Native and
