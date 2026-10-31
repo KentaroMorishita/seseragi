@@ -1,0 +1,14 @@
+fn identity<A> value: A -> A = value
+let render = \value -> show value
+let defaultValue = zero
+
+pub effect fn main = do {
+  println (show (identity 42))
+  println (identity "hello")
+  println (render 42)
+  println (render "hello")
+  let a: Int = defaultValue ()
+  let b: Float = defaultValue ()
+  println (show a)
+  println (show b)
+}
