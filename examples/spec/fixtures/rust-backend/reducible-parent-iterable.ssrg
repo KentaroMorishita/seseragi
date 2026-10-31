@@ -1,0 +1,40 @@
+import * as arrays from "std/array"
+import * as iterator from "std/iterator"
+import * as maps from "std/map"
+import * as sets from "std/set"
+
+newtype Reverse<A> = Array<A>
+
+instance<A> Iterable<Reverse<A>, A> {
+  fn iterate values:Reverse<A> -> iterator.Iterator<A> = match values {
+    Reverse items -> iterator.unfold (\index:Int -> match arrays.get index items {
+      Nothing -> Nothing
+      Just value -> Just (value, index + 1)
+    }) 0
+  }
+}
+
+instance<A> Reducible<Reverse<A>, A> {
+  fn reduce<B> initial:B -> step:(B -> A -> B) -> values:Reverse<A> -> B = match values {
+    Reverse items -> arrays.reduceRight initial (\value:A -> \acc:B -> step acc value) items
+  }
+}
+
+fn visit<C,A> action:(A -> Effect<{console:Console},ConsoleError,Unit>) -> values:C -> Effect<{console:Console},ConsoleError,Unit> where Reducible<C,A> = forEach action values
+
+pub effect fn main = do {
+  visit (\n:Int -> println (show n)) [6,7]
+  visit (\n:Int -> println (show n)) `[8,9]
+  visit (\entry:(Int,Int) -> match entry {
+    (key,value) -> println (show (key + value))
+  }) (maps.fromEntries [(2,20),(1,10),(2,22)])
+  visit (\n:Int -> println (show n)) (sets.fromIterable [3,1,3])
+  let selected:Reverse<Int> -> Effect<{console:Console},ConsoleError,Unit> = visit (\n:Int -> println (show n))
+  let cold = selected (Reverse [4,5])
+  println "created"
+  cold
+  cold
+  let empty:Array<Int> = []
+  visit (\n:Int -> println (show n)) empty
+  visit (\n:Int -> println (show n)) (Reverse empty)
+}

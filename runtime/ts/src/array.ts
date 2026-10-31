@@ -177,14 +177,6 @@ export function reduce<A, B>(
   return accumulator
 }
 
-export const arrayReducible = /* @__PURE__ */ Object.freeze({
-  reduce:
-    <A, B>(initial: B) =>
-    (step: (accumulator: B) => (value: A) => B) =>
-    (values: ReadonlyArray<A>): B =>
-      reduce(initial, step, values),
-})
-
 function arrayIterator<A>(
   values: ReadonlyArray<A>,
   index: number
@@ -200,6 +192,15 @@ function arrayIterator<A>(
 export const arrayIterable = /* @__PURE__ */ Object.freeze({
   iterate: <A>(values: ReadonlyArray<A>): SeseragiIterator<A> =>
     arrayIterator(values, 0),
+})
+
+export const arrayReducible = /* @__PURE__ */ Object.freeze({
+  ...arrayIterable,
+  reduce:
+    <A, B>(initial: B) =>
+    (step: (accumulator: B) => (value: A) => B) =>
+    (values: ReadonlyArray<A>): B =>
+      reduce(initial, step, values),
 })
 
 /** Convert an Array to the persistent List representation in source order. */

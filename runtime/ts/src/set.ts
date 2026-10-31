@@ -141,6 +141,7 @@ export function iterate<A>(values: Set<A>): Iterator<A> {
 
 export const setIterable = /* @__PURE__ */ Object.freeze({ iterate })
 export const setReducible = /* @__PURE__ */ Object.freeze({
+  ...setIterable,
   reduce:
     <B>(initial: B) =>
     <A>(step: (accumulator: B) => (value: A) => B) =>

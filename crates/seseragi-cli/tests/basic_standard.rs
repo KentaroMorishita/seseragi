@@ -3242,6 +3242,16 @@ fn basic_decimal_keys_argument_and_returned_callback_defects_run_finalizers_and_
 }
 
 #[test]
+fn prelude_reducible_parent_projects_the_selected_iterable() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/reducible-parent-iterable.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/reducible-parent-iterable.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn prelude_collections_match_ts_with_selected_dictionaries_saved_stages_and_cold_replay() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/prelude-collections.ssrg"),
