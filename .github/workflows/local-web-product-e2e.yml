@@ -89,8 +89,8 @@ jobs:
       - name: Verify SDK runner and record byte transport controls
         run: |
           node --test scripts/local-web-product-e2e-node.test.cjs
-          bun scripts/local-web-product-e2e-transport-probe.cjs target/local-web-product-e2e-transport/bun.json
-          node scripts/local-web-product-e2e-transport-probe.cjs target/local-web-product-e2e-transport/node.json
+          bun scripts/probes/local-web-product-e2e-transport-probe.cjs target/local-web-product-e2e-transport/bun.json
+          node scripts/probes/local-web-product-e2e-transport-probe.cjs target/local-web-product-e2e-transport/node.json
       - name: Run installed VSIX and native archive through the product journey
         run: xvfb-run --auto-servernum bun run test:local-web-e2e
       - uses: actions/upload-artifact@v4

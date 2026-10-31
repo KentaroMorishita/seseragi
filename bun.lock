@@ -21,7 +21,7 @@
     },
     "runtime/ts": {
       "name": "@seseragi/runtime",
-      "version": "0.61.73",
+      "version": "0.61.131",
     },
   },
   "packages": {

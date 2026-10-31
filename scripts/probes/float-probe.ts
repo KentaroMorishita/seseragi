@@ -3,8 +3,8 @@ import path from "node:path"
 import { pathToFileURL } from "node:url"
 import ts from "typescript"
 
-const [input, golden] = process.argv.slice(2)
-assert(input && golden, "expected emitted TypeScript and a fixture stdout file")
+const input = process.argv[2]
+assert(input, "expected an emitted TypeScript Float fixture")
 const program = ts.createProgram([input], {
   noEmit: true,
   strict: true,
@@ -30,19 +30,15 @@ const built = await Bun.build({
 })
 assert(built.success, built.logs.map(String).join("\n"))
 assert.equal(built.outputs.length, 1)
-const output = path.join(path.dirname(input), "list-module.mjs")
+const output = path.join(path.dirname(input), "float-module.mjs")
 await Bun.write(output, built.outputs[0])
+const harness = path.resolve("scripts/probes/float-probe.mjs")
 let expected: unknown
 for (const runtime of [process.execPath, "node"]) {
-  const result = Bun.spawnSync(
-    [
-      runtime,
-      path.resolve("scripts/list-probe.mjs"),
-      pathToFileURL(output).href,
-      golden,
-    ],
-    { stdout: "pipe", stderr: "pipe" }
-  )
+  const result = Bun.spawnSync([runtime, harness, pathToFileURL(output).href], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
   assert(result.success, result.stderr.toString())
   const report = JSON.parse(result.stdout.toString())
   if (expected !== undefined) assert.deepEqual(report, expected)

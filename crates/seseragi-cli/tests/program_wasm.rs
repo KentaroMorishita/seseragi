@@ -306,7 +306,7 @@ fn standard_web_build_owns_program_assets_types_and_the_selected_import_closure(
         for engine in ["bun", "node"] {
             let result = successful(bounded(
                 Command::new(engine)
-                    .arg(root.join("scripts/program-wasm-probe.mjs"))
+                    .arg(root.join("scripts/probes/program-wasm-probe.mjs"))
                     .arg(&directory),
                 &scratch.0,
             ));
@@ -762,7 +762,7 @@ fn checked_program_runs_on_bun_and_node_and_preserves_owned_lifetimes() {
         let engine = runtime(engine, &scratch.0);
         let result = successful(bounded(
             Command::new(engine)
-                .arg(root().join("scripts/program-wasm-probe.mjs"))
+                .arg(root().join("scripts/probes/program-wasm-probe.mjs"))
                 .arg(&output)
                 .arg(&other)
                 .current_dir(&scratch.0)
@@ -1080,7 +1080,7 @@ fn providerless_program_effects_run_cancel_and_release_on_bun_and_node() {
         let engine = runtime(engine, &scratch.0);
         let result = successful(bounded(
             Command::new(engine)
-                .arg(root().join("scripts/program-wasm-effect-probe.mjs"))
+                .arg(root().join("scripts/probes/program-wasm-effect-probe.mjs"))
                 .arg(&output)
                 .arg(&former_output)
                 .current_dir(&scratch.0)
@@ -1743,7 +1743,7 @@ fn standard_web_effect_build_owns_async_program_types_and_lifetimes() {
             for scenario in ["normal", "defect"] {
                 let result = successful(bounded(
                     Command::new(runtime(engine, &scratch.0))
-                        .arg(root().join("scripts/program-wasm-effect-package-probe.mjs"))
+                        .arg(root().join("scripts/probes/program-wasm-effect-package-probe.mjs"))
                         .arg(&directory)
                         .arg(scenario)
                         .current_dir(&scratch.0)
@@ -1794,7 +1794,7 @@ fn effect_success_callbacks_return_cold_owned_effects() {
     for name in ["bun", "node"] {
         let result = successful(bounded(
             Command::new(runtime(name, &scratch.0))
-                .arg(root().join("scripts/program-wasm-effect-factory-probe.mjs"))
+                .arg(root().join("scripts/probes/program-wasm-effect-factory-probe.mjs"))
                 .arg(&output)
                 .env("PATH", ""),
             &scratch.0,
@@ -2043,7 +2043,7 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
         for engine in ["bun", "node"] {
             let result = successful(bounded(
                 Command::new(runtime(engine, &scratch.0))
-                    .arg(root().join("scripts/program-wasm-effect-factory-probe.mjs"))
+                    .arg(root().join("scripts/probes/program-wasm-effect-factory-probe.mjs"))
                     .arg(&directory)
                     .arg("package")
                     .env("PATH", ""),
@@ -2084,7 +2084,7 @@ fn private_ref_effect_callbacks_retain_state_and_release_the_instance() {
     for engine in ["bun", "node"] {
         let result = successful(bounded(
             Command::new(runtime(engine, &scratch.0))
-                .arg(root().join("scripts/program-wasm-private-ref-probe.mjs"))
+                .arg(root().join("scripts/probes/program-wasm-private-ref-probe.mjs"))
                 .arg(&destination)
                 .env("PATH", ""),
             &scratch.0,
@@ -2243,7 +2243,7 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
         for engine in ["bun", "node"] {
             let result = successful(bounded(
                 Command::new(runtime(engine, &scratch.0))
-                    .arg(root().join("scripts/program-wasm-private-ref-probe.mjs"))
+                    .arg(root().join("scripts/probes/program-wasm-private-ref-probe.mjs"))
                     .arg(&directory)
                     .arg("package")
                     .env("PATH", ""),

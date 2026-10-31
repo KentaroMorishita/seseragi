@@ -1,0 +1,8 @@
+let absent = Nothing
+
+pub effect fn main = do {
+  let a: Maybe<Int> = absent
+  let b: Maybe<String> = absent
+  println (show a)
+  println (show b)
+}

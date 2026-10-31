@@ -15,13 +15,14 @@ export const sizeErrorEq = /* @__PURE__ */ Object.freeze({
       left.value === right.value,
 })
 
-export type Reducible<Collection, Element> = Readonly<{
-  reduce: <Accumulator>(
-    initial: Accumulator
-  ) => (
-    step: (accumulator: Accumulator) => (value: Element) => Accumulator
-  ) => (values: Collection) => Accumulator
-}>
+export type Reducible<Collection, Element> = Iterable<Collection, Element> &
+  Readonly<{
+    reduce: <Accumulator>(
+      initial: Accumulator
+    ) => (
+      step: (accumulator: Accumulator) => (value: Element) => Accumulator
+    ) => (values: Collection) => Accumulator
+  }>
 
 export type Iterable<Collection, Element> = Readonly<{
   iterate: (values: Collection) => Iterator<Element>

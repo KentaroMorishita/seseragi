@@ -39,14 +39,6 @@ export function reduce<B>(
   return accumulator
 }
 
-export const rangeReducible = /* @__PURE__ */ Object.freeze({
-  reduce:
-    <B>(initial: B) =>
-    (step: (accumulator: B) => (value: number) => B) =>
-    (range: IntRange): B =>
-      reduce(initial, step, range),
-})
-
 function emptyIterator(): SeseragiIterator<number> {
   return { next: () => Nothing }
 }
@@ -74,6 +66,15 @@ export const rangeIterable = /* @__PURE__ */ Object.freeze({
     range.start > range.end
       ? emptyIterator()
       : rangeIterator(range, range.start),
+})
+
+export const rangeReducible = /* @__PURE__ */ Object.freeze({
+  ...rangeIterable,
+  reduce:
+    <B>(initial: B) =>
+    (step: (accumulator: B) => (value: number) => B) =>
+    (range: IntRange): B =>
+      reduce(initial, step, range),
 })
 
 /** Pure comprehension lowering for the standard Range Iterable instance. */

@@ -1044,6 +1044,19 @@ pub(crate) fn runtime_collection_for_each_operation(
     .map(|_| &COLLECTION_FOR_EACH)
 }
 
+pub(crate) fn runtime_prelude_collection_operation(
+    callee: &str,
+    evidence: &[CoreCallEvidence],
+) -> Option<&'static RuntimeCollectionOperation> {
+    runtime_collection_operation(callee, evidence)
+        .or_else(|| runtime_collection_for_each_operation(callee, evidence))
+        .or_else(|| runtime_collection_join_operation(callee, evidence))
+        .or_else(|| runtime_collection_sum_operation(callee, evidence))
+        .or_else(|| runtime_collection_product_operation(callee, evidence))
+        .or_else(|| runtime_collection_combine_operation(callee, evidence))
+        .or_else(|| runtime_collection_predicate_operation(callee, evidence))
+}
+
 pub(crate) fn runtime_collection_operation_for_feature(
     feature: &str,
 ) -> Option<RuntimeCollectionOperation> {
