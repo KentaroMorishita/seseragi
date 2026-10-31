@@ -325,19 +325,26 @@ fn parse_record_pattern_field(
         end: name_token.end,
     };
     let mut cursor = 1usize;
+    let query_colon = significant
+        .get(cursor)
+        .and_then(|index| tokens.get(*index))
+        .is_some_and(|token| token.raw == "?:");
     let optional = significant
         .get(cursor)
         .and_then(|index| tokens.get(*index))
-        .is_some_and(|token| token.raw == "?");
+        .is_some_and(|token| matches!(token.raw.as_str(), "?" | "?:"));
     if optional {
         cursor += 1;
     }
-    let pattern = if significant
-        .get(cursor)
-        .and_then(|index| tokens.get(*index))
-        .is_some_and(|token| token.kind == TokenKind::PunctuationColon)
+    let pattern = if query_colon
+        || significant
+            .get(cursor)
+            .and_then(|index| tokens.get(*index))
+            .is_some_and(|token| token.kind == TokenKind::PunctuationColon)
     {
-        let pattern_start = significant.get(cursor + 1).copied()?;
+        let pattern_start = significant
+            .get(cursor + usize::from(!query_colon))
+            .copied()?;
         parse_pattern_range(tokens, pattern_start, end)
     } else {
         if cursor != significant.len() {

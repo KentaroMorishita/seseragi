@@ -1,0 +1,96 @@
+alias Row = { note?: String }
+
+fn query<A> row: { note?: A } -> Maybe<A> = match row {
+  { note? } -> note
+}
+
+fn label row: Row -> String = match row {
+  { note?: Just "chosen" } -> "chosen"
+  { note?: Just value } when value == "guarded" -> "guarded"
+  { note?: Just value } -> value
+  { note?: Nothing } -> "absent"
+}
+
+fn nested row: { note?: Maybe<Int> } -> Int = match row {
+  { note?: Just (Just value) } -> value
+  { note?: Just Nothing } -> -1
+  { note?: Nothing } -> -2
+}
+
+fn required row: { note: String } -> String = match row {
+  { note?: Just value } -> value
+}
+
+fn requiredQuery row: { note: Maybe<Int> } -> Maybe<Maybe<Int>> = match row {
+  { note? } -> note
+}
+
+fn unit row: { note?: Unit } -> String = match row {
+  { note?: Just _ } -> "unit"
+  { note?: Nothing } -> "absent unit"
+}
+
+fn destructure row: Row -> Maybe<String> = {
+  let { note? } = row
+  note
+}
+
+fn guardedQuery row: Row -> Maybe<String> = match row {
+  { note? } when False -> Just "skipped"
+  { note?: value } -> value
+}
+
+fn property row: { __proto__?: String } -> Maybe<String> = match row {
+  { __proto__? } -> __proto__
+}
+
+type Content = | Label String | Count Int
+
+fn content row: { value?: Content } -> String = match row {
+  { value?: Just (Label text) } -> text
+  { value?: Just (Count count) } -> show count
+  { value?: Nothing } -> "no content"
+}
+
+fn flags row: { first?: Bool, second?: Bool } -> Int = match row {
+  { first?: Nothing } -> 0
+  { first?: Just False } -> 1
+  { first?: Just True, second?: Nothing } -> 2
+  { first?: Just True, second?: Just False } -> 3
+  { first?: Just True, second?: Just True } -> 4
+}
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  let absent: Row = {}
+  let present: Row = { note: "present" }
+  println $ show $ query absent
+  println $ show $ query present
+  println $ label absent
+  println $ label present
+  println $ label { note: "chosen" }
+  println $ label { note: "guarded" }
+  println $ label { ...absent }
+  println $ label { ...present }
+  println $ label { ...absent, note: "override" }
+  println $ show $ nested {}
+  println $ show $ nested { note: Nothing }
+  println $ show $ nested { note: Just 42 }
+  println $ required { note: "required" }
+  println $ show $ requiredQuery { note: Nothing }
+  println $ unit {}
+  println $ unit { note: () }
+  println $ show $ destructure absent
+  println $ show $ destructure present
+  println $ show $ flags {}
+  println $ show $ flags { first: False }
+  println $ show $ flags { first: True }
+  println $ show $ flags { first: True, second: False }
+  println $ show $ flags { first: True, second: True }
+  println $ show $ property {}
+  println $ show $ property { __proto__: "own" }
+  println $ content {}
+  println $ content { value: Label "text" }
+  println $ content { value: Count 7 }
+  println $ show $ guardedQuery absent
+  println $ show $ guardedQuery present
+}

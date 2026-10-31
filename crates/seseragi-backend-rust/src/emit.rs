@@ -1606,6 +1606,9 @@ impl Backend<'_> {
                 CoreDecisionProjection::RecordField { name } => {
                     format!("({value}).field({})", quoted(name))
                 }
+                CoreDecisionProjection::OptionalRecordField { name } => {
+                    format!("({value}).optional_field({})", quoted(name))
+                }
                 CoreDecisionProjection::ListElement { index } => {
                     format!("({value}).list_element({index})")
                 }

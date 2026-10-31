@@ -145,6 +145,7 @@ pub enum CoreDecisionProjection {
     ListElement { index: usize },
     ListRest { start: usize },
     RecordField { name: String },
+    OptionalRecordField { name: String },
     AdtPayload,
 }
 
@@ -330,7 +331,11 @@ fn lower_pattern(
         }
         TypedPattern::Record { fields, .. } => {
             for field in fields {
-                path.push(CoreDecisionProjection::RecordField { name: field.name });
+                path.push(if field.optional {
+                    CoreDecisionProjection::OptionalRecordField { name: field.name }
+                } else {
+                    CoreDecisionProjection::RecordField { name: field.name }
+                });
                 lower_pattern(source, field.pattern, path, tests, bindings);
                 path.pop();
             }

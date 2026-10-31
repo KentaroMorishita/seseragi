@@ -89,6 +89,46 @@ fn exports_each_public_top_level_pattern_binding_with_its_nested_type() {
 }
 
 #[test]
+fn optional_record_bindings_keep_maybe_types_and_required_queries_are_irrefutable() {
+    let source = concat!(
+        "fn query row: { note?: Int } -> Maybe<Int> = { let { note? } = row; note }\n",
+        "fn required row: { note: Int } -> Int = { let { note?: Just value } = row; value }\n",
+    );
+    let diagnostics = semantic_diagnostics("pattern/record-query.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    let typed = type_module("pattern/record-query.ssrg", source);
+    let TypedDecl::Fn {
+        body: TypedExpr::Block { statements, .. },
+        ..
+    } = &typed.declarations[0]
+    else {
+        panic!("expected query block");
+    };
+    let TypedBlockStatement::Let {
+        pattern: TypedPattern::Record { fields, .. },
+        ..
+    } = &statements[0]
+    else {
+        panic!("expected record binding");
+    };
+    assert!(fields[0].optional);
+    assert!(matches!(&fields[0].pattern, TypedPattern::Binding {
+        type_ref: TypedType::Named { name, arguments }, ..
+    } if name == "Maybe" && arguments == &[named("Int")]));
+    let diagnostics = semantic_diagnostics(
+        "pattern/refutable-query.ssrg",
+        "fn query row: { note?: Int } -> Int = { let { note?: Just value } = row; value }\n",
+    );
+    assert!(
+        diagnostics
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.message_key == "binding.refutable-pattern"),
+        "{diagnostics:#?}"
+    );
+}
+
+#[test]
 fn types_block_record_and_struct_pattern_bindings() {
     let source = concat!(
         "struct User { id: Int, name: String }\n",

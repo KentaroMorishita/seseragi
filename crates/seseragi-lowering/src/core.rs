@@ -411,6 +411,8 @@ pub enum CorePattern {
 #[serde(rename_all = "camelCase")]
 pub struct CoreRecordPatternField {
     pub name: String,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub optional: bool,
     pub pattern: CorePattern,
     pub origin: SourceSpan,
 }

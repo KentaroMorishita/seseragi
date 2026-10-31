@@ -22,6 +22,7 @@ use struct_pattern::type_struct_pattern;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) enum CoveragePattern {
     Any,
+    Never,
     Literal(LiteralPattern),
     Constructor {
         constructor: SymbolId,
@@ -131,7 +132,7 @@ fn coverage_is_irrefutable(pattern: &CoveragePattern) -> bool {
             only_variant,
             ..
         } => *only_variant && argument.as_deref().is_none_or(coverage_is_irrefutable),
-        CoveragePattern::Literal(_) | CoveragePattern::Invalid => false,
+        CoveragePattern::Literal(_) | CoveragePattern::Never | CoveragePattern::Invalid => false,
     }
 }
 
