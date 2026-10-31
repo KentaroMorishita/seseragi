@@ -26,6 +26,7 @@ mod comparisons;
 mod concurrency;
 mod console;
 mod decimal;
+mod derived;
 mod display;
 mod effect_conversions;
 mod effect_defects;
@@ -55,8 +56,10 @@ mod returned_calls;
 mod scalar;
 mod sequence_operations;
 mod sequence_order;
+mod standard_errors;
 mod tail;
 mod text;
+mod variables;
 
 use local::{LocalCallable, Scope};
 type Result<T> = std::result::Result<T, RustBackendError>;
@@ -191,6 +194,8 @@ fn emit_body(
     output.push_str(include_str!("runtime_math.rs"));
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_tuple.rs"));
+    output.push_str(include_str!("runtime_derived.rs"));
+    output.push_str(include_str!("runtime_standard_errors.rs"));
     output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_array_operations.rs"));
     output.push_str(include_str!("runtime_sequence.rs"));
@@ -282,6 +287,16 @@ fn emit_body(
             &instance.identity,
         );
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
+        if let Some(dictionary) = backend
+            .derived_dictionary(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
+                id(&instance.identity)
+            ));
+            continue;
+        }
         if let Some(dictionary) = backend
             .json_derived_dictionary(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
@@ -568,6 +583,10 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if let Some(dictionary) = self.derived_structural_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Hash") {
                 self.validate_hash_evidence(selected, scope)?;
             }
@@ -643,6 +662,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = self.big_int_display_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = self.standard_error_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -906,115 +929,7 @@ impl Backend<'_> {
             CoreExpr::String { value, .. } => format!("V::text({})", quoted(value)),
             CoreExpr::Char { value, .. } => characters::character_literal(value)?,
             CoreExpr::Boolean { value, .. } => format!("V::Bool({value})"),
-            CoreExpr::Variable {
-                name,
-                evidence,
-                type_ref,
-                ..
-            } => {
-                if let Some(value) =
-                    self.clock_reference(name, evidence, type_ref, core_expr_origin(expr), scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) = self.console_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.die_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.concurrency_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.from_either_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.filesystem_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.bytes_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.big_int_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.decimal_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.json_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.json_codec_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.json_decoder_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.collection_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.array_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.sequence_order_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.iterator_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.iterable_build_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.collection_control_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.maybe_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) =
-                    self.either_operation_reference(name, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) = self.sequence_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if let Some(value) = self.number_parse_reference(name, evidence, type_ref, scope)? {
-                    return Ok(value);
-                }
-                if equality::is_equality(name) && !scope.contains(name) {
-                    self.equality_result_type(type_ref, 0, evidence, scope)?;
-                }
-                if comparisons::is_comparison(name) && !scope.contains(name) {
-                    self.comparison_result_type(type_ref, 0, evidence, scope)?;
-                }
-                if operators::primitive_reference(name, evidence).is_some() && !scope.contains(name)
-                {
-                    self.validate_primitive_operator_result(&evidence[0], 0, type_ref, scope)?;
-                }
-                if name == "std/float::power" && !scope.contains(name) {
-                    self.validate_float_power_type(type_ref, 0, scope)?;
-                }
-                self.reference(name, evidence, scope)?
-            }
+            CoreExpr::Variable { .. } => self.variable(expr, scope)?,
             CoreExpr::EffectOperation {
                 operation,
                 arguments,
