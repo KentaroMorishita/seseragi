@@ -50,6 +50,7 @@ mod local;
 mod math;
 mod maybe;
 mod methods;
+mod monads;
 mod number_parse;
 mod operators;
 mod prelude_collections;
@@ -211,6 +212,8 @@ fn emit_body(
     output.push_str(include_str!("runtime_collection_control.rs"));
     output.push_str(include_str!("runtime_prelude_collections.rs"));
     output.push_str(include_str!("runtime_traversable.rs"));
+    output.push_str(include_str!("runtime_monad.rs"));
+    output.push_str(include_str!("runtime_transformer.rs"));
     output.push_str(include_str!("runtime_maybe.rs"));
     output.push_str(include_str!("runtime_either.rs"));
     output.push_str(include_str!("runtime_text.rs"));
@@ -329,7 +332,17 @@ fn emit_body(
             .validate_hash_instance(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
         let mut values = Vec::new();
-        if backend
+        if let Some(fields) = backend
+            .monad_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            for field in fields {
+                values.push(format!(
+                    "({field:?}, {}.field({field:?}))",
+                    id("\0dictionary_0")
+                ));
+            }
+        } else if backend
             .traversable_supertrait(instance, &scope)
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
         {
@@ -358,6 +371,9 @@ fn emit_body(
             .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
         {
             values.push(format!("(\"eq\", {}.field(\"eq\"))", id("\0dictionary_0")));
+        }
+        if monads::tail_bind(instance) {
+            values.push("(\"\\0nativeTailBind\", V::Bool(true))".into());
         }
         for method in methods {
             let mut method_scope = scope.clone();
@@ -611,6 +627,10 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if let Some(dictionary) = self.monad_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.derived_structural_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
@@ -1384,6 +1404,13 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => self.comprehension(element, clauses, type_ref, true, scope)?,
+            CoreExpr::MonadDo {
+                statements,
+                result,
+                evidence,
+                type_ref,
+                ..
+            } => self.monad_do(statements, result, evidence, type_ref, scope)?,
             _ => {
                 return Err(format!(
                     "Rust backend: unsupported {} expression",

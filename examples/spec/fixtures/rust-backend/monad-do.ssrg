@@ -1,0 +1,118 @@
+type Box<A> = | Box A
+
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> = match value {
+    Box item -> Box (f item)
+  }
+}
+instance Applicative<Box> {
+  fn pure<A> value: A -> Box<A> = Box value
+
+  fn apply<A, B> functions: Box<A -> B> -> value: Box<A> -> Box<B> =
+    match (functions, value) {
+    (Box f, Box item) -> Box (f item)
+  }
+}
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value {
+    Box item -> f item
+  }
+}
+
+fn lift<F<_>> f: (Int -> Int) -> value: F<Int> -> F<Int> where Functor<F> = map f value
+fn twice<M<_>> value: M<Int> -> M<Int> where Monad<M> = do {
+  first <- value
+  let second = first + 1
+  pure (second * 2)
+}
+fn choose<M<_>> value: M<Int> -> M<Int> where Monad<M> =
+  value
+  >>= (\item -> pure (item + 10))
+fn ignored<M<_>> value: M<Int> -> M<Int> where Monad<M> = do {
+  value
+  pure 9
+}
+fn emptyMaybe -> Maybe<Int> = Nothing
+fn leftEither -> Either<String, Int> = Left "stop"
+fn rightEither -> Either<String, Int> = Right 20
+fn maybeStop -> Maybe<Int> = do {
+  x <- (emptyMaybe ())
+  y <- Just (1 / 0)
+  pure (x + y)
+}
+fn dangerEither -> Either<String, Int> = Right (1 / 0)
+fn eitherStop -> Either<String, Int> = do {
+  x <- (leftEither ())
+  y <- dangerEither ()
+  pure (x + y)
+}
+fn combinations -> Array<Int> = do {
+  x <- [1, 2]
+  let y = x * 10
+  z <- [3, 4]
+  pure (y + z)
+}
+fn patterns -> Maybe<Int> = do {
+  (a, b) <- Just (20, 21)
+  let (c, d) = (a, b)
+  pure (c + d + 1)
+}
+fn locals -> Maybe<Int> = do {
+  first <- Just 20
+  let keep = \value -> value
+  let add = \value -> value + first
+  pure (keep (add 22))
+}
+fn boxed -> Int = match twice (Box 20) { Box value -> value }
+
+fn renderEither value: Either<String, Int> -> String = match value {
+  Left error -> "Left " + error
+  Right item -> "Right " + show item
+}
+
+fn results -> Array<String> = [
+  show (twice (Just 20)),
+  renderEither (twice (rightEither ())),
+  show (twice [
+    1,
+    2
+  ]),
+  show (twice `[
+    1,
+    2
+  ]),
+  show (combinations ()),
+  show (maybeStop ()),
+  renderEither (eitherStop ()),
+  show (patterns ()),
+  show (locals ()),
+  show (boxed ()),
+  show (lift (\x -> x + 1) [
+    1,
+    2
+  ]),
+  show (lift (\x -> x + 1) (Just 41)),
+  show ((\x: Int -> x + 1) <$> [
+    1,
+    2
+  ]),
+  show ((\x: Int -> x + 1) <$> Just 41),
+  show ([
+    (\x: Int -> x + 1),
+    (\x: Int -> x * 10)
+  ] <*> [
+    1,
+    2
+  ]),
+  show (Just (\x: Int -> x + 1) <*> Just 41),
+  show (choose [
+    1,
+    2
+  ]),
+  show (ignored (Just 1)),
+  show (ignored (emptyMaybe ()))
+]
+
+pub fn probe -> String = show (results ())
+
+pub effect fn main = println (probe ())
