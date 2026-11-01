@@ -465,7 +465,7 @@ native Int infix `>` / `>=`の修復はbackendの`--test comparison_partials`と
 新しいinfix経路のprogram WASM受入は追加しません。
 
 List prefixの共有はloweringの`--test match_decision`、backendの
-`--test native list_prefix`、CLIの`--test rust_backend
+`--test native_list list_prefix`、CLIの`--test rust_backend
 list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。
 元の生成TS両profileのstrictとfresh Bun/Node/nativeを比較し、guard失敗・長さ・
 nested payload・alias・tail捕捉・Ref cycle・Failure解放を保ちます。lexicalな
