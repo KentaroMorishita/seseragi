@@ -349,8 +349,13 @@
                     "kind": "field",
                     "name": "items",
                     "value": {
-                      "kind": "runtime-call",
+                      "kind": "type-application-call",
                       "callee": "_ssrg_array_append",
+                      "typeArguments": [
+                        {
+                          "kind": "string"
+                        }
+                      ],
                       "arguments": [
                         {
                           "kind": "array",

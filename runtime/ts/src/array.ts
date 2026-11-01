@@ -194,14 +194,15 @@ export const arrayIterable = /* @__PURE__ */ Object.freeze({
     arrayIterator(values, 0),
 })
 
-export const arrayReducible = /* @__PURE__ */ Object.freeze({
-  ...arrayIterable,
-  reduce:
-    <A, B>(initial: B) =>
-    (step: (accumulator: B) => (value: A) => B) =>
-    (values: ReadonlyArray<A>): B =>
-      reduce(initial, step, values),
-})
+export const arrayReducible = /* @__PURE__ */ (() =>
+  Object.freeze({
+    ...arrayIterable,
+    reduce:
+      <A, B>(initial: B) =>
+      (step: (accumulator: B) => (value: A) => B) =>
+      (values: ReadonlyArray<A>): B =>
+        reduce(initial, step, values),
+  }))()
 
 /** Convert an Array to the persistent List representation in source order. */
 export function toList<A>(values: ReadonlyArray<A>): List<A> {

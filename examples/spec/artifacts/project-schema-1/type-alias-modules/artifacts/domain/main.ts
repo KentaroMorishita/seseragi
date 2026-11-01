@@ -6,4 +6,4 @@ type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & 
 type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
 export interface $ssrg$kind$Pair extends $ssrg$Kind<readonly [unknown]> { readonly type: Pair<this["args"][0]> }
 export type Pair<A> = { readonly "left": A; readonly "right": A }
-export const duplicate = <A,>(value: A) => ({ "left": value, "right": value } as const)
+export const duplicate = <A,>(value: A) => (<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ "left": value, "right": value } as const))
