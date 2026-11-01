@@ -66,6 +66,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 if runtime_prelude_collection_operation(&name, &evidence).is_some()
                     || runtime_standard_operation(&name).is_some()
                     || runtime_iterator_operation(&name).is_some()
+                    || runtime_stream_operation(&name).is_some()
                 {
                     // A bare function reference is a partial application with
                     // no source arguments. Keep evidence and currying identical
@@ -219,16 +220,8 @@ pub(super) fn lower_core_expr_to_typescript(
                 })
                 .or_else(|| {
                     runtime_stream_operation(&name).map(|operation| {
-                        let arity = core_function_arity(&type_ref);
-                        if arity > 1 {
-                            TypeScriptExpr::CurriedRuntimeReference {
-                                name: operation.local_name.to_owned(),
-                                arity,
-                            }
-                        } else {
-                            TypeScriptExpr::RuntimeReference {
-                                name: operation.local_name.to_owned(),
-                            }
+                        TypeScriptExpr::RuntimeReference {
+                            name: operation.local_name.to_owned(),
                         }
                     })
                 })
@@ -598,6 +591,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 let result = lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
                     arguments,
+                    Vec::new(),
                     &type_ref,
                     imported_types,
                     "collection",
@@ -660,16 +654,33 @@ pub(super) fn lower_core_expr_to_typescript(
                     result
                 }
             } else if let Some(operation) = runtime_stream_operation(&callee) {
-                if callee == "std/stream::fromIterable" {
-                    arguments.extend(evidence.iter().map(|selected| {
-                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                let dictionaries = if callee == "std/stream::fromIterable" {
+                    evidence
+                        .iter()
+                        .map(|selected| {
+                            selected_dictionary_expression(
+                                &selected,
+                                imported_values,
+                                imported_types,
+                            )
                             .expect("Stream.fromIterable requires materialized Iterable evidence")
-                    }));
-                }
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
+                        })
+                        .collect()
+                } else {
+                    Vec::new()
+                };
+                lower_uncurried_runtime_call(
+                    operation.local_name.to_owned(),
                     arguments,
-                }
+                    dictionaries,
+                    &type_ref,
+                    imported_types,
+                    "stream",
+                    Vec::new(),
+                    None,
+                    checked_argument_types.iter().cloned().enumerate().collect(),
+                    origin,
+                )
             } else if callee == "std/prelude::reduce"
                 && matches!(evidence.as_slice(), [selected] if selected.constraint.name == "Reducible")
             {
@@ -686,6 +697,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
                     arguments,
+                    Vec::new(),
                     &type_ref,
                     imported_types,
                     "iterator",
@@ -701,6 +713,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
                     arguments,
+                    Vec::new(),
                     &type_ref,
                     imported_types,
                     "text_bytes",
@@ -724,6 +737,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     let call = lower_uncurried_runtime_call(
                         operation.local_name.to_owned(),
                         arguments,
+                        Vec::new(),
                         &type_ref,
                         imported_types,
                         "json",
@@ -775,6 +789,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
                     arguments,
+                    Vec::new(),
                     &type_ref,
                     imported_types,
                     "numeric",
@@ -803,6 +818,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     lower_uncurried_runtime_call(
                         operation.local_name.to_owned(),
                         arguments,
+                        Vec::new(),
                         &type_ref,
                         imported_types,
                         "provider",
@@ -1684,6 +1700,7 @@ fn core_function_arity(type_ref: &CoreType) -> usize {
 fn lower_uncurried_runtime_call(
     callee: String,
     mut arguments: Vec<TypeScriptExpr>,
+    trailing_arguments: Vec<TypeScriptExpr>,
     result_type: &CoreType,
     imported_types: &TypeScriptTypeContext,
     parameter_scope: &str,
@@ -1728,6 +1745,7 @@ fn lower_uncurried_runtime_call(
             });
         }
     }
+    arguments.extend(trailing_arguments);
     let call = if type_arguments.is_empty() {
         TypeScriptExpr::RuntimeCall { callee, arguments }
     } else {
