@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.61.134] - 2026-11-01
+
+### Added
+
+- Pass the standard Show, Debug, Semigroup and Monoid dictionaries natively as values, so generic code with these constraints works with standard types.
+- Build `std/stream` natively as lazy streams: elements are produced on demand, effects run in order, and large streams keep memory bounded.
+- Build `std/validation` natively: `Valid` and `Invalid` construction, pattern matching and the standard instances.
+- Match optional record fields with `{ id? }` and `{ id?: pattern }` patterns on both targets; the field binds as a `Maybe` and coverage checking accounts for absent fields.
+
+### Fixed
+
+- Array and List element types are now inferred from every element, so `Html<Action>` arrays and other generic elements type-check regardless of element order.
+
 ## [0.61.133] - 2026-11-01
 
 ### Added

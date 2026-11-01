@@ -238,8 +238,11 @@ fn render_prefix_path(path: &[TypeScriptDecisionProjection], prefix: bool) -> St
 }
 
 fn render_projection_path(root: &str, path: &[TypeScriptDecisionProjection]) -> String {
-    path.iter()
-        .fold(root.to_owned(), |value, projection| match projection {
+    let mut value = root.to_owned();
+    let mut query_payload = None;
+    for projection in path {
+        let previous_query_payload = query_payload.take();
+        value = match projection {
             TypeScriptDecisionProjection::TupleElement { index } => {
                 format!("{value}[{index}]")
             }
@@ -256,8 +259,19 @@ fn render_projection_path(root: &str, path: &[TypeScriptDecisionProjection]) -> 
             TypeScriptDecisionProjection::RecordField { name } => {
                 format!("{value}[{name:?}]")
             }
-            TypeScriptDecisionProjection::AdtPayload => format!("{value}.value"),
-        })
+            TypeScriptDecisionProjection::OptionalRecordField { name } => {
+                let payload = format!("{value}[{name:?}]!");
+                query_payload = Some(payload);
+                format!(
+                    "(($ssrg_record) => Object.prototype.hasOwnProperty.call($ssrg_record, {name:?}) ? ({{ tag: \"Just\", value: $ssrg_record[{name:?}] as Required<typeof $ssrg_record>[{name:?}] }} as const) : ({{ tag: \"Nothing\" }} as const))({value})"
+                )
+            }
+            TypeScriptDecisionProjection::AdtPayload => {
+                previous_query_payload.unwrap_or_else(|| format!("{value}.value"))
+            }
+        };
+    }
+    value
 }
 
 fn render_list_length_test(value: &str, length: usize, minimum: bool) -> String {

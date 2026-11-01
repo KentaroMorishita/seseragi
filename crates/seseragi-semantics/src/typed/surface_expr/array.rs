@@ -2,7 +2,7 @@ use crate::typed::pure_issues::ArrayIssue;
 use crate::typed::semantic_types::{
     semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
 };
-use crate::typed::type_ref::inferred_type_from_expr;
+use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
@@ -69,6 +69,19 @@ fn type_collection(
     if elements.is_empty() {
         return empty_collection(span, expected_element, kind);
     }
+    let expected_element = match expected_element {
+        Some(expected) if !typed_type_contains_hole(&expected.type_ref) => Some(expected),
+        expected => {
+            super::let_inference::infer_collection_element(elements, expected.as_ref(), context)
+                .map(|inferred| match expected.clone() {
+                    Some(expected) => {
+                        super::expected::refine_expected_type(expected, &inferred, context)
+                    }
+                    None => inferred,
+                })
+                .or(expected)
+        }
+    };
 
     let first_context = context.with_expected(expected_element.clone());
     let first = type_surface_expression(&elements[0], &first_context);

@@ -1,0 +1,50 @@
+Right 9
+Right 9
+Nothing
+Nothing
+Left bad
+value
+Left "bad\nvalue"
+Right mark:4
+Right debug:4
+Just [Right mark:4]
+Just [Right debug:4]
+Nothing
+Nothing
+`[Left bad
+value]
+`[Left "bad\nvalue"]
+`[Left bad
+value, Left bad
+value]
+`[Right debug:4]
+Valid ok
+Valid "ok"
+Map [(z, Nothing), (a, Just `[mark:5])]
+Map [("z", Nothing), ("a", Just `[debug:5])]
+Set [z, a]
+Set ["z", "a"]
+Map []
+Map []
+Set []
+Set []
+(Left bad
+value, Just [mark:6])
+(Left "bad\nvalue", Just [debug:6])
+abc
+[1, 2]
+`[1, 2, 3]
+Just [1, 2, 3]
+Just [1, 2, 3]
+Just [1, 2, 3]
+Just Just ab
+Just ab
+Nothing
+Just mark:5
+`[1, 2, 3, 4]
+0
+1
+
+[]
+`[]
+Nothing

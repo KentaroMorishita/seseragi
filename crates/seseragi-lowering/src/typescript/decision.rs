@@ -341,6 +341,9 @@ fn lower_projection(projection: CoreDecisionProjection) -> TypeScriptDecisionPro
         CoreDecisionProjection::RecordField { name } => {
             TypeScriptDecisionProjection::RecordField { name }
         }
+        CoreDecisionProjection::OptionalRecordField { name } => {
+            TypeScriptDecisionProjection::OptionalRecordField { name }
+        }
         CoreDecisionProjection::AdtPayload => TypeScriptDecisionProjection::AdtPayload,
     }
 }
@@ -456,7 +459,11 @@ fn lower_pattern(
         }
         CorePattern::Record { fields, .. } => {
             for field in fields {
-                path.push(TypeScriptDecisionProjection::RecordField { name: field.name });
+                path.push(if field.optional {
+                    TypeScriptDecisionProjection::OptionalRecordField { name: field.name }
+                } else {
+                    TypeScriptDecisionProjection::RecordField { name: field.name }
+                });
                 lower_pattern(field.pattern, path, tests, bindings, imported_types);
                 path.pop();
             }

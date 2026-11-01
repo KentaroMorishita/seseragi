@@ -85,7 +85,7 @@ pub(super) fn primitive_display(selected: &CoreCallEvidence) -> Option<Result<St
         return None;
     };
     let (method, primitive) = ["Show", "Debug"].into_iter().find_map(|method| {
-        ["Unit", "Int", "Bool", "String"]
+        ["Unit", "Int", "Bool", "String", "Never"]
             .into_iter()
             .find(|primitive| identity == &format!("{method}<std/prelude::{primitive}>"))
             .map(|primitive| (method, primitive))
@@ -135,6 +135,16 @@ pub(super) fn valid_display_dispatch(
             | "std/range::Debug"
             | "std/maybe::Show"
             | "std/maybe::Debug"
+            | "std/either::Show"
+            | "std/either::Debug"
+            | "std/map::Show"
+            | "std/map::Debug"
+            | "std/set::Show"
+            | "std/set::Debug"
+            | "std/non-empty-list::Show"
+            | "std/non-empty-list::Debug"
+            | "std/validation::Show"
+            | "std/validation::Debug"
     ) && primitive_display(selected).is_none()
         && filesystem::display_contract(dictionary).is_none()
         && !number_parse::is_show_dictionary(dictionary)

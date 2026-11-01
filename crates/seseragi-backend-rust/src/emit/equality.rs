@@ -87,6 +87,31 @@ impl Backend<'_> {
             evidence_arguments,
         } = &selected.evidence
         {
+            if identity == "std/validation::Eq" {
+                let CoreType::Named { name, arguments } =
+                    self.local_canonical_type(&selected.constraint.arguments[0], scope)?
+                else {
+                    return Err("Rust backend: Validation Eq requires a named type".into());
+                };
+                if name != "std/validation::Validation"
+                    || arguments.len() != 2
+                    || evidence_arguments.len() != 2
+                    || type_arguments
+                        .iter()
+                        .map(|ty| self.local_canonical_type(ty, scope))
+                        .collect::<Result<Vec<_>>>()?
+                        != arguments
+                {
+                    return Err("Rust backend: Validation Eq factory mismatch".into());
+                }
+                for (ty, child) in arguments.iter().zip(evidence_arguments) {
+                    self.validate_eq_evidence(child, scope)?;
+                    if self.local_canonical_type(&child.constraint.arguments[0], scope)? != *ty {
+                        return Err("Rust backend: Validation Eq child mismatch".into());
+                    }
+                }
+                return Ok(());
+            }
             if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
                 return Err("Rust backend: unexpected Eq type or child evidence arguments".into());
             }

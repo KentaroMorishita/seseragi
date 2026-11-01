@@ -689,6 +689,7 @@ pub enum TypeScriptDecisionProjection {
     ListElement { index: usize },
     ListRest { start: usize },
     RecordField { name: String },
+    OptionalRecordField { name: String },
     AdtPayload,
 }
 

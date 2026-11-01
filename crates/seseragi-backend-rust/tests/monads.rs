@@ -62,7 +62,7 @@ fn compare_options(source: &str, expected: &str, trace: bool, extras: bool) {
                 let mut context = NativeContext::default();
                 match context.root({}(vec![]).apply(V::Unit)) {{ Ok(value) => println!("{{}}", value.render()), Err(_) => panic!("effect") }}
                 let emit = V::fun(vec![], |_, value| V::leaf(vec![value], |captures, _| {{ println!("{{}}", captures[0].render()); Ok(V::Unit) }}));
-                assert!(context.root({}(vec![]).apply(V::Unit).apply(emit)).is_ok());
+                assert!(context.root(native_stream_operation("std/stream::runForEach", vec![emit, {}(vec![]).apply(V::Unit)])).is_ok());
                 println!("{{}}", {}(vec![]).apply(V::Unit).field("run").payload().payload().render());
                 println!("{{}}", {}(vec![]).apply(V::Unit).field("run").index(0).payload().render());
                 println!("{{}}", {}(vec![]).apply(V::Unit).field("run").apply(V::text("env")).payload().render());

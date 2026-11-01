@@ -120,6 +120,63 @@ fn record_and_struct_fields_retain_nested_products_and_adt_identity() {
 }
 
 #[test]
+fn optional_record_queries_preserve_presence_and_required_field_domains() {
+    for body in [
+        "{ note? } -> note",
+        "{ note?: Just value } -> Just value; { note?: Nothing } -> Nothing",
+        "{ note?: Just value } when False -> Just value; { note? } -> note",
+    ] {
+        total(&format!(
+            "pub fn value row: {{ note?: Int }} -> Maybe<Int> = match row {{ {body} }}\n"
+        ));
+    }
+    total("pub fn value row: { note: Bool } -> Bool = match row { { note?: Just True } -> True; { note?: Just False } -> False }\n");
+    total("pub fn value row: { note: Bool } -> Bool = match row { { note: True } -> True; { note?: Just False } -> False }\n");
+    total("pub fn value row: { note?: Maybe<Bool> } -> Bool = match row { { note?: Just (Just True) } -> True; { note?: Just (Just False) } -> False; { note?: Just Nothing } -> False; { note?: Nothing } -> False }\n");
+    for source in [
+        "pub fn value row: { note?: Int } -> Int = match row { { note?: Just value } -> value }",
+        "pub fn value row: { note?: Int } -> Int = match row { { note?: Nothing } -> 0 }",
+        "pub fn value row: { note?: Int } -> Int = match row { { note? } when False -> 0 }",
+        "pub fn value row: { note?: Maybe<Bool> } -> Int = match row { { note?: Just (Just True) } -> 1; { note?: Just Nothing } -> 2; { note?: Nothing } -> 3 }",
+    ] {
+        rejects(source, "match.non-exhaustive");
+    }
+    for source in [
+        "pub fn value row: { note?: Int } -> Int = match row { { note? } -> 0; _ -> 1 }",
+        "pub fn value row: { note: Int } -> Int = match row { { note?: Nothing } -> 0; { note?: Just value } -> value }",
+        "pub fn value row: { note: Int } -> Int = match row { { note?: Just value } -> value; _ -> 0 }",
+    ] {
+        rejects(source, "match.unreachable-arm");
+    }
+    let errors = compile_module(input(
+        "pub fn value row: { note?: Int } -> Int = match row { { note?: Just value } -> value }\n",
+    ))
+    .unwrap_err();
+    let diagnostic = errors
+        .diagnostics
+        .iter()
+        .find(|diagnostic| diagnostic.message_key == "match.non-exhaustive")
+        .unwrap();
+    assert_eq!(
+        diagnostic.related[0].message,
+        "missing patterns: { note?: Nothing }"
+    );
+}
+
+#[test]
+fn record_queries_retain_field_and_nested_pattern_type_diagnostics() {
+    for (source, message) in [
+        ("pub fn value row: { note?: Int } -> Int = match row { { note } -> 0 }", "optional record field note requires an optional query pattern"),
+        ("pub fn value row: { note?: Int } -> Int = match row { { missing? } -> 0 }", "record pattern field missing does not exist"),
+        ("pub fn value row: { note?: Int } -> Int = match row { { note?: Just True } -> 0; _ -> 1 }", "Bool"),
+        ("struct Row { note: Int }\npub fn value row: Row -> Int = match row { Row { note? } -> 0 }", "struct patterns do not support optional queries"),
+    ] {
+        let errors = compile_module(input(source)).unwrap_err();
+        assert!(errors.diagnostics.iter().any(|diagnostic| diagnostic.related.iter().any(|related| related.message.contains(message))), "{source}\n{errors:#?}");
+    }
+}
+
+#[test]
 fn runtime_equivalent_integer_patterns_are_unreachable_with_original_ranges() {
     for (first, second) in [
         ("1000", "1_000"),

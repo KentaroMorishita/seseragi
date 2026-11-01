@@ -7,6 +7,56 @@ const MUTABLE_SIGNAL: &str = "std/signal::MutableSignal";
 const SIGNAL_READ: &str = "std/signal::read";
 const SIGNAL_SET: &str = "std/signal::set";
 
+pub(crate) struct StandardInstanceHead {
+    pub(crate) parameters: Vec<seseragi_syntax::TypeParameter>,
+    pub(crate) arguments: Vec<TypedType>,
+}
+
+pub(crate) fn standard_module_instance_heads(
+    trait_identity: Option<&str>,
+    name: &str,
+) -> Vec<(StandardInstanceHead, &'static str)> {
+    if (trait_identity, name) != (Some(INTO_CHILDREN), "IntoChildren") {
+        return Vec::new();
+    }
+    let action = named("Action");
+    let html = TypedType::ExternalNamed {
+        name: "Html".to_owned(),
+        canonical: "std/web/html::Html".to_owned(),
+        arguments: vec![action.clone()],
+    };
+    [
+        (named("Unit"), "std/web/html::IntoChildren<Unit>"),
+        (named("String"), "std/web/html::IntoChildren<String>"),
+        (html.clone(), "std/web/html::IntoChildren<Html>"),
+        (
+            TypedType::Named {
+                name: "Array".to_owned(),
+                arguments: vec![html.clone()],
+            },
+            "std/web/html::IntoChildren<Array>",
+        ),
+        (
+            TypedType::Named {
+                name: "List".to_owned(),
+                arguments: vec![html],
+            },
+            "std/web/html::IntoChildren<List>",
+        ),
+    ]
+    .into_iter()
+    .map(|(children, identity)| {
+        (
+            StandardInstanceHead {
+                parameters: vec![seseragi_syntax::TypeParameter::value("Action".to_owned())],
+                arguments: vec![children, action.clone()],
+            },
+            identity,
+        )
+    })
+    .collect()
+}
+
 pub(crate) struct StandardSignalCall {
     pub(crate) canonical: &'static str,
     pub(crate) result: TypedType,
@@ -136,26 +186,26 @@ pub(crate) fn standard_module_instance(
 }
 
 fn into_children_instance(constraint: &TypedConstraint) -> Option<&'static str> {
-    let [children, action] = constraint.arguments.as_slice() else {
-        return None;
-    };
-
-    if named_leaf(children, "Unit") {
-        return Some("std/web/html::IntoChildren<Unit>");
-    }
-    if named_leaf(children, "String") {
-        return Some("std/web/html::IntoChildren<String>");
-    }
-    if html_action(children).is_some_and(|html_action| html_action == action) {
-        return Some("std/web/html::IntoChildren<Html>");
-    }
-    if collection_html_action(children, "Array").is_some_and(|html_action| html_action == action) {
-        return Some("std/web/html::IntoChildren<Array>");
-    }
-    if collection_html_action(children, "List").is_some_and(|html_action| html_action == action) {
-        return Some("std/web/html::IntoChildren<List>");
-    }
-    None
+    standard_module_instance_heads(Some(INTO_CHILDREN), &constraint.name)
+        .into_iter()
+        .find_map(|(head, identity)| {
+            if head.arguments.len() != constraint.arguments.len() {
+                return None;
+            }
+            let mut substitutions = std::collections::BTreeMap::new();
+            head.arguments
+                .iter()
+                .zip(&constraint.arguments)
+                .all(|(template, actual)| {
+                    instance_argument_matches(
+                        template,
+                        actual,
+                        &head.parameters,
+                        &mut substitutions,
+                    )
+                })
+                .then_some(identity)
+        })
 }
 
 fn style_record_instance(constraint: &TypedConstraint) -> Option<&'static str> {
@@ -189,26 +239,79 @@ fn named_leaf(type_ref: &TypedType, expected: &str) -> bool {
     matches!(type_ref, TypedType::Named { name, arguments } if name == expected && arguments.is_empty())
 }
 
-fn html_action(type_ref: &TypedType) -> Option<&TypedType> {
-    match type_ref {
-        TypedType::ExternalNamed {
-            canonical,
-            arguments,
-            ..
-        } if canonical == "std/web/html::Html" => arguments.first(),
-        _ => None,
+fn instance_argument_matches(
+    expected: &TypedType,
+    actual: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+    substitutions: &mut std::collections::BTreeMap<String, TypedType>,
+) -> bool {
+    if let TypedType::Named { name, arguments } = expected {
+        if arguments.is_empty() && parameters.iter().any(|parameter| parameter.name == *name) {
+            return match substitutions.entry(name.clone()) {
+                std::collections::btree_map::Entry::Vacant(entry) => {
+                    entry.insert(actual.clone());
+                    true
+                }
+                std::collections::btree_map::Entry::Occupied(entry) => entry.get() == actual,
+            };
+        }
     }
-}
-
-fn collection_html_action<'a>(type_ref: &'a TypedType, collection: &str) -> Option<&'a TypedType> {
-    let child = match type_ref {
-        TypedType::Named { name, arguments } if name == collection => arguments.first(),
-        TypedType::ExternalNamed {
-            name, arguments, ..
-        } if name == collection => arguments.first(),
-        _ => None,
-    }?;
-    html_action(child)
+    match (expected, actual) {
+        (
+            TypedType::Named { name, arguments },
+            TypedType::Named {
+                name: actual_name,
+                arguments: actual_arguments,
+            },
+        ) => {
+            name == actual_name
+                && arguments.len() == actual_arguments.len()
+                && arguments
+                    .iter()
+                    .zip(actual_arguments)
+                    .all(|(expected, actual)| {
+                        instance_argument_matches(expected, actual, parameters, substitutions)
+                    })
+        }
+        (
+            TypedType::Named { name, arguments },
+            TypedType::ExternalNamed {
+                name: actual_name,
+                arguments: actual_arguments,
+                ..
+            },
+        ) if !arguments.is_empty() && name == actual_name => {
+            arguments.len() == actual_arguments.len()
+                && arguments
+                    .iter()
+                    .zip(actual_arguments)
+                    .all(|(expected, actual)| {
+                        instance_argument_matches(expected, actual, parameters, substitutions)
+                    })
+        }
+        (
+            TypedType::ExternalNamed {
+                canonical,
+                arguments,
+                ..
+            },
+            TypedType::ExternalNamed {
+                canonical: actual_canonical,
+                arguments: actual_arguments,
+                ..
+            },
+        ) => {
+            canonical == actual_canonical
+                && arguments.len() == actual_arguments.len()
+                && arguments
+                    .iter()
+                    .zip(actual_arguments)
+                    .all(|(expected, actual)| {
+                        instance_argument_matches(expected, actual, parameters, substitutions)
+                    })
+        }
+        _ => expected == actual,
+    }
 }
 
 #[cfg(test)]

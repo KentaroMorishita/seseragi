@@ -1,0 +1,22 @@
+Valid 8
+Invalid `["first"]
+ok:1
+`[first]
+zero
+`[many]
+Valid 2
+Invalid `[first]
+Valid 2
+Invalid `[first]
+Invalid `[function]
+Invalid `[function, first]
+Valid 3
+Invalid `[left]
+Valid 4
+Left `[first]
+Right 1
+True
+True
+False
+False
+False

@@ -7,7 +7,7 @@ use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
-fn maybe_type(
+pub(super) fn maybe_type(
     element: SemanticValueType,
     context: &PureExpressionContext<'_>,
 ) -> SemanticValueType {

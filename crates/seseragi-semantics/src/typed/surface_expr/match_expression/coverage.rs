@@ -13,7 +13,7 @@ enum Constructor {
     Literal(LiteralPattern),
     Adt(SymbolId),
     Tuple,
-    Record(Vec<String>),
+    Record(Vec<(String, bool)>),
     Empty(bool),
     Cons(bool),
 }
@@ -21,6 +21,7 @@ enum Constructor {
 #[derive(Clone, Debug, Eq, PartialEq)]
 enum Pattern {
     Any,
+    Never,
     Constructor(Constructor, Vec<Pattern>),
 }
 
@@ -108,6 +109,9 @@ fn useful(
     steps: &mut usize,
     depth: usize,
 ) -> Result<Option<Vec<Pattern>>, ()> {
+    if candidate.iter().any(contains_never) {
+        return Ok(None);
+    }
     if matrix
         .iter()
         .any(|row| row.iter().all(|pattern| *pattern == Pattern::Any))
@@ -206,6 +210,14 @@ fn useful(
     }
 }
 
+fn contains_never(pattern: &Pattern) -> bool {
+    match pattern {
+        Pattern::Never => true,
+        Pattern::Constructor(_, fields) => fields.iter().any(contains_never),
+        Pattern::Any => false,
+    }
+}
+
 fn specialize(
     matrix: &[Vec<Pattern>],
     constructor: &Constructor,
@@ -272,7 +284,10 @@ fn signatures(value: &SemanticValueType, context: &PureExpressionContext<'_>) ->
                 .unwrap_or_default();
             return vec![Signature {
                 constructor: Constructor::Record(
-                    fields.iter().map(|field| field.name.clone()).collect(),
+                    fields
+                        .iter()
+                        .map(|field| (field.name.clone(), false))
+                        .collect(),
                 ),
                 fields: fields.into_iter().map(|field| field.type_ref).collect(),
             }];
@@ -301,16 +316,24 @@ fn signatures(value: &SemanticValueType, context: &PureExpressionContext<'_>) ->
         }],
         TypedType::Record { fields, .. } => vec![Signature {
             constructor: Constructor::Record(
-                fields.iter().map(|field| field.name.clone()).collect(),
+                fields
+                    .iter()
+                    .map(|field| (field.name.clone(), field.optional))
+                    .collect(),
             ),
             fields: fields
                 .iter()
                 .map(|field| {
-                    match &value.key {
+                    let value = match &value.key {
                         SemanticTypeKey::Record(values) => values.get(&field.name).cloned(),
                         _ => None,
                     }
-                    .unwrap_or_else(|| context.semantic_value_from_typed_type(&field.type_ref))
+                    .unwrap_or_else(|| context.semantic_value_from_typed_type(&field.type_ref));
+                    if field.optional {
+                        super::super::fallback::maybe_type(value, context)
+                    } else {
+                        value
+                    }
                 })
                 .collect(),
         }],
@@ -344,6 +367,7 @@ fn normalize(
     let heads = signatures(value, context);
     let (constructor, fields) = match pattern {
         CoveragePattern::Any => return Ok(Pattern::Any),
+        CoveragePattern::Never => return Ok(Pattern::Never),
         CoveragePattern::Invalid => return Err(()),
         CoveragePattern::Literal(literal) => {
             return Ok(Pattern::Constructor(
@@ -374,7 +398,7 @@ fn normalize(
                 head.constructor.clone(),
                 names
                     .iter()
-                    .map(|name| {
+                    .map(|(name, _)| {
                         fields
                             .iter()
                             .find(|(field, _)| field == name)
@@ -471,7 +495,10 @@ fn render(pattern: &Pattern, context: &PureExpressionContext<'_>) -> String {
             names
                 .iter()
                 .zip(values)
-                .map(|(name, value)| format!("{name}: {value}"))
+                .map(|((name, optional), value)| format!(
+                    "{name}{}: {value}",
+                    if *optional { "?" } else { "" }
+                ))
                 .collect::<Vec<_>>()
                 .join(", ")
         ),

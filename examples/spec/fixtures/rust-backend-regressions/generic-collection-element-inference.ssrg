@@ -1,0 +1,8 @@
+type Box<A> deriving Show = | Empty | Value A
+
+pub effect fn main = do {
+  let left = [Empty, Value 42]
+  let right = [Value 42, Empty]
+  println (show left)
+  println (show right)
+}
