@@ -1,0 +1,70 @@
+True
+False
+True
+False
+True
+True
+False
+True
+False
+True
+True
+False
+True
+False
+True
+True
+True
+False
+True
+False
+False
+Equal
+Greater
+Less
+Less
+-850125065
+292984781
+292984781
+True
+True
+True
+False
+False
+True
+True
+True
+False
+True
+Less
+-311156598
+`[key:1, key:2]
+`[debug:1, debug:2]
+Map [(key:1, `[key:4]), (key:2, `[key:3])]
+Set [debug:1, debug:2]
+Left key:1
+Valid 1
+1..=3
+1..=3
+3
+3
+[1, 2]
+Just `[1, 2]
+Just `[2, 3]
+Nothing
+Less
+Less
+Equal
+True
+False
+True
+True
+True
+True
+True
+True
+True
+True
+True
+True
+True

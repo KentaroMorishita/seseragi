@@ -35,6 +35,42 @@ pub(super) fn int_ord_dictionary(selected: &CoreCallEvidence) -> Option<Result<S
 }
 
 impl Backend<'_> {
+    pub(super) fn standard_comparison_binary(
+        &mut self,
+        operator: &str,
+        left: &CoreExpr,
+        right: &CoreExpr,
+        evidence: &[CoreCallEvidence],
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<Option<String>> {
+        if !is_comparison(operator)
+            || !matches!(evidence, [CoreCallEvidence { evidence: CoreInstanceEvidence::Standard { identity, .. }, .. }]
+                if matches!(identity.as_str(), "std/non-empty-list::Ord" | "std/tuple::Ord" | "std/bool::Ord" | "std/string::Ord" | "std/unit::Ord"))
+        {
+            return Ok(None);
+        }
+        self.comparison_result_type(type_ref, 2, evidence, scope)?;
+        for operand in [left, right] {
+            let actual = local::method_argument_type(operand)
+                .ok_or("Rust backend: missing standard comparison operand type")?;
+            self.match_local_type(
+                &evidence[0].constraint.arguments[0],
+                &actual,
+                &BTreeMap::new(),
+                &mut BTreeMap::new(),
+                scope,
+            )?;
+        }
+        let function = self.comparison_reference(operator, evidence, scope)?;
+        let stage = self.fresh();
+        Ok(Some(format!(
+            "{{ let {stage} = ({function}).apply({}); {stage}.apply({}) }}",
+            self.expr(left, scope)?,
+            self.expr(right, scope)?
+        )))
+    }
+
     pub(super) fn descending_int_binary(
         &mut self,
         operator: &str,
@@ -166,6 +202,9 @@ impl Backend<'_> {
             std::slice::from_ref(selected),
             scope,
         )?;
+        if self.validate_standard_composite(selected, scope)? {
+            return Ok(());
+        }
         if let CoreInstanceEvidence::Standard {
             identity,
             type_arguments,

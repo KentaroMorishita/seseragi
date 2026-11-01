@@ -225,6 +225,7 @@ impl Backend<'_> {
                 *provider = match identity.as_str() {
                     "std/array::Reducible" => "std/array::Iterable",
                     "std/list::Reducible" => "std/list::Iterable",
+                    "std/non-empty-list::Reducible" => "std/non-empty-list::Iterable",
                     "std/range::Reducible" => "std/range::Iterable",
                     "std/map::Reducible" => "std/map::Iterable",
                     "std/set::Reducible" => "std/set::Iterable",
