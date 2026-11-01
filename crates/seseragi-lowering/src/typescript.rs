@@ -532,6 +532,7 @@ pub enum TypeScriptExpr {
     OptionalFieldAccess {
         receiver: Box<TypeScriptExpr>,
         field: String,
+        value_type: TypeScriptType,
         just_constructor: String,
         nothing_constructor: String,
     },

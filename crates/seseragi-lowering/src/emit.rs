@@ -1190,12 +1190,14 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::OptionalFieldAccess {
             receiver,
             field,
+            value_type,
             just_constructor,
             nothing_constructor,
         } => {
             let field = format!("{field:?}");
             format!(
-                "(($ssrg_record) => Object.prototype.hasOwnProperty.call($ssrg_record, {field}) ? {just_constructor}($ssrg_record[{field}]) : {nothing_constructor})({})",
+                "(($ssrg_record) => Object.prototype.hasOwnProperty.call($ssrg_record, {field}) ? {just_constructor}($ssrg_record[{field}] as {}) : {nothing_constructor})({})",
+                render_typescript_type(value_type),
                 render_typescript_expr(receiver)
             )
         }
@@ -1220,12 +1222,16 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                     .collect::<Vec<_>>()
                     .join(", ")
             );
-            asserted_type.as_ref().map_or(value.clone(), |type_ref| {
-                format!(
+            match asserted_type {
+                Some(type_ref) => format!(
                     "({value} as unknown as {})",
                     render_typescript_type(type_ref)
-                )
-            })
+                ),
+                // Preserve inferred own fields while marking absent Object members.
+                None => format!(
+                    "(<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & {{ readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never }})({value})"
+                ),
+            }
         }
         TypeScriptExpr::Array {
             elements,

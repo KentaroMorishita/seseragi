@@ -1,0 +1,94 @@
+alias Row = { note?: String }
+alias PrototypeRow = { toString?: String }
+
+fn describe row: Row -> String = match row.note {
+  Just value -> value
+  Nothing -> "none"
+}
+
+fn render value: Maybe<String> -> String = match value {
+  Just text -> text
+  Nothing -> "none"
+}
+
+fn saved row: Row -> String = {
+  let value = row.note
+  render value
+}
+
+fn argument row: Row -> String = render row.note
+fn returned row: Row -> Maybe<String> = row.note
+fn pipeline row: Row -> String = row.note |> render
+fn generic<A> row: { note?: A } -> Maybe<A> = row.note
+
+fn prototype row: PrototypeRow -> String = match row.toString {
+  Just value -> value
+  Nothing -> "no own toString"
+}
+
+fn prototypePattern row: PrototypeRow -> String = match row {
+  { toString?: Just value } -> value
+  { toString?: Nothing } -> "no own pattern"
+}
+
+fn emptyPrototype -> PrototypeRow = {}
+
+fn nested row: { inner?: PrototypeRow } -> String = match row.inner {
+  Just inner -> prototype inner
+  Nothing -> "no inner"
+}
+
+fn maybeField row: { note?: Maybe<String> } -> String = match row.note {
+  Just (Just value) -> value
+  Just Nothing -> "own Nothing"
+  Nothing -> "no Maybe"
+}
+
+fn unit row: { note?: Unit } -> String = match row.note {
+  Just _ -> "own Unit"
+  Nothing -> "no Unit"
+}
+
+fn prototypeMembers row: {
+  constructor?: String, toLocaleString?: String, valueOf?: String,
+  hasOwnProperty?: String, isPrototypeOf?: String, propertyIsEnumerable?: String
+} -> String = match row {
+  { constructor?: Nothing, toLocaleString?: Nothing, valueOf?: Nothing,
+    hasOwnProperty?: Nothing, isPrototypeOf?: Nothing, propertyIsEnumerable?: Nothing } -> "no prototype members"
+  _ -> "own prototype member"
+}
+
+pub effect fn main = do {
+  println $ describe {}
+  println $ describe { note: "match" }
+  println $ saved {}
+  println $ saved { note: "let" }
+  println $ argument {}
+  println $ argument { note: "argument" }
+  println $ render $ returned {}
+  println $ render $ returned { note: "return" }
+  println $ pipeline {}
+  println $ pipeline { note: "pipeline" }
+  println $ render $ generic {}
+  println $ render $ generic { note: "generic" }
+  let absent: PrototypeRow = {}
+  let present: PrototypeRow = { toString: "nested" }
+  println $ prototype absent
+  println $ prototype {}
+  println $ prototype { toString: "own toString" }
+  println $ prototype $ emptyPrototype ()
+  println $ prototypePattern {}
+  println $ prototypePattern { toString: "own pattern" }
+  println $ prototype { ...absent }
+  println $ prototype { ...absent, toString: "override" }
+  println $ nested {}
+  println $ nested { inner: absent }
+  println $ nested { inner: present }
+  println $ maybeField {}
+  println $ maybeField { note: Nothing }
+  println $ maybeField { note: Just "inner Just" }
+  println $ unit {}
+  println $ unit { note: () }
+  println $ prototypeMembers {}
+  println $ prototypeMembers { constructor: "own constructor" }
+}

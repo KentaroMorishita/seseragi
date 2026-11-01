@@ -400,11 +400,13 @@ fn expression(value: &TypeScriptExpr) -> Names {
         }
         TypeScriptExpr::OptionalFieldAccess {
             receiver,
+            value_type,
             just_constructor,
             nothing_constructor,
             ..
         } => {
             refs.extend(expression(receiver));
+            types(value_type, &mut refs);
             refs.insert(just_constructor.clone());
             refs.insert(nothing_constructor.clone());
         }
