@@ -167,6 +167,7 @@ impl Backend<'_> {
             let owner = match identity.as_str() {
                 "std/array::Traversable" => "std/prelude::Array",
                 "std/list::Traversable" => "std/prelude::List",
+                "std/non-empty-list::Traversable" => "std/non-empty-list::NonEmptyList",
                 _ => {
                     return Err(
                         "Rust backend: native Traversable provider needs an ABI proof".into(),
@@ -210,6 +211,9 @@ impl Backend<'_> {
         }
         self.validate_traversable_evidence(selected, scope)?;
         self.capabilities.insert("traversable".into());
+        if identity == "std/non-empty-list::Traversable" {
+            return Ok(Some("native_non_empty_traversable_dictionary()".into()));
+        }
         Ok(Some(format!(
             "native_sequence_traversable_dictionary({})",
             identity == "std/list::Traversable"

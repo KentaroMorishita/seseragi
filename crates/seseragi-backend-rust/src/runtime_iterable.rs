@@ -60,6 +60,11 @@ fn native_iterable_dictionary(identity: &'static str) -> V {
                     source,
                 )
             },
+            "std/non-empty-list::Iterable" => |_, source| {
+                native_iterable_dictionary("std/list::Iterable")
+                    .field("iterate")
+                    .apply(V::list_cons(source.field("head"), source.field("tail")))
+            },
             "std/iterator::Iterable" => |_, source| source,
             "std/range::Iterable" => |_, source| native_range_iterator(source),
             "std/map::Iterable" => |_, source| native_iterable_map_cursor(source, false),

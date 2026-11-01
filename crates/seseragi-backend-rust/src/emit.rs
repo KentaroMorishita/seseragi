@@ -62,6 +62,7 @@ mod sequence_operations;
 mod sequence_order;
 mod signal;
 mod standard_errors;
+mod standard_instances;
 mod standard_values;
 mod stream;
 mod tail;
@@ -633,6 +634,10 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if let Some(dictionary) = self.standard_composite_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.standard_value_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
@@ -1263,6 +1268,11 @@ impl Backend<'_> {
                 }
                 if let Some(value) = self
                     .big_int_comparison_binary(operator, left, right, evidence, type_ref, scope)?
+                {
+                    return Ok(value);
+                }
+                if let Some(value) = self
+                    .standard_comparison_binary(operator, left, right, evidence, type_ref, scope)?
                 {
                     return Ok(value);
                 }

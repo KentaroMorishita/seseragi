@@ -1,0 +1,61 @@
+import * as effects from "std/effect"
+import * as maybe from "std/maybe"
+import { NonEmptyList } from "std/non-empty-list"
+import { Validation, Valid, Invalid } from "std/validation"
+
+type Box<A> = | Box A
+instance Functor<Box> {
+  fn map<A,B> callback: (A -> B) -> value: Box<A> -> Box<B> = match value { Box item -> Box (callback item) }
+}
+instance Applicative<Box> {
+  fn pure<A> value: A -> Box<A> = Box value
+  fn apply<A,B> functions: Box<A -> B> -> value: Box<A> -> Box<B> = match (functions, value) { (Box callback, Box item) -> Box (callback item) }
+}
+instance Monad<Box> {
+  fn flatMap<A,B> callback: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value { Box item -> callback item }
+}
+fn lifted<F<_>> value: F<Int> -> F<Int> where Functor<F> = map (\n: Int -> n + 1) value
+fn applied<F<_>> value: F<Int> -> F<Int> where Applicative<F> = apply (pure (\n: Int -> n * 2)) (lifted value)
+fn chained<M<_>> value: M<Int> -> M<Int> where Monad<M> = do { n <- applied value; pure (n + 1) }
+fn singleton<A> value: A -> NonEmptyList<A> = pure value
+fn nel -> NonEmptyList<Int> = append (singleton 1) (singleton 2)
+fn invalid -> Validation<String, Int> = Invalid (singleton "bad")
+fn good -> Validation<String, Int> = Valid 20
+fn either -> Either<String, Int> = Right 20
+fn stop -> Either<String, Int> = Left "stop"
+fn say value: String -> Effect<{console: Console}, ConsoleError, Unit> = println value
+effect fn work -> Int with Console fails ConsoleError = do { println "value"; effects.succeed 20 }
+effect fn functions -> (Int -> Int) with Console fails ConsoleError = do { println "function"; effects.succeed (\n: Int -> n + 2) }
+effect fn failed -> (Int -> Int) fails String = effects.fail "typed"
+
+pub effect fn main = do {
+  let none: Maybe<Int> = Nothing
+  println (show (chained [1,2]))
+  println (show (chained `[1,2]))
+  println (show (chained (Just 20)))
+  println (show (chained none))
+  println (show (chained (either ())))
+  println (show (chained (stop ())))
+  println (show (chained (nel ())))
+  println (show (applied (good ())))
+  println (show (applied (invalid ())))
+  let Box boxed = chained (Box 20)
+  println (show boxed)
+  let Box nested = map (\value: Maybe<Int> -> chained value) (Box (Just 20))
+  println (show nested)
+  let saved: Effect<{console: Console}, ConsoleError, Int -> Int> -> Effect<{console: Console}, ConsoleError, Int> -> Effect<{console: Console}, ConsoleError, Int> = apply
+  let partial = saved (functions ())
+  let cold = partial (work ())
+  println "created"
+  value <- cold
+  println (show value)
+  valueAgain <- cold
+  println (show valueAgain)
+  result <- chained (work ())
+  println (show result)
+  let invalidFunction: Validation<String, Int -> Int> = Invalid (singleton "function")
+  let failures: Validation<String, Int> = apply invalidFunction (invalid ())
+  println (show failures)
+  handled <- effects.recover (\error: String -> effects.succeed 99) (apply (failed ()) (effects.succeed 1))
+  println (show handled)
+}

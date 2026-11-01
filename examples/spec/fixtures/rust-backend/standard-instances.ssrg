@@ -1,0 +1,103 @@
+import * as arrays from "std/array"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as maybe from "std/maybe"
+import { NonEmptyList } from "std/non-empty-list"
+import { Validation, Valid, Invalid } from "std/validation"
+
+type Key = | Key Int
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool = match (left, right) { (Key a, Key b) -> a % 10 == b % 10 }
+}
+instance Ord<Key> {
+  fn compare left: Key -> right: Key -> Ordering = match (left, right) { (Key a, Key b) -> compare (a % 10) (b % 10) }
+}
+instance Hash<Key> { fn hash value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key n -> `key:${n}` } }
+instance Debug<Key> { fn debug value: Key -> String = match value { Key n -> `debug:${n}` } }
+fn equal<A> left: A -> right: A -> Bool where Eq<A> = left == right
+fn inherited<A> left: A -> right: A -> Bool where Ord<A> = equal<A> left right
+fn ordered<A> left: A -> right: A -> Ordering where Ord<A> = compare left right
+fn order value: Ordering -> String = match value { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
+fn hashed<A> value: A -> Int where Hash<A> = hash value
+fn displayed<A> value: A -> String where Show<A> = show value
+fn inspected<A> value: A -> String where Debug<A> = debug value
+fn singleton<A> value: A -> NonEmptyList<A> = pure value
+fn total<C> values: C -> Int where Reducible<C, Int> = sum values
+fn collected<F<_>,A> values: F<Maybe<A>> -> Maybe<F<A>> where Traversable<F> = maybe.sequence values
+fn optionalValue value: Maybe<Key> -> Maybe<Key> = value
+fn eitherValue value: Either<Key, Int> -> Either<Key, Int> = value
+fn validationValue value: Validation<Key, Int> -> Validation<Key, Int> = value
+fn pair value: Int -> (Int, Int) = (1, value)
+pub fn probe -> String = {
+  let emptyArray: Array<Key> = []
+  let arrayOne: Array<Key> = [Key 1]
+  let noInt: Maybe<Int> = Nothing
+  let nil: List<Key> = `[]
+  let none: Maybe<Key> = optionalValue Nothing
+  let left: Either<Key, Int> = eitherValue (Left (Key 1))
+  let otherLeft: Either<Key, Int> = Left (Key 11)
+  let right: Either<Key, Int> = eitherValue (Right 1)
+  let valid: Validation<Key, Int> = validationValue (Valid 1)
+  let invalid: Validation<Key, Int> = validationValue (Invalid (singleton (Key 1)))
+  let otherInvalid: Validation<Key, Int> = Invalid (singleton (Key 11))
+  let a = append (singleton (Key 1)) (singleton (Key 2))
+  let b = append (singleton (Key 11)) (singleton (Key 12))
+  let saved: List<Key> -> List<Key> -> Bool = equal
+  let partial = saved `[Key 1, Key 2]
+  let mapA = maps.insert (Key 2) `[Key 3] (maps.singleton (Key 1) `[Key 4])
+  let mapB = maps.insert (Key 11) `[Key 14] (maps.singleton (Key 12) `[Key 13])
+  let setA = sets.insert (Key 2) (sets.singleton (Key 1))
+  let setB = sets.insert (Key 11) (sets.singleton (Key 12))
+  let mapEqual: maps.Map<Key, List<Key>> -> Bool = equal mapA
+  let setEqual: sets.Set<Key> -> Bool = equal setA
+  let arraySaved: Array<Key> -> Array<Key> -> Bool = eq
+  let arrayPartial = arraySaved [Key 1]
+  let maybeSaved: Maybe<Key> -> Maybe<Key> -> Bool = eq
+  let maybePartial = maybeSaved (Just (Key 1))
+  let eitherSaved: Either<Key, Int> -> Either<Key, Int> -> Bool = eq
+  let eitherPartial = eitherSaved left
+  let validationSaved: Validation<Key, Int> -> Validation<Key, Int> -> Bool = eq
+  let validationPartial = validationSaved invalid
+  let nelSaved: NonEmptyList<Key> -> NonEmptyList<Key> -> Bool = eq
+  let nelPartial = nelSaved a
+  let emptyMap: maps.Map<Key, List<Key>> = maps.empty ()
+  let emptySet: sets.Set<Key> = sets.empty ()
+  let hashSaved: NonEmptyList<Int> -> Int = hashed
+  let compareSaved: NonEmptyList<Key> -> NonEmptyList<Key> -> Ordering = ordered
+  let comparePartial = compareSaved a
+  let nel = append (singleton 1) (singleton 2)
+  let traversal: NonEmptyList<Maybe<Int>> -> Maybe<NonEmptyList<Int>> = collected
+  let traversePartial: NonEmptyList<Int> -> Maybe<NonEmptyList<Int>> = maybe.traverse (\n: Int -> Just (n + 1))
+  let failed = append (singleton (Just 1)) (singleton noInt)
+  join "\n" [
+    show ([Key 1] == [Key 11]), show (equal [Key 1] [Key 2]),
+    show (equal emptyArray emptyArray), show (equal<Array<Key>> arrayOne emptyArray),
+    show (`[Key 1] == `[Key 11]), show (partial `[Key 11, Key 12]),
+    show (partial `[Key 1]), show (equal nil nil), show (equal nil `[Key 1]),
+    show (equal (Just [Key 1]) (Just [Key 11])), show (equal none none), show (equal<Maybe<Key>> none (Just (Key 1))),
+    show (equal left otherLeft), show (equal<Either<Key, Int>> left right), show (equal right right),
+    show (equal valid valid), show (equal invalid otherInvalid), show (equal<Validation<Key, Int>> valid invalid),
+    show (a == b), show (equal a (singleton (Key 1))), show (equal a (append (singleton (Key 1)) (singleton (Key 3)))),
+    order (comparePartial b), order (ordered a (singleton (Key 1))), order (ordered (singleton (Key 1)) a),
+    order (ordered a (append (singleton (Key 1)) (singleton (Key 3)))),
+    show (hashSaved (append (singleton (-9007199254740991)) (singleton 4294967296))),
+    show (hash a), show (hash b),
+    show (mapA == mapB), show (mapEqual mapB), show (equal emptyMap emptyMap),
+    show (equal mapA emptyMap), show (equal mapA (maps.insert (Key 2) `[Key 9] (maps.singleton (Key 1) `[Key 4]))),
+    show (setA == setB), show (setEqual setB), show (equal emptySet emptySet), show (equal setA emptySet),
+    show (equal (Key 1, [Key 2]) (Key 11, [Key 12])), order (ordered<(Int, Int)> (pair 2) (1, 3)), show (hash (1, 2)),
+    displayed a, inspected a, displayed mapA, inspected setA,
+    displayed left, inspected valid, displayed (1..=3), inspected (1..=3),
+    show (total nel), show (sum nel), show (arrays.fromIterable nel),
+    show (traversal (map Just nel)), show (traversePartial nel), show (collected failed),
+    order (ordered False True), order (ordered "\u{e000}" "🙂"), order (ordered () ()),
+    show (inherited "雪" "雪"), show (inherited False True),
+    show (arrayPartial [Key 11]), show (maybePartial (Just (Key 11))),
+    show (eitherPartial otherLeft), show (validationPartial otherInvalid), show (nelPartial b),
+    show (a < (append (singleton (Key 1)) (singleton (Key 3)))),
+    show (False < True), show ("🙂" > "\u{e000}"), show (() <= ()),
+    show ((1, 2) < (1, 3)), show ((1, 2) >= (1, 2))
+  ]
+}
+pub effect fn main = println (probe ())

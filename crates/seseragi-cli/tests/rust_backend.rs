@@ -856,9 +856,13 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 ("error[", Some(main.clone()), "value")
             }
             "unsupported" => {
-                let addition = "\npub fn unsupported -> Bool = `[1] == `[1]\n";
+                let addition = "\nimport * as regex from \"std/regex\"\npub fn unsupported -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n";
                 fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
-                ("SES-RUST-0001", Some(library.clone()), "`[1] == `[1]")
+                (
+                    "SES-RUST-0001",
+                    Some(library.clone()),
+                    "regex.compile \"x\"",
+                )
             }
             _ => ("SES-K0102", None, ""),
         };
@@ -1500,7 +1504,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         let metadata: serde_json::Value = serde_json::from_slice(&fs::read(output.with_extension("rust-backend.json")).unwrap()).unwrap();
         assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == capability));
     }
-    for (name, source) in [("list-eq", "pub fn answer -> Bool = `[1] == `[1]\n")] {
+    for (name, source) in [("regex-compile", "import * as regex from \"std/regex\"\npub fn answer -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n")] {
         let bad_path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&bad_path, source).unwrap();
         let bad_output = scratch.0.join(format!("{name}.rs"));
