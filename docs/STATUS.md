@@ -33,15 +33,13 @@
 まだ足りないものは次のとおりです。
 
 - 標準ライブラリのうち、ファイル・HTTP・Stream などは一部だけです
-- 省略可能なフィールドのパターン（`{ id? }`）は型検査が未対応です（#1174）
-- 多相なトップレベル値を複数の型で使うと、生成したコードが読み込めません（#1173）
 
 ## ネイティブターゲット
 
 TypeScript ターゲットと同じプログラムを、Bun や Node.js なしで動くネイティブバイナリにする作業を進めています。
 全体の進み具合は [#809](https://github.com/KentaroMorishita/seseragi/issues/809) で追っています。
 
-いまは `seseragi experimental build-native` でビルドします。`seseragi run --target native` で選べるようにする作業は #1122 です。
+`seseragi run`・`build`・`dev` に `--target native` を付けると、ネイティブでビルドして実行できます。
 
 ### 公式サンプルの状況
 
@@ -49,21 +47,13 @@ TypeScript ターゲットと同じプログラムを、Bun や Node.js なし�
 
 | 状況 | 本数 | 内容 |
 | --- | --- | --- |
-| 動く（TS と出力が一致） | 16 | fizzbuzz、records、stdin-greeting、project-greeting など |
-| Web UI（ネイティブの対象外） | 8 | `std/web/html` を使うサンプル。画面は TypeScript ターゲットが担当します |
-| まだ動かない | 7 | 下の表のとおり |
-
-| 止まる理由 | サンプル | Issue |
-| --- | --- | --- |
-| `std/signal` が未対応 | signal-state、signal-composition、type-aliases | #1076 |
-| 内包表記が未対応 | collections、typeclass-operator-parity | #1096、#1097 |
-| Effect 以外の `do` が未対応 | either-and-monad | #1103 |
-| パターンの判定の一部が未対応 | collection-patterns | #1093 |
+| 動く（TS と出力が一致） | 24 | 画面を持たないサンプルすべて。`std/web/html` で HTML を文字列にする html-components を含みます |
+| ブラウザー専用（ネイティブの対象外） | 7 | `std/web/dom` で画面を動かすサンプル。TypeScript ターゲットが担当します |
 
 ### TS とネイティブの一致を確かめる方法
 
 - `examples/spec/fixtures/rust-backend/` の fixture は、Bun・Node.js・ネイティブの出力を、同じ期待値と比べています
-- 型の付いたプログラムをランダムに作って両方で実行し、結果を比べる差分テストを準備しています（#1170）
+- 型の付いたプログラムをランダムに作って両方で実行し、結果を比べる差分テストがあります（`crates/seseragi-cli/tests/differential.rs`）
 
 ## 開発用ツール
 
