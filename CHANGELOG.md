@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.135] - 2026-11-01
+
+### Added
+
+- Add the standard instances the native target was missing compared with the TS target: `==` for Array, List, Map, Set, Maybe and Either; Eq, Ord, Hash and the collection traits for NonEmptyList; Ord for Bool, String and Unit; Tuple comparison operators; and the `std/effect` Applicative.
+
+### Fixed
+
+- Reading an optional record field now produces TypeScript typed as `Maybe<T>`, so matching on it passes `tsc --strict`; record fields named like Object prototype members (such as `toString`) no longer break the generated types.
+
 ## [0.61.134] - 2026-11-01
 
 ### Added
