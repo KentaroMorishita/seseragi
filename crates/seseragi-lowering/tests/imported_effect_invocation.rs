@@ -111,7 +111,7 @@ pub effect fn main =
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated.typescript.contains("announce("));
+    assert!(generated.typescript.contains("announce<number>(42)"));
     assert!(generated.typescript.contains("_ssrg_show_intShow"));
 }
 

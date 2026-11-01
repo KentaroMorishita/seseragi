@@ -902,7 +902,6 @@ pub(super) fn lower_core_expr_to_typescript(
                     &type_ref,
                     &evidence,
                 );
-                let typed_json_evidence = has_typed_json_evidence(&evidence);
                 let evidence = evidence
                     .iter()
                     .map(|selected| {
@@ -934,12 +933,15 @@ pub(super) fn lower_core_expr_to_typescript(
                     }
                 } else {
                     let has_evidence = !evidence.is_empty();
+                    let type_arguments =
+                        ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
                     let checked_result = type_ref_from_core_type_with_erasure(
                         foreign_result.as_ref().unwrap_or(&type_ref),
                         imported_types,
                         &deferred_evidence_type_constructor_parameters,
                     );
                     let check_late_callback = has_evidence
+                        && type_arguments.is_empty()
                         && deferred_evidence_parameters.is_empty()
                         && (checked_argument_types.iter().skip(1).any(|argument| {
                             matches!(argument, super::TypeScriptType::Function { .. })
@@ -996,6 +998,7 @@ pub(super) fn lower_core_expr_to_typescript(
                         lower_constrained_call(
                             callee,
                             arguments,
+                            type_arguments,
                             evidence,
                             deferred_evidence_parameters,
                             deferred_evidence_type_constructor_parameters,
@@ -1006,13 +1009,6 @@ pub(super) fn lower_core_expr_to_typescript(
                             origin,
                         )
                     };
-                    if let TypeScriptExpr::Call { type_arguments, .. } = &mut call {
-                        *type_arguments = ordinary_call_type_arguments(
-                            callee_signature.as_ref(),
-                            has_evidence && !typed_json_evidence,
-                            imported_types,
-                        );
-                    }
                     if check_late_callback {
                         // TypeScript fixes generic parameters at the first
                         // curried argument. The source checker used every
@@ -1379,7 +1375,6 @@ pub(super) fn lower_core_expr_to_typescript(
                         arguments,
                         type_arguments: ordinary_call_type_arguments(
                             callee_signature.as_ref(),
-                            !evidence.is_empty() && !has_typed_json_evidence(&evidence),
                             imported_types,
                         ),
                         checked_callee_type: None,
@@ -1546,6 +1541,7 @@ fn callback_returns_either(type_ref: &super::TypeScriptType) -> bool {
 fn lower_constrained_call(
     callee: String,
     mut arguments: Vec<TypeScriptExpr>,
+    type_arguments: Vec<super::TypeScriptType>,
     evidence: Vec<TypeScriptExpr>,
     deferred_parameters: Vec<CoreType>,
     deferred_type_constructor_parameters: Vec<String>,
@@ -1561,7 +1557,7 @@ fn lower_constrained_call(
         return TypeScriptExpr::Call {
             callee,
             arguments,
-            type_arguments: Vec::new(),
+            type_arguments,
             checked_callee_type: None,
         };
     }
@@ -1589,7 +1585,9 @@ fn lower_constrained_call(
         // Check the supplied prefix before TS infers its generic parameters
         // from a callback's Either union. The remaining source parameters still
         // precede dictionaries, which precede any returned function's stages.
-        let checked_callee_type = supplied_types.iter().any(callback_returns_either).then(|| {
+        let checked_callee_type = (type_arguments.is_empty()
+            && supplied_types.iter().any(callback_returns_either))
+        .then(|| {
             supplied_types
                 .iter()
                 .cloned()
@@ -1611,7 +1609,7 @@ fn lower_constrained_call(
         TypeScriptExpr::Call {
             callee,
             arguments,
-            type_arguments: Vec::new(),
+            type_arguments,
             checked_callee_type,
         }
     };
@@ -2553,34 +2551,16 @@ fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
     }
 }
 
-fn has_typed_json_evidence(evidence: &[crate::CoreCallEvidence]) -> bool {
-    evidence.iter().any(|selected| {
-        selected.constraint.arguments.len() == 1
-            && matches!(
-                (
-                    selected.constraint.name.as_str(),
-                    selected.constraint.trait_identity.as_deref()
-                ),
-                ("JsonEncode", Some("std/prelude::JsonEncode"))
-                    | ("JsonDecode", Some("std/prelude::JsonDecode"))
-            )
-    })
-}
-
-// Reify only a complete ordinary source instantiation. Typed JSON dictionaries
-// need this before a source stage that cannot infer A (for example String ->
-// String where JsonDecode<A>, JsonEncode<A>). Otherwise TypeScript fixes A to
-// unknown before the later invariant dictionary stage. Higher-kinded erasure,
-// runtime intrinsics, foreign tasks and erased dictionaries retain their paths.
+// Reify a complete ordinary source instantiation at the first curried stage.
+// TypeScript otherwise fixes parameters before later arguments and dictionaries
+// can infer them. Higher-kinded calls retain their checked erasure path.
 fn ordinary_call_type_arguments(
     signature: Option<&crate::CoreCallSignature>,
-    has_evidence: bool,
     imported_types: &TypeScriptTypeContext,
 ) -> Vec<super::TypeScriptType> {
     signature
         .filter(|signature| {
-            !has_evidence
-                && !signature.type_parameters.is_empty()
+            !signature.type_parameters.is_empty()
                 && signature
                     .type_parameters
                     .iter()
