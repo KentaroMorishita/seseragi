@@ -710,6 +710,14 @@ commands: command name順のarray
     stability: Stable | Experimental
 ```
 
+`run`と`build`の`--target`は`process | web | native`、`dev`は`web | native`を受け付けます。
+`run --target native`は生成した実行ファイルを起動し、標準入出力と終了コードを引き継ぎます。
+`build --target native`は既定で`dist/program`（Windowsでは`program.exe`）を生成し、
+`--out-dir`で出力先を変更できます。生成したRustソースと実行情報も同じディレクトリへ置きます。
+`dev --target native`はファイルまたはパッケージを監視し、変更時に`.seseragi/dev`へ再ビルドします。
+ビルドに失敗しても直前の出力を保持し、修正後に再試行します。`--host`、`--port`、`--open`はweb専用です。
+nativeでは`run`のプロセス実行設定とJSON診断、`build`の`--source-map`を受け付けません。
+
 schema 1でstableなcompiler共通optionは `target`、`profile` (`development | release`)、
 `diagnostic-format` (`text | json`)、`deny-warnings`、`locked` です。buildはさらに `emit`
 (`javascript | declarations | interface | none`) を持ちます。formatは `check`、`stdin-file`、

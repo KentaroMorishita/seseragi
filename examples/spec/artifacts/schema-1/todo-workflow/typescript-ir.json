@@ -203,8 +203,15 @@
         }
       ],
       "body": {
-        "kind": "runtime-call",
+        "kind": "type-application-call",
         "callee": "_ssrg_array_append",
+        "typeArguments": [
+          {
+            "kind": "reference",
+            "name": "Todo",
+            "arguments": []
+          }
+        ],
         "arguments": [
           {
             "kind": "array",

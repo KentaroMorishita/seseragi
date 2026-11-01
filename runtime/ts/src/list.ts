@@ -395,23 +395,25 @@ export const nonEmptyListIterable = /* @__PURE__ */ Object.freeze({
     listIterator(toListNonEmpty(values)),
 })
 
-export const listReducible = /* @__PURE__ */ Object.freeze({
-  ...listIterable,
-  reduce:
-    <A, B>(initial: B) =>
-    (step: (accumulator: B) => (value: A) => B) =>
-    (values: List<A>): B =>
-      reduce(initial, step, values),
-})
+export const listReducible = /* @__PURE__ */ (() =>
+  Object.freeze({
+    ...listIterable,
+    reduce:
+      <A, B>(initial: B) =>
+      (step: (accumulator: B) => (value: A) => B) =>
+      (values: List<A>): B =>
+        reduce(initial, step, values),
+  }))()
 
-export const nonEmptyListReducible = /* @__PURE__ */ Object.freeze({
-  ...nonEmptyListIterable,
-  reduce:
-    <B>(initial: B) =>
-    <A>(step: (accumulator: B) => (value: A) => B) =>
-    (values: NonEmptyList<A>): B =>
-      reduce(initial, step, toListNonEmpty(values)),
-})
+export const nonEmptyListReducible = /* @__PURE__ */ (() =>
+  Object.freeze({
+    ...nonEmptyListIterable,
+    reduce:
+      <B>(initial: B) =>
+      <A>(step: (accumulator: B) => (value: A) => B) =>
+      (values: NonEmptyList<A>): B =>
+        reduce(initial, step, toListNonEmpty(values)),
+  }))()
 
 /** Convert a persistent List to an Array without exposing its representation. */
 export function toArray<A>(values: List<A>): ReadonlyArray<A> {

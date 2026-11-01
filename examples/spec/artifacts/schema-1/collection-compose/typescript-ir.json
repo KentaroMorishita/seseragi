@@ -321,8 +321,13 @@
             "callee": "showArray",
             "arguments": [
               {
-                "kind": "runtime-call",
+                "kind": "type-application-call",
                 "callee": "_ssrg_array_append",
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
+                ],
                 "arguments": [
                   {
                     "kind": "array",

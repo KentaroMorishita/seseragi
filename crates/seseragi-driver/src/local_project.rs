@@ -28,12 +28,16 @@ pub struct CoreLocalProject {
 pub fn compile_core_local_project(
     project: &LoadedLocalProject,
 ) -> Result<CoreLocalProject, LocalProjectCompileError> {
+    compile_core_local_project_with_profile(project, seseragi_project::BuildProfile::Development)
+}
+
+pub fn compile_core_local_project_with_profile(
+    project: &LoadedLocalProject,
+    profile: seseragi_project::BuildProfile,
+) -> Result<CoreLocalProject, LocalProjectCompileError> {
     let (graph, identities_by_id) = local_project_graph(project);
-    let compiled = crate::compile_core_project(
-        graph,
-        local_project_inputs(project, seseragi_project::BuildProfile::Development),
-    )
-    .map_err(|error| local_project_error(error, &identities_by_id))?;
+    let compiled = crate::compile_core_project(graph, local_project_inputs(project, profile))
+        .map_err(|error| local_project_error(error, &identities_by_id))?;
     Ok(CoreLocalProject {
         compiled,
         entry_module: logical_module_id(project.entry()),

@@ -12,7 +12,7 @@ type Todo = {
   readonly "urgent": boolean;
   readonly [__ssrg$brand$Todo]: true;
 };
-const addTodo = (todo: Todo) => (values: ReadonlyArray<Todo>) => _ssrg_array_append([todo], values)
+const addTodo = (todo: Todo) => (values: ReadonlyArray<Todo>) => _ssrg_array_append<Todo>([todo], values)
 const keepTodo = (removedId: number) => (todo: Todo) => _ssrg_int_eq_dictionary["eq"]((todo)["id"])(removedId) === false
 const removeTodo = (id: number) => (values: ReadonlyArray<Todo>) => _ssrg_array_filter(keepTodo(id), values)
 const isUrgent = (todo: Todo) => (todo)["urgent"]

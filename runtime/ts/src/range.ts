@@ -68,14 +68,15 @@ export const rangeIterable = /* @__PURE__ */ Object.freeze({
       : rangeIterator(range, range.start),
 })
 
-export const rangeReducible = /* @__PURE__ */ Object.freeze({
-  ...rangeIterable,
-  reduce:
-    <B>(initial: B) =>
-    (step: (accumulator: B) => (value: number) => B) =>
-    (range: IntRange): B =>
-      reduce(initial, step, range),
-})
+export const rangeReducible = /* @__PURE__ */ (() =>
+  Object.freeze({
+    ...rangeIterable,
+    reduce:
+      <B>(initial: B) =>
+      (step: (accumulator: B) => (value: number) => B) =>
+      (range: IntRange): B =>
+        reduce(initial, step, range),
+  }))()
 
 /** Pure comprehension lowering for the standard Range Iterable instance. */
 export function collectMap<B>(

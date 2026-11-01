@@ -117,8 +117,10 @@ pub(super) struct RecursiveLocal {
 pub(super) struct LocalCallable {
     pub(super) self_name: Option<String>,
     variables: BTreeMap<String, u32>,
+    type_constructor_parameters: Vec<String>,
     pub(super) constraints: Vec<CoreInstanceConstraint>,
     pub(super) parameters: Vec<CoreParameter>,
+    pub(super) result_type: Option<CoreType>,
     /// A let factory introduces only dictionaries and returns this checked
     /// method type. It has no implicit Unit or eta-expanded source stages.
     pub(super) method_value: Option<CoreType>,
@@ -129,11 +131,18 @@ impl LocalCallable {
         constraints: &[CoreInstanceConstraint],
         parameters: &[CoreParameter],
     ) -> Self {
+        let variables = variables.collect::<Vec<_>>();
         Self {
             self_name: None,
-            variables: variables.collect(),
+            type_constructor_parameters: variables
+                .iter()
+                .filter(|(_, arity)| *arity > 0)
+                .map(|(name, _)| name.clone())
+                .collect(),
+            variables: variables.into_iter().collect(),
             constraints: constraints.to_vec(),
             parameters: parameters.to_vec(),
+            result_type: None,
             method_value: None,
         }
     }
@@ -246,7 +255,13 @@ impl Backend<'_> {
         {
             return Err("Rust backend: method factory dictionary staging mismatch".into());
         }
-        if !deferred_evidence_type_constructor_parameters.is_empty()
+        let constructors = if deferred_evidence_parameters.is_empty() {
+            &[][..]
+        } else {
+            callable.type_constructor_parameters.as_slice()
+        };
+        if deferred_evidence_type_constructor_parameters != constructors
+            || (self.program_wasm_library && !constructors.is_empty())
             || evidence_argument_index
                 .is_some_and(|index| index != callable.parameters.len() || index > arguments.len())
         {
@@ -319,6 +334,23 @@ impl Backend<'_> {
             {
                 return Err("Rust backend: local partial source arity mismatch".into());
             }
+            let remaining = callable.parameters[arguments.len()..].iter().rev().fold(
+                callable
+                    .result_type
+                    .clone()
+                    .ok_or("Rust backend: unproven local partial result type")?,
+                |result, parameter| CoreType::Function {
+                    parameter: Box::new(parameter.type_ref.clone()),
+                    result: Box::new(result),
+                },
+            );
+            self.match_local_type(
+                &remaining,
+                type_ref,
+                &callable.variables,
+                &mut bindings,
+                scope,
+            )?;
             // Local factories take their checked dictionaries before the
             // source stages. Applying the supplied prefix directly retains
             // already evaluated values as ordinary traceable closure edges.

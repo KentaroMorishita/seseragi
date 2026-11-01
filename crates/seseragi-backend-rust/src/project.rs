@@ -73,6 +73,44 @@ fn emit_body(
         .iter()
         .find(|m| m.module == entry_module)
         .ok_or("Rust backend: entry module not found")?;
+    let entry = entry
+        .map(|name| {
+            let symbol = format!("{entry_module}::{name}");
+            if entry_core
+                .functions
+                .iter()
+                .any(|function| function.symbol == symbol)
+            {
+                return Ok(symbol);
+            }
+            let source = entry_core
+                .functions
+                .first()
+                .map(|function| &function.origin.source)
+                .or_else(|| {
+                    entry_core
+                        .bindings
+                        .first()
+                        .map(|binding| &binding.origin.source)
+                })
+                .or_else(|| {
+                    entry_core
+                        .module_dependencies
+                        .first()
+                        .map(|dependency| &dependency.origin.source)
+                })
+                .unwrap_or(&entry_core.module);
+            Err(at(
+                &format!("Rust backend: entry function `{symbol}` not found"),
+                &SourceSpan {
+                    source: source.clone(),
+                    start: 0,
+                    end: 0,
+                },
+                entry_module,
+            ))
+        })
+        .transpose()?;
     let mut linked = (*entry_core).clone();
     linked.adts.clear();
     linked.aliases.clear();
@@ -207,7 +245,7 @@ fn emit_body(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = if let Some(entry) = entry {
+    let mut artifact = if let Some(entry) = &entry {
         emit::emit(
             &linked,
             entry,

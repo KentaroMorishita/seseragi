@@ -624,7 +624,7 @@ fn rejects_unknown_build_targets_without_creating_output() {
 
     assert_eq!(output.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&output.stderr)
-        .contains("unknown project target `browser`; expected `process` or `web`"));
+        .contains("unknown project target `browser`; expected `process`, `web` or `native`"));
     assert!(!output_directory.exists());
     fs::remove_dir_all(directory).unwrap();
 }
@@ -903,10 +903,10 @@ fn documents_build_in_cli_help() {
 
     assert_eq!(output.status.code(), Some(0));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/app.ssrg [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]"
+        "seseragi build path/to/app.ssrg [--target process|web|native] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]"
     ));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/package [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]"
+        "seseragi build path/to/package [--target process|web|native] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]"
     ));
 }
 

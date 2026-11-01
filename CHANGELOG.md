@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.136] - 2026-11-01
+
+### Added
+
+- `seseragi run`, `build` and `dev` accept `--target native`: `run` builds and starts the native executable, `build` writes `dist/program` (or `--out-dir`), and `dev` rebuilds into `.seseragi/dev` on every change. The entry function is resolved as the module's own symbol and reported with its position when missing.
+- Partially apply, store and return constrained functions over higher-kinded types (Functor, Monad and similar) on the native target, including local and `do`-bound aliases.
+
+### Fixed
+
+- Programs that use no collections no longer bundle the unused standard Reducible dictionaries and persistent-index helpers into production builds.
+
 ## [0.61.135] - 2026-11-01
 
 ### Added

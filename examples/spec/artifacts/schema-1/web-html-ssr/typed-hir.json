@@ -1340,6 +1340,13 @@
                                         }
                                       ]
                                     }
+                                  ],
+                                  "instantiatedTypeArguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Action",
+                                      "arguments": []
+                                    }
                                   ]
                                 },
                                 "type": {

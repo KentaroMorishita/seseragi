@@ -179,8 +179,8 @@ fn emit_body(
             module
                 .functions
                 .iter()
-                .find(|f| f.symbol == format!("{}::{entry}", module.module))
-                .ok_or("Rust backend: entry function not found")
+                .find(|function| function.symbol == entry)
+                .ok_or("Rust backend: resolved entry function not found")
         })
         .transpose()?;
     if let Some(entry) = entry {
@@ -1534,6 +1534,7 @@ impl Backend<'_> {
                     constraints,
                     parameters,
                 );
+                callable.result_type = local::method_argument_type(body);
                 if !initializer_in_outer_scope {
                     callable.self_name = Some(name.clone());
                 }

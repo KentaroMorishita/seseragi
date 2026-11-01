@@ -1,4 +1,7 @@
 import { expect, test } from "bun:test"
+import { mkdtemp, rm, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
+import { join, resolve } from "node:path"
 import { arrayIterable, arrayReducible } from "../src/array"
 import {
   type Iterable,
@@ -82,4 +85,45 @@ test("all standard Reducible dictionaries expose their selected Iterable parent"
     [3, 1, 2]
   )
   checkParent(sets.setReducible, sets.setIterable, sets.empty<number>(), [])
+})
+
+test("unused standard Reducible dictionaries do not retain iteration helpers", async () => {
+  const temporary = await mkdtemp(join(tmpdir(), "seseragi-reducible-bundle-"))
+  try {
+    const entry = join(temporary, "entry.ts")
+    const runtime = resolve(import.meta.dir, "../src")
+    await writeFile(
+      entry,
+      [
+        ["array", "length"],
+        ["list", "length"],
+        ["range", "inclusive"],
+        ["map", "empty"],
+        ["set", "empty"],
+      ]
+        .map(
+          ([module, name]) =>
+            `import { ${name} as ${module} } from ${JSON.stringify(join(runtime, `${module}.ts`))}; console.log(${module});`
+        )
+        .join("\n")
+    )
+    const result = await Bun.build({ entrypoints: [entry], target: "bun" })
+    expect(result.success).toBe(true)
+    expect(result.outputs).toHaveLength(1)
+    const code = await result.outputs[0].text()
+    for (const dictionary of [
+      "arrayReducible",
+      "listReducible",
+      "nonEmptyListReducible",
+      "rangeReducible",
+      "mapReducible",
+      "setReducible",
+    ]) {
+      expect(code).not.toContain(dictionary)
+    }
+    expect(code).not.toContain("invalid persistent Map order link")
+    expect(code).not.toContain("persistent-index.ts")
+  } finally {
+    await rm(temporary, { recursive: true, force: true })
+  }
 })

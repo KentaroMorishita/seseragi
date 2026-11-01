@@ -5,12 +5,53 @@ use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
 use seseragi_runtime::{DiagnosticFormat, ProcessRunOptions, ProcessSignalMode, RandomSeed};
 
 use crate::diagnostics::{render_diagnostics, DiagnosticDocument};
+use crate::target::Target;
 
 mod package;
 
 pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     let invocation = Invocation::parse(arguments)?;
+    if invocation.target == Some(Target::Native) {
+        return run_native(&invocation);
+    }
     run_path(&invocation)
+}
+
+fn run_native(invocation: &Invocation) -> Result<i32, String> {
+    if invocation.signal_mode.is_some()
+        || invocation.shutdown_grace_ms.is_some()
+        || invocation.hash_seed.is_some()
+        || invocation.random_seed.is_some()
+        || invocation.diagnostic_format == Some(DiagnosticFormat::Json)
+    {
+        return Err(
+            "native run does not support process runtime options or JSON diagnostics".into(),
+        );
+    }
+    let output = tempfile::Builder::new()
+        .prefix("seseragi-native-run-")
+        .tempdir()
+        .map_err(|error| error.to_string())?;
+    crate::experimental::build_native(
+        &invocation.path,
+        output.path(),
+        ProjectCommand::Run,
+        invocation.profile.unwrap_or_default(),
+    )?;
+    let status =
+        std::process::Command::new(output.path().join(crate::experimental::output::EXECUTABLE))
+            .status()
+            .map_err(|error| format!("could not run native program: {error}"))?;
+    if let Some(code) = status.code() {
+        return Ok(code);
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::process::ExitStatusExt;
+        Ok(128 + status.signal().unwrap_or(1))
+    }
+    #[cfg(not(unix))]
+    Ok(1)
 }
 
 fn run_path(invocation: &Invocation) -> Result<i32, String> {
@@ -28,7 +69,7 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
     if path.extension().and_then(|extension| extension.to_str()) != Some("ssrg") {
         return Err("run expects a .ssrg source file".to_owned());
     }
-    select_project_target(ProjectCommand::Run, invocation.target, None, None)
+    select_project_target(ProjectCommand::Run, invocation.target(), None, None)
         .map_err(|error| error.to_string())?;
     let source = std::fs::read_to_string(path)
         .map_err(|error| format!("failed to read {}: {error}", path.display()))?;
@@ -110,7 +151,7 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
 
 pub(super) struct Invocation {
     path: PathBuf,
-    target: Option<ProjectTarget>,
+    target: Option<Target>,
     profile: Option<seseragi_project::BuildProfile>,
     diagnostic_format: Option<DiagnosticFormat>,
     signal_mode: Option<ProcessSignalMode>,
@@ -153,8 +194,7 @@ impl Invocation {
                 "--target" => {
                     set_once(
                         &mut invocation.target,
-                        ProjectTarget::parse(value("--target")?)
-                            .map_err(|error| error.to_string())?,
+                        Target::parse(value("--target")?)?,
                         "--target",
                     )?;
                     2
@@ -226,7 +266,7 @@ impl Invocation {
     }
 
     pub(super) fn target(&self) -> Option<ProjectTarget> {
-        self.target
+        self.target.and_then(Target::project)
     }
 
     pub(super) fn diagnostic_format(&self) -> DiagnosticFormat {

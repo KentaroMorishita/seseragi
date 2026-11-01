@@ -1,0 +1,83 @@
+trait Render<F<_>> {
+  fn render<A> callback: (A -> String) -> values: F<A> -> String
+}
+instance Render<Array> {
+  fn render<A> callback: (A -> String) -> values: Array<A> -> String =
+    show (map callback values)
+}
+
+trait RenderPair<F<_, _>> {
+  fn renderPair values: F<Int, String> -> String
+}
+type Pair<A, B> = | Pair (A, B)
+instance RenderPair<Pair> {
+  fn renderPair values: Pair<Int, String> -> String =
+    match values { Pair (a, b) -> show a + b }
+}
+fn pairText<F<_, _>> prefix: String
+  -> values: F<Int, String>
+  -> String
+where RenderPair<F> =
+  prefix + renderPair values
+
+fn mapped<F<_>, A, B> callback: (A -> B) -> values: F<A> -> F<B> where Functor<F> =
+  map callback values
+fn custom<F<_>, A> callback: (A -> String) -> values: F<A> -> String where Render<F> =
+  render callback values
+fn keep<F<_>, A> values: F<A> -> other: A -> F<A> where Functor<F> = values
+fn scoped<F<_>> callback: (Int -> Int) -> (F<Int> -> F<Int>) where Functor<F> =
+  mapped callback
+fn returned<F<_>> unit: Unit -> ((Int -> Int) -> F<Int> -> F<Int>) where Functor<F> =
+  mapped
+fn both<F<_>, G<_>> left: F<Int>
+  -> right: G<Int>
+  -> (F<Int>, G<Int>)
+where Functor<F>, Functor<G> =
+  (map (\x: Int -> x + 1) left, map (\x: Int -> x + 2) right)
+fn increment value: Int -> Int = value + 1
+fn renderInt value: Int -> String = show value
+fn invoke callback: (Array<Int> -> Array<Int>) -> Array<Int> = callback [9]
+type Box<A> = | Box A
+let globalMap = mapped
+
+fn monadic -> Maybe<Array<Int>> = do {
+  first <- Just 15
+  let saved = mapped
+  let partial: Array<Int> -> Array<Int> = saved increment
+  pure (partial [first])
+}
+
+fn positions -> String = {
+  fn named<F<_>> callback: (Int -> Int) -> values: F<Int> -> F<Int> where Functor<F> =
+    map callback values
+  let namedPartial: Array<Int> -> Array<Int> = named increment
+  let direct: Array<Int> -> Array<Int> = mapped increment
+  let saved = mapped
+  let local: Array<Int> -> Array<Int> = saved increment
+  let global: Array<Int> -> Array<Int> = globalMap increment
+  let selected: Int -> Array<Int> = keep [7]
+  let user: Array<Int> -> String = custom renderInt
+  let generic: Array<Int> -> Array<Int> = scoped increment
+  let returnedMap: (Int -> Int) -> Array<Int> -> Array<Int> = returned ()
+  let record: { run: Array<Int> -> Array<Int> } = { run: mapped increment }
+  let boxed: Box<Array<Int> -> Array<Int>> = Box (mapped increment)
+  let unboxed = match boxed { Box callback -> callback [8] }
+  let paired: Maybe<Int> -> (Array<Int>, Maybe<Int>) = both [1]
+  let pairPartial: Pair<Int, String> -> String = pairText "pair:"
+  show (
+    direct [1],
+    local [2],
+    global [3],
+    selected 0,
+    generic [4],
+    returnedMap increment [5]
+  ) + ":" + user [6] + ":" + show (record.run [7], unboxed, invoke (mapped increment), [10] |> mapped increment) + ":" + show (saved increment [11], saved (\x: Bool -> !x) (Just True), paired (Just 2)) + ":" + pairPartial (Pair (16, "x")) + ":" + show (namedPartial [17], monadic ())
+}
+
+pub effect fn main = do {
+  println (positions ())
+  let saved: Array<Int> -> Array<Int> = mapped increment
+  let alias = mapped
+  let later: Maybe<Int> -> Maybe<Int> = alias increment
+  println (show (saved [12], later (Just 13)))
+}
