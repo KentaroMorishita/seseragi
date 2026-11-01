@@ -63,15 +63,9 @@ fn native_derived_structural_stage(captures: &[V], left: V) -> V {
                     let [V::Text(name), V::Bool(optional)] = field.get().as_slice() else {
                         unreachable!()
                     };
-                    let V::Record(a) = left else {
-                        panic!("Rust ABI: record")
-                    };
-                    let a = a.get().get(name.get());
+                    let a = left.record_fields().get(name.get());
                     let b = if method == "eq" {
-                        let V::Record(b) = &right else {
-                            panic!("Rust ABI: record")
-                        };
-                        b.get().get(name.get())
+                        right.record_fields().get(name.get())
                     } else {
                         None
                     };

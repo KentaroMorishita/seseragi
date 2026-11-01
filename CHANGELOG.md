@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.138] - 2026-11-01
+
+### Added
+
+- Build `std/web/html` natively: `style`, `img` and the remaining elements, attributes and SSR helpers the official samples use, with CSS declaration order and escaping matching the TS target. All 45 runnable HTML samples now produce the same output on both targets.
+
 ## [0.61.137] - 2026-11-01
 
 ### Added

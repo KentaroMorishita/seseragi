@@ -40,6 +40,9 @@ impl Backend<'_> {
         if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.html_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.bytes_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }

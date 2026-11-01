@@ -127,6 +127,8 @@ pub fn emit_rust_project_with_options(
 #[allow(dead_code)]
 mod runtime {
     include!("runtime.rs");
+    include!("runtime_record.rs");
+    include!("runtime_html.rs");
     include!("runtime_char.rs");
     include!("runtime_float_display.rs");
     include!("runtime_float.rs");
