@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.139] - 2026-11-02
+
+### Fixed
+
+- The Playground replaces its compiler worker after an internal compiler crash and reports it as an internal error, so later compiles never run on a stopped WASM instance. Ordinary compile errors keep the worker.
+
 ## [0.61.138] - 2026-11-01
 
 ### Added
