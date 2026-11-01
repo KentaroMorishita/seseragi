@@ -1350,6 +1350,7 @@ fn type_template(
     let mut typed_parts = Vec::with_capacity(parts.len());
     let mut children = Vec::new();
     let mut missing_instance = None;
+    let mut invalid_interpolation = false;
     for part in parts {
         match part {
             SurfaceTemplatePart::Text { value, span } => {
@@ -1359,20 +1360,28 @@ fn type_template(
                 });
             }
             SurfaceTemplatePart::Interpolation { value, span } => {
-                let analysis = type_surface_expression(value, &context.without_expected());
+                let mut analysis = type_surface_expression(value, &context.without_expected());
+                ensure_recovery_hole_issue(&mut analysis);
                 let type_ref = super::type_ref::inferred_type_from_expr(&analysis.value);
-                let selected = context.select_show_evidence(SemanticValueType {
-                    type_ref: type_ref.clone(),
-                    key: analysis.semantic_type.clone(),
-                });
-                let (trait_identity, evidence) = match selected {
-                    Ok(selected) => (selected.0, Some(selected.1)),
-                    Err(constraint) => {
-                        missing_instance.get_or_insert(PureCallIssue::MissingInstance {
-                            callee: value.span(),
-                            constraint,
-                        });
-                        ("std/prelude::Show".to_owned(), None)
+                let invalid = analysis.has_issues()
+                    || analysis.semantic_type == SemanticTypeKey::Invalid
+                    || super::type_ref::typed_type_contains_hole(&type_ref);
+                invalid_interpolation |= invalid;
+                let (trait_identity, evidence) = if invalid {
+                    ("std/prelude::Show".to_owned(), None)
+                } else {
+                    match context.select_show_evidence(SemanticValueType {
+                        type_ref,
+                        key: analysis.semantic_type.clone(),
+                    }) {
+                        Ok(selected) => (selected.0, Some(selected.1)),
+                        Err(constraint) => {
+                            missing_instance.get_or_insert(PureCallIssue::MissingInstance {
+                                callee: value.span(),
+                                constraint,
+                            });
+                            ("std/prelude::Show".to_owned(), None)
+                        }
                     }
                 };
                 typed_parts.push(TypedTemplatePart::Interpolation {
@@ -1391,16 +1400,16 @@ fn type_template(
             type_ref: named_type("String"),
             origin: span,
         },
-        if missing_instance.is_some() {
+        if invalid_interpolation || missing_instance.is_some() {
             SemanticTypeKey::Invalid
         } else {
             SemanticTypeKey::Other
         },
     );
-    result.pure_call_issue = missing_instance;
     for child in children {
         result.merge_issues_from(child);
     }
+    result.pure_call_issue = result.pure_call_issue.or(missing_instance);
     result
 }
 
