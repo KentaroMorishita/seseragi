@@ -1826,6 +1826,7 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
                 || typescript_expr_contains_await(result)
         }
         TypeScriptExpr::Undefined
+        | TypeScriptExpr::EmptyDictionary
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::String { .. }

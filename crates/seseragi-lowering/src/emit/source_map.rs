@@ -408,6 +408,7 @@ fn collect_expr_names(
             collect_expr_names(result, helper_names, names);
         }
         TypeScriptExpr::Undefined
+        | TypeScriptExpr::EmptyDictionary
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::Boolean { .. }

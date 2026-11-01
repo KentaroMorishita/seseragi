@@ -26,6 +26,12 @@ pub(super) fn local_dictionary_expression(
         evidence_arguments,
     } = evidence
     {
+        if type_arguments.is_empty()
+            && evidence_arguments.is_empty()
+            && seseragi_semantics::standard_instance_has_empty_dictionary(identity)
+        {
+            return Some(TypeScriptExpr::EmptyDictionary);
+        }
         if identity == "@seseragi/foreign-codec" {
             let (name, arguments) = match type_arguments.as_slice() {
                 [crate::CoreType::Named { name, arguments }] => (name, arguments),
@@ -187,6 +193,42 @@ fn structural_dictionary_arguments(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn does_not_invent_html_instances_or_discard_instance_arguments() {
+        let nested = crate::CoreCallEvidence {
+            constraint: crate::CoreInstanceConstraint {
+                name: "Show".to_owned(),
+                trait_identity: Some("std/prelude::Show".to_owned()),
+                arguments: Vec::new(),
+            },
+            evidence: CoreInstanceEvidence::Parameter { index: 0 },
+        };
+        for (identity, type_arguments, evidence_arguments) in [
+            ("std/web/html::IntoChildren<Int>", vec![], vec![]),
+            ("other/html::StyleRecord<Record>", vec![], vec![]),
+            (
+                "std/web/html::StyleRecord<Record>",
+                vec![crate::CoreType::Hole],
+                vec![],
+            ),
+            ("std/web/html::IntoChildren<String>", vec![], vec![nested]),
+        ] {
+            assert_eq!(
+                local_dictionary_expression(
+                    &CoreInstanceEvidence::Standard {
+                        identity: identity.to_owned(),
+                        type_arguments,
+                        evidence_arguments,
+                    },
+                    &Default::default(),
+                    &Default::default(),
+                ),
+                None,
+                "{identity}"
+            );
+        }
+    }
 
     #[test]
     fn materializes_a_registered_standard_show_dictionary() {

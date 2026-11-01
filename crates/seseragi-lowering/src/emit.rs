@@ -1158,6 +1158,7 @@ fn render_arrow_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -
 fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
     match expr {
         TypeScriptExpr::Undefined => "undefined".to_owned(),
+        TypeScriptExpr::EmptyDictionary => "({})".to_owned(),
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::Number { value } => value.clone(),
         TypeScriptExpr::String { value } => format!("{value:?}"),
