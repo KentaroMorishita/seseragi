@@ -1534,6 +1534,7 @@ impl Backend<'_> {
                     constraints,
                     parameters,
                 );
+                callable.result_type = local::method_argument_type(body);
                 if !initializer_in_outer_scope {
                     callable.self_name = Some(name.clone());
                 }

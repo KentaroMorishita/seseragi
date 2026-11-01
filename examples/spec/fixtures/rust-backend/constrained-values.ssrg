@@ -1,0 +1,70 @@
+trait Tag<A> {
+  fn tag value: A -> String
+}
+instance Tag<Int> {
+  fn tag value: Int -> String = "int:" + show value
+}
+instance Tag<Bool> {
+  fn tag value: Bool -> String = "bool:" + show value
+}
+
+type Box<A> = | Box A
+
+fn render<A> value: A -> String where Show<A> = show value
+fn same<A> left: A -> right: A -> Bool where Eq<A> = eq left right
+fn less<A> left: A -> right: A -> Bool where Ord<A> = left < right
+fn tagged<A> value: A -> String where Tag<A> = tag value
+fn identityValue<A> unit: Unit -> A where Monoid<A> = empty ()
+fn joined<A> left: A -> right: A -> A where Monoid<A> = append left right
+fn returned<A> unit: Unit -> (A -> String) where Show<A> = render
+fn returnedTag<A> unit: Unit -> (A -> String) where Tag<A> = tagged
+fn returnedPartial<A> left: A -> (A -> Bool) where Eq<A> = same left
+fn use callback: (Int -> String) -> String = callback 7
+
+let globalRender = render
+let globalTag = tagged
+
+fn monadic -> Maybe<Bool> = do {
+  first <- Just 7
+  let equal = same
+  let partial = equal first
+  pure (partial 7)
+}
+
+fn userPositions -> String = {
+  let later: Bool -> String = returnedTag ()
+  use tagged + ":" + (18 |> tagged) + ":" + later True
+}
+
+fn positions -> String = {
+  let saved = render
+  let alias = saved
+  let equal = same
+  let order = less
+  let custom = tagged
+  let monoid = identityValue
+  let text: String = monoid ()
+  let values: Array<Int> = monoid ()
+  let record: { run: Int -> String, tag: Bool -> String } = { run: render, tag: tagged }
+  let boxed: Box<Int -> String> = Box render
+  let unpacked = match boxed { Box callback -> callback 8 }
+  let partial = equal 7
+  let customRecord: { run: Int -> String } = { run: globalTag }
+  let customBox: Box<Bool -> String> = Box tagged
+  let customUnpacked = match customBox { Box callback -> callback False }
+  let later: Bool -> String = returned ()
+  let partialLater = returnedPartial "x"
+  let combine = joined "a"
+  alias 7 + ":" + alias True + ":" + globalRender 'λ' + ":" + custom 8 + ":" + custom False + ":" + globalTag True + ":" + record.run 9 + ":" + record.tag True + ":" + unpacked + ":" + customRecord.run 10 + ":" + customUnpacked + ":" + later False + ":" + use render + ":" + (11 |> render) + ":" + show (partial 7, partial 8, equal True False, order 1 2, order "b" "a", partialLater "x") + ":" + text + show values + ":" + combine "b"
+}
+
+pub effect fn main = do {
+  println (positions ())
+  let renderLater = render
+  let sameLater = same
+  let userLater = tagged
+  println (renderLater 12 + ":" + renderLater True + ":" + userLater 13 + ":" + userLater False)
+  println (show (sameLater 14 14, sameLater "a" "b"))
+  println (show (monadic ()))
+  println (userPositions ())
+}

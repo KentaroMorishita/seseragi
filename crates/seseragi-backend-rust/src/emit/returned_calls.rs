@@ -47,7 +47,18 @@ impl Backend<'_> {
         {
             return Ok(false);
         }
-        if !deferred_evidence_type_constructor_parameters.is_empty() {
+        let constructors = function
+            .filter(|_| partial && trait_dispatch.is_none())
+            .map(|function| {
+                function
+                    .type_parameters
+                    .iter()
+                    .filter(|parameter| parameter.arity > 0)
+                    .map(|parameter| parameter.name.clone())
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+        if *deferred_evidence_type_constructor_parameters != constructors {
             return Err("Rust backend: unproven returned callable source stages".into());
         }
         let index = if partial {
@@ -56,10 +67,6 @@ impl Backend<'_> {
             };
             if evidence_argument_index.is_some()
                 || arguments.len() + deferred_evidence_parameters.len() != function.parameters.len()
-                || function
-                    .type_parameters
-                    .iter()
-                    .any(|parameter| parameter.arity != 0)
             {
                 return Err("Rust backend: partial function source boundary mismatch".into());
             }

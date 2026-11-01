@@ -439,17 +439,23 @@ impl Backend<'_> {
                 ..
             }) = statement.filter(|statement| matches!(statement, CoreMonadDoStatement::PureLet { type_parameters, constraints, .. } if !type_parameters.is_empty() || !constraints.is_empty()))
             {
-                let (parameters, body) = match value {
-                    CoreExpr::Lambda {
-                        parameter, body, ..
-                    } => (std::slice::from_ref(parameter), body.as_ref()),
-                    _ => (&[][..], value),
-                };
+                let mut parameters = Vec::new();
+                let mut body = value;
+                while let CoreExpr::Lambda {
+                    parameter,
+                    body: next,
+                    ..
+                } = body
+                {
+                    parameters.push(parameter.clone());
+                    body = next;
+                }
                 let mut callable = LocalCallable::new(
                     type_parameters.iter().map(|p| (p.name.clone(), p.arity)),
                     constraints,
-                    parameters,
+                    &parameters,
                 );
+                callable.result_type = local::method_argument_type(body);
                 if parameters.is_empty() {
                     callable.method_value = local::method_argument_type(value)
                         .filter(|ty| matches!(ty, CoreType::Function { .. }));

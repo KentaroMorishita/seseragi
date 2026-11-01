@@ -249,7 +249,8 @@ impl Backend<'_> {
         if (!deferred_evidence_parameters.is_empty()
             && !bound_primitive_partial
             && !returned_evidence_call)
-            || !deferred_evidence_type_constructor_parameters.is_empty()
+            || (!deferred_evidence_type_constructor_parameters.is_empty()
+                && !returned_evidence_call)
             || (evidence_argument_index.is_some()
                 && !evidence.is_empty()
                 && !returned_evidence_call)

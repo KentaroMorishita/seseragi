@@ -123,6 +123,7 @@ impl Backend<'_> {
                 constraints,
                 parameters,
             );
+            callable.result_type = method_argument_type(body);
             callable.self_name = Some(name.clone());
             if let Some(mut free) = core_free_variables(body) {
                 for parameter in parameters {
