@@ -341,11 +341,12 @@ fn native_standard_error_equal(left: &V, right: &V) -> bool {
         (V::Adt(a), V::Adt(b)) => {
             a.get().0 == b.get().0 && native_standard_error_equal(&a.get().1, &b.get().1)
         }
-        (V::Record(a), V::Record(b)) => {
-            a.get().len() == b.get().len()
-                && a.get().iter().all(|(key, value)| {
-                    b.get()
-                        .get(key)
+        (V::Record(_) | V::HtmlStyleRecord(_), V::Record(_) | V::HtmlStyleRecord(_)) => {
+            let a = left.record_fields();
+            let b = right.record_fields();
+            a.len() == b.len()
+                && a.iter().all(|(key, value)| {
+                    b.get(key)
                         .is_some_and(|right| native_standard_error_equal(value, right))
                 })
         }

@@ -114,7 +114,7 @@ fn contract(identity: &str) -> Option<(&'static str, &'static str)> {
         _ => None,
     }
 }
-fn interface_type(
+pub(super) fn interface_type(
     ty: &InterfaceType,
     module: &str,
     parameters: &BTreeSet<String>,

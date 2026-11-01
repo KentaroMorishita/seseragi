@@ -1,0 +1,82 @@
+import * as html from "std/web/html"
+
+type Action =
+  | Clicked
+
+let base = { zIndex: "2", color: "red" }
+let declarations = {
+  ...base,
+  variables: { accentColor: "<&\"'", secondColor: "雪" },
+  color: "blue",
+  backgroundColor: "white"
+}
+let savedStyle: {
+  zIndex: String,
+  color: String,
+  variables: { accentColor: String, secondColor: String },
+  backgroundColor: String
+} -> html.Style =
+  html.style
+let accent = savedStyle declarations
+
+pub effect fn main = do {
+  let parsed = html.parseWebUrl "/photo?a=1&b=2"
+  match parsed {
+    Left error -> println (show error)
+    Right imageUrl -> do {
+      let image: html.ImageProps<Action> -> html.Html<Action> = html.img
+      let render: html.Html<Action> -> String = html.renderToString
+      let page: html.Html<Action> = html.main {
+        title: "雪 <&\"'",
+        class: "card",
+        id: "app",
+        hidden: False,
+        ariaHidden: False,
+        style: accent,
+        children: [
+          image {
+            loading: "lazy",
+            height: 24,
+            width: 32,
+            alt: "<&\"' 雪",
+            src: imageUrl,
+            style: html.style {}
+          },
+          html.picture {
+            children: html.source {
+              src: imageUrl,
+              mimeType: "image/png",
+              media: "screen"
+            }
+          },
+          html.a { href: imageUrl, download: True, children: "<&>\"'" },
+          html.fragment `[
+            html.text "<&>",
+            html.br {},
+            html.hr {},
+            html.button { onClick: Clicked, disabled: True, children: "OK" },
+          ],
+          html.textarea { value: "<&>\"'", rows: 2 },
+          html.input { checked: True, required: False },
+        ]
+      }
+      println (render page)
+      println (
+        html.renderDocument
+          (html.html {
+            lang: "ja",
+            children: [
+              html.head {
+                children: [
+                  html.meta { charSet: "utf-8" },
+                  html.title { children: "<&>" },
+                  html.link { rel: "icon", href: imageUrl },
+                ]
+              },
+              html.body { children: html.p { children: "Body" } },
+            ]
+          })
+      )
+    }
+  }
+}

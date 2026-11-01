@@ -213,6 +213,7 @@ enum V {
     ListEmpty,
     List(Shared<ListCell>),
     Record(Shared<BTreeMap<String, V>>),
+    HtmlStyleRecord(Shared<NativeStyleRecord>),
     Adt(Shared<(&'static str, V)>),
     Fun(Shared<Function>),
     Dict(Shared<BTreeMap<String, V>>),
@@ -253,14 +254,17 @@ impl V {
             Self::Dict(v) | Self::Record(v) => {
                 v.get().get(key).expect("Rust ABI: missing field").clone()
             }
+            Self::HtmlStyleRecord(v) => v
+                .get()
+                .fields
+                .get(key)
+                .expect("Rust ABI: missing field")
+                .clone(),
             _ => panic!("Rust ABI: expected dictionary or record"),
         }
     }
     fn optional_field(&self, key: &str) -> V {
-        let Self::Record(fields) = self else {
-            panic!("Rust ABI: expected record")
-        };
-        match fields.get().get(key) {
+        match self.record_fields().get(key) {
             Some(value) => Self::adt("std/prelude::Just", value.clone()),
             None => Self::adt("std/prelude::Nothing", Self::Unit),
         }
@@ -362,10 +366,10 @@ impl V {
                         }
                     }
                 }
-                V::Record(v) => {
+                V::Record(_) | V::HtmlStyleRecord(_) => {
                     output.push('{');
                     work.push(Task::Text("}".into()));
-                    for (index, (name, item)) in v.get().iter().enumerate().rev() {
+                    for (index, (name, item)) in value.record_fields().iter().enumerate().rev() {
                         work.push(Task::Value(item));
                         work.push(Task::Text(format!("{name}: ")));
                         if index != 0 {

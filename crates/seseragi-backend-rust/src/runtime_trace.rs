@@ -104,6 +104,7 @@ impl V {
             Self::MapEntry(v) => v.id(),
             Self::List(v) => v.id(),
             Self::Record(v) | Self::Dict(v) => v.id(),
+            Self::HtmlStyleRecord(v) => v.id(),
             Self::Adt(v) => v.id(),
             Self::Fun(v) => v.id(),
             Self::Reference(v) => v.id(),

@@ -126,6 +126,8 @@ impl Backend<'_> {
                 | "std/signal::MutableSignal"
                 | "std/prelude::Sum"
                 | "std/prelude::Product"
+                | "std/web/html::Html"
+                | "std/web/html::EventAction"
                     if !self.program_wasm_library =>
                 {
                     Some(1)

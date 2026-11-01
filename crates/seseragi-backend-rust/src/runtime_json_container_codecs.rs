@@ -111,13 +111,14 @@ fn native_json_container_encode(kind: &str, captures: &[V], value: V) -> V {
             values.get().iter().cloned().map(|v| encode(0, v)).collect()
         }
         "Record" => {
-            let (V::Record(values), V::Array(fields)) = (value, &captures[0]) else {
+            let V::Array(fields) = &captures[0] else {
                 panic!("Rust ABI: JSON Record")
             };
+            let values = value.record_fields();
             let mut entries = vec![];
             for (index, field) in fields.get().iter().enumerate() {
                 let (name, optional) = native_json_codec_field(field);
-                if optional && !values.get().contains_key(name) {
+                if optional && !values.contains_key(name) {
                     continue;
                 }
                 entries.push((
@@ -125,7 +126,6 @@ fn native_json_container_encode(kind: &str, captures: &[V], value: V) -> V {
                     encode(
                         index,
                         values
-                            .get()
                             .get(name)
                             .expect("Rust ABI: required JSON Record field")
                             .clone(),

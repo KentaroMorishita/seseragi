@@ -445,6 +445,11 @@ impl Backend<'_> {
                 | "std/signal::MutableSignal"
                 | "std/prelude::Sum"
                 | "std/prelude::Product" => return Some(vec![0]),
+                "std/web/html::Html" | "std/web/html::EventAction" => return Some(vec![0]),
+                "std/web/html::Style"
+                | "std/web/html::WebUrl"
+                | "std/web/html::InputEvent"
+                | "std/web/html::ChangeEvent" => return Some(vec![]),
                 "std/signal::SignalChange" | "std/signal::Subscription" => return Some(vec![]),
                 _ => {}
             }
