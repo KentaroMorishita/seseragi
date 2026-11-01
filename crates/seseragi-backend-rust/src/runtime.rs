@@ -140,9 +140,35 @@ fn set_global(index: usize, value: V) {
 // Only owned clones or immediate scalar extraction run under this borrow;
 // source callbacks and initializer evaluation stay outside global storage.
 fn read_global<T>(index: usize, read: impl FnOnce(&V) -> T) -> T {
+    read_global_at(index, None, read)
+}
+fn read_global_at<T>(
+    index: usize,
+    source: Option<&'static NativeSource>,
+    read: impl FnOnce(&V) -> T,
+) -> T {
     GLOBALS.with(|globals| {
         let globals = globals.borrow();
-        read(globals.get(index).expect("Rust ABI: uninitialized global"))
+        read(
+            globals
+                .get(index)
+                .unwrap_or_else(|| native_defect_at("Rust ABI: uninitialized global", source)),
+        )
+    })
+}
+fn get_global_at(index: usize, source: &'static NativeSource) -> V {
+    read_global_at(index, Some(source), V::clone)
+}
+fn get_global_int_at(index: usize, source: &'static NativeSource) -> i64 {
+    read_global_at(index, Some(source), |value| match value {
+        V::Int(value) => *value,
+        _ => panic!("Rust ABI: expected Int"),
+    })
+}
+fn get_global_bool_at(index: usize, source: &'static NativeSource) -> bool {
+    read_global_at(index, Some(source), |value| match value {
+        V::Bool(value) => *value,
+        _ => panic!("Rust ABI: expected Bool"),
     })
 }
 fn get_global(index: usize) -> V {
@@ -374,60 +400,118 @@ fn checked_int(value: i64) -> V {
     V::Int(checked_int_value(value))
 }
 fn checked_int_value(value: i64) -> i64 {
-    assert!(
-        (-9_007_199_254_740_991..=9_007_199_254_740_991).contains(&value),
-        "Seseragi Int overflow"
-    );
+    checked_int_value_at(value, None)
+}
+#[inline]
+fn checked_int_value_at(value: i64, source: Option<&'static NativeSource>) -> i64 {
+    if !(-9_007_199_254_740_991..=9_007_199_254_740_991).contains(&value) {
+        native_defect_at("Seseragi Int overflow", source);
+    }
     value
 }
 fn negate(value: V) -> V {
+    negate_at(value, None)
+}
+fn negate_at(value: V, source: Option<&'static NativeSource>) -> V {
     match value {
-        V::Int(n) => checked_int(n.checked_neg().expect("Int overflow")),
+        V::Int(n) => V::Int(int_negate_value_at(n, source)),
         V::Float(n) => V::Float(-n),
         _ => panic!("Rust ABI: expected Int"),
     }
 }
+#[inline]
+fn int_negate_value_at(value: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        value
+            .checked_neg()
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
+}
 fn int_add_value(a: i64, b: i64) -> i64 {
-    checked_int_value(a.checked_add(b).expect("Int overflow"))
+    int_add_value_at(a, b, None)
+}
+#[inline]
+fn int_add_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        a.checked_add(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
 }
 fn int_subtract_value(a: i64, b: i64) -> i64 {
-    checked_int_value(a.checked_sub(b).expect("Int overflow"))
+    int_subtract_value_at(a, b, None)
+}
+#[inline]
+fn int_subtract_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        a.checked_sub(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
 }
 fn int_multiply_value(a: i64, b: i64) -> i64 {
-    checked_int_value(a.checked_mul(b).expect("Int overflow"))
+    int_multiply_value_at(a, b, None)
+}
+#[inline]
+fn int_multiply_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        a.checked_mul(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
 }
 fn int_divide_value(a: i64, b: i64) -> i64 {
+    int_divide_value_at(a, b, None)
+}
+#[inline]
+fn int_divide_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
     if b == 0 {
-        panic!("Int division by zero");
+        native_defect_at("Seseragi Int division by zero", source);
     }
-    checked_int_value(a);
-    checked_int_value(b);
-    checked_int_value(a.checked_div(b).expect("Int overflow"))
+    checked_int_value_at(a, source);
+    checked_int_value_at(b, source);
+    checked_int_value_at(
+        a.checked_div(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
 }
 fn int_remainder_value(a: i64, b: i64) -> i64 {
+    int_remainder_value_at(a, b, None)
+}
+#[inline]
+fn int_remainder_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
     if b == 0 {
-        panic!("Int remainder by zero");
+        native_defect_at("Seseragi Int remainder by zero", source);
     }
-    checked_int_value(a);
-    checked_int_value(b);
-    checked_int_value(a.checked_rem(b).expect("Int overflow"))
+    checked_int_value_at(a, source);
+    checked_int_value_at(b, source);
+    checked_int_value_at(
+        a.checked_rem(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
 }
 fn int_power_value(base: i64, exponent: i64) -> i64 {
+    int_power_value_at(base, exponent, None)
+}
+fn int_power_value_at(base: i64, exponent: i64, source: Option<&'static NativeSource>) -> i64 {
     if exponent < 0 {
-        panic!("Int negative exponent");
+        native_defect_at("Seseragi Int negative exponent", source);
     }
-    checked_int_value(base);
-    checked_int_value(exponent);
+    checked_int_value_at(base, source);
+    checked_int_value_at(exponent, source);
     let mut exponent = exponent as u64;
     let mut factor = base;
     let mut result = 1;
     while exponent != 0 {
         if exponent & 1 != 0 {
-            result = int_multiply_value(result, factor);
+            result = int_multiply_value_at(result, factor, source);
         }
         exponent >>= 1;
         if exponent != 0 {
-            factor = int_multiply_value(factor, factor);
+            factor = int_multiply_value_at(factor, factor, source);
         }
     }
     result
@@ -459,6 +543,18 @@ fn binary(op: &str, a: V, b: V) -> V {
         (">=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(b, a)),
         ("+", V::Text(a), V::Text(b)) => V::Text(Shared::new(format!("{}{}", a.get(), b.get()))),
         _ => panic!("Rust ABI: unsupported binary operation"),
+    }
+}
+
+fn binary_at(op: &str, a: V, b: V, source: Option<&'static NativeSource>) -> V {
+    match (op, a, b) {
+        ("+", V::Int(a), V::Int(b)) => V::Int(int_add_value_at(a, b, source)),
+        ("-", V::Int(a), V::Int(b)) => V::Int(int_subtract_value_at(a, b, source)),
+        ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value_at(a, b, source)),
+        ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value_at(a, b, source)),
+        ("%", V::Int(a), V::Int(b)) => V::Int(int_remainder_value_at(a, b, source)),
+        ("**", V::Int(a), V::Int(b)) => V::Int(int_power_value_at(a, b, source)),
+        (op, a, b) => binary(op, a, b),
     }
 }
 

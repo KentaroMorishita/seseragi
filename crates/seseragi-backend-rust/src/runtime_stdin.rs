@@ -6,7 +6,7 @@ fn native_stdin_failure(tag: &'static str, field: Option<(&str, u64)>) -> Native
         )]))),
         None => V::Unit,
     };
-    NativeExit::Failure(V::adt(tag, payload))
+    NativeExit::failure(V::adt(tag, payload))
 }
 fn native_read_line(reader: &mut impl std::io::BufRead, offset: &mut u64) -> NativeOutcome {
     const LIMIT: usize = 1024 * 1024;

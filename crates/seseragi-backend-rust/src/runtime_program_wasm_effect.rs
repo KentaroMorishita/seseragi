@@ -377,7 +377,7 @@ fn program_outcome(
         Err(NativeExit::Failure(error)) => {
             program_bytes(&mut out, &[2])?;
             program_encode(
-                error,
+                error.value,
                 failure.ok_or("program ABI: Never failure produced a value")?,
                 &codes,
                 &mut out,
@@ -428,7 +428,7 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
                 NativeTurn::Operation(_, _) | NativeTurn::FileSystem(_, _) => {
                     // Full target admission prevents these turns. Preserve the
                     // scope stack even for a violated internal contract.
-                    run.machine.resume(Err(NativeExit::Defect(vec![
+                    run.machine.resume(Err(NativeExit::defects(vec![
                         "program ABI: unadmitted host operation".into(),
                     ])));
                 }

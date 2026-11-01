@@ -52,14 +52,16 @@ impl TraceValue for NativeFiber {
             .try_borrow_mut()
             .map_err(|_| "borrowed native Fiber")?;
         match outcome.as_ref() {
-            Some(Ok(value) | Err(NativeExit::Failure(value))) => visit(value),
+            Some(Ok(value)) => visit(value),
+            Some(Err(NativeExit::Failure(error))) => visit(&error.value),
             _ => {}
         }
         Ok(())
     }
     fn sever_reference(&self) -> Option<V> {
         match self.outcome.replace(None) {
-            Some(Ok(value) | Err(NativeExit::Failure(value))) => Some(value),
+            Some(Ok(value)) => Some(value),
+            Some(Err(NativeExit::Failure(error))) => Some(error.value),
             _ => None,
         }
     }
@@ -104,7 +106,7 @@ fn native_either(value: Result<V, V>) -> V {
 fn native_fiber_exit(outcome: NativeOutcome) -> NativeOutcome {
     match outcome {
         Ok(value) => Ok(V::adt("std/effect::FiberSucceeded", value)),
-        Err(NativeExit::Failure(value)) => Ok(V::adt("std/effect::FiberFailed", value)),
+        Err(NativeExit::Failure(value)) => Ok(V::adt("std/effect::FiberFailed", value.value)),
         Err(NativeExit::Cancelled) => Ok(V::adt("std/effect::FiberCancelled", V::Unit)),
         Err(defect) => Err(defect),
     }
@@ -156,7 +158,7 @@ impl NativeWait {
                 .result
                 .borrow()
                 .clone()
-                .map(|v| v.map_err(NativeExit::Failure)),
+                .map(|v| v.map_err(NativeExit::failure)),
         }
     }
 }
@@ -550,8 +552,8 @@ mod scheduler_tests {
             );
             let end = V::leaf(vec![V::Int(ending)], |c, _| match c[0] {
                 V::Int(0) => Ok(V::Unit),
-                V::Int(1) => Err(NativeExit::Failure(V::Int(7))),
-                _ => Err(NativeExit::Defect(vec!["body".into()])),
+                V::Int(1) => Err(NativeExit::failure(V::Int(7))),
+                _ => Err(NativeExit::defects(vec!["body".into()])),
             });
             let plan = then(
                 op("std/effect::fork", vec![child]),
@@ -669,9 +671,11 @@ mod scheduler_tests {
             op("std/effect::fork", vec![failure]),
             V::fun(vec![], |_, fiber| op("std/effect::join", vec![fiber])),
         );
-        assert!(matches!(run(plan), Err(NativeExit::Failure(V::Int(8)))));
+        assert!(
+            matches!(run(plan), Err(NativeExit::Failure(error)) if matches!(error.value, V::Int(8)))
+        );
         let defect = V::leaf(vec![], |_, _| {
-            Err(NativeExit::Defect(vec!["child defect".into()]))
+            Err(NativeExit::defects(vec!["child defect".into()]))
         });
         let plan = V::bind(
             op("std/effect::fork", vec![defect]),

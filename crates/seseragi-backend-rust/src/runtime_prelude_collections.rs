@@ -421,7 +421,7 @@ mod prelude_collection_tests {
                     if c[0].boolean() {
                         panic!("callback defect")
                     }
-                    Err(NativeExit::Failure(V::text("typed")))
+                    Err(NativeExit::failure(V::text("typed")))
                 })
             });
             let plan = native_prelude_collection(

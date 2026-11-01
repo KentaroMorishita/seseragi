@@ -15,6 +15,7 @@ fn options() -> RustTargetOptions {
     RustTargetOptions {
         clock_provider: Some(NativeClockProvider::BuiltinSleep),
         clock_selection_origin: NativeProviderSelectionOrigin::ExplicitApi,
+        ..RustTargetOptions::default()
     }
 }
 fn ty(name: &str) -> CoreType {

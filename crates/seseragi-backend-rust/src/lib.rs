@@ -17,6 +17,12 @@ pub use program_wasm::{
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::{CoreModule, SourceSpan};
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RustSourceFile {
+    pub path: String,
+    pub text: String,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RustBackendError {
@@ -172,6 +178,7 @@ mod runtime {
     include!("runtime_float_conversion.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
+    include!("runtime_diagnostic.rs");
     include!("runtime_stdin.rs");
     include!("runtime_effect_defect.rs");
     include!("runtime_scheduler.rs");

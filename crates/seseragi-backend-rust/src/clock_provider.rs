@@ -38,6 +38,8 @@ pub enum NativeProviderSelectionOrigin {
 pub struct RustTargetOptions {
     pub clock_provider: Option<NativeClockProvider>,
     pub clock_selection_origin: NativeProviderSelectionOrigin,
+    /// Original files keyed by Core module identity, including dependencies.
+    pub sources: std::collections::BTreeMap<String, crate::RustSourceFile>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
