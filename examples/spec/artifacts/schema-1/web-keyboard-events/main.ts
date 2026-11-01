@@ -15,5 +15,5 @@ const ControlKey: Action = { tag: "ControlKey" } as const;
 const keyAction = (event: KeyboardEvent) => _ssrg_html_Dispatch((event)["controlKey"] ? ControlKey : KeyPressed((event)["key"]))
 const taskKey = (action: Effect<{  }, never, undefined>) => (event: KeyboardEvent) => _ssrg_html_Dispatch(action)
 const ignoreKey = (event: KeyboardEvent) => _ssrg_html_IgnoreEvent
-export const view = (_unit: undefined) => _ssrg_html_button(({ "id": "keyboard-target", "onFocus": Focused, "onBlur": Blurred, "onKeyDown": keyAction, "onKeyUp": ignoreKey, "children": "Keyboard target" } as const))
-export const taskView = (action: Effect<{  }, never, undefined>) => _ssrg_html_button(({ "onFocus": action, "onKeyDown": taskKey(action), "children": "Effect target" } as const))
+export const view = (_unit: undefined) => _ssrg_html_button((<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ "id": "keyboard-target", "onFocus": Focused, "onBlur": Blurred, "onKeyDown": keyAction, "onKeyUp": ignoreKey, "children": "Keyboard target" } as const)))
+export const taskView = (action: Effect<{  }, never, undefined>) => _ssrg_html_button((<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ "onFocus": action, "onKeyDown": taskKey(action), "children": "Effect target" } as const)))

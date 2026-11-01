@@ -1116,7 +1116,10 @@ pub(super) fn lower_core_expr_to_typescript(
             }
         }
         CoreExpr::OptionalFieldAccess {
-            receiver, field, ..
+            receiver,
+            field,
+            type_ref,
+            ..
         } => TypeScriptExpr::OptionalFieldAccess {
             receiver: Box::new(lower_core_expr_to_typescript(
                 *receiver,
@@ -1124,6 +1127,10 @@ pub(super) fn lower_core_expr_to_typescript(
                 imported_types,
             )),
             field,
+            value_type: match type_ref_from_core_type(&type_ref, imported_types) {
+                super::TypeScriptType::Maybe { element } => *element,
+                _ => unreachable!("optional field access must return Maybe"),
+            },
             just_constructor: runtime_sum_constructor("std/prelude::Just")
                 .expect("standard Just constructor must exist")
                 .local_name

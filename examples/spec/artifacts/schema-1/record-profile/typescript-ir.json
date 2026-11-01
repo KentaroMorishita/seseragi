@@ -317,6 +317,9 @@
             "name": "user"
           },
           "field": "label",
+          "valueType": {
+            "kind": "string"
+          },
           "justConstructor": "_ssrg_maybe_Just",
           "nothingConstructor": "_ssrg_maybe_Nothing"
         },

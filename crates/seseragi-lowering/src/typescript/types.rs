@@ -1124,7 +1124,7 @@ fn render_type(type_ref: &TypeScriptType, kind_parameters: bool) -> String {
                 .join(", ")
         ),
         TypeScriptType::Record { fields } => format!(
-            "{{ {} }}",
+            "{{ {}{} }}",
             fields
                 .iter()
                 .map(|field| format!(
@@ -1134,7 +1134,12 @@ fn render_type(type_ref: &TypeScriptType, kind_parameters: bool) -> String {
                     render(&field.type_ref)
                 ))
                 .collect::<Vec<_>>()
-                .join("; ")
+                .join("; "),
+            if !fields.is_empty() && fields.iter().all(|field| field.optional) {
+                "; readonly [key: string]: unknown"
+            } else {
+                ""
+            }
         ),
         TypeScriptType::Array { element } => {
             format!("ReadonlyArray<{}>", render(element))

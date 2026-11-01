@@ -11,13 +11,13 @@ type AppError =
   | { readonly tag: "AppFailed" };
 const AppFailed: AppError = { tag: "AppFailed" } as const;
 const userId = (value: number) => value
-const pair = <A,>(value: A) => ({ "left": value, "right": value } as const)
+const pair = <A,>(value: A) => (<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ "left": value, "right": value } as const))
 const apply = <A, B,>(transform: (argument: A) => B) => (value: A) => transform(value)
 const app = <A,>(operation: Effect<{ readonly "console": Console }, AppError, A>) => operation
 const failure = (value: AppError) => value
 const result = (value: { readonly tag: "Left"; readonly value: AppError } | { readonly tag: "Right"; readonly value: number }) => value
 const increment = (state: MutableSignal<number>) => _ssrg_signal_update((value: number) => _ssrg_int_add(value, 1), state)
-const view = (state: MutableSignal<number>) => (current: number) => _ssrg_html_button(({ "onClick": increment(state), "children": _ssrg_show_intShow["show"](current) } as const))
+const view = (state: MutableSignal<number>) => (current: number) => _ssrg_html_button((<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ "onClick": increment(state), "children": _ssrg_show_intShow["show"](current) } as const)))
 const content = (state: MutableSignal<number>) => _ssrg_signal_map(view(state), state)
 const compact = (_unit: undefined) => _ssrg_effect_succeed(undefined)
 export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_signal_make<number>(41), (state: MutableSignal<number>) => _ssrg_effect_flatMap(increment(state), () => (() => { const rendered: Signal<Html<Effect<{  }, never, undefined>>> = content(state); return _ssrg_effect_flatMap(_ssrg_signal_read(state), (current: number) => (() => { const values: { readonly "left": number; readonly "right": number } = pair<number>(apply(userId)(current)); return _ssrg_console_println("aliases: " + _ssrg_show_intShow["show"]((values)["left"]) + ", signal: " + _ssrg_show_intShow["show"](current)); })()); })()))
