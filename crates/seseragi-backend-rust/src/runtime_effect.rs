@@ -4,8 +4,8 @@
 type NativeOutcome = Result<V, NativeExit>;
 #[derive(Clone)]
 enum NativeExit {
-    Failure(V),
-    Defect(Vec<String>),
+    Failure(NativeDiagnostic<V>),
+    Defect(Vec<NativeDiagnostic<String>>),
     Cancelled,
 }
 type NativeCode = fn(&[V], &mut NativeContext) -> NativeOutcome;
@@ -24,13 +24,16 @@ enum Instruction {
     SignalTransaction,
     SignalSubscribe,
 }
+#[derive(Clone)]
 struct EffectPlan {
+    source: Option<&'static NativeSource>,
     instruction: Instruction,
     captures: Vec<V>,
 }
 impl V {
     fn effect(instruction: Instruction, captures: Vec<V>) -> Self {
         Self::Effect(Shared::new(EffectPlan {
+            source: None,
             instruction,
             captures,
         }))
@@ -57,23 +60,27 @@ fn native_panic_message(error: Box<dyn Any + Send>) -> String {
         .unwrap_or_else(|| "native host panic".into())
 }
 fn native_panic(error: Box<dyn Any + Send>) -> NativeExit {
-    NativeExit::Defect(vec![native_panic_message(error)])
+    match error.downcast::<NativeDiagnostic<String>>() {
+        Ok(error) => NativeExit::Defect(vec![*error]),
+        Err(error) => NativeExit::defects(vec![native_panic_message(error).into()]),
+    }
 }
 fn catch_native(action: impl FnOnce() -> NativeOutcome) -> NativeOutcome {
     std::panic::catch_unwind(std::panic::AssertUnwindSafe(action))
         .unwrap_or_else(|error| Err(native_panic(error)))
 }
 enum NativeFrame {
+    Source(Option<&'static NativeSource>),
     SignalPublication(SignalPublication),
     SignalSubscribe(V, V),
-    Bind(V),
-    Recover(V),
-    MapError(V),
-    Register(V),
+    Bind(V, Option<&'static NativeSource>),
+    Recover(V, Option<&'static NativeSource>),
+    MapError(V, Option<&'static NativeSource>),
+    Register(V, Option<&'static NativeSource>),
     Scope,
     Cleanup {
         original: NativeOutcome,
-        defects: Vec<String>,
+        defects: Vec<NativeDiagnostic<String>>,
         previous_mask: bool,
     },
 }
@@ -130,7 +137,7 @@ impl NativeContext {
         &mut self,
         stack: &mut Vec<NativeFrame>,
         original: NativeOutcome,
-        defects: Vec<String>,
+        defects: Vec<NativeDiagnostic<String>>,
         previous_mask: bool,
     ) -> NativeState {
         if let Some(next) = self
@@ -218,7 +225,21 @@ impl NativeMachine {
                 NativeState::Evaluate(plan) => {
                     // Checked plans are immutable; no Ref borrow survives an
                     // instruction boundary or a call to user code.
+                    let source = match &plan {
+                        V::Effect(plan) => plan.get().source,
+                        _ => None,
+                    };
                     let (instruction, c) = plan.plan();
+                    if source.is_some()
+                        && matches!(
+                            instruction,
+                            Instruction::Native(_)
+                                | Instruction::Concurrent(_)
+                                | Instruction::FileSystem(_)
+                        )
+                    {
+                        stack.push(NativeFrame::Source(source));
+                    }
                     match instruction {
                         Instruction::SignalTransaction => {
                             signal_transaction(c[0].clone(), context, stack)
@@ -254,7 +275,7 @@ impl NativeMachine {
                             }
                         }
                         Instruction::Bind => {
-                            stack.push(NativeFrame::Bind(c[1].clone()));
+                            stack.push(NativeFrame::Bind(c[1].clone(), source));
                             NativeState::Evaluate(c[0].clone())
                         }
                         Instruction::Defer => match context
@@ -262,7 +283,7 @@ impl NativeMachine {
                             .and_then(|_| catch_native(|| Ok(c[0].apply(V::Unit))))
                         {
                             Ok(next) => NativeState::Evaluate(next),
-                            Err(exit) => NativeState::Return(Err(exit)),
+                            Err(exit) => NativeState::Return(Err(exit.at(source))),
                         },
                         Instruction::Scoped => {
                             context.scopes.push(NativeScope::default());
@@ -270,21 +291,21 @@ impl NativeMachine {
                             NativeState::Evaluate(c[0].clone())
                         }
                         Instruction::AcquireRelease => {
-                            stack.push(NativeFrame::Register(c[1].clone()));
+                            stack.push(NativeFrame::Register(c[1].clone(), source));
                             NativeState::Evaluate(c[0].clone())
                         }
                         Instruction::Recover => {
-                            stack.push(NativeFrame::Recover(c[0].clone()));
+                            stack.push(NativeFrame::Recover(c[0].clone(), source));
                             NativeState::Evaluate(c[1].clone())
                         }
                         Instruction::MapError => {
-                            stack.push(NativeFrame::MapError(c[0].clone()));
+                            stack.push(NativeFrame::MapError(c[0].clone(), source));
                             NativeState::Evaluate(c[1].clone())
                         }
                         Instruction::Release => match catch_native(|| Ok(c[0].apply(c[1].clone())))
                         {
                             Ok(next) => NativeState::Evaluate(next),
-                            Err(exit) => NativeState::Return(Err(exit)),
+                            Err(exit) => NativeState::Return(Err(exit.at(source))),
                         },
                     }
                 }
@@ -293,6 +314,9 @@ impl NativeMachine {
                         return NativeTurn::Complete(result);
                     };
                     match frame {
+                        NativeFrame::Source(source) => {
+                            NativeState::Return(result.map_err(|error| error.at(source)))
+                        }
                         NativeFrame::SignalPublication(publication) => {
                             publication.resume(result, context, stack)
                         }
@@ -301,45 +325,56 @@ impl NativeMachine {
                                 catch_native(|| Ok(signal_subscribe(source, observer, context)))
                             }))
                         }
-                        NativeFrame::Bind(next) => match result {
+                        NativeFrame::Bind(next, source) => match result {
                             Ok(value) => match context
                                 .checkpoint()
                                 .and_then(|_| catch_native(|| Ok(next.apply(value))))
                             {
                                 Ok(plan) => NativeState::Evaluate(plan),
-                                Err(exit) => NativeState::Return(Err(exit)),
+                                Err(exit) => NativeState::Return(Err(exit.at(source))),
                             },
                             error => NativeState::Return(error),
                         },
-                        NativeFrame::Recover(handler) => match result {
+                        NativeFrame::Recover(handler, source) => match result {
                             Err(NativeExit::Failure(error)) => match context
                                 .checkpoint()
-                                .and_then(|_| catch_native(|| Ok(handler.apply(error))))
+                                .and_then(|_| catch_native(|| Ok(handler.apply(error.value))))
                             {
                                 Ok(plan) => NativeState::Evaluate(plan),
-                                Err(exit) => NativeState::Return(Err(exit)),
+                                Err(exit) => NativeState::Return(Err(exit.at(source))),
                             },
                             result => NativeState::Return(result),
                         },
-                        NativeFrame::MapError(handler) => match result {
+                        NativeFrame::MapError(handler, source) => match result {
                             Err(NativeExit::Failure(error)) => {
                                 NativeState::Return(context.checkpoint().and_then(|_| {
-                                    catch_native(|| Err(NativeExit::Failure(handler.apply(error))))
+                                    catch_native(|| {
+                                        Err(NativeExit::Failure(NativeDiagnostic {
+                                            value: match source {
+                                                Some(source) => native_source_value(source, || {
+                                                    handler.apply(error.value)
+                                                }),
+                                                None => handler.apply(error.value),
+                                            },
+                                            source: error.source.or(source),
+                                        }))
+                                    })
                                 }))
                             }
                             result => NativeState::Return(result),
                         },
-                        NativeFrame::Register(release) => match result {
+                        NativeFrame::Register(release, source) => match result {
                             Ok(resource) => {
                                 context
                                     .scopes
                                     .last_mut()
                                     .expect("owning native scope")
                                     .finalizers
-                                    .push(V::effect(
-                                        Instruction::Release,
-                                        vec![release, resource.clone()],
-                                    ));
+                                    .push(V::Effect(Shared::new(EffectPlan {
+                                        source,
+                                        instruction: Instruction::Release,
+                                        captures: vec![release, resource.clone()],
+                                    })));
                                 // A successful acquisition owns its finalizer
                                 // BEFORE the next cancellation checkpoint.
                                 NativeState::Return(context.checkpoint().map(|_| resource))
@@ -391,7 +426,7 @@ fn native_operation(name: &str, args: Vec<V>) -> V {
                     panic!("Rust ABI: expected Either")
                 };
                 match value.get().0 {
-                    "std/prelude::Left" => Err(NativeExit::Failure(value.get().1.clone())),
+                    "std/prelude::Left" => Err(NativeExit::failure(value.get().1.clone())),
                     "std/prelude::Right" => Ok(value.get().1.clone()),
                     _ => panic!("Rust ABI: Either owner"),
                 }
@@ -407,7 +442,7 @@ fn native_operation(name: &str, args: Vec<V>) -> V {
         }
         "std/effect::succeed" | "effect.succeed" => V::leaf(args, |c, _| Ok(c[0].clone())),
         "std/effect::fail" | "effect.fail" => {
-            V::leaf(args, |c, _| Err(NativeExit::Failure(c[0].clone())))
+            V::leaf(args, |c, _| Err(NativeExit::failure(c[0].clone())))
         }
         "std/effect::defer" => V::effect(Instruction::Defer, args),
         "std/effect::scoped" => V::effect(Instruction::Scoped, args),
@@ -471,7 +506,7 @@ fn write_native_console(writer: &mut impl std::io::Write, text: &str) -> NativeO
         .and_then(|_| writer.flush())
         .map(|_| V::Unit)
         .map_err(|error| {
-            NativeExit::Failure(V::Record(Shared::new(BTreeMap::from([
+            NativeExit::failure(V::Record(Shared::new(BTreeMap::from([
                 ("kind".into(), V::text("console-error")),
                 ("message".into(), V::text(&error.to_string())),
             ]))))
@@ -481,10 +516,21 @@ fn write_native_console(writer: &mut impl std::io::Write, text: &str) -> NativeO
 fn run_native_entry(entry: impl FnOnce() -> V, trace: bool) -> i32 {
     run_native_program(entry, trace, true)
 }
+fn run_native_entry_with_show(entry: impl FnOnce() -> V, trace: bool, show: fn(V) -> V) -> i32 {
+    run_native_program_with_show(entry, trace, true, show)
+}
 fn run_native_pure_entry(entry: impl FnOnce() -> V, trace: bool) -> i32 {
     run_native_program(entry, trace, false)
 }
 fn run_native_program(entry: impl FnOnce() -> V, trace: bool, effect: bool) -> i32 {
+    run_native_program_with_show(entry, trace, effect, |value| V::text(&value.render()))
+}
+fn run_native_program_with_show(
+    entry: impl FnOnce() -> V,
+    trace: bool,
+    effect: bool,
+    show: fn(V) -> V,
+) -> i32 {
     // This executable owns its single-thread runtime. Defects are reported
     // after managed scope cleanup, without the host panic hook printing early.
     let previous_hook = std::panic::take_hook();
@@ -502,14 +548,40 @@ fn run_native_program(entry: impl FnOnce() -> V, trace: bool, effect: bool) -> i
             Ok(V::Unit)
         }
     });
+    let result = match result {
+        Err(NativeExit::Failure(error)) => match catch_native(|| {
+            let rendered = show(error.value);
+            if !matches!(rendered, V::Text(_)) {
+                panic!("Rust ABI: failure Show must return String");
+            }
+            Ok(rendered)
+        }) {
+            Ok(value) => Err(NativeExit::Failure(NativeDiagnostic {
+                value,
+                source: error.source,
+            })),
+            Err(exit) => Err(exit.at(error.source)),
+        },
+        result => result,
+    };
     let code = match &result {
         Ok(_) => 0,
         Err(NativeExit::Failure(error)) => {
-            eprintln!("{}", error.render());
+            if let Some(source) = error.source {
+                eprint!("{source}: ");
+            }
+            let message = error.render();
+            eprint!("{message}");
+            if !message.ends_with('\n') {
+                eprintln!();
+            }
             1
         }
         Err(NativeExit::Defect(errors)) => {
             for (i, error) in errors.iter().enumerate() {
+                if let Some(source) = error.source {
+                    eprint!("{source}: ");
+                }
                 eprintln!(
                     "Seseragi {}: {error}",
                     if i == 0 {
@@ -650,7 +722,7 @@ mod effect_tests {
     fn finalizer_defects_do_not_skip_remaining_lifo_cleanup() {
         enable_cycle_collection();
         let log = V::reference(V::Int(0));
-        let mut plan = V::leaf(vec![], |_, _| Err(NativeExit::Failure(V::Int(7))));
+        let mut plan = V::leaf(vec![], |_, _| Err(NativeExit::failure(V::Int(7))));
         for digit in (1..=3).rev() {
             let release = V::fun(vec![log.clone(), V::Int(digit)], |c, _| {
                 V::leaf(c.to_vec(), |c, _| {
@@ -662,7 +734,7 @@ mod effect_tests {
                     if c[1].render() == "2" {
                         Ok(V::Unit)
                     } else {
-                        Err(NativeExit::Defect(vec![format!(
+                        Err(NativeExit::defects(vec![format!(
                             "release {}",
                             c[1].render()
                         )]))
@@ -732,7 +804,7 @@ mod prelude_effect_tests {
                     let result = NativeContext::default().root(plan.clone());
                     let value = match result {
                         Ok(value) if !left => value,
-                        Err(NativeExit::Failure(value)) if left => value,
+                        Err(NativeExit::Failure(value)) if left => value.value,
                         _ => panic!("wrong Either outcome"),
                     };
                     assert_eq!(value.field("value").render(), "42");

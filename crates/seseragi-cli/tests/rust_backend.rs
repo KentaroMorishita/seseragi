@@ -2330,6 +2330,13 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
                 .filter(|line| !line.starts_with("native managed-live="))
                 .collect::<Vec<_>>()
                 .join("\n");
+            let native_error = if name == "unhandled-failure" {
+                native_error
+                    .strip_prefix(&format!("{}:3:40: ", path.display()))
+                    .expect("unhandled failure must identify its original source position")
+            } else {
+                native_error.as_str()
+            };
             assert_eq!(
                 native_error,
                 String::from_utf8_lossy(&ts.stderr).trim_end(),

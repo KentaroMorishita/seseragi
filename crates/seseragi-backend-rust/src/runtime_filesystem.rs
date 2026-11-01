@@ -353,7 +353,7 @@ fn native_file_error(operation: &'static str, path: V, error: std::io::Error) ->
 #[cfg(test)]
 fn native_read_text(host: &mut impl NativeFileHost, path: &V) -> NativeOutcome {
     let bytes = native_read_file(host, native_path_text(path)).map_err(|error| {
-        NativeExit::Failure(V::adt(
+        NativeExit::failure(V::adt(
             "std/fs::FileAccessFailure",
             native_file_error("std/fs::ReadFile", path.clone(), error),
         ))
@@ -363,7 +363,7 @@ fn native_read_text(host: &mut impl NativeFileHost, path: &V) -> NativeOutcome {
 fn native_decode_text(bytes: Vec<u8>) -> NativeOutcome {
     match String::from_utf8(bytes) {
         Ok(text) => Ok(V::text(&text)),
-        Err(error) => Err(NativeExit::Failure(V::adt(
+        Err(error) => Err(NativeExit::failure(V::adt(
             "std/fs::FileUtf8Failure",
             V::adt(
                 "std/text::InvalidUtf8",

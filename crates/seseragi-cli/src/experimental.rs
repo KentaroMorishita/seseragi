@@ -93,13 +93,17 @@ fn compile_native(
                 seseragi_driver::render_terminal_diagnostics(&checked.diagnostics, &source)
             );
         }
+        let mut options = native_clock_options(provider)?;
+        options.sources.insert(
+            checked.core_ir.module.clone(),
+            seseragi_backend_rust::RustSourceFile {
+                path: path.to_owned(),
+                text: source,
+            },
+        );
         Ok((
-            seseragi_backend_rust::emit_rust_module_with_options(
-                &checked.core_ir,
-                entry,
-                &native_clock_options(provider)?,
-            )
-            .map_err(|e| target_error(e, Some(path)))?,
+            seseragi_backend_rust::emit_rust_module_with_options(&checked.core_ir, entry, &options)
+                .map_err(|e| target_error(e, Some(path)))?,
             vec![fs::canonicalize(path).map_err(|e| e.to_string())?],
         ))
     }
@@ -180,7 +184,19 @@ fn compile_project(
         .package(project.packages().root())
         .expect("checked root package");
     let manifest_path = root.root().join("seseragi.toml");
-    let options = native_clock_options(provider)?;
+    let mut options = native_clock_options(provider)?;
+    options.sources = project
+        .modules()
+        .map(|(identity, module)| {
+            (
+                seseragi_project::logical_module_id(identity),
+                seseragi_backend_rust::RustSourceFile {
+                    path: module.source_path().to_string_lossy().into_owned(),
+                    text: module.source().to_owned(),
+                },
+            )
+        })
+        .collect();
     let artifact = seseragi_backend_rust::emit_rust_project_with_options(
         &modules,
         &checked.entry_module,
@@ -260,6 +276,7 @@ fn native_clock_options(
     Ok(RustTargetOptions {
         clock_provider: Some(provider),
         clock_selection_origin: NativeProviderSelectionOrigin::CommandLine,
+        ..RustTargetOptions::default()
     })
 }
 

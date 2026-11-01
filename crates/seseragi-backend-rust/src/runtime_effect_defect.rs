@@ -3,11 +3,11 @@
 fn native_effect_die(message: V) -> V {
     V::leaf(vec![message], |captures, _| {
         let V::Text(message) = &captures[0] else {
-            return Err(NativeExit::Defect(vec![
+            return Err(NativeExit::defects(vec![
                 "Rust ABI: die expected String".into()
             ]));
         };
-        Err(NativeExit::Defect(vec![message.get().clone()]))
+        Err(NativeExit::defects(vec![message.get().clone()]))
     })
 }
 

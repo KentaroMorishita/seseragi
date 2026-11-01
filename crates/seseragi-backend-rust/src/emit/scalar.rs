@@ -82,7 +82,7 @@ impl Backend<'_> {
     }
 
     fn scalar_expr(&mut self, expr: &CoreExpr, plan: &CoreScalarTailLoop) -> Result<String> {
-        Ok(match expr {
+        let value = match expr {
             CoreExpr::Integer { value, .. } => format!(
                 "{}_i64",
                 value
@@ -99,17 +99,23 @@ impl Backend<'_> {
                         .globals
                         .get(&read.symbol)
                         .ok_or("Rust backend: unknown certified global")?;
-                    format!(
-                        "get_global_{}({index})",
-                        scalar_tag(read.kind).to_ascii_lowercase()
-                    )
+                    let tag = scalar_tag(read.kind).to_ascii_lowercase();
+                    match self.source_location(core_expr_origin(expr)) {
+                        Some(source) => format!("get_global_{tag}_at({index}, {source})"),
+                        None => format!("get_global_{tag}({index})"),
+                    }
                 }
                 None => id(name),
             },
-            CoreExpr::Unary { operand, .. } => format!(
-                "checked_int_value(({}).checked_neg().expect(\"Int overflow\"))",
-                self.scalar_expr(operand, plan)?
-            ),
+            CoreExpr::Unary { operand, .. } => {
+                let operand = self.scalar_expr(operand, plan)?;
+                match self.source_location(core_expr_origin(expr)) {
+                    Some(source) => format!("int_negate_value_at({operand}, Some({source}))"),
+                    None => format!(
+                        "checked_int_value(({operand}).checked_neg().expect(\"Int overflow\"))"
+                    ),
+                }
+            }
             CoreExpr::Binary {
                 operator,
                 left,
@@ -129,7 +135,13 @@ impl Backend<'_> {
                     "<=" => "int_less_equal_value",
                     _ => return Err("Rust backend: invalid certified scalar operator".into()),
                 };
-                format!("{{ let {a} = {left}; let {b} = {right}; {operation}({a}, {b}) }}")
+                let call = match self.source_location(core_expr_origin(expr)) {
+                    Some(source) if matches!(operator.as_str(), "+" | "-" | "*") => {
+                        format!("{operation}_at({a}, {b}, Some({source}))")
+                    }
+                    _ => format!("{operation}({a}, {b})"),
+                };
+                format!("{{ let {a} = {left}; let {b} = {right}; {call} }}")
             }
             CoreExpr::If {
                 condition,
@@ -143,7 +155,8 @@ impl Backend<'_> {
                 self.scalar_expr(else_branch, plan)?,
             ),
             _ => return Err("Rust backend: invalid certified scalar expression".into()),
-        })
+        };
+        Ok(value)
     }
 }
 

@@ -72,7 +72,7 @@ impl NativeFileOperation {
         }
     }
     fn failure(self, captures: &[V], error: std::io::Error) -> NativeExit {
-        NativeExit::Failure(match self {
+        NativeExit::failure(match self {
             Self::ReadText => V::adt(
                 "std/fs::FileAccessFailure",
                 native_file_error("std/fs::ReadFile", captures[0].clone(), error),
@@ -95,7 +95,7 @@ impl NativeFileOperation {
             }
             if let Err(fault) = close {
                 return (
-                    Err(NativeExit::Defect(vec![native_file_close_defect(fault)])),
+                    Err(NativeExit::defects(vec![native_file_close_defect(fault)])),
                     notes,
                 );
             }
@@ -104,7 +104,7 @@ impl NativeFileOperation {
         let result = match (result, close) {
             (Err(NativeFileFault::Defect(error)), Err(close)) => {
                 return (
-                    Err(NativeExit::Defect(vec![
+                    Err(NativeExit::defects(vec![
                         native_file_close_defect(close),
                         error,
                     ])),
@@ -113,10 +113,10 @@ impl NativeFileOperation {
             }
             (Err(NativeFileFault::Io(primary)), Err(NativeFileFault::Defect(error))) => {
                 notes.push(format!("file I/O failed before cleanup defect: {primary}"));
-                return (Err(NativeExit::Defect(vec![error])), notes);
+                return (Err(NativeExit::defects(vec![error])), notes);
             }
             (_, Err(NativeFileFault::Defect(error))) => {
-                return (Err(NativeExit::Defect(vec![error])), notes);
+                return (Err(NativeExit::defects(vec![error])), notes);
             }
             (Err(primary), Err(close)) => {
                 // Preserve the established small-file primary I/O failure;
@@ -132,11 +132,11 @@ impl NativeFileOperation {
                 native_decode_text(bytes)
             }
             Ok(NativeFilePayload::Unit) if matches!(self, Self::WriteText) => Ok(V::Unit),
-            Ok(_) => Err(NativeExit::Defect(vec![
+            Ok(_) => Err(NativeExit::defects(vec![
                 "invalid native filesystem worker result".into(),
             ])),
             Err(NativeFileFault::Io(error)) => Err(self.failure(captures, error)),
-            Err(NativeFileFault::Defect(error)) => Err(NativeExit::Defect(vec![error])),
+            Err(NativeFileFault::Defect(error)) => Err(NativeExit::defects(vec![error])),
             Err(NativeFileFault::Cancelled) => Err(NativeExit::Cancelled),
         };
         (outcome, notes)
@@ -176,7 +176,7 @@ impl NativeFileTask {
                     .send(reply);
             })
             .map_err(|error| {
-                NativeExit::Defect(vec![format!("cannot start filesystem worker: {error}")])
+                NativeExit::defects(vec![format!("cannot start filesystem worker: {error}")])
             })?;
         Ok(Self {
             operation,

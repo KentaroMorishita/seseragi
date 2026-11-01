@@ -18,7 +18,7 @@ fn die_emits_an_explicit_cold_defect_only_when_the_module_uses_it() {
         .contains("fn native_effect_die(message: V) -> V"));
     assert!(artifact
         .source
-        .contains("Err(NativeExit::Defect(vec![message.get().clone()]))"));
+        .contains("Err(NativeExit::defects(vec![message.get().clone()]))"));
 
     let plain = compile_core_module(CompileInput::new(
         "plain.ssrg",

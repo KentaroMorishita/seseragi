@@ -383,7 +383,7 @@ fn program_outcome(
         Err(NativeExit::Failure(error)) => {
             program_bytes(&mut out, &[2])?;
             program_encode(
-                error,
+                error.value,
                 failure.ok_or("program ABI: Never failure produced a value")?,
                 &codes,
                 &mut out,
@@ -435,7 +435,7 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
                                 .machine
                                 .stack
                                 .iter()
-                                .any(|frame| matches!(frame, NativeFrame::Register(_)));
+                                .any(|frame| matches!(frame, NativeFrame::Register(..)));
                         match program_host_request(&request) {
                             Ok(bytes) => {
                                 run.waiting = Some(request);
@@ -444,7 +444,7 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
                             }
                             Err(message) => run
                                 .machine
-                                .resume(Err(NativeExit::Defect(vec![message.into()]))),
+                                .resume(Err(NativeExit::defects(vec![message.into()]))),
                         }
                     }
                 }
@@ -462,7 +462,7 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
                 NativeTurn::Operation(_, _) | NativeTurn::FileSystem(_, _) => {
                     // Full target admission prevents these turns. Preserve the
                     // scope stack even for a violated internal contract.
-                    run.machine.resume(Err(NativeExit::Defect(vec![
+                    run.machine.resume(Err(NativeExit::defects(vec![
                         "program ABI: unadmitted host operation".into(),
                     ])));
                 }
@@ -511,12 +511,12 @@ fn program_host_decode(token: u32, codec: usize) -> ProgramResult<V> {
     Ok(V::fun(vec![V::Record(marker)], |captures, argument| {
         V::leaf(vec![captures[0].clone(), argument], |captures, _| {
             let V::Int(token) = captures[0].field("token") else {
-                return Err(NativeExit::Defect(vec![
+                return Err(NativeExit::defects(vec![
                     "program ABI: invalid host token lease".into(),
                 ]));
             };
             let V::Int(codec) = captures[0].field("codec") else {
-                return Err(NativeExit::Defect(vec![
+                return Err(NativeExit::defects(vec![
                     "program ABI: invalid host codec lease".into(),
                 ]));
             };
@@ -557,7 +557,7 @@ fn program_host_outcome(kind: u32, bytes: &[u8], codec: usize) -> ProgramResult<
             success.ok_or("host callback returned Never success")?,
             &codes,
         )?),
-        2 => Err(NativeExit::Failure(program_decode(
+        2 => Err(NativeExit::failure(program_decode(
             &mut input,
             failure.ok_or("host callback returned Never failure")?,
             &codes,
@@ -576,7 +576,7 @@ fn program_host_outcome(kind: u32, bytes: &[u8], codec: usize) -> ProgramResult<
                         .to_owned(),
                 );
             }
-            Err(NativeExit::Defect(messages))
+            Err(NativeExit::defects(messages))
         }
         4 => Err(NativeExit::Cancelled),
         _ => return Err("invalid host response tag"),
@@ -600,7 +600,7 @@ pub extern "C" fn ssrg_host_reply(kind: u32) -> u32 {
         } else {
             program_host_outcome(kind, &bytes, request.codec)
         }
-        .unwrap_or_else(|message| Err(NativeExit::Defect(vec![message.into()])));
+        .unwrap_or_else(|message| Err(NativeExit::defects(vec![message.into()])));
         // Acquisition succeeds into Register BEFORE observing cancellation.
         // Unmasked host success is a cancellation boundary of its own.
         if !request.masked && run.machine.context.cancelled && outcome.is_ok() {

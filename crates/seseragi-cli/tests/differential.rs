@@ -26,6 +26,26 @@ fn defect_kind(message: &str) -> String {
         _ => format!("other:{message}"),
     }
 }
+fn native_defect_message(stderr: &str) -> Option<&str> {
+    let stderr = stderr.trim();
+    if let Some(message) = stderr.strip_prefix("Seseragi Defect: ") {
+        return Some(message);
+    }
+    let (position, message) = stderr.split_once(": Seseragi Defect: ")?;
+    let (position, column) = position.rsplit_once(':')?;
+    let (file, line) = position.rsplit_once(':')?;
+    if file.is_empty() || file.contains(['\n', '\r']) {
+        return None;
+    }
+    for coordinate in [line, column] {
+        if !coordinate.bytes().all(|byte| byte.is_ascii_digit())
+            || !coordinate.parse::<usize>().ok().is_some_and(|n| n > 0)
+        {
+            return None;
+        }
+    }
+    Some(message)
+}
 fn observe(output: &Output) -> Observation {
     let stderr = String::from_utf8_lossy(&output.stderr);
     let defect = if output.status.code() == Some(70) {
@@ -35,7 +55,7 @@ fn observe(output: &Output) -> Observation {
             } else {
                 Some(format!("invalid diagnostic:{stderr}"))
             }
-        } else if let Some(message) = stderr.trim().strip_prefix("Seseragi Defect: ") {
+        } else if let Some(message) = native_defect_message(&stderr) {
             Some(defect_kind(message))
         } else {
             Some(format!("invalid diagnostic:{stderr}"))
@@ -342,6 +362,31 @@ fn observations_preserve_stdout_exit_and_defect_kind() {
         r#"{"kind":"Defect","message":"Seseragi Int overflow","groups":[]}"#,
     ));
     assert_eq!(native, ts);
+    for file in ["/tmp/probe-雪🙂.ssrg", "C:\\source\\probe.ssrg"] {
+        assert_eq!(
+            native,
+            observe(&output(
+                70,
+                &format!("{file}:9:67: Seseragi Defect: Seseragi Int overflow\n")
+            ))
+        );
+    }
+    for position in [
+        "",
+        ":9:67",
+        "probe.ssrg",
+        "probe.ssrg:9",
+        "probe.ssrg:0:1",
+        "probe.ssrg:1:0",
+        "probe.ssrg:nine:1",
+        "probe.ssrg:1:+1",
+        "probe.ssrg:1:1\n",
+    ] {
+        assert!(!valid(&observe(&output(
+            70,
+            &format!("{position}: Seseragi Defect: Seseragi Int overflow\n")
+        ))));
+    }
     assert!(valid(&native));
     assert_eq!(native.stdout, b"\0\xff\n");
     assert_ne!(

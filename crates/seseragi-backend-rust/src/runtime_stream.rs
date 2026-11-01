@@ -474,7 +474,7 @@ mod stream_tests {
                 let fail = V::bind(
                     acquire,
                     V::fun(vec![], |_, _| {
-                        V::leaf(vec![], |_, _| Err(NativeExit::Failure(V::text("failed"))))
+                        V::leaf(vec![], |_, _| Err(NativeExit::failure(V::text("failed"))))
                     }),
                 );
                 native_stream_operation("std/stream::fromEffect", vec![fail])

@@ -738,7 +738,7 @@ mod signal_tests {
                 vec![],
                 match outcome {
                     0 => |_, _| Ok(V::Unit),
-                    1 => |_, _| Err(NativeExit::Failure(V::Int(1))),
+                    1 => |_, _| Err(NativeExit::failure(V::Int(1))),
                     2 => |_, _| panic!("observer scope defect"),
                     _ => |_, context| {
                         context.cancelled = true;

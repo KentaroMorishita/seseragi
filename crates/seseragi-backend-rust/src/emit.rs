@@ -28,6 +28,7 @@ mod concurrency;
 mod console;
 mod decimal;
 mod derived;
+mod diagnostics;
 mod display;
 mod effect_conversions;
 mod effect_defects;
@@ -248,6 +249,7 @@ fn emit_body(
     output.push_str(include_str!("runtime_float_conversion.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
+    output.push_str(include_str!("runtime_diagnostic.rs"));
     output.push_str(include_str!("runtime_stdin.rs"));
     output.push_str(include_str!("runtime_scheduler.rs"));
     output.push_str(include_str!("runtime_path.rs"));
@@ -465,6 +467,12 @@ fn emit_body(
         output.push_str(include_str!("runtime_effect_defect.rs"));
     }
     if let Some(entry) = entry {
+        backend.owner = &owners[&entry.symbol];
+        if entry.is_effect {
+            output.push_str(&backend.entry_failure_show(entry).map_err(|error| {
+                crate::project::at(&error.message, &entry.origin, backend.owner)
+            })?);
+        }
         let startup =
             if backend.capabilities.contains("map") || backend.capabilities.contains("set") {
                 "let _ = native_process_hash_seed(); "
@@ -473,11 +481,11 @@ fn emit_body(
             };
         if entry.is_effect {
             let runner = if backend.capabilities.contains("clock-sleep") {
-                "run_native_clock_entry"
+                "run_native_clock_entry_with_show"
             } else {
-                "run_native_entry"
+                "run_native_entry_with_show"
             };
-            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}, entry_failure_show)); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         } else {
             output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         }
@@ -973,7 +981,7 @@ impl Backend<'_> {
     }
 
     fn expr(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<String> {
-        self.expr_inner(expr, scope).map_err(|mut error| {
+        let value = self.expr_inner(expr, scope).map_err(|mut error| {
             if error.origin.is_none() {
                 error.origin = Some(core_expr_origin(expr).clone());
             }
@@ -981,7 +989,8 @@ impl Backend<'_> {
                 error.module = Some(self.owner.to_owned());
             }
             error
-        })
+        })?;
+        Ok(self.located_expr(expr, value, scope))
     }
 
     fn expr_inner(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<String> {
@@ -1300,12 +1309,11 @@ impl Backend<'_> {
                         type_ref,
                         scope,
                     )?;
-                    return Ok(format!(
-                        "binary({}, {}, {})",
-                        quoted(operator),
-                        self.expr(left, scope)?,
-                        self.expr(right, scope)?
-                    ));
+                    return Ok({
+                        let left = self.expr(left, scope)?;
+                        let right = self.expr(right, scope)?;
+                        self.located_binary(expr, operator, left, right)
+                    });
                 }
                 let standard = evidence.iter().all(|e| matches!(&e.evidence, CoreInstanceEvidence::Standard { identity, .. } if matches!(identity.as_str(), "std/int::Add" | "std/int::Sub" | "std/int::Mul" | "std/int::Eq" | "std/int::Ord" | "std/string::Add")));
                 if !standard || !matches!(operator.as_str(), "+" | "-" | "*" | "==" | "<" | "<=") {
@@ -1314,12 +1322,11 @@ impl Backend<'_> {
                     )
                     .into());
                 }
-                format!(
-                    "binary({}, {}, {})",
-                    quoted(operator),
-                    self.expr(left, scope)?,
-                    self.expr(right, scope)?
-                )
+                {
+                    let left = self.expr(left, scope)?;
+                    let right = self.expr(right, scope)?;
+                    self.located_binary(expr, operator, left, right)
+                }
             }
             CoreExpr::Unary {
                 operator,
@@ -1329,7 +1336,16 @@ impl Backend<'_> {
             } if operator == "!" => self.boolean_not(operand, type_ref, scope)?,
             CoreExpr::Unary {
                 operator, operand, ..
-            } if operator == "-" => format!("negate({})", self.expr(operand, scope)?),
+            } if operator == "-" => {
+                let operand = self.expr(operand, scope)?;
+                match self
+                    .source_location(core_expr_origin(expr))
+                    .filter(|_| !self.program_wasm_library)
+                {
+                    Some(source) => format!("negate_at({operand}, Some({source}))"),
+                    None => format!("negate({operand})"),
+                }
+            }
             CoreExpr::If {
                 condition,
                 then_branch,

@@ -70,11 +70,11 @@ struct NativeTimer {
 impl NativeTimer {
     fn start(value: &V) -> Result<Self, NativeExit> {
         let nanos = native_duration_nanoseconds(value)
-            .map_err(|message| NativeExit::Defect(vec![message]))?;
+            .map_err(|message| NativeExit::defects(vec![message]))?;
         let deadline = std::time::Instant::now()
             .checked_add(std::time::Duration::from_nanos(nanos))
             .ok_or_else(|| {
-                NativeExit::Defect(vec![
+                NativeExit::defects(vec![
                     "native Clock: host deadline is outside its range".into()
                 ])
             })?;
@@ -92,6 +92,13 @@ impl Drop for NativeTimer {
     }
 }
 fn run_native_clock_entry(action: impl FnOnce() -> V, tracing: bool) -> i32 {
+    run_native_clock_entry_with_show(action, tracing, |value| V::text(&value.render()))
+}
+fn run_native_clock_entry_with_show(
+    action: impl FnOnce() -> V,
+    tracing: bool,
+    show: fn(V) -> V,
+) -> i32 {
     assert_eq!(
         NATIVE_TIMERS.with(Cell::get),
         0,
@@ -99,7 +106,7 @@ fn run_native_clock_entry(action: impl FnOnce() -> V, tracing: bool) -> i32 {
     );
     NATIVE_TIMERS_PEAK.with(|n| n.set(0));
     NATIVE_TIMERS_CREATED.with(|n| n.set(0));
-    let code = run_native_entry(action, tracing);
+    let code = run_native_entry_with_show(action, tracing, show);
     if std::env::var_os("SESERAGI_NATIVE_METRICS").is_some() {
         eprintln!(
             "native clock timers-live={} timers-peak={} timers-created={}",
