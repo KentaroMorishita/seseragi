@@ -125,3 +125,45 @@ fn native_sequence_traversable_dictionary(list: bool) -> V {
         },
     )
 }
+
+fn native_non_empty_traversable_dictionary() -> V {
+    cached("\0native:non-empty-traversable", || {
+        V::dict(vec![
+            ("map", native_monad_dictionary(4, "Functor").field("map")),
+            (
+                "traverse",
+                V::fun(vec![], |_, callback| {
+                    V::fun(vec![callback], |captures, source| {
+                        V::fun(
+                            vec![captures[0].clone(), source],
+                            |captures, applicative| {
+                                let source = V::list_cons(
+                                    captures[1].field("head"),
+                                    captures[1].field("tail"),
+                                );
+                                let traversed = native_traverse_sequence(
+                                    &source,
+                                    &captures[0],
+                                    &applicative,
+                                    true,
+                                );
+                                applicative
+                                    .field("map")
+                                    .apply(V::fun(vec![], |_, values| {
+                                        let cell = values
+                                            .list_cell()
+                                            .expect("Rust ABI: nonempty traversal");
+                                        V::Record(Shared::new(BTreeMap::from([
+                                            ("head".into(), cell.head.clone()),
+                                            ("tail".into(), cell.tail.clone()),
+                                        ])))
+                                    }))
+                                    .apply(traversed)
+                            },
+                        )
+                    })
+                }),
+            ),
+        ])
+    })
+}

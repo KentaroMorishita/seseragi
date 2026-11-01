@@ -13,11 +13,20 @@ fn successful(command: &mut Command) -> std::process::Output {
 
 #[test]
 fn optional_record_patterns_match_shared_stdout_on_bun_node_and_native() {
+    check_fixture("optional-record-patterns");
+}
+
+#[test]
+fn optional_field_access_matches_strict_typescript_and_native() {
+    check_fixture("strict-optional-field-access");
+}
+
+fn check_fixture(name: &str) {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .ancestors()
         .nth(2)
         .unwrap();
-    let source = root.join("examples/spec/fixtures/rust-backend/optional-record-patterns.ssrg");
+    let source = root.join(format!("examples/spec/fixtures/rust-backend/{name}.ssrg"));
     let expected = fs::read(source.with_extension("stdout")).unwrap();
     let scratch = tempfile::tempdir().unwrap();
     let cli = env!("CARGO_BIN_EXE_seseragi");
@@ -35,16 +44,12 @@ fn optional_record_patterns_match_shared_stdout_on_bun_node_and_native() {
         );
         let text = fs::read_to_string(&source).unwrap();
         let compiled = seseragi_driver::compile_module(
-            seseragi_driver::CompileInput::new(
-                "optional-record-patterns.ssrg",
-                "fixture/queries",
-                &text,
-            )
-            .with_profile(build_profile),
+            seseragi_driver::CompileInput::new(&format!("{name}.ssrg"), "fixture/queries", &text)
+                .with_profile(build_profile),
         )
         .unwrap();
-        fs::write(directory.join("raw.ts"), compiled.generated.typescript).unwrap();
-        let config = serde_json::json!({
+        fs::write(directory.join("raw.ts"), &compiled.generated.typescript).unwrap();
+        let mut config = serde_json::json!({
             "compilerOptions": {
                 "strict": true, "noEmit": true, "skipLibCheck": false,
                 "target": "ES2022", "module": "ESNext", "moduleResolution": "Bundler",
@@ -54,17 +59,50 @@ fn optional_record_patterns_match_shared_stdout_on_bun_node_and_native() {
             },
             "files": [directory.join("raw.ts")]
         });
-        fs::write(
-            directory.join("tsconfig.json"),
-            serde_json::to_vec(&config).unwrap(),
-        )
-        .unwrap();
-        successful(
-            Command::new("node")
+        for exact in [false, true] {
+            config["compilerOptions"]["exactOptionalPropertyTypes"] = exact.into();
+            fs::write(
+                directory.join("tsconfig.json"),
+                serde_json::to_vec(&config).unwrap(),
+            )
+            .unwrap();
+            successful(
+                Command::new("node")
+                    .arg(root.join("node_modules/typescript/bin/tsc"))
+                    .arg("--project")
+                    .arg(directory.join("tsconfig.json")),
+            );
+        }
+        if name == "strict-optional-field-access" {
+            fs::write(
+                directory.join("invalid.ts"),
+                format!(
+                    "{}\ndescribe({{ note: 42 }});\nprototype({{ toString: 42 }});\n",
+                    compiled.generated.typescript
+                ),
+            )
+            .unwrap();
+            config["files"] = serde_json::json!([directory.join("invalid.ts")]);
+            fs::write(
+                directory.join("tsconfig.json"),
+                serde_json::to_vec(&config).unwrap(),
+            )
+            .unwrap();
+            let rejected = Command::new("node")
                 .arg(root.join("node_modules/typescript/bin/tsc"))
                 .arg("--project")
-                .arg(directory.join("tsconfig.json")),
-        );
+                .arg(directory.join("tsconfig.json"))
+                .output()
+                .unwrap();
+            assert!(!rejected.status.success(), "{rejected:?}");
+            assert_eq!(
+                String::from_utf8_lossy(&rejected.stdout)
+                    .matches("error TS2322")
+                    .count(),
+                2,
+                "{rejected:?}"
+            );
+        }
         let manifest: serde_json::Value =
             serde_json::from_slice(&fs::read(directory.join("artifact-manifest.json")).unwrap())
                 .unwrap();

@@ -173,7 +173,7 @@ mod tests {
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
         assert!(bundle.typescript.contains(
-            "const profile = (name: string) => (score: number) => ({ \"name\": name, \"score\": score } as const)"
+            "const profile = (name: string) => (score: number) => (<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ \"name\": name, \"score\": score } as const))"
         ), "{}", bundle.typescript);
         assert!(bundle.typescript.contains(
             "export const displayName = (user: { readonly \"name\": string }) => (user)[\"name\"]"
@@ -201,9 +201,9 @@ mod tests {
             bundle.typescript
         );
         assert!(
-            bundle
-                .typescript
-                .contains("? _ssrg_maybe_Just($ssrg_record[\"id\"]) : _ssrg_maybe_Nothing"),
+            bundle.typescript.contains(
+                "? _ssrg_maybe_Just($ssrg_record[\"id\"] as string) : _ssrg_maybe_Nothing"
+            ),
             "{}",
             bundle.typescript
         );

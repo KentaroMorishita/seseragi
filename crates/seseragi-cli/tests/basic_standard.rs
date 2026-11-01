@@ -3390,3 +3390,23 @@ fn remaining_prelude_native_partials_keep_original_source_and_output() {
         "{result:?}"
     );
 }
+
+#[test]
+fn standard_instances_match_ts_with_generic_saved_and_user_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/standard-instances.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/standard-instances.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn standard_applicatives_keep_effect_order_cold_replay_and_user_supertraits() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/standard-applicative-effect.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/standard-applicative-effect.stdout"
+        ))],
+    );
+}

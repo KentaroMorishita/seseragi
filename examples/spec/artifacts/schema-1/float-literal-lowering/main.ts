@@ -13,5 +13,5 @@ type Measurement = {
 export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_arrayDebug<number>(_ssrg_debug_floatDebug)["debug"](values)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println((($ssrg$closedDisplay$0()["debug"](pair)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_recordDebug<{ readonly "value": number }>(["value"] as const, [false] as const, _ssrg_debug_floatDebug)["debug"](sample)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_show_floatShow["show"](1.0)) as string)), () => _ssrg_console_println(((_ssrg_debug_floatDebug["debug"]((measurement)["reading"])) as string))))))
 const values: ReadonlyArray<number> = [1.0, 2.3, -(0.0), 6.022e23];
 const pair: readonly [number, number] = [1.25, 1e-9] as const;
-const sample: { readonly "value": number } = ({ "value": 2.5 } as const);
+const sample: { readonly "value": number } = (<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ "value": 2.5 } as const));
 const measurement: Measurement = (({ "reading": -(0.0) } as const) as unknown as Measurement);

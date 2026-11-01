@@ -75,6 +75,9 @@ impl Backend<'_> {
             std::slice::from_ref(&normalized),
             scope,
         )?;
+        if self.validate_standard_composite(selected, scope)? {
+            return Ok(());
+        }
         if self.validate_derived_structural_evidence(selected, scope)? {
             return Ok(());
         }
