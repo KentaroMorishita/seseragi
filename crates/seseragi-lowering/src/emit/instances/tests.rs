@@ -206,6 +206,61 @@ instance Render<Badge> { fn render value: Badge -> String = \"active\" }
 }
 
 #[test]
+fn preserves_eq_in_standard_ord_dictionary_types_and_generic_evidence() {
+    let source = r#"
+pub type Key = | Key Int
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = True }
+instance Ord<Key> { fn compare left: Key -> right: Key -> Ordering = Equal }
+pub fn same<A> left: A -> right: A -> Bool where Ord<A> = left == right
+"#;
+    let core = lower_typed_module(type_module("artifact/ord-parent/main.ssrg", source));
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+    assert!(
+        bundle.typescript.contains(
+            "__ssrg$instance$Ord$1 = (__ssrg$evidence$0: import(\"@seseragi/runtime/equality\").Eq<Key>) => ({ ...__ssrg$evidence$0,"
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle.typescript.contains(
+            "__ssrg$evidence$0: import(\"@seseragi/runtime/sequence\").Ord<A> & import(\"@seseragi/runtime/equality\").Eq<A>"
+        ),
+        "{}",
+        bundle.typescript
+    );
+}
+
+#[test]
+fn keeps_shadowed_eq_and_ord_evidence_separate_from_standard_dictionary_types() {
+    let source = r#"
+pub trait Eq<A> { fn eq left: A -> right: A -> Bool }
+pub trait Ord<A> where Eq<A> { fn compare left: A -> right: A -> Ordering }
+pub type Key = | Key Int
+instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = True }
+instance Ord<Key> { fn compare left: Key -> right: Key -> Ordering = Equal }
+pub fn same<A> left: A -> right: A -> Bool where Ord<A> = eq left right
+"#;
+    let core = lower_typed_module(type_module("artifact/custom-ord/main.ssrg", source));
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+    assert!(
+        bundle.typescript.contains(
+            "__ssrg$instance$Ord$1 = (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ ...__ssrg$evidence$0,"
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(!bundle
+        .typescript
+        .contains("import(\"@seseragi/runtime/equality\").Eq"));
+    assert!(!bundle
+        .typescript
+        .contains("import(\"@seseragi/runtime/sequence\").Ord"));
+}
+
+#[test]
 fn dispatches_a_trait_method_call_through_selected_local_evidence() {
     let source = "\
 pub type Badge = | Active
