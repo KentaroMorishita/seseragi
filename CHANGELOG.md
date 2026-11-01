@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.137] - 2026-11-01
+
+### Added
+
+- Native programs report runtime defects and unhandled failures that reach `main` with the original `.ssrg` file, line and column, and render unhandled user errors with their Show instance, matching the TS target's messages and exit codes.
+
 ## [0.61.136] - 2026-11-01
 
 ### Added
