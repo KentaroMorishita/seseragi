@@ -14,4 +14,9 @@ export type CompilerRequest = {
 }[CompilerMethod]
 export type CompilerReply =
   | { readonly id: number; readonly ok: true; readonly result: unknown }
-  | { readonly id: number; readonly ok: false; readonly error: string }
+  | {
+      readonly id: number
+      readonly ok: false
+      readonly error: string
+      readonly fatal: boolean
+    }

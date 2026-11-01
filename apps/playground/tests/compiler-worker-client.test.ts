@@ -4,6 +4,7 @@ import type {
   CompilerReply,
   CompilerRequest,
 } from "../src/compiler/compiler-worker-protocol"
+import type { ProjectCompileResponse } from "../src/compiler/types"
 
 class TestWorker extends EventTarget {
   requests: CompilerRequest[] = []
@@ -51,11 +52,82 @@ test("compiler operation errors reject their request and allow another operation
   const worker = new TestWorker()
   const client = createCompilerWorkerClient(() => worker)
   const request = client.call("analyzeProject", project)
-  worker.reply({ id: 1, ok: false, error: "WASM failed" })
+  worker.reply({ id: 1, ok: false, error: "WASM failed", fatal: false })
   await expect(request).rejects.toThrow("WASM failed")
+  expect(worker.terminated).toBe(false)
   const next = client.call("analyzeProject", project)
   worker.reply({ id: 2, ok: true, result: analyzed })
   expect(await next).toEqual(analyzed)
+})
+
+test("source diagnostics keep the compiler worker available", async () => {
+  const worker = new TestWorker()
+  let starts = 0
+  const client = createCompilerWorkerClient(() => {
+    starts++
+    return worker
+  })
+  const request = client.call("compileProject", project)
+  worker.reply({ id: 1, ok: true, result: compiled })
+  expect(await request).toEqual(compiled)
+  const next = client.call("analyzeProject", project)
+  worker.reply({ id: 2, ok: true, result: analyzed })
+  expect(await next).toEqual(analyzed)
+  expect(worker.terminated).toBe(false)
+  expect(starts).toBe(1)
+})
+
+test("a WASM trap rejects all pending requests and the next compile uses a fresh worker", async () => {
+  const first = new TestWorker()
+  const second = new TestWorker()
+  let starts = 0
+  const client = createCompilerWorkerClient(() =>
+    ++starts === 1 ? first : second
+  )
+  const analysis = client.call("analyzeProject", project)
+  const compilation = client.call("compileProject", project)
+  const results = Promise.allSettled([analysis, compilation])
+  const error = "Internal compiler error: unreachable. Please try again."
+  first.reply({ id: 2, ok: false, error, fatal: true })
+  for (const result of await results) {
+    expect(result.status).toBe("rejected")
+    if (result.status === "rejected") expect(result.reason.message).toBe(error)
+  }
+  expect(first.terminated).toBe(true)
+
+  const validProject = {
+    ...project,
+    files: [{ path: "main.ssrg", source: 'pub effect fn main = println "ok"' }],
+  }
+  const next = client.call("compileProject", validProject)
+  expect(second.requests).toEqual([
+    { id: 3, method: "compileProject", args: [validProject] },
+  ])
+  first.reply({ id: 3, ok: false, error, fatal: true })
+  first.reply({ id: 3, ok: true, result: compiled })
+  expect(second.terminated).toBe(false)
+  const success: ProjectCompileResponse = {
+    status: "success",
+    schema: 1,
+    diagnostics: [],
+    modules: [],
+    entry: { path: "main.ssrg", module: "main" },
+  }
+  second.reply({ id: 3, ok: true, result: success })
+  expect(await next).toEqual(success)
+  expect(starts).toBe(2)
+})
+
+test("compiler worker reports WASM traps as internal errors", () => {
+  const result = Bun.spawnSync([
+    process.execPath,
+    new URL("./fixtures/compiler-worker-trap.ts", import.meta.url).pathname,
+  ])
+  expect(result.stderr.toString()).toBe("")
+  expect(result.exitCode).toBe(0)
+  expect(result.stdout.toString()).toContain(
+    "Compiler worker trap regression passed"
+  )
 })
 
 test("worker failure rejects pending requests and a later request starts a fresh worker", async () => {
