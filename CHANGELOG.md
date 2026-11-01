@@ -9,6 +9,7 @@
 ### Fixed
 
 - Reading an optional record field now produces TypeScript typed as `Maybe<T>`, so matching on it passes `tsc --strict`; record fields named like Object prototype members (such as `toString`) no longer break the generated types.
+- Programs that use no collections no longer bundle the unused standard Reducible dictionaries and persistent-index helpers into production builds.
 
 ## [0.61.134] - 2026-11-01
 
