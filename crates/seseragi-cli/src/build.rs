@@ -1,6 +1,7 @@
 use std::path::Path;
 
 use crate::local_project::compatible_targets;
+use crate::target::Target;
 use seseragi_driver::{compile_module, render_terminal_diagnostics, CompileInput};
 use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
 use seseragi_runtime::{main_contract, BuildTarget};
@@ -45,10 +46,8 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
             "--target" => {
                 index += 1;
                 target = Some(match arguments.get(index).map(String::as_str) {
-                    Some(value) => {
-                        ProjectTarget::parse(value).map_err(|error| error.to_string())?
-                    }
-                    None => return Err("--target requires `process` or `web`".to_owned()),
+                    Some(value) => Target::parse(value)?,
+                    None => return Err("--target requires `process`, `web` or `native`".to_owned()),
                 });
             }
             argument if argument.starts_with('-') => {
@@ -60,10 +59,23 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
         index += 1;
     }
     let path = path.ok_or_else(|| "build requires a source file or package path".to_owned())?;
+    if target == Some(Target::Native) {
+        if source_map.is_some() {
+            return Err("--source-map is not supported by the native target".into());
+        }
+        crate::experimental::build_native(
+            Path::new(&path),
+            Path::new(&output_directory),
+            ProjectCommand::Build,
+            profile.unwrap_or_default(),
+        )?;
+        println!("Built {} -> {}", path, output_directory);
+        return Ok(0);
+    }
     build_path(
         Path::new(&path),
         Path::new(&output_directory),
-        target,
+        target.and_then(Target::project),
         profile,
         source_map,
     )

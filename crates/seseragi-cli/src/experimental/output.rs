@@ -5,7 +5,7 @@ use std::{
 };
 use tempfile::TempDir;
 
-pub(super) const EXECUTABLE: &str = if cfg!(windows) {
+pub(crate) const EXECUTABLE: &str = if cfg!(windows) {
     "program.exe"
 } else {
     "program"

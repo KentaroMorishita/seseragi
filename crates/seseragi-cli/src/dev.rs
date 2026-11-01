@@ -1,4 +1,5 @@
 use crate::local_project::prepare_package_build;
+use crate::target::Target;
 use seseragi_project::ProjectCommand;
 use seseragi_runtime::{build_local_project_with_programs, BuildTarget};
 use std::collections::BTreeMap;
@@ -18,60 +19,94 @@ const WATCH_INTERVAL: Duration = Duration::from_millis(100);
 
 pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     let options = DevOptions::parse(arguments)?;
-    if !options.path.is_dir() {
+    if options.target != Some(Target::Native) && !options.path.is_dir() {
         return Err("dev requires a package directory".to_owned());
     }
-    let project = options.path.canonicalize().map_err(|error| {
+    let package = if options.target == Some(Target::Native) {
+        crate::local_project::containing_package(&options.path)
+    } else {
+        None
+    };
+    let input = package.as_deref().unwrap_or(&options.path);
+    let project = input.canonicalize().map_err(|error| {
         format!(
             "failed to resolve package {}: {error}",
             options.path.display()
         )
     })?;
-    let output = project.join(".seseragi/dev");
-    let listener = TcpListener::bind((options.host.as_str(), options.port)).map_err(|error| {
-        format!(
-            "dev server could not bind {}:{}: {error}",
-            options.host, options.port
-        )
-    })?;
-    listener
-        .set_nonblocking(true)
-        .map_err(|error| format!("failed to configure dev server: {error}"))?;
-    let address = listener
-        .local_addr()
-        .map_err(|error| format!("failed to read dev server address: {error}"))?;
-    let url = format!("http://{}:{}/", options.host, address.port());
+    let root = if project.is_dir() {
+        project.as_path()
+    } else {
+        project.parent().unwrap()
+    };
+    let output = root.join(".seseragi/dev");
+    let listener = if options.target == Some(Target::Native) {
+        None
+    } else {
+        let listener =
+            TcpListener::bind((options.host.as_str(), options.port)).map_err(|error| {
+                format!(
+                    "dev server could not bind {}:{}: {error}",
+                    options.host, options.port
+                )
+            })?;
+        listener
+            .set_nonblocking(true)
+            .map_err(|error| format!("failed to configure dev server: {error}"))?;
+        Some(listener)
+    };
+    let url = listener
+        .as_ref()
+        .map(|listener| {
+            listener
+                .local_addr()
+                .map(|address| format!("http://{}:{}/", options.host, address.port()))
+                .map_err(|error| format!("failed to read dev server address: {error}"))
+        })
+        .transpose()?;
 
     let stopping = Arc::new(AtomicBool::new(false));
     let signal = Arc::clone(&stopping);
     ctrlc::set_handler(move || signal.store(true, Ordering::SeqCst))
         .map_err(|error| format!("failed to install shutdown handler: {error}"))?;
 
-    let mut watch_roots = watched_package_roots(&project).unwrap_or_else(|_| vec![project.clone()]);
+    let mut watch_roots = watched_package_roots(&project).unwrap_or_else(|_| vec![root.to_owned()]);
     let mut files = watch_snapshot(&watch_roots)?;
     let version = AtomicU64::new(0);
-    let mut build_available = rebuild(&project, &output, &version)?;
-    println!("Dev server: {url}");
+    let rebuild = || rebuild_target(&project, &output, &version, options.target);
+    let mut build_available = if options.target == Some(Target::Native) {
+        rebuild().unwrap_or_else(|error| {
+            eprintln!("seseragi dev: {error}\nBuild failed");
+            false
+        })
+    } else {
+        rebuild()?
+    };
+    if let Some(url) = &url {
+        println!("Dev server: {url}");
+    }
     println!("Watching {}", project.display());
     if options.open {
-        open_browser(&url)?;
+        open_browser(url.as_deref().expect("web dev has a URL"))?;
     }
 
     while !stopping.load(Ordering::SeqCst) {
-        if !serve_pending_requests(&listener, &stopping, |stream| {
-            if let Err(error) = serve(stream, &output, &version, build_available, &options.host) {
-                eprintln!("seseragi dev: {error}");
+        if let Some(listener) = &listener {
+            if !serve_pending_requests(listener, &stopping, |stream| {
+                if let Err(error) = serve(stream, &output, &version, build_available, &options.host)
+                {
+                    eprintln!("seseragi dev: {error}");
+                }
+            })? {
+                break;
             }
-        })? {
-            break;
         }
-
         let next = watch_snapshot(&watch_roots)?;
         if stopping.load(Ordering::SeqCst) {
             break;
         }
         if next != files {
-            let mut rebuilt = match rebuild(&project, &output, &version) {
+            let mut rebuilt = match rebuild() {
                 Ok(rebuilt) => rebuilt,
                 Err(error) => {
                     eprintln!("seseragi dev: {error}");
@@ -96,7 +131,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
             // snapshot; otherwise the dependency change has no later event to
             // trigger recovery.
             if !rebuilt && refresh_succeeded && roots_changed && !stopping.load(Ordering::SeqCst) {
-                rebuilt = match rebuild(&project, &output, &version) {
+                rebuilt = match rebuild() {
                     Ok(rebuilt) => rebuilt,
                     Err(error) => {
                         eprintln!("seseragi dev: {error}");
@@ -145,6 +180,7 @@ struct DevOptions {
     host: String,
     port: u16,
     open: bool,
+    target: Option<Target>,
 }
 
 impl DevOptions {
@@ -153,10 +189,27 @@ impl DevOptions {
         let mut host = DEFAULT_HOST.to_owned();
         let mut port = DEFAULT_PORT;
         let mut open = false;
+        let mut target = None;
+        let mut web_options = false;
         let mut index = 0;
         while index < arguments.len() {
             match arguments[index].as_str() {
+                "--target" => {
+                    if target.is_some() {
+                        return Err("--target may only be specified once".into());
+                    }
+                    index += 1;
+                    let value = arguments
+                        .get(index)
+                        .ok_or("--target requires web or native")?;
+                    let selected = Target::parse(value)?;
+                    if selected == Target::Project(seseragi_project::ProjectTarget::Process) {
+                        return Err("dev does not support the `process` target".into());
+                    }
+                    target = Some(selected);
+                }
                 "--host" => {
+                    web_options = true;
                     index += 1;
                     host = arguments
                         .get(index)
@@ -165,6 +218,7 @@ impl DevOptions {
                         .clone();
                 }
                 "--port" => {
+                    web_options = true;
                     index += 1;
                     let value = arguments
                         .get(index)
@@ -182,8 +236,12 @@ impl DevOptions {
             }
             index += 1;
         }
+        if target == Some(Target::Native) && (web_options || open) {
+            return Err("--host, --port and --open require --target web".into());
+        }
         Ok(Self {
             path: path.unwrap_or_else(|| PathBuf::from(".")),
+            target,
             host,
             port,
             open,
@@ -191,9 +249,29 @@ impl DevOptions {
     }
 }
 
-fn rebuild(project: &Path, output: &Path, version: &AtomicU64) -> Result<bool, String> {
+fn rebuild_target(
+    project: &Path,
+    output: &Path,
+    version: &AtomicU64,
+    target: Option<Target>,
+) -> Result<bool, String> {
+    if target != Some(Target::Native) {
+        return rebuild(project, output, version, target.and_then(Target::project));
+    }
     let started = Instant::now();
-    let Some(prepared) = prepare_package_build(project, ProjectCommand::Dev, None, None)? else {
+    crate::experimental::build_native(project, output, ProjectCommand::Dev, Default::default())?;
+    println!("Built native app ({})", elapsed(started));
+    Ok(true)
+}
+
+fn rebuild(
+    project: &Path,
+    output: &Path,
+    version: &AtomicU64,
+    target: Option<seseragi_project::ProjectTarget>,
+) -> Result<bool, String> {
+    let started = Instant::now();
+    let Some(prepared) = prepare_package_build(project, ProjectCommand::Dev, target, None)? else {
         eprintln!("Build failed ({})", elapsed(started));
         return Ok(false);
     };
@@ -223,6 +301,12 @@ struct WatchStamp {
 }
 
 fn watched_package_roots(project: &Path) -> Result<Vec<PathBuf>, String> {
+    if project.is_file() {
+        return Ok(vec![project
+            .parent()
+            .ok_or("source file has no parent")?
+            .to_owned()]);
+    }
     seseragi_project::read_and_validate_development_lockfile(project)
         .map_err(|error| format!("{}: {error}", error.code()))?;
     let graph = seseragi_project::discover_local_package_graph(project)

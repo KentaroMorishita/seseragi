@@ -1,6 +1,6 @@
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, path::PathBuf, process::Command};
-mod output;
+pub(crate) mod output;
 pub(crate) mod program_wasm;
 
 pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
@@ -38,24 +38,62 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     }
     let entry = entry.ok_or_else(|| usage().to_owned())?;
     let destination = destination.ok_or_else(|| usage().to_owned())?;
-    let (artifact, source_paths) = if std::path::Path::new(path).is_dir() {
-        compile_project(path, entry, provider)?
+    let (artifact, source_paths) = compile_native(
+        path,
+        entry,
+        provider,
+        seseragi_project::ProjectCommand::Build,
+        seseragi_project::BuildProfile::Development,
+    )?;
+    publish_artifact(&artifact, &source_paths, &destination, native)?;
+    if native {
+        println!("{}", destination.join(output::EXECUTABLE).display());
+    } else {
+        println!("{}", destination.display());
+    }
+    Ok(0)
+}
+
+pub(crate) fn build_native(
+    path: &std::path::Path,
+    destination: &std::path::Path,
+    command: seseragi_project::ProjectCommand,
+    profile: seseragi_project::BuildProfile,
+) -> Result<(), String> {
+    let package = crate::local_project::containing_package(path);
+    let path = package.as_deref().unwrap_or(path);
+    let path = path.to_str().ok_or("native source path must be UTF-8")?;
+    let (artifact, source_paths) = compile_native(path, "main", None, command, profile)?;
+    publish_artifact(&artifact, &source_paths, destination, true)
+}
+
+fn compile_native(
+    path: &str,
+    entry: &str,
+    provider: Option<&str>,
+    command: seseragi_project::ProjectCommand,
+    profile: seseragi_project::BuildProfile,
+) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
+    if std::path::Path::new(path).is_dir() {
+        compile_project(path, entry, provider, command, profile)
     } else {
         if !path.ends_with(".ssrg") || !std::path::Path::new(path).is_file() {
             return Err("experimental Rust target accepts a .ssrg file or package root".into());
         }
         let source = fs::read_to_string(path).map_err(|e| e.to_string())?;
-        let checked = compile_core_module(CompileInput::new(path, "experimental/main", &source))
-            .map_err(|diagnostics| {
-                seseragi_driver::render_terminal_diagnostics(&diagnostics, &source)
-            })?;
+        let checked = compile_core_module(
+            CompileInput::new(path, "experimental/main", &source).with_profile(profile),
+        )
+        .map_err(|diagnostics| {
+            seseragi_driver::render_terminal_diagnostics(&diagnostics, &source)
+        })?;
         if !checked.diagnostics.diagnostics.is_empty() {
             eprint!(
                 "{}",
                 seseragi_driver::render_terminal_diagnostics(&checked.diagnostics, &source)
             );
         }
-        (
+        Ok((
             seseragi_backend_rust::emit_rust_module_with_options(
                 &checked.core_ir,
                 entry,
@@ -63,16 +101,24 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
             )
             .map_err(|e| target_error(e, Some(path)))?,
             vec![fs::canonicalize(path).map_err(|e| e.to_string())?],
-        )
-    };
+        ))
+    }
+}
+
+fn publish_artifact(
+    artifact: &seseragi_backend_rust::RustArtifact,
+    source_paths: &[PathBuf],
+    destination: &std::path::Path,
+    native: bool,
+) -> Result<(), String> {
     // Target admission precedes filesystem changes. Generate and compile only
     // inside owned staging, then replace the checked output leaves together.
     let selected = if native {
-        output::Destination::Native(&destination)
+        output::Destination::Native(destination)
     } else {
-        output::Destination::Rust(&destination)
+        output::Destination::Rust(destination)
     };
-    output::publish(selected, &source_paths, |staged| {
+    output::publish(selected, source_paths, |staged| {
         fs::write(&staged.rust, &artifact.source).map_err(|e| e.to_string())?;
         fs::write(
             &staged.metadata,
@@ -96,12 +142,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
         }
         Ok(())
     })?;
-    if native {
-        println!("{}", destination.join(output::EXECUTABLE).display());
-    } else {
-        println!("{}", destination.display());
-    }
-    Ok(0)
+    Ok(())
 }
 
 fn target_error(
@@ -123,8 +164,11 @@ fn compile_project(
     path: &str,
     entry: &str,
     provider: Option<&str>,
+    command: seseragi_project::ProjectCommand,
+    profile: seseragi_project::BuildProfile,
 ) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
-    let (project, checked) = load_checked_project(path)?;
+    let (project, checked) = load_checked_project_entry_with_profile(path, None, command, profile)?
+        .ok_or("project compiler did not produce a checked entry")?;
     let modules = checked
         .compiled
         .order
@@ -239,36 +283,30 @@ fn project_target_error(
     target_error(error, source.as_deref())
 }
 
-fn load_checked_project(
-    path: &str,
-) -> Result<
-    (
-        seseragi_project::LoadedLocalProject,
-        seseragi_driver::CoreLocalProject,
-    ),
-    String,
-> {
-    load_checked_project_entry(path, None)
-}
-
-fn load_checked_project_entry(
-    path: &str,
-    module: Option<&seseragi_project::ModulePath>,
-) -> Result<
-    (
-        seseragi_project::LoadedLocalProject,
-        seseragi_driver::CoreLocalProject,
-    ),
-    String,
-> {
-    load_checked_project_entry_for_command(path, module, seseragi_project::ProjectCommand::Build)?
-        .ok_or_else(|| "project compiler did not produce a checked entry".to_owned())
-}
-
 fn load_checked_project_entry_for_command(
     path: &str,
     module: Option<&seseragi_project::ModulePath>,
     command: seseragi_project::ProjectCommand,
+) -> Result<
+    Option<(
+        seseragi_project::LoadedLocalProject,
+        seseragi_driver::CoreLocalProject,
+    )>,
+    String,
+> {
+    load_checked_project_entry_with_profile(
+        path,
+        module,
+        command,
+        seseragi_project::BuildProfile::Development,
+    )
+}
+
+fn load_checked_project_entry_with_profile(
+    path: &str,
+    module: Option<&seseragi_project::ModulePath>,
+    command: seseragi_project::ProjectCommand,
+    profile: seseragi_project::BuildProfile,
 ) -> Result<
     Option<(
         seseragi_project::LoadedLocalProject,
@@ -287,7 +325,7 @@ fn load_checked_project_entry_for_command(
         None => seseragi_project::load_local_project(path),
     }
     .map_err(|error| format!("{}: {error}", error.code()))?;
-    let result = seseragi_driver::compile_core_local_project(&project);
+    let result = seseragi_driver::compile_core_local_project_with_profile(&project, profile);
     let checked = if command == seseragi_project::ProjectCommand::Dev {
         let Some(checked) = crate::local_project::render_compile_result(
             &project,
