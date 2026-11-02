@@ -532,7 +532,10 @@ pub(super) fn lower_core_expr_to_typescript(
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
                 let type_arguments = match (callee.as_str(), evidence.first()) {
-                    (name, _) if name.starts_with("std/either::") => {
+                    (name, _)
+                        if name.starts_with("std/either::")
+                            || name == "std/transformer/either::fromEither" =>
+                    {
                         checked_either_runtime_arguments(
                             name,
                             &checked_argument_types,
@@ -1909,7 +1912,7 @@ fn checked_either_runtime_arguments(
                 let (error, value) = sum(parameters[2])?;
                 vec![error, value, remaining.clone()]
             }
-            "std/either::swap" => {
+            "std/either::swap" | "std/transformer/either::fromEither" => {
                 let (error, value) = sum(parameters[0])?;
                 vec![error, value]
             }
