@@ -61,6 +61,9 @@ impl Backend<'_> {
         if let Some(value) = self.die_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.effect_control_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.concurrency_call(expr, scope)? {
             return Ok(value);
         }

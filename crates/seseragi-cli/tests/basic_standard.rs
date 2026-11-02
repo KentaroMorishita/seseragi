@@ -231,6 +231,36 @@ fn basic_long_effect_sequence_keeps_every_statement_in_both_profiles() {
 }
 
 #[test]
+fn basic_effect_control_matches_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-effect-control.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-effect-control.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_effect_control_keeps_cold_failure_payloads_cancellation_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-effect-control-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-effect-control-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_effect_control_keeps_imported_iterable_and_generic_effect_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/projects/effect-until"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/projects/effect-until/expected.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn inferred_builtin_array_owner_keeps_original_strict_ts_bun_node_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-regressions/inferred-builtin-array-owner.ssrg"),

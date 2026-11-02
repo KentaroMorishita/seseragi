@@ -1,0 +1,70 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as deferred from "std/deferred"
+
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+fn require<E,A> error:E -> value:Maybe<A> -> Effect<{},E,A> = effects.fromMaybe error value
+effect fn step total:refs.Ref<Int> -> value:Int -> effects.LoopControl with Console = do {
+  refs.update (\n:Int -> n + value) total
+  say ("visit: " + show value)
+  effects.succeed (if value == 2 then effects.Break else effects.Continue)
+}
+effect fn failAtTwo value:Int -> effects.LoopControl fails String with Console = do {
+  say ("failure: " + show value)
+  if value == 2 then effects.fail "typed" else effects.succeed effects.Continue
+}
+effect fn retain value:Int -> Int with Console = effects.succeed value
+effect fn waiting ready:deferred.Deferred<Never,Unit> -> gate:deferred.Deferred<Never,Unit> -> released:refs.Ref<Int> -> value:Int -> effects.LoopControl with Console = do {
+  effects.acquireRelease (retain value) (\n:Int -> do {
+    refs.update (\count:Int -> count + 1) released
+    say ("cancel released: " + show n)
+  })
+  say ("waiting: " + show value)
+  deferred.succeed () ready
+  deferred.await gate
+  effects.succeed effects.Continue
+}
+pub effect fn main = do {
+  total <- refs.make 0
+  let cold = effects.forEachUntil (step total) [1,2,3]
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> say "released")
+    cold
+    cold
+  })
+  count <- refs.get total
+  say ("total: " + show count)
+  failure <- effects.attempt (effects.scoped (do {
+    effects.acquireRelease (say "failure acquired") (\_:Unit -> say "failure released")
+    effects.forEachUntil failAtTwo [1,2,3]
+  }))
+  say (match failure { Left error -> error; Right _value -> "unexpected" })
+  let absent:Maybe<Int> = Nothing
+  reference <- effects.attempt (require total absent)
+  match reference {
+    Left same -> refs.set 99 same
+    Right _value -> effects.succeed ()
+  }
+  kept <- refs.get total
+  say ("payload: " + show kept)
+  nested <- effects.attempt (effects.attempt (require "nested" absent))
+  say (match nested {
+    Left _error -> "unexpected outer failure"
+    Right inner -> match inner { Left error -> error; Right _value -> "unexpected success" }
+  })
+  ready <- deferred.make<Never,Unit> ()
+  gate <- deferred.make<Never,Unit> ()
+  released <- refs.make 0
+  worker <- effects.fork (effects.attempt (effects.forEachUntil (waiting ready gate released) [1,2]))
+  deferred.await ready
+  effects.interrupt worker
+  result <- effects.await worker
+  say (match result {
+    effects.FiberCancelled -> "cancelled"
+    _ -> "unexpected fiber outcome"
+  })
+  releases <- refs.get released
+  say ("releases: " + show releases)
+}

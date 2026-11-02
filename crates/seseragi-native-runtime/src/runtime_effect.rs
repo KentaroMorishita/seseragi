@@ -18,6 +18,7 @@ enum Instruction {
     AcquireRelease,
     Recover,
     MapError,
+    Attempt,
     Release,
     Concurrent(ConcurrentOperation),
     FileSystem(NativeFileOperation),
@@ -77,6 +78,7 @@ enum NativeFrame {
     Bind(V, Option<&'static NativeSource>),
     Recover(V, Option<&'static NativeSource>),
     MapError(V, Option<&'static NativeSource>),
+    Attempt,
     Register(V, Option<&'static NativeSource>),
     Scope,
     Cleanup {
@@ -316,6 +318,10 @@ impl NativeMachine {
                             stack.push(NativeFrame::MapError(c[0].clone(), source));
                             NativeState::Evaluate(c[1].clone())
                         }
+                        Instruction::Attempt => {
+                            stack.push(NativeFrame::Attempt);
+                            NativeState::Evaluate(c[0].clone())
+                        }
                         Instruction::Release => match catch_native(|| Ok(c[0].apply(c[1].clone())))
                         {
                             Ok(next) => NativeState::Evaluate(next),
@@ -359,6 +365,15 @@ impl NativeMachine {
                             },
                             result => NativeState::Return(result),
                         },
+                        NativeFrame::Attempt => NativeState::Return(match result {
+                            Ok(value) => context
+                                .checkpoint()
+                                .map(|_| V::adt("std/prelude::Right", value)),
+                            Err(NativeExit::Failure(error)) => context
+                                .checkpoint()
+                                .map(|_| V::adt("std/prelude::Left", error.value)),
+                            error => error,
+                        }),
                         NativeFrame::MapError(handler, source) => match result {
                             Err(NativeExit::Failure(error)) => {
                                 NativeState::Return(context.checkpoint().and_then(|_| {
