@@ -922,12 +922,12 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 ("error[", Some(main.clone()), "value")
             }
             "unsupported" => {
-                let addition = "\nimport * as regex from \"std/regex\"\npub fn unsupported -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n";
+                let addition = "\nimport * as effects from \"std/effect\"\npub effect fn unsupported -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
                 fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
                 (
                     "SES-RUST-0001",
                     Some(library.clone()),
-                    "regex.compile \"x\"",
+                    "effects.race (effects.succeed 1) (effects.succeed 2)",
                 )
             }
             _ => ("SES-K0102", None, ""),
@@ -988,35 +988,36 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
 }
 
 #[test]
-fn native_project_accepts_the_formerly_unsupported_imported_power() {
+fn native_project_accepts_formerly_unsupported_imported_operations() {
     let scratch = Scratch::new();
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../examples/spec/fixtures/rust-backend-projects/linked");
-    let project = scratch.0.join("power");
-    copy_project(&fixture, &project);
-    let library = project.join("vendor/model/src/lib.ssrg");
-    fs::write(
-        &library,
-        fs::read_to_string(&library).unwrap() + "\npub fn unsupported -> Float = 2.0 ** 3.0\n",
-    )
-    .unwrap();
-    write_project_lock(&project);
-    let output = scratch.0.join("power.rs");
-    let result = cli()
-        .env("PATH", "")
-        .args(["experimental", "emit-rust"])
-        .arg(&project)
-        .args(["--entry", "probe", "--output"])
-        .arg(&output)
-        .output()
-        .unwrap();
-    assert!(
-        result.status.success(),
-        "{}",
-        String::from_utf8_lossy(&result.stderr)
-    );
-    assert!(output.is_file());
-    assert!(output.with_extension("rust-backend.json").is_file());
+    for (name, addition) in [
+        ("power", "\npub fn unsupported -> Float = 2.0 ** 3.0\n"),
+        ("regex", "\nimport * as regex from \"std/regex\"\npub fn unsupported -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n"),
+    ] {
+        let project = scratch.0.join(name);
+        copy_project(&fixture, &project);
+        let library = project.join("vendor/model/src/lib.ssrg");
+        fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
+        write_project_lock(&project);
+        let output = scratch.0.join(format!("{name}.rs"));
+        let result = cli()
+            .env("PATH", "")
+            .args(["experimental", "emit-rust"])
+            .arg(&project)
+            .args(["--entry", "probe", "--output"])
+            .arg(&output)
+            .output()
+            .unwrap();
+        assert!(
+            result.status.success(),
+            "{name}: {}",
+            String::from_utf8_lossy(&result.stderr)
+        );
+        assert!(output.is_file());
+        assert!(output.with_extension("rust-backend.json").is_file());
+    }
 }
 
 #[test]
@@ -1560,6 +1561,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         ("float-math-cbrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.cbrt 4.0\n", "math"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n", "hash"),
         ("hash-big-int", "import * as big from \"std/big-int\"\npub fn answer -> Int = hash (big.fromInt 1)\n", "big-int"),
+        ("regex-compile", "import * as regex from \"std/regex\"\npub fn answer -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n", "regex"),
     ] {
         let path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&path, source).unwrap();
@@ -1571,11 +1573,12 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         let metadata: serde_json::Value = serde_json::from_slice(&fs::read(output.with_extension("rust-backend.json")).unwrap()).unwrap();
         assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == capability));
     }
-    for (name, source) in [("regex-compile", "import * as regex from \"std/regex\"\npub fn answer -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n")] {
+    for (name, source) in [("effect-race", "import * as effects from \"std/effect\"\npub effect fn answer -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n")] {
         let bad_path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&bad_path, source).unwrap();
         let bad_output = scratch.0.join(format!("{name}.rs"));
         let bad = cli()
+            .env("PATH", "")
             .args(["experimental", "emit-rust"])
             .arg(&bad_path)
             .args(["--entry", "answer", "--output"])

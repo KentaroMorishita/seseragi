@@ -1,5 +1,7 @@
-use crate::typed::semantic_types::SemanticValueType;
-use crate::TypedPattern;
+use crate::typed::semantic_types::{
+    semantic_values_have_same_identity, SemanticTypeKey, SemanticValueType,
+};
+use crate::{TypedPattern, TypedType};
 use seseragi_syntax::{decode_string_literal, ByteSpan};
 use std::collections::BTreeMap;
 
@@ -60,12 +62,6 @@ pub(super) fn type_char_pattern(
     span: ByteSpan,
     expected: &SemanticValueType,
 ) -> PatternAnalysis {
-    if !matches!(
-        expected.key,
-        crate::typed::semantic_types::SemanticTypeKey::Other
-    ) {
-        return invalid(span, "Char literal pattern requires the builtin Char type");
-    }
     let value = seseragi_syntax::decode_char_literal(raw).unwrap_or_default();
     type_literal_pattern(
         TypedPattern::Char {
@@ -105,9 +101,14 @@ fn type_literal_pattern(
     span: ByteSpan,
     expected: &SemanticValueType,
 ) -> PatternAnalysis {
-    if expected.key != crate::typed::semantic_types::SemanticTypeKey::Other
-        || !super::super::named_type_is(&expected.type_ref, expected_name)
-    {
+    let primitive = SemanticValueType {
+        type_ref: TypedType::Named {
+            name: expected_name.to_owned(),
+            arguments: Vec::new(),
+        },
+        key: SemanticTypeKey::Other,
+    };
+    if !semantic_values_have_same_identity(expected, &primitive) {
         return invalid(
             span,
             format!("{expected_name} literal pattern does not match the scrutinee type"),

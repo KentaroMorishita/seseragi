@@ -59,21 +59,6 @@ fn source_reference(value: &CoreExpr) {
     source_type_is_a_clock_callable(type_ref);
 }
 
-fn cold_callback(value: &TypeScriptExpr) {
-    let TypeScriptExpr::Lambda { parameter, body } = value else {
-        panic!("constructing a saved function must not call its provider: {value:?}");
-    };
-    let TypeScriptExpr::RuntimeCall { callee, arguments } = body.as_ref() else {
-        panic!("{body:?}");
-    };
-    assert_eq!(callee, "_ssrg_clock_sleep");
-    assert_eq!(arguments.len(), 1);
-    let TypeScriptExpr::Identifier { name } = &arguments[0] else {
-        panic!("{arguments:?}");
-    };
-    assert_eq!(parameter.split_once(':').unwrap().0, name);
-}
-
 #[test]
 fn saved_clock_operation_keeps_its_checked_source_argument_until_application() {
     let source = format!(
@@ -97,13 +82,23 @@ fn saved_clock_operation_keeps_its_checked_source_argument_until_application() {
         source_type_is_a_clock_callable(type_ref);
         source_reference(value);
         let TypeScriptFunction::ConstFunction { body, .. } = &compiled.typescript_ir.functions[0];
-        let TypeScriptExpr::Sequence { statements, .. } = body else {
+        let TypeScriptExpr::Sequence { statements, result } = body else {
             panic!("{body:?}");
         };
         let TypeScriptStatement::PureLet { initializer, .. } = &statements[0] else {
             panic!("{statements:?}");
         };
-        cold_callback(initializer);
+        assert!(
+            matches!(initializer, TypeScriptExpr::RuntimeReference { name }
+                if name == "_ssrg_clock_sleep"),
+            "constructing a saved function must not call its provider: {initializer:?}"
+        );
+        assert!(
+            matches!(result.as_ref(), TypeScriptExpr::Call { callee, arguments, .. }
+                if callee == "saved" && matches!(arguments.as_slice(),
+                    [TypeScriptExpr::Identifier { name }] if name == "pause")),
+            "application must pass the checked source argument to the saved function: {result:?}"
+        );
 
         let direct = compile_module(
             CompileInput::new(

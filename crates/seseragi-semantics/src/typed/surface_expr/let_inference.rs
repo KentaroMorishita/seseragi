@@ -757,7 +757,12 @@ impl Inference<'_, '_> {
                 return self.resolve(replacement);
             }
         }
-        map_children(value, |child| self.resolve(child))
+        match map_children(value, |child| self.resolve(child)) {
+            TypedType::RequirementMerge { operands } => {
+                crate::typed::type_ref::normalize_requirement_merge(operands)
+            }
+            resolved => resolved,
+        }
     }
 
     fn nominal_application(&self, value: &TypedType) -> Option<(String, Vec<TypedType>)> {

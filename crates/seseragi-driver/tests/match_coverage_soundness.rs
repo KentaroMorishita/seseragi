@@ -279,8 +279,37 @@ fn builtin_patterns_do_not_accept_same_spelled_nominal_or_higher_kinded_types() 
     }
     for (name, literal) in [("Int", "1"), ("Bool", "True"), ("String", "\"text\"")] {
         rejects(&format!("struct {name} {{ value: Unit }}\npub fn inspect value: {name} -> Unit = match value {{ {literal} -> (); _ -> () }}\n"), "match.pattern-type-mismatch");
+        rejects(&format!("pub fn inspect<{name}> value: {name} -> Unit = match value {{ {literal} -> (); _ -> () }}\n"), "match.pattern-type-mismatch");
     }
     total("alias Values<A> = Array<A>\npub fn inspect values: Values<Int> -> Int = match values { [] -> 0; [item, ...tail] -> item }\n");
+}
+
+#[test]
+fn literal_patterns_keep_the_primitive_identity_of_stdin_results() {
+    for (binding, call) in [
+        ("", "readLine ()"),
+        ("let saved = readLine;", "saved ()"),
+        ("", "stdin.readLine ()"),
+        ("let saved = stdin.readLine;", "saved ()"),
+    ] {
+        let source = format!(
+            "import * as effects from \"std/effect\"\n\
+             import * as stdin from \"std/stdin\"\n\
+             pub effect fn main -> Unit with Stdin fails String = do {{\n\
+               {binding}\n\
+               selected <- {call} |> effects.mapError show\n\
+               match selected {{ Just \"ready\" -> effects.succeed (); _ -> effects.succeed () }}\n\
+             }}\n"
+        );
+        for profile in [
+            seseragi_driver::BuildProfile::Development,
+            seseragi_driver::BuildProfile::Release,
+        ] {
+            let compiled = compile_module(input(&source).with_profile(profile))
+                .unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
+            assert!(compiled.diagnostics.diagnostics.is_empty());
+        }
+    }
 }
 
 #[test]

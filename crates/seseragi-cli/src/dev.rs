@@ -43,6 +43,18 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     let listener = if options.target == Some(Target::Native) {
         None
     } else {
+        let manifest_path = project.join("seseragi.toml");
+        let manifest_source = fs::read_to_string(&manifest_path)
+            .map_err(|error| format!("failed to read {}: {error}", manifest_path.display()))?;
+        let manifest = seseragi_project::parse_manifest(&manifest_source)
+            .map_err(|error| format!("{}: {error}", error.code()))?;
+        seseragi_project::select_project_target(
+            ProjectCommand::Dev,
+            options.target.and_then(Target::project),
+            manifest.run.as_ref().and_then(|run| run.target.as_ref()),
+            None,
+        )
+        .map_err(|error| error.to_string())?;
         let listener =
             TcpListener::bind((options.host.as_str(), options.port)).map_err(|error| {
                 format!(

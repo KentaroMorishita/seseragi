@@ -6,7 +6,11 @@ use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+#[cfg(unix)]
+#[path = "support/generic_impl_process.rs"]
+mod process;
 
 static NEXT_LOCKED_PROJECT_ID: AtomicU64 = AtomicU64::new(0);
 static NEXT_FORMAT_DIRECTORY_ID: AtomicU64 = AtomicU64::new(0);
@@ -993,35 +997,61 @@ fn runs_effect_tail_recursive_queue_worker_to_completion() {
 }
 
 #[cfg(unix)]
-fn interrupt_process_target(mut child: std::process::Child) -> std::process::Output {
-    let deadline = Instant::now() + Duration::from_secs(15);
-    loop {
-        let children = Command::new("pgrep")
-            .args(["-P", &child.id().to_string()])
-            .output()
-            .unwrap();
-        if children.status.success() {
-            if let Some(pid) = String::from_utf8_lossy(&children.stdout)
-                .split_whitespace()
-                .next()
-            {
-                std::thread::sleep(Duration::from_millis(500));
-                let interrupted = Command::new("kill").args(["-INT", pid]).status().unwrap();
-                assert!(interrupted.success());
-                return child.wait_with_output().unwrap();
-            }
-        }
-        if Instant::now() >= deadline {
-            let _ = child.kill();
-            let output = child.wait_with_output().unwrap();
+fn interrupt_process_target(package: &LockedProject) -> std::process::Output {
+    use std::os::unix::fs::PermissionsExt;
+
+    let directory = package.root.join("interrupt");
+    let bin = directory.join("bin");
+    fs::create_dir_all(&bin).unwrap();
+    let bun = process::runtime("bun", &directory);
+    let pid_file = directory.join("runtime.pid");
+    let preload = directory.join("interrupt.cjs");
+    fs::write(
+        &preload,
+        r#"const fs = require("node:fs");
+const timeout = setTimeout(() => process.exit(124), 10000);
+const ready = setInterval(() => {
+  if (process.listenerCount("SIGINT") === 0) return;
+  clearInterval(ready);
+  fs.writeFileSync(process.env.SESERAGI_INTERRUPT_PID, String(process.pid));
+  process.kill(process.pid, "SIGINT");
+}, 5);
+timeout.unref();
+ready.unref();
+"#,
+    )
+    .unwrap();
+    let wrapper = bin.join("bun");
+    let executable = format!("'{}'", bun.to_str().unwrap().replace('\'', "'\\''"));
+    fs::write(&wrapper, format!(
+        "#!/bin/sh\nif [ \"$1\" = run ]; then shift; exec {executable} run --preload \"$SESERAGI_INTERRUPT_PRELOAD\" \"$@\"; fi\nexec {executable} \"$@\"\n"
+    )).unwrap();
+    fs::set_permissions(&wrapper, fs::Permissions::from_mode(0o755)).unwrap();
+    let mut paths = vec![bin];
+    paths.extend(std::env::split_paths(&std::env::var_os("PATH").unwrap()));
+    let mut child = process::OwnedChild::start(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(package)
+            .env("PATH", std::env::join_paths(paths).unwrap())
+            .env("SESERAGI_INTERRUPT_PRELOAD", preload)
+            .env("SESERAGI_INTERRUPT_PID", &pid_file),
+        &directory,
+    );
+    fs::write(directory.join("cli.pid"), child.id().to_string()).unwrap();
+    let output = child.wait(Duration::from_secs(15));
+    let runtime_pid: u32 = fs::read_to_string(pid_file)
+        .unwrap_or_else(|error| {
             panic!(
-                "Seseragi process target did not start\nstdout:\n{}\nstderr:\n{}",
+                "runtime did not record its SIGINT: {error}\nstdout:\n{}\nstderr:\n{}",
                 String::from_utf8_lossy(&output.stdout),
-                String::from_utf8_lossy(&output.stderr)
-            );
-        }
-        std::thread::sleep(Duration::from_millis(25));
-    }
+                String::from_utf8_lossy(&output.stderr),
+            )
+        })
+        .parse()
+        .unwrap();
+    assert!(runtime_pid > 0);
+    output
 }
 
 #[cfg(unix)]
@@ -1030,14 +1060,7 @@ fn forwards_interrupt_to_the_process_signal_stream() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/process-shutdown-forward"),
     );
-    let child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("run")
-        .arg(&package)
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .unwrap();
-    let output = interrupt_process_target(child);
+    let output = interrupt_process_target(&package);
 
     assert_eq!(
         output.status.code(),
@@ -1088,14 +1111,7 @@ fn cancels_the_root_effect_and_preserves_the_signal_exit_status() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/process-shutdown-cancel"),
     );
-    let child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("run")
-        .arg(&package)
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .unwrap();
-    let output = interrupt_process_target(child);
+    let output = interrupt_process_target(&package);
 
     assert_eq!(output.status.code(), Some(130));
     assert_eq!(String::from_utf8_lossy(&output.stdout), "");

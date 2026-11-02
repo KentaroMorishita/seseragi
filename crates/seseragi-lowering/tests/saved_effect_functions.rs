@@ -52,9 +52,9 @@ fn saved_effect_functions_remain_function_values() {
             };
             assert!(
                 matches!(statements.first(), Some(CoreStatement::PureLet {
-                value: CoreExpr::Call { callee: actual, arguments, type_ref: CoreType::Function { .. }, .. },
+                value: CoreExpr::Variable { name: actual, evidence, type_ref: CoreType::Function { .. }, .. },
                 ..
-            }) if actual == name && arguments.is_empty()),
+            }) if actual == name && evidence.is_empty()),
                 "{source}\n{statements:#?}"
             );
             let generated =
