@@ -251,13 +251,18 @@ impl Backend<'_> {
                         closed: right_closed,
                         fields: right,
                     },
-                ) if left_closed == right_closed
-                    && left.len() == right.len()
-                    && left
+                ) if left_closed == right_closed && left.len() == right.len() => {
+                    let mut left = left.iter().collect::<Vec<_>>();
+                    let mut right = right.iter().collect::<Vec<_>>();
+                    left.sort_by(|l, r| l.name.cmp(&r.name));
+                    right.sort_by(|l, r| l.name.cmp(&r.name));
+                    if !left
                         .iter()
-                        .zip(right)
-                        .all(|(l, r)| l.name == r.name && l.optional == r.optional) =>
-                {
+                        .zip(&right)
+                        .all(|(l, r)| l.name == r.name && l.optional == r.optional)
+                    {
+                        return Err("Rust backend: local callable constraint type mismatch".into());
+                    }
                     Some((
                         left.iter().map(|field| field.type_ref.clone()).collect(),
                         right.iter().map(|field| field.type_ref.clone()).collect(),
