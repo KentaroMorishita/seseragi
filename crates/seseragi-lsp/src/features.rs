@@ -39,6 +39,7 @@ pub(crate) struct DocumentState {
     pub(crate) source: String,
     pub(crate) analysis: AnalysisDocument,
     pub(crate) lint_enabled: bool,
+    pub(crate) target_diagnostics: Vec<crate::target_diagnostics::TargetDiagnostic>,
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -59,6 +60,7 @@ impl DocumentState {
             source,
             analysis,
             lint_enabled: true,
+            target_diagnostics: Vec::new(),
         }
     }
 
@@ -73,6 +75,7 @@ impl DocumentState {
             source,
             analysis,
             lint_enabled,
+            target_diagnostics: Vec::new(),
         }
     }
 

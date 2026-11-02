@@ -180,6 +180,56 @@ fn emit_body(
             ))
         })
         .transpose()?;
+    let LinkedProject {
+        linked,
+        owners,
+        scalar_globals,
+        type_names,
+        trait_names,
+        initialization,
+    } = link(modules, entry_module)?;
+    let mut artifact = if let Some((tests, benchmark)) = tests {
+        emit::emit_tests(
+            &linked,
+            tests,
+            benchmark,
+            &owners,
+            &scalar_globals,
+            &type_names,
+            &trait_names,
+            options,
+        )
+    } else if let Some(entry) = &entry {
+        emit::emit(
+            &linked,
+            entry,
+            &owners,
+            &scalar_globals,
+            &type_names,
+            &trait_names,
+            options,
+        )
+    } else {
+        emit::emit_library(&linked, &owners, &scalar_globals, &type_names, &trait_names)
+    }?;
+    artifact.metadata.modules = initialization;
+    Ok(artifact)
+}
+
+struct LinkedProject {
+    linked: CoreModule,
+    owners: BTreeMap<String, String>,
+    scalar_globals: seseragi_lowering::CoreScalarGlobals,
+    type_names: BTreeMap<(String, String), String>,
+    trait_names: BTreeMap<(String, String), String>,
+    initialization: Vec<String>,
+}
+
+fn link(modules: &[&CoreModule], entry_module: &str) -> Result<LinkedProject, RustBackendError> {
+    let entry_core = modules
+        .iter()
+        .find(|module| module.module == entry_module)
+        .ok_or("Rust backend: entry module not found")?;
     let mut linked = (*entry_core).clone();
     linked.adts.clear();
     linked.aliases.clear();
@@ -314,30 +364,48 @@ fn emit_body(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = if let Some((tests, benchmark)) = tests {
-        emit::emit_tests(
-            &linked,
-            tests,
-            benchmark,
-            &owners,
-            &scalar_globals,
-            &type_names,
-            &trait_names,
+    Ok(LinkedProject {
+        linked,
+        owners,
+        scalar_globals,
+        type_names,
+        trait_names,
+        initialization,
+    })
+}
+
+pub(crate) fn diagnose(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    target: crate::RustDiagnosticTarget,
+    options: &crate::RustTargetOptions,
+) -> Vec<RustBackendError> {
+    let mut diagnostics = Vec::new();
+    let modules = modules
+        .iter()
+        .map(|module| {
+            let mut module = (*module).clone();
+            for foreign in module.foreign_modules.drain(..) {
+                diagnostics.push(at(
+                    "Rust backend: foreign modules are unsupported",
+                    &foreign.origin,
+                    &module.module,
+                ));
+            }
+            module
+        })
+        .collect::<Vec<_>>();
+    match link(&modules.iter().collect::<Vec<_>>(), entry_module) {
+        Ok(project) => diagnostics.extend(emit::diagnose(
+            &project.linked,
+            &project.owners,
+            &project.scalar_globals,
+            &project.type_names,
+            &project.trait_names,
             options,
-        )
-    } else if let Some(entry) = &entry {
-        emit::emit(
-            &linked,
-            entry,
-            &owners,
-            &scalar_globals,
-            &type_names,
-            &trait_names,
-            options,
-        )
-    } else {
-        emit::emit_library(&linked, &owners, &scalar_globals, &type_names, &trait_names)
-    }?;
-    artifact.metadata.modules = initialization;
-    Ok(artifact)
+            target,
+        )),
+        Err(error) => diagnostics.push(error),
+    }
+    diagnostics
 }

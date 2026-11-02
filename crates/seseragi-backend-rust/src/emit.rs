@@ -15,11 +15,13 @@ mod arrays;
 mod benchmark;
 mod big_int;
 mod big_int_traits;
+mod binary;
 mod booleans;
 mod bytes;
 mod calls;
 mod canonical;
 mod characters;
+mod check;
 mod child_process;
 mod clock;
 mod collection_control;
@@ -90,6 +92,7 @@ mod transformer_writer;
 mod validation;
 mod variables;
 
+pub(crate) use check::diagnose;
 use local::{LocalCallable, Scope};
 type Result<T> = std::result::Result<T, RustBackendError>;
 
@@ -187,40 +190,16 @@ fn emit_body(
     if !module.foreign_modules.is_empty() {
         return Err("Rust backend: foreign modules are unsupported".into());
     }
-    let mut backend = Backend {
+    let mut backend = Backend::new(
         module,
         owners,
         scalar_globals,
         type_names,
         trait_names,
         options,
-        clock_origins: Vec::new(),
-        html_ordered_records: html_flow::ordered_records(module, owners),
-        program_wasm_library: entry.is_none() && tests.is_none(),
-        test_runner: tests.is_some_and(|(_, benchmark)| !benchmark),
-        owner: &module.module,
-        functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
-        globals: module
-            .bindings
-            .iter()
-            .enumerate()
-            .map(|(i, b)| (b.symbol.clone(), i))
-            .collect(),
-        constructors: module
-            .adts
-            .iter()
-            .flat_map(|a| {
-                a.variants
-                    .iter()
-                    .map(|v| (v.symbol.clone(), v.payload.is_some()))
-            })
-            .collect(),
-        serial: 0,
-        direct_calls: 0,
-        self_tail_calls: 0,
-        closed_dictionary_sites: 0,
-        capabilities: BTreeSet::new(),
-    };
+        entry.is_none() && tests.is_none(),
+        tests.is_some_and(|(_, benchmark)| !benchmark),
+    );
     let entry = entry
         .map(|entry| {
             module
@@ -277,183 +256,10 @@ fn emit_body(
         output.push_str(&format!("\nfn {}() -> V {{ {value} }}\n", id(symbol)));
     }
     for instance in &module.instances {
-        backend.owner = &owners[&instance.identity];
-        if backend.program_wasm_library
-            && instance
-                .arguments
-                .iter()
-                .any(CoreType::contains_type_function)
-        {
-            return Err(crate::project::at(
-                "program WASM: checked type-function dictionaries are unsupported",
-                &instance.origin,
-                backend.owner,
-            ));
-        }
-        let mut scope = Scope::new();
-        scope.type_parameters(
-            instance
-                .type_parameters
-                .iter()
-                .map(|p| (p.name.clone(), p.arity)),
-            &instance.identity,
-        );
-        let setup = dictionary_parameters(&instance.constraints, &mut scope);
-        if let Some(dictionary) = backend
-            .derived_dictionary(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
-        {
-            output.push_str(&format!(
-                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
-                id(&instance.identity)
-            ));
-            continue;
-        }
-        if let Some(dictionary) = backend
-            .json_derived_dictionary(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
-        {
-            output.push_str(&format!(
-                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
-                id(&instance.identity)
-            ));
-            continue;
-        }
-        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
-            return Err(crate::project::at(
-                "Rust backend: derived instances are unsupported",
-                &instance.origin,
-                backend.owner,
-            ));
-        };
-        backend
-            .validate_eq_instance(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
-        backend
-            .validate_hash_instance(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
-        let mut values = Vec::new();
-        if let Some(fields) = backend
-            .monad_supertrait(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
-        {
-            for field in fields {
-                values.push(format!(
-                    "({field:?}, {}.field({field:?}))",
-                    id("\0dictionary_0")
-                ));
-            }
-        } else if backend
-            .traversable_supertrait(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
-        {
-            values.push(format!(
-                "(\"map\", {}.field(\"map\"))",
-                id("\0dictionary_0")
-            ));
-        } else if backend
-            .reducible_supertrait(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
-        {
-            values.push(format!(
-                "(\"iterate\", {}.field(\"iterate\"))",
-                id("\0dictionary_0")
-            ));
-        } else if backend
-            .monoid_supertrait(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
-        {
-            values.push(format!(
-                "(\"append\", {}.field(\"append\"))",
-                id("\0dictionary_0")
-            ));
-        } else if backend
-            .ord_supertrait(instance, &scope)
-            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
-        {
-            values.push(format!("(\"eq\", {}.field(\"eq\"))", id("\0dictionary_0")));
-        }
-        if monads::tail_bind(instance) {
-            values.push("(\"\\0nativeTailBind\", V::Bool(true))".into());
-        }
-        for method in methods {
-            let mut method_scope = scope.clone();
-            method_scope.type_parameters(
-                method
-                    .type_parameters
-                    .iter()
-                    .map(|p| (p.name.clone(), p.arity)),
-                &format!("{}::{}", instance.identity, method.name),
-            );
-            backend
-                .validate_method_value_provider(instance, method, &method_scope)
-                .map_err(|error| {
-                    crate::project::at(&error.message, &method.origin, backend.owner)
-                })?;
-            let value = backend
-                .method_function(method, &method_scope)
-                .map_err(|mut error| {
-                    if error.origin.is_none() {
-                        error.origin = Some(method.origin.clone());
-                        error.module = Some(backend.owner.to_owned());
-                    }
-                    error
-                })?;
-            values.push(format!("({}, {value})", quoted(&method.name)));
-            if !method.constraints.is_empty() && !method.parameters.is_empty() {
-                let value = backend
-                    .method_value_function(method, &method_scope)
-                    .map_err(|error| {
-                        crate::project::at(&error.message, &method.origin, backend.owner)
-                    })?;
-                values.push(format!(
-                    "({}, {value})",
-                    quoted(&seseragi_lowering::method_value_factory_name(&method.name))
-                ));
-            }
-        }
-        output.push_str(&format!(
-            "\nfn {}(dicts: Vec<V>) -> V {{ {setup} V::dict(vec![{}]) }}\n",
-            id(&instance.identity),
-            values.join(",")
-        ));
+        output.push_str(&backend.instance(instance)?);
     }
     for function in &module.functions {
-        backend.owner = &owners[&function.symbol];
-        if function.is_effect {
-            backend.capabilities.insert("effect-sync".into());
-        }
-        let mut scope = Scope::new();
-        scope.type_parameters(
-            function
-                .type_parameters
-                .iter()
-                .map(|p| (p.name.clone(), p.arity)),
-            &function.symbol,
-        );
-        let setup = dictionary_parameters(&function.constraints, &mut scope);
-        if function.parameters.is_empty() {
-            backend
-                .validate_global_method_factory(function, &scope)
-                .map_err(|error| {
-                    crate::project::at(&error.message, &function.origin, backend.owner)
-                })?;
-            let body = backend.expr(&function.body, &scope)?;
-            output.push_str(&format!(
-                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
-                id(&function.symbol)
-            ));
-            continue;
-        }
-        let body = backend.function(&function.parameters, &function.body, &scope)?;
-        output.push_str(&format!(
-            "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
-            id(&function.symbol)
-        ));
-        for parameter in &function.parameters {
-            scope.insert(parameter.id.clone());
-        }
-        output.push_str(&backend.direct_function(function, &setup, &scope)?);
+        output.push_str(&backend.function_definition(function)?);
     }
     if let Some((tests, benchmark)) = tests {
         let kind = if benchmark { "Benchmark" } else { "Test" };
@@ -614,9 +420,239 @@ struct Backend<'a> {
     capabilities: BTreeSet<String>,
     options: &'a crate::RustTargetOptions,
     clock_origins: Vec<seseragi_lowering::SourceSpan>,
+    diagnostics: Option<Vec<RustBackendError>>,
 }
 
-impl Backend<'_> {
+impl<'a> Backend<'a> {
+    fn new(
+        module: &'a CoreModule,
+        owners: &'a BTreeMap<String, String>,
+        scalar_globals: &'a seseragi_lowering::CoreScalarGlobals,
+        type_names: &'a BTreeMap<(String, String), String>,
+        trait_names: &'a BTreeMap<(String, String), String>,
+        options: &'a crate::RustTargetOptions,
+        program_wasm_library: bool,
+        test_runner: bool,
+    ) -> Self {
+        Self {
+            module,
+            owners,
+            scalar_globals,
+            type_names,
+            trait_names,
+            options,
+            clock_origins: Vec::new(),
+            html_ordered_records: html_flow::ordered_records(module, owners),
+            program_wasm_library,
+            test_runner,
+            owner: &module.module,
+            functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
+            globals: module
+                .bindings
+                .iter()
+                .enumerate()
+                .map(|(i, b)| (b.symbol.clone(), i))
+                .collect(),
+            constructors: module
+                .adts
+                .iter()
+                .flat_map(|a| {
+                    a.variants
+                        .iter()
+                        .map(|v| (v.symbol.clone(), v.payload.is_some()))
+                })
+                .collect(),
+            diagnostics: None,
+            serial: 0,
+            direct_calls: 0,
+            self_tail_calls: 0,
+            closed_dictionary_sites: 0,
+            capabilities: BTreeSet::new(),
+        }
+    }
+
+    fn instance(&mut self, instance: &seseragi_lowering::CoreInstance) -> Result<String> {
+        let mut output = String::new();
+        self.owner = &self.owners[&instance.identity];
+        if self.program_wasm_library
+            && instance
+                .arguments
+                .iter()
+                .any(CoreType::contains_type_function)
+        {
+            return Err(crate::project::at(
+                "program WASM: checked type-function dictionaries are unsupported",
+                &instance.origin,
+                self.owner,
+            ));
+        }
+        let mut scope = Scope::new();
+        scope.type_parameters(
+            instance
+                .type_parameters
+                .iter()
+                .map(|p| (p.name.clone(), p.arity)),
+            &instance.identity,
+        );
+        let setup = dictionary_parameters(&instance.constraints, &mut scope);
+        if let Some(dictionary) = self
+            .derived_dictionary(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?
+        {
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
+                id(&instance.identity)
+            ));
+            return Ok(output);
+        }
+        if let Some(dictionary) = self
+            .json_derived_dictionary(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?
+        {
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {dictionary} }}\n",
+                id(&instance.identity)
+            ));
+            return Ok(output);
+        }
+        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            return Err(crate::project::at(
+                "Rust backend: derived instances are unsupported",
+                &instance.origin,
+                self.owner,
+            ));
+        };
+        self.validate_eq_instance(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?;
+        self.validate_hash_instance(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?;
+        let mut values = Vec::new();
+        if let Some(fields) = self
+            .monad_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?
+        {
+            for field in fields {
+                values.push(format!(
+                    "({field:?}, {}.field({field:?}))",
+                    id("\0dictionary_0")
+                ));
+            }
+        } else if self
+            .traversable_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?
+        {
+            values.push(format!(
+                "(\"map\", {}.field(\"map\"))",
+                id("\0dictionary_0")
+            ));
+        } else if self
+            .reducible_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?
+        {
+            values.push(format!(
+                "(\"iterate\", {}.field(\"iterate\"))",
+                id("\0dictionary_0")
+            ));
+        } else if self
+            .monoid_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?
+        {
+            values.push(format!(
+                "(\"append\", {}.field(\"append\"))",
+                id("\0dictionary_0")
+            ));
+        } else if self
+            .ord_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, self.owner))?
+        {
+            values.push(format!("(\"eq\", {}.field(\"eq\"))", id("\0dictionary_0")));
+        }
+        if monads::tail_bind(instance) {
+            values.push("(\"\\0nativeTailBind\", V::Bool(true))".into());
+        }
+        for method in methods {
+            let mut method_scope = scope.clone();
+            method_scope.type_parameters(
+                method
+                    .type_parameters
+                    .iter()
+                    .map(|p| (p.name.clone(), p.arity)),
+                &format!("{}::{}", instance.identity, method.name),
+            );
+            self.validate_method_value_provider(instance, method, &method_scope)
+                .map_err(|error| crate::project::at(&error.message, &method.origin, self.owner))?;
+            let value = self
+                .method_function(method, &method_scope)
+                .map_err(|mut error| {
+                    if error.origin.is_none() {
+                        error.origin = Some(method.origin.clone());
+                        error.module = Some(self.owner.to_owned());
+                    }
+                    error
+                })?;
+            values.push(format!("({}, {value})", quoted(&method.name)));
+            if !method.constraints.is_empty() && !method.parameters.is_empty() {
+                let value = self
+                    .method_value_function(method, &method_scope)
+                    .map_err(|error| {
+                        crate::project::at(&error.message, &method.origin, self.owner)
+                    })?;
+                values.push(format!(
+                    "({}, {value})",
+                    quoted(&seseragi_lowering::method_value_factory_name(&method.name))
+                ));
+            }
+        }
+        output.push_str(&format!(
+            "\nfn {}(dicts: Vec<V>) -> V {{ {setup} V::dict(vec![{}]) }}\n",
+            id(&instance.identity),
+            values.join(",")
+        ));
+        Ok(output)
+    }
+
+    fn function_definition(
+        &mut self,
+        function: &seseragi_lowering::CoreFunction,
+    ) -> Result<String> {
+        let mut output = String::new();
+        self.owner = &self.owners[&function.symbol];
+        if function.is_effect {
+            self.capabilities.insert("effect-sync".into());
+        }
+        let mut scope = Scope::new();
+        scope.type_parameters(
+            function
+                .type_parameters
+                .iter()
+                .map(|p| (p.name.clone(), p.arity)),
+            &function.symbol,
+        );
+        let setup = dictionary_parameters(&function.constraints, &mut scope);
+        if function.parameters.is_empty() {
+            self.validate_global_method_factory(function, &scope)
+                .map_err(|error| {
+                    crate::project::at(&error.message, &function.origin, self.owner)
+                })?;
+            let body = self.expr(&function.body, &scope)?;
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
+                id(&function.symbol)
+            ));
+            return Ok(output);
+        }
+        let body = self.function(&function.parameters, &function.body, &scope)?;
+        output.push_str(&format!(
+            "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
+            id(&function.symbol)
+        ));
+        for parameter in &function.parameters {
+            scope.insert(parameter.id.clone());
+        }
+        output.push_str(&self.direct_function(function, &setup, &scope)?);
+        Ok(output)
+    }
+
     fn fresh(&mut self) -> String {
         self.serial += 1;
         format!("temporary_{}", self.serial)
@@ -1026,19 +1062,33 @@ impl Backend<'_> {
     }
 
     fn expr(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<String> {
-        let value = self.expr_inner(expr, scope).map_err(|mut error| {
+        let value = self.expr_inner(expr, scope).or_else(|mut error| {
             if error.origin.is_none() {
                 error.origin = Some(core_expr_origin(expr).clone());
             }
             if error.module.is_none() {
                 error.module = Some(self.owner.to_owned());
             }
-            error
+            if let Some(diagnostics) = &mut self.diagnostics {
+                diagnostics.push(error);
+                // Diagnostic checks discard this placeholder after collecting source errors.
+                Ok("V::Unit".into())
+            } else {
+                Err(error)
+            }
         })?;
         Ok(self.located_expr(expr, value, scope))
     }
 
     fn expr_inner(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<String> {
+        // Operator chains must not retain the other expression forms' stack frame.
+        match expr {
+            CoreExpr::Binary { .. } => self.binary_expression(expr, scope),
+            _ => self.non_binary_expression(expr, scope),
+        }
+    }
+
+    fn non_binary_expression(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<String> {
         Ok(match expr {
             CoreExpr::Unit { .. } => "V::Unit".into(),
             CoreExpr::Integer { value, .. } => {
@@ -1253,180 +1303,6 @@ impl Backend<'_> {
                 quoted(field)
             ),
             CoreExpr::Record { items, origin, .. } => self.record(items, origin, scope)?,
-            CoreExpr::Binary {
-                operator,
-                left,
-                right,
-                evidence,
-                type_ref,
-                ..
-            } => {
-                if matches!(operator.as_str(), ".." | "..=") {
-                    return self.range_expression(
-                        operator,
-                        [left, right],
-                        evidence,
-                        type_ref,
-                        scope,
-                    );
-                }
-                if operator == ":" {
-                    if !evidence.is_empty() || lists::list_element(type_ref).is_none() {
-                        return Err(
-                            "Rust backend: cons requires canonical List type and no evidence"
-                                .into(),
-                        );
-                    }
-                    self.capabilities.insert("list".into());
-                    return Ok(format!(
-                        "V::list_cons({}, {})",
-                        self.expr(left, scope)?,
-                        self.expr(right, scope)?
-                    ));
-                }
-                if self.program_wasm_library && operator == "**" {
-                    return Err(
-                        "program WASM: native power requires a target-specific arithmetic proof"
-                            .into(),
-                    );
-                }
-                self.validate_opaque_numeric_operator_provider(
-                    operator,
-                    [left, right],
-                    evidence,
-                    scope,
-                )?;
-                if operators::big_int_binary(evidence, operator) {
-                    self.validate_primitive_operator_binary(
-                        operator,
-                        [left, right],
-                        evidence,
-                        type_ref,
-                        scope,
-                    )?;
-                    self.capabilities.insert("big-int".into());
-                    return Ok(format!(
-                        "native_big_int_arithmetic({}, {}, {})",
-                        quoted(operator),
-                        self.expr(left, scope)?,
-                        self.expr(right, scope)?
-                    ));
-                }
-                if operators::decimal_binary(evidence, operator) {
-                    self.validate_primitive_operator_binary(
-                        operator,
-                        [left, right],
-                        evidence,
-                        type_ref,
-                        scope,
-                    )?;
-                    self.capabilities.insert("decimal".into());
-                    return Ok(format!(
-                        "native_decimal_arithmetic({}, {}, {})",
-                        quoted(operator),
-                        self.expr(left, scope)?,
-                        self.expr(right, scope)?
-                    ));
-                }
-                if floats::float_binary(evidence, operator) {
-                    if operator == "**" {
-                        self.validate_primitive_operator_binary(
-                            operator,
-                            [left, right],
-                            evidence,
-                            type_ref,
-                            scope,
-                        )?;
-                    }
-                    self.capabilities.insert("float".into());
-                    return Ok(format!(
-                        "native_float_binary({}, {}, {})",
-                        quoted(operator),
-                        self.expr(left, scope)?,
-                        self.expr(right, scope)?
-                    ));
-                }
-                if let Some(method) = dictionary_arithmetic(evidence, operator) {
-                    let dictionary = self.evidence(evidence, scope)?;
-                    let function = self.fresh();
-                    // A selected user method can execute after its first
-                    // source argument, before the second argument is evaluated.
-                    return Ok(format!("{{ let {function} = ({dictionary}).remove(0).field({}).apply({}); {function}.apply({}) }}", quoted(method), self.expr(left, scope)?, self.expr(right, scope)?));
-                }
-                if equality::is_equality(operator) {
-                    return self.equality_binary(operator, left, right, evidence, type_ref, scope);
-                }
-                if let Some(value) =
-                    self.descending_int_binary(operator, left, right, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if characters::character_comparison(evidence, operator) {
-                    return Ok(format!(
-                        "native_char_binary({}, {}, {})",
-                        quoted(operator),
-                        self.expr(left, scope)?,
-                        self.expr(right, scope)?
-                    ));
-                }
-                if let Some(value) = self
-                    .decimal_comparison_binary(operator, left, right, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) = self
-                    .big_int_comparison_binary(operator, left, right, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if let Some(value) = self
-                    .standard_comparison_binary(operator, left, right, evidence, type_ref, scope)?
-                {
-                    return Ok(value);
-                }
-                if characters::dictionary_comparison(evidence, operator) {
-                    let dictionary = self.evidence(evidence, scope)?;
-                    let a = self.fresh();
-                    let b = self.fresh();
-                    let d = self.fresh();
-                    if comparisons::is_comparison(operator) {
-                        let stage = self.fresh();
-                        return Ok(format!("{{ let {stage} = ({dictionary}).remove(0).field(\"compare\").apply({}); native_ordering_comparison({}, {stage}.apply({})) }}", self.expr(left, scope)?, quoted(operator), self.expr(right, scope)?));
-                    }
-                    return Ok(format!(
-                        "{{ let {d} = ({dictionary}).remove(0); let {a} = {}; let {b} = {}; native_dictionary_comparison({}, {d}, {a}, {b}) }}",
-                        self.expr(left, scope)?,
-                        self.expr(right, scope)?,
-                        quoted(operator)
-                    ));
-                }
-                if matches!(operator.as_str(), "/" | "%" | "**") {
-                    self.validate_primitive_operator_binary(
-                        operator,
-                        [left, right],
-                        evidence,
-                        type_ref,
-                        scope,
-                    )?;
-                    return Ok({
-                        let left = self.expr(left, scope)?;
-                        let right = self.expr(right, scope)?;
-                        self.located_binary(expr, operator, left, right)
-                    });
-                }
-                let standard = evidence.iter().all(|e| matches!(&e.evidence, CoreInstanceEvidence::Standard { identity, .. } if matches!(identity.as_str(), "std/int::Add" | "std/int::Sub" | "std/int::Mul" | "std/int::Eq" | "std/int::Ord" | "std/string::Add")));
-                if !standard || !matches!(operator.as_str(), "+" | "-" | "*" | "==" | "<" | "<=") {
-                    return Err(format!(
-                        "Rust backend: unsupported operator/evidence {operator} {evidence:?}"
-                    )
-                    .into());
-                }
-                {
-                    let left = self.expr(left, scope)?;
-                    let right = self.expr(right, scope)?;
-                    self.located_binary(expr, operator, left, right)
-                }
-            }
             CoreExpr::Unary {
                 operator,
                 operand,
