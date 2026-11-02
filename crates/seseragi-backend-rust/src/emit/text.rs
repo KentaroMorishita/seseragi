@@ -21,7 +21,37 @@ fn text_signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         name: "std/bytes::Bytes".into(),
         arguments: vec![],
     };
+    let scalar = CoreType::Named {
+        name: "std/prelude::Char".into(),
+        arguments: vec![],
+    };
+    let form = CoreType::Named {
+        name: "std/text/unicode::NormalizationForm".into(),
+        arguments: vec![],
+    };
     match name {
+        "std/text/unicode::version" => Some((
+            vec![CoreType::Named {
+                name: "std/prelude::Unit".into(),
+                arguments: vec![],
+            }],
+            string,
+        )),
+        "std/text/unicode::normalize" => Some((vec![form, string.clone()], string)),
+        "std/text/unicode::isNormalized" => Some((vec![form, string], boolean)),
+        "std/text/unicode::generalCategory" => Some((
+            vec![scalar],
+            CoreType::Named {
+                name: "std/text/unicode::UnicodeGeneralCategory".into(),
+                arguments: vec![],
+            },
+        )),
+        "std/text/unicode::simpleCaseFold" => Some((vec![scalar.clone()], scalar)),
+        "std/text/unicode::fullCaseFold" => Some((vec![string.clone()], string)),
+        "std/text/unicode::isAlphabetic"
+        | "std/text/unicode::isWhitespace"
+        | "std/text/unicode::isDecimalDigit"
+        | "std/text/unicode::isMark" => Some((vec![scalar], boolean)),
         "std/text::encodeUtf8" => Some((vec![string], bytes)),
         "std/text::decodeUtf8" => Some((
             vec![bytes],

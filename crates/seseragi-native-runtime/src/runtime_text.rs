@@ -1,4 +1,7 @@
 pub fn native_text_operation(name: &str, arguments: Vec<V>) -> V {
+    if name.starts_with("std/text/unicode::") {
+        return native_unicode_operation(name, arguments);
+    }
     match name {
         "std/text::encodeUtf8" => {
             assert_eq!(arguments.len(), 1, "Rust ABI: text.encodeUtf8 arity");

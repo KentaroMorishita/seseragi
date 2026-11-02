@@ -161,7 +161,7 @@ impl Backend<'_> {
                 if let [selected] = evidence.as_slice() {
                     if self.validate_standard_error_evidence(selected, scope)? {
                         if arguments.len()
-                            > if selected.constraint.name == "Eq" {
+                            > if matches!(selected.constraint.name.as_str(), "Eq" | "Ord") {
                                 2
                             } else {
                                 1
