@@ -1,0 +1,171 @@
+import * as regex from "std/regex"
+import { RegexOptions } from "std/regex"
+import * as maps from "std/map"
+import * as text from "std/text"
+import * as effects from "std/effect"
+
+fn keep<A> value:A -> A = value
+fn span value:regex.RegexSpan -> String = show value.start + ".." + show value.end
+fn capture value:Maybe<regex.RegexCapture> -> String = match value {
+  Nothing -> "Nothing"
+  Just found -> span found.span + ":" + debug found.text
+}
+fn named value:(String,Maybe<regex.RegexCapture>) -> String = match value {
+  (name, found) -> debug name + "=" + capture found
+}
+fn found value:Maybe<regex.RegexMatch> -> String = match value {
+  Nothing -> "Nothing"
+  Just matched -> span matched.span + ":" + debug matched.text
+    + ":[" + text.join "," (map capture matched.captures)
+    + "]:{" + text.join "," (map named (maps.entries matched.named)) + "}"
+}
+fn inspect options:regex.RegexOptions -> pattern:String -> input:String -> String =
+  match regex.compileWith options pattern {
+    Left error -> show error
+    Right compiled -> show (regex.isMatch compiled input) + ":" + found (regex.find compiled input)
+  }
+fn problem pattern:String -> String = match regex.compile pattern {
+  Left error -> show error
+  Right _ -> "Right"
+}
+fn compiler -> String -> Either<regex.RegexCompileError,regex.Regex> = regex.compile
+effect fn say value:String -> Unit with Console fails String = println value |> effects.mapError show
+
+pub effect fn main = do {
+  let options = keep (regex.defaultOptions ())
+  say (show options.caseInsensitive + ":" + show options.multiline + ":" + show options.dotMatchesNewline)
+  let run = keep (inspect options)
+  say (run "" "")
+  say (run "" "雫🙂")
+  say (run "a" "bbb")
+  say (run "a|aa" "xaa")
+  say (run "aa|a" "xaa")
+  say (run "a{2,4}" "xaaaaa")
+  say (run "a{2,}" "xaaaa")
+  say (run "a{0}" "a")
+  say (run "a{0,0}" "a")
+  say (run "a{2}" "a")
+  say (run "(?:ab)?c+" "zabccc")
+  say (run "(a?)*" "a")
+  say (run "(a?)*" "")
+  say (run "(a?)+" "")
+  say (run "(a?){1000000000}" "")
+  say (run "(){9007199254740991}" "")
+  say (run "((a)|b)+" "ab")
+  say (run "(a(b)?)+" "aba")
+  say (run "(?<word>\\w+)(?:-(a+))?" "👍 é́-aa")
+  say (run "(?<名前>雫)?(?<tail>🙂)?" "雫")
+  say (run "(?<z>b)?(?<a>a)?(?<m>c)?" "a")
+  say (run "(a)|(b)" "b")
+  say (run "(?<empty>)(x)?" "🙂")
+  say (run "^\\w+$" "漢́٣_‿")
+  say (run "^\\d+$" "٣")
+  say (run "^\\p{Decimal_Number}+$" "٣")
+  say (run "^\\s$" "\u{85}")
+  say (run "^\\s$" "\u{feff}")
+  say (run "[a-c-]+" "-abc")
+  say (run "[^a-c]+" "ab🙂雫")
+  say (run "[\\d\\s]+" "٣ 123")
+  say (run "[^\\D]+" "a123")
+  say (run "^[\\b]$" "\u{8}")
+  say (run "\\A雫.\\z" "雫🙂")
+  say (run "\\u{1F642}" "雫🙂")
+  say (run "^.$" "\n")
+  say (run "^.$" "\r")
+  say (run "^.$" "\u{2028}")
+  say (run "^.$" "\u{2029}")
+  say (run "^b$" "a\nb\n")
+  let folded:regex.RegexOptions = RegexOptions {caseInsensitive:True,multiline:False,dotMatchesNewline:False}
+  let fold = inspect folded
+  say (fold "^[A-ZΣ]+$" "aςσ")
+  say (fold "^[K]+$" "kKK")
+  say (fold "^[S]+$" "ſsS")
+  say (fold "^ß$" "ẞ")
+  say (fold "^ß$" "ss")
+  say (fold "^I$" "İ")
+  say (fold "^\\P{Uppercase_Letter}+$" "a")
+  say (fold "^\\P{Uppercase_Letter}+$" "1")
+  say (fold "^[^A-Z]+$" "a")
+  let multiline:regex.RegexOptions = RegexOptions {caseInsensitive:False,multiline:True,dotMatchesNewline:False}
+  let lines = inspect multiline
+  say (lines "^b$" "a\r\nb\n")
+  say (lines "^$" "\r\n")
+  say (lines "^\\n" "\r\n")
+  say (lines "\\r$" "\r\n")
+  say (lines "^b$" "a\u{2028}b\u{2029}")
+  say (lines "\\Ab\\z" "a\nb")
+  let dotAll:regex.RegexOptions = RegexOptions {caseInsensitive:False,multiline:False,dotMatchesNewline:True}
+  say (inspect dotAll "^.$" "\n")
+  let escaped = keep regex.escape
+  let nul = "\u{0}"
+  let literal = "a.^$|?*+()[]{}\\\n\r\t" + nul + "1👍"
+  say (debug (escaped literal))
+  let compile = keep (compiler ())
+  match compile ("\\A" + escaped literal + "\\z") {
+    Left error -> say (show error)
+    Right compiled -> do {
+      let matches = keep (regex.isMatch compiled)
+      let search = keep (regex.find compiled)
+      say (show (matches literal))
+      say (found (search literal))
+      say (found (search "different"))
+    }
+  }
+  say (problem "é[")
+  say (problem "雫🙂(")
+  say (problem "(?<名前>a)(?<名前>b)")
+  say (problem "(a)\\1")
+  say (problem "\\01")
+  say (problem "\\k<name>")
+  say (problem "a+?")
+  say (problem "a++")
+  say (problem "a**")
+  say (problem "*a")
+  say (problem "^{2}")
+  say (problem "\\A+")
+  say (problem "a{3,2}")
+  say (problem "a{9007199254740992}")
+  say (problem "a{1,9007199254740992}")
+  say (problem "a{,2}")
+  say (problem "a{1")
+  say (problem "a{1,x}")
+  say (problem "a{2}{3}")
+  say (problem "\\p{Unknown}")
+  say (problem "\\p{Lu")
+  say (problem "\\pLu")
+  say (problem "\\q")
+  say (problem "\\")
+  say (problem "\\u1234")
+  say (problem "\\u{}")
+  say (problem "\\u{d800}")
+  say (problem "\\u{110000}")
+  say (problem "\\u{0000000}")
+  say (problem "\\u{12")
+  say (problem "\\u{xyz}")
+  say (problem "[]")
+  say (problem "[^]")
+  say (problem "[z-a]")
+  say (problem "[\\d-a]")
+  say (problem "[a-\\w]")
+  say (problem "[a-")
+  say (problem "[\\A]")
+  say (problem "[\\B]")
+  say (problem "é]")
+  say (problem "雫🙂)")
+  say (problem "(?<1>a)")
+  say (problem "(?<>a)")
+  say (problem "(?<a-b>a)")
+  say (problem "(?<name")
+  say (problem "(?=a)")
+  say (problem "(?!a)")
+  say (problem "(?<=a)")
+  say (problem "(?<!a)")
+  say (problem "(?>a)")
+  say (problem "(?(a)b)")
+  say (problem "(?R)")
+  say (problem "(?1)")
+  say (problem "(?i:a)")
+  say (problem "\\b")
+  say (problem "\\B")
+  say (run "^(a|aa)*b$" (text.join "" ["a" | n <- 0..40000] + "c"))
+}

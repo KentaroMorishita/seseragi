@@ -64,6 +64,7 @@ mod prelude_effects;
 mod process;
 mod random;
 mod range;
+mod regex;
 mod returned_calls;
 mod scalar;
 mod sequence_operations;

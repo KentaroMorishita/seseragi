@@ -97,6 +97,7 @@ impl V {
             Self::BigInt(v) => v.id(),
             Self::Decimal(v) => v.id(),
             Self::DecimalContext(v) => v.id(),
+            Self::Regex(v) => v.id(),
             Self::Bytes(v) => v.id(),
             Self::File(v) => v.id(),
             Self::PathResource(v) => v.id(),
