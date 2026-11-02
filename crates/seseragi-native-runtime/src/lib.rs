@@ -61,5 +61,6 @@ include!("runtime_effect_defect.rs");
 include!("runtime_scheduler.rs");
 include!("runtime_path.rs");
 include!("runtime_filesystem.rs");
+include!("runtime_filesystem_chunks.rs");
 include!("runtime_host.rs");
 include!("runtime_clock.rs");

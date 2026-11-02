@@ -441,9 +441,10 @@ impl Backend<'_> {
         }
         if !self.program_wasm_library {
             match name.as_str() {
-                "std/fs::FileType" | "std/fs::FileMetadata" | "std/time::Instant" => {
-                    return Some(vec![])
-                }
+                "std/fs::FileType"
+                | "std/fs::FileMetadata"
+                | "std/time::Instant"
+                | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"
                 | "std/signal::MutableSignal"
                 | "std/prelude::Sum"

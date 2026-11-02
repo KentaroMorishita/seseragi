@@ -51,6 +51,25 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         ),
         "std/fs::canonicalize" => (vec![path()], effect(ty("std/fs::FileSystemError"), path())),
         "std/fs::readTextUtf8" => (vec![path()], effect(ty("std/fs::FileTextError"), string())),
+        "std/fs::readBytes" => (
+            vec![path()],
+            effect(ty("std/fs::FileSystemError"), ty("std/bytes::Bytes")),
+        ),
+        "std/fs::readChunks" => (
+            vec![ty("std/stream::BufferCapacity"), path()],
+            applied(
+                "std/stream::Stream",
+                vec![
+                    filesystem_environment(),
+                    ty("std/fs::FileSystemError"),
+                    ty("std/bytes::Bytes"),
+                ],
+            ),
+        ),
+        "std/fs::writeBytes" => (
+            vec![ty("std/fs::WriteMode"), ty("std/bytes::Bytes"), path()],
+            effect(ty("std/fs::FileSystemError"), unit()),
+        ),
         "std/fs::writeTextUtf8" => (
             vec![ty("std/fs::WriteMode"), string(), path()],
             effect(ty("std/fs::FileSystemError"), unit()),
@@ -61,19 +80,57 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
 fn effect(failure: CoreType, success: CoreType) -> CoreType {
     applied(
         "std/prelude::Effect",
-        vec![
+        vec![filesystem_environment(), failure, success],
+    )
+}
+fn filesystem_environment() -> CoreType {
+    CoreType::Record {
+        closed: true,
+        fields: vec![seseragi_lowering::CoreRecordField {
+            name: "fileSystem".into(),
+            optional: false,
+            type_ref: ty("std/fs::FileSystem"),
+        }],
+    }
+}
+fn merge_requirements(environment: CoreType) -> Result<CoreType> {
+    let mut operands = match environment {
+        CoreType::RequirementMerge { operands } => operands,
+        environment => vec![environment],
+    };
+    operands.push(filesystem_environment());
+    let mut fields = BTreeMap::new();
+    let mut other = Vec::new();
+    for operand in operands {
+        match operand {
             CoreType::Record {
                 closed: true,
-                fields: vec![seseragi_lowering::CoreRecordField {
-                    name: "fileSystem".into(),
-                    optional: false,
-                    type_ref: ty("std/fs::FileSystem"),
-                }],
-            },
-            failure,
-            success,
-        ],
-    )
+                fields: row,
+            } => {
+                for field in row {
+                    if let Some(previous) = fields.insert(field.name.clone(), field.clone()) {
+                        if previous != field {
+                            return Err(
+                                "Rust backend: conflicting writeChunks filesystem requirement"
+                                    .into(),
+                            );
+                        }
+                    }
+                }
+            }
+            operand => other.push(operand),
+        }
+    }
+    let row = CoreType::Record {
+        closed: true,
+        fields: fields.into_values().collect(),
+    };
+    if other.is_empty() {
+        Ok(row)
+    } else {
+        other.push(row);
+        Ok(CoreType::RequirementMerge { operands: other })
+    }
 }
 fn arrow(parameters: &[CoreType], result: CoreType) -> CoreType {
     parameters
@@ -105,6 +162,68 @@ pub(super) fn display_contract(identity: &str) -> Option<(&'static str, &'static
 }
 
 impl Backend<'_> {
+    fn filesystem_signature(
+        &self,
+        name: &str,
+        full: &CoreType,
+        scope: &Scope,
+    ) -> Result<Option<(Vec<CoreType>, CoreType)>> {
+        if name != "std/fs::writeChunks" {
+            return Ok(signature(name));
+        }
+        if scope.has_unproven_type_scope() {
+            return Err("Rust backend: unproven filesystem type scope".into());
+        }
+        let mut remaining = full;
+        let mut parameters = Vec::new();
+        for _ in 0..3 {
+            let CoreType::Function { parameter, result } = remaining else {
+                return Err("Rust backend: missing writeChunks source stage".into());
+            };
+            parameters.push(*parameter.clone());
+            remaining = result;
+        }
+        if self.declared_method_type_kind(&parameters[1], scope) != Some(0) {
+            return Err("Rust backend: unproven writeChunks Stream kinds".into());
+        }
+        let parameters = parameters
+            .iter()
+            .map(|parameter| self.local_canonical_type(parameter, scope))
+            .collect::<Result<Vec<_>>>()?;
+        let CoreType::Named { name, arguments } = &parameters[1] else {
+            return Err("Rust backend: writeChunks requires a canonical Stream".into());
+        };
+        if name != "std/stream::Stream" || arguments.len() != 3 {
+            return Err("Rust backend: unproven writeChunks Stream type".into());
+        }
+        let result = applied(
+            "std/prelude::Effect",
+            vec![
+                merge_requirements(arguments[0].clone())?,
+                applied(
+                    "std/prelude::Either",
+                    vec![arguments[1].clone(), ty("std/fs::FileSystemError")],
+                ),
+                ty("std/prelude::Unit"),
+            ],
+        );
+        Ok(Some((
+            vec![
+                ty("std/fs::WriteMode"),
+                applied(
+                    "std/stream::Stream",
+                    vec![
+                        arguments[0].clone(),
+                        arguments[1].clone(),
+                        ty("std/bytes::Bytes"),
+                    ],
+                ),
+                ty("std/path::Path"),
+            ],
+            result,
+        )))
+    }
+
     pub(super) fn filesystem_display_dictionary(
         &mut self,
         selected: &CoreCallEvidence,
@@ -143,7 +262,7 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<Option<String>> {
-        let Some((parameters, result)) = signature(name) else {
+        let Some((parameters, result)) = self.filesystem_signature(name, type_ref, scope)? else {
             return Ok(None);
         };
         if scope.contains(name) {
@@ -225,13 +344,22 @@ impl Backend<'_> {
             ),
             _ => return Ok(None),
         };
-        if scope.contains(name) || signature(name).is_none() {
+        if scope.contains(name) || (name != "std/fs::writeChunks" && signature(name).is_none()) {
             return Ok(None);
         }
         if !valid {
             return Err("Rust backend: unproven native filesystem call evidence".into());
         }
-        let (parameters, expected) = signature(name).unwrap();
+        let supplied = arguments
+            .iter()
+            .map(|argument| {
+                local::method_argument_type(argument)
+                    .ok_or_else(|| "Rust backend: missing filesystem argument type".into())
+            })
+            .collect::<Result<Vec<_>>>()?;
+        let (parameters, expected) = self
+            .filesystem_signature(name, &arrow(&supplied, result.clone()), scope)?
+            .unwrap();
         if arguments.len() > parameters.len() {
             return Err("Rust backend: native filesystem source arity mismatch".into());
         }
@@ -247,7 +375,7 @@ impl Backend<'_> {
         {
             return Err("Rust backend: native filesystem canonical result mismatch".into());
         }
-        let reference_type = arrow(&parameters, expected);
+        let reference_type = arrow(&supplied, result);
         let function = self
             .filesystem_reference(name, &[], &reference_type, scope)?
             .unwrap();

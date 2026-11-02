@@ -4,6 +4,9 @@
 enum NativeFileOperation {
     ReadText,
     WriteText,
+    ReadBytes,
+    WriteBytes,
+    Session(NativeFileAction),
     Exists,
     Metadata,
     SymlinkMetadata,
@@ -21,6 +24,14 @@ enum NativeFileRequest {
     Inspect {
         operation: NativeFileOperation,
         path: String,
+    },
+    Session {
+        file: std::sync::Arc<std::sync::Mutex<Option<std::fs::File>>>,
+        action: NativeFileAction,
+        path: String,
+        mode: Option<&'static str>,
+        bytes: Vec<u8>,
+        limit: usize,
     },
 }
 enum NativeFilePayload {
@@ -61,10 +72,10 @@ impl Drop for NativeFileCompletion {
 impl NativeFileOperation {
     fn request(self, captures: &[V]) -> NativeFileRequest {
         match self {
-            Self::ReadText => NativeFileRequest::Read {
+            Self::ReadText | Self::ReadBytes => NativeFileRequest::Read {
                 path: native_path_text(&captures[0]).into(),
             },
-            Self::WriteText => {
+            Self::WriteText | Self::WriteBytes => {
                 let V::Adt(mode) = &captures[0] else {
                     panic!("Rust ABI: expected WriteMode")
                 };
@@ -77,7 +88,39 @@ impl NativeFileOperation {
                 NativeFileRequest::Write {
                     path: native_path_text(&captures[2]).into(),
                     mode,
-                    bytes: native_text(&captures[1]).as_bytes().to_vec(),
+                    bytes: if matches!(self, Self::WriteBytes) {
+                        native_bytes(&captures[1]).to_vec()
+                    } else {
+                        native_text(&captures[1]).as_bytes().to_vec()
+                    },
+                }
+            }
+            Self::Session(action) => {
+                let V::File(file) = &captures[0] else {
+                    panic!("Rust ABI: expected file resource")
+                };
+                NativeFileRequest::Session {
+                    file: file.get().0.clone(),
+                    action,
+                    path: native_path_text(&captures[1]).into(),
+                    mode: if matches!(action, NativeFileAction::OpenWrite) {
+                        Some(native_write_mode(&captures[2]))
+                    } else {
+                        None
+                    },
+                    bytes: if matches!(action, NativeFileAction::Write) {
+                        native_bytes(&captures[2]).to_vec()
+                    } else {
+                        vec![]
+                    },
+                    limit: if matches!(action, NativeFileAction::Read) {
+                        let V::Int(limit) = captures[2] else {
+                            panic!("Rust ABI: expected read limit")
+                        };
+                        usize::try_from(limit).expect("positive read limit")
+                    } else {
+                        0
+                    },
                 }
             }
             Self::Exists | Self::Metadata | Self::SymlinkMetadata | Self::Canonicalize => {
@@ -95,6 +138,28 @@ impl NativeFileOperation {
                 native_file_error("std/fs::ReadFile", captures[0].clone(), error),
             ),
             Self::WriteText => native_file_error("std/fs::WriteFile", captures[2].clone(), error),
+            Self::ReadBytes => native_file_error("std/fs::ReadFile", captures[0].clone(), error),
+            Self::WriteBytes => native_file_error(
+                "std/fs::WriteFile",
+                captures[2].clone(),
+                if error.kind() == std::io::ErrorKind::WriteZero {
+                    native_file_provider_error("filesystem write made no progress")
+                } else {
+                    error
+                },
+            ),
+            Self::Session(action) => native_file_error(
+                if matches!(
+                    action,
+                    NativeFileAction::OpenWrite | NativeFileAction::Write | NativeFileAction::Flush
+                ) {
+                    "std/fs::WriteFile"
+                } else {
+                    "std/fs::ReadFile"
+                },
+                captures[1].clone(),
+                error,
+            ),
             Self::Exists | Self::Metadata | Self::SymlinkMetadata => {
                 native_file_error("std/fs::ReadMetadata", captures[0].clone(), error)
             }
@@ -147,6 +212,16 @@ impl NativeFileOperation {
                 notes.push(native_file_close_defect(close));
                 Err(primary)
             }
+            (Ok(_), Err(NativeFileFault::Io(error))) if matches!(self, Self::WriteBytes) => {
+                return (
+                    Err(NativeExit::failure(native_file_error(
+                        "std/fs::ReadFile",
+                        captures[2].clone(),
+                        error,
+                    ))),
+                    notes,
+                );
+            }
             (Ok(_), Err(close)) => Err(close),
             (result, Ok(())) => result,
         };
@@ -155,6 +230,17 @@ impl NativeFileOperation {
                 native_decode_text(bytes)
             }
             Ok(NativeFilePayload::Unit) if matches!(self, Self::WriteText) => Ok(V::Unit),
+            Ok(NativeFilePayload::Bytes(bytes))
+                if matches!(
+                    self,
+                    Self::ReadBytes | Self::Session(NativeFileAction::Read)
+                ) =>
+            {
+                Ok(V::Bytes(Shared::new(bytes)))
+            }
+            Ok(NativeFilePayload::Unit) if matches!(self, Self::WriteBytes | Self::Session(_)) => {
+                Ok(V::Unit)
+            }
             Ok(NativeFilePayload::Exists(found)) if matches!(self, Self::Exists) => {
                 Ok(V::Bool(found))
             }
@@ -200,7 +286,11 @@ impl NativeFileTask {
             .name("seseragi-file-io".into())
             .spawn(move || {
                 let mut completion = completion_owner;
-                let reply = native_run_file_request(&mut NativeStdFileHost, request, &cancellation);
+                let reply = if matches!(request, NativeFileRequest::Session { .. }) {
+                    native_run_file_session(request, &cancellation)
+                } else {
+                    native_run_file_request(&mut NativeStdFileHost, request, &cancellation)
+                };
                 // Handles are closed before publishing. The runtime always joins
                 // this worker before committing the result or scope cancellation.
                 let _ = completion
@@ -401,6 +491,85 @@ mod host_tests {
             waiting,
             resume,
         )
+    }
+    #[test]
+    fn chunk_sessions_drain_pending_host_calls_and_close_once_after_cancellation() {
+        for stage in ["open", "read", "write", "flush", "close"] {
+            let scratch = Scratch::new();
+            let (mut host, waiting, resume) = host(Some(stage));
+            let events = host.events.clone();
+            let writing = matches!(stage, "write" | "flush");
+            let cancelled = Arc::new(AtomicBool::new(false));
+            let cancellation = cancelled.clone();
+            let path = scratch.path();
+            let mut worker = Joined(Some(std::thread::spawn(move || {
+                let mut handle = None;
+                let actions = if writing {
+                    vec![
+                        NativeFileAction::OpenWrite,
+                        NativeFileAction::Write,
+                        NativeFileAction::Flush,
+                        NativeFileAction::Close,
+                    ]
+                } else {
+                    vec![
+                        NativeFileAction::OpenRead,
+                        NativeFileAction::Read,
+                        NativeFileAction::Close,
+                    ]
+                };
+                for action in actions {
+                    if native_run_file_action(
+                        &mut host,
+                        &mut handle,
+                        action,
+                        &path,
+                        writing.then_some("Replace"),
+                        b"chunk",
+                        3,
+                        &cancellation,
+                    )
+                    .is_err()
+                    {
+                        break;
+                    }
+                }
+                let masked = AtomicBool::new(false);
+                for _ in 0..2 {
+                    assert!(native_run_file_action(
+                        &mut host,
+                        &mut handle,
+                        NativeFileAction::Close,
+                        &path,
+                        None,
+                        &[],
+                        0,
+                        &masked
+                    )
+                    .is_ok());
+                }
+                assert!(handle.is_none());
+            })));
+            let pending = waiting.recv_timeout(Duration::from_secs(5));
+            cancelled.store(true, Ordering::Release);
+            let _ = resume.send(());
+            worker.take();
+            assert!(pending.is_ok(), "{stage}");
+            let events = events.lock().unwrap();
+            assert_eq!(
+                events.iter().filter(|event| **event == "close").count(),
+                1,
+                "{stage}"
+            );
+            if stage == "open" {
+                assert!(!events.contains(&"read"));
+            }
+            if stage == "write" {
+                assert!(!events.contains(&"flush"));
+            }
+            drop(std::fs::File::open(scratch.path()).unwrap());
+            std::fs::remove_file(scratch.path()).unwrap();
+        }
     }
     #[test]
     fn owned_file_workers_drain_each_pending_stage_and_close_once_on_cancellation() {

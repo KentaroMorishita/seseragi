@@ -239,7 +239,7 @@ fn native_run_file_request(
         let (path, mode) = match &request {
             NativeFileRequest::Read { path } => (path, None),
             NativeFileRequest::Write { path, mode, .. } => (path, Some(*mode)),
-            NativeFileRequest::Inspect { .. } => unreachable!(),
+            NativeFileRequest::Inspect { .. } | NativeFileRequest::Session { .. } => unreachable!(),
         };
         guard.handle = Some(guard.host.open(path, mode).map_err(NativeFileFault::Io)?);
         native_file_checkpoint(cancelled)?;
@@ -297,7 +297,7 @@ fn native_run_file_request(
                     .map_err(NativeFileFault::Io)?;
                 Ok(NativeFilePayload::Unit)
             }
-            NativeFileRequest::Inspect { .. } => unreachable!(),
+            NativeFileRequest::Inspect { .. } | NativeFileRequest::Session { .. } => unreachable!(),
         }
     }))
     .unwrap_or_else(|error| Err(NativeFileFault::Defect(native_panic_message(error))));
@@ -358,6 +358,12 @@ fn native_write_file(
     native_test_file_result(reply).map(|_| ())
 }
 fn native_file_error_code(error: &std::io::Error) -> &'static str {
+    if error
+        .get_ref()
+        .is_some_and(|error| error.is::<NativeFileProviderError>())
+    {
+        return "FILESYSTEM_ERROR";
+    }
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     if let Some(code) = error.raw_os_error() {
         let common = match code {
@@ -511,6 +517,20 @@ pub fn native_filesystem_operation(name: &'static str, arguments: Vec<V>) -> V {
         "std/fs::writeTextUtf8" => V::effect(
             Instruction::FileSystem(NativeFileOperation::WriteText),
             arguments,
+        ),
+        "std/fs::readBytes" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::ReadBytes),
+            arguments,
+        ),
+        "std/fs::writeBytes" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::WriteBytes),
+            arguments,
+        ),
+        "std/fs::readChunks" => native_file_read_chunks(arguments[0].clone(), arguments[1].clone()),
+        "std/fs::writeChunks" => native_file_write_chunks(
+            arguments[0].clone(),
+            arguments[1].clone(),
+            arguments[2].clone(),
         ),
         _ => panic!("Rust ABI: unsupported filesystem operation"),
     }
