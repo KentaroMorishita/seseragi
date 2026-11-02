@@ -6,13 +6,24 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod model;
 mod target;
+mod type_providers;
 
 pub use model::{LinkError, LinkTargetError, LinkedDependency, LinkedImport, LinkedModule};
 pub use target::ModuleLinkTarget;
 
 pub fn link_module(
+    unlinked: UnlinkedModuleInterface,
+    targets: &BTreeMap<String, ModuleLinkTarget>,
+) -> Result<LinkedModule, Vec<LinkError>> {
+    link_module_with_type_providers(unlinked, targets, &[])
+}
+
+/// Retains public struct definitions referenced by dependency signatures.
+/// Providers supply type information without adding source import edges.
+pub fn link_module_with_type_providers(
     mut unlinked: UnlinkedModuleInterface,
     targets: &BTreeMap<String, ModuleLinkTarget>,
+    type_providers: &[seseragi_syntax::ModuleInterface],
 ) -> Result<LinkedModule, Vec<LinkError>> {
     let mut dependencies = Vec::with_capacity(unlinked.imports.len());
     let mut interface_dependencies = Vec::with_capacity(unlinked.imports.len());
@@ -132,6 +143,7 @@ pub fn link_module(
         .extend(reexported_namespaces);
     unlinked.interface.operators.extend(reexported_operators);
     unlinked.interface.dependencies = interface_dependencies;
+    type_providers::retain_struct_definitions(&mut dependencies, targets, type_providers);
     Ok(LinkedModule {
         header: unlinked.header,
         interface: unlinked.interface,
