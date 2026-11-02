@@ -1,0 +1,94 @@
+import * as rt from "std/transformer/reader"
+import * as mt from "std/transformer/maybe"
+import { ReaderT } from "std/transformer/reader"
+
+struct Box<A> { value: A }
+instance Functor<Box> {
+  fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = Box { value: f box.value }
+}
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box { value }
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = Box { value: f.value box.value }
+}
+instance Monad<Box> {
+  fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = f box.value
+}
+struct Raw<A> { value: A }
+
+fn ask<R,M<_>> -> rt.ReaderT<R,M,R> where Monad<M> = rt.ask ()
+fn asks<R,M<_>,A> f:(R -> A) -> rt.ReaderT<R,M,A> where Monad<M> = rt.asks f
+fn local<R,M<_>,A> f:(R -> R) -> value:rt.ReaderT<R,M,A> -> rt.ReaderT<R,M,A> where Monad<M> = rt.local f value
+fn lift<R,M<_>,A> value:M<A> -> rt.ReaderT<R,M,A> where Monad<M> = rt.lift value
+fn run<R,M<_>,A> environment:R -> value:rt.ReaderT<R,M,A> -> M<A> = rt.run environment value
+fn saved<R,M<_>,A> -> ((R -> R) -> rt.ReaderT<R,M,A> -> rt.ReaderT<R,M,A>) where Monad<M> = rt.local
+
+let environment:rt.ReaderT<Int,Maybe,Int> = ask ()
+let projection:rt.ReaderT<Int,Maybe,String> = asks (\n:Int -> show (n + 1))
+let changed:rt.ReaderT<Int,Maybe,Int> = local (\n:Int -> n + 10) environment
+let scoped:rt.ReaderT<Int,Maybe,(Int,Int)> = do { a <- changed; b <- environment; pure (a,b) }
+let mapped:rt.ReaderT<Int,Maybe,Int> = map (\n:Int -> n * 2) environment
+let bound:rt.ReaderT<Int,Maybe,Int> = environment >>= (\a:Int -> map (\b:Int -> a + b) environment)
+let applied:rt.ReaderT<Int,Maybe,Int> = (pure (\n:Int -> n + 3)) <*> environment
+let absent:rt.ReaderT<Int,Maybe,Int> = lift Nothing
+let skipped:rt.ReaderT<Int,Maybe,Int> = absent >>= (\n:Int -> rt.asks (\_:Int -> n / 0))
+let noFunction:rt.ReaderT<Int,Maybe,Int -> Int> = rt.lift Nothing
+let noApplied:rt.ReaderT<Int,Maybe,Int> = noFunction <*> (rt.asks (\n:Int -> n / 0))
+let askSaved:Unit -> rt.ReaderT<Int,Maybe,Int> = rt.ask
+let asksSaved:(Int -> Int) -> rt.ReaderT<Int,Maybe,Int> = rt.asks
+let localSaved:(Int -> Int) -> rt.ReaderT<Int,Maybe,Int> -> rt.ReaderT<Int,Maybe,Int> = rt.local
+let liftSaved:Maybe<Int> -> rt.ReaderT<Int,Maybe,Int> = rt.lift
+let runSaved:Int -> rt.ReaderT<Int,Maybe,Int> -> Maybe<Int> = rt.run
+let partial:rt.ReaderT<Int,Maybe,Int> -> Maybe<Int> = rt.run 5
+let partialLocal:rt.ReaderT<Int,Maybe,Int> -> rt.ReaderT<Int,Maybe,Int> = rt.local (\n:Int -> n - 2)
+let returned:(Int -> Int) -> rt.ReaderT<Int,Maybe,Int> -> rt.ReaderT<Int,Maybe,Int> = saved ()
+let functions:rt.ReaderT<Int,Maybe,Int -> Int> = rt.asks (\n:Int -> \value:Int -> n + value)
+let called = match rt.run 7 functions { Just f -> f 8; Nothing -> 0 }
+let array:rt.ReaderT<Int,Array,Int> = lift [1,2]
+let arrayAsk:rt.ReaderT<Int,Array,Int> = rt.ask ()
+let arrayWork:rt.ReaderT<Int,Array,Int> = do { n <- array; r <- arrayAsk; pure (n + r) }
+let empty:rt.ReaderT<Int,Array,Int> = lift []
+let list:rt.ReaderT<String,List,Int> = lift `[4,5]
+let failed:rt.ReaderT<Int,Either<String>,Int> = lift (Left "base failure")
+let failedWork:rt.ReaderT<Int,Either<String>,Int> = map (\n:Int -> n / 0) failed
+let boxAsk:rt.ReaderT<Int,Box,Int> = rt.ask ()
+let box:rt.ReaderT<Int,Box,Int> = do { n <- boxAsk; pure (n + 1) }
+let nestedAsk:rt.ReaderT<Int,rt.ReaderT<Int,Maybe>,Int> = rt.ask ()
+let nestedLift:rt.ReaderT<Int,rt.ReaderT<Int,Maybe>,Int> = rt.lift environment
+let nested:rt.ReaderT<Int,rt.ReaderT<Int,Maybe>,Int> = do { outer <- nestedAsk; inner <- nestedLift; pure (outer + inner) }
+let maybeNested:rt.ReaderT<Int,mt.MaybeT<Maybe>,Int> = rt.lift (mt.fromMaybe (Just 8))
+let raw:rt.ReaderT<Int,Raw,Int> = ReaderT { run: \n:Int -> Raw { value: n + 1 } }
+let unitEnvironment:rt.ReaderT<Unit,Maybe,Unit> = rt.ask ()
+let text:rt.ReaderT<String,Maybe,String> = rt.local (\s:String -> s + "🙂") (rt.ask ())
+let record:rt.ReaderT<{ n:Int },Maybe,Int> = rt.asks (\r:{ n:Int } -> r.n)
+
+pub effect fn main = do {
+  println (show (run 2 environment))
+  println (show (run 2 projection))
+  println (show (run 2 scoped))
+  println (show (run 5 scoped))
+  println (show (run 2 mapped))
+  println (show (run 2 bound))
+  println (show (run 2 applied))
+  println (show (run 0 skipped))
+  println (show (run 0 noApplied))
+  println (show (runSaved 3 (askSaved ())))
+  println (show (partial (asksSaved (\n:Int -> n + 1))))
+  println (show (partial (localSaved (\n:Int -> n + 2) environment)))
+  println (show (partial (partialLocal environment)))
+  println (show (partial (returned (\n:Int -> n + 4) environment)))
+  println (show (partial (liftSaved (Just 9))))
+  println (show called)
+  println (show (run 10 arrayWork))
+  println (show (run 0 empty))
+  println (show (run "" list))
+  println (show (run 0 failedWork))
+  println (show (run 6 box).value)
+  println (show (run 7 (run 5 nested)))
+  println (show (mt.run (run 0 maybeNested)))
+  println (show (run 9 raw).value)
+  println (show (run () unitEnvironment))
+  println (show (run "雪" text))
+  println (show (run "" text))
+  println (show (run { n: -9007199254740991 } record))
+  println (show (run 9007199254740991 environment))
+}

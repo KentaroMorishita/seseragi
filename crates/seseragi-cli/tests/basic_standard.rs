@@ -720,6 +720,190 @@ fn basic_non_empty_list_source_and_both_reducer_stage_defects_match_ts_and_relea
 }
 
 #[test]
+fn basic_reader_transformer_apis_and_instances_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/reader-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/reader-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_reader_transformer_effects_keep_cold_runs_local_scope_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/reader-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/reader-transformer-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_reader_transformer_imported_opaque_environment_and_monad_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/reader-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as rt from "std/transformer/reader"
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+pub alias Work<A> = rt.ReaderT<Value,Box,A>
+pub fn value -> Value = Value 7
+pub fn bump value:Value -> Value = match value { Value n -> Value (n + 1) }
+pub fn render value:Value -> String = match value { Value n -> show n }
+pub fn savedAsk -> (Unit -> Work<Value>) = rt.ask
+pub fn savedAsks<A> -> ((Value -> A) -> Work<A>) = rt.asks
+pub fn savedLocal<A> -> ((Value -> Value) -> Work<A> -> Work<A>) = rt.local
+pub fn savedLift<A> -> (Box<A> -> Work<A>) = rt.lift
+pub fn savedRun<A> -> (Value -> Work<A> -> Box<A>) = rt.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe value:Box<Value> -> String = match value { Box item -> render item }
+pub fn text value:Box<String> -> String = match value { Box item -> item }
+"#).unwrap();
+    fs::write(project.join("src/main.ssrg"), r#"
+import * as rt from "std/transformer/reader"
+import { Value, Box, Work, value, bump, render, savedAsk, savedAsks, savedLocal, savedLift, savedRun, box, describe, text } from "./domain"
+let ask:Unit -> Work<Value> = savedAsk ()
+let asks:(Value -> String) -> Work<String> = savedAsks ()
+let local:(Value -> Value) -> Work<Value> -> Work<Value> = savedLocal ()
+let lift:Box<Value> -> Work<Value> = savedLift ()
+let run:Value -> Work<Value> -> Box<Value> = savedRun ()
+let environment:Work<Value> = ask ()
+let changed:Work<Value> = local bump environment
+let mapped:Work<Value> = map bump changed
+let bound:Work<Value> = changed >>= (\_:Value -> environment)
+pub effect fn main = do {
+  println (describe (run (value ()) environment))
+  println (describe (run (value ()) changed))
+  println (describe (run (value ()) mapped))
+  println (describe (run (value ()) bound))
+  println (describe (run (value ()) (lift (box (value ())))))
+  println (text (rt.run (value ()) (asks render)))
+}
+"#).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(&project, &[Case::success(b"7\n8\n9\n7\n7\n7\n")]);
+}
+
+#[test]
+fn basic_reader_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = Just 1",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.ask 1",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,String> = rt.ask ()",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.asks (\\n:String -> n)",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.local (\\n:Int -> show n) (rt.ask ())",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.lift 1",
+        "pub fn invalid -> Maybe<Int> = rt.run True (rt.asks (\\n:Int -> n))",
+        "pub fn invalid -> Maybe<Int> = rt.run 1 (Just 2)",
+        "struct Box<A> { value:A }\npub fn invalid -> rt.ReaderT<Int,Box,Int> = rt.ask ()",
+        "pub fn invalid -> rt.ReaderT<Int,Int,Int> = rt.ask ()",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!(
+                "import * as rt from \"std/transformer/reader\"\n{declaration}\npub fn main -> Int = 0\n"
+            ),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_reader_transformer_defects_preserve_error_kind_and_release_roots() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/reader-transformer-effects.ssrg"
+    );
+    let needle = "rt.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "rt.lift (pass (42 / 0))",
+        "rt.lift (effects.defer (\\_:Unit -> pass (42 / 0)))",
+        "{ let selected:Work<Int> = rt.ask (if 42 / 0 == 0 then () else ()); selected }",
+        "rt.asks (if 42 / 0 == 0 then (\\n:Int -> n) else (\\n:Int -> n))",
+        "rt.asks (\\n:Int -> n / 0)",
+        "rt.local (if 42 / 0 == 0 then (\\n:Int -> n) else (\\n:Int -> n)) (rt.ask ())",
+        "rt.local (\\n:Int -> n) (if 42 / 0 == 0 then rt.ask () else rt.ask ())",
+        "rt.local (\\n:Int -> n / 0) (rt.ask ())",
+        "map (\\n:Int -> n / 0) (rt.asks (\\n:Int -> n))",
+        "(rt.asks (\\n:Int -> n)) >>= (\\n:Int -> rt.lift (pass (n / 0)))",
+        "(pure (\\n:Int -> n / 0)) <*> (rt.asks (\\n:Int -> n))",
+        "rt.lift (rt.run (42 / 0) (rt.ask ()))",
+        "rt.lift (rt.run 42 (if 42 / 0 == 0 then rt.ask () else rt.ask ()))",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("reader-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                stdout: b"created: 0\nacquired\n13\n13\n16\n2\n6\n9\n5\ncalls: 4\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
 fn basic_maybe_transformer_apis_and_instances_match_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/maybe-transformer.ssrg"),

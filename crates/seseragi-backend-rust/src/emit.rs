@@ -79,6 +79,7 @@ mod text;
 mod time;
 mod transformer_either;
 mod transformer_maybe;
+mod transformer_reader;
 mod validation;
 mod variables;
 
@@ -1027,6 +1028,9 @@ impl Backend<'_> {
                 ..
             } => {
                 if let Some(value) = self.maybe_transformer_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.reader_transformer_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.time_call(expr, scope)? {
