@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/operator-reference",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 91,
+      "end": 109
+    },
+    {
+      "source": "main.ssrg",
+      "start": 164,
+      "end": 190
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add"
@@ -35,16 +47,34 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "step",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "initial"
+            "name": "$ssrg$source91"
           },
           {
-            "kind": "identifier",
-            "name": "value"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "step",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "initial"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -71,39 +101,57 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "foldPair",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "curried-runtime-reference",
-              "name": "_ssrg_int_add",
-              "arity": 2
-            },
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "number"
-              },
-              "result": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "number"
+            "kind": "identifier",
+            "name": "$ssrg$source164"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "foldPair",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "curried-runtime-reference",
+                    "name": "_ssrg_int_add",
+                    "arity": 2
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "number"
+                      },
+                      "result": {
+                        "kind": "number"
+                      }
+                    }
+                  }
                 },
-                "result": {
-                  "kind": "number"
+                {
+                  "kind": "identifier",
+                  "name": "initial"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "value"
                 }
-              }
+              ]
             }
           },
           {
-            "kind": "identifier",
-            "name": "initial"
-          },
-          {
-            "kind": "identifier",
-            "name": "value"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

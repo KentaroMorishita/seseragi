@@ -2,6 +2,63 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/rps-cli-split::input",
+  "runtimeSources": [
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 246,
+      "end": 256
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 272,
+      "end": 283
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 302,
+      "end": 316
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 330,
+      "end": 354
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 336,
+      "end": 353
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 456,
+      "end": 471
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 489,
+      "end": 503
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 554,
+      "end": 589
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 577,
+      "end": 588
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 594,
+      "end": 623
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/input.ssrg",
+      "start": 606,
+      "end": 622
+    }
+  ],
   "runtimeRequirements": [
     "effect.stdin.error",
     "core.adt",
@@ -276,11 +333,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_either_Right",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "Rock"
+                  "name": "$ssrg$source246"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Right",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Rock"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -295,11 +370,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_either_Right",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "Paper"
+                  "name": "$ssrg$source272"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Right",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Paper"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -314,11 +407,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_either_Right",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "Scissors"
+                  "name": "$ssrg$source302"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Right",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Scissors"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -336,17 +447,53 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_either_Left",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "UnknownHand",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "other"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source330"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Left",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source336"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "UnknownHand",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "other"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -406,11 +553,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_either_Left",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "EndOfInput"
+                  "name": "$ssrg$source456"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Left",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "EndOfInput"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -437,12 +602,30 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "parseHand",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "line"
+                  "name": "$ssrg$source489"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "parseHand",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "line"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -493,16 +676,52 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "StdinFailure"
+                  "name": "$ssrg$source554"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_stdin_readLine",
-                  "arguments": []
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "StdinFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source577"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_stdin_readLine",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -515,17 +734,53 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_fromEither",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "parseInput",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "input"
-                }
-              ]
+              "kind": "identifier",
+              "name": "$ssrg$source594"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_fromEither",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source606"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "parseInput",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "input"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

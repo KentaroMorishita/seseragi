@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/feature-module-composition::todo/form",
+  "runtimeSources": [
+    {
+      "source": "project/feature-module-composition/src/todo/form.ssrg",
+      "start": 208,
+      "end": 455
+    },
+    {
+      "source": "project/feature-module-composition/src/todo/form.ssrg",
+      "start": 256,
+      "end": 384
+    },
+    {
+      "source": "project/feature-module-composition/src/todo/form.ssrg",
+      "start": 392,
+      "end": 445
+    }
+  ],
   "runtimeRequirements": [
     "web.html.input-event-type",
     "effect.core.type",
@@ -64,121 +81,175 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_form",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "onSubmit",
-                "value": {
-                  "kind": "identifier",
-                  "name": "onSubmit"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "array",
-                  "elements": [
+            "kind": "identifier",
+            "name": "$ssrg$source208"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_form",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_input",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "id",
-                              "value": {
-                                "kind": "string",
-                                "value": "todo-draft"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "value",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "draft"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "placeholder",
-                              "value": {
-                                "kind": "string",
-                                "value": "Add a task"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "onInput",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "onDraft"
-                              }
-                            }
-                          ]
-                        }
-                      ]
+                      "kind": "field",
+                      "name": "onSubmit",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "onSubmit"
+                      }
                     },
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "buttonType",
-                              "value": {
-                                "kind": "string",
-                                "value": "submit"
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source256"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_input",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "id",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "todo-draft"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "value",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "draft"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "placeholder",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "Add a task"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "onInput",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "onDraft"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
                               }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "Add"
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source392"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_button",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "buttonType",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "submit"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "Add"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
                               }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "never"
+                                },
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
                             }
                           ]
                         }
-                      ]
-                    }
-                  ],
-                  "elementType": {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Effect",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "fields": []
-                          },
-                          {
-                            "kind": "never"
-                          },
-                          {
-                            "kind": "undefined"
-                          }
-                        ]
                       }
-                    ]
-                  }
+                    }
+                  ]
                 }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

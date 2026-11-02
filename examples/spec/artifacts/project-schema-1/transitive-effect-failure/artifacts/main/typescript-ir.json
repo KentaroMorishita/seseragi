@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/transitive-effect-failure::main",
+  "runtimeSources": [
+    {
+      "source": "project/transitive-effect-failure/src/main.ssrg",
+      "start": 76,
+      "end": 100
+    },
+    {
+      "source": "project/transitive-effect-failure/src/main.ssrg",
+      "start": 105,
+      "end": 115
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.core.flatMap",
@@ -86,12 +98,30 @@
           {
             "kind": "effect",
             "value": {
-              "kind": "call",
-              "callee": "rejectViaFacade",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "lizard"
+                  "kind": "identifier",
+                  "name": "$ssrg$source76"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "rejectViaFacade",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "lizard"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -99,10 +129,28 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_succeed",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "undefined"
+              "kind": "identifier",
+              "name": "$ssrg$source105"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_succeed",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

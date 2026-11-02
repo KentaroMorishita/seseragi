@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/constrained-function-dispatch",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 220,
+      "end": 231
+    },
+    {
+      "source": "main.ssrg",
+      "start": 296,
+      "end": 321
+    },
+    {
+      "source": "main.ssrg",
+      "start": 305,
+      "end": 320
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -110,24 +127,42 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
             "kind": "identifier",
-            "name": "__ssrg$evidence$0"
+            "name": "$ssrg$source220"
           },
-          "method": "ready",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "ready",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -148,34 +183,70 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "call",
-              "callee": "describe",
+            "kind": "identifier",
+            "name": "$ssrg$source296"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "identifier",
-                  "name": "Active"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$instance$Ready$0"
-                }
-              ],
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "Badge",
-                  "arguments": []
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source305"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "call",
+                          "callee": "describe",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "Active"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Ready$0"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Badge",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
                 }
               ]
-            },
-            "type": {
-              "kind": "string"
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

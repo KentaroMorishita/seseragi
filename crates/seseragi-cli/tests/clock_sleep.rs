@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use sha2::{Digest, Sha256};
 use std::{
     fs::{self, File},
@@ -348,6 +352,7 @@ fn run_transform(
     case: &str,
     input: Option<&[u8]>,
 ) {
+    let mut expected_defect = None;
     for (label, executable, argument, native) in programs {
         let cwd = directory.join(format!("{label}-{case}"));
         fs::create_dir(&cwd).unwrap();
@@ -494,8 +499,15 @@ fn run_transform(
             if !reason.is_empty() {
                 assert!(stderr.contains(reason), "{label}/{case}: {stderr}");
             }
+            if code == 70 {
+                let diagnostic = diagnostics::ts_defect_from_native(&result.stderr);
+                // TS builds the unchanged standalone body as a package entry.
+                // Only its source label differs; keep positions and messages exact.
+                let positioned = diagnostic.strip_prefix("original.ssrg:").unwrap();
+                expected_defect = Some(format!("src/main.ssrg:{positioned}"));
+            }
         } else if code == 70 {
-            assert_eq!(stderr, "seseragi: runtime defect\n", "{label}/{case}");
+            assert_eq!(stderr, *expected_defect.as_ref().unwrap(), "{label}/{case}");
         } else if code == 0 {
             assert!(stderr.is_empty(), "{label}/{case}: {stderr}");
         } else {

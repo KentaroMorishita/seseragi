@@ -1,6 +1,8 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
+import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+const $ssrg$source322 = { file: "main.ssrg", line: 19, column: 3, uri: "seseragi://artifact/generic-struct", start: 322, end: 346 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
 interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
@@ -15,5 +17,5 @@ export type Box<A> = {
 const replace = <A,>(value: A) => (box: Box<A>) => (({ ...box, "value": value } as const) as unknown as Box<A>)
 const unwrap = <A,>(box: Box<A>) => (($ssrg_match: Box<A>): A => ((value: A): A => value)($ssrg_match["value"]))(box)
 const render = (value: number) => "Generic Struct: " + _ssrg_show_intShow["show"](value)
-export const main = (_unit: undefined) => _ssrg_console_println(render(unwrap<number>(replace<number>(42)(inferred))))
+export const main = (_unit: undefined) => $ssrg$atSource($ssrg$source322, () => _ssrg_console_println($ssrg$atSource($ssrg$source322, () => render($ssrg$atSource($ssrg$source322, () => unwrap<number>($ssrg$atSource($ssrg$source322, () => replace<number>(42)(inferred), false)), false)), false)), true)
 export const inferred: Box<number> = (({ "value": 42 } as const) as unknown as Box<number>);

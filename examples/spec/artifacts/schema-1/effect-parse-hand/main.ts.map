@@ -17,15 +17,22 @@
     "UnknownHand",
     "__ssrg$instance$Show$0",
     "parseHand",
+    "$ssrg$atSource",
     "Right",
+    "$ssrg$atSource",
     "Right",
+    "$ssrg$atSource",
     "Right",
     "other",
+    "$ssrg$atSource",
     "Left",
+    "$ssrg$atSource",
     "UnknownHand",
     "parse",
+    "$ssrg$atSource",
     "fromEither",
+    "$ssrg$atSource",
     "parseHand"
   ],
-  "mappings": ";;;;;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;AACIC;AADJC;AAGAC;AAQAO"
+  "mappings": ";;;;;;;;;;;;;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;AACIC;AADJC;AAGAC;AAQAY"
 }

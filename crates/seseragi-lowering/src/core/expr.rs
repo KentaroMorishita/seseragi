@@ -138,7 +138,20 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
 }
 
 pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
+    // Arithmetic chains must not retain the unrelated structural temporaries
+    // from lower_structural_expr at every recursive step in debug builds.
     match expr {
+        expr @ TypedExpr::Call { .. } => lower_call(source, expr),
+        expr @ TypedExpr::Binary { .. } => lower_binary(source, expr),
+        expr => lower_structural_expr(source, expr),
+    }
+}
+
+fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
+    match expr {
+        TypedExpr::Call { .. } | TypedExpr::Binary { .. } => {
+            unreachable!("calls and binary expressions are dispatched separately")
+        }
         TypedExpr::Unit { origin, .. } => CoreExpr::Unit {
             origin: source_span(source, origin),
         },
@@ -182,67 +195,6 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
-        TypedExpr::Call {
-            callee,
-            arguments,
-            callee_signature,
-            evidence,
-            deferred_evidence_parameters,
-            deferred_evidence_type_constructor_parameters,
-            evidence_argument_index,
-            trait_dispatch,
-            type_ref,
-            origin,
-        } => {
-            let argument_types = arguments
-                .iter()
-                .map(super::decision::typed_expr_type)
-                .map(lower_typed_type)
-                .collect();
-            let call = CoreExpr::Call {
-                callee,
-                arguments: lower_exprs(source, arguments),
-                callee_signature: callee_signature.map(lower_call_signature),
-                evidence: evidence.into_iter().map(lower_call_evidence).collect(),
-                deferred_evidence_parameters: deferred_evidence_parameters
-                    .into_iter()
-                    .map(lower_typed_type)
-                    .collect(),
-                deferred_evidence_type_constructor_parameters,
-                evidence_argument_index,
-                trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
-                    trait_identity: dispatch.trait_identity,
-                    method: dispatch.method,
-                    method_contract: dispatch.method_contract.map(|contract| {
-                        super::CoreTraitMethodContract {
-                            parameters: contract
-                                .parameters
-                                .into_iter()
-                                .map(lower_typed_type)
-                                .collect(),
-                            constraints: contract
-                                .constraints
-                                .into_iter()
-                                .enumerate()
-                                .map(|(index, constraint)| {
-                                    super::instances::lower_constraint_with_identity(
-                                        constraint,
-                                        contract
-                                            .constraint_identities
-                                            .get(index)
-                                            .cloned()
-                                            .flatten(),
-                                    )
-                                })
-                                .collect(),
-                        }
-                    }),
-                }),
-                type_ref: lower_typed_type(type_ref),
-                origin: source_span(source, origin),
-            };
-            operator::lower_trait_operator(call, argument_types)
-        }
         TypedExpr::Lambda {
             parameter,
             body,
@@ -357,57 +309,6 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
-        TypedExpr::Binary {
-            operator,
-            left,
-            right,
-            evidence,
-            type_ref,
-            origin,
-        } => {
-            if operator == "??" {
-                return super::decision::lower_fallback(source, *left, *right, type_ref, origin);
-            }
-            let origin = source_span(source, origin);
-            let type_ref = lower_typed_type(type_ref);
-            if matches!(operator.as_str(), "&&" | "||") {
-                let left = Box::new(lower_expr(source, *left));
-                let right = Box::new(lower_expr(source, *right));
-                let (then_branch, else_branch) = if operator == "&&" {
-                    (
-                        right,
-                        Box::new(CoreExpr::Boolean {
-                            value: false,
-                            origin: origin.clone(),
-                        }),
-                    )
-                } else {
-                    (
-                        Box::new(CoreExpr::Boolean {
-                            value: true,
-                            origin: origin.clone(),
-                        }),
-                        right,
-                    )
-                };
-                CoreExpr::If {
-                    condition: left,
-                    then_branch,
-                    else_branch,
-                    type_ref,
-                    origin,
-                }
-            } else {
-                CoreExpr::Binary {
-                    operator,
-                    left: Box::new(lower_expr(source, *left)),
-                    right: Box::new(lower_expr(source, *right)),
-                    evidence: evidence.into_iter().map(lower_call_evidence).collect(),
-                    type_ref,
-                    origin,
-                }
-            }
-        }
         TypedExpr::Unary {
             operator,
             operand,
@@ -510,6 +411,124 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+    }
+}
+
+fn lower_call(source: &str, expr: TypedExpr) -> CoreExpr {
+    let TypedExpr::Call {
+        callee,
+        arguments,
+        callee_signature,
+        evidence,
+        deferred_evidence_parameters,
+        deferred_evidence_type_constructor_parameters,
+        evidence_argument_index,
+        trait_dispatch,
+        type_ref,
+        origin,
+    } = expr
+    else {
+        unreachable!("call lowering requires a call expression")
+    };
+    let argument_types = arguments
+        .iter()
+        .map(super::decision::typed_expr_type)
+        .map(lower_typed_type)
+        .collect();
+    let call = CoreExpr::Call {
+        callee,
+        arguments: lower_exprs(source, arguments),
+        callee_signature: callee_signature.map(lower_call_signature),
+        evidence: evidence.into_iter().map(lower_call_evidence).collect(),
+        deferred_evidence_parameters: deferred_evidence_parameters
+            .into_iter()
+            .map(lower_typed_type)
+            .collect(),
+        deferred_evidence_type_constructor_parameters,
+        evidence_argument_index,
+        trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
+            trait_identity: dispatch.trait_identity,
+            method: dispatch.method,
+            method_contract: dispatch.method_contract.map(|contract| {
+                super::CoreTraitMethodContract {
+                    parameters: contract
+                        .parameters
+                        .into_iter()
+                        .map(lower_typed_type)
+                        .collect(),
+                    constraints: contract
+                        .constraints
+                        .into_iter()
+                        .enumerate()
+                        .map(|(index, constraint)| {
+                            super::instances::lower_constraint_with_identity(
+                                constraint,
+                                contract.constraint_identities.get(index).cloned().flatten(),
+                            )
+                        })
+                        .collect(),
+                }
+            }),
+        }),
+        type_ref: lower_typed_type(type_ref),
+        origin: source_span(source, origin),
+    };
+    operator::lower_trait_operator(call, argument_types)
+}
+
+fn lower_binary(source: &str, expr: TypedExpr) -> CoreExpr {
+    let TypedExpr::Binary {
+        operator,
+        left,
+        right,
+        evidence,
+        type_ref,
+        origin,
+    } = expr
+    else {
+        unreachable!("binary lowering requires a binary expression")
+    };
+    if operator == "??" {
+        return super::decision::lower_fallback(source, *left, *right, type_ref, origin);
+    }
+    let origin = source_span(source, origin);
+    let type_ref = lower_typed_type(type_ref);
+    if matches!(operator.as_str(), "&&" | "||") {
+        let left = Box::new(lower_expr(source, *left));
+        let right = Box::new(lower_expr(source, *right));
+        let (then_branch, else_branch) = if operator == "&&" {
+            (
+                right,
+                Box::new(CoreExpr::Boolean {
+                    value: false,
+                    origin: origin.clone(),
+                }),
+            )
+        } else {
+            (
+                Box::new(CoreExpr::Boolean {
+                    value: true,
+                    origin: origin.clone(),
+                }),
+                right,
+            )
+        };
+        CoreExpr::If {
+            condition: left,
+            then_branch,
+            else_branch,
+            type_ref,
+            origin,
+        }
+    } else {
+        CoreExpr::Binary {
+            operator,
+            left: Box::new(lower_expr(source, *left)),
+            right: Box::new(lower_expr(source, *right)),
+            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
+            type_ref,
+            origin,
+        }
     }
 }
 

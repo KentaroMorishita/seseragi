@@ -10,21 +10,28 @@
   ],
   "names": [
     "rightAssociated",
+    "$ssrg$atSource",
     "__ssrg$operator$3c5e3e",
+    "$ssrg$atSource",
     "__ssrg$operator$3c5e3e",
     "leftAssociated",
+    "$ssrg$atSource",
     "__ssrg$operator$3c7e3e",
+    "$ssrg$atSource",
     "__ssrg$operator$3c7e3e",
     "__ssrg$operator$3c5e3e",
     "subtract",
     "__ssrg$operator$3c7e3e",
     "subtract",
     "main",
+    "$ssrg$atSource",
     "println",
     "intShow",
+    "$ssrg$atSource",
     "rightAssociated",
     "intShow",
+    "$ssrg$atSource",
     "leftAssociated"
   ],
-  "mappings": ";;;;;;AACAA;AACAG;AAEAG;AAIAE;AAIAE"
+  "mappings": ";;;;;;;;;;;;;;;AACAA;AACAK;AAEAK;AAIAE;AAIAE"
 }

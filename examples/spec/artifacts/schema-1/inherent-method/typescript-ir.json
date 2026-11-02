@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/inherent-method",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 166,
+      "end": 186
+    },
+    {
+      "source": "main.ssrg",
+      "start": 229,
+      "end": 268
+    },
+    {
+      "source": "main.ssrg",
+      "start": 230,
+      "end": 263
+    },
+    {
+      "source": "main.ssrg",
+      "start": 249,
+      "end": 262
+    },
+    {
+      "source": "main.ssrg",
+      "start": 333,
+      "end": 393
+    },
+    {
+      "source": "main.ssrg",
+      "start": 363,
+      "end": 391
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
@@ -107,16 +139,34 @@
             "kind": "field",
             "name": "value",
             "value": {
-              "kind": "call",
-              "callee": "transform",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "self"
-                  },
-                  "field": "value"
+                  "kind": "identifier",
+                  "name": "$ssrg$source166"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "transform",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "self"
+                        },
+                        "field": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -152,49 +202,89 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "__ssrg$method$Box$get",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "__ssrg$method$Box$map",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "box"
-              },
-              {
-                "kind": "lambda",
-                "parameter": "value: number",
-                "body": {
+            "kind": "identifier",
+            "name": "$ssrg$source229"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "__ssrg$method$Box$get",
+              "arguments": [
+                {
                   "kind": "runtime-call",
-                  "callee": "_ssrg_int_add",
+                  "callee": "$ssrg$atSource",
                   "arguments": [
                     {
                       "kind": "identifier",
-                      "name": "value"
+                      "name": "$ssrg$source230"
                     },
                     {
-                      "kind": "identifier",
-                      "name": "value"
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "__ssrg$method$Box$map",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "box"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "value: number",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_int_add",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "value"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "value"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source249"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          },
+                          {
+                            "kind": "number"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
                   ]
                 }
-              }
-            ],
-            "typeArguments": [
-              {
-                "kind": "number"
-              },
-              {
-                "kind": "number"
-              }
-            ]
-          }
-        ],
-        "typeArguments": [
+              ],
+              "typeArguments": [
+                {
+                  "kind": "number"
+                }
+              ]
+            }
+          },
           {
-            "kind": "number"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -217,53 +307,89 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "binary",
-            "operator": "+",
-            "left": {
-              "kind": "string",
-              "value": "Inherent method: "
-            },
-            "right": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
-              },
-              "method": "show",
+            "kind": "identifier",
+            "name": "$ssrg$source333"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "evaluate",
-                  "arguments": [
-                    {
-                      "kind": "record",
-                      "items": [
-                        {
-                          "kind": "field",
-                          "name": "value",
-                          "value": {
-                            "kind": "number",
-                            "value": "21"
-                          }
-                        }
-                      ],
-                      "assertedType": {
-                        "kind": "reference",
-                        "name": "Box",
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "Inherent method: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "number"
+                            "kind": "identifier",
+                            "name": "$ssrg$source363"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "evaluate",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "items": [
+                                    {
+                                      "kind": "field",
+                                      "name": "value",
+                                      "value": {
+                                        "kind": "number",
+                                        "value": "21"
+                                      }
+                                    }
+                                  ],
+                                  "assertedType": {
+                                    "kind": "reference",
+                                    "name": "Box",
+                                    "arguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
-                    }
-                  ]
+                    ]
+                  }
                 }
               ]
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

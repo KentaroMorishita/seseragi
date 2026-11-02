@@ -10,13 +10,19 @@
   ],
   "names": [
     "invitation",
+    "$ssrg$atSource",
     "stringAdd",
+    "$ssrg$atSource",
     "stringAdd",
+    "$ssrg$atSource",
     "stringAdd",
+    "$ssrg$atSource",
     "stringAdd",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "invitation"
   ],
-  "mappings": ";;;;;AACAA;AAGAK"
+  "mappings": ";;;;;;;;;AACAA;AAGAS"
 }

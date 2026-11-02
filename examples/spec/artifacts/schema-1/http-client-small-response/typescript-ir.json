@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/http-client-small-response",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 412,
+      "end": 433
+    },
+    {
+      "source": "main.ssrg",
+      "start": 526,
+      "end": 552
+    },
+    {
+      "source": "main.ssrg",
+      "start": 718,
+      "end": 772
+    },
+    {
+      "source": "main.ssrg",
+      "start": 866,
+      "end": 920
+    },
+    {
+      "source": "main.ssrg",
+      "start": 882,
+      "end": 906
+    },
+    {
+      "source": "main.ssrg",
+      "start": 965,
+      "end": 991
+    }
+  ],
   "runtimeRequirements": [
     "http-client.build-error-type",
     "core.bytes.byte-error-type",
@@ -351,27 +383,81 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "BuildFailure"
+                  "name": "$ssrg$source412"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_effect_fromEither",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_http_client_parseUrl",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "urlText"
-                        }
-                      ]
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "BuildFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source412"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_effect_fromEither",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source412"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_http_client_parseUrl",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "urlText"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -391,45 +477,117 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "BuildFailure"
+                  "name": "$ssrg$source526"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_effect_fromEither",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_http_client_withRequestHeader",
-                      "arguments": [
-                        {
-                          "kind": "string",
-                          "value": "content-type"
-                        },
-                        {
-                          "kind": "string",
-                          "value": "application/octet-stream"
-                        },
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_http_client_request",
-                          "arguments": [
-                            {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_http_client_post"
-                            },
-                            {
-                              "kind": "identifier",
-                              "name": "url"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "BuildFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source526"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_effect_fromEither",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source526"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_http_client_withRequestHeader",
+                                        "arguments": [
+                                          {
+                                            "kind": "string",
+                                            "value": "content-type"
+                                          },
+                                          {
+                                            "kind": "string",
+                                            "value": "application/octet-stream"
+                                          },
+                                          {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source526"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "runtime-call",
+                                                  "callee": "_ssrg_http_client_request",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "runtime-reference",
+                                                      "name": "_ssrg_http_client_post"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "url"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": false
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
                             }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -449,63 +607,117 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "BytesFailure"
+                  "name": "$ssrg$source718"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_effect_fromEither",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_bytes_fromInts",
-                      "arguments": [
-                        {
-                          "kind": "array",
-                          "elements": [
-                            {
-                              "kind": "number",
-                              "value": "115"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "101"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "115"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "101"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "114"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "97"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "103"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "105"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "BytesFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source718"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_effect_fromEither",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source718"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_bytes_fromInts",
+                                        "arguments": [
+                                          {
+                                            "kind": "array",
+                                            "elements": [
+                                              {
+                                                "kind": "number",
+                                                "value": "115"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "101"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "115"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "101"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "114"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "97"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "103"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "105"
+                                              }
+                                            ],
+                                            "elementType": {
+                                              "kind": "number"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
                             }
-                          ],
-                          "elementType": {
-                            "kind": "number"
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
                           }
-                        }
-                      ]
-                    }
-                  ]
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -525,34 +737,88 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "HttpFailure"
+                  "name": "$ssrg$source866"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_http_client_sendBytes",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_http_client_defaultBodyLimit",
-                      "arguments": [
-                        {
-                          "kind": "undefined"
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "body"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "request"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "HttpFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source866"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_http_client_sendBytes",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source882"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_http_client_defaultBodyLimit",
+                                        "arguments": [
+                                          {
+                                            "kind": "undefined"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "body"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "request"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -565,33 +831,105 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_mapError",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "TextFailure"
+              "name": "$ssrg$source965"
             },
             {
-              "kind": "runtime-call",
-              "callee": "_ssrg_effect_fromEither",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_text_decodeUtf8",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_http_client_responseBody",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "response"
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_mapError",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "TextFailure"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source965"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_effect_fromEither",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source965"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_text_decodeUtf8",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source965"
+                                          },
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "runtime-call",
+                                              "callee": "_ssrg_http_client_responseBody",
+                                              "arguments": [
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "response"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
                         }
-                      ]
-                    }
-                  ]
-                }
-              ]
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

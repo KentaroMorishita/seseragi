@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -524,6 +528,8 @@ fn float_parse_saved_cold_plan_failure_and_defect_release_once() {
         if code == 70 {
             assert!(String::from_utf8_lossy(&result.stderr).contains("aggregate defect"));
         }
+        let expected_defect =
+            (code == 70).then(|| diagnostics::ts_defect_from_native(&result.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -557,7 +563,7 @@ fn float_parse_saved_cold_plan_failure_and_defect_release_once() {
                 if code == 0 {
                     assert!(result.stderr.is_empty());
                 } else {
-                    assert_eq!(result.stderr, b"seseragi: runtime defect\n");
+                    assert_eq!(result.stderr, expected_defect.as_ref().unwrap().as_bytes());
                 }
             }
         }

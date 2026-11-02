@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/namespace-call::main",
+  "runtimeSources": [
+    {
+      "source": "project/namespace-generic-call/src/main.ssrg",
+      "start": 431,
+      "end": 488
+    },
+    {
+      "source": "project/namespace-generic-call/src/main.ssrg",
+      "start": 448,
+      "end": 487
+    },
+    {
+      "source": "project/namespace-generic-call/src/main.ssrg",
+      "start": 456,
+      "end": 486
+    },
+    {
+      "source": "project/namespace-generic-call/src/main.ssrg",
+      "start": 473,
+      "end": 485
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "core.adt"
@@ -248,42 +270,114 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "domain$member$identity",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "domain$member$identity",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "choose",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      }
-                    ]
-                  }
-                ],
-                "typeArguments": [
-                  {
-                    "kind": "reference",
-                    "name": "domain$member$Hand",
-                    "arguments": []
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "typeArguments": [
+            "kind": "identifier",
+            "name": "$ssrg$source431"
+          },
           {
-            "kind": "string"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "domain$member$identity",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source448"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source456"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "domain$member$identity",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source473"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "call",
+                                            "callee": "choose",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "value"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "domain$member$Hand",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "string"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

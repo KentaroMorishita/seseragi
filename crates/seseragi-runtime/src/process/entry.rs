@@ -63,6 +63,10 @@ pub(super) fn entry_source(
         imports.push("import { readFileSync } from \"node:fs\";".to_owned());
         imports.push("import { fileURLToPath } from \"node:url\";".to_owned());
         startup.push("const readDiagnosticSource = (url: string) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
+    } else {
+        imports.push(
+            "import { renderRuntimeDefectText } from \"@seseragi/runtime/foreign\";".to_owned(),
+        );
     }
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
@@ -611,7 +615,7 @@ pub(super) fn entry_source(
     let defect = if options.diagnostic_format == DiagnosticFormat::Json {
         "process.stderr.write(renderRuntimeDefectDiagnostic(runtimeDefect, readDiagnosticSource) + \"\\n\");\n  process.exitCode = 70;"
     } else {
-        "process.stderr.write(\"seseragi: runtime defect\\n\");\n  process.exitCode = 70;"
+        "process.stderr.write(renderRuntimeDefectText(runtimeDefect));\n  process.exitCode = 70;"
     };
     let cancellation = if options.diagnostic_format == DiagnosticFormat::Json {
         "process.stderr.write(renderCancellationDiagnostic() + \"\\n\");\n  process.exitCode = processShutdown.exitCode() ?? 130;"
@@ -624,7 +628,7 @@ pub(super) fn entry_source(
     let initialization_defect = if options.diagnostic_format == DiagnosticFormat::Json {
         "renderRuntimeDefectDiagnostic(runtimeDefect, readDiagnosticSource) + \"\\n\""
     } else {
-        "\"seseragi: runtime defect during module initialization: \" + String(runtimeDefect) + \"\\n\""
+        "renderRuntimeDefectText(runtimeDefect).trimEnd() + \" (during module initialization)\\n\""
     };
     startup.push(format!("const reportApplicationImportDefect = async (runtimeDefect: unknown) => {{ await new Promise((resolve) => process.stderr.write({initialization_defect}, resolve)); process.exit(70); }};"));
     let application_imports = application_imports
@@ -757,7 +761,7 @@ mod tests {
         assert!(source.contains("stdinAdapter1.close()"));
         assert!(source.contains("catch (cleanupDefect)"));
         assert!(source.contains("runtimeDefect ??= cleanupDefect"));
-        assert!(source.contains("seseragi: runtime defect\\n"));
+        assert!(source.contains("renderRuntimeDefectText(runtimeDefect)"));
         assert!(source.contains("process.exitCode = 70"));
         assert!(!source.contains("target mismatch"));
         assert!(

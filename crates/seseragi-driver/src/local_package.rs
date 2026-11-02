@@ -52,6 +52,7 @@ pub fn compile_local_package(
             module.source(),
             format!("dist/{}.js", path.as_str()),
         )
+        .with_runtime_source_path(module.runtime_source_path(package.root()))
     });
     let compiled = compile_project(graph, inputs).map_err(|error| LocalPackageCompileError {
         module: error_module(&error).and_then(|module| paths_by_id.get(module).cloned()),

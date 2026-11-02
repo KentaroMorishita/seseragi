@@ -12,7 +12,8 @@
     "add",
     "add",
     "addTo",
+    "$ssrg$atSource",
     "add"
   ],
-  "mappings": ";;;;AAAAA;AACAE"
+  "mappings": ";;;;;;;AAAAA;AACAE"
 }

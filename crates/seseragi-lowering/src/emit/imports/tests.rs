@@ -22,6 +22,7 @@ fn lines(reexports: Vec<TypeScriptSourceImportBinding>) -> Vec<String> {
         schema: 1,
         stage: "typescript-ir".into(),
         module: "facade".into(),
+        runtime_sources: vec![],
         foreign_modules: vec![],
         runtime_requirements: vec![],
         imports: vec![],

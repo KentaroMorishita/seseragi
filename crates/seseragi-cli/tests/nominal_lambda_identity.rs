@@ -203,8 +203,7 @@ fn saved_nominal_return_lambda_keeps_primitive_identity_and_scoped_effects() {
                     assert!(result.stderr.is_empty(), "{result:?}");
                 } else {
                     assert!(
-                        String::from_utf8_lossy(&result.stderr)
-                            .contains("seseragi: runtime defect"),
+                        String::from_utf8_lossy(&result.stderr).contains("Seseragi Defect:"),
                         "{result:?}"
                     );
                 }

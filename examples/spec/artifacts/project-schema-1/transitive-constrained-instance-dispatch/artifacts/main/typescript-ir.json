@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/transitive-constrained-instance-dispatch::main",
+  "runtimeSources": [
+    {
+      "source": "project/transitive-constrained-instance-dispatch/src/main.ssrg",
+      "start": 58,
+      "end": 74
+    },
+    {
+      "source": "project/transitive-constrained-instance-dispatch/src/main.ssrg",
+      "start": 66,
+      "end": 73
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.console.println",
@@ -96,52 +108,106 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "call",
-              "callee": "report",
+            "kind": "identifier",
+            "name": "$ssrg$source58"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
                   "kind": "runtime-call",
-                  "callee": "_ssrg_maybe_Just",
-                  "arguments": [
-                    {
-                      "kind": "number",
-                      "value": "42"
-                    }
-                  ]
-                },
-                {
-                  "kind": "type-application-call",
-                  "callee": "__ssrg$instance$Inspect$1",
-                  "typeArguments": [
-                    {
-                      "kind": "number"
-                    }
-                  ],
+                  "callee": "$ssrg$atSource",
                   "arguments": [
                     {
                       "kind": "identifier",
-                      "name": "__ssrg$instance$Ready$0"
+                      "name": "$ssrg$source58"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "call",
+                          "callee": "report",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source66"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_maybe_Just",
+                                    "arguments": [
+                                      {
+                                        "kind": "number",
+                                        "value": "42"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Inspect$1",
+                              "typeArguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Ready$0"
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "number"
+                              }
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
                   ]
                 }
-              ],
-              "typeArguments": [
-                {
-                  "kind": "maybe",
-                  "element": {
-                    "kind": "number"
-                  }
-                }
               ]
-            },
-            "type": {
-              "kind": "string"
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

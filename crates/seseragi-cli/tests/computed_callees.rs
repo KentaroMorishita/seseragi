@@ -232,7 +232,7 @@ fn computed_callees_preserve_results_cold_effects_and_defect_cleanup() {
                 );
                 assert_eq!(result.stdout, expected, "{name}/{profile}/{index}");
                 if code == 70 {
-                    assert!(String::from_utf8_lossy(&result.stderr).contains("runtime defect"));
+                    assert!(String::from_utf8_lossy(&result.stderr).contains("Seseragi Defect:"));
                     assert!(
                         !String::from_utf8_lossy(&result.stderr).contains("Int division by zero")
                     );

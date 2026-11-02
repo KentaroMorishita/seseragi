@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-effect-failure::main",
+  "runtimeSources": [
+    {
+      "source": "project/imported-effect-failure/src/main.ssrg",
+      "start": 141,
+      "end": 180
+    },
+    {
+      "source": "project/imported-effect-failure/src/main.ssrg",
+      "start": 164,
+      "end": 179
+    },
+    {
+      "source": "project/imported-effect-failure/src/main.ssrg",
+      "start": 185,
+      "end": 195
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.show.dictionary",
@@ -177,21 +194,57 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "InputFailure"
+                  "name": "$ssrg$source141"
                 },
                 {
-                  "kind": "call",
-                  "callee": "reject",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "lizard"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "InputFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source164"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "reject",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "lizard"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -199,10 +252,28 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_succeed",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "undefined"
+              "kind": "identifier",
+              "name": "$ssrg$source185"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_succeed",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

@@ -450,10 +450,16 @@ fn compiles_a_higher_order_parameter_call_through_every_owned_stage() {
     assert!(compiled.diagnostics.diagnostics.is_empty());
     assert_eq!(
         compiled.generated.typescript,
-        with_unicode_header("import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n", concat!(
-            "export const apply = (f: (argument: number) => number) => (value: number) => f(value)\n",
-            "export const increment = (value: number) => _ssrg_int_add(value, 1)\n",
-            "export const example = (value: number) => apply(increment)(value)\n",
+        with_unicode_header(concat!(
+            "import { atSource as $ssrg$atSource } from \"@seseragi/runtime/effect\"\n",
+            "import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n",
+            "const $ssrg$source52 = { file: \"main.ssrg\", line: 1, column: 53, uri: \"seseragi://artifact/driver-higher-order\", start: 52, end: 59 };\n",
+            "const $ssrg$source97 = { file: \"main.ssrg\", line: 2, column: 38, uri: \"seseragi://artifact/driver-higher-order\", start: 97, end: 106 };\n",
+            "const $ssrg$source142 = { file: \"main.ssrg\", line: 3, column: 36, uri: \"seseragi://artifact/driver-higher-order\", start: 142, end: 163 };\n",
+        ), concat!(
+            "export const apply = (f: (argument: number) => number) => (value: number) => $ssrg$atSource($ssrg$source52, () => f(value), false)\n",
+            "export const increment = (value: number) => _ssrg_int_add(value, 1, $ssrg$source97)\n",
+            "export const example = (value: number) => $ssrg$atSource($ssrg$source142, () => apply(increment)(value), false)\n",
         ))
     );
 }
@@ -466,8 +472,8 @@ fn instantiates_a_generic_higher_order_function() {
     const EXPECTED_TYPESCRIPT: &str =
         include_str!("../../../examples/spec/artifacts/schema-1/generic-higher-order-call/main.ts");
     let compiled = compile_module(input(
-        "artifact/driver-generic-higher-order/main.ssrg",
-        "artifact/driver-generic-higher-order",
+        "artifact/generic-higher-order-call/main.ssrg",
+        "artifact/generic-higher-order-call",
         SOURCE,
     ))
     .expect("generic higher-order application should compile");
@@ -491,8 +497,8 @@ fn passes_an_arithmetic_operator_as_a_function_value() {
     const EXPECTED_TYPESCRIPT: &str =
         include_str!("../../../examples/spec/artifacts/schema-1/operator-reference/main.ts");
     let compiled = compile_module(input(
-        "artifact/driver-operator-reference/main.ssrg",
-        "artifact/driver-operator-reference",
+        "artifact/operator-reference/main.ssrg",
+        "artifact/operator-reference",
         SOURCE,
     ))
     .expect("arithmetic operator reference should compile");
@@ -960,7 +966,7 @@ fn compiles_a_linked_module_through_planned_typescript_output() {
     assert!(compiled
         .generated
         .typescript
-        .contains("export const run = (value: number) => next(value)"));
+        .contains(&format!("export const run = (value: number) => $ssrg$atSource($ssrg$source{}, () => next(value), false)", main_source.find("next value").unwrap())));
 }
 
 #[test]

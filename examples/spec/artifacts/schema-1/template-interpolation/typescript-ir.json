@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/template-interpolation",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 157,
+      "end": 181
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.show.dictionary",
@@ -169,21 +176,57 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "Seseragi"
-              },
-              {
-                "kind": "identifier",
-                "name": "Active"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source157"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source157"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "Seseragi"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "Active"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

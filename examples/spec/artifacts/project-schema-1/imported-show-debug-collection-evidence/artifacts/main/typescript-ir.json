@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-show-debug-collection-evidence::main",
+  "runtimeSources": [
+    {
+      "source": "project/imported-show-debug-collection-evidence/src/main.ssrg",
+      "start": 99,
+      "end": 110
+    },
+    {
+      "source": "project/imported-show-debug-collection-evidence/src/main.ssrg",
+      "start": 161,
+      "end": 172
+    },
+    {
+      "source": "project/imported-show-debug-collection-evidence/src/main.ssrg",
+      "start": 237,
+      "end": 257
+    }
+  ],
   "runtimeRequirements": [
     "core.array.show",
     "core.string",
@@ -105,37 +122,55 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "_ssrg_show_arrayShow",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "Badge",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Show$0"
-              }
-            ]
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source99"
           },
-          "method": "show",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "values"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_arrayShow",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Show$0"
+                    }
+                  ]
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "values"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -155,37 +190,55 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "_ssrg_debug_maybeDebug",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "Badge",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Debug$1"
-              }
-            ]
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source161"
           },
-          "method": "debug",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_debug_maybeDebug",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Debug$1"
+                    }
+                  ]
+                },
+                "method": "debug",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -205,60 +258,78 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "call",
-          "callee": "renderImported",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
-            },
-            {
-              "kind": "type-application-call",
-              "callee": "__ssrg$instance$Render$2",
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "Badge",
-                  "arguments": []
-                }
-              ],
-              "arguments": [
-                {
-                  "kind": "type-application-call",
-                  "callee": "_ssrg_show_arrayShow",
-                  "typeArguments": [
-                    {
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source237"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "renderImported",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "type-application-call",
+                    "callee": "__ssrg$instance$Render$2",
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Badge",
+                        "arguments": []
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_arrayShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "Badge",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Show$0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "maybe",
+                    "element": {
                       "kind": "reference",
                       "name": "Badge",
                       "arguments": []
                     }
-                  ],
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "__ssrg$instance$Show$0"
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "typeArguments": [
-            {
-              "kind": "maybe",
-              "element": {
-                "kind": "reference",
-                "name": "Badge",
-                "arguments": []
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
               }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

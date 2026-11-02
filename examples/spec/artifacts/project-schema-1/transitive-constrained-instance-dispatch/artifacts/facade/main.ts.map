@@ -10,7 +10,8 @@
   ],
   "names": [
     "report",
+    "$ssrg$atSource",
     "providerReport"
   ],
-  "mappings": ";;;;AAEAA"
+  "mappings": ";;;;;;AAEAA"
 }

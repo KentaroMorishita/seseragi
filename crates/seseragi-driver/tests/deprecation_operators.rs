@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{
     analyze_module, analyze_project, compile_module, BuildProfile, CompileInput, ProjectModuleInput,
 };
@@ -126,7 +130,10 @@ fn metadata_keeps_instance_contracts_and_generated_code_unchanged() {
             CompileInput::new("box.ssrg", "operators/metadata", &plain).with_profile(profile),
         )
         .unwrap();
-        assert_eq!(compiled.generated.typescript, ordinary.generated.typescript);
+        assert_eq!(
+            source_locations::canonical_typescript(&compiled, &source),
+            source_locations::canonical_typescript(&ordinary, &plain)
+        );
         let notices = &compiled.typed_interface.operator_deprecations;
         assert_eq!(notices.len(), 1, "{notices:#?}");
         let notice = &notices[0];

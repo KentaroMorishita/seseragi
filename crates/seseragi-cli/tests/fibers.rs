@@ -149,7 +149,7 @@ fn compare(source: &str, stdout: &str, trace: Option<&str>, exit: i32, error: Op
         if let Some(error) = error {
             assert!(
                 stderr.contains(if exit == 70 && !native {
-                    "runtime defect"
+                    "Seseragi Defect:"
                 } else {
                     error
                 }),

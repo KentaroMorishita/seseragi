@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-user-add-operator::main",
+  "runtimeSources": [
+    {
+      "source": "project/imported-user-add-operator/src/main.ssrg",
+      "start": 94,
+      "end": 107
+    },
+    {
+      "source": "project/imported-user-add-operator/src/main.ssrg",
+      "start": 150,
+      "end": 183
+    },
+    {
+      "source": "project/imported-user-add-operator/src/main.ssrg",
+      "start": 170,
+      "end": 178
+    },
+    {
+      "source": "project/imported-user-add-operator/src/main.ssrg",
+      "start": 344,
+      "end": 367
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.array.reduce",
@@ -88,20 +110,38 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$instance$Add$0"
-        },
-        "method": "add",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "score"
+            "name": "$ssrg$source94"
           },
           {
-            "kind": "identifier",
-            "name": "bonus"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Add$0"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "score"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "bonus"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -123,63 +163,117 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "addBonus",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "number",
-            "value": "0"
+            "kind": "identifier",
+            "name": "$ssrg$source150"
           },
           {
-            "kind": "runtime-call",
-            "callee": "_ssrg_array_reduce",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "Points",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "0"
-                  }
-                ]
-              },
-              {
-                "kind": "checked-result",
-                "value": {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Add$0"
-                  },
-                  "method": "add",
-                  "arguments": []
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "addBonus",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "0"
                 },
-                "type": {
-                  "kind": "function",
-                  "parameter": {
-                    "kind": "reference",
-                    "name": "Score",
-                    "arguments": []
-                  },
-                  "result": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "number"
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source150"
                     },
-                    "result": {
-                      "kind": "reference",
-                      "name": "Score",
-                      "arguments": []
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_array_reduce",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source170"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "Points",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "0"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "identifier",
+                                "name": "__ssrg$instance$Add$0"
+                              },
+                              "method": "add",
+                              "arguments": []
+                            },
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "reference",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "reference",
+                                  "name": "Score",
+                                  "arguments": []
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "values"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
-                  }
+                  ]
                 }
-              },
-              {
-                "kind": "identifier",
-                "name": "values"
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -265,39 +359,93 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "total",
-                "arguments": [
-                  {
-                    "kind": "array",
-                    "elements": [
-                      {
-                        "kind": "number",
-                        "value": "10"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "12"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "20"
+            "kind": "identifier",
+            "name": "$ssrg$source344"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source344"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source344"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "total",
+                                  "arguments": [
+                                    {
+                                      "kind": "array",
+                                      "elements": [
+                                        {
+                                          "kind": "number",
+                                          "value": "10"
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "12"
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "20"
+                                        }
+                                      ],
+                                      "elementType": {
+                                        "kind": "number"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
                       }
-                    ],
-                    "elementType": {
-                      "kind": "number"
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
-                  }
-                ]
-              }
-            ]
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

@@ -97,7 +97,7 @@ fn compile_native(
         options.sources.insert(
             checked.core_ir.module.clone(),
             seseragi_backend_rust::RustSourceFile {
-                path: path.to_owned(),
+                path: seseragi_project::standalone_runtime_source_path(path),
                 text: source,
             },
         );
@@ -132,6 +132,15 @@ fn publish_artifact(
         if let Some(executable) = &staged.executable {
             let output = Command::new("rustc")
                 .args(["--edition=2021", "--crate-name", "seseragi_program", "-O"])
+                .arg("--remap-path-prefix")
+                .arg(format!(
+                    "{}=.",
+                    staged
+                        .rust
+                        .parent()
+                        .expect("staged Rust source has a parent")
+                        .display()
+                ))
                 .arg(&staged.rust)
                 .arg("-o")
                 .arg(executable)
@@ -191,7 +200,13 @@ fn compile_project(
             (
                 seseragi_project::logical_module_id(identity),
                 seseragi_backend_rust::RustSourceFile {
-                    path: module.source_path().to_string_lossy().into_owned(),
+                    path: module.runtime_source_path(
+                        project
+                            .packages()
+                            .package(identity.package())
+                            .expect("checked source package")
+                            .root(),
+                    ),
                     text: module.source().to_owned(),
                 },
             )

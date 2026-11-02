@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/struct-profile",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 355,
+      "end": 401
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.string",
@@ -285,45 +292,99 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "improve",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "items": [
-                      {
-                        "kind": "field",
-                        "name": "name",
-                        "value": {
-                          "kind": "string",
-                          "value": "Mio"
-                        }
-                      },
-                      {
-                        "kind": "field",
-                        "name": "score",
-                        "value": {
-                          "kind": "number",
-                          "value": "12"
-                        }
+            "kind": "identifier",
+            "name": "$ssrg$source355"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source355"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source355"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "improve",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "name",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "Mio"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "score",
+                                          "value": {
+                                            "kind": "number",
+                                            "value": "12"
+                                          }
+                                        }
+                                      ],
+                                      "assertedType": {
+                                        "kind": "reference",
+                                        "name": "Player",
+                                        "arguments": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
                       }
-                    ],
-                    "assertedType": {
-                      "kind": "reference",
-                      "name": "Player",
-                      "arguments": []
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
-                  }
-                ]
-              }
-            ]
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

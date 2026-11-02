@@ -123,8 +123,8 @@ fn release_removes_dead_modules_and_declarations_before_bundling() {
     .unwrap();
     let values = package.join("src/values.ssrg");
     let mut text = fs::read_to_string(&values).unwrap();
-    text = format!("import * as math from \"std/math\"\n{text}");
-    text.push_str("\npub fn anotherDeadExport value: Float -> Float = math.sin value\n");
+    // Append dead code so retained declarations keep their source positions.
+    text.push_str("\nimport * as math from \"std/math\"\npub fn anotherDeadExport value: Float -> Float = math.sin value\n");
     fs::write(values, text).unwrap();
     command(&["lock", "update"], &package);
     command(

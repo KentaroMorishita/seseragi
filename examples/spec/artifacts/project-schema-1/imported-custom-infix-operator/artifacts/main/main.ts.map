@@ -10,12 +10,16 @@
   ],
   "names": [
     "calculate",
+    "$ssrg$atSource",
     "<^>",
+    "$ssrg$atSource",
     "<^>",
     "main",
+    "$ssrg$atSource",
     "println",
     "intShow",
+    "$ssrg$atSource",
     "calculate"
   ],
-  "mappings": ";;;;;;AAEAA;AAGAG"
+  "mappings": ";;;;;;;;;;;AAEAA;AAGAK"
 }

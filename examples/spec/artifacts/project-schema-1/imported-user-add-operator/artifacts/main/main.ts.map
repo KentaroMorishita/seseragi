@@ -10,17 +10,24 @@
   ],
   "names": [
     "addBonus",
+    "$ssrg$atSource",
     "__ssrg$instance$Add$0",
     "total",
+    "$ssrg$atSource",
     "addBonus",
+    "$ssrg$atSource",
     "_ssrg_array_reduce",
+    "$ssrg$atSource",
     "Points",
     "__ssrg$instance$Add$0",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "total"
   ],
-  "mappings": ";;;;;;AAEAA;AAGAE;AAKAK;AAMAC"
+  "mappings": ";;;;;;;;;;;AAEAA;AAGAG;AAKAQ;AAMAC"
 }

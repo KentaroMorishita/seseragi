@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-compact-read-line",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 25,
+      "end": 36
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.stdin.readLine",
@@ -28,8 +35,26 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_stdin_readLine",
-        "arguments": []
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source25"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_stdin_readLine",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

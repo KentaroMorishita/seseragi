@@ -2,6 +2,48 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/json-core-codecs",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 118,
+      "end": 141
+    },
+    {
+      "source": "main.ssrg",
+      "start": 256,
+      "end": 278
+    },
+    {
+      "source": "main.ssrg",
+      "start": 358,
+      "end": 375
+    },
+    {
+      "source": "main.ssrg",
+      "start": 396,
+      "end": 406
+    },
+    {
+      "source": "main.ssrg",
+      "start": 426,
+      "end": 452
+    },
+    {
+      "source": "main.ssrg",
+      "start": 433,
+      "end": 451
+    },
+    {
+      "source": "main.ssrg",
+      "start": 521,
+      "end": 584
+    },
+    {
+      "source": "main.ssrg",
+      "start": 531,
+      "end": 584
+    }
+  ],
   "runtimeRequirements": [
     "json.read-error-type",
     "core.bool",
@@ -98,91 +140,109 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_json_encodeString",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source118"
           },
           {
-            "kind": "type-application-call",
-            "callee": "_ssrg_record_json_encode",
-            "typeArguments": [
-              {
-                "kind": "record",
-                "fields": [
-                  {
-                    "name": "active",
-                    "optional": false,
-                    "type": {
-                      "kind": "boolean"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_json_encodeString",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_record_json_encode",
+                  "typeArguments": [
+                    {
+                      "kind": "record",
+                      "fields": [
+                        {
+                          "name": "active",
+                          "optional": false,
+                          "type": {
+                            "kind": "boolean"
+                          }
+                        },
+                        {
+                          "name": "name",
+                          "optional": false,
+                          "type": {
+                            "kind": "string"
+                          }
+                        },
+                        {
+                          "name": "score",
+                          "optional": false,
+                          "type": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
                     }
-                  },
-                  {
-                    "name": "name",
-                    "optional": false,
-                    "type": {
-                      "kind": "string"
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "active"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "name"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "score"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_bool_json_encode"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_json_encode"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_json_encode"
                     }
-                  },
-                  {
-                    "name": "score",
-                    "optional": false,
-                    "type": {
-                      "kind": "number"
-                    }
-                  }
-                ]
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "string",
-                    "value": "active"
-                  },
-                  {
-                    "kind": "string",
-                    "value": "name"
-                  },
-                  {
-                    "kind": "string",
-                    "value": "score"
-                  }
-                ]
-              },
-              {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_bool_json_encode"
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_string_json_encode"
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_json_encode"
-              }
-            ]
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -205,91 +265,109 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_json_decodeString",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "text"
+            "name": "$ssrg$source256"
           },
           {
-            "kind": "type-application-call",
-            "callee": "_ssrg_record_json_decode",
-            "typeArguments": [
-              {
-                "kind": "record",
-                "fields": [
-                  {
-                    "name": "active",
-                    "optional": false,
-                    "type": {
-                      "kind": "boolean"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_json_decodeString",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "text"
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_record_json_decode",
+                  "typeArguments": [
+                    {
+                      "kind": "record",
+                      "fields": [
+                        {
+                          "name": "active",
+                          "optional": false,
+                          "type": {
+                            "kind": "boolean"
+                          }
+                        },
+                        {
+                          "name": "name",
+                          "optional": false,
+                          "type": {
+                            "kind": "string"
+                          }
+                        },
+                        {
+                          "name": "score",
+                          "optional": false,
+                          "type": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
                     }
-                  },
-                  {
-                    "name": "name",
-                    "optional": false,
-                    "type": {
-                      "kind": "string"
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "active"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "name"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "score"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_bool_json_decode"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_json_decode"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_json_decode"
                     }
-                  },
-                  {
-                    "name": "score",
-                    "optional": false,
-                    "type": {
-                      "kind": "number"
-                    }
-                  }
-                ]
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "string",
-                    "value": "active"
-                  },
-                  {
-                    "kind": "string",
-                    "value": "name"
-                  },
-                  {
-                    "kind": "string",
-                    "value": "score"
-                  }
-                ]
-              },
-              {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_bool_json_decode"
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_string_json_decode"
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_json_decode"
-              }
-            ]
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -313,12 +391,30 @@
       "body": {
         "kind": "decision",
         "scrutinee": {
-          "kind": "call",
-          "callee": "decodeRecord",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "text"
+              "name": "$ssrg$source358"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "call",
+                "callee": "decodeRecord",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "text"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
@@ -382,11 +478,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_either_Left",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "error"
+                  "name": "$ssrg$source396"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Left",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "error"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -437,17 +551,53 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_either_Right",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "encodeRecord",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "value"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source426"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Right",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source433"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "encodeRecord",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "value"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -484,42 +634,78 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "encodeRecord",
-            "arguments": [
-              {
-                "kind": "record",
-                "items": [
-                  {
-                    "kind": "field",
-                    "name": "active",
-                    "value": {
+            "kind": "identifier",
+            "name": "$ssrg$source521"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source531"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "encodeRecord",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "items": [
+                              {
+                                "kind": "field",
+                                "name": "active",
+                                "value": {
+                                  "kind": "boolean",
+                                  "value": true
+                                }
+                              },
+                              {
+                                "kind": "field",
+                                "name": "name",
+                                "value": {
+                                  "kind": "string",
+                                  "value": "Mio"
+                                }
+                              },
+                              {
+                                "kind": "field",
+                                "name": "score",
+                                "value": {
+                                  "kind": "number",
+                                  "value": "42"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
                       "kind": "boolean",
-                      "value": true
+                      "value": false
                     }
-                  },
-                  {
-                    "kind": "field",
-                    "name": "name",
-                    "value": {
-                      "kind": "string",
-                      "value": "Mio"
-                    }
-                  },
-                  {
-                    "kind": "field",
-                    "name": "score",
-                    "value": {
-                      "kind": "number",
-                      "value": "42"
-                    }
-                  }
-                ]
-              }
-            ]
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

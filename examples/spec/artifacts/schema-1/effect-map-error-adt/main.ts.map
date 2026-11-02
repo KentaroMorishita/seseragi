@@ -14,9 +14,12 @@
     "AppError",
     "InvalidHand",
     "rejectUnknownHand",
+    "$ssrg$atSource",
     "mapError",
+    "$ssrg$atSource",
     "fail",
+    "$ssrg$atSource",
     "UnknownHand"
   ],
-  "mappings": ";;;;AAAAA;;AACIC;AAEJC;;AACIC;AAEJC"
+  "mappings": ";;;;;;;;AAAAA;;AACIC;AAEJC;;AACIC;AAEJC"
 }

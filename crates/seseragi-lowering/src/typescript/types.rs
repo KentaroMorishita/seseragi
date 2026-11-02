@@ -10,6 +10,8 @@ use crate::runtime_types::runtime_type_import_for_surface;
 /// Import names and lexical type-constructor scope used only for TypeScript annotations.
 #[derive(Clone, Debug, Default)]
 pub(super) struct TypeScriptTypeContext {
+    runtime_sources: Arc<Mutex<BTreeMap<usize, crate::SourceSpan>>>,
+    retain_runtime_sources: bool,
     imported_names: Arc<BTreeMap<String, String>>,
     polymorphic_bindings: BTreeSet<String>,
     constructors: BTreeSet<String>,
@@ -32,6 +34,8 @@ pub(super) struct TypeScriptTypeContext {
 impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
     fn from(imported_names: BTreeMap<String, String>) -> Self {
         Self {
+            runtime_sources: Default::default(),
+            retain_runtime_sources: false,
             imported_names: Arc::new(imported_names),
             polymorphic_bindings: Default::default(),
             constructors: BTreeSet::new(),
@@ -53,6 +57,34 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn with_runtime_sources(mut self, enabled: bool) -> Self {
+        self.retain_runtime_sources = enabled;
+        self
+    }
+
+    pub(super) fn retains_runtime_sources(&self) -> bool {
+        self.retain_runtime_sources
+    }
+
+    pub(super) fn runtime_source(&self, origin: crate::SourceSpan) -> String {
+        let name = format!("$ssrg$source{}", origin.start);
+        self.runtime_sources
+            .lock()
+            .expect("runtime source positions")
+            .entry(origin.start)
+            .or_insert(origin);
+        name
+    }
+
+    pub(super) fn runtime_sources(&self) -> Vec<crate::SourceSpan> {
+        self.runtime_sources
+            .lock()
+            .expect("runtime source positions")
+            .values()
+            .cloned()
+            .collect()
+    }
+
     pub(super) fn with_polymorphic_bindings(
         &self,
         symbols: impl IntoIterator<Item = String>,

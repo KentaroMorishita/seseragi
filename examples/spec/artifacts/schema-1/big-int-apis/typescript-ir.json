@@ -2,6 +2,373 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/big-int-apis",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 191,
+      "end": 208
+    },
+    {
+      "source": "main.ssrg",
+      "start": 351,
+      "end": 361
+    },
+    {
+      "source": "main.ssrg",
+      "start": 509,
+      "end": 519
+    },
+    {
+      "source": "main.ssrg",
+      "start": 539,
+      "end": 559
+    },
+    {
+      "source": "main.ssrg",
+      "start": 676,
+      "end": 686
+    },
+    {
+      "source": "main.ssrg",
+      "start": 706,
+      "end": 726
+    },
+    {
+      "source": "main.ssrg",
+      "start": 850,
+      "end": 860
+    },
+    {
+      "source": "main.ssrg",
+      "start": 880,
+      "end": 890
+    },
+    {
+      "source": "main.ssrg",
+      "start": 956,
+      "end": 974
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1089,
+      "end": 1157
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1104,
+      "end": 1156
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1175,
+      "end": 1252
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1190,
+      "end": 1251
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1265,
+      "end": 1282
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1296,
+      "end": 1313
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1331,
+      "end": 1352
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1348,
+      "end": 1351
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1367,
+      "end": 1391
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1374,
+      "end": 1391
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1394,
+      "end": 1411
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1430,
+      "end": 1450
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1471,
+      "end": 1500
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1487,
+      "end": 1499
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1518,
+      "end": 1560
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1532,
+      "end": 1559
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1581,
+      "end": 1613
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1597,
+      "end": 1612
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1619,
+      "end": 1651
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1635,
+      "end": 1650
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1657,
+      "end": 1709
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1673,
+      "end": 1708
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1715,
+      "end": 1770
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1731,
+      "end": 1769
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1776,
+      "end": 1843
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1792,
+      "end": 1842
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1815,
+      "end": 1832
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1861,
+      "end": 1888
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1877,
+      "end": 1887
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1894,
+      "end": 1937
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1907,
+      "end": 1936
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1929,
+      "end": 1931
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1960,
+      "end": 2013
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1978,
+      "end": 2012
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1993,
+      "end": 2011
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2019,
+      "end": 2056
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2037,
+      "end": 2055
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2081,
+      "end": 2104
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2087,
+      "end": 2103
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2110,
+      "end": 2135
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2116,
+      "end": 2134
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2141,
+      "end": 2168
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2147,
+      "end": 2167
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2190,
+      "end": 2227
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2206,
+      "end": 2226
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2233,
+      "end": 2254
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2274,
+      "end": 2283
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2289,
+      "end": 2299
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2321,
+      "end": 2333
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2339,
+      "end": 2358
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2364,
+      "end": 2373
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2377,
+      "end": 2386
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2392,
+      "end": 2416
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2408,
+      "end": 2415
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2422,
+      "end": 2445
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2438,
+      "end": 2444
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2470,
+      "end": 2530
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2536,
+      "end": 2571
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2568,
+      "end": 2570
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2575,
+      "end": 2610
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2607,
+      "end": 2609
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2684,
+      "end": 2724
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2696,
+      "end": 2707
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2710,
+      "end": 2722
+    }
+  ],
   "runtimeRequirements": [
     "core.big-int.parse-error",
     "core.big-int",
@@ -316,11 +683,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_bigInt_fromInt",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "number",
-                  "value": "0"
+                  "kind": "identifier",
+                  "name": "$ssrg$source191"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_fromInt",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -419,24 +804,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_bigIntParseErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source351"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_bigIntParseErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -531,24 +934,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_bigIntDivisionErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source509"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_bigIntDivisionErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -576,11 +997,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_bigInt_format",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "value"
+                  "name": "$ssrg$source539"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_format",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -651,24 +1090,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_bigIntPowerErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source676"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_bigIntPowerErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -696,11 +1153,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_bigInt_format",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "value"
+                  "name": "$ssrg$source706"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_format",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -769,24 +1244,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_bigIntConversionErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source850"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_bigIntConversionErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -811,24 +1304,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_show_intShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source880"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "value"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           }
         ],
@@ -861,28 +1372,46 @@
       "body": {
         "kind": "decision",
         "scrutinee": {
-          "kind": "checked-result",
-          "value": {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_bigIntOrd"
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "$ssrg$source956"
             },
-            "method": "compare",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "left"
-              },
-              {
-                "kind": "identifier",
-                "name": "right"
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_bigIntOrd"
+                  },
+                  "method": "compare",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "left"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "right"
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "ordering"
+                }
               }
-            ]
-          },
-          "type": {
-            "kind": "ordering"
-          }
+            },
+            {
+              "kind": "boolean",
+              "value": false
+            }
+          ]
         },
         "scrutineeType": {
           "kind": "ordering"
@@ -955,18 +1484,54 @@
               "arguments": []
             },
             "initializer": {
-              "kind": "call",
-              "callee": "requireBigInt",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bigInt_parse",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "999999999999999999999999999999999999"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source1089"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "requireBigInt",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1104"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bigInt_parse",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "999999999999999999999999999999999999"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -985,22 +1550,58 @@
               "arguments": []
             },
             "initializer": {
-              "kind": "call",
-              "callee": "requireBigInt",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bigInt_parseRadix",
-                  "arguments": [
-                    {
-                      "kind": "number",
-                      "value": "10"
-                    },
-                    {
-                      "kind": "string",
-                      "value": "0999999999999999999999999999999999999"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source1175"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "requireBigInt",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1190"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bigInt_parseRadix",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "10"
+                                },
+                                {
+                                  "kind": "string",
+                                  "value": "0999999999999999999999999999999999999"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1020,11 +1621,29 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_bigInt_fromInt",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "number",
-                  "value": "2"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1265"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_fromInt",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "2"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1044,11 +1663,29 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_bigInt_fromInt",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "number",
-                  "value": "5"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1296"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_fromInt",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "5"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1068,21 +1705,43 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_bigInt_fromInt",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_int_subtract",
-                  "arguments": [
-                    {
-                      "kind": "number",
-                      "value": "0"
-                    },
-                    {
-                      "kind": "number",
-                      "value": "17"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source1331"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_fromInt",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int_subtract",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "0"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "17"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1348"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1101,46 +1760,118 @@
               "arguments": []
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_bigIntAdd"
-              },
-              "method": "add",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_bigIntMul"
-                  },
-                  "method": "mul",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "huge"
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_bigInt_fromInt",
-                      "arguments": [
-                        {
-                          "kind": "number",
-                          "value": "3"
-                        }
-                      ]
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source1367"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bigInt_fromInt",
-                  "arguments": [
-                    {
-                      "kind": "number",
-                      "value": "1"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_bigIntAdd"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1367"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_bigIntMul"
+                              },
+                              "method": "mul",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "huge"
+                                },
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source1374"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_bigInt_fromInt",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "3"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1394"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bigInt_fromInt",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "1"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1171,11 +1902,29 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_bigInt_format",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "exact"
+                        "name": "$ssrg$source1430"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_bigInt_format",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "exact"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1199,25 +1948,61 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_bigInt_format",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_bigIntSub"
-                        },
-                        "method": "sub",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "exact"
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "huge"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source1471"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_bigInt_format",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1487"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "dictionary-call",
+                                    "dictionary": {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_bigIntSub"
+                                    },
+                                    "method": "sub",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "exact"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "huge"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1240,22 +2025,58 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "renderResult",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_formatRadix",
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "16"
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "huge"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source1518"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderResult",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1532"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_bigInt_formatRadix",
+                                    "arguments": [
+                                      {
+                                        "kind": "number",
+                                        "value": "16"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "huge"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1303,25 +2124,61 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "_ssrg_bigInt_format",
+                                    "callee": "$ssrg$atSource",
                                     "arguments": [
                                       {
-                                        "kind": "dictionary-call",
-                                        "dictionary": {
-                                          "kind": "runtime-reference",
-                                          "name": "_ssrg_bigIntDiv"
-                                        },
-                                        "method": "div",
-                                        "arguments": [
-                                          {
-                                            "kind": "identifier",
-                                            "name": "negative"
-                                          },
-                                          {
-                                            "kind": "identifier",
-                                            "name": "five"
-                                          }
-                                        ]
+                                        "kind": "identifier",
+                                        "name": "$ssrg$source1581"
+                                      },
+                                      {
+                                        "kind": "lambda",
+                                        "parameter": "",
+                                        "body": {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_bigInt_format",
+                                          "arguments": [
+                                            {
+                                              "kind": "runtime-call",
+                                              "callee": "$ssrg$atSource",
+                                              "arguments": [
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "$ssrg$source1597"
+                                                },
+                                                {
+                                                  "kind": "lambda",
+                                                  "parameter": "",
+                                                  "body": {
+                                                    "kind": "dictionary-call",
+                                                    "dictionary": {
+                                                      "kind": "runtime-reference",
+                                                      "name": "_ssrg_bigIntDiv"
+                                                    },
+                                                    "method": "div",
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "identifier",
+                                                        "name": "negative"
+                                                      },
+                                                      {
+                                                        "kind": "identifier",
+                                                        "name": "five"
+                                                      }
+                                                    ]
+                                                  }
+                                                },
+                                                {
+                                                  "kind": "boolean",
+                                                  "value": false
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "boolean",
+                                        "value": false
                                       }
                                     ]
                                   }
@@ -1343,25 +2200,61 @@
                             "arguments": [
                               {
                                 "kind": "runtime-call",
-                                "callee": "_ssrg_bigInt_format",
+                                "callee": "$ssrg$atSource",
                                 "arguments": [
                                   {
-                                    "kind": "dictionary-call",
-                                    "dictionary": {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_bigIntRem"
-                                    },
-                                    "method": "rem",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "negative"
-                                      },
-                                      {
-                                        "kind": "identifier",
-                                        "name": "five"
-                                      }
-                                    ]
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1619"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_bigInt_format",
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "$ssrg$atSource",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "$ssrg$source1635"
+                                            },
+                                            {
+                                              "kind": "lambda",
+                                              "parameter": "",
+                                              "body": {
+                                                "kind": "dictionary-call",
+                                                "dictionary": {
+                                                  "kind": "runtime-reference",
+                                                  "name": "_ssrg_bigIntRem"
+                                                },
+                                                "method": "rem",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "negative"
+                                                  },
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "five"
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            {
+                                              "kind": "boolean",
+                                              "value": false
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
                                   }
                                 ]
                               }
@@ -1382,22 +2275,58 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "call",
-                            "callee": "renderDivision",
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
                             "arguments": [
                               {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_bigInt_checkedDivide",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "five"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "negative"
-                                  }
-                                ]
+                                "kind": "identifier",
+                                "name": "$ssrg$source1657"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "renderDivision",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source1673"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "runtime-call",
+                                            "callee": "_ssrg_bigInt_checkedDivide",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "five"
+                                              },
+                                              {
+                                                "kind": "identifier",
+                                                "name": "negative"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
                               }
                             ]
                           }
@@ -1418,22 +2347,58 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "renderDivision",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_bigInt_checkedRemainder",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "five"
-                              },
-                              {
-                                "kind": "identifier",
-                                "name": "negative"
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source1715"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "renderDivision",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source1731"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_bigInt_checkedRemainder",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "five"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "negative"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1454,28 +2419,82 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "renderDivision",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_checkedDivide",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_bigInt_fromInt",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              }
-                            ]
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "negative"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source1776"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderDivision",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1792"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_bigInt_checkedDivide",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source1815"
+                                          },
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "runtime-call",
+                                              "callee": "_ssrg_bigInt_fromInt",
+                                              "arguments": [
+                                                {
+                                                  "kind": "number",
+                                                  "value": "0"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "negative"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1505,25 +2524,61 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_format",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_bigIntPow"
-                            },
-                            "method": "pow",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "two"
-                              },
-                              {
-                                "kind": "number",
-                                "value": "100"
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source1861"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bigInt_format",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source1877"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "dictionary-call",
+                                        "dictionary": {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_bigIntPow"
+                                        },
+                                        "method": "pow",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "two"
+                                          },
+                                          {
+                                            "kind": "number",
+                                            "value": "100"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1544,32 +2599,72 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "renderPower",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_checkedPower",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_int_subtract",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              },
-                              {
-                                "kind": "number",
-                                "value": "1"
-                              }
-                            ]
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "two"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source1894"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderPower",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1907"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_bigInt_checkedPower",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_int_subtract",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "0"
+                                          },
+                                          {
+                                            "kind": "number",
+                                            "value": "1"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source1929"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "two"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1598,24 +2693,78 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "renderConversion",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_bigInt_toInt",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_bigInt_fromInt",
-                                "arguments": [
-                                  {
-                                    "kind": "number",
-                                    "value": "42"
-                                  }
-                                ]
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source1960"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "renderConversion",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source1978"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_bigInt_toInt",
+                                        "arguments": [
+                                          {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source1993"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "runtime-call",
+                                                  "callee": "_ssrg_bigInt_fromInt",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "number",
+                                                      "value": "42"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": false
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1636,18 +2785,54 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "renderConversion",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_toInt",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "huge"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source2019"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderConversion",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2037"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_bigInt_toInt",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "huge"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1682,52 +2867,88 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "checked-result",
-                            "value": {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "type-application-call",
-                                "callee": "_ssrg_show_eitherShow",
-                                "typeArguments": [
-                                  {
-                                    "kind": "reference",
-                                    "name": "BigIntParseError",
-                                    "arguments": []
-                                  },
-                                  {
-                                    "kind": "reference",
-                                    "name": "BigInt",
-                                    "arguments": []
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_bigIntParseErrorShow"
-                                  },
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_bigIntShow"
-                                  }
-                                ]
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source2081"
                               },
-                              "method": "show",
-                              "arguments": [
-                                {
-                                  "kind": "runtime-call",
-                                  "callee": "_ssrg_bigInt_parse",
-                                  "arguments": [
-                                    {
-                                      "kind": "string",
-                                      "value": ""
-                                    }
-                                  ]
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "checked-result",
+                                  "value": {
+                                    "kind": "dictionary-call",
+                                    "dictionary": {
+                                      "kind": "type-application-call",
+                                      "callee": "_ssrg_show_eitherShow",
+                                      "typeArguments": [
+                                        {
+                                          "kind": "reference",
+                                          "name": "BigIntParseError",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "reference",
+                                          "name": "BigInt",
+                                          "arguments": []
+                                        }
+                                      ],
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_bigIntParseErrorShow"
+                                        },
+                                        {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_bigIntShow"
+                                        }
+                                      ]
+                                    },
+                                    "method": "show",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source2087"
+                                          },
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "runtime-call",
+                                              "callee": "_ssrg_bigInt_parse",
+                                              "arguments": [
+                                                {
+                                                  "kind": "string",
+                                                  "value": ""
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "type": {
+                                    "kind": "string"
+                                  }
                                 }
-                              ]
-                            },
-                            "type": {
-                              "kind": "string"
-                            }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
                           }
                         ]
                       }
@@ -1746,52 +2967,88 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "_ssrg_show_eitherShow",
-                            "typeArguments": [
-                              {
-                                "kind": "reference",
-                                "name": "BigIntParseError",
-                                "arguments": []
-                              },
-                              {
-                                "kind": "reference",
-                                "name": "BigInt",
-                                "arguments": []
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_bigIntParseErrorShow"
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_bigIntShow"
-                              }
-                            ]
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source2110"
                           },
-                          "method": "show",
-                          "arguments": [
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_bigInt_parse",
-                              "arguments": [
-                                {
-                                  "kind": "string",
-                                  "value": "01"
-                                }
-                              ]
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "type-application-call",
+                                  "callee": "_ssrg_show_eitherShow",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "BigIntParseError",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "reference",
+                                      "name": "BigInt",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_bigIntParseErrorShow"
+                                    },
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_bigIntShow"
+                                    }
+                                  ]
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "$ssrg$atSource",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "$ssrg$source2116"
+                                      },
+                                      {
+                                        "kind": "lambda",
+                                        "parameter": "",
+                                        "body": {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_bigInt_parse",
+                                          "arguments": [
+                                            {
+                                              "kind": "string",
+                                              "value": "01"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "boolean",
+                                        "value": false
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
                             }
-                          ]
-                        },
-                        "type": {
-                          "kind": "string"
-                        }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
                       }
                     ]
                   }
@@ -1810,52 +3067,88 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "checked-result",
-                    "value": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_show_eitherShow",
-                        "typeArguments": [
-                          {
-                            "kind": "reference",
-                            "name": "BigIntParseError",
-                            "arguments": []
-                          },
-                          {
-                            "kind": "reference",
-                            "name": "BigInt",
-                            "arguments": []
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_bigIntParseErrorShow"
-                          },
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_bigIntShow"
-                          }
-                        ]
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source2141"
                       },
-                      "method": "show",
-                      "arguments": [
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_bigInt_parse",
-                          "arguments": [
-                            {
-                              "kind": "string",
-                              "value": "12é"
-                            }
-                          ]
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "_ssrg_show_eitherShow",
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "BigIntParseError",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "reference",
+                                  "name": "BigInt",
+                                  "arguments": []
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigIntParseErrorShow"
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigIntShow"
+                                }
+                              ]
+                            },
+                            "method": "show",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source2147"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_bigInt_parse",
+                                      "arguments": [
+                                        {
+                                          "kind": "string",
+                                          "value": "12é"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "string"
+                          }
                         }
-                      ]
-                    },
-                    "type": {
-                      "kind": "string"
-                    }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
                   }
                 ]
               }
@@ -1883,17 +3176,53 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_format",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_bigInt_abs",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "negative"
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source2190"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bigInt_format",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source2206"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_bigInt_abs",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "negative"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1915,11 +3244,29 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_bigInt_sign",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "negative"
+                        "name": "$ssrg$source2233"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_bigInt_sign",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "negative"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1948,24 +3295,42 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_bigIntShow"
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source2274"
                           },
-                          "method": "show",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "huge"
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigIntShow"
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "huge"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
                             }
-                          ]
-                        },
-                        "type": {
-                          "kind": "string"
-                        }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
                       }
                     ]
                   }
@@ -1984,24 +3349,42 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "checked-result",
-                    "value": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_bigIntDebug"
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source2289"
                       },
-                      "method": "debug",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "huge"
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_bigIntDebug"
+                            },
+                            "method": "debug",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "huge"
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "string"
+                          }
                         }
-                      ]
-                    },
-                    "type": {
-                      "kind": "string"
-                    }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
                   }
                 ]
               }
@@ -2046,20 +3429,38 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "dictionary-call",
-                                    "dictionary": {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_bigIntEq"
-                                    },
-                                    "method": "eq",
+                                    "kind": "runtime-call",
+                                    "callee": "$ssrg$atSource",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "huge"
+                                        "name": "$ssrg$source2321"
                                       },
                                       {
-                                        "kind": "identifier",
-                                        "name": "same"
+                                        "kind": "lambda",
+                                        "parameter": "",
+                                        "body": {
+                                          "kind": "dictionary-call",
+                                          "dictionary": {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_bigIntEq"
+                                          },
+                                          "method": "eq",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "huge"
+                                            },
+                                            {
+                                              "kind": "identifier",
+                                              "name": "same"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "boolean",
+                                        "value": false
                                       }
                                     ]
                                   }
@@ -2080,16 +3481,34 @@
                             "method": "show",
                             "arguments": [
                               {
-                                "kind": "call",
-                                "callee": "ordering",
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
                                 "arguments": [
                                   {
                                     "kind": "identifier",
-                                    "name": "huge"
+                                    "name": "$ssrg$source2339"
                                   },
                                   {
-                                    "kind": "identifier",
-                                    "name": "exact"
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "ordering",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "huge"
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "exact"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
                                   }
                                 ]
                               }
@@ -2110,52 +3529,106 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_int_eq_dictionary"
-                            },
-                            "method": "eq",
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
                             "arguments": [
                               {
-                                "kind": "checked-result",
-                                "value": {
+                                "kind": "identifier",
+                                "name": "$ssrg$source2364"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
                                   "kind": "dictionary-call",
                                   "dictionary": {
                                     "kind": "runtime-reference",
-                                    "name": "_ssrg_bigIntHash"
+                                    "name": "_ssrg_int_eq_dictionary"
                                   },
-                                  "method": "hash",
+                                  "method": "eq",
                                   "arguments": [
                                     {
-                                      "kind": "identifier",
-                                      "name": "huge"
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source2364"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "runtime-reference",
+                                                "name": "_ssrg_bigIntHash"
+                                              },
+                                              "method": "hash",
+                                              "arguments": [
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "huge"
+                                                }
+                                              ]
+                                            },
+                                            "type": {
+                                              "kind": "number"
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source2377"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "runtime-reference",
+                                                "name": "_ssrg_bigIntHash"
+                                              },
+                                              "method": "hash",
+                                              "arguments": [
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "same"
+                                                }
+                                              ]
+                                            },
+                                            "type": {
+                                              "kind": "number"
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
                                     }
                                   ]
-                                },
-                                "type": {
-                                  "kind": "number"
                                 }
                               },
                               {
-                                "kind": "checked-result",
-                                "value": {
-                                  "kind": "dictionary-call",
-                                  "dictionary": {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_bigIntHash"
-                                  },
-                                  "method": "hash",
-                                  "arguments": [
-                                    {
-                                      "kind": "identifier",
-                                      "name": "same"
-                                    }
-                                  ]
-                                },
-                                "type": {
-                                  "kind": "number"
-                                }
+                                "kind": "boolean",
+                                "value": false
                               }
                             ]
                           }
@@ -2177,28 +3650,64 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_format",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "checked-result",
-                            "value": {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_bigIntZero"
-                              },
-                              "method": "zero",
+                            "kind": "identifier",
+                            "name": "$ssrg$source2392"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bigInt_format",
                               "arguments": [
                                 {
-                                  "kind": "undefined"
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source2408"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "checked-result",
+                                        "value": {
+                                          "kind": "dictionary-call",
+                                          "dictionary": {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_bigIntZero"
+                                          },
+                                          "method": "zero",
+                                          "arguments": [
+                                            {
+                                              "kind": "undefined"
+                                            }
+                                          ]
+                                        },
+                                        "type": {
+                                          "kind": "reference",
+                                          "name": "BigInt",
+                                          "arguments": []
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
                                 }
                               ]
-                            },
-                            "type": {
-                              "kind": "reference",
-                              "name": "BigInt",
-                              "arguments": []
                             }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -2220,28 +3729,64 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_bigInt_format",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_bigIntOne"
-                          },
-                          "method": "one",
+                        "kind": "identifier",
+                        "name": "$ssrg$source2422"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_bigInt_format",
                           "arguments": [
                             {
-                              "kind": "undefined"
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2438"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_bigIntOne"
+                                      },
+                                      "method": "one",
+                                      "arguments": [
+                                        {
+                                          "kind": "undefined"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "kind": "reference",
+                                      "name": "BigInt",
+                                      "arguments": []
+                                    }
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
                             }
                           ]
-                        },
-                        "type": {
-                          "kind": "reference",
-                          "name": "BigInt",
-                          "arguments": []
                         }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -2270,20 +3815,38 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_bigIntDivisionErrorEq"
-                        },
-                        "method": "eq",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_bigInt_BigIntDivisionByZero"
+                            "kind": "identifier",
+                            "name": "$ssrg$source2470"
                           },
                           {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_bigInt_BigIntDivisionByZero"
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_bigIntDivisionErrorEq"
+                              },
+                              "method": "eq",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigInt_BigIntDivisionByZero"
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigInt_BigIntDivisionByZero"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -2304,52 +3867,114 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_bigIntPowerErrorEq"
-                    },
-                    "method": "eq",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_NegativeBigIntExponent",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_int_subtract",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              },
-                              {
-                                "kind": "number",
-                                "value": "1"
-                              }
-                            ]
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source2536"
                       },
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_NegativeBigIntExponent",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_int_subtract",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              },
-                              {
-                                "kind": "number",
-                                "value": "1"
-                              }
-                            ]
-                          }
-                        ]
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_bigIntPowerErrorEq"
+                          },
+                          "method": "eq",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2536"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_bigInt_NegativeBigIntExponent",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_int_subtract",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "0"
+                                          },
+                                          {
+                                            "kind": "number",
+                                            "value": "1"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source2568"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2575"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_bigInt_NegativeBigIntExponent",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_int_subtract",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "0"
+                                          },
+                                          {
+                                            "kind": "number",
+                                            "value": "1"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source2607"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -2381,86 +4006,140 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_collection_for_each",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_iterable"
+            "kind": "identifier",
+            "name": "$ssrg$source2684"
           },
           {
             "kind": "lambda",
-            "parameter": "$ssrg_for_value: string",
+            "parameter": "",
             "body": {
-              "kind": "decision",
-              "scrutinee": {
-                "kind": "identifier",
-                "name": "$ssrg_for_value"
-              },
-              "scrutineeType": {
-                "kind": "string"
-              },
-              "branches": [
+              "kind": "runtime-call",
+              "callee": "_ssrg_collection_for_each",
+              "arguments": [
                 {
-                  "tests": [],
-                  "bindings": [
-                    {
-                      "name": "line",
-                      "type": {
-                        "kind": "string"
-                      },
-                      "path": []
-                    }
-                  ],
-                  "value": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_console_println",
-                    "arguments": [
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "$ssrg_for_value: string",
+                  "body": {
+                    "kind": "decision",
+                    "scrutinee": {
+                      "kind": "identifier",
+                      "name": "$ssrg_for_value"
+                    },
+                    "scrutineeType": {
+                      "kind": "string"
+                    },
+                    "branches": [
                       {
-                        "kind": "identifier",
-                        "name": "line"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "type": {
-                "kind": "reference",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "fields": [
-                      {
-                        "name": "console",
-                        "optional": false,
-                        "type": {
-                          "kind": "reference",
-                          "name": "Console",
-                          "arguments": []
+                        "tests": [],
+                        "bindings": [
+                          {
+                            "name": "line",
+                            "type": {
+                              "kind": "string"
+                            },
+                            "path": []
+                          }
+                        ],
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "$ssrg$atSource",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "$ssrg$source2710"
+                            },
+                            {
+                              "kind": "lambda",
+                              "parameter": "",
+                              "body": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_console_println",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "line"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "boolean",
+                              "value": true
+                            }
+                          ]
                         }
                       }
-                    ]
-                  },
-                  {
-                    "kind": "reference",
-                    "name": "ConsoleError",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "undefined"
+                    ],
+                    "type": {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": [
+                            {
+                              "name": "console",
+                              "optional": false,
+                              "type": {
+                                "kind": "reference",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
                   }
-                ]
-              }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source2696"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "exercise",
+                        "arguments": [
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
             }
           },
           {
-            "kind": "call",
-            "callee": "exercise",
-            "arguments": [
-              {
-                "kind": "undefined"
-              }
-            ]
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

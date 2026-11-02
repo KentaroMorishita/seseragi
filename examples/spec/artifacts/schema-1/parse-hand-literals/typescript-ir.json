@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/parse-hand-literals",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 186,
+      "end": 197
+    },
+    {
+      "source": "main.ssrg",
+      "start": 213,
+      "end": 225
+    },
+    {
+      "source": "main.ssrg",
+      "start": 244,
+      "end": 259
+    },
+    {
+      "source": "main.ssrg",
+      "start": 273,
+      "end": 290
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string"
@@ -121,12 +143,30 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "Parsed",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "Rock"
+                  "name": "$ssrg$source186"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "Parsed",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Rock"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -140,12 +180,30 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "Parsed",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "Paper"
+                  "name": "$ssrg$source213"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "Parsed",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Paper"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -159,12 +217,30 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "Parsed",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "Scissors"
+                  "name": "$ssrg$source244"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "Parsed",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Scissors"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -181,12 +257,30 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "UnknownHand",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "other"
+                  "name": "$ssrg$source273"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "UnknownHand",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "other"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }

@@ -13,15 +13,20 @@
     "__ssrg$instance$Add$0",
     "__ssrg$instance$Eq$1",
     "total",
+    "$ssrg$atSource",
     "__ssrg$instance$Add$0",
     "render",
+    "$ssrg$atSource",
     "__ssrg$instance$Eq$1",
     "value",
     "intShow",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "total"
   ],
-  "mappings": ";;;;;;;;AAAAA;;;;AAKEC;AAGAC;AAIFC;AAGAE;AAQAI"
+  "mappings": ";;;;;;;;;;;;;;;;AAAAA;;;;AAKEC;AAGAC;AAIFC;AAGAG;AAQAK"
 }

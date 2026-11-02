@@ -2,6 +2,63 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/equality-operator-section",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 426,
+      "end": 444
+    },
+    {
+      "source": "main.ssrg",
+      "start": 545,
+      "end": 563
+    },
+    {
+      "source": "main.ssrg",
+      "start": 654,
+      "end": 672
+    },
+    {
+      "source": "main.ssrg",
+      "start": 736,
+      "end": 765
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1035,
+      "end": 1237
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1045,
+      "end": 1237
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1058,
+      "end": 1090
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1096,
+      "end": 1130
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1136,
+      "end": 1165
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1171,
+      "end": 1200
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1206,
+      "end": 1233
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.bool",
@@ -221,16 +278,34 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "compare",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "$ssrg$source426"
           },
           {
-            "kind": "identifier",
-            "name": "right"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -262,16 +337,34 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "compare",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "$ssrg$source545"
           },
           {
-            "kind": "identifier",
-            "name": "right"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -306,16 +399,34 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "compare",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "$ssrg$source654"
           },
           {
-            "kind": "identifier",
-            "name": "right"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -358,54 +469,72 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "applyEquality",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$0"
-              },
-              "method": "eq",
-              "arguments": []
-            },
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "reference",
-                "name": "T",
-                "arguments": []
-              },
-              "result": {
-                "kind": "function",
-                "parameter": {
+            "kind": "identifier",
+            "name": "$ssrg$source736"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "applyEquality",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "eq",
+                    "arguments": []
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "reference",
+                      "name": "T",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "reference",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "boolean"
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ],
+              "typeArguments": [
+                {
                   "kind": "reference",
                   "name": "T",
                   "arguments": []
-                },
-                "result": {
-                  "kind": "boolean"
                 }
-              }
+              ]
             }
           },
           {
-            "kind": "identifier",
-            "name": "left"
-          },
-          {
-            "kind": "identifier",
-            "name": "right"
-          }
-        ],
-        "typeArguments": [
-          {
-            "kind": "reference",
-            "name": "T",
-            "arguments": []
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -542,403 +671,529 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "call",
-                    "callee": "applyComparison",
-                    "arguments": [
-                      {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Eq$0"
-                          },
-                          "method": "eq",
-                          "arguments": []
-                        },
-                        "type": {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "reference",
-                            "name": "Status",
-                            "arguments": []
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "reference",
-                              "name": "Status",
-                              "arguments": []
-                            },
-                            "result": {
-                              "kind": "boolean"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "applyComparison",
-                    "arguments": [
-                      {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "sequence",
-                          "statements": [
-                            {
-                              "kind": "pure-let",
-                              "name": "__ssrg$equality$method",
-                              "type": {
-                                "kind": "function",
-                                "parameter": {
-                                  "kind": "reference",
-                                  "name": "Status",
-                                  "arguments": []
-                                },
-                                "result": {
-                                  "kind": "function",
-                                  "parameter": {
-                                    "kind": "reference",
-                                    "name": "Status",
-                                    "arguments": []
-                                  },
-                                  "result": {
-                                    "kind": "boolean"
-                                  }
-                                }
-                              },
-                              "initializer": {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "identifier",
-                                  "name": "__ssrg$instance$Eq$0"
-                                },
-                                "method": "eq",
-                                "arguments": []
-                              },
-                              "origin": {
-                                "source": "main.ssrg",
-                                "start": 1113,
-                                "end": 1115
-                              }
-                            }
-                          ],
-                          "result": {
-                            "kind": "lambda",
-                            "parameter": "__ssrg$equality$left: Status",
-                            "body": {
-                              "kind": "sequence",
-                              "statements": [
-                                {
-                                  "kind": "pure-let",
-                                  "name": "__ssrg$equality$stage",
-                                  "type": {
-                                    "kind": "function",
-                                    "parameter": {
-                                      "kind": "reference",
-                                      "name": "Status",
-                                      "arguments": []
-                                    },
-                                    "result": {
-                                      "kind": "boolean"
-                                    }
-                                  },
-                                  "initializer": {
-                                    "kind": "call",
-                                    "callee": "__ssrg$equality$method",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "__ssrg$equality$left"
-                                      }
-                                    ]
-                                  },
-                                  "origin": {
-                                    "source": "main.ssrg",
-                                    "start": 1113,
-                                    "end": 1115
-                                  }
-                                }
-                              ],
-                              "result": {
-                                "kind": "lambda",
-                                "parameter": "__ssrg$equality$right: Status",
-                                "body": {
-                                  "kind": "binary",
-                                  "operator": "===",
-                                  "left": {
-                                    "kind": "call",
-                                    "callee": "__ssrg$equality$stage",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "__ssrg$equality$right"
-                                      }
-                                    ]
-                                  },
-                                  "right": {
-                                    "kind": "boolean",
-                                    "value": false
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "type": {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "reference",
-                            "name": "Status",
-                            "arguments": []
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "reference",
-                              "name": "Status",
-                              "arguments": []
-                            },
-                            "result": {
-                              "kind": "boolean"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Waiting"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "applyIntComparison",
-                    "arguments": [
-                      {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
-                          },
-                          "method": "eq",
-                          "arguments": []
-                        },
-                        "type": {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "number"
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "number"
-                            },
-                            "result": {
-                              "kind": "boolean"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "kind": "number",
-                        "value": "42"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "42"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "applyIntComparison",
-                    "arguments": [
-                      {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "sequence",
-                          "statements": [
-                            {
-                              "kind": "pure-let",
-                              "name": "__ssrg$equality$method",
-                              "type": {
-                                "kind": "function",
-                                "parameter": {
-                                  "kind": "number"
-                                },
-                                "result": {
-                                  "kind": "function",
-                                  "parameter": {
-                                    "kind": "number"
-                                  },
-                                  "result": {
-                                    "kind": "boolean"
-                                  }
-                                }
-                              },
-                              "initializer": {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_int_eq_dictionary"
-                                },
-                                "method": "eq",
-                                "arguments": []
-                              },
-                              "origin": {
-                                "source": "main.ssrg",
-                                "start": 1191,
-                                "end": 1193
-                              }
-                            }
-                          ],
-                          "result": {
-                            "kind": "lambda",
-                            "parameter": "__ssrg$equality$left: number",
-                            "body": {
-                              "kind": "sequence",
-                              "statements": [
-                                {
-                                  "kind": "pure-let",
-                                  "name": "__ssrg$equality$stage",
-                                  "type": {
-                                    "kind": "function",
-                                    "parameter": {
-                                      "kind": "number"
-                                    },
-                                    "result": {
-                                      "kind": "boolean"
-                                    }
-                                  },
-                                  "initializer": {
-                                    "kind": "call",
-                                    "callee": "__ssrg$equality$method",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "__ssrg$equality$left"
-                                      }
-                                    ]
-                                  },
-                                  "origin": {
-                                    "source": "main.ssrg",
-                                    "start": 1191,
-                                    "end": 1193
-                                  }
-                                }
-                              ],
-                              "result": {
-                                "kind": "lambda",
-                                "parameter": "__ssrg$equality$right: number",
-                                "body": {
-                                  "kind": "binary",
-                                  "operator": "===",
-                                  "left": {
-                                    "kind": "call",
-                                    "callee": "__ssrg$equality$stage",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "__ssrg$equality$right"
-                                      }
-                                    ]
-                                  },
-                                  "right": {
-                                    "kind": "boolean",
-                                    "value": false
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        },
-                        "type": {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "number"
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "number"
-                            },
-                            "result": {
-                              "kind": "boolean"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "kind": "number",
-                        "value": "42"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "41"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "checked-result",
-                    "value": {
-                      "kind": "call",
-                      "callee": "genericSame",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "Waiting"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "Waiting"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "__ssrg$instance$Eq$0"
-                        }
-                      ],
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "Status",
-                          "arguments": []
-                        }
-                      ]
+            "kind": "identifier",
+            "name": "$ssrg$source1035"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source1045"
                     },
-                    "type": {
-                      "kind": "boolean"
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1058"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "applyComparison",
+                                      "arguments": [
+                                        {
+                                          "kind": "checked-result",
+                                          "value": {
+                                            "kind": "dictionary-call",
+                                            "dictionary": {
+                                              "kind": "identifier",
+                                              "name": "__ssrg$instance$Eq$0"
+                                            },
+                                            "method": "eq",
+                                            "arguments": []
+                                          },
+                                          "type": {
+                                            "kind": "function",
+                                            "parameter": {
+                                              "kind": "reference",
+                                              "name": "Status",
+                                              "arguments": []
+                                            },
+                                            "result": {
+                                              "kind": "function",
+                                              "parameter": {
+                                                "kind": "reference",
+                                                "name": "Status",
+                                                "arguments": []
+                                              },
+                                              "result": {
+                                                "kind": "boolean"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "Ready"
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "Ready"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1096"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "applyComparison",
+                                      "arguments": [
+                                        {
+                                          "kind": "checked-result",
+                                          "value": {
+                                            "kind": "sequence",
+                                            "statements": [
+                                              {
+                                                "kind": "pure-let",
+                                                "name": "__ssrg$equality$method",
+                                                "type": {
+                                                  "kind": "function",
+                                                  "parameter": {
+                                                    "kind": "reference",
+                                                    "name": "Status",
+                                                    "arguments": []
+                                                  },
+                                                  "result": {
+                                                    "kind": "function",
+                                                    "parameter": {
+                                                      "kind": "reference",
+                                                      "name": "Status",
+                                                      "arguments": []
+                                                    },
+                                                    "result": {
+                                                      "kind": "boolean"
+                                                    }
+                                                  }
+                                                },
+                                                "initializer": {
+                                                  "kind": "dictionary-call",
+                                                  "dictionary": {
+                                                    "kind": "identifier",
+                                                    "name": "__ssrg$instance$Eq$0"
+                                                  },
+                                                  "method": "eq",
+                                                  "arguments": []
+                                                },
+                                                "origin": {
+                                                  "source": "main.ssrg",
+                                                  "start": 1113,
+                                                  "end": 1115
+                                                }
+                                              }
+                                            ],
+                                            "result": {
+                                              "kind": "lambda",
+                                              "parameter": "__ssrg$equality$left: Status",
+                                              "body": {
+                                                "kind": "sequence",
+                                                "statements": [
+                                                  {
+                                                    "kind": "pure-let",
+                                                    "name": "__ssrg$equality$stage",
+                                                    "type": {
+                                                      "kind": "function",
+                                                      "parameter": {
+                                                        "kind": "reference",
+                                                        "name": "Status",
+                                                        "arguments": []
+                                                      },
+                                                      "result": {
+                                                        "kind": "boolean"
+                                                      }
+                                                    },
+                                                    "initializer": {
+                                                      "kind": "call",
+                                                      "callee": "__ssrg$equality$method",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "identifier",
+                                                          "name": "__ssrg$equality$left"
+                                                        }
+                                                      ]
+                                                    },
+                                                    "origin": {
+                                                      "source": "main.ssrg",
+                                                      "start": 1113,
+                                                      "end": 1115
+                                                    }
+                                                  }
+                                                ],
+                                                "result": {
+                                                  "kind": "lambda",
+                                                  "parameter": "__ssrg$equality$right: Status",
+                                                  "body": {
+                                                    "kind": "binary",
+                                                    "operator": "===",
+                                                    "left": {
+                                                      "kind": "call",
+                                                      "callee": "__ssrg$equality$stage",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "identifier",
+                                                          "name": "__ssrg$equality$right"
+                                                        }
+                                                      ]
+                                                    },
+                                                    "right": {
+                                                      "kind": "boolean",
+                                                      "value": false
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "type": {
+                                            "kind": "function",
+                                            "parameter": {
+                                              "kind": "reference",
+                                              "name": "Status",
+                                              "arguments": []
+                                            },
+                                            "result": {
+                                              "kind": "function",
+                                              "parameter": {
+                                                "kind": "reference",
+                                                "name": "Status",
+                                                "arguments": []
+                                              },
+                                              "result": {
+                                                "kind": "boolean"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "Ready"
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "Waiting"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1136"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "applyIntComparison",
+                                      "arguments": [
+                                        {
+                                          "kind": "checked-result",
+                                          "value": {
+                                            "kind": "dictionary-call",
+                                            "dictionary": {
+                                              "kind": "runtime-reference",
+                                              "name": "_ssrg_int_eq_dictionary"
+                                            },
+                                            "method": "eq",
+                                            "arguments": []
+                                          },
+                                          "type": {
+                                            "kind": "function",
+                                            "parameter": {
+                                              "kind": "number"
+                                            },
+                                            "result": {
+                                              "kind": "function",
+                                              "parameter": {
+                                                "kind": "number"
+                                              },
+                                              "result": {
+                                                "kind": "boolean"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "42"
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "42"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1171"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "applyIntComparison",
+                                      "arguments": [
+                                        {
+                                          "kind": "checked-result",
+                                          "value": {
+                                            "kind": "sequence",
+                                            "statements": [
+                                              {
+                                                "kind": "pure-let",
+                                                "name": "__ssrg$equality$method",
+                                                "type": {
+                                                  "kind": "function",
+                                                  "parameter": {
+                                                    "kind": "number"
+                                                  },
+                                                  "result": {
+                                                    "kind": "function",
+                                                    "parameter": {
+                                                      "kind": "number"
+                                                    },
+                                                    "result": {
+                                                      "kind": "boolean"
+                                                    }
+                                                  }
+                                                },
+                                                "initializer": {
+                                                  "kind": "dictionary-call",
+                                                  "dictionary": {
+                                                    "kind": "runtime-reference",
+                                                    "name": "_ssrg_int_eq_dictionary"
+                                                  },
+                                                  "method": "eq",
+                                                  "arguments": []
+                                                },
+                                                "origin": {
+                                                  "source": "main.ssrg",
+                                                  "start": 1191,
+                                                  "end": 1193
+                                                }
+                                              }
+                                            ],
+                                            "result": {
+                                              "kind": "lambda",
+                                              "parameter": "__ssrg$equality$left: number",
+                                              "body": {
+                                                "kind": "sequence",
+                                                "statements": [
+                                                  {
+                                                    "kind": "pure-let",
+                                                    "name": "__ssrg$equality$stage",
+                                                    "type": {
+                                                      "kind": "function",
+                                                      "parameter": {
+                                                        "kind": "number"
+                                                      },
+                                                      "result": {
+                                                        "kind": "boolean"
+                                                      }
+                                                    },
+                                                    "initializer": {
+                                                      "kind": "call",
+                                                      "callee": "__ssrg$equality$method",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "identifier",
+                                                          "name": "__ssrg$equality$left"
+                                                        }
+                                                      ]
+                                                    },
+                                                    "origin": {
+                                                      "source": "main.ssrg",
+                                                      "start": 1191,
+                                                      "end": 1193
+                                                    }
+                                                  }
+                                                ],
+                                                "result": {
+                                                  "kind": "lambda",
+                                                  "parameter": "__ssrg$equality$right: number",
+                                                  "body": {
+                                                    "kind": "binary",
+                                                    "operator": "===",
+                                                    "left": {
+                                                      "kind": "call",
+                                                      "callee": "__ssrg$equality$stage",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "identifier",
+                                                          "name": "__ssrg$equality$right"
+                                                        }
+                                                      ]
+                                                    },
+                                                    "right": {
+                                                      "kind": "boolean",
+                                                      "value": false
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "type": {
+                                            "kind": "function",
+                                            "parameter": {
+                                              "kind": "number"
+                                            },
+                                            "result": {
+                                              "kind": "function",
+                                              "parameter": {
+                                                "kind": "number"
+                                              },
+                                              "result": {
+                                                "kind": "boolean"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "42"
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "41"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1206"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "call",
+                                        "callee": "genericSame",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "Waiting"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "Waiting"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "__ssrg$instance$Eq$0"
+                                          }
+                                        ],
+                                        "typeArguments": [
+                                          {
+                                            "kind": "reference",
+                                            "name": "Status",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "boolean"
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
-                  }
-                ]
-              }
-            ]
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

@@ -11,22 +11,32 @@
   "names": [
     "main",
     "source",
+    "$ssrg$atSource",
     "make",
     "mirror",
+    "$ssrg$atSource",
     "make",
     "selected",
+    "$ssrg$atSource",
     "switchMap",
+    "$ssrg$atSource",
     "constant",
     "add",
     "subscription",
+    "$ssrg$atSource",
     "subscribe",
+    "$ssrg$atSource",
     "set",
+    "$ssrg$atSource",
     "set",
+    "$ssrg$atSource",
     "unsubscribe",
     "current",
+    "$ssrg$atSource",
     "read",
+    "$ssrg$atSource",
     "println",
     "intShow"
   ],
-  "mappings": ";;;;;;;;AAEAA"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;AAEAA"
 }

@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-validation::operations",
+  "runtimeSources": [
+    {
+      "source": "project/imported-validation/src/operations.ssrg",
+      "start": 304,
+      "end": 310
+    },
+    {
+      "source": "project/imported-validation/src/operations.ssrg",
+      "start": 438,
+      "end": 451
+    },
+    {
+      "source": "project/imported-validation/src/operations.ssrg",
+      "start": 535,
+      "end": 545
+    },
+    {
+      "source": "project/imported-validation/src/operations.ssrg",
+      "start": 631,
+      "end": 642
+    },
+    {
+      "source": "project/imported-validation/src/operations.ssrg",
+      "start": 751,
+      "end": 772
+    },
+    {
+      "source": "project/imported-validation/src/operations.ssrg",
+      "start": 864,
+      "end": 889
+    }
+  ],
   "runtimeRequirements": [
     "core.validation",
     "core.list",
@@ -757,16 +789,17 @@
           }
         ],
         "result": {
-          "kind": "checked-result",
-          "value": {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_validation_applicative"
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "$ssrg$source304"
             },
-            "method": "apply",
-            "arguments": [
-              {
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
                 "kind": "checked-result",
                 "value": {
                   "kind": "dictionary-call",
@@ -777,57 +810,134 @@
                   "method": "apply",
                   "arguments": [
                     {
-                      "kind": "checked-result",
-                      "value": {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_validation_applicative"
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source304"
                         },
-                        "method": "pure",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "f"
-                          }
-                        ]
-                      },
-                      "type": {
-                        "kind": "reference",
-                        "name": "Validation",
-                        "arguments": [
-                          {
-                            "kind": "reference",
-                            "name": "E",
-                            "arguments": []
-                          },
-                          {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "reference",
-                              "name": "A",
-                              "arguments": []
-                            },
-                            "result": {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "reference",
-                                "name": "B",
-                                "arguments": []
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_validation_applicative"
                               },
-                              "result": {
-                                "kind": "reference",
-                                "name": "C",
-                                "arguments": []
-                              }
+                              "method": "apply",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source304"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "checked-result",
+                                        "value": {
+                                          "kind": "dictionary-call",
+                                          "dictionary": {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_validation_applicative"
+                                          },
+                                          "method": "pure",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "f"
+                                            }
+                                          ]
+                                        },
+                                        "type": {
+                                          "kind": "reference",
+                                          "name": "Validation",
+                                          "arguments": [
+                                            {
+                                              "kind": "reference",
+                                              "name": "E",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "function",
+                                              "parameter": {
+                                                "kind": "reference",
+                                                "name": "A",
+                                                "arguments": []
+                                              },
+                                              "result": {
+                                                "kind": "function",
+                                                "parameter": {
+                                                  "kind": "reference",
+                                                  "name": "B",
+                                                  "arguments": []
+                                                },
+                                                "result": {
+                                                  "kind": "reference",
+                                                  "name": "C",
+                                                  "arguments": []
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "left"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "reference",
+                              "name": "Validation",
+                              "arguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "E",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "reference",
+                                    "name": "B",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "reference",
+                                    "name": "C",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
                             }
                           }
-                        ]
-                      }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
                     },
                     {
                       "kind": "identifier",
-                      "name": "left"
+                      "name": "right"
                     }
                   ]
                 },
@@ -841,43 +951,19 @@
                       "arguments": []
                     },
                     {
-                      "kind": "function",
-                      "parameter": {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
-                      },
-                      "result": {
-                        "kind": "reference",
-                        "name": "C",
-                        "arguments": []
-                      }
+                      "kind": "reference",
+                      "name": "C",
+                      "arguments": []
                     }
                   ]
                 }
-              },
-              {
-                "kind": "identifier",
-                "name": "right"
               }
-            ]
-          },
-          "type": {
-            "kind": "reference",
-            "name": "Validation",
-            "arguments": [
-              {
-                "kind": "reference",
-                "name": "E",
-                "arguments": []
-              },
-              {
-                "kind": "reference",
-                "name": "C",
-                "arguments": []
-              }
-            ]
-          }
+            },
+            {
+              "kind": "boolean",
+              "value": false
+            }
+          ]
         }
       },
       "origin": {
@@ -931,42 +1017,60 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_validation_eq",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "A",
-              "arguments": []
-            }
-          ],
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$0"
-            },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$1"
-            }
-          ]
-        },
-        "method": "eq",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "$ssrg$source438"
           },
           {
-            "kind": "identifier",
-            "name": "right"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_validation_eq",
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$1"
+                  }
+                ]
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -1016,46 +1120,64 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "_ssrg_show_validationShow",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "E",
-                "arguments": []
-              },
-              {
-                "kind": "reference",
-                "name": "A",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$0"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$1"
-              }
-            ]
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source535"
           },
-          "method": "show",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_validationShow",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$1"
+                    }
+                  ]
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "operations.ssrg",
@@ -1103,46 +1225,64 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "_ssrg_debug_validationDebug",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "E",
-                "arguments": []
-              },
-              {
-                "kind": "reference",
-                "name": "A",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$0"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$1"
-              }
-            ]
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source631"
           },
-          "method": "debug",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_debug_validationDebug",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$1"
+                    }
+                  ]
+                },
+                "method": "debug",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "operations.ssrg",
@@ -1243,11 +1383,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_non_empty_list_toList",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "items"
+                  "name": "$ssrg$source751"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_non_empty_list_toList",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "items"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -1285,11 +1443,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_validation_toEither",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source864"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_validation_toEither",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

@@ -1,8 +1,3 @@
-examples/tour/lessons/list-decomposition/diagnostic.ssrg:3:25: error[SES-T0201]: A required trait instance is not available
-  |   [head, ...tail] -> `${head}`
-  |                         ^^^^ no Show<unknown> instance matches the inferred call arguments
-  = note: Trait instances are selected from the current lexical and import scope.
-  = help: Define or import a matching instance, or use a type with an available instance.
 examples/tour/lessons/list-decomposition/diagnostic.ssrg:2:3: error[SES-T0101]: Match pattern type mismatch
   |   [] -> "empty"
   |   ^^ Array pattern requires a Array scrutinee

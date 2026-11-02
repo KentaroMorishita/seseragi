@@ -15,16 +15,24 @@
     "__ssrg$instance$Show$0",
     "main",
     "first",
+    "$ssrg$atSource",
     "mapError",
+    "$ssrg$atSource",
     "readHand",
     "second",
+    "$ssrg$atSource",
     "mapError",
+    "$ssrg$atSource",
     "readHand",
     "outcome",
+    "$ssrg$atSource",
     "decide",
+    "$ssrg$atSource",
     "mapError",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "renderOutcome"
   ],
-  "mappings": ";;;;;;;;AAGAA;;;AACIC;AACAC;AAFJC;AAIAC"
+  "mappings": ";;;;;;;;;;;;;;;;;AAGAA;;;AACIC;AACAC;AAFJC;AAIAC"
 }

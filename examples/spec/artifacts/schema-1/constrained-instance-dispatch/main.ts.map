@@ -14,11 +14,15 @@
     "__ssrg$instance$Ready$0",
     "__ssrg$instance$Render$1",
     "label",
+    "$ssrg$atSource",
     "__ssrg$instance$Render$1",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "label",
+    "$ssrg$atSource",
     "Just"
   ],
-  "mappings": ";;;;;AAAAA;;AACIC;AAUJC;AAIAC;AASAC;AAEAE"
+  "mappings": ";;;;;;;;;;;AAAAA;;AACIC;AAUJC;AAIAC;AASAC;AAEAG"
 }

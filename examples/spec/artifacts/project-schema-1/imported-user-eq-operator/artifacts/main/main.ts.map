@@ -10,15 +10,20 @@
   ],
   "names": [
     "same",
+    "$ssrg$atSource",
     "__ssrg$evidence$0",
     "different",
     "__ssrg$evidence$0",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "same",
+    "$ssrg$atSource",
     "different"
   ],
-  "mappings": ";;;;;AAEAA;AAIAE;AAIAE;AAMAC"
+  "mappings": ";;;;;;;;;;AAEAA;AAIAG;AAIAE;AAMAC"
 }

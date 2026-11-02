@@ -2,6 +2,68 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/todo-workflow",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 307,
+      "end": 334
+    },
+    {
+      "source": "main.ssrg",
+      "start": 475,
+      "end": 509
+    },
+    {
+      "source": "main.ssrg",
+      "start": 490,
+      "end": 501
+    },
+    {
+      "source": "main.ssrg",
+      "start": 613,
+      "end": 642
+    },
+    {
+      "source": "main.ssrg",
+      "start": 761,
+      "end": 794
+    },
+    {
+      "source": "main.ssrg",
+      "start": 773,
+      "end": 794
+    },
+    {
+      "source": "main.ssrg",
+      "start": 865,
+      "end": 938
+    },
+    {
+      "source": "main.ssrg",
+      "start": 959,
+      "end": 980
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1000,
+      "end": 1023
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1047,
+      "end": 1067
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1092,
+      "end": 1115
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1134,
+      "end": 1156
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.string",
@@ -203,33 +265,51 @@
         }
       ],
       "body": {
-        "kind": "type-application-call",
-        "callee": "_ssrg_array_append",
-        "typeArguments": [
-          {
-            "kind": "reference",
-            "name": "Todo",
-            "arguments": []
-          }
-        ],
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "array",
-            "elements": [
-              {
-                "kind": "identifier",
-                "name": "todo"
-              }
-            ],
-            "elementType": {
-              "kind": "reference",
-              "name": "Todo",
-              "arguments": []
+            "kind": "identifier",
+            "name": "$ssrg$source307"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_array_append",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "todo"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
             }
           },
           {
-            "kind": "identifier",
-            "name": "values"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -309,21 +389,57 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_array_filter",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "keepTodo",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "id"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source475"
           },
           {
-            "kind": "identifier",
-            "name": "values"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_array_filter",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source490"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "keepTodo",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "id"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -371,15 +487,33 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_array_filter",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "isUrgent"
+            "name": "$ssrg$source613"
           },
           {
-            "kind": "identifier",
-            "name": "values"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_array_filter",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "isUrgent"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -467,42 +601,78 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_collection_join",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_reducible"
+            "kind": "identifier",
+            "name": "$ssrg$source761"
           },
           {
-            "kind": "string",
-            "value": ", "
-          },
-          {
-            "kind": "checked-result",
-            "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_functor"
-              },
-              "method": "map",
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_collection_join",
               "arguments": [
                 {
-                  "kind": "identifier",
-                  "name": "renderTodo"
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_reducible"
                 },
                 {
-                  "kind": "identifier",
-                  "name": "values"
+                  "kind": "string",
+                  "value": ", "
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source773"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_array_functor"
+                          },
+                          "method": "map",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "renderTodo"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "values"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "array",
+                          "element": {
+                            "kind": "string"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
                 }
               ]
-            },
-            "type": {
-              "kind": "array",
-              "element": {
-                "kind": "string"
-              }
             }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -538,46 +708,64 @@
               }
             },
             "initializer": {
-              "kind": "call",
-              "callee": "addTodo",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "record",
-                  "items": [
-                    {
-                      "kind": "field",
-                      "name": "id",
-                      "value": {
-                        "kind": "number",
-                        "value": "3"
+                  "kind": "identifier",
+                  "name": "$ssrg$source865"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "addTodo",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "id",
+                            "value": {
+                              "kind": "number",
+                              "value": "3"
+                            }
+                          },
+                          {
+                            "kind": "field",
+                            "name": "title",
+                            "value": {
+                              "kind": "string",
+                              "value": "Review docs"
+                            }
+                          },
+                          {
+                            "kind": "field",
+                            "name": "urgent",
+                            "value": {
+                              "kind": "boolean",
+                              "value": true
+                            }
+                          }
+                        ],
+                        "assertedType": {
+                          "kind": "reference",
+                          "name": "Todo",
+                          "arguments": []
+                        }
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "initialTodos"
                       }
-                    },
-                    {
-                      "kind": "field",
-                      "name": "title",
-                      "value": {
-                        "kind": "string",
-                        "value": "Review docs"
-                      }
-                    },
-                    {
-                      "kind": "field",
-                      "name": "urgent",
-                      "value": {
-                        "kind": "boolean",
-                        "value": true
-                      }
-                    }
-                  ],
-                  "assertedType": {
-                    "kind": "reference",
-                    "name": "Todo",
-                    "arguments": []
+                    ]
                   }
                 },
                 {
-                  "kind": "identifier",
-                  "name": "initialTodos"
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -599,16 +787,34 @@
               }
             },
             "initializer": {
-              "kind": "call",
-              "callee": "removeTodo",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "number",
-                  "value": "2"
+                  "kind": "identifier",
+                  "name": "$ssrg$source959"
                 },
                 {
-                  "kind": "identifier",
-                  "name": "afterAdd"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "removeTodo",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "afterAdd"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -630,12 +836,30 @@
               }
             },
             "initializer": {
-              "kind": "call",
-              "callee": "urgentTodos",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "afterRemove"
+                  "name": "$ssrg$source1000"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "urgentTodos",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "afterRemove"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -665,12 +889,30 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "renderTodos",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "afterAdd"
+                        "name": "$ssrg$source1047"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderTodos",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "afterAdd"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -693,12 +935,30 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "renderTodos",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "afterRemove"
+                        "name": "$ssrg$source1092"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderTodos",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "afterRemove"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -721,12 +981,30 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "renderTodos",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "urgentOnly"
+                        "name": "$ssrg$source1134"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderTodos",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "urgentOnly"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }

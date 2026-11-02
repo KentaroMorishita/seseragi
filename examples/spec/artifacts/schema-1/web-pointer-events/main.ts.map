@@ -15,15 +15,21 @@
     "PointerKind",
     "Scrolled",
     "mouseAction",
+    "$ssrg$atSource",
     "DispatchPreventDefault",
+    "$ssrg$atSource",
     "MouseButton",
     "pointerAction",
+    "$ssrg$atSource",
     "DispatchStopPropagation",
+    "$ssrg$atSource",
     "PointerKind",
     "scrollAction",
+    "$ssrg$atSource",
     "DispatchPreventDefaultAndStop",
     "view",
+    "$ssrg$atSource",
     "div"
   ],
-  "mappings": ";;;;AAEAA;;;;;AACIC;AACAC;AACAC;AACAC;AAEJC;AAGAG;AAGAG;AAGAE"
+  "mappings": ";;;;;;;;;;;AAEAA;;;;;AACIC;AACAC;AACAC;AACAC;AAEJC;AAGAK;AAGAK;AAGAG"
 }

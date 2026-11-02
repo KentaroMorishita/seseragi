@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/rps-domain-split::main",
+  "runtimeSources": [
+    {
+      "source": "project/rock-paper-scissors-domain-split/src/main.ssrg",
+      "start": 266,
+      "end": 301
+    },
+    {
+      "source": "project/rock-paper-scissors-domain-split/src/main.ssrg",
+      "start": 281,
+      "end": 300
+    },
+    {
+      "source": "project/rock-paper-scissors-domain-split/src/main.ssrg",
+      "start": 350,
+      "end": 408
+    },
+    {
+      "source": "project/rock-paper-scissors-domain-split/src/main.ssrg",
+      "start": 360,
+      "end": 407
+    },
+    {
+      "source": "project/rock-paper-scissors-domain-split/src/main.ssrg",
+      "start": 375,
+      "end": 406
+    },
+    {
+      "source": "project/rock-paper-scissors-domain-split/src/main.ssrg",
+      "start": 385,
+      "end": 405
+    }
+  ],
   "runtimeRequirements": [
     "core.bool",
     "core.adt",
@@ -217,22 +249,58 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "renderOutcome",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "decide",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "first"
-              },
-              {
-                "kind": "identifier",
-                "name": "second"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source266"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "renderOutcome",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source281"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "decide",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "first"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "second"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -254,46 +322,118 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "identity",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "renderOutcome",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "identity",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "decide",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "Rock"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Scissors"
-                      }
-                    ]
-                  }
-                ],
-                "typeArguments": [
-                  {
-                    "kind": "reference",
-                    "name": "Outcome",
-                    "arguments": []
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "typeArguments": [
+            "kind": "identifier",
+            "name": "$ssrg$source350"
+          },
           {
-            "kind": "string"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "identity",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source360"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "renderOutcome",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source375"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "identity",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source385"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "call",
+                                            "callee": "decide",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "Rock"
+                                              },
+                                              {
+                                                "kind": "identifier",
+                                                "name": "Scissors"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "Outcome",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "string"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

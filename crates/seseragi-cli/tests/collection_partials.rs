@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs,
     path::Path,
@@ -83,13 +87,19 @@ fn verify_exit(source: &str, expected: &str, exit: i32) {
                 "{profile}/{engine}: {output:?}"
             );
             assert_eq!(output.stdout, expected.as_bytes(), "{profile}/{engine}");
+            let expected_stderr = if exit == 0 {
+                String::new()
+            } else {
+                diagnostics::defect_at_source(
+                    &input,
+                    source,
+                    "9007199254740991 + 1",
+                    "Seseragi Int overflow",
+                )
+            };
             assert_eq!(
                 output.stderr,
-                if exit == 0 {
-                    b"".as_slice()
-                } else {
-                    b"seseragi: runtime defect\n".as_slice()
-                },
+                expected_stderr.as_bytes(),
                 "{profile}/{engine}"
             );
         }
@@ -119,6 +129,24 @@ struct Case<'a> {
     result: &'a str,
     stdout: &'a str,
     effect: bool,
+}
+
+#[test]
+fn constrained_collection_factories_keep_inferred_types_before_dictionary_arguments() {
+    verify(
+        include_str!("../../../examples/spec/artifacts/schema-1/map-set/main.ssrg"),
+        include_str!("../../../examples/spec/artifacts/execution-schema-1/map-set/stdout.txt"),
+    );
+    verify(
+        include_str!("../../../examples/spec/artifacts/schema-1/monoid-wrappers/main.ssrg"),
+        include_str!("../../../examples/spec/fixtures/projects/monoid-wrappers/expected.stdout"),
+    );
+    verify(
+        include_str!("../../../examples/spec/artifacts/schema-1/array-list-apis/main.ssrg"),
+        include_str!(
+            "../../../examples/spec/artifacts/execution-schema-1/array-list-apis/stdout.txt"
+        ),
+    );
 }
 
 #[test]

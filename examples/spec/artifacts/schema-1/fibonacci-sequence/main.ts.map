@@ -11,17 +11,22 @@
   "names": [
     "fibonacci",
     "loop",
+    "$ssrg$atSource",
     "intEq",
+    "$ssrg$atSource",
     "loop",
     "subtract",
     "add",
+    "$ssrg$atSource",
     "loop",
     "fibonacciLines",
     "_ssrg_range_comprehend",
+    "$ssrg$atSource",
     "inclusive",
     "intShow",
     "intShow",
+    "$ssrg$atSource",
     "fibonacci"
   ],
-  "mappings": ";;;;;;;AAAAA;AAUAO"
+  "mappings": ";;;;;;;;;;;;;;;AAAAA;AAUAU"
 }

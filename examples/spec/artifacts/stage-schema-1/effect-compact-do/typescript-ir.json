@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-compact-do",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 28,
+      "end": 43
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.console.println",
@@ -27,11 +34,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "string",
-            "value": "hello"
+            "kind": "identifier",
+            "name": "$ssrg$source28"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "hello"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

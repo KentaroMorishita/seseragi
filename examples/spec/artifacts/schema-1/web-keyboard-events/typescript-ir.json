@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/web-keyboard-events",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 185,
+      "end": 262
+    },
+    {
+      "source": "main.ssrg",
+      "start": 241,
+      "end": 261
+    },
+    {
+      "source": "main.ssrg",
+      "start": 359,
+      "end": 379
+    },
+    {
+      "source": "main.ssrg",
+      "start": 507,
+      "end": 676
+    },
+    {
+      "source": "main.ssrg",
+      "start": 742,
+      "end": 841
+    },
+    {
+      "source": "main.ssrg",
+      "start": 792,
+      "end": 806
+    }
+  ],
   "runtimeRequirements": [
     "web.html.keyboard-event-type",
     "web.html.event-action-type",
@@ -118,36 +150,72 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_Dispatch",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "conditional",
-            "condition": {
-              "kind": "field-access",
-              "receiver": {
-                "kind": "identifier",
-                "name": "event"
-              },
-              "field": "controlKey"
-            },
-            "thenBranch": {
-              "kind": "identifier",
-              "name": "ControlKey"
-            },
-            "elseBranch": {
-              "kind": "call",
-              "callee": "KeyPressed",
+            "kind": "identifier",
+            "name": "$ssrg$source185"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_Dispatch",
               "arguments": [
                 {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "event"
+                  "kind": "conditional",
+                  "condition": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "event"
+                    },
+                    "field": "controlKey"
                   },
-                  "field": "key"
+                  "thenBranch": {
+                    "kind": "identifier",
+                    "name": "ControlKey"
+                  },
+                  "elseBranch": {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source241"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "KeyPressed",
+                          "arguments": [
+                            {
+                              "kind": "field-access",
+                              "receiver": {
+                                "kind": "identifier",
+                                "name": "event"
+                              },
+                              "field": "key"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  }
                 }
               ]
             }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -175,11 +243,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_Dispatch",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "action"
+            "name": "$ssrg$source359"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_Dispatch",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "action"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -223,60 +309,78 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_button",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "id",
-                "value": {
-                  "kind": "string",
-                  "value": "keyboard-target"
+            "kind": "identifier",
+            "name": "$ssrg$source507"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_button",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "id",
+                      "value": {
+                        "kind": "string",
+                        "value": "keyboard-target"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onFocus",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "Focused"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onBlur",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "Blurred"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onKeyDown",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "keyAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onKeyUp",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "ignoreKey"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "string",
+                        "value": "Keyboard target"
+                      }
+                    }
+                  ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "onFocus",
-                "value": {
-                  "kind": "identifier",
-                  "name": "Focused"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onBlur",
-                "value": {
-                  "kind": "identifier",
-                  "name": "Blurred"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onKeyDown",
-                "value": {
-                  "kind": "identifier",
-                  "name": "keyAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onKeyUp",
-                "value": {
-                  "kind": "identifier",
-                  "name": "ignoreKey"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "string",
-                  "value": "Keyboard target"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -299,42 +403,78 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_button",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "onFocus",
-                "value": {
-                  "kind": "identifier",
-                  "name": "action"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onKeyDown",
-                "value": {
-                  "kind": "call",
-                  "callee": "taskKey",
-                  "arguments": [
+            "kind": "identifier",
+            "name": "$ssrg$source742"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_button",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "identifier",
-                      "name": "action"
+                      "kind": "field",
+                      "name": "onFocus",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "action"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onKeyDown",
+                      "value": {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source792"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "taskKey",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "action"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "string",
+                        "value": "Effect target"
+                      }
                     }
                   ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "string",
-                  "value": "Effect target"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

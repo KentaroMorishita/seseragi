@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-custom-infix-operator::operators",
+  "runtimeSources": [
+    {
+      "source": "project/imported-custom-infix-operator/src/operators.ssrg",
+      "start": 63,
+      "end": 75
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.subtract"
@@ -40,6 +47,10 @@
           {
             "kind": "identifier",
             "name": "right"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source63"
           }
         ]
       },

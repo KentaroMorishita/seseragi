@@ -9,10 +9,13 @@
   },
   "invocation": {
     "argument": "Unit",
-    "pure": { "result": "json" }
+    "pure": {
+      "result": "json"
+    }
   },
   "expected": {
     "runtimeRequirements": [
+      "core.list",
       "core.int.zero-dictionary",
       "core.int.add-dictionary",
       "core.collection.sum",
@@ -20,7 +23,6 @@
       "core.unit",
       "core.array.reducible",
       "core.list.reducible",
-      "core.list",
       "core.list.from-array",
       "core.range.reducible",
       "core.range",
@@ -28,7 +30,9 @@
       "core.string",
       "core.int.show"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt"
   }

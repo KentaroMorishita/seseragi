@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-inherent-method::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-inherent-method/src/domain.ssrg",
+      "start": 189,
+      "end": 209
+    }
+  ],
   "higherKinds": {
     "constructors": [
       {
@@ -136,44 +143,62 @@
             "kind": "field",
             "name": "value",
             "value": {
-              "kind": "call",
-              "callee": "transform",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "field-access",
-                    "receiver": {
-                      "kind": "checked-result",
-                      "value": {
+                  "kind": "identifier",
+                  "name": "$ssrg$source189"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "transform",
+                    "arguments": [
+                      {
                         "kind": "checked-result",
                         "value": {
-                          "kind": "identifier",
-                          "name": "self"
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "self"
+                              },
+                              "type": {
+                                "kind": "unknown"
+                              }
+                            },
+                            "type": {
+                              "kind": "reference",
+                              "name": "__ssrg$representation$Box",
+                              "arguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "field": "value"
                         },
                         "type": {
-                          "kind": "unknown"
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
                         }
-                      },
-                      "type": {
-                        "kind": "reference",
-                        "name": "__ssrg$representation$Box",
-                        "arguments": [
-                          {
-                            "kind": "reference",
-                            "name": "A",
-                            "arguments": []
-                          }
-                        ]
                       }
-                    },
-                    "field": "value"
-                  },
-                  "type": {
-                    "kind": "reference",
-                    "name": "A",
-                    "arguments": []
+                    ]
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }

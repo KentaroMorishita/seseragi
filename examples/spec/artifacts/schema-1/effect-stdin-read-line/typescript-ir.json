@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-stdin-read-line",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 41,
+      "end": 52
+    },
+    {
+      "source": "main.ssrg",
+      "start": 67,
+      "end": 78
+    },
+    {
+      "source": "main.ssrg",
+      "start": 83,
+      "end": 93
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.core.flatMap",
@@ -50,8 +67,26 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_stdin_readLine",
-              "arguments": []
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source41"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_stdin_readLine",
+                    "arguments": []
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
+                }
+              ]
             },
             "origin": {
               "source": "main.ssrg",
@@ -70,8 +105,26 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_stdin_readLine",
-              "arguments": []
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source67"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_stdin_readLine",
+                    "arguments": []
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
+                }
+              ]
             },
             "origin": {
               "source": "main.ssrg",
@@ -82,10 +135,28 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_succeed",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "undefined"
+              "kind": "identifier",
+              "name": "$ssrg$source83"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_succeed",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

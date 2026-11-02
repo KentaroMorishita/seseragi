@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.141] - 2026-11-02
+
+### Added
+
+- TS programs report runtime defects with the original `.ssrg` file, line and column, using the same package-relative paths as the native target. Self-recursive tail calls stay stack-safe.
+- A crash inside lowering is reported as an internal compiler error diagnostic (`SES-I0001`) instead of aborting the compiler.
+
+### Changed
+
+- The project crate's standard module definitions are split into one file per module.
+
 ## [0.61.140] - 2026-11-02
 
 ### Fixed

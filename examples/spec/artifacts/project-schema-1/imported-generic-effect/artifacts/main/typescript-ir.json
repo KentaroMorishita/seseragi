@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-generic-effect::main",
+  "runtimeSources": [
+    {
+      "source": "project/imported-generic-effect/src/main.ssrg",
+      "start": 60,
+      "end": 85
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.string.show",
@@ -52,21 +59,39 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "announce",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "string",
-            "value": "generic effect"
+            "kind": "identifier",
+            "name": "$ssrg$source60"
           },
           {
-            "kind": "runtime-reference",
-            "name": "_ssrg_show_stringShow"
-          }
-        ],
-        "typeArguments": [
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "announce",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "generic effect"
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "string"
+                }
+              ]
+            }
+          },
           {
-            "kind": "string"
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

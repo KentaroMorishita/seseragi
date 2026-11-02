@@ -10,6 +10,7 @@
     "requirements": [
       "core.sum.type",
       "core.product.type",
+      "core.list",
       "core.unit",
       "core.int",
       "core.int.subtract",
@@ -30,7 +31,6 @@
       "core.int.one-dictionary",
       "core.int.mul-dictionary",
       "core.product.monoid",
-      "core.list",
       "core.list.from-array",
       "core.product.constructor",
       "core.sum.semigroup"

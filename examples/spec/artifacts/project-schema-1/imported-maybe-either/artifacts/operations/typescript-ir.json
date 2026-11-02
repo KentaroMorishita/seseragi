@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-maybe-either::operations",
+  "runtimeSources": [
+    {
+      "source": "project/imported-maybe-either/src/operations.ssrg",
+      "start": 156,
+      "end": 177
+    },
+    {
+      "source": "project/imported-maybe-either/src/operations.ssrg",
+      "start": 281,
+      "end": 303
+    },
+    {
+      "source": "project/imported-maybe-either/src/operations.ssrg",
+      "start": 386,
+      "end": 400
+    }
+  ],
   "higherKinds": {
     "constructors": [],
     "partials": [],
@@ -72,15 +89,33 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_maybe_sequence",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "__ssrg$evidence$0"
+            "name": "$ssrg$source156"
           },
           {
-            "kind": "identifier",
-            "name": "values"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_maybe_sequence",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -124,15 +159,33 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_either_sequence",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "__ssrg$evidence$0"
+            "name": "$ssrg$source281"
           },
           {
-            "kind": "identifier",
-            "name": "values"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_sequence",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -171,32 +224,50 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_collection_combine",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_reducible"
-          },
-          {
-            "kind": "type-application-call",
-            "callee": "_ssrg_maybe_monoid",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "A",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$0"
-              }
-            ]
-          },
-          {
             "kind": "identifier",
-            "name": "values"
+            "name": "$ssrg$source386"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_collection_combine",
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_reducible"
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_maybe_monoid",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

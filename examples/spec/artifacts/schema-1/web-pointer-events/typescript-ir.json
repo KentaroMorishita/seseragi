@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/web-pointer-events",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 191,
+      "end": 245
+    },
+    {
+      "source": "main.ssrg",
+      "start": 220,
+      "end": 244
+    },
+    {
+      "source": "main.ssrg",
+      "start": 321,
+      "end": 381
+    },
+    {
+      "source": "main.ssrg",
+      "start": 351,
+      "end": 380
+    },
+    {
+      "source": "main.ssrg",
+      "start": 455,
+      "end": 498
+    },
+    {
+      "source": "main.ssrg",
+      "start": 537,
+      "end": 883
+    }
+  ],
   "runtimeRequirements": [
     "web.html.mouse-event-type",
     "web.html.event-action-type",
@@ -132,21 +164,57 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_DispatchPreventDefault",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "MouseButton",
-            "arguments": [
-              {
-                "kind": "field-access",
-                "receiver": {
-                  "kind": "identifier",
-                  "name": "event"
-                },
-                "field": "button"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source191"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_DispatchPreventDefault",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source220"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "MouseButton",
+                        "arguments": [
+                          {
+                            "kind": "field-access",
+                            "receiver": {
+                              "kind": "identifier",
+                              "name": "event"
+                            },
+                            "field": "button"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -169,21 +237,57 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_DispatchStopPropagation",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "PointerKind",
-            "arguments": [
-              {
-                "kind": "field-access",
-                "receiver": {
-                  "kind": "identifier",
-                  "name": "event"
-                },
-                "field": "pointerType"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source321"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_DispatchStopPropagation",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source351"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "PointerKind",
+                        "arguments": [
+                          {
+                            "kind": "field-access",
+                            "receiver": {
+                              "kind": "identifier",
+                              "name": "event"
+                            },
+                            "field": "pointerType"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -206,11 +310,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_DispatchPreventDefaultAndStop",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "Scrolled"
+            "name": "$ssrg$source455"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_DispatchPreventDefaultAndStop",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Scrolled"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -233,100 +355,118 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_div",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "onClick",
-                "value": {
-                  "kind": "identifier",
-                  "name": "Clicked"
+            "kind": "identifier",
+            "name": "$ssrg$source537"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_div",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "onClick",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "Clicked"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "preventClickDefault",
+                      "value": {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "stopClickPropagation",
+                      "value": {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onMouseDown",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "mouseAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onMouseUp",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "mouseAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onPointerDown",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "pointerAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onPointerUp",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "pointerAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onDoubleClick",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "mouseAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onContextMenu",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "mouseAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onScroll",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "scrollAction"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "string",
+                        "value": "Pointer target"
+                      }
+                    }
+                  ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "preventClickDefault",
-                "value": {
-                  "kind": "boolean",
-                  "value": true
-                }
-              },
-              {
-                "kind": "field",
-                "name": "stopClickPropagation",
-                "value": {
-                  "kind": "boolean",
-                  "value": true
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onMouseDown",
-                "value": {
-                  "kind": "identifier",
-                  "name": "mouseAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onMouseUp",
-                "value": {
-                  "kind": "identifier",
-                  "name": "mouseAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onPointerDown",
-                "value": {
-                  "kind": "identifier",
-                  "name": "pointerAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onPointerUp",
-                "value": {
-                  "kind": "identifier",
-                  "name": "pointerAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onDoubleClick",
-                "value": {
-                  "kind": "identifier",
-                  "name": "mouseAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onContextMenu",
-                "value": {
-                  "kind": "identifier",
-                  "name": "mouseAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onScroll",
-                "value": {
-                  "kind": "identifier",
-                  "name": "scrollAction"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "string",
-                  "value": "Pointer target"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

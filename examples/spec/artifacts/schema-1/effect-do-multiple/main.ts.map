@@ -10,8 +10,10 @@
   ],
   "names": [
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "println"
   ],
-  "mappings": ";;;;;AAAAA"
+  "mappings": ";;;;;;;;AAAAA"
 }

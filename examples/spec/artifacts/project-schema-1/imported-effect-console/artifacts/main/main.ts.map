@@ -10,7 +10,8 @@
   ],
   "names": [
     "main",
+    "$ssrg$atSource",
     "announce"
   ],
-  "mappings": ";;;;AAEAA"
+  "mappings": ";;;;;;AAEAA"
 }

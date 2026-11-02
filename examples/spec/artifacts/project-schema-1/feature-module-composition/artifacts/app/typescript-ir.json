@@ -2,6 +2,103 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/feature-module-composition::app",
+  "runtimeSources": [
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 570,
+      "end": 588
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 695,
+      "end": 731
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 711,
+      "end": 724
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 941,
+      "end": 1163
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 978,
+      "end": 1081
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1009,
+      "end": 1035
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1089,
+      "end": 1153
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1126,
+      "end": 1149
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1398,
+      "end": 1448
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1614,
+      "end": 1654
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1668,
+      "end": 1693
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1708,
+      "end": 1733
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1746,
+      "end": 1759
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1775,
+      "end": 1814
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1788,
+      "end": 1804
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1833,
+      "end": 1845
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1897,
+      "end": 1913
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1990,
+      "end": 2044
+    },
+    {
+      "source": "project/feature-module-composition/src/app.ssrg",
+      "start": 1999,
+      "end": 2020
+    }
+  ],
   "runtimeRequirements": [
     "signal.mutable-type",
     "effect.core.type",
@@ -356,16 +453,34 @@
                   "kind": "field",
                   "name": "theme",
                   "value": {
-                    "kind": "call",
-                    "callee": "toggle",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "identifier",
-                          "name": "state"
-                        },
-                        "field": "theme"
+                        "kind": "identifier",
+                        "name": "$ssrg$source570"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "toggle",
+                          "arguments": [
+                            {
+                              "kind": "field-access",
+                              "receiver": {
+                                "kind": "identifier",
+                                "name": "state"
+                              },
+                              "field": "theme"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -409,21 +524,57 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_signal_update",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "update",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "action"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source695"
           },
           {
-            "kind": "identifier",
-            "name": "state"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_update",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source711"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "update",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "action"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },
@@ -505,127 +656,217 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_section",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "array",
-                  "elements": [
+            "kind": "identifier",
+            "name": "$ssrg$source941"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_section",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "call",
-                                "callee": "dispatch",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "state"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "ToggleTheme"
-                                  }
-                                ]
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "Toggle app theme"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_h1",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "binary",
-                                "operator": "+",
-                                "left": {
-                                  "kind": "string",
-                                  "value": "Feature tree: "
-                                },
-                                "right": {
-                                  "kind": "dictionary-call",
-                                  "dictionary": {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_show_stringShow"
-                                  },
-                                  "method": "show",
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source978"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_button",
                                   "arguments": [
                                     {
-                                      "kind": "call",
-                                      "callee": "themeName",
-                                      "arguments": [
+                                      "kind": "record",
+                                      "items": [
                                         {
-                                          "kind": "field-access",
-                                          "receiver": {
-                                            "kind": "identifier",
-                                            "name": "current"
-                                          },
-                                          "field": "theme"
+                                          "kind": "field",
+                                          "name": "onClick",
+                                          "value": {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source1009"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "call",
+                                                  "callee": "dispatch",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "state"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "ToggleTheme"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": true
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "Toggle app theme"
+                                          }
                                         }
                                       ]
                                     }
                                   ]
                                 }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
                               }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source1089"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_h1",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "binary",
+                                            "operator": "+",
+                                            "left": {
+                                              "kind": "string",
+                                              "value": "Feature tree: "
+                                            },
+                                            "right": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "runtime-reference",
+                                                "name": "_ssrg_show_stringShow"
+                                              },
+                                              "method": "show",
+                                              "arguments": [
+                                                {
+                                                  "kind": "runtime-call",
+                                                  "callee": "$ssrg$atSource",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "$ssrg$source1126"
+                                                    },
+                                                    {
+                                                      "kind": "lambda",
+                                                      "parameter": "",
+                                                      "body": {
+                                                        "kind": "call",
+                                                        "callee": "themeName",
+                                                        "arguments": [
+                                                          {
+                                                            "kind": "field-access",
+                                                            "receiver": {
+                                                              "kind": "identifier",
+                                                              "name": "current"
+                                                            },
+                                                            "field": "theme"
+                                                          }
+                                                        ]
+                                                      }
+                                                    },
+                                                    {
+                                                      "kind": "boolean",
+                                                      "value": false
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "never"
+                                },
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
                             }
                           ]
                         }
-                      ]
-                    }
-                  ],
-                  "elementType": {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Effect",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "fields": []
-                          },
-                          {
-                            "kind": "never"
-                          },
-                          {
-                            "kind": "undefined"
-                          }
-                        ]
                       }
-                    ]
-                  }
+                    }
+                  ]
                 }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -663,59 +904,77 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_main",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "array",
-                  "elements": [
+            "kind": "identifier",
+            "name": "$ssrg$source1398"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_main",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "identifier",
-                      "name": "app"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "first"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "second"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "todo"
-                    }
-                  ],
-                  "elementType": {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Effect",
-                        "arguments": [
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "array",
+                        "elements": [
                           {
-                            "kind": "record",
-                            "fields": []
+                            "kind": "identifier",
+                            "name": "app"
                           },
                           {
-                            "kind": "never"
+                            "kind": "identifier",
+                            "name": "first"
                           },
                           {
-                            "kind": "undefined"
+                            "kind": "identifier",
+                            "name": "second"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "todo"
                           }
-                        ]
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "never"
+                                },
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
-                    ]
-                  }
+                    }
+                  ]
                 }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -775,33 +1034,51 @@
               ]
             },
             "initializer": {
-              "kind": "type-application-call",
-              "callee": "_ssrg_signal_make",
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "AppState",
-                  "arguments": []
-                }
-              ],
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "record",
-                  "items": [
-                    {
-                      "kind": "field",
-                      "name": "theme",
-                      "value": {
-                        "kind": "identifier",
-                        "name": "Light"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1614"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_signal_make",
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "AppState",
+                        "arguments": []
                       }
-                    }
-                  ],
-                  "assertedType": {
-                    "kind": "reference",
-                    "name": "AppState",
-                    "arguments": []
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "theme",
+                            "value": {
+                              "kind": "identifier",
+                              "name": "Light"
+                            }
+                          }
+                        ],
+                        "assertedType": {
+                          "kind": "reference",
+                          "name": "AppState",
+                          "arguments": []
+                        }
+                      }
+                    ]
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -843,12 +1120,30 @@
               ]
             },
             "initializer": {
-              "kind": "call",
-              "callee": "createCounter",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "Counter A"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1668"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "createCounter",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Counter A"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -890,12 +1185,30 @@
               ]
             },
             "initializer": {
-              "kind": "call",
-              "callee": "createCounter",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "Counter B"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1708"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "createCounter",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Counter B"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -937,11 +1250,29 @@
               ]
             },
             "initializer": {
-              "kind": "call",
-              "callee": "createTodo",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "undefined"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1746"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "createTodo",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -984,21 +1315,57 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_signal_map",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "appView",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "appState"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source1775"
                 },
                 {
-                  "kind": "identifier",
-                  "name": "appState"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_signal_map",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1788"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "appView",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "appState"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "appState"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1040,16 +1407,17 @@
               ]
             },
             "initializer": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_signal_applicative"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source1833"
                 },
-                "method": "apply",
-                "arguments": [
-                  {
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
                     "kind": "checked-result",
                     "value": {
                       "kind": "dictionary-call",
@@ -1060,32 +1428,284 @@
                       "method": "apply",
                       "arguments": [
                         {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_signal_applicative"
+                          "kind": "runtime-call",
+                          "callee": "$ssrg$atSource",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "$ssrg$source1833"
                             },
-                            "method": "apply",
-                            "arguments": [
-                              {
+                            {
+                              "kind": "lambda",
+                              "parameter": "",
+                              "body": {
                                 "kind": "checked-result",
                                 "value": {
                                   "kind": "dictionary-call",
                                   "dictionary": {
                                     "kind": "runtime-reference",
-                                    "name": "_ssrg_signal_functor"
+                                    "name": "_ssrg_signal_applicative"
                                   },
-                                  "method": "map",
+                                  "method": "apply",
                                   "arguments": [
                                     {
-                                      "kind": "identifier",
-                                      "name": "page"
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source1833"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "runtime-reference",
+                                                "name": "_ssrg_signal_applicative"
+                                              },
+                                              "method": "apply",
+                                              "arguments": [
+                                                {
+                                                  "kind": "runtime-call",
+                                                  "callee": "$ssrg$atSource",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "$ssrg$source1833"
+                                                    },
+                                                    {
+                                                      "kind": "lambda",
+                                                      "parameter": "",
+                                                      "body": {
+                                                        "kind": "checked-result",
+                                                        "value": {
+                                                          "kind": "dictionary-call",
+                                                          "dictionary": {
+                                                            "kind": "runtime-reference",
+                                                            "name": "_ssrg_signal_functor"
+                                                          },
+                                                          "method": "map",
+                                                          "arguments": [
+                                                            {
+                                                              "kind": "identifier",
+                                                              "name": "page"
+                                                            },
+                                                            {
+                                                              "kind": "identifier",
+                                                              "name": "app"
+                                                            }
+                                                          ]
+                                                        },
+                                                        "type": {
+                                                          "kind": "reference",
+                                                          "name": "Signal",
+                                                          "arguments": [
+                                                            {
+                                                              "kind": "function",
+                                                              "parameter": {
+                                                                "kind": "reference",
+                                                                "name": "Html",
+                                                                "arguments": [
+                                                                  {
+                                                                    "kind": "reference",
+                                                                    "name": "Effect",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "record",
+                                                                        "fields": []
+                                                                      },
+                                                                      {
+                                                                        "kind": "never"
+                                                                      },
+                                                                      {
+                                                                        "kind": "undefined"
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                ]
+                                                              },
+                                                              "result": {
+                                                                "kind": "function",
+                                                                "parameter": {
+                                                                  "kind": "reference",
+                                                                  "name": "Html",
+                                                                  "arguments": [
+                                                                    {
+                                                                      "kind": "reference",
+                                                                      "name": "Effect",
+                                                                      "arguments": [
+                                                                        {
+                                                                          "kind": "record",
+                                                                          "fields": []
+                                                                        },
+                                                                        {
+                                                                          "kind": "never"
+                                                                        },
+                                                                        {
+                                                                          "kind": "undefined"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                },
+                                                                "result": {
+                                                                  "kind": "function",
+                                                                  "parameter": {
+                                                                    "kind": "reference",
+                                                                    "name": "Html",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "reference",
+                                                                        "name": "Effect",
+                                                                        "arguments": [
+                                                                          {
+                                                                            "kind": "record",
+                                                                            "fields": []
+                                                                          },
+                                                                          {
+                                                                            "kind": "never"
+                                                                          },
+                                                                          {
+                                                                            "kind": "undefined"
+                                                                          }
+                                                                        ]
+                                                                      }
+                                                                    ]
+                                                                  },
+                                                                  "result": {
+                                                                    "kind": "reference",
+                                                                    "name": "Html",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "reference",
+                                                                        "name": "Effect",
+                                                                        "arguments": [
+                                                                          {
+                                                                            "kind": "record",
+                                                                            "fields": []
+                                                                          },
+                                                                          {
+                                                                            "kind": "never"
+                                                                          },
+                                                                          {
+                                                                            "kind": "undefined"
+                                                                          }
+                                                                        ]
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    },
+                                                    {
+                                                      "kind": "boolean",
+                                                      "value": false
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "first"
+                                                }
+                                              ]
+                                            },
+                                            "type": {
+                                              "kind": "reference",
+                                              "name": "Signal",
+                                              "arguments": [
+                                                {
+                                                  "kind": "function",
+                                                  "parameter": {
+                                                    "kind": "reference",
+                                                    "name": "Html",
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "reference",
+                                                        "name": "Effect",
+                                                        "arguments": [
+                                                          {
+                                                            "kind": "record",
+                                                            "fields": []
+                                                          },
+                                                          {
+                                                            "kind": "never"
+                                                          },
+                                                          {
+                                                            "kind": "undefined"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  },
+                                                  "result": {
+                                                    "kind": "function",
+                                                    "parameter": {
+                                                      "kind": "reference",
+                                                      "name": "Html",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "reference",
+                                                          "name": "Effect",
+                                                          "arguments": [
+                                                            {
+                                                              "kind": "record",
+                                                              "fields": []
+                                                            },
+                                                            {
+                                                              "kind": "never"
+                                                            },
+                                                            {
+                                                              "kind": "undefined"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    },
+                                                    "result": {
+                                                      "kind": "reference",
+                                                      "name": "Html",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "reference",
+                                                          "name": "Effect",
+                                                          "arguments": [
+                                                            {
+                                                              "kind": "record",
+                                                              "fields": []
+                                                            },
+                                                            {
+                                                              "kind": "never"
+                                                            },
+                                                            {
+                                                              "kind": "undefined"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
                                     },
                                     {
                                       "kind": "identifier",
-                                      "name": "app"
+                                      "name": "second"
                                     }
                                   ]
                                 },
@@ -1118,169 +1738,41 @@
                                         ]
                                       },
                                       "result": {
-                                        "kind": "function",
-                                        "parameter": {
-                                          "kind": "reference",
-                                          "name": "Html",
-                                          "arguments": [
-                                            {
-                                              "kind": "reference",
-                                              "name": "Effect",
-                                              "arguments": [
-                                                {
-                                                  "kind": "record",
-                                                  "fields": []
-                                                },
-                                                {
-                                                  "kind": "never"
-                                                },
-                                                {
-                                                  "kind": "undefined"
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        },
-                                        "result": {
-                                          "kind": "function",
-                                          "parameter": {
+                                        "kind": "reference",
+                                        "name": "Html",
+                                        "arguments": [
+                                          {
                                             "kind": "reference",
-                                            "name": "Html",
+                                            "name": "Effect",
                                             "arguments": [
                                               {
-                                                "kind": "reference",
-                                                "name": "Effect",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "record",
-                                                    "fields": []
-                                                  },
-                                                  {
-                                                    "kind": "never"
-                                                  },
-                                                  {
-                                                    "kind": "undefined"
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          },
-                                          "result": {
-                                            "kind": "reference",
-                                            "name": "Html",
-                                            "arguments": [
+                                                "kind": "record",
+                                                "fields": []
+                                              },
                                               {
-                                                "kind": "reference",
-                                                "name": "Effect",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "record",
-                                                    "fields": []
-                                                  },
-                                                  {
-                                                    "kind": "never"
-                                                  },
-                                                  {
-                                                    "kind": "undefined"
-                                                  }
-                                                ]
+                                                "kind": "never"
+                                              },
+                                              {
+                                                "kind": "undefined"
                                               }
                                             ]
                                           }
-                                        }
+                                        ]
                                       }
                                     }
                                   ]
                                 }
-                              },
-                              {
-                                "kind": "identifier",
-                                "name": "first"
                               }
-                            ]
-                          },
-                          "type": {
-                            "kind": "reference",
-                            "name": "Signal",
-                            "arguments": [
-                              {
-                                "kind": "function",
-                                "parameter": {
-                                  "kind": "reference",
-                                  "name": "Html",
-                                  "arguments": [
-                                    {
-                                      "kind": "reference",
-                                      "name": "Effect",
-                                      "arguments": [
-                                        {
-                                          "kind": "record",
-                                          "fields": []
-                                        },
-                                        {
-                                          "kind": "never"
-                                        },
-                                        {
-                                          "kind": "undefined"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                "result": {
-                                  "kind": "function",
-                                  "parameter": {
-                                    "kind": "reference",
-                                    "name": "Html",
-                                    "arguments": [
-                                      {
-                                        "kind": "reference",
-                                        "name": "Effect",
-                                        "arguments": [
-                                          {
-                                            "kind": "record",
-                                            "fields": []
-                                          },
-                                          {
-                                            "kind": "never"
-                                          },
-                                          {
-                                            "kind": "undefined"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "result": {
-                                    "kind": "reference",
-                                    "name": "Html",
-                                    "arguments": [
-                                      {
-                                        "kind": "reference",
-                                        "name": "Effect",
-                                        "arguments": [
-                                          {
-                                            "kind": "record",
-                                            "fields": []
-                                          },
-                                          {
-                                            "kind": "never"
-                                          },
-                                          {
-                                            "kind": "undefined"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
-                            ]
-                          }
+                            },
+                            {
+                              "kind": "boolean",
+                              "value": false
+                            }
+                          ]
                         },
                         {
                           "kind": "identifier",
-                          "name": "second"
+                          "name": "todo"
                         }
                       ]
                     },
@@ -1289,89 +1781,36 @@
                       "name": "Signal",
                       "arguments": [
                         {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "reference",
-                            "name": "Html",
-                            "arguments": [
-                              {
-                                "kind": "reference",
-                                "name": "Effect",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "fields": []
-                                  },
-                                  {
-                                    "kind": "never"
-                                  },
-                                  {
-                                    "kind": "undefined"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          "result": {
-                            "kind": "reference",
-                            "name": "Html",
-                            "arguments": [
-                              {
-                                "kind": "reference",
-                                "name": "Effect",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "fields": []
-                                  },
-                                  {
-                                    "kind": "never"
-                                  },
-                                  {
-                                    "kind": "undefined"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "never"
+                                },
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "todo"
                   }
-                ]
-              },
-              "type": {
-                "kind": "reference",
-                "name": "Signal",
-                "arguments": [
-                  {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Effect",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "fields": []
-                          },
-                          {
-                            "kind": "never"
-                          },
-                          {
-                            "kind": "undefined"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             },
             "origin": {
               "source": "app.ssrg",
@@ -1389,25 +1828,61 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
+                  "kind": "identifier",
+                  "name": "$ssrg$source1897"
+                },
+                {
                   "kind": "lambda",
-                  "parameter": "error: DomError",
+                  "parameter": "",
                   "body": {
-                    "kind": "string",
-                    "value": "DOM target unavailable"
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "error: DomError",
+                        "body": {
+                          "kind": "string",
+                          "value": "DOM target unavailable"
+                        }
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1897"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_dom_query",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "#app"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
                   }
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_dom_query",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "#app"
-                    }
-                  ]
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -1420,42 +1895,96 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_mapError",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
+              "kind": "identifier",
+              "name": "$ssrg$source1990"
+            },
+            {
               "kind": "lambda",
-              "parameter": "error: DomRuntimeError<never>",
+              "parameter": "",
               "body": {
-                "kind": "string",
-                "value": "DOM runtime failed"
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_mapError",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "error: DomRuntimeError<never>",
+                    "body": {
+                      "kind": "string",
+                      "value": "DOM runtime failed"
+                    }
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source1990"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_dom_run",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1999"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_dom_defaultOptions",
+                                    "arguments": [
+                                      {
+                                        "kind": "undefined"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "target"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "perform"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "content"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
               }
             },
             {
-              "kind": "runtime-call",
-              "callee": "_ssrg_dom_run",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_dom_defaultOptions",
-                  "arguments": [
-                    {
-                      "kind": "undefined"
-                    }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "target"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "perform"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "content"
-                }
-              ]
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

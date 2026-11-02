@@ -18,6 +18,7 @@ mod generated_metadata;
 mod input;
 mod local_package;
 mod local_project;
+mod lowering_panic;
 mod output;
 mod output_plan;
 mod project_compile;

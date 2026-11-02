@@ -233,19 +233,19 @@ pub effect fn main = println "ok"
         let typescript = response["generated"]["typescript"].as_str().unwrap();
         assert!(
             typescript.contains(
-                "_ssrg_float_div_dictionary[\"div\"](_ssrg_float_sub_dictionary[\"sub\"](value)(1.0))(_ssrg_float_add_dictionary[\"add\"](value)(1.0))"
+                "const ratio = (value: number) => $ssrg$atSource($ssrg$source35, () => _ssrg_float_div_dictionary[\"div\"]($ssrg$atSource($ssrg$source36, () => _ssrg_float_sub_dictionary[\"sub\"](value)(1.0), false))($ssrg$atSource($ssrg$source52, () => _ssrg_float_add_dictionary[\"add\"](value)(1.0), false)), false)"
             ),
             "{typescript}"
         );
         assert!(
             typescript.contains(
-                "_ssrg_float_div_dictionary[\"div\"](_ssrg_float_sub_dictionary[\"sub\"](positive)(negative))(2.0)"
+                "const averageDifference = (positive: number) => (negative: number) => $ssrg$atSource($ssrg$source135, () => _ssrg_float_div_dictionary[\"div\"]($ssrg$atSource($ssrg$source136, () => _ssrg_float_sub_dictionary[\"sub\"](positive)(negative), false))(2.0), false)"
             ),
             "{typescript}"
         );
         assert!(
             typescript.contains(
-                "double(_ssrg_float_div_dictionary[\"div\"](_ssrg_float_sub_dictionary[\"sub\"](9.0)(1.0))(2.0))"
+                "const groupedThroughPipeline: number = $ssrg$atSource($ssrg$source244, () => double($ssrg$atSource($ssrg$source245, () => _ssrg_float_div_dictionary[\"div\"]($ssrg$atSource($ssrg$source246, () => _ssrg_float_sub_dictionary[\"sub\"](9.0)(1.0), false))(2.0), false)), false);"
             ),
             "{typescript}"
         );
