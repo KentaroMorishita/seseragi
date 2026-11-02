@@ -52,6 +52,7 @@ mod json_derived_newtypes;
 mod json_derived_structs;
 mod lists;
 mod local;
+mod log;
 mod math;
 mod maybe;
 mod methods;
@@ -980,6 +981,9 @@ impl Backend<'_> {
                 success,
                 ..
             } => {
+                if let Some(value) = self.log_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.time_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -1030,6 +1034,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.log_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.writer_transformer_call(expr, scope)? {
                     return Ok(value);
                 }

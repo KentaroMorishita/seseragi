@@ -22,6 +22,9 @@ impl Backend<'_> {
         {
             return Ok(value);
         }
+        if let Some(value) = self.log_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.time_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
