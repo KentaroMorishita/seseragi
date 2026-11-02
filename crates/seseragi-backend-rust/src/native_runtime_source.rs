@@ -31,6 +31,7 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/unicode_data.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_text_case.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_unicode.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_grapheme.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_text.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_bytes.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_bytes_codecs.rs"),

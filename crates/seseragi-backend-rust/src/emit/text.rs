@@ -30,6 +30,35 @@ fn text_signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         arguments: vec![],
     };
     match name {
+        "std/text/grapheme::length" => Some((vec![string], int)),
+        "std/text/grapheme::clusters" => Some((vec![string], strings)),
+        "std/text/grapheme::byteBoundaries" => Some((
+            vec![string],
+            CoreType::Named {
+                name: "std/prelude::Array".into(),
+                arguments: vec![int],
+            },
+        )),
+        "std/text/grapheme::at" => Some((
+            vec![int, string.clone()],
+            CoreType::Named {
+                name: "std/prelude::Maybe".into(),
+                arguments: vec![string],
+            },
+        )),
+        "std/text/grapheme::slice" => Some((
+            vec![int.clone(), int, string.clone()],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![
+                    CoreType::Named {
+                        name: "std/text/grapheme::GraphemeSliceError".into(),
+                        arguments: vec![],
+                    },
+                    string,
+                ],
+            },
+        )),
         "std/text/unicode::version" => Some((
             vec![CoreType::Named {
                 name: "std/prelude::Unit".into(),
