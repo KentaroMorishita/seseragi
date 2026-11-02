@@ -112,6 +112,9 @@ impl Backend<'_> {
         if let Some(value) = self.sequence_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.non_empty_list_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }

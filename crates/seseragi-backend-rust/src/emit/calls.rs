@@ -143,6 +143,9 @@ impl Backend<'_> {
         if let Some(value) = self.sequence_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.non_empty_list_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.math_call(expr, scope)? {
             return Ok(value);
         }

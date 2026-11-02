@@ -1,0 +1,15 @@
+import * as nonEmpty from "std/non-empty-list"
+
+pub opaque newtype Key = Int
+pub alias Values<A> = nonEmpty.NonEmptyList<A>
+instance Eq<Key> { fn eq left:Key -> right:Key -> Bool = match (left,right) { (Key a,Key b) -> a % 10 == b % 10 } }
+instance Ord<Key> { fn compare left:Key -> right:Key -> Ordering = match (left,right) { (Key a,Key b) -> compare (a % 10) (b % 10) } }
+instance Hash<Key> { fn hash _value:Key -> Int = 0 }
+instance Show<Key> { fn show value:Key -> String = match value { Key n -> "key:" + show n } }
+instance Debug<Key> { fn debug value:Key -> String = match value { Key n -> "debug:" + show n } }
+pub fn make value:Int -> Key = Key value
+pub fn add left:Key -> right:Key -> Key = match (left,right) { (Key a,Key b) -> Key (a + b) }
+pub fn first<A> values:Values<A> -> A = nonEmpty.head values
+pub fn rest<A> values:Values<A> -> List<A> = nonEmpty.tail values
+pub fn cons<A> head:A -> tail:List<A> -> Values<A> = nonEmpty.cons head tail
+pub fn reduce<A> callback:(A -> A -> A) -> values:Values<A> -> A = nonEmpty.reduce1 callback values

@@ -7,6 +7,7 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/runtime_float.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_math.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_list.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_non_empty_list.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_tuple.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_array.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_array_operations.rs"),

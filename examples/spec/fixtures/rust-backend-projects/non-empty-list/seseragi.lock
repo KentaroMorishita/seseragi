@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/non-empty-list@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/non-empty-list@0.0.0#workspace:."
+name = "fixture/non-empty-list"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:1996199002b5197f48efc7eb00827482e0b89d5baa88cd84fa969579e50d532c"
+content_digest = "sha256:d9592696769a7a141c77549cb1a9bc092b9c6e27afd2fce51e236df588a831cf"
+dependencies = []

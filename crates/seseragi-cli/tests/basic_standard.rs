@@ -472,6 +472,117 @@ fn basic_either_operations_host_error_and_global_this_source_names_keep_raw_stri
 }
 
 #[test]
+fn basic_non_empty_list_matches_strict_ts_and_native_for_apis_instances_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/non-empty-list.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/non-empty-list.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_path_package_keeps_opaque_elements_aliases_and_imported_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/non-empty-list"),
+        &[Case::success(b"`[key:7]\nNothing\nJust `[key:1, key:2, key:3]\nkey:1\n`[key:2, key:3]\nkey:6\nTrue\nEqual\nTrue\n`[debug:1, debug:2, debug:3]\n`[key:1, key:2, key:3, key:4]\n[key:1, key:2, key:3]\n`[key:1, key:2, key:3]\nJust `[key:1, key:2, key:3]\n")],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_native_saved_binary_partials_and_returned_function_application() {
+    // TS emits saved binary exports without curry wrappers and passes returned
+    // function arguments directly to the head/reduce1 runtime exports.
+    let mut source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/non-empty-list.ssrg").to_owned();
+    for (before, after) in [
+        ("= withHead\n", "= nonEmpty.cons\n"),
+        ("= fold\n", "= nonEmpty.reduce1\n"),
+        (
+            "show (selected 41)",
+            "show (nonEmpty.head functionValues 41)",
+        ),
+        (
+            "show (selectedFold 41)",
+            "show (nonEmpty.reduce1 pick functionValues 41)",
+        ),
+        (
+            "fn withHead<A> value:A -> tail:List<A> -> Values<A> = nonEmpty.cons value tail",
+            "fn withHead<A> value:A -> (List<A> -> Values<A>) = nonEmpty.cons value",
+        ),
+    ] {
+        assert_eq!(source.matches(before).count(), 1);
+        source = source.replace(before, after);
+    }
+    let scratch = Scratch::new();
+    let input = scratch.0.join("functions.ssrg");
+    fs::write(&input, source).unwrap();
+    let out = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&input)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let result = successful(bounded(
+        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    ));
+    assert_eq!(
+        result.stdout,
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/non-empty-list.stdout")
+    );
+    assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
+}
+
+#[test]
+fn basic_non_empty_list_keeps_cold_replay_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/non-empty-list-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/non-empty-list-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_source_and_both_reducer_stage_defects_match_ts_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/non-empty-list-effects.ssrg");
+    let needle = "nonEmpty.reduce1 (callback 0) (source 10)";
+    assert_eq!(original.matches(needle).count(), 1);
+    for (expression, defect) in [
+        ("nonEmpty.reduce1 (step (42 / 0)) (source (9007199254740991 + 1))", "Int division by zero"),
+        ("nonEmpty.reduce1 (callback 0) (source (42 / 0))", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\acc:Int -> if acc == 10 then callback (acc / 0) acc else callback 0 acc) (source 10)", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\acc:Int -> \\value:Int -> if value == 3 then acc / 0 else acc) (source 10)", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\acc:Int -> \\value:Int -> acc + value) (nonEmpty.cons 9007199254740991 `[1,2])", "Int overflow"),
+        ("{let _value = nonEmpty.singleton (42 / 0); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.cons (42 / 0) (if 9007199254740991 + 1 == 0 then `[] else `[1]); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.cons 1 (if 42 / 0 == 0 then `[] else `[1]); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.fromList (if 42 / 0 == 0 then `[1] else `[]); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.toList (source (42 / 0)); 0}", "Int division by zero"),
+        ("nonEmpty.head (source (42 / 0))", "Int division by zero"),
+        ("{let _value = nonEmpty.tail (source (42 / 0)); 0}", "Int division by zero"),
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("non-empty-list-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created\nacquired\ncold\n17\ncold\n17\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: defect,
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
 fn basic_maybe_operations_keep_original_fallbacks_traversals_saved_and_returned_functions() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-maybe-operations.ssrg"),

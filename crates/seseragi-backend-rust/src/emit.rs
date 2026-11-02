@@ -56,6 +56,7 @@ mod math;
 mod maybe;
 mod methods;
 mod monads;
+mod non_empty_list;
 mod number_parse;
 mod operators;
 mod prelude_collections;
