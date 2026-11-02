@@ -4636,6 +4636,26 @@ fn standard_instances_match_ts_with_generic_saved_and_user_dictionaries() {
 }
 
 #[test]
+fn standard_errors_match_raw_strict_ts_and_native_with_saved_and_generic_instances() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/standard-errors.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/standard-errors.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn standard_error_boundaries_match_raw_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/standard-error-boundaries.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/standard-error-boundaries.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn standard_applicatives_keep_effect_order_cold_replay_and_user_supertraits() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/standard-applicative-effect.ssrg"),

@@ -131,6 +131,16 @@ fn unhandled_native_errors_use_user_and_standard_show_instances() {
 }
 
 #[test]
+fn rendered_benchmark_failure_preserves_ts_message_and_exit_kind() {
+    compare(
+        "import * as effects from \"std/effect\"\nimport * as benchmarks from \"std/benchmark\"\npub effect fn main -> Unit fails String = effects.mapError (\\error: benchmarks.BenchmarkFailure -> show error) (effects.fail (benchmarks.ExplicitBenchmarkFailure \"雪🙂\\nsecond\"))\n",
+        "effects.fail",
+        "ExplicitBenchmarkFailure 雪🙂\nsecond",
+        false,
+    );
+}
+
+#[test]
 fn unhandled_native_sequence_failures_keep_the_declared_show_instance() {
     compare(
         "import * as effects from \"std/effect\"\nstruct Problem { code: Int }\ninstance Show<Problem> {\n  fn show value: Problem -> String = \"problem \" + show value.code\n}\npub effect fn main -> Unit fails Problem = do {\n  _result <- effects.fail (Problem { code: 7 })\n  effects.succeed ()\n}\n",
