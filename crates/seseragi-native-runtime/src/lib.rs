@@ -60,6 +60,7 @@ include!("runtime_stdin.rs");
 include!("runtime_effect_defect.rs");
 include!("runtime_scheduler.rs");
 include!("runtime_path.rs");
+include!("runtime_process.rs");
 include!("runtime_filesystem.rs");
 include!("runtime_host.rs");
 include!("runtime_clock.rs");
