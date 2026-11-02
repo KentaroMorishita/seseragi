@@ -131,6 +131,16 @@ fn unhandled_native_errors_use_user_and_standard_show_instances() {
 }
 
 #[test]
+fn unhandled_native_sequence_failures_keep_the_declared_show_instance() {
+    compare(
+        "import * as effects from \"std/effect\"\nstruct Problem { code: Int }\ninstance Show<Problem> {\n  fn show value: Problem -> String = \"problem \" + show value.code\n}\npub effect fn main -> Unit fails Problem = do {\n  _result <- effects.fail (Problem { code: 7 })\n  effects.succeed ()\n}\n",
+        "effects.fail (Problem",
+        "problem 7",
+        false,
+    );
+}
+
+#[test]
 fn imported_failures_keep_the_dependency_file_and_its_show_instance() {
     let scratch = Scratch::new();
     fs::create_dir_all(scratch.0.join("src/errors")).unwrap();

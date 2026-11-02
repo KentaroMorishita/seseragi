@@ -30,6 +30,7 @@ mod decimal;
 mod derived;
 mod diagnostics;
 mod display;
+mod effect_control;
 mod effect_conversions;
 mod effect_defects;
 mod either;
@@ -978,6 +979,9 @@ impl Backend<'_> {
                 if let Some(value) = self.prelude_effect_call(expr, scope)? {
                     return Ok(value);
                 }
+                if let Some(value) = self.effect_control_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.die_operation(expr, scope)? {
                     return Ok(value);
                 }
@@ -1026,6 +1030,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.die_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.effect_control_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.concurrency_call(expr, scope)? {

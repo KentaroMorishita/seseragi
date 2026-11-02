@@ -31,6 +31,9 @@ impl Backend<'_> {
         if let Some(value) = self.die_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.effect_control_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.concurrency_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }

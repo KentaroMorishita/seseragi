@@ -508,6 +508,7 @@ impl Backend<'_> {
             | "std/text::Utf8DecodeError"
             | "std/prelude::Unit"
             | "std/prelude::Never"
+            | "std/effect::LoopControl"
             | "std/prelude::Int"
             | "std/prelude::Float"
             | "std/prelude::Bool"
