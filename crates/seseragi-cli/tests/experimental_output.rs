@@ -326,6 +326,10 @@ exit 17
     fs::set_permissions(compiler, fs::Permissions::from_mode(0o700)).unwrap();
     let stage_log = root.path().join("stage-path");
     let output = command("build-native", &source, &directory)
+        .env(
+            "SESERAGI_NATIVE_TOOLCHAIN",
+            native_cache::mock_toolchain(&compiler_directory),
+        )
         .env("PATH", &compiler_directory)
         .env("SESERAGI_TEST_STAGE_LOG", &stage_log)
         .output()
@@ -404,6 +408,10 @@ printf '{"reason":"compiler-artifact","target":{"name":"program"},"executable":"
             .unwrap();
             fs::set_permissions(compiler, fs::Permissions::from_mode(0o700)).unwrap();
             let output = command("build-native", &source, &directory)
+                .env(
+                    "SESERAGI_NATIVE_TOOLCHAIN",
+                    native_cache::mock_toolchain(&compiler_directory),
+                )
                 .env("PATH", &compiler_directory)
                 .env(
                     "SESERAGI_TEST_EXECUTABLE",

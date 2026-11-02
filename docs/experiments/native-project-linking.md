@@ -20,6 +20,40 @@ result; synchronous Effect entries execute the ordinary native plan.
 
 ## Cargo builds
 
+The CLI downloads its pinned Rust toolchain on the first native build. It uses
+the version in `rust-toolchain.toml`, with Cargo and the host standard library
+from the same release. The bootstrap uses the official rustup 1.28.2 installer
+over HTTPS and checks its SHA-256 before running it. The first download needs
+`curl` and internet access. Later builds use the cached tools directly and do
+not contact the distribution server. Rust does not need to be on `PATH`.
+
+The default cache locations are:
+
+| Platform | Directory |
+| --- | --- |
+| macOS | `~/Library/Caches/seseragi/native/` |
+| Linux | `$XDG_CACHE_HOME/seseragi/native/`, or `~/.cache/seseragi/native/` |
+| Windows | `%LOCALAPPDATA%/seseragi/cache/native/` |
+
+Set `SESERAGI_NATIVE_CACHE` to use another writable directory. Toolchains are
+separated by Rust version and host OS/CPU. Downloads are staged under a lock;
+an interrupted installation can be retried without using partial tools. The
+CLI checks the Rust and Cargo versions, host and standard library before use.
+It reports incomplete or incompatible cached installations with repair steps.
+
+To prepare an offline machine, copy a complete matching Rust installation and
+set `SESERAGI_NATIVE_TOOLCHAIN` to its root, containing `bin/` and `lib/rustlib/`.
+This override uses the same version and host checks. Cargo's dependency cache
+stays under `SESERAGI_NATIVE_CACHE/cargo/`. Native builds do not use the caller's
+`CARGO_HOME`, Rust version selection, compiler or compiler wrappers.
+
+The system linker and SDK remain separate prerequisites. On macOS, install
+Xcode Command Line Tools with `xcode-select --install`. On Linux, install the
+C compiler and development libraries, such as Debian/Ubuntu's `build-essential`.
+On Windows, install Visual Studio Build Tools with Desktop development with C++
+and the Windows SDK. Build failures include the underlying compiler diagnostic
+and platform-specific setup steps when the linker or SDK is unavailable.
+
 Native builds keep a Cargo project under `.seseragi/native/` in the package
 root, or beside a standalone source file. The directory is stable for each
 input and entry function. It contains `Cargo.toml`, `Cargo.lock`, `program.rs`
@@ -38,6 +72,11 @@ Build outputs normally stay in that project's `target/` directory. When
 0; `--profile release` uses level 3. Both ordinary native commands and
 `experimental build-native` accept the profile selection. A failed build leaves
 the previously published executable, Rust source and metadata intact.
+
+Each project's build outputs are separated by runtime version and source,
+Rust version, host, dependency features, linker settings, build profile and
+Cargo/Rust build environment settings. Editing only the program can reuse its
+runtime build.
 
 Packages can declare Rust adapter dependencies and linker inputs in
 `seseragi.toml`:
@@ -58,8 +97,9 @@ These settings make dependencies available to generated Rust and future native
 adapters; they do not add a Seseragi foreign-function interface.
 
 Cargo always builds offline. Registry dependencies must already be available
-locally; path dependencies and programs without external dependencies need no
-network access. The generated Cargo lockfile is retained between builds.
+in the managed Cargo cache; path dependencies and programs without external
+dependencies need no network access. The generated Cargo lockfile is retained
+between builds.
 
 ## Shared frontend, separate target
 

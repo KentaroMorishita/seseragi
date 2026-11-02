@@ -46,6 +46,20 @@ thread_local! {
 }
 
 pub fn configure(command: &mut Command) {
+    CACHE.with(|cache| {
+        if !command
+            .get_envs()
+            .any(|(key, _)| key == "SESERAGI_NATIVE_CACHE")
+        {
+            command.env("SESERAGI_NATIVE_CACHE", &cache.0);
+        }
+        if !command
+            .get_envs()
+            .any(|(key, _)| key == "SESERAGI_NATIVE_TOOLCHAIN")
+        {
+            command.env("SESERAGI_NATIVE_TOOLCHAIN", toolchain());
+        }
+    });
     if !command.get_envs().any(|(key, _)| key == "CARGO_TARGET_DIR") {
         CACHE.with(|cache| {
             if let Some(target) = &cache.1 {
@@ -88,4 +102,62 @@ fn copy_tree(source: &std::path::Path, destination: &std::path::Path) {
         fs::create_dir_all(destination.parent().unwrap()).unwrap();
         fs::copy(source, destination).unwrap();
     }
+}
+
+pub fn toolchain() -> &'static std::path::Path {
+    static SYSROOT: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
+    SYSROOT.get_or_init(|| {
+        let pinned = include_str!("../../rust-toolchain.toml")
+            .lines()
+            .find_map(|line| line.strip_prefix("channel = \"")?.strip_suffix('"'))
+            .unwrap();
+        let output = Command::new(std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()))
+            .args(["--print", "sysroot"])
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "{output:?}");
+        let root = PathBuf::from(String::from_utf8(output.stdout).unwrap().trim());
+        let version = Command::new(root.join(format!("bin/rustc{}", std::env::consts::EXE_SUFFIX)))
+            .arg("--version")
+            .output()
+            .unwrap();
+        if version.status.success()
+            && String::from_utf8_lossy(&version.stdout)
+                .split_whitespace()
+                .nth(1)
+                == Some(pinned)
+        {
+            return root;
+        }
+        let output = Command::new("rustup")
+            .args(["run", pinned, "rustc", "--print", "sysroot"])
+            .output()
+            .expect("tests need the pinned Rust toolchain installed with rustup");
+        assert!(
+            output.status.success(),
+            "tests require Rust {pinned}: {output:?}"
+        );
+        PathBuf::from(String::from_utf8(output.stdout).unwrap().trim())
+    })
+}
+
+#[cfg(unix)]
+pub fn mock_toolchain(directory: &std::path::Path) -> PathBuf {
+    use std::os::unix::fs::{symlink, PermissionsExt};
+    let bin = directory.join("bin");
+    fs::create_dir(&bin).unwrap();
+    let cargo = directory.join("cargo");
+    let script = fs::read_to_string(&cargo).unwrap();
+    let output = Command::new(toolchain().join("bin/cargo"))
+        .arg("--version")
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let version = String::from_utf8(output.stdout).unwrap();
+    fs::write(&cargo, format!("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then printf '%s\\n' '{}'; exit 0; fi\n{script}", version.trim())).unwrap();
+    fs::set_permissions(&cargo, fs::Permissions::from_mode(0o700)).unwrap();
+    symlink(&cargo, bin.join("cargo")).unwrap();
+    symlink(toolchain().join("bin/rustc"), bin.join("rustc")).unwrap();
+    symlink(toolchain().join("lib"), directory.join("lib")).unwrap();
+    directory.to_owned()
 }
