@@ -211,104 +211,156 @@ impl NativeScheduler {
         let root = scheduler.spawn(std::mem::take(context), plan);
         let root_id = root.fiber().task;
         loop {
-            scheduler.poll_files();
-            scheduler.poll_stdin();
-            scheduler.poll_timers();
-            let Some(id) = scheduler.ready.pop_front() else {
-                // A program awaiting an uncompleted Deferred stays pending.
-                // No artificial typed failure or Defect is invented for it.
-                let timeout = scheduler.next_timer_wait();
-                let timeout = if scheduler.tasks.values().any(|task| task.stdin.is_some()) {
-                    Some(
-                        timeout
-                            .unwrap_or(std::time::Duration::MAX)
-                            .min(std::time::Duration::from_millis(10)),
-                    )
-                } else {
-                    timeout
-                };
-                if let Some(timeout) = timeout {
-                    std::thread::park_timeout(timeout);
-                } else {
-                    std::thread::park();
-                }
-                continue;
-            };
-            let mut task = scheduler.tasks.remove(&id).expect("runnable native task");
-            match task.machine.turn() {
-                NativeTurn::Runnable => scheduler.ready.push_back(id),
-                NativeTurn::Operation(operation, captures) => {
-                    scheduler.operation(id, &mut task, operation, captures)
-                }
-                NativeTurn::FileSystem(operation, captures) => {
-                    match NativeFileTask::start(operation, captures) {
-                        Ok(file) => task.file = Some(file),
-                        Err(exit) => {
-                            task.machine.resume(Err(exit));
-                            scheduler.ready.push_back(id);
-                        }
-                    }
-                }
-                NativeTurn::Stdin(operation, captures) => {
-                    match NativeStdinTask::start(
-                        task.machine.context.stdin.clone(),
-                        operation,
-                        &captures[0],
-                    ) {
-                        Ok(stdin) => task.stdin = Some(stdin),
-                        Err(exit) => {
-                            task.machine.resume(Err(exit));
-                            scheduler.ready.push_back(id);
-                        }
-                    }
-                }
-                NativeTurn::CloseScope(original, previous_mask) => {
-                    let scope = task
-                        .machine
-                        .context
-                        .scopes
-                        .last_mut()
-                        .expect("closing scope");
-                    // Completed children have already left their scope; their
-                    // stored failure is observed only through await/join.
-                    scope.finalizers.retain(|plan| {
-                        let (instruction, captures) = plan.plan();
-                        !matches!(
-                            instruction,
-                            Instruction::Concurrent(ConcurrentOperation::Supervise)
-                        ) || captures[0].fiber().outcome.borrow().is_none()
-                    });
-                    let children = &task
-                        .machine
-                        .context
-                        .scopes
-                        .last()
-                        .expect("closing scope")
-                        .children;
-                    for child in children {
-                        scheduler.cancel(child.fiber().task);
-                    }
-                    task.machine.state = Some(task.machine.context.cleanup(
-                        &mut task.machine.stack,
-                        original,
-                        Vec::new(),
-                        previous_mask,
-                    ));
-                    scheduler.ready.push_back(id);
-                }
-                NativeTurn::Complete(outcome) => {
-                    task.handle.fiber().outcome.replace(Some(outcome.clone()));
-                    scheduler.wake(WaitKey::Fiber(id));
-                    if id == root_id {
-                        *context = task.machine.context;
-                        debug_assert!(scheduler.tasks.is_empty(), "root scope awaits all children");
-                        return outcome;
-                    }
-                    continue;
+            if let Some((id, completed_context, outcome)) = scheduler.tick(5_000) {
+                if id == root_id {
+                    *context = completed_context;
+                    debug_assert!(scheduler.tasks.is_empty(), "root scope awaits all children");
+                    return outcome;
                 }
             }
-            scheduler.tasks.insert(id, task);
+            if scheduler.ready.is_empty() {
+                scheduler.park_until_ready(None);
+            }
         }
+    }
+    fn park_until_ready(&self, maximum: Option<std::time::Duration>) {
+        let mut timeout = self.next_timer_wait();
+        if self.tasks.values().any(|task| task.stdin.is_some()) {
+            timeout = Some(
+                timeout
+                    .unwrap_or(std::time::Duration::MAX)
+                    .min(std::time::Duration::from_millis(10)),
+            );
+        }
+        if let Some(maximum) = maximum {
+            timeout = Some(timeout.unwrap_or(std::time::Duration::MAX).min(maximum));
+        }
+        if let Some(timeout) = timeout {
+            std::thread::park_timeout(timeout);
+        } else {
+            std::thread::park();
+        }
+    }
+    fn tick(&mut self, cleanup_ms: u64) -> Option<(usize, NativeContext, NativeOutcome)> {
+        self.poll_files();
+        self.poll_stdin();
+        self.poll_timers();
+        let id = self.ready.pop_front()?;
+        let mut task = self.tasks.remove(&id).expect("runnable native task");
+        match task.machine.turn() {
+            NativeTurn::Runnable => self.ready.push_back(id),
+            NativeTurn::Operation(operation, captures) => {
+                self.operation(id, &mut task, operation, captures)
+            }
+            NativeTurn::FileSystem(operation, captures) => {
+                match NativeFileTask::start(operation, captures) {
+                    Ok(file) => task.file = Some(file),
+                    Err(exit) => {
+                        task.machine.resume(Err(exit));
+                        self.ready.push_back(id);
+                    }
+                }
+            }
+            NativeTurn::Stdin(operation, captures) => {
+                match NativeStdinTask::start(
+                    task.machine.context.stdin.clone(),
+                    operation,
+                    &captures[0],
+                ) {
+                    Ok(stdin) => task.stdin = Some(stdin),
+                    Err(exit) => {
+                        task.machine.resume(Err(exit));
+                        self.ready.push_back(id);
+                    }
+                }
+            }
+            NativeTurn::CloseScope(original, previous_mask) => {
+                if task.machine.context.scopes.len() == 1 {
+                    if let Some(environment) = &task.machine.context.test {
+                        let mut environment = environment.borrow_mut();
+                        if environment.root == id && environment.cleanup.is_none() {
+                            let cancelling = matches!(original, Err(NativeExit::Defect(_)));
+                            let reason = if cancelling {
+                                "after defect"
+                            } else {
+                                "during cleanup"
+                            };
+                            environment.cleanup = Some((
+                                std::time::Instant::now()
+                                    + native_test_cleanup_delay(cleanup_ms, cancelling),
+                                reason,
+                            ));
+                        }
+                    }
+                }
+                let scope = task
+                    .machine
+                    .context
+                    .scopes
+                    .last_mut()
+                    .expect("closing scope");
+                // Completed children have already left their scope; their
+                // stored failure is observed only through await/join.
+                scope.finalizers.retain(|plan| {
+                    let (instruction, captures) = plan.plan();
+                    !matches!(
+                        instruction,
+                        Instruction::Concurrent(ConcurrentOperation::Supervise)
+                    ) || captures[0].fiber().outcome.borrow().is_none()
+                });
+                let children = &task
+                    .machine
+                    .context
+                    .scopes
+                    .last()
+                    .expect("closing scope")
+                    .children;
+                for child in children {
+                    self.cancel(child.fiber().task);
+                }
+                task.machine.state = Some(task.machine.context.cleanup(
+                    &mut task.machine.stack,
+                    original,
+                    Vec::new(),
+                    previous_mask,
+                ));
+                self.ready.push_back(id);
+            }
+            NativeTurn::Complete(outcome) => {
+                task.handle.fiber().outcome.replace(Some(outcome.clone()));
+                self.wake(WaitKey::Fiber(id));
+                return Some((id, task.machine.context, outcome));
+            }
+        }
+        self.tasks.insert(id, task);
+        None
+    }
+    fn discard_test(&mut self, environment: &Rc<RefCell<NativeTestEnvironment>>) {
+        let removed = self
+            .tasks
+            .iter()
+            .filter_map(|(id, task)| {
+                task.machine
+                    .context
+                    .test
+                    .as_ref()
+                    .is_some_and(|test| Rc::ptr_eq(test, environment))
+                    .then_some(*id)
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        for id in &removed {
+            let task = self.tasks.remove(id).unwrap();
+            task.handle
+                .fiber()
+                .outcome
+                .replace(Some(Err(NativeExit::Cancelled)));
+            self.wake(WaitKey::Fiber(*id));
+        }
+        self.ready.retain(|id| !removed.contains(id));
+        self.waiters.retain(|_, waiters| {
+            waiters.retain(|id| !removed.contains(id));
+            !waiters.is_empty()
+        });
     }
     fn cancel(&mut self, id: usize) {
         let Some(task) = self.tasks.get_mut(&id) else {
@@ -393,6 +445,15 @@ impl NativeScheduler {
     ) {
         let result = match operation {
             ConcurrentOperation::ClockSleep => {
+                if let Some(environment) = &task.machine.context.test {
+                    environment.borrow_mut().instant += native_duration_nanoseconds(&c[0])
+                        .expect("canonical test Duration")
+                        as u128;
+                    task.machine.resume(Ok(V::Unit));
+                    self.ready.push_back(id);
+                    return;
+                }
+
                 match NativeTimer::start(&c[0]) {
                     Ok(timer) => task.timer = Some(timer),
                     Err(exit) => {
@@ -408,6 +469,7 @@ impl NativeScheduler {
                         gc_every: task.machine.context.gc_every,
                         stdin: task.machine.context.stdin.clone(),
                         random: task.machine.context.random.clone(),
+                        test: task.machine.context.test.clone(),
                         temporaries: task.machine.context.temporaries.clone(),
                         ..NativeContext::default()
                     },

@@ -63,9 +63,9 @@ pub fn native_clock_operation(name: &str, arguments: Vec<V>) -> V {
                 native_left(V::adt("std/time::DurationOutsideRange", V::Unit))
             }
         }
-        ("std/time::toNanoseconds", [value]) => checked_int(
-            native_duration_nanoseconds(value).expect("canonical Duration") as i64,
-        ),
+        ("std/time::toNanoseconds", [value]) => {
+            checked_int(native_duration_nanoseconds(value).expect("canonical Duration") as i64)
+        }
         ("std/time::addDuration", [right, left]) => {
             let sum = native_duration_nanoseconds(left)
                 .ok()
@@ -81,9 +81,15 @@ pub fn native_clock_operation(name: &str, arguments: Vec<V>) -> V {
             V::adt("std/time::NegativeDuration", value.clone())
         }
         ("std/time::DurationOutsideRange", []) => V::adt("std/time::DurationOutsideRange", V::Unit),
-        ("std/clock::now", [V::Unit]) => V::leaf(vec![], |_, _| {
+        ("std/clock::now", [V::Unit]) => V::leaf(vec![], |_, context| {
+            if let Some(environment) = &context.test {
+                return Ok(native_clock_instant(environment.borrow().instant));
+            }
             static ORIGIN: std::sync::OnceLock<std::time::Instant> = std::sync::OnceLock::new();
-            let nanos = ORIGIN.get_or_init(std::time::Instant::now).elapsed().as_nanos();
+            let nanos = ORIGIN
+                .get_or_init(std::time::Instant::now)
+                .elapsed()
+                .as_nanos();
             Ok(native_clock_instant(nanos))
         }),
         ("std/clock::sleep", [_]) => V::effect(
@@ -272,10 +278,8 @@ mod clock_tests {
         let zero = native_clock_operation("std/time::zeroDuration", vec![V::Unit]);
         assert_eq!(native_duration_nanoseconds(&zero).unwrap(), 0);
         for nanos in [0, 1, 999_999_999, 9_007_199_254_740_991] {
-            let result = native_clock_operation(
-                "std/time::toNanoseconds",
-                vec![native_duration(nanos)],
-            );
+            let result =
+                native_clock_operation("std/time::toNanoseconds", vec![native_duration(nanos)]);
             assert!(matches!(result, V::Int(value) if value == nanos as i64));
         }
         for (left, right) in [
@@ -292,7 +296,10 @@ mod clock_tests {
                 vec![right_value.clone(), left_value.clone()],
             );
             assert!(sum.tagged("std/prelude::Right"));
-            assert_eq!(native_duration_nanoseconds(&sum.payload()).unwrap(), left + right);
+            assert_eq!(
+                native_duration_nanoseconds(&sum.payload()).unwrap(),
+                left + right
+            );
             assert_eq!(native_duration_nanoseconds(&left_value).unwrap(), left);
             assert_eq!(native_duration_nanoseconds(&right_value).unwrap(), right);
         }
@@ -313,7 +320,9 @@ mod clock_tests {
 
     fn instant_nanos(value: V) -> u128 {
         assert!(value.tagged("std/time::Instant"));
-        let V::BigInt(nanos) = value.payload() else { panic!() };
+        let V::BigInt(nanos) = value.payload() else {
+            panic!()
+        };
         nanos.get().decimal().parse().unwrap()
     }
 
@@ -326,12 +335,26 @@ mod clock_tests {
         let (instruction, captures) = plan.plan();
         assert!(matches!(instruction, Instruction::Native(_)));
         assert!(captures.is_empty());
-        let first = instant_nanos(NativeContext::default().root(plan.clone()).unwrap_or_else(|_| panic!()));
+        let first = instant_nanos(
+            NativeContext::default()
+                .root(plan.clone())
+                .unwrap_or_else(|_| panic!()),
+        );
         std::thread::sleep(std::time::Duration::from_millis(1));
-        let second = instant_nanos(NativeContext::default().root(plan.clone()).unwrap_or_else(|_| panic!()));
+        let second = instant_nanos(
+            NativeContext::default()
+                .root(plan.clone())
+                .unwrap_or_else(|_| panic!()),
+        );
         assert!(second >= first + 1_000_000);
-        let mut cancelled = NativeContext { cancelled: true, ..NativeContext::default() };
-        assert!(matches!(cancelled.root(plan.clone()), Err(NativeExit::Cancelled)));
+        let mut cancelled = NativeContext {
+            cancelled: true,
+            ..NativeContext::default()
+        };
+        assert!(matches!(
+            cancelled.root(plan.clone()),
+            Err(NativeExit::Cancelled)
+        ));
         assert_eq!(NATIVE_TIMERS.with(Cell::get), 0);
         drop(plan);
         assert_eq!(LIVE.with(Cell::get), 0);

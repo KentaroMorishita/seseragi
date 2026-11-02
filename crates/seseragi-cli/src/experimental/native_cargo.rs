@@ -38,7 +38,7 @@ overflow-checks = false
 opt-level = 3
 "#;
 
-pub(super) fn build(
+pub(crate) fn build(
     input: &Path,
     entry: &str,
     profile: BuildProfile,

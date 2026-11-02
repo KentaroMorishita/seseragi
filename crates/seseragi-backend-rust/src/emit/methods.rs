@@ -442,6 +442,8 @@ impl Backend<'_> {
         if !self.program_wasm_library {
             match name.as_str() {
                 "std/fs::FileType"
+                | "std/test::Test"
+                | "std/test::TestFailure"
                 | "std/log::Logger"
                 | "std/log::LogLevel"
                 | "std/log::LogValue"

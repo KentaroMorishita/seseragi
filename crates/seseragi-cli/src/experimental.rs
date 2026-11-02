@@ -1,6 +1,6 @@
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, path::PathBuf};
-mod native_cargo;
+pub(crate) mod native_cargo;
 pub(crate) mod output;
 pub(crate) mod program_wasm;
 

@@ -1,0 +1,65 @@
+import * as t from "std/test"
+import * as effects from "std/effect"
+import * as deferred from "std/deferred"
+import * as clock from "std/clock"
+import * as time from "std/time"
+import * as random from "std/random"
+import * as console from "std/console"
+import * as log from "std/log"
+import { LogEvent } from "std/log"
+import { add } from "fixture/native-test"
+
+effect fn say text:String -> Unit with Console fails t.TestFailure =
+  println text |> effects.mapError (\_:ConsoleError -> t.ExplicitTestFailure "console")
+effect fn pending -> Unit = do {
+  promise <- deferred.make<Never,Unit> ()
+  deferred.await promise
+}
+effect fn defect -> Unit = effects.die "kaboom"
+effect fn noisy = do {
+  say "out雪"
+  console.errorLine "err🙂" |> effects.mapError (\_:ConsoleError -> t.ExplicitTestFailure "console")
+  let fields:List<(String,log.LogValue)> = `[]
+  log.log (LogEvent {level:log.LogInfo,message:"message",fields:fields}) |> effects.mapError (\_:log.LogError -> t.ExplicitTestFailure "logger")
+}
+fn stamp instant:time.Instant -> String = match time.utcOffset 0 {
+  Left _ -> "invalid offset"
+  Right offset -> time.formatOffsetDateTime (time.atOffset offset instant)
+}
+fn same<A> left:A -> right:A -> Effect<{},t.TestFailure,Unit> where Eq<A>, Debug<A> = t.equal left right
+effect fn environment = do {
+  before <- clock.now ()
+  clock.sleep (time.zeroDuration ())
+  after <- clock.now ()
+  same (stamp before) (stamp after)
+  algorithm <- random.algorithmId ()
+  say algorithm
+  first <- random.nextInt ()
+  second <- random.nextInt ()
+  say (show first + "," + show second)
+}
+let short = match time.milliseconds 2 { Left _ -> time.zeroDuration (); Right duration -> duration }
+let long = match time.milliseconds 30 { Left _ -> time.zeroDuration (); Right duration -> duration }
+let typed:Effect<{},String,Never> = effects.fail "typed"
+effect fn succeeds -> Unit fails String = effects.succeed ()
+let succeeded = succeeds ()
+pub let tests:t.Test = t.suite "suite" [
+  t.test "pass" (t.equal 4 (add 2 2)),
+  t.test "false" (t.isFalse False),
+  t.test "unequal" (t.notEqual 1 2),
+  t.test "equal-failure" (t.equal 1 2),
+  t.test "not-equal-failure" (t.notEqual "雪" "雪"),
+  t.test "true-failure" (t.isTrue False),
+  t.test "false-failure" (t.isFalse True),
+  t.test "explicit" (t.fail "boom"),
+  t.test "expected" (t.expectFailure (\_:String -> True) typed),
+  t.test "mismatch" (t.expectFailure (\_:String -> False) typed),
+  t.test "success" (t.expectFailure (\_:String -> True) succeeded),
+  t.test "defect" (defect ()),
+  t.skip "outer" (t.suite "skipped" [t.test "one" (t.fail "never"),t.skip "inner" (t.test "two" (defect ()))]),
+  t.timeout long (t.timeout short (t.test "timeout" (pending ()))),
+  t.timeout (time.zeroDuration ()) (t.test "zero" (t.isTrue True)),
+  t.test "output" (noisy ()),
+  t.test "environment" (environment ()),
+  t.suite "empty" []
+]
