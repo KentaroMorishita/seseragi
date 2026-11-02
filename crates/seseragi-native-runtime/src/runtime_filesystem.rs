@@ -365,13 +365,7 @@ fn native_decode_text(bytes: Vec<u8>) -> NativeOutcome {
         Ok(text) => Ok(V::text(&text)),
         Err(error) => Err(NativeExit::failure(V::adt(
             "std/fs::FileUtf8Failure",
-            V::adt(
-                "std/text::InvalidUtf8",
-                V::Record(Shared::new(BTreeMap::from([(
-                    "offset".into(),
-                    V::Int(error.utf8_error().valid_up_to() as i64),
-                )]))),
-            ),
+            native_utf8_decode_error(error.utf8_error()),
         ))),
     }
 }

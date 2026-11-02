@@ -17,7 +17,26 @@ fn text_signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         name: "std/prelude::Int".into(),
         arguments: vec![],
     };
+    let bytes = CoreType::Named {
+        name: "std/bytes::Bytes".into(),
+        arguments: vec![],
+    };
     match name {
+        "std/text::encodeUtf8" => Some((vec![string], bytes)),
+        "std/text::decodeUtf8" => Some((
+            vec![bytes],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![
+                    CoreType::Named {
+                        name: "std/text::Utf8DecodeError".into(),
+                        arguments: vec![],
+                    },
+                    string,
+                ],
+            },
+        )),
+        "std/text::decodeUtf8Lossy" => Some((vec![bytes], string)),
         "std/text::isEmpty" => Some((vec![string], boolean)),
         "std/text::concat" => Some((vec![strings], string)),
         "std/text::lengthScalars" | "std/text::lengthBytes" => Some((vec![string], int)),
