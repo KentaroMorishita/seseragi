@@ -51,11 +51,11 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
             vec![limit()],
             reading("std/prelude::Effect", maybe(ty("std/prelude::String"))),
         ),
-        "std/stdin::readLine" => (
+        "std/prelude::readLine" | "std/stdin::readLine" => (
             vec![ty("std/prelude::Unit")],
             reading("std/prelude::Effect", maybe(ty("std/prelude::String"))),
         ),
-        "std/prelude::readLine" | "stdin.readLine" => (
+        "stdin.readLine" => (
             vec![],
             reading("std/prelude::Effect", maybe(ty("std/prelude::String"))),
         ),
@@ -116,9 +116,14 @@ impl Backend<'_> {
             .map(|name| format!("{}.clone()", id(name)))
             .collect::<Vec<_>>()
             .join(",");
+        let operation = if name == "std/prelude::readLine" {
+            "std/stdin::readLine"
+        } else {
+            name
+        };
         let mut body = format!(
             "native_stdin_operation({}, vec![{arguments}])",
-            quoted(name)
+            quoted(operation)
         );
         for i in (0..names.len()).rev() {
             body = Self::closure(&names[i], &body, &names[..i].iter().cloned().collect());

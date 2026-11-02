@@ -1,0 +1,38 @@
+import * as effects from "std/effect"
+import * as stdin from "std/stdin"
+
+fn keep<A> value: A -> A = value
+
+effect fn say text: String -> Unit with Console fails String =
+  println text |> effects.mapError show
+
+effect fn failure error: StdinError -> String with Stdin =
+  effects.succeed ("Left " + show error)
+
+effect fn report action: Effect<{stdin:Stdin},StdinError,Maybe<String>> -> Unit with Stdin, Console fails String = do {
+  let success: Effect<{stdin:Stdin},StdinError,String> = do {
+    value <- action
+    effects.succeed ("Right " + debug value)
+  }
+  text <- effects.recover failure success
+  say text
+}
+
+pub effect fn main -> Unit with Stdin, Console fails String = do {
+  let saved = readLine
+  let alias = (saved)
+  let annotated: Unit -> Effect<{stdin:Stdin},StdinError,Maybe<String>> = readLine
+  let standard = stdin.readLine
+  let generic = keep readLine
+  let (destructured, _) = (readLine, ())
+  let action = alias ()
+  say "created"
+  report action
+  report action
+  report (annotated ())
+  report (standard ())
+  report (generic ())
+  report (destructured ())
+  report (readLine ())
+  report action
+}

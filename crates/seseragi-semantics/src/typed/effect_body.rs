@@ -303,6 +303,9 @@ fn effect_application(
         return None;
     }
     let mut operation = known_effect_operation_by_surface(&symbol.spelling)?;
+    if operation.surface_name == "readLine" && argument_nodes.is_empty() {
+        return None;
+    }
     if matches!(operation.surface_name, "print" | "println") {
         if argument_nodes.len() != 1 {
             return None;

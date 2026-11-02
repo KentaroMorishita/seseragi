@@ -1035,8 +1035,9 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
 
 pub(crate) fn runtime_effect_operation(core_name: &str) -> Option<RuntimeEffectOperation> {
     // Prelude references retain the canonical callable owner; direct Effect
-    // syntax already lowers to the same Console runtime operation.
+    // syntax already lowers to the same runtime operation.
     let core_name = match core_name {
+        "std/prelude::readLine" => "stdin.readLine",
         "std/prelude::print" => "console.print",
         "std/prelude::println" => "console.println",
         other => other,
@@ -1070,8 +1071,9 @@ mod tests {
     }
 
     #[test]
-    fn canonical_prelude_console_references_share_the_runtime_abi() {
+    fn canonical_prelude_provider_references_share_the_runtime_abi() {
         for (canonical, operation) in [
+            ("std/prelude::readLine", "stdin.readLine"),
             ("std/prelude::print", "console.print"),
             ("std/prelude::println", "console.println"),
         ] {
@@ -1081,6 +1083,7 @@ mod tests {
             assert_eq!(reference.runtime_feature, direct.runtime_feature);
         }
         assert!(runtime_effect_operation("fixture/console::println").is_none());
+        assert!(runtime_effect_operation("fixture/stdin::readLine").is_none());
     }
 
     #[test]

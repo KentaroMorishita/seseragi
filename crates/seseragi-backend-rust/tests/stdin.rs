@@ -18,6 +18,78 @@ fn stdin_apis_keep_shared_service_and_opaque_configuration_contracts() {
 }
 
 #[test]
+fn prelude_read_line_values_keep_one_unit_stage_and_the_stdin_capability() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/prelude-read-line-saved.ssrg");
+    let core = compile_core_module(CompileInput::new("saved.ssrg", "native/saved", source))
+        .unwrap()
+        .core_ir;
+    let artifact = emit_rust_module(&core, "main").unwrap();
+    assert!(artifact.metadata.capabilities.contains(&"stdin".into()));
+    assert!(emit_program_wasm(&[&core], "native/saved", &["main".into()]).is_err());
+}
+
+#[test]
+fn prelude_read_line_references_reject_forged_function_and_effect_types() {
+    let source = "pub fn saved -> (Unit -> Effect<{stdin:Stdin},StdinError,Maybe<String>>) = readLine\npub fn main -> Int = 0\n";
+    let core = compile_core_module(CompileInput::new("saved.ssrg", "native/saved", source))
+        .unwrap()
+        .core_ir;
+    emit_rust_module(&core, "main").unwrap();
+    let index = core
+        .functions
+        .iter()
+        .position(|f| f.symbol.ends_with("::saved"))
+        .unwrap();
+    let origin = core_expr_origin(&core.functions[index].body).clone();
+    for mutation in 0..8 {
+        let mut changed = core.clone();
+        let CoreExpr::Variable { name, type_ref, .. } = &mut changed.functions[index].body else {
+            panic!("readLine must remain a callable reference");
+        };
+        assert_eq!(name, "std/prelude::readLine");
+        let CoreType::Function { parameter, result } = type_ref else {
+            panic!("readLine must take one Unit argument");
+        };
+        let fake = CoreType::Named {
+            name: "fake::Value".into(),
+            arguments: vec![],
+        };
+        match mutation {
+            0 => **parameter = CoreType::Hole,
+            1 => **parameter = fake,
+            2 => *type_ref = *result.clone(),
+            6 => **result = CoreType::Hole,
+            _ => {
+                let CoreType::Named { arguments, .. } = result.as_mut() else {
+                    panic!("readLine must return an Effect");
+                };
+                match mutation {
+                    3 => {
+                        arguments[0] = CoreType::Record {
+                            closed: true,
+                            fields: vec![],
+                        }
+                    }
+                    4 => arguments[1] = fake,
+                    5 => arguments[2] = fake,
+                    7 => {
+                        let CoreType::Record { fields, .. } = &mut arguments[0] else {
+                            panic!()
+                        };
+                        fields[0].type_ref = fake;
+                    }
+                    _ => unreachable!(),
+                }
+            }
+        }
+        let error = emit_rust_module(&changed, "main").expect_err("unproven readLine reference");
+        assert_eq!(error.code, "SES-RUST-0001", "mutation {mutation}");
+        assert_eq!(error.origin.as_ref(), Some(&origin), "mutation {mutation}");
+    }
+}
+
+#[test]
 fn stdin_rejects_forged_owners_kinds_results_requirements_and_source_arities() {
     for (name, definition) in [
         ("readSize", "fn operation value: Int -> Either<stdin.StdinConfigError,stdin.ReadSize> = stdin.readSize value"),

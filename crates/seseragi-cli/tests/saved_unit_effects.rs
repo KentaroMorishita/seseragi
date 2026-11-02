@@ -140,6 +140,7 @@ fn programs(text: &str, directory: &Path) -> Vec<Program> {
 #[test]
 fn issue_examples_pass_strict_typescript_and_run_on_all_hosts() {
     for text in [
+        "import * as effects from \"std/effect\"\npub effect fn main = do { let saved = readLine; saved (); effects.succeed () }\n",
         "import * as console from \"std/console\"\npub effect fn main = { let saved = console.flush; saved () }\n",
         "import * as stdin from \"std/stdin\"\nimport * as effects from \"std/effect\"\npub effect fn main = do { let saved = stdin.readLine; saved (); effects.succeed () }\n",
     ] {
@@ -148,6 +149,23 @@ fn issue_examples_pass_strict_typescript_and_run_on_all_hosts() {
             assert_eq!(program.run(b"line\n", scratch.path()).stdout, b"", "{}", program.name);
         }
     }
+}
+
+#[test]
+fn inferred_prelude_read_line_passes_lint_without_annotations() {
+    let scratch = tempfile::tempdir().unwrap();
+    let source = scratch.path().join("01.ssrg");
+    fs::write(
+        &source,
+        "pub effect fn main = { let saved = readLine; saved () }\n",
+    )
+    .unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("lint")
+            .arg(&source),
+        scratch.path(),
+    ));
 }
 
 const SAVED: &str = r#"import * as console from "std/console"

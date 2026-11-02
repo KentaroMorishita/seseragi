@@ -116,7 +116,7 @@ fn stdin_read_failures_match_typescript_and_release_the_lease() {
     let scratch = scratch.path();
     let source = scratch.join("failure.ssrg");
     let fixture = include_str!("../../../examples/spec/fixtures/rust-backend/stdin.ssrg");
-    let source_text = format!("{}pub effect fn main -> Unit with Stdin, Console fails String = do {{\n  report (stdin.readChunk (stdin.defaultReadSize ()) |> map byteInts)\n  report (stdin.readLine ())\n  report (stdin.readLineWith (stdin.defaultLineLimit ()))\n  report (stdin.lines (stdin.defaultLineLimit ()) |> streams.runCollect)\n}}\n", fixture.split("pub effect fn main").next().unwrap());
+    let source_text = format!("{}pub effect fn main -> Unit with Stdin, Console fails String = do {{\n  let saved = readLine\n  let action = saved ()\n  report (stdin.readChunk (stdin.defaultReadSize ()) |> map byteInts)\n  report (stdin.readLine ())\n  report (stdin.readLineWith (stdin.defaultLineLimit ()))\n  report (stdin.lines (stdin.defaultLineLimit ()) |> streams.runCollect)\n  report action\n  report (saved ())\n}}\n", fixture.split("pub effect fn main").next().unwrap());
     fs::write(&source, &source_text).unwrap();
     for mut program in build_programs(&source, scratch) {
         let mut command;
@@ -153,7 +153,7 @@ fn stdin_read_failures_match_typescript_and_release_the_lease() {
         let output = bounded(&mut command, scratch);
         assert!(output.status.success(), "{}: {output:?}", program.name);
         program.check_metrics(&output);
-        assert_eq!(output.stdout, b"Left StdinReadFailure\nLeft StdinReadFailure\nLeft StdinReadFailure\nLeft StdinReadFailure\n", "{}", program.name);
+        assert_eq!(output.stdout, b"Left StdinReadFailure\nLeft StdinReadFailure\nLeft StdinReadFailure\nLeft StdinReadFailure\nLeft StdinReadFailure\nLeft StdinReadFailure\n", "{}", program.name);
     }
 }
 
@@ -202,6 +202,161 @@ fn compare(programs: &[Program], scratch: &Path, input: &[u8], expected: &str) {
             "{} / input length {}",
             program.name,
             input.len()
+        );
+    }
+}
+
+#[test]
+fn saved_prelude_read_line_matches_typescript_and_remains_cold() {
+    use seseragi_driver::{compile_module, BuildProfile, CompileInput};
+    let scratch = tempfile::tempdir().unwrap();
+    let scratch = scratch.path();
+    let source = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/spec/fixtures/rust-backend/prelude-read-line-saved.ssrg");
+    let programs = build_programs(&source, scratch);
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    for (label, profile) in [
+        ("development", BuildProfile::Development),
+        ("release", BuildProfile::Release),
+    ] {
+        let directory = scratch.join(label);
+        let compiled = compile_module(
+            CompileInput::new(
+                "saved.ssrg",
+                "single-file/main",
+                &fs::read_to_string(&source).unwrap(),
+            )
+            .with_profile(profile),
+        )
+        .unwrap();
+        let raw = directory.join("raw.ts");
+        fs::write(&raw, source_runtime_imports(&compiled.generated.typescript)).unwrap();
+        let config = directory.join("tsconfig.json");
+        fs::write(
+            &config,
+            serde_json::to_vec(&serde_json::json!({
+                "compilerOptions": {
+                    "strict": true, "noEmit": true, "skipLibCheck": false,
+                    "allowImportingTsExtensions": true, "target": "ES2022",
+                    "module": "ESNext", "moduleResolution": "Bundler",
+                    "types": ["bun", "node"], "typeRoots": [root.join("node_modules/@types")],
+                    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+                }, "files": [raw]
+            }))
+            .unwrap(),
+        )
+        .unwrap();
+        successful(bounded(
+            Command::new(runtime("node", scratch))
+                .arg(root.join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(config),
+            scratch,
+        ));
+    }
+    let eof = "Right Nothing\n";
+    compare(
+        &programs,
+        scratch,
+        "雪🙂\r\n\nlast\r".as_bytes(),
+        &format!(
+            "created\nRight Just \"雪🙂\"\nRight Just \"\"\nRight Just \"last\\r\"\n{}",
+            eof.repeat(5)
+        ),
+    );
+    compare(
+        &programs,
+        scratch,
+        b"",
+        &format!("created\n{}", eof.repeat(8)),
+    );
+    compare(
+        &programs,
+        scratch,
+        b"\xff\nkept\n",
+        &format!(
+            "created\nLeft InvalidStdinUtf8 {{ offset: 0 }}\nRight Just \"kept\"\n{}",
+            eof.repeat(6)
+        ),
+    );
+    for length in [1048576, 1048577] {
+        for ending in [b"\n".as_slice(), b"\r\n".as_slice(), b"".as_slice()] {
+            let input = [&vec![b'x'; length], ending].concat();
+            let first = if length == 1048576 {
+                format!("Right Just \"{}\"\n", "x".repeat(length))
+            } else {
+                "Left StdinLineTooLong { limitBytes: 1048576 }\n".into()
+            };
+            compare(
+                &programs,
+                scratch,
+                &input,
+                &format!("created\n{first}{}", eof.repeat(7)),
+            );
+        }
+    }
+    compare(
+        &programs,
+        scratch,
+        &[vec![b'x'; 1048577], b"\nok\n".to_vec()].concat(),
+        &format!(
+            "created\nLeft StdinLineTooLong {{ limitBytes: 1048576 }}\nRight Just \"ok\"\n{}",
+            eof.repeat(6)
+        ),
+    );
+
+    for program in &programs {
+        let out = scratch.join("saved.stdout");
+        let err = scratch.join("saved.stderr");
+        let mut child = Running(
+            program
+                .command()
+                .stdin(Stdio::piped())
+                .stdout(Stdio::from(File::create(&out).unwrap()))
+                .stderr(Stdio::from(File::create(&err).unwrap()))
+                .spawn()
+                .unwrap(),
+        );
+        wait_for(&mut child, &out, "created\n");
+        assert_eq!(
+            fs::read_to_string(&out).unwrap(),
+            "created\n",
+            "{}",
+            program.name
+        );
+        child
+            .0
+            .stdin
+            .take()
+            .unwrap()
+            .write_all(b"first\nsecond\n")
+            .unwrap();
+        let deadline = Instant::now() + Duration::from_secs(30);
+        let status = loop {
+            if let Some(status) = child.0.try_wait().unwrap() {
+                break status;
+            }
+            assert!(
+                Instant::now() < deadline,
+                "{}: saved read did not finish",
+                program.name
+            );
+            std::thread::sleep(Duration::from_millis(10));
+        };
+        let output = successful(Output {
+            status,
+            stdout: fs::read(&out).unwrap(),
+            stderr: fs::read(&err).unwrap(),
+        });
+        program.check_metrics(&output);
+        assert_eq!(
+            String::from_utf8(output.stdout).unwrap(),
+            format!(
+                "created\nRight Just \"first\"\nRight Just \"second\"\n{}",
+                eof.repeat(6)
+            ),
+            "{}",
+            program.name
         );
     }
 }
