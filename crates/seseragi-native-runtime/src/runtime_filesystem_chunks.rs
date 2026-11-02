@@ -6,6 +6,7 @@ enum NativeFileAction {
     Write,
     Flush,
     Close,
+    CloseWrite,
 }
 pub struct NativeFileResource(std::sync::Arc<std::sync::Mutex<Option<std::fs::File>>>);
 #[derive(Debug)]
@@ -97,7 +98,7 @@ fn native_run_file_action<H: NativeFileHost>(
         NativeFileAction::Flush => host
             .flush(handle.as_mut().expect("open file"))
             .map_err(NativeFileFault::Io)?,
-        NativeFileAction::Close => {
+        NativeFileAction::Close | NativeFileAction::CloseWrite => {
             if let Some(handle) = handle.take() {
                 host.close(handle).map_err(NativeFileFault::Io)?;
             }
@@ -175,7 +176,11 @@ fn native_file_acquire(path: V, mode: V) -> V {
                 vec![path.clone(), opened.clone(), V::Bool(writing)],
                 |captures, file| {
                     let close = native_file_action(
-                        NativeFileAction::Close,
+                        if captures[2].boolean() {
+                            NativeFileAction::CloseWrite
+                        } else {
+                            NativeFileAction::Close
+                        },
                         file,
                         captures[0].clone(),
                         V::Unit,
@@ -342,7 +347,7 @@ fn native_file_write_chunks(mode: V, source: V, path: V) -> V {
                             ),
                             V::fun(captures.to_vec(), |captures, _| {
                                 native_file_action(
-                                    NativeFileAction::Close,
+                                    NativeFileAction::CloseWrite,
                                     captures[0].clone(),
                                     captures[1].clone(),
                                     V::Unit,
@@ -456,7 +461,7 @@ mod file_chunk_tests {
             for action in [
                 NativeFileAction::Write,
                 NativeFileAction::Flush,
-                NativeFileAction::Close,
+                NativeFileAction::CloseWrite,
             ] {
                 let result = native_run_file_action(
                     &mut host,
@@ -474,12 +479,7 @@ mod file_chunk_tests {
                     let NativeExit::Failure(error) = exit else {
                         panic!("typed I/O failure expected")
                     };
-                    let closing = matches!(action, NativeFileAction::Close);
-                    assert!(error.field("operation").tagged(if closing {
-                        "std/fs::ReadFile"
-                    } else {
-                        "std/fs::WriteFile"
-                    }));
+                    assert!(error.field("operation").tagged("std/fs::WriteFile"));
                     assert!(error.field("kind").tagged(if fail == Some("write") {
                         "std/fs::OtherFileSystemError"
                     } else {
@@ -536,7 +536,7 @@ mod file_chunk_tests {
         let Err(NativeExit::Failure(error)) = outcome else {
             panic!("typed close failure expected")
         };
-        assert!(error.field("operation").tagged("std/fs::ReadFile"));
+        assert!(error.field("operation").tagged("std/fs::WriteFile"));
         assert!(error.field("kind").tagged("std/fs::PermissionDenied"));
         assert!(notes.is_empty());
         drop((captures, error));

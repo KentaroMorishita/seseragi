@@ -627,10 +627,10 @@ function writeWith<
       await write(handle, environment, active)
       await rawFlush(handle, path)(environment, active)
     } catch (error) {
-      await bestEffort(rawCloseFile(handle, path), environment)
+      await bestEffort(rawCloseFile(handle, path, WriteFile), environment)
       throw error
     }
-    await rawCloseFile(handle, path)(environment, active)
+    await rawCloseFile(handle, path, WriteFile)(environment, active)
     return unit
   }
 }
@@ -748,9 +748,10 @@ function rawFlush(
 
 function rawCloseFile(
   handle: FileHandle,
-  path: Path
+  path: Path,
+  operation: FileSystemOperation = ReadFile
 ): Effect<FileSystemEnvironment, FileSystemError, Unit> {
-  return pathEffect(path, ReadFile, (fs, context) =>
+  return pathEffect(path, operation, (fs, context) =>
     fs.closeFile(handle, context)
   )
 }
