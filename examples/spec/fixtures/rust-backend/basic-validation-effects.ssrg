@@ -1,0 +1,37 @@
+import { Validation } from "std/validation"
+import * as validation from "std/validation"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+fn validator<E> error: E -> (Int -> Validation<E, Int>) = \value: Int ->
+  if value == 0 then validation.invalid error else validation.valid value
+effect fn failBody -> Unit fails String = do {
+  let _computed: Validation<String, Int> = validation.valid 42
+  effects.fail "typed"
+}
+pub effect fn main = do {
+  released <- refs.make 0
+  saved <- refs.make (validator "captured")
+  let cold = effects.defer $ \_: Unit -> do {
+    operation <- refs.get saved
+    say (debug (operation 0))
+    say (debug (operation 42))
+  }
+  say "created"
+  effects.scoped (do {
+      effects.acquireRelease (say "acquired") (\_: Unit -> do {
+          refs.update (\n -> n + 1) released
+          say "released"
+        }
+      )
+      cold
+      cold
+      failBody ()
+  }) |> effects.recover (\message: String -> say ("recovered: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

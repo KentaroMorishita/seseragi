@@ -1,0 +1,137 @@
+import { Validation } from "std/validation"
+import * as validation from "std/validation"
+import { NonEmptyList } from "std/non-empty-list"
+
+alias Check<E, A> = Validation<E, A>
+type Label = | Label Int
+instance Eq<Label> {
+  fn eq left: Label -> right: Label -> Bool =
+    match (left, right) { (Label a, Label b) -> a % 10 == b % 10 }
+}
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label n -> "label:" + show n }
+}
+instance Debug<Label> {
+  fn debug value: Label -> String = match value { Label n -> "debug:" + show n }
+}
+fn accept<E, A> value: A -> Check<E, A> = validation.valid value
+fn reject<E, A> error: E -> Check<E, A> = validation.invalid error
+fn rejectMany<E, A> errors: NonEmptyList<E> -> Check<E, A> =
+  validation.invalidMany errors
+fn convert<E, A> value: Either<E, A> -> Check<E, A> = validation.fromEither value
+fn extract<E, A> value: Check<E, A> -> Either<NonEmptyList<E>, A> =
+  validation.toEither value
+fn same<E, A> left: Check<E, A> -> right: Check<E, A> -> Bool where Eq<E>, Eq<A> =
+  left == right
+fn mapped<F<_>, A, B> callback: (A -> B) -> value: F<A> -> F<B> where Functor<F> =
+  callback
+  <$> value
+fn applied<F<_>, A, B> callback: F<(A -> B)>
+  -> value: F<A>
+  -> F<B>
+where Applicative<F> =
+  callback
+  <*> value
+fn lifted<F<_>, A> value: A -> F<A> where Applicative<F> = pure value
+fn increment value: Int -> Int = value + 1
+fn sum left: Int -> right: Int -> Int = left + right
+fn unused value: Int -> Int = value / 0
+fn singleton<A> value: A -> NonEmptyList<A> = pure value
+
+pub effect fn main = do {
+  let valid: Int -> Check<String, Int> = validation.valid
+  let invalid: String -> Check<String, Int> = validation.invalid
+  let invalidMany: NonEmptyList<String> -> Check<String, Int> = validation.invalidMany
+  let fromEither: Either<String, Int> -> Check<String, Int> = validation.fromEither
+  let toEither: Check<String, Int> -> Either<NonEmptyList<String>, Int> =
+    validation.toEither
+  let errors =
+    append (singleton "first") (append (singleton "") (append (singleton "雪🙂") (singleton "first")))
+  let other = append (singleton "next") (singleton "last")
+  let good = valid 41
+  let bad = invalid ""
+  let many = invalidMany errors
+  let goodFunction: Check<String, (Int -> Int)> = accept increment
+  let badFunction: Check<String, (Int -> Int)> = rejectMany other
+  println (debug good)
+  println (debug bad)
+  println (debug many)
+  println (debug (fromEither (Right 0)))
+  println (debug (fromEither (Left "left")))
+  println (debug (toEither good))
+  println (debug (toEither many))
+  println (debug (extract<String, String> (accept<String, String> "")))
+  println (debug (extract<String, Int> (reject<String, Int> "雪🙂")))
+  println (debug (extract<String, Int> (rejectMany<String, Int> errors)))
+  let nested: Check<NonEmptyList<String>, Int> = convert (Left errors)
+  println (debug nested)
+  println (debug (extract nested))
+  println (debug (convert (extract many)))
+  let empty: Check<String, Array<Int>> = accept []
+  let unit: Check<String, Unit> = accept ()
+  let minimum: Check<String, Int> = accept (-9007199254740991)
+  let maximum: Check<String, Int> = accept 9007199254740991
+  println (debug empty)
+  println (debug unit)
+  println (debug minimum)
+  println (debug maximum)
+  println (debug (mapped increment good))
+  println (debug (mapped unused many))
+  println (debug (applied goodFunction good))
+  println (debug (applied goodFunction many))
+  println (debug (applied badFunction good))
+  println (debug (applied badFunction many))
+  let skipped: Check<String, (Int -> Int)> = accept unused
+  println (debug (skipped <*> many))
+  let start: Check<String, (Int -> Int -> Int)> = lifted sum
+  let combined = start <*> many <*> invalidMany other
+  println (debug combined)
+  println (debug many)
+  println (debug errors)
+  println (debug (same good (accept 41)))
+  println (debug (same good (accept 42)))
+  println (debug (same good bad))
+  println (debug (same bad good))
+  println (debug (same many (rejectMany errors)))
+  println (
+    debug (
+      same many
+        (rejectMany (append (singleton "first") (append (singleton "") (singleton "雪🙂"))))
+    )
+  )
+  println (
+    debug (
+      same many (
+        rejectMany (
+          append (singleton "")
+            (append (singleton "first") (append (singleton "雪🙂") (singleton "first")))
+        )
+      )
+    )
+  )
+  let callable: Check<String, (Int -> Int)> = convert (Right increment)
+  println (match extract callable { Left _ -> "missing";
+    Right callback -> show (callback 41) })
+  let errorCallable: Check<(Int -> Int), Int> = reject increment
+  match extract<(Int -> Int), Int> errorCallable {
+    Left failures -> for callback <- failures { println (show (callback 41)) }
+    Right value -> println (show value)
+  }
+  let customValid: Check<Label, Label> = accept (Label 7)
+  let customInvalid: Check<Label, Label> =
+    rejectMany (append (singleton (Label 11)) (singleton (Label 12)))
+  println (show customValid)
+  println (debug customValid)
+  println (show customInvalid)
+  println (debug customInvalid)
+  println (debug (same customValid (accept (Label 17))))
+  println (
+    debug (
+      same customInvalid
+        (rejectMany (append (singleton (Label 1)) (singleton (Label 2))))
+    )
+  )
+  let escaped: Check<String, String> = accept "ok\n\"\\"
+  println (debug escaped)
+  println (debug (validation.toEither escaped))
+}
