@@ -1,0 +1,10 @@
+pub fn make -> (Unit -> Int) = {
+  fn value -> Int = 9007199254740991 + 1
+  value
+}
+
+pub effect fn main = do {
+  let saved = make ()
+  println "created"
+  println (show (saved ()))
+}
