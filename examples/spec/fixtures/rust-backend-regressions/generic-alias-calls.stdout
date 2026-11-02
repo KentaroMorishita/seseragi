@@ -1,0 +1,13 @@
+Right 0
+Left `[""]
+Left `["雪🙂"]
+Right 42
+Left `[0]
+Right ""
+Right []
+Right ()
+Right -9007199254740991
+Right 9007199254740991
+Nothing
+Just "雪🙂"
+42

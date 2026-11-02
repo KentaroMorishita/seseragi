@@ -132,6 +132,44 @@ impl AliasCatalog {
         self.expand_type_ref(resolved, type_ref, &BTreeMap::new(), &mut BTreeSet::new())
     }
 
+    pub(super) fn application_template(
+        &self,
+        resolved: &ResolvedModule,
+        type_ref: &TypeRef,
+    ) -> Option<TypedType> {
+        let TypeRef::Named {
+            arguments, span, ..
+        } = type_ref
+        else {
+            return None;
+        };
+        let owner = self.target(resolved, *span)?;
+        let definition = self.definitions.get(&owner)?;
+        if arguments.len() != definition.parameter_names.len()
+            || arguments.is_empty()
+            || definition.parameter_arities.iter().any(|arity| *arity != 0)
+        {
+            return None;
+        }
+        let arguments = (0..arguments.len())
+            .map(|index| TypedType::TypeFunctionParameter {
+                depth: 0,
+                index: index as u32,
+            })
+            .collect();
+        Some(TypedType::TypeFunction {
+            parameter_kinds: definition.parameter_arities.clone(),
+            body: Box::new(self.instantiate(
+                resolved,
+                owner,
+                definition,
+                arguments,
+                None,
+                &mut BTreeSet::new(),
+            )),
+        })
+    }
+
     pub(super) fn expand_closed_owner(
         &self,
         resolved: &ResolvedModule,

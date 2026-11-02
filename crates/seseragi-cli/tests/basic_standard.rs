@@ -221,6 +221,36 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
 }
 
 #[test]
+fn inferred_validation_alias_calls_keep_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/validation-inferred-return.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/validation-inferred-return.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn generic_alias_calls_keep_success_errors_and_boundaries_in_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/generic-alias-calls.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/generic-alias-calls.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn imported_generic_alias_calls_keep_strict_ts_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/generic-alias-calls"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-projects/generic-alias-calls/expected.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn basic_long_effect_sequence_keeps_every_statement_in_both_profiles() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-long-effect-sequence.ssrg"),

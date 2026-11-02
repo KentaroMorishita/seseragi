@@ -1202,9 +1202,6 @@ impl SemanticTypeCatalog {
         resolved: &ResolvedModule,
         type_ref: &TypeRef,
     ) -> SemanticTypeKey {
-        if self.aliases.expands(resolved, type_ref) {
-            return self.key_from_typed_type(resolved, &self.aliases.expand(resolved, type_ref));
-        }
         let owners = self.adts.keys().copied().collect::<BTreeSet<_>>();
         let struct_owners = self.structs.keys().copied().collect::<BTreeSet<_>>();
         semantic_key_from_type_ref(resolved, &owners, &struct_owners, &self.aliases, type_ref)
@@ -1433,6 +1430,36 @@ fn semantic_key_from_type_ref(
     type_ref: &TypeRef,
 ) -> SemanticTypeKey {
     if aliases.expands(resolved, type_ref) {
+        if let TypeRef::Named { arguments, .. } = type_ref {
+            if let Some(constructor) = aliases.application_template(resolved, type_ref) {
+                let key =
+                    semantic_key_from_expanded_type(resolved, owners, struct_owners, &constructor);
+                let arguments = arguments
+                    .iter()
+                    .map(|argument| SemanticValueType {
+                        type_ref: aliases.expand(resolved, argument),
+                        key: semantic_key_from_type_ref(
+                            resolved,
+                            owners,
+                            struct_owners,
+                            aliases,
+                            argument,
+                        ),
+                    })
+                    .collect::<Vec<_>>();
+                // Apply the checked alias body before discarding source spans.
+                // Its argument keys retain the caller's declaration binders.
+                if let Some(value) = seseragi_syntax::type_functions::apply_type_function(
+                    &SemanticValueType {
+                        type_ref: constructor,
+                        key,
+                    },
+                    &arguments,
+                ) {
+                    return value.key;
+                }
+            }
+        }
         let expanded = aliases.expand(resolved, type_ref);
         return semantic_key_from_expanded_type(resolved, owners, struct_owners, &expanded);
     }
