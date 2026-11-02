@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use seseragi_driver::{BuildProfile, CompileInput};
 use std::{
     fs,
@@ -290,7 +293,7 @@ fn generic_impl_operand_and_selected_dictionary_stages_evaluate_once_in_source_o
     let binary = directory.join(format!("trace{}", std::env::consts::EXE_SUFFIX));
     fs::write(&file, rust).unwrap();
     successful(bounded(
-        Command::new(std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()))
+        native_runtime::rustc()
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&file),

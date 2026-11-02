@@ -1,5 +1,5 @@
 use seseragi_driver::{compile_core_module, CompileInput};
-use std::{fs, path::PathBuf, process::Command};
+use std::{fs, path::PathBuf};
 pub(crate) mod output;
 pub(crate) mod program_wasm;
 
@@ -130,13 +130,15 @@ fn publish_artifact(
         )
         .map_err(|e| e.to_string())?;
         if let Some(executable) = &staged.executable {
-            let output = Command::new("rustc")
-                .args(["--edition=2021", "--crate-name", "seseragi_program", "-O"])
-                .arg(&staged.rust)
-                .arg("-o")
-                .arg(executable)
-                .output()
-                .map_err(|e| format!("could not start rustc: {e}; install a Rust toolchain"))?;
+            let output = seseragi_backend_rust::native_runtime::compiler(
+                &seseragi_backend_rust::native_runtime::cache_directory()?,
+            )?
+            .args(["--edition=2021", "--crate-name", "seseragi_program", "-O"])
+            .arg(&staged.rust)
+            .arg("-o")
+            .arg(executable)
+            .output()
+            .map_err(|e| format!("could not start rustc: {e}; install a Rust toolchain"))?;
             if !output.status.success() {
                 return Err(format!(
                     "Rust target compilation failed:\n{}",

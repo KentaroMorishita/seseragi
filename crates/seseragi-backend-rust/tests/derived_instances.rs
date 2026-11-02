@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::{emit_program_wasm, emit_rust_module};
 use seseragi_driver::{compile_module, CompileInput};
 use seseragi_lowering::{CoreInstanceEvidence, CoreInstanceImplementation, CoreType};
@@ -64,7 +67,7 @@ fn compare_outputs(
         artifact.source
     };
     fs::write(&rust, generated).unwrap();
-    let output = Command::new("rustc")
+    let output = link::rustc()
         .args(["--edition=2021", "-O"])
         .arg(&rust)
         .arg("-o")

@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, process::Command};
@@ -33,7 +36,7 @@ fn file_transform_preserves_utf8_input_and_typed_failures() {
     } else {
         "program"
     });
-    let compiled = Command::new("rustc")
+    let compiled = link::rustc()
         .args(["--edition=2021", "-o"])
         .arg(&binary)
         .arg(&rust)

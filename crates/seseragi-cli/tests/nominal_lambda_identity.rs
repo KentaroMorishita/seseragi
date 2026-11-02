@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -95,7 +98,7 @@ fn saved_nominal_return_lambda_keeps_primitive_identity_and_scoped_effects() {
                     "effects.acquireRelease (do { println \"acquired\"; effects.succeed () }) (\\_: Unit -> do { refs.set True released; effects.recover (\\_: ConsoleError -> effects.succeed ()) (println \"released\") })")).unwrap();
         }
         success(
-            Command::new(cli)
+            native_cache::command(cli)
                 .args(["lock", "update"])
                 .arg(&project)
                 .output()
@@ -103,7 +106,7 @@ fn saved_nominal_return_lambda_keeps_primitive_identity_and_scoped_effects() {
         );
         let native = scratch.path().join(format!("{label}-native"));
         success(
-            Command::new(cli)
+            native_cache::command(cli)
                 .args(["experimental", "build-native"])
                 .arg(&project)
                 .args(["--entry", "main", "--out-dir"])
@@ -140,7 +143,7 @@ fn saved_nominal_return_lambda_keeps_primitive_identity_and_scoped_effects() {
         ] {
             let output = scratch.path().join(format!("{label}-{profile}"));
             success(
-                Command::new(cli)
+                native_cache::command(cli)
                     .arg("build")
                     .arg(&project)
                     .args(["--profile", profile, "--out-dir"])

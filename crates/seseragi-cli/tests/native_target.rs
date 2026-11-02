@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs,
     path::Path,
@@ -10,7 +13,9 @@ mod process;
 use process::{bounded, successful};
 
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+    native_cache::configure(&mut command);
+    command
 }
 
 fn executable(directory: &Path) -> std::path::PathBuf {

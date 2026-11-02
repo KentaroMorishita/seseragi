@@ -1,3 +1,9 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -32,6 +38,7 @@ struct OwnedChild {
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command
@@ -603,7 +610,7 @@ fn string_equality_evaluates_source_operands_once_in_order() {
             .join(format!("{entry}{}", std::env::consts::EXE_SUFFIX));
         fs::write(&file, rust).unwrap();
         successful(bounded(
-            Command::new("rustc")
+            native_runtime::rustc()
                 .args(["--edition=2021", "-O", "-o"])
                 .arg(&binary)
                 .arg(&file),
@@ -710,7 +717,7 @@ fn standard_web_program_string_predicate_matches_native_and_strict_bridge() {
         .join(format!("oracle{}", std::env::consts::EXE_SUFFIX));
     fs::write(&rust, native.source).unwrap();
     successful(bounded(
-        Command::new("rustc")
+        native_runtime::rustc()
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&rust),

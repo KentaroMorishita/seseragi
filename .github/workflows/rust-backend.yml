@@ -10,6 +10,8 @@ on:
       - "Cargo.lock"
       - "rust-toolchain.toml"
       - "crates/seseragi-backend-rust/**"
+      - "crates/seseragi-native-runtime/**"
+      - "crates/test-support/native_runtime.rs"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-lowering/**"
       - "crates/seseragi-runtime/**"
@@ -25,6 +27,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
+      - "crates/seseragi-cli/tests/native_runtime_cache.rs"
       - "crates/seseragi-cli/tests/differential.rs"
       - "crates/seseragi-cli/tests/support/differential/**"
       - "crates/seseragi-cli/tests/support/generic_impl_process.rs"
@@ -86,6 +89,8 @@ on:
       - "Cargo.lock"
       - "rust-toolchain.toml"
       - "crates/seseragi-backend-rust/**"
+      - "crates/seseragi-native-runtime/**"
+      - "crates/test-support/native_runtime.rs"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-lowering/**"
       - "crates/seseragi-runtime/**"
@@ -101,6 +106,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
+      - "crates/seseragi-cli/tests/native_runtime_cache.rs"
       - "crates/seseragi-cli/tests/differential.rs"
       - "crates/seseragi-cli/tests/support/differential/**"
       - "crates/seseragi-cli/tests/support/generic_impl_process.rs"
@@ -293,7 +299,7 @@ jobs:
       - name: Check Rust formatting
         run: |
           cargo fmt --all -- --check
-          rustfmt --edition 2021 --check crates/seseragi-backend-rust/src/runtime*.rs
+          rustfmt --edition 2021 --check crates/seseragi-backend-rust/src/runtime*.rs crates/seseragi-native-runtime/src/runtime*.rs
       - name: Verify Array, Tuple and List display order and shared depth on Bun and Node
         run: |
           bun build runtime/ts/probes/tuple-display.ts --target=node --outfile target/tuple-display.mjs
@@ -308,9 +314,9 @@ jobs:
           cargo test --locked -p seseragi-lowering --lib core_analysis::scalar
           cargo test --locked -p seseragi-driver --test scalar_globals
       - name: Verify native values, captures, dictionaries, and teardown
-        run: cargo test --locked -p seseragi-backend-rust
+        run: cargo test --locked -p seseragi-native-runtime -p seseragi-backend-rust
       - name: Compare the CLI Rust target with TypeScript execution
-        run: cargo test --locked -p seseragi-cli --test rust_backend
+        run: cargo test --locked -p seseragi-cli --test rust_backend --test native_runtime_cache
       - name: Compare fixed-seed generated programs on Bun, Node and native
         run: cargo test --locked -p seseragi-cli --test differential -- --nocapture
       - name: Verify canonical reexport process builds on Bun and Node

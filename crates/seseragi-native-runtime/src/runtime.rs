@@ -1,0 +1,889 @@
+// Single-thread native values. Captures and mutable edges are always explicit.
+use std::{
+    any::Any,
+    cell::{Cell, RefCell},
+    collections::BTreeMap,
+    rc::{Rc, Weak},
+};
+
+thread_local! {
+    static DROP_QUEUE: RefCell<Vec<Box<dyn Any>>> = const { RefCell::new(Vec::new()) };
+    static DRAINING: Cell<bool> = const { Cell::new(false) };
+    static DICTIONARIES: RefCell<BTreeMap<&'static str, V>> = const { RefCell::new(BTreeMap::new()) };
+    pub static GLOBALS: RefCell<Vec<V>> = const { RefCell::new(Vec::new()) };
+    pub static LIVE: Cell<usize> = const { Cell::new(0) };
+    static PEAK: Cell<usize> = const { Cell::new(0) };
+    pub static ALLOCATIONS: Cell<usize> = const { Cell::new(0) };
+    static SHARES: Cell<usize> = const { Cell::new(0) };
+}
+
+struct Node<T: TraceValue> {
+    value: T,
+}
+impl<T: TraceValue> Drop for Node<T> {
+    fn drop(&mut self) {
+        let _ = LIVE.try_with(|n| n.set(n.get() - 1));
+        if CYCLE_TRACKING.try_with(Cell::get).unwrap_or(false) {
+            let id = self as *const Self as usize;
+            let _ = NODES.try_with(|nodes| nodes.borrow_mut().remove(&id));
+        }
+    }
+}
+pub struct Shared<T: TraceValue + 'static>(Option<Rc<Node<T>>>);
+impl<T: TraceValue + 'static> Shared<T> {
+    pub fn new(value: T) -> Self {
+        // Initialize teardown dependencies before dictionaries can own nodes.
+        DROP_QUEUE.with(|_| {});
+        DRAINING.with(|_| {});
+        LIVE.with(|n| {
+            n.set(n.get() + 1);
+            PEAK.with(|p| p.set(p.get().max(n.get())));
+        });
+        ALLOCATIONS.with(|n| n.set(n.get() + 1));
+        let node = Rc::new(Node { value });
+        if CYCLE_TRACKING.with(Cell::get) {
+            let erased: Rc<dyn TraceNode> = node.clone();
+            NODES.with(|nodes| {
+                nodes
+                    .borrow_mut()
+                    .insert(Rc::as_ptr(&node) as usize, Rc::downgrade(&erased));
+            });
+        }
+        Self(Some(node))
+    }
+    pub fn get(&self) -> &T {
+        &self.0.as_ref().expect("live shared handle").value
+    }
+    fn id(&self) -> usize {
+        Rc::as_ptr(self.0.as_ref().expect("live shared handle")) as usize
+    }
+}
+impl<T: TraceValue + 'static> Clone for Shared<T> {
+    fn clone(&self) -> Self {
+        SHARES.with(|n| n.set(n.get() + 1));
+        Self(Some(Rc::clone(
+            self.0.as_ref().expect("live shared handle"),
+        )))
+    }
+}
+
+// Destroy last owners through a work queue. Dropping a parent can enqueue
+// children, but cannot recurse through a long immutable value graph.
+impl<T: TraceValue + 'static> Drop for Shared<T> {
+    fn drop(&mut self) {
+        let node = self.0.take().expect("live shared handle");
+        if Rc::strong_count(&node) != 1 {
+            drop(node);
+            return;
+        }
+        let mut managed_child = false;
+        let inspected = node.value.edges(&mut |value| {
+            managed_child |= value.node_id().is_some();
+        });
+        if inspected.is_ok() && !managed_child {
+            // Scalar payloads cannot recurse into another managed destructor.
+            // Failed inspection (for example a borrowed Ref) keeps the queue.
+            drop(node);
+            return;
+        }
+        DROP_QUEUE.with(|queue| queue.borrow_mut().push(Box::new(node)));
+        if DRAINING.with(|flag| flag.replace(true)) {
+            return;
+        }
+        struct Reset;
+        impl Drop for Reset {
+            fn drop(&mut self) {
+                DRAINING.with(|flag| flag.set(false));
+            }
+        }
+        let _reset = Reset;
+        loop {
+            let next = DROP_QUEUE.with(|queue| queue.borrow_mut().pop());
+            match next {
+                Some(node) => drop(node),
+                None => break,
+            }
+        }
+    }
+}
+
+pub fn cached(key: &'static str, factory: impl FnOnce() -> V) -> V {
+    // Initialize teardown state first: TLS destructors run in reverse order.
+    DROP_QUEUE.with(|_| {});
+    DRAINING.with(|_| {});
+    LIVE.with(|_| {});
+    if let Some(value) = DICTIONARIES.with(|cache| cache.borrow().get(key).cloned()) {
+        return value;
+    }
+    let value = factory(); // No cache borrow survives nested factory evaluation.
+    DICTIONARIES.with(|cache| cache.borrow_mut().insert(key, value.clone()));
+    value
+}
+pub fn clear_dictionaries() {
+    let entries = DICTIONARIES.with(|cache| std::mem::take(&mut *cache.borrow_mut()));
+    drop(entries);
+}
+
+pub fn set_global(index: usize, value: V) {
+    // Evaluate the initializer before borrowing storage. Calls can read earlier
+    // bindings, but no initializer or user callback runs under this borrow.
+    GLOBALS.with(|globals| {
+        let mut globals = globals.borrow_mut();
+        assert_eq!(
+            globals.len(),
+            index,
+            "Rust ABI: global initialization order"
+        );
+        globals.push(value);
+    });
+}
+// Only owned clones or immediate scalar extraction run under this borrow;
+// source callbacks and initializer evaluation stay outside global storage.
+pub fn read_global<T>(index: usize, read: impl FnOnce(&V) -> T) -> T {
+    read_global_at(index, None, read)
+}
+pub fn read_global_at<T>(
+    index: usize,
+    source: Option<&'static NativeSource>,
+    read: impl FnOnce(&V) -> T,
+) -> T {
+    GLOBALS.with(|globals| {
+        let globals = globals.borrow();
+        read(
+            globals
+                .get(index)
+                .unwrap_or_else(|| native_defect_at("Rust ABI: uninitialized global", source)),
+        )
+    })
+}
+#[inline]
+pub fn get_global_at(index: usize, source: &'static NativeSource) -> V {
+    read_global_at(index, Some(source), V::clone)
+}
+#[inline]
+pub fn get_global_int_at(index: usize, source: &'static NativeSource) -> i64 {
+    read_global_at(index, Some(source), |value| match value {
+        V::Int(value) => *value,
+        _ => panic!("Rust ABI: expected Int"),
+    })
+}
+#[inline]
+pub fn get_global_bool_at(index: usize, source: &'static NativeSource) -> bool {
+    read_global_at(index, Some(source), |value| match value {
+        V::Bool(value) => *value,
+        _ => panic!("Rust ABI: expected Bool"),
+    })
+}
+#[inline]
+pub fn get_global(index: usize) -> V {
+    read_global(index, V::clone)
+}
+#[inline]
+pub fn get_global_int(index: usize) -> i64 {
+    read_global(index, |value| match value {
+        V::Int(value) => *value,
+        _ => panic!("Rust ABI: expected Int"),
+    })
+}
+#[inline]
+pub fn get_global_bool(index: usize) -> bool {
+    read_global(index, |value| match value {
+        V::Bool(value) => *value,
+        _ => panic!("Rust ABI: expected Bool"),
+    })
+}
+pub fn clear_globals() {
+    let values = GLOBALS.with(|globals| std::mem::take(&mut *globals.borrow_mut()));
+    drop(values);
+}
+
+#[derive(Clone)]
+pub enum V {
+    Unit,
+    Int(i64),
+    Byte(u8),
+    Float(f64),
+    Char(char),
+    Bool(bool),
+    Text(Shared<String>),
+    Bytes(Shared<Vec<u8>>),
+    BigInt(Shared<NativeBigInt>),
+    Decimal(Shared<NativeDecimal>),
+    DecimalContext(Shared<NativeDecimalContext>),
+    Tuple(Shared<Vec<V>>),
+    Array(Shared<Vec<V>>),
+    Map(Shared<NativeMap>),
+    Set(Shared<NativeMap>),
+    MapIndex(Shared<NativeMapIndex>),
+    MapEntry(Shared<NativeMapEntry>),
+    ListEmpty,
+    List(Shared<ListCell>),
+    Record(Shared<BTreeMap<String, V>>),
+    HtmlStyleRecord(Shared<NativeStyleRecord>),
+    Adt(Shared<(&'static str, V)>),
+    Fun(Shared<Function>),
+    Dict(Shared<BTreeMap<String, V>>),
+    Reference(Shared<RefCell<V>>),
+    Effect(Shared<EffectPlan>),
+    Fiber(Shared<NativeFiber>),
+    Deferred(Shared<NativeDeferred>),
+}
+
+pub struct Function {
+    pub captures: Vec<V>,
+    code: fn(&[V], V) -> V,
+}
+
+impl V {
+    #[inline]
+    pub fn text(value: &str) -> Self {
+        Self::Text(Shared::new(value.to_owned()))
+    }
+    #[inline]
+    pub fn fun(captures: Vec<V>, code: fn(&[V], V) -> V) -> Self {
+        Self::Fun(Shared::new(Function { captures, code }))
+    }
+    #[inline]
+    pub fn adt(tag: &'static str, payload: V) -> Self {
+        Self::Adt(Shared::new((tag, payload)))
+    }
+    pub fn dict(methods: Vec<(&str, V)>) -> Self {
+        Self::Dict(Shared::new(
+            methods.into_iter().map(|(k, v)| (k.into(), v)).collect(),
+        ))
+    }
+    #[inline]
+    pub fn apply(&self, arg: V) -> V {
+        match self {
+            Self::Fun(f) => (f.get().code)(&f.get().captures, arg),
+            _ => panic!("Rust ABI: expected function"),
+        }
+    }
+    #[inline]
+    pub fn field(&self, key: &str) -> V {
+        match self {
+            Self::Dict(v) | Self::Record(v) => {
+                v.get().get(key).expect("Rust ABI: missing field").clone()
+            }
+            Self::HtmlStyleRecord(v) => v
+                .get()
+                .fields
+                .get(key)
+                .expect("Rust ABI: missing field")
+                .clone(),
+            _ => panic!("Rust ABI: expected dictionary or record"),
+        }
+    }
+    #[inline]
+    pub fn optional_field(&self, key: &str) -> V {
+        match self.record_fields().get(key) {
+            Some(value) => Self::adt("std/prelude::Just", value.clone()),
+            None => Self::adt("std/prelude::Nothing", Self::Unit),
+        }
+    }
+    #[inline]
+    pub fn index(&self, index: usize) -> V {
+        match self {
+            Self::Tuple(v) | Self::Array(v) => v.get()[index].clone(),
+            _ => panic!("Rust ABI: expected tuple or array"),
+        }
+    }
+    #[inline]
+    pub fn array_length_matches(&self, length: usize, minimum: bool) -> bool {
+        let Self::Array(values) = self else {
+            panic!("Rust ABI: expected Array")
+        };
+        if minimum {
+            values.get().len() >= length
+        } else {
+            values.get().len() == length
+        }
+    }
+    #[inline]
+    pub fn array_rest(&self, start: usize) -> V {
+        let Self::Array(values) = self else {
+            panic!("Rust ABI: expected Array")
+        };
+        Self::Array(Shared::new(values.get()[start..].to_vec()))
+    }
+    #[inline]
+    pub fn payload(&self) -> V {
+        match self {
+            Self::Adt(v) => v.get().1.clone(),
+            _ => panic!("Rust ABI: expected ADT"),
+        }
+    }
+    #[inline]
+    pub fn tagged(&self, tag: &str) -> bool {
+        matches!(self, Self::Adt(v) if v.get().0 == tag)
+    }
+    #[inline]
+    pub fn boolean(&self) -> bool {
+        match self {
+            Self::Bool(v) => *v,
+            _ => panic!("Rust ABI: expected Bool"),
+        }
+    }
+    // Inspection output, not the language's Show instance implementation.
+    // Use an explicit stack for nested collections and ADTs too.
+    pub fn render(&self) -> String {
+        enum Task<'a> {
+            Value(&'a V),
+            Text(String),
+            ListTail(&'a V),
+        }
+        let mut work = vec![Task::Value(self)];
+        let mut output = String::new();
+        while let Some(task) = work.pop() {
+            let value = match task {
+                Task::ListTail(cursor) => {
+                    if let Some(cell) = cursor.list_cell() {
+                        output.push_str(", ");
+                        work.push(Task::ListTail(&cell.tail));
+                        work.push(Task::Value(&cell.head));
+                    } else {
+                        output.push(']');
+                    }
+                    continue;
+                }
+                Task::Text(text) => {
+                    output.push_str(&text);
+                    continue;
+                }
+                Task::Value(v) => v,
+            };
+            match value {
+                V::Unit => output.push_str("()"),
+                V::Int(n) => output.push_str(&n.to_string()),
+                V::Byte(n) => output.push_str(&n.to_string()),
+                V::Float(n) => output.push_str(&native_float_format(*n)),
+                V::Char(c) => output.push(*c),
+                V::Bool(v) => output.push_str(if *v { "True" } else { "False" }),
+                V::Text(v) => output.push_str(v.get()),
+                V::BigInt(v) => output.push_str(v.get().decimal()),
+                V::Decimal(v) => output.push_str(&native_decimal_format(v.get())),
+                V::DecimalContext(_) => output.push_str("<DecimalContext>"),
+                V::Bytes(_) => output.push_str("<Bytes>"),
+                V::Map(_) => output.push_str("<Map>"),
+                V::Set(_) => output.push_str("<Set>"),
+                V::MapIndex(_) | V::MapEntry(_) => output.push_str("<Map internal>"),
+                V::ListEmpty => output.push_str("`[]"),
+                V::List(v) => {
+                    output.push_str("`[");
+                    work.push(Task::ListTail(&v.get().tail));
+                    work.push(Task::Value(&v.get().head));
+                }
+                V::Tuple(v) | V::Array(v) => {
+                    let array = matches!(value, V::Array(_));
+                    output.push_str(if array { "[" } else { "(" });
+                    work.push(Task::Text(if array { "]" } else { ")" }.into()));
+                    for (index, item) in v.get().iter().enumerate().rev() {
+                        work.push(Task::Value(item));
+                        if index != 0 {
+                            work.push(Task::Text(", ".into()));
+                        }
+                    }
+                }
+                V::Record(_) | V::HtmlStyleRecord(_) => {
+                    output.push('{');
+                    work.push(Task::Text("}".into()));
+                    for (index, (name, item)) in value.record_fields().iter().enumerate().rev() {
+                        work.push(Task::Value(item));
+                        work.push(Task::Text(format!("{name}: ")));
+                        if index != 0 {
+                            work.push(Task::Text(", ".into()));
+                        }
+                    }
+                }
+                V::Adt(v) => {
+                    output.push_str(&v.get().0);
+                    output.push(' ');
+                    work.push(Task::Value(&v.get().1));
+                }
+                V::Fun(_) => output.push_str("<function>"),
+                V::Dict(_) => output.push_str("<dictionary>"),
+                V::Reference(_) => output.push_str("<ref>"),
+                V::Fiber(_) => output.push_str("<Fiber>"),
+                V::Deferred(_) => output.push_str("<Deferred>"),
+                V::Effect(_) => output.push_str("<effect>"),
+            }
+        }
+        output
+    }
+}
+
+pub fn apply(mut f: V, args: Vec<V>) -> V {
+    for arg in args {
+        f = f.apply(arg);
+    }
+    f
+}
+#[inline]
+pub fn checked_int(value: i64) -> V {
+    V::Int(checked_int_value(value))
+}
+#[inline]
+pub fn checked_int_value(value: i64) -> i64 {
+    checked_int_value_at(value, None)
+}
+#[inline]
+pub fn checked_int_value_at(value: i64, source: Option<&'static NativeSource>) -> i64 {
+    if !(-9_007_199_254_740_991..=9_007_199_254_740_991).contains(&value) {
+        native_defect_at("Seseragi Int overflow", source);
+    }
+    value
+}
+#[inline]
+pub fn negate(value: V) -> V {
+    negate_at(value, None)
+}
+#[inline]
+pub fn negate_at(value: V, source: Option<&'static NativeSource>) -> V {
+    match value {
+        V::Int(n) => V::Int(int_negate_value_at(n, source)),
+        V::Float(n) => V::Float(-n),
+        _ => panic!("Rust ABI: expected Int"),
+    }
+}
+#[inline]
+pub fn int_negate_value_at(value: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        value
+            .checked_neg()
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
+}
+#[inline]
+pub fn int_add_value(a: i64, b: i64) -> i64 {
+    int_add_value_at(a, b, None)
+}
+#[inline]
+pub fn int_add_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        a.checked_add(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
+}
+#[inline]
+pub fn int_subtract_value(a: i64, b: i64) -> i64 {
+    int_subtract_value_at(a, b, None)
+}
+#[inline]
+pub fn int_subtract_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        a.checked_sub(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
+}
+#[inline]
+pub fn int_multiply_value(a: i64, b: i64) -> i64 {
+    int_multiply_value_at(a, b, None)
+}
+#[inline]
+pub fn int_multiply_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    checked_int_value_at(
+        a.checked_mul(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
+}
+#[inline]
+pub fn int_divide_value(a: i64, b: i64) -> i64 {
+    int_divide_value_at(a, b, None)
+}
+#[inline]
+pub fn int_divide_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    if b == 0 {
+        native_defect_at("Seseragi Int division by zero", source);
+    }
+    checked_int_value_at(a, source);
+    checked_int_value_at(b, source);
+    checked_int_value_at(
+        a.checked_div(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
+}
+#[inline]
+pub fn int_remainder_value(a: i64, b: i64) -> i64 {
+    int_remainder_value_at(a, b, None)
+}
+#[inline]
+pub fn int_remainder_value_at(a: i64, b: i64, source: Option<&'static NativeSource>) -> i64 {
+    if b == 0 {
+        native_defect_at("Seseragi Int remainder by zero", source);
+    }
+    checked_int_value_at(a, source);
+    checked_int_value_at(b, source);
+    checked_int_value_at(
+        a.checked_rem(b)
+            .unwrap_or_else(|| native_defect_at("Int overflow", source)),
+        source,
+    )
+}
+#[inline]
+pub fn int_power_value(base: i64, exponent: i64) -> i64 {
+    int_power_value_at(base, exponent, None)
+}
+#[inline]
+pub fn int_power_value_at(base: i64, exponent: i64, source: Option<&'static NativeSource>) -> i64 {
+    if exponent < 0 {
+        native_defect_at("Seseragi Int negative exponent", source);
+    }
+    checked_int_value_at(base, source);
+    checked_int_value_at(exponent, source);
+    let mut exponent = exponent as u64;
+    let mut factor = base;
+    let mut result = 1;
+    while exponent != 0 {
+        if exponent & 1 != 0 {
+            result = int_multiply_value_at(result, factor, source);
+        }
+        exponent >>= 1;
+        if exponent != 0 {
+            factor = int_multiply_value_at(factor, factor, source);
+        }
+    }
+    result
+}
+#[inline]
+pub fn int_equal_value(a: i64, b: i64) -> bool {
+    a == b
+}
+#[inline]
+pub fn int_less_value(a: i64, b: i64) -> bool {
+    a < b
+}
+#[inline]
+pub fn int_less_equal_value(a: i64, b: i64) -> bool {
+    a <= b
+}
+#[inline(always)]
+pub fn binary(op: &str, a: V, b: V) -> V {
+    match (op, a, b) {
+        ("+", V::Int(a), V::Int(b)) => V::Int(int_add_value(a, b)),
+        ("-", V::Int(a), V::Int(b)) => V::Int(int_subtract_value(a, b)),
+        ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value(a, b)),
+        ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value(a, b)),
+        ("%", V::Int(a), V::Int(b)) => V::Int(int_remainder_value(a, b)),
+        ("**", V::Int(a), V::Int(b)) => V::Int(int_power_value(a, b)),
+        ("==", V::Int(a), V::Int(b)) => V::Bool(int_equal_value(a, b)),
+        ("==", V::Bool(a), V::Bool(b)) => V::Bool(a == b),
+        ("==", V::Unit, V::Unit) => V::Bool(true),
+        ("==", V::Text(a), V::Text(b)) => V::Bool(a.get() == b.get()),
+        ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
+        ("<=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(a, b)),
+        (">", V::Int(a), V::Int(b)) => V::Bool(int_less_value(b, a)),
+        (">=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(b, a)),
+        ("+", V::Text(a), V::Text(b)) => V::Text(Shared::new(format!("{}{}", a.get(), b.get()))),
+        _ => panic!("Rust ABI: unsupported binary operation"),
+    }
+}
+
+#[inline(always)]
+pub fn binary_at(op: &str, a: V, b: V, source: Option<&'static NativeSource>) -> V {
+    match (op, a, b) {
+        ("+", V::Int(a), V::Int(b)) => V::Int(int_add_value_at(a, b, source)),
+        ("-", V::Int(a), V::Int(b)) => V::Int(int_subtract_value_at(a, b, source)),
+        ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value_at(a, b, source)),
+        ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value_at(a, b, source)),
+        ("%", V::Int(a), V::Int(b)) => V::Int(int_remainder_value_at(a, b, source)),
+        ("**", V::Int(a), V::Int(b)) => V::Int(int_power_value_at(a, b, source)),
+        (op, a, b) => binary(op, a, b),
+    }
+}
+
+pub fn native_operator_dictionary(identity: &'static str) -> V {
+    cached(identity, || {
+        macro_rules! arithmetic {
+            ($method:literal, $operator:literal) => {
+                V::dict(vec![(
+                    $method,
+                    V::fun(vec![], |_, left| {
+                        V::fun(vec![left], |c, right| {
+                            binary($operator, c[0].clone(), right)
+                        })
+                    }),
+                )])
+            };
+        }
+        match identity {
+            "std/int::Add" | "std/string::Add" => arithmetic!("add", "+"),
+            "std/int::Sub" => arithmetic!("sub", "-"),
+            "std/int::Mul" => arithmetic!("mul", "*"),
+            "std/int::Div" => arithmetic!("div", "/"),
+            "std/int::Rem" => arithmetic!("rem", "%"),
+            "std/int::Pow" => arithmetic!("pow", "**"),
+            "std/int::Eq" | "std/bool::Eq" | "std/unit::Eq" | "std/string::Eq" => {
+                arithmetic!("eq", "==")
+            }
+            _ => panic!("Rust ABI: unsupported arithmetic dictionary"),
+        }
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn array_pattern_length_is_constant_time_and_rest_copies_each_remaining_element_once() {
+        let count = 100_000;
+        let values = V::Array(Shared::new((0..count).map(|_| V::text("雪")).collect()));
+        let shares = SHARES.with(Cell::get);
+        let allocations = ALLOCATIONS.with(Cell::get);
+        assert!(values.array_length_matches(count, false));
+        assert!(values.array_length_matches(count - 1, true));
+        assert!(!values.array_length_matches(count - 1, false));
+        assert!(!values.array_length_matches(count + 1, true));
+        assert_eq!(SHARES.with(Cell::get), shares);
+        assert_eq!(ALLOCATIONS.with(Cell::get), allocations);
+        let rest = values.array_rest(2);
+        assert!(rest.array_length_matches(count - 2, false));
+        assert_eq!(SHARES.with(Cell::get) - shares, count - 2);
+        assert_eq!(ALLOCATIONS.with(Cell::get) - allocations, 1);
+        assert!(values.array_rest(count).array_length_matches(0, false));
+        assert!(values.array_rest(0).array_length_matches(count, false));
+        assert!(values.array_length_matches(count, false));
+        assert_eq!(rest.index(0).render(), "雪");
+    }
+
+    fn released_while_the_drop_queue_is_busy<T: TraceValue + 'static>(value: Shared<T>) -> bool {
+        assert!(DROP_QUEUE.with(|queue| queue.borrow().is_empty()));
+        let weak = Rc::downgrade(value.0.as_ref().unwrap());
+        DRAINING.with(|flag| flag.set(true));
+        drop(value);
+        let released = weak.upgrade().is_none();
+        DRAINING.with(|flag| flag.set(false));
+        // Restore the queue before asserting, including on the old behavior.
+        let pending = DROP_QUEUE.with(|queue| std::mem::take(&mut *queue.borrow_mut()));
+        drop(pending);
+        assert!(weak.upgrade().is_none());
+        assert!(DROP_QUEUE.with(|queue| queue.borrow().is_empty()));
+        assert_eq!(LIVE.with(Cell::get), 0);
+        released
+    }
+
+    #[test]
+    fn childless_last_owners_release_without_waiting_for_the_drop_queue() {
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            "雫🙂".to_owned()
+        )));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(vec![
+            V::Int(1),
+            V::Bool(true)
+        ])));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            BTreeMap::from([("field".to_owned(), V::Unit),])
+        )));
+        let V::Adt(value) = V::adt("local::Sample", V::Int(42)) else {
+            unreachable!()
+        };
+        assert!(released_while_the_drop_queue_is_busy(value));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            Function {
+                captures: vec![V::Int(42)],
+                code: |capture, _| capture[0].clone(),
+            }
+        )));
+        assert!(released_while_the_drop_queue_is_busy(Shared::new(
+            RefCell::new(V::Bool(true))
+        )));
+    }
+
+    #[test]
+    fn child_managed_last_owners_still_wait_for_the_drop_queue() {
+        assert!(!released_while_the_drop_queue_is_busy(Shared::new(vec![
+            V::text("child")
+        ])));
+    }
+
+    #[test]
+    fn uninspectable_last_owners_still_wait_for_the_drop_queue() {
+        struct Uninspectable(V);
+        impl TraceValue for Uninspectable {
+            fn edges(&self, _: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
+                let _ = &self.0;
+                Err("borrowed edge")
+            }
+        }
+        assert!(!released_while_the_drop_queue_is_busy(Shared::new(
+            Uninspectable(V::text("child"))
+        )));
+    }
+    #[test]
+    fn int_power_preserves_safe_integer_bounds_and_large_exponent_parity() {
+        const MAX: i64 = 9_007_199_254_740_991;
+        for base in -100_i64..=100 {
+            for exponent in 0..=53_u32 {
+                if let Some(expected) = i128::from(base).checked_pow(exponent) {
+                    if (-i128::from(MAX)..=i128::from(MAX)).contains(&expected) {
+                        assert_eq!(int_power_value(base, i64::from(exponent)), expected as i64);
+                    }
+                }
+            }
+        }
+        for (base, exponent, expected) in [
+            (0, 0, 1),
+            (MAX, 1, MAX),
+            (-MAX, 1, -MAX),
+            (0, MAX, 0),
+            (1, MAX, 1),
+            (-1, MAX, -1),
+            (-1, MAX - 1, 1),
+        ] {
+            assert_eq!(int_power_value(base, exponent), expected);
+        }
+        for (base, exponent, reason) in [
+            (2, 53, "Int overflow"),
+            (3, 34, "Int overflow"),
+            (MAX, 2, "Int overflow"),
+            (2, MAX, "Int overflow"),
+            (2, -1, "Int negative exponent"),
+            (0, -1, "Int negative exponent"),
+        ] {
+            let error = std::panic::catch_unwind(|| int_power_value(base, exponent)).unwrap_err();
+            let message = error
+                .downcast_ref::<String>()
+                .map(String::as_str)
+                .or_else(|| error.downcast_ref::<&str>().copied())
+                .unwrap();
+            assert!(message.contains(reason), "{base} ** {exponent}: {message}");
+        }
+    }
+
+    #[test]
+    fn int_power_reuses_curried_stages_and_releases_the_dictionary() {
+        clear_dictionaries();
+        let method = native_operator_dictionary("std/int::Pow").field("pow");
+        let saved = method.apply(V::Int(2));
+        assert!(matches!(saved.apply(V::Int(3)), V::Int(8)));
+        assert!(matches!(saved.apply(V::Int(4)), V::Int(16)));
+        drop((saved, method));
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn string_equality_compares_contents_and_releases_partial_captures() {
+        clear_dictionaries();
+        let equal = native_operator_dictionary("std/string::Eq").field("eq");
+        let saved = equal.apply(V::text("雫\0🙂"));
+        let separate = V::text(&format!("{}{}", "雫\0", "🙂"));
+        assert!(saved.apply(separate).boolean());
+        assert!(!saved.apply(V::text("雫\0🦀")).boolean());
+        assert!(binary("==", V::text(""), V::text("")).boolean());
+        assert!(!binary("==", V::text("é"), V::text("é")).boolean());
+        drop(saved);
+        drop(equal);
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn bool_and_unit_equality_preserve_curried_value_stages() {
+        clear_dictionaries();
+        let bool_eq = native_operator_dictionary("std/bool::Eq").field("eq");
+        let true_stage = bool_eq.apply(V::Bool(true));
+        assert!(true_stage.apply(V::Bool(true)).boolean());
+        assert!(!true_stage.apply(V::Bool(false)).boolean());
+        let unit_eq = native_operator_dictionary("std/unit::Eq").field("eq");
+        let unit_stage = unit_eq.apply(V::Unit);
+        assert!(matches!(&unit_stage, V::Fun(_)));
+        assert!(unit_stage.apply(V::Unit).boolean());
+        assert!(unit_stage.apply(V::Unit).boolean());
+        drop((unit_stage, unit_eq, true_stage, bool_eq));
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn scalar_global_reads_keep_checked_access_and_release_storage_borrows() {
+        clear_globals();
+        assert!(std::panic::catch_unwind(|| get_global_int(0)).is_err());
+        assert!(std::panic::catch_unwind(|| get_global_bool(0)).is_err());
+        set_global(0, V::Int(42));
+        set_global(1, V::Bool(true));
+        let before = ALLOCATIONS.with(Cell::get);
+        for _ in 0..1000 {
+            assert_eq!(get_global_int(0), 42);
+            assert!(get_global_bool(1));
+        }
+        assert_eq!(ALLOCATIONS.with(Cell::get), before);
+        assert!(std::panic::catch_unwind(|| get_global_int(1)).is_err());
+        assert!(std::panic::catch_unwind(|| get_global_bool(0)).is_err());
+        GLOBALS.with(|globals| assert!(globals.try_borrow_mut().is_ok()));
+        assert_eq!(get_global(0).render(), "42");
+        clear_globals();
+        assert!(std::panic::catch_unwind(|| get_global_int(0)).is_err());
+        set_global(0, V::Int(7));
+        assert_eq!(get_global_int(0), 7);
+        clear_globals();
+    }
+
+    #[test]
+    fn deep_values_and_closure_captures_drop_on_a_small_stack() {
+        std::thread::Builder::new()
+            .stack_size(256 * 1024)
+            .spawn(|| {
+                let mut chain = V::Unit;
+                for _ in 0..100_000 {
+                    chain = V::adt("Cons", chain);
+                }
+                let retained = chain.clone();
+                let callback = V::fun(vec![retained], |captures, _| captures[0].clone());
+                drop(chain);
+                assert!(LIVE.with(Cell::get) >= 100_000);
+                drop(callback);
+                assert_eq!(LIVE.with(Cell::get), 0);
+            })
+            .unwrap()
+            .join()
+            .unwrap();
+    }
+    #[test]
+    fn large_values_share_storage_and_release_last_owner() {
+        let text = V::text(&"x".repeat(1_000_000));
+        let before = ALLOCATIONS.with(Cell::get);
+        let copies = (0..10_000).map(|_| text.clone()).collect::<Vec<_>>();
+        assert_eq!(ALLOCATIONS.with(Cell::get), before);
+        drop(text);
+        drop(copies);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    #[test]
+    fn lazy_dictionary_cache_releases_on_scope_clear() {
+        let calls = Cell::new(0);
+        for _ in 0..100 {
+            drop(cached("closed", || {
+                calls.set(calls.get() + 1);
+                V::dict(vec![("read", V::fun(vec![], |_, v| v))])
+            }));
+        }
+        assert_eq!(calls.get(), 1);
+        assert_eq!(LIVE.with(Cell::get), 2);
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    #[test]
+    fn cached_captures_are_safe_during_thread_teardown() {
+        std::thread::Builder::new()
+            .stack_size(256 * 1024)
+            .spawn(|| {
+                let mut chain = V::Unit;
+                for _ in 0..20_000 {
+                    chain = V::adt("Cons", chain);
+                }
+                drop(cached("deep", || {
+                    V::fun(vec![chain], |captures, _| captures[0].clone())
+                }));
+                // Deliberately leave the dictionary cache populated for TLS Drop.
+            })
+            .unwrap()
+            .join()
+            .unwrap();
+    }
+}

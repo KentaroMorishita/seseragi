@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_core_module, CompileInput};
 
@@ -24,7 +27,7 @@ fn execute(source: &str, name: &str, expected: &str, exit: i32) {
     } else {
         "program"
     });
-    let built = Command::new("rustc")
+    let built = link::rustc()
         .args(["--edition=2021", "-O", "-o"])
         .arg(&exe)
         .arg(&file)

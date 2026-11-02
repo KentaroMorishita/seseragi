@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -458,7 +461,7 @@ fn powers_evaluate_source_operands_once_in_order_across_saved_stages() {
         .join(format!("trace{}", std::env::consts::EXE_SUFFIX));
     fs::write(&file, rust).unwrap();
     successful(bounded(
-        Command::new(std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()))
+        native_runtime::rustc()
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&file),

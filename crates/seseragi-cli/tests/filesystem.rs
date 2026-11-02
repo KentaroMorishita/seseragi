@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -32,7 +35,7 @@ fn root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
 }
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
 }
 fn successful(output: Output) -> Output {
     assert!(

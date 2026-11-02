@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use sha2::{Digest, Sha256};
 use std::{
     fs,
@@ -81,7 +84,7 @@ fn public_aliases_keep_raw_strict_exports_owners_and_type_only_initialization() 
             fs::write(project.join("src/main.ssrg"), "import { MyUnit } from \"./facade\"\npub effect fn main = do { let value: MyUnit = (); println (show value) }\n").unwrap();
         }
         success(
-            Command::new(cli)
+            native_cache::command(cli)
                 .args(["lock", "update"])
                 .arg(&project)
                 .output()
@@ -89,7 +92,7 @@ fn public_aliases_keep_raw_strict_exports_owners_and_type_only_initialization() 
         );
         let native = scratch.path().join(format!("{label}-native"));
         success(
-            Command::new(cli)
+            native_cache::command(cli)
                 .args(["experimental", "build-native"])
                 .arg(&project)
                 .args(["--entry", "main", "--out-dir"])
@@ -122,7 +125,7 @@ fn public_aliases_keep_raw_strict_exports_owners_and_type_only_initialization() 
         ] {
             let site = scratch.path().join(format!("{label}-{profile}"));
             success(
-                Command::new(cli)
+                native_cache::command(cli)
                     .arg("build")
                     .arg(&project)
                     .args(["--profile", profile, "--out-dir"])
@@ -300,14 +303,14 @@ fn public_aliases_keep_raw_strict_exports_owners_and_type_only_initialization() 
     source.push_str("\npub fn wrong unit: MyUnit -> PublicWrapper<Int> = Local 42\n");
     fs::write(main, source).unwrap();
     success(
-        Command::new(cli)
+        native_cache::command(cli)
             .args(["lock", "update"])
             .arg(&wrong)
             .output()
             .unwrap(),
     );
     let site = scratch.path().join("wrong-site");
-    let refused = Command::new(cli)
+    let refused = native_cache::command(cli)
         .arg("build")
         .arg(&wrong)
         .arg("--out-dir")
@@ -318,7 +321,7 @@ fn public_aliases_keep_raw_strict_exports_owners_and_type_only_initialization() 
     assert!(String::from_utf8_lossy(&refused.stderr).contains("SES-T0101"));
     assert!(!site.exists());
     let rust = scratch.path().join("wrong.rs");
-    let refused = Command::new(cli)
+    let refused = native_cache::command(cli)
         .args(["experimental", "emit-rust"])
         .arg(&wrong)
         .args(["--entry", "main", "--output"])

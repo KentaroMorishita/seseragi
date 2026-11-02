@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_module, CompileInput};
 use std::{
@@ -116,7 +119,7 @@ fn compare_options(source: &str, expected: &str, trace: bool, extras: bool) {
         );
     }
     fs::write(&rust, generated).unwrap();
-    let build = Command::new("rustc")
+    let build = link::rustc()
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(&rust)

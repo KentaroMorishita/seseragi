@@ -9,6 +9,7 @@ members = [
   "crates/seseragi-interop",
   "crates/seseragi-lowering",
   "crates/seseragi-lsp",
+  "crates/seseragi-native-runtime",
   "crates/seseragi-provider",
   "crates/seseragi-projection",
   "crates/seseragi-project",

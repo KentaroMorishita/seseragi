@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_project;
 use seseragi_lowering::CoreModule;
 use std::{
@@ -31,7 +34,7 @@ fn execute(source: &str, expected: &[u8], exit: i32, trace: Option<&str>) {
         "program"
     });
     fs::write(&input, source).unwrap();
-    let built = Command::new("rustc")
+    let built = link::rustc()
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(input)

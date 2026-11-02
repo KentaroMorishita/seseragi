@@ -4,6 +4,8 @@ Keep a baseline directory for the later, interleaved product comparison. Only
 measurement main functions are attached; generated runtime/kernel bodies remain
 byte-identical to the selected compiler's output.
 """
+from native_runtime import compile_native
+
 import argparse
 import hashlib
 import json
@@ -111,7 +113,7 @@ def main():
         rust = stage / (name + ".rs")
         rust.write_text(prefix + harness.replace("KERNEL", symbol))
         binary = stage / (name + (".exe" if os.name == "nt" else ""))
-        run(["rustc", "--edition=2021", "-O", rust, "-o", binary])
+        compile_native(rust, binary)
         binaries[name] = binary
     (stage / "measure.mjs").write_text(JS)
     allocation = json.loads(run([binaries["allocation"]], env=native_env))

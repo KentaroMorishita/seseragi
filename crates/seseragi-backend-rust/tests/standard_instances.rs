@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_module, CompileInput};
 use std::{
@@ -45,7 +48,7 @@ fn execute(source: &str) -> (Output, Output) {
     let rust = scratch.0.join("program.rs");
     let binary = scratch.0.join("program");
     fs::write(&rust, artifact.source).unwrap();
-    let build = Command::new("rustc")
+    let build = link::rustc()
         .args(["--edition=2021", "-o"])
         .arg(&binary)
         .arg(&rust)

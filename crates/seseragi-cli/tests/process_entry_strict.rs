@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -150,7 +153,7 @@ fn original_process_program_and_bootstrap_are_strict_and_keep_initialization_def
         let source = fixtures.join(format!("{name}.ssrg"));
         let native = scratch.path().join(format!("{name}-native"));
         successful(
-            Command::new(cli)
+            native_cache::command(cli)
                 .args(["experimental", "build-native"])
                 .arg(&source)
                 .args(["--entry", "main", "--out-dir"])
@@ -176,7 +179,7 @@ fn original_process_program_and_bootstrap_are_strict_and_keep_initialization_def
         ] {
             let text = scratch.path().join(format!("{name}-{profile}-text"));
             successful(
-                Command::new(cli)
+                native_cache::command(cli)
                     .arg("build")
                     .arg(&source)
                     .args(["--profile", profile, "--out-dir"])

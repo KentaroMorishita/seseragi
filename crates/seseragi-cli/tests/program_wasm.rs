@@ -1,3 +1,9 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -32,6 +38,7 @@ struct OwnedChild {
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command
@@ -241,7 +248,7 @@ fn standard_web_build_owns_program_assets_types_and_the_selected_import_closure(
         "oracle"
     });
     successful(bounded(
-        Command::new("rustc")
+        native_runtime::rustc()
             .args(["--edition=2021", "--crate-name", "oracle", "-O"])
             .arg(scratch.0.join("oracle.rs"))
             .arg("-o")

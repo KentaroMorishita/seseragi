@@ -1,3 +1,9 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -5,7 +11,7 @@ use std::{
 };
 
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
 }
 
 #[test]
@@ -295,7 +301,7 @@ fn main() {{
     } else {
         "program"
     });
-    let built = Command::new("rustc")
+    let built = native_runtime::rustc()
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(&program)

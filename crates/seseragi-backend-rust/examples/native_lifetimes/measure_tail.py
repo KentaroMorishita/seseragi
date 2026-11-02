@@ -3,6 +3,8 @@
 This deliberately measures only scalar self tail recursion, not application or
 Effect performance. Run with an otherwise idle local host and a built CLI.
 """
+from native_runtime import compile_native
+
 import argparse
 import hashlib
 import json
@@ -101,7 +103,7 @@ fn main() {
     rust_source = stage / "measure.rs"
     rust_source.write_text(generated[:generated.rfind("fn main()")] + harness)
     native = stage / ("measure.exe" if os.name == "nt" else "measure")
-    run(["rustc", "--edition=2021", "-O", str(rust_source), "-o", str(native)])
+    compile_native(rust_source, native)
     js = stage / "measure.mjs"
     js.write_text('''import { kernel } from "./module.mjs";
 const samplesNs = [];

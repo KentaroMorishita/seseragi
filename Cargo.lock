@@ -655,6 +655,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-native-runtime"
+version = "0.61.138"
+
+[[package]]
 name = "seseragi-project"
 version = "0.61.138"
 dependencies = [

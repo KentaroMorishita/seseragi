@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -9,24 +12,50 @@ static SERIAL: AtomicUsize = AtomicUsize::new(0);
 struct Scratch(PathBuf);
 impl Scratch {
     fn new() -> Self {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../target")
+        let path = std::env::var_os("CARGO_TARGET_DIR")
+            .map(PathBuf::from)
+            .unwrap_or_else(std::env::temp_dir)
             .join(format!(
                 "rust-cli-test-{}-{}",
                 std::process::id(),
                 SERIAL.fetch_add(1, Ordering::Relaxed)
             ));
         fs::create_dir_all(&path).unwrap();
-        Self(path.canonicalize().unwrap())
+        let scratch = Self(path.canonicalize().unwrap());
+        let dependencies = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../node_modules");
+        if dependencies.is_dir() {
+            let link = scratch.0.join("node_modules");
+            #[cfg(unix)]
+            std::os::unix::fs::symlink(&dependencies, link).unwrap();
+            #[cfg(windows)]
+            prefix_process::successful(prefix_process::bounded(
+                Command::new("node")
+                    .args([
+                        "-e",
+                        "require('node:fs').symlinkSync(process.argv[1], process.argv[2], 'junction')",
+                    ])
+                    .arg(&dependencies)
+                    .arg(link),
+                &scratch.0,
+            ));
+        }
+        scratch
     }
 }
 impl Drop for Scratch {
     fn drop(&mut self) {
+        let dependencies = self.0.join("node_modules");
+        #[cfg(unix)]
+        let _ = fs::remove_file(dependencies);
+        #[cfg(windows)]
+        let _ = fs::remove_dir(dependencies);
         let _ = fs::remove_dir_all(&self.0);
     }
 }
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+    native_runtime::configure(&mut command);
+    command
 }
 
 #[path = "support/generic_impl_process.rs"]
@@ -1204,7 +1233,7 @@ fn main() {
     } else {
         "format"
     });
-    let compiled = Command::new("rustc")
+    let compiled = native_runtime::rustc()
         .args(["--edition=2021", "-O", "-o"])
         .arg(&executable)
         .arg(&rust)
