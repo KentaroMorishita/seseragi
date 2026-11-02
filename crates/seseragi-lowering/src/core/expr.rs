@@ -719,7 +719,8 @@ fn lower_call_signature(
 pub(super) fn lower_parameter(parameter: &TypedParameter) -> CoreParameter {
     match parameter {
         TypedParameter::ImplicitUnit { type_ref } => CoreParameter {
-            id: "unit".to_owned(),
+            // Source identifiers cannot contain `$`.
+            id: "$ssrg$unit".to_owned(),
             kind: "implicit".to_owned(),
             type_ref: lower_typed_type(type_ref.clone()),
         },
