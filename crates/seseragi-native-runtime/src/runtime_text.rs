@@ -1,5 +1,78 @@
 pub fn native_text_operation(name: &str, arguments: Vec<V>) -> V {
     match name {
+        "std/text::isEmpty" => {
+            assert_eq!(arguments.len(), 1, "Rust ABI: text.isEmpty arity");
+            V::Bool(native_text(&arguments[0]).is_empty())
+        }
+        "std/text::lengthScalars" | "std/text::lengthBytes" => {
+            assert_eq!(arguments.len(), 1, "Rust ABI: text length arity");
+            let text = native_text(&arguments[0]);
+            checked_int(if name == "std/text::lengthScalars" {
+                text.chars().count() as i64
+            } else {
+                text.len() as i64
+            })
+        }
+        "std/text::concat" => {
+            assert_eq!(arguments.len(), 1, "Rust ABI: text.concat arity");
+            let V::Array(values) = &arguments[0] else {
+                panic!("Rust ABI: text.concat expected Array<String>")
+            };
+            let mut output = String::new();
+            for value in values.get() {
+                output.push_str(native_text(value));
+            }
+            V::text(&output)
+        }
+        "std/text::scalarAt" => {
+            assert_eq!(arguments.len(), 2, "Rust ABI: text.scalarAt arity");
+            let V::Int(index) = arguments[0] else {
+                panic!("Rust ABI: text.scalarAt expected Int")
+            };
+            let text = native_text(&arguments[1]);
+            match usize::try_from(index)
+                .ok()
+                .and_then(|i| text.chars().nth(i))
+            {
+                Some(scalar) => V::adt("std/prelude::Just", V::Char(scalar)),
+                None => V::adt("std/prelude::Nothing", V::Unit),
+            }
+        }
+        "std/text::sliceScalars" => {
+            assert_eq!(arguments.len(), 3, "Rust ABI: text.sliceScalars arity");
+            let (V::Int(start), V::Int(end)) = (&arguments[0], &arguments[1]) else {
+                panic!("Rust ABI: text.sliceScalars expected Int bounds")
+            };
+            let text = native_text(&arguments[2]);
+            let (mut size, mut first, mut last) = (0, 0, 0);
+            for (offset, _) in text.char_indices() {
+                if size == *start {
+                    first = offset;
+                }
+                if size == *end {
+                    last = offset;
+                }
+                size += 1;
+            }
+            if size == *start {
+                first = text.len();
+            }
+            if size == *end {
+                last = text.len();
+            }
+            if *start < 0 || start > end || *end > size {
+                native_left(V::adt(
+                    "std/text::InvalidScalarRange",
+                    V::Record(Shared::new(BTreeMap::from([
+                        ("start".into(), V::Int(*start)),
+                        ("end".into(), V::Int(*end)),
+                        ("length".into(), V::Int(size)),
+                    ]))),
+                ))
+            } else {
+                native_right(V::text(&text[first..last]))
+            }
+        }
         "std/text::lines" => {
             assert_eq!(arguments.len(), 1, "Rust ABI: text.lines arity");
             let text = native_text(&arguments[0]);
@@ -51,9 +124,28 @@ pub fn native_text_operation(name: &str, arguments: Vec<V>) -> V {
             };
             V::Array(Shared::new(output))
         }
+        "std/text::words" => {
+            assert_eq!(arguments.len(), 1, "Rust ABI: text.words arity");
+            V::Array(Shared::new(
+                native_text(&arguments[0])
+                    .split(native_text_whitespace)
+                    .filter(|word| !word.is_empty())
+                    .map(V::text)
+                    .collect(),
+            ))
+        }
         "std/text::trim" => {
             assert_eq!(arguments.len(), 1, "Rust ABI: text.trim arity");
             V::text(native_text(&arguments[0]).trim_matches(native_text_whitespace))
+        }
+        "std/text::trimStart" | "std/text::trimEnd" => {
+            assert_eq!(arguments.len(), 1, "Rust ABI: text trim arity");
+            let text = native_text(&arguments[0]);
+            V::text(if name == "std/text::trimStart" {
+                text.trim_start_matches(native_text_whitespace)
+            } else {
+                text.trim_end_matches(native_text_whitespace)
+            })
         }
         "std/text::contains" => {
             assert_eq!(arguments.len(), 2, "Rust ABI: text.contains arity");
@@ -81,6 +173,13 @@ pub fn native_text_operation(name: &str, arguments: Vec<V>) -> V {
                 1,
             ))
         }
+        "std/text::replaceAll" => {
+            assert_eq!(arguments.len(), 3, "Rust ABI: text.replaceAll arity");
+            V::text(
+                &native_text(&arguments[2])
+                    .replace(native_text(&arguments[0]), native_text(&arguments[1])),
+            )
+        }
         _ => panic!("Rust ABI: unsupported text operation"),
     }
 }
@@ -96,6 +195,166 @@ fn native_text_whitespace(scalar: char) -> bool {
 #[cfg(test)]
 mod text_tests {
     use super::*;
+
+    #[test]
+    fn lengths_and_concat_preserve_scalar_byte_and_empty_boundaries() {
+        clear_dictionaries();
+        for (text, scalars, bytes) in [
+            ("", 0, 0),
+            ("\0", 1, 1),
+            ("é", 1, 2),
+            ("e\u{301}", 2, 3),
+            ("A👍🏽e\u{301}\0", 6, 13),
+            ("\u{feff}\u{10ffff}", 2, 7),
+        ] {
+            let input = V::text(text);
+            assert_eq!(
+                native_text_operation("std/text::isEmpty", vec![input.clone()]).boolean(),
+                text.is_empty()
+            );
+            for (name, expected) in [("lengthScalars", scalars), ("lengthBytes", bytes)] {
+                assert_eq!(
+                    native_text_operation(&format!("std/text::{name}"), vec![input.clone()])
+                        .render(),
+                    expected.to_string()
+                );
+            }
+            let values = V::Array(Shared::new(vec![
+                V::text(""),
+                input.clone(),
+                V::text("🙂"),
+                V::text(""),
+            ]));
+            let result = native_text_operation("std/text::concat", vec![values.clone()]);
+            assert_eq!(native_text(&values.index(1)), text);
+            drop((values, input));
+            assert_eq!(native_text(&result), format!("{text}🙂"));
+        }
+        let empty = native_text_operation("std/text::concat", vec![V::Array(Shared::new(vec![]))]);
+        assert_eq!(native_text(&empty), "");
+        drop(empty);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn scalar_indices_and_ranges_return_exact_values_and_typed_error_payloads() {
+        clear_dictionaries();
+        for text in ["", "雪", "A👍🏽e\u{301}\0", "\u{feff}\u{10ffff}"] {
+            let scalars = text.chars().collect::<Vec<_>>();
+            let size = scalars.len() as i64;
+            let indices = [
+                -9_007_199_254_740_991,
+                -1,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                9_007_199_254_740_991,
+            ];
+            for index in indices {
+                let value =
+                    native_text_operation("std/text::scalarAt", vec![V::Int(index), V::text(text)]);
+                if index >= 0 && index < size {
+                    assert!(value.tagged("std/prelude::Just"));
+                    assert_eq!(native_char(&value.payload()), scalars[index as usize]);
+                } else {
+                    assert!(value.tagged("std/prelude::Nothing"));
+                }
+                for end in indices {
+                    let value = native_text_operation(
+                        "std/text::sliceScalars",
+                        vec![V::Int(index), V::Int(end), V::text(text)],
+                    );
+                    if index >= 0 && index <= end && end <= size {
+                        assert!(value.tagged("std/prelude::Right"));
+                        let expected = scalars[index as usize..end as usize]
+                            .iter()
+                            .collect::<String>();
+                        assert_eq!(native_text(&value.payload()), expected);
+                    } else {
+                        assert!(value.tagged("std/prelude::Left"));
+                        let error = value.payload();
+                        assert!(error.tagged("std/text::InvalidScalarRange"));
+                        let payload = error.payload();
+                        for (name, expected) in [("start", index), ("end", end), ("length", size)] {
+                            assert_eq!(payload.field(name).render(), expected.to_string());
+                        }
+                    }
+                }
+            }
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn words_and_one_sided_trim_use_every_pinned_whitespace_scalar() {
+        clear_dictionaries();
+        for scalar in "\t\n\u{b}\u{c}\r \u{85}\u{a0}\u{1680}\u{2000}\u{2001}\u{2002}\u{2003}\u{2004}\u{2005}\u{2006}\u{2007}\u{2008}\u{2009}\u{200a}\u{2028}\u{2029}\u{202f}\u{205f}\u{3000}".chars() {
+            let text = format!("{scalar}{scalar}雫,{scalar}🙂!\u{feff}\0{scalar}{scalar}");
+            assert_eq!(
+                strings(native_text_operation("std/text::words", vec![V::text(&text)])),
+                ["雫,", "🙂!\u{feff}\0"]
+            );
+            for (name, expected) in [
+                ("trimStart", format!("雫,{scalar}🙂!\u{feff}\0{scalar}{scalar}")),
+                ("trimEnd", format!("{scalar}{scalar}雫,{scalar}🙂!\u{feff}\0")),
+            ] {
+                let result = native_text_operation(&format!("std/text::{name}"), vec![V::text(&text)]);
+                assert_eq!(native_text(&result), expected);
+                let empty = native_text_operation(&format!("std/text::{name}"), vec![V::text(&format!("{scalar}{scalar}"))]);
+                assert_eq!(native_text(&empty), "");
+            }
+        }
+        for text in ["", "\u{feff}", "\u{180e}\u{200b}\u{2060}\0"] {
+            for name in ["trimStart", "trimEnd"] {
+                assert_eq!(
+                    native_text(&native_text_operation(
+                        &format!("std/text::{name}"),
+                        vec![V::text(text)]
+                    )),
+                    text
+                );
+            }
+            assert_eq!(
+                strings(native_text_operation(
+                    "std/text::words",
+                    vec![V::text(text)]
+                )),
+                if text.is_empty() { vec![] } else { vec![text] }
+            );
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn replace_all_is_literal_nonoverlapping_and_inserts_at_scalar_boundaries() {
+        clear_dictionaries();
+        for (needle, replacement, text, expected) in [
+            ("aa", "$&", "aaaaa", "$&$&a"),
+            ("aba", "X", "ababa", "Xba"),
+            ("", "/", "A👍🏽e\u{301}", "/A/👍/🏽/e/\u{301}/"),
+            ("", "/", "", "/"),
+            ("", "", "雪🙂", "雪🙂"),
+            ("雪", "川", "雪🙂雪", "川🙂川"),
+            ("🙂", "", "🙂🙂", ""),
+            ("x", "y", "", ""),
+            ("longer", "x", "long", "long"),
+            ("é", "x", "e\u{301}", "e\u{301}"),
+            (".", "$1\\", "a.b.", "a$1\\b$1\\"),
+            ("\0", "$`$'", "a\0🙂\0", "a$`$'🙂$`$'"),
+        ] {
+            let result = native_text_operation(
+                "std/text::replaceAll",
+                vec![V::text(needle), V::text(replacement), V::text(text)],
+            );
+            assert_eq!(native_text(&result), expected);
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
 
     #[test]
     fn prefix_and_suffix_are_literal_and_keep_unicode_empty_and_nul_boundaries() {
