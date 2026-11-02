@@ -90,6 +90,8 @@ impl Program {
     }
 }
 fn programs(source: &Path, directory: &Path) -> Vec<Program> {
+    let input = native_cache::copy_input(source, directory);
+    let source = input.as_path();
     let native = directory.join("native");
     successful(
         cli()

@@ -49,6 +49,8 @@ impl Program {
 }
 
 fn programs(source: &Path, directory: &Path) -> Vec<Program> {
+    let input = process::copy_input(source, directory);
+    let source = input.as_path();
     let native = directory.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))

@@ -1,6 +1,9 @@
 #[path = "../../../test-support/native_cache.rs"]
 mod native_cache;
 
+#[allow(unused_imports)]
+pub use native_cache::copy_input;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},

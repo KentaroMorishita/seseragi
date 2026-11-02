@@ -12,14 +12,11 @@ static SERIAL: AtomicUsize = AtomicUsize::new(0);
 struct Scratch(PathBuf);
 impl Scratch {
     fn new() -> Self {
-        let path = std::env::var_os("CARGO_TARGET_DIR")
-            .map(PathBuf::from)
-            .unwrap_or_else(std::env::temp_dir)
-            .join(format!(
-                "rust-cli-test-{}-{}",
-                std::process::id(),
-                SERIAL.fetch_add(1, Ordering::Relaxed)
-            ));
+        let path = std::env::temp_dir().join(format!(
+            "rust-cli-test-{}-{}",
+            std::process::id(),
+            SERIAL.fetch_add(1, Ordering::Relaxed)
+        ));
         fs::create_dir_all(&path).unwrap();
         let scratch = Self(path.canonicalize().unwrap());
         let dependencies = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../node_modules");
@@ -195,6 +192,7 @@ fn native_polymorphic_globals_match_ts_in_both_profiles() {
         let directory = scratch
             .0
             .join(if input.is_dir() { "package" } else { "file" });
+        let input = prefix_process::copy_input(&input, &scratch.0);
         successful(bounded(
             cli()
                 .args(["experimental", "build-native"])
@@ -319,6 +317,7 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
         ("int-division-defect", 70),
     ] {
         let source = fixtures.join(format!("{name}.ssrg"));
+        let source = prefix_process::copy_input(&source, &scratch.0);
         let expected = if code == 0 {
             fs::read(fixtures.join(format!("{name}.stdout"))).unwrap()
         } else {
@@ -773,6 +772,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
             .join(fixture);
+        let project = prefix_process::copy_input(&project, &scratch.0);
         for entry in ["main", "probe"] {
             let directory = scratch.0.join(fixture).join(entry);
             let built = cli()
@@ -1025,6 +1025,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
         ));
+        let path = prefix_process::copy_input(&path, &scratch.0);
         let destination = scratch.0.join(name);
         let built = cli()
             .args(["experimental", "build-native"])
@@ -2310,6 +2311,7 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
         ),
     ] {
         let path = fixtures.join(relative);
+        let path = prefix_process::copy_input(&path, &scratch.0);
         let destination = scratch.0.join(name);
         let built = cli()
             .args(["experimental", "build-native"])

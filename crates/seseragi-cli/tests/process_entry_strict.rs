@@ -150,7 +150,8 @@ fn original_process_program_and_bootstrap_are_strict_and_keep_initialization_def
             b"".as_slice(),
         ),
     ] {
-        let source = fixtures.join(format!("{name}.ssrg"));
+        let source =
+            native_cache::copy_input(&fixtures.join(format!("{name}.ssrg")), scratch.path());
         let native = scratch.path().join(format!("{name}-native"));
         successful(
             native_cache::command(cli)

@@ -64,6 +64,9 @@ impl<'a> Case<'a> {
 
 fn compare(source: &Path, cases: &[Case<'_>]) {
     let scratch = Scratch::new();
+    let original_source = source;
+    let input = process::copy_input(source, &scratch.0);
+    let source = input.as_path();
     let original = source.is_file().then(|| fs::read(source).unwrap());
     let native = scratch.0.join("native");
     successful(bounded(
@@ -213,6 +216,7 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
     }
     if let Some(original) = original {
         assert_eq!(fs::read(source).unwrap(), original);
+        assert_eq!(fs::read(original_source).unwrap(), original);
     }
 }
 
@@ -3335,6 +3339,7 @@ fn remaining_prelude_matches_ts_with_selected_providers_short_circuit_and_saved_
 fn prelude_read_line_matches_ts_with_remaining_stdin_and_eof() {
     let scratch = Scratch::new();
     let source = root().join("examples/spec/fixtures/rust-backend/prelude-read-line.ssrg");
+    let source = process::copy_input(&source, &scratch.0);
     let native = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -3386,6 +3391,7 @@ fn prelude_read_line_matches_ts_with_remaining_stdin_and_eof() {
 fn remaining_prelude_native_partials_keep_original_source_and_output() {
     let scratch = Scratch::new();
     let source = root().join("examples/spec/fixtures/rust-backend/prelude-native-partials.ssrg");
+    let source = process::copy_input(&source, &scratch.0);
     let out = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))

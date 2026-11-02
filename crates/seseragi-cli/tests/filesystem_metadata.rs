@@ -65,6 +65,8 @@ fn native_program(source: &Path, scratch: &Path) -> Program {
 }
 
 fn programs(source: &Path, scratch: &Path) -> Vec<Program> {
+    let input = process::copy_input(source, scratch);
+    let source = input.as_path();
     let mut programs = vec![native_program(source, scratch)];
     for profile in ["development", "release"] {
         let output = scratch.join(profile);
@@ -447,7 +449,7 @@ try {
         scratch,
     ));
     let rust = scratch.join("instants.rs");
-    fs::write(
+    link::write_program(
         &rust,
         r#"
 use seseragi_native_runtime::*;
@@ -484,7 +486,7 @@ fn main() {
     .unwrap();
     let binary = scratch.join(format!("instants{}", std::env::consts::EXE_SUFFIX));
     successful(bounded(
-        link::rustc()
+        Command::new("rustc")
             .args(["--edition=2021", "-o"])
             .arg(&binary)
             .arg(&rust),

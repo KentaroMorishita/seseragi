@@ -87,9 +87,9 @@ fn compare(source: &str, expected: &str) {
     let executable = scratch
         .0
         .join(format!("program{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&rust, artifact.source).unwrap();
+    link::write_program(&rust, artifact.source).unwrap();
     successful(
-        link::rustc()
+        Command::new("rustc")
             .args(["--edition=2021", "-O"])
             .arg(&rust)
             .arg("-o")

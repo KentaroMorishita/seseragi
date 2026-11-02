@@ -75,6 +75,8 @@ fn fixture() -> PathBuf {
         .join("../../examples/spec/fixtures/rust-backend/filesystem-paths.ssrg")
 }
 fn native_program(source: &Path, scratch: &Path) -> Program {
+    let input = process::copy_input(source, scratch);
+    let source = input.as_path();
     let native = scratch.join("native");
     successful(bounded(
         cli()

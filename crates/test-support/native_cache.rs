@@ -60,3 +60,32 @@ pub fn command(program: impl AsRef<std::ffi::OsStr>) -> Command {
     configure(&mut command);
     command
 }
+
+// Cargo stores its generated project beside the input. Copy repository fixtures
+// so those files stay in the test's temporary directory as well.
+pub fn copy_input(source: &std::path::Path, scratch: &std::path::Path) -> PathBuf {
+    if source.starts_with(scratch)
+        || source
+            .canonicalize()
+            .unwrap()
+            .starts_with(std::env::temp_dir().canonicalize().unwrap())
+    {
+        return source.to_owned();
+    }
+    let destination = scratch.join("source").join(source.file_name().unwrap());
+    copy_tree(source, &destination);
+    destination
+}
+
+fn copy_tree(source: &std::path::Path, destination: &std::path::Path) {
+    if source.is_dir() {
+        fs::create_dir_all(destination).unwrap();
+        for entry in fs::read_dir(source).unwrap() {
+            let entry = entry.unwrap();
+            copy_tree(&entry.path(), &destination.join(entry.file_name()));
+        }
+    } else {
+        fs::create_dir_all(destination.parent().unwrap()).unwrap();
+        fs::copy(source, destination).unwrap();
+    }
+}

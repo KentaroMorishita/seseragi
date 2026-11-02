@@ -53,6 +53,7 @@ fn signal_fixtures_and_official_samples_match_bun_node_and_native() {
         } else {
             fs::read(input.with_extension("stdout")).unwrap()
         };
+        let input = process::copy_input(&input, &directory);
         let native = directory.join("native");
         successful(bounded(
             Command::new(env!("CARGO_BIN_EXE_seseragi"))

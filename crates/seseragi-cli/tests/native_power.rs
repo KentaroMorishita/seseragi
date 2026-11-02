@@ -68,6 +68,8 @@ struct Case<'a> {
 
 fn compare_cases(source: &Path, cases: &[Case<'_>]) {
     let scratch = Scratch::new();
+    let input = process::copy_input(source, &scratch.0);
+    let source = input.as_path();
     let native = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))

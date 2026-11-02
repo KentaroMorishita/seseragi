@@ -530,6 +530,7 @@ fn line_filter_preserves_inputs_and_typed_failure_outputs() {
     let source =
         root().join("examples/spec/fixtures/rust-backend/filesystem-text-line-filter.ssrg");
     let source_text = fs::read_to_string(&source).unwrap();
+    let source = native_cache::copy_input(&source, &scratch.0);
     let native = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))

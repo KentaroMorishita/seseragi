@@ -90,6 +90,8 @@ fn build_programs(source: &Path, scratch: &Path) -> Vec<Program> {
 }
 
 fn native_program(source: &Path, scratch: &Path) -> Program {
+    let input = process::copy_input(source, scratch);
+    let source = input.as_path();
     let native = scratch.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
