@@ -1,0 +1,69 @@
+import * as st from "std/transformer/state"
+
+let action: st.StateT<Int, Maybe, Int> = do { st.put 1; st.get () }
+let bound: st.StateT<Int, Maybe, String> = do {
+  before <- st.get ()
+  unit <- st.put (before + 1)
+  let suffix = show unit
+  pure (show before + suffix)
+}
+let modified: st.StateT<Int, Maybe, Int> = do {
+  st.modify (\n -> n + 1)
+  st.get ()
+}
+let discarded: st.StateT<Int, Maybe, String> = do {
+  st.get ()
+  st.lift (Just True)
+  pure "kept"
+}
+let absent: st.StateT<Int, Maybe, Int> = do {
+  let missing: Maybe<Int> = Nothing
+  st.lift missing
+  st.put 9
+  st.get ()
+}
+let branches: st.StateT<Int, Array, Int> = do {
+  n <- st.lift [1, 2]
+  st.put n
+  st.get ()
+}
+let empty: st.StateT<Int, Array, Int> = do {
+  let values: Array<Bool> = []
+  st.lift values
+  st.put 9
+  st.get ()
+}
+let failure: st.StateT<Int, Either<String>, Int> = do {
+  let stopped: Either<String, Int> = Left "stopped"
+  st.lift stopped
+  st.put 9
+  st.get ()
+}
+fn replace<S, M<_>> state: S -> st.StateT<S, M, S> where Monad<M> = do {
+  st.put state
+  st.get ()
+}
+let generic: st.StateT<String, Maybe, String> = replace "雪"
+alias Work<A> = st.StateT<Int, Maybe, A>
+let aliased: Work<Bool> = do { st.put 6; pure True }
+let nested: st.StateT<Int, st.StateT<String, Maybe>, Int> = do {
+  st.put 2
+  st.lift (st.put "inner")
+  st.get ()
+}
+
+pub effect fn main = do {
+  println (show (st.run 0 action))
+  println (show (st.run 4 bound))
+  println (show (st.run 0 modified))
+  println (show (st.run 7 discarded))
+  println (show (st.run 0 absent))
+  println (show (st.run 0 branches))
+  println (show (st.run 0 empty))
+  println (show (st.run 0 failure))
+  println (show (st.run "before" generic))
+  println (show (st.run 0 aliased))
+  println (show (st.run "before" (st.run 0 nested)))
+  println (show (st.run (-9007199254740991) discarded))
+  println (show (st.run 9007199254740991 discarded))
+}

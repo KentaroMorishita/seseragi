@@ -1370,6 +1370,16 @@ fn basic_state_transformer_apis_instances_errors_and_boundaries_match_strict_ts_
 }
 
 #[test]
+fn basic_state_transformer_do_inference_matches_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/state-transformer-do-inference.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/state-transformer-do-inference.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn basic_state_transformer_effects_keep_cold_runs_failure_and_finalizers() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/state-transformer-effects.ssrg"),
@@ -1472,6 +1482,13 @@ fn basic_state_transformer_invalid_inputs_have_identical_ts_and_native_diagnosti
         "pub fn invalid value:st.StateT<Int,Maybe,Int> -> Maybe<(Int,Int)> = st.run True value",
         "struct Box<A> { value:A }\npub fn invalid -> st.StateT<Int,Box,Int> = st.get ()",
         "pub fn invalid -> st.StateT<Int,Int,Int> = st.get ()",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put True; st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.modify (\\n:Int -> show n); st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.lift (Right 1); st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put<Int,List> 1; st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { unit <- st.put 1; pure (unit + 1) }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put 1; pure True }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put 1; let wrong:Int = True; st.get () }",
     ] {
         let scratch = Scratch::new();
         let source = scratch.0.join("invalid.ssrg");
