@@ -6,7 +6,7 @@ use super::super::semantic_types::{SemanticTypeKey, SemanticValueType};
 use super::super::type_ref::typed_type_from_interface_type;
 
 pub(super) struct ImportedTypeContext {
-    // Keep the checked intrinsic owner where localizing to the legacy Unit
+    // Keep the checked intrinsic owner where localizing to the unqualified Unit
     // spelling would reinterpret it as the caller's source nominal.
     canonical_unit: bool,
     names: BTreeMap<(String, String), String>,
@@ -95,7 +95,11 @@ impl ImportedTypeContext {
             canonical_unit: matches!(
                 super::implicit_unit_value_type(resolved).type_ref,
                 TypedType::ExternalNamed { .. }
-            ),
+            ) || resolved.symbols.iter().any(|symbol| {
+                symbol.kind == crate::SymbolKind::Type
+                    && symbol.spelling == "Unit"
+                    && symbol.canonical.as_deref() != Some("std/prelude::Unit")
+            }),
             names,
             canonical_names,
             owners,
@@ -166,6 +170,16 @@ impl ImportedTypeContext {
                         canonical: binding.canonical.clone(),
                         arguments,
                     },
+                    // Implicit Prelude types need no import binding. Keep
+                    // Unit's owner when explicit instantiation could otherwise
+                    // resolve its spelling in the caller's nominal scope.
+                    None if name == "Unit"
+                        && arguments.is_empty()
+                        && self.canonical_unit
+                        && !self.owners.contains_key(&(module.to_owned(), name.clone())) =>
+                    {
+                        super::canonical_unit_value_type().type_ref
+                    }
                     None => TypedType::Named {
                         name: localized_name,
                         arguments,
@@ -379,6 +393,8 @@ impl ImportedTypeContext {
                     self.prelude_owners.get(&(name.clone(), arguments.len()))
                 {
                     Some(self.owner_key(*owner, arguments))
+                } else if name == "Unit" && arguments.is_empty() && self.canonical_unit {
+                    Some(super::canonical_unit_value_type().key)
                 } else if arguments.is_empty() {
                     Some(SemanticTypeKey::Other)
                 } else {
@@ -673,5 +689,24 @@ mod tests {
         assert!(
             matches!(value.key, SemanticTypeKey::ExternalNominal { canonical, .. } if canonical == "fixture/model::Unit")
         );
+    }
+
+    #[test]
+    fn implicit_prelude_unit_keeps_its_owner_without_an_explicit_import_binding() {
+        for source in ["type Unit = | FakeUnit\n", "struct Unit { value: Int }\n"] {
+            let resolved = crate::resolve_module("unit-import.ssrg", source);
+            let value = ImportedTypeContext::new(&resolved)
+                .semantic_value(
+                    InterfaceType::Named {
+                        name: "Unit".into(),
+                        arguments: vec![],
+                    },
+                    "std/queue",
+                    &BTreeSet::new(),
+                    &[],
+                )
+                .unwrap();
+            assert_eq!(value, super::super::canonical_unit_value_type());
+        }
     }
 }
