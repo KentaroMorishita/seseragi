@@ -66,6 +66,9 @@ fn native_random_sample(width: u64, mut next: impl FnMut() -> u64) -> u64 {
 fn native_random_run(captures: &[V], context: &mut NativeContext) -> NativeOutcome {
     let name = native_text(&captures[0]);
     let arguments = &captures[1..];
+    if let Some(environment) = &context.test {
+        return native_test_random(name, arguments, &mut environment.borrow_mut());
+    }
     match (name, arguments) {
         ("std/random::algorithmId", [V::Unit]) => Ok(V::text("seseragi-xoshiro256ss-v1")),
         ("std/random::nextBool", [V::Unit]) => {

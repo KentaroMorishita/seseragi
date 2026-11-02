@@ -48,7 +48,7 @@ pub(crate) fn emit_with_options(
     entry: &str,
     options: &crate::RustTargetOptions,
 ) -> Result<RustArtifact, RustBackendError> {
-    emit_body(modules, entry_module, Some(entry), options)
+    emit_body(modules, entry_module, Some(entry), options, None)
 }
 
 pub(crate) fn emit_library(
@@ -60,7 +60,55 @@ pub(crate) fn emit_library(
         entry_module,
         None,
         &crate::RustTargetOptions::default(),
+        None,
     )
+}
+
+pub(crate) fn emit_tests(
+    modules: &[&CoreModule],
+    tests: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    let root = CoreModule {
+        schema: 1,
+        stage: "core-ir".into(),
+        module: "\0native-tests".into(),
+        foreign_modules: vec![],
+        external_type_bindings: vec![],
+        module_dependencies: modules
+            .iter()
+            .map(|module| seseragi_lowering::CoreModuleDependency {
+                specifier: module.module.clone(),
+                module: module.module.clone(),
+                imports: vec![],
+                origin: SourceSpan {
+                    source: module.module.clone(),
+                    start: 0,
+                    end: 0,
+                },
+            })
+            .collect(),
+        adts: vec![],
+        aliases: vec![],
+        structs: vec![],
+        instances: vec![],
+        trait_methods: vec![],
+        bindings: vec![],
+        functions: vec![],
+    };
+    let mut graph = modules.to_vec();
+    graph.push(&root);
+    let mut artifact = emit_body(
+        &graph,
+        &root.module,
+        None,
+        &crate::RustTargetOptions::default(),
+        Some(tests),
+    )?;
+    artifact
+        .metadata
+        .modules
+        .retain(|module| module != &root.module);
+    Ok(artifact)
 }
 
 fn emit_body(
@@ -68,6 +116,7 @@ fn emit_body(
     entry_module: &str,
     entry: Option<&str>,
     options: &crate::RustTargetOptions,
+    tests: Option<&[(String, String)]>,
 ) -> Result<RustArtifact, RustBackendError> {
     let entry_core = modules
         .iter()
@@ -245,7 +294,17 @@ fn emit_body(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = if let Some(entry) = &entry {
+    let mut artifact = if let Some(tests) = tests {
+        emit::emit_tests(
+            &linked,
+            tests,
+            &owners,
+            &scalar_globals,
+            &type_names,
+            &trait_names,
+            options,
+        )
+    } else if let Some(entry) = &entry {
         emit::emit(
             &linked,
             entry,

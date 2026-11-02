@@ -174,6 +174,7 @@ struct NativeTask {
 #[derive(Default)]
 struct NativeScheduler {
     tasks: BTreeMap<usize, NativeTask>,
+    roots: BTreeMap<usize, Rc<RefCell<NativeProcess>>>,
     ready: std::collections::VecDeque<usize>,
     waiters: BTreeMap<WaitKey, Vec<usize>>,
 }
@@ -189,6 +190,14 @@ impl NativeScheduler {
             next.set(id.checked_add(1).expect("native task identity exhausted"));
             id
         });
+        // Fibers share their root's process; independent test roots do not.
+        if !self
+            .roots
+            .values()
+            .any(|process| Rc::ptr_eq(process, &context.process))
+        {
+            self.roots.insert(id, context.process.clone());
+        }
         let handle = V::Fiber(Shared::new(NativeFiber {
             task: id,
             outcome: RefCell::new(None),
@@ -212,140 +221,209 @@ impl NativeScheduler {
         let mut scheduler = Self::default();
         let root = scheduler.spawn(std::mem::take(context), plan);
         let root_id = root.fiber().task;
-        let process = scheduler.tasks[&root_id].machine.context.process.clone();
         loop {
-            if process.borrow_mut().poll() {
-                scheduler.cancel(root_id);
-            }
-            scheduler.poll_process_signals(&process);
-            scheduler.poll_files();
-            scheduler.poll_stdin();
-            scheduler.poll_timers();
-            let Some(id) = scheduler.ready.pop_front() else {
-                process.borrow().force_if_expired(true);
-                // A program awaiting an uncompleted Deferred stays pending.
-                // No artificial typed failure or Defect is invented for it.
-                let timeout = scheduler.next_timer_wait();
-                let timeout = if process.borrow().active()
-                    || scheduler.tasks.values().any(|task| task.stdin.is_some())
-                {
-                    Some(
-                        timeout
-                            .unwrap_or(std::time::Duration::MAX)
-                            .min(std::time::Duration::from_millis(10)),
-                    )
-                } else {
-                    timeout
-                };
-                if let Some(timeout) = timeout {
-                    std::thread::park_timeout(timeout);
-                } else {
-                    std::thread::park();
-                }
-                continue;
-            };
-            let mut task = scheduler.tasks.remove(&id).expect("runnable native task");
-            let turn = task.machine.turn();
-            let yielded = matches!(&turn, NativeTurn::Operation(ConcurrentOperation::Yield, _));
-            let asynchronous = matches!(
-                &turn,
-                NativeTurn::Runnable
-                    | NativeTurn::Operation(..)
-                    | NativeTurn::FileSystem(..)
-                    | NativeTurn::Stdin(..)
-                    | NativeTurn::ProcessSignalPull(..)
-            );
-            match turn {
-                NativeTurn::Runnable => scheduler.ready.push_back(id),
-                NativeTurn::Operation(operation, captures) => {
-                    scheduler.operation(id, &mut task, operation, captures)
-                }
-                NativeTurn::FileSystem(operation, captures) => {
-                    match NativeFileTask::start(operation, captures) {
-                        Ok(file) => task.file = Some(file),
-                        Err(exit) => {
-                            task.machine.resume(Err(exit));
-                            scheduler.ready.push_back(id);
-                        }
-                    }
-                }
-                NativeTurn::Stdin(operation, captures) => {
-                    match NativeStdinTask::start(
-                        task.machine.context.stdin.clone(),
-                        operation,
-                        &captures[0],
-                    ) {
-                        Ok(stdin) => task.stdin = Some(stdin),
-                        Err(exit) => {
-                            task.machine.resume(Err(exit));
-                            scheduler.ready.push_back(id);
-                        }
-                    }
-                }
-                NativeTurn::ProcessSignalPull(subscription) => {
-                    if let Some(value) = process.borrow_mut().pull(subscription) {
-                        task.machine.resume(Ok(value));
-                        scheduler.ready.push_back(id);
-                    } else {
-                        task.process_signal = Some(subscription);
-                    }
-                }
-                NativeTurn::CloseScope(original, previous_mask) => {
-                    let scope = task
-                        .machine
-                        .context
-                        .scopes
-                        .last_mut()
-                        .expect("closing scope");
-                    // Completed children have already left their scope; their
-                    // stored failure is observed only through await/join.
-                    scope.finalizers.retain(|plan| {
-                        let (instruction, captures) = plan.plan();
-                        !matches!(
-                            instruction,
-                            Instruction::Concurrent(ConcurrentOperation::Supervise)
-                        ) || captures[0].fiber().outcome.borrow().is_none()
-                    });
-                    let children = &task
-                        .machine
-                        .context
-                        .scopes
-                        .last()
-                        .expect("closing scope")
-                        .children;
-                    for child in children {
-                        scheduler.cancel(child.fiber().task);
-                    }
-                    task.machine.state = Some(task.machine.context.cleanup(
-                        &mut task.machine.stack,
-                        original,
-                        Vec::new(),
-                        previous_mask,
-                    ));
-                    scheduler.ready.push_back(id);
-                }
-                NativeTurn::Complete(outcome) => {
-                    task.handle.fiber().outcome.replace(Some(outcome.clone()));
-                    scheduler.wake(WaitKey::Fiber(id));
-                    if id == root_id {
-                        *context = task.machine.context;
-                        debug_assert!(scheduler.tasks.is_empty(), "root scope awaits all children");
-                        return outcome;
-                    }
-                    continue;
+            if let Some((id, completed_context, outcome)) = scheduler.tick(5_000) {
+                if id == root_id {
+                    *context = completed_context;
+                    debug_assert!(scheduler.tasks.is_empty(), "root scope awaits all children");
+                    return outcome;
                 }
             }
-            let suspended = yielded
-                || task.waiting.is_some()
-                || task.file.is_some()
-                || task.stdin.is_some()
-                || task.timer.is_some()
-                || task.process_signal.is_some();
-            scheduler.tasks.insert(id, task);
-            if asynchronous {
-                process.borrow().force_if_expired(suspended);
+            if scheduler.ready.is_empty() {
+                scheduler.park_until_ready(None);
             }
         }
+    }
+    fn park_until_ready(&self, maximum: Option<std::time::Duration>) {
+        for process in self.roots.values() {
+            process.borrow().force_if_expired(true);
+        }
+        let mut timeout = self.next_timer_wait();
+        if self.roots.values().any(|process| process.borrow().active())
+            || self.tasks.values().any(|task| task.stdin.is_some())
+        {
+            timeout = Some(
+                timeout
+                    .unwrap_or(std::time::Duration::MAX)
+                    .min(std::time::Duration::from_millis(10)),
+            );
+        }
+        if let Some(maximum) = maximum {
+            timeout = Some(timeout.unwrap_or(std::time::Duration::MAX).min(maximum));
+        }
+        if let Some(timeout) = timeout {
+            std::thread::park_timeout(timeout);
+        } else {
+            std::thread::park();
+        }
+    }
+    fn tick(&mut self, cleanup_ms: u64) -> Option<(usize, NativeContext, NativeOutcome)> {
+        let processes = self
+            .roots
+            .iter()
+            .map(|(root, process)| (*root, process.clone()))
+            .collect::<Vec<_>>();
+        for (root, process) in processes {
+            let cancel = process.borrow_mut().poll();
+            if cancel {
+                self.cancel(root);
+            }
+        }
+        self.poll_process_signals();
+        self.poll_files();
+        self.poll_stdin();
+        self.poll_timers();
+        let Some(id) = self.ready.pop_front() else {
+            for process in self.roots.values() {
+                process.borrow().force_if_expired(true);
+            }
+            return None;
+        };
+        let mut task = self.tasks.remove(&id).expect("runnable native task");
+        let process = task.machine.context.process.clone();
+        let turn = task.machine.turn();
+        let yielded = matches!(&turn, NativeTurn::Operation(ConcurrentOperation::Yield, _));
+        let asynchronous = matches!(
+            &turn,
+            NativeTurn::Runnable
+                | NativeTurn::Operation(..)
+                | NativeTurn::FileSystem(..)
+                | NativeTurn::Stdin(..)
+                | NativeTurn::ProcessSignalPull(..)
+        );
+        match turn {
+            NativeTurn::Runnable => self.ready.push_back(id),
+            NativeTurn::Operation(operation, captures) => {
+                self.operation(id, &mut task, operation, captures)
+            }
+            NativeTurn::FileSystem(operation, captures) => {
+                match NativeFileTask::start(operation, captures) {
+                    Ok(file) => task.file = Some(file),
+                    Err(exit) => {
+                        task.machine.resume(Err(exit));
+                        self.ready.push_back(id);
+                    }
+                }
+            }
+            NativeTurn::Stdin(operation, captures) => {
+                match NativeStdinTask::start(
+                    task.machine.context.stdin.clone(),
+                    operation,
+                    &captures[0],
+                ) {
+                    Ok(stdin) => task.stdin = Some(stdin),
+                    Err(exit) => {
+                        task.machine.resume(Err(exit));
+                        self.ready.push_back(id);
+                    }
+                }
+            }
+            NativeTurn::ProcessSignalPull(subscription) => {
+                if let Some(value) = process.borrow_mut().pull(subscription) {
+                    task.machine.resume(Ok(value));
+                    self.ready.push_back(id);
+                } else {
+                    task.process_signal = Some(subscription);
+                }
+            }
+            NativeTurn::CloseScope(original, previous_mask) => {
+                if task.machine.context.scopes.len() == 1 {
+                    if let Some(environment) = &task.machine.context.test {
+                        let mut environment = environment.borrow_mut();
+                        if environment.root == id && environment.cleanup.is_none() {
+                            let cancelling = matches!(original, Err(NativeExit::Defect(_)));
+                            let reason = if cancelling {
+                                "after defect"
+                            } else {
+                                "during cleanup"
+                            };
+                            environment.cleanup = Some((
+                                std::time::Instant::now()
+                                    + native_test_cleanup_delay(cleanup_ms, cancelling),
+                                reason,
+                            ));
+                        }
+                    }
+                }
+                let scope = task
+                    .machine
+                    .context
+                    .scopes
+                    .last_mut()
+                    .expect("closing scope");
+                // Completed children have already left their scope; their
+                // stored failure is observed only through await/join.
+                scope.finalizers.retain(|plan| {
+                    let (instruction, captures) = plan.plan();
+                    !matches!(
+                        instruction,
+                        Instruction::Concurrent(ConcurrentOperation::Supervise)
+                    ) || captures[0].fiber().outcome.borrow().is_none()
+                });
+                let children = &task
+                    .machine
+                    .context
+                    .scopes
+                    .last()
+                    .expect("closing scope")
+                    .children;
+                for child in children {
+                    self.cancel(child.fiber().task);
+                }
+                task.machine.state = Some(task.machine.context.cleanup(
+                    &mut task.machine.stack,
+                    original,
+                    Vec::new(),
+                    previous_mask,
+                ));
+                self.ready.push_back(id);
+            }
+            NativeTurn::Complete(outcome) => {
+                task.handle.fiber().outcome.replace(Some(outcome.clone()));
+                self.wake(WaitKey::Fiber(id));
+                self.roots.remove(&id);
+                return Some((id, task.machine.context, outcome));
+            }
+        }
+        let suspended = yielded
+            || task.waiting.is_some()
+            || task.file.is_some()
+            || task.stdin.is_some()
+            || task.timer.is_some()
+            || task.process_signal.is_some();
+        self.tasks.insert(id, task);
+        if asynchronous {
+            process.borrow().force_if_expired(suspended);
+        }
+        None
+    }
+    fn discard_test(&mut self, environment: &Rc<RefCell<NativeTestEnvironment>>) {
+        let removed = self
+            .tasks
+            .iter()
+            .filter_map(|(id, task)| {
+                task.machine
+                    .context
+                    .test
+                    .as_ref()
+                    .is_some_and(|test| Rc::ptr_eq(test, environment))
+                    .then_some(*id)
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        for id in &removed {
+            let task = self.tasks.remove(id).unwrap();
+            task.handle
+                .fiber()
+                .outcome
+                .replace(Some(Err(NativeExit::Cancelled)));
+            self.wake(WaitKey::Fiber(*id));
+        }
+        self.ready.retain(|id| !removed.contains(id));
+        self.roots.retain(|id, _| !removed.contains(id));
+        self.waiters.retain(|_, waiters| {
+            waiters.retain(|id| !removed.contains(id));
+            !waiters.is_empty()
+        });
     }
     fn cancel(&mut self, id: usize) {
         let Some(task) = self.tasks.get_mut(&id) else {
@@ -407,12 +485,13 @@ impl NativeScheduler {
             }
         }
     }
-    fn poll_process_signals(&mut self, process: &Rc<RefCell<NativeProcess>>) {
+    fn poll_process_signals(&mut self) {
         for (id, task) in &mut self.tasks {
             let Some(subscription) = task.process_signal else {
                 continue;
             };
-            if let Some(value) = process.borrow_mut().pull(subscription) {
+            let value = task.machine.context.process.borrow_mut().pull(subscription);
+            if let Some(value) = value {
                 task.process_signal = None;
                 task.machine.resume(Ok(value));
                 self.ready.push_back(*id);
@@ -446,6 +525,15 @@ impl NativeScheduler {
     ) {
         let result = match operation {
             ConcurrentOperation::ClockSleep => {
+                if let Some(environment) = &task.machine.context.test {
+                    environment.borrow_mut().instant += native_duration_nanoseconds(&c[0])
+                        .expect("canonical test Duration")
+                        as u128;
+                    task.machine.resume(Ok(V::Unit));
+                    self.ready.push_back(id);
+                    return;
+                }
+
                 match NativeTimer::start(&c[0]) {
                     Ok(timer) => task.timer = Some(timer),
                     Err(exit) => {
@@ -461,6 +549,7 @@ impl NativeScheduler {
                         gc_every: task.machine.context.gc_every,
                         stdin: task.machine.context.stdin.clone(),
                         random: task.machine.context.random.clone(),
+                        test: task.machine.context.test.clone(),
                         temporaries: task.machine.context.temporaries.clone(),
                         process: task.machine.context.process.clone(),
                         ..NativeContext::default()
@@ -560,6 +649,72 @@ impl NativeScheduler {
 #[cfg(test)]
 mod scheduler_tests {
     use super::*;
+    #[test]
+    fn tick_resumes_signal_waiters_in_their_own_root_process() {
+        let _access = native_process_signal_host::TEST_ACCESS.lock().unwrap();
+        enable_cycle_collection();
+        let mut scheduler = NativeScheduler::default();
+        let mut roots = Vec::new();
+        for _ in 0..2 {
+            let context = NativeContext::default();
+            let process = context.process.clone();
+            process.borrow_mut().cursors.insert(
+                0,
+                NativeProcessSignalCursor {
+                    handlers: vec![],
+                    queue: Default::default(),
+                },
+            );
+            let handle = scheduler.spawn(
+                context,
+                V::effect(Instruction::ProcessSignalPull, vec![V::Int(0)]),
+            );
+            roots.push((handle, process));
+        }
+        for _ in 0..64 {
+            if scheduler
+                .tasks
+                .values()
+                .all(|task| task.process_signal == Some(0))
+            {
+                break;
+            }
+            assert!(scheduler.tick(5_000).is_none());
+        }
+        assert_eq!(scheduler.roots.len(), 2);
+        assert!(scheduler
+            .tasks
+            .values()
+            .all(|task| task.process_signal == Some(0)));
+        for (position, signal) in [(1, 5), (0, 4)] {
+            let (handle, process) = &roots[position];
+            process
+                .borrow_mut()
+                .cursors
+                .get_mut(&0)
+                .unwrap()
+                .queue
+                .push_back(signal);
+            let mut complete = false;
+            for _ in 0..64 {
+                if let Some((id, _context, outcome)) = scheduler.tick(5_000) {
+                    assert_eq!(id, handle.fiber().task);
+                    let value = outcome.ok().expect("signal pull succeeded");
+                    assert!(value.payload().tagged(NATIVE_PROCESS_SIGNALS[signal]));
+                    complete = true;
+                    break;
+                }
+            }
+            assert!(complete, "tick must poll suspended signal pulls");
+            assert!(!scheduler.roots.contains_key(&handle.fiber().task));
+        }
+        assert!(scheduler.tasks.is_empty());
+        assert!(scheduler.roots.is_empty());
+        drop((roots, scheduler));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
     fn op(name: &str, args: Vec<V>) -> V {
         native_operation(name, args)
     }

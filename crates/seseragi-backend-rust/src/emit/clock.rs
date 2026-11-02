@@ -92,6 +92,10 @@ impl Backend<'_> {
         }
         self.capabilities.insert("duration".into());
         if matches!(name, "std/clock::now" | "std/clock::sleep") {
+            if self.test_runner {
+                self.capabilities.insert("test-clock".into());
+                return Ok(());
+            }
             // Contract types and this finite selection are proved before any
             // generated output or host wait is allowed to exist.
             crate::clock_provider::receipt(self.options, vec![origin.clone()])?;

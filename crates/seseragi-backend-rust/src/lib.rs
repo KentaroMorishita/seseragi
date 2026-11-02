@@ -137,3 +137,12 @@ pub fn emit_rust_project_with_options(
 ) -> Result<RustArtifact, RustBackendError> {
     project::emit_with_options(modules, entry_module, entry, options)
 }
+
+/// Emits a native test runner for checked exported Test bindings.
+/// Each pair contains the displayed module name and the binding's canonical symbol.
+pub fn emit_rust_tests(
+    modules: &[&CoreModule],
+    tests: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    project::emit_tests(modules, tests)
+}

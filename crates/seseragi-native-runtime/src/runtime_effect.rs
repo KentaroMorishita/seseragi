@@ -102,6 +102,7 @@ pub struct NativeContext {
     pub peak_frames: usize,
     stdin: Rc<RefCell<NativeStdin>>,
     random: Rc<RefCell<NativeRandom>>,
+    test: Option<Rc<RefCell<NativeTestEnvironment>>>,
     temporaries: Rc<RefCell<Vec<NativeTemporaryHandle>>>,
     process: Rc<RefCell<NativeProcess>>,
 }
@@ -117,6 +118,7 @@ impl Default for NativeContext {
             peak_frames: 0,
             stdin: Rc::default(),
             random: Rc::default(),
+            test: None,
             temporaries: Rc::default(),
             process: Rc::default(),
         }
@@ -509,28 +511,42 @@ pub fn native_operation(name: &str, args: Vec<V>) -> V {
             Ok(result)
         }),
         "std/prelude::println" | "console.println" | "std/console::println" => {
-            V::leaf(args, |c, _| {
-                let text = format!("{}\n", console_text(&c[0]));
-                write_native_console(&mut std::io::stdout().lock(), &text)
+            V::leaf(args, |c, context| {
+                native_context_console(context, false, &format!("{}\n", console_text(&c[0])))
             })
         }
-        "std/prelude::print" | "console.print" | "std/console::print" => V::leaf(args, |c, _| {
-            write_native_console(&mut std::io::stdout().lock(), console_text(&c[0]))
+        "std/prelude::print" | "console.print" | "std/console::print" => {
+            V::leaf(args, |c, context| {
+                native_context_console(context, false, console_text(&c[0]))
+            })
+        }
+        "std/console::error" => V::leaf(args, |c, context| {
+            native_context_console(context, true, console_text(&c[0]))
         }),
-        "std/console::error" => V::leaf(args, |c, _| {
-            write_native_console(&mut std::io::stderr().lock(), console_text(&c[0]))
+        "std/console::errorLine" => V::leaf(args, |c, context| {
+            native_context_console(context, true, &format!("{}\n", console_text(&c[0])))
         }),
-        "std/console::errorLine" => V::leaf(args, |c, _| {
-            write_native_console(
-                &mut std::io::stderr().lock(),
-                &format!("{}\n", console_text(&c[0])),
-            )
-        }),
-        "std/console::flush" => V::leaf(args, |_, _| {
-            write_native_console(&mut std::io::stdout().lock(), "")?;
-            write_native_console(&mut std::io::stderr().lock(), "")
+        "std/console::flush" => V::leaf(args, |_, context| {
+            native_context_console(context, false, "")?;
+            native_context_console(context, true, "")
         }),
         _ => panic!("Rust ABI: unsupported native operation {name}"),
+    }
+}
+
+fn native_context_console(context: &NativeContext, stderr: bool, text: &str) -> NativeOutcome {
+    if let Some(environment) = &context.test {
+        let mut environment = environment.borrow_mut();
+        if stderr {
+            environment.stderr.push_str(text);
+        } else {
+            environment.stdout.push_str(text);
+        }
+        Ok(V::Unit)
+    } else if stderr {
+        write_native_console(&mut std::io::stderr().lock(), text)
+    } else {
+        write_native_console(&mut std::io::stdout().lock(), text)
     }
 }
 

@@ -122,7 +122,19 @@ pub fn native_log_operation(name: &str, mut arguments: Vec<V>) -> V {
         "std/log::LogInt" => "std/log::LogInt",
         "std/log::LogFloat" => "std/log::LogFloat",
         "std/log::LogBool" => "std/log::LogBool",
-        "std/log::log" => return V::leaf(arguments, |captures, _| native_log_stderr(&captures[0])),
+        "std/log::log" => {
+            return V::leaf(arguments, |captures, context| {
+                if let Some(environment) = &context.test {
+                    environment
+                        .borrow_mut()
+                        .stderr
+                        .push_str(&native_log_event(&captures[0]));
+                    Ok(V::Unit)
+                } else {
+                    native_log_stderr(&captures[0])
+                }
+            })
+        }
         _ => panic!("Rust ABI: unsupported Logger operation"),
     };
     V::adt(tag, arguments.pop().unwrap_or(V::Unit))
