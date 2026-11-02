@@ -1,11 +1,15 @@
 use super::*;
 
+#[path = "../../../../test-support/native_cache.rs"]
+mod native_cache;
+
 const RUNTIME: &str = "pub fn answer() -> i64 { 42 }\n";
 const SOURCE: &str = "fn main() { println!(\"{}\", seseragi_native_runtime::answer()); }\n";
 
 struct Fixture {
     root: tempfile::TempDir,
     target: PathBuf,
+    toolchain: Toolchain,
 }
 
 impl Fixture {
@@ -20,7 +24,17 @@ impl Fixture {
             .unwrap_or_else(|| root.path().to_owned())
             .join("seseragi-native-tests")
             .join(root.path().file_name().unwrap());
-        Self { root, target }
+        let toolchain = Toolchain::load(
+            native_cache::toolchain().to_owned(),
+            root.path().join("cargo-home"),
+            native_toolchain::host().unwrap(),
+        )
+        .unwrap();
+        Self {
+            root,
+            target,
+            toolchain,
+        }
     }
 
     fn project(&self) -> Project {
@@ -54,19 +68,23 @@ fn modified(path: &Path) -> std::time::SystemTime {
 }
 
 fn runtime_library(target: &Path) -> PathBuf {
-    let libraries = fs::read_dir(target.join("debug/deps"))
-        .unwrap()
-        .map(|entry| entry.unwrap().path())
-        .filter(|path| {
-            path.file_name()
-                .unwrap()
-                .to_string_lossy()
-                .starts_with("libseseragi_native_runtime-")
-                && path
-                    .extension()
-                    .is_some_and(|extension| extension == "rlib")
-        })
-        .collect::<Vec<_>>();
+    let libraries = fs::read_dir(
+        target
+            .join(native_toolchain::host().unwrap())
+            .join("debug/deps"),
+    )
+    .unwrap()
+    .map(|entry| entry.unwrap().path())
+    .filter(|path| {
+        path.file_name()
+            .unwrap()
+            .to_string_lossy()
+            .starts_with("libseseragi_native_runtime-")
+            && path
+                .extension()
+                .is_some_and(|extension| extension == "rlib")
+    })
+    .collect::<Vec<_>>();
     assert_eq!(libraries.len(), 1, "{libraries:?}");
     libraries.into_iter().next().unwrap()
 }
@@ -82,6 +100,7 @@ fn cargo_reuses_files_and_distinguishes_program_and_runtime_changes() {
                 source,
                 runtime,
                 &fixture.executable(),
+                &fixture.toolchain,
             )
             .unwrap();
     };
@@ -97,10 +116,16 @@ fn cargo_reuses_files_and_distinguishes_program_and_runtime_changes() {
     ]
     .map(|file| project.directory.join(file));
     let times = files.each_ref().map(|file| modified(file));
-    let library = runtime_library(&project.target);
+    let library = runtime_library(
+        &project
+            .target_for(BuildProfile::Development, RUNTIME)
+            .unwrap(),
+    );
     let library_time = modified(&library);
     let binary = project
-        .target
+        .target_for(BuildProfile::Development, RUNTIME)
+        .unwrap()
+        .join(native_toolchain::host().unwrap())
         .join(format!("debug/{}", super::super::output::EXECUTABLE));
     let binary_time = modified(&binary);
     build(SOURCE, RUNTIME);
@@ -119,9 +144,17 @@ fn cargo_reuses_files_and_distinguishes_program_and_runtime_changes() {
     assert_ne!(modified(&binary), binary_time);
 
     let program_time = modified(&files[3]);
-    build(&changed, &RUNTIME.replace("42", "43"));
+    let changed_runtime = RUNTIME.replace("42", "43");
+    build(&changed, &changed_runtime);
     assert_eq!(fixture.stdout(), "changed 43\n");
-    assert_ne!(modified(&library), library_time);
+    let rebuilt = runtime_library(
+        &project
+            .target_for(BuildProfile::Development, &changed_runtime)
+            .unwrap(),
+    );
+    assert_ne!(rebuilt, library);
+    assert_ne!(modified(&rebuilt), library_time);
+    assert_eq!(modified(&library), library_time);
     assert_ne!(modified(&files[5]), times[5]);
     assert_eq!(modified(&files[3]), program_time);
     assert_eq!(modified(&files[1]), times[1]);
@@ -145,6 +178,7 @@ fn compiler_failure_preserves_the_executable_and_recovery_uses_both_profiles() {
             SOURCE,
             RUNTIME,
             &fixture.executable(),
+            &fixture.toolchain,
         )
         .unwrap();
     let previous = fs::read(fixture.executable()).unwrap();
@@ -154,6 +188,7 @@ fn compiler_failure_preserves_the_executable_and_recovery_uses_both_profiles() {
             "fn main() { missing(); }",
             RUNTIME,
             &fixture.executable(),
+            &fixture.toolchain,
         )
         .unwrap_err();
     assert!(error.contains("Rust target compilation failed"), "{error}");
@@ -162,12 +197,20 @@ fn compiler_failure_preserves_the_executable_and_recovery_uses_both_profiles() {
     assert_eq!(fixture.stdout(), "42\n");
     for profile in [BuildProfile::Development, BuildProfile::Release] {
         project
-            .build(profile, SOURCE, RUNTIME, &fixture.executable())
+            .build(
+                profile,
+                SOURCE,
+                RUNTIME,
+                &fixture.executable(),
+                &fixture.toolchain,
+            )
             .unwrap();
         assert_eq!(fixture.stdout(), "42\n");
     }
     assert!(project
-        .target
+        .target_for(BuildProfile::Release, RUNTIME)
+        .unwrap()
+        .join(native_toolchain::host().unwrap())
         .join(format!("release/{}", super::super::output::EXECUTABLE))
         .is_file());
     let manifest = fs::read_to_string(project.directory.join("Cargo.toml"))
@@ -192,6 +235,49 @@ fn compiler_failure_preserves_the_executable_and_recovery_uses_both_profiles() {
         .contains_key("incremental"));
 }
 
+#[test]
+fn build_cache_separates_runtime_profiles_features_and_linker_settings() {
+    let fixture = Fixture::new();
+    let mut project = fixture.project();
+    let development = project
+        .target_for(BuildProfile::Development, RUNTIME)
+        .unwrap();
+    let release = project.target_for(BuildProfile::Release, RUNTIME).unwrap();
+    assert_ne!(development, release);
+    assert_ne!(
+        development,
+        project
+            .target_for(BuildProfile::Development, "changed runtime")
+            .unwrap()
+    );
+    project.config.dependencies.insert(
+        "adapter".into(),
+        toml::Value::Table(toml::Table::from_iter([
+            ("version".into(), "1.0".into()),
+            (
+                "features".into(),
+                toml::Value::Array(vec!["selected".into()]),
+            ),
+        ])),
+    );
+    let features = project
+        .target_for(BuildProfile::Development, RUNTIME)
+        .unwrap();
+    assert_ne!(development, features);
+    project.config.libraries.push("m".into());
+    let linking = project
+        .target_for(BuildProfile::Development, RUNTIME)
+        .unwrap();
+    assert_ne!(features, linking);
+    project.config.search_paths.push("native/lib".into());
+    assert_ne!(
+        linking,
+        project
+            .target_for(BuildProfile::Development, RUNTIME)
+            .unwrap()
+    );
+}
+
 #[cfg(unix)]
 #[test]
 fn external_crate_and_system_c_library_link_offline_and_bad_link_preserves_binary() {
@@ -214,12 +300,17 @@ fn external_crate_and_system_c_library_link_offline_and_bad_link_preserves_binar
             source,
             RUNTIME,
             &fixture.executable(),
+            &fixture.toolchain,
         )
         .unwrap();
     assert_eq!(fixture.stdout(), "1\n");
     let lock = fs::read_to_string(project.directory.join("Cargo.lock")).unwrap();
     assert!(lock.contains("name = \"adapter\""), "{lock}");
-    let runtime = runtime_library(&project.target);
+    let runtime = runtime_library(
+        &project
+            .target_for(BuildProfile::Development, RUNTIME)
+            .unwrap(),
+    );
     let runtime_time = modified(&runtime);
     fs::write(root.join("adapter 雪/lib.rs"), "#[cfg(feature = \"selected\")] pub fn input() -> f64 { std::hint::black_box(std::f64::consts::PI) }\n").unwrap();
     project
@@ -228,6 +319,7 @@ fn external_crate_and_system_c_library_link_offline_and_bad_link_preserves_binar
             source,
             RUNTIME,
             &fixture.executable(),
+            &fixture.toolchain,
         )
         .unwrap();
     assert_eq!(fixture.stdout(), "-1\n");
@@ -246,6 +338,7 @@ fn external_crate_and_system_c_library_link_offline_and_bad_link_preserves_binar
             source,
             RUNTIME,
             &fixture.executable(),
+            &fixture.toolchain,
         )
         .unwrap_err();
     assert!(
@@ -296,7 +389,8 @@ fn native_build_rejects_symlinked_build_inputs() {
             BuildProfile::Development,
             SOURCE,
             RUNTIME,
-            &fixture.executable()
+            &fixture.executable(),
+            &fixture.toolchain
         )
         .unwrap_err()
         .contains("regular file"));
@@ -309,7 +403,8 @@ fn native_build_rejects_symlinked_build_inputs() {
             BuildProfile::Development,
             SOURCE,
             RUNTIME,
-            &fixture.executable()
+            &fixture.executable(),
+            &fixture.toolchain
         )
         .unwrap_err()
         .contains("regular file"));
@@ -342,6 +437,7 @@ fn concurrent_builds_of_the_same_project_keep_each_published_program() {
                         &format!("fn main() {{ println!(\"{value}\"); }}"),
                         RUNTIME,
                         &output,
+                        &fixture.toolchain,
                     )
                     .unwrap();
                 let result = Command::new(output).output().unwrap();

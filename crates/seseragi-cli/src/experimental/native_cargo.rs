@@ -1,11 +1,14 @@
+use super::native_toolchain::{self, Toolchain};
 use seseragi_project::BuildProfile;
 use sha2::{Digest, Sha256};
 use std::{
     fs::{self, File},
     io::{self, Write},
     path::{Path, PathBuf},
-    process::Command,
 };
+
+#[cfg(test)]
+use std::process::Command;
 
 const RUNTIME_MANIFEST: &str = r#"[package]
 name = "seseragi-native-runtime"
@@ -51,6 +54,7 @@ pub(crate) fn build(
         source,
         seseragi_backend_rust::native_runtime::SOURCE,
         executable,
+        &Toolchain::obtain()?,
     )
 }
 
@@ -115,6 +119,7 @@ impl Project {
         source: &str,
         runtime: &str,
         executable: &Path,
+        toolchain: &Toolchain,
     ) -> Result<(), String> {
         let runtime_directory = self.directory.join("runtime");
         ensure_directory(&runtime_directory)?;
@@ -136,7 +141,9 @@ impl Project {
             self.config.build_script().as_bytes(),
         )?;
         regular_file(&self.directory.join("Cargo.lock"))?;
-        let output = Command::new("cargo")
+        let target = self.target_for(profile, runtime)?;
+        let output = toolchain
+            .cargo()?
             .current_dir(&self.directory)
             .args([
                 "build",
@@ -144,6 +151,8 @@ impl Project {
                 "--bin",
                 "program",
                 "--message-format=json-render-diagnostics",
+                "--target",
+                &toolchain.host,
                 "--profile",
             ])
             .arg(match profile {
@@ -151,13 +160,21 @@ impl Project {
                 BuildProfile::Release => "release",
             })
             .arg("--target-dir")
-            .arg(&self.target)
+            .arg(&target)
             .output()
-            .map_err(|error| format!("could not start cargo: {error}; install a Rust toolchain"))?;
+            .map_err(|error| format!("could not start managed cargo: {error}"))?;
         if !output.status.success() {
-            return Err(format!(
-                "Rust target compilation failed:\n{}",
-                String::from_utf8_lossy(&output.stderr)
+            let mut diagnostics = String::from_utf8_lossy(&output.stderr).into_owned();
+            for line in output.stdout.split(|byte| *byte == b'\n') {
+                if let Ok(message) = serde_json::from_slice::<serde_json::Value>(line) {
+                    if let Some(rendered) = message["message"]["rendered"].as_str() {
+                        diagnostics.push_str(rendered);
+                    }
+                }
+            }
+            return Err(native_toolchain::compilation_error(
+                &toolchain.host,
+                &diagnostics,
             ));
         }
         let built = output
@@ -173,6 +190,25 @@ impl Project {
             .ok_or("Cargo did not report a native executable")?;
         fs::copy(built, executable).map_err(|error| error.to_string())?;
         Ok(())
+    }
+
+    fn target_for(&self, profile: BuildProfile, runtime: &str) -> Result<PathBuf, String> {
+        let identity = format!(
+            "{:?}",
+            (
+                env!("CARGO_PKG_VERSION"),
+                Sha256::digest(runtime.as_bytes()),
+                native_toolchain::version(),
+                native_toolchain::host()?,
+                profile,
+                self.config.manifest()?,
+                self.config.build_script(),
+                native_toolchain::build_settings(),
+            )
+        );
+        Ok(self
+            .target
+            .join(format!("{:x}", Sha256::digest(identity.as_bytes()))))
     }
 }
 
