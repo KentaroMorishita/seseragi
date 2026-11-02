@@ -33,6 +33,7 @@ include!("unicode_case_data.rs");
 include!("unicode_data.rs");
 include!("runtime_text_case.rs");
 include!("runtime_unicode.rs");
+include!("runtime_grapheme.rs");
 include!("runtime_text.rs");
 include!("runtime_bytes.rs");
 include!("runtime_bytes_codecs.rs");

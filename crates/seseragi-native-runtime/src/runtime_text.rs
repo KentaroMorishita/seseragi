@@ -1,4 +1,7 @@
 pub fn native_text_operation(name: &str, arguments: Vec<V>) -> V {
+    if name.starts_with("std/text/grapheme::") {
+        return native_grapheme_operation(name, arguments);
+    }
     if name.starts_with("std/text/unicode::") {
         return native_unicode_operation(name, arguments);
     }

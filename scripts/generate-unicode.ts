@@ -309,6 +309,9 @@ export function generateUnicodeTables(
       rustRanges("COMBINING_CLASS", combining),
       rustRanges("Alphabetic"),
       rustRanges("White_Space"),
+      rustRanges("GRAPHEME_BREAK", graphemes),
+      rustRanges("INDIC_CONJUNCT_BREAK", indic),
+      rustRanges("Extended_Pictographic"),
       rustMappings("CANONICAL_DECOMPOSITION", canonicalDecomposition),
       rustMappings("COMPATIBILITY_DECOMPOSITION", compatibilityDecomposition),
       `pub const COMPOSITIONS: &[((u32, u32), u32)] = &[\n${Object.entries(

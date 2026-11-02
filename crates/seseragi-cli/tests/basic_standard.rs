@@ -358,6 +358,126 @@ fn basic_bytes_operations_match_raw_strict_ts_and_native_for_errors_and_boundari
 }
 
 #[test]
+fn basic_grapheme_matches_raw_strict_ts_and_native_for_errors_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/text-grapheme.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/text-grapheme.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_grapheme_pinned_corpus_and_range_matrix_match_ts_and_native() {
+    let scratch = Scratch::new();
+    let mut cases = vec![vec![]];
+    for line in include_str!("../../../runtime/unicode/ucd/auxiliary/GraphemeBreakTest.txt").lines()
+    {
+        let value = line.split('#').next().unwrap().trim();
+        if value.is_empty() {
+            continue;
+        }
+        cases.push(
+            value
+                .split('÷')
+                .filter_map(|group| {
+                    let cluster = group
+                        .split_whitespace()
+                        .filter(|token| *token != "×")
+                        .map(|hex| char::from_u32(u32::from_str_radix(hex, 16).unwrap()).unwrap())
+                        .collect::<String>();
+                    (!cluster.is_empty()).then_some(cluster)
+                })
+                .collect::<Vec<_>>(),
+        );
+    }
+    assert!(cases.len() > 700);
+    let mut source = String::from(
+        r#"import * as grapheme from "std/text/grapheme"
+import * as text from "std/text"
+import * as bytes from "std/bytes"
+
+fn encoded value: String -> Array<Int> = bytes.toInts (text.encodeUtf8 value)
+fn describeAt result: Maybe<String> -> String = match result {
+  Nothing -> "Nothing"
+  Just value -> "Just " + show (encoded value)
+}
+fn describeSlice result: Either<grapheme.GraphemeSliceError, String> -> String = match result {
+  Left error -> "Left " + show error
+  Right value -> "Right " + show (encoded value)
+}
+fn inspect value: String -> String = {
+  let size = grapheme.length value
+  let indices = [-9007199254740991, -1, 0, 1, size - 1, size, size + 1, 9007199254740991]
+  let selected = map (\index: Int -> describeAt (grapheme.at index value)) indices
+  let sliced = map (\start: Int -> text.join "," (map (\end: Int -> describeSlice (grapheme.slice start end value)) indices)) indices
+  text.join "|" [show size, show (map encoded (grapheme.clusters value)), show (grapheme.byteBoundaries value), text.join ";" selected, text.join ";" sliced]
+}
+"#,
+    );
+    let mut expected = String::new();
+    let mut groups = Vec::new();
+    for (group, cases) in cases.chunks(24).enumerate() {
+        source.push_str(&format!(
+            "fn group{group} -> String = text.join \"\\n\" [\n"
+        ));
+        for clusters in cases {
+            let text = clusters.concat();
+            source.push_str(&format!("inspect {text:?},\n"));
+            let size = clusters.len() as i64;
+            let mut boundaries = vec![0];
+            for cluster in clusters {
+                boundaries.push(boundaries.last().unwrap() + cluster.len());
+            }
+            let encoded = clusters.iter().map(|s| s.as_bytes()).collect::<Vec<_>>();
+            let indices = [
+                -9_007_199_254_740_991,
+                -1,
+                0,
+                1,
+                size - 1,
+                size,
+                size + 1,
+                9_007_199_254_740_991,
+            ];
+            let mut selected = Vec::new();
+            let mut sliced = Vec::new();
+            for &start in &indices {
+                selected.push(if (0..size).contains(&start) {
+                    format!("Just {:?}", encoded[start as usize])
+                } else {
+                    "Nothing".into()
+                });
+                let mut ends = Vec::new();
+                for &end in &indices {
+                    ends.push(if 0 <= start && start <= end && end <= size {
+                        let slice = clusters[start as usize..end as usize].concat();
+                        format!("Right {:?}", slice.as_bytes())
+                    } else {
+                        format!("Left InvalidGraphemeRange {{ start: {start}, end: {end}, length: {size} }}")
+                    });
+                }
+                sliced.push(ends.join(","));
+            }
+            expected.push_str(&format!(
+                "{size}|{encoded:?}|{boundaries:?}|{}|{}\n",
+                selected.join(";"),
+                sliced.join(";")
+            ));
+        }
+        source.push_str("]\n");
+        groups.push(format!("group{group} ()"));
+    }
+    source.push_str(&format!(
+        "pub fn probe -> String = text.join \"\\n\" [{}]\npub effect fn main = println (probe ())\n",
+        groups.join(", ")
+    ));
+    let path = scratch.0.join("grapheme-corpus.ssrg");
+    fs::write(&path, source).unwrap();
+    compare(&path, &[Case::success(expected.as_bytes())]);
+}
+
+#[test]
 fn basic_utf8_matches_original_raw_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/text-utf8.ssrg"),
