@@ -1357,13 +1357,14 @@ fn lower_call(
                 imported_types,
                 &deferred_evidence_type_constructor_parameters,
             );
-            let check_late_callback =
-                has_evidence
-                    && type_arguments.is_empty()
-                    && deferred_evidence_parameters.is_empty()
-                    && (checked_argument_types.iter().skip(1).any(|argument| {
+            let check_curried_inference = has_evidence
+                && type_arguments.is_empty()
+                && deferred_evidence_parameters.is_empty()
+                && (needs_ordinary_call_annotation(callee_signature.as_ref())
+                    || checked_argument_types.iter().skip(1).any(|argument| {
                         matches!(argument, super::TypeScriptType::Function { .. })
-                    }) || checked_argument_types
+                    })
+                    || checked_argument_types
                         .first()
                         .is_some_and(callback_returns_either));
             let hkt_callee = (!has_evidence)
@@ -1423,11 +1424,11 @@ fn lower_call(
                     origin,
                 )
             };
-            if check_late_callback {
+            if check_curried_inference {
                 // TypeScript fixes generic parameters at the first
                 // curried argument. The source checker used every
                 // argument and evidence; retain that instantiated
-                // callable type before applying any callback. A
+                // callable type before applying dictionaries or callbacks. A
                 // returned source function follows the dictionaries;
                 // its arguments must not shift that checked boundary.
                 let mut parameters = checked_argument_types;
@@ -2610,6 +2611,17 @@ fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
         }
         TypeScriptStatement::LocalFunction { body, .. } => typescript_expr_contains_await(body),
     }
+}
+
+pub(super) fn needs_ordinary_call_annotation(signature: Option<&crate::CoreCallSignature>) -> bool {
+    signature.is_some_and(|signature| {
+        !signature.type_parameters.is_empty()
+            && signature
+                .type_parameters
+                .iter()
+                .all(|p| !p.is_constructor())
+            && signature.instantiated_type_arguments.len() != signature.type_parameters.len()
+    })
 }
 
 // Reify a complete ordinary source instantiation at the first curried stage.

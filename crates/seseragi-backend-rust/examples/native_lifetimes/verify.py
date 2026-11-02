@@ -85,7 +85,9 @@ def main():
     assert native.stdout == candidate.stdout == ts.stdout == "body before release defect\n"
     assert 'Defect(["Seseragi Int overflow"])' in native.stderr and "live=0 registry=0" in native.stderr
     assert 'Defect(["Seseragi Int overflow"])' in candidate.stderr and "live=0 registry=0" in candidate.stderr
-    assert "runtime defect" in ts.stderr
+    assert ts.stderr == (
+        f"{source.name}:8:24: Seseragi Defect: Seseragi Int overflow\n"
+    ), ts.stderr
     report["sourceCases"].append({"name": "release-callback-timing", "sourceHash": digest(source),
                                  "rustHash": digest(rust), "stdout": native.stdout,
                                  "exit": "defect", "lifetime": native.stderr.strip(),

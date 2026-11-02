@@ -295,7 +295,20 @@ fn rustc_failure_preserves_all_previous_outputs_and_cleans_owned_staging() {
     let compiler_directory = root.path().join("compiler");
     fs::create_dir(&compiler_directory).unwrap();
     let compiler = compiler_directory.join("rustc");
-    fs::write(&compiler, "#!/bin/sh\nprintf '%s\\n' \"$5\" > \"$SESERAGI_TEST_STAGE_LOG\"\nprintf 'forced rustc failure\\n' >&2\nexit 17\n").unwrap();
+    fs::write(
+        &compiler,
+        r#"#!/bin/sh
+set -eu
+for argument in "$@"; do
+    case "$argument" in
+        */program.rs) printf '%s\n' "$argument" > "$SESERAGI_TEST_STAGE_LOG" ;;
+    esac
+done
+printf 'forced rustc failure\n' >&2
+exit 17
+"#,
+    )
+    .unwrap();
     fs::set_permissions(compiler, fs::Permissions::from_mode(0o700)).unwrap();
     let stage_log = root.path().join("stage-path");
     let output = command("build-native", &source, &directory)
@@ -368,7 +381,18 @@ fn publish_io_failure_rolls_back_and_removes_owned_staging() {
             let compiler = compiler_directory.join("rustc");
             fs::write(
                 &compiler,
-                "#!/bin/sh\nset -eu\nprintf 'staged executable\\n' > \"$7\"\n",
+                r#"#!/bin/sh
+set -eu
+while [ "$#" -gt 0 ]; do
+    if [ "$1" = "-o" ]; then
+        shift
+        printf 'staged executable\n' > "$1"
+        exit 0
+    fi
+    shift
+done
+exit 1
+"#,
             )
             .unwrap();
             fs::set_permissions(compiler, fs::Permissions::from_mode(0o700)).unwrap();

@@ -132,6 +132,24 @@ struct Case<'a> {
 }
 
 #[test]
+fn constrained_collection_factories_keep_inferred_types_before_dictionary_arguments() {
+    verify(
+        include_str!("../../../examples/spec/artifacts/schema-1/map-set/main.ssrg"),
+        include_str!("../../../examples/spec/artifacts/execution-schema-1/map-set/stdout.txt"),
+    );
+    verify(
+        include_str!("../../../examples/spec/artifacts/schema-1/monoid-wrappers/main.ssrg"),
+        include_str!("../../../examples/spec/fixtures/projects/monoid-wrappers/expected.stdout"),
+    );
+    verify(
+        include_str!("../../../examples/spec/artifacts/schema-1/array-list-apis/main.ssrg"),
+        include_str!(
+            "../../../examples/spec/artifacts/execution-schema-1/array-list-apis/stdout.txt"
+        ),
+    );
+}
+
+#[test]
 fn collection_helpers_preserve_every_partial_stage_in_typed_bindings_and_arguments() {
     let digits = ("Int -> Int -> Int", "digits");
     let positive = ("Int -> Bool", "positive");

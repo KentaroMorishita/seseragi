@@ -227,6 +227,7 @@
   "runtimeRequirements": [
     "core.sum.type",
     "core.product.type",
+    "core.list",
     "core.unit",
     "core.int",
     "core.int.subtract",
@@ -247,7 +248,6 @@
     "core.int.one-dictionary",
     "core.int.mul-dictionary",
     "core.product.monoid",
-    "core.list",
     "core.list.from-array",
     "core.product.constructor",
     "core.sum.semigroup"
@@ -338,6 +338,10 @@
     {
       "feature": "core.product.type",
       "local": "Product"
+    },
+    {
+      "feature": "core.list",
+      "local": "List"
     }
   ],
   "structs": [
@@ -1164,7 +1168,43 @@
                                                             }
                                                           ]
                                                         }
-                                                      ]
+                                                      ],
+                                                      "checkedCalleeType": {
+                                                        "kind": "function",
+                                                        "parameter": {
+                                                          "kind": "array",
+                                                          "element": {
+                                                            "kind": "reference",
+                                                            "name": "Sum",
+                                                            "arguments": [
+                                                              {
+                                                                "kind": "number"
+                                                              }
+                                                            ]
+                                                          }
+                                                        },
+                                                        "result": {
+                                                          "kind": "function",
+                                                          "parameter": {
+                                                            "kind": "unknown"
+                                                          },
+                                                          "result": {
+                                                            "kind": "function",
+                                                            "parameter": {
+                                                              "kind": "unknown"
+                                                            },
+                                                            "result": {
+                                                              "kind": "reference",
+                                                              "name": "Sum",
+                                                              "arguments": [
+                                                                {
+                                                                  "kind": "number"
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        }
+                                                      }
                                                     },
                                                     "type": {
                                                       "kind": "reference",
@@ -1417,7 +1457,43 @@
                                                             }
                                                           ]
                                                         }
-                                                      ]
+                                                      ],
+                                                      "checkedCalleeType": {
+                                                        "kind": "function",
+                                                        "parameter": {
+                                                          "kind": "list",
+                                                          "element": {
+                                                            "kind": "reference",
+                                                            "name": "Product",
+                                                            "arguments": [
+                                                              {
+                                                                "kind": "number"
+                                                              }
+                                                            ]
+                                                          }
+                                                        },
+                                                        "result": {
+                                                          "kind": "function",
+                                                          "parameter": {
+                                                            "kind": "unknown"
+                                                          },
+                                                          "result": {
+                                                            "kind": "function",
+                                                            "parameter": {
+                                                              "kind": "unknown"
+                                                            },
+                                                            "result": {
+                                                              "kind": "reference",
+                                                              "name": "Product",
+                                                              "arguments": [
+                                                                {
+                                                                  "kind": "number"
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        }
+                                                      }
                                                     },
                                                     "type": {
                                                       "kind": "reference",
@@ -1638,7 +1714,43 @@
                                                             }
                                                           ]
                                                         }
-                                                      ]
+                                                      ],
+                                                      "checkedCalleeType": {
+                                                        "kind": "function",
+                                                        "parameter": {
+                                                          "kind": "array",
+                                                          "element": {
+                                                            "kind": "reference",
+                                                            "name": "Sum",
+                                                            "arguments": [
+                                                              {
+                                                                "kind": "number"
+                                                              }
+                                                            ]
+                                                          }
+                                                        },
+                                                        "result": {
+                                                          "kind": "function",
+                                                          "parameter": {
+                                                            "kind": "unknown"
+                                                          },
+                                                          "result": {
+                                                            "kind": "function",
+                                                            "parameter": {
+                                                              "kind": "unknown"
+                                                            },
+                                                            "result": {
+                                                              "kind": "reference",
+                                                              "name": "Sum",
+                                                              "arguments": [
+                                                                {
+                                                                  "kind": "number"
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        }
+                                                      }
                                                     },
                                                     "type": {
                                                       "kind": "reference",
@@ -1791,7 +1903,43 @@
                                                             }
                                                           ]
                                                         }
-                                                      ]
+                                                      ],
+                                                      "checkedCalleeType": {
+                                                        "kind": "function",
+                                                        "parameter": {
+                                                          "kind": "array",
+                                                          "element": {
+                                                            "kind": "reference",
+                                                            "name": "Product",
+                                                            "arguments": [
+                                                              {
+                                                                "kind": "number"
+                                                              }
+                                                            ]
+                                                          }
+                                                        },
+                                                        "result": {
+                                                          "kind": "function",
+                                                          "parameter": {
+                                                            "kind": "unknown"
+                                                          },
+                                                          "result": {
+                                                            "kind": "function",
+                                                            "parameter": {
+                                                              "kind": "unknown"
+                                                            },
+                                                            "result": {
+                                                              "kind": "reference",
+                                                              "name": "Product",
+                                                              "arguments": [
+                                                                {
+                                                                  "kind": "number"
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        }
+                                                      }
                                                     },
                                                     "type": {
                                                       "kind": "reference",
@@ -2012,7 +2160,47 @@
                                       }
                                     ]
                                   }
-                                ]
+                                ],
+                                "checkedCalleeType": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "array",
+                                    "element": {
+                                      "kind": "reference",
+                                      "name": "Sum",
+                                      "arguments": [
+                                        {
+                                          "kind": "reference",
+                                          "name": "Tally",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "result": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "unknown"
+                                    },
+                                    "result": {
+                                      "kind": "function",
+                                      "parameter": {
+                                        "kind": "unknown"
+                                      },
+                                      "result": {
+                                        "kind": "reference",
+                                        "name": "Sum",
+                                        "arguments": [
+                                          {
+                                            "kind": "reference",
+                                            "name": "Tally",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
                               },
                               "type": {
                                 "kind": "reference",
@@ -2289,7 +2477,47 @@
                                       }
                                     ]
                                   }
-                                ]
+                                ],
+                                "checkedCalleeType": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "array",
+                                    "element": {
+                                      "kind": "reference",
+                                      "name": "Product",
+                                      "arguments": [
+                                        {
+                                          "kind": "reference",
+                                          "name": "Ordered",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "result": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "unknown"
+                                    },
+                                    "result": {
+                                      "kind": "function",
+                                      "parameter": {
+                                        "kind": "unknown"
+                                      },
+                                      "result": {
+                                        "kind": "reference",
+                                        "name": "Product",
+                                        "arguments": [
+                                          {
+                                            "kind": "reference",
+                                            "name": "Ordered",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
                               },
                               "type": {
                                 "kind": "reference",
