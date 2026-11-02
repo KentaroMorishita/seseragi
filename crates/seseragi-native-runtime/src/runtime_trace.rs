@@ -99,6 +99,7 @@ impl V {
             Self::DecimalContext(v) => v.id(),
             Self::Bytes(v) => v.id(),
             Self::File(v) => v.id(),
+            Self::PathResource(v) => v.id(),
             Self::Tuple(v) | Self::Array(v) => v.id(),
             Self::Map(v) | Self::Set(v) => v.id(),
             Self::MapIndex(v) => v.id(),

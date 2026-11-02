@@ -74,6 +74,31 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
             vec![ty("std/fs::WriteMode"), string(), path()],
             effect(ty("std/fs::FileSystemError"), unit()),
         ),
+        "std/fs::writeAtomic" => (
+            vec![ty("std/bytes::Bytes"), path()],
+            effect(ty("std/fs::FileSystemError"), unit()),
+        ),
+        "std/fs::createDirectory"
+        | "std/fs::createDirectories"
+        | "std/fs::removeFile"
+        | "std/fs::removeDirectory" => {
+            (vec![path()], effect(ty("std/fs::FileSystemError"), unit()))
+        }
+        "std/fs::move" => (
+            vec![path(), path()],
+            effect(ty("std/fs::FileSystemError"), unit()),
+        ),
+        "std/fs::list" => (
+            vec![path()],
+            applied(
+                "std/stream::Stream",
+                vec![
+                    filesystem_environment(),
+                    ty("std/fs::FileSystemError"),
+                    ty("std/fs::DirectoryEntry"),
+                ],
+            ),
+        ),
         _ => return None,
     })
 }
@@ -151,6 +176,7 @@ pub(super) fn display_contract(identity: &str) -> Option<(&'static str, &'static
             "std/fs::FileSystemError",
             "std/fs::FileType",
             "std/fs::FileMetadata",
+            "std/fs::DirectoryEntry",
             "std/fs::WriteMode",
             "std/fs::FileTextError",
             "std/text::Utf8DecodeError",
@@ -162,12 +188,110 @@ pub(super) fn display_contract(identity: &str) -> Option<(&'static str, &'static
 }
 
 impl Backend<'_> {
+    fn filesystem_canonical_type(
+        &self,
+        name: &str,
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<CoreType> {
+        fn normalize(type_ref: &mut CoreType) -> Result<()> {
+            match type_ref {
+                CoreType::Function { parameter, result } => {
+                    normalize(parameter)?;
+                    normalize(result)?;
+                }
+                CoreType::Named { name, arguments } => {
+                    for argument in arguments.iter_mut() {
+                        normalize(argument)?;
+                    }
+                    if name == "std/prelude::Effect" && arguments.len() == 3 {
+                        if let CoreType::Record {
+                            closed: true,
+                            fields,
+                        } = &mut arguments[0]
+                        {
+                            let mut unique = BTreeMap::new();
+                            for field in fields.iter() {
+                                if let Some(previous) =
+                                    unique.insert(field.name.clone(), field.clone())
+                                {
+                                    if previous != *field {
+                                        return Err("Rust backend: conflicting temporary filesystem requirement".into());
+                                    }
+                                }
+                            }
+                            *fields = unique.into_values().collect();
+                        }
+                    }
+                }
+                _ => (),
+            }
+            Ok(())
+        }
+        let mut canonical = self.local_canonical_type(type_ref, scope)?;
+        if matches!(
+            name,
+            "std/fs::withTemporaryDirectory" | "std/fs::withTemporaryFile"
+        ) {
+            normalize(&mut canonical)?;
+        }
+        Ok(canonical)
+    }
+
     fn filesystem_signature(
         &self,
         name: &str,
         full: &CoreType,
         scope: &Scope,
     ) -> Result<Option<(Vec<CoreType>, CoreType)>> {
+        if matches!(
+            name,
+            "std/fs::withTemporaryDirectory" | "std/fs::withTemporaryFile"
+        ) {
+            if scope.has_unproven_type_scope() {
+                return Err("Rust backend: unproven temporary filesystem kinds".into());
+            }
+            let full = self.filesystem_canonical_type(name, full, scope)?;
+            let CoreType::Function { result, .. } = &full else {
+                return Err("Rust backend: missing temporary prefix stage".into());
+            };
+            let CoreType::Function {
+                parameter: callback,
+                ..
+            } = result.as_ref()
+            else {
+                return Err("Rust backend: missing temporary callback stage".into());
+            };
+            if self.declared_method_type_kind(callback, scope) != Some(0) {
+                return Err("Rust backend: unproven temporary callback kinds".into());
+            }
+            let CoreType::Function { result, .. } = callback.as_ref() else {
+                return Err("Rust backend: temporary callback must return Effect".into());
+            };
+            let CoreType::Named { name, arguments } = result.as_ref() else {
+                return Err("Rust backend: temporary callback must return canonical Effect".into());
+            };
+            if name != "std/prelude::Effect" || arguments.len() != 3 {
+                return Err("Rust backend: unproven temporary callback Effect".into());
+            }
+            return Ok(Some((
+                vec![
+                    ty("std/prelude::String"),
+                    arrow(&[ty("std/path::Path")], result.as_ref().clone()),
+                ],
+                applied(
+                    "std/prelude::Effect",
+                    vec![
+                        merge_requirements(arguments[0].clone())?,
+                        applied(
+                            "std/prelude::Either",
+                            vec![ty("std/fs::FileSystemError"), arguments[1].clone()],
+                        ),
+                        arguments[2].clone(),
+                    ],
+                ),
+            )));
+        }
         if name != "std/fs::writeChunks" {
             return Ok(signature(name));
         }
@@ -269,7 +393,7 @@ impl Backend<'_> {
             return Ok(None);
         }
         if !evidence.is_empty()
-            || self.local_canonical_type(type_ref, scope)? != arrow(&parameters, result)
+            || self.filesystem_canonical_type(name, type_ref, scope)? != arrow(&parameters, result)
         {
             return Err("Rust backend: unproven native filesystem reference contract".into());
         }
@@ -344,7 +468,14 @@ impl Backend<'_> {
             ),
             _ => return Ok(None),
         };
-        if scope.contains(name) || (name != "std/fs::writeChunks" && signature(name).is_none()) {
+        if scope.contains(name)
+            || (!matches!(
+                name.as_str(),
+                "std/fs::writeChunks"
+                    | "std/fs::withTemporaryDirectory"
+                    | "std/fs::withTemporaryFile"
+            ) && signature(name).is_none())
+        {
             return Ok(None);
         }
         if !valid {
@@ -366,11 +497,11 @@ impl Backend<'_> {
         for (argument, expected) in arguments.iter().zip(&parameters) {
             let actual = local::method_argument_type(argument)
                 .ok_or("Rust backend: missing filesystem argument type")?;
-            if self.local_canonical_type(&actual, scope)? != *expected {
+            if self.filesystem_canonical_type(name, &actual, scope)? != *expected {
                 return Err("Rust backend: native filesystem canonical argument mismatch".into());
             }
         }
-        if self.local_canonical_type(&result, scope)?
+        if self.filesystem_canonical_type(name, &result, scope)?
             != arrow(&parameters[arguments.len()..], expected.clone())
         {
             return Err("Rust backend: native filesystem canonical result mismatch".into());

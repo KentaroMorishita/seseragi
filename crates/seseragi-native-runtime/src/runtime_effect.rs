@@ -97,6 +97,7 @@ pub struct NativeContext {
     reclaimed: usize,
     pub peak_frames: usize,
     stdin_offset: Rc<Cell<u64>>,
+    temporaries: Rc<RefCell<Vec<NativeTemporaryHandle>>>,
 }
 impl Default for NativeContext {
     fn default() -> Self {
@@ -109,6 +110,7 @@ impl Default for NativeContext {
             reclaimed: 0,
             peak_frames: 0,
             stdin_offset: Rc::new(Cell::new(0)),
+            temporaries: Rc::default(),
         }
     }
 }
@@ -548,6 +550,16 @@ fn run_native_program_with_show(
             Ok(V::Unit)
         }
     });
+    let result = match catch_native(|| native_temporary_shutdown(&context)) {
+        Ok(_) => result,
+        Err(NativeExit::Defect(mut cleanup)) => {
+            if let Err(NativeExit::Defect(original)) = result {
+                cleanup.extend(original);
+            }
+            Err(NativeExit::Defect(cleanup))
+        }
+        Err(exit) => Err(exit),
+    };
     let result = match result {
         Err(NativeExit::Failure(error)) => match catch_native(|| {
             let rendered = show(error.value);

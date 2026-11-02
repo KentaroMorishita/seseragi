@@ -11,6 +11,7 @@ enum NativeFileOperation {
     Metadata,
     SymlinkMetadata,
     Canonicalize,
+    Path(NativePathOperation),
 }
 enum NativeFileRequest {
     Read {
@@ -33,6 +34,13 @@ enum NativeFileRequest {
         bytes: Vec<u8>,
         limit: usize,
     },
+    Path {
+        operation: NativePathOperation,
+        resource: Option<NativePathHandle>,
+        path: String,
+        other_path: String,
+        bytes: Vec<u8>,
+    },
 }
 enum NativeFilePayload {
     Bytes(Vec<u8>),
@@ -40,6 +48,8 @@ enum NativeFilePayload {
     Exists(bool),
     Metadata(std::fs::Metadata),
     CanonicalPath(String),
+    DirectoryEntry(Option<NativeDirectoryEntry>),
+    TemporaryPath(String),
 }
 enum NativeFileFault {
     Io(std::io::Error),
@@ -72,6 +82,7 @@ impl Drop for NativeFileCompletion {
 impl NativeFileOperation {
     fn request(self, captures: &[V]) -> NativeFileRequest {
         match self {
+            Self::Path(operation) => return operation.request(captures),
             Self::ReadText | Self::ReadBytes => NativeFileRequest::Read {
                 path: native_path_text(&captures[0]).into(),
             },
@@ -133,6 +144,7 @@ impl NativeFileOperation {
     }
     fn failure(self, captures: &[V], error: std::io::Error) -> NativeExit {
         NativeExit::failure(match self {
+            Self::Path(operation) => operation.failure(captures, error),
             Self::ReadText => V::adt(
                 "std/fs::FileAccessFailure",
                 native_file_error("std/fs::ReadFile", captures[0].clone(), error),
@@ -241,6 +253,17 @@ impl NativeFileOperation {
             Ok(NativeFilePayload::Unit) if matches!(self, Self::WriteBytes | Self::Session(_)) => {
                 Ok(V::Unit)
             }
+            Ok(payload) if matches!(self, Self::Path(_)) => match payload {
+                NativeFilePayload::Unit => Ok(V::Unit),
+                NativeFilePayload::DirectoryEntry(entry) => Ok(entry
+                    .map_or_else(stream_done, |entry| {
+                        stream_item(native_directory_entry(entry))
+                    })),
+                NativeFilePayload::TemporaryPath(path) => Ok(native_path(&path)),
+                _ => Err(NativeExit::defects(vec![
+                    "invalid filesystem path result".into()
+                ])),
+            },
             Ok(NativeFilePayload::Exists(found)) if matches!(self, Self::Exists) => {
                 Ok(V::Bool(found))
             }

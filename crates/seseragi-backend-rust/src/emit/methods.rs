@@ -443,6 +443,7 @@ impl Backend<'_> {
             match name.as_str() {
                 "std/fs::FileType"
                 | "std/fs::FileMetadata"
+                | "std/fs::DirectoryEntry"
                 | "std/time::Instant"
                 | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"

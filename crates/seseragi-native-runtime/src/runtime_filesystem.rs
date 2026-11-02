@@ -230,6 +230,9 @@ fn native_run_file_request(
     request: NativeFileRequest,
     cancelled: &std::sync::atomic::AtomicBool,
 ) -> NativeFileReply {
+    if matches!(request, NativeFileRequest::Path { .. }) {
+        return native_run_path_request(request, cancelled);
+    }
     let mut guard = NativeFileGuard { host, handle: None };
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         native_file_checkpoint(cancelled)?;
@@ -239,7 +242,9 @@ fn native_run_file_request(
         let (path, mode) = match &request {
             NativeFileRequest::Read { path } => (path, None),
             NativeFileRequest::Write { path, mode, .. } => (path, Some(*mode)),
-            NativeFileRequest::Inspect { .. } | NativeFileRequest::Session { .. } => unreachable!(),
+            NativeFileRequest::Inspect { .. }
+            | NativeFileRequest::Session { .. }
+            | NativeFileRequest::Path { .. } => unreachable!(),
         };
         guard.handle = Some(guard.host.open(path, mode).map_err(NativeFileFault::Io)?);
         native_file_checkpoint(cancelled)?;
@@ -297,7 +302,9 @@ fn native_run_file_request(
                     .map_err(NativeFileFault::Io)?;
                 Ok(NativeFilePayload::Unit)
             }
-            NativeFileRequest::Inspect { .. } | NativeFileRequest::Session { .. } => unreachable!(),
+            NativeFileRequest::Inspect { .. }
+            | NativeFileRequest::Session { .. }
+            | NativeFileRequest::Path { .. } => unreachable!(),
         }
     }))
     .unwrap_or_else(|error| Err(NativeFileFault::Defect(native_panic_message(error))));
@@ -364,6 +371,12 @@ fn native_file_error_code(error: &std::io::Error) -> &'static str {
     {
         return "FILESYSTEM_ERROR";
     }
+    #[cfg(windows)]
+    match error.raw_os_error() {
+        Some(206) => return "ENAMETOOLONG",
+        Some(1921) => return "ELOOP",
+        _ => (),
+    }
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     if let Some(code) = error.raw_os_error() {
         let common = match code {
@@ -427,6 +440,14 @@ fn native_file_error_code(error: &std::io::Error) -> &'static str {
     }
 }
 fn native_file_error(operation: &'static str, path: V, error: std::io::Error) -> V {
+    native_file_error_with_other(operation, path, None, error)
+}
+fn native_file_error_with_other(
+    operation: &'static str,
+    path: V,
+    other: Option<V>,
+    error: std::io::Error,
+) -> V {
     let code = native_file_error_code(&error);
     let kind = match code {
         "ENOENT" => "std/fs::FileNotFound",
@@ -452,7 +473,7 @@ fn native_file_error(operation: &'static str, path: V, error: std::io::Error) ->
     V::Record(Shared::new(BTreeMap::from([
         ("operation".into(), V::adt(operation, V::Unit)),
         ("path".into(), path),
-        ("otherPath".into(), native_maybe(None)),
+        ("otherPath".into(), native_maybe(other)),
         ("kind".into(), kind),
     ])))
 }
@@ -486,7 +507,16 @@ pub fn native_filesystem_operation(name: &'static str, arguments: Vec<V>) -> V {
     if name.starts_with("std/path::") {
         return native_path_operation(name, &arguments);
     }
+    if let Some(operation) = NativePathOperation::named(name) {
+        return native_path_effect(operation, arguments);
+    }
     match name {
+        "std/fs::list" => native_directory_list(arguments[0].clone()),
+        "std/fs::withTemporaryDirectory" | "std/fs::withTemporaryFile" => native_with_temporary(
+            arguments[0].clone(),
+            arguments[1].clone(),
+            name == "std/fs::withTemporaryFile",
+        ),
         "std/fs::Replace"
         | "std/fs::CreateNew"
         | "std/fs::Append"
@@ -620,6 +650,22 @@ fn native_filesystem_display(name: &str, value: &V) -> String {
             native_standard_tag(&value.field("modified"), "std/prelude::"),
             native_standard_tag(&value.field("created"), "std/prelude::")
         ),
+        "std/fs::DirectoryEntry" => {
+            let file_type = value.field("fileType");
+            let file_type = if file_type.tagged("std/prelude::Nothing") {
+                "Nothing".into()
+            } else {
+                format!(
+                    "Just {}",
+                    native_filesystem_display("std/fs::FileType", &file_type.payload())
+                )
+            };
+            format!(
+                "DirectoryEntry {{ name: {}, path: {}, fileType: {file_type} }}",
+                native_json_string(native_text(&value.field("name"))),
+                native_json_string(native_path_text(&value.field("path"))),
+            )
+        }
         "std/text::Utf8DecodeError" => {
             assert!(value.tagged("std/text::InvalidUtf8"));
             format!(

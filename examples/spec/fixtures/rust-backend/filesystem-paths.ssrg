@@ -1,0 +1,180 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+import * as bytes from "std/bytes"
+import * as streams from "std/stream"
+import * as arrays from "std/array"
+import * as deferred from "std/deferred"
+
+fn keep<A> value: A -> A = value
+
+effect fn line -> String with Stdin fails String = do {
+  input <- readLine () |> effects.mapError show
+  match input {
+    Just value -> effects.succeed value
+    Nothing -> effects.fail "missing input"
+  }
+}
+
+effect fn report<E> error: E -> String with FileSystem where Show<E> =
+  effects.succeed ("Left " + show error)
+
+effect fn result<E,A> action: Effect<{fileSystem:fs.FileSystem},E,A> -> String with FileSystem where Show<E>, Show<A> = {
+  let success: Effect<{fileSystem:fs.FileSystem},E,String> = do {
+    value <- action
+    effects.succeed ("Right " + show value)
+  }
+  effects.recover report success
+}
+
+
+effect fn storedDirectory prefix: String -> use: (paths.Path -> Effect<{fileSystem:fs.FileSystem},String,String>) -> String with FileSystem fails Either<fs.FileSystemError,String> = fs.withTemporaryDirectory prefix use
+effect fn storedFile prefix: String -> use: (paths.Path -> Effect<{fileSystem:fs.FileSystem},String,String>) -> String with FileSystem fails Either<fs.FileSystemError,String> = fs.withTemporaryFile prefix use
+effect fn storedAtomic content: bytes.Bytes -> path: paths.Path -> Unit with FileSystem fails fs.FileSystemError = fs.writeAtomic content path
+effect fn storedMove destination: paths.Path -> source: paths.Path -> Unit with FileSystem fails fs.FileSystemError = fs.move destination source
+effect fn storedCreate path: paths.Path -> Unit with FileSystem fails fs.FileSystemError = fs.createDirectory path
+effect fn storedCreates path: paths.Path -> Unit with FileSystem fails fs.FileSystemError = fs.createDirectories path
+effect fn storedRemove path: paths.Path -> Unit with FileSystem fails fs.FileSystemError = fs.removeFile path
+effect fn storedRemoveDirectory path: paths.Path -> Unit with FileSystem fails fs.FileSystemError = fs.removeDirectory path
+fn storedList path: paths.Path -> streams.Stream<{fileSystem:fs.FileSystem},fs.FileSystemError,fs.DirectoryEntry> = fs.list path
+
+effect fn record path: paths.Path -> Unit with FileSystem fails String = do {
+  output <- paths.parse "observed" |> effects.fromEither |> effects.mapError show
+  fs.writeTextUtf8 fs.Replace (paths.render path) output |> effects.mapError show
+}
+
+effect fn useDirectory mode: String -> path: paths.Path -> String with FileSystem fails String = do {
+  record path
+  child <- paths.child "nested" path |> effects.fromEither |> effects.mapError show
+  fs.createDirectory child |> effects.mapError show
+  match mode {
+    "fail" -> effects.fail "callback failed"
+    "defect" -> effects.die "callback defect"
+    "remove" -> do {
+      fs.removeDirectory child |> effects.mapError show
+      fs.removeDirectory path |> effects.mapError show
+      effects.succeed "used"
+    }
+    "move-source" -> do {
+      target <- paths.parse "moved" |> effects.fromEither |> effects.mapError show
+      fs.move target path |> effects.mapError show
+      effects.succeed "unexpected move"
+    }
+    "move-destination" -> do {
+      fs.move path child |> effects.mapError show
+      effects.succeed "unexpected move"
+    }
+    _ -> effects.succeed "used"
+  }
+}
+
+effect fn useFile mode: String -> path: paths.Path -> String with FileSystem fails String = do {
+  record path
+  empty <- fs.readBytes path |> effects.mapError show
+  fs.writeTextUtf8 fs.Replace "temporary 😀" path |> effects.mapError show
+  content <- fs.readTextUtf8 path |> effects.mapError show
+  match mode {
+    "fail" -> effects.fail "callback failed"
+    "defect" -> effects.die "callback defect"
+    "remove" -> do {
+      fs.removeFile path |> effects.mapError show
+      effects.succeed content
+    }
+    "replace" -> do {
+      fs.writeAtomic empty path |> effects.mapError show
+      effects.succeed content
+    }
+    "move-source" -> do {
+      target <- paths.parse "moved" |> effects.fromEither |> effects.mapError show
+      fs.move target path |> effects.mapError show
+      effects.succeed "unexpected move"
+    }
+    "move-destination" -> do {
+      source <- paths.parse "file" |> effects.fromEither |> effects.mapError show
+      fs.move path source |> effects.mapError show
+      effects.succeed "unexpected move"
+    }
+    _ -> effects.succeed (show (bytes.toInts empty) + ":" + content)
+  }
+}
+
+effect fn suspended ready: deferred.Deferred<Never,Unit> -> wait: deferred.Deferred<String,String> -> path: paths.Path -> String with FileSystem fails String = do {
+  record path
+  deferred.succeed () ready
+  deferred.await wait
+}
+
+effect fn cancel file: Bool -> prefix: String -> Unit with FileSystem, Console fails String = do {
+  ready <- deferred.make<Never,Unit> ()
+  wait <- deferred.make<String,String> ()
+  let use = suspended ready wait
+  let action = if file then storedFile prefix use else storedDirectory prefix use
+  worker <- effects.fork action
+  deferred.await ready
+  effects.interrupt worker
+  exit <- effects.await worker
+  match exit {
+    effects.FiberCancelled -> println "cancelled" |> effects.mapError show
+    _ -> effects.fail "unexpected temporary exit"
+  }
+}
+
+effect fn listing count: Int -> path: paths.Path -> Unit with FileSystem, Console fails String = do {
+  let saved = keep storedList
+  let action = saved path |> streams.take count |> streams.map (\entry: fs.DirectoryEntry -> show entry + " | " + debug entry) |> streams.runCollect |> map arrays.sort
+  first <- result action
+  second <- result action
+  println first |> effects.mapError show
+  println second |> effects.mapError show
+}
+
+pub effect fn main -> Unit with FileSystem, Stdin, Console fails String = do {
+  command <- line ()
+  text <- line ()
+  other <- line ()
+  match command {
+    "temporary-directory" -> do {
+      let saved: String -> (paths.Path -> Effect<{fileSystem:fs.FileSystem},String,String>) -> Effect<{fileSystem:fs.FileSystem},Either<fs.FileSystemError,String>,String> = keep storedDirectory
+      let action = saved text (useDirectory other)
+      outcome <- result action
+      println outcome |> effects.mapError show
+    }
+    "temporary-file" -> do {
+      let saved: (paths.Path -> Effect<{fileSystem:fs.FileSystem},String,String>) -> Effect<{fileSystem:fs.FileSystem},Either<fs.FileSystemError,String>,String> = storedFile text
+      outcome <- result (saved (useFile other))
+      println outcome |> effects.mapError show
+    }
+    "cancel-directory" -> cancel False text
+    "cancel-file" -> cancel True text
+    _ -> do {
+      path <- paths.parse text |> effects.fromEither |> effects.mapError show
+      match command {
+        "list" -> listing 1000000 path
+        "list-one" -> listing 1 path
+        "list-zero" -> listing 0 path
+        "list-negative" -> listing (-1) path
+        _ -> do {
+          content <- bytes.fromInts (if other == "empty" then [] else [0,128,255,13,10,1]) |> effects.fromEither |> effects.mapError show
+          destination <- paths.parse (if other == "" then "." else other) |> effects.fromEither |> effects.mapError show
+          let atomic = storedAtomic content
+          let move = storedMove destination
+          let mkdir = keep storedCreate
+          let mkdirs = keep storedCreates
+          let unlink = keep storedRemove
+          let rmdir = keep storedRemoveDirectory
+          let action = match command {
+            "createDirectory" -> mkdir path
+            "createDirectories" -> mkdirs path
+            "removeFile" -> unlink path
+            "removeDirectory" -> rmdir path
+            "move" -> move path
+            "atomic" -> atomic path
+            _ -> effects.die "unknown command"
+          }
+          outcome <- result action
+          println outcome |> effects.mapError show
+        }
+      }
+    }
+  }
+}
