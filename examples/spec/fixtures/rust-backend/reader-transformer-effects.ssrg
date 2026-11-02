@@ -1,0 +1,62 @@
+import * as rt from "std/transformer/reader"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+alias Work<A> = rt.ReaderT<Int,Effect<{},String>,A>
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+effect fn mark counter:refs.Ref<Int> -> value:Int -> Int fails String = do {
+  refs.update (\n:Int -> n + 1) counter
+  effects.succeed value
+}
+effect fn failValue -> Int fails String = effects.fail "typed"
+effect fn pass value:Int -> Int fails String = effects.succeed value
+fn callback counter:refs.Ref<Int> -> (Int -> Work<Int>) = \n:Int -> rt.lift (mark counter (n + 1))
+fn divide n:Int -> Work<Int> = rt.asks (\_:Int -> n / 0)
+effect fn failBody -> Unit fails String = do {
+  let failure:Work<Int> = rt.lift (failValue ())
+  let work:Work<Int> = failure >>= divide
+  rt.run 42 work
+  effects.succeed ()
+}
+pub effect fn main = do {
+  released <- refs.make 0
+  counter <- refs.make 0
+  saved <- refs.make (callback counter)
+  operation <- refs.get saved
+  let environment:Work<Int> = rt.ask ()
+  let projection:Work<Int> = rt.asks (\n:Int -> n * 2)
+  let initial:Work<Int> = environment >>= operation
+  let cold:Work<Int> = rt.local (\n:Int -> n + 10) initial
+  let created = rt.run 2 cold
+  before <- refs.get counter
+  say ("created: " + show before)
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> do {
+      refs.update (\n:Int -> n + 1) released
+      say "released"
+    })
+    first <- created
+    say (show first)
+    second <- created
+    say (show second)
+    third <- rt.run 5 cold
+    say (show third)
+    original <- rt.run 2 environment
+    say (show original)
+    projected <- rt.run 3 projection
+    say (show projected)
+    let constant:Work<Int> = rt.lift (mark counter 9)
+    let localized:Work<Int> = rt.local (\n:Int -> n + 100) constant
+    lifted <- rt.run 0 localized
+    say (show lifted)
+    let functions:Work<Int -> Int> = pure (\n:Int -> n + 1)
+    applied <- rt.run 4 (functions <*> environment)
+    say (show applied)
+    count <- refs.get counter
+    say ("calls: " + show count)
+    failBody ()
+  }) |> effects.recover (\error:String -> say ("recovered: " + error))
+  count <- refs.get released
+  say ("released: " + show count)
+}
