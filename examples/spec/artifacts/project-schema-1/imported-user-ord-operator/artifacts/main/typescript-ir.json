@@ -649,6 +649,13 @@
                                 }
                               ]
                             }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Score",
+                              "arguments": []
+                            }
                           ]
                         },
                         "type": {
@@ -679,6 +686,13 @@
                                   "name": "__ssrg$instance$Eq$0"
                                 }
                               ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Score",
+                              "arguments": []
                             }
                           ]
                         },

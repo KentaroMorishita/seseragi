@@ -539,6 +539,11 @@
                           "kind": "runtime-reference",
                           "name": "_ssrg_string_semigroup"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "string"
+                        }
                       ]
                     },
                     "type": {

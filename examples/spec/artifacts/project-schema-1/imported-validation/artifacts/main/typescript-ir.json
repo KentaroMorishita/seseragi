@@ -661,6 +661,16 @@
                         "kind": "runtime-reference",
                         "name": "_ssrg_show_intShow"
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "number"
+                      }
                     ]
                   },
                   "type": {
@@ -693,6 +703,16 @@
                       {
                         "kind": "runtime-reference",
                         "name": "_ssrg_debug_intDebug"
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "number"
                       }
                     ]
                   },
@@ -730,6 +750,16 @@
                   {
                     "kind": "runtime-reference",
                     "name": "_ssrg_int_eq_dictionary"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "number"
                   }
                 ]
               },

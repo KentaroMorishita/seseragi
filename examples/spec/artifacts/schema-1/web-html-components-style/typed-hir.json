@@ -499,6 +499,138 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "R"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "R",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "Style",
+            "canonical": "std/web/html::Style",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "backgroundColor",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "borderRadius",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "boxShadow",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "padding",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "variables",
+                  "type": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "cardShadow",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "backgroundColor",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "borderRadius",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "boxShadow",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "padding",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "variables",
+                  "type": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "cardShadow",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -776,6 +908,72 @@
                                     }
                                   }
                                 ],
+                                "calleeSignature": {
+                                  "typeParameters": [
+                                    "R"
+                                  ],
+                                  "parameters": [
+                                    {
+                                      "kind": "named",
+                                      "name": "R",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "Style",
+                                    "canonical": "std/web/html::Style",
+                                    "arguments": []
+                                  },
+                                  "argumentTypes": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "color",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "marginTop",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "instantiatedTypeArguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "color",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "marginTop",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
                                 "evidence": [
                                   {
                                     "constraint": {
@@ -879,6 +1077,611 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "Action",
+                          "C"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "elementRef",
+                                "optional": true,
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "ElementRef",
+                                  "canonical": "std/web/html::ElementRef",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "id",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "class",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "title",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "hidden",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "key",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "optional": true,
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "attributes",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Array",
+                                  "arguments": [
+                                    {
+                                      "kind": "external-named",
+                                      "name": "Attribute",
+                                      "canonical": "std/web/html::Attribute",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "role",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "tabIndex",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "lang",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "dir",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "draggable",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "contentEditable",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "inert",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaLabel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaBusy",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaExpanded",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaHidden",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaSelected",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "preventClickDefault",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "stopClickPropagation",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onFocus",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onBlur",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onKeyDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "KeyboardEvent",
+                                    "canonical": "std/web/html::KeyboardEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onKeyUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "KeyboardEvent",
+                                    "canonical": "std/web/html::KeyboardEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onMouseDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onMouseUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerMove",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerCancel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onWheel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "WheelEvent",
+                                    "canonical": "std/web/html::WheelEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onDoubleClick",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onContextMenu",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onScroll",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "ScrollEvent",
+                                    "canonical": "std/web/html::ScrollEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "C",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "external-named",
+                          "name": "html.Html",
+                          "canonical": "std/web/html::Html",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Action",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "evidence": [
                         {
                           "constraint": {
@@ -1008,6 +1811,72 @@
                                     }
                                   }
                                 ],
+                                "calleeSignature": {
+                                  "typeParameters": [
+                                    "R"
+                                  ],
+                                  "parameters": [
+                                    {
+                                      "kind": "named",
+                                      "name": "R",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "Style",
+                                    "canonical": "std/web/html::Style",
+                                    "arguments": []
+                                  },
+                                  "argumentTypes": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "color",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "marginBottom",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "instantiatedTypeArguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "color",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "marginBottom",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
                                 "evidence": [
                                   {
                                     "constraint": {
@@ -1111,6 +1980,611 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "Action",
+                          "C"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "elementRef",
+                                "optional": true,
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "ElementRef",
+                                  "canonical": "std/web/html::ElementRef",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "id",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "class",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "title",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "hidden",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "key",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "optional": true,
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "attributes",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Array",
+                                  "arguments": [
+                                    {
+                                      "kind": "external-named",
+                                      "name": "Attribute",
+                                      "canonical": "std/web/html::Attribute",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "role",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "tabIndex",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "lang",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "dir",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "draggable",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "contentEditable",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "inert",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaLabel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaBusy",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaExpanded",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaHidden",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaSelected",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "preventClickDefault",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "stopClickPropagation",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onFocus",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onBlur",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onKeyDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "KeyboardEvent",
+                                    "canonical": "std/web/html::KeyboardEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onKeyUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "KeyboardEvent",
+                                    "canonical": "std/web/html::KeyboardEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onMouseDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onMouseUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerMove",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerCancel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onWheel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "WheelEvent",
+                                    "canonical": "std/web/html::WheelEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onDoubleClick",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onContextMenu",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onScroll",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "ScrollEvent",
+                                    "canonical": "std/web/html::ScrollEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "C",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "external-named",
+                          "name": "html.Html",
+                          "canonical": "std/web/html::Html",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Action",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "evidence": [
                         {
                           "constraint": {
@@ -1232,6 +2706,645 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "Action",
+            "C"
+          ],
+          "parameters": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "elementRef",
+                  "optional": true,
+                  "type": {
+                    "kind": "external-named",
+                    "name": "ElementRef",
+                    "canonical": "std/web/html::ElementRef",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "class",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "title",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "hidden",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "key",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "style",
+                  "optional": true,
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "attributes",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Attribute",
+                        "canonical": "std/web/html::Attribute",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "role",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "tabIndex",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "lang",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "dir",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "draggable",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "contentEditable",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "inert",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaLabel",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaBusy",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaExpanded",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaHidden",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaSelected",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onClick",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "preventClickDefault",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "stopClickPropagation",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onFocus",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onBlur",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onKeyDown",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onKeyUp",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onMouseDown",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onMouseUp",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerDown",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerMove",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerUp",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerCancel",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onWheel",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "WheelEvent",
+                      "canonical": "std/web/html::WheelEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onDoubleClick",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onContextMenu",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onScroll",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "ScrollEvent",
+                      "canonical": "std/web/html::ScrollEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "C",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "class",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "style",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1484,6 +3597,618 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "Action",
+                          "C"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "elementRef",
+                                "optional": true,
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "ElementRef",
+                                  "canonical": "std/web/html::ElementRef",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "id",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "class",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "title",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "hidden",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "key",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "optional": true,
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "attributes",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Array",
+                                  "arguments": [
+                                    {
+                                      "kind": "external-named",
+                                      "name": "Attribute",
+                                      "canonical": "std/web/html::Attribute",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "role",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "tabIndex",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "lang",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "dir",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "draggable",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "contentEditable",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "inert",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaLabel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaBusy",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaExpanded",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaHidden",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "ariaSelected",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "preventClickDefault",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "stopClickPropagation",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onFocus",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onBlur",
+                                "optional": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onKeyDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "KeyboardEvent",
+                                    "canonical": "std/web/html::KeyboardEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onKeyUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "KeyboardEvent",
+                                    "canonical": "std/web/html::KeyboardEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onMouseDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onMouseUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerDown",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerMove",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerUp",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onPointerCancel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "PointerEvent",
+                                    "canonical": "std/web/html::PointerEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onWheel",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "WheelEvent",
+                                    "canonical": "std/web/html::WheelEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onDoubleClick",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onContextMenu",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "MouseEvent",
+                                    "canonical": "std/web/html::MouseEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "onScroll",
+                                "optional": true,
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "ScrollEvent",
+                                    "canonical": "std/web/html::ScrollEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "external-named",
+                                    "name": "EventAction",
+                                    "canonical": "std/web/html::EventAction",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Action",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "C",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "external-named",
+                          "name": "html.Html",
+                          "canonical": "std/web/html::Html",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Action",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "class",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "evidence": [
                         {
                           "constraint": {
@@ -1652,6 +4377,644 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "Action",
+            "C"
+          ],
+          "parameters": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "elementRef",
+                  "optional": true,
+                  "type": {
+                    "kind": "external-named",
+                    "name": "ElementRef",
+                    "canonical": "std/web/html::ElementRef",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "class",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "title",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "hidden",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "key",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "style",
+                  "optional": true,
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "attributes",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Attribute",
+                        "canonical": "std/web/html::Attribute",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "role",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "tabIndex",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "lang",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "dir",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "draggable",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "contentEditable",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "inert",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaLabel",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaBusy",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaExpanded",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaHidden",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "ariaSelected",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onClick",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "preventClickDefault",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "stopClickPropagation",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onFocus",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onBlur",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onKeyDown",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onKeyUp",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onMouseDown",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onMouseUp",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerDown",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerMove",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerUp",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerCancel",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onWheel",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "WheelEvent",
+                      "canonical": "std/web/html::WheelEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onDoubleClick",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onContextMenu",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onScroll",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "ScrollEvent",
+                      "canonical": "std/web/html::ScrollEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "C",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "class",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "id",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {

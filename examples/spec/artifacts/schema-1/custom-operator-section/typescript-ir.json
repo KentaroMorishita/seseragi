@@ -266,6 +266,11 @@
                           "kind": "number",
                           "value": "10"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
                       ]
                     },
                     "type": {
@@ -395,6 +400,11 @@
                                   {
                                     "kind": "identifier",
                                     "name": "__ssrg$instance$Difference$0"
+                                  }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
                                   }
                                 ]
                               },

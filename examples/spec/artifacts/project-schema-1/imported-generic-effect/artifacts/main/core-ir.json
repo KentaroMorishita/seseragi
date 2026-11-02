@@ -109,6 +109,64 @@
       "body": {
         "kind": "effect-invoke",
         "callee": "fixture/imported-generic-effect::domain::announce",
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Console",
+                      "canonical": "std/prelude::Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "external-named",
+                "name": "ConsoleError",
+                "canonical": "std/prelude::ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
         "requirements": {
           "kind": "record",
           "closed": true,

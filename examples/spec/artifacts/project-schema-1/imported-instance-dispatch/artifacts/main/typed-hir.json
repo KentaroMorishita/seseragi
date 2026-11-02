@@ -172,6 +172,39 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "T"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "external-named",
+                  "name": "Badge",
+                  "canonical": "fixture/imported-instance-dispatch::domain::Badge",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "external-named",
+                  "name": "Badge",
+                  "canonical": "fixture/imported-instance-dispatch::domain::Badge",
+                  "arguments": []
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {

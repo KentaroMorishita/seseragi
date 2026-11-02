@@ -8,6 +8,7 @@
     "abiMajor": 1,
     "unicodeVersion": "17.0.0",
     "requirements": [
+      "core.list",
       "core.int.zero-dictionary",
       "core.int.add-dictionary",
       "core.collection.sum",
@@ -15,7 +16,6 @@
       "core.unit",
       "core.array.reducible",
       "core.list.reducible",
-      "core.list",
       "core.list.from-array",
       "core.range.reducible",
       "core.range",

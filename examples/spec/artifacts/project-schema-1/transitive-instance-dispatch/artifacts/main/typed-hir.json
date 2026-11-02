@@ -185,6 +185,39 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "T"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "external-named",
+                  "name": "Badge",
+                  "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "external-named",
+                  "name": "Badge",
+                  "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+                  "arguments": []
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {

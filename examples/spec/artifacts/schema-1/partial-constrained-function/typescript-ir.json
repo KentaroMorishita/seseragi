@@ -238,6 +238,13 @@
                               "kind": "identifier",
                               "name": "Active"
                             }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Badge",
+                              "arguments": []
+                            }
                           ]
                         },
                         "type": {

@@ -286,6 +286,13 @@
                     "kind": "identifier",
                     "name": "__ssrg$evidence$0"
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
                 ]
               },
               "type": {
@@ -346,6 +353,11 @@
                         "kind": "runtime-reference",
                         "name": "_ssrg_show_intShow"
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
                     ]
                   },
                   "type": {
@@ -391,6 +403,11 @@
                   {
                     "kind": "runtime-reference",
                     "name": "_ssrg_show_intShow"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "number"
                   }
                 ]
               },
@@ -483,6 +500,13 @@
                     "kind": "identifier",
                     "name": "__ssrg$evidence$0"
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Let426T0",
+                    "arguments": []
+                  }
                 ]
               },
               "type": {
@@ -515,6 +539,11 @@
                         "kind": "runtime-reference",
                         "name": "_ssrg_show_intShow"
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
                     ]
                   },
                   "type": {
@@ -542,6 +571,11 @@
                   {
                     "kind": "runtime-reference",
                     "name": "_ssrg_show_boolShow"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "boolean"
                   }
                 ]
               },

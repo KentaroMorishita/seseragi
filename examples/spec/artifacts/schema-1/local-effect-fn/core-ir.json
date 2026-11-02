@@ -2207,6 +2207,53 @@
                                     }
                                   }
                                 ],
+                                "calleeSignature": {
+                                  "typeParameters": [
+                                    "A"
+                                  ],
+                                  "parameters": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Effect",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "closed": true,
+                                        "fields": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Never",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "String",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "argumentTypes": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "instantiatedTypeArguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
                                 "evidence": [
                                   {
                                     "constraint": {
