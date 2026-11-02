@@ -67,6 +67,7 @@ mod signal;
 mod standard_errors;
 mod standard_instances;
 mod standard_values;
+mod stdin;
 mod stream;
 mod tail;
 mod text;

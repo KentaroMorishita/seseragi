@@ -507,7 +507,9 @@ impl Backend<'_> {
             | "std/prelude::Console"
             | "std/prelude::ConsoleError"
             | "std/prelude::Stdin"
-            | "std/prelude::StdinError" => Some(vec![]),
+            | "std/prelude::StdinError"
+            | "std/stdin::ReadSize"
+            | "std/stdin::LineLimit" => Some(vec![]),
             "std/prelude::Array"
             | "std/prelude::List"
             | "std/prelude::Range"
