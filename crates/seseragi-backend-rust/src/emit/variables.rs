@@ -37,6 +37,9 @@ impl Backend<'_> {
         if let Some(value) = self.filesystem_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.process_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }

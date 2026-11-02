@@ -483,6 +483,7 @@ impl Backend<'_> {
             | "std/time::Duration"
             | "std/time::DurationError"
             | "std/clock::Clock"
+            | "std/process::Process"
             | "std/path::PathError"
             | "std/fs::FileSystem"
             | "std/fs::FileSystemError"

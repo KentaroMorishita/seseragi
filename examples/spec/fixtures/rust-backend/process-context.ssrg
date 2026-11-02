@@ -1,0 +1,46 @@
+import * as effects from "std/effect"
+import * as process from "std/process"
+import * as paths from "std/path"
+
+fn identity<A> value: A -> A = value
+
+effect fn report error: process.ProcessError -> String with process: process.Process =
+  effects.succeed ("error: " + show error)
+
+effect fn environment name: String -> String with process: process.Process =
+  effects.recover report $ do {
+    value <- process.environment name
+    effects.succeed (show value)
+  }
+
+pub effect fn main -> Unit with process: process.Process, Console fails String = do {
+  let savedArguments = identity (\unit: Unit -> process.arguments unit)
+  let savedEnvironment = identity (\name: String -> process.environment name)
+  let savedDirectory = identity (\unit: Unit -> process.currentDirectory unit)
+  let unused = process.environment ""
+  let repeated = savedArguments ()
+  args <- repeated |> effects.mapError show
+  println (show args) |> effects.mapError show
+  again <- repeated |> effects.mapError show
+  println (show again) |> effects.mapError show
+  present <- savedEnvironment "SESERAGI_PROCESS_VALUE" |> effects.mapError show
+  println (show present) |> effects.mapError show
+  empty <- environment "SESERAGI_PROCESS_EMPTY"
+  println empty |> effects.mapError show
+  missing <- environment "SESERAGI_PROCESS_MISSING"
+  println missing |> effects.mapError show
+  invalid <- environment ""
+  println invalid |> effects.mapError show
+  nul <- environment "bad\0name"
+  println nul |> effects.mapError show
+  equals <- environment "a=b"
+  println equals |> effects.mapError show
+  unicode <- environment "SESERAGI_PROCESS_雪🙂"
+  println unicode |> effects.mapError show
+  directory <- savedDirectory () |> effects.mapError show
+  println (paths.render directory) |> effects.mapError show
+  direct <- process.currentDirectory () |> effects.mapError show
+  println (paths.render direct) |> effects.mapError show
+  directArguments <- process.arguments () |> effects.mapError show
+  println (show directArguments) |> effects.mapError show
+}
