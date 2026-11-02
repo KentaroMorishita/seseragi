@@ -124,6 +124,50 @@ fn native_defects_keep_the_innermost_source_position_and_ts_exit_contract() {
 }
 
 #[test]
+fn duration_projection_uses_the_same_int_overflow_defect_on_ts_and_native() {
+    for expression in [
+        "add (time.nanoseconds 1) (time.nanoseconds 9007199254740991)",
+        "add (time.nanoseconds 2) (time.nanoseconds 9007199254740991)",
+        "time.milliseconds 9007199255",
+        "time.seconds 9007200",
+        "time.minutes 150120",
+        "time.hours 2502",
+        "time.seconds 9223372036",
+        "time.milliseconds 9223372036854",
+        "add (time.nanoseconds 854775807) (time.seconds 9223372036)",
+    ] {
+        let source = format!(
+            r#"import * as time from "std/time"
+import * as effects from "std/effect"
+
+fn add right: Either<time.DurationError, time.Duration>
+  -> left: Either<time.DurationError, time.Duration>
+  -> Either<time.DurationError, time.Duration> =
+  match right {{
+    Left error -> Left error
+    Right rightValue -> match left {{
+      Left error -> Left error
+      Right leftValue -> time.addDuration rightValue leftValue
+    }}
+  }}
+
+pub effect fn main -> Unit fails String = do {{
+  value <- effects.fromEither ({expression}) |> effects.mapError show
+  let nanos = time.toNanoseconds value
+  effects.succeed ()
+}}
+"#
+        );
+        compare(
+            &source,
+            "time.toNanoseconds value",
+            "Seseragi Int overflow",
+            true,
+        );
+    }
+}
+
+#[test]
 fn unhandled_native_errors_use_user_and_standard_show_instances() {
     compare("import * as effects from \"std/effect\"\npub effect fn main -> Unit fails String = effects.fail \"first\\nsecond\\n\"\n", "effects.fail", "first\nsecond\n", false);
     compare("import * as effects from \"std/effect\"\nstruct Problem { code: Int }\ninstance Show<Problem> {\n  fn show value: Problem -> String = \"problem \" + show value.code\n}\npub effect fn main -> Unit fails Problem = effects.fail (Problem { code: 7 })\n", "effects.fail (Problem", "problem 7", false);

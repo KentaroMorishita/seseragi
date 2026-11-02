@@ -355,20 +355,20 @@ const RELEASED: &str = "release-start\nreleased\n";
 
 #[test]
 fn duration_operations_match_original_raw_strict_ts_bun_node_and_native() {
-    compare_clock_fixture("clock-duration", PROVIDER);
+    compare_clock_fixture("clock-duration", PROVIDER, false);
 }
 
 #[test]
 fn duration_projection_matches_ts_at_and_above_the_safe_int_boundary() {
-    compare_clock_fixture("clock-duration-projection", PROVIDER);
+    compare_clock_fixture("clock-duration-projection", PROVIDER, true);
 }
 
 #[test]
 fn clock_now_keeps_saved_cold_replay_and_finalizers_on_all_targets() {
-    compare_clock_fixture("clock-now", CLOCK_PROVIDER);
+    compare_clock_fixture("clock-now", CLOCK_PROVIDER, false);
 }
 
-fn compare_clock_fixture(name: &str, provider: &str) {
+fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
     let scratch = Scratch::new();
     let source = scratch.0.join("main.ssrg");
     let original =
@@ -408,15 +408,24 @@ fn compare_clock_fixture(name: &str, provider: &str) {
             command.env("SESERAGI_NATIVE_METRICS", "1");
         }
         let result = bounded(&mut command, &directory);
-        if result.status.code() != Some(0) || result.stdout != expected {
+        let expected_exit = if defect { 70 } else { 0 };
+        if result.status.code() != Some(expected_exit) || result.stdout != expected {
             failures.push(format!("{}: {result:?}", directory.display()));
         }
         if native {
             let stderr = String::from_utf8_lossy(&result.stderr);
             assert!(stderr.contains("managed-live=0"), "{name}: {stderr}");
+            if defect {
+                assert!(
+                    stderr.contains("Seseragi Defect: Seseragi Int overflow"),
+                    "{name}: {stderr}"
+                );
+            }
             if name == "clock-now" {
                 assert!(stderr.contains("timers-live=0"), "{stderr}");
             }
+        } else if defect {
+            assert_eq!(result.stderr, b"seseragi: runtime defect\n", "{name}");
         } else {
             assert!(result.stderr.is_empty(), "{name}: {result:?}");
         }
