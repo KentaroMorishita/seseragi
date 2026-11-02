@@ -73,6 +73,7 @@ mod stdin;
 mod stream;
 mod tail;
 mod text;
+mod time;
 mod validation;
 mod variables;
 

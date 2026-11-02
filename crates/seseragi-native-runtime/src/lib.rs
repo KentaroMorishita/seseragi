@@ -72,3 +72,4 @@ include!("runtime_filesystem_chunks.rs");
 include!("runtime_filesystem_paths.rs");
 include!("runtime_host.rs");
 include!("runtime_clock.rs");
+include!("runtime_time.rs");

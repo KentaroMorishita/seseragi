@@ -49,6 +49,9 @@ impl Backend<'_> {
         if let Some(value) = self.clock_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.time_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.stdin_call(expr, scope)? {
             return Ok(value);
         }

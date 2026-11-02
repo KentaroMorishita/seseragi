@@ -70,4 +70,5 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/runtime_filesystem_paths.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_host.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_clock.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_time.rs"),
 );

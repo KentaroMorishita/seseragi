@@ -221,37 +221,46 @@ pub fn native_primitive_display_dictionary(identity: &'static str) -> V {
     let debug = identity.starts_with("Debug<");
     let method = if debug { "debug" } else { "show" };
     let string = identity.ends_with("::String>");
+    let integer = identity.ends_with("::Int>");
     V::dict(vec![(
         method,
-        V::fun(vec![V::Bool(debug && string)], |capture, value| {
-            native_display(|| {
-                if !capture[0].boolean() {
-                    return V::text(&value.render());
-                }
-                let V::Text(text) = value else {
-                    panic!("Rust ABI: expected String")
-                };
-                let mut output = String::from("\"");
-                for c in text.get().chars() {
-                    match c {
-                        '\\' => output.push_str("\\\\"),
-                        '"' => output.push_str("\\\""),
-                        '\0' => output.push_str("\\0"),
-                        '\u{8}' => output.push_str("\\b"),
-                        '\t' => output.push_str("\\t"),
-                        '\n' => output.push_str("\\n"),
-                        '\u{c}' => output.push_str("\\f"),
-                        '\r' => output.push_str("\\r"),
-                        c if u32::from(c) < 0x20 || (0x7f..=0x9f).contains(&u32::from(c)) => {
-                            output.push_str(&format!("\\u{{{:X}}}", u32::from(c)));
+        V::fun(
+            vec![V::Bool(debug && string), V::Bool(integer)],
+            |capture, value| {
+                native_display(|| {
+                    if capture[1].boolean() {
+                        if let V::Float(number) = &value {
+                            return V::text(&native_number_text(*number));
                         }
-                        c => output.push(c),
                     }
-                }
-                output.push('"');
-                V::text(&output)
-            })
-        }),
+                    if !capture[0].boolean() {
+                        return V::text(&value.render());
+                    }
+                    let V::Text(text) = value else {
+                        panic!("Rust ABI: expected String")
+                    };
+                    let mut output = String::from("\"");
+                    for c in text.get().chars() {
+                        match c {
+                            '\\' => output.push_str("\\\\"),
+                            '"' => output.push_str("\\\""),
+                            '\0' => output.push_str("\\0"),
+                            '\u{8}' => output.push_str("\\b"),
+                            '\t' => output.push_str("\\t"),
+                            '\n' => output.push_str("\\n"),
+                            '\u{c}' => output.push_str("\\f"),
+                            '\r' => output.push_str("\\r"),
+                            c if u32::from(c) < 0x20 || (0x7f..=0x9f).contains(&u32::from(c)) => {
+                                output.push_str(&format!("\\u{{{:X}}}", u32::from(c)));
+                            }
+                            c => output.push(c),
+                        }
+                    }
+                    output.push('"');
+                    V::text(&output)
+                })
+            },
+        ),
     )])
 }
 

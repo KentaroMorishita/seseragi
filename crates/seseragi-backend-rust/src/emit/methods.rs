@@ -447,6 +447,11 @@ impl Backend<'_> {
                 | "std/random::Random"
                 | "std/random::RandomSize"
                 | "std/time::Instant"
+                | "std/time::LocalDate"
+                | "std/time::LocalTime"
+                | "std/time::LocalDateTime"
+                | "std/time::UtcOffset"
+                | "std/time::OffsetDateTime"
                 | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"
                 | "std/signal::MutableSignal"
