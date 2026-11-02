@@ -1,6 +1,7 @@
 fn native_transformer_wrap(run: V) -> V {
     V::Record(Shared::new(BTreeMap::from([("run".into(), run)])))
 }
+
 pub fn native_maybe_transformer_callable(name: &str, dictionaries: Vec<V>) -> V {
     match name {
         "std/transformer/maybe::run" => V::fun(vec![], |_, value| value.field("run")),
@@ -68,6 +69,55 @@ pub fn native_reader_transformer_callable(name: &str, dictionaries: Vec<V>) -> V
             native_transformer_wrap(V::fun(vec![value], |captures, _| captures[0].clone()))
         }),
         _ => panic!("Rust ABI: unknown ReaderT operation"),
+    }
+}
+pub fn native_state_transformer_callable(name: &str, dictionaries: Vec<V>) -> V {
+    match name {
+        "std/transformer/state::run" => V::fun(vec![], |_, initial| {
+            V::fun(vec![initial], |captures, value| {
+                value.field("run").apply(captures[0].clone())
+            })
+        }),
+        "std/transformer/state::get" => V::fun(dictionaries, |captures, _| {
+            native_transformer_wrap(V::fun(captures.to_vec(), |captures, state| {
+                captures[0]
+                    .field("pure")
+                    .apply(V::Tuple(Shared::new(vec![state.clone(), state])))
+            }))
+        }),
+        "std/transformer/state::put" => V::fun(dictionaries, |captures, next| {
+            native_transformer_wrap(V::fun(vec![captures[0].clone(), next], |captures, _| {
+                captures[0]
+                    .field("pure")
+                    .apply(V::Tuple(Shared::new(vec![V::Unit, captures[1].clone()])))
+            }))
+        }),
+        "std/transformer/state::modify" => V::fun(dictionaries, |captures, callback| {
+            native_transformer_wrap(V::fun(
+                vec![captures[0].clone(), callback],
+                |captures, state| {
+                    captures[0].field("pure").apply(V::Tuple(Shared::new(vec![
+                        V::Unit,
+                        captures[1].apply(state),
+                    ])))
+                },
+            ))
+        }),
+        "std/transformer/state::lift" => V::fun(dictionaries, |captures, source| {
+            native_transformer_wrap(V::fun(
+                vec![captures[0].clone(), source],
+                |captures, state| {
+                    let pair = V::fun(vec![state], |captures, value| {
+                        V::Tuple(Shared::new(vec![value, captures[0].clone()]))
+                    });
+                    captures[0]
+                        .field("map")
+                        .apply(pair)
+                        .apply(captures[1].clone())
+                },
+            ))
+        }),
+        _ => panic!("Rust ABI: unknown StateT operation"),
     }
 }
 fn native_transformer_pure(kind: i64, children: &[V], value: V) -> V {
@@ -642,5 +692,162 @@ mod either_transformer_tests {
         }
         drop((context, calls, base, dictionary, plan));
         cleanup();
+    }
+}
+
+#[cfg(test)]
+mod state_transformer_tests {
+    use super::*;
+
+    fn run(initial: V, value: V) -> V {
+        native_state_transformer_callable("std/transformer/state::run", vec![])
+            .apply(initial)
+            .apply(value)
+    }
+
+    #[test]
+    fn operations_delay_selected_methods_until_run_and_preserve_state_and_value_identity() {
+        enable_cycle_collection();
+        let pure_calls = V::reference(V::Int(0));
+        let map_calls = V::reference(V::Int(0));
+        let modify_calls = V::reference(V::Int(0));
+        let dictionary = V::dict(vec![
+            (
+                "pure",
+                V::fun(vec![pure_calls.clone()], |c, value| {
+                    c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
+                    V::adt("test::Box", value)
+                }),
+            ),
+            (
+                "map",
+                V::fun(vec![map_calls.clone()], |c, callback| {
+                    V::fun(vec![c[0].clone(), callback], |c, value| {
+                        c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
+                        V::adt("test::Box", c[1].apply(value.payload()))
+                    })
+                }),
+            ),
+        ]);
+        let state = V::reference(V::Int(7));
+        let value = V::reference(V::Int(42));
+        let get = native_state_transformer_callable(
+            "std/transformer/state::get",
+            vec![dictionary.clone()],
+        )
+        .apply(V::Unit);
+        let put = native_state_transformer_callable(
+            "std/transformer/state::put",
+            vec![dictionary.clone()],
+        )
+        .apply(state.clone());
+        let modify = native_state_transformer_callable(
+            "std/transformer/state::modify",
+            vec![dictionary.clone()],
+        )
+        .apply(V::fun(vec![modify_calls.clone()], |c, state| {
+            c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
+            binary("+", state, V::Int(1))
+        }));
+        let lift = native_state_transformer_callable(
+            "std/transformer/state::lift",
+            vec![dictionary.clone()],
+        )
+        .apply(V::adt("test::Box", value.clone()));
+        for counter in [&pure_calls, &map_calls, &modify_calls] {
+            assert_eq!(counter.read_reference().render(), "0");
+        }
+        let observed = run(state.clone(), get.clone()).payload();
+        assert_eq!(observed.index(0).node_id(), state.node_id());
+        assert_eq!(observed.index(1).node_id(), state.node_id());
+        let set = run(V::Int(-1), put.clone()).payload();
+        assert_eq!(set.index(0).render(), "()");
+        assert_eq!(set.index(1).node_id(), state.node_id());
+        assert_eq!(run(V::Int(5), modify.clone()).payload().render(), "((), 6)");
+        assert_eq!(
+            run(V::Int(9), modify.clone()).payload().render(),
+            "((), 10)"
+        );
+        let lifted = run(state.clone(), lift.clone()).payload();
+        assert_eq!(lifted.index(0).node_id(), value.node_id());
+        assert_eq!(lifted.index(1).node_id(), state.node_id());
+        assert_eq!(pure_calls.read_reference().render(), "4");
+        assert_eq!(map_calls.read_reference().render(), "1");
+        assert_eq!(modify_calls.read_reference().render(), "2");
+        drop((
+            pure_calls,
+            map_calls,
+            modify_calls,
+            dictionary,
+            state,
+            value,
+            get,
+            put,
+            modify,
+            lift,
+            observed,
+            set,
+            lifted,
+        ));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn base_failure_skips_state_updates_and_keeps_its_payload_identity() {
+        enable_cycle_collection();
+        let base = native_monad_dictionary(3, "Monad");
+        let failure = V::adt("std/prelude::Left", V::reference(V::Int(7)));
+        let lifted =
+            native_state_transformer_callable("std/transformer/state::lift", vec![base.clone()])
+                .apply(failure.clone());
+        let dictionary = native_transformer_dictionary(12, vec![base.clone()]);
+        let work = dictionary
+            .field("flatMap")
+            .apply(V::fun(vec![], |_, _| panic!("failed StateT callback")))
+            .apply(lifted);
+        let result = run(V::Int(0), work.clone());
+        assert_eq!(result.node_id(), failure.node_id());
+        drop((base, failure, dictionary, work, result));
+        clear_dictionaries();
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn saved_lift_traces_state_cycles_and_keeps_effect_failure_and_defect_distinct() {
+        enable_cycle_collection();
+        for defect in [false, true] {
+            let cell = V::reference(V::Unit);
+            let dictionary = native_monad_dictionary(5, "Monad");
+            let lift = native_state_transformer_callable(
+                "std/transformer/state::lift",
+                vec![dictionary.clone()],
+            );
+            let source = V::leaf(vec![cell.clone(), V::Bool(defect)], |c, _| {
+                if c[1].boolean() {
+                    panic!("deliberate StateT base defect");
+                }
+                Err(NativeExit::failure(c[0].clone()))
+            });
+            let work = lift.apply(source);
+            cell.write_reference(work.clone());
+            let effect = run(cell.clone(), work.clone());
+            let result = NativeContext::default().root(effect);
+            match result {
+                Err(NativeExit::Failure(error)) if !defect => {
+                    assert_eq!(error.node_id(), cell.node_id());
+                }
+                Err(NativeExit::Defect(errors)) if defect => {
+                    assert_eq!(errors.len(), 1);
+                    assert_eq!(errors[0].value, "deliberate StateT base defect");
+                }
+                _ => panic!("StateT changed the base exit kind"),
+            }
+            drop((cell, dictionary, lift, work));
+            clear_dictionaries();
+            assert!(collect_cycles().unwrap().reclaimed > 0);
+            assert_eq!(LIVE.with(Cell::get), 0);
+        }
     }
 }

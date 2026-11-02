@@ -904,6 +904,194 @@ fn basic_reader_transformer_defects_preserve_error_kind_and_release_roots() {
 }
 
 #[test]
+fn basic_state_transformer_apis_instances_errors_and_boundaries_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/state-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/state-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_state_transformer_effects_keep_cold_runs_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/state-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/state-transformer-effects.stdout"
+        ))],
+    );
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/state-transformer-effects.ssrg");
+    let recovery = "|> effects.recover (\\error:String -> say (\"recovered: \" + error))";
+    assert_eq!(original.matches(recovery).count(), 1);
+    let scratch = Scratch::new();
+    let path = scratch.0.join("state-transformer-failure.ssrg");
+    fs::write(&path, original.replace(recovery, "")).unwrap();
+    compare(&path, &[Case {
+        stdout: b"created: 0\nacquired\n(15, 15)\n(15, 15)\n(25, 25)\n((), -7)\n(0, 0)\ncalls: 6\nreleased\n",
+        exit: 1,
+        failure: Some("typed"),
+        ..Case::success(b"")
+    }]);
+}
+
+#[test]
+fn basic_state_transformer_imported_opaque_state_and_custom_monad_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/state-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as st from "std/transformer/state"
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+pub alias Work<A> = st.StateT<Value,Box,A>
+pub fn value n:Int -> Value = Value n
+pub fn next value:Value -> Value = match value { Value n -> Value (n + 1) }
+pub fn savedGet -> (Unit -> Work<Value>) = st.get
+pub fn savedPut -> (Value -> Work<Unit>) = st.put
+pub fn savedModify -> ((Value -> Value) -> Work<Unit>) = st.modify
+pub fn savedLift<A> -> (Box<A> -> Work<A>) = st.lift
+pub fn savedRun<A> -> (Value -> Work<A> -> Box<(A,Value)>) = st.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe box:Box<(Value,Value)> -> String = match box { Box (Value result,Value state) -> show (result,state) }
+"#).unwrap();
+    fs::write(project.join("src/main.ssrg"), r#"
+import * as st from "std/transformer/state"
+import { Box, Work, Value, value, next, describe, savedGet, savedPut, savedModify, savedLift, savedRun, box } from "./domain"
+let get:Unit -> Work<Value> = savedGet ()
+let put:Value -> Work<Unit> = savedPut ()
+let modify:(Value -> Value) -> Work<Unit> = savedModify ()
+let lift:Box<Value> -> Work<Value> = savedLift ()
+let run:Value -> Work<Value> -> Box<(Value,Value)> = savedRun ()
+let current:Work<Value> = get ()
+let set:Work<Unit> = put (value 7)
+let changed:Work<Unit> = modify next
+let flow:Work<Value> = do { set; changed; get () }
+let partial:Work<Value> -> Box<(Value,Value)> = st.run (value 10)
+pub effect fn main = do {
+  println (describe (run (value 0) flow))
+  println (describe (partial current))
+  println (describe (st.run (value 3) (lift (box (value 9)))))
+}
+"#).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(&project, &[Case::success(b"(8, 8)\n(10, 10)\n(9, 3)\n")]);
+}
+
+#[test]
+fn basic_state_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = Just 1",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = st.get 1",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = st.put 1",
+        "pub fn invalid -> st.StateT<Int,Maybe,Unit> = st.put True",
+        "pub fn invalid -> st.StateT<Int,Maybe,Unit> = st.modify (\\n:Int -> show n)",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = st.lift 1",
+        "pub fn invalid -> Maybe<(Int,Int)> = st.run 0 (Just 1)",
+        "pub fn invalid value:st.StateT<Int,Maybe,Int> -> Maybe<(Int,Int)> = st.run True value",
+        "struct Box<A> { value:A }\npub fn invalid -> st.StateT<Int,Box,Int> = st.get ()",
+        "pub fn invalid -> st.StateT<Int,Int,Int> = st.get ()",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!(
+            "import * as st from \"std/transformer/state\"\n{declaration}\npub fn main -> Int = 0\n"
+        ),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_state_transformer_defects_preserve_error_kind_evaluation_order_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/state-transformer-effects.ssrg");
+    let needle = "st.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for (expression, defect) in [
+        ("st.get (if 42 / 0 == 0 then () else ())", "Int division by zero"),
+        ("st.put (42 / 0) |> map (\\_:Unit -> 0)", "Int division by zero"),
+        ("st.modify (if 42 / 0 == 0 then (\\s:Int -> s) else (\\s:Int -> s)) |> map (\\_:Unit -> 0)", "Int division by zero"),
+        ("st.modify (\\s:Int -> s / 0) |> map (\\_:Unit -> 0)", "Int division by zero"),
+        ("st.modify (\\_s:Int -> 9007199254740991 + 1) |> map (\\_:Unit -> 0)", "Int overflow"),
+        ("st.lift (pass (42 / 0))", "Int division by zero"),
+        ("st.lift (effects.defer (\\_:Unit -> pass (42 / 0)))", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); map (\\n:Int -> n / 0) selected }", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); selected >>= (\\n:Int -> st.lift (pass (n / 0))) }", "Int division by zero"),
+        ("{ let functions:Work<Int -> Int> = pure (\\n:Int -> n / 0); let selected:Work<Int> = st.get (); functions <*> selected }", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); st.lift (st.run (42 / 0) selected) |> map (\\_pair:(Int,Int) -> 0) }", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); st.lift (st.run 0 (if 42 / 0 == 0 then selected else selected)) |> map (\\_pair:(Int,Int) -> 0) }", "Int division by zero"),
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("state-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created: 0\nacquired\n(15, 15)\n(15, 15)\n(25, 25)\n((), -7)\n(0, 0)\ncalls: 6\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: defect,
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
 fn basic_maybe_transformer_apis_and_instances_match_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/maybe-transformer.ssrg"),
