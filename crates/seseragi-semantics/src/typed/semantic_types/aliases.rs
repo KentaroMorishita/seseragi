@@ -458,6 +458,11 @@ fn expand_interface_type(
                     canonical: binding.canonical.clone(),
                     arguments,
                 },
+                None if name == "Unit" && arguments.is_empty() => TypedType::ExternalNamed {
+                    name: name.clone(),
+                    canonical: "std/prelude::Unit".into(),
+                    arguments,
+                },
                 None => TypedType::Named {
                     name: name.clone(),
                     arguments,
