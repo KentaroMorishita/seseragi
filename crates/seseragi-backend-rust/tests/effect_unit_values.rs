@@ -35,8 +35,8 @@ fn execute(source: &str, entry: &str, stdout: &str, exit: i32, trace: Option<&st
     } else {
         "program"
     });
-    fs::write(&input, artifact.source).unwrap();
-    let built = link::rustc()
+    link::write_program(&input, artifact.source).unwrap();
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(&input)

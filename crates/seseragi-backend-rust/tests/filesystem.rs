@@ -30,13 +30,13 @@ fn file_transform_preserves_utf8_input_and_typed_failures() {
     fs::create_dir(&temp).unwrap();
     let _cleanup = Cleanup(temp.clone());
     let rust = temp.join("program.rs");
-    fs::write(&rust, artifact.source).unwrap();
+    link::write_program(&rust, artifact.source).unwrap();
     let binary = temp.join(if cfg!(windows) {
         "program.exe"
     } else {
         "program"
     });
-    let compiled = link::rustc()
+    let compiled = Command::new("rustc")
         .args(["--edition=2021", "-o"])
         .arg(&binary)
         .arg(&rust)

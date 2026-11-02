@@ -580,9 +580,9 @@ fn conversion_evaluates_mode_and_value_once_across_saved_and_returned_stages() {
     let binary = scratch
         .0
         .join(format!("trace{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&file, rust).unwrap();
+    native_runtime::write_program(&file, rust).unwrap();
     successful(bounded(
-        native_runtime::rustc()
+        Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&file),

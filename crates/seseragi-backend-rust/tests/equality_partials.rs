@@ -22,8 +22,8 @@ fn execute(source: &str, name: &str, stdout: &str, code: i32) {
     } else {
         "program"
     });
-    fs::write(&input, &artifact.source).unwrap();
-    let built = link::rustc()
+    link::write_program(&input, &artifact.source).unwrap();
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&exe)
         .arg(&input)
@@ -285,8 +285,8 @@ fn fully_applied_equality_runs_its_first_stage_before_the_right_operand() {
         } else {
             "program"
         });
-        fs::write(&file, rust).unwrap();
-        let built = link::rustc()
+        link::write_program(&file, rust).unwrap();
+        let built = Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&exe)
             .arg(&file)

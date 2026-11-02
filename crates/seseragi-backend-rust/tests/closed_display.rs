@@ -27,8 +27,8 @@ impl Scratch {
         let exe = self
             .0
             .join(format!("program{}", std::env::consts::EXE_SUFFIX));
-        fs::write(&file, source).unwrap();
-        let output = link::rustc()
+        link::write_program(&file, source).unwrap();
+        let output = Command::new("rustc")
             .args(["--edition=2021", "-O"])
             .arg(&file)
             .arg("-o")

@@ -52,7 +52,7 @@ fn standard_display_and_append_dictionaries_match_typescript() {
         symbol("sumProbe"),
         symbol("productProbe")
     );
-    fs::write(
+    link::write_program(
         &rust,
         artifact.source.replace(
             "initialize_globals();",
@@ -60,7 +60,7 @@ fn standard_display_and_append_dictionaries_match_typescript() {
         ),
     )
     .unwrap();
-    let build = link::rustc()
+    let build = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(&rust)

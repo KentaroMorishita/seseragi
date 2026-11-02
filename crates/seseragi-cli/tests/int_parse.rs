@@ -633,9 +633,9 @@ fn decimal_parse_evaluates_direct_and_saved_source_once() {
         let binary = scratch
             .0
             .join(format!("{entry}{}", std::env::consts::EXE_SUFFIX));
-        fs::write(&file, rust).unwrap();
+        native_runtime::write_program(&file, rust).unwrap();
         successful(bounded(
-            native_runtime::rustc()
+            Command::new("rustc")
                 .args(["--edition=2021", "-O", "-o"])
                 .arg(&binary)
                 .arg(&file),

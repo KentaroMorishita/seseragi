@@ -66,8 +66,8 @@ fn compare_outputs(
     } else {
         artifact.source
     };
-    fs::write(&rust, generated).unwrap();
-    let output = link::rustc()
+    link::write_program(&rust, generated).unwrap();
+    let output = Command::new("rustc")
         .args(["--edition=2021", "-O"])
         .arg(&rust)
         .arg("-o")

@@ -1,20 +1,20 @@
 #![allow(dead_code)]
 
 #[path = "native_cache.rs"]
-mod cache;
-
-pub fn rustc() -> seseragi_backend_rust::native_runtime::Compiler {
-    seseragi_backend_rust::native_runtime::compiler(
-        &cache::directory().join("seseragi/native-runtime"),
-    )
-    .unwrap()
-}
+mod build_outputs;
 
 pub fn configure(command: &mut std::process::Command) {
-    cache::configure(command);
+    build_outputs::configure(command);
 }
 
-// Instrumentation probes insert counters into runtime bodies before compiling.
+pub fn write_program(
+    path: impl AsRef<std::path::Path>,
+    source: impl AsRef<str>,
+) -> std::io::Result<()> {
+    std::fs::write(path, inline_runtime(source.as_ref()))
+}
+
+// Instrumentation probes compile the runtime in the same crate as their counters.
 pub fn inline_runtime(source: &str) -> String {
     source
         .replace(

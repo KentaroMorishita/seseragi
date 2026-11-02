@@ -295,13 +295,13 @@ fn main() {{
 "#, id(&rust.metadata.entry)));
     fs::create_dir(folder).unwrap();
     let program = folder.join("program.rs");
-    fs::write(&program, observed).unwrap();
+    native_runtime::write_program(&program, observed).unwrap();
     let binary = folder.join(if cfg!(windows) {
         "program.exe"
     } else {
         "program"
     });
-    let built = native_runtime::rustc()
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(&program)

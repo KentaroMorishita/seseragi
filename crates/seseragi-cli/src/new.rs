@@ -6,6 +6,7 @@ const CANONICAL_PACKAGE_NAME: &str = "samples/web-starter";
 const MANIFEST: &str = include_str!("../../../examples/samples/web-starter/seseragi.toml");
 const APP_SOURCE: &str = include_str!("../../../examples/samples/web-starter/src/app.ssrg");
 const MAIN_SOURCE: &str = include_str!("../../../examples/samples/web-starter/src/main.ssrg");
+const GITIGNORE: &str = include_str!("../../../examples/samples/web-starter/.gitignore");
 
 pub(crate) fn new(arguments: &[String]) -> Result<i32, String> {
     let [template, destination] = arguments else {
@@ -66,6 +67,7 @@ fn write_web_project(destination: &Path, package_name: &str) -> Result<(), Strin
     let manifest = MANIFEST.replacen(CANONICAL_PACKAGE_NAME, package_name, 1);
     for (path, contents) in [
         (destination.join("seseragi.toml"), manifest.as_str()),
+        (destination.join(".gitignore"), GITIGNORE),
         (source.join("app.ssrg"), APP_SOURCE),
         (source.join("main.ssrg"), MAIN_SOURCE),
     ] {

@@ -43,8 +43,8 @@ fn compare(source: &str, expected: &str) {
     let binary = scratch
         .0
         .join(format!("program{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&program, rust).unwrap();
-    let built = link::rustc()
+    link::write_program(&program, rust).unwrap();
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O"])
         .arg(&program)
         .arg("-o")

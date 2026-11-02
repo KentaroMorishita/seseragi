@@ -608,9 +608,9 @@ fn string_equality_evaluates_source_operands_once_in_order() {
         let binary = scratch
             .0
             .join(format!("{entry}{}", std::env::consts::EXE_SUFFIX));
-        fs::write(&file, rust).unwrap();
+        native_runtime::write_program(&file, rust).unwrap();
         successful(bounded(
-            native_runtime::rustc()
+            Command::new("rustc")
                 .args(["--edition=2021", "-O", "-o"])
                 .arg(&binary)
                 .arg(&file),
@@ -715,9 +715,9 @@ fn standard_web_program_string_predicate_matches_native_and_strict_bridge() {
     let binary = scratch
         .0
         .join(format!("oracle{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&rust, native.source).unwrap();
+    native_runtime::write_program(&rust, native.source).unwrap();
     successful(bounded(
-        native_runtime::rustc()
+        Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&rust),

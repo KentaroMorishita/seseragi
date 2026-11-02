@@ -78,7 +78,7 @@ pub(super) fn publish(
         executable: native.then(|| staging.path().join(&names[2])),
     };
     stage(&staged)?;
-    // rustc may take time. Recheck every destination before changing the first
+    // Compilation may take time. Recheck every destination before changing the first
     // final output, then use rename rather than writes through existing inodes.
     preflight(&targets, sources)?;
     let backup = private_directory(&directory, ".seseragi-rust-backup-")?;

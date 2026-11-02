@@ -606,9 +606,9 @@ fn remainder_evaluates_source_operands_once_in_order_across_saved_stages() {
     let binary = scratch
         .0
         .join(format!("trace{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&file, rust).unwrap();
+    native_runtime::write_program(&file, rust).unwrap();
     successful(bounded(
-        native_runtime::rustc()
+        Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&file),

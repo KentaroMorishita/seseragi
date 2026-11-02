@@ -241,14 +241,14 @@ fn standard_web_build_owns_program_assets_types_and_the_selected_import_closure(
         .collect::<Vec<_>>();
     let native =
         seseragi_backend_rust::emit_rust_project(&modules, &core.entry_module, "probe").unwrap();
-    fs::write(scratch.0.join("oracle.rs"), native.source).unwrap();
+    native_runtime::write_program(scratch.0.join("oracle.rs"), native.source).unwrap();
     let binary = scratch.0.join(if cfg!(windows) {
         "oracle.exe"
     } else {
         "oracle"
     });
     successful(bounded(
-        native_runtime::rustc()
+        Command::new("rustc")
             .args(["--edition=2021", "--crate-name", "oracle", "-O"])
             .arg(scratch.0.join("oracle.rs"))
             .arg("-o")

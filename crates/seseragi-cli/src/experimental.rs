@@ -1,5 +1,6 @@
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, path::PathBuf};
+mod native_cargo;
 pub(crate) mod output;
 pub(crate) mod program_wasm;
 
@@ -20,6 +21,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     let mut entry = None;
     let mut destination = None;
     let mut provider = None;
+    let mut profile = None;
     for pair in flags.chunks(2) {
         let [flag, value] = pair else {
             return Err(usage().into());
@@ -27,6 +29,9 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
         match flag.as_str() {
             "--entry" if entry.is_none() => entry = Some(value.as_str()),
             "--provider" if provider.is_none() => provider = Some(value.as_str()),
+            "--profile" if native && profile.is_none() => {
+                profile = Some(seseragi_project::BuildProfile::parse(value)?)
+            }
             "--output" if !native && destination.is_none() => {
                 destination = Some(PathBuf::from(value))
             }
@@ -43,9 +48,18 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
         entry,
         provider,
         seseragi_project::ProjectCommand::Build,
-        seseragi_project::BuildProfile::Development,
+        profile.unwrap_or_default(),
     )?;
-    publish_artifact(&artifact, &source_paths, &destination, native)?;
+    publish_artifact(
+        &artifact,
+        &source_paths,
+        &destination,
+        native.then_some((
+            std::path::Path::new(path),
+            entry,
+            profile.unwrap_or_default(),
+        )),
+    )?;
     if native {
         println!("{}", destination.join(output::EXECUTABLE).display());
     } else {
@@ -64,7 +78,12 @@ pub(crate) fn build_native(
     let path = package.as_deref().unwrap_or(path);
     let path = path.to_str().ok_or("native source path must be UTF-8")?;
     let (artifact, source_paths) = compile_native(path, "main", None, command, profile)?;
-    publish_artifact(&artifact, &source_paths, destination, true)
+    publish_artifact(
+        &artifact,
+        &source_paths,
+        destination,
+        Some((std::path::Path::new(path), "main", profile)),
+    )
 }
 
 fn compile_native(
@@ -113,11 +132,11 @@ fn publish_artifact(
     artifact: &seseragi_backend_rust::RustArtifact,
     source_paths: &[PathBuf],
     destination: &std::path::Path,
-    native: bool,
+    native: Option<(&std::path::Path, &str, seseragi_project::BuildProfile)>,
 ) -> Result<(), String> {
-    // Target admission precedes filesystem changes. Generate and compile only
-    // inside owned staging, then replace the checked output leaves together.
-    let selected = if native {
+    // Target admission precedes filesystem changes. Prepare all outputs before
+    // replacing the checked destination leaves together.
+    let selected = if native.is_some() {
         output::Destination::Native(destination)
     } else {
         output::Destination::Rust(destination)
@@ -130,21 +149,8 @@ fn publish_artifact(
         )
         .map_err(|e| e.to_string())?;
         if let Some(executable) = &staged.executable {
-            let output = seseragi_backend_rust::native_runtime::compiler(
-                &seseragi_backend_rust::native_runtime::cache_directory()?,
-            )?
-            .args(["--edition=2021", "--crate-name", "seseragi_program", "-O"])
-            .arg(&staged.rust)
-            .arg("-o")
-            .arg(executable)
-            .output()
-            .map_err(|e| format!("could not start rustc: {e}; install a Rust toolchain"))?;
-            if !output.status.success() {
-                return Err(format!(
-                    "Rust target compilation failed:\n{}",
-                    String::from_utf8_lossy(&output.stderr)
-                ));
-            }
+            let (path, entry, profile) = native.expect("native output has a build input");
+            native_cargo::build(path, entry, profile, &artifact.source, executable)?;
         }
         Ok(())
     })?;
@@ -398,5 +404,5 @@ fn load_checked_project_entry_with_profile(
 }
 
 fn usage() -> &'static str {
-    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep] | build-native source.ssrg|package-root --entry function --out-dir path [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep]"
+    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep] | build-native source.ssrg|package-root --entry function --out-dir path [--profile development|release] [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep]"
 }

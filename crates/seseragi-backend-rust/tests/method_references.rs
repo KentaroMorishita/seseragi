@@ -135,8 +135,8 @@ fn execute(source: &str, name: &str, stdout: &str, code: i32) {
     } else {
         "program"
     });
-    fs::write(&input, &artifact.source).unwrap();
-    let built = link::rustc()
+    link::write_program(&input, &artifact.source).unwrap();
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&exe)
         .arg(&input)
@@ -898,8 +898,8 @@ fn main() {{
         } else {
             "program"
         });
-        fs::write(&input, rust).unwrap();
-        let built = link::rustc()
+        link::write_program(&input, rust).unwrap();
+        let built = Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&executable)
             .arg(&input)

@@ -40,8 +40,8 @@ fn execute_rust(source: &str, name: &str, expected: &str, code: i32, trace: Opti
     } else {
         "program"
     });
-    fs::write(&input, source).unwrap();
-    let built = link::rustc()
+    link::write_program(&input, source).unwrap();
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&executable)
         .arg(&input)

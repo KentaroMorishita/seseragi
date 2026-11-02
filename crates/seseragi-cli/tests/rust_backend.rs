@@ -1227,13 +1227,13 @@ fn main() {
     .replace("<DISPLAY>", &display);
     let main = artifact.source.rfind("fn main()").unwrap();
     let rust = scratch.0.join("format.rs");
-    fs::write(&rust, artifact.source[..main].to_owned() + &harness).unwrap();
+    native_runtime::write_program(&rust, artifact.source[..main].to_owned() + &harness).unwrap();
     let executable = scratch.0.join(if cfg!(windows) {
         "format.exe"
     } else {
         "format"
     });
-    let compiled = native_runtime::rustc()
+    let compiled = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&executable)
         .arg(&rust)

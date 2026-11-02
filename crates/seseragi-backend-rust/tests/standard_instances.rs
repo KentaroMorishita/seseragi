@@ -47,8 +47,8 @@ fn execute(source: &str) -> (Output, Output) {
     fs::create_dir(&scratch.0).unwrap();
     let rust = scratch.0.join("program.rs");
     let binary = scratch.0.join("program");
-    fs::write(&rust, artifact.source).unwrap();
-    let build = link::rustc()
+    link::write_program(&rust, artifact.source).unwrap();
+    let build = Command::new("rustc")
         .args(["--edition=2021", "-o"])
         .arg(&binary)
         .arg(&rust)

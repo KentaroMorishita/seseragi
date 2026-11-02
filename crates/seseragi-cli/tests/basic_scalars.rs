@@ -402,9 +402,9 @@ fn basic_scalar_operations_evaluate_each_source_argument_once_in_order() {
         let binary = scratch
             .0
             .join(format!("{entry}{}", std::env::consts::EXE_SUFFIX));
-        fs::write(&file, rust).unwrap();
+        native_runtime::write_program(&file, rust).unwrap();
         successful(bounded(
-            native_runtime::rustc()
+            Command::new("rustc")
                 .args(["--edition=2021", "-O", "-o"])
                 .arg(&binary)
                 .arg(&file),

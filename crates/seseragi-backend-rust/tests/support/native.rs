@@ -35,8 +35,8 @@ impl Scratch {
         } else {
             "native"
         });
-        fs::write(&input, source).unwrap();
-        let result = link::rustc()
+        link::write_program(&input, source).unwrap();
+        let result = Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&input)

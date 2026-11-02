@@ -18,6 +18,49 @@ Unit function in that exact module. A function with the same short name in a
 dependency cannot become the entry. Pure entries print the native inspection
 result; synchronous Effect entries execute the ordinary native plan.
 
+## Cargo builds
+
+Native builds keep a Cargo project under `.seseragi/native/` in the package
+root, or beside a standalone source file. The directory is stable for each
+input and entry function. It contains `Cargo.toml`, `Cargo.lock`, `program.rs`
+and a copy of the native runtime crate embedded in the CLI. Unchanged files
+keep their modification times. Cargo reuses dependencies after program edits
+and rebuilds the runtime when its source changes.
+
+Allow roughly 84 MB per generated project for a hello-world development build,
+mostly for Cargo's build outputs. The size varies with the toolchain and debug
+settings, and grows when adding dependencies or building another profile.
+The project template's `.gitignore` excludes `.seseragi/` from version control.
+
+Build outputs normally stay in that project's `target/` directory. When
+`CARGO_TARGET_DIR` is set, each project uses a separate directory under
+`$CARGO_TARGET_DIR/seseragi-native/`. Development builds use optimization level
+0; `--profile release` uses level 3. Both ordinary native commands and
+`experimental build-native` accept the profile selection. A failed build leaves
+the previously published executable, Rust source and metadata intact.
+
+Packages can declare Rust adapter dependencies and linker inputs in
+`seseragi.toml`:
+
+```toml
+[tool.native]
+libraries = ["sqlite3"]
+search-paths = ["native/lib"]
+
+[tool.native.dependencies]
+adapter = { path = "native/adapter" }
+```
+
+Dependencies use Cargo's dependency syntax. Paths are relative to the package
+root. `libraries` uses Cargo's `rustc-link-lib` syntax, including optional
+`static=` or `dylib=` prefixes. `search-paths` lists native library directories.
+These settings make dependencies available to generated Rust and future native
+adapters; they do not add a Seseragi foreign-function interface.
+
+Cargo always builds offline. Registry dependencies must already be available
+locally; path dependencies and programs without external dependencies need no
+network access. The generated Cargo lockfile is retained between builds.
+
 ## Shared frontend, separate target
 
 `compile_core_project` and `compile_core_local_project` reuse source discovery,

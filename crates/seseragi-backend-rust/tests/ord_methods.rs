@@ -21,13 +21,13 @@ fn execute(source: &str, name: &str, expected: &str, exit: i32) {
     );
     fs::create_dir(&dir.0).unwrap();
     let file = dir.0.join("program.rs");
-    fs::write(&file, artifact.source).unwrap();
+    link::write_program(&file, artifact.source).unwrap();
     let exe = dir.0.join(if cfg!(windows) {
         "program.exe"
     } else {
         "program"
     });
-    let built = link::rustc()
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&exe)
         .arg(&file)

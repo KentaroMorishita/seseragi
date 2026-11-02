@@ -43,6 +43,12 @@ fn creates_the_canonical_web_starter_and_builds_it() {
     assert!(stdout.contains("seseragi dev --open"));
 
     let canonical = repository_root().join("examples/samples/web-starter");
+    let ignore = fs::read_to_string(project.join(".gitignore")).unwrap();
+    assert_eq!(
+        ignore,
+        fs::read_to_string(canonical.join(".gitignore")).unwrap()
+    );
+    assert!(ignore.lines().any(|line| line == ".seseragi/"));
     for source in ["app.ssrg", "main.ssrg"] {
         assert_eq!(
             fs::read(project.join("src").join(source)).unwrap(),

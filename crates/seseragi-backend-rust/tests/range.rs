@@ -31,8 +31,8 @@ fn range_fixture_executes_with_native_iterable_reducible_and_display() {
     } else {
         "program"
     });
-    fs::write(&source, artifact.source).unwrap();
-    let build = link::rustc()
+    link::write_program(&source, artifact.source).unwrap();
+    let build = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(&source)

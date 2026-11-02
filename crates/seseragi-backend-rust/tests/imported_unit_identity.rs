@@ -33,8 +33,8 @@ fn execute(source: &str, expected: &[u8], exit: i32, trace: Option<&str>) {
     } else {
         "program"
     });
-    fs::write(&input, source).unwrap();
-    let built = link::rustc()
+    link::write_program(&input, source).unwrap();
+    let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(input)

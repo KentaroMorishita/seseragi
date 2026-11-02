@@ -1,6 +1,6 @@
-"""Link measurement entrypoints to the native runtime used by this checkout."""
-from functools import cache
+"""Compile measurement entrypoints with this checkout's native runtime source."""
 from pathlib import Path
+import re
 import subprocess
 
 
@@ -11,20 +11,16 @@ def rustc(arguments):
         raise RuntimeError(result.stderr)
 
 
-@cache
-def runtime_library(directory):
-    source = (Path(__file__).resolve().parents[4]
-              / "crates/seseragi-native-runtime/src/lib.rs")
-    library = directory / "libseseragi_native_runtime.rlib"
-    rustc(["--edition=2021", "--crate-name=seseragi_native_runtime",
-           "--crate-type=rlib", "-O", source, "-o", library])
-    return library
-
-
 def compile_native(source, executable):
     source = Path(source)
-    arguments = ["--edition=2021", "-O", source, "-o", executable]
-    if "use seseragi_native_runtime::*;" in source.read_text():
-        arguments += ["--extern",
-                      f"seseragi_native_runtime={runtime_library(source.parent)}"]
-    rustc(arguments)
+    program = source.read_text()
+    if "use seseragi_native_runtime::*;" in program:
+        manifest = (Path(__file__).resolve().parents[2]
+                    / "src/native_runtime_source.rs")
+        runtime = "".join((manifest.parent / name).read_text() for name in
+                          re.findall(r'include_str!\("([^"]+)"\)', manifest.read_text()))
+        program = program.replace("use seseragi_native_runtime::*;", runtime)
+        program = program.replace(
+            "use std::{cell::{Cell, RefCell}, collections::BTreeMap};\n", "")
+        source.write_text(program)
+    rustc(["--edition=2021", "-O", source, "-o", executable])

@@ -118,8 +118,8 @@ fn compare_options(source: &str, expected: &str, trace: bool, extras: bool) {
             &format!("println!(\"trace:{{}}\", {}.render());", symbol("value")),
         );
     }
-    fs::write(&rust, generated).unwrap();
-    let build = link::rustc()
+    link::write_program(&rust, generated).unwrap();
+    let build = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)
         .arg(&rust)
