@@ -302,7 +302,7 @@ mod tests {
 
         assert!(core.bindings.is_empty());
         assert_eq!(core.functions.len(), 1);
-        assert_eq!(core.functions[0].parameters[0].id, "unit");
+        assert_eq!(core.functions[0].parameters[0].id, "$ssrg$unit");
         assert!(matches!(
             core.functions[0].body,
             CoreExpr::EffectOperation { .. }

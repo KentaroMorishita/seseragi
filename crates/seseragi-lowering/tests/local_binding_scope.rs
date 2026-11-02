@@ -1,5 +1,7 @@
 use serde_json::Value;
-use seseragi_lowering::{lower_core_module_to_typescript_ir, lower_typed_module, CoreStatement};
+use seseragi_lowering::{
+    lower_core_module_to_typescript_ir, lower_typed_module, CoreExpr, CoreStatement,
+};
 use seseragi_semantics::type_module;
 
 fn local_bindings(value: &Value, bindings: &mut Vec<(String, bool)>) {
@@ -59,6 +61,47 @@ pub fn probe -> String = {
     local_bindings(&serde_json::to_value(typescript).unwrap(), &mut projected);
     projected.sort();
     assert_eq!(projected, bindings);
+}
+
+#[test]
+fn implicit_unit_parameters_have_no_source_binding_name() {
+    let source = r#"
+let unit = 1
+fn read -> Int = unit
+effect fn report -> Unit with Console fails ConsoleError = println (show unit)
+fn capture unit: Int -> Int = {
+  fn read -> Int = unit
+  read ()
+}
+"#;
+    let core = lower_typed_module(type_module("implicit-unit.ssrg", source));
+    for name in ["read", "report"] {
+        let function = core
+            .functions
+            .iter()
+            .find(|function| function.symbol.ends_with(&format!("::{name}")))
+            .unwrap();
+        let [parameter] = function.parameters.as_slice() else {
+            panic!("{function:#?}");
+        };
+        assert_eq!(parameter.kind, "implicit");
+        assert!(parameter.id.starts_with("$ssrg$"), "{parameter:?}");
+    }
+    let capture = core
+        .functions
+        .iter()
+        .find(|function| function.symbol.ends_with("::capture"))
+        .unwrap();
+    assert_eq!(capture.parameters[0].id, "unit");
+    assert_eq!(capture.parameters[0].kind, "named");
+    let CoreExpr::Sequence { statements, .. } = &capture.body else {
+        panic!("{:?}", capture.body);
+    };
+    let CoreStatement::LocalFunction { parameters, .. } = &statements[0] else {
+        panic!("{:?}", statements[0]);
+    };
+    assert_eq!(parameters[0].kind, "implicit");
+    assert_ne!(parameters[0].id, capture.parameters[0].id);
 }
 
 #[test]

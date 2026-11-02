@@ -1,0 +1,31 @@
+let unit = 1
+fn read -> Int = unit
+effect fn report -> Unit with Console fails ConsoleError = println (show unit)
+fn explicit unit: Int -> Int = unit
+effect fn explicitEffect unit: Int -> Unit with Console fails ConsoleError =
+  println (show unit)
+fn capture unit: Int -> Int = {
+  fn nested -> Int = unit
+  nested ()
+}
+fn local -> Int = {
+  let unit = 4
+  fn nested -> Int = unit
+  nested ()
+}
+effect fn localEffect -> Unit with Console fails ConsoleError = do {
+  let unit = 5
+  println (show unit)
+}
+fn explicitUnit unit: Unit -> Unit = unit
+pub effect fn main = do {
+  println (show (read ()))
+  report ()
+  println (show (explicit 2))
+  explicitEffect 3
+  println (show (local ()))
+  localEffect ()
+  println (show (capture 6))
+  println (show ((\unit: Int -> unit) 7))
+  println (show (explicitUnit ()))
+}
