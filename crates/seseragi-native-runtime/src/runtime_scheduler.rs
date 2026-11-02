@@ -168,6 +168,7 @@ struct NativeTask {
     waiting: Option<NativeWait>,
     file: Option<NativeFileTask>,
     stdin: Option<NativeStdinTask>,
+    child: Option<NativeChildTask>,
     timer: Option<NativeTimer>,
 }
 #[derive(Default)]
@@ -200,6 +201,7 @@ impl NativeScheduler {
                 waiting: None,
                 file: None,
                 stdin: None,
+                child: None,
                 timer: None,
             },
         );
@@ -213,12 +215,17 @@ impl NativeScheduler {
         loop {
             scheduler.poll_files();
             scheduler.poll_stdin();
+            scheduler.poll_children();
             scheduler.poll_timers();
             let Some(id) = scheduler.ready.pop_front() else {
                 // A program awaiting an uncompleted Deferred stays pending.
                 // No artificial typed failure or Defect is invented for it.
                 let timeout = scheduler.next_timer_wait();
-                let timeout = if scheduler.tasks.values().any(|task| task.stdin.is_some()) {
+                let timeout = if scheduler
+                    .tasks
+                    .values()
+                    .any(|task| task.stdin.is_some() || task.child.is_some())
+                {
                     Some(
                         timeout
                             .unwrap_or(std::time::Duration::MAX)
@@ -243,6 +250,15 @@ impl NativeScheduler {
                 NativeTurn::FileSystem(operation, captures) => {
                     match NativeFileTask::start(operation, captures) {
                         Ok(file) => task.file = Some(file),
+                        Err(exit) => {
+                            task.machine.resume(Err(exit));
+                            scheduler.ready.push_back(id);
+                        }
+                    }
+                }
+                NativeTurn::ChildProcess(operation, captures) => {
+                    match NativeChildTask::start(operation, captures) {
+                        Ok(child) => task.child = Some(child),
                         Err(exit) => {
                             task.machine.resume(Err(exit));
                             scheduler.ready.push_back(id);
@@ -326,6 +342,9 @@ impl NativeScheduler {
             task.machine.resume(Err(NativeExit::Cancelled));
             self.ready.push_back(id);
         }
+        if let Some(child) = &mut task.child {
+            child.cancelled = true;
+        }
         if let Some(file) = &task.file {
             // A blocking OS call has no invented abort. Observe it and join
             // its worker after close, before running language finalizers.
@@ -352,6 +371,15 @@ impl NativeScheduler {
                     eprintln!("native filesystem: {note}");
                 }
                 task.file = None;
+                task.machine.resume(outcome);
+                self.ready.push_back(*id);
+            }
+        }
+    }
+    fn poll_children(&mut self) {
+        for (id, task) in &mut self.tasks {
+            if let Some(outcome) = task.child.as_mut().and_then(NativeChildTask::poll) {
+                task.child = None;
                 task.machine.resume(outcome);
                 self.ready.push_back(*id);
             }

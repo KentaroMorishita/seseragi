@@ -19,6 +19,7 @@ mod bytes;
 mod calls;
 mod canonical;
 mod characters;
+mod child_process;
 mod clock;
 mod collection_control;
 mod collections;
@@ -462,7 +463,9 @@ fn emit_body(
                 "rust-erased-clock-v5"
             } else if backend.capabilities.contains("clock-sleep") {
                 "rust-erased-clock-sleep-v5"
-            } else if backend.capabilities.contains("filesystem-async") {
+            } else if backend.capabilities.contains("filesystem-async")
+                || backend.capabilities.contains("child-process")
+            {
                 "rust-erased-async-v4"
             } else if backend.capabilities.contains("fiber")
                 || backend.capabilities.contains("deferred")
@@ -1076,6 +1079,9 @@ impl Backend<'_> {
                 if let Some(value) = self.filesystem_call(expr, scope)? {
                     return Ok(value);
                 }
+                if let Some(value) = self.child_process_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.process_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -1544,8 +1550,13 @@ impl Backend<'_> {
             ));
         }
         match statement {
-            CoreStatement::PureLet { name, value, .. } => {
-                let value = self.expr(value, scope)?;
+            CoreStatement::PureLet {
+                name,
+                value,
+                type_parameters,
+                ..
+            } => {
+                let value = self.pure_let_value(value, type_parameters, scope)?;
                 let mut inner = scope.clone();
                 inner.insert(name.clone());
                 Ok(format!(

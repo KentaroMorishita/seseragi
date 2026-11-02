@@ -258,6 +258,23 @@ fn compile_project(
         .metadata
         .capabilities
         .iter()
+        .any(|capability| capability == "child-process")
+    {
+        for (_, package) in project.packages().packages() {
+            if package
+                .manifest()
+                .providers
+                .contains_key("std/child-process::ChildProcesses")
+                || !package.manifest().provider_artifacts.is_empty()
+            {
+                return Err(format!("{}: SES-RUST-0001: unsupported native ChildProcesses provider selection/artifact configuration; this target currently uses its built-in child process host", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
         .any(|capability| capability == "random")
     {
         for (_, package) in project.packages().packages() {

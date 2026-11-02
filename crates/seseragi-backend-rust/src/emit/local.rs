@@ -149,6 +149,24 @@ impl LocalCallable {
 }
 
 impl Backend<'_> {
+    pub(super) fn pure_let_value(
+        &mut self,
+        value: &CoreExpr,
+        type_parameters: &[seseragi_syntax::TypeParameter],
+        scope: &Scope,
+    ) -> Result<String> {
+        if type_parameters.is_empty() {
+            return self.expr(value, scope);
+        }
+        let mut inner = scope.clone();
+        let declaration = self.fresh();
+        inner.type_parameters(
+            type_parameters.iter().map(|p| (p.name.clone(), p.arity)),
+            &declaration,
+        );
+        self.expr(value, &inner)
+    }
+
     pub(super) fn local_function(
         &mut self,
         callable: &LocalCallable,

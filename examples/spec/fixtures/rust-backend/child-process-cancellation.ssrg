@@ -1,0 +1,61 @@
+import * as children from "std/child-process"
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+import * as process from "std/process"
+import * as text from "std/text"
+import * as time from "std/time"
+
+fn payload depth: Int -> String = if depth == 0 then "x" else {
+  let half = payload (depth - 1)
+  half + half
+}
+
+effect fn ready marker: paths.Path -> Unit with fileSystem: fs.FileSystem fails String = do {
+  found <- fs.exists marker |> effects.mapError show
+  if found then do {
+    let done: Effect<{fileSystem: fs.FileSystem}, String, Unit> = effects.succeed ()
+    done
+  } else do {
+    effects.yieldNow ()
+    let next: Effect<{fileSystem: fs.FileSystem}, String, Unit> = ready marker
+    next
+  }
+}
+
+effect fn captured command: children.Command -> Unit with childProcesses: children.ChildProcesses fails String = do {
+  _output <- children.runCaptured (children.defaultCaptureLimit ()) (text.encodeUtf8 (payload 20)) command |> effects.mapError show
+  let done: Effect<{childProcesses: children.ChildProcesses}, String, Unit> = effects.succeed ()
+  done
+}
+
+effect fn inherited command: children.Command -> Unit with childProcesses: children.ChildProcesses fails String = do {
+  _status <- children.runInherited command |> effects.mapError show
+  let done: Effect<{childProcesses: children.ChildProcesses}, String, Unit> = effects.succeed ()
+  done
+}
+
+effect fn cancel node: String -> script: String -> mode: String -> Unit with Console, childProcesses: children.ChildProcesses, fileSystem: fs.FileSystem fails String = do {
+  path <- paths.parse node |> effects.fromEither |> effects.mapError show
+  base <- children.command (children.ExecutablePath path) |> effects.fromEither |> effects.mapError show
+  args <- children.addArguments [script, mode] base |> effects.fromEither |> effects.mapError show
+  grace <- time.milliseconds 500 |> effects.fromEither |> effects.mapError show
+  let command = children.terminationGrace grace (children.inDirectory (paths.current ()) args)
+  marker <- paths.child "child.pid" (paths.current ()) |> effects.fromEither |> effects.mapError show
+  worker <- effects.fork (if mode == "cancel-inherited" then inherited command else captured command)
+  ready marker
+  effects.interrupt worker
+  exit <- effects.await worker
+  match exit {
+    effects.FiberCancelled -> println "cancelled" |> effects.mapError show
+    _ -> effects.fail "unexpected child result"
+  }
+}
+
+pub effect fn main -> Unit with Console, childProcesses: children.ChildProcesses, fileSystem: fs.FileSystem, process: process.Process fails String = do {
+  args <- process.arguments () |> effects.mapError show
+  match args {
+    [node, script, mode] -> cancel node script mode
+    _ -> effects.fail "expected node, script and scenario"
+  }
+}

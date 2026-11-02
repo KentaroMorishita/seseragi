@@ -1,0 +1,33 @@
+import * as children from "std/child-process"
+import * as streams from "std/stream"
+import * as time from "std/time"
+import * as effects from "std/effect"
+
+fn result<A> value: Either<children.ChildProcessConfigError, A> -> String = match value {
+  Left error -> show error
+  Right _ -> "ok"
+}
+
+pub effect fn main -> Unit with Console fails String = do {
+  println (result (children.command (children.SearchPath ""))) |> effects.mapError show
+  println (result (children.command (children.SearchPath "a/b"))) |> effects.mapError show
+  println (result (children.command (children.SearchPath "a\\b"))) |> effects.mapError show
+  println (result (children.command (children.SearchPath "a\0b"))) |> effects.mapError show
+  base <- children.command (children.SearchPath "node") |> effects.fromEither |> effects.mapError show
+  added <- children.addArgument "first" base |> effects.fromEither |> effects.mapError show
+  println (result (children.addArgument "雪🙂\0tail" added)) |> effects.mapError show
+  println (result (children.addArguments ["ok", "🙂\0tail", "\0"] added)) |> effects.mapError show
+  println (result (children.addArguments [] base)) |> effects.mapError show
+  println (result (children.setEnvironment "name\0" "value\0" base)) |> effects.mapError show
+  println (result (children.setEnvironment "name" "value\0" base)) |> effects.mapError show
+  println (result (children.unsetEnvironment "name\0" base)) |> effects.mapError show
+  println (result (children.setEnvironment "" "" base)) |> effects.mapError show
+  println (result (children.setEnvironment "a=b" "value" base)) |> effects.mapError show
+  println (result (children.captureLimit 0)) |> effects.mapError show
+  println (result (children.captureLimit (-1))) |> effects.mapError show
+  println (result (children.captureLimit 1)) |> effects.mapError show
+  println (result (children.captureLimit 9007199254740991)) |> effects.mapError show
+  capacity <- streams.bufferCapacity 1 |> effects.fromEither |> effects.mapError show
+  let configured = children.terminationGrace (time.zeroDuration ()) (children.outputBuffer capacity base)
+  println (result (children.addArgument "still immutable" configured)) |> effects.mapError show
+}

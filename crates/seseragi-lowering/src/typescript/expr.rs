@@ -66,6 +66,9 @@ pub(super) fn lower_core_expr_to_typescript(
                 if runtime_prelude_collection_operation(&name, &evidence).is_some()
                     || runtime_standard_operation(&name).is_some()
                     || runtime_iterator_operation(&name).is_some()
+                    || runtime_provider_service_operation(&name).is_some_and(|operation| {
+                        operation.source_arity.is_some_and(|arity| arity > 1)
+                    })
                 {
                     // A bare function reference is a partial application with
                     // no source arguments. Keep evidence and currying identical

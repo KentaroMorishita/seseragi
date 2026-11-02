@@ -23,6 +23,7 @@ enum Instruction {
     Concurrent(ConcurrentOperation),
     FileSystem(NativeFileOperation),
     Stdin(NativeStdinOperation),
+    ChildProcess(NativeChildOperation),
     SignalTransaction,
     SignalSubscribe,
 }
@@ -200,6 +201,7 @@ enum NativeTurn {
     Operation(ConcurrentOperation, Vec<V>),
     FileSystem(NativeFileOperation, Vec<V>),
     Stdin(NativeStdinOperation, Vec<V>),
+    ChildProcess(NativeChildOperation, Vec<V>),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -245,6 +247,7 @@ impl NativeMachine {
                                 | Instruction::Concurrent(_)
                                 | Instruction::FileSystem(_)
                                 | Instruction::Stdin(_)
+                                | Instruction::ChildProcess(_)
                         )
                     {
                         stack.push(NativeFrame::Source(source));
@@ -281,6 +284,13 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::FileSystem(operation, c);
+                            }
+                        }
+                        Instruction::ChildProcess(operation) => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::ChildProcess(operation, c);
                             }
                         }
                         Instruction::Stdin(operation) => {
