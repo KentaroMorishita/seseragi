@@ -19,6 +19,8 @@ mod metadata;
 mod precedence_tests;
 mod scalar_tail;
 mod source_map;
+#[cfg(test)]
+mod string_tests;
 
 use imports::render_import_lines;
 use instances::render_typescript_instances;
@@ -1160,7 +1162,9 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Undefined => "undefined".to_owned(),
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::Number { value } => value.clone(),
-        TypeScriptExpr::String { value } => format!("{value:?}"),
+        TypeScriptExpr::String { value } => {
+            serde_json::to_string(value).expect("serializing a string cannot fail")
+        }
         TypeScriptExpr::Boolean { value } => value.to_string(),
         TypeScriptExpr::Identifier { name } => name.clone(),
         TypeScriptExpr::RuntimeReference { name } => name.clone(),

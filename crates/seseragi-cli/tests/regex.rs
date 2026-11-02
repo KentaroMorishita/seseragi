@@ -98,6 +98,137 @@ fn strict_typescript(source: &str, profile: &str, directory: &Path) {
     ));
 }
 
+fn assert_string_literal_outputs(source: &str, expected: &[u8]) {
+    let scratch = tempfile::tempdir().unwrap();
+    let directory = scratch.path();
+    let input = directory.join("main.ssrg");
+    fs::write(&input, source).unwrap();
+    for profile in ["development", "release"] {
+        let output = directory.join(profile);
+        successful(bounded(
+            cli()
+                .arg("build")
+                .arg(&input)
+                .args([
+                    "--target",
+                    "process",
+                    "--source-map",
+                    "omit",
+                    "--profile",
+                    profile,
+                    "--out-dir",
+                ])
+                .arg(&output),
+            directory,
+        ));
+        strict_typescript(source, profile, &output);
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(output.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        for engine in ["bun", "node"] {
+            let result = successful(bounded(
+                Command::new(runtime(engine, directory))
+                    .arg(output.join(manifest["entry"].as_str().unwrap()))
+                    .env("PATH", ""),
+                directory,
+            ));
+            assert!(result.stderr.is_empty(), "{profile}/{engine}: {result:?}");
+            assert_eq!(result.stdout, expected, "{profile}/{engine}");
+        }
+    }
+    let binary = build_native(&input, directory);
+    assert_native(native_output(&binary, directory), expected);
+    assert_eq!(fs::read_to_string(input).unwrap(), source);
+}
+
+#[test]
+fn nul_string_literals_preserve_bytes_in_strict_ts_bun_node_and_native() {
+    let source = r#"
+pub effect fn main = do {
+  println "\u{0}0"
+  println "\u{0}1"
+  println "\u{0}2"
+  println "\u{0}3"
+  println "\u{0}4"
+  println "\u{0}5"
+  println "\u{0}6"
+  println "\u{0}7"
+  println "\u{0}8"
+  println "\u{0}9"
+  println "\u{0}"
+  println "\u{0}x1"
+  println "\u{0}\u{0}1"
+  println "\u{0}1\u{0}9"
+  println "\\01"
+  println "\\\u{0}1"
+  println "\"\u{0}1\""
+  println "雫\u{0}9🙂e\u{301}"
+  println "\u{1}\u{8}\u{b}\u{c}\n\r\t\\\""
+}
+"#;
+    assert_string_literal_outputs(
+        source,
+        concat!(
+            "\x000\n\x001\n\x002\n\x003\n\x004\n",
+            "\x005\n\x006\n\x007\n\x008\n\x009\n",
+            "\x00\n\x00x1\n\x00\x001\n\x001\x009\n",
+            "\\01\n\\\x001\n\"\x001\"\n雫\x009🙂e\u{301}\n",
+            "\u{1}\u{8}\u{b}\u{c}\n\r\t\\\"\n",
+        )
+        .as_bytes(),
+    );
+}
+
+#[test]
+fn regex_nul_literals_preserve_matches_and_errors_in_strict_ts_bun_node_and_native() {
+    let source = r#"
+import * as regex from "std/regex"
+fn inspect pattern:String -> String = match regex.compile pattern {
+  Left error -> match error.kind {
+    regex.UnexpectedRegexEnd -> "UnexpectedRegexEnd:" + show error.offset
+    regex.InvalidRegexEscape -> "InvalidRegexEscape:" + show error.offset
+    regex.UnsupportedRegexFeature feature -> "UnsupportedRegexFeature:" + feature + ":" + show error.offset
+    _ -> "unexpected error"
+  }
+  Right compiled -> match regex.find compiled pattern {
+    Nothing -> "missing match"
+    Just hit -> hit.text + ":" + show hit.span.start + ":" + show hit.span.end
+      + ":" + show (regex.isMatch compiled "\u{1}")
+  }
+}
+pub effect fn main = do {
+  println (inspect "\u{0}0")
+  println (inspect "\u{0}1")
+  println (inspect "\u{0}2")
+  println (inspect "\u{0}3")
+  println (inspect "\u{0}4")
+  println (inspect "\u{0}5")
+  println (inspect "\u{0}6")
+  println (inspect "\u{0}7")
+  println (inspect "\u{0}8")
+  println (inspect "\u{0}9")
+  println (inspect "\u{0}")
+  println (inspect "\u{0}x1")
+  println (inspect "\u{0}\u{0}1")
+  println (inspect "\u{0}1[")
+  println (inspect "\u{0}1\\q")
+  println (inspect "\\01")
+}
+"#;
+    assert_string_literal_outputs(
+        source,
+        concat!(
+            "\x000:0:2:False\n\x001:0:2:False\n\x002:0:2:False\n",
+            "\x003:0:2:False\n\x004:0:2:False\n\x005:0:2:False\n",
+            "\x006:0:2:False\n\x007:0:2:False\n\x008:0:2:False\n",
+            "\x009:0:2:False\n\x00:0:1:False\n\x00x1:0:3:False\n",
+            "\x00\x001:0:3:False\nUnexpectedRegexEnd:3\nInvalidRegexEscape:2\n",
+            "UnsupportedRegexFeature:backreference:0\n",
+        )
+        .as_bytes(),
+    );
+}
+
 #[test]
 fn regex_matches_strict_ts_bun_node_and_native_for_syntax_captures_and_boundaries() {
     let scratch = tempfile::tempdir().unwrap();
