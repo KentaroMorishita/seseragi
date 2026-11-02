@@ -63,6 +63,10 @@ fn programs(text: &str, directory: &Path) -> Vec<Program> {
             .typescript,
         )
         .unwrap();
+        let mut files = vec![raw];
+        if label == "development" {
+            files.extend([dist.join("main.ts"), dist.join("entry.ts")]);
+        }
         fs::write(
             dist.join("tsconfig.json"),
             serde_json::to_vec(&serde_json::json!({
@@ -73,7 +77,7 @@ fn programs(text: &str, directory: &Path) -> Vec<Program> {
                     "types": ["bun", "node"], "typeRoots": [root().join("node_modules/@types")],
                     "baseUrl": root(), "paths": {"@seseragi/runtime/*": ["runtime/ts/src/*"]},
                     "lib": ["ES2023", "DOM", "DOM.Iterable"]
-                }, "files": [raw]
+                }, "files": files
             }))
             .unwrap(),
         )
@@ -111,6 +115,31 @@ fn programs(text: &str, directory: &Path) -> Vec<Program> {
         entry: None,
     });
     programs
+}
+
+#[test]
+fn empty_and_nonempty_log_fields_match_strict_ts_bun_node_and_native() {
+    for (fields, expected) in [
+        (
+            "`[]",
+            "{\"level\":\"info\",\"message\":\"x\",\"fields\":[]}\n",
+        ),
+        (
+            "`[(\"count\", logs.LogInt 42)]",
+            "{\"level\":\"info\",\"message\":\"x\",\"fields\":[[\"count\",42]]}\n",
+        ),
+    ] {
+        let scratch = tempfile::tempdir().unwrap();
+        let directory = scratch.path();
+        let text = format!(
+            "import * as logs from \"std/log\"\nimport {{ LogEvent }} from \"std/log\"\npub effect fn main = logs.log (LogEvent {{ level: logs.LogInfo, message: \"x\", fields: {fields} }})\n"
+        );
+        for program in programs(&text, directory) {
+            let output = successful(bounded(&mut program.command(), directory));
+            assert!(output.stdout.is_empty(), "{}: {output:?}", program.name);
+            assert_eq!(output.stderr, expected.as_bytes(), "{}", program.name);
+        }
+    }
 }
 
 #[test]
@@ -181,26 +210,29 @@ fn log_write_failure_matches_ts_error_kind_message_and_debug_redaction() {
     // Node also emits stream errors; the host consumes them to observe LogError.
     fs::write(&wrapper, "import { pathToFileURL } from 'node:url';\nprocess.stderr.on('error', () => {});\nawait import(pathToFileURL(process.argv[2]).href);\n").unwrap();
     let shell = runtime("sh", directory);
-    for program in programs(text, directory) {
-        let mut command = Command::new(&shell);
-        command
-            .args(["-c", "exec \"$@\" 2< \"$SESERAGI_LOG_SINK\"", "log-sink"])
-            .arg(&program.executable);
-        if let Some(entry) = &program.entry {
-            command.arg(&wrapper).arg(entry);
+    let inline = "import * as logs from \"std/log\"\nimport * as effects from \"std/effect\"\nimport { LogEvent } from \"std/log\"\npub effect fn main = do { result <- effects.attempt (logs.log (LogEvent { level: logs.LogInfo, message: \"test\", fields: `[] })); match result { Left error -> do { println (show error); println (debug error) }; Right _ -> println \"unexpected success\" } }\n";
+    for text in [text, inline] {
+        for program in programs(text, directory) {
+            let mut command = Command::new(&shell);
+            command
+                .args(["-c", "exec \"$@\" 2< \"$SESERAGI_LOG_SINK\"", "log-sink"])
+                .arg(&program.executable);
+            if let Some(entry) = &program.entry {
+                command.arg(&wrapper).arg(entry);
+            }
+            let output = successful(bounded(
+                command.env("SESERAGI_LOG_SINK", &sink).env("PATH", ""),
+                directory,
+            ));
+            assert_eq!(
+                output.stdout,
+                b"LogError: EBADF: bad file descriptor, write\nLogError { message: \"<redacted>\" }\n",
+                "{}",
+                program.name
+            );
+            assert!(output.stderr.is_empty(), "{}: {output:?}", program.name);
+            assert_eq!(fs::read(&sink).unwrap(), b"");
         }
-        let output = successful(bounded(
-            command.env("SESERAGI_LOG_SINK", &sink).env("PATH", ""),
-            directory,
-        ));
-        assert_eq!(
-            output.stdout,
-            b"LogError: EBADF: bad file descriptor, write\nLogError { message: \"<redacted>\" }\n",
-            "{}",
-            program.name
-        );
-        assert!(output.stderr.is_empty(), "{}: {output:?}", program.name);
-        assert_eq!(fs::read(&sink).unwrap(), b"");
     }
 }
 
