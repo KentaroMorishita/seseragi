@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -163,6 +167,7 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
         }
     }
     assert_eq!(programs.len(), 5);
+    let mut expected_defects = std::collections::BTreeMap::new();
     for (label, executable, argument, is_native) in programs {
         for case in cases {
             let label = format!("{label}-{}", case.name);
@@ -192,8 +197,14 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
                 if case.defect {
                     assert!(stderr.contains(case.native_defect), "{label}: {stderr}");
                 }
+                if case.exit == 70 {
+                    expected_defects.insert(
+                        case.name,
+                        diagnostics::ts_defect_from_native(&result.stderr),
+                    );
+                }
             } else if case.defect {
-                assert_eq!(stderr, "seseragi: runtime defect\n", "{label}");
+                assert_eq!(stderr, expected_defects[case.name], "{label}");
             } else if case.failure.is_none() {
                 assert!(stderr.is_empty(), "{label}: {stderr}");
             }
@@ -1889,6 +1900,69 @@ fn basic_iterable_build_iterate_step_hash_eq_and_source_defects_release_every_ro
 #[test]
 fn basic_iterable_build_path_package_keeps_imported_opaque_sources_keys_and_generic_factories() {
     compare(&root().join("examples/spec/fixtures/rust-backend-projects/basic-iterable-build"),&[Case::success(b"[3, 1, 3, 2]\n`[3, 1, 3, 2]\n[3, 1, 2]\n[(key:1, new), (key:2, second)]\n[(key:1, new), (key:2, second)]\n[3, 1, 3, 2]\n")]);
+}
+
+#[test]
+fn basic_stream_saved_functions_keep_checked_callable_types() {
+    let scratch = Scratch::new();
+    let path = scratch.0.join("stream-saved-effect.ssrg");
+    fs::write(
+        &path,
+        r#"
+import * as streams from "std/stream"
+import * as effects from "std/effect"
+fn increment value: Int -> Int = value + 1
+fn add total: Int -> value: Int -> Int = total + value
+fn runCollect value: Int -> Int = value + 1
+fn map value: Int -> Int = value * 2
+pub effect fn main = do {
+  let action: Effect<{}, Never, Int> = effects.succeed 1
+  let source: streams.Stream<{}, Never, Int> = streams.fromEffect action
+  let collect: streams.Stream<{}, Never, Int> -> Effect<{}, Never, Array<Int>> = streams.runCollect
+  let mapped: streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int> = streams.map increment
+  values <- collect (mapped source)
+  println (show values)
+  let fold: (Int -> Int -> Int) -> streams.Stream<{}, Never, Int> -> Effect<{}, Never, Int> = streams.runFold 10
+  total <- fold add source
+  println (show total)
+  let ownCollect: Int -> Int = runCollect
+  let ownMap: Int -> Int = map
+  println (show (ownMap (ownCollect 20)))
+}
+"#,
+    )
+    .unwrap();
+    compare(&path, &[Case::success(b"[2]\n11\n42\n")]);
+}
+
+#[test]
+fn basic_stream_partial_arguments_are_evaluated_before_the_remaining_call() {
+    for expression in ["streams.map (callback (42 / 0))", "streams.take (42 / 0)"] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("stream-partial-defect.ssrg");
+        fs::write(
+            &path,
+            format!(
+                "import * as streams from \"std/stream\"\n\
+                 fn callback seed: Int -> (Int -> Int) = \\value: Int -> seed + value\n\
+                 pub effect fn main = do {{\n\
+                   println \"before\"\n\
+                   let pending: streams.Stream<{{}}, Never, Int> -> streams.Stream<{{}}, Never, Int> = {expression}\n\
+                   println \"unreachable\"\n\
+                 }}\n"
+            ),
+        )
+        .unwrap();
+        compare(
+            &path,
+            &[Case {
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"before\n")
+            }],
+        );
+    }
 }
 
 #[test]

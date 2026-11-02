@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/add-fn",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 37,
+      "end": 42
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add"
@@ -40,6 +47,10 @@
           {
             "kind": "identifier",
             "name": "y"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source37"
           }
         ]
       },

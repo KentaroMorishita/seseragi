@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-map-error-adt",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 152,
+      "end": 199
+    },
+    {
+      "source": "main.ssrg",
+      "start": 174,
+      "end": 198
+    },
+    {
+      "source": "main.ssrg",
+      "start": 180,
+      "end": 197
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -86,27 +103,81 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_effect_mapError",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "InvalidHand"
+            "name": "$ssrg$source152"
           },
           {
-            "kind": "runtime-call",
-            "callee": "_ssrg_effect_fail",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "UnknownHand",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "input"
-                  }
-                ]
-              }
-            ]
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "InvalidHand"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source174"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_effect_fail",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source180"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "UnknownHand",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "input"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

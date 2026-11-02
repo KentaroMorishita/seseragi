@@ -81,7 +81,7 @@ impl NativeBigInt {
     }
 
     fn quotient_remainder(&self, divisor: &Self) -> (Self, Self) {
-        assert!(!divisor.is_zero(), "BigInt division by zero");
+        assert!(!divisor.is_zero(), "Seseragi BigInt division by zero");
         if Self::magnitude_order(&self.limbs, &divisor.limbs).is_lt() {
             return (
                 Self::from_i64(0),
@@ -118,7 +118,7 @@ impl NativeBigInt {
 
     pub fn power(&self, exponent: i64) -> Self {
         let exponent = checked_int_value(exponent);
-        assert!(exponent >= 0, "BigInt negative exponent");
+        assert!(exponent >= 0, "Seseragi BigInt negative exponent");
         let mut remaining = exponent as u64;
         let mut result = Self::from_i64(1);
         let mut factor = Self::from_limbs(self.negative, self.limbs.clone());
@@ -154,11 +154,11 @@ pub fn native_big_int_arithmetic(operator: &str, left: V, right: V) -> V {
         "-" => left.subtract(right),
         "*" => left.multiply(right),
         "/" => {
-            assert!(!right.is_zero(), "BigInt division by zero");
+            assert!(!right.is_zero(), "Seseragi BigInt division by zero");
             left.quotient_remainder(right).0
         }
         "%" => {
-            assert!(!right.is_zero(), "BigInt remainder by zero");
+            assert!(!right.is_zero(), "Seseragi BigInt remainder by zero");
             left.quotient_remainder(right).1
         }
         _ => panic!("Rust ABI: unsupported BigInt arithmetic operator"),

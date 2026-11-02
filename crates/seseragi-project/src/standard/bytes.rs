@@ -1,0 +1,168 @@
+use super::*;
+
+pub(super) fn bytes_interface() -> ModuleInterface {
+    let module = "std/bytes";
+    let byte = external_type("Byte", "std/bytes::Byte", module, "Byte", Vec::new());
+    let bytes = external_type("Bytes", "std/bytes::Bytes", module, "Bytes", Vec::new());
+    let byte_error = external_type(
+        "ByteError",
+        "std/bytes::ByteError",
+        module,
+        "ByteError",
+        Vec::new(),
+    );
+    let slice_error = external_type(
+        "BytesSliceError",
+        "std/bytes::BytesSliceError",
+        module,
+        "BytesSliceError",
+        Vec::new(),
+    );
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Byte", 0, "opaque-type"),
+            type_export(module, "Bytes", 0, "opaque-type"),
+            opaque_adt_type_export(module, "ByteError", []),
+            constructor_export(
+                module,
+                "ByteError",
+                "ByteOutOfRange",
+                [],
+                Some(named("Int")),
+            ),
+            opaque_adt_type_export(module, "BytesSliceError", []),
+            constructor_export(
+                module,
+                "BytesSliceError",
+                "InvalidByteRange",
+                [],
+                Some(record([
+                    required("start", named("Int")),
+                    required("end", named("Int")),
+                    required("length", named("Int")),
+                ])),
+            ),
+            function_export(
+                module,
+                "byte",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                named_with("Either", vec![byte_error.clone(), byte.clone()]),
+            ),
+            function_export(
+                module,
+                "toInt",
+                [],
+                Vec::new(),
+                vec![byte.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "empty",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "singleton",
+                [],
+                Vec::new(),
+                vec![byte.clone()],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "fromArray",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![byte.clone()])],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "fromInts",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![named("Int")])],
+                named_with("Either", vec![byte_error, bytes.clone()]),
+            ),
+            function_export(
+                module,
+                "toArray",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named_with("Array", vec![byte.clone()]),
+            ),
+            function_export(
+                module,
+                "toInts",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named_with("Array", vec![named("Int")]),
+            ),
+            function_export(
+                module,
+                "length",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "isEmpty",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "get",
+                [],
+                Vec::new(),
+                vec![named("Int"), bytes.clone()],
+                named_with("Maybe", vec![byte.clone()]),
+            ),
+            function_export(
+                module,
+                "slice",
+                [],
+                Vec::new(),
+                vec![named("Int"), named("Int"), bytes.clone()],
+                named_with("Either", vec![slice_error, bytes.clone()]),
+            ),
+            function_export(
+                module,
+                "copy",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "append",
+                [],
+                Vec::new(),
+                vec![bytes.clone(), bytes.clone()],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "concat",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![bytes.clone()])],
+                bytes,
+            ),
+        ],
+    )
+}

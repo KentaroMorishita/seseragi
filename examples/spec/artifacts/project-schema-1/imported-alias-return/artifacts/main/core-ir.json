@@ -451,6 +451,49 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "A"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "Foreign",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "Foreign",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {
@@ -712,6 +755,50 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "Foreign",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "external-named",
+                        "name": "Foreign",
+                        "canonical": "fixture/imported-alias-return::domain::Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "evidence": [
                     {
                       "constraint": {
@@ -841,6 +928,58 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Foreign",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "Foreign",
+                    "canonical": "fixture/imported-alias-return::domain::Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "evidence": [
                 {
                   "constraint": {
@@ -1061,6 +1200,50 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Foreign",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "Foreign",
+                    "canonical": "fixture/imported-alias-return::domain::Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Let426T0",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Let426T0",
+                    "arguments": []
+                  }
+                ]
+              },
               "evidence": [
                 {
                   "constraint": {
@@ -1143,6 +1326,37 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "Let426T0"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "Let426T0",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "evidence": [
                     {
                       "constraint": {
@@ -1226,6 +1440,37 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "Let426T0"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Let426T0",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                ]
+              },
               "evidence": [
                 {
                   "constraint": {

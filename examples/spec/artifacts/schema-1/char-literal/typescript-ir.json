@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/char-literal",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 248,
+      "end": 256
+    },
+    {
+      "source": "main.ssrg",
+      "start": 258,
+      "end": 270
+    },
+    {
+      "source": "main.ssrg",
+      "start": 299,
+      "end": 316
+    },
+    {
+      "source": "main.ssrg",
+      "start": 318,
+      "end": 332
+    }
+  ],
   "closedDisplayDictionaries": [
     {
       "name": "$ssrg$closedDisplay$0",
@@ -120,21 +142,57 @@
         "elements": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_maybe_Just",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "string",
-                "value": "a"
+                "kind": "identifier",
+                "name": "$ssrg$source248"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_maybe_Just",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "a"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_maybe_Just",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
                 "kind": "identifier",
-                "name": "escaped"
+                "name": "$ssrg$source258"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_maybe_Just",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "escaped"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           }
@@ -171,27 +229,63 @@
         "kind": "tuple",
         "elements": [
           {
-            "kind": "call",
-            "callee": "identity",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
                 "kind": "identifier",
-                "name": "account$prime"
-              }
-            ],
-            "typeArguments": [
+                "name": "$ssrg$source299"
+              },
               {
-                "kind": "string"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "identity",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "account$prime"
+                    }
+                  ],
+                  "typeArguments": [
+                    {
+                      "kind": "string"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
-            "kind": "call",
-            "callee": "character",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "string",
-                "value": "'"
+                "kind": "identifier",
+                "name": "$ssrg$source318"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "character",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "'"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           }

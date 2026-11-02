@@ -13,16 +13,22 @@
     "Active",
     "__ssrg$instance$Ready$0",
     "describe",
+    "$ssrg$atSource",
     "stringAdd",
+    "$ssrg$atSource",
     "__ssrg$evidence$0",
     "applyLabel",
+    "$ssrg$atSource",
     "labeler",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "applyLabel",
+    "$ssrg$atSource",
     "__ssrg$partial$stage",
     "describe",
     "__ssrg$partial$stage"
   ],
-  "mappings": ";;;;;AAAAA;;AACIC;AAMJC;AAIAC;AAOAG;AAKAE"
+  "mappings": ";;;;;;;;;AAAAA;;AACIC;AAMJC;AAIAC;AAOAK;AAKAG"
 }

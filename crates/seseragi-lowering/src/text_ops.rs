@@ -569,6 +569,13 @@ mod tests {
     use super::*;
 
     #[test]
+    fn macro_generated_runtime_modules_are_public() {
+        crate::runtime_exports::assert_public_runtime_modules(
+            OPERATIONS.iter().map(|operation| operation.module),
+        );
+    }
+
+    #[test]
     fn maps_all_text_operations_only_by_canonical_identity() {
         for operation in OPERATIONS {
             assert_eq!(

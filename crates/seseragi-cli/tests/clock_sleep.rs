@@ -1,6 +1,10 @@
 #[path = "../../test-support/native_cache.rs"]
 mod native_cache;
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use sha2::{Digest, Sha256};
 use std::{
     fs::{self, File},
@@ -401,6 +405,7 @@ fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
         );
     }
     let mut failures = Vec::new();
+    let mut expected_defect = None;
     for (label, executable, argument, native) in programs {
         let directory = scratch.0.join(format!("run-{label}"));
         fs::create_dir(&directory).unwrap();
@@ -425,12 +430,23 @@ fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
                     stderr.contains("Seseragi Defect: Seseragi Int overflow"),
                     "{name}: {stderr}"
                 );
+                let diagnostic = diagnostics::ts_defect_from_native(&result.stderr);
+                expected_defect = Some(if provider == CLOCK_PROVIDER {
+                    let positioned = diagnostic.strip_prefix("main.ssrg:").unwrap();
+                    format!("src/main.ssrg:{positioned}")
+                } else {
+                    diagnostic
+                });
             }
             if provider == CLOCK_PROVIDER {
                 assert!(stderr.contains("timers-live=0"), "{stderr}");
             }
         } else if defect {
-            assert_eq!(result.stderr, b"seseragi: runtime defect\n", "{name}");
+            assert_eq!(
+                String::from_utf8_lossy(&result.stderr),
+                *expected_defect.as_ref().unwrap(),
+                "{name}"
+            );
         } else {
             assert!(result.stderr.is_empty(), "{name}: {result:?}");
         }
@@ -511,6 +527,7 @@ fn run_transform(
     case: &str,
     input: Option<&[u8]>,
 ) {
+    let mut expected_defect = None;
     for (label, executable, argument, native) in programs {
         let cwd = directory.join(format!("{label}-{case}"));
         fs::create_dir(&cwd).unwrap();
@@ -657,8 +674,15 @@ fn run_transform(
             if !reason.is_empty() {
                 assert!(stderr.contains(reason), "{label}/{case}: {stderr}");
             }
+            if code == 70 {
+                let diagnostic = diagnostics::ts_defect_from_native(&result.stderr);
+                // TS builds the unchanged standalone body as a package entry.
+                // Only its source label differs; keep positions and messages exact.
+                let positioned = diagnostic.strip_prefix("original.ssrg:").unwrap();
+                expected_defect = Some(format!("src/main.ssrg:{positioned}"));
+            }
         } else if code == 70 {
-            assert_eq!(stderr, "seseragi: runtime defect\n", "{label}/{case}");
+            assert_eq!(stderr, *expected_defect.as_ref().unwrap(), "{label}/{case}");
         } else if code == 0 {
             assert!(stderr.is_empty(), "{label}/{case}: {stderr}");
         } else {

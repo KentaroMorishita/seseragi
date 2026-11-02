@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-user-ord-operator::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-user-ord-operator/src/domain.ssrg",
+      "start": 99,
+      "end": 124
+    },
+    {
+      "source": "project/imported-user-ord-operator/src/domain.ssrg",
+      "start": 204,
+      "end": 234
+    }
+  ],
   "runtimeRequirements": [
     "core.int.eq-dictionary",
     "core.bool",
@@ -76,28 +88,46 @@
               }
             ],
             "body": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_eq_dictionary"
-              },
-              "method": "eq",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "left"
-                  },
-                  "field": "value"
+                  "kind": "identifier",
+                  "name": "$ssrg$source99"
                 },
                 {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "right"
-                  },
-                  "field": "value"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_eq_dictionary"
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "left"
+                        },
+                        "field": "value"
+                      },
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "right"
+                        },
+                        "field": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -158,36 +188,54 @@
               }
             ],
             "body": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_int_ord_dictionary"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source204"
                 },
-                "method": "compare",
-                "arguments": [
-                  {
-                    "kind": "field-access",
-                    "receiver": {
-                      "kind": "identifier",
-                      "name": "right"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_int_ord_dictionary"
+                      },
+                      "method": "compare",
+                      "arguments": [
+                        {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "identifier",
+                            "name": "right"
+                          },
+                          "field": "value"
+                        },
+                        {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "identifier",
+                            "name": "left"
+                          },
+                          "field": "value"
+                        }
+                      ]
                     },
-                    "field": "value"
-                  },
-                  {
-                    "kind": "field-access",
-                    "receiver": {
-                      "kind": "identifier",
-                      "name": "left"
-                    },
-                    "field": "value"
+                    "type": {
+                      "kind": "ordering"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "ordering"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             },
             "origin": {
               "source": "domain.ssrg",

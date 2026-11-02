@@ -17,7 +17,8 @@
     "__ssrg$instance$Applicative$1",
     "__ssrg$instance$Monad$2",
     "bind",
+    "$ssrg$atSource",
     "__ssrg$evidence$0"
   ],
-  "mappings": ";;;;;;;AAAAA;;AACIC;AAEJC;;AACIC;AAMJC;AAaAC;AAcAC;AAOAC"
+  "mappings": ";;;;;;;;;;;;;;;AAAAA;;AACIC;AAEJC;;AACIC;AAMJC;AAaAC;AAcAC;AAOAC"
 }

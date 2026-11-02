@@ -49,6 +49,10 @@ export function createCompilerWorkerClient(
         const reply = event.data
         const request = pending.get(reply.id)
         if (worker !== transport || request === undefined) return
+        if (!reply.ok && reply.fatal) {
+          failWorker(new Error(reply.error))
+          return
+        }
         clearTimeout(request.timer)
         pending.delete(reply.id)
         if (reply.ok) request.resolve(reply.result)

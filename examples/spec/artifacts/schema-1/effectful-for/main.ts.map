@@ -10,23 +10,30 @@
   ],
   "names": [
     "main",
+    "$ssrg$atSource",
     "_ssrg_collection_for_each",
     "arrayIterable",
     "value",
+    "$ssrg$atSource",
     "println",
     "intShow",
+    "$ssrg$atSource",
     "_ssrg_collection_for_each",
     "listIterable",
     "value",
+    "$ssrg$atSource",
     "println",
     "intShow",
     "fromArray",
+    "$ssrg$atSource",
     "_ssrg_collection_for_each",
     "rangeIterable",
     "value",
+    "$ssrg$atSource",
     "println",
     "intShow",
+    "$ssrg$atSource",
     "inclusive"
   ],
-  "mappings": ";;;;;;;;;;AAAAA"
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAAA"
 }

@@ -1,0 +1,168 @@
+use super::{catch_lowering_panic, fault};
+use crate::{
+    compile_core_module, compile_core_project, compile_linked_module_with_output_paths,
+    compile_module, compile_project, CompileInput, LinkedCompileError, ProjectCompileError,
+    ProjectModuleInput,
+};
+use seseragi_lowering::{GeneratedOutputPaths, TypeScriptOutputPlan};
+use seseragi_project::ModuleGraph;
+use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact, DiagnosticSeverity};
+
+const SOURCE: &str = "pub fn answer -> Int = 42\n";
+const STAGES: [fault::Stage; 3] = [
+    fault::Stage::Core,
+    fault::Stage::TypeScript,
+    fault::Stage::Emission,
+];
+
+fn assert_internal_error(diagnostics: &DiagnosticArtifact, source: &str) {
+    assert_eq!(diagnostics.source, source);
+    assert_eq!(diagnostics.schema, 1);
+    assert_eq!(diagnostics.position_encoding, "utf-8");
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    let diagnostic = &diagnostics.diagnostics[0];
+    assert_eq!(diagnostic.id, "d1");
+    assert_eq!(diagnostic.code, "SES-I0001");
+    assert_eq!(diagnostic.severity, DiagnosticSeverity::Error);
+    assert_eq!(diagnostic.message(), "Internal compiler error");
+    let note = "This is a bug in the compiler, not an error in your source. Please report it with the source that triggers it.";
+    assert_eq!(diagnostic.notes(), [note]);
+    assert_eq!(diagnostic.primary.start, 0);
+    assert_eq!(diagnostic.primary.end, 0);
+    assert!(diagnostic.fixes.is_empty());
+    let json = serde_json::to_value(diagnostics).unwrap();
+    assert_eq!(json["diagnostics"][0]["message"], "Internal compiler error");
+    assert_eq!(json["diagnostics"][0]["notes"], serde_json::json!([note]));
+    let terminal = crate::render_terminal_diagnostics(diagnostics, SOURCE);
+    assert!(terminal.contains(source));
+    assert!(terminal.contains("error[SES-I0001]: Internal compiler error"));
+    assert!(terminal.contains(&format!("  = note: {note}\n")));
+}
+
+fn project() -> (ModuleGraph<String>, Vec<ProjectModuleInput>) {
+    let mut graph = ModuleGraph::new();
+    graph.add_module("app/lib".to_owned(), []).unwrap();
+    graph
+        .add_module(
+            "app/main".to_owned(),
+            [("./lib".to_owned(), "app/lib".to_owned())],
+        )
+        .unwrap();
+    let inputs = vec![
+        ProjectModuleInput::new("lib.ssrg", "app/lib", SOURCE, "lib.js"),
+        ProjectModuleInput::new(
+            "main.ssrg",
+            "app/main",
+            "import { answer } from \"./lib\"\npub fn result -> Int = answer ()\n",
+            "main.js",
+        ),
+    ];
+    (graph, inputs)
+}
+
+#[test]
+fn single_module_discards_output_and_recovers_after_each_lowering_stage_panics() {
+    for profile in [
+        crate::BuildProfile::Development,
+        crate::BuildProfile::Release,
+    ] {
+        let input = CompileInput::new("single.ssrg", "app/single", SOURCE).with_profile(profile);
+        let expected = compile_module(input).unwrap();
+        assert!(!expected.generated.typescript.is_empty());
+        for stage in STAGES {
+            let diagnostics = fault::with_panic_at(stage, 0, || compile_module(input))
+                .expect_err("panicking compilation must return diagnostics without artifacts");
+            assert_internal_error(&diagnostics, "single.ssrg");
+            assert_eq!(compile_module(input).unwrap(), expected);
+        }
+    }
+}
+
+#[test]
+fn project_discards_earlier_modules_and_recovers_after_each_lowering_stage_panics() {
+    let (graph, inputs) = project();
+    let expected = compile_project(graph.clone(), inputs.clone()).unwrap();
+    assert_eq!(expected.order, ["app/lib", "app/main"]);
+    for stage in STAGES {
+        let error =
+            fault::with_panic_at(stage, 1, || compile_project(graph.clone(), inputs.clone()))
+                .expect_err("a project must not return partial module artifacts");
+        let ProjectCompileError::Compile {
+            module,
+            error: LinkedCompileError::Diagnostics(diagnostics),
+        } = error
+        else {
+            panic!("expected internal-error diagnostics, got {error:?}");
+        };
+        assert_eq!(module, "app/main");
+        assert_internal_error(&diagnostics, "main.ssrg");
+        assert_eq!(
+            compile_project(graph.clone(), inputs.clone()).unwrap(),
+            expected
+        );
+    }
+}
+
+#[test]
+fn core_only_module_returns_diagnostics_and_recovers_after_lowering_panics() {
+    let input = CompileInput::new("native.ssrg", "app/native", SOURCE);
+    let expected = compile_core_module(input).unwrap();
+    let diagnostics = fault::with_panic_at(fault::Stage::Core, 0, || compile_core_module(input))
+        .expect_err("native compilation must not return partial Core IR");
+    assert_internal_error(&diagnostics, "native.ssrg");
+    assert_eq!(compile_core_module(input).unwrap(), expected);
+}
+
+#[test]
+fn core_only_project_discards_earlier_modules_and_recovers_after_lowering_panics() {
+    let (graph, inputs) = project();
+    let expected = compile_core_project(graph.clone(), inputs.clone()).unwrap();
+    let error = fault::with_panic_at(fault::Stage::Core, 1, || {
+        compile_core_project(graph.clone(), inputs.clone())
+    })
+    .expect_err("native project compilation must not return partial Core IR");
+    let ProjectCompileError::Diagnostics { modules } = error else {
+        panic!("expected internal-error diagnostics, got {error:?}");
+    };
+    assert_eq!(modules.len(), 1);
+    assert_eq!(modules[0].module, "app/main");
+    assert_internal_error(&modules[0].diagnostics, "main.ssrg");
+    assert_eq!(compile_core_project(graph, inputs).unwrap(), expected);
+}
+
+#[test]
+fn linked_module_propagates_internal_diagnostics_and_recovers() {
+    let linked = seseragi_project::link_module(
+        seseragi_syntax::parse_unlinked_module_interface("linked.ssrg", "app/linked", SOURCE),
+        &Default::default(),
+    )
+    .unwrap();
+    let plan = TypeScriptOutputPlan::default();
+    let compile = || {
+        compile_linked_module_with_output_paths(
+            linked.clone(),
+            SOURCE,
+            &plan,
+            GeneratedOutputPaths::default(),
+        )
+    };
+    let expected = compile().unwrap();
+    for stage in STAGES {
+        let error = fault::with_panic_at(stage, 0, compile).unwrap_err();
+        let LinkedCompileError::Diagnostics(diagnostics) = error else {
+            panic!("expected internal-error diagnostics, got {error:?}");
+        };
+        assert_internal_error(&diagnostics, "linked.ssrg");
+        assert_eq!(compile().unwrap(), expected);
+    }
+}
+
+#[test]
+fn non_string_panic_payload_also_returns_an_internal_error() {
+    let diagnostics = catch_lowering_panic(parse_diagnostics("payload.ssrg", SOURCE), || {
+        std::panic::panic_any(42_u32)
+    })
+    .unwrap_err();
+    assert_internal_error(&diagnostics, "payload.ssrg");
+    assert!(compile_module(CompileInput::new("payload.ssrg", "app/payload", SOURCE)).is_ok());
+}

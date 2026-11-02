@@ -1,5 +1,4 @@
-examples/tour/lessons/bool-literal/diagnostic.ssrg:1:39: error[SES-T0201]: A required trait instance is not available
+examples/tour/lessons/bool-literal/diagnostic.ssrg:1:39: error[SES-N0001]: Name could not be resolved
   | pub effect fn main = println `Bool: ${true}`
-  |                                       ^^^^ no Show<unknown> instance matches the inferred call arguments
-  = note: Trait instances are selected from the current lexical and import scope.
-  = help: Define or import a matching instance, or use a type with an available instance.
+  |                                       ^^^^ effect function body
+  = help: Check the spelling, or define or import the name before using it.

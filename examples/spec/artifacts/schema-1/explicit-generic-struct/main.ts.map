@@ -11,11 +11,14 @@
   "names": [
     "Marker",
     "render",
+    "$ssrg$atSource",
     "stringAdd",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
     "marker"
   ],
-  "mappings": ";;;;;;;;;;AAAAA;;;;;AAUAC;AAGAE;AARAG"
+  "mappings": ";;;;;;;;;;;;;AAAAA;;;;;AAUAC;AAGAG;AARAK"
 }

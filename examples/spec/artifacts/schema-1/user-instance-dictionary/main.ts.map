@@ -14,11 +14,14 @@
     "Paused",
     "__ssrg$instance$Render$0",
     "label",
+    "$ssrg$atSource",
     "__ssrg$instance$Render$0",
     "status",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "label"
   ],
-  "mappings": ";;;;AAAAA;;;AACIC;AACAC;AAMJC;AAQAC;AAEAE;AAEAC"
+  "mappings": ";;;;;;;;AAAAA;;;AACIC;AACAC;AAMJC;AAQAC;AAEAG;AAEAC"
 }

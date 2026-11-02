@@ -203,6 +203,7 @@ fn push_declaration_mapping(
 fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
     let import_lines = render_import_lines(module).len();
     import_lines
+        + module.runtime_sources.len()
         + 1 // Unicode ABI guard precedes every source declaration.
         + super::render_kind_declarations(module).lines().count()
         + module.closed_display_dictionaries.len()
@@ -408,6 +409,7 @@ fn collect_expr_names(
             collect_expr_names(result, helper_names, names);
         }
         TypeScriptExpr::Undefined
+        | TypeScriptExpr::EmptyDictionary
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::Boolean { .. }
@@ -651,6 +653,7 @@ mod tests {
             schema: 1,
             stage: "typescript-ir".to_owned(),
             module: "fixture/game::main".to_owned(),
+            runtime_sources: Vec::new(),
             runtime_requirements: Vec::new(),
             imports: Vec::new(),
             type_imports: Vec::new(),

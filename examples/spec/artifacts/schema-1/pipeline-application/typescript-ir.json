@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/pipeline-application",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 215,
+      "end": 229
+    },
+    {
+      "source": "main.ssrg",
+      "start": 261,
+      "end": 270
+    },
+    {
+      "source": "main.ssrg",
+      "start": 452,
+      "end": 511
+    },
+    {
+      "source": "main.ssrg",
+      "start": 466,
+      "end": 481
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
@@ -52,6 +74,10 @@
           {
             "kind": "identifier",
             "name": "value"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source215"
           }
         ]
       },
@@ -83,6 +109,10 @@
           {
             "kind": "number",
             "value": "2"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source261"
           }
         ]
       },
@@ -157,33 +187,105 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "describe",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "double",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "add",
-                    "arguments": [
-                      {
-                        "kind": "number",
-                        "value": "5"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "16"
+            "kind": "identifier",
+            "name": "$ssrg$source452"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source466"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "describe",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source466"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "double",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source466"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "call",
+                                            "callee": "add",
+                                            "arguments": [
+                                              {
+                                                "kind": "number",
+                                                "value": "5"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "16"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
                       }
-                    ]
-                  }
-                ]
-              }
-            ]
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

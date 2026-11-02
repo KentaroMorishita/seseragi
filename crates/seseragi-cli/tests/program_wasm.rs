@@ -1956,9 +1956,8 @@ pub effect fn main = do { answer <- oracle (); println answer }
                 &scratch.0,
             ));
             let raw_runner = if label == "cleanup" {
-                    // Process entry deliberately keeps Defects opaque. Inspect
-                    // the same original raw TypeScript via its public runtime
-                    // outcome instead, preserving both ordered cleanup errors.
+                    // Inspect the original TypeScript outcome as well as the
+                    // process diagnostic to retain both ordered cleanup errors.
                     fs::write(output.join("raw-check.mjs"), r##"
 import assert from "node:assert/strict";
 import { cleanupFactory } from "./raw.ts";
@@ -1998,7 +1997,7 @@ console.log("raw cleanup checked");
                 if code == 0 {
                     assert!(error.is_empty(), "{error}");
                 } else {
-                    assert!(error.contains("seseragi: runtime defect"), "{error}");
+                    assert!(error.contains("Seseragi Defect:"), "{error}");
                 }
                 if let Some(runner) = &raw_runner {
                     let raw_result = successful(bounded(
@@ -2211,7 +2210,7 @@ pub effect fn main = do { answer <- oracle () |> effects.recover unexpected; pri
                 assert_eq!(result.stdout,expected.as_bytes());
                 let error=String::from_utf8_lossy(&result.stderr);
                 if code==0 { assert!(error.is_empty(),"{error}"); }
-                else { assert!(error.contains("seseragi: runtime defect"),"{error}"); }
+                else { assert!(error.contains("Seseragi Defect:"),"{error}"); }
             }
         }
     }

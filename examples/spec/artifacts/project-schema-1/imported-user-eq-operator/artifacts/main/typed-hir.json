@@ -635,6 +635,50 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "T"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {
@@ -699,6 +743,50 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "T"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "Status",
+                          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {

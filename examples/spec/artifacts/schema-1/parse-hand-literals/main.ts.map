@@ -17,11 +17,15 @@
     "Parsed",
     "UnknownHand",
     "parseHand",
+    "$ssrg$atSource",
     "Parsed",
+    "$ssrg$atSource",
     "Parsed",
+    "$ssrg$atSource",
     "Parsed",
     "other",
+    "$ssrg$atSource",
     "UnknownHand"
   ],
-  "mappings": ";;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAEJC"
+  "mappings": ";;;;;;;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAEJC"
 }

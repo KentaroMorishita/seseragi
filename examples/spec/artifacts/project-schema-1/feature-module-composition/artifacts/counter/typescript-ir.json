@@ -2,6 +2,83 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/feature-module-composition::counter",
+  "runtimeSources": [
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 345,
+      "end": 360
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 402,
+      "end": 417
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 532,
+      "end": 568
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 548,
+      "end": 561
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 703,
+      "end": 977
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 740,
+      "end": 805
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 763,
+      "end": 787
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 813,
+      "end": 878
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 836,
+      "end": 860
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 886,
+      "end": 913
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 921,
+      "end": 967
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 1096,
+      "end": 1136
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 1141,
+      "end": 1187
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 1151,
+      "end": 1187
+    },
+    {
+      "source": "project/feature-module-composition/src/counter.ssrg",
+      "start": 1164,
+      "end": 1180
+    }
+  ],
   "runtimeRequirements": [
     "signal.mutable-type",
     "effect.core.type",
@@ -207,6 +284,10 @@
                       {
                         "kind": "number",
                         "value": "1"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source345"
                       }
                     ]
                   }
@@ -242,6 +323,10 @@
                       {
                         "kind": "number",
                         "value": "1"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source402"
                       }
                     ]
                   }
@@ -285,21 +370,57 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_signal_update",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "update",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "action"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source532"
           },
           {
-            "kind": "identifier",
-            "name": "state"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_update",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source548"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "update",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "action"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },
@@ -332,177 +453,303 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_section",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "array",
-                  "elements": [
+            "kind": "identifier",
+            "name": "$ssrg$source703"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_section",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "call",
-                                "callee": "dispatch",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "state"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "Decrement"
-                                  }
-                                ]
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "-1"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "call",
-                                "callee": "dispatch",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "state"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "Increment"
-                                  }
-                                ]
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "+1"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_h2",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
                                 "kind": "identifier",
-                                "name": "label"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_p",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "binary",
-                                "operator": "+",
-                                "left": {
-                                  "kind": "string",
-                                  "value": "Count: "
-                                },
-                                "right": {
-                                  "kind": "dictionary-call",
-                                  "dictionary": {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_show_intShow"
-                                  },
-                                  "method": "show",
+                                "name": "$ssrg$source740"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_button",
                                   "arguments": [
                                     {
-                                      "kind": "field-access",
-                                      "receiver": {
-                                        "kind": "identifier",
-                                        "name": "current"
-                                      },
-                                      "field": "count"
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "onClick",
+                                          "value": {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source763"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "call",
+                                                  "callee": "dispatch",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "state"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "Decrement"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": true
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "-1"
+                                          }
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
                               }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source813"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_button",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "onClick",
+                                          "value": {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source836"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "call",
+                                                  "callee": "dispatch",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "state"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "Increment"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": true
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "+1"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source886"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_h2",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "label"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source921"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_p",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "binary",
+                                            "operator": "+",
+                                            "left": {
+                                              "kind": "string",
+                                              "value": "Count: "
+                                            },
+                                            "right": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "runtime-reference",
+                                                "name": "_ssrg_show_intShow"
+                                              },
+                                              "method": "show",
+                                              "arguments": [
+                                                {
+                                                  "kind": "field-access",
+                                                  "receiver": {
+                                                    "kind": "identifier",
+                                                    "name": "current"
+                                                  },
+                                                  "field": "count"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "never"
+                                },
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
                             }
                           ]
                         }
-                      ]
-                    }
-                  ],
-                  "elementType": {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Effect",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "fields": []
-                          },
-                          {
-                            "kind": "never"
-                          },
-                          {
-                            "kind": "undefined"
-                          }
-                        ]
                       }
-                    ]
-                  }
+                    }
+                  ]
                 }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -541,33 +788,51 @@
               ]
             },
             "initializer": {
-              "kind": "type-application-call",
-              "callee": "_ssrg_signal_make",
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "CounterState",
-                  "arguments": []
-                }
-              ],
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "record",
-                  "items": [
-                    {
-                      "kind": "field",
-                      "name": "count",
-                      "value": {
-                        "kind": "number",
-                        "value": "0"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1096"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_signal_make",
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "CounterState",
+                        "arguments": []
                       }
-                    }
-                  ],
-                  "assertedType": {
-                    "kind": "reference",
-                    "name": "CounterState",
-                    "arguments": []
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "count",
+                            "value": {
+                              "kind": "number",
+                              "value": "0"
+                            }
+                          }
+                        ],
+                        "assertedType": {
+                          "kind": "reference",
+                          "name": "CounterState",
+                          "arguments": []
+                        }
+                      }
+                    ]
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -580,31 +845,85 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_succeed",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "runtime-call",
-              "callee": "_ssrg_signal_map",
-              "arguments": [
-                {
-                  "kind": "call",
-                  "callee": "view",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "label"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "state"
-                    }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "state"
-                }
-              ]
+              "kind": "identifier",
+              "name": "$ssrg$source1141"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_succeed",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source1151"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_signal_map",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1164"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "view",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "label"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "state"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "state"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

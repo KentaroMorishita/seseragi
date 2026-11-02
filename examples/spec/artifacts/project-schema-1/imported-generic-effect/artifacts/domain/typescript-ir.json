@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-generic-effect::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-generic-effect/src/domain.ssrg",
+      "start": 93,
+      "end": 113
+    },
+    {
+      "source": "project/imported-generic-effect/src/domain.ssrg",
+      "start": 102,
+      "end": 112
+    }
+  ],
   "runtimeRequirements": [
     "effect.console.println",
     "core.unit",
@@ -43,27 +55,63 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$0"
-              },
-              "method": "show",
+            "kind": "identifier",
+            "name": "$ssrg$source93"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "identifier",
-                  "name": "value"
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source102"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "identifier",
+                            "name": "__ssrg$evidence$0"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
                 }
               ]
-            },
-            "type": {
-              "kind": "string"
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

@@ -146,7 +146,7 @@ impl Project {
             .cargo()?
             .current_dir(&self.directory)
             .args([
-                "build",
+                "rustc",
                 "--offline",
                 "--bin",
                 "program",
@@ -161,6 +161,9 @@ impl Project {
             })
             .arg("--target-dir")
             .arg(&target)
+            .arg("--")
+            .arg("--remap-path-prefix")
+            .arg(format!("{}=.", self.directory.display()))
             .output()
             .map_err(|error| format!("could not start managed cargo: {error}"))?;
         if !output.status.success() {

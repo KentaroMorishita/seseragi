@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-compact-greet",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 33,
+      "end": 48
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "effect.console.println",
@@ -27,11 +34,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "string",
-            "value": "hello"
+            "kind": "identifier",
+            "name": "$ssrg$source33"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "hello"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

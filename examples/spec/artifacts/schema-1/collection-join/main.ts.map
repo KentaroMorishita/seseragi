@@ -10,21 +10,28 @@
   ],
   "names": [
     "joinValues",
+    "$ssrg$atSource",
     "_ssrg_collection_join",
     "arrayLabel",
+    "$ssrg$atSource",
     "joinValues",
     "arrayReducible",
     "listLabel",
+    "$ssrg$atSource",
     "joinValues",
     "listReducible",
     "emptyLabel",
+    "$ssrg$atSource",
     "joinValues",
     "arrayReducible",
     "collectionJoinResults",
+    "$ssrg$atSource",
     "arrayLabel",
+    "$ssrg$atSource",
     "listLabel",
     "fromArray",
+    "$ssrg$atSource",
     "emptyLabel"
   ],
-  "mappings": ";;;;;;AAAAA;AAIAE;AAGAG;AAGAG;AAGAG"
+  "mappings": ";;;;;;;;;;;;;;AAAAA;AAIAG;AAGAI;AAGAI;AAGAI"
 }

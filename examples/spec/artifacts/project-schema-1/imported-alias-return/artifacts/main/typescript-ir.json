@@ -2,6 +2,88 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-alias-return::main",
+  "runtimeSources": [
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 187,
+      "end": 197
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 280,
+      "end": 299
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 289,
+      "end": 299
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 328,
+      "end": 353
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 337,
+      "end": 352
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 343,
+      "end": 351
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 368,
+      "end": 382
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 374,
+      "end": 381
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 385,
+      "end": 409
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 394,
+      "end": 408
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 436,
+      "end": 454
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 442,
+      "end": 453
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 457,
+      "end": 477
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 466,
+      "end": 476
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 480,
+      "end": 502
+    },
+    {
+      "source": "project/imported-alias-return/src/main.ssrg",
+      "start": 489,
+      "end": 501
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -199,24 +281,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
                   "kind": "identifier",
-                  "name": "__ssrg$evidence$0"
+                  "name": "$ssrg$source187"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "inner"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "identifier",
+                        "name": "__ssrg$evidence$0"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "inner"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           }
         ],
@@ -261,36 +361,79 @@
         "kind": "lambda",
         "parameter": "prefix: string",
         "body": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_string_add_dictionary"
-          },
-          "method": "add",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "prefix"
+              "name": "$ssrg$source280"
             },
             {
-              "kind": "checked-result",
-              "value": {
-                "kind": "call",
-                "callee": "read",
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_string_add_dictionary"
+                },
+                "method": "add",
                 "arguments": [
                   {
                     "kind": "identifier",
-                    "name": "value"
+                    "name": "prefix"
                   },
                   {
-                    "kind": "identifier",
-                    "name": "__ssrg$evidence$0"
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source289"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "call",
+                            "callee": "read",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "value"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$evidence$0"
+                              }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "string"
+                          }
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
                   }
                 ]
-              },
-              "type": {
-                "kind": "string"
               }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         }
@@ -319,38 +462,97 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "call",
-                    "callee": "read",
+                  "kind": "identifier",
+                  "name": "$ssrg$source328"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "boxed",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "number",
-                            "value": "42"
-                          }
-                        ],
-                        "typeArguments": [
+                            "kind": "identifier",
+                            "name": "$ssrg$source337"
+                          },
                           {
-                            "kind": "number"
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "call",
+                                "callee": "read",
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "$ssrg$atSource",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "$ssrg$source343"
+                                      },
+                                      {
+                                        "kind": "lambda",
+                                        "parameter": "",
+                                        "body": {
+                                          "kind": "call",
+                                          "callee": "boxed",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "42"
+                                            }
+                                          ],
+                                          "typeArguments": [
+                                            {
+                                              "kind": "number"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "boolean",
+                                        "value": false
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_show_intShow"
+                                  }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
                       }
                     ]
-                  },
-                  "type": {
-                    "kind": "string"
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -368,41 +570,82 @@
               }
             },
             "initializer": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "call",
-                "callee": "hold",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "boxed",
-                    "arguments": [
-                      {
-                        "kind": "number",
-                        "value": "7"
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
-                  }
-                ]
-              },
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "string"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source368"
                 },
-                "result": {
-                  "kind": "string"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "hold",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "$ssrg$atSource",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "$ssrg$source374"
+                            },
+                            {
+                              "kind": "lambda",
+                              "parameter": "",
+                              "body": {
+                                "kind": "call",
+                                "callee": "boxed",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "7"
+                                  }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "boolean",
+                              "value": false
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "string"
+                      },
+                      "result": {
+                        "kind": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
-              }
+              ]
             },
             "origin": {
               "source": "main.ssrg",
@@ -414,17 +657,53 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "saved",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "saved="
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source385"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source394"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "saved",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "saved="
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -457,37 +736,80 @@
               }
             ],
             "body": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "call",
-                "callee": "read",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "boxed",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Let426T0",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$evidence$0"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source436"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "read",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "$ssrg$atSource",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "$ssrg$source442"
+                            },
+                            {
+                              "kind": "lambda",
+                              "parameter": "",
+                              "body": {
+                                "kind": "call",
+                                "callee": "boxed",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "value"
+                                  }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "Let426T0",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "boolean",
+                              "value": false
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Let426T0",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             },
             "origin": {
               "source": "main.ssrg",
@@ -499,27 +821,68 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "call",
-                    "callee": "forward",
+                  "kind": "identifier",
+                  "name": "$ssrg$source457"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
                     "arguments": [
                       {
-                        "kind": "number",
-                        "value": "42"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source466"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "call",
+                                "callee": "forward",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "42"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_show_intShow"
+                                  }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
                       }
                     ]
-                  },
-                  "type": {
-                    "kind": "string"
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -527,27 +890,68 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "checked-result",
-              "value": {
-                "kind": "call",
-                "callee": "forward",
+              "kind": "identifier",
+              "name": "$ssrg$source480"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "boolean",
-                    "value": true
-                  },
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source489"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "call",
+                            "callee": "forward",
+                            "arguments": [
+                              {
+                                "kind": "boolean",
+                                "value": true
+                              },
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_show_boolShow"
+                              }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "boolean"
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "string"
+                          }
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
                   }
                 ]
-              },
-              "type": {
-                "kind": "string"
               }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

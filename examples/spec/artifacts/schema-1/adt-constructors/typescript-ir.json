@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/adt-constructors",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 167,
+      "end": 180
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string"
@@ -119,12 +126,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "Present",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source167"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "Present",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

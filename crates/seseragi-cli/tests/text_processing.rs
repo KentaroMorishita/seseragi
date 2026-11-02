@@ -4,6 +4,10 @@ mod native_cache;
 #[path = "../../test-support/native_runtime.rs"]
 mod native_runtime;
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -493,6 +497,8 @@ fn compare_text_cases<'a>(cases: impl IntoIterator<Item = (&'a str, String, i32,
             };
             assert!(stderr.contains(message), "{stderr}");
         }
+        let expected_defect =
+            (code == 70).then(|| diagnostics::ts_defect_from_native(&output.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -528,7 +534,7 @@ fn compare_text_cases<'a>(cases: impl IntoIterator<Item = (&'a str, String, i32,
                 if code == 0 {
                     assert!(stderr.is_empty(), "{stderr}");
                 } else {
-                    assert_eq!(stderr, "seseragi: runtime defect\n");
+                    assert_eq!(stderr, *expected_defect.as_ref().unwrap());
                 }
             }
         }

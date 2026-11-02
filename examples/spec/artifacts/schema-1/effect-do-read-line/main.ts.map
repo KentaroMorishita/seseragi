@@ -10,7 +10,8 @@
   ],
   "names": [
     "main",
+    "$ssrg$atSource",
     "readLine"
   ],
-  "mappings": ";;;;AAAAA"
+  "mappings": ";;;;;;AAAAA"
 }

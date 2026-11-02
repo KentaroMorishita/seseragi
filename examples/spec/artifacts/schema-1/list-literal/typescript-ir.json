@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/list-literal",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 44,
+      "end": 53
+    },
+    {
+      "source": "main.ssrg",
+      "start": 62,
+      "end": 71
+    }
+  ],
   "runtimeRequirements": [
     "core.list",
     "core.int",
@@ -59,6 +71,10 @@
                   {
                     "kind": "number",
                     "value": "1"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "$ssrg$source44"
                   }
                 ]
               },
@@ -77,6 +93,10 @@
                   {
                     "kind": "number",
                     "value": "1"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "$ssrg$source62"
                   }
                 ]
               }

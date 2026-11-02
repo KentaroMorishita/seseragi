@@ -11,10 +11,13 @@
   "names": [
     "main",
     "first",
+    "$ssrg$atSource",
     "readLine",
     "second",
+    "$ssrg$atSource",
     "readLine",
+    "$ssrg$atSource",
     "succeed"
   ],
-  "mappings": ";;;;;AAAAA"
+  "mappings": ";;;;;;;;;AAAAA"
 }

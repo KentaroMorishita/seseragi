@@ -8,7 +8,7 @@ impl Backend<'_> {
         let column = prefix.rsplit('\n').next()?.chars().count() + 1;
         Some(format!(
             "&NativeSource {{ file: {}, line: {line}, column: {column} }}",
-            quoted(&source.path)
+            quoted(&seseragi_project::runtime_source_path(&source.path))
         ))
     }
 

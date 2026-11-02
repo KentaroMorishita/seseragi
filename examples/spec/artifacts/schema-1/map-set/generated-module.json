@@ -9,8 +9,8 @@
     "unicodeVersion": "17.0.0",
     "requirements": [
       "core.map",
-      "json.read-error-type",
       "core.set",
+      "json.read-error-type",
       "json.parse-error-type",
       "json.value-type",
       "effect.core.type",

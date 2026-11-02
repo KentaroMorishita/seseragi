@@ -11,12 +11,15 @@
   "names": [
     "sumTo",
     "intOrd",
+    "$ssrg$atSource",
     "sumTo",
     "subtract",
     "add",
     "selfTailLoopWorks",
+    "$ssrg$atSource",
     "intEq",
+    "$ssrg$atSource",
     "sumTo"
   ],
-  "mappings": ";;;;;AAAAA;AAMAK"
+  "mappings": ";;;;;;;;;;AAAAA;AAMAM"
 }

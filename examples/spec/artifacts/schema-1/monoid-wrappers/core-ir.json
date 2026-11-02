@@ -750,6 +750,31 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C",
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1439,6 +1464,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "C",
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "C",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "evidence": [
                             {
                               "constraint": {
@@ -1948,6 +2010,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "C",
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "C",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "evidence": [
                             {
                               "constraint": {
@@ -2356,6 +2455,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "C",
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "C",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "evidence": [
                             {
                               "constraint": {
@@ -2660,6 +2796,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "C",
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "C",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "evidence": [
                             {
                               "constraint": {
@@ -3121,6 +3294,43 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "C",
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "C",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   "evidence": [
                     {
                       "constraint": {
@@ -3652,6 +3862,43 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "C",
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "C",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   "evidence": [
                     {
                       "constraint": {

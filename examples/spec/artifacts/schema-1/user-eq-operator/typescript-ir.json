@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/user-eq-operator",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 275,
+      "end": 288
+    },
+    {
+      "source": "main.ssrg",
+      "start": 533,
+      "end": 588
+    },
+    {
+      "source": "main.ssrg",
+      "start": 534,
+      "end": 550
+    },
+    {
+      "source": "main.ssrg",
+      "start": 552,
+      "end": 575
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.bool",
@@ -210,20 +232,38 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$instance$Eq$0"
-        },
-        "method": "eq",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "$ssrg$source275"
           },
           {
-            "kind": "identifier",
-            "name": "right"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Eq$0"
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -385,56 +425,135 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "call",
-                    "callee": "same",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "checked-result",
-                    "value": {
-                      "kind": "call",
-                      "callee": "different",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "Ready"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "Waiting"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "__ssrg$instance$Eq$0"
-                        }
-                      ]
+            "kind": "identifier",
+            "name": "$ssrg$source533"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source533"
                     },
-                    "type": {
-                      "kind": "boolean"
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source534"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "same",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "Ready"
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "Ready"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source552"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "call",
+                                        "callee": "different",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "Ready"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "Waiting"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "__ssrg$instance$Eq$0"
+                                          }
+                                        ],
+                                        "typeArguments": [
+                                          {
+                                            "kind": "reference",
+                                            "name": "Status",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "boolean"
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
-                  }
-                ]
-              }
-            ]
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

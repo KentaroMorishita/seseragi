@@ -12,10 +12,14 @@
     "swap",
     "message",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "message",
+    "$ssrg$atSource",
     "swap",
+    "$ssrg$atSource",
     "duplicate"
   ],
-  "mappings": ";;;;;AAGAA;AAGAC;AAEAC"
+  "mappings": ";;;;;;;;;;AAGAA;AAGAC;AAEAC"
 }

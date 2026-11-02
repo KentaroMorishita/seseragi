@@ -13,10 +13,14 @@
     "add",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "transform",
+    "$ssrg$atSource",
     "Boxed"
   ],
-  "mappings": ";;;;;;AAEAA;AAEAE;AAMAC"
+  "mappings": ";;;;;;;;;AAEAA;AAEAE;AAMAC"
 }

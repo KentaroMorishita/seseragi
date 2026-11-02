@@ -31,11 +31,17 @@ scope.onmessage = (event) => {
   const request = event.data
   void execute(request).then(
     (result) => scope.postMessage({ id: request.id, ok: true, result }),
-    (error: unknown) =>
+    (error: unknown) => {
+      const fatal = error instanceof WebAssembly.RuntimeError
+      const message = error instanceof Error ? error.message : String(error)
       scope.postMessage({
         id: request.id,
         ok: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: fatal
+          ? `Internal compiler error: ${message}. Please try again.`
+          : message,
+        fatal,
       })
+    }
   )
 }

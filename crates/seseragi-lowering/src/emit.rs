@@ -80,7 +80,7 @@ pub fn emit_typescript_module_with_output_paths(
     source_text: &str,
     output_paths: GeneratedOutputPaths,
 ) -> GeneratedBundle {
-    let typescript = render_typescript(&module);
+    let typescript = render_typescript_with_sources(&module, source_text);
     let source_map = source_map_for_module(&module, source_text, &output_paths.typescript);
     let metadata = generated_module_for(module, output_paths);
 
@@ -91,7 +91,12 @@ pub fn emit_typescript_module_with_output_paths(
     }
 }
 
+#[cfg(test)]
 fn render_typescript(module: &TypeScriptModule) -> String {
+    render_typescript_with_sources(module, "")
+}
+
+fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) -> String {
     let mut output = String::new();
     let aliases = module
         .aliases
@@ -123,6 +128,28 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     for line in &import_lines {
         output.push_str(line);
         output.push('\n');
+    }
+    let mut origins = module.runtime_sources.iter().collect::<Vec<_>>();
+    origins.sort_unstable_by_key(|origin| origin.start);
+    let mut characters = source_text.char_indices().peekable();
+    let (mut line, mut column) = (1, 1);
+    for origin in origins {
+        while let Some(&(start, character)) = characters.peek() {
+            if start + character.len_utf8() > origin.start {
+                break;
+            }
+            if character == '\n' {
+                line += 1;
+                column = 1;
+            } else {
+                column += 1;
+            }
+            characters.next();
+        }
+        output.push_str(&format!(
+            "const $ssrg$source{} = {{ file: {:?}, line: {line}, column: {column}, uri: {:?}, start: {}, end: {} }};\n",
+            origin.start, origin.source, format!("seseragi://{}", module.module), origin.start, origin.end,
+        ));
     }
     output.push_str(&format!(
         "$ssrg$assertUnicodeVersion({:?})\n",
@@ -611,22 +638,30 @@ pub(super) fn evidence_parameters(
 }
 
 pub(super) fn evidence_type(constraint: &crate::TypeScriptInstanceConstraint) -> String {
-    let dictionary = match constraint.trait_identity.as_deref() {
-        Some("std/prelude::JsonEncode") if constraint.name == "JsonEncode" => "JsonEncode",
-        Some("std/prelude::JsonDecode") if constraint.name == "JsonDecode" => "JsonDecode",
+    let (module, dictionary) = match constraint.trait_identity.as_deref() {
+        Some("std/prelude::Eq") if constraint.name == "Eq" => ("@seseragi/runtime/equality", "Eq"),
+        Some("std/prelude::Ord") if constraint.name == "Ord" => {
+            ("@seseragi/runtime/equality", "Ord")
+        }
+        Some("std/prelude::JsonEncode") if constraint.name == "JsonEncode" => {
+            ("@seseragi/runtime/json", "JsonEncode")
+        }
+        Some("std/prelude::JsonDecode") if constraint.name == "JsonDecode" => {
+            ("@seseragi/runtime/json", "JsonDecode")
+        }
         _ => return ERASED_EVIDENCE_TYPE.to_owned(),
     };
     let [argument] = constraint.arguments.as_slice() else {
         return ERASED_EVIDENCE_TYPE.to_owned();
     };
-    // Keep the selected value type at every evidence stage. An index signature
-    // does not promise the required method to the strict JSON runtime API.
-    // A type-only import also works in local functions and instance factories
-    // whose enclosing source signature does not otherwise mention Json.
-    format!(
-        "import(\"@seseragi/runtime/json\").{dictionary}<{}>",
-        render_typescript_type(argument)
-    )
+    // Preserve selected method types for runtime calls and inherited dictionaries.
+    let argument = render_typescript_type(argument);
+    let evidence = format!("import({module:?}).{dictionary}<{argument}>");
+    if dictionary == "Ord" {
+        format!("{evidence} & import(\"@seseragi/runtime/equality\").Eq<{argument}>")
+    } else {
+        evidence
+    }
 }
 
 fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
@@ -1024,7 +1059,13 @@ fn statements_bind_name(statements: &[TypeScriptStatement], name: &str) -> bool 
 }
 
 fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> bool {
+    if let Some(value) = source_action(expr) {
+        return contains_direct_self_tail_call(value, self_name, arity);
+    }
     match expr {
+        TypeScriptExpr::CheckedResult { value, .. } => {
+            contains_direct_self_tail_call(value, self_name, arity)
+        }
         TypeScriptExpr::Call {
             callee, arguments, ..
         } => callee == self_name && arguments.len() == arity,
@@ -1087,7 +1128,23 @@ fn render_tail_recursive_body(
 }
 
 fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> String {
+    if let Some(value) = source_action(expr) {
+        let TypeScriptExpr::RuntimeCall { callee, arguments } = expr else {
+            unreachable!();
+        };
+        return format!(
+            "{callee}({}, () => {}, {})",
+            render_typescript_expr(&arguments[0]),
+            render_tail_position_expr(value, self_name, arity),
+            render_typescript_expr(&arguments[2]),
+        );
+    }
     match expr {
+        TypeScriptExpr::CheckedResult { value, type_ref } => format!(
+            "(({}) as {})",
+            render_tail_position_expr(value, self_name, arity),
+            render_typescript_type(type_ref)
+        ),
         TypeScriptExpr::Call {
             callee, arguments, ..
         } if callee == self_name && arguments.len() == arity => {
@@ -1145,6 +1202,19 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
     }
 }
 
+fn source_action(expr: &TypeScriptExpr) -> Option<&TypeScriptExpr> {
+    let TypeScriptExpr::RuntimeCall { callee, arguments } = expr else {
+        return None;
+    };
+    if callee != "$ssrg$atSource" || arguments.len() != 3 {
+        return None;
+    }
+    match &arguments[1] {
+        TypeScriptExpr::Lambda { parameter, body } if parameter.is_empty() => Some(body),
+        _ => None,
+    }
+}
+
 fn render_arrow_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> String {
     let names = parameters
         .iter()
@@ -1160,6 +1230,7 @@ fn render_arrow_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -
 fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
     match expr {
         TypeScriptExpr::Undefined => "undefined".to_owned(),
+        TypeScriptExpr::EmptyDictionary => "({})".to_owned(),
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::Number { value } => value.clone(),
         TypeScriptExpr::String { value } => {

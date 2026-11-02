@@ -239,6 +239,9 @@ pub fn retain_application(
             return true;
         }
         module
+            .runtime_sources
+            .retain(|origin| keep(&format!("$ssrg$source{}", origin.start)));
+        module
             .bindings
             .retain(|TypeScriptBinding::Const { name, .. }| keep(name));
         module
@@ -578,6 +581,7 @@ fn expression(value: &TypeScriptExpr) -> Names {
             }
         }
         TypeScriptExpr::Undefined
+        | TypeScriptExpr::EmptyDictionary
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::String { .. }
@@ -659,6 +663,31 @@ mod tests {
             id,
             "pub fn main value: Int -> Int = value\nfn unused value: Int -> Int = value\n",
         )))
+    }
+    #[test]
+    fn retains_runtime_sources_only_for_surviving_declarations() {
+        let source =
+            "pub fn main value: Int -> Int = value + 1\nfn unused value: Int -> Int = value + 2\n";
+        let module = lower_core_module_to_typescript_ir_with_options(
+            lower_typed_module(seseragi_semantics::type_module("positions", source)),
+            &TypeScriptOutputPlan::default(),
+            &TypeScriptLoweringOptions {
+                runtime_sources: true,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert_eq!(module.runtime_sources.len(), 2);
+        let retained_sources = module
+            .runtime_sources
+            .iter()
+            .filter(|origin| origin.start < source.find("fn unused").unwrap())
+            .cloned()
+            .collect::<Vec<_>>();
+        assert_eq!(retained_sources.len(), 1);
+        let mut modules = BTreeMap::from([("positions".to_owned(), module)]);
+        retain_application(&mut modules, &[("positions".into(), "main".into())]);
+        assert_eq!(modules["positions"].runtime_sources, retained_sources);
     }
     #[test]
     fn lazy_display_factories_retain_their_imports_only_with_a_live_reader() {

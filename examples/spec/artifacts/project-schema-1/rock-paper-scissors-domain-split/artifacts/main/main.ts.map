@@ -11,13 +11,19 @@
   "names": [
     "isOpeningDraw",
     "play",
+    "$ssrg$atSource",
     "renderOutcome",
+    "$ssrg$atSource",
     "decide",
     "openingMessage",
+    "$ssrg$atSource",
     "identity",
+    "$ssrg$atSource",
     "renderOutcome",
+    "$ssrg$atSource",
     "identity",
+    "$ssrg$atSource",
     "decide"
   ],
-  "mappings": ";;;;AAEAA;AAMAC;AAGAG"
+  "mappings": ";;;;;;;;;;;AAEAA;AAMAC;AAGAK"
 }

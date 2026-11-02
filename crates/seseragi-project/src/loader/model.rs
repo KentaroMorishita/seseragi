@@ -34,6 +34,14 @@ impl LoadedModule {
         &self.source_path
     }
 
+    pub fn runtime_source_path(&self, package_root: &Path) -> String {
+        let relative = self
+            .source_path
+            .strip_prefix(package_root)
+            .expect("a loaded source stays within its package");
+        crate::runtime_source_path(&relative.to_string_lossy())
+    }
+
     pub fn source(&self) -> &str {
         &self.source
     }

@@ -4,6 +4,10 @@ mod native_cache;
 #[path = "../../test-support/native_runtime.rs"]
 mod native_runtime;
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -335,6 +339,7 @@ fn check_file_entry(source: PathBuf, project: bool, standard_show: bool) {
         }
     }
     assert_eq!(programs.len(), 5);
+    let mut expected_defects = std::collections::BTreeMap::new();
     for (label, executable, argument, native) in programs {
         for (scenario, input, expected, code, diagnostic) in [
             (
@@ -489,8 +494,10 @@ fn check_file_entry(source: PathBuf, project: bool, standard_show: bool) {
                 if code == 70 {
                     if native {
                         assert!(stderr.contains("Int overflow"), "{stderr}");
+                        expected_defects
+                            .insert(scenario, diagnostics::ts_defect_from_native(&result.stderr));
                     } else {
-                        assert_eq!(stderr, "seseragi: runtime defect\n");
+                        assert_eq!(stderr, expected_defects[scenario]);
                     }
                 }
                 if scenario != "write-directory" {
@@ -553,6 +560,8 @@ fn decimal_parse_saved_cold_plan_failure_and_defect_release_once() {
         if code == 70 {
             assert!(String::from_utf8_lossy(&result.stderr).contains("aggregate defect"));
         }
+        let expected_defect =
+            (code == 70).then(|| diagnostics::ts_defect_from_native(&result.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -586,7 +595,7 @@ fn decimal_parse_saved_cold_plan_failure_and_defect_release_once() {
                 if code == 0 {
                     assert!(result.stderr.is_empty());
                 } else {
-                    assert_eq!(result.stderr, b"seseragi: runtime defect\n");
+                    assert_eq!(result.stderr, expected_defect.as_ref().unwrap().as_bytes());
                 }
             }
         }
@@ -770,6 +779,7 @@ fn standard_parse_error_show_values_and_cold_failures_match_raw_strict_ts() {
         if code == 70 {
             assert!(String::from_utf8_lossy(&result.stderr).contains("aggregate defect"));
         }
+        let expected_defect = (code == 70).then(|| diagnostics::ts_defect_from_native(&result.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -799,7 +809,7 @@ fn standard_parse_error_show_values_and_cold_failures_match_raw_strict_ts() {
                 if code == 0 {
                     assert!(result.stderr.is_empty());
                 } else {
-                    assert_eq!(result.stderr, b"seseragi: runtime defect\n");
+                    assert_eq!(result.stderr, expected_defect.as_ref().unwrap().as_bytes());
                 }
             }
         }

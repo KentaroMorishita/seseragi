@@ -11,7 +11,8 @@
   "names": [
     "classify",
     "stringEscapeResults",
+    "$ssrg$atSource",
     "classify"
   ],
-  "mappings": ";;;AAAAA;AAMAC"
+  "mappings": ";;;;;AAAAA;AAMAC"
 }

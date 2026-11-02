@@ -9,6 +9,8 @@ import {
   type Ordering,
 } from "./sum"
 
+export type { Ord } from "./sequence"
+
 export type Eq<Value> = Readonly<{
   eq: (left: Value) => (right: Value) => boolean
 }>

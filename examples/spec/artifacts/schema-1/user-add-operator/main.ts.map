@@ -13,17 +13,24 @@
     "Score",
     "__ssrg$instance$Add$0",
     "addBonus",
+    "$ssrg$atSource",
     "__ssrg$instance$Add$0",
     "total",
+    "$ssrg$atSource",
     "addBonus",
+    "$ssrg$atSource",
     "_ssrg_array_reduce",
+    "$ssrg$atSource",
     "Score",
     "__ssrg$instance$Add$0",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "total"
   ],
-  "mappings": ";;;;;;AACAA;;AACIC;AAEJC;AAOAC;AAGAE;AAKAK;AAMAC"
+  "mappings": ";;;;;;;;;;;;;AACAA;;AACIC;AAEJC;AAOAC;AAGAG;AAKAQ;AAMAC"
 }

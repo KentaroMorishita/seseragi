@@ -3,6 +3,7 @@ use crate::{
 };
 use seseragi_semantics::ExternalTypeBinding;
 
+use super::super::expr::needs_ordinary_call_annotation;
 use super::super::TypeScriptTypeImport;
 use super::collect_type_imports;
 
@@ -42,6 +43,24 @@ pub(super) fn collect_expr_type_imports(
     {
         for argument in &signature.instantiated_type_arguments {
             collect_type_imports(argument, bindings, requirements, imports);
+        }
+    }
+    if let CoreExpr::Call {
+        callee_signature: Some(signature),
+        evidence,
+        deferred_evidence_parameters,
+        ..
+    } = expr
+    {
+        if !evidence.is_empty()
+            && deferred_evidence_parameters.is_empty()
+            && needs_ordinary_call_annotation(Some(signature))
+        {
+            // The checked callable annotation also names its argument types,
+            // including types otherwise inferred from collection literals.
+            for argument in &signature.argument_types {
+                collect_type_imports(argument, bindings, requirements, imports);
+            }
         }
     }
     match expr {

@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/transitive-constrained-instance-dispatch::facade",
+  "runtimeSources": [
+    {
+      "source": "project/transitive-constrained-instance-dispatch/src/facade.ssrg",
+      "start": 121,
+      "end": 141
+    }
+  ],
   "runtimeRequirements": [
     "core.string"
   ],
@@ -60,24 +67,49 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "call",
-          "callee": "providerReport",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
-            },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$0"
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source121"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "providerReport",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "T",
+                    "arguments": []
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "facade.ssrg",

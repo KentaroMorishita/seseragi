@@ -1072,6 +1072,39 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "regex.RegexCompileError",
+                    "canonical": "std/regex::RegexCompileError",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "regex.RegexCompileError",
+                    "canonical": "std/regex::RegexCompileError",
+                    "arguments": []
+                  }
+                ]
+              },
               "evidence": [
                 {
                   "constraint": {
@@ -1367,6 +1400,39 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "regex.RegexCompileError",
+                    "canonical": "std/regex::RegexCompileError",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "regex.RegexCompileError",
+                    "canonical": "std/regex::RegexCompileError",
+                    "arguments": []
+                  }
+                ]
+              },
               "evidence": [
                 {
                   "constraint": {
@@ -6160,6 +6226,50 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "RegexCompileErrorKind",
+                          "canonical": "std/regex::RegexCompileErrorKind",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "RegexCompileErrorKind",
+                          "canonical": "std/regex::RegexCompileErrorKind",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "RegexCompileErrorKind",
+                          "canonical": "std/regex::RegexCompileErrorKind",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {
@@ -6246,6 +6356,39 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "RegexCompileErrorKind",
+                          "canonical": "std/regex::RegexCompileErrorKind",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "RegexCompileErrorKind",
+                          "canonical": "std/regex::RegexCompileErrorKind",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {
@@ -6355,6 +6498,47 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "RegexSpan",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "RegexSpan",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "RegexSpan",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {

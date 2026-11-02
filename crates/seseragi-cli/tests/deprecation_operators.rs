@@ -9,6 +9,9 @@ use std::{
     time::{Duration, Instant},
 };
 
+#[path = "../../test-support/source_locations.rs"]
+mod source_locations;
+
 struct Scratch(PathBuf);
 impl Scratch {
     fn new() -> Self {
@@ -228,6 +231,31 @@ fn rust_source(project: &seseragi_project::LoadedLocalProject) -> String {
     .source
 }
 
+fn canonical_typescript(
+    compiled: &seseragi_driver::CompiledModule,
+    project: &seseragi_project::LoadedLocalProject,
+) -> (String, Vec<String>) {
+    let (identity, source) = project
+        .modules()
+        .find(|(_, source)| source.source_path() == Path::new(&compiled.diagnostics.source))
+        .unwrap();
+    let package = project.packages().package(identity.package()).unwrap();
+    let relative = source
+        .source_path()
+        .strip_prefix(package.root())
+        .unwrap()
+        .to_string_lossy()
+        .replace('\\', "/");
+    let typescript = source_locations::canonical_typescript(compiled, source.source(), &relative);
+    let expressions = compiled
+        .typescript_ir
+        .runtime_sources
+        .iter()
+        .map(|origin| source.source()[origin.start..origin.end].to_owned())
+        .collect();
+    (typescript, expressions)
+}
+
 #[test]
 fn path_package_operator_notices_preserve_original_strict_ts_native_and_stage_lifetimes() {
     let scratch = Scratch::new();
@@ -327,7 +355,8 @@ fn path_package_operator_notices_preserve_original_strict_ts_native_and_stage_li
             );
             for (id, module) in &compiled.compiled.modules {
                 assert_eq!(
-                    module.generated.typescript, original.compiled.modules[id].generated.typescript,
+                    canonical_typescript(module, &noticed),
+                    canonical_typescript(&original.compiled.modules[id], &plain),
                     "{id}/{name}/{label}"
                 );
             }
@@ -363,8 +392,7 @@ fn path_package_operator_notices_preserve_original_strict_ts_native_and_stage_li
                     assert!(result.stderr.is_empty(), "{result:?}");
                 } else {
                     assert!(
-                        String::from_utf8_lossy(&result.stderr)
-                            .contains("seseragi: runtime defect"),
+                        String::from_utf8_lossy(&result.stderr).contains("Seseragi Defect:"),
                         "{result:?}"
                     );
                 }

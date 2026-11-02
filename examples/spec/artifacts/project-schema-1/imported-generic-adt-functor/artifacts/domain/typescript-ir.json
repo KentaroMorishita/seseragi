@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-generic-adt-functor::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-generic-adt-functor/src/domain.ssrg",
+      "start": 228,
+      "end": 242
+    },
+    {
+      "source": "project/imported-generic-adt-functor/src/domain.ssrg",
+      "start": 236,
+      "end": 242
+    },
+    {
+      "source": "project/imported-generic-adt-functor/src/domain.ssrg",
+      "start": 343,
+      "end": 354
+    }
+  ],
   "higherKinds": {
     "constructors": [
       {
@@ -138,25 +155,61 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Boxed",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "f",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "item"
-                          }
-                        ]
-                      }
-                    ],
-                    "typeArguments": [
+                        "kind": "identifier",
+                        "name": "$ssrg$source228"
+                      },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Boxed",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source236"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "f",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "item"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -223,36 +276,54 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
             "kind": "identifier",
-            "name": "__ssrg$evidence$0"
+            "name": "$ssrg$source343"
           },
-          "method": "map",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "f"
-            },
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "map",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "f"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "kind-application",
+                "constructor": "F",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "kind-application",
-          "constructor": "F",
-          "arguments": [
-            {
-              "kind": "reference",
-              "name": "B",
-              "arguments": []
-            }
-          ]
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "domain.ssrg",

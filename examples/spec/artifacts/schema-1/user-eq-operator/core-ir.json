@@ -900,6 +900,47 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "T"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {

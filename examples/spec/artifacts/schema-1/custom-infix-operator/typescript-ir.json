@@ -2,6 +2,48 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/custom-infix-operator",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 124,
+      "end": 138
+    },
+    {
+      "source": "main.ssrg",
+      "start": 131,
+      "end": 138
+    },
+    {
+      "source": "main.ssrg",
+      "start": 177,
+      "end": 185
+    },
+    {
+      "source": "main.ssrg",
+      "start": 252,
+      "end": 264
+    },
+    {
+      "source": "main.ssrg",
+      "start": 325,
+      "end": 337
+    },
+    {
+      "source": "main.ssrg",
+      "start": 402,
+      "end": 480
+    },
+    {
+      "source": "main.ssrg",
+      "start": 433,
+      "end": 451
+    },
+    {
+      "source": "main.ssrg",
+      "start": 461,
+      "end": 478
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.int",
@@ -37,26 +79,62 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "__ssrg$operator$3c5e3e",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "number",
-            "value": "10"
+            "kind": "identifier",
+            "name": "$ssrg$source124"
           },
           {
-            "kind": "call",
-            "callee": "__ssrg$operator$3c5e3e",
-            "arguments": [
-              {
-                "kind": "number",
-                "value": "3"
-              },
-              {
-                "kind": "number",
-                "value": "2"
-              }
-            ]
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "__ssrg$operator$3c5e3e",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "10"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source131"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "__ssrg$operator$3c5e3e",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "3"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "2"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -78,26 +156,62 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "__ssrg$operator$3c7e3e",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "__ssrg$operator$3c7e3e",
-            "arguments": [
-              {
-                "kind": "number",
-                "value": "10"
-              },
-              {
-                "kind": "number",
-                "value": "3"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source177"
           },
           {
-            "kind": "number",
-            "value": "2"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "__ssrg$operator$3c7e3e",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source177"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "__ssrg$operator$3c7e3e",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "10"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "3"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "number",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -134,6 +248,10 @@
           {
             "kind": "identifier",
             "name": "right"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source252"
           }
         ]
       },
@@ -170,6 +288,10 @@
           {
             "kind": "identifier",
             "name": "right"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source325"
           }
         ]
       },
@@ -192,65 +314,119 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "binary",
-            "operator": "+",
-            "left": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "binary",
-                "operator": "+",
-                "left": {
-                  "kind": "string",
-                  "value": "Custom infix: right="
-                },
-                "right": {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "rightAssociated",
-                      "arguments": [
-                        {
-                          "kind": "undefined"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              "right": {
-                "kind": "string",
-                "value": ", left="
-              }
-            },
-            "right": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
-              },
-              "method": "show",
+            "kind": "identifier",
+            "name": "$ssrg$source402"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "leftAssociated",
-                  "arguments": [
-                    {
-                      "kind": "undefined"
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "string",
+                        "value": "Custom infix: right="
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source433"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "rightAssociated",
+                                  "arguments": [
+                                    {
+                                      "kind": "undefined"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": ", left="
                     }
-                  ]
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source461"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "leftAssociated",
+                              "arguments": [
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
                 }
               ]
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

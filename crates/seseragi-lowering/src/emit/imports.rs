@@ -21,6 +21,11 @@ pub(super) fn render_import_lines(module: &TypeScriptModule) -> Vec<String> {
     // A leading `$` cannot be spelled by a source identifier, so a user binding
     // cannot shadow this mandatory ABI check (including through import aliases).
     lines.push("import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from \"@seseragi/runtime/unicode-version\"".to_owned());
+    if !module.runtime_sources.is_empty() {
+        lines.push(
+            "import { atSource as $ssrg$atSource } from \"@seseragi/runtime/effect\"".to_owned(),
+        );
+    }
     lines.extend(render_runtime_imports(module));
     lines
 }

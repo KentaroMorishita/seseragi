@@ -11,6 +11,7 @@ import {
   isEffectCancellation,
   mapError,
 } from "./effect"
+import { runtimeDefectMessage, runtimeDefectSource } from "./runtime-diagnostic"
 
 export type RuntimeDiagnosticFrame = Readonly<{
   readonly language: "typescript" | "seseragi" | "interop"
@@ -340,17 +341,61 @@ export function renderRuntimeDefectDiagnostic(
   value: unknown,
   readSource: (url: string) => string | undefined
 ): string {
-  const frame =
-    value instanceof Error
-      ? stackDiagnosticFrame(value.stack, readSource)
-      : undefined
+  const source = runtimeDefectSource(value)
+  const frame: RuntimeDiagnosticFrame | undefined =
+    source !== undefined
+      ? {
+          language: "seseragi",
+          function: "<expression>",
+          uri: source.uri,
+          range: { start: source.start, end: source.end },
+          generated: false,
+        }
+      : value instanceof Error
+        ? stackDiagnosticFrame(value.stack, readSource)
+        : undefined
   return JSON.stringify({
     schema: 1,
     kind: "Defect",
     phase: null,
-    message: diagnosticMessage(value),
+    message: runtimeDefectMessage(value),
     groups: [{ role: "Thrown", frames: frame === undefined ? [] : [frame] }],
   })
+}
+
+export function renderRuntimeDefectText(value: unknown): string {
+  const seen = new Set<unknown>()
+  const messages: string[] = []
+  const render = (error: unknown): void => {
+    if (seen.has(error)) return
+    seen.add(error)
+    if (error instanceof AggregateError && Object.hasOwn(error, "cause")) {
+      render(error.cause)
+      for (const suppressed of error.errors) render(suppressed)
+      return
+    }
+    const source = runtimeDefectSource(error)
+    const position =
+      source === undefined
+        ? ""
+        : `${source.file}:${source.line}:${source.column}: `
+    const label = messages.length === 0 ? "Defect" : "suppressed Defect"
+    messages.push(
+      `${position}Seseragi ${label}: ${runtimeDefectMessage(error)}\n`
+    )
+    if (
+      (typeof error === "object" && error !== null) ||
+      typeof error === "function"
+    ) {
+      const suppressed = Object.getOwnPropertyDescriptor(
+        error,
+        "suppressed"
+      )?.value
+      if (Array.isArray(suppressed)) for (const next of suppressed) render(next)
+    }
+  }
+  render(value)
+  return messages.join("")
 }
 
 export function renderCancellationDiagnostic(): string {
@@ -361,16 +406,6 @@ export function renderCancellationDiagnostic(): string {
     message: "execution cancelled",
     groups: [],
   })
-}
-
-function diagnosticMessage(value: unknown): string {
-  if (value instanceof Error && value.message.length > 0) return value.message
-  if (typeof value === "string" && value.length > 0) return value
-  try {
-    return String(value)
-  } catch {
-    return "runtime defect"
-  }
 }
 
 function isJsError(value: unknown): value is JsError {

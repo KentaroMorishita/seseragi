@@ -117,7 +117,7 @@ fn compile_native(
         options.sources.insert(
             checked.core_ir.module.clone(),
             seseragi_backend_rust::RustSourceFile {
-                path: path.to_owned(),
+                path: seseragi_project::standalone_runtime_source_path(path),
                 text: source,
             },
         );
@@ -204,7 +204,13 @@ fn compile_project(
             (
                 seseragi_project::logical_module_id(identity),
                 seseragi_backend_rust::RustSourceFile {
-                    path: module.source_path().to_string_lossy().into_owned(),
+                    path: module.runtime_source_path(
+                        project
+                            .packages()
+                            .package(identity.package())
+                            .expect("checked source package")
+                            .root(),
+                    ),
                     text: module.source().to_owned(),
                 },
             )

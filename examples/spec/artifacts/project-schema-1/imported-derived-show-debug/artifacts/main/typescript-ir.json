@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-derived-show-debug::main",
+  "runtimeSources": [
+    {
+      "source": "project/imported-derived-show-debug/src/main.ssrg",
+      "start": 89,
+      "end": 99
+    },
+    {
+      "source": "project/imported-derived-show-debug/src/main.ssrg",
+      "start": 150,
+      "end": 161
+    }
+  ],
   "runtimeRequirements": [
     "core.string"
   ],
@@ -116,37 +128,55 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "__ssrg$instance$Show$2",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "Code",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Show$0"
-              }
-            ]
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source89"
           },
-          "method": "show",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Show$2",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Code",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Show$0"
+                    }
+                  ]
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -166,37 +196,55 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "__ssrg$instance$Debug$3",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "Code",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Debug$1"
-              }
-            ]
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source150"
           },
-          "method": "debug",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Debug$3",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Code",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Debug$1"
+                    }
+                  ]
+                },
+                "method": "debug",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

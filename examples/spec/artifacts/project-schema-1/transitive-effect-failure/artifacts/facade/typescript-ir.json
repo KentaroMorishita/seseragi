@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/transitive-effect-failure::facade",
+  "runtimeSources": [
+    {
+      "source": "project/transitive-effect-failure/src/facade.ssrg",
+      "start": 85,
+      "end": 97
+    }
+  ],
   "runtimeRequirements": [
     "core.string"
   ],
@@ -56,12 +63,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "reject",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "input"
+            "name": "$ssrg$source85"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "reject",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "input"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

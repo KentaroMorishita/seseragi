@@ -1,6 +1,10 @@
 #[path = "../../test-support/native_cache.rs"]
 mod native_cache;
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -218,6 +222,30 @@ fn string_console_calls_keep_raw_strict_ts_native_and_scope_lifetimes() {
         let scratch = Scratch::new();
         let source = scratch.0.join(format!("{label}.ssrg"));
         fs::write(&source, &text).unwrap();
+        let native = scratch.0.join("native");
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            &scratch.0,
+        ));
+        let result = bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &scratch.0,
+        );
+        assert_eq!(result.status.code(), Some(code), "{label}: {result:?}");
+        assert_eq!(result.stdout, expected.as_bytes(), "{label}: {result:?}");
+        let stderr = String::from_utf8_lossy(&result.stderr);
+        assert!(stderr.contains("managed-live=0"), "{label}: {stderr}");
+        if label == "defect" {
+            assert!(stderr.contains("body defect"), "{stderr}");
+        }
+        let expected_defect =
+            (code == 70).then(|| diagnostics::ts_defect_from_native(&result.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -259,33 +287,12 @@ fn string_console_calls_keep_raw_strict_ts_native_and_scope_lifetimes() {
                     );
                 } else {
                     assert_eq!(
-                        result.stderr, b"seseragi: runtime defect\n",
+                        result.stderr,
+                        expected_defect.as_ref().unwrap().as_bytes(),
                         "{label}/{profile}/{engine}"
                     );
                 }
             }
-        }
-        let native = scratch.0.join("native");
-        successful(bounded(
-            Command::new(env!("CARGO_BIN_EXE_seseragi"))
-                .args(["experimental", "build-native"])
-                .arg(&source)
-                .args(["--entry", "main", "--out-dir"])
-                .arg(&native),
-            &scratch.0,
-        ));
-        let result = bounded(
-            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
-                .env("PATH", "")
-                .env("SESERAGI_NATIVE_METRICS", "1"),
-            &scratch.0,
-        );
-        assert_eq!(result.status.code(), Some(code), "{label}: {result:?}");
-        assert_eq!(result.stdout, expected.as_bytes(), "{label}: {result:?}");
-        let stderr = String::from_utf8_lossy(&result.stderr);
-        assert!(stderr.contains("managed-live=0"), "{label}: {stderr}");
-        if label == "defect" {
-            assert!(stderr.contains("body defect"), "{stderr}");
         }
     }
 }

@@ -490,7 +490,7 @@ pub effect fn main = do { answer <- oracle () |> effects.recover unexpected; pri
                 let result=bounded(Command::new(runtime(engine,&scratch.0)).arg(output.join("entry.js")).env("PATH",""),&scratch.0);
                 assert_eq!(result.status.code(),Some(code),"{label}/{profile}: {result:?}");assert_eq!(result.stdout,expected.as_bytes());
                 let error=String::from_utf8_lossy(&result.stderr);
-                if code==0 {assert!(error.is_empty(),"{error}");} else {assert!(error.contains("seseragi: runtime defect"),"{error}");}
+                if code==0 {assert!(error.is_empty(),"{error}");} else {assert!(error.contains("Seseragi Defect:"),"{error}");}
             }
         }
     }

@@ -275,14 +275,27 @@ describe("Playground project compiler boundary", () => {
     if (response.status !== "success") return
     const typescript = response.modules[0]?.generated.typescript ?? ""
     expect(typescript).toContain(
-      '_ssrg_float_div_dictionary["div"](_ssrg_float_sub_dictionary["sub"](value)(1.0))(_ssrg_float_add_dictionary["add"](value)(1.0))'
+      'const ratio = (value: number) => $ssrg$atSource($ssrg$source35, () => _ssrg_float_div_dictionary["div"]($ssrg$atSource($ssrg$source36, () => _ssrg_float_sub_dictionary["sub"](value)(1.0), false))($ssrg$atSource($ssrg$source52, () => _ssrg_float_add_dictionary["add"](value)(1.0), false)), false)'
     )
     expect(typescript).toContain(
-      '_ssrg_float_div_dictionary["div"](_ssrg_float_sub_dictionary["sub"](positive)(negative))(2.0)'
+      'const averageDifference = (positive: number) => (negative: number) => $ssrg$atSource($ssrg$source135, () => _ssrg_float_div_dictionary["div"]($ssrg$atSource($ssrg$source136, () => _ssrg_float_sub_dictionary["sub"](positive)(negative), false))(2.0), false)'
     )
     expect(typescript).toContain(
-      'double(_ssrg_float_div_dictionary["div"](_ssrg_float_sub_dictionary["sub"](9.0)(1.0))(2.0))'
+      'const groupedThroughPipeline: number = $ssrg$atSource($ssrg$source244, () => double($ssrg$atSource($ssrg$source245, () => _ssrg_float_div_dictionary["div"]($ssrg$atSource($ssrg$source246, () => _ssrg_float_sub_dictionary["sub"](9.0)(1.0), false))(2.0), false)), false);'
     )
+    if (!response.entry.contract) {
+      throw new Error("missing grouped arithmetic execution entry")
+    }
+    expect(
+      await executeGeneratedProject(
+        response.modules.map((module) => ({
+          path: module.path,
+          typescript: module.generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: "[0.5, 0.75, 0.0]\n[4.0, -2.0]\n8.0", debug: "()" })
   })
 
   test("keeps a renamed nested entry and its diagnostic tab on canonical paths", async () => {
@@ -1923,7 +1936,7 @@ describe("Playground project compiler boundary", () => {
       '((a ? true : b) ? c : false) ? "mixed-left" : "mixed-left-no"'
     )
     expect(response.generated.typescript).toContain(
-      '(false ? unavailable(undefined) : false) ? "wrong" : "and-safe"'
+      '(false ? $ssrg$atSource($ssrg$source1294, () => unavailable(undefined), false) : false) ? "wrong" : "and-safe"'
     )
     expect(
       await executeGeneratedModule(

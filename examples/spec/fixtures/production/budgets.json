@@ -5,7 +5,11 @@
     "target": "process",
     "maxMinifiedBytes": 15000,
     "requiredRuntime": [
+      "@seseragi/runtime/decimal",
+      "@seseragi/runtime/equality",
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/unicode-version"
     ],
     "forbiddenRuntime": [
@@ -19,13 +23,17 @@
       "@seseragi/runtime/cleanup-defect",
       "@seseragi/runtime/clock-value",
       "@seseragi/runtime/collection",
+      "@seseragi/runtime/decimal",
       "@seseragi/runtime/effect",
+      "@seseragi/runtime/equality",
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
       "@seseragi/runtime/int",
       "@seseragi/runtime/list",
       "@seseragi/runtime/map",
       "@seseragi/runtime/path",
       "@seseragi/runtime/process",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/service",
       "@seseragi/runtime/stream",
       "@seseragi/runtime/sum",
@@ -43,7 +51,9 @@
     "target": "process",
     "maxMinifiedBytes": 50000,
     "requiredRuntime": [
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/unicode-version"
     ],
     "forbiddenRuntime": [
@@ -62,6 +72,7 @@
       "@seseragi/runtime/decimal",
       "@seseragi/runtime/effect",
       "@seseragi/runtime/equality",
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
       "@seseragi/runtime/int",
       "@seseragi/runtime/list",
@@ -69,6 +80,7 @@
       "@seseragi/runtime/path",
       "@seseragi/runtime/persistent-index",
       "@seseragi/runtime/process",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/service",
       "@seseragi/runtime/set",
       "@seseragi/runtime/show",
@@ -88,7 +100,9 @@
     "target": "process",
     "maxMinifiedBytes": 50000,
     "requiredRuntime": [
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/unicode-version"
     ],
     "forbiddenRuntime": [
@@ -108,6 +122,7 @@
       "@seseragi/runtime/decimal",
       "@seseragi/runtime/effect",
       "@seseragi/runtime/equality",
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
       "@seseragi/runtime/int",
       "@seseragi/runtime/list",
@@ -115,6 +130,7 @@
       "@seseragi/runtime/path",
       "@seseragi/runtime/persistent-index",
       "@seseragi/runtime/process",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/service",
       "@seseragi/runtime/set",
       "@seseragi/runtime/show",
@@ -134,7 +150,9 @@
     "target": "process",
     "maxMinifiedBytes": 50000,
     "requiredRuntime": [
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/unicode-version"
     ],
     "forbiddenRuntime": [
@@ -157,6 +175,7 @@
       "@seseragi/runtime/decimal",
       "@seseragi/runtime/effect",
       "@seseragi/runtime/equality",
+      "@seseragi/runtime/foreign",
       "@seseragi/runtime/hash",
       "@seseragi/runtime/int",
       "@seseragi/runtime/list",
@@ -164,6 +183,7 @@
       "@seseragi/runtime/path",
       "@seseragi/runtime/persistent-index",
       "@seseragi/runtime/process",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/service",
       "@seseragi/runtime/set",
       "@seseragi/runtime/show",
@@ -186,6 +206,7 @@
     "maxMinifiedBytes": 1300000,
     "requiredRuntime": [
       "@seseragi/runtime/hash",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/unicode-version"
     ],
     "forbiddenRuntime": [
@@ -232,6 +253,7 @@
       "@seseragi/runtime/provider-timezones",
       "@seseragi/runtime/provider-websocket",
       "@seseragi/runtime/random",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/service",
       "@seseragi/runtime/set",
       "@seseragi/runtime/show",
@@ -260,6 +282,7 @@
     "maxMinifiedBytes": 1350000,
     "requiredRuntime": [
       "@seseragi/runtime/hash",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/unicode-version"
     ],
     "forbiddenRuntime": [
@@ -307,6 +330,7 @@
       "@seseragi/runtime/provider-timezones",
       "@seseragi/runtime/provider-websocket",
       "@seseragi/runtime/random",
+      "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/service",
       "@seseragi/runtime/set",
       "@seseragi/runtime/show",

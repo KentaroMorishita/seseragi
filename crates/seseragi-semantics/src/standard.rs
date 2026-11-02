@@ -1,4 +1,5 @@
 use crate::{TypedConstraint, TypedType};
+use std::{collections::BTreeSet, sync::OnceLock};
 
 const INTO_CHILDREN: &str = "std/web/html::trait(IntoChildren)";
 const STYLE_RECORD: &str = "std/web/html::trait(StyleRecord)";
@@ -6,6 +7,36 @@ const SIGNAL: &str = "std/signal::Signal";
 const MUTABLE_SIGNAL: &str = "std/signal::MutableSignal";
 const SIGNAL_READ: &str = "std/signal::read";
 const SIGNAL_SET: &str = "std/signal::set";
+
+struct StandardModuleTrait {
+    identity: &'static str,
+    name: &'static str,
+    heads: fn() -> Vec<(StandardInstanceHead, &'static str)>,
+    structural_instance: Option<StandardStructuralInstance>,
+}
+
+struct StandardStructuralInstance {
+    identity: &'static str,
+    matches: fn(&TypedConstraint) -> bool,
+}
+
+const STANDARD_MODULE_TRAITS: &[StandardModuleTrait] = &[
+    StandardModuleTrait {
+        identity: INTO_CHILDREN,
+        name: "IntoChildren",
+        heads: into_children_instance_heads,
+        structural_instance: None,
+    },
+    StandardModuleTrait {
+        identity: STYLE_RECORD,
+        name: "StyleRecord",
+        heads: Vec::new,
+        structural_instance: Some(StandardStructuralInstance {
+            identity: "std/web/html::StyleRecord<Record>",
+            matches: is_style_record_instance,
+        }),
+    },
+];
 
 pub(crate) struct StandardInstanceHead {
     pub(crate) parameters: Vec<seseragi_syntax::TypeParameter>,
@@ -16,9 +47,21 @@ pub(crate) fn standard_module_instance_heads(
     trait_identity: Option<&str>,
     name: &str,
 ) -> Vec<(StandardInstanceHead, &'static str)> {
-    if (trait_identity, name) != (Some(INTO_CHILDREN), "IntoChildren") {
-        return Vec::new();
-    }
+    standard_module_trait(trait_identity, name)
+        .map(|trait_spec| (trait_spec.heads)())
+        .unwrap_or_default()
+}
+
+fn standard_module_trait(
+    identity: Option<&str>,
+    name: &str,
+) -> Option<&'static StandardModuleTrait> {
+    STANDARD_MODULE_TRAITS
+        .iter()
+        .find(|trait_spec| Some(trait_spec.identity) == identity && trait_spec.name == name)
+}
+
+fn into_children_instance_heads() -> Vec<(StandardInstanceHead, &'static str)> {
     let action = named("Action");
     let html = TypedType::ExternalNamed {
         name: "Html".to_owned(),
@@ -55,6 +98,66 @@ pub(crate) fn standard_module_instance_heads(
         )
     })
     .collect()
+}
+
+/// Returns whether a registered standard instance has no dictionary methods
+/// or superclass dictionaries. Instance arguments are checked by its consumer.
+pub fn standard_instance_has_empty_dictionary(identity: &str) -> bool {
+    static EMPTY_MODULE_INSTANCES: OnceLock<BTreeSet<&'static str>> = OnceLock::new();
+    if EMPTY_MODULE_INSTANCES
+        .get_or_init(|| {
+            let mut instances = BTreeSet::new();
+            for trait_spec in STANDARD_MODULE_TRAITS {
+                let Some((module, _)) = trait_spec.identity.split_once("::") else {
+                    continue;
+                };
+                let Some(target) = seseragi_project::standard_module_target(module) else {
+                    continue;
+                };
+                if target.interface().exports.iter().any(|export| {
+                    export.symbol == trait_spec.identity
+                        && module_trait_has_empty_dictionary(export)
+                }) {
+                    instances.extend(
+                        (trait_spec.heads)()
+                            .into_iter()
+                            .map(|(_, identity)| identity),
+                    );
+                    instances.extend(
+                        trait_spec
+                            .structural_instance
+                            .iter()
+                            .map(|instance| instance.identity),
+                    );
+                }
+            }
+            instances
+        })
+        .contains(identity)
+    {
+        return true;
+    }
+    let trait_name = crate::prelude::standard_instance_by_identity(identity)
+        .map(|instance| instance.trait_name)
+        .or_else(|| {
+            crate::prelude::special_standard_instance_by_identity(identity)
+                .map(|instance| instance.trait_name)
+        });
+    trait_name
+        .and_then(crate::prelude::trait_by_name)
+        .is_some_and(|trait_spec| {
+            trait_spec.supertrait.is_none()
+                && !crate::prelude::TRAIT_METHODS
+                    .iter()
+                    .any(|method| method.trait_name == trait_spec.name)
+        })
+}
+
+fn module_trait_has_empty_dictionary(export: &seseragi_syntax::InterfaceExport) -> bool {
+    export.namespace == "trait"
+        && export.declaration_kind.as_deref() == Some("trait")
+        && export.methods.is_empty()
+        && export.scheme.constraints.is_empty()
 }
 
 pub(crate) struct StandardSignalCall {
@@ -178,15 +281,8 @@ pub(crate) fn standard_module_instance(
     trait_identity: Option<&str>,
     constraint: &TypedConstraint,
 ) -> Option<&'static str> {
-    match (trait_identity, constraint.name.as_str()) {
-        (Some(INTO_CHILDREN), "IntoChildren") => into_children_instance(constraint),
-        (Some(STYLE_RECORD), "StyleRecord") => style_record_instance(constraint),
-        _ => None,
-    }
-}
-
-fn into_children_instance(constraint: &TypedConstraint) -> Option<&'static str> {
-    standard_module_instance_heads(Some(INTO_CHILDREN), &constraint.name)
+    let trait_spec = standard_module_trait(trait_identity, &constraint.name)?;
+    (trait_spec.heads)()
         .into_iter()
         .find_map(|(head, identity)| {
             if head.arguments.len() != constraint.arguments.len() {
@@ -206,24 +302,28 @@ fn into_children_instance(constraint: &TypedConstraint) -> Option<&'static str> 
                 })
                 .then_some(identity)
         })
+        .or_else(|| {
+            trait_spec
+                .structural_instance
+                .as_ref()
+                .filter(|instance| (instance.matches)(constraint))
+                .map(|instance| instance.identity)
+        })
 }
 
-fn style_record_instance(constraint: &TypedConstraint) -> Option<&'static str> {
+fn is_style_record_instance(constraint: &TypedConstraint) -> bool {
     let [declarations] = constraint.arguments.as_slice() else {
-        return None;
+        return false;
     };
     let TypedType::Record { fields, .. } = declarations else {
-        return None;
+        return false;
     };
-    fields
-        .iter()
-        .all(|field| {
-            if field.name == "variables" {
-                return style_variables_record(&field.type_ref);
-            }
-            named_leaf(&field.type_ref, "String")
-        })
-        .then_some("std/web/html::StyleRecord<Record>")
+    fields.iter().all(|field| {
+        if field.name == "variables" {
+            return style_variables_record(&field.type_ref);
+        }
+        named_leaf(&field.type_ref, "String")
+    })
 }
 
 fn style_variables_record(type_ref: &TypedType) -> bool {
@@ -317,6 +417,92 @@ fn instance_argument_matches(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn methodless_dictionaries_follow_the_instance_selection_registry() {
+        for trait_spec in STANDARD_MODULE_TRAITS {
+            let (module, _) = trait_spec.identity.split_once("::").unwrap();
+            let target = seseragi_project::standard_module_target(module).unwrap();
+            let export = target
+                .interface()
+                .exports
+                .iter()
+                .find(|export| export.symbol == trait_spec.identity)
+                .unwrap();
+            let empty = module_trait_has_empty_dictionary(export);
+            for (head, identity) in (trait_spec.heads)() {
+                let constraint = TypedConstraint {
+                    name: trait_spec.name.to_owned(),
+                    arguments: head.arguments,
+                };
+                assert_eq!(
+                    standard_module_instance(Some(trait_spec.identity), &constraint),
+                    Some(identity)
+                );
+                assert_eq!(standard_instance_has_empty_dictionary(identity), empty);
+            }
+            if let Some(instance) = &trait_spec.structural_instance {
+                assert_eq!(
+                    standard_instance_has_empty_dictionary(instance.identity),
+                    empty
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn empty_dictionaries_require_no_methods_or_superclass_dictionaries() {
+        let target = seseragi_project::standard_module_target("std/web/html").unwrap();
+        let mut marker = target
+            .interface()
+            .exports
+            .iter()
+            .find(|export| export.symbol == STYLE_RECORD)
+            .unwrap()
+            .clone();
+        marker.name = "Marker".to_owned();
+        marker.symbol = "std/example::trait(Marker)".to_owned();
+        assert!(module_trait_has_empty_dictionary(&marker));
+
+        marker.methods.push(seseragi_syntax::InterfaceMethod {
+            name: "inspect".to_owned(),
+            deprecation: None,
+            scheme: marker.scheme.clone(),
+            origin: marker.declaration,
+        });
+        assert!(!module_trait_has_empty_dictionary(&marker));
+
+        marker.methods.clear();
+        marker
+            .scheme
+            .constraints
+            .push(seseragi_syntax::InterfaceConstraint {
+                name: "Parent".to_owned(),
+                trait_identity: Some("std/example::trait(Parent)".to_owned()),
+                arguments: Vec::new(),
+            });
+        assert!(!module_trait_has_empty_dictionary(&marker));
+
+        marker.scheme.constraints.clear();
+        marker.namespace = "value".to_owned();
+        assert!(!module_trait_has_empty_dictionary(&marker));
+    }
+
+    #[test]
+    fn unknown_and_method_bearing_standard_instances_are_not_empty_dictionaries() {
+        for identity in [
+            "std/example::Marker<Unit>",
+            "std/web/html::IntoChildren<Int>",
+            "std/int::Add",
+            "std/array::Functor",
+            "std/string::Monoid",
+        ] {
+            assert!(
+                !standard_instance_has_empty_dictionary(identity),
+                "{identity}"
+            );
+        }
+    }
 
     #[test]
     fn selects_only_the_declared_html_children_shapes() {

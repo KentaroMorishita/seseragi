@@ -1,0 +1,43 @@
+import * as html from "std/web/html"
+
+let savedStyle = html.style
+let forwardedStyle = savedStyle
+let makeDiv = html.div
+let makeFragment = html.fragment
+let accent = savedStyle { color: "red" }
+let directAccent = html.style { color: "red" }
+let node: html.Html<Unit> = makeDiv { style: accent, children: "Hello" }
+
+pub effect fn main = do {
+  let localStyle = html.style
+  let localDiv = html.div
+  let render = html.renderToString
+  println (render node)
+  println (html.renderToString (html.div { style: directAccent, children: "Hello" }))
+  let declarations = { zIndex: "2", color: "blue", variables: { accentColor: "<&>" } }
+  let local: html.Html<Unit> = localDiv {
+    style: localStyle declarations,
+    children: "<&>"
+  }
+  println (render local)
+  let direct: html.Html<Unit> = html.div {
+    style: html.style declarations,
+    children: "<&>"
+  }
+  println (render direct)
+  let empty: html.Html<Unit> = makeDiv { style: forwardedStyle {}, children: () }
+  println (render empty)
+  let unit: html.Html<Unit> = makeFragment ()
+  let text: html.Html<Unit> = makeFragment "fragment"
+  let singleChild: html.Html<Unit> = html.text "single"
+  let arrayChild: html.Html<Unit> = html.text "array"
+  let listChild: html.Html<Unit> = html.text "list"
+  let single: html.Html<Unit> = makeFragment singleChild
+  let array: html.Html<Unit> = makeFragment [arrayChild]
+  let list: html.Html<Unit> = makeFragment `[listChild]
+  println (render unit)
+  println (render text)
+  println (render single)
+  println (render array)
+  println (render list)
+}

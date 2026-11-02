@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-user-add-operator::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-user-add-operator/src/domain.ssrg",
+      "start": 152,
+      "end": 174
+    },
+    {
+      "source": "project/imported-user-add-operator/src/domain.ssrg",
+      "start": 160,
+      "end": 173
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.int",
@@ -116,22 +128,44 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Points",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_int_add",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "value"
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "right"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source152"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Points",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_int_add",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "value"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "right"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source160"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }

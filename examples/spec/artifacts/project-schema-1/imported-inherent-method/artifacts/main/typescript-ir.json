@@ -2,6 +2,38 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-inherent-method::main",
+  "runtimeSources": [
+    {
+      "source": "project/imported-inherent-method/src/main.ssrg",
+      "start": 66,
+      "end": 110
+    },
+    {
+      "source": "project/imported-inherent-method/src/main.ssrg",
+      "start": 67,
+      "end": 105
+    },
+    {
+      "source": "project/imported-inherent-method/src/main.ssrg",
+      "start": 68,
+      "end": 77
+    },
+    {
+      "source": "project/imported-inherent-method/src/main.ssrg",
+      "start": 93,
+      "end": 104
+    },
+    {
+      "source": "project/imported-inherent-method/src/main.ssrg",
+      "start": 175,
+      "end": 227
+    },
+    {
+      "source": "project/imported-inherent-method/src/main.ssrg",
+      "start": 214,
+      "end": 225
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
@@ -111,57 +143,115 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "get",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "map",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "box",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "value"
-                  }
-                ],
-                "typeArguments": [
-                  {
-                    "kind": "number"
-                  }
-                ]
-              },
-              {
-                "kind": "lambda",
-                "parameter": "item: number",
-                "body": {
+            "kind": "identifier",
+            "name": "$ssrg$source66"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "get",
+              "arguments": [
+                {
                   "kind": "runtime-call",
-                  "callee": "_ssrg_int_add",
+                  "callee": "$ssrg$atSource",
                   "arguments": [
                     {
                       "kind": "identifier",
-                      "name": "item"
+                      "name": "$ssrg$source67"
                     },
                     {
-                      "kind": "identifier",
-                      "name": "item"
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "map",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source68"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "box",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "value"
+                                    }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "item: number",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_int_add",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "item"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "item"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source93"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
                   ]
                 }
-              }
-            ],
-            "typeArguments": [
-              {
-                "kind": "number"
-              }
-            ]
-          }
-        ],
-        "typeArguments": [
+              ],
+              "typeArguments": [
+                {
+                  "kind": "number"
+                }
+              ]
+            }
+          },
           {
-            "kind": "number"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -184,35 +274,71 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "binary",
-            "operator": "+",
-            "left": {
-              "kind": "string",
-              "value": "Imported inherent method: "
-            },
-            "right": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
-              },
-              "method": "show",
+            "kind": "identifier",
+            "name": "$ssrg$source175"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "evaluate",
-                  "arguments": [
-                    {
-                      "kind": "number",
-                      "value": "21"
-                    }
-                  ]
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "Imported inherent method: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source214"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "evaluate",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "21"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
                 }
               ]
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

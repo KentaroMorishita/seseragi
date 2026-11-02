@@ -11,11 +11,15 @@
   "names": [
     "__ssrg$instance$Tag$0",
     "label",
+    "$ssrg$atSource",
     "__ssrg$instance$Tag$0",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "label",
+    "$ssrg$atSource",
     "Just"
   ],
-  "mappings": ";;;;;AAIAA;AAIAC;AAEAE"
+  "mappings": ";;;;;;;;;;AAIAA;AAIAC;AAEAG"
 }

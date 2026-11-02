@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-fail-adt",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 56,
+      "end": 68
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.unit",
@@ -51,11 +58,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_effect_fail",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "Invalid"
+            "name": "$ssrg$source56"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_fail",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Invalid"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

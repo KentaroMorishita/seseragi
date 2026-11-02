@@ -18,14 +18,20 @@
     "__ssrg$instance$Render$0",
     "__ssrg$instance$Describe$1",
     "badgeLabel",
+    "$ssrg$atSource",
     "__ssrg$instance$Render$0",
     "modeLabel",
+    "$ssrg$atSource",
     "__ssrg$instance$Describe$1",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "badgeLabel",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "modeLabel"
   ],
-  "mappings": ";;;;;AAAAA;;;AACIC;AACAC;AAEJC;;;AACIC;AACAC;AAUJC;AAQAC;AAQAC;AAEAE;AAEAE"
+  "mappings": ";;;;;;;;;;;;AAAAA;;;AACIC;AACAC;AAEJC;;;AACIC;AACAC;AAUJC;AAQAC;AAQAC;AAEAG;AAEAG"
 }

@@ -100,7 +100,7 @@ fn effect_until_crosses_imported_iterable_and_partial_application_boundaries() {
     );
     assert!(
         ts.contains(
-            "_ssrg_effect_forEachUntil(observe, __ssrg$effect$partial$0, _ssrg_array_iterable)"
+            "_ssrg_effect_forEachUntil($ssrg$atSource($ssrg$source556, () => observe, false), __ssrg$effect$partial$0, _ssrg_array_iterable)"
         ),
         "partial application must put the collection before evidence: {ts}"
     );

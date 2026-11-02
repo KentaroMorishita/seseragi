@@ -20,6 +20,7 @@ use seseragi_lowering::{CoreModule, SourceSpan};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RustSourceFile {
+    /// Package-relative path displayed by runtime diagnostics.
     pub path: String,
     pub text: String,
 }

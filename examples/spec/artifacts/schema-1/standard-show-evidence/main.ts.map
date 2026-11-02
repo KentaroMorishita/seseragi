@@ -12,12 +12,16 @@
     "__ssrg$instance$Render$0",
     "acknowledge",
     "label",
+    "$ssrg$atSource",
     "__ssrg$instance$Render$0",
     "stringShow",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "label",
+    "$ssrg$atSource",
     "Just"
   ],
-  "mappings": ";;;;;;AAQAA;AAJAC;AAaAC;AAGAG"
+  "mappings": ";;;;;;;;;;;AAQAA;AAJAC;AAaAC;AAGAI"
 }

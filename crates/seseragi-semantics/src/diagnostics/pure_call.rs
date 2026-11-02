@@ -482,6 +482,168 @@ mod tests {
     }
 
     #[test]
+    fn preserves_argument_type_errors_inside_template_interpolations() {
+        for (template, argument, message) in [
+            (
+                r#"`${total "400" 2}`"#,
+                r#""400""#,
+                "argument 1 expected Int, received String",
+            ),
+            (
+                r#"`${total 400 "2"}`"#,
+                r#""2""#,
+                "argument 2 expected Int, received String",
+            ),
+            (
+                r#"`${[total "400" 2]}`"#,
+                r#""400""#,
+                "argument 1 expected Int, received String",
+            ),
+            (
+                r#"`${(total "400" 2, True)}`"#,
+                r#""400""#,
+                "argument 1 expected Int, received String",
+            ),
+            (
+                r#"`outer ${`inner ${total "400" 2}`}`"#,
+                r#""400""#,
+                "argument 1 expected Int, received String",
+            ),
+        ] {
+            let source = format!(
+                "fn total price: Int -> qty: Int -> Int = price * qty\n\npub effect fn main = println {template}\n"
+            );
+            let artifact = semantic_diagnostics("template-argument.ssrg", &source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
+            let diagnostic = &artifact.diagnostics[0];
+            assert_eq!(diagnostic.code, "SES-T0101");
+            assert_eq!(diagnostic.message_key, "call.argument-type-mismatch");
+            assert_eq!(diagnostic.related[0].message, message);
+            assert_eq!(
+                &source[diagnostic.primary.start as usize..diagnostic.primary.end as usize],
+                argument,
+            );
+        }
+    }
+
+    #[test]
+    fn does_not_add_show_errors_for_values_from_invalid_bindings() {
+        for body in [
+            "let t = total \"400\" 2\npub effect fn main = println `${t}`\n",
+            "let t = total \"400\" 2\nlet values = [t]\npub effect fn main = println `${values}`\n",
+            "pub effect fn main = println {\n  let t = total \"400\" 2\n  `${t}`\n}\n",
+        ] {
+            let source = format!("fn total price: Int -> qty: Int -> Int = price * qty\n\n{body}");
+            let artifact = semantic_diagnostics("template-invalid-binding.ssrg", &source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
+            let diagnostic = &artifact.diagnostics[0];
+            assert_eq!(diagnostic.code, "SES-T0101");
+            assert_eq!(diagnostic.message_key, "call.argument-type-mismatch");
+            assert_eq!(
+                diagnostic.related[0].message,
+                "argument 1 expected Int, received String"
+            );
+        }
+    }
+
+    #[test]
+    fn preserves_missing_operator_instances_inside_template_interpolations() {
+        for expression in ["n + 1", "[n + 1]"] {
+            let source =
+                format!("fn label n: Either<String, Int> -> String = `${{{expression}}}`\n");
+            let artifact = semantic_diagnostics("template-add.ssrg", &source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
+            let diagnostic = &artifact.diagnostics[0];
+            assert_eq!(diagnostic.code, "SES-T0201");
+            assert_eq!(diagnostic.message_key, "instance.missing");
+            assert_eq!(
+                diagnostic.related[0].message,
+                "no Add instance matches the inferred call arguments"
+            );
+            assert_eq!(
+                &source[diagnostic.primary.start as usize..diagnostic.primary.end as usize],
+                "+",
+            );
+        }
+    }
+
+    #[test]
+    fn prioritizes_expression_errors_over_show_errors_in_other_interpolations() {
+        for (expression, message_key, message) in [
+            (
+                r#"total "400" 2"#,
+                "call.argument-type-mismatch",
+                "argument 1 expected Int, received String",
+            ),
+            (
+                "(1) 1",
+                "expression.invalid",
+                "the expression could not be resolved to a typed language construct",
+            ),
+        ] {
+            for template in [
+                format!("`${{{expression}}} ${{Active}}`"),
+                format!("`${{Active}} ${{{expression}}}`"),
+            ] {
+                let source = format!(
+                    "type Badge = | Active\nfn total price: Int -> qty: Int -> Int = price * qty\nfn label -> String = {template}\n"
+                );
+                let artifact = semantic_diagnostics("template-error-priority.ssrg", &source);
+                assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
+                assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+                assert_eq!(artifact.diagnostics[0].message_key, message_key);
+                assert_eq!(artifact.diagnostics[0].related[0].message, message);
+            }
+        }
+    }
+
+    #[test]
+    fn preserves_other_expression_errors_inside_template_interpolations() {
+        for (expression, code, message_key) in [
+            ("[1, \"wrong\"]", "SES-T0101", "array.element-type-mismatch"),
+            (
+                "if True then 1 else \"wrong\"",
+                "SES-T0101",
+                "if.branch-type-mismatch",
+            ),
+            ("(1) 1", "SES-T0101", "expression.invalid"),
+            ("missing", "SES-N0001", "name.unresolved"),
+        ] {
+            let source = format!("fn label -> String = `${{{expression}}}`\n");
+            let artifact = semantic_diagnostics("template-expression.ssrg", &source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
+            assert_eq!(artifact.diagnostics[0].code, code);
+            assert_eq!(artifact.diagnostics[0].message_key, message_key);
+        }
+    }
+
+    #[test]
+    fn still_checks_show_for_other_interpolations_after_a_binding_error() {
+        for template in ["`${t} ${Active}`", "`${Active} ${t}`"] {
+            let source = format!(
+                "type Badge = | Active\nfn total price: Int -> qty: Int -> Int = price * qty\nlet t = total \"400\" 2\nfn label -> String = {template}\n"
+            );
+            let artifact = semantic_diagnostics("template-independent-show.ssrg", &source);
+            assert_eq!(artifact.diagnostics.len(), 2, "{source}\n{artifact:#?}");
+            assert_eq!(
+                artifact.diagnostics[0].message_key,
+                "call.argument-type-mismatch"
+            );
+            let diagnostic = &artifact.diagnostics[1];
+            assert_eq!(diagnostic.code, "SES-T0201");
+            assert_eq!(diagnostic.message_key, "instance.missing");
+            assert_eq!(
+                diagnostic.related[0].message,
+                "no Show<Badge> instance matches the inferred call arguments"
+            );
+            assert_eq!(
+                &source[diagnostic.primary.start as usize..diagnostic.primary.end as usize],
+                "Active",
+            );
+        }
+    }
+
+    #[test]
     fn reports_the_missing_leaf_of_a_conditional_collection_instance() {
         let artifact = semantic_diagnostics(
             "missing-collection-show.ssrg",

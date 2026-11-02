@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-effect-console::effects",
+  "runtimeSources": [
+    {
+      "source": "project/imported-effect-console/src/effects.ssrg",
+      "start": 83,
+      "end": 98
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "effect.console.println",
@@ -27,11 +34,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "message"
+            "name": "$ssrg$source83"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "message"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

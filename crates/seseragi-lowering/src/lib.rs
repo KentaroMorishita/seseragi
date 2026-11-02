@@ -23,6 +23,8 @@ mod provider_service_ops;
 mod range_ops;
 mod reachability;
 mod regex_ops;
+#[cfg(test)]
+mod runtime_exports;
 mod runtime_modules;
 mod runtime_types;
 mod signal_ops;

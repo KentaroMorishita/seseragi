@@ -10,9 +10,12 @@
   ],
   "names": [
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "describe",
+    "$ssrg$atSource",
     "active"
   ],
-  "mappings": ";;;;;;AAEAA"
+  "mappings": ";;;;;;;;;;AAEAA"
 }

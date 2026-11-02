@@ -1,4 +1,6 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
+import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
+const $ssrg$source127 = { file: "project/imported-alias-return/src/domain.ssrg", line: 4, column: 40, uri: "seseragi://fixture/imported-alias-return::domain", start: 127, end: 136 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
 interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
@@ -12,4 +14,4 @@ export type Box<A> =
 export const Box = <A>(value: A): Box<A> => ({ tag: "Box", value } as const);
 export type Wrapped<A> = Box<A>
 export type Again<A> = Box<A>
-export const boxed = <A,>(value: A) => Box<A>(value)
+export const boxed = <A,>(value: A) => $ssrg$atSource($ssrg$source127, () => Box<A>(value), false)

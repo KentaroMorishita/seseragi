@@ -91,7 +91,7 @@ fn process_initialization_defects_use_the_language_exit_and_diagnostic_contract(
                 assert_eq!(diagnostic["kind"], "Defect");
                 assert_eq!(diagnostic["schema"], 1);
             } else {
-                assert!(error.contains("during module initialization"), "{error}");
+                assert_eq!(error, "Seseragi Defect: application fixture boundary (during module initialization)\n");
             }
         }
     }

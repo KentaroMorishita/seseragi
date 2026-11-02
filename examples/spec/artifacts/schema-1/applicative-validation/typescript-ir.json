@@ -2,6 +2,148 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/applicative-validation",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 354,
+      "end": 368
+    },
+    {
+      "source": "main.ssrg",
+      "start": 362,
+      "end": 368
+    },
+    {
+      "source": "main.ssrg",
+      "start": 393,
+      "end": 407
+    },
+    {
+      "source": "main.ssrg",
+      "start": 658,
+      "end": 677
+    },
+    {
+      "source": "main.ssrg",
+      "start": 704,
+      "end": 741
+    },
+    {
+      "source": "main.ssrg",
+      "start": 717,
+      "end": 740
+    },
+    {
+      "source": "main.ssrg",
+      "start": 835,
+      "end": 846
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1024,
+      "end": 1045
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1032,
+      "end": 1045
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1085,
+      "end": 1118
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1095,
+      "end": 1118
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1148,
+      "end": 1162
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1192,
+      "end": 1206
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1366,
+      "end": 1382
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1453,
+      "end": 1463
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1469,
+      "end": 1495
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1479,
+      "end": 1495
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1501,
+      "end": 1511
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1587,
+      "end": 1596
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1602,
+      "end": 1633
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1612,
+      "end": 1633
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1711,
+      "end": 1724
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1731,
+      "end": 1748
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1755,
+      "end": 1770
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2067,
+      "end": 2098
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2261,
+      "end": 2280
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2318,
+      "end": 2335
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2370,
+      "end": 2391
+    }
+  ],
   "higherKinds": {
     "constructors": [
       {
@@ -353,30 +495,66 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Valid",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "f",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "item"
-                          }
-                        ]
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "E",
-                        "arguments": []
+                        "kind": "identifier",
+                        "name": "$ssrg$source354"
                       },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Valid",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source362"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "f",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "item"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "E",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -411,24 +589,42 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Invalid",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "errors"
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "E",
-                        "arguments": []
+                        "name": "$ssrg$source393"
                       },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Invalid",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "errors"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "E",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -527,24 +723,42 @@
               }
             ],
             "body": {
-              "kind": "call",
-              "callee": "Valid",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "value"
-                }
-              ],
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "E",
-                  "arguments": []
+                  "name": "$ssrg$source835"
                 },
                 {
-                  "kind": "reference",
-                  "name": "A",
-                  "arguments": []
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "Valid",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -701,30 +915,66 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Valid",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "_function",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "item"
-                          }
-                        ]
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "E",
-                        "arguments": []
+                        "kind": "identifier",
+                        "name": "$ssrg$source1024"
                       },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Valid",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1032"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "_function",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "item"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "E",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -801,41 +1051,77 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Invalid",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "appendErrors",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "left"
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "right"
-                          }
-                        ],
-                        "typeArguments": [
-                          {
-                            "kind": "reference",
-                            "name": "E",
-                            "arguments": []
-                          }
-                        ]
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "E",
-                        "arguments": []
+                        "kind": "identifier",
+                        "name": "$ssrg$source1085"
                       },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Invalid",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1095"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "appendErrors",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "left"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "right"
+                                      }
+                                    ],
+                                    "typeArguments": [
+                                      {
+                                        "kind": "reference",
+                                        "name": "E",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "E",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -879,24 +1165,42 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Invalid",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "errors"
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "E",
-                        "arguments": []
+                        "name": "$ssrg$source1148"
                       },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Invalid",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "errors"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "E",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -940,24 +1244,42 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Invalid",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "errors"
-                      }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "E",
-                        "arguments": []
+                        "name": "$ssrg$source1192"
                       },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Invalid",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "errors"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "E",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1052,28 +1374,46 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "More",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "identifier",
-                      "name": "error"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "right"
-                    }
-                  ]
-                }
-              ],
-              "typeArguments": [
+                  "kind": "identifier",
+                  "name": "$ssrg$source658"
+                },
                 {
-                  "kind": "reference",
-                  "name": "E",
-                  "arguments": []
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "More",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "identifier",
+                            "name": "error"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "right"
+                          }
+                        ]
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -1129,38 +1469,74 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "More",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "identifier",
-                      "name": "error"
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "appendErrors",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "rest"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "right"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ],
-              "typeArguments": [
+                  "kind": "identifier",
+                  "name": "$ssrg$source704"
+                },
                 {
-                  "kind": "reference",
-                  "name": "E",
-                  "arguments": []
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "More",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "identifier",
+                            "name": "error"
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source717"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "appendErrors",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "rest"
+                                    },
+                                    {
+                                      "kind": "identifier",
+                                      "name": "right"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -1201,21 +1577,39 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "User",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "tuple",
-            "elements": [
-              {
-                "kind": "identifier",
-                "name": "name"
-              },
-              {
-                "kind": "identifier",
-                "name": "age"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source1366"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "User",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "name"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "age"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -1239,73 +1633,145 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_string_eq_dictionary"
-          },
-          "method": "eq",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "name"
+              "name": "$ssrg$source1453"
             },
             {
-              "kind": "string",
-              "value": ""
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_string_eq_dictionary"
+                },
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "name"
+                  },
+                  {
+                    "kind": "string",
+                    "value": ""
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
         "thenBranch": {
-          "kind": "call",
-          "callee": "Invalid",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "One",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "NameRequired"
-                }
-              ],
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "FormError",
-                  "arguments": []
-                }
-              ]
-            }
-          ],
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "FormError",
-              "arguments": []
+              "kind": "identifier",
+              "name": "$ssrg$source1469"
             },
             {
-              "kind": "string"
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "call",
+                "callee": "Invalid",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source1479"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "One",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "NameRequired"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "FormError",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
         "elseBranch": {
-          "kind": "call",
-          "callee": "Valid",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "name"
-            }
-          ],
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "FormError",
-              "arguments": []
+              "name": "$ssrg$source1501"
             },
             {
-              "kind": "string"
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "call",
+                "callee": "Valid",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "name"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         }
@@ -1360,55 +1826,109 @@
           }
         },
         "thenBranch": {
-          "kind": "call",
-          "callee": "Valid",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "age"
-            }
-          ],
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "FormError",
-              "arguments": []
+              "name": "$ssrg$source1587"
             },
             {
-              "kind": "number"
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "call",
+                "callee": "Valid",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "age"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
         "elseBranch": {
-          "kind": "call",
-          "callee": "Invalid",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "One",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "AgeMustBePositive"
-                }
-              ],
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "FormError",
-                  "arguments": []
-                }
-              ]
-            }
-          ],
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "FormError",
-              "arguments": []
+              "kind": "identifier",
+              "name": "$ssrg$source1602"
             },
             {
-              "kind": "number"
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "call",
+                "callee": "Invalid",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source1612"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "One",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "AgeMustBePositive"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "FormError",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         }
@@ -1436,37 +1956,17 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "__ssrg$instance$Applicative$1",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "FormError",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "type-application-call",
-                "callee": "__ssrg$instance$Functor$0",
-                "typeArguments": [
-                  {
-                    "kind": "reference",
-                    "name": "FormError",
-                    "arguments": []
-                  }
-                ],
-                "arguments": []
-              }
-            ]
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source1711"
           },
-          "method": "apply",
-          "arguments": [
-            {
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
               "kind": "checked-result",
               "value": {
                 "kind": "dictionary-call",
@@ -1498,78 +1998,216 @@
                 "method": "apply",
                 "arguments": [
                   {
-                    "kind": "checked-result",
-                    "value": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [
-                          {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source1711"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Applicative$1",
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "FormError",
+                                  "arguments": []
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "__ssrg$instance$Functor$0",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "FormError",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "method": "apply",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1711"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "dictionary-call",
+                                        "dictionary": {
+                                          "kind": "type-application-call",
+                                          "callee": "__ssrg$instance$Applicative$1",
+                                          "typeArguments": [
+                                            {
+                                              "kind": "reference",
+                                              "name": "FormError",
+                                              "arguments": []
+                                            }
+                                          ],
+                                          "arguments": [
+                                            {
+                                              "kind": "type-application-call",
+                                              "callee": "__ssrg$instance$Functor$0",
+                                              "typeArguments": [
+                                                {
+                                                  "kind": "reference",
+                                                  "name": "FormError",
+                                                  "arguments": []
+                                                }
+                                              ],
+                                              "arguments": []
+                                            }
+                                          ]
+                                        },
+                                        "method": "pure",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "makeUser"
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "reference",
+                                        "name": "Validation",
+                                        "arguments": [
+                                          {
+                                            "kind": "reference",
+                                            "name": "FormError",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "function",
+                                            "parameter": {
+                                              "kind": "string"
+                                            },
+                                            "result": {
+                                              "kind": "function",
+                                              "parameter": {
+                                                "kind": "number"
+                                              },
+                                              "result": {
+                                                "kind": "reference",
+                                                "name": "User",
+                                                "arguments": []
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1731"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "validateName",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "name"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "type": {
                             "kind": "reference",
-                            "name": "FormError",
-                            "arguments": []
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Functor$0",
-                            "typeArguments": [
+                            "name": "Validation",
+                            "arguments": [
                               {
                                 "kind": "reference",
                                 "name": "FormError",
                                 "arguments": []
+                              },
+                              {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "reference",
+                                  "name": "User",
+                                  "arguments": []
+                                }
                               }
-                            ],
-                            "arguments": []
+                            ]
                           }
-                        ]
+                        }
                       },
-                      "method": "pure",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "makeUser"
-                        }
-                      ]
-                    },
-                    "type": {
-                      "kind": "reference",
-                      "name": "Validation",
-                      "arguments": [
-                        {
-                          "kind": "reference",
-                          "name": "FormError",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "string"
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "number"
-                            },
-                            "result": {
-                              "kind": "reference",
-                              "name": "User",
-                              "arguments": []
-                            }
-                          }
-                        }
-                      ]
-                    }
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
                   },
                   {
-                    "kind": "call",
-                    "callee": "validateName",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "name"
+                        "name": "$ssrg$source1755"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "validateAge",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "age"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1585,47 +2223,19 @@
                     "arguments": []
                   },
                   {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "number"
-                    },
-                    "result": {
-                      "kind": "reference",
-                      "name": "User",
-                      "arguments": []
-                    }
+                    "kind": "reference",
+                    "name": "User",
+                    "arguments": []
                   }
                 ]
               }
-            },
-            {
-              "kind": "call",
-              "callee": "validateAge",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "age"
-                }
-              ]
             }
-          ]
-        },
-        "type": {
-          "kind": "reference",
-          "name": "Validation",
-          "arguments": [
-            {
-              "kind": "reference",
-              "name": "FormError",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "User",
-              "arguments": []
-            }
-          ]
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -1778,12 +2388,30 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "renderRemainingErrors",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "remaining"
+                  "name": "$ssrg$source2067"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "renderRemainingErrors",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "remaining"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -1883,12 +2511,30 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "renderErrors",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "errors"
+                  "name": "$ssrg$source2261"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "renderErrors",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "errors"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -1922,27 +2568,81 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "render",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "validateUser",
-                      "arguments": [
-                        {
-                          "kind": "string",
-                          "value": ""
-                        },
-                        {
-                          "kind": "number",
-                          "value": "0"
-                        }
-                      ]
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source2318"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source2318"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "render",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source2318"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "call",
+                                        "callee": "validateUser",
+                                        "arguments": [
+                                          {
+                                            "kind": "string",
+                                            "value": ""
+                                          },
+                                          {
+                                            "kind": "number",
+                                            "value": "0"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -1950,27 +2650,81 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "render",
-              "arguments": [
-                {
-                  "kind": "call",
-                  "callee": "validateUser",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "Mio"
-                    },
-                    {
-                      "kind": "number",
-                      "value": "20"
-                    }
-                  ]
-                }
-              ]
+              "kind": "identifier",
+              "name": "$ssrg$source2370"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source2370"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "render",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2370"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "validateUser",
+                                    "arguments": [
+                                      {
+                                        "kind": "string",
+                                        "value": "Mio"
+                                      },
+                                      {
+                                        "kind": "number",
+                                        "value": "20"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

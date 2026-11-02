@@ -2,6 +2,53 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/iterator-unfold",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 71,
+      "end": 98
+    },
+    {
+      "source": "main.ssrg",
+      "start": 86,
+      "end": 97
+    },
+    {
+      "source": "main.ssrg",
+      "start": 174,
+      "end": 187
+    },
+    {
+      "source": "main.ssrg",
+      "start": 189,
+      "end": 202
+    },
+    {
+      "source": "main.ssrg",
+      "start": 271,
+      "end": 284
+    },
+    {
+      "source": "main.ssrg",
+      "start": 305,
+      "end": 318
+    },
+    {
+      "source": "main.ssrg",
+      "start": 320,
+      "end": 334
+    },
+    {
+      "source": "main.ssrg",
+      "start": 408,
+      "end": 429
+    },
+    {
+      "source": "main.ssrg",
+      "start": 678,
+      "end": 691
+    }
+  ],
   "runtimeRequirements": [
     "core.iterator",
     "core.int",
@@ -105,30 +152,52 @@
         },
         "thenBranch": {
           "kind": "runtime-call",
-          "callee": "_ssrg_maybe_Just",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "identifier",
-                  "name": "current"
-                },
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_int_add",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "current"
-                    },
-                    {
-                      "kind": "number",
-                      "value": "1"
-                    }
-                  ]
-                }
-              ]
+              "kind": "identifier",
+              "name": "$ssrg$source71"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "identifier",
+                        "name": "current"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int_add",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "current"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source86"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
@@ -161,21 +230,57 @@
           "elements": [
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_iterator_next",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "iterator"
+                  "name": "$ssrg$source174"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_iterator_next",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "iterator"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_iterator_next",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "iterator"
+                  "name": "$ssrg$source189"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_iterator_next",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "iterator"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -343,20 +448,38 @@
             "value": {
               "kind": "conditional",
               "condition": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_int_eq_dictionary"
-                },
-                "method": "eq",
+                "kind": "runtime-call",
+                "callee": "$ssrg$atSource",
                 "arguments": [
                   {
                     "kind": "identifier",
-                    "name": "left"
+                    "name": "$ssrg$source271"
                   },
                   {
-                    "kind": "identifier",
-                    "name": "right"
+                    "kind": "lambda",
+                    "parameter": "",
+                    "body": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_int_eq_dictionary"
+                      },
+                      "method": "eq",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "left"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "right"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": false
                   }
                 ]
               },
@@ -367,21 +490,57 @@
                   "elements": [
                     {
                       "kind": "runtime-call",
-                      "callee": "_ssrg_iterator_next",
+                      "callee": "$ssrg$atSource",
                       "arguments": [
                         {
                           "kind": "identifier",
-                          "name": "leftRest"
+                          "name": "$ssrg$source305"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_iterator_next",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "leftRest"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
                         }
                       ]
                     },
                     {
                       "kind": "runtime-call",
-                      "callee": "_ssrg_iterator_next",
+                      "callee": "$ssrg$atSource",
                       "arguments": [
                         {
                           "kind": "identifier",
-                          "name": "rightRest"
+                          "name": "$ssrg$source320"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_iterator_next",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "rightRest"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
                         }
                       ]
                     }
@@ -499,20 +658,38 @@
                     "value": {
                       "kind": "conditional",
                       "condition": {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_int_eq_dictionary"
-                        },
-                        "method": "eq",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
                             "kind": "identifier",
-                            "name": "leftNext"
+                            "name": "$ssrg$source408"
                           },
                           {
-                            "kind": "identifier",
-                            "name": "rightNext"
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_int_eq_dictionary"
+                              },
+                              "method": "eq",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "leftNext"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "rightNext"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       },
@@ -575,27 +752,81 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_iterator_unfold",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "step"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "1"
-                  }
-                ]
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source678"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source678"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source678"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_iterator_unfold",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "step"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "1"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

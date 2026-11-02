@@ -1,5 +1,33 @@
 # Change Log
 
+## [0.61.141] - 2026-11-02
+
+### Added
+
+- TS programs report runtime defects with the original `.ssrg` file, line and column, using the same package-relative paths as the native target. Self-recursive tail calls stay stack-safe.
+- A crash inside lowering is reported as an internal compiler error diagnostic (`SES-I0001`) instead of aborting the compiler.
+
+### Changed
+
+- The project crate's standard module definitions are split into one file per module.
+
+## [0.61.140] - 2026-11-02
+
+### Fixed
+
+- Storing an `std/web/html` helper such as `html.style` without a type annotation no longer crashes the TS compiler; methodless standard instances lower to an empty dictionary.
+- The TS `NonEmptyList` Ord dictionary now carries its Eq parent, so `==` works inside functions constrained only by `Ord`.
+- Calls to constrained generic functions emit their inferred type arguments, so generated TS passes `tsc --strict` without callable casts.
+- Saved `runCollect` and partially applied Stream functions such as `map` run correctly on the TS target.
+- A type error inside a template interpolation `${...}` is reported as itself instead of `no Show<unknown> instance`, and no extra Show error follows.
+- Native Decimal arithmetic reports host-limit overflow as a defect instead of aborting the process.
+
+## [0.61.139] - 2026-11-02
+
+### Fixed
+
+- The Playground replaces its compiler worker after an internal compiler crash and reports it as an internal error, so later compiles never run on a stopped WASM instance. Ordinary compile errors keep the worker.
+
 ## [0.61.138] - 2026-11-01
 
 ### Added

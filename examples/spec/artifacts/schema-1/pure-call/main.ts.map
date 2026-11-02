@@ -12,9 +12,11 @@
     "add",
     "add",
     "addOne",
+    "$ssrg$atSource",
     "add",
     "total",
+    "$ssrg$atSource",
     "addOne"
   ],
-  "mappings": ";;;;AAAAA;AACAE;AACAE"
+  "mappings": ";;;;;;;;AAAAA;AACAE;AACAG"
 }

@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 use seseragi_lowering::{
     CoreExpr, CoreStatement, CoreType, TypeScriptExpr, TypeScriptFunction, TypeScriptStatement,
@@ -59,6 +63,14 @@ fn source_reference(value: &CoreExpr) {
     source_type_is_a_clock_callable(type_ref);
 }
 
+fn cold_callback(value: &TypeScriptExpr) {
+    assert!(
+        matches!(value, TypeScriptExpr::RuntimeReference { name }
+            if name == "_ssrg_clock_sleep"),
+        "constructing a saved function must not call its provider: {value:?}"
+    );
+}
+
 #[test]
 fn saved_clock_operation_keeps_its_checked_source_argument_until_application() {
     let source = format!(
@@ -88,13 +100,9 @@ fn saved_clock_operation_keeps_its_checked_source_argument_until_application() {
         let TypeScriptStatement::PureLet { initializer, .. } = &statements[0] else {
             panic!("{statements:?}");
         };
+        cold_callback(initializer);
         assert!(
-            matches!(initializer, TypeScriptExpr::RuntimeReference { name }
-                if name == "_ssrg_clock_sleep"),
-            "constructing a saved function must not call its provider: {initializer:?}"
-        );
-        assert!(
-            matches!(result.as_ref(), TypeScriptExpr::Call { callee, arguments, .. }
+            matches!(source_locations::source_action(result, true), TypeScriptExpr::Call { callee, arguments, .. }
                 if callee == "saved" && matches!(arguments.as_slice(),
                     [TypeScriptExpr::Identifier { name }] if name == "pause")),
             "application must pass the checked source argument to the saved function: {result:?}"
@@ -111,7 +119,7 @@ fn saved_clock_operation_keeps_its_checked_source_argument_until_application() {
         .unwrap();
         let TypeScriptFunction::ConstFunction { body, .. } = &direct.typescript_ir.functions[0];
         assert!(
-            matches!(body, TypeScriptExpr::RuntimeCall { callee, arguments }
+            matches!(source_locations::source_action(body, true), TypeScriptExpr::RuntimeCall { callee, arguments }
             if callee == "_ssrg_clock_sleep" && arguments.len() == 1)
         );
     }
@@ -195,7 +203,7 @@ fn clock_callable_keeps_nominal_argument_identity_and_user_function_ownership() 
         .unwrap();
     let TypeScriptFunction::ConstFunction { body, .. } = factory;
     assert!(
-        matches!(body, TypeScriptExpr::Call { callee, arguments, .. }
+        matches!(source_locations::source_action(body, false), TypeScriptExpr::Call { callee, arguments, .. }
         if callee == "sleep" && arguments.len() == 1)
     );
 }

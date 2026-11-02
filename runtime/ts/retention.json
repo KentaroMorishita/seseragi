@@ -82,6 +82,7 @@
     "src/range.ts": "pure-helper",
     "src/ref.ts": "pure-helper",
     "src/regex.ts": "pure-helper",
+    "src/runtime-diagnostic.ts": "pure-helper",
     "src/semaphore.ts": "pure-helper",
     "src/sequence.ts": "pure-helper",
     "src/service.ts": "pure-helper",

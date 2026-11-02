@@ -62,5 +62,5 @@ pub fn answer unit: Unit -> (Bool, Bool) =
         .contains("__ssrg$evidence$0[\"eq\"](left)(right) === false"));
     assert!(bundle
         .typescript
-        .contains("different(Ready)(Waiting)(__ssrg$instance$Eq$0)"));
+        .contains("different<Status>(Ready)(Waiting)(__ssrg$instance$Eq$0)"));
 }

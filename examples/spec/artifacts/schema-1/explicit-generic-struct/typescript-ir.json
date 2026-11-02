@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/explicit-generic-struct",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 206,
+      "end": 247
+    },
+    {
+      "source": "main.ssrg",
+      "start": 272,
+      "end": 290
+    }
+  ],
   "higherKinds": {
     "constructors": [
       {
@@ -149,24 +161,42 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_string_add_dictionary"
-        },
-        "method": "add",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "string",
-            "value": "Explicit generic Struct: "
+            "kind": "identifier",
+            "name": "$ssrg$source206"
           },
           {
-            "kind": "field-access",
-            "receiver": {
-              "kind": "identifier",
-              "name": "value"
-            },
-            "field": "label"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Explicit generic Struct: "
+                },
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  "field": "label"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -189,17 +219,53 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "marker"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source272"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source272"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "marker"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

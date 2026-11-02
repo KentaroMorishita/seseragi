@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/feature-module-composition::todo/list",
+  "runtimeSources": [
+    {
+      "source": "project/feature-module-composition/src/todo/list.ssrg",
+      "start": 148,
+      "end": 280
+    },
+    {
+      "source": "project/feature-module-composition/src/todo/list.ssrg",
+      "start": 185,
+      "end": 234
+    },
+    {
+      "source": "project/feature-module-composition/src/todo/list.ssrg",
+      "start": 242,
+      "end": 270
+    }
+  ],
   "runtimeRequirements": [
     "effect.core.type",
     "web.html.type",
@@ -54,89 +71,143 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_section",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "array",
-                  "elements": [
+            "kind": "identifier",
+            "name": "$ssrg$source148"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_section",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "clear"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "Clear"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_p",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "summary"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ],
-                  "elementType": {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Effect",
-                        "arguments": [
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "array",
+                        "elements": [
                           {
-                            "kind": "record",
-                            "fields": []
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source185"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_button",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "onClick",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "clear"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "Clear"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
                           },
                           {
-                            "kind": "never"
-                          },
-                          {
-                            "kind": "undefined"
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source242"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_p",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "summary"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
                           }
-                        ]
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "never"
+                                },
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
-                    ]
-                  }
+                    }
+                  ]
                 }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

@@ -11,11 +11,15 @@
   "names": [
     "__ssrg$instance$Functor$0",
     "transform",
+    "$ssrg$atSource",
     "__ssrg$evidence$0",
     "applyMapper",
+    "$ssrg$atSource",
     "mapper",
     "transformWith",
+    "$ssrg$atSource",
     "applyMapper",
+    "$ssrg$atSource",
     "__ssrg$partial$stage",
     "transform",
     "__ssrg$partial$stage",
@@ -23,10 +27,14 @@
     "add",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "transformWith",
+    "$ssrg$atSource",
     "Just"
   ],
-  "mappings": ";;;;;;;;;AAIAA;AAQAC;AAOAE;AAMAE;AAOAK;AAEAE;AAOAC"
+  "mappings": ";;;;;;;;;;;;;;;;;;AAIAA;AAQAC;AAOAG;AAMAG;AAOAO;AAEAE;AAOAC"
 }

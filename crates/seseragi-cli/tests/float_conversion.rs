@@ -4,6 +4,10 @@ mod native_cache;
 #[path = "../../test-support/native_runtime.rs"]
 mod native_runtime;
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -422,6 +426,7 @@ fn check_semantic_program(
     trace: Option<&str>,
 ) {
     let scratch = Scratch::new();
+    let mut expected_defect = None;
     for (label, executable, argument, native) in build_programs(source, false, &scratch.0) {
         let cwd = scratch.0.join(format!("run-{label}"));
         fs::create_dir(&cwd).unwrap();
@@ -442,8 +447,11 @@ fn check_semantic_program(
             if code == 70 {
                 assert!(stderr.contains(reason), "{label}: {stderr}");
             }
+            if code == 70 {
+                expected_defect = Some(diagnostics::ts_defect_from_native(&result.stderr));
+            }
         } else if code == 70 {
-            assert_eq!(stderr, "seseragi: runtime defect\n");
+            assert_eq!(stderr, *expected_defect.as_ref().unwrap());
         } else {
             assert!(stderr.is_empty(), "{label}: {stderr}");
         }

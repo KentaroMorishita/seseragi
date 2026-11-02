@@ -2,6 +2,53 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/record-profile",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 297,
+      "end": 314
+    },
+    {
+      "source": "main.ssrg",
+      "start": 338,
+      "end": 350
+    },
+    {
+      "source": "main.ssrg",
+      "start": 467,
+      "end": 504
+    },
+    {
+      "source": "main.ssrg",
+      "start": 488,
+      "end": 504
+    },
+    {
+      "source": "main.ssrg",
+      "start": 523,
+      "end": 535
+    },
+    {
+      "source": "main.ssrg",
+      "start": 538,
+      "end": 554
+    },
+    {
+      "source": "main.ssrg",
+      "start": 603,
+      "end": 619
+    },
+    {
+      "source": "main.ssrg",
+      "start": 625,
+      "end": 650
+    },
+    {
+      "source": "main.ssrg",
+      "start": 671,
+      "end": 720
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "core.int",
@@ -207,20 +254,38 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_string_add_dictionary"
-              },
-              "method": "add",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "Player: "
+                  "kind": "identifier",
+                  "name": "$ssrg$source297"
                 },
                 {
-                  "kind": "identifier",
-                  "name": "name"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_add_dictionary"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Player: "
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "name"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -254,34 +319,70 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_string_add_dictionary"
-              },
-              "method": "add",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_string_add_dictionary"
-                  },
-                  "method": "add",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "label"
-                    },
-                    {
-                      "kind": "string",
-                      "value": ": "
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source338"
                 },
                 {
-                  "kind": "identifier",
-                  "name": "name"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_add_dictionary"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source338"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_string_add_dictionary"
+                              },
+                              "method": "add",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "label"
+                                },
+                                {
+                                  "kind": "string",
+                                  "value": ": "
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "name"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -339,26 +440,62 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_string_add_dictionary"
-              },
-              "method": "add",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "Record profile: "
+                  "kind": "identifier",
+                  "name": "$ssrg$source467"
                 },
                 {
-                  "kind": "call",
-                  "callee": "displayName",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "user"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_add_dictionary"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Record profile: "
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source488"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "displayName",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "user"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -385,40 +522,94 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_string_add_dictionary"
-              },
-              "method": "add",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_string_add_dictionary"
-                  },
-                  "method": "add",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "label"
-                    },
-                    {
-                      "kind": "string",
-                      "value": ": "
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source523"
                 },
                 {
-                  "kind": "call",
-                  "callee": "displayName",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "user"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_add_dictionary"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source523"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_string_add_dictionary"
+                              },
+                              "method": "add",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "label"
+                                },
+                                {
+                                  "kind": "string",
+                                  "value": ": "
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source538"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "displayName",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "user"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -471,16 +662,34 @@
               ]
             },
             "initializer": {
-              "kind": "call",
-              "callee": "profile",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "Mio"
+                  "kind": "identifier",
+                  "name": "$ssrg$source603"
                 },
                 {
-                  "kind": "number",
-                  "value": "42"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "profile",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Mio"
+                      },
+                      {
+                        "kind": "number",
+                        "value": "42"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -494,17 +703,53 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "renderProfile",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "base"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source625"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source625"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "renderProfile",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "base"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -512,33 +757,69 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "renderLabeled",
-              "arguments": [
-                {
-                  "kind": "record",
-                  "items": [
-                    {
-                      "kind": "spread",
-                      "value": {
+              "kind": "identifier",
+              "name": "$ssrg$source671"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
                         "kind": "identifier",
-                        "name": "base"
+                        "name": "$ssrg$source671"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "renderLabeled",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "spread",
+                                  "value": {
+                                    "kind": "identifier",
+                                    "name": "base"
+                                  }
+                                },
+                                {
+                                  "kind": "field",
+                                  "name": "label",
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "Player"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
-                    },
-                    {
-                      "kind": "field",
-                      "name": "label",
-                      "value": {
-                        "kind": "string",
-                        "value": "Player"
-                      }
-                    }
-                  ]
-                }
-              ]
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

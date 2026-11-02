@@ -1,0 +1,7 @@
+import * as streams from "std/stream"
+
+pub effect fn main = do {
+  let collect: streams.Stream<{}, Never, Int> -> Effect<{}, Never, Array<Int>> = streams.runCollect
+  values <- collect (streams.fromArray [1, 2, 3])
+  println (show values)
+}

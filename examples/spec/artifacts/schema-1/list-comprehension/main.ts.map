@@ -12,19 +12,25 @@
     "oddSquares",
     "fromArray",
     "_ssrg_list_comprehend",
+    "$ssrg$atSource",
     "intEq",
     "remainder",
     "multiply",
     "total",
+    "$ssrg$atSource",
     "_ssrg_list_reduce",
     "add",
     "renderTotal",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "renderTotal",
+    "$ssrg$atSource",
     "total",
+    "$ssrg$atSource",
     "oddSquares",
     "fromArray"
   ],
-  "mappings": ";;;;;;;AAAAA;AAGAM;AAIAG;AAMAC"
+  "mappings": ";;;;;;;;;;;;AAAAA;AAGAO;AAIAI;AAMAC"
 }

@@ -11,19 +11,26 @@
   "names": [
     "evenSquares",
     "_ssrg_range_comprehend",
+    "$ssrg$atSource",
     "inclusive",
+    "$ssrg$atSource",
     "intEq",
     "remainder",
     "multiply",
     "total",
+    "$ssrg$atSource",
     "_ssrg_array_reduce",
     "add",
+    "$ssrg$atSource",
     "evenSquares",
     "renderTotal",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "renderTotal",
+    "$ssrg$atSource",
     "total"
   ],
-  "mappings": ";;;;;;;;AAAAA;AAGAM;AAIAI;AAMAC"
+  "mappings": ";;;;;;;;;;;;;;AAAAA;AAGAQ;AAIAM;AAMAC"
 }

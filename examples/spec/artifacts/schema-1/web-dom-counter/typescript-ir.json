@@ -2,6 +2,168 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/web-dom-counter",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 224,
+      "end": 366
+    },
+    {
+      "source": "main.ssrg",
+      "start": 386,
+      "end": 608
+    },
+    {
+      "source": "main.ssrg",
+      "start": 629,
+      "end": 747
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1575,
+      "end": 1731
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1609,
+      "end": 1620
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1714,
+      "end": 1727
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1776,
+      "end": 1973
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1810,
+      "end": 1821
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2062,
+      "end": 2121
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2145,
+      "end": 2204
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2224,
+      "end": 2283
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2381,
+      "end": 2569
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2527,
+      "end": 2545
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2615,
+      "end": 3951
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2671,
+      "end": 3941
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2777,
+      "end": 3165
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2887,
+      "end": 2991
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2922,
+      "end": 2937
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2965,
+      "end": 2975
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3007,
+      "end": 3139
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3177,
+      "end": 3303
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3281,
+      "end": 3291
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3315,
+      "end": 3426
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3401,
+      "end": 3414
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3438,
+      "end": 3606
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3502,
+      "end": 3594
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3534,
+      "end": 3552
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3618,
+      "end": 3923
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3732,
+      "end": 3777
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3793,
+      "end": 3838
+    },
+    {
+      "source": "main.ssrg",
+      "start": 3854,
+      "end": 3897
+    },
+    {
+      "source": "main.ssrg",
+      "start": 4118,
+      "end": 4198
+    }
+  ],
   "runtimeRequirements": [
     "web.html.style-type",
     "web.html.type",
@@ -193,36 +355,54 @@
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_style",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "background",
-                "value": {
-                  "kind": "string",
-                  "value": "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)"
+            "kind": "identifier",
+            "name": "$ssrg$source224"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_style",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "background",
+                      "value": {
+                        "kind": "string",
+                        "value": "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "minHeight",
+                      "value": {
+                        "kind": "string",
+                        "value": "100vh"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "padding",
+                      "value": {
+                        "kind": "string",
+                        "value": "32px"
+                      }
+                    }
+                  ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "minHeight",
-                "value": {
-                  "kind": "string",
-                  "value": "100vh"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "padding",
-                "value": {
-                  "kind": "string",
-                  "value": "32px"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -243,69 +423,87 @@
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_style",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "variables",
-                "value": {
+            "kind": "identifier",
+            "name": "$ssrg$source386"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_style",
+              "arguments": [
+                {
                   "kind": "record",
                   "items": [
                     {
                       "kind": "field",
-                      "name": "cardShadow",
+                      "name": "variables",
+                      "value": {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "cardShadow",
+                            "value": {
+                              "kind": "string",
+                              "value": "0 24px 64px #0f172a24"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "backgroundColor",
                       "value": {
                         "kind": "string",
-                        "value": "0 24px 64px #0f172a24"
+                        "value": "#ffffff"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "border",
+                      "value": {
+                        "kind": "string",
+                        "value": "1px solid #ffffffcc"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "borderRadius",
+                      "value": {
+                        "kind": "string",
+                        "value": "28px"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "boxShadow",
+                      "value": {
+                        "kind": "string",
+                        "value": "var(--card-shadow)"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "padding",
+                      "value": {
+                        "kind": "string",
+                        "value": "32px"
                       }
                     }
                   ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "backgroundColor",
-                "value": {
-                  "kind": "string",
-                  "value": "#ffffff"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "border",
-                "value": {
-                  "kind": "string",
-                  "value": "1px solid #ffffffcc"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "borderRadius",
-                "value": {
-                  "kind": "string",
-                  "value": "28px"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "boxShadow",
-                "value": {
-                  "kind": "string",
-                  "value": "var(--card-shadow)"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "padding",
-                "value": {
-                  "kind": "string",
-                  "value": "32px"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -326,44 +524,62 @@
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_style",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "backgroundColor",
-                "value": {
-                  "kind": "string",
-                  "value": "#e2e8f0"
+            "kind": "identifier",
+            "name": "$ssrg$source629"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_style",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "value": {
+                        "kind": "string",
+                        "value": "#e2e8f0"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "borderRadius",
+                      "value": {
+                        "kind": "string",
+                        "value": "999px"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "height",
+                      "value": {
+                        "kind": "string",
+                        "value": "10px"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "overflow",
+                      "value": {
+                        "kind": "string",
+                        "value": "hidden"
+                      }
+                    }
+                  ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "borderRadius",
-                "value": {
-                  "kind": "string",
-                  "value": "999px"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "height",
-                "value": {
-                  "kind": "string",
-                  "value": "10px"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "overflow",
-                "value": {
-                  "kind": "string",
-                  "value": "hidden"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -723,64 +939,118 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_style",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "backgroundColor",
-                "value": {
-                  "kind": "call",
-                  "callee": "accent",
-                  "arguments": [
+            "kind": "identifier",
+            "name": "$ssrg$source1575"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_style",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "identifier",
-                      "name": "mode"
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "value": {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1609"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "accent",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "mode"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "borderRadius",
+                      "value": {
+                        "kind": "string",
+                        "value": "999px"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "height",
+                      "value": {
+                        "kind": "string",
+                        "value": "100%"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "transition",
+                      "value": {
+                        "kind": "string",
+                        "value": "all 240ms ease"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "width",
+                      "value": {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1714"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "progress",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "mode"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
                     }
                   ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "borderRadius",
-                "value": {
-                  "kind": "string",
-                  "value": "999px"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "height",
-                "value": {
-                  "kind": "string",
-                  "value": "100%"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "transition",
-                "value": {
-                  "kind": "string",
-                  "value": "all 240ms ease"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "width",
-                "value": {
-                  "kind": "call",
-                  "callee": "progress",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "mode"
-                    }
-                  ]
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -803,74 +1073,110 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_style",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "backgroundColor",
-                "value": {
-                  "kind": "call",
-                  "callee": "accent",
-                  "arguments": [
+            "kind": "identifier",
+            "name": "$ssrg$source1776"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_style",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "identifier",
-                      "name": "mode"
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "value": {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1810"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "accent",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "mode"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "borderRadius",
+                      "value": {
+                        "kind": "string",
+                        "value": "999px"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "color",
+                      "value": {
+                        "kind": "string",
+                        "value": "#ffffff"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "fontSize",
+                      "value": {
+                        "kind": "string",
+                        "value": "12px"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "fontWeight",
+                      "value": {
+                        "kind": "string",
+                        "value": "700"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "letterSpacing",
+                      "value": {
+                        "kind": "string",
+                        "value": "0.12em"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "padding",
+                      "value": {
+                        "kind": "string",
+                        "value": "6px 12px"
+                      }
                     }
                   ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "borderRadius",
-                "value": {
-                  "kind": "string",
-                  "value": "999px"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "color",
-                "value": {
-                  "kind": "string",
-                  "value": "#ffffff"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "fontSize",
-                "value": {
-                  "kind": "string",
-                  "value": "12px"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "fontWeight",
-                "value": {
-                  "kind": "string",
-                  "value": "700"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "letterSpacing",
-                "value": {
-                  "kind": "string",
-                  "value": "0.12em"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "padding",
-                "value": {
-                  "kind": "string",
-                  "value": "6px 12px"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -913,28 +1219,46 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_html_style",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "record",
-                  "items": [
-                    {
-                      "kind": "field",
-                      "name": "backgroundColor",
-                      "value": {
-                        "kind": "string",
-                        "value": "#059669"
+                  "kind": "identifier",
+                  "name": "$ssrg$source2062"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_html_style",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "backgroundColor",
+                            "value": {
+                              "kind": "string",
+                              "value": "#059669"
+                            }
+                          },
+                          {
+                            "kind": "field",
+                            "name": "color",
+                            "value": {
+                              "kind": "string",
+                              "value": "#ffffff"
+                            }
+                          }
+                        ]
                       }
-                    },
-                    {
-                      "kind": "field",
-                      "name": "color",
-                      "value": {
-                        "kind": "string",
-                        "value": "#ffffff"
-                      }
-                    }
-                  ]
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -949,28 +1273,46 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_html_style",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "record",
-                  "items": [
-                    {
-                      "kind": "field",
-                      "name": "backgroundColor",
-                      "value": {
-                        "kind": "string",
-                        "value": "#2563eb"
+                  "kind": "identifier",
+                  "name": "$ssrg$source2145"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_html_style",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "backgroundColor",
+                            "value": {
+                              "kind": "string",
+                              "value": "#2563eb"
+                            }
+                          },
+                          {
+                            "kind": "field",
+                            "name": "color",
+                            "value": {
+                              "kind": "string",
+                              "value": "#ffffff"
+                            }
+                          }
+                        ]
                       }
-                    },
-                    {
-                      "kind": "field",
-                      "name": "color",
-                      "value": {
-                        "kind": "string",
-                        "value": "#ffffff"
-                      }
-                    }
-                  ]
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -979,28 +1321,46 @@
             "tests": [],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_html_style",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "record",
-                  "items": [
-                    {
-                      "kind": "field",
-                      "name": "backgroundColor",
-                      "value": {
-                        "kind": "string",
-                        "value": "#f1f5f9"
+                  "kind": "identifier",
+                  "name": "$ssrg$source2224"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_html_style",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "backgroundColor",
+                            "value": {
+                              "kind": "string",
+                              "value": "#f1f5f9"
+                            }
+                          },
+                          {
+                            "kind": "field",
+                            "name": "color",
+                            "value": {
+                              "kind": "string",
+                              "value": "#334155"
+                            }
+                          }
+                        ]
                       }
-                    },
-                    {
-                      "kind": "field",
-                      "name": "color",
-                      "value": {
-                        "kind": "string",
-                        "value": "#334155"
-                      }
-                    }
-                  ]
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -1041,58 +1401,94 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_button",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "id",
-                "value": {
-                  "kind": "identifier",
-                  "name": "id"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "onClick",
-                "value": {
-                  "kind": "identifier",
-                  "name": "action"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "class",
-                "value": {
-                  "kind": "string",
-                  "value": "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "style",
-                "value": {
-                  "kind": "call",
-                  "callee": "actionStyle",
-                  "arguments": [
+            "kind": "identifier",
+            "name": "$ssrg$source2381"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_button",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "identifier",
-                      "name": "action"
+                      "kind": "field",
+                      "name": "id",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "id"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "onClick",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "action"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "class",
+                      "value": {
+                        "kind": "string",
+                        "value": "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "style",
+                      "value": {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source2527"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "actionStyle",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "action"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "text"
+                      }
                     }
                   ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "identifier",
-                  "name": "text"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -1115,407 +1511,731 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_main",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "style",
-                "value": {
-                  "kind": "identifier",
-                  "name": "pageStyle"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "array",
-                  "elements": [
+            "kind": "identifier",
+            "name": "$ssrg$source2615"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_main",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_section",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "class",
-                              "value": {
-                                "kind": "string",
-                                "value": "mx-auto max-w-lg"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "style",
-                              "value": {
+                      "kind": "field",
+                      "name": "style",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "pageStyle"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
                                 "kind": "identifier",
-                                "name": "cardStyle"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "array",
-                                "elements": [
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_html_div",
-                                    "arguments": [
-                                      {
-                                        "kind": "record",
-                                        "items": [
-                                          {
-                                            "kind": "field",
-                                            "name": "class",
-                                            "value": {
-                                              "kind": "string",
-                                              "value": "mb-6 flex items-center justify-between"
-                                            }
-                                          },
-                                          {
-                                            "kind": "field",
-                                            "name": "children",
-                                            "value": {
-                                              "kind": "array",
-                                              "elements": [
-                                                {
-                                                  "kind": "runtime-call",
-                                                  "callee": "_ssrg_html_span",
-                                                  "arguments": [
-                                                    {
-                                                      "kind": "record",
-                                                      "items": [
-                                                        {
-                                                          "kind": "field",
-                                                          "name": "style",
-                                                          "value": {
-                                                            "kind": "call",
-                                                            "callee": "badgeStyle",
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "identifier",
-                                                                "name": "mode"
-                                                              }
-                                                            ]
-                                                          }
-                                                        },
-                                                        {
-                                                          "kind": "field",
-                                                          "name": "children",
-                                                          "value": {
-                                                            "kind": "call",
-                                                            "callee": "label",
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "identifier",
-                                                                "name": "mode"
-                                                              }
-                                                            ]
-                                                          }
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "kind": "runtime-call",
-                                                  "callee": "_ssrg_html_span",
-                                                  "arguments": [
-                                                    {
-                                                      "kind": "record",
-                                                      "items": [
-                                                        {
-                                                          "kind": "field",
-                                                          "name": "class",
-                                                          "value": {
-                                                            "kind": "string",
-                                                            "value": "text-sm font-semibold text-slate-500"
-                                                          }
-                                                        },
-                                                        {
-                                                          "kind": "field",
-                                                          "name": "children",
-                                                          "value": {
-                                                            "kind": "string",
-                                                            "value": "SESERAGI FLOW"
-                                                          }
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ],
-                                              "elementType": {
-                                                "kind": "reference",
-                                                "name": "Html",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "reference",
-                                                    "name": "Action",
-                                                    "arguments": []
-                                                  }
-                                                ]
-                                              }
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_html_h1",
-                                    "arguments": [
-                                      {
-                                        "kind": "record",
-                                        "items": [
-                                          {
-                                            "kind": "field",
-                                            "name": "class",
-                                            "value": {
-                                              "kind": "string",
-                                              "value": "m-0 text-3xl font-bold text-slate-900 sm:text-4xl"
-                                            }
-                                          },
-                                          {
-                                            "kind": "field",
-                                            "name": "children",
-                                            "value": {
-                                              "kind": "call",
-                                              "callee": "title",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "mode"
-                                                }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_html_p",
-                                    "arguments": [
-                                      {
-                                        "kind": "record",
-                                        "items": [
-                                          {
-                                            "kind": "field",
-                                            "name": "class",
-                                            "value": {
-                                              "kind": "string",
-                                              "value": "mb-6 mt-4 text-lg text-slate-700"
-                                            }
-                                          },
-                                          {
-                                            "kind": "field",
-                                            "name": "children",
-                                            "value": {
-                                              "kind": "call",
-                                              "callee": "guidance",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "mode"
-                                                }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_html_div",
-                                    "arguments": [
-                                      {
-                                        "kind": "record",
-                                        "items": [
-                                          {
-                                            "kind": "field",
-                                            "name": "style",
-                                            "value": {
-                                              "kind": "identifier",
-                                              "name": "trackStyle"
-                                            }
-                                          },
-                                          {
-                                            "kind": "field",
-                                            "name": "children",
-                                            "value": {
-                                              "kind": "runtime-call",
-                                              "callee": "_ssrg_html_div",
-                                              "arguments": [
-                                                {
-                                                  "kind": "record",
-                                                  "items": [
-                                                    {
-                                                      "kind": "field",
-                                                      "name": "style",
-                                                      "value": {
-                                                        "kind": "call",
-                                                        "callee": "progressStyle",
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "identifier",
-                                                            "name": "mode"
-                                                          }
-                                                        ]
-                                                      }
-                                                    },
-                                                    {
-                                                      "kind": "field",
-                                                      "name": "children",
-                                                      "value": {
-                                                        "kind": "string",
-                                                        "value": ""
-                                                      }
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_html_div",
-                                    "arguments": [
-                                      {
-                                        "kind": "record",
-                                        "items": [
-                                          {
-                                            "kind": "field",
-                                            "name": "class",
-                                            "value": {
-                                              "kind": "string",
-                                              "value": "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3"
-                                            }
-                                          },
-                                          {
-                                            "kind": "field",
-                                            "name": "children",
-                                            "value": {
-                                              "kind": "array",
-                                              "elements": [
-                                                {
-                                                  "kind": "call",
-                                                  "callee": "actionButton",
-                                                  "arguments": [
-                                                    {
-                                                      "kind": "string",
-                                                      "value": "focus"
-                                                    },
-                                                    {
-                                                      "kind": "string",
-                                                      "value": "Start focus"
-                                                    },
-                                                    {
-                                                      "kind": "identifier",
-                                                      "name": "StartFocus"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "kind": "call",
-                                                  "callee": "actionButton",
-                                                  "arguments": [
-                                                    {
-                                                      "kind": "string",
-                                                      "value": "break"
-                                                    },
-                                                    {
-                                                      "kind": "string",
-                                                      "value": "Take a break"
-                                                    },
-                                                    {
-                                                      "kind": "identifier",
-                                                      "name": "TakeBreak"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "kind": "call",
-                                                  "callee": "actionButton",
-                                                  "arguments": [
-                                                    {
-                                                      "kind": "string",
-                                                      "value": "reset"
-                                                    },
-                                                    {
-                                                      "kind": "string",
-                                                      "value": "Reset the flow"
-                                                    },
-                                                    {
-                                                      "kind": "identifier",
-                                                      "name": "Reset"
-                                                    }
-                                                  ]
-                                                }
-                                              ],
-                                              "elementType": {
-                                                "kind": "reference",
-                                                "name": "Html",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "reference",
-                                                    "name": "Action",
-                                                    "arguments": []
-                                                  }
-                                                ]
-                                              }
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ],
-                                "elementType": {
-                                  "kind": "reference",
-                                  "name": "Html",
+                                "name": "$ssrg$source2671"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_section",
                                   "arguments": [
                                     {
-                                      "kind": "reference",
-                                      "name": "Action",
-                                      "arguments": []
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "class",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "mx-auto max-w-lg"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "style",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "cardStyle"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "array",
+                                            "elements": [
+                                              {
+                                                "kind": "runtime-call",
+                                                "callee": "$ssrg$atSource",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "$ssrg$source2777"
+                                                  },
+                                                  {
+                                                    "kind": "lambda",
+                                                    "parameter": "",
+                                                    "body": {
+                                                      "kind": "runtime-call",
+                                                      "callee": "_ssrg_html_div",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "record",
+                                                          "items": [
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "class",
+                                                              "value": {
+                                                                "kind": "string",
+                                                                "value": "mb-6 flex items-center justify-between"
+                                                              }
+                                                            },
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "children",
+                                                              "value": {
+                                                                "kind": "array",
+                                                                "elements": [
+                                                                  {
+                                                                    "kind": "runtime-call",
+                                                                    "callee": "$ssrg$atSource",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "identifier",
+                                                                        "name": "$ssrg$source2887"
+                                                                      },
+                                                                      {
+                                                                        "kind": "lambda",
+                                                                        "parameter": "",
+                                                                        "body": {
+                                                                          "kind": "runtime-call",
+                                                                          "callee": "_ssrg_html_span",
+                                                                          "arguments": [
+                                                                            {
+                                                                              "kind": "record",
+                                                                              "items": [
+                                                                                {
+                                                                                  "kind": "field",
+                                                                                  "name": "style",
+                                                                                  "value": {
+                                                                                    "kind": "runtime-call",
+                                                                                    "callee": "$ssrg$atSource",
+                                                                                    "arguments": [
+                                                                                      {
+                                                                                        "kind": "identifier",
+                                                                                        "name": "$ssrg$source2922"
+                                                                                      },
+                                                                                      {
+                                                                                        "kind": "lambda",
+                                                                                        "parameter": "",
+                                                                                        "body": {
+                                                                                          "kind": "call",
+                                                                                          "callee": "badgeStyle",
+                                                                                          "arguments": [
+                                                                                            {
+                                                                                              "kind": "identifier",
+                                                                                              "name": "mode"
+                                                                                            }
+                                                                                          ]
+                                                                                        }
+                                                                                      },
+                                                                                      {
+                                                                                        "kind": "boolean",
+                                                                                        "value": false
+                                                                                      }
+                                                                                    ]
+                                                                                  }
+                                                                                },
+                                                                                {
+                                                                                  "kind": "field",
+                                                                                  "name": "children",
+                                                                                  "value": {
+                                                                                    "kind": "runtime-call",
+                                                                                    "callee": "$ssrg$atSource",
+                                                                                    "arguments": [
+                                                                                      {
+                                                                                        "kind": "identifier",
+                                                                                        "name": "$ssrg$source2965"
+                                                                                      },
+                                                                                      {
+                                                                                        "kind": "lambda",
+                                                                                        "parameter": "",
+                                                                                        "body": {
+                                                                                          "kind": "call",
+                                                                                          "callee": "label",
+                                                                                          "arguments": [
+                                                                                            {
+                                                                                              "kind": "identifier",
+                                                                                              "name": "mode"
+                                                                                            }
+                                                                                          ]
+                                                                                        }
+                                                                                      },
+                                                                                      {
+                                                                                        "kind": "boolean",
+                                                                                        "value": false
+                                                                                      }
+                                                                                    ]
+                                                                                  }
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      },
+                                                                      {
+                                                                        "kind": "boolean",
+                                                                        "value": false
+                                                                      }
+                                                                    ]
+                                                                  },
+                                                                  {
+                                                                    "kind": "runtime-call",
+                                                                    "callee": "$ssrg$atSource",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "identifier",
+                                                                        "name": "$ssrg$source3007"
+                                                                      },
+                                                                      {
+                                                                        "kind": "lambda",
+                                                                        "parameter": "",
+                                                                        "body": {
+                                                                          "kind": "runtime-call",
+                                                                          "callee": "_ssrg_html_span",
+                                                                          "arguments": [
+                                                                            {
+                                                                              "kind": "record",
+                                                                              "items": [
+                                                                                {
+                                                                                  "kind": "field",
+                                                                                  "name": "class",
+                                                                                  "value": {
+                                                                                    "kind": "string",
+                                                                                    "value": "text-sm font-semibold text-slate-500"
+                                                                                  }
+                                                                                },
+                                                                                {
+                                                                                  "kind": "field",
+                                                                                  "name": "children",
+                                                                                  "value": {
+                                                                                    "kind": "string",
+                                                                                    "value": "SESERAGI FLOW"
+                                                                                  }
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      },
+                                                                      {
+                                                                        "kind": "boolean",
+                                                                        "value": false
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                ],
+                                                                "elementType": {
+                                                                  "kind": "reference",
+                                                                  "name": "Html",
+                                                                  "arguments": [
+                                                                    {
+                                                                      "kind": "reference",
+                                                                      "name": "Action",
+                                                                      "arguments": []
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "boolean",
+                                                    "value": false
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "kind": "runtime-call",
+                                                "callee": "$ssrg$atSource",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "$ssrg$source3177"
+                                                  },
+                                                  {
+                                                    "kind": "lambda",
+                                                    "parameter": "",
+                                                    "body": {
+                                                      "kind": "runtime-call",
+                                                      "callee": "_ssrg_html_h1",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "record",
+                                                          "items": [
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "class",
+                                                              "value": {
+                                                                "kind": "string",
+                                                                "value": "m-0 text-3xl font-bold text-slate-900 sm:text-4xl"
+                                                              }
+                                                            },
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "children",
+                                                              "value": {
+                                                                "kind": "runtime-call",
+                                                                "callee": "$ssrg$atSource",
+                                                                "arguments": [
+                                                                  {
+                                                                    "kind": "identifier",
+                                                                    "name": "$ssrg$source3281"
+                                                                  },
+                                                                  {
+                                                                    "kind": "lambda",
+                                                                    "parameter": "",
+                                                                    "body": {
+                                                                      "kind": "call",
+                                                                      "callee": "title",
+                                                                      "arguments": [
+                                                                        {
+                                                                          "kind": "identifier",
+                                                                          "name": "mode"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "kind": "boolean",
+                                                                    "value": false
+                                                                  }
+                                                                ]
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "boolean",
+                                                    "value": false
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "kind": "runtime-call",
+                                                "callee": "$ssrg$atSource",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "$ssrg$source3315"
+                                                  },
+                                                  {
+                                                    "kind": "lambda",
+                                                    "parameter": "",
+                                                    "body": {
+                                                      "kind": "runtime-call",
+                                                      "callee": "_ssrg_html_p",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "record",
+                                                          "items": [
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "class",
+                                                              "value": {
+                                                                "kind": "string",
+                                                                "value": "mb-6 mt-4 text-lg text-slate-700"
+                                                              }
+                                                            },
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "children",
+                                                              "value": {
+                                                                "kind": "runtime-call",
+                                                                "callee": "$ssrg$atSource",
+                                                                "arguments": [
+                                                                  {
+                                                                    "kind": "identifier",
+                                                                    "name": "$ssrg$source3401"
+                                                                  },
+                                                                  {
+                                                                    "kind": "lambda",
+                                                                    "parameter": "",
+                                                                    "body": {
+                                                                      "kind": "call",
+                                                                      "callee": "guidance",
+                                                                      "arguments": [
+                                                                        {
+                                                                          "kind": "identifier",
+                                                                          "name": "mode"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "kind": "boolean",
+                                                                    "value": false
+                                                                  }
+                                                                ]
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "boolean",
+                                                    "value": false
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "kind": "runtime-call",
+                                                "callee": "$ssrg$atSource",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "$ssrg$source3438"
+                                                  },
+                                                  {
+                                                    "kind": "lambda",
+                                                    "parameter": "",
+                                                    "body": {
+                                                      "kind": "runtime-call",
+                                                      "callee": "_ssrg_html_div",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "record",
+                                                          "items": [
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "style",
+                                                              "value": {
+                                                                "kind": "identifier",
+                                                                "name": "trackStyle"
+                                                              }
+                                                            },
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "children",
+                                                              "value": {
+                                                                "kind": "runtime-call",
+                                                                "callee": "$ssrg$atSource",
+                                                                "arguments": [
+                                                                  {
+                                                                    "kind": "identifier",
+                                                                    "name": "$ssrg$source3502"
+                                                                  },
+                                                                  {
+                                                                    "kind": "lambda",
+                                                                    "parameter": "",
+                                                                    "body": {
+                                                                      "kind": "runtime-call",
+                                                                      "callee": "_ssrg_html_div",
+                                                                      "arguments": [
+                                                                        {
+                                                                          "kind": "record",
+                                                                          "items": [
+                                                                            {
+                                                                              "kind": "field",
+                                                                              "name": "style",
+                                                                              "value": {
+                                                                                "kind": "runtime-call",
+                                                                                "callee": "$ssrg$atSource",
+                                                                                "arguments": [
+                                                                                  {
+                                                                                    "kind": "identifier",
+                                                                                    "name": "$ssrg$source3534"
+                                                                                  },
+                                                                                  {
+                                                                                    "kind": "lambda",
+                                                                                    "parameter": "",
+                                                                                    "body": {
+                                                                                      "kind": "call",
+                                                                                      "callee": "progressStyle",
+                                                                                      "arguments": [
+                                                                                        {
+                                                                                          "kind": "identifier",
+                                                                                          "name": "mode"
+                                                                                        }
+                                                                                      ]
+                                                                                    }
+                                                                                  },
+                                                                                  {
+                                                                                    "kind": "boolean",
+                                                                                    "value": false
+                                                                                  }
+                                                                                ]
+                                                                              }
+                                                                            },
+                                                                            {
+                                                                              "kind": "field",
+                                                                              "name": "children",
+                                                                              "value": {
+                                                                                "kind": "string",
+                                                                                "value": ""
+                                                                              }
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "kind": "boolean",
+                                                                    "value": false
+                                                                  }
+                                                                ]
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "boolean",
+                                                    "value": false
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "kind": "runtime-call",
+                                                "callee": "$ssrg$atSource",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "$ssrg$source3618"
+                                                  },
+                                                  {
+                                                    "kind": "lambda",
+                                                    "parameter": "",
+                                                    "body": {
+                                                      "kind": "runtime-call",
+                                                      "callee": "_ssrg_html_div",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "record",
+                                                          "items": [
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "class",
+                                                              "value": {
+                                                                "kind": "string",
+                                                                "value": "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3"
+                                                              }
+                                                            },
+                                                            {
+                                                              "kind": "field",
+                                                              "name": "children",
+                                                              "value": {
+                                                                "kind": "array",
+                                                                "elements": [
+                                                                  {
+                                                                    "kind": "runtime-call",
+                                                                    "callee": "$ssrg$atSource",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "identifier",
+                                                                        "name": "$ssrg$source3732"
+                                                                      },
+                                                                      {
+                                                                        "kind": "lambda",
+                                                                        "parameter": "",
+                                                                        "body": {
+                                                                          "kind": "call",
+                                                                          "callee": "actionButton",
+                                                                          "arguments": [
+                                                                            {
+                                                                              "kind": "string",
+                                                                              "value": "focus"
+                                                                            },
+                                                                            {
+                                                                              "kind": "string",
+                                                                              "value": "Start focus"
+                                                                            },
+                                                                            {
+                                                                              "kind": "identifier",
+                                                                              "name": "StartFocus"
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      },
+                                                                      {
+                                                                        "kind": "boolean",
+                                                                        "value": false
+                                                                      }
+                                                                    ]
+                                                                  },
+                                                                  {
+                                                                    "kind": "runtime-call",
+                                                                    "callee": "$ssrg$atSource",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "identifier",
+                                                                        "name": "$ssrg$source3793"
+                                                                      },
+                                                                      {
+                                                                        "kind": "lambda",
+                                                                        "parameter": "",
+                                                                        "body": {
+                                                                          "kind": "call",
+                                                                          "callee": "actionButton",
+                                                                          "arguments": [
+                                                                            {
+                                                                              "kind": "string",
+                                                                              "value": "break"
+                                                                            },
+                                                                            {
+                                                                              "kind": "string",
+                                                                              "value": "Take a break"
+                                                                            },
+                                                                            {
+                                                                              "kind": "identifier",
+                                                                              "name": "TakeBreak"
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      },
+                                                                      {
+                                                                        "kind": "boolean",
+                                                                        "value": false
+                                                                      }
+                                                                    ]
+                                                                  },
+                                                                  {
+                                                                    "kind": "runtime-call",
+                                                                    "callee": "$ssrg$atSource",
+                                                                    "arguments": [
+                                                                      {
+                                                                        "kind": "identifier",
+                                                                        "name": "$ssrg$source3854"
+                                                                      },
+                                                                      {
+                                                                        "kind": "lambda",
+                                                                        "parameter": "",
+                                                                        "body": {
+                                                                          "kind": "call",
+                                                                          "callee": "actionButton",
+                                                                          "arguments": [
+                                                                            {
+                                                                              "kind": "string",
+                                                                              "value": "reset"
+                                                                            },
+                                                                            {
+                                                                              "kind": "string",
+                                                                              "value": "Reset the flow"
+                                                                            },
+                                                                            {
+                                                                              "kind": "identifier",
+                                                                              "name": "Reset"
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      },
+                                                                      {
+                                                                        "kind": "boolean",
+                                                                        "value": false
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                ],
+                                                                "elementType": {
+                                                                  "kind": "reference",
+                                                                  "name": "Html",
+                                                                  "arguments": [
+                                                                    {
+                                                                      "kind": "reference",
+                                                                      "name": "Action",
+                                                                      "arguments": []
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "boolean",
+                                                    "value": false
+                                                  }
+                                                ]
+                                              }
+                                            ],
+                                            "elementType": {
+                                              "kind": "reference",
+                                              "name": "Html",
+                                              "arguments": [
+                                                {
+                                                  "kind": "reference",
+                                                  "name": "Action",
+                                                  "arguments": []
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
                               }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Action",
+                              "arguments": []
                             }
                           ]
                         }
-                      ]
-                    }
-                  ],
-                  "elementType": {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Action",
-                        "arguments": []
                       }
-                    ]
-                  }
+                    }
+                  ]
                 }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -1612,44 +2332,62 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_dom_app",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "target",
-                "value": {
-                  "kind": "string",
-                  "value": "#app"
+            "kind": "identifier",
+            "name": "$ssrg$source4118"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_dom_app",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "target",
+                      "value": {
+                        "kind": "string",
+                        "value": "#app"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "initial",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "initialMode"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "update",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "update"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "view",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "view"
+                      }
+                    }
+                  ]
                 }
-              },
-              {
-                "kind": "field",
-                "name": "initial",
-                "value": {
-                  "kind": "identifier",
-                  "name": "initialMode"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "update",
-                "value": {
-                  "kind": "identifier",
-                  "name": "update"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "view",
-                "value": {
-                  "kind": "identifier",
-                  "name": "view"
-                }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

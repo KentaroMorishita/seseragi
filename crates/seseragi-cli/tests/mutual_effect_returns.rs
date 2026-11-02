@@ -1,6 +1,10 @@
 #[path = "../../test-support/native_cache.rs"]
 mod native_cache;
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -208,6 +212,8 @@ fn mutually_recursive_effects_match_original_strict_ts_and_native_lifetimes() {
         if code == 70 {
             assert!(stderr.contains("body defect"), "{stderr}");
         }
+        let expected_defect =
+            (code == 70).then(|| diagnostics::ts_defect_from_native(&output.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -265,7 +271,7 @@ fn mutually_recursive_effects_match_original_strict_ts_and_native_lifetimes() {
                 if code == 0 {
                     assert!(stderr.is_empty(), "{stderr}");
                 } else {
-                    assert_eq!(stderr, "seseragi: runtime defect\n");
+                    assert_eq!(stderr, *expected_defect.as_ref().unwrap());
                 }
             }
         }

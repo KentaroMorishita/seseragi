@@ -14,11 +14,15 @@
     "raw",
     "value",
     "render",
+    "$ssrg$atSource",
     "raw",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "UserId"
   ],
-  "mappings": ";;;;AAAAA;;AAAYC;AAEZC;AAKAE;AAMAE"
+  "mappings": ";;;;;;;AAAAA;;AAAYC;AAEZC;AAKAE;AAMAG"
 }

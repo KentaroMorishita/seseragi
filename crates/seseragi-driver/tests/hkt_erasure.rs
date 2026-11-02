@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{compile_module, CompileInput};
 
 const TRAVERSABLE: &str = r#"
@@ -220,7 +224,7 @@ pub fn saved -> (F<Int> -> F<Int>) = keep
             let TypeScriptExpr::Call {
                 checked_callee_type: Some(TypeScriptType::Function { parameter, result }),
                 ..
-            } = body
+            } = source_locations::source_action(body, false)
             else {
                 panic!("{body:?}")
             };
@@ -236,7 +240,7 @@ pub fn saved -> (F<Int> -> F<Int>) = keep
             ));
         } else if name == "ordinary" {
             assert!(matches!(
-                body,
+                source_locations::source_action(body, false),
                 TypeScriptExpr::Call {
                     checked_callee_type: None,
                     type_arguments,

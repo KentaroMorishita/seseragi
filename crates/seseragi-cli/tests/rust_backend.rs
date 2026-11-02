@@ -1,6 +1,10 @@
 #[path = "../../test-support/native_runtime.rs"]
 mod native_runtime;
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -55,6 +59,44 @@ fn cli() -> Command {
     command
 }
 
+#[test]
+fn located_tail_calls_stay_stack_safe_and_keep_defect_positions() {
+    let scratch = Scratch::new();
+    let evidence = include_str!("../../../examples/spec/fixtures/rust-backend/tail-evidence.ssrg");
+    let scalar = "fn count remaining: Int -> total: Int -> Int = if remaining == 0 then total else count (remaining - 1) (total + 1)\n";
+    let failure = "fn broken remaining: Int -> Int = if remaining == 0 then 1 / 0 else broken (remaining - 1)\n";
+    for (name, source, expected, code) in [
+        ("deep", format!("{evidence}\n{scalar}pub effect fn main = do {{ println (show (probe ())); println (show (count 200000 0)) }}\n"), "(35, 42)\n200000\n", 0),
+        ("defect", format!("{failure}pub effect fn main = println (show (broken 200000))\n"), "", 70),
+    ] {
+        let path = scratch.0.join(format!("{name}.ssrg"));
+        fs::write(&path, &source).unwrap();
+        for profile in ["development", "release"] {
+            let output = scratch.0.join(format!("{name}-{profile}"));
+            let built = cli().arg("build").arg(&path).args(["--profile", profile, "--out-dir"]).arg(&output).output().unwrap();
+            assert!(built.status.success(), "{}", String::from_utf8_lossy(&built.stderr));
+            if profile == "development" {
+                let raw = fs::read_to_string(output.join("main.ts")).unwrap();
+                assert!(raw.contains("while (true)"), "{raw}");
+                assert!(raw.contains("$ssrg$atSource"), "locations must survive loop emission");
+                if name == "deep" {
+                    assert!(raw.contains("const $ssrg$scalarNext0 = $ssrg$atSource("), "scalar tail transfers must retain their call-site location");
+                }
+            }
+            let manifest: serde_json::Value = serde_json::from_slice(&fs::read(output.join("artifact-manifest.json")).unwrap()).unwrap();
+            for engine in ["bun", "node"] {
+                let result = Command::new(engine).arg(output.join(manifest["entry"].as_str().unwrap())).output().unwrap();
+                assert_eq!(result.status.code(), Some(code), "{name}/{profile}/{engine}: {}", String::from_utf8_lossy(&result.stderr));
+                assert_eq!(result.stdout, expected.as_bytes());
+                let diagnostic = if code == 70 {
+                    diagnostics::defect_at_source(&path, &source, "1 / 0", "Seseragi Int division by zero")
+                } else { String::new() };
+                assert_eq!(result.stderr, diagnostic.as_bytes(), "{name}/{profile}/{engine}");
+            }
+        }
+    }
+}
+
 #[path = "support/generic_impl_process.rs"]
 mod prefix_process;
 
@@ -102,6 +144,9 @@ fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
         assert_eq!(output.status.code(), Some(exit), "{fixture}: {output:?}");
         assert_eq!(output.stdout, expected, "{fixture}");
         assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+        let expected_defect = exit == 70;
+        let expected_defect =
+            expected_defect.then(|| diagnostics::ts_defect_from_native(&output.stderr));
         for (profile, build_profile) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -160,7 +205,7 @@ fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
                 );
                 assert_eq!(output.stdout, expected, "{fixture}/{profile}/{engine}");
                 if exit == 70 {
-                    assert_eq!(output.stderr, b"seseragi: runtime defect\n");
+                    assert_eq!(output.stderr, expected_defect.as_ref().unwrap().as_bytes());
                 } else {
                     assert!(output.stderr.is_empty(), "{output:?}");
                 }
@@ -400,6 +445,9 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
                 b"acquire\nsaved\nrelease\n"
             );
         }
+        let expected_defect = code == 70;
+        let expected_defect =
+            expected_defect.then(|| diagnostics::ts_defect_from_native(&native.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -462,7 +510,7 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
                 );
                 assert_eq!(result.stdout, expected, "{name}/{profile}/{index}");
                 if code == 70 {
-                    assert!(String::from_utf8_lossy(&result.stderr).contains("runtime defect"));
+                    assert_eq!(result.stderr, expected_defect.as_ref().unwrap().as_bytes());
                     assert_eq!(
                         fs::read(cwd.join("trace.txt")).unwrap(),
                         b"acquire\nsaved\nrelease\n"
@@ -2403,7 +2451,7 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
                 .join("\n");
             let native_error = if name == "unhandled-failure" {
                 native_error
-                    .strip_prefix(&format!("{}:3:40: ", path.display()))
+                    .strip_prefix(&format!("{}:3:40: ", path.file_name().unwrap().to_string_lossy()))
                     .expect("unhandled failure must identify its original source position")
             } else {
                 native_error.as_str()

@@ -27,7 +27,7 @@ pub fn label value: Badge -> String = describe value
     assert!(
         bundle
             .typescript
-            .contains("describe(value)(__ssrg$instance$Ready$0)"),
+            .contains("describe<Badge>(value)(__ssrg$instance$Ready$0)"),
         "{}",
         bundle.typescript
     );
@@ -216,7 +216,7 @@ pub fn answer unit: Unit -> Int =
     assert!(
         bundle
             .typescript
-            .contains("total(Pair([20, 22] as const))(__ssrg$instance$Reducible$1(__ssrg$instance$Iterable$0))"),
+            .contains("total<Pair>(Pair([20, 22] as const))(__ssrg$instance$Reducible$1(__ssrg$instance$Iterable$0))"),
         "{}",
         bundle.typescript
     );

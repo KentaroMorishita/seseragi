@@ -11,7 +11,9 @@ use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
 /// public interface; source-package imports still require the project driver.
 pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, DiagnosticArtifact> {
     let core = crate::compile_core_module(input)?;
-    Ok(finish_compilation(core, input.source(), input.profile()))
+    crate::lowering_panic::catch_lowering_panic(core.diagnostics.clone(), move || {
+        finish_compilation(core, input.source_name(), input.source(), input.profile())
+    })
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -43,61 +45,76 @@ pub fn compile_linked_module_with_output_paths(
     output_plan: &TypeScriptOutputPlan,
     output_paths: GeneratedOutputPaths,
 ) -> Result<CompiledModule, LinkedCompileError> {
-    let diagnostics = parse_diagnostics(linked.interface.source.clone(), source);
+    let source_name = linked.interface.source.clone();
+    let diagnostics = parse_diagnostics(source_name.clone(), source);
     let analyzed = analyze_linked_module(diagnostics, linked, source)
         .map_err(LinkedCompileError::Diagnostics)?;
     compile_analyzed_module_with_output_paths(
         analyzed,
+        &source_name,
         source,
         output_plan,
         output_paths,
         seseragi_project::BuildProfile::Development,
         &std::collections::BTreeSet::new(),
     )
-    .map_err(LinkedCompileError::TypeScriptPlan)
 }
 
 /// Finishes lowering and emission for a project module whose shared frontend
 /// analysis has already completed without error diagnostics.
 pub(crate) fn compile_analyzed_module_with_output_paths(
     analyzed: AnalyzedModule,
+    source_name: &str,
     source: &str,
     output_plan: &TypeScriptOutputPlan,
     output_paths: GeneratedOutputPaths,
     profile: seseragi_project::BuildProfile,
     project_newtypes: &std::collections::BTreeSet<String>,
-) -> Result<CompiledModule, TypeScriptLoweringError> {
-    let analyzed = crate::lower_analyzed_module(analyzed);
-    let core_ir = analyzed.core_ir;
-    let options = lowering_options(&core_ir, profile, project_newtypes);
-    let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
-        core_ir.clone(),
-        output_plan,
-        &options,
-    )?;
-    let mut generated =
-        emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
-    configure_profile_metadata(
-        &core_ir,
-        &typescript_ir,
-        &options,
-        profile,
-        &mut generated.metadata,
-    );
-    crate::generated_metadata::retain_deprecations(&analyzed.typed_interface, &mut generated);
+) -> Result<CompiledModule, LinkedCompileError> {
+    let analyzed =
+        crate::lower_analyzed_module(analyzed).map_err(LinkedCompileError::Diagnostics)?;
+    crate::lowering_panic::catch_lowering_panic(analyzed.diagnostics.clone(), move || {
+        let core_ir = analyzed.core_ir;
+        let options = lowering_options(&core_ir, profile, project_newtypes);
+        let mut typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
+            core_ir.clone(),
+            output_plan,
+            &options,
+        )?;
+        for origin in &mut typescript_ir.runtime_sources {
+            origin.source = seseragi_project::runtime_source_path(source_name);
+        }
+        #[cfg(test)]
+        crate::lowering_panic::fault::after_typescript();
+        let mut generated =
+            emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
+        #[cfg(test)]
+        crate::lowering_panic::fault::after_emission();
+        configure_profile_metadata(
+            &core_ir,
+            &typescript_ir,
+            &options,
+            profile,
+            &mut generated.metadata,
+        );
+        crate::generated_metadata::retain_deprecations(&analyzed.typed_interface, &mut generated);
 
-    Ok(CompiledModule {
-        diagnostics: analyzed.diagnostics,
-        typed_hir: analyzed.typed_hir,
-        typed_interface: analyzed.typed_interface,
-        core_ir,
-        typescript_ir,
-        generated,
+        Ok(CompiledModule {
+            diagnostics: analyzed.diagnostics,
+            typed_hir: analyzed.typed_hir,
+            typed_interface: analyzed.typed_interface,
+            core_ir,
+            typescript_ir,
+            generated,
+        })
     })
+    .map_err(LinkedCompileError::Diagnostics)?
+    .map_err(LinkedCompileError::TypeScriptPlan)
 }
 
 fn finish_compilation(
     core: CoreCompilation,
+    source_name: &str,
     source: &str,
     profile: seseragi_project::BuildProfile,
 ) -> CompiledModule {
@@ -108,13 +125,20 @@ fn finish_compilation(
         core_ir,
     } = core;
     let options = lowering_options(&core_ir, profile, &std::collections::BTreeSet::new());
-    let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
+    let mut typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
         core_ir.clone(),
         &TypeScriptOutputPlan::default(),
         &options,
     )
     .expect("single module output plan");
+    for origin in &mut typescript_ir.runtime_sources {
+        origin.source = seseragi_project::standalone_runtime_source_path(source_name);
+    }
+    #[cfg(test)]
+    crate::lowering_panic::fault::after_typescript();
     let mut generated = emit_typescript_module(typescript_ir.clone(), source);
+    #[cfg(test)]
+    crate::lowering_panic::fault::after_emission();
     configure_profile_metadata(
         &core_ir,
         &typescript_ir,
@@ -267,10 +291,10 @@ mod tests {
             .typescript
             .contains("const loop = (current: number) =>"));
         assert!(
-            compiled
-                .generated
-                .typescript
-                .contains("({ [$ssrg$tail]: [_ssrg_int_subtract(current, 1)] } as never)"),
+            compiled.generated.typescript.contains(&format!(
+                "({{ [$ssrg$tail]: [_ssrg_int_subtract(current, 1, $ssrg$source{})] }} as never)",
+                source.find("current - 1").unwrap()
+            )),
             "{}",
             compiled.generated.typescript
         );
@@ -1149,10 +1173,11 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
 
     #[test]
     fn unicode_abi_guard_cannot_be_shadowed_by_a_source_binding() {
+        let source = "fn _ssrg_assertUnicodeVersion value: String -> Int = 42\npub let answer: Int = _ssrg_assertUnicodeVersion \"local\"\n";
         let compiled = compile_module(CompileInput::new(
             "main.ssrg",
             "artifact/unicode-guard-shadow",
-            "fn _ssrg_assertUnicodeVersion value: String -> Int = 42\npub let answer: Int = _ssrg_assertUnicodeVersion \"local\"\n",
+            source,
         ))
         .unwrap();
         let typescript = &compiled.generated.typescript;
@@ -1160,8 +1185,7 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
             typescript.contains("import { assertUnicodeVersion as $ssrg$assertUnicodeVersion }")
         );
         assert!(typescript.contains("const _ssrg_assertUnicodeVersion = (value: string) => 42"));
-        assert!(typescript
-            .contains("export const answer: number = _ssrg_assertUnicodeVersion(\"local\")"));
+        assert!(typescript.contains(&format!("export const answer: number = $ssrg$atSource($ssrg$source{}, () => _ssrg_assertUnicodeVersion(\"local\"), false)", source.find("_ssrg_assertUnicodeVersion \"local\"").unwrap())));
         assert!(
             typescript
                 .find("$ssrg$assertUnicodeVersion(\"17.0.0\")")
@@ -2070,7 +2094,7 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
             .contains("_ssrg_array_zip(__ssrg$collection$partial$0, __ssrg$collection$partial$1)"));
         assert!(output
             .contains("_ssrg_list_zip(__ssrg$collection$partial$0, __ssrg$collection$partial$1)"));
-        assert!(output.contains("const folded: (argument: number) => number = _ssrg_array_reduceRight(identity, step, [1, 2, 3])"));
+        assert!(output.contains(&format!("const folded: (argument: number) => number = $ssrg$atSource($ssrg$source{}, () => _ssrg_array_reduceRight(identity, step, [1, 2, 3]), false)", source.find("arrays.reduceRight identity step [1, 2, 3]").unwrap())));
         assert!(output.contains("_ssrg_sizeErrorEq"));
         assert!(output.contains("_ssrg_int_ord_dictionary"));
         assert!(!output.contains("from \"std/"));
@@ -2090,8 +2114,12 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
         let output = &compiled.generated.typescript;
         assert!(output.contains("_ssrg_collection_reduceUntil"));
         assert!(output.contains("type ReduceStep"));
-        assert!(output.contains("generic as unknown as (argument: string) =>"));
-        assert!(output.contains("generic as unknown as (argument: readonly [number, string]) =>"));
+        // Explicit type arguments replace the earlier callable casts (#1195).
+        assert!(output.contains("generic<ReadonlyArray<string>, string, string>(\"\")"));
+        assert!(output.contains(
+            "generic<ReadonlyArray<string>, string, readonly [number, string]>([0, \"\"] as const)"
+        ));
+        assert!(!output.contains("generic as unknown as"));
         assert!(!output.contains("from \"std/"));
         assert!(!output.contains("_ssrg_array_fromIterable"));
     }
@@ -2446,6 +2474,7 @@ fn lowering_options(
     project_newtypes: &std::collections::BTreeSet<String>,
 ) -> seseragi_lowering::TypeScriptLoweringOptions {
     let mut options = seseragi_lowering::TypeScriptLoweringOptions::default();
+    options.runtime_sources = true;
     if profile == seseragi_project::BuildProfile::Release {
         options.erased_newtype_constructors = project_newtypes.clone();
         options.erased_newtype_constructors.extend(

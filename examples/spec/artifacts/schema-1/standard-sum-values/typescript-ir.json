@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/standard-sum-values",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 200,
+      "end": 210
+    },
+    {
+      "source": "main.ssrg",
+      "start": 212,
+      "end": 228
+    },
+    {
+      "source": "main.ssrg",
+      "start": 230,
+      "end": 239
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.unit",
@@ -93,31 +110,85 @@
         "elements": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_either_Right",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
                 "kind": "identifier",
-                "name": "Rock"
+                "name": "$ssrg$source200"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_either_Right",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "Rock"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_either_Left",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
                 "kind": "identifier",
-                "name": "InvalidHand"
+                "name": "$ssrg$source212"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_either_Left",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "InvalidHand"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_maybe_Just",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
                 "kind": "identifier",
-                "name": "Rock"
+                "name": "$ssrg$source230"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_maybe_Just",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "Rock"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },

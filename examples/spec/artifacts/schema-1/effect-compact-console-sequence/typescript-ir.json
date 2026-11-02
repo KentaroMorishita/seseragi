@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-compact-console-sequence",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 32,
+      "end": 51
+    },
+    {
+      "source": "main.ssrg",
+      "start": 53,
+      "end": 67
+    },
+    {
+      "source": "main.ssrg",
+      "start": 69,
+      "end": 84
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.core.flatMap",
@@ -42,11 +59,29 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_print",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "loading... "
+                  "kind": "identifier",
+                  "name": "$ssrg$source32"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_print",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "loading... "
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -55,11 +90,29 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "done"
+                  "kind": "identifier",
+                  "name": "$ssrg$source53"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "done"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -67,11 +120,29 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "string",
-              "value": "ready"
+              "kind": "identifier",
+              "name": "$ssrg$source69"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "ready"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

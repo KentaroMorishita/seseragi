@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/higher-kinded-alias-import::main",
+  "runtimeSources": [
+    {
+      "source": "project/higher-kinded-alias-import/src/main.ssrg",
+      "start": 149,
+      "end": 164
+    },
+    {
+      "source": "project/higher-kinded-alias-import/src/main.ssrg",
+      "start": 271,
+      "end": 287
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.maybe",
@@ -83,12 +95,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "keepMaybe",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source149"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "keepMaybe",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -110,12 +140,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "keepEither",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source271"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "keepEither",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

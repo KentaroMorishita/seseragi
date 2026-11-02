@@ -10,9 +10,12 @@
   ],
   "names": [
     "view",
+    "$ssrg$atSource",
     "form",
+    "$ssrg$atSource",
     "input",
+    "$ssrg$atSource",
     "button"
   ],
-  "mappings": ";;;;;AAEAA"
+  "mappings": ";;;;;;;;;AAEAA"
 }

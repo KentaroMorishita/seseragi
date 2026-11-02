@@ -253,6 +253,37 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "T"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {

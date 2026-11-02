@@ -188,7 +188,7 @@ impl Program {
                 stderr.contains(if self.argument.is_none() {
                     "Int overflow"
                 } else {
-                    "runtime defect"
+                    "Seseragi Defect:"
                 }),
                 "{}: {output:?}",
                 self.name

@@ -64,6 +64,14 @@ Docs are read by people who did not see your work. Write for that reader.
 - Keep `docs/spec/` normative: change wording without changing a rule unless
   the change is intended, and say so in the PR when a rule changes.
 
+## Writing issues
+
+- Write and update GitHub issues with `docs/ISSUE_GUIDE.md` and the templates
+  in `.github/ISSUE_TEMPLATE/`. Pick the template that matches the type label.
+- A bug needs a minimal repro source and the actual output. When rewriting an
+  issue, reorganize it; never drop technical facts such as repros, error text,
+  API names, or constraints.
+
 ## Testing and commits
 
 - Add focused Rust tests and execution fixtures for compiler changes.

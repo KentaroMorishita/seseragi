@@ -27,19 +27,26 @@
     "__ssrg$comparison$stage",
     "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
     "__ssrg$comparison$stage",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "$ssrg$closedDisplay$0",
     "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
     "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
     "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
     "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "$ssrg$closedDisplay$1",
+    "$ssrg$atSource",
     "ordered",
     "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "$ssrg$atSource",
     "localGeneric",
     "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "$ssrg$atSource",
     "lower"
   ],
-  "mappings": ";;;;;;;;;AAEAS;AAEAE"
+  "mappings": ";;;;;;;;;;;;;;;;;AAEAS;AAEAE"
 }
