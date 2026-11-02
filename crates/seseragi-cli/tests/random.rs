@@ -12,6 +12,17 @@ use std::{
 const SOURCE: &str = include_str!("../../../examples/spec/fixtures/rust-backend/random.ssrg");
 const EXPECTED: &[u8] =
     include_bytes!("../../../examples/spec/fixtures/rust-backend/random.stdout");
+const UNIT_SERVICE_OPERATIONS: &[&str] = &[
+    "clock.now",
+    "random.algorithmId",
+    "random.nextBool",
+    "random.nextInt",
+    "random.unitFloat",
+    "console.flush",
+    "stdin.readLine",
+    "time.databaseVersion",
+];
+const UNIT_IMPORTS: &str = "import * as clock from \"std/clock\"\nimport * as random from \"std/random\"\nimport * as console from \"std/console\"\nimport * as stdin from \"std/stdin\"\nimport * as time from \"std/time\"\nimport * as queue from \"std/queue\"\n";
 
 fn cli() -> Command {
     Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -46,6 +57,53 @@ fn build_native(source: &Path, directory: &Path) -> PathBuf {
     output.join(format!("program{}", std::env::consts::EXE_SUFFIX))
 }
 
+fn check_raw_strict(source: &str, directory: &Path) {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(2)
+        .unwrap();
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("random.ssrg", "fixture/random", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        fs::write(directory.join("raw.ts"), compiled.generated.typescript).unwrap();
+        let config = serde_json::json!({
+            "compilerOptions": {
+                "strict": true,
+                "noEmit": true,
+                "skipLibCheck": false,
+                "target": "ES2022",
+                "module": "ESNext",
+                "moduleResolution": "Bundler",
+                "types": ["bun", "node"],
+                "typeRoots": [root.join("node_modules/@types")],
+                "baseUrl": root,
+                "paths": {"@seseragi/runtime/*": ["runtime/ts/src/*"]},
+                "lib": ["ES2023", "DOM", "DOM.Iterable"],
+                "allowImportingTsExtensions": true
+            },
+            "files": [directory.join("raw.ts")]
+        });
+        fs::write(
+            directory.join("tsconfig.json"),
+            serde_json::to_vec(&config).unwrap(),
+        )
+        .unwrap();
+        successful(bounded(
+            Command::new(runtime("node", directory))
+                .arg(root.join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(directory.join("tsconfig.json")),
+            directory,
+        ));
+    }
+}
+
 fn native(binary: &Path, seed: i64, directory: &Path, expected: &[u8]) {
     let output = successful(bounded(
         Command::new(binary)
@@ -65,6 +123,7 @@ fn native(binary: &Path, seed: i64, directory: &Path, expected: &[u8]) {
 fn random_matches_ts_bun_node_and_native_for_errors_and_boundaries() {
     let scratch = tempfile::tempdir().unwrap();
     let directory = scratch.path();
+    check_raw_strict(SOURCE, directory);
     let package = package(directory, SOURCE);
     let binary = build_native(&package.join("src/main.ssrg"), directory);
     for profile in ["development", "release"] {
@@ -106,6 +165,68 @@ fn random_matches_ts_bun_node_and_native_for_errors_and_boundaries() {
         }
         native(&binary, seed, directory, &ts.stdout);
         native(&binary, seed, directory, &ts.stdout);
+    }
+}
+
+#[test]
+fn random_unit_arguments_keep_saved_functions_and_cold_replay_strict_on_both_targets() {
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend-regressions/random-unit-arguments.ssrg"
+    );
+    let expected = include_bytes!(
+        "../../../examples/spec/fixtures/rust-backend-regressions/random-unit-arguments.stdout"
+    );
+    let scratch = tempfile::tempdir().unwrap();
+    let directory = scratch.path();
+    check_raw_strict(source, directory);
+    let package = package(directory, source);
+    let ts = successful(bounded(cli().arg("run").arg(&package), directory));
+    assert_eq!(ts.stdout, expected);
+    assert!(ts.stderr.is_empty(), "{ts:?}");
+    let binary = build_native(&package.join("src/main.ssrg"), directory);
+    native(&binary, 42, directory, expected);
+}
+
+#[test]
+fn unit_standard_calls_pass_raw_strict_in_both_profiles() {
+    let mut source = UNIT_IMPORTS.to_owned();
+    for (index, operation) in UNIT_SERVICE_OPERATIONS.iter().enumerate() {
+        source.push_str(&format!("pub effect fn direct{index} = {operation} ()\n"));
+    }
+    source.push_str("pub effect fn unbounded = queue.unbounded<Int> ()\n");
+    let scratch = tempfile::tempdir().unwrap();
+    check_raw_strict(&source, scratch.path());
+}
+
+#[test]
+fn unit_standard_calls_reject_non_unit_arguments_before_either_backend() {
+    for operation in UNIT_SERVICE_OPERATIONS {
+        for argument in ["1", "LocalUnit"] {
+            let source = format!(
+                "{UNIT_IMPORTS}type Unit = | LocalUnit\npub effect fn main = {operation} {argument}\n"
+            );
+            for profile in [
+                seseragi_driver::BuildProfile::Development,
+                seseragi_driver::BuildProfile::Release,
+            ] {
+                let input = seseragi_driver::CompileInput::new(
+                    "unit-argument.ssrg",
+                    "fixture/unit-argument",
+                    &source,
+                )
+                .with_profile(profile);
+                let core = seseragi_driver::compile_core_module(input.clone()).unwrap_err();
+                let ts = seseragi_driver::compile_module(input).unwrap_err();
+                assert_eq!(core, ts, "{operation}/{argument}/{profile:?}");
+                assert_eq!(core.diagnostics.len(), 1, "{core:?}");
+                assert_eq!(
+                    core.diagnostics[0].message_key, "call.argument-type-mismatch",
+                    "{core:?}"
+                );
+                let span = core.diagnostics[0].primary;
+                assert_eq!(&source[span.start..span.end], argument);
+            }
+        }
     }
 }
 
@@ -215,6 +336,26 @@ fn random_cold_failures_and_argument_defects_keep_scope_cleanup_and_source_order
             "acquired\nreleased\n",
             70,
         ),
+        (
+            "random.algorithmId (explodeUnit ()) |> effects.mapError (\\_:Never -> \"unreachable\")",
+            "acquired\nreleased\n",
+            70,
+        ),
+        (
+            "random.nextBool (explodeUnit ()) |> effects.mapError (\\_:Never -> \"unreachable\")",
+            "acquired\nreleased\n",
+            70,
+        ),
+        (
+            "random.nextInt (explodeUnit ()) |> effects.mapError (\\_:Never -> \"unreachable\")",
+            "acquired\nreleased\n",
+            70,
+        ),
+        (
+            "random.unitFloat (explodeUnit ()) |> effects.mapError (\\_:Never -> \"unreachable\")",
+            "acquired\nreleased\n",
+            70,
+        ),
     ] {
         let scratch = tempfile::tempdir().unwrap();
         let directory = scratch.path();
@@ -223,6 +364,7 @@ fn random_cold_failures_and_argument_defects_keep_scope_cleanup_and_source_order
 import * as random from "std/random"
 import * as effects from "std/effect"
 fn explode -> Int = 1 / 0
+fn explodeUnit -> Unit = {{ let _value = explode (); () }}
 effect fn ignore _error:ConsoleError -> Unit with Console, Random = effects.succeed ()
 effect fn say text:String -> Unit with Console, Random = println text |> effects.recover ignore
 pub effect fn main = effects.scoped (do {{

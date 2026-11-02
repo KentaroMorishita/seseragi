@@ -1,0 +1,31 @@
+import * as random from "std/random"
+import { Random, nextBool } from "std/random"
+import * as effects from "std/effect"
+
+alias Tick = Unit
+fn keep<A> value: A -> A = value
+fn argument -> Tick = { let _value = 6 / 2; () }
+fn boolean -> (Tick -> Effect<{ random: Random }, Never, Bool>) = nextBool
+effect fn say text: String -> Unit with Console fails String =
+  println text
+  |> effects.mapError show
+
+pub effect fn main = do {
+  let unit: Tick = ()
+  let identify = keep random.algorithmId
+  name <- identify unit
+  say name
+  let integer: Tick -> Effect<{ random: Random }, Never, Int> = keep random.nextInt
+  let cold = integer (argument ())
+  say "created"
+  first <- cold
+  second <- cold
+  say (show first)
+  say (show second)
+  let drawBool = boolean ()
+  flag <- drawBool (if True then () else ())
+  say (show flag)
+  let fraction: Tick -> Effect<{ random: Random }, Never, Float> = keep random.unitFloat
+  value <- fraction unit
+  say (show value)
+}

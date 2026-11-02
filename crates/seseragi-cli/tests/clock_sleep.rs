@@ -368,6 +368,11 @@ fn clock_now_keeps_saved_cold_replay_and_finalizers_on_all_targets() {
     compare_clock_fixture("clock-now", CLOCK_PROVIDER, false);
 }
 
+#[test]
+fn clock_now_evaluates_the_unit_argument_before_constructing_the_cold_effect() {
+    compare_clock_fixture("clock-now-unit-defect", CLOCK_PROVIDER, true);
+}
+
 fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
     let scratch = Scratch::new();
     let source = scratch.0.join("main.ssrg");
@@ -381,7 +386,7 @@ fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
     let metadata: serde_json::Value =
         serde_json::from_slice(&fs::read(scratch.0.join("native/rust-backend.json")).unwrap())
             .unwrap();
-    if name != "clock-now" {
+    if provider != CLOCK_PROVIDER {
         assert!(metadata.get("providers").is_none());
     } else {
         assert_eq!(metadata["providers"].as_array().unwrap().len(), 1);
@@ -421,7 +426,7 @@ fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
                     "{name}: {stderr}"
                 );
             }
-            if name == "clock-now" {
+            if provider == CLOCK_PROVIDER {
                 assert!(stderr.contains("timers-live=0"), "{stderr}");
             }
         } else if defect {

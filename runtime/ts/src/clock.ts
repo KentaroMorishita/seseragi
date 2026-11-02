@@ -96,7 +96,7 @@ function durationFromUnit(
 }
 
 /** Reads the selected Clock without exposing its provider identity. */
-export function now(): Effect<ClockEnvironment, never, Instant> {
+export function now(_unit?: Unit): Effect<ClockEnvironment, never, Instant> {
   return serviceEffect(async (environment, context) =>
     serviceSuccess(await environment.clock.now(context))
   )
