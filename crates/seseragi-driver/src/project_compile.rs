@@ -123,8 +123,17 @@ pub fn compile_core_project(
         modules: frontend
             .analyzed
             .into_iter()
-            .map(|(id, analyzed)| (id, crate::lower_analyzed_module(analyzed)))
-            .collect(),
+            .map(|(module, analyzed)| {
+                crate::lower_analyzed_module(analyzed)
+                    .map(|compiled| (module.clone(), compiled))
+                    .map_err(|diagnostics| ProjectCompileError::Diagnostics {
+                        modules: vec![ProjectModuleDiagnostics {
+                            module,
+                            diagnostics,
+                        }],
+                    })
+            })
+            .collect::<Result<_, _>>()?,
     })
 }
 
@@ -288,7 +297,7 @@ fn compile_project_inner(
         )
         .map_err(|error| ProjectCompileError::Compile {
             module: module.clone(),
-            error: LinkedCompileError::TypeScriptPlan(error),
+            error,
         })?;
         initialization_requirements.insert(
             module.clone(),

@@ -13,17 +13,24 @@ pub struct CoreCompilation {
 }
 
 pub fn compile_core_module(input: CompileInput<'_>) -> Result<CoreCompilation, DiagnosticArtifact> {
-    analyze_module_frontend(input).map(lower_analyzed_module)
+    analyze_module_frontend(input).and_then(lower_analyzed_module)
 }
 
 /// Project adapters may supply a checked module after resolving imports.
-pub fn lower_analyzed_module(analyzed: AnalyzedModule) -> CoreCompilation {
-    CoreCompilation {
-        core_ir: lower_typed_module(analyzed.typed_hir.clone()),
-        diagnostics: analyzed.diagnostics,
-        typed_hir: analyzed.typed_hir,
-        typed_interface: analyzed.typed_interface,
-    }
+pub fn lower_analyzed_module(
+    analyzed: AnalyzedModule,
+) -> Result<CoreCompilation, DiagnosticArtifact> {
+    crate::lowering_panic::catch_lowering_panic(analyzed.diagnostics.clone(), move || {
+        let core_ir = lower_typed_module(analyzed.typed_hir.clone());
+        #[cfg(test)]
+        crate::lowering_panic::fault::after_core();
+        CoreCompilation {
+            core_ir,
+            diagnostics: analyzed.diagnostics,
+            typed_hir: analyzed.typed_hir,
+            typed_interface: analyzed.typed_interface,
+        }
+    })
 }
 
 #[cfg(test)]

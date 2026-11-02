@@ -11,12 +11,9 @@ use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
 /// public interface; source-package imports still require the project driver.
 pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, DiagnosticArtifact> {
     let core = crate::compile_core_module(input)?;
-    Ok(finish_compilation(
-        core,
-        input.source_name(),
-        input.source(),
-        input.profile(),
-    ))
+    crate::lowering_panic::catch_lowering_panic(core.diagnostics.clone(), move || {
+        finish_compilation(core, input.source_name(), input.source(), input.profile())
+    })
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -61,7 +58,6 @@ pub fn compile_linked_module_with_output_paths(
         seseragi_project::BuildProfile::Development,
         &std::collections::BTreeSet::new(),
     )
-    .map_err(LinkedCompileError::TypeScriptPlan)
 }
 
 /// Finishes lowering and emission for a project module whose shared frontend
@@ -74,37 +70,46 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
     output_paths: GeneratedOutputPaths,
     profile: seseragi_project::BuildProfile,
     project_newtypes: &std::collections::BTreeSet<String>,
-) -> Result<CompiledModule, TypeScriptLoweringError> {
-    let analyzed = crate::lower_analyzed_module(analyzed);
-    let core_ir = analyzed.core_ir;
-    let options = lowering_options(&core_ir, profile, project_newtypes);
-    let mut typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
-        core_ir.clone(),
-        output_plan,
-        &options,
-    )?;
-    for origin in &mut typescript_ir.runtime_sources {
-        origin.source = seseragi_project::runtime_source_path(source_name);
-    }
-    let mut generated =
-        emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
-    configure_profile_metadata(
-        &core_ir,
-        &typescript_ir,
-        &options,
-        profile,
-        &mut generated.metadata,
-    );
-    crate::generated_metadata::retain_deprecations(&analyzed.typed_interface, &mut generated);
+) -> Result<CompiledModule, LinkedCompileError> {
+    let analyzed =
+        crate::lower_analyzed_module(analyzed).map_err(LinkedCompileError::Diagnostics)?;
+    crate::lowering_panic::catch_lowering_panic(analyzed.diagnostics.clone(), move || {
+        let core_ir = analyzed.core_ir;
+        let options = lowering_options(&core_ir, profile, project_newtypes);
+        let mut typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
+            core_ir.clone(),
+            output_plan,
+            &options,
+        )?;
+        for origin in &mut typescript_ir.runtime_sources {
+            origin.source = seseragi_project::runtime_source_path(source_name);
+        }
+        #[cfg(test)]
+        crate::lowering_panic::fault::after_typescript();
+        let mut generated =
+            emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
+        #[cfg(test)]
+        crate::lowering_panic::fault::after_emission();
+        configure_profile_metadata(
+            &core_ir,
+            &typescript_ir,
+            &options,
+            profile,
+            &mut generated.metadata,
+        );
+        crate::generated_metadata::retain_deprecations(&analyzed.typed_interface, &mut generated);
 
-    Ok(CompiledModule {
-        diagnostics: analyzed.diagnostics,
-        typed_hir: analyzed.typed_hir,
-        typed_interface: analyzed.typed_interface,
-        core_ir,
-        typescript_ir,
-        generated,
+        Ok(CompiledModule {
+            diagnostics: analyzed.diagnostics,
+            typed_hir: analyzed.typed_hir,
+            typed_interface: analyzed.typed_interface,
+            core_ir,
+            typescript_ir,
+            generated,
+        })
     })
+    .map_err(LinkedCompileError::Diagnostics)?
+    .map_err(LinkedCompileError::TypeScriptPlan)
 }
 
 fn finish_compilation(
@@ -129,7 +134,11 @@ fn finish_compilation(
     for origin in &mut typescript_ir.runtime_sources {
         origin.source = seseragi_project::standalone_runtime_source_path(source_name);
     }
+    #[cfg(test)]
+    crate::lowering_panic::fault::after_typescript();
     let mut generated = emit_typescript_module(typescript_ir.clone(), source);
+    #[cfg(test)]
+    crate::lowering_panic::fault::after_emission();
     configure_profile_metadata(
         &core_ir,
         &typescript_ir,

@@ -114,6 +114,7 @@ impl Diagnostic {
 
     pub fn message(&self) -> String {
         match self.message_key.as_str() {
+            "internal.compiler-error" => "Internal compiler error".to_owned(),
             "name.unresolved" => "Name could not be resolved".to_owned(),
             "call.arity-mismatch" => {
                 "Function was called with the wrong number of arguments".to_owned()
@@ -249,6 +250,10 @@ impl Diagnostic {
 
     pub fn notes(&self) -> Vec<String> {
         match self.message_key.as_str() {
+            "internal.compiler-error" => vec![
+                "This is a bug in the compiler, not an error in your source. Please report it with the source that triggers it."
+                    .to_owned(),
+            ],
             "instance.missing" => vec![
                 "Trait instances are selected from the current lexical and import scope."
                     .to_owned(),
@@ -1150,6 +1155,26 @@ fn message_key_for_code(code: &str) -> &str {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn internal_compiler_error_has_an_explicit_message_and_reporting_note() {
+        let diagnostic = Diagnostic {
+            id: "d1".to_owned(),
+            code: "SES-I0001".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "internal.compiler-error".to_owned(),
+            primary: ByteRange { start: 0, end: 0 },
+            related: Vec::new(),
+            fixes: Vec::new(),
+            type_difference: None,
+        };
+        let note = "This is a bug in the compiler, not an error in your source. Please report it with the source that triggers it.";
+        assert_eq!(diagnostic.message(), "Internal compiler error");
+        assert_eq!(diagnostic.notes(), [note]);
+        let encoded = serde_json::to_value(diagnostic).unwrap();
+        assert_eq!(encoded["message"], "Internal compiler error");
+        assert_eq!(encoded["notes"], serde_json::json!([note]));
+    }
 
     #[test]
     fn reports_incomplete_trait_and_instance_method_signatures_instead_of_dropping_them() {
