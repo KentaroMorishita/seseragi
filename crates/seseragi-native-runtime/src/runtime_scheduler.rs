@@ -407,6 +407,7 @@ impl NativeScheduler {
                     NativeContext {
                         gc_every: task.machine.context.gc_every,
                         stdin: task.machine.context.stdin.clone(),
+                        random: task.machine.context.random.clone(),
                         temporaries: task.machine.context.temporaries.clone(),
                         ..NativeContext::default()
                     },

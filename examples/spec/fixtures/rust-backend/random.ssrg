@@ -1,0 +1,110 @@
+import * as random from "std/random"
+import { Random, RandomRangeError, RandomConfigError } from "std/random"
+import * as effects from "std/effect"
+import * as bytes from "std/bytes"
+import * as hex from "std/bytes/hex"
+import * as nonEmpty from "std/non-empty-list"
+import * as floats from "std/float"
+
+fn configured<A> value: Either<RandomConfigError, A> -> String = match value {
+  Left error -> show error
+  Right _ -> "Right"
+}
+fn keep<A> value: A -> A = value
+fn singleton<A> value: A -> nonEmpty.NonEmptyList<A> = pure value
+fn pick<A> values: nonEmpty.NonEmptyList<A> -> Effect<{random:Random},Never,A> = random.choose values
+fn permute<A> values: Array<A> -> Effect<{random:Random},Never,Array<A>> = random.shuffle values
+effect fn failure error: RandomRangeError -> String with Random = effects.succeed ("Left " + show error)
+effect fn result<A> action: Effect<{random:Random},RandomRangeError,A> -> String with Random where Show<A> = {
+  let success: Effect<{random:Random},RandomRangeError,String> = action |> map (\value:A -> "Right " + show value)
+  effects.recover failure success
+}
+
+effect fn say text:String -> Unit with Console fails String = println text |> effects.mapError show
+
+pub effect fn main = do {
+  let size = keep random.randomSize
+  say (configured (size (-9007199254740991)))
+  say (configured (size (-1)))
+  say (configured (size 0))
+  say (configured (size 1))
+  say (configured (size 1048576))
+  say (configured (size 1048577))
+  say (configured (size 9007199254740991))
+  let cold = random.nextInt ()
+  id <- random.algorithmId ()
+  say id
+  first <- cold
+  second <- cold
+  say (show first)
+  say (show second)
+  flag <- random.nextBool ()
+  say (show flag)
+  fraction <- random.unitFloat ()
+  say (show fraction)
+  sample <- result (random.intBetween (-7) 13)
+  say sample
+  one <- result (random.intBetween 42 43)
+  say one
+  wide <- result (random.intBetween (-9007199254740991) 9007199254740991)
+  say wide
+  low <- result (random.intBetween (-9007199254740991) (-9007199254740990))
+  say low
+  high <- result (random.intBetween 9007199254740990 9007199254740991)
+  say high
+  empty <- result (random.intBetween 3 3)
+  say empty
+  reversed <- result (random.intBetween 4 (-2))
+  say reversed
+  let chance = keep random.chance
+  invalid <- result (chance (-0.1))
+  say invalid
+  excessive <- result (chance 1.1)
+  say excessive
+  nan <- result (chance (floats.nan ()))
+  say nan
+  positive <- result (chance (floats.positiveInfinity ()))
+  say positive
+  negative <- result (chance (floats.negativeInfinity ()))
+  say negative
+  zero <- result (chance (-0.0))
+  say zero
+  certain <- result (chance 1.0)
+  say certain
+  uncertain <- result (chance 0.25)
+  say uncertain
+  after <- random.nextInt ()
+  say (show after)
+  small <- size 1 |> effects.fromEither |> effects.mapError show
+  aligned <- size 8 |> effects.fromEither |> effects.mapError show
+  unaligned <- size 9 |> effects.fromEither |> effects.mapError show
+  let generate = keep random.randomBytes
+  a <- generate small
+  b <- generate aligned
+  c <- generate unaligned
+  say (hex.encode a)
+  say (hex.encode b)
+  say (hex.encode c)
+  maximum <- size 1048576 |> effects.fromEither |> effects.mapError show
+  large <- generate maximum
+  say (show (bytes.length large))
+  say (show (sum (bytes.toInts large)))
+  let choose: nonEmpty.NonEmptyList<String> -> Effect<{random:Random},Never,String> = keep random.choose
+  only <- choose (singleton "only")
+  say only
+  let entries = append (singleton "雪") (append (singleton "🙂") (append (singleton "λ") (singleton "雪")))
+  chosen <- pick entries
+  say chosen
+  let shuffle: Array<String> -> Effect<{random:Random},Never,Array<String>> = keep random.shuffle
+  let input = ["雪", "🙂", "λ", "雪"]
+  shuffled <- shuffle input
+  say (show shuffled)
+  say (show input)
+  let emptyArray:Array<Int> = []
+  emptyShuffle <- permute emptyArray
+  say (show emptyShuffle)
+  singleton <- permute [42]
+  say (show singleton)
+  final <- random.nextInt ()
+  say (show final)
+}

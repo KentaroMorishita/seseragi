@@ -70,6 +70,9 @@ impl Backend<'_> {
         if let Some(value) = self.process_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.random_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.text_call(expr, scope)? {
             return Ok(value);
         }

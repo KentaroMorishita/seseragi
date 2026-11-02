@@ -254,6 +254,23 @@ fn compile_project(
             }
         }
     }
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
+        .any(|capability| capability == "random")
+    {
+        for (_, package) in project.packages().packages() {
+            if package
+                .manifest()
+                .providers
+                .contains_key("std/random::Random")
+                || !package.manifest().provider_artifacts.is_empty()
+            {
+                return Err(format!("{}: SES-RUST-0001: unsupported native Random provider selection/artifact configuration; this target currently uses its built-in Random host", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
     let source_paths = project
         .modules()
         .map(|(_, module)| fs::canonicalize(module.source_path()).map_err(|e| e.to_string()))

@@ -444,6 +444,8 @@ impl Backend<'_> {
                 "std/fs::FileType"
                 | "std/fs::FileMetadata"
                 | "std/fs::DirectoryEntry"
+                | "std/random::Random"
+                | "std/random::RandomSize"
                 | "std/time::Instant"
                 | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"

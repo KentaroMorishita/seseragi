@@ -1,0 +1,40 @@
+NonPositiveRandomSize -9007199254740991
+NonPositiveRandomSize -1
+NonPositiveRandomSize 0
+Right
+Right
+RandomSizeTooLarge 1048577
+RandomSizeTooLarge 9007199254740991
+seseragi-xoshiro256ss-v1
+755370490430936
+3413550631330343
+True
+0.9246929453253876
+Right 9
+Right 42
+Right 374406700721011
+Right -9007199254740991
+Right 9007199254740990
+Left EmptyRandomIntRange { lower: 3, upperExclusive: 3 }
+Left EmptyRandomIntRange { lower: 4, upperExclusive: -2 }
+Left InvalidProbability -0.1
+Left InvalidProbability 1.1
+Left InvalidProbability NaN
+Left InvalidProbability Infinity
+Left InvalidProbability -Infinity
+Right False
+Right True
+Right False
+-2860210276171257
+65
+b6c60630a9ed0fcd
+4227b4a465084852cd
+1048576
+133717192
+only
+λ
+[雪, λ, 雪, 🙂]
+[雪, 🙂, λ, 雪]
+[]
+[42]
+3369578149529113

@@ -98,6 +98,7 @@ pub struct NativeContext {
     reclaimed: usize,
     pub peak_frames: usize,
     stdin: Rc<RefCell<NativeStdin>>,
+    random: Rc<RefCell<NativeRandom>>,
     temporaries: Rc<RefCell<Vec<NativeTemporaryHandle>>>,
 }
 impl Default for NativeContext {
@@ -111,6 +112,7 @@ impl Default for NativeContext {
             reclaimed: 0,
             peak_frames: 0,
             stdin: Rc::default(),
+            random: Rc::default(),
             temporaries: Rc::default(),
         }
     }
