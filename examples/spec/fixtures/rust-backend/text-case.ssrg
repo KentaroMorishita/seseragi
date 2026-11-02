@@ -1,0 +1,36 @@
+import * as text from "std/text"
+
+fn through<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn choose operation: (String -> String) -> String -> String = operation
+
+fn converted value: String -> String = {
+  let lower: String -> String = text.toLower
+  let upper: String -> String = text.toUpper
+  let fold: String -> String = text.caseFold
+  text.join "|" [through lower value, (choose upper) value, fold value]
+}
+
+pub fn probe -> String = {
+  let boundaries =
+    "\0\u{7f}\u{80}\u{7ff}\u{800}\u{d7ff}\u{e000}\u{feff}\u{ffff}\u{10000}🙂\u{10ffff}"
+  text.join "\n" [
+    converted "",
+    converted "AZ az 09",
+    converted "ΟΣ ΟΣΑ Σ İ",
+    converted "Ο'Σ\u{301}! Ο'Σ\u{301}Α",
+    converted "Straße ﬃ ᾀ",
+    converted "Iİıi",
+    converted "\u{1fbe}Σ",
+    converted "\u{a7ce}\u{a7cf}\u{16ea0}\u{16ebb}",
+    converted "KÅſẞς",
+    converted "ΐևᾷᏣꮳ",
+    converted "e\u{301}É",
+    "boundaries:" + show (
+      text.toLower boundaries == boundaries && text.toUpper boundaries == boundaries && text.caseFold
+        boundaries == boundaries
+    ),
+    text.toLower "AΣ!" + "|" + text.toUpper "ß" + "|" + text.caseFold "ς"
+  ]
+}
+
+pub effect fn main = println (probe ())

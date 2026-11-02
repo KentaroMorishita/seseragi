@@ -1,4 +1,4 @@
-use seseragi_backend_rust::emit_rust_module;
+use seseragi_backend_rust::{emit_program_wasm, emit_rust_module};
 use seseragi_driver::{compile_core_module, CompileInput};
 use seseragi_lowering::{core_expr_origin, CoreExpr, CoreType};
 
@@ -33,6 +33,52 @@ pub effect fn main = do {
         .unwrap()
         .core_ir;
     emit_rust_module(&core, "main").unwrap();
+    for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend/text-scalars.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/text-scalars-effects.ssrg"),
+    ] {
+        let core = compile_core_module(CompileInput::new(
+            "text-scalars.ssrg",
+            "native/main",
+            source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "main").unwrap();
+    }
+}
+
+#[test]
+fn native_text_extensions_keep_unused_program_wasm_references_rejected() {
+    for (operation, signature) in [
+        ("isEmpty", "String -> Bool"),
+        ("concat", "Array<String> -> String"),
+        ("lengthScalars", "String -> Int"),
+        ("lengthBytes", "String -> Int"),
+        ("scalarAt", "Int -> String -> Maybe<Char>"),
+        (
+            "sliceScalars",
+            "Int -> Int -> String -> Either<text.TextSliceError, String>",
+        ),
+        ("words", "String -> Array<String>"),
+        ("trimStart", "String -> String"),
+        ("trimEnd", "String -> String"),
+        ("replaceAll", "String -> String -> String -> String"),
+    ] {
+        let source = format!("import * as text from \"std/text\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = text.{operation}; value }}\npub fn nativeProbe -> Int = probe 42\n");
+        let core = compile_core_module(CompileInput::new("text-wasm.ssrg", "native/main", &source))
+            .unwrap()
+            .core_ir;
+        emit_rust_module(&core, "nativeProbe").unwrap();
+        let error = emit_program_wasm(&[&core], "native/main", &["probe".into()]).unwrap_err();
+        assert!(
+            error
+                .message
+                .contains("native text extension requires a target-specific proof"),
+            "{operation}: {error}"
+        );
+        assert_eq!(error.origin.unwrap().source, "text-wasm.ssrg");
+    }
 }
 
 #[test]

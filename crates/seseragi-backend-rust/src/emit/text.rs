@@ -13,15 +13,99 @@ fn text_signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         name: "std/prelude::Bool".into(),
         arguments: vec![],
     };
+    let int = CoreType::Named {
+        name: "std/prelude::Int".into(),
+        arguments: vec![],
+    };
+    let bytes = CoreType::Named {
+        name: "std/bytes::Bytes".into(),
+        arguments: vec![],
+    };
+    let scalar = CoreType::Named {
+        name: "std/prelude::Char".into(),
+        arguments: vec![],
+    };
+    let form = CoreType::Named {
+        name: "std/text/unicode::NormalizationForm".into(),
+        arguments: vec![],
+    };
     match name {
-        "std/text::lines" => Some((vec![string], strings)),
+        "std/text/unicode::version" => Some((
+            vec![CoreType::Named {
+                name: "std/prelude::Unit".into(),
+                arguments: vec![],
+            }],
+            string,
+        )),
+        "std/text/unicode::normalize" => Some((vec![form, string.clone()], string)),
+        "std/text/unicode::isNormalized" => Some((vec![form, string], boolean)),
+        "std/text/unicode::generalCategory" => Some((
+            vec![scalar],
+            CoreType::Named {
+                name: "std/text/unicode::UnicodeGeneralCategory".into(),
+                arguments: vec![],
+            },
+        )),
+        "std/text/unicode::simpleCaseFold" => Some((vec![scalar.clone()], scalar)),
+        "std/text/unicode::fullCaseFold" => Some((vec![string.clone()], string)),
+        "std/text/unicode::isAlphabetic"
+        | "std/text/unicode::isWhitespace"
+        | "std/text/unicode::isDecimalDigit"
+        | "std/text/unicode::isMark" => Some((vec![scalar], boolean)),
+        "std/text::encodeUtf8" => Some((vec![string], bytes)),
+        "std/text::decodeUtf8" => Some((
+            vec![bytes],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![
+                    CoreType::Named {
+                        name: "std/text::Utf8DecodeError".into(),
+                        arguments: vec![],
+                    },
+                    string,
+                ],
+            },
+        )),
+        "std/text::decodeUtf8Lossy" => Some((vec![bytes], string)),
+        "std/text::isEmpty" => Some((vec![string], boolean)),
+        "std/text::concat" => Some((vec![strings], string)),
+        "std/text::lengthScalars" | "std/text::lengthBytes" => Some((vec![string], int)),
+        "std/text::scalarAt" => Some((
+            vec![int, string],
+            CoreType::Named {
+                name: "std/prelude::Maybe".into(),
+                arguments: vec![CoreType::Named {
+                    name: "std/prelude::Char".into(),
+                    arguments: vec![],
+                }],
+            },
+        )),
+        "std/text::sliceScalars" => Some((
+            vec![int.clone(), int, string.clone()],
+            CoreType::Named {
+                name: "std/prelude::Either".into(),
+                arguments: vec![
+                    CoreType::Named {
+                        name: "std/text::TextSliceError".into(),
+                        arguments: vec![],
+                    },
+                    string,
+                ],
+            },
+        )),
+        "std/text::lines" | "std/text::words" => Some((vec![string], strings)),
         "std/text::join" => Some((vec![string.clone(), strings], string)),
         "std/text::split" => Some((vec![string.clone(), string], strings)),
-        "std/text::trim" => Some((vec![string.clone()], string)),
+        "std/text::trim"
+        | "std/text::trimStart"
+        | "std/text::trimEnd"
+        | "std/text::toLower"
+        | "std/text::toUpper"
+        | "std/text::caseFold" => Some((vec![string.clone()], string)),
         "std/text::contains" | "std/text::startsWith" | "std/text::endsWith" => {
             Some((vec![string.clone(), string], boolean))
         }
-        "std/text::replace" => Some((vec![string.clone(); 3], string)),
+        "std/text::replace" | "std/text::replaceAll" => Some((vec![string.clone(); 3], string)),
         _ => None,
     }
 }

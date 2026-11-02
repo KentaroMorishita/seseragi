@@ -1,0 +1,36 @@
+import * as effects from "std/effect"
+import * as text from "std/text"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message
+  |> effects.recover ignore
+effect fn release _unit: Unit -> Unit with Console = say "released"
+
+effect fn body mode: String -> String with Console fails String = effects.scoped $ do {
+  effects.acquireRelease (say "acquired") release
+  let lower: String -> String = text.toLower
+  let upper: String -> String = text.toUpper
+  let fold: String -> String = text.caseFold
+  let plan = effects.defer $ \_: Unit -> do {
+    let first = lower (if mode == "lower-defect" then show (42 / 0) else "AΣ")
+    let second = upper (if mode == "upper-defect" then show (42 / 0) else "ß")
+    let third = fold (if mode == "fold-defect" then show (42 / 0) else "Straße")
+    if mode == "fail" then
+      effects.fail third
+    else
+      effects.succeed (first + "|" + second + "|" + third)
+  }
+  say "cold"
+  first <- plan
+  second <- plan
+  effects.succeed (first + "\n" + second)
+}
+
+effect fn report error: String -> String with Console =
+  effects.succeed ("Failure: " + error)
+
+pub effect fn main = do {
+  result <- body "ready" |> effects.recover report
+  println result
+}

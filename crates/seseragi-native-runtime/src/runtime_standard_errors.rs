@@ -98,6 +98,8 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
             native_error_record(tag, &payload, &[("offset", false)])
         }
         "std/big-int::BigIntDivisionError"
+        | "std/text/unicode::NormalizationForm"
+        | "std/text/unicode::UnicodeGeneralCategory"
         | "std/big-int::BigIntConversionError"
         | "std/decimal::DecimalArithmeticError"
         | "std/decimal::DecimalConversionError"

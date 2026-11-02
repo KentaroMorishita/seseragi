@@ -185,9 +185,70 @@ fn check_raw_strict(
     ));
 }
 
+fn scalar_boundaries() -> (String, String) {
+    let mut checks = Vec::new();
+    for text in ["", "a", "\0", "é", "A👍🏽e\u{301}\0", "\u{feff}\u{10ffff}"] {
+        let scalars = text.chars().collect::<Vec<_>>();
+        let size = scalars.len() as i64;
+        let mut indices = vec![-9_007_199_254_740_991, -1];
+        indices.extend(0..=size + 1);
+        indices.push(9_007_199_254_740_991);
+        for &start in &indices {
+            let expected = if start >= 0 && start < size {
+                format!("Just {:?}", scalars[start as usize])
+            } else {
+                "missing".into()
+            };
+            checks.push(format!("text.scalarAt ({start}) {text:?} == ({expected})"));
+            for &end in &indices {
+                let expected = if start >= 0 && start <= end && end <= size {
+                    let selected = scalars[start as usize..end as usize]
+                        .iter()
+                        .collect::<String>();
+                    format!("Right {selected}")
+                } else {
+                    format!(
+                        "Left InvalidScalarRange {{ start: {start}, end: {end}, length: {size} }}"
+                    )
+                };
+                checks.push(format!(
+                    "describe (text.sliceScalars ({start}) ({end}) {text:?}) == {expected:?}"
+                ));
+            }
+        }
+    }
+    for whitespace in "\t\n\u{b}\u{c}\r \u{85}\u{a0}\u{1680}\u{2000}\u{2001}\u{2002}\u{2003}\u{2004}\u{2005}\u{2006}\u{2007}\u{2008}\u{2009}\u{200a}\u{2028}\u{2029}\u{202f}\u{205f}\u{3000}".chars() {
+        let input = format!("{whitespace}{whitespace}雪,{whitespace}🙂!\u{feff}\0{whitespace}{whitespace}");
+        checks.push(format!("text.words {input:?} == [\"雪,\", \"🙂!\\u{{feff}}\\0\"]"));
+        for (operation, expected) in [
+            ("trimStart", format!("雪,{whitespace}🙂!\u{feff}\0{whitespace}{whitespace}")),
+            ("trimEnd", format!("{whitespace}{whitespace}雪,{whitespace}🙂!\u{feff}\0")),
+        ] {
+            checks.push(format!("text.{operation} {input:?} == {expected:?}"));
+        }
+    }
+    let mut source =
+        "import * as text from \"std/text\"\nfn describe result: Either<text.TextSliceError, String> -> String = match result { Left error -> \"Left \" + show error; Right value -> \"Right \" + value }\n"
+            .to_owned();
+    let mut expected = String::new();
+    let mut groups = Vec::new();
+    for (group, checks) in checks.chunks(24).enumerate() {
+        source.push_str(&format!("fn group{group} -> String = {{\n let missing: Maybe<Char> = Nothing\n text.join \"\\n\" [\n"));
+        for (offset, check) in checks.iter().enumerate() {
+            let index = group * 24 + offset;
+            source.push_str(&format!("  \"case-{index}:\" + show ({check}),\n"));
+            expected.push_str(&format!("case-{index}:True\n"));
+        }
+        source.push_str("]\n}\n");
+        groups.push(format!("group{group} ()"));
+    }
+    source.push_str(&format!("pub fn probe -> String = text.join \"\\n\" [{}]\npub effect fn main = println (probe ())\n", groups.join(", ")));
+    (source, expected)
+}
+
 #[test]
 fn text_operations_match_strict_ts_and_native_lifetimes() {
-    let scratch = Scratch::new();
+    let (boundaries, expected_boundaries) = scalar_boundaries();
     let fixture = fs::read_to_string(
         root().join("examples/spec/fixtures/rust-backend/text-processing-effects.ssrg"),
     )
@@ -195,7 +256,7 @@ fn text_operations_match_strict_ts_and_native_lifetimes() {
     assert_eq!(fixture.matches("body \"ready\"").count(), 1);
     let original =
         include_str!("../../../examples/spec/fixtures/rust-backend/text-line-filter.ssrg");
-    for (label, text, code, expected) in [
+    compare_text_cases([
         ("original", original.to_owned(), 0, "雫\n🙂\n\n"),
         (
             "values",
@@ -203,6 +264,19 @@ fn text_operations_match_strict_ts_and_native_lifetimes() {
                 .to_owned(),
             0,
             include_str!("../../../examples/spec/fixtures/rust-backend/text-processing.stdout"),
+        ),
+        (
+            "scalars",
+            include_str!("../../../examples/spec/fixtures/rust-backend/text-scalars.ssrg")
+                .to_owned(),
+            0,
+            include_str!("../../../examples/spec/fixtures/rust-backend/text-scalars.stdout"),
+        ),
+        (
+            "scalar-boundaries",
+            boundaries,
+            0,
+            expected_boundaries.as_str(),
         ),
         (
             "success",
@@ -222,7 +296,156 @@ fn text_operations_match_strict_ts_and_native_lifetimes() {
             70,
             "acquired\ncold\nreleased\n",
         ),
+    ]);
+}
+
+#[test]
+fn text_scalar_effects_keep_cold_replay_typed_failure_defect_and_cleanup() {
+    let fixture =
+        include_str!("../../../examples/spec/fixtures/rust-backend/text-scalars-effects.ssrg");
+    assert_eq!(fixture.matches("body \"ready\"").count(), 1);
+    compare_text_cases([
+        (
+            "scalar-success",
+            fixture.to_owned(),
+            0,
+            "acquired\ncold\nreleased\n👍🏽e\u{301}!\n👍🏽e\u{301}!\n",
+        ),
+        (
+            "scalar-failure",
+            fixture.replace("body \"ready\"", "body \"fail\""),
+            0,
+            "acquired\ncold\nreleased\nFailure: InvalidScalarRange { start: -1, end: 7, length: 6 }\n",
+        ),
+        (
+            "scalar-defect",
+            fixture.replace("body \"ready\"", "body \"defect\""),
+            70,
+            "acquired\ncold\nreleased\n",
+        ),
+    ]);
+}
+
+#[test]
+fn text_case_matches_strict_ts_and_native_at_unicode_and_sigma_boundaries() {
+    let mut checks = Vec::new();
+    for (prefix, lower_prefix, preceded) in [
+        ("", "", false),
+        ("A", "a", true),
+        ("a", "a", true),
+        ("1", "1", false),
+        ("中", "中", false),
+        ("\u{345}", "\u{345}", false),
+        ("\u{2b0}", "\u{2b0}", false),
+        ("A\u{345}", "a\u{345}", true),
+        ("A\u{200d}", "a\u{200d}", true),
+        ("A'", "a'", true),
+        ("A ", "a ", false),
+        ("\u{1fbe}", "\u{1fbe}", true),
+        ("Ⅰ", "ⅰ", true),
+        ("\u{a7ce}", "\u{a7cf}", true),
     ] {
+        for (suffix, lower_suffix, followed) in [
+            ("", "", false),
+            ("A", "a", true),
+            ("1", "1", false),
+            ("中", "中", false),
+            ("'", "'", false),
+            ("'A", "'a", true),
+            (" A", " a", false),
+            ("\u{301}", "\u{301}", false),
+            ("\u{345}", "\u{345}", false),
+            ("\u{345}A", "\u{345}a", true),
+            ("\u{200d}A", "\u{200d}a", true),
+            ("\u{1fbe}", "\u{1fbe}", true),
+            ("Ⅰ", "ⅰ", true),
+            ("\u{a7ce}", "\u{a7cf}", true),
+        ] {
+            let source = format!("{prefix}Σ{suffix}");
+            let sigma = if preceded && !followed { 'ς' } else { 'σ' };
+            let expected = format!("{lower_prefix}{sigma}{lower_suffix}");
+            checks.push(format!("text.toLower {source:?} == {expected:?}"));
+        }
+    }
+    let marks = "\u{301}".repeat(20_000);
+    for (source, expected) in [
+        (format!("A{marks}Σ{marks}!"), format!("a{marks}ς{marks}!")),
+        (format!("A{marks}Σ{marks}A"), format!("a{marks}σ{marks}a")),
+    ] {
+        checks.push(format!("text.toLower {source:?} == {expected:?}"));
+    }
+    let mut source = "import * as text from \"std/text\"\n".to_owned();
+    let mut expected = String::new();
+    let mut groups = Vec::new();
+    for (group, checks) in checks.chunks(24).enumerate() {
+        source.push_str(&format!(
+            "fn group{group} -> String = text.join \"\\n\" [\n"
+        ));
+        for (offset, check) in checks.iter().enumerate() {
+            let index = group * 24 + offset;
+            source.push_str(&format!(" \"case-{index}:\" + show ({check}),\n"));
+            expected.push_str(&format!("case-{index}:True\n"));
+        }
+        source.push_str("]\n");
+        groups.push(format!("group{group} ()"));
+    }
+    source.push_str(&format!(
+        "pub effect fn main = println (text.join \"\\n\" [{}])\n",
+        groups.join(", ")
+    ));
+    compare_text_cases([
+        (
+            "case-values",
+            include_str!("../../../examples/spec/fixtures/rust-backend/text-case.ssrg").to_owned(),
+            0,
+            include_str!("../../../examples/spec/fixtures/rust-backend/text-case.stdout"),
+        ),
+        ("case-contexts", source, 0, expected.as_str()),
+    ]);
+}
+
+#[test]
+fn text_case_keeps_cold_replay_failure_argument_defects_and_cleanup() {
+    let fixture =
+        include_str!("../../../examples/spec/fixtures/rust-backend/text-case-effects.ssrg");
+    assert_eq!(fixture.matches("body \"ready\"").count(), 1);
+    compare_text_cases([
+        (
+            "case-success",
+            fixture.to_owned(),
+            0,
+            "acquired\ncold\nreleased\naς|SS|strasse\naς|SS|strasse\n",
+        ),
+        (
+            "case-failure",
+            fixture.replace("body \"ready\"", "body \"fail\""),
+            0,
+            "acquired\ncold\nreleased\nFailure: strasse\n",
+        ),
+        (
+            "case-lower-defect",
+            fixture.replace("body \"ready\"", "body \"lower-defect\""),
+            70,
+            "acquired\ncold\nreleased\n",
+        ),
+        (
+            "case-upper-defect",
+            fixture.replace("body \"ready\"", "body \"upper-defect\""),
+            70,
+            "acquired\ncold\nreleased\n",
+        ),
+        (
+            "case-fold-defect",
+            fixture.replace("body \"ready\"", "body \"fold-defect\""),
+            70,
+            "acquired\ncold\nreleased\n",
+        ),
+    ]);
+}
+
+fn compare_text_cases<'a>(cases: impl IntoIterator<Item = (&'a str, String, i32, &'a str)>) {
+    let scratch = Scratch::new();
+    for (label, text, code, expected) in cases {
         let source = scratch.0.join(format!("{label}.ssrg"));
         fs::write(&source, &text).unwrap();
         let native = scratch.0.join(format!("{label}-native"));
@@ -249,7 +472,15 @@ fn text_operations_match_strict_ts_and_native_lifetimes() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         assert!(stderr.contains("managed-live=0"), "{label}: {stderr}");
         if code == 70 {
-            assert!(stderr.contains("body defect"), "{stderr}");
+            let message = if matches!(
+                label,
+                "scalar-defect" | "case-lower-defect" | "case-upper-defect" | "case-fold-defect"
+            ) {
+                "Seseragi Int division by zero"
+            } else {
+                "body defect"
+            };
+            assert!(stderr.contains(message), "{stderr}");
         }
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),

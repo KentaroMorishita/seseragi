@@ -46,7 +46,7 @@ impl Backend<'_> {
     ) -> Result<Option<String>> {
         if !is_comparison(operator)
             || !matches!(evidence, [CoreCallEvidence { evidence: CoreInstanceEvidence::Standard { identity, .. }, .. }]
-                if matches!(identity.as_str(), "std/non-empty-list::Ord" | "std/tuple::Ord" | "std/bool::Ord" | "std/string::Ord" | "std/unit::Ord"))
+                if matches!(identity.as_str(), "std/non-empty-list::Ord" | "std/tuple::Ord" | "std/bool::Ord" | "std/string::Ord" | "std/unit::Ord" | "Ord<std/text/unicode::UnicodeGeneralCategory>"))
         {
             return Ok(None);
         }
@@ -203,6 +203,9 @@ impl Backend<'_> {
             scope,
         )?;
         if self.validate_standard_composite(selected, scope)? {
+            return Ok(());
+        }
+        if self.validate_standard_error_evidence(selected, scope)? {
             return Ok(());
         }
         if let CoreInstanceEvidence::Standard {

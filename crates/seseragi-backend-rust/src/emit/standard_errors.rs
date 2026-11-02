@@ -56,6 +56,8 @@ pub(super) const ERROR_TYPES: &[&str] = &[
     "std/web/storage::StorageError",
 ];
 const RELATED_TYPES: &[&str] = &[
+    "std/text/unicode::NormalizationForm",
+    "std/text/unicode::UnicodeGeneralCategory",
     "std/process::ProcessSignal",
     "std/child-process::ChildOutputChannel",
     "std/child-process::Executable",
@@ -88,6 +90,19 @@ fn eq_type(name: &str) -> bool {
     )
 }
 fn contract(identity: &str) -> Option<(&'static str, &'static str)> {
+    for name in [
+        "std/text/unicode::NormalizationForm",
+        "std/text/unicode::UnicodeGeneralCategory",
+    ] {
+        for class in ["Eq", "Show", "Debug", "Ord"] {
+            if class == "Ord" && name.ends_with("::NormalizationForm") {
+                continue;
+            }
+            if identity == format!("{class}<{name}>") {
+                return Some((class, name));
+            }
+        }
+    }
     for &name in ERROR_TYPES {
         for class in ["Show", "Debug", "Eq"] {
             if class == "Debug"
@@ -274,6 +289,9 @@ impl Backend<'_> {
             unreachable!()
         };
         let (class, name) = contract(identity).unwrap();
+        if class == "Ord" {
+            return Ok(Some("native_unicode_category_ord_dictionary()".into()));
+        }
         let children = self.evidence(evidence_arguments, scope)?;
         Ok(Some(format!(
             "native_standard_error_dictionary({}, {}, {children})",
