@@ -19,6 +19,10 @@ pub fn native_text_operation(name: &str, arguments: Vec<V>) -> V {
             assert_eq!(arguments.len(), 1, "Rust ABI: text.isEmpty arity");
             V::Bool(native_text(&arguments[0]).is_empty())
         }
+        "std/text::toLower" | "std/text::toUpper" | "std/text::caseFold" => {
+            assert_eq!(arguments.len(), 1, "Rust ABI: text casing arity");
+            V::text(&native_text_case(name, native_text(&arguments[0])))
+        }
         "std/text::lengthScalars" | "std/text::lengthBytes" => {
             assert_eq!(arguments.len(), 1, "Rust ABI: text length arity");
             let text = native_text(&arguments[0]);

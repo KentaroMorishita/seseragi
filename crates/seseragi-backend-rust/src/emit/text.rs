@@ -66,9 +66,12 @@ fn text_signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         "std/text::lines" | "std/text::words" => Some((vec![string], strings)),
         "std/text::join" => Some((vec![string.clone(), strings], string)),
         "std/text::split" => Some((vec![string.clone(), string], strings)),
-        "std/text::trim" | "std/text::trimStart" | "std/text::trimEnd" => {
-            Some((vec![string.clone()], string))
-        }
+        "std/text::trim"
+        | "std/text::trimStart"
+        | "std/text::trimEnd"
+        | "std/text::toLower"
+        | "std/text::toUpper"
+        | "std/text::caseFold" => Some((vec![string.clone()], string)),
         "std/text::contains" | "std/text::startsWith" | "std/text::endsWith" => {
             Some((vec![string.clone(), string], boolean))
         }
