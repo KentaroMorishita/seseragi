@@ -904,6 +904,257 @@ fn basic_reader_transformer_defects_preserve_error_kind_and_release_roots() {
 }
 
 #[test]
+fn basic_writer_transformer_apis_instances_errors_and_boundaries_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/writer-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/writer-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_writer_transformer_effects_keep_cold_runs_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/writer-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/writer-transformer-effects.stdout"
+        ))],
+    );
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/writer-transformer-effects.ssrg"
+    );
+    let recovery = "|> effects.recover (\\error:String -> say (\"recovered: \" + error))";
+    assert_eq!(original.matches(recovery).count(), 1);
+    let scratch = Scratch::new();
+    let path = scratch.0.join("writer-transformer-failure.ssrg");
+    fs::write(&path, original.replace(recovery, "")).unwrap();
+    compare(&path, &[Case {
+        stdout: b"created: 0\nacquired\n((5, first-next), first-next)\n((5, first-next), first-next)\n(0, )\n((), only)\ncalls: 4\nreleased\n",
+        exit: 1,
+        failure: Some("typed"),
+        ..Case::success(b"")
+    }]);
+}
+
+#[test]
+fn basic_writer_transformer_imported_opaque_output_and_custom_monad_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/writer-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as wt from "std/transformer/writer"
+pub opaque newtype Log = String
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+instance Semigroup<Log> { fn append first:Log -> second:Log -> Log = match (first,second) { (Log a,Log b) -> Log (a + b) } }
+instance Monoid<Log> { fn empty _unit:Unit -> Log = Log "" }
+pub alias Work<A> = wt.WriterT<Log,Box,A>
+pub fn log text:String -> Log = Log text
+pub fn value -> Value = Value 7
+pub fn bump value:Value -> Value = match value { Value n -> Value (n + 1) }
+pub fn savedTell -> (Log -> Work<Unit>) = wt.tell
+pub fn savedListen<A> -> (Work<A> -> Work<(A,Log)>) = wt.listen
+pub fn savedLift<A> -> (Box<A> -> Work<A>) = wt.lift
+pub fn savedRun<A> -> (Work<A> -> Box<(A,Log)>) = wt.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe box:Box<(Value,Log)> -> String = match box { Box (Value n,Log text) -> show n + ":" + text }
+pub fn observed box:Box<((Value,Log),Log)> -> String = match box { Box ((Value n,Log first),Log second) -> show n + ":" + first + ":" + second }
+"#).unwrap();
+    fs::write(project.join("src/main.ssrg"), r#"
+import * as wt from "std/transformer/writer"
+import { Log, Value, Box, Work, log, value, bump, savedTell, savedListen, savedLift, savedRun, box, describe, observed } from "./domain"
+let tell:Log -> Work<Unit> = savedTell ()
+let listen:Work<Value> -> Work<(Value,Log)> = savedListen ()
+let lift:Box<Value> -> Work<Value> = savedLift ()
+let run:Work<Value> -> Box<(Value,Log)> = savedRun ()
+let first:Work<Unit> = tell (log "雪")
+let second:Work<Unit> = tell (log "🙂")
+let flow:Work<Value> = do { first; second; lift (box (value ())) }
+let mapped:Work<Value> = map bump flow
+let applied:Work<Value> = (pure bump) <*> flow
+let bound:Work<Value> = flow >>= (\n:Value -> pure (bump n))
+pub effect fn main = do {
+  println (describe (run flow))
+  println (describe (run mapped))
+  println (describe (run applied))
+  println (describe (run bound))
+  println (observed (wt.run (listen flow)))
+  println (describe (wt.run (lift (box (value ())))))
+}
+"#).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(
+        &project,
+        &[Case::success(
+            "7:雪🙂\n8:雪🙂\n8:雪🙂\n8:雪🙂\n7:雪🙂:雪🙂\n7:\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_writer_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> wt.WriterT<String,Maybe,Int> = Just 1",
+        "pub fn invalid -> wt.WriterT<String,Maybe,Int> = wt.tell \"a\"",
+        "pub fn invalid -> wt.WriterT<String,Maybe,Unit> = wt.tell 1",
+        "pub fn invalid -> wt.WriterT<String,Maybe,Int> = wt.lift 1",
+        "pub fn invalid -> wt.WriterT<String,Maybe,(Int,String)> = wt.listen (Just 1)",
+        "pub fn invalid value:wt.WriterT<String,Maybe,Int> -> wt.WriterT<String,Maybe,Int> = wt.listen value",
+        "pub fn invalid -> Maybe<Int> = wt.run (wt.tell \"a\")",
+        "pub fn invalid -> Maybe<(Int,String)> = wt.run (Just 1)",
+        "struct Box<A> { value:A }\npub fn invalid -> wt.WriterT<String,Box,Unit> = wt.tell \"a\"",
+        "struct Log { value:Int }\npub fn invalid -> wt.WriterT<Log,Maybe,Unit> = wt.tell (Log { value:1 })",
+        "pub fn invalid -> wt.WriterT<String,Int,Unit> = wt.tell \"a\"",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!("import * as wt from \"std/transformer/writer\"\n{declaration}\npub fn main -> Int = 0\n"),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_writer_transformer_selected_monoid_defects_keep_tell_listen_and_finalizers() {
+    for (empty, append, operation) in [
+        ("show (42 / 0)", "first.text + second.text", "lifted"),
+        ("\"\"", "show (42 / 0)", "lifted >>= (\\n:Int -> pure n)"),
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("writer-monoid-defect.ssrg");
+        let template = r#"
+import * as wt from "std/transformer/writer"
+import * as effects from "std/effect"
+struct Log { text:String }
+instance Semigroup<Log> { fn append first:Log -> second:Log -> Log = Log { text:APPEND } }
+instance Monoid<Log> { fn empty _unit:Unit -> Log = Log { text:EMPTY } }
+alias Work<A> = wt.WriterT<Log,Effect<{},String>,A>
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say text:String -> Unit with Console = println text |> effects.recover ignore
+effect fn pass value:Int -> Int fails String = effects.succeed value
+pub effect fn main = do {
+  let logged:Work<Unit> = wt.tell (Log { text:"kept" })
+  let lifted:Work<Int> = wt.lift (pass 42)
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> say "released")
+    observed <- wt.run (wt.listen logged)
+    let text = match observed { ((_,first),second) -> first.text + ":" + second.text }
+    say text
+    let work:Work<Int> = OPERATION
+    wt.run work
+    effects.succeed ()
+  })
+}
+"#;
+        fs::write(
+            &source,
+            template
+                .replace("APPEND", append)
+                .replace("EMPTY", empty)
+                .replace("OPERATION", operation),
+        )
+        .unwrap();
+        compare(
+            &source,
+            &[Case {
+                stdout: b"created\nacquired\nkept:kept\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_writer_transformer_defects_preserve_error_kind_and_release_roots() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/writer-transformer-effects.ssrg"
+    );
+    let needle = "wt.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "wt.lift (pass (42 / 0))",
+        "wt.lift (effects.defer (\\_:Unit -> pass (42 / 0)))",
+        "map (\\_:Unit -> 42) (wt.tell (show (42 / 0)))",
+        "map (\\pair:(Int,String) -> match pair { (n,_) -> n }) (wt.listen (if 42 / 0 == 0 then pure 1 else pure 2))",
+        "map (\\n:Int -> n / 0) (wt.lift (pass 42))",
+        "(wt.lift (pass 42)) >>= (\\n:Int -> pure (n / 0))",
+        "(pure (\\n:Int -> n / 0)) <*> (wt.lift (pass 42))",
+        "wt.lift (wt.run ({ let selected:Work<Int> = if 42 / 0 == 0 then pure 1 else pure 2; selected }) |> map (\\pair:(Int,String) -> match pair { (n,_) -> n }))",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("writer-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created: 0\nacquired\n((5, first-next), first-next)\n((5, first-next), first-next)\n(0, )\n((), only)\ncalls: 4\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
 fn basic_state_transformer_apis_instances_errors_and_boundaries_match_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/state-transformer.ssrg"),

@@ -121,6 +121,9 @@ impl Backend<'_> {
         if let Some(value) = self.reader_transformer_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.writer_transformer_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.state_transformer_call(expr, scope)? {
             return Ok(value);
         }

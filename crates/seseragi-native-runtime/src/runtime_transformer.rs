@@ -2,6 +2,44 @@ fn native_transformer_wrap(run: V) -> V {
     V::Record(Shared::new(BTreeMap::from([("run".into(), run)])))
 }
 
+pub fn native_writer_transformer_callable(name: &str, dictionaries: Vec<V>) -> V {
+    match name {
+        "std/transformer/writer::run" => V::fun(vec![], |_, value| value.field("run")),
+        "std/transformer/writer::tell" => V::fun(dictionaries, |captures, output| {
+            native_transformer_wrap(
+                captures[0]
+                    .field("pure")
+                    .apply(V::Tuple(Shared::new(vec![V::Unit, output]))),
+            )
+        }),
+        "std/transformer/writer::listen" => V::fun(dictionaries, |captures, value| {
+            let listen = V::fun(vec![], |_, pair| {
+                let output = pair.index(1);
+                V::Tuple(Shared::new(vec![
+                    V::Tuple(Shared::new(vec![pair.index(0), output.clone()])),
+                    output,
+                ]))
+            });
+            native_transformer_wrap(
+                captures[0]
+                    .field("map")
+                    .apply(listen)
+                    .apply(value.field("run")),
+            )
+        }),
+        "std/transformer/writer::lift" => V::fun(dictionaries, |captures, value| {
+            let pair = V::fun(vec![captures[1].clone()], |captures, item| {
+                V::Tuple(Shared::new(vec![
+                    item,
+                    captures[0].field("empty").apply(V::Unit),
+                ]))
+            });
+            native_transformer_wrap(captures[0].field("map").apply(pair).apply(value))
+        }),
+        _ => panic!("Rust ABI: unknown WriterT operation"),
+    }
+}
+
 pub fn native_maybe_transformer_callable(name: &str, dictionaries: Vec<V>) -> V {
     match name {
         "std/transformer/maybe::run" => V::fun(vec![], |_, value| value.field("run")),
@@ -849,5 +887,236 @@ mod state_transformer_tests {
             assert!(collect_cycles().unwrap().reclaimed > 0);
             assert_eq!(LIVE.with(Cell::get), 0);
         }
+    }
+}
+
+#[cfg(test)]
+mod writer_transformer_tests {
+    use super::*;
+
+    fn run(value: V) -> V {
+        native_writer_transformer_callable("std/transformer/writer::run", vec![]).apply(value)
+    }
+
+    fn cleanup() {
+        clear_dictionaries();
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn tell_and_listen_use_selected_base_methods_and_preserve_callable_output_identity() {
+        enable_cycle_collection();
+        let calls = V::reference(V::Int(0));
+        let base = V::dict(vec![
+            (
+                "pure",
+                V::fun(vec![calls.clone()], |captures, value| {
+                    captures[0].write_reference(binary(
+                        "+",
+                        captures[0].read_reference(),
+                        V::Int(1),
+                    ));
+                    V::adt("test::Box", value)
+                }),
+            ),
+            (
+                "map",
+                V::fun(vec![calls.clone()], |captures, callback| {
+                    V::fun(vec![captures[0].clone(), callback], |captures, value| {
+                        captures[0].write_reference(binary(
+                            "+",
+                            captures[0].read_reference(),
+                            V::Int(10),
+                        ));
+                        V::adt("test::Box", captures[1].apply(value.payload()))
+                    })
+                }),
+            ),
+        ]);
+        let output = V::fun(vec![calls.clone()], |_, value| value);
+        let unused_monoid = V::dict(vec![
+            (
+                "empty",
+                V::fun(vec![], |_, _| panic!("unexpected WriterT empty")),
+            ),
+            (
+                "append",
+                V::fun(vec![], |_, _| panic!("unexpected WriterT append")),
+            ),
+        ]);
+        let tell = native_writer_transformer_callable(
+            "std/transformer/writer::tell",
+            vec![base.clone(), unused_monoid.clone()],
+        );
+        let written = tell.apply(output.clone());
+        let stored = written.field("run");
+        assert_eq!(run(written.clone()).node_id(), stored.node_id());
+        assert_eq!(calls.read_reference().render(), "1");
+        let pair = run(written.clone()).payload();
+        assert_eq!(pair.index(0).render(), "()");
+        assert_eq!(pair.index(1).node_id(), output.node_id());
+        let listened = native_writer_transformer_callable(
+            "std/transformer/writer::listen",
+            vec![base.clone(), unused_monoid.clone()],
+        )
+        .apply(written.clone());
+        let observed = run(listened).payload();
+        assert_eq!(observed.index(0).index(0).render(), "()");
+        assert_eq!(observed.index(0).index(1).node_id(), output.node_id());
+        assert_eq!(observed.index(1).node_id(), output.node_id());
+        assert_eq!(observed.index(1).apply(V::Int(42)).render(), "42");
+        assert_eq!(calls.read_reference().render(), "11");
+        drop((
+            calls,
+            base,
+            output,
+            unused_monoid,
+            tell,
+            written,
+            stored,
+            pair,
+            observed,
+        ));
+        cleanup();
+    }
+
+    #[test]
+    fn lift_skips_empty_for_failed_bases_and_calls_it_once_for_each_array_item() {
+        enable_cycle_collection();
+        let calls = V::reference(V::Int(0));
+        let output = V::dict(vec![(
+            "empty",
+            V::fun(vec![calls.clone()], |captures, _| {
+                let value = binary("+", captures[0].read_reference(), V::Int(1));
+                captures[0].write_reference(value.clone());
+                value
+            }),
+        )]);
+        let lift = native_writer_transformer_callable(
+            "std/transformer/writer::lift",
+            vec![native_monad_dictionary(0, "Monad"), output.clone()],
+        );
+        assert_eq!(
+            run(lift.apply(V::Array(Shared::new(vec![])))).render(),
+            "[]"
+        );
+        assert_eq!(calls.read_reference().render(), "0");
+        let values = V::Array(Shared::new(vec![V::Int(7), V::Int(8)]));
+        assert_eq!(run(lift.apply(values)).render(), "[(7, 1), (8, 2)]");
+        for (kind, failure) in [
+            (2, V::adt("std/prelude::Nothing", V::Unit)),
+            (3, V::adt("std/prelude::Left", V::text("typed"))),
+        ] {
+            let lift = native_writer_transformer_callable(
+                "std/transformer/writer::lift",
+                vec![native_monad_dictionary(kind, "Monad"), output.clone()],
+            );
+            assert_eq!(
+                run(lift.apply(failure.clone())).node_id(),
+                failure.node_id()
+            );
+        }
+        assert_eq!(calls.read_reference().render(), "2");
+        drop((calls, output, lift));
+        cleanup();
+    }
+
+    #[test]
+    fn effect_lift_and_listen_delay_empty_until_each_run_and_preserve_exit_kinds() {
+        enable_cycle_collection();
+        let calls = V::reference(V::Int(0));
+        let base = native_monad_dictionary(5, "Monad");
+        let output = V::dict(vec![(
+            "empty",
+            V::fun(vec![calls.clone()], |captures, _| {
+                captures[0].write_reference(binary("+", captures[0].read_reference(), V::Int(1)));
+                V::text("")
+            }),
+        )]);
+        let lift = native_writer_transformer_callable(
+            "std/transformer/writer::lift",
+            vec![base.clone(), output.clone()],
+        );
+        let listen = native_writer_transformer_callable(
+            "std/transformer/writer::listen",
+            vec![base.clone(), output.clone()],
+        );
+        let source = V::leaf(vec![], |_, _| Ok(V::Int(42)));
+        let effect = run(listen.apply(lift.apply(source)));
+        assert_eq!(calls.read_reference().render(), "0");
+        let mut context = NativeContext::default();
+        for count in [1, 2] {
+            let result = context
+                .root(effect.clone())
+                .unwrap_or_else(|_| panic!("expected success"));
+            assert_eq!(result.render(), "((42, ), )");
+            assert_eq!(calls.read_reference().render(), count.to_string());
+        }
+        for kind in [0, 1, 2] {
+            let source = V::leaf(vec![V::Int(kind)], |captures, _| {
+                Err(match captures[0] {
+                    V::Int(0) => NativeExit::failure(V::text("typed")),
+                    V::Int(1) => NativeExit::defects(vec!["defect".into()]),
+                    _ => NativeExit::Cancelled,
+                })
+            });
+            let work = run(listen.apply(lift.apply(source)));
+            match (kind, context.root(work)) {
+                (0, Err(NativeExit::Failure(error))) => assert_eq!(error.render(), "typed"),
+                (1, Err(NativeExit::Defect(errors))) => assert_eq!(errors, ["defect"]),
+                (2, Err(NativeExit::Cancelled)) => {}
+                _ => panic!("WriterT changed the base exit kind"),
+            }
+        }
+        assert_eq!(calls.read_reference().render(), "2");
+        drop((calls, base, output, lift, listen, effect, context));
+        cleanup();
+    }
+
+    #[test]
+    fn saved_lift_and_writer_instances_trace_output_and_callback_cycles() {
+        enable_cycle_collection();
+        let root = V::reference(V::Unit);
+        let output = V::dict(vec![
+            (
+                "empty",
+                V::fun(vec![root.clone()], |captures, _| captures[0].clone()),
+            ),
+            (
+                "append",
+                V::fun(vec![], |_, first| {
+                    V::fun(vec![first], |captures, _| captures[0].clone())
+                }),
+            ),
+        ]);
+        let base = native_monad_dictionary(2, "Monad");
+        let dictionary = native_transformer_dictionary(13, vec![base.clone(), output.clone()]);
+        let lift = native_writer_transformer_callable(
+            "std/transformer/writer::lift",
+            vec![base.clone(), output.clone()],
+        );
+        let callback = V::fun(vec![root.clone()], |captures, value| {
+            binary("+", value, captures[0].read_reference().index(0))
+        });
+        root.write_reference(V::Tuple(Shared::new(vec![
+            V::Int(1),
+            dictionary.clone(),
+            lift.clone(),
+            callback.clone(),
+        ])));
+        let mapped = dictionary
+            .field("map")
+            .apply(callback.clone())
+            .apply(lift.apply(V::adt("std/prelude::Just", V::Int(41))));
+        let result = run(mapped.clone()).payload();
+        assert_eq!(result.index(0).render(), "42");
+        assert_eq!(result.index(1).node_id(), root.node_id());
+        drop((
+            root, output, base, dictionary, lift, callback, mapped, result,
+        ));
+        clear_dictionaries();
+        assert!(collect_cycles().unwrap().reclaimed > 0);
+        assert_eq!(LIVE.with(Cell::get), 0);
     }
 }

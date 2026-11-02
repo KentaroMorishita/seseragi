@@ -112,6 +112,9 @@ impl Backend<'_> {
         if let Some(value) = self.reader_transformer_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.writer_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.state_transformer_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }

@@ -81,6 +81,7 @@ mod transformer_either;
 mod transformer_maybe;
 mod transformer_reader;
 mod transformer_state;
+mod transformer_writer;
 mod validation;
 mod variables;
 
@@ -1028,6 +1029,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.writer_transformer_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.state_transformer_call(expr, scope)? {
                     return Ok(value);
                 }
