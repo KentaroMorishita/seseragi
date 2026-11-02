@@ -356,6 +356,8 @@ fn filesystem_generated_typescript_is_strict_in_both_profiles() {
         "filesystem-transform",
         "filesystem-effects",
         "filesystem-async",
+        "filesystem-metadata",
+        "filesystem-metadata-effects",
         "path-portable",
     ] {
         let source = fs::read_to_string(

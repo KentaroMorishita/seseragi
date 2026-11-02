@@ -37,6 +37,19 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         "std/fs::Replace" | "std/fs::CreateNew" | "std/fs::Append" => {
             (vec![], ty("std/fs::WriteMode"))
         }
+        "std/fs::RegularFile"
+        | "std/fs::Directory"
+        | "std/fs::SymbolicLink"
+        | "std/fs::OtherFileType" => (vec![], ty("std/fs::FileType")),
+        "std/fs::exists" => (
+            vec![path()],
+            effect(ty("std/fs::FileSystemError"), ty("std/prelude::Bool")),
+        ),
+        "std/fs::metadata" | "std/fs::symlinkMetadata" => (
+            vec![path()],
+            effect(ty("std/fs::FileSystemError"), ty("std/fs::FileMetadata")),
+        ),
+        "std/fs::canonicalize" => (vec![path()], effect(ty("std/fs::FileSystemError"), path())),
         "std/fs::readTextUtf8" => (vec![path()], effect(ty("std/fs::FileTextError"), string())),
         "std/fs::writeTextUtf8" => (
             vec![ty("std/fs::WriteMode"), string(), path()],
@@ -79,6 +92,8 @@ pub(super) fn display_contract(identity: &str) -> Option<(&'static str, &'static
             "std/fs::FileSystemOperation",
             "std/fs::FileSystemErrorKind",
             "std/fs::FileSystemError",
+            "std/fs::FileType",
+            "std/fs::FileMetadata",
             "std/fs::WriteMode",
             "std/fs::FileTextError",
             "std/text::Utf8DecodeError",

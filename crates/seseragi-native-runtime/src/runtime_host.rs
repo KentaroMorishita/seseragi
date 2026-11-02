@@ -4,6 +4,10 @@
 enum NativeFileOperation {
     ReadText,
     WriteText,
+    Exists,
+    Metadata,
+    SymlinkMetadata,
+    Canonicalize,
 }
 enum NativeFileRequest {
     Read {
@@ -14,10 +18,17 @@ enum NativeFileRequest {
         mode: &'static str,
         bytes: Vec<u8>,
     },
+    Inspect {
+        operation: NativeFileOperation,
+        path: String,
+    },
 }
 enum NativeFilePayload {
     Bytes(Vec<u8>),
     Unit,
+    Exists(bool),
+    Metadata(std::fs::Metadata),
+    CanonicalPath(String),
 }
 enum NativeFileFault {
     Io(std::io::Error),
@@ -69,6 +80,12 @@ impl NativeFileOperation {
                     bytes: native_text(&captures[1]).as_bytes().to_vec(),
                 }
             }
+            Self::Exists | Self::Metadata | Self::SymlinkMetadata | Self::Canonicalize => {
+                NativeFileRequest::Inspect {
+                    operation: self,
+                    path: native_path_text(&captures[0]).into(),
+                }
+            }
         }
     }
     fn failure(self, captures: &[V], error: std::io::Error) -> NativeExit {
@@ -78,6 +95,12 @@ impl NativeFileOperation {
                 native_file_error("std/fs::ReadFile", captures[0].clone(), error),
             ),
             Self::WriteText => native_file_error("std/fs::WriteFile", captures[2].clone(), error),
+            Self::Exists | Self::Metadata | Self::SymlinkMetadata => {
+                native_file_error("std/fs::ReadMetadata", captures[0].clone(), error)
+            }
+            Self::Canonicalize => {
+                native_file_error("std/fs::CanonicalizePath", captures[0].clone(), error)
+            }
         })
     }
     fn outcome(
@@ -132,6 +155,17 @@ impl NativeFileOperation {
                 native_decode_text(bytes)
             }
             Ok(NativeFilePayload::Unit) if matches!(self, Self::WriteText) => Ok(V::Unit),
+            Ok(NativeFilePayload::Exists(found)) if matches!(self, Self::Exists) => {
+                Ok(V::Bool(found))
+            }
+            Ok(NativeFilePayload::Metadata(metadata))
+                if matches!(self, Self::Metadata | Self::SymlinkMetadata) =>
+            {
+                catch_native(|| Ok(native_file_metadata(metadata)))
+            }
+            Ok(NativeFilePayload::CanonicalPath(path)) if matches!(self, Self::Canonicalize) => {
+                Ok(native_path(&path))
+            }
             Ok(_) => Err(NativeExit::defects(vec![
                 "invalid native filesystem worker result".into(),
             ])),

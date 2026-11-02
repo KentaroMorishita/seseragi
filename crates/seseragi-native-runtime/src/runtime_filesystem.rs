@@ -62,15 +62,111 @@ impl NativeFileHost for NativeStdFileHost {
 fn native_host_path(path: &str) -> String {
     // Match std/fs's public wrapper before reaching the provider. This is
     // lexical normalization, not symlink resolution or a security boundary.
-    let path = native_path_normalize(path);
+    native_provider_path(&native_path_normalize(path))
+}
+fn native_provider_path(path: &str) -> String {
     #[cfg(windows)]
     {
         path.replace('/', "\\")
     }
     #[cfg(not(windows))]
     {
-        path
+        path.into()
     }
+}
+
+fn native_inspect_file(
+    operation: NativeFileOperation,
+    path: &str,
+) -> std::io::Result<NativeFilePayload> {
+    match operation {
+        NativeFileOperation::Exists => match std::fs::metadata(native_provider_path(path)) {
+            Ok(_) => Ok(NativeFilePayload::Exists(true)),
+            Err(error) if native_file_error_code(&error) == "ENOENT" => {
+                Ok(NativeFilePayload::Exists(false))
+            }
+            Err(error) => Err(error),
+        },
+        NativeFileOperation::Metadata => {
+            std::fs::metadata(native_host_path(path)).map(NativeFilePayload::Metadata)
+        }
+        NativeFileOperation::SymlinkMetadata => {
+            std::fs::symlink_metadata(native_host_path(path)).map(NativeFilePayload::Metadata)
+        }
+        NativeFileOperation::Canonicalize => {
+            let path = native_provider_path(path);
+            // macOS realpath can discard a trailing slash or file/.. before
+            // checking directory traversal. Match the default TS host (Bun).
+            std::fs::metadata(&path)?;
+            let path = std::fs::canonicalize(path)?;
+            let path = path.to_string_lossy();
+            #[cfg(windows)]
+            let path = if let Some(unc) = path.strip_prefix(r"\\?\UNC\") {
+                format!("//{unc}")
+            } else {
+                path.strip_prefix(r"\\?\").unwrap_or(&path).into()
+            };
+            Ok(NativeFilePayload::CanonicalPath(path.replace('\\', "/")))
+        }
+        _ => panic!("Rust ABI: invalid filesystem inspection"),
+    }
+}
+
+fn native_file_instant(time: std::io::Result<std::time::SystemTime>) -> V {
+    native_maybe(time.ok().map(|time| {
+        let nanos = match time.duration_since(std::time::UNIX_EPOCH) {
+            Ok(duration) => duration.as_nanos() as i128,
+            Err(error) => -(error.duration().as_nanos() as i128),
+        };
+        // The TS provider uses numeric stat milliseconds, then truncates their
+        // product with one million. Preserve that rounding at both conversions.
+        let milliseconds = nanos.div_euclid(1_000_000_000) as f64 * 1_000.0
+            + nanos.rem_euclid(1_000_000_000) as f64 / 1_000_000.0;
+        let rounded = (milliseconds * 1_000_000.0).trunc() as i128;
+        // The TS provider accepts only unsigned timestamp strings.
+        assert!(rounded >= 0, "filesystem metadata is invalid");
+        V::adt(
+            "std/time::Instant",
+            native_big_int_parse(&rounded.to_string()).payload(),
+        )
+    }))
+}
+fn native_file_metadata(metadata: std::fs::Metadata) -> V {
+    let file_type = metadata.file_type();
+    let file_type = if file_type.is_file() {
+        "std/fs::RegularFile"
+    } else if file_type.is_dir() {
+        "std/fs::Directory"
+    } else if file_type.is_symlink() {
+        "std/fs::SymbolicLink"
+    } else {
+        "std/fs::OtherFileType"
+    };
+    let created = metadata.created();
+    #[cfg(unix)]
+    let created = created.or_else(|_| {
+        use std::os::unix::fs::MetadataExt;
+        let nanos = metadata.ctime() as i128 * 1_000_000_000 + metadata.ctime_nsec() as i128;
+        let magnitude = nanos.unsigned_abs();
+        let duration = std::time::Duration::new(
+            (magnitude / 1_000_000_000) as u64,
+            (magnitude % 1_000_000_000) as u32,
+        );
+        Ok(if nanos < 0 {
+            std::time::UNIX_EPOCH - duration
+        } else {
+            std::time::UNIX_EPOCH + duration
+        })
+    });
+    V::Record(Shared::new(BTreeMap::from([
+        ("fileType".into(), V::adt(file_type, V::Unit)),
+        (
+            "sizeBytes".into(),
+            checked_int(i64::try_from(metadata.len()).expect("file size fits Int")),
+        ),
+        ("modified".into(), native_file_instant(metadata.modified())),
+        ("created".into(), native_file_instant(created)),
+    ])))
 }
 #[cfg(unix)]
 fn native_close_file(file: std::fs::File) -> std::io::Result<()> {
@@ -137,9 +233,13 @@ fn native_run_file_request(
     let mut guard = NativeFileGuard { host, handle: None };
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         native_file_checkpoint(cancelled)?;
+        if let NativeFileRequest::Inspect { operation, path } = &request {
+            return native_inspect_file(*operation, path).map_err(NativeFileFault::Io);
+        }
         let (path, mode) = match &request {
             NativeFileRequest::Read { path } => (path, None),
             NativeFileRequest::Write { path, mode, .. } => (path, Some(*mode)),
+            NativeFileRequest::Inspect { .. } => unreachable!(),
         };
         guard.handle = Some(guard.host.open(path, mode).map_err(NativeFileFault::Io)?);
         native_file_checkpoint(cancelled)?;
@@ -197,6 +297,7 @@ fn native_run_file_request(
                     .map_err(NativeFileFault::Io)?;
                 Ok(NativeFilePayload::Unit)
             }
+            NativeFileRequest::Inspect { .. } => unreachable!(),
         }
     }))
     .unwrap_or_else(|error| Err(NativeFileFault::Defect(native_panic_message(error))));
@@ -380,7 +481,29 @@ pub fn native_filesystem_operation(name: &'static str, arguments: Vec<V>) -> V {
         return native_path_operation(name, &arguments);
     }
     match name {
-        "std/fs::Replace" | "std/fs::CreateNew" | "std/fs::Append" => V::adt(name, V::Unit),
+        "std/fs::Replace"
+        | "std/fs::CreateNew"
+        | "std/fs::Append"
+        | "std/fs::RegularFile"
+        | "std/fs::Directory"
+        | "std/fs::SymbolicLink"
+        | "std/fs::OtherFileType" => V::adt(name, V::Unit),
+        "std/fs::exists" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::Exists),
+            arguments,
+        ),
+        "std/fs::metadata" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::Metadata),
+            arguments,
+        ),
+        "std/fs::symlinkMetadata" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::SymlinkMetadata),
+            arguments,
+        ),
+        "std/fs::canonicalize" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::Canonicalize),
+            arguments,
+        ),
         "std/fs::readTextUtf8" => V::effect(
             Instruction::FileSystem(NativeFileOperation::ReadText),
             arguments,
@@ -470,6 +593,13 @@ fn native_filesystem_display(name: &str, value: &V) -> String {
                 native_filesystem_display(child, &value.payload())
             )
         }
+        "std/fs::FileMetadata" => format!(
+            "FileMetadata {{ fileType: {}, sizeBytes: {}, modified: {}, created: {} }}",
+            native_filesystem_display("std/fs::FileType", &value.field("fileType")),
+            value.field("sizeBytes").render(),
+            native_standard_tag(&value.field("modified"), "std/prelude::"),
+            native_standard_tag(&value.field("created"), "std/prelude::")
+        ),
         "std/text::Utf8DecodeError" => {
             assert!(value.tagged("std/text::InvalidUtf8"));
             format!(
@@ -488,7 +618,7 @@ fn native_filesystem_display(name: &str, value: &V) -> String {
                 tag
             }
         }
-        "std/fs::FileSystemOperation" | "std/fs::WriteMode" => {
+        "std/fs::FileSystemOperation" | "std/fs::WriteMode" | "std/fs::FileType" => {
             native_standard_tag(value, "std/fs::")
         }
         _ => panic!("Rust ABI: filesystem display identity"),
@@ -556,6 +686,76 @@ mod filesystem_tests {
         fn close(&mut self, _: ()) -> std::io::Result<()> {
             self.live -= 1;
             self.event("close")
+        }
+    }
+    #[test]
+    fn file_instants_preserve_stat_rounding_epoch_sign_and_large_nanoseconds() {
+        use std::time::{Duration, UNIX_EPOCH};
+        for (time, expected) in [
+            (UNIX_EPOCH, "0"),
+            (UNIX_EPOCH + Duration::from_nanos(1), "1"),
+            (UNIX_EPOCH - Duration::from_nanos(1), "0"),
+            (
+                UNIX_EPOCH + Duration::new(1_793_586_967, 539_172_942),
+                "1793586967539172864",
+            ),
+            (
+                UNIX_EPOCH + Duration::new(10_000_000_000, 0),
+                "10000000000000000000",
+            ),
+        ] {
+            let maybe = native_file_instant(Ok(time));
+            assert!(maybe.tagged("std/prelude::Just"));
+            let instant = maybe.payload();
+            assert!(instant.tagged("std/time::Instant"));
+            assert!(matches!(instant.payload(), V::BigInt(_)));
+            assert_eq!(instant.payload().render(), expected);
+        }
+        assert!(
+            native_file_instant(Err(std::io::ErrorKind::Unsupported.into()))
+                .tagged("std/prelude::Nothing")
+        );
+        let invalid = catch_native(|| {
+            Ok(native_file_instant(Ok(
+                UNIX_EPOCH - Duration::from_nanos(1_000_000_001)
+            )))
+        });
+        assert!(
+            matches!(invalid, Err(NativeExit::Defect(ref errors)) if errors == &["filesystem metadata is invalid"])
+        );
+    }
+
+    #[test]
+    fn inspections_do_not_open_file_handles_and_cancellation_discards_the_result() {
+        let path = std::env::temp_dir().to_str().unwrap().to_owned();
+        for operation in [
+            NativeFileOperation::Exists,
+            NativeFileOperation::Metadata,
+            NativeFileOperation::SymlinkMetadata,
+            NativeFileOperation::Canonicalize,
+        ] {
+            for cancelled in [false, true] {
+                let mut host = Host::default();
+                let reply = native_run_file_request(
+                    &mut host,
+                    NativeFileRequest::Inspect {
+                        operation,
+                        path: path.clone(),
+                    },
+                    &std::sync::atomic::AtomicBool::new(cancelled),
+                );
+                assert!(host.events.is_empty());
+                assert_eq!(host.live, 0);
+                assert!(reply.close.is_ok());
+                if cancelled {
+                    assert!(matches!(reply.result, Err(NativeFileFault::Cancelled)));
+                } else {
+                    assert!(reply.result.is_ok());
+                    let (outcome, notes) = operation.outcome(&[native_path(&path)], reply, true);
+                    assert!(matches!(outcome, Err(NativeExit::Cancelled)));
+                    assert!(notes.is_empty());
+                }
+            }
         }
     }
     #[test]

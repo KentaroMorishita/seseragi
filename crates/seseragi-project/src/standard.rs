@@ -1387,7 +1387,10 @@ fn filesystem_interface() -> ModuleInterface {
             module,
             "FileMetadata",
             [
-                required("fileType", named("FileType")),
+                required(
+                    "fileType",
+                    external_type("FileType", "std/fs::FileType", module, "FileType", vec![]),
+                ),
                 required("sizeBytes", named("Int")),
                 required("modified", named_with("Maybe", vec![instant()])),
                 required("created", named_with("Maybe", vec![instant()])),
