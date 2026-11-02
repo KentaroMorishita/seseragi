@@ -1,4 +1,6 @@
-use crate::{CoreComprehensionClause, CoreExpr, CorePattern, CoreStatement, CoreTemplatePart};
+use crate::{
+    CoreComprehensionClause, CoreExpr, CorePattern, CoreStatement, CoreTemplatePart, CoreType,
+};
 use seseragi_semantics::ExternalTypeBinding;
 
 use super::super::TypeScriptTypeImport;
@@ -103,10 +105,15 @@ pub(super) fn collect_expr_type_imports(
                 collect_expr_type_imports(item.value(), bindings, requirements, imports);
             }
         }
-        CoreExpr::List { elements, .. } => {
-            // List literals are constructed through `fromArray`, whose result
-            // type is inferred. A runtime `List` type import is only needed
-            // when a source signature or another emitted annotation names it.
+        CoreExpr::List {
+            elements, type_ref, ..
+        } => {
+            // Empty lists annotate the constructor's array argument with its element type.
+            if let CoreType::Named { name, arguments } = type_ref {
+                if elements.is_empty() && name == "List" && arguments.len() == 1 {
+                    collect_type_imports(&arguments[0], bindings, requirements, imports);
+                }
+            }
             collect_exprs(elements, bindings, requirements, imports);
         }
         CoreExpr::ArrayComprehension {

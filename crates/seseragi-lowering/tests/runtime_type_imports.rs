@@ -56,6 +56,63 @@ fn does_not_import_a_runtime_type_for_a_local_shadow() {
 }
 
 #[test]
+fn imports_runtime_types_used_only_by_empty_list_element_annotations() {
+    for (element, annotation, nested_list) in [
+        ("StdinError", "StdinError", false),
+        (
+            "(String, StdinError)",
+            "readonly [string, StdinError]",
+            false,
+        ),
+        ("List<StdinError>", "List<StdinError>", true),
+    ] {
+        let source = format!("pub fn values -> List<{element}> = `[]\n");
+        let generated = compile("artifact/empty-list/main.ssrg", &source);
+
+        assert!(
+            generated.typescript.contains(
+                "import { type StdinError as StdinError } from \"@seseragi/runtime/stdin\""
+            ),
+            "{}",
+            generated.typescript
+        );
+        assert!(generated
+            .typescript
+            .contains(&format!("[] as ReadonlyArray<{annotation}>")));
+        assert_eq!(
+            generated.typescript.contains("type List as List"),
+            nested_list,
+            "{}",
+            generated.typescript
+        );
+        assert!(generated
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"effect.stdin.error".to_owned()));
+    }
+}
+
+#[test]
+fn empty_list_element_annotation_respects_a_local_runtime_type_shadow() {
+    let generated = compile(
+        "artifact/empty-list-shadow/main.ssrg",
+        "type StdinError = | LocalStdinError\npub fn values -> List<(String, StdinError)> = `[]\n",
+    );
+
+    assert!(generated
+        .typescript
+        .contains("[] as ReadonlyArray<readonly [string, StdinError]>"));
+    assert!(!generated.typescript.contains("@seseragi/runtime/stdin"));
+    assert!(!generated.typescript.contains("type List as List"));
+    assert!(!generated
+        .metadata
+        .runtime
+        .requirements
+        .contains(&"effect.stdin.error".to_owned()));
+}
+
+#[test]
 fn public_alias_projection_collects_target_runtime_types_but_respects_own_binders() {
     let generated = compile(
         "artifact/alias-runtime-target/main.ssrg",
