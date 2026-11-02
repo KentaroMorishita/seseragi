@@ -1171,10 +1171,13 @@ pub fn listLength values: List<Int> -> Int = {
             bundle.typescript,
             with_unicode_header(
                 "",
-                "export const invoke = (value: number) => _default(value)\n"
+                "export const invoke = (value: number) => __ssrg$source$default(value)\n"
             )
         );
-        assert_eq!(bundle.source_map.names, vec!["invoke", "_default"]);
+        assert_eq!(
+            bundle.source_map.names,
+            vec!["invoke", "__ssrg$source$default"]
+        );
     }
 
     #[test]
@@ -1277,7 +1280,10 @@ fails ConsoleError =
 
         assert_eq!(
             bundle.typescript,
-            with_unicode_header("", "export const pick = (_default: number) => _default\n")
+            with_unicode_header(
+                "",
+                "export const pick = (__ssrg$source$default: number) => __ssrg$source$default\n"
+            )
         );
     }
 

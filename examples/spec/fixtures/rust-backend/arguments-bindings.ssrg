@@ -1,0 +1,48 @@
+import * as effects from "std/effect"
+
+let arguments = 1
+let _arguments = 2
+let __ssrg_source_arguments = 3
+let arguments' = 4
+
+fn parameter arguments: Int -> _arguments: Int -> Int = arguments + _arguments
+fn local -> Int = {
+  let arguments = 10
+  let _arguments = 20
+  arguments + _arguments
+}
+fn closure arguments: Int -> (Int -> Int) =
+  \_arguments -> arguments + _arguments
+fn lambda -> Int = (\arguments: Int -> arguments + 1) 41
+fn pattern pair: (Int, Int) -> Int =
+  match pair { (arguments, _arguments) -> arguments + _arguments }
+fn destructure -> Int = {
+  let (arguments, _arguments) = (40, 2)
+  arguments + _arguments
+}
+fn named -> Int = {
+  fn arguments _arguments: Int -> Int = _arguments + 1
+  arguments 41
+}
+fn reserved default: Int -> _default: Int -> Int = default + _default
+effect fn effectBinding = do {
+  arguments <- effects.succeed (-9007199254740991)
+  println (show arguments)
+}
+
+pub effect fn main = do {
+  println (show arguments)
+  println (show _arguments)
+  println (show __ssrg_source_arguments)
+  println (show arguments')
+  println (show (parameter 5 6))
+  println (show (local ()))
+  println (show ((closure 20) 22))
+  println (show (lambda ()))
+  println (show (pattern (40, 2)))
+  println (show (destructure ()))
+  println (show (named ()))
+  println (show (reserved 10 20))
+  println (show (parameter 9007199254740991 0))
+  effectBinding ()
+}
