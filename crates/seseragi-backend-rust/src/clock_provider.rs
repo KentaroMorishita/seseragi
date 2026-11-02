@@ -41,6 +41,7 @@ pub enum NativeProviderSelectionOrigin {
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct RustTargetOptions {
+    pub process: crate::NativeProcessOptions,
     pub clock_provider: Option<NativeClockProvider>,
     pub clock_selection_origin: NativeProviderSelectionOrigin,
     /// Original files keyed by Core module identity, including dependencies.

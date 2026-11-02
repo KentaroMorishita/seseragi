@@ -105,6 +105,9 @@ fn contract(identity: &str) -> Option<(&'static str, &'static str)> {
             }
         }
     }
+    if identity == "Show<std/process::ProcessSignal>" {
+        return Some(("Show", "std/process::ProcessSignal"));
+    }
     for &name in ERROR_TYPES {
         for class in ["Show", "Debug", "Eq"] {
             if class == "Debug"

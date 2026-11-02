@@ -428,6 +428,11 @@ fn emit_body(
     }
     if let Some(entry) = entry {
         backend.owner = &owners[&entry.symbol];
+        let process = &backend.options.process;
+        let process_startup = format!(
+            "configure_native_process_shutdown({}, {}); ",
+            process.forward_signals, process.shutdown_grace_ms
+        );
         if entry.is_effect {
             output.push_str(&backend.entry_failure_show(entry).map_err(|error| {
                 crate::project::at(&error.message, &entry.origin, backend.owner)
@@ -447,7 +452,7 @@ fn emit_body(
             } else {
                 "run_native_entry_with_show"
             };
-            output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}, entry_failure_show)); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ {process_startup}std::process::exit({runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}, entry_failure_show)); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         } else {
             output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         }

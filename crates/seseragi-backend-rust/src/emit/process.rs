@@ -18,12 +18,23 @@ fn signature(name: &str) -> Option<(CoreType, CoreType)> {
         ),
         "std/process::environment" => (string(), named("std/prelude::Maybe", vec![string()])),
         "std/process::currentDirectory" => (value("std/prelude::Unit"), value("std/path::Path")),
+        "std/process::signals" => (
+            named(
+                "std/non-empty-list::NonEmptyList",
+                vec![value("std/process::ProcessSignal")],
+            ),
+            value("std/process::ProcessSignal"),
+        ),
         _ => return None,
     };
     Some((
         input,
         named(
-            "std/prelude::Effect",
+            if name == "std/process::signals" {
+                "std/stream::Stream"
+            } else {
+                "std/prelude::Effect"
+            },
             vec![
                 CoreType::Record {
                     closed: true,
@@ -84,6 +95,10 @@ impl Backend<'_> {
         )?;
         self.capabilities.insert("process".into());
         self.capabilities.insert("effect-sync".into());
+        if name == "std/process::signals" {
+            self.capabilities.insert("process-signals".into());
+            self.capabilities.insert("stream".into());
+        }
         Ok(Some(format!(
             "V::fun(vec![], |_, argument| native_process_operation({}, argument))",
             quoted(name)

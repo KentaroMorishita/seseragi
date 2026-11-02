@@ -24,6 +24,20 @@ pub struct RustSourceFile {
     pub text: String,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct NativeProcessOptions {
+    pub forward_signals: bool,
+    pub shutdown_grace_ms: u64,
+}
+impl Default for NativeProcessOptions {
+    fn default() -> Self {
+        Self {
+            forward_signals: false,
+            shutdown_grace_ms: 10_000,
+        }
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RustBackendError {

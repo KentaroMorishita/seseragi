@@ -74,6 +74,8 @@ include!("runtime_effect_defect.rs");
 include!("runtime_scheduler.rs");
 include!("runtime_path.rs");
 include!("runtime_process.rs");
+include!("runtime_process_signals.rs");
+include!("runtime_process_signal_host.rs");
 include!("runtime_random.rs");
 include!("runtime_entropy.rs");
 include!("runtime_filesystem.rs");

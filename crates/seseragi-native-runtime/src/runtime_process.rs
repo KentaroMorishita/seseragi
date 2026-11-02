@@ -36,6 +36,7 @@ fn native_process_directory(directory: std::io::Result<std::path::PathBuf>) -> N
 
 pub fn native_process_operation(name: &str, argument: V) -> V {
     match name {
+        "std/process::signals" => native_process_signals(argument),
         "std/process::arguments" => {
             assert!(matches!(argument, V::Unit));
             V::leaf(vec![], |_, _| {

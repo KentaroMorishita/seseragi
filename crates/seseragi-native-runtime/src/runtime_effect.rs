@@ -23,6 +23,7 @@ enum Instruction {
     Concurrent(ConcurrentOperation),
     FileSystem(NativeFileOperation),
     Stdin(NativeStdinOperation),
+    ProcessSignalPull,
     SignalTransaction,
     SignalSubscribe,
 }
@@ -102,6 +103,7 @@ pub struct NativeContext {
     stdin: Rc<RefCell<NativeStdin>>,
     random: Rc<RefCell<NativeRandom>>,
     temporaries: Rc<RefCell<Vec<NativeTemporaryHandle>>>,
+    process: Rc<RefCell<NativeProcess>>,
 }
 impl Default for NativeContext {
     fn default() -> Self {
@@ -116,6 +118,7 @@ impl Default for NativeContext {
             stdin: Rc::default(),
             random: Rc::default(),
             temporaries: Rc::default(),
+            process: Rc::default(),
         }
     }
 }
@@ -162,6 +165,9 @@ impl NativeContext {
             NativeState::Evaluate(next)
         } else {
             let scope = self.scopes.pop().expect("closing native scope");
+            for subscription in scope.process_signals {
+                self.process.borrow_mut().close(subscription);
+            }
             for subscription in scope.subscriptions {
                 signal_unsubscribe(&subscription);
             }
@@ -189,6 +195,7 @@ struct NativeScope {
     finalizers: Vec<V>,
     children: Vec<V>,
     subscriptions: Vec<V>,
+    process_signals: Vec<usize>,
 }
 struct NativeMachine {
     context: NativeContext,
@@ -200,6 +207,7 @@ enum NativeTurn {
     Operation(ConcurrentOperation, Vec<V>),
     FileSystem(NativeFileOperation, Vec<V>),
     Stdin(NativeStdinOperation, Vec<V>),
+    ProcessSignalPull(usize),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -245,6 +253,7 @@ impl NativeMachine {
                                 | Instruction::Concurrent(_)
                                 | Instruction::FileSystem(_)
                                 | Instruction::Stdin(_)
+                                | Instruction::ProcessSignalPull
                         )
                     {
                         stack.push(NativeFrame::Source(source));
@@ -288,6 +297,14 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::Stdin(operation, c);
+                            }
+                        }
+                        Instruction::ProcessSignalPull => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                let V::Int(id) = c[0] else { unreachable!() };
+                                return NativeTurn::ProcessSignalPull(id as usize);
                             }
                         }
                         Instruction::Bind => {
@@ -566,6 +583,7 @@ fn run_native_program_with_show(
     let result = catch_native(|| {
         let value = entry();
         if effect {
+            context.process.borrow_mut().install_shutdown()?;
             context.root(value)
         } else {
             println!("{}", value.render());
@@ -628,8 +646,12 @@ fn run_native_program_with_show(
             70
         }
         Err(NativeExit::Cancelled) => {
-            eprintln!("Seseragi cancelled");
-            130
+            if let Some(code) = context.process.borrow().signal_exit_code() {
+                code
+            } else {
+                eprintln!("Seseragi cancelled");
+                130
+            }
         }
     };
     drop(result);

@@ -193,6 +193,10 @@ fn compile_project(
         .expect("checked root package");
     let manifest_path = root.root().join("seseragi.toml");
     let mut options = native_clock_options(provider)?;
+    if let Some(run) = &root.manifest().run {
+        options.process.forward_signals = run.signal_mode == seseragi_project::SignalMode::Forward;
+        options.process.shutdown_grace_ms = run.shutdown_grace_ms.unwrap_or(10_000);
+    }
     options.sources = project
         .modules()
         .map(|(identity, module)| {

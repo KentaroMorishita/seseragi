@@ -72,6 +72,8 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/runtime_scheduler.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_path.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_process.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_process_signals.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_process_signal_host.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_random.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_entropy.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_filesystem.rs"),

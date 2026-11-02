@@ -169,6 +169,7 @@ struct NativeTask {
     file: Option<NativeFileTask>,
     stdin: Option<NativeStdinTask>,
     timer: Option<NativeTimer>,
+    process_signal: Option<usize>,
 }
 #[derive(Default)]
 struct NativeScheduler {
@@ -201,6 +202,7 @@ impl NativeScheduler {
                 file: None,
                 stdin: None,
                 timer: None,
+                process_signal: None,
             },
         );
         self.ready.push_back(id);
@@ -210,15 +212,23 @@ impl NativeScheduler {
         let mut scheduler = Self::default();
         let root = scheduler.spawn(std::mem::take(context), plan);
         let root_id = root.fiber().task;
+        let process = scheduler.tasks[&root_id].machine.context.process.clone();
         loop {
+            if process.borrow_mut().poll() {
+                scheduler.cancel(root_id);
+            }
+            scheduler.poll_process_signals(&process);
             scheduler.poll_files();
             scheduler.poll_stdin();
             scheduler.poll_timers();
             let Some(id) = scheduler.ready.pop_front() else {
+                process.borrow().force_if_expired(true);
                 // A program awaiting an uncompleted Deferred stays pending.
                 // No artificial typed failure or Defect is invented for it.
                 let timeout = scheduler.next_timer_wait();
-                let timeout = if scheduler.tasks.values().any(|task| task.stdin.is_some()) {
+                let timeout = if process.borrow().active()
+                    || scheduler.tasks.values().any(|task| task.stdin.is_some())
+                {
                     Some(
                         timeout
                             .unwrap_or(std::time::Duration::MAX)
@@ -235,7 +245,17 @@ impl NativeScheduler {
                 continue;
             };
             let mut task = scheduler.tasks.remove(&id).expect("runnable native task");
-            match task.machine.turn() {
+            let turn = task.machine.turn();
+            let yielded = matches!(&turn, NativeTurn::Operation(ConcurrentOperation::Yield, _));
+            let asynchronous = matches!(
+                &turn,
+                NativeTurn::Runnable
+                    | NativeTurn::Operation(..)
+                    | NativeTurn::FileSystem(..)
+                    | NativeTurn::Stdin(..)
+                    | NativeTurn::ProcessSignalPull(..)
+            );
+            match turn {
                 NativeTurn::Runnable => scheduler.ready.push_back(id),
                 NativeTurn::Operation(operation, captures) => {
                     scheduler.operation(id, &mut task, operation, captures)
@@ -260,6 +280,14 @@ impl NativeScheduler {
                             task.machine.resume(Err(exit));
                             scheduler.ready.push_back(id);
                         }
+                    }
+                }
+                NativeTurn::ProcessSignalPull(subscription) => {
+                    if let Some(value) = process.borrow_mut().pull(subscription) {
+                        task.machine.resume(Ok(value));
+                        scheduler.ready.push_back(id);
+                    } else {
+                        task.process_signal = Some(subscription);
                     }
                 }
                 NativeTurn::CloseScope(original, previous_mask) => {
@@ -307,7 +335,16 @@ impl NativeScheduler {
                     continue;
                 }
             }
+            let suspended = yielded
+                || task.waiting.is_some()
+                || task.file.is_some()
+                || task.stdin.is_some()
+                || task.timer.is_some()
+                || task.process_signal.is_some();
             scheduler.tasks.insert(id, task);
+            if asynchronous {
+                process.borrow().force_if_expired(suspended);
+            }
         }
     }
     fn cancel(&mut self, id: usize) {
@@ -323,6 +360,10 @@ impl NativeScheduler {
             self.ready.push_back(id);
         }
         if task.stdin.take().is_some() {
+            task.machine.resume(Err(NativeExit::Cancelled));
+            self.ready.push_back(id);
+        }
+        if task.process_signal.take().is_some() {
             task.machine.resume(Err(NativeExit::Cancelled));
             self.ready.push_back(id);
         }
@@ -362,6 +403,18 @@ impl NativeScheduler {
             if let Some(outcome) = task.stdin.as_mut().and_then(NativeStdinTask::poll) {
                 task.stdin = None;
                 task.machine.resume(outcome);
+                self.ready.push_back(*id);
+            }
+        }
+    }
+    fn poll_process_signals(&mut self, process: &Rc<RefCell<NativeProcess>>) {
+        for (id, task) in &mut self.tasks {
+            let Some(subscription) = task.process_signal else {
+                continue;
+            };
+            if let Some(value) = process.borrow_mut().pull(subscription) {
+                task.process_signal = None;
+                task.machine.resume(Ok(value));
                 self.ready.push_back(*id);
             }
         }
@@ -409,6 +462,7 @@ impl NativeScheduler {
                         stdin: task.machine.context.stdin.clone(),
                         random: task.machine.context.random.clone(),
                         temporaries: task.machine.context.temporaries.clone(),
+                        process: task.machine.context.process.clone(),
                         ..NativeContext::default()
                     },
                     c[0].clone(),

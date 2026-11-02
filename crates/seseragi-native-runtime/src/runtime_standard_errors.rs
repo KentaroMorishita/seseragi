@@ -101,6 +101,7 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
         "std/big-int::BigIntDivisionError"
         | "std/text/unicode::NormalizationForm"
         | "std/text/unicode::UnicodeGeneralCategory"
+        | "std/process::ProcessSignal"
         | "std/big-int::BigIntConversionError"
         | "std/decimal::DecimalArithmeticError"
         | "std/decimal::DecimalConversionError"
