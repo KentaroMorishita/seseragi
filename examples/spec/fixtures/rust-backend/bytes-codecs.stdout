@@ -1,0 +1,138 @@
+|||Right []|Right []|Right []|[]
+66|Zg==|Zg|Right [102]|Right [102]|Right [102]|[102]
+666f|Zm8=|Zm8|Right [102, 111]|Right [102, 111]|Right [102, 111]|[102, 111]
+666f6f|Zm9v|Zm9v|Right [102, 111, 111]|Right [102, 111, 111]|Right [102, 111, 111]|[102, 111, 111]
+666f6f62|Zm9vYg==|Zm9vYg|Right [102, 111, 111, 98]|Right [102, 111, 111, 98]|Right [102, 111, 111, 98]|[102, 111, 111, 98]
+666f6f6261|Zm9vYmE=|Zm9vYmE|Right [102, 111, 111, 98, 97]|Right [102, 111, 111, 98, 97]|Right [102, 111, 111, 98, 97]|[102, 111, 111, 98, 97]
+666f6f626172|Zm9vYmFy|Zm9vYmFy|Right [102, 111, 111, 98, 97, 114]|Right [102, 111, 111, 98, 97, 114]|Right [102, 111, 111, 98, 97, 114]|[102, 111, 111, 98, 97, 114]
+00|AA==|AA|Right [0]|Right [0]|Right [0]|[0]
+0000|AAA=|AAA|Right [0, 0]|Right [0, 0]|Right [0, 0]|[0, 0]
+000000|AAAA|AAAA|Right [0, 0, 0]|Right [0, 0, 0]|Right [0, 0, 0]|[0, 0, 0]
+ff|/w==|_w|Right [255]|Right [255]|Right [255]|[255]
+ffff|//8=|__8|Right [255, 255]|Right [255, 255]|Right [255, 255]|[255, 255]
+ffffff|////|____|Right [255, 255, 255]|Right [255, 255, 255]|Right [255, 255, 255]|[255, 255, 255]
+fbefff|++//|--__|Right [251, 239, 255]|Right [251, 239, 255]|Right [251, 239, 255]|[251, 239, 255]
+fbff|+/8=|-_8|Right [251, 255]|Right [251, 255]|Right [251, 255]|[251, 255]
+00010f10abff|AAEPEKv/|AAEPEKv_|Right [0, 1, 15, 16, 171, 255]|Right [0, 1, 15, 16, 171, 255]|Right [0, 1, 15, 16, 171, 255]|[0, 1, 15, 16, 171, 255]
+000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff|AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==|AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w|Right [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255]|Right [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255]|Right [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255]|[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255]
+074a8dd0135699|B0qN0BNWmQ==|B0qN0BNWmQ|Right [7, 74, 141, 208, 19, 86, 153]|Right [7, 74, 141, 208, 19, 86, 153]|Right [7, 74, 141, 208, 19, 86, 153]|[7, 74, 141, 208, 19, 86, 153]
+084b8ed114579add|CEuO0RRXmt0=|CEuO0RRXmt0|Right [8, 75, 142, 209, 20, 87, 154, 221]|Right [8, 75, 142, 209, 20, 87, 154, 221]|Right [8, 75, 142, 209, 20, 87, 154, 221]|[8, 75, 142, 209, 20, 87, 154, 221]
+094c8fd215589bde21|CUyP0hVYm94h|CUyP0hVYm94h|Right [9, 76, 143, 210, 21, 88, 155, 222, 33]|Right [9, 76, 143, 210, 21, 88, 155, 222, 33]|Right [9, 76, 143, 210, 21, 88, 155, 222, 33]|[9, 76, 143, 210, 21, 88, 155, 222, 33]
+105396d91c5fa2e5286baef13477bafd|EFOW2RxfouUoa67xNHe6/Q==|EFOW2RxfouUoa67xNHe6_Q|Right [16, 83, 150, 217, 28, 95, 162, 229, 40, 107, 174, 241, 52, 119, 186, 253]|Right [16, 83, 150, 217, 28, 95, 162, 229, 40, 107, 174, 241, 52, 119, 186, 253]|Right [16, 83, 150, 217, 28, 95, 162, 229, 40, 107, 174, 241, 52, 119, 186, 253]|[16, 83, 150, 217, 28, 95, 162, 229, 40, 107, 174, 241, 52, 119, 186, 253]
+1f62a5e82b6eb1f4377abd004386c90c4f92d5185b9ee12467aaed3073b6f9|H2Kl6CtusfQ3er0AQ4bJDE+S1RhbnuEkZ6rtMHO2+Q==|H2Kl6CtusfQ3er0AQ4bJDE-S1RhbnuEkZ6rtMHO2-Q|Right [31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189, 0, 67, 134, 201, 12, 79, 146, 213, 24, 91, 158, 225, 36, 103, 170, 237, 48, 115, 182, 249]|Right [31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189, 0, 67, 134, 201, 12, 79, 146, 213, 24, 91, 158, 225, 36, 103, 170, 237, 48, 115, 182, 249]|Right [31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189, 0, 67, 134, 201, 12, 79, 146, 213, 24, 91, 158, 225, 36, 103, 170, 237, 48, 115, 182, 249]|[31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189, 0, 67, 134, 201, 12, 79, 146, 213, 24, 91, 158, 225, 36, 103, 170, 237, 48, 115, 182, 249]
+2063a6e92c6fb2f5387bbe014487ca0d5093d6195c9fe22568abee3174b7fa3d|IGOm6SxvsvU4e74BRIfKDVCT1hlcn+IlaKvuMXS3+j0=|IGOm6SxvsvU4e74BRIfKDVCT1hlcn-IlaKvuMXS3-j0|Right [32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61]|Right [32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61]|Right [32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61]|[32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61]
+2164a7ea2d70b3f6397cbf024588cb0e5194d71a5da0e32669acef3275b8fb3e81|IWSn6i1ws/Y5fL8CRYjLDlGU1xpdoOMmaazvMnW4+z6B|IWSn6i1ws_Y5fL8CRYjLDlGU1xpdoOMmaazvMnW4-z6B|Right [33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129]|Right [33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129]|Right [33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129]|[33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129]
+3f82c5084b8ed114579add2063a6e92c6fb2f5387bbe014487ca0d5093d6195c9fe22568abee3174b7fa3d80c306498ccf125598db1e61a4e72a6db0f33679|P4LFCEuO0RRXmt0gY6bpLG+y9Th7vgFEh8oNUJPWGVyf4iVoq+4xdLf6PYDDBkmMzxJVmNseYaTnKm2w8zZ5|P4LFCEuO0RRXmt0gY6bpLG-y9Th7vgFEh8oNUJPWGVyf4iVoq-4xdLf6PYDDBkmMzxJVmNseYaTnKm2w8zZ5|Right [63, 130, 197, 8, 75, 142, 209, 20, 87, 154, 221, 32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61, 128, 195, 6, 73, 140, 207, 18, 85, 152, 219, 30, 97, 164, 231, 42, 109, 176, 243, 54, 121]|Right [63, 130, 197, 8, 75, 142, 209, 20, 87, 154, 221, 32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61, 128, 195, 6, 73, 140, 207, 18, 85, 152, 219, 30, 97, 164, 231, 42, 109, 176, 243, 54, 121]|Right [63, 130, 197, 8, 75, 142, 209, 20, 87, 154, 221, 32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61, 128, 195, 6, 73, 140, 207, 18, 85, 152, 219, 30, 97, 164, 231, 42, 109, 176, 243, 54, 121]|[63, 130, 197, 8, 75, 142, 209, 20, 87, 154, 221, 32, 99, 166, 233, 44, 111, 178, 245, 56, 123, 190, 1, 68, 135, 202, 13, 80, 147, 214, 25, 92, 159, 226, 37, 104, 171, 238, 49, 116, 183, 250, 61, 128, 195, 6, 73, 140, 207, 18, 85, 152, 219, 30, 97, 164, 231, 42, 109, 176, 243, 54, 121]
+4083c6094c8fd215589bde2164a7ea2d70b3f6397cbf024588cb0e5194d71a5da0e32669acef3275b8fb3e81c4074a8dd0135699dc1f62a5e82b6eb1f4377abd|QIPGCUyP0hVYm94hZKfqLXCz9jl8vwJFiMsOUZTXGl2g4yZprO8ydbj7PoHEB0qN0BNWmdwfYqXoK26x9Dd6vQ==|QIPGCUyP0hVYm94hZKfqLXCz9jl8vwJFiMsOUZTXGl2g4yZprO8ydbj7PoHEB0qN0BNWmdwfYqXoK26x9Dd6vQ|Right [64, 131, 198, 9, 76, 143, 210, 21, 88, 155, 222, 33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129, 196, 7, 74, 141, 208, 19, 86, 153, 220, 31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189]|Right [64, 131, 198, 9, 76, 143, 210, 21, 88, 155, 222, 33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129, 196, 7, 74, 141, 208, 19, 86, 153, 220, 31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189]|Right [64, 131, 198, 9, 76, 143, 210, 21, 88, 155, 222, 33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129, 196, 7, 74, 141, 208, 19, 86, 153, 220, 31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189]|[64, 131, 198, 9, 76, 143, 210, 21, 88, 155, 222, 33, 100, 167, 234, 45, 112, 179, 246, 57, 124, 191, 2, 69, 136, 203, 14, 81, 148, 215, 26, 93, 160, 227, 38, 105, 172, 239, 50, 117, 184, 251, 62, 129, 196, 7, 74, 141, 208, 19, 86, 153, 220, 31, 98, 165, 232, 43, 110, 177, 244, 55, 122, 189]
+hex:""|Right []
+hex:"00"|Right [0]
+hex:"FF"|Right [255]
+hex:"aBfF"|Right [171, 255]
+hex:"00010F10aBfF"|Right [0, 1, 15, 16, 171, 255]
+hex:"0"|Left OddHexLength 1
+hex:"abc"|Left OddHexLength 3
+hex:"0x00"|Left InvalidHexDigit { offset: 1 }
+hex:" 0"|Left InvalidHexDigit { offset: 0 }
+hex:"00 "|Left OddHexLength 3
+hex:"00\n"|Left OddHexLength 3
+hex:"00\r\n"|Left InvalidHexDigit { offset: 2 }
+hex:"0g"|Left InvalidHexDigit { offset: 1 }
+hex:"g0"|Left InvalidHexDigit { offset: 0 }
+hex:"00xz"|Left InvalidHexDigit { offset: 2 }
+hex:"é"|Left InvalidHexDigit { offset: 0 }
+hex:"é0"|Left OddHexLength 3
+hex:"0é0"|Left InvalidHexDigit { offset: 1 }
+hex:"00é"|Left InvalidHexDigit { offset: 2 }
+hex:"雪"|Left OddHexLength 3
+hex:"雪0"|Left InvalidHexDigit { offset: 0 }
+hex:"🙂"|Left InvalidHexDigit { offset: 0 }
+hex:"00🙂"|Left InvalidHexDigit { offset: 2 }
+hex:"0\0"|Left InvalidHexDigit { offset: 1 }
+hex:"\0\0"|Left InvalidHexDigit { offset: 0 }
+base64:""|Right []
+base64:"AA=="|Right [0]
+base64:"AAA="|Right [0, 0]
+base64:"AAAA"|Right [0, 0, 0]
+base64:"Zg=="|Right [102]
+base64:"Zm8="|Right [102, 111]
+base64:"Zm9v"|Right [102, 111, 111]
+base64:"++//"|Right [251, 239, 255]
+base64:"/w=="|Right [255]
+base64:"A"|Left InvalidBase64Length 1
+base64:"AA"|Left InvalidBase64Length 2
+base64:"AAA"|Left InvalidBase64Length 3
+base64:"AAAAA"|Left InvalidBase64Length 5
+base64:"Zg"|Left InvalidBase64Length 2
+base64:"Zg="|Left InvalidBase64Length 3
+base64:"Zg==="|Left InvalidBase64Length 5
+base64:"AA A"|Left InvalidBase64Digit { offset: 2 }
+base64:"AA-A"|Left InvalidBase64Digit { offset: 2 }
+base64:"AA_A"|Left InvalidBase64Digit { offset: 2 }
+base64:"AA\nA"|Left InvalidBase64Digit { offset: 2 }
+base64:"AA\r\nAA"|Left InvalidBase64Length 6
+base64:"AA\0A"|Left InvalidBase64Digit { offset: 2 }
+base64:"===="|Left InvalidBase64Padding { offset: 0 }
+base64:"A==="|Left InvalidBase64Padding { offset: 1 }
+base64:"AA=="|Right [0]
+base64:"AAA="|Right [0, 0]
+base64:"AAAA===="|Left InvalidBase64Padding { offset: 4 }
+base64:"=AAA"|Left InvalidBase64Padding { offset: 0 }
+base64:"A=AA"|Left InvalidBase64Padding { offset: 1 }
+base64:"AA=A"|Left InvalidBase64Padding { offset: 2 }
+base64:"AA=?"|Left InvalidBase64Digit { offset: 3 }
+base64:"=AA?"|Left InvalidBase64Padding { offset: 0 }
+base64:"AAA?"|Left InvalidBase64Digit { offset: 3 }
+base64:"AB=="|Left NonCanonicalBase64Bits { offset: 1 }
+base64:"AAB="|Left NonCanonicalBase64Bits { offset: 2 }
+base64:"//=="|Left NonCanonicalBase64Bits { offset: 1 }
+base64:"///="|Left NonCanonicalBase64Bits { offset: 2 }
+base64:"AAAAAB=="|Left NonCanonicalBase64Bits { offset: 5 }
+base64:"AAAAAAB="|Left NonCanonicalBase64Bits { offset: 6 }
+base64:"AAé"|Left InvalidBase64Digit { offset: 2 }
+base64:"éAA="|Left InvalidBase64Length 5
+base64:"éé"|Left InvalidBase64Digit { offset: 0 }
+base64:"雪A"|Left InvalidBase64Digit { offset: 0 }
+base64:"🙂"|Left InvalidBase64Digit { offset: 0 }
+base64:"AA🙂AA"|Left InvalidBase64Digit { offset: 2 }
+base64:"AA=éAAA"|Left InvalidBase64Digit { offset: 3 }
+url:""|Right []
+url:"AA"|Right [0]
+url:"AAA"|Right [0, 0]
+url:"AAAA"|Right [0, 0, 0]
+url:"Zg"|Right [102]
+url:"Zm8"|Right [102, 111]
+url:"Zm9v"|Right [102, 111, 111]
+url:"--__"|Right [251, 239, 255]
+url:"-_8"|Right [251, 255]
+url:"_w"|Right [255]
+url:"A"|Left InvalidBase64Length 1
+url:"AAAAA"|Left InvalidBase64Length 5
+url:"="|Left InvalidBase64Length 1
+url:"=="|Left InvalidBase64Padding { offset: 0 }
+url:"AA="|Left InvalidBase64Padding { offset: 2 }
+url:"AA=="|Left InvalidBase64Padding { offset: 2 }
+url:"AA==="|Left InvalidBase64Length 5
+url:"AA=A"|Left InvalidBase64Padding { offset: 2 }
+url:"=AA?"|Left InvalidBase64Padding { offset: 0 }
+url:"?="|Left InvalidBase64Digit { offset: 0 }
+url:"+A"|Left InvalidBase64Digit { offset: 0 }
+url:"/w"|Left InvalidBase64Digit { offset: 0 }
+url:"AA A"|Left InvalidBase64Digit { offset: 2 }
+url:"AA\nA"|Left InvalidBase64Digit { offset: 2 }
+url:"AA\0A"|Left InvalidBase64Digit { offset: 2 }
+url:"AB"|Left NonCanonicalBase64Bits { offset: 1 }
+url:"AAB"|Left NonCanonicalBase64Bits { offset: 2 }
+url:"__"|Left NonCanonicalBase64Bits { offset: 1 }
+url:"___"|Left NonCanonicalBase64Bits { offset: 2 }
+url:"AAAAAB"|Left NonCanonicalBase64Bits { offset: 5 }
+url:"AAAAAAB"|Left NonCanonicalBase64Bits { offset: 6 }
+url:"é"|Left InvalidBase64Digit { offset: 0 }
+url:"éAA"|Left InvalidBase64Digit { offset: 0 }
+url:"éAAA"|Left InvalidBase64Length 5
+url:"AAé"|Left InvalidBase64Digit { offset: 2 }
+url:"雪"|Left InvalidBase64Digit { offset: 0 }
+url:"🙂"|Left InvalidBase64Digit { offset: 0 }
+url:"AA🙂AA"|Left InvalidBase64Digit { offset: 2 }
+url:"=é"|Left InvalidBase64Padding { offset: 0 }
+url:"AA=éAAA"|Left InvalidBase64Padding { offset: 2 }
+True|True|True|True|True|True|False|False|False|NonCanonicalBase64Bits { offset: 1 }|InvalidHexDigit { offset: 2 }

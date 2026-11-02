@@ -7,6 +7,12 @@ fn native_bytes(value: &V) -> &[u8] {
 
 pub fn native_bytes_operation(name: &str, arguments: Vec<V>) -> V {
     match (name, arguments.as_slice()) {
+        ("std/bytes/base64::encode", [bytes]) => native_base64_encode(native_bytes(bytes), false),
+        ("std/bytes/base64::encodeUrl", [bytes]) => native_base64_encode(native_bytes(bytes), true),
+        ("std/bytes/base64::decode", [text]) => native_base64_decode(native_text(text), false),
+        ("std/bytes/base64::decodeUrl", [text]) => native_base64_decode(native_text(text), true),
+        ("std/bytes/hex::encode", [bytes]) => native_hex_encode(native_bytes(bytes)),
+        ("std/bytes/hex::decode", [text]) => native_hex_decode(native_text(text)),
         ("std/bytes::byte", [V::Int(value)]) => match u8::try_from(*value) {
             Ok(byte) => native_right(V::Byte(byte)),
             Err(_) => native_left(V::adt("std/bytes::ByteOutOfRange", V::Int(*value))),

@@ -338,6 +338,29 @@ fn basic_utf8_matches_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_bytes_codecs_match_raw_strict_ts_and_native_for_errors_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/bytes-codecs.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/bytes-codecs.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_bytes_codecs_preserve_the_existing_spec_example() {
+    let lines: Vec<String> = serde_json::from_str(include_str!(
+        "../../../examples/spec/artifacts/execution-schema-1/bytes-codecs/stdout.txt"
+    ))
+    .unwrap();
+    let stdout = format!("{}\n", lines.join("\n"));
+    compare(
+        &root().join("examples/spec/artifacts/schema-1/bytes-codecs/main.ssrg"),
+        &[Case::success(stdout.as_bytes())],
+    );
+}
+
+#[test]
 fn basic_either_operations_keep_original_selected_branches_traversals_and_returned_functions() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-either-operations.ssrg"),

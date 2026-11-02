@@ -34,6 +34,7 @@ include!("runtime_text_case.rs");
 include!("runtime_unicode.rs");
 include!("runtime_text.rs");
 include!("runtime_bytes.rs");
+include!("runtime_bytes_codecs.rs");
 include!("runtime_big_int_value.rs");
 include!("runtime_big_int_arithmetic.rs");
 include!("runtime_big_int.rs");

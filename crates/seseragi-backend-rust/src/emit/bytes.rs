@@ -10,7 +10,25 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let bytes = named("std/bytes::Bytes", vec![]);
     let ints = named("std/prelude::Array", vec![int.clone()]);
     let byte_array = named("std/prelude::Array", vec![byte.clone()]);
+    let string = named("std/prelude::String", vec![]);
     Some(match name {
+        "std/bytes/base64::encode" | "std/bytes/base64::encodeUrl" | "std/bytes/hex::encode" => {
+            (vec![bytes], string)
+        }
+        "std/bytes/base64::decode" | "std/bytes/base64::decodeUrl" => (
+            vec![string],
+            named(
+                "std/prelude::Either",
+                vec![named("std/bytes/base64::Base64DecodeError", vec![]), bytes],
+            ),
+        ),
+        "std/bytes/hex::decode" => (
+            vec![string],
+            named(
+                "std/prelude::Either",
+                vec![named("std/bytes/hex::HexDecodeError", vec![]), bytes],
+            ),
+        ),
         "std/bytes::byte" => (
             vec![int],
             named(
