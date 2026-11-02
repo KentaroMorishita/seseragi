@@ -1,0 +1,40 @@
+import * as entropy from "std/entropy"
+import { Entropy, EntropyConfigError, EntropyError, EntropySize } from "std/entropy"
+import * as effects from "std/effect"
+import * as bytes from "std/bytes"
+
+fn keep<A> value: A -> A = value
+fn configured<A> value: Either<EntropyConfigError, A> -> String = match value {
+  Left error -> show error
+  Right _ -> "Right"
+}
+fn generator -> EntropySize -> Effect<{entropy:Entropy},EntropyError,bytes.Bytes> = entropy.secureBytes
+effect fn say text:String -> Unit with Console fails String = println text |> effects.mapError show
+effect fn sample amount:Int -> Unit with Console, Entropy fails String = do {
+  size <- entropy.entropySize amount |> effects.fromEither |> effects.mapError show
+  let saved = keep (generator ())
+  let cold = saved size
+  first <- cold |> effects.mapError show
+  second <- cold |> effects.mapError show
+  say (show amount + ":" + show (bytes.length first) + ":" + show (bytes.length second))
+}
+pub effect fn main = do {
+  let size = keep entropy.entropySize
+  say (configured (size (-9007199254740991)))
+  say (configured (size (-1)))
+  say (configured (size 0))
+  say (configured (size 1))
+  say (configured (size 1048576))
+  say (configured (size 1048577))
+  say (configured (size 9007199254740991))
+  sample 1
+  sample 32
+  sample 65536
+  sample 65537
+  sample 1048576
+  small <- size 32 |> effects.fromEither |> effects.mapError show
+  result <- entropy.secureBytes small |> effects.mapError show
+  say (show (all (\value:Int -> value >= 0 && value <= 255) (bytes.toInts result)))
+  say (show entropy.EntropyUnavailable)
+  say (show entropy.EntropyReadFailure)
+}

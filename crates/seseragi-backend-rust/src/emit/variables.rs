@@ -43,6 +43,9 @@ impl Backend<'_> {
         if let Some(value) = self.random_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.entropy_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }

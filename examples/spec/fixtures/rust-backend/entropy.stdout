@@ -1,0 +1,15 @@
+NonPositiveEntropySize -9007199254740991
+NonPositiveEntropySize -1
+NonPositiveEntropySize 0
+Right
+Right
+EntropySizeTooLarge 1048577
+EntropySizeTooLarge 9007199254740991
+1:1:1
+32:32:32
+65536:65536:65536
+65537:65537:65537
+1048576:1048576:1048576
+True
+EntropyUnavailable
+EntropyReadFailure

@@ -67,6 +67,7 @@ include!("runtime_scheduler.rs");
 include!("runtime_path.rs");
 include!("runtime_process.rs");
 include!("runtime_random.rs");
+include!("runtime_entropy.rs");
 include!("runtime_filesystem.rs");
 include!("runtime_filesystem_chunks.rs");
 include!("runtime_filesystem_paths.rs");

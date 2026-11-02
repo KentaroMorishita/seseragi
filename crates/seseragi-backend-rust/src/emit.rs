@@ -33,6 +33,7 @@ mod display;
 mod effect_conversions;
 mod effect_defects;
 mod either;
+mod entropy;
 mod equality;
 mod filesystem;
 mod floats;
@@ -1039,6 +1040,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.random_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.entropy_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(callable) = scope.callables.get(callee) {

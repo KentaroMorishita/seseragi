@@ -446,6 +446,8 @@ impl Backend<'_> {
                 | "std/fs::DirectoryEntry"
                 | "std/random::Random"
                 | "std/random::RandomSize"
+                | "std/entropy::Entropy"
+                | "std/entropy::EntropySize"
                 | "std/time::Instant"
                 | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"
