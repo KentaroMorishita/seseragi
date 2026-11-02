@@ -144,6 +144,110 @@ fn benchmark_values_match_strict_ts_bun_node_and_cargo_native() {
     }
 }
 
+#[test]
+fn benchmark_failure_show_and_main_failures_match_bun_node_and_cargo_native() {
+    let scratch = tempfile::tempdir().unwrap();
+    let directory = scratch.path();
+    let input = directory.join("main.ssrg");
+    for (literal, message) in [
+        (r#""x""#, "x"),
+        (r#""""#, ""),
+        (r#""雪🙂\n\t\"\\\u{0}""#, "雪🙂\n\t\"\\\0"),
+        (r#""x\n""#, "x\n"),
+    ] {
+        let displayed = format!("ExplicitBenchmarkFailure {message}");
+        for (expression, code) in [
+            (
+                format!("println (show (b.ExplicitBenchmarkFailure {literal}))"),
+                0,
+            ),
+            (format!("b.fail {literal}"), 1),
+        ] {
+            fs::write(
+                &input,
+                format!(
+                    "import * as b from \"std/benchmark\"\npub effect fn main = {expression}\n"
+                ),
+            )
+            .unwrap();
+            let stdout = if code == 0 {
+                format!("{displayed}\n")
+            } else {
+                String::new()
+            };
+            let stderr = if code == 0 {
+                String::new()
+            } else if displayed.ends_with('\n') {
+                displayed.clone()
+            } else {
+                format!("{displayed}\n")
+            };
+            let out = directory.join("native");
+            successful(bounded(
+                cli()
+                    .args(["experimental", "build-native"])
+                    .arg(&input)
+                    .args(["--entry", "main", "--out-dir"])
+                    .arg(&out),
+                directory,
+            ));
+            let native = bounded(
+                Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                    .env("PATH", ""),
+                directory,
+            );
+            assert_eq!(native.status.code(), Some(code), "{native:?}");
+            assert_eq!(native.stdout, stdout.as_bytes(), "{expression}");
+            let native_stderr = if code == 0 {
+                String::new()
+            } else {
+                format!("{}:2:22: {stderr}", input.display())
+            };
+            assert_eq!(native.stderr, native_stderr.as_bytes(), "{expression}");
+            for profile in ["development", "release"] {
+                let dist = directory.join(profile);
+                successful(bounded(
+                    cli()
+                        .arg("build")
+                        .arg(&input)
+                        .args([
+                            "--target",
+                            "process",
+                            "--source-map",
+                            "omit",
+                            "--profile",
+                            profile,
+                            "--out-dir",
+                        ])
+                        .arg(&dist),
+                    directory,
+                ));
+                let manifest: Value =
+                    serde_json::from_slice(&fs::read(dist.join("artifact-manifest.json")).unwrap())
+                        .unwrap();
+                for engine in ["bun", "node"] {
+                    let output = bounded(
+                        Command::new(runtime(engine, directory))
+                            .arg(dist.join(manifest["entry"].as_str().unwrap()))
+                            .env("PATH", ""),
+                        directory,
+                    );
+                    assert_eq!(output.status.code(), native.status.code(), "{output:?}");
+                    assert_eq!(
+                        output.stdout, native.stdout,
+                        "{profile}/{engine}/{expression}"
+                    );
+                    assert_eq!(
+                        output.stderr,
+                        stderr.as_bytes(),
+                        "{profile}/{engine}/{expression}"
+                    );
+                }
+            }
+        }
+    }
+}
+
 fn verify_measurement(case: &Value) {
     assert_eq!(case["status"], "passed");
     assert!(case.get("failure").is_none());
