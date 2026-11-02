@@ -1,0 +1,37 @@
+import * as et from "std/transformer/either"
+import { EitherT } from "std/transformer/either"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+alias Work<A> = EitherT<String, Effect<{ console: Console }, String>, A>
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn base -> Int with Console fails String = do {
+  say "base"
+  effects.succeed 41
+}
+fn increment value: Int -> Int = value + 1
+fn promote<E, M<_>, A> value: M<A> -> EitherT<E, M, A> where Monad<M> = et.lift value
+fn extract<E, M<_>, A> value: EitherT<E, M, A> -> M<Either<E, A>> = et.run value
+
+pub effect fn main = do {
+  released <- refs.make 0
+  let cold: Work<Int> = promote (base ())
+  let mapped: Work<Int> = map increment cold
+  let inner: Work<Int> = et.fromEither (Left "inner")
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> do {
+      refs.update (\n -> n + 1) released
+      say "released"
+    })
+    first <- extract mapped
+    say (debug first)
+    second <- extract mapped
+    say (debug second)
+    error <- extract inner
+    say (debug error)
+  }) |> effects.recover (\message: String -> say ("failure: " + message))
+  count <- refs.get released
+  say ("released: " + show count)
+}

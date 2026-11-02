@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/transformer-either@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/transformer-either@0.0.0#workspace:."
+name = "fixture/transformer-either"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:4989db5be7cba0677859b8dd09535a05a886de24647d0613b37893b74a32ebae"
+content_digest = "sha256:6cfe02b85c3e72ad0ae1271c73a92040143d8580c15de85b36b58fd86c8bdff6"
+dependencies = []

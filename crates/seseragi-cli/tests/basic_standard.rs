@@ -451,6 +451,83 @@ fn basic_validation_source_and_selected_callback_defects_keep_their_kind_and_rel
 }
 
 #[test]
+fn basic_transformer_either_matches_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-transformer-either.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-transformer-either.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_transformer_either_keeps_cold_effects_inner_lefts_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-transformer-either-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-transformer-either-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_transformer_either_preserves_imported_opaque_types_aliases_and_base_instances() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/transformer-either"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-projects/transformer-either/main.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_transformer_either_preserves_base_failure_and_defect_kinds() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-transformer-either-effects.ssrg"
+    );
+    for (needle, replacement, stdout, defect) in [
+        (
+            "effects.succeed 41",
+            "effects.fail \"typed\"",
+            "created\nacquired\nbase\nreleased\nfailure: typed\nreleased: 1\n",
+            false,
+        ),
+        (
+            "effects.succeed 41",
+            "effects.die \"deliberate\"",
+            "created\nacquired\nbase\nreleased\n",
+            true,
+        ),
+        (
+            "effects.succeed 41",
+            "effects.succeed (41 / 0)",
+            "created\nacquired\nbase\nreleased\n",
+            true,
+        ),
+        (
+            "value + 1",
+            "value / 0",
+            "created\nacquired\nbase\nreleased\n",
+            true,
+        ),
+    ] {
+        assert_eq!(original.matches(needle).count(), 1);
+        let scratch = Scratch::new();
+        let path = scratch.0.join("either-transformer-error.ssrg");
+        fs::write(&path, original.replace(needle, replacement)).unwrap();
+        let mut case = Case::success(stdout.as_bytes());
+        case.exit = if defect { 70 } else { 0 };
+        case.defect = defect;
+        case.native_defect = if replacement.contains("/ 0") {
+            "Int division by zero"
+        } else {
+            "deliberate"
+        };
+        compare(&path, &[case]);
+    }
+}
+
+#[test]
 fn basic_either_operations_keep_original_selected_branches_traversals_and_returned_functions() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-either-operations.ssrg"),

@@ -77,6 +77,7 @@ mod stream;
 mod tail;
 mod text;
 mod time;
+mod transformer_either;
 mod transformer_maybe;
 mod validation;
 mod variables;

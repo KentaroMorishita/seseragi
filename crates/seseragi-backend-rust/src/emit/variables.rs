@@ -112,6 +112,9 @@ impl Backend<'_> {
         if let Some(value) = self.either_operation_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.either_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.sequence_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
