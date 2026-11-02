@@ -449,6 +449,11 @@ impl Backend<'_> {
                 | "std/entropy::Entropy"
                 | "std/entropy::EntropySize"
                 | "std/time::Instant"
+                | "std/time::LocalDate"
+                | "std/time::LocalTime"
+                | "std/time::LocalDateTime"
+                | "std/time::UtcOffset"
+                | "std/time::OffsetDateTime"
                 | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"
                 | "std/signal::MutableSignal"

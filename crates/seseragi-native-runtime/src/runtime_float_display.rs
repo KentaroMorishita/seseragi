@@ -92,6 +92,19 @@ fn native_float_format(value: f64) -> String {
     }
 }
 
+fn native_number_text(value: f64) -> String {
+    if value == 0.0 {
+        return "0".into();
+    }
+    let text = native_float_format(value);
+    let text = text.strip_suffix(".0").unwrap_or(&text);
+    if let Some((coefficient, exponent)) = text.split_once('e') {
+        format!("{coefficient}e{:+}", exponent.parse::<i32>().unwrap())
+    } else {
+        text.into()
+    }
+}
+
 #[cfg(test)]
 mod float_display_tests {
     use super::*;

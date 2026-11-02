@@ -212,10 +212,11 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
             _ => panic!("Rust ABI: ChildProcessError variant"),
         },
         "std/time::DateTimeError" => match tag {
-            "InvalidDate" => native_error_record(
-                tag,
-                &payload,
-                &[("year", false), ("month", false), ("day", false)],
+            "InvalidDate" => format!(
+                "{tag} {{ year: {}, month: {}, day: {} }}",
+                native_time_error_year(&payload.field("year")),
+                payload.field("month").render(),
+                payload.field("day").render(),
             ),
             "InvalidTime" => native_error_record(
                 tag,
