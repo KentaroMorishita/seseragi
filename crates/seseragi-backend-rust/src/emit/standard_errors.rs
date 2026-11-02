@@ -3,6 +3,7 @@ use seseragi_syntax::{InterfaceExport, InterfaceType};
 use std::sync::OnceLock;
 
 pub(super) const ERROR_TYPES: &[&str] = &[
+    "std/benchmark::BenchmarkFailure",
     "std/big-int::BigIntConversionError",
     "std/big-int::BigIntDivisionError",
     "std/big-int::BigIntParseError",
@@ -72,7 +73,8 @@ pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {
 fn eq_type(name: &str) -> bool {
     matches!(
         name,
-        "std/decimal::DecimalParseError"
+        "std/benchmark::BenchmarkFailure"
+            | "std/decimal::DecimalParseError"
             | "std/decimal::DecimalContextError"
             | "std/decimal::DecimalArithmeticError"
             | "std/decimal::DecimalConversionError"
@@ -106,17 +108,24 @@ fn contract(identity: &str) -> Option<(&'static str, &'static str)> {
     for &name in ERROR_TYPES {
         for class in ["Show", "Debug", "Eq"] {
             if class == "Debug"
-                && matches!(name, "std/int::IntParseError" | "std/prelude::Js.Error")
+                && matches!(
+                    name,
+                    "std/benchmark::BenchmarkFailure"
+                        | "std/int::IntParseError"
+                        | "std/prelude::Js.Error"
+                )
             {
                 continue;
             }
             if class == "Eq" && !eq_type(name) {
                 continue;
             }
-            let expected = if class == "Eq" && name == "std/collection::SizeError" {
-                "std/collection::EqSizeError".to_owned()
-            } else {
-                format!("{class}<{name}>")
+            let expected = match (class, name) {
+                ("Eq", "std/benchmark::BenchmarkFailure") => {
+                    "std/benchmark::EqBenchmarkFailure".to_owned()
+                }
+                ("Eq", "std/collection::SizeError") => "std/collection::EqSizeError".to_owned(),
+                _ => format!("{class}<{name}>"),
             };
             if identity == expected {
                 return Some((class, name));

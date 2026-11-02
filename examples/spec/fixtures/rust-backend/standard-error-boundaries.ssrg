@@ -1,0 +1,73 @@
+import * as arrays from "std/array"
+import * as benchmarks from "std/benchmark"
+import * as big from "std/big-int"
+import * as base64 from "std/bytes/base64"
+import * as hex from "std/bytes/hex"
+import * as collection from "std/collection"
+import * as decimal from "std/decimal"
+import * as floats from "std/float"
+import * as ints from "std/int"
+import * as random from "std/random"
+import * as regex from "std/regex"
+import * as text from "std/text"
+import * as grapheme from "std/text/grapheme"
+
+type BenchmarkFailure = | LocalFailure String
+instance Show<BenchmarkFailure> {
+  fn show value: BenchmarkFailure -> String = match value { LocalFailure message -> "local:" + message }
+}
+
+fn compared<A> left: A -> right: A -> String where Eq<A> = show (left == right) + "|" + show (left != right)
+fn compileError input: String -> Maybe<regex.RegexCompileError> = match regex.compile input {
+  Left error -> Just error
+  Right _ -> Nothing
+}
+
+pub fn probe -> String = {
+  let create: String -> benchmarks.BenchmarkFailure = benchmarks.ExplicitBenchmarkFailure
+  let saved: benchmarks.BenchmarkFailure -> benchmarks.BenchmarkFailure -> Bool = eq
+  let partial = saved (create "雪🙂")
+  let size: collection.SizeError -> String = debug
+  join "\n" [
+    show (ints.parse "42"), show (ints.parse ""), show (ints.parse "01"),
+    show (ints.parse "1🙂"), show (ints.parse "9007199254740991"),
+    show (ints.parse "9007199254740992"), show (ints.parseRadix 1 "0"),
+    show (arrays.windows 1 [1, 2]), show (arrays.windows 0 [1, 2]),
+    debug (arrays.windows (-9007199254740991) [1, 2]),
+    show (text.sliceScalars 0 2 "雪🙂"), show (text.sliceScalars (-1) 1 "雪🙂"),
+    debug (text.sliceScalars 0 3 "雪🙂"),
+    show (decimal.parse "12.50"), debug (decimal.parse "1.雪"),
+    debug (show (create "")), show (create "雪🙂\nsecond"), show (LocalFailure "雪🙂"),
+    show (partial (create "雪🙂")), show (partial (create "雪")),
+    compared (create "") (create ""), compared (create "雪🙂") (create "雪"),
+    size (collection.NonPositiveSize 9007199254740991),
+    compared (collection.NonPositiveSize (-9007199254740991)) (collection.NonPositiveSize 9007199254740991),
+    compared (big.InvalidBigIntDigit { offset: 1, radix: 10 }) (big.InvalidBigIntDigit { offset: 2, radix: 10 }),
+    compared (big.InvalidBigIntDigit { offset: 1, radix: 10 }) (big.InvalidBigIntDigit { offset: 1, radix: 16 }),
+    compared (decimal.InvalidDecimal { offset: 0 }) (decimal.InvalidDecimal { offset: 9007199254740991 }),
+    compared decimal.DecimalDivisionByZero decimal.NonTerminatingDecimal,
+    compared decimal.DecimalNotIntegral decimal.DecimalOutsideFloatRange,
+    compared (hex.OddHexLength 1) (hex.OddHexLength 3),
+    compared (hex.InvalidHexDigit { offset: 1 }) (hex.InvalidHexDigit { offset: 2 }),
+    compared (base64.InvalidBase64Digit { offset: 1 }) (base64.InvalidBase64Digit { offset: 2 }),
+    compared (base64.InvalidBase64Padding { offset: 1 }) (base64.NonCanonicalBase64Bits { offset: 1 }),
+    compared (text.InvalidScalarRange { start: 0, end: 1, length: 2 }) (text.InvalidScalarRange { start: 1, end: 1, length: 2 }),
+    compared (text.InvalidScalarRange { start: 0, end: 1, length: 2 }) (text.InvalidScalarRange { start: 0, end: 2, length: 2 }),
+    compared (text.InvalidScalarRange { start: 0, end: 1, length: 2 }) (text.InvalidScalarRange { start: 0, end: 1, length: 3 }),
+    compared (grapheme.InvalidGraphemeRange { start: 0, end: 1, length: 2 }) (grapheme.InvalidGraphemeRange { start: 1, end: 1, length: 2 }),
+    compared (grapheme.InvalidGraphemeRange { start: 0, end: 1, length: 2 }) (grapheme.InvalidGraphemeRange { start: 0, end: 2, length: 2 }),
+    compared (grapheme.InvalidGraphemeRange { start: 0, end: 1, length: 2 }) (grapheme.InvalidGraphemeRange { start: 0, end: 1, length: 3 }),
+    compared (regex.UnexpectedRegexToken '🙂') (regex.UnexpectedRegexToken '🙂'),
+    compared (regex.UnexpectedRegexToken '\n') (regex.UnexpectedRegexToken '\u{0}'),
+    compared (regex.DuplicateCaptureName "雪🙂") (regex.DuplicateCaptureName "雪"),
+    compared (compileError "(") (compileError "("),
+    compared (compileError "(") (compileError "a("),
+    compared (compileError "(") (compileError "a"),
+    show (random.InvalidProbability (floats.nan ())),
+    debug (random.InvalidProbability (floats.positiveInfinity ())),
+    show (random.InvalidProbability (floats.negativeInfinity ())),
+    debug (random.InvalidProbability (-0.0))
+  ]
+}
+
+pub effect fn main = println (probe ())

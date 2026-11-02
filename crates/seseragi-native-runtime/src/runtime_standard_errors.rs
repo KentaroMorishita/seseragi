@@ -78,6 +78,7 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
     let tag = native_error_tag(value);
     let payload = value.payload();
     match name {
+        "std/benchmark::BenchmarkFailure" => format!("{tag} {}", native_text(&payload)),
         "std/prelude::StdinError" => match tag {
             "InvalidStdinUtf8" => native_error_record(tag, &payload, &[("offset", false)]),
             "StdinLineTooLong" => native_error_record(tag, &payload, &[("limitBytes", false)]),
@@ -377,14 +378,186 @@ pub fn native_standard_error_dictionary(
     V::dict(vec![(
         method,
         V::fun(captures, |c, value| {
-            native_display(|| {
+            let render = || {
                 V::text(&native_standard_error_text(
                     native_text(&c[0]),
                     &value,
                     c[1].boolean(),
                     c.get(2),
                 ))
-            })
+            };
+            // BenchmarkFailure's TS Show builds an unbounded document.
+            if native_text(&c[0]) == "std/benchmark::BenchmarkFailure" {
+                render()
+            } else {
+                native_display(render)
+            }
         }),
     )])
+}
+
+#[cfg(test)]
+mod standard_error_tests {
+    use super::*;
+
+    #[test]
+    fn host_error_records_match_ts_including_redaction_and_nested_file_failures() {
+        clear_dictionaries();
+        let record = |fields: Vec<(&str, V)>| {
+            V::Record(Shared::new(
+                fields
+                    .into_iter()
+                    .map(|(key, value)| (key.into(), value))
+                    .collect(),
+            ))
+        };
+        let actual = {
+            let message = "雪🙂\n\t\"\\\0";
+            let host = record(vec![("message", V::text(message))]);
+            let js = record(vec![
+                ("phase", V::text("call")),
+                ("message", V::text(message)),
+            ]);
+            let file = record(vec![
+                ("operation", V::adt("std/fs::ReadFile", V::Unit)),
+                ("path", native_path("雪/\"source")),
+                ("otherPath", native_maybe(Some(native_path("🙂/target")))),
+                (
+                    "kind",
+                    V::adt("std/fs::OtherFileSystemError", V::text(message)),
+                ),
+            ]);
+            let mut output = String::new();
+            for (name, value, methods) in [
+                (
+                    "std/prelude::ConsoleError",
+                    host.clone(),
+                    &["show", "debug"][..],
+                ),
+                ("std/log::LogError", host, &["show", "debug"][..]),
+                ("std/prelude::Js.Error", js, &["show"][..]),
+                (
+                    "std/fs::FileSystemError",
+                    file.clone(),
+                    &["show", "debug"][..],
+                ),
+                (
+                    "std/fs::FileTextError",
+                    V::adt("std/fs::FileAccessFailure", file),
+                    &["show", "debug"][..],
+                ),
+            ] {
+                for method in methods {
+                    let text = native_standard_error_dictionary(name, method, vec![])
+                        .field(method)
+                        .apply(value.clone())
+                        .render();
+                    output.push_str(&native_json_string(&text));
+                    output.push('\n');
+                }
+            }
+            output
+        };
+        assert_eq!(LIVE.with(Cell::get), 0);
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .ancestors()
+            .nth(2)
+            .unwrap();
+        let script = format!(
+            r#"
+const display = await import({});
+const paths = await import({});
+const message = "雪🙂\n\t\"\\\0";
+const host = {{ message }};
+const file = {{ operation: {{ tag: "ReadFile" }}, path: paths.parse('雪/"source').value,
+  otherPath: {{ tag: "Just", value: paths.parse("🙂/target").value }},
+  kind: {{ tag: "OtherFileSystemError", value: message }} }};
+for (const [name, value, methods] of [
+  ["consoleError", host, ["show", "debug"]],
+  ["logError", host, ["show", "debug"]],
+  ["jsError", {{ phase: "call", message }}, ["show"]],
+  ["fileSystemError", file, ["show", "debug"]],
+  ["fileTextError", {{ tag: "FileAccessFailure", value: file }}, ["show", "debug"]],
+]) {{
+  for (const method of methods) {{
+    const dictionary = display[name + (method === "show" ? "Show" : "Debug")];
+    console.log(JSON.stringify(dictionary[method](value)));
+  }}
+}}
+"#,
+            native_json_string(&root.join("runtime/ts/src/show.ts").to_string_lossy()),
+            native_json_string(&root.join("runtime/ts/src/path.ts").to_string_lossy()),
+        );
+        let ts = std::process::Command::new("bun")
+            .args(["--eval", &script])
+            .output()
+            .unwrap();
+        assert!(
+            ts.status.success(),
+            "{}",
+            String::from_utf8_lossy(&ts.stderr)
+        );
+        assert!(ts.stderr.is_empty(), "{ts:?}");
+        assert_eq!(actual.as_bytes(), ts.stdout);
+    }
+
+    #[test]
+    fn benchmark_failure_preserves_message_equality_and_saved_dictionary_stages() {
+        clear_dictionaries();
+        {
+            let show =
+                native_standard_error_dictionary("std/benchmark::BenchmarkFailure", "show", vec![])
+                    .field("show");
+            let eq =
+                native_standard_error_dictionary("std/benchmark::BenchmarkFailure", "eq", vec![])
+                    .field("eq");
+            for message in ["", "雪🙂\n\t\"\\\0", "ExplicitBenchmarkFailure"] {
+                let value = V::adt("std/benchmark::ExplicitBenchmarkFailure", V::text(message));
+                assert_eq!(
+                    show.apply(value.clone()).render(),
+                    format!("ExplicitBenchmarkFailure {message}")
+                );
+                let partial = eq.apply(value.clone());
+                assert!(partial
+                    .apply(V::adt(
+                        "std/benchmark::ExplicitBenchmarkFailure",
+                        V::text(message)
+                    ))
+                    .boolean());
+                assert!(!partial
+                    .apply(V::adt(
+                        "std/benchmark::ExplicitBenchmarkFailure",
+                        V::text(&format!("{message}x"))
+                    ))
+                    .boolean());
+            }
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn benchmark_failure_keeps_ts_unbounded_display_at_the_standard_depth_limit() {
+        clear_dictionaries();
+        {
+            struct Restore(usize);
+            impl Drop for Restore {
+                fn drop(&mut self) {
+                    DISPLAY_DEPTH.with(|depth| depth.set(self.0));
+                }
+            }
+            let _restore = Restore(DISPLAY_DEPTH.with(|depth| depth.replace(128)));
+            let show =
+                native_standard_error_dictionary("std/benchmark::BenchmarkFailure", "show", vec![]);
+            assert_eq!(
+                show.field("show")
+                    .apply(V::adt(
+                        "std/benchmark::ExplicitBenchmarkFailure",
+                        V::text("雪🙂")
+                    ))
+                    .render(),
+                "ExplicitBenchmarkFailure 雪🙂"
+            );
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
 }
