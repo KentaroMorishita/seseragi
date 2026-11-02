@@ -15,8 +15,8 @@ type Score = {
 };
 export const __ssrg$instance$Eq$0 = { "eq": (left: Score) => (right: Score) => _ssrg_int_eq_dictionary["eq"]((left)["value"])((right)["value"]) } as const;
 export const __ssrg$instance$Ord$1 = (__ssrg$evidence$0: import("@seseragi/runtime/equality").Eq<Score>) => ({ ...__ssrg$evidence$0, "compare": (left: Score) => (right: Score) => ((_ssrg_int_ord_dictionary["compare"]((right)["value"])((left)["value"])) as { readonly tag: "Less" } | { readonly tag: "Equal" } | { readonly tag: "Greater" }) }) as const;
-const ordered = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/sequence").Ord<A> & import("@seseragi/runtime/equality").Eq<A>) => (__ssrg$evidence$0["compare"](left)(right))["tag"] !== "Greater"
-const referenced = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/sequence").Ord<A> & import("@seseragi/runtime/equality").Eq<A>) => (__ssrg$evidence$0["compare"](left)(right))["tag"] !== "Less"
+const ordered = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/equality").Ord<A> & import("@seseragi/runtime/equality").Eq<A>) => (__ssrg$evidence$0["compare"](left)(right))["tag"] !== "Greater"
+const referenced = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/equality").Ord<A> & import("@seseragi/runtime/equality").Eq<A>) => (__ssrg$evidence$0["compare"](left)(right))["tag"] !== "Less"
 const apply = <A,>(f: (argument: A) => (argument: A) => boolean) => (left: A) => (right: A) => f(left)(right)
 const arithmeticApply = <A,>(f: (argument: A) => (argument: A) => A) => (left: A) => (right: A) => f(left)(right)
 const arithmeticReference = (unit: undefined) => (((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1)) as (argument: number) => (argument: number) => number)

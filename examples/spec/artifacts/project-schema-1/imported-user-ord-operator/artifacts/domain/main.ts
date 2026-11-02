@@ -9,4 +9,4 @@ export type Score = {
 };
 export const __ssrg$instance$Eq$0 = { "eq": (left: Score) => (right: Score) => _ssrg_int_eq_dictionary["eq"]((left)["value"])((right)["value"]) } as const;
 export const __ssrg$instance$Ord$1 = (__ssrg$evidence$0: import("@seseragi/runtime/equality").Eq<Score>) => ({ ...__ssrg$evidence$0, "compare": (left: Score) => (right: Score) => ((_ssrg_int_ord_dictionary["compare"]((right)["value"])((left)["value"])) as { readonly tag: "Less" } | { readonly tag: "Equal" } | { readonly tag: "Greater" }) }) as const;
-export const ordered = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/sequence").Ord<A> & import("@seseragi/runtime/equality").Eq<A>) => (__ssrg$evidence$0["compare"](left)(right))["tag"] !== "Greater"
+export const ordered = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/equality").Ord<A> & import("@seseragi/runtime/equality").Eq<A>) => (__ssrg$evidence$0["compare"](left)(right))["tag"] !== "Greater"

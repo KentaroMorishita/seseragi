@@ -225,7 +225,7 @@ pub fn same<A> left: A -> right: A -> Bool where Ord<A> = left == right
     );
     assert!(
         bundle.typescript.contains(
-            "__ssrg$evidence$0: import(\"@seseragi/runtime/sequence\").Ord<A> & import(\"@seseragi/runtime/equality\").Eq<A>"
+            "__ssrg$evidence$0: import(\"@seseragi/runtime/equality\").Ord<A> & import(\"@seseragi/runtime/equality\").Eq<A>"
         ),
         "{}",
         bundle.typescript
@@ -257,7 +257,7 @@ pub fn same<A> left: A -> right: A -> Bool where Ord<A> = eq left right
         .contains("import(\"@seseragi/runtime/equality\").Eq"));
     assert!(!bundle
         .typescript
-        .contains("import(\"@seseragi/runtime/sequence\").Ord"));
+        .contains("import(\"@seseragi/runtime/equality\").Ord"));
 }
 
 #[test]

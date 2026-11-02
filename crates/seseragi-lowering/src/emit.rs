@@ -610,13 +610,15 @@ pub(super) fn evidence_parameters(
 
 pub(super) fn evidence_type(constraint: &crate::TypeScriptInstanceConstraint) -> String {
     let (module, dictionary) = match constraint.trait_identity.as_deref() {
-        Some("std/prelude::Eq") if constraint.name == "Eq" => ("equality", "Eq"),
-        Some("std/prelude::Ord") if constraint.name == "Ord" => ("sequence", "Ord"),
+        Some("std/prelude::Eq") if constraint.name == "Eq" => ("@seseragi/runtime/equality", "Eq"),
+        Some("std/prelude::Ord") if constraint.name == "Ord" => {
+            ("@seseragi/runtime/equality", "Ord")
+        }
         Some("std/prelude::JsonEncode") if constraint.name == "JsonEncode" => {
-            ("json", "JsonEncode")
+            ("@seseragi/runtime/json", "JsonEncode")
         }
         Some("std/prelude::JsonDecode") if constraint.name == "JsonDecode" => {
-            ("json", "JsonDecode")
+            ("@seseragi/runtime/json", "JsonDecode")
         }
         _ => return ERASED_EVIDENCE_TYPE.to_owned(),
     };
@@ -625,7 +627,7 @@ pub(super) fn evidence_type(constraint: &crate::TypeScriptInstanceConstraint) ->
     };
     // Preserve selected method types for runtime calls and inherited dictionaries.
     let argument = render_typescript_type(argument);
-    let evidence = format!("import(\"@seseragi/runtime/{module}\").{dictionary}<{argument}>");
+    let evidence = format!("import({module:?}).{dictionary}<{argument}>");
     if dictionary == "Ord" {
         format!("{evidence} & import(\"@seseragi/runtime/equality\").Eq<{argument}>")
     } else {
