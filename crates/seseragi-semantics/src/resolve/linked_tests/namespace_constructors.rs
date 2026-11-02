@@ -1,7 +1,135 @@
 use super::linked_program;
-use crate::{analyze_linked_module, TypedDecl, TypedExpr, TypedPattern, TypedType};
+use crate::{
+    analyze_linked_module, resolve_linked_module, SymbolNamespace, TypedDecl, TypedExpr,
+    TypedPattern, TypedType,
+};
 
 const HAND_SOURCE: &str = "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n";
+
+#[test]
+fn constructs_public_structs_through_named_and_namespace_imports() {
+    let domain =
+        "pub struct Box<A> { value: A }\npub struct Empty {}\npub alias Wrapped<A> = Box<A>\n";
+    let main = concat!(
+        "import { Box as Named, Empty } from \"./domain\"\n",
+        "import * as domain from \"./domain\"\n",
+        "pub fn qualified value: Int -> Named<Int> = domain.Box<Int> { value }\n",
+        "pub fn inferred value: Int -> Named<Int> = domain.Box { value }\n",
+        "pub fn named value: Int -> domain.Box<Int> = Named<Int> { value }\n",
+        "pub fn empty -> Empty = domain.Empty {}\n",
+        "pub fn field -> Int = (domain.Box<Int> { value: 42 }).value\n",
+        "pub fn direct -> Int = domain.Box<Int> { value: 42 }.value\n",
+        "fn read box: Named<Int> -> Int = box.value\n",
+        "pub fn argument -> Int = read domain.Box<Int> { value: 42 }\n",
+        "pub fn wrapped -> Named<Int> = domain.Wrapped<Int> { value: 42 }\n",
+    );
+    analyze(main, domain).unwrap();
+    let resolved = resolve_linked_module(
+        linked_program(main, [("./domain", "fixture/game::domain", domain)]),
+        main,
+    );
+    assert!(resolved.issues.is_empty());
+    let named = resolved
+        .imports
+        .iter()
+        .find(|import| import.local_name == "Named")
+        .unwrap();
+    let qualified = resolved
+        .imports
+        .iter()
+        .find(|import| import.local_name == "domain.Box")
+        .unwrap();
+    assert_eq!(named.symbol, qualified.symbol);
+    assert_eq!(qualified.export.namespace, "type");
+    assert!(resolved.references.iter().any(|reference| {
+        reference.spelling == "domain.Box"
+            && reference.namespace == SymbolNamespace::Type
+            && reference.target == Some(named.symbol)
+    }));
+}
+
+#[test]
+fn qualified_struct_construction_keeps_visibility_and_field_checks() {
+    let domain = concat!(
+        "pub struct Box<A> { value: A }\n",
+        "pub opaque struct Secret { value: Int }\n",
+        "struct Hidden { value: Int }\n",
+    );
+    for (expression, code, key) in [
+        ("domain.Missing {}", "SES-N0104", "module.export-unresolved"),
+        (
+            "domain.Hidden { value: 1 }",
+            "SES-N0102",
+            "module.private-symbol",
+        ),
+        (
+            "domain.Secret { value: 1 }",
+            "SES-T0101",
+            "struct.representation-private",
+        ),
+        ("domain.Box<Int> {}", "SES-T0101", "struct.field-missing"),
+        (
+            "domain.Box<Int> { value: False }",
+            "SES-T0101",
+            "struct.field-type-mismatch",
+        ),
+        (
+            "domain.Box<Int> { value: 1, extra: 2 }",
+            "SES-T0101",
+            "struct.field-unresolved",
+        ),
+        (
+            "domain.Box<Int, Bool> { value: 1 }",
+            "SES-T0101",
+            "struct.type-argument-arity-mismatch",
+        ),
+    ] {
+        let main = format!("import * as domain from \"./domain\"\nlet invalid = {expression}\n");
+        let diagnostics = analyze(&main, domain).unwrap_err();
+        let actual = diagnostics
+            .diagnostics
+            .iter()
+            .map(|diagnostic| (diagnostic.code.as_str(), diagnostic.message_key.as_str()))
+            .collect::<Vec<_>>();
+        assert_eq!(actual, [(code, key)], "{expression}: {diagnostics:#?}");
+    }
+}
+
+#[test]
+fn qualified_record_payload_constructors_still_resolve_as_values() {
+    let domain = "pub type Box<A> = | Box { value: A }\n";
+    let main = concat!(
+        "import * as domain from \"./domain\"\n",
+        "pub fn boxed -> domain.Box<Int> = domain.Box { value: 42 }\n",
+    );
+    let analyzed = analyze(main, domain).unwrap();
+    assert!(matches!(
+        &analyzed.typed_hir.declarations[0],
+        TypedDecl::Fn { body: TypedExpr::Call { callee, .. }, .. }
+            if callee == "fixture/game::domain::Box"
+    ));
+    let main = main.replace("value: 42", "value: False");
+    let diagnostics = analyze(&main, domain).unwrap_err();
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "call.argument-type-mismatch"
+    );
+}
+
+#[test]
+fn qualified_record_payloads_keep_application_order_and_single_name_blocks() {
+    let domain = "pub type Box = | Box { value: Int }\npub type Number = | Number Int\n";
+    let main = concat!(
+        "import * as domain from \"./domain\"\n",
+        "fn apply make: ({ value: Int } -> domain.Box) -> payload: { value: Int } -> domain.Box = make payload\n",
+        "pub fn boxed -> domain.Box = apply domain.Box { value: 42 }\n",
+        "let value = 42\n",
+        "pub fn number -> domain.Number = domain.Number { value }\n",
+    );
+    analyze(main, domain).unwrap();
+}
 
 #[test]
 fn types_a_namespace_qualified_constructor_as_its_canonical_adt_value() {

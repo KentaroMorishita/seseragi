@@ -258,6 +258,60 @@ fn parses_explicit_struct_type_arguments() {
 }
 
 #[test]
+fn keeps_qualified_construction_syntax_available_for_name_resolution() {
+    for expression in [
+        "domain.Box { value }",
+        "domain.Box<Int> { value }",
+        "domain.Box { ...base, value: 1 }",
+        "domain.Empty {}",
+    ] {
+        let source = format!("pub let boxed = {expression}\n");
+        let SurfaceExpr::Application {
+            function,
+            argument,
+            span,
+        } = first_body(&source)
+        else {
+            panic!("expected a qualified construction: {expression}");
+        };
+        let SurfaceExpr::Member {
+            receiver,
+            field,
+            field_span,
+            type_arguments,
+            ..
+        } = *function
+        else {
+            panic!("expected a qualified head");
+        };
+        assert!(matches!(*receiver, SurfaceExpr::Name { ref name, .. } if name == "domain"));
+        assert_eq!(&source[field_span.start..field_span.end], field);
+        assert_eq!(type_arguments.is_some(), expression.contains("<Int>"));
+        if expression.contains("{ value }") {
+            assert!(
+                matches!(*argument, SurfaceExpr::Block { ref items, ref result, .. }
+                if items.is_empty() && matches!(result.as_ref(), SurfaceExpr::Name { name, .. } if name == "value"))
+            );
+        } else {
+            assert!(matches!(*argument, SurfaceExpr::Record { .. }));
+        }
+        assert_eq!(&source[span.start..span.end], expression);
+    }
+}
+
+#[test]
+fn keeps_qualified_comparisons_and_match_braces_out_of_struct_heads() {
+    let compared = first_body("pub let value = domain.First < domain.Last\n");
+    assert!(matches!(compared, SurfaceExpr::Binary { operator, .. } if operator == "<"));
+    let matched = first_body("pub let value = match domain.Empty { _ -> 1 }\n");
+    assert!(matches!(
+        matched,
+        SurfaceExpr::Match { scrutinee, .. }
+            if matches!(*scrutinee, SurfaceExpr::Member { ref field, .. } if field == "Empty")
+    ));
+}
+
+#[test]
 fn parses_explicit_call_site_type_arguments_on_names_and_members() {
     let name_call = first_body("pub let value = choose<Int, String> 1\n");
     assert!(matches!(

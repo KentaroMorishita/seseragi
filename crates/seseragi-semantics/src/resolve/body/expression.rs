@@ -47,11 +47,46 @@ pub(super) fn resolve_expression(
             receiver: function,
             index: argument,
             ..
-        }
-        | SurfaceExpr::Application {
-            function, argument, ..
         } => {
             resolve_expression(resolver, scope, function);
+            resolve_expression(resolver, scope, argument);
+        }
+        SurfaceExpr::Application {
+            function, argument, ..
+        } => {
+            let (callee, head) = match function.as_ref() {
+                SurfaceExpr::Application {
+                    function, argument, ..
+                } => (Some(function.as_ref()), argument.as_ref()),
+                head => (None, head),
+            };
+            let record_body = is_construction_record_body(argument);
+            let construction = match head {
+                SurfaceExpr::Member {
+                    field,
+                    type_arguments,
+                    span,
+                    ..
+                } if field.chars().next().is_some_and(char::is_uppercase) && record_body => {
+                    qualified_module_member(resolver, scope, head)
+                        .filter(|name| {
+                            resolver.namespace_construction_namespace(name) == SymbolNamespace::Type
+                        })
+                        .map(|name| (name, type_arguments, *span))
+                }
+                _ => None,
+            };
+            if let Some((name, type_arguments, span)) = construction {
+                if let Some(callee) = callee {
+                    resolve_expression(resolver, scope, callee);
+                }
+                resolver.reference(scope, SymbolNamespace::Type, &name, span, true);
+                for argument in type_arguments.iter().flatten() {
+                    resolve_type_ref(resolver, scope, argument);
+                }
+            } else {
+                resolve_expression(resolver, scope, function);
+            }
             resolve_expression(resolver, scope, argument);
         }
         SurfaceExpr::Prefix { operand, .. } => resolve_expression(resolver, scope, operand),
@@ -336,6 +371,26 @@ pub(super) fn resolve_expression(
         | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Error { .. } => {}
+    }
+}
+
+fn is_construction_record_body(expression: &SurfaceExpr) -> bool {
+    match expression {
+        SurfaceExpr::Record { .. } => true,
+        SurfaceExpr::Block { items, result, .. } => {
+            items.is_empty()
+                && matches!(
+                    result.as_ref(),
+                    SurfaceExpr::Name {
+                        type_arguments: None,
+                        ..
+                    }
+                )
+        }
+        SurfaceExpr::Member { receiver, .. } | SurfaceExpr::Index { receiver, .. } => {
+            is_construction_record_body(receiver)
+        }
+        _ => false,
     }
 }
 

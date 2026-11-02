@@ -15,6 +15,7 @@ use crate::typed::semantic_types::{
 use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 
 mod candidates;
+mod namespace_struct;
 
 use candidates::{select_trait_method_candidate, type_trait_method_selection_error};
 
@@ -759,6 +760,9 @@ pub(crate) fn type_application_with(
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let (callee, argument_nodes) = flatten_application(expression);
+    if let Some(construction) = namespace_struct::normalize(callee, &argument_nodes, context) {
+        return type_argument(&construction, context);
+    }
     let explicit_type_arguments = explicit_type_arguments(callee);
     if let SurfaceExpr::Member {
         receiver,
