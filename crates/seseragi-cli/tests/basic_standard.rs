@@ -314,6 +314,16 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_bytes_operations_match_raw_strict_ts_and_native_for_errors_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-bytes-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-bytes-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
 fn basic_either_operations_keep_original_selected_branches_traversals_and_returned_functions() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-either-operations.ssrg"),
