@@ -9,7 +9,7 @@ mod project;
 mod type_names;
 pub use clock_provider::{
     NativeClockProvider, NativeProviderReceipt, NativeProviderSelectionOrigin, RustTargetOptions,
-    NATIVE_CLOCK_SLEEP_PROVIDER,
+    NATIVE_CLOCK_PROVIDER, NATIVE_CLOCK_SLEEP_PROVIDER,
 };
 pub use program_wasm::{
     emit_program_wasm, ProgramCodec, ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata,

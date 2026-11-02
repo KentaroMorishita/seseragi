@@ -428,7 +428,9 @@ fn emit_body(
                 ""
             };
         if entry.is_effect {
-            let runner = if backend.capabilities.contains("clock-sleep") {
+            let runner = if backend.capabilities.contains("clock-sleep")
+                || backend.capabilities.contains("clock-now")
+            {
                 "run_native_clock_entry_with_show"
             } else {
                 "run_native_entry_with_show"
@@ -444,7 +446,9 @@ fn emit_body(
             schema: 1,
             backend: "rust".into(),
             stability: "experimental".into(),
-            abi: if backend.capabilities.contains("clock-sleep") {
+            abi: if backend.capabilities.contains("clock-now") {
+                "rust-erased-clock-v5"
+            } else if backend.capabilities.contains("clock-sleep") {
                 "rust-erased-clock-sleep-v5"
             } else if backend.capabilities.contains("filesystem-async") {
                 "rust-erased-async-v4"

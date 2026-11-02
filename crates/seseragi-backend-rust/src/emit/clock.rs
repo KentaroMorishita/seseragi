@@ -22,14 +22,28 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let duration = || value("std/time::Duration");
     let error = || value("std/time::DurationError");
     Some(match name {
-        "std/time::milliseconds" => (
+        "std/time::zeroDuration" => (vec![value("std/prelude::Unit")], duration()),
+        "std/time::nanoseconds"
+        | "std/time::milliseconds"
+        | "std/time::seconds"
+        | "std/time::minutes"
+        | "std/time::hours" => (
             vec![value("std/prelude::Int")],
+            named("std/prelude::Either", vec![error(), duration()]),
+        ),
+        "std/time::toNanoseconds" => (vec![duration()], value("std/prelude::Int")),
+        "std/time::addDuration" => (
+            vec![duration(), duration()],
             named("std/prelude::Either", vec![error(), duration()]),
         ),
         "std/time::NegativeDuration" => (vec![value("std/prelude::Int")], error()),
         "std/time::DurationOutsideRange" => (vec![], error()),
-        "std/clock::sleep" => (
-            vec![duration()],
+        "std/clock::now" | "std/clock::sleep" => (
+            vec![if name == "std/clock::now" {
+                value("std/prelude::Unit")
+            } else {
+                duration()
+            }],
             named(
                 "std/prelude::Effect",
                 vec![
@@ -42,7 +56,11 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
                         }],
                     },
                     value("std/prelude::Never"),
-                    value("std/prelude::Unit"),
+                    value(if name == "std/clock::now" {
+                        "std/time::Instant"
+                    } else {
+                        "std/prelude::Unit"
+                    }),
                 ],
             ),
         ),
@@ -73,11 +91,24 @@ impl Backend<'_> {
             );
         }
         self.capabilities.insert("duration".into());
-        if name == "std/clock::sleep" {
+        if matches!(name, "std/clock::now" | "std/clock::sleep") {
             // Contract types and this finite selection are proved before any
             // generated output or host wait is allowed to exist.
             crate::clock_provider::receipt(self.options, vec![origin.clone()])?;
-            self.capabilities.insert("clock-sleep".into());
+            if name == "std/clock::now"
+                && self.options.clock_provider != Some(crate::NativeClockProvider::BuiltinClock)
+            {
+                return Err(format!(
+                    "Rust backend: Clock now requires --provider std/clock::Clock={}",
+                    crate::NATIVE_CLOCK_PROVIDER
+                )
+                .into());
+            }
+            self.capabilities.insert(if name == "std/clock::now" {
+                "clock-now".into()
+            } else {
+                "clock-sleep".into()
+            });
             self.capabilities.insert("effect-sync".into());
             if !self.clock_origins.contains(origin) {
                 self.clock_origins.push(origin.clone());
@@ -110,9 +141,6 @@ impl Backend<'_> {
     ) -> Result<Option<String>> {
         if scope.contains(name) {
             return Ok(None);
-        }
-        if name == "std/clock::now" {
-            return Err("Rust backend: selected native Clock slice supports sleep only; now is not admitted".into());
         }
         let Some((parameters, result)) = signature(name) else {
             return Ok(None);
@@ -188,9 +216,6 @@ impl Backend<'_> {
         };
         if scope.contains(name) {
             return Ok(None);
-        }
-        if name == "std/clock::now" {
-            return Err("Rust backend: selected native Clock slice supports sleep only; now is not admitted".into());
         }
         let Some((parameters, expected)) = signature(name) else {
             return Ok(None);

@@ -1,4 +1,4 @@
-//! A finite native target binding, not an implementation of every Clock API.
+//! Explicit native bindings for the Clock service.
 use crate::RustBackendError;
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::SourceSpan;
@@ -8,20 +8,25 @@ use seseragi_provider::{
 use sha2::{Digest, Sha256};
 
 pub const NATIVE_CLOCK_SLEEP_PROVIDER: &str = "seseragi/runtime-native#clock-sleep";
+pub const NATIVE_CLOCK_PROVIDER: &str = "seseragi/runtime-native#clock";
 const CONTRACT: &str =
     include_str!("../../../examples/spec/artifacts/provider-contract-schema-1/clock/contract.json");
 pub(crate) const SLEEP: &str = "std/clock::Clock#sleep";
+const NOW: &str = "std/clock::Clock#now";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum NativeClockProvider {
     BuiltinSleep,
+    BuiltinClock,
 }
 impl NativeClockProvider {
     pub fn from_identity(identity: &str) -> Result<Self, RustBackendError> {
         if identity == NATIVE_CLOCK_SLEEP_PROVIDER {
             Ok(Self::BuiltinSleep)
+        } else if identity == NATIVE_CLOCK_PROVIDER {
+            Ok(Self::BuiltinClock)
         } else {
-            Err(format!("Rust backend: unsupported native Clock provider {identity}; explicitly select {NATIVE_CLOCK_SLEEP_PROVIDER}; JavaScript providers are not substituted").into())
+            Err(format!("Rust backend: unsupported native Clock provider {identity}; explicitly select {NATIVE_CLOCK_PROVIDER} or {NATIVE_CLOCK_SLEEP_PROVIDER}; JavaScript providers are not substituted").into())
         }
     }
 }
@@ -62,6 +67,9 @@ pub(crate) fn contract() -> Result<ProviderContract, RustBackendError> {
     let operation = contract
         .operation(SLEEP)
         .ok_or("Rust backend: Clock contract is missing canonical sleep")?;
+    let now = contract
+        .operation(NOW)
+        .ok_or("Rust backend: Clock contract is missing canonical now")?;
     if contract.identity != "std/clock::Clock"
         || contract.requirement.field != "clock"
         || contract.requirement.type_identity != "std/clock::Clock"
@@ -74,8 +82,16 @@ pub(crate) fn contract() -> Result<ProviderContract, RustBackendError> {
             })
         || operation.success != LogicalType::Unit
         || operation.failure != LogicalType::Never
+        || now.kind != OperationKind::OneShot
+        || now.portability != Portability::Portable
+        || now.input != LogicalType::Unit
+        || now.success
+            != (LogicalType::Named {
+                identity: "std/time::Instant".into(),
+            })
+        || now.failure != LogicalType::Never
     {
-        return Err("Rust backend: native sleep disagrees with canonical Clock contract".into());
+        return Err("Rust backend: native Clock disagrees with canonical Clock contract".into());
     }
     Ok(contract)
 }
@@ -84,19 +100,30 @@ pub(crate) fn receipt(
     options: &RustTargetOptions,
     traces: Vec<SourceSpan>,
 ) -> Result<NativeProviderReceipt, RustBackendError> {
-    options.clock_provider.ok_or_else(|| RustBackendError::from(
-        format!("Rust backend: Clock sleep requires explicit provider selection; use --provider std/clock::Clock={NATIVE_CLOCK_SLEEP_PROVIDER}")
+    let provider = options.clock_provider.ok_or_else(|| RustBackendError::from(
+        format!("Rust backend: Clock requires explicit provider selection; use --provider std/clock::Clock={NATIVE_CLOCK_PROVIDER}")
     ))?;
     let contract = contract()?;
     Ok(NativeProviderReceipt {
         target: "native".into(),
-        backend: "rust-native-sleep-v1".into(),
-        provider: NATIVE_CLOCK_SLEEP_PROVIDER.into(),
+        backend: match provider {
+            NativeClockProvider::BuiltinSleep => "rust-native-sleep-v1",
+            NativeClockProvider::BuiltinClock => "rust-native-clock-v1",
+        }
+        .into(),
+        provider: match provider {
+            NativeClockProvider::BuiltinSleep => NATIVE_CLOCK_SLEEP_PROVIDER,
+            NativeClockProvider::BuiltinClock => NATIVE_CLOCK_PROVIDER,
+        }
+        .into(),
         selection: options.clock_selection_origin,
         service: contract.identity,
         contract_version: contract.version,
         contract_digest: format!("{:x}", Sha256::digest(CONTRACT.as_bytes())),
-        supported_operations: vec![SLEEP.into()],
+        supported_operations: match provider {
+            NativeClockProvider::BuiltinSleep => vec![SLEEP.into()],
+            NativeClockProvider::BuiltinClock => vec![NOW.into(), SLEEP.into()],
+        },
         traces,
     })
 }

@@ -216,7 +216,7 @@ fn compile_project(
         .metadata
         .capabilities
         .iter()
-        .any(|c| c == "clock-sleep")
+        .any(|c| matches!(c.as_str(), "clock-sleep" | "clock-now"))
     {
         reject_clock_manifest_pin(
             root.manifest()
@@ -233,7 +233,7 @@ fn compile_project(
                         .providers
                         .contains_key("std/clock::Clock"))
             {
-                return Err(format!("{}: SES-RUST-0001: native Clock sleep requires the explicit native CLI selection; provider artifacts and dependency provider selections are not admitted", package.root().join("seseragi.toml").display()));
+                return Err(format!("{}: SES-RUST-0001: native Clock requires the explicit native CLI selection; provider artifacts and dependency provider selections are not admitted", package.root().join("seseragi.toml").display()));
             }
         }
     }
@@ -272,7 +272,7 @@ fn native_clock_options(
             return Err("SES-RUST-0001: --provider requires std/clock::Clock=provider-identity".to_owned());
         };
         if service != "std/clock::Clock" {
-            return Err(format!("SES-RUST-0001: unsupported native provider service {service}; this finite selection supports Clock sleep only"));
+            return Err(format!("SES-RUST-0001: unsupported native provider service {service}; this selection supports Clock only"));
         }
         Ok(provider)
     }).transpose()?;
@@ -290,7 +290,7 @@ fn native_clock_options(
 
 fn reject_clock_manifest_pin(manifest: Option<&str>, path: &std::path::Path) -> Result<(), String> {
     if let Some(identity) = manifest {
-        return Err(format!("{}: SES-RUST-0001: native Clock sleep does not admit the target-shared manifest provider selection {identity}; use the explicit native --provider selection without a Clock manifest pin; JavaScript providers are not substituted", path.display()));
+        return Err(format!("{}: SES-RUST-0001: native Clock does not admit the target-shared manifest provider selection {identity}; use the explicit native --provider selection without a Clock manifest pin; JavaScript providers are not substituted", path.display()));
     }
     Ok(())
 }
@@ -404,5 +404,5 @@ fn load_checked_project_entry_with_profile(
 }
 
 fn usage() -> &'static str {
-    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep] | build-native source.ssrg|package-root --entry function --out-dir path [--profile development|release] [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep]"
+    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock] | build-native source.ssrg|package-root --entry function --out-dir path [--profile development|release] [--provider std/clock::Clock=seseragi/runtime-native#clock]"
 }
