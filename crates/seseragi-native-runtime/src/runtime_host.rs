@@ -163,7 +163,10 @@ impl NativeFileOperation {
             Self::Session(action) => native_file_error(
                 if matches!(
                     action,
-                    NativeFileAction::OpenWrite | NativeFileAction::Write | NativeFileAction::Flush
+                    NativeFileAction::OpenWrite
+                        | NativeFileAction::Write
+                        | NativeFileAction::Flush
+                        | NativeFileAction::CloseWrite
                 ) {
                     "std/fs::WriteFile"
                 } else {
@@ -223,16 +226,6 @@ impl NativeFileOperation {
                 // the failed close is retained as a diagnostic, not lost.
                 notes.push(native_file_close_defect(close));
                 Err(primary)
-            }
-            (Ok(_), Err(NativeFileFault::Io(error))) if matches!(self, Self::WriteBytes) => {
-                return (
-                    Err(NativeExit::failure(native_file_error(
-                        "std/fs::ReadFile",
-                        captures[2].clone(),
-                        error,
-                    ))),
-                    notes,
-                );
             }
             (Ok(_), Err(close)) => Err(close),
             (result, Ok(())) => result,
@@ -532,7 +525,7 @@ mod host_tests {
                         NativeFileAction::OpenWrite,
                         NativeFileAction::Write,
                         NativeFileAction::Flush,
-                        NativeFileAction::Close,
+                        NativeFileAction::CloseWrite,
                     ]
                 } else {
                     vec![
