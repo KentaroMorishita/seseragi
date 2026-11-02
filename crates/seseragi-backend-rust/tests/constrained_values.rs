@@ -7,6 +7,37 @@ const LOCAL: &str = "pub fn probe -> (Array<Int> -> Array<Int>) = { fn mapped<F<
 const ALIAS: &str = "fn mapped<F<_>> callback:(Int -> Int) -> values:F<Int> -> F<Int> where Functor<F> = map callback values\npub fn probe -> (Array<Int> -> Array<Int>) = { let saved = mapped; saved (\\x:Int -> x + 1) }\n";
 
 #[test]
+fn binary_chains_with_local_bindings_fit_the_default_test_stack() {
+    let bindings = (0..16)
+        .map(|index| format!("let v{index} = \"x\"\n"))
+        .collect::<String>();
+    let terms = (0..40)
+        .map(|index| format!("v{}", index % 16))
+        .collect::<Vec<_>>();
+    let left = terms.join(" + ");
+    let right = terms
+        .chunks(8)
+        .map(|group| {
+            let expression = group
+                .iter()
+                .rev()
+                .cloned()
+                .reduce(|tail, term| format!("{term} + ({tail})"))
+                .unwrap();
+            format!("({expression})")
+        })
+        .collect::<Vec<_>>()
+        .join(" + ");
+    for expression in [left, right] {
+        let source = format!("pub fn main -> String = {{\n{bindings}{expression}\n}}\n");
+        let core = compile_core_module(CompileInput::new("chain.ssrg", "native/chain", &source))
+            .unwrap()
+            .core_ir;
+        emit_rust_module(&core, "main").unwrap();
+    }
+}
+
+#[test]
 fn constrained_values_keep_all_first_class_positions() {
     for source in [
         include_str!("../../../examples/spec/fixtures/rust-backend/constrained-values.ssrg"),

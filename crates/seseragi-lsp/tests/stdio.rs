@@ -86,6 +86,232 @@ fn published<'messages>(messages: &'messages [Value], uri: &str) -> &'messages V
         .unwrap_or_else(|| panic!("diagnostics for {uri}: {messages:#?}"))
 }
 
+fn open_package(
+    workspace: &TempWorkspace,
+    relative: &str,
+    source: &str,
+    encoding: &str,
+) -> Vec<Value> {
+    let uri = file_uri(&workspace.path().join(relative));
+    run_server(&[
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+            "rootUri": file_uri(workspace.path()),
+            "capabilities": {"general": {"positionEncodings": [encoding]}}
+        }}),
+        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {
+            "textDocument": {"uri": uri, "languageId": "seseragi", "version": 1, "text": source}
+        }}),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ])
+}
+
+fn target_manifest(target: Option<&str>) -> String {
+    let mut manifest = "[package]\nname = \"fixture/target-diagnostics\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n[run]\nentry = \"main\"\n".to_owned();
+    if let Some(target) = target {
+        manifest.push_str(&format!("target = {target:?}\n"));
+    }
+    manifest
+}
+
+#[test]
+fn native_target_reports_multiple_uses_at_the_backend_ranges_in_both_encodings() {
+    let source = concat!(
+        "import { race as compete, succeed } from \"std/effect\"\n",
+        "pub fn main -> (Task<Int>, Task<Int>) = { let _prefix = \"雪🙂\"; (compete (succeed 1) (succeed 2), compete (succeed 3) (succeed 4)) }\n",
+    );
+    let core = seseragi_driver::compile_core_module(seseragi_driver::CompileInput::new(
+        "main.ssrg",
+        "target/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    let errors = seseragi_backend_rust::diagnose_rust_project(
+        &[&core],
+        &core.module,
+        seseragi_backend_rust::RustDiagnosticTarget::Native,
+        &seseragi_backend_rust::RustTargetOptions::default(),
+    );
+    assert_eq!(errors.len(), 2);
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let workspace = TempWorkspace::new();
+        workspace.write("seseragi.toml", &target_manifest(Some("native")));
+        workspace.write("src/main.ssrg", source);
+        let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let messages = open_package(&workspace, "src/main.ssrg", source, name);
+        let diagnostics = published(&messages, &uri)["params"]["diagnostics"]
+            .as_array()
+            .unwrap();
+        assert_eq!(diagnostics.len(), 2, "{diagnostics:?}");
+        for (diagnostic, error) in diagnostics.iter().zip(&errors) {
+            let origin = error.origin.as_ref().unwrap();
+            let index = LineIndex::new(source);
+            let start = index.try_locate_encoded(origin.start, encoding).unwrap();
+            let end = index.try_locate_encoded(origin.end, encoding).unwrap();
+            assert_eq!(
+                diagnostic["range"],
+                json!({
+                    "start": {"line": start.line, "character": start.character},
+                    "end": {"line": end.line, "character": end.character},
+                })
+            );
+            assert_eq!(diagnostic["severity"], 2);
+            assert_eq!(diagnostic["code"], error.code);
+            assert_eq!(
+                diagnostic["message"],
+                format!("native target: {}", error.message)
+            );
+            assert_eq!(
+                diagnostic["data"]["messageKey"],
+                "target.unsupported-feature"
+            );
+        }
+    }
+}
+
+#[test]
+fn ts_targets_keep_native_limitations_out_of_editor_diagnostics() {
+    let source = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
+    seseragi_driver::compile_module(seseragi_driver::CompileInput::new(
+        "main.ssrg",
+        "target/main",
+        source,
+    ))
+    .unwrap();
+    for target in [None, Some("process"), Some("web")] {
+        let workspace = TempWorkspace::new();
+        workspace.write("seseragi.toml", &target_manifest(target));
+        workspace.write("src/main.ssrg", source);
+        let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let messages = open_package(&workspace, "src/main.ssrg", source, "utf-16");
+        assert_eq!(
+            published(&messages, &uri)["params"]["diagnostics"],
+            json!([]),
+            "{target:?}"
+        );
+    }
+}
+
+#[test]
+fn native_support_does_not_hide_type_errors_or_warn_for_supported_file_operations() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/filesystem-transform.ssrg");
+    let workspace = TempWorkspace::new();
+    workspace.write("seseragi.toml", &target_manifest(Some("native")));
+    workspace.write("src/main.ssrg", source);
+    let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let messages = open_package(&workspace, "src/main.ssrg", source, "utf-16");
+    assert_eq!(
+        published(&messages, &uri)["params"]["diagnostics"],
+        json!([])
+    );
+    let broken = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed \"wrong\") (effects.succeed 2)\n";
+    let mut expected = None;
+    for target in ["native", "process"] {
+        workspace.write("seseragi.toml", &target_manifest(Some(target)));
+        workspace.write("src/main.ssrg", broken);
+        let messages = open_package(&workspace, "src/main.ssrg", broken, "utf-16");
+        let diagnostics = published(&messages, &uri)["params"]["diagnostics"]
+            .as_array()
+            .unwrap();
+        assert!(
+            diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic["severity"] == 1),
+            "{diagnostics:?}"
+        );
+        assert!(diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic["data"]["messageKey"] != "target.unsupported-feature"));
+        if let Some(expected) = &expected {
+            assert_eq!(diagnostics, expected);
+        } else {
+            expected = Some(diagnostics.clone());
+        }
+    }
+}
+
+#[test]
+fn native_target_reports_dependency_features_in_the_defining_document() {
+    let workspace = TempWorkspace::new();
+    workspace.write("seseragi.toml", &(target_manifest(Some("native")) + "[dependencies]\nremote = { package = \"fixture/remote\", path = \"vendor/remote\" }\n"));
+    workspace.write("vendor/remote/seseragi.toml", "[package]\nname = \"fixture/remote\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n[exports]\n\".\" = \"lib\"\n");
+    let dependency = "import * as effects from \"std/effect\"\npub effect fn task -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
+    workspace.write("vendor/remote/src/lib.ssrg", dependency);
+    let source = "import { task } from \"remote\"\nimport { value } from \"./lib\"\npub effect fn main -> Int = task ()\npub fn local -> Int = value\n";
+    workspace.write("src/main.ssrg", source);
+    workspace.write("src/lib.ssrg", "pub let value: Int = 42\n");
+    let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let local_uri = file_uri(&workspace.path().join("src/lib.ssrg"));
+    let dependency_uri = file_uri(&workspace.path().join("vendor/remote/src/lib.ssrg"));
+    let messages = open_package(&workspace, "src/main.ssrg", source, "utf-16");
+    assert_eq!(
+        published(&messages, &main_uri)["params"]["diagnostics"],
+        json!([])
+    );
+    assert_eq!(
+        published(&messages, &local_uri)["params"]["diagnostics"],
+        json!([])
+    );
+    let diagnostics = published(&messages, &dependency_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert_eq!(diagnostics.len(), 1, "{diagnostics:?}");
+    assert_eq!(
+        diagnostics[0]["range"]["start"],
+        json!({"line": 1, "character": 28})
+    );
+    assert!(diagnostics[0]["message"]
+        .as_str()
+        .unwrap()
+        .contains("std/effect::race"));
+}
+
+#[test]
+fn wasm_target_checks_selected_programs_without_warning_in_ts_ui_sources() {
+    let workspace = TempWorkspace::new();
+    workspace.write(
+        "seseragi.toml",
+        &(target_manifest(Some("web"))
+            + "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n"),
+    );
+    let ui = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
+    let program = "pub fn unused -> Int = 2 ** 3\npub fn amount -> Int = 42\n";
+    workspace.write("src/main.ssrg", ui);
+    workspace.write("src/calculation.ssrg", program);
+    let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let program_uri = file_uri(&workspace.path().join("src/calculation.ssrg"));
+    let messages = open_package(&workspace, "src/main.ssrg", ui, "utf-16");
+    assert_eq!(
+        published(&messages, &main_uri)["params"]["diagnostics"],
+        json!([])
+    );
+    let diagnostics = published(&messages, &program_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert_eq!(diagnostics.len(), 1, "{diagnostics:?}");
+    assert_eq!(diagnostics[0]["severity"], 2);
+    assert_eq!(
+        diagnostics[0]["range"],
+        json!({
+            "start": {"line": 0, "character": 23},
+            "end": {"line": 0, "character": 29},
+        })
+    );
+    assert!(diagnostics[0]["message"]
+        .as_str()
+        .unwrap()
+        .starts_with("WASM target: "));
+    assert!(diagnostics[0]["message"]
+        .as_str()
+        .unwrap()
+        .contains("arithmetic proof"));
+}
+
 #[test]
 fn deprecated_symbols_remain_navigable_and_carry_editor_tags() {
     let uri = "file:///deprecation.ssrg";

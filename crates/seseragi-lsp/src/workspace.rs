@@ -218,16 +218,20 @@ fn analyze_local_package(
             .add_module(logical_module_id(identity), dependencies)
             .map_err(|error| format!("invalid local package graph: {error:?}"))?;
     }
-    let inputs = project.modules().map(|(identity, module)| {
-        ProjectModuleInput::new(
-            module.source_path().to_string_lossy(),
-            logical_module_id(identity),
-            module.source(),
-            local_output_path(identity),
-        )
-        .with_package_scope(logical_package_scope(identity.package()))
-    });
-    let mut analyzed = analyze_project(graph, inputs).map_err(|error| format!("{error:?}"))?;
+    let inputs = project
+        .modules()
+        .map(|(identity, module)| {
+            ProjectModuleInput::new(
+                module.source_path().to_string_lossy(),
+                logical_module_id(identity),
+                module.source(),
+                local_output_path(identity),
+            )
+            .with_package_scope(logical_package_scope(identity.package()))
+        })
+        .collect::<Vec<_>>();
+    let mut analyzed =
+        analyze_project(graph.clone(), inputs.clone()).map_err(|error| format!("{error:?}"))?;
     let mut documents = BTreeMap::new();
     for (identity, module) in project.modules() {
         let analysis = analyzed
@@ -245,6 +249,7 @@ fn analyze_local_package(
             ),
         );
     }
+    crate::target_diagnostics::append(project, &graph, &inputs, &mut documents);
     Ok(ProjectSnapshot { documents })
 }
 

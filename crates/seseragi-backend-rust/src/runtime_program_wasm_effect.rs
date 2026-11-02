@@ -425,6 +425,11 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
                 NativeTurn::Complete(outcome) => {
                     return program_outcome(outcome, run.failure, run.success)
                 }
+                NativeTurn::ProcessSignalPull(_) => {
+                    run.machine.resume(Err(NativeExit::defects(vec![
+                        "program ABI: process signals are unavailable in WASM".into(),
+                    ])));
+                }
                 NativeTurn::Operation(_, _)
                 | NativeTurn::FileSystem(_, _)
                 | NativeTurn::Stdin(_, _) => {

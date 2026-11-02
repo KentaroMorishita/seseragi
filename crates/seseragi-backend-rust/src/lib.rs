@@ -146,3 +146,20 @@ pub fn emit_rust_tests(
 ) -> Result<RustArtifact, RustBackendError> {
     project::emit_tests(modules, tests)
 }
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum RustDiagnosticTarget {
+    Native,
+    ProgramWasm,
+}
+
+/// Checks source features with the target emitter without requiring an entry
+/// function, compiling Rust, or executing the program.
+pub fn diagnose_rust_project(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    target: RustDiagnosticTarget,
+    options: &RustTargetOptions,
+) -> Vec<RustBackendError> {
+    project::diagnose(modules, entry_module, target, options)
+}
