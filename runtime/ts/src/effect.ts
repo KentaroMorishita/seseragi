@@ -1,6 +1,7 @@
 import { defectWithSuppressed } from "./cleanup-defect"
 import { createDuration, type Duration } from "./clock-value"
 import type { Iterable, RuntimeDictionary } from "./collection"
+import { locateRuntimeDefect, type RuntimeSource } from "./runtime-diagnostic"
 import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 export type Unit = undefined
@@ -389,9 +390,46 @@ type BindPlan = {
 }
 const bindPlan = Symbol("seseragi.effect-bind")
 const deferPlan = Symbol("seseragi.effect-defer")
+const sourcePlan = Symbol("seseragi.effect-source")
 type PlannedEffect = ErasedEffect & {
   readonly [bindPlan]?: BindPlan
   readonly [deferPlan]?: (unit: Unit) => ErasedEffect
+  readonly [sourcePlan]?: Readonly<{
+    readonly effect: ErasedEffect
+    readonly source: RuntimeSource
+  }>
+}
+export function atSource<Value>(
+  source: RuntimeSource,
+  action: () => Value,
+  effect: boolean
+): Value {
+  try {
+    const value = action()
+    if (!effect || typeof value !== "function") return value
+    if ((value as PlannedEffect)[sourcePlan] !== undefined) return value
+    const located: ErasedEffect = (environment, context) =>
+      interpretBinds(
+        located,
+        environment,
+        context ?? createEffectExecution().context
+      )
+    Object.defineProperty(located, sourcePlan, {
+      value: { effect: value as ErasedEffect, source },
+    })
+    return located as Value
+  } catch (error) {
+    throw locateEffectDefect(error, source)
+  }
+}
+
+function locateEffectDefect(
+  error: unknown,
+  source: RuntimeSource | undefined
+): unknown {
+  return error instanceof TypedFailureSignal || isEffectCancellation(error)
+    ? error
+    : locateRuntimeDefect(error, source)
 }
 
 async function interpretBinds(
@@ -400,29 +438,43 @@ async function interpretBinds(
   context: EffectContext
 ): Promise<unknown> {
   const continuations: BindPlan["next"][] = []
+  const sources: (RuntimeSource | undefined)[] = []
   let current = initial
-  while (true) {
+  let source: RuntimeSource | undefined
+  try {
     while (true) {
-      const plan = (current as PlannedEffect)[bindPlan]
-      if (plan !== undefined) {
-        continuations.push(plan.next)
-        current = plan.source
-        continue
+      while (true) {
+        const located = (current as PlannedEffect)[sourcePlan]
+        if (located !== undefined) {
+          source = located.source
+          current = located.effect
+          continue
+        }
+        const plan = (current as PlannedEffect)[bindPlan]
+        if (plan !== undefined) {
+          continuations.push(plan.next)
+          sources.push(source)
+          current = plan.source
+          continue
+        }
+        const thunk = (current as PlannedEffect)[deferPlan]
+        if (thunk !== undefined) {
+          current = thunk(unit)
+          continue
+        }
+        break
       }
-      const thunk = (current as PlannedEffect)[deferPlan]
-      if (thunk !== undefined) {
-        current = thunk(unit)
-        continue
-      }
-      break
+      const value = await awaitWithCancellation(
+        current(environment, context),
+        context
+      )
+      const next = continuations.pop()
+      if (next === undefined) return value
+      source = sources.pop()
+      current = next(value)
     }
-    const value = await awaitWithCancellation(
-      current(environment, context),
-      context
-    )
-    const next = continuations.pop()
-    if (next === undefined) return value
-    current = next(value)
+  } catch (error) {
+    throw locateEffectDefect(error, source)
   }
 }
 

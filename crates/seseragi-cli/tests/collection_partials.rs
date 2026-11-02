@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs,
     path::Path,
@@ -83,13 +87,19 @@ fn verify_exit(source: &str, expected: &str, exit: i32) {
                 "{profile}/{engine}: {output:?}"
             );
             assert_eq!(output.stdout, expected.as_bytes(), "{profile}/{engine}");
+            let expected_stderr = if exit == 0 {
+                String::new()
+            } else {
+                diagnostics::defect_at_source(
+                    &input,
+                    source,
+                    "9007199254740991 + 1",
+                    "Seseragi Int overflow",
+                )
+            };
             assert_eq!(
                 output.stderr,
-                if exit == 0 {
-                    b"".as_slice()
-                } else {
-                    b"seseragi: runtime defect\n".as_slice()
-                },
+                expected_stderr.as_bytes(),
                 "{profile}/{engine}"
             );
         }

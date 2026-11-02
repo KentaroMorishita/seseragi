@@ -359,8 +359,7 @@ fn path_package_operator_notices_preserve_original_strict_ts_native_and_stage_li
                     assert!(result.stderr.is_empty(), "{result:?}");
                 } else {
                     assert!(
-                        String::from_utf8_lossy(&result.stderr)
-                            .contains("seseragi: runtime defect"),
+                        String::from_utf8_lossy(&result.stderr).contains("Seseragi Defect:"),
                         "{result:?}"
                     );
                 }

@@ -48,11 +48,11 @@ fn native_run_passes_stdin_stdout_stderr_and_exit_status() {
     assert_eq!(native.stdout, b"Just hello\n");
     assert_eq!(native.stdout, ts.stdout);
     assert!(!ts.stderr.is_empty());
-    // Native prefixes the failure with its source position; TS does not yet (#1192).
-    let location = format!("{}:2:", source.display());
+    // Native typed failures include a source position before the message.
+    let location = "main.ssrg:2:";
     let native_stderr = String::from_utf8(native.stderr).unwrap();
     let message = native_stderr
-        .strip_prefix(&location)
+        .strip_prefix(location)
         .and_then(|rest| rest.split_once(": "))
         .map(|(column, message)| {
             assert!(column.parse::<usize>().is_ok(), "{native_stderr:?}");

@@ -32,6 +32,32 @@ pub fn format_module_with_options(
 }
 
 #[cfg(test)]
+fn comparable_typescript(compiled: &crate::CompiledModule, source: &str) -> String {
+    let mut output = compiled.generated.typescript.clone();
+    for (index, origin) in compiled
+        .typescript_ir
+        .runtime_sources
+        .iter()
+        .enumerate()
+        .rev()
+    {
+        let prefix = &source[..origin.start];
+        let line = prefix.bytes().filter(|byte| *byte == b'\n').count() + 1;
+        let column = prefix.rsplit('\n').next().unwrap().chars().count() + 1;
+        let declaration = format!(
+            "const $ssrg$source{} = {{ file: {:?}, line: {line}, column: {column}, uri: {:?}, start: {}, end: {} }};\n",
+            origin.start, origin.source, format!("seseragi://{}", compiled.typescript_ir.module), origin.start, origin.end,
+        );
+        assert_eq!(output.matches(&declaration).count(), 1);
+        output = output.replace(&declaration, "").replace(
+            &format!("$ssrg$source{}", origin.start),
+            &format!("$ssrg$position{index}"),
+        );
+    }
+    output
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::{compile_module, CompileInput};
@@ -105,7 +131,10 @@ mod tests {
                 .map(|export| (&export.symbol, &export.scheme, export.call_arity))
                 .collect::<Vec<_>>()
         );
-        assert_eq!(after.generated.typescript, original.generated.typescript);
+        assert_eq!(
+            comparable_typescript(&after, &formatted.text),
+            comparable_typescript(&original, input),
+        );
 
         let converged =
             format_module("main.ssrg", &formatted.text).expect("formatted source parses");
@@ -288,7 +317,10 @@ mod range_tests {
         let after =
             crate::compile_module(crate::CompileInput::new("main.ssrg", "app/main", &result))
                 .unwrap();
-        assert_eq!(before.generated.typescript, after.generated.typescript);
+        assert_eq!(
+            super::comparable_typescript(&before, source),
+            super::comparable_typescript(&after, &result),
+        );
         assert_eq!(
             format_module("main.ssrg", source).unwrap().text,
             format_module("main.ssrg", &result).unwrap().text

@@ -263,7 +263,7 @@ fn polymorphic_values_preserve_surrounding_initializer_defects_and_order() {
         assert!(output.stdout.is_empty(), "{output:?}");
         let error = String::from_utf8_lossy(&output.stderr);
         assert!(
-            error.contains("runtime defect during module initialization"),
+            error.contains("Seseragi Defect: Seseragi Int division by zero"),
             "{error}"
         );
         assert!(error.contains("Seseragi Int division by zero"), "{error}");

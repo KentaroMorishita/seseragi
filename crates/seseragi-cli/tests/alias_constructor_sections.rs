@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use seseragi_driver::{BuildProfile, CompileInput};
 use std::{
     fs,
@@ -145,6 +149,7 @@ fn check_case(
     if let Some(defect) = defect {
         assert!(stderr.contains(defect), "{stderr}");
     }
+    let expected_defect = (code == 70).then(|| diagnostics::ts_defect_from_native(&result.stderr));
     for (label, profile) in [
         ("development", BuildProfile::Development),
         ("release", BuildProfile::Release),
@@ -222,7 +227,7 @@ fn check_case(
             if code == 0 {
                 assert!(result.stderr.is_empty(), "{result:?}");
             } else {
-                assert_eq!(result.stderr, b"seseragi: runtime defect\n");
+                assert_eq!(result.stderr, expected_defect.as_ref().unwrap().as_bytes());
             }
         }
     }

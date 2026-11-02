@@ -112,6 +112,13 @@ pub(crate) fn runtime_int_operation_for_feature(feature: &str) -> Option<Runtime
         .find(|operation| operation.runtime_feature == feature)
 }
 
+pub(crate) fn runtime_int_operation_for_local_name(name: &str) -> Option<RuntimeIntOperation> {
+    RUNTIME_INT_OPERATIONS
+        .iter()
+        .copied()
+        .find(|operation| operation.local_name == name)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

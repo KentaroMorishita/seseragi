@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -287,6 +291,7 @@ fn check_file_entry(source: PathBuf, project: bool, zero_divisor: bool) {
         .map(|name| (name, fs::read(source.join(name)).unwrap()))
     });
     let programs = build_programs(&source, project, &scratch.0);
+    let mut expected_defects = std::collections::BTreeMap::new();
     for (label, executable, argument, native) in programs {
         let scenarios = if zero_divisor {
             vec![("zero-divisor", Some(b"7\n-7\n8\n".as_slice()), None, 70, "")]
@@ -419,8 +424,10 @@ fn check_file_entry(source: PathBuf, project: bool, zero_divisor: bool) {
                 if code == 70 {
                     if native {
                         assert!(stderr.contains("Int remainder by zero"), "{stderr}");
+                        expected_defects
+                            .insert(scenario, diagnostics::ts_defect_from_native(&result.stderr));
                     } else {
-                        assert_eq!(stderr, "seseragi: runtime defect\n");
+                        assert_eq!(stderr, expected_defects[scenario]);
                     }
                 }
                 if scenario != "write-directory" {
@@ -451,6 +458,7 @@ fn check_semantic_program(
     trace: Option<&str>,
 ) {
     let scratch = Scratch::new();
+    let mut expected_defect = None;
     for (label, executable, argument, native) in build_programs(source, false, &scratch.0) {
         let cwd = scratch.0.join(format!("run-{label}"));
         fs::create_dir(&cwd).unwrap();
@@ -471,8 +479,11 @@ fn check_semantic_program(
             if code == 70 {
                 assert!(stderr.contains(reason), "{label}: {stderr}");
             }
+            if code == 70 {
+                expected_defect = Some(diagnostics::ts_defect_from_native(&result.stderr));
+            }
         } else if code == 70 {
-            assert_eq!(stderr, "seseragi: runtime defect\n");
+            assert_eq!(stderr, *expected_defect.as_ref().unwrap());
         } else {
             assert!(stderr.is_empty(), "{label}: {stderr}");
         }

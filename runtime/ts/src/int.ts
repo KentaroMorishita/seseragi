@@ -1,12 +1,13 @@
 import type { Unit } from "./effect"
+import { locateRuntimeDefect, type RuntimeSource } from "./runtime-diagnostic"
 import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 export const MIN_INT = Number.MIN_SAFE_INTEGER
 export const MAX_INT = Number.MAX_SAFE_INTEGER
 
-export function assertInt(value: number): number {
+export function assertInt(value: number, source?: RuntimeSource): number {
   if (!Number.isSafeInteger(value)) {
-    throw new RangeError("Seseragi Int overflow")
+    throw locateRuntimeDefect(new RangeError("Seseragi Int overflow"), source)
   }
   return value === 0 ? 0 : value
 }
@@ -31,8 +32,12 @@ export function encodeJsonInt(value: number): number {
   return assertInt(value)
 }
 
-export function add(left: number, right: number): number {
-  return assertInt(left + right)
+export function add(
+  left: number,
+  right: number,
+  source?: RuntimeSource
+): number {
+  return assertInt(left + right, source)
 }
 
 export const intZero = {
@@ -57,12 +62,20 @@ export const intSub = {
       subtract(left, right),
 } as const
 
-export function subtract(left: number, right: number): number {
-  return assertInt(left - right)
+export function subtract(
+  left: number,
+  right: number,
+  source?: RuntimeSource
+): number {
+  return assertInt(left - right, source)
 }
 
-export function multiply(left: number, right: number): number {
-  return assertInt(left * right)
+export function multiply(
+  left: number,
+  right: number,
+  source?: RuntimeSource
+): number {
+  return assertInt(left * right, source)
 }
 
 export const intMul = {
@@ -93,29 +106,50 @@ export const intPow = {
       power(base, exponent),
 } as const
 
-export function divide(left: number, right: number): number {
+export function divide(
+  left: number,
+  right: number,
+  source?: RuntimeSource
+): number {
   if (right === 0) {
-    throw new RangeError("Seseragi Int division by zero")
+    throw locateRuntimeDefect(
+      new RangeError("Seseragi Int division by zero"),
+      source
+    )
   }
-  assertInt(left)
-  assertInt(right)
+  assertInt(left, source)
+  assertInt(right, source)
   return Number(BigInt(left) / BigInt(right))
 }
 
-export function remainder(left: number, right: number): number {
+export function remainder(
+  left: number,
+  right: number,
+  source?: RuntimeSource
+): number {
   if (right === 0) {
-    throw new RangeError("Seseragi Int remainder by zero")
+    throw locateRuntimeDefect(
+      new RangeError("Seseragi Int remainder by zero"),
+      source
+    )
   }
-  assertInt(left)
-  assertInt(right)
+  assertInt(left, source)
+  assertInt(right, source)
   return Number(BigInt(left) % BigInt(right))
 }
 
-export function power(base: number, exponent: number): number {
+export function power(
+  base: number,
+  exponent: number,
+  source?: RuntimeSource
+): number {
   if (exponent < 0) {
-    throw new RangeError("Seseragi Int negative exponent")
+    throw locateRuntimeDefect(
+      new RangeError("Seseragi Int negative exponent"),
+      source
+    )
   }
-  return assertInt(base ** exponent)
+  return assertInt(base ** exponent, source)
 }
 
 export type IntParseError =

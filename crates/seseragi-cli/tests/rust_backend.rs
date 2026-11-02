@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -76,6 +80,9 @@ fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
         assert_eq!(output.status.code(), Some(exit), "{fixture}: {output:?}");
         assert_eq!(output.stdout, expected, "{fixture}");
         assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+        let expected_defect = exit == 70;
+        let expected_defect =
+            expected_defect.then(|| diagnostics::ts_defect_from_native(&output.stderr));
         for (profile, build_profile) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -134,7 +141,7 @@ fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
                 );
                 assert_eq!(output.stdout, expected, "{fixture}/{profile}/{engine}");
                 if exit == 70 {
-                    assert_eq!(output.stderr, b"seseragi: runtime defect\n");
+                    assert_eq!(output.stderr, expected_defect.as_ref().unwrap().as_bytes());
                 } else {
                     assert!(output.stderr.is_empty(), "{output:?}");
                 }
@@ -335,6 +342,9 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
                 b"acquire\nsaved\nrelease\n"
             );
         }
+        let expected_defect = code == 70;
+        let expected_defect =
+            expected_defect.then(|| diagnostics::ts_defect_from_native(&native.stderr));
         for (profile, value) in [
             ("development", seseragi_driver::BuildProfile::Development),
             ("release", seseragi_driver::BuildProfile::Release),
@@ -397,7 +407,7 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
                 );
                 assert_eq!(result.stdout, expected, "{name}/{profile}/{index}");
                 if code == 70 {
-                    assert!(String::from_utf8_lossy(&result.stderr).contains("runtime defect"));
+                    assert_eq!(result.stderr, expected_defect.as_ref().unwrap().as_bytes());
                     assert_eq!(
                         fs::read(cwd.join("trace.txt")).unwrap(),
                         b"acquire\nsaved\nrelease\n"

@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -160,6 +164,7 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
         }
     }
     assert_eq!(programs.len(), 5);
+    let mut expected_defects = std::collections::BTreeMap::new();
     for (label, executable, argument, is_native) in programs {
         for case in cases {
             let label = format!("{label}-{}", case.name);
@@ -189,8 +194,14 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
                 if case.defect {
                     assert!(stderr.contains(case.native_defect), "{label}: {stderr}");
                 }
+                if case.exit == 70 {
+                    expected_defects.insert(
+                        case.name,
+                        diagnostics::ts_defect_from_native(&result.stderr),
+                    );
+                }
             } else if case.defect {
-                assert_eq!(stderr, "seseragi: runtime defect\n", "{label}");
+                assert_eq!(stderr, expected_defects[case.name], "{label}");
             } else if case.failure.is_none() {
                 assert!(stderr.is_empty(), "{label}: {stderr}");
             }

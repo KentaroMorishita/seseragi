@@ -46,6 +46,67 @@ pub(super) fn lower_core_expr_to_typescript(
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
+    if !imported_types.retains_runtime_sources() {
+        return lower_core_expr_unlocated(expr, imported_values, imported_types);
+    }
+    let locate = matches!(
+        expr,
+        CoreExpr::Call { .. }
+            | CoreExpr::Binary { .. }
+            | CoreExpr::Unary { .. }
+            | CoreExpr::EffectOperation { .. }
+            | CoreExpr::EffectInvoke { .. }
+    );
+    if !locate {
+        return lower_core_expr_unlocated(expr, imported_values, imported_types);
+    }
+    let origin = crate::core_expr_origin(&expr).clone();
+    let effect = match &expr {
+        CoreExpr::EffectOperation { .. } | CoreExpr::EffectInvoke { .. } => true,
+        CoreExpr::Call { type_ref, .. } => {
+            matches!(type_ref, CoreType::Named { name, .. } if name == "Effect")
+        }
+        _ => false,
+    };
+    let mut value = lower_core_expr_unlocated(expr, imported_values, imported_types);
+    if typescript_expr_contains_await(&value) {
+        return value;
+    }
+    if matches!(
+        value,
+        TypeScriptExpr::Binary { .. } | TypeScriptExpr::Unary { .. }
+    ) {
+        return value;
+    }
+    let source = TypeScriptExpr::Identifier {
+        name: imported_types.runtime_source(origin),
+    };
+    if let TypeScriptExpr::RuntimeCall { callee, arguments } = &mut value {
+        if crate::int_ops::runtime_int_operation_for_local_name(callee).is_some()
+            && arguments.len() == 2
+        {
+            arguments.push(source);
+            return value;
+        }
+    }
+    TypeScriptExpr::RuntimeCall {
+        callee: "$ssrg$atSource".to_owned(),
+        arguments: vec![
+            source,
+            TypeScriptExpr::Lambda {
+                parameter: String::new(),
+                body: Box::new(value),
+            },
+            TypeScriptExpr::Boolean { value: effect },
+        ],
+    }
+}
+
+fn lower_core_expr_unlocated(
+    expr: CoreExpr,
+    imported_values: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
+) -> TypeScriptExpr {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Integer { value, .. } => TypeScriptExpr::Number { value },

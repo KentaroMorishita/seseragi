@@ -35,6 +35,12 @@ pub(super) fn render(
 }
 
 fn tail(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> String {
+    if let Some(value) = super::source_action(expr) {
+        if matches!(value, TypeScriptExpr::Call { callee, arguments, .. } if callee == self_name && arguments.len() == arity)
+        {
+            return tail(value, self_name, arity);
+        }
+    }
     match expr {
         TypeScriptExpr::Conditional {
             condition,

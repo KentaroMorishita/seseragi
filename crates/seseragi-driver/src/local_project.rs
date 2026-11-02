@@ -188,6 +188,15 @@ fn compile_tool_roots(
             module.source(),
             test_output_path(identity),
         )
+        .with_runtime_source_path(
+            module.runtime_source_path(
+                project
+                    .packages()
+                    .package(identity.package())
+                    .expect("loaded test package")
+                    .root(),
+            ),
+        )
         .with_package_scope(logical_package_scope(identity.package()))
         .with_profile(profile)
     });
@@ -324,6 +333,15 @@ fn local_project_inputs(
             logical_module_id(identity),
             module.source(),
             output_path(identity),
+        )
+        .with_runtime_source_path(
+            module.runtime_source_path(
+                project
+                    .packages()
+                    .package(identity.package())
+                    .expect("loaded source package")
+                    .root(),
+            ),
         )
         .with_package_scope(logical_package_scope(identity.package()))
         .with_profile(profile)

@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 use seseragi_driver::{BuildProfile, CompileInput};
 use std::{
     fs,
@@ -49,6 +53,7 @@ fn check(source: &str, expected: &str, code: i32) {
         assert!(stderr.contains("body defect"), "{stderr}");
     }
 
+    let expected_defect = (code == 70).then(|| diagnostics::ts_defect_from_native(&output.stderr));
     for (label, profile) in [
         ("development", BuildProfile::Development),
         ("release", BuildProfile::Release),
@@ -107,7 +112,7 @@ fn check(source: &str, expected: &str, code: i32) {
             if code == 0 {
                 assert!(output.stderr.is_empty(), "{output:?}");
             } else {
-                assert_eq!(output.stderr, b"seseragi: runtime defect\n");
+                assert_eq!(output.stderr, expected_defect.as_ref().unwrap().as_bytes());
             }
         }
     }

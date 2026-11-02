@@ -47,6 +47,8 @@ pub struct TypeScriptModule {
     pub schema: u32,
     pub stage: String,
     pub module: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub runtime_sources: Vec<SourceSpan>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub higher_kinds: Option<TypeScriptKinds>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -761,6 +763,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
 #[derive(Clone, Debug, Default)]
 pub struct TypeScriptLoweringOptions {
     pub erased_newtype_constructors: std::collections::BTreeSet<String>,
+    pub runtime_sources: bool,
 }
 
 pub fn lower_core_module_to_typescript_ir_with_options(
@@ -773,6 +776,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     let mut module_imports = lower_module_imports(&module, plan)?;
     module_imports.type_names = module_imports
         .type_names
+        .with_runtime_sources(options.runtime_sources)
         .with_erased_newtypes(options.erased_newtype_constructors.clone());
     let foreign_opaque_names = foreign_opaque_type_names(&module.foreign_modules);
     let mut runtime_requirements = Vec::new();
@@ -1187,6 +1191,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         schema: module.schema,
         stage: "typescript-ir".to_owned(),
         module: module.module,
+        runtime_sources: module_imports.type_names.runtime_sources(),
         higher_kinds: module_imports.type_names.higher_kinds(),
         closed_display_dictionaries: module_imports.type_names.closed_display_dictionaries(),
         foreign_modules,

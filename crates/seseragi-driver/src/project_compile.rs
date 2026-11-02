@@ -29,6 +29,7 @@ mod provider_resolution_tests;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProjectModuleInput {
     pub source_name: String,
+    pub runtime_source_path: String,
     pub module_id: String,
     pub source: String,
     pub output_path: String,
@@ -43,8 +44,10 @@ impl ProjectModuleInput {
         source: impl Into<String>,
         output_path: impl Into<String>,
     ) -> Self {
+        let source_name = source_name.into();
         Self {
-            source_name: source_name.into(),
+            runtime_source_path: seseragi_project::runtime_source_path(&source_name),
+            source_name,
             module_id: module_id.into(),
             source: source.into(),
             output_path: output_path.into(),
@@ -55,6 +58,11 @@ impl ProjectModuleInput {
 
     pub fn with_profile(mut self, profile: seseragi_project::BuildProfile) -> Self {
         self.profile = profile;
+        self
+    }
+
+    pub fn with_runtime_source_path(mut self, path: impl Into<String>) -> Self {
+        self.runtime_source_path = seseragi_project::runtime_source_path(&path.into());
         self
     }
 
@@ -271,6 +279,7 @@ fn compile_project_inner(
             .expect("error-free frontend analyzed every module");
         let compiled_module = compile_analyzed_module_with_output_paths(
             analyzed,
+            &input.runtime_source_path,
             &input.source,
             &output_plan,
             output_paths,
@@ -1500,10 +1509,13 @@ mod tests {
             .generated
             .typescript
             .contains("__ssrg$method$Box$map as map"));
-        assert!(main
-            .generated
-            .typescript
-            .contains("get<number>(map<number>(box<number>(value))"));
+        assert!(
+            main.generated
+                .typescript
+                .contains("get<number>($ssrg$atSource($ssrg$source66, () => map<number>($ssrg$atSource($ssrg$source67, () => box<number>(value), false))((item: number) => _ssrg_int_add(item, item, $ssrg$source92)), false))"),
+            "{}",
+            main.generated.typescript
+        );
     }
 
     #[test]
