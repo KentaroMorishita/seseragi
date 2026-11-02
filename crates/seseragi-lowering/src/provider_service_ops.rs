@@ -196,6 +196,12 @@ macro_rules! process_operation {
 }
 
 macro_rules! child_process_operation {
+    ($name:literal, $feature:literal, $arity:literal) => {
+        RuntimeProviderServiceOperation {
+            source_arity: Some($arity),
+            ..child_process_operation!($name, $feature)
+        }
+    };
     ($name:literal, $feature:literal) => {
         operation!(
             concat!("std/child-process::", $name),
@@ -370,20 +376,20 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     child_process_operation!("ChildStdoutChunk", "event.stdout"),
     child_process_operation!("ChildStderrChunk", "event.stderr"),
     child_process_operation!("ChildExitedWith", "event.exited"),
-    child_process_operation!("command", "command"),
-    child_process_operation!("addArgument", "add-argument"),
-    child_process_operation!("addArguments", "add-arguments"),
-    child_process_operation!("inDirectory", "in-directory"),
-    child_process_operation!("setEnvironment", "set-environment"),
-    child_process_operation!("unsetEnvironment", "unset-environment"),
-    child_process_operation!("clearEnvironment", "clear-environment"),
-    child_process_operation!("terminationGrace", "termination-grace"),
-    child_process_operation!("outputBuffer", "output-buffer"),
-    child_process_operation!("captureLimit", "capture-limit"),
-    child_process_operation!("defaultCaptureLimit", "default-capture-limit"),
-    child_process_operation!("runStreaming", "run-streaming"),
-    child_process_operation!("runCaptured", "run-captured"),
-    child_process_operation!("runInherited", "run-inherited"),
+    child_process_operation!("command", "command", 1),
+    child_process_operation!("addArgument", "add-argument", 2),
+    child_process_operation!("addArguments", "add-arguments", 2),
+    child_process_operation!("inDirectory", "in-directory", 2),
+    child_process_operation!("setEnvironment", "set-environment", 3),
+    child_process_operation!("unsetEnvironment", "unset-environment", 2),
+    child_process_operation!("clearEnvironment", "clear-environment", 1),
+    child_process_operation!("terminationGrace", "termination-grace", 2),
+    child_process_operation!("outputBuffer", "output-buffer", 2),
+    child_process_operation!("captureLimit", "capture-limit", 1),
+    child_process_operation!("defaultCaptureLimit", "default-capture-limit", 1),
+    child_process_operation!("runStreaming", "run-streaming", 2),
+    child_process_operation!("runCaptured", "run-captured", 3),
+    child_process_operation!("runInherited", "run-inherited", 1),
     random_operation!("EmptyRandomIntRange", "error.empty-range"),
     random_operation!("InvalidProbability", "error.invalid-probability"),
     random_operation!("NonPositiveRandomSize", "config.non-positive-size"),
@@ -1014,6 +1020,57 @@ use crate::CoreType;
 #[cfg(test)]
 mod tests {
     use super::runtime_provider_service_operation;
+
+    #[test]
+    fn child_process_source_stages_match_the_standard_interface() {
+        use seseragi_syntax::InterfaceType;
+
+        let target = seseragi_project::standard_module_target("std/child-process").unwrap();
+        for (name, arity) in [
+            ("command", 1),
+            ("addArgument", 2),
+            ("addArguments", 2),
+            ("inDirectory", 2),
+            ("setEnvironment", 3),
+            ("unsetEnvironment", 2),
+            ("clearEnvironment", 1),
+            ("terminationGrace", 2),
+            ("outputBuffer", 2),
+            ("captureLimit", 1),
+            ("defaultCaptureLimit", 1),
+            ("runStreaming", 2),
+            ("runCaptured", 3),
+            ("runInherited", 1),
+        ] {
+            let canonical = format!("std/child-process::{name}");
+            let operation = runtime_provider_service_operation(&canonical).unwrap();
+            let export = target
+                .interface()
+                .exports
+                .iter()
+                .find(|export| export.symbol == canonical)
+                .unwrap();
+            assert!(export.scheme.constraints.is_empty());
+            let mut remaining = &export.scheme.type_ref;
+            let mut actual = 0;
+            while let InterfaceType::Function { result, .. } = remaining {
+                actual += 1;
+                remaining = result;
+            }
+            assert_eq!(actual, arity, "{canonical}");
+            assert_eq!(operation.source_arity, Some(arity), "{canonical}");
+            assert!(
+                runtime_provider_service_operation(&format!("fixture/child-process::{name}"))
+                    .is_none()
+            );
+        }
+        assert!(
+            runtime_provider_service_operation("std/child-process::SearchPath")
+                .unwrap()
+                .source_arity
+                .is_none()
+        );
+    }
 
     #[test]
     fn clock_sleep_source_stage_matches_the_canonical_interface() {

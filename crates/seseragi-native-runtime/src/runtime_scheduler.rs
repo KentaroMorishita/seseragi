@@ -168,6 +168,7 @@ struct NativeTask {
     waiting: Option<NativeWait>,
     file: Option<NativeFileTask>,
     stdin: Option<NativeStdinTask>,
+    child: Option<NativeChildTask>,
     timer: Option<NativeTimer>,
     process_signal: Option<usize>,
 }
@@ -210,6 +211,7 @@ impl NativeScheduler {
                 waiting: None,
                 file: None,
                 stdin: None,
+                child: None,
                 timer: None,
                 process_signal: None,
             },
@@ -240,7 +242,10 @@ impl NativeScheduler {
         }
         let mut timeout = self.next_timer_wait();
         if self.roots.values().any(|process| process.borrow().active())
-            || self.tasks.values().any(|task| task.stdin.is_some())
+            || self
+                .tasks
+                .values()
+                .any(|task| task.stdin.is_some() || task.child.is_some())
         {
             timeout = Some(
                 timeout
@@ -272,6 +277,7 @@ impl NativeScheduler {
         self.poll_process_signals();
         self.poll_files();
         self.poll_stdin();
+        self.poll_children();
         self.poll_timers();
         let Some(id) = self.ready.pop_front() else {
             for process in self.roots.values() {
@@ -290,6 +296,7 @@ impl NativeScheduler {
                 | NativeTurn::FileSystem(..)
                 | NativeTurn::Stdin(..)
                 | NativeTurn::ProcessSignalPull(..)
+                | NativeTurn::ChildProcess(..)
         );
         match turn {
             NativeTurn::Runnable => self.ready.push_back(id),
@@ -299,6 +306,15 @@ impl NativeScheduler {
             NativeTurn::FileSystem(operation, captures) => {
                 match NativeFileTask::start(operation, captures) {
                     Ok(file) => task.file = Some(file),
+                    Err(exit) => {
+                        task.machine.resume(Err(exit));
+                        self.ready.push_back(id);
+                    }
+                }
+            }
+            NativeTurn::ChildProcess(operation, captures) => {
+                match NativeChildTask::start(operation, captures) {
+                    Ok(child) => task.child = Some(child),
                     Err(exit) => {
                         task.machine.resume(Err(exit));
                         self.ready.push_back(id);
@@ -389,6 +405,7 @@ impl NativeScheduler {
             || task.waiting.is_some()
             || task.file.is_some()
             || task.stdin.is_some()
+            || task.child.is_some()
             || task.timer.is_some()
             || task.process_signal.is_some();
         self.tasks.insert(id, task);
@@ -445,6 +462,9 @@ impl NativeScheduler {
             task.machine.resume(Err(NativeExit::Cancelled));
             self.ready.push_back(id);
         }
+        if let Some(child) = &mut task.child {
+            child.cancelled = true;
+        }
         if let Some(file) = &task.file {
             // A blocking OS call has no invented abort. Observe it and join
             // its worker after close, before running language finalizers.
@@ -471,6 +491,15 @@ impl NativeScheduler {
                     eprintln!("native filesystem: {note}");
                 }
                 task.file = None;
+                task.machine.resume(outcome);
+                self.ready.push_back(*id);
+            }
+        }
+    }
+    fn poll_children(&mut self) {
+        for (id, task) in &mut self.tasks {
+            if let Some(outcome) = task.child.as_mut().and_then(NativeChildTask::poll) {
+                task.child = None;
                 task.machine.resume(outcome);
                 self.ready.push_back(*id);
             }

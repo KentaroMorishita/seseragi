@@ -14,6 +14,7 @@ pub(super) const ERROR_TYPES: &[&str] = &[
     "std/bytes::BytesSliceError",
     "std/child-process::ChildProcessConfigError",
     "std/child-process::ChildProcessError",
+    "std/child-process::ChildExitStatus",
     "std/collection::SizeError",
     "std/decimal::DecimalArithmeticError",
     "std/decimal::DecimalContextError",
@@ -62,6 +63,8 @@ const RELATED_TYPES: &[&str] = &[
     "std/process::ProcessSignal",
     "std/child-process::ChildOutputChannel",
     "std/child-process::Executable",
+    "std/child-process::ChildInput",
+    "std/child-process::ChildEvent",
     "std/web/storage::StorageArea",
 ];
 pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {

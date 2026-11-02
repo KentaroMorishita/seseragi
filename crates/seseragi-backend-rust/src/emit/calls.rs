@@ -79,6 +79,9 @@ impl Backend<'_> {
         if let Some(value) = self.filesystem_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.child_process_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.process_call(expr, scope)? {
             return Ok(value);
         }

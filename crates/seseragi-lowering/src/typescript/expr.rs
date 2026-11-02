@@ -178,6 +178,9 @@ pub(super) fn lower_core_expr_to_typescript(
                         name.as_str(),
                         "std/test::equal" | "std/test::notEqual" | "std/test::expectFailure"
                     )
+                    || runtime_provider_service_operation(&name).is_some_and(|operation| {
+                        operation.source_arity.is_some_and(|arity| arity > 1)
+                    })
                 {
                     // A bare function reference is a partial application with
                     // no source arguments. Keep evidence and currying identical

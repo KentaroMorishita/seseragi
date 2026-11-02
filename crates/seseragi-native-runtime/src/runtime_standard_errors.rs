@@ -181,6 +181,11 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
                 }
             ),
         },
+        "std/child-process::ChildExitStatus" => match tag {
+            "ChildSignaled" => format!("{tag} {}", native_error_tag(&payload)),
+            "ChildHostTerminated" => format!("{tag} {}", native_json_string(native_text(&payload))),
+            _ => format!("{tag} {}", payload.render()),
+        },
         "std/child-process::ChildProcessError" => match tag {
             "ChildInputAfterClose" => tag.into(),
             "UnsupportedChildSignal" => format!("{tag} {}", native_error_tag(&payload)),

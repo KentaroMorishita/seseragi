@@ -100,6 +100,7 @@ impl V {
             Self::Regex(v) => v.id(),
             Self::Bytes(v) => v.id(),
             Self::File(v) => v.id(),
+            Self::ChildProcess(v) => v.id(),
             Self::PathResource(v) => v.id(),
             Self::Tuple(v) | Self::Array(v) => v.id(),
             Self::Map(v) | Self::Set(v) => v.id(),

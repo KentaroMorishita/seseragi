@@ -24,6 +24,7 @@ enum Instruction {
     FileSystem(NativeFileOperation),
     Stdin(NativeStdinOperation),
     ProcessSignalPull,
+    ChildProcess(NativeChildOperation),
     SignalTransaction,
     SignalSubscribe,
 }
@@ -210,6 +211,7 @@ enum NativeTurn {
     FileSystem(NativeFileOperation, Vec<V>),
     Stdin(NativeStdinOperation, Vec<V>),
     ProcessSignalPull(usize),
+    ChildProcess(NativeChildOperation, Vec<V>),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -256,6 +258,7 @@ impl NativeMachine {
                                 | Instruction::FileSystem(_)
                                 | Instruction::Stdin(_)
                                 | Instruction::ProcessSignalPull
+                                | Instruction::ChildProcess(_)
                         )
                     {
                         stack.push(NativeFrame::Source(source));
@@ -292,6 +295,13 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::FileSystem(operation, c);
+                            }
+                        }
+                        Instruction::ChildProcess(operation) => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::ChildProcess(operation, c);
                             }
                         }
                         Instruction::Stdin(operation) => {
