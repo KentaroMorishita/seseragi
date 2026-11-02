@@ -85,6 +85,9 @@ impl Backend<'_> {
         if let Some(value) = self.text_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.regex_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.html_call(expr, scope)? {
             return Ok(value);
         }
