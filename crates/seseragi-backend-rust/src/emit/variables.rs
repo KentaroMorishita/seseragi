@@ -109,6 +109,9 @@ impl Backend<'_> {
         if let Some(value) = self.maybe_transformer_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.state_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.either_operation_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
