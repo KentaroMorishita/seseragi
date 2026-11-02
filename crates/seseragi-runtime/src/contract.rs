@@ -510,6 +510,7 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             "std/random::RandomConfigError" => Some(dictionary("randomConfigErrorShow")),
             "std/entropy::EntropyConfigError" => Some(dictionary("entropyConfigErrorShow")),
             "std/entropy::EntropyError" => Some(dictionary("entropyErrorShow")),
+            "std/time::DurationError" => Some(dictionary("durationErrorShow")),
             "std/time::DateTimeError" => Some(dictionary("dateTimeErrorShow")),
             "std/time::TimeZoneError" => Some(dictionary("timeZoneErrorShow")),
             _ => None,
@@ -650,6 +651,74 @@ fails DomRuntimeError<Never> =
                 if module == "@seseragi/runtime/show" && export == "intShow"
                     && arguments.is_empty()
         ));
+    }
+
+    #[test]
+    fn duration_error_main_contracts_select_the_standard_show_dictionary() {
+        for source in [
+            "import * as effects from \"std/effect\"\nimport * as time from \"std/time\"\npub effect fn main -> Unit fails time.DurationError = effects.fail time.DurationOutsideRange\n",
+            "import * as effects from \"std/effect\"\nimport * as time from \"std/time\"\npub effect fn main -> Unit fails time.DurationError = effects.fail (time.NegativeDuration (-1))\n",
+            "import { DurationError, DurationOutsideRange } from \"std/time\"\npub effect fn main -> Unit fails DurationError = fail DurationOutsideRange\n",
+        ] {
+            let module_id = "test/main";
+            let compiled =
+                compile_module(CompileInput::new("main.ssrg", module_id, source)).unwrap();
+            let expected = FailureRenderer::Show {
+                module: "@seseragi/runtime/show".to_owned(),
+                export: "durationErrorShow".to_owned(),
+                arguments: Vec::new(),
+            };
+            assert_eq!(main_contract(&compiled).unwrap().failure_renderer, expected);
+            let project = CompiledProject {
+                order: vec![module_id.to_owned()],
+                modules: BTreeMap::from([(module_id.to_owned(), compiled)]),
+                provider_resolution: None,
+            };
+            assert_eq!(
+                project_main_contract(&project, module_id)
+                    .unwrap()
+                    .failure_renderer,
+                expected
+            );
+        }
+    }
+
+    #[test]
+    fn duration_error_dictionary_requires_its_canonical_owner_and_zero_arity() {
+        let standard = TypedType::ExternalNamed {
+            name: "time.DurationError".to_owned(),
+            canonical: "std/time::DurationError".to_owned(),
+            arguments: Vec::new(),
+        };
+        assert_eq!(
+            standard_show_dictionary(&standard),
+            Some(DisplayDictionary {
+                module: "@seseragi/runtime/show".to_owned(),
+                export: "durationErrorShow".to_owned(),
+                arguments: Vec::new(),
+            })
+        );
+        for unrelated in [
+            TypedType::Named {
+                name: "DurationError".to_owned(),
+                arguments: Vec::new(),
+            },
+            TypedType::ExternalNamed {
+                name: "DurationError".to_owned(),
+                canonical: "app/errors::DurationError".to_owned(),
+                arguments: Vec::new(),
+            },
+            TypedType::ExternalNamed {
+                name: "DurationError".to_owned(),
+                canonical: "std/time::DurationError".to_owned(),
+                arguments: vec![TypedType::Named {
+                    name: "Int".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            },
+        ] {
+            assert_eq!(standard_show_dictionary(&unrelated), None);
+        }
     }
 
     #[test]
