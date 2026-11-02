@@ -457,6 +457,12 @@ fn type_do_block(
                 if let Some(issue) = binding.mismatch {
                     issues.calls.push(issue);
                 }
+                if let Some(issue) = binding.expression.conditional_issue.clone() {
+                    issues.conditionals.push(issue);
+                }
+                if let Some(issue) = binding.expression.pure_call_issue.clone() {
+                    issues.calls.push(issue);
+                }
                 if let Some(issue) = binding.expression.array_issue.clone() {
                     issues.arrays.push(issue);
                 }
@@ -477,6 +483,9 @@ fn type_do_block(
                 }
                 locals.extend(binding.pattern.locals.clone());
                 issues.patterns.extend(binding.pattern.issues);
+                issues
+                    .patterns
+                    .extend(binding.expression.match_issues.clone());
                 statements.push(TypedDoStatement::PureLet {
                     constraints: binding
                         .inferred_callable

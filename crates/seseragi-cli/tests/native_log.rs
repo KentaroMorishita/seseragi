@@ -118,6 +118,65 @@ fn programs(text: &str, directory: &Path) -> Vec<Program> {
 }
 
 #[test]
+fn saving_log_functions_without_calling_them_is_silent_on_all_targets() {
+    for declaration in [
+        "let saved = logs.log\npub effect fn main = effects.succeed ()",
+        "pub effect fn main = { let saved = logs.log; effects.succeed () }",
+        "pub effect fn main = do { let saved = logs.log; effects.succeed () }",
+    ] {
+        let scratch = tempfile::tempdir().unwrap();
+        let directory = scratch.path();
+        let text = format!(
+            "import * as logs from \"std/log\"\nimport * as effects from \"std/effect\"\n{declaration}\n"
+        );
+        for program in programs(&text, directory) {
+            let output = successful(bounded(&mut program.command(), directory));
+            assert!(output.stdout.is_empty(), "{}: {output:?}", program.name);
+            assert!(output.stderr.is_empty(), "{}: {output:?}", program.name);
+        }
+    }
+}
+
+#[test]
+fn saved_log_functions_record_their_events_on_all_targets() {
+    let scratch = tempfile::tempdir().unwrap();
+    let directory = scratch.path();
+    let text = include_str!(
+        "../../../examples/spec/fixtures/rust-backend-regressions/saved-log-functions.ssrg"
+    );
+    let mut expected = ["top-level", "block", "do", "雪🙂\n\"\\", "returned"]
+        .into_iter()
+        .map(|message| {
+            serde_json::json!({
+                "level": "info", "message": message,
+                "fields": [["same", message], ["same", 42]],
+            })
+        })
+        .collect::<Vec<_>>();
+    expected.push(serde_json::json!({"level": "trace", "message": "", "fields": []}));
+    let cold = serde_json::json!({
+        "level": "info", "message": "cold", "fields": [["same", "cold"], ["same", 42]],
+    });
+    expected.extend([cold.clone(), cold]);
+    let mut stderr = None;
+    for program in programs(text, directory) {
+        let output = successful(bounded(&mut program.command(), directory));
+        assert!(output.stdout.is_empty(), "{}: {output:?}", program.name);
+        let events = String::from_utf8(output.stderr.clone())
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(events, expected, "{}", program.name);
+        if let Some(stderr) = &stderr {
+            assert_eq!(&output.stderr, stderr, "{}", program.name);
+        } else {
+            stderr = Some(output.stderr);
+        }
+    }
+}
+
+#[test]
 fn empty_and_nonempty_log_fields_match_strict_ts_bun_node_and_native() {
     for (fields, expected) in [
         (
@@ -211,7 +270,26 @@ fn log_write_failure_matches_ts_error_kind_message_and_debug_redaction() {
     fs::write(&wrapper, "import { pathToFileURL } from 'node:url';\nprocess.stderr.on('error', () => {});\nawait import(pathToFileURL(process.argv[2]).href);\n").unwrap();
     let shell = runtime("sh", directory);
     let inline = "import * as logs from \"std/log\"\nimport * as effects from \"std/effect\"\nimport { LogEvent } from \"std/log\"\npub effect fn main = do { result <- effects.attempt (logs.log (LogEvent { level: logs.LogInfo, message: \"test\", fields: `[] })); match result { Left error -> do { println (show error); println (debug error) }; Right _ -> println \"unexpected success\" } }\n";
-    for text in [text, inline] {
+    let top_level = text
+        .replace(
+            "pub effect fn main",
+            "let saved = logs.log\npub effect fn main",
+        )
+        .replace("effects.attempt (logs.log", "effects.attempt (saved");
+    let block = text
+        .replace(
+            "pub effect fn main = do {",
+            "pub effect fn main = { let saved = logs.log; do {",
+        )
+        .replace("effects.attempt (logs.log", "effects.attempt (saved")
+        + "}\n";
+    let do_block = text
+        .replace(
+            "pub effect fn main = do {",
+            "pub effect fn main = do { let saved = logs.log;",
+        )
+        .replace("effects.attempt (logs.log", "effects.attempt (saved");
+    for text in [text, inline, &top_level, &block, &do_block] {
         for program in programs(text, directory) {
             let mut command = Command::new(&shell);
             command
