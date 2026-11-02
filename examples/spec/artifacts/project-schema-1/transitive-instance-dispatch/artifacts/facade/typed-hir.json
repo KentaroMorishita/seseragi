@@ -180,6 +180,37 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "T"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {

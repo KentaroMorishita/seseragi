@@ -609,22 +609,30 @@ pub(super) fn evidence_parameters(
 }
 
 pub(super) fn evidence_type(constraint: &crate::TypeScriptInstanceConstraint) -> String {
-    let dictionary = match constraint.trait_identity.as_deref() {
-        Some("std/prelude::JsonEncode") if constraint.name == "JsonEncode" => "JsonEncode",
-        Some("std/prelude::JsonDecode") if constraint.name == "JsonDecode" => "JsonDecode",
+    let (module, dictionary) = match constraint.trait_identity.as_deref() {
+        Some("std/prelude::Eq") if constraint.name == "Eq" => ("@seseragi/runtime/equality", "Eq"),
+        Some("std/prelude::Ord") if constraint.name == "Ord" => {
+            ("@seseragi/runtime/equality", "Ord")
+        }
+        Some("std/prelude::JsonEncode") if constraint.name == "JsonEncode" => {
+            ("@seseragi/runtime/json", "JsonEncode")
+        }
+        Some("std/prelude::JsonDecode") if constraint.name == "JsonDecode" => {
+            ("@seseragi/runtime/json", "JsonDecode")
+        }
         _ => return ERASED_EVIDENCE_TYPE.to_owned(),
     };
     let [argument] = constraint.arguments.as_slice() else {
         return ERASED_EVIDENCE_TYPE.to_owned();
     };
-    // Keep the selected value type at every evidence stage. An index signature
-    // does not promise the required method to the strict JSON runtime API.
-    // A type-only import also works in local functions and instance factories
-    // whose enclosing source signature does not otherwise mention Json.
-    format!(
-        "import(\"@seseragi/runtime/json\").{dictionary}<{}>",
-        render_typescript_type(argument)
-    )
+    // Preserve selected method types for runtime calls and inherited dictionaries.
+    let argument = render_typescript_type(argument);
+    let evidence = format!("import({module:?}).{dictionary}<{argument}>");
+    if dictionary == "Ord" {
+        format!("{evidence} & import(\"@seseragi/runtime/equality\").Eq<{argument}>")
+    } else {
+        evidence
+    }
 }
 
 fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
@@ -1158,6 +1166,7 @@ fn render_arrow_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -
 fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
     match expr {
         TypeScriptExpr::Undefined => "undefined".to_owned(),
+        TypeScriptExpr::EmptyDictionary => "({})".to_owned(),
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::Number { value } => value.clone(),
         TypeScriptExpr::String { value } => format!("{value:?}"),

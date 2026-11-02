@@ -1,0 +1,63 @@
+import * as effects from "std/effect"
+
+type Renderer<A> = | Renderer (A -> String)
+
+fn render<A> prefix: String -> renderer: Renderer<A> -> value: A -> String where Show<A> =
+  match renderer { Renderer apply -> prefix + apply value }
+
+fn returned<A> prefix: String -> renderer: Renderer<A> -> (A -> String) where Show<A> =
+  \value -> render prefix renderer value
+
+fn combine<A, B> prefix: String -> left: Renderer<A> -> right: Renderer<B> -> first: A -> second: B -> String where Show<A>, Show<B>, Eq<A> =
+  if first == first then render prefix left first + render ":" right second else "unreachable"
+
+fn forward<T> renderer: Renderer<T> -> value: T -> String where Show<T> = render "generic:" renderer value
+
+fn callback<A> prefix: String -> apply: (A -> String) -> value: A -> String where Show<A> = prefix + apply value
+
+trait Label<A> { fn label value: A -> String }
+instance Label<Int> { fn label value: Int -> String = show value }
+fn labeled<A> prefix: String -> renderer: Renderer<A> -> value: A -> String where Label<A> =
+  match renderer { Renderer apply -> prefix + apply value + ":" + label value }
+
+fn transform<E, A, B> callback: (A -> Either<E, B>) -> value: A -> (Int -> Either<E, B>) where Show<A> =
+  \_stage: Int -> callback value
+fn choose value: Int -> Either<String, Int> = Right value
+fn extract result: Either<String, Int> -> String = match result { Left error -> error; Right value -> show value }
+
+effect fn renderEffect<A> prefix: String -> renderer: Renderer<A> -> value: A -> String where Show<A> =
+  effects.succeed (render prefix renderer value)
+
+fn localProbe renderer: Renderer<Int> -> String = {
+  fn local<A> prefix: String -> renderer: Renderer<A> -> value: A -> String where Show<A> =
+    render prefix renderer value
+  local "local:" renderer 42
+}
+
+pub effect fn main = do {
+  let integer = Renderer (\value: Int -> show value)
+  let text = Renderer (\value: String -> value)
+  let prefix: Renderer<Int> -> Int -> String = render "prefix:"
+  let saved = render "saved:" integer
+  let callable: String -> Renderer<Int> -> Int -> String = render
+  let returnedSaved = returned "returned:" integer
+  let callbackSaved: (Int -> String) -> Int -> String = callback "callback:"
+  let transformed = transform choose
+  println (render "direct:" integer 42)
+  println (render<Int> "explicit:" integer 42)
+  println (prefix integer 42)
+  println (saved 42)
+  println (callable "callable:" integer 42)
+  println (returnedSaved 42)
+  println (returned "returned-direct:" integer 42)
+  println (combine "combined:" integer text 42 "ok")
+  println (forward integer 42)
+  println (localProbe integer)
+  println (callback "callback-direct:" (\value: Int -> show value) 42)
+  println (callbackSaved (\value: Int -> show value) 42)
+  println (labeled "custom:" integer 42)
+  println (extract (transform choose 7 42))
+  println (extract (transformed 7 42))
+  result <- renderEffect "effect:" integer 42
+  println result
+}

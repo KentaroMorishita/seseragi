@@ -17,6 +17,9 @@ instance Show<Key> { fn show value: Key -> String = match value { Key n -> `key:
 instance Debug<Key> { fn debug value: Key -> String = match value { Key n -> `debug:${n}` } }
 fn equal<A> left: A -> right: A -> Bool where Eq<A> = left == right
 fn inherited<A> left: A -> right: A -> Bool where Ord<A> = equal<A> left right
+fn equalFromOrd<A> left: A -> right: A -> Bool where Ord<A> = left == right
+fn unequalFromOrd<A> left: A -> right: A -> Bool where Ord<A> = left != right
+fn nonEmptyEqualFromOrd<A> left: NonEmptyList<A> -> right: NonEmptyList<A> -> Bool where Ord<A> = equalFromOrd left right
 fn ordered<A> left: A -> right: A -> Ordering where Ord<A> = compare left right
 fn order value: Ordering -> String = match value { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
 fn hashed<A> value: A -> Int where Hash<A> = hash value
@@ -61,6 +64,8 @@ pub fn probe -> String = {
   let validationPartial = validationSaved invalid
   let nelSaved: NonEmptyList<Key> -> NonEmptyList<Key> -> Bool = eq
   let nelPartial = nelSaved a
+  let ordEqualSaved: NonEmptyList<Key> -> NonEmptyList<Key> -> Bool = equalFromOrd
+  let ordEqualPartial = ordEqualSaved a
   let emptyMap: maps.Map<Key, List<Key>> = maps.empty ()
   let emptySet: sets.Set<Key> = sets.empty ()
   let hashSaved: NonEmptyList<Int> -> Int = hashed
@@ -97,7 +102,20 @@ pub fn probe -> String = {
     show (eitherPartial otherLeft), show (validationPartial otherInvalid), show (nelPartial b),
     show (a < (append (singleton (Key 1)) (singleton (Key 3)))),
     show (False < True), show ("🙂" > "\u{e000}"), show (() <= ()),
-    show ((1, 2) < (1, 3)), show ((1, 2) >= (1, 2))
+    show ((1, 2) < (1, 3)), show ((1, 2) >= (1, 2)),
+    show (equalFromOrd (singleton 1) (singleton 1)),
+    show (equalFromOrd (singleton 1) (singleton 2)),
+    show (equalFromOrd a b), show (unequalFromOrd a b),
+    show (unequalFromOrd a (singleton (Key 1))),
+    show (equalFromOrd a (singleton (Key 1))),
+    show (equalFromOrd (singleton (Key 1)) a),
+    show (equalFromOrd a (append (singleton (Key 1)) (singleton (Key 3)))),
+    show (equalFromOrd a (append (singleton (Key 2)) (singleton (Key 2)))),
+    show (inherited a b), show (ordEqualSaved a b), show (ordEqualPartial b),
+    show (equalFromOrd (singleton a) (singleton b)),
+    show (equalFromOrd (singleton a) (singleton (singleton (Key 1)))),
+    show (nonEmptyEqualFromOrd a b),
+    show (nonEmptyEqualFromOrd a (singleton (Key 1)))
   ]
 }
 pub effect fn main = println (probe ())

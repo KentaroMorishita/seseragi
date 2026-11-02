@@ -578,6 +578,7 @@ fn expression(value: &TypeScriptExpr) -> Names {
             }
         }
         TypeScriptExpr::Undefined
+        | TypeScriptExpr::EmptyDictionary
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::String { .. }

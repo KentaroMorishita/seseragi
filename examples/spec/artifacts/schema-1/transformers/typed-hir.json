@@ -1026,6 +1026,70 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            {
+              "name": "M",
+              "arity": 1
+            },
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "mt.MaybeT",
+            "canonical": "std/transformer/maybe::MaybeT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "M",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1149,6 +1213,63 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "R",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "rt.ReaderT",
+            "canonical": "std/transformer/reader::ReaderT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "M",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1570,6 +1691,52 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "mt.MaybeT",
+            "canonical": "std/transformer/maybe::MaybeT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1723,6 +1890,71 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            {
+              "name": "F",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "external-named",
+              "name": "mt.MaybeT",
+              "canonical": "std/transformer/maybe::MaybeT",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "external-named",
+              "name": "mt.MaybeT",
+              "canonical": "std/transformer/maybe::MaybeT",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1986,6 +2218,91 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "E",
+            {
+              "name": "M",
+              "arity": 1
+            },
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "et.EitherT",
+            "canonical": "std/transformer/either::EitherT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -2146,6 +2463,58 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "external-named",
+              "name": "Unit",
+              "canonical": "std/prelude::Unit",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "rt.ReaderT",
+            "canonical": "std/transformer/reader::ReaderT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -2425,6 +2794,129 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "R",
+            {
+              "name": "M",
+              "arity": 1
+            },
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "external-named",
+              "name": "rt.ReaderT",
+              "canonical": "std/transformer/reader::ReaderT",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "R",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "rt.ReaderT",
+            "canonical": "std/transformer/reader::ReaderT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "external-named",
+              "name": "rt.ReaderT",
+              "canonical": "std/transformer/reader::ReaderT",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -2585,6 +3077,63 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "S",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "st.StateT",
+            "canonical": "std/transformer/state::StateT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "S",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "S",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -2746,6 +3295,63 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "W",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "W",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "wt.WriterT",
+            "canonical": "std/transformer/writer::WriterT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "W",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -4067,6 +4673,52 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  {
+                    "name": "M",
+                    "arity": 1
+                  }
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "external-named",
+                  "name": "mt.MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": []
+                  }
+                ]
+              },
               "evidence": [
                 {
                   "constraint": {
@@ -4420,6 +5072,79 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "S",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "S",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "S",
+                "arguments": []
+              }
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "st.StateT",
+            "canonical": "std/transformer/state::StateT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "S",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -4617,6 +5342,63 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "S",
+              {
+                "name": "M",
+                "arity": 1
+              }
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "external-named",
+              "name": "st.StateT",
+              "canonical": "std/transformer/state::StateT",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": []
+              }
+            ]
+          },
           "evidence": [
             {
               "constraint": {
@@ -4865,6 +5647,63 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "W",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "W",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "wt.WriterT",
+            "canonical": "std/transformer/writer::WriterT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "W",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -5043,6 +5882,63 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "W",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "W",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "wt.WriterT",
+            "canonical": "std/transformer/writer::WriterT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "W",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -5708,6 +6604,58 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            {
+              "name": "M",
+              "arity": 1
+            },
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "mt.MaybeT",
+            "canonical": "std/transformer/maybe::MaybeT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -6027,6 +6975,113 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            {
+              "name": "M",
+              "arity": 1
+            },
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "M",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "mt.MaybeT",
+            "canonical": "std/transformer/maybe::MaybeT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Console",
+                        "canonical": "std/prelude::Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "external-named",
+                  "name": "ConsoleError",
+                  "canonical": "std/prelude::ConsoleError",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Console",
+                        "canonical": "std/prelude::Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "external-named",
+                  "name": "ConsoleError",
+                  "canonical": "std/prelude::ConsoleError",
+                  "arguments": []
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -6740,6 +7795,63 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "W",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "W",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "wt.WriterT",
+            "canonical": "std/transformer/writer::WriterT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "W",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Log",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Log",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -6959,6 +8071,63 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "W",
+            {
+              "name": "M",
+              "arity": 1
+            }
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "W",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "wt.WriterT",
+            "canonical": "std/transformer/writer::WriterT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "W",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Log",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Log",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -10989,6 +12158,113 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "W",
+                              {
+                                "name": "M",
+                                "arity": 1
+                              },
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "external-named",
+                                "name": "wt.WriterT",
+                                "canonical": "std/transformer/writer::WriterT",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "W",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "M",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ],
+                            "result": {
+                              "kind": "external-named",
+                              "name": "wt.WriterT",
+                              "canonical": "std/transformer/writer::WriterT",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "W",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "M",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "tuple",
+                                  "elements": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "W",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "external-named",
+                                "name": "wt.WriterT",
+                                "canonical": "std/transformer/writer::WriterT",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Maybe",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "evidence": [
                             {
                               "constraint": {

@@ -239,7 +239,7 @@ pub fn run left: Int -> right: Int -> Int =
         .typescript
         .contains("__ssrg$instance$Difference$0"));
     assert!(generated.typescript.contains(
-        "__ssrg$operator$3c5e3e(__ssrg$partial$0)(__ssrg$partial$1)(__ssrg$instance$Difference$0)"
+        "__ssrg$operator$3c5e3e<number>(__ssrg$partial$0)(__ssrg$partial$1)(__ssrg$instance$Difference$0)"
     ));
     assert!(!generated.typescript.contains("<^>"));
 }
@@ -324,7 +324,7 @@ pub fn status value: Badge -> String = describe value
         .typescript
         .contains("import { describe } from \"./domain.js\""));
     assert!(generated.typescript.contains(
-        "export const status = (value: Badge) => ((describe(value)(__ssrg$instance$Ready$0)) as string)"
+        "export const status = (value: Badge) => ((describe<Badge>(value)(__ssrg$instance$Ready$0)) as string)"
     ));
     assert_only_unicode_runtime_import(&generated.typescript);
 }
@@ -384,7 +384,7 @@ pub fn status value: Unit -> String = describe Active
         generated.typescript
     );
     assert!(generated.typescript.contains(
-        "export const status = (value: undefined) => ((describe(Active)(__ssrg$instance$Ready$0)) as string)"
+        "export const status = (value: undefined) => ((describe<Badge>(Active)(__ssrg$instance$Ready$0)) as string)"
     ));
     assert_only_unicode_runtime_import(&generated.typescript);
 }
@@ -453,7 +453,7 @@ pub fn status value: Unit -> String = describe Active
         generated.typescript
     );
     assert!(generated.typescript.contains(
-        "export const status = (value: undefined) => ((describe(Active)(__ssrg$instance$Ready$0)) as string)"
+        "export const status = (value: undefined) => ((describe<Badge>(Active)(__ssrg$instance$Ready$0)) as string)"
     ));
 
     let missing =

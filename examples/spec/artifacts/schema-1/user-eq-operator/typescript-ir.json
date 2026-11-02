@@ -426,6 +426,13 @@
                           "kind": "identifier",
                           "name": "__ssrg$instance$Eq$0"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Status",
+                          "arguments": []
+                        }
                       ]
                     },
                     "type": {

@@ -516,12 +516,12 @@ fn passes_a_custom_operator_as_a_curried_function_value() {
 
     assert!(compiled.diagnostics.diagnostics.is_empty());
     assert!(compiled.generated.typescript.contains(
-        "__ssrg$operator$3c5e3e(__ssrg$partial$0)(__ssrg$partial$1)(__ssrg$instance$Difference$0)"
+        "__ssrg$operator$3c5e3e<number>(__ssrg$partial$0)(__ssrg$partial$1)(__ssrg$instance$Difference$0)"
     ));
     assert!(compiled
         .generated
         .typescript
-        .contains("const __ssrg$partial$stage: (argument: number) => (argument: unknown) => number = ((__ssrg$operator$3c5e3e(10))"));
+        .contains("const __ssrg$partial$stage: (argument: number) => (argument: unknown) => number = ((__ssrg$operator$3c5e3e<number>(10))"));
     assert!(compiled.generated.typescript.contains(
         "return (__ssrg$partial$0: number) => __ssrg$partial$stage(__ssrg$partial$0)(__ssrg$instance$Difference$0)"
     ));

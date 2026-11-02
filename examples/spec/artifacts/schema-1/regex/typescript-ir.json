@@ -461,6 +461,13 @@
                     "kind": "runtime-reference",
                     "name": "_ssrg_regexCompileErrorDebug"
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "RegexCompileError",
+                    "arguments": []
+                  }
                 ]
               },
               "type": {
@@ -579,6 +586,13 @@
                   {
                     "kind": "runtime-reference",
                     "name": "_ssrg_regexCompileErrorDebug"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "RegexCompileError",
+                    "arguments": []
                   }
                 ]
               },
@@ -2397,6 +2411,13 @@
                               "kind": "runtime-reference",
                               "name": "_ssrg_regexCompileErrorKindEq"
                             }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "RegexCompileErrorKind",
+                              "arguments": []
+                            }
                           ]
                         },
                         "type": {
@@ -2432,6 +2453,13 @@
                         {
                           "kind": "runtime-reference",
                           "name": "_ssrg_regexCompileErrorKindDebug"
+                        }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "RegexCompileErrorKind",
+                          "arguments": []
                         }
                       ]
                     },
@@ -2474,6 +2502,13 @@
                         {
                           "kind": "runtime-reference",
                           "name": "_ssrg_regexSpanOrd"
+                        }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "RegexSpan",
+                          "arguments": []
                         }
                       ]
                     },

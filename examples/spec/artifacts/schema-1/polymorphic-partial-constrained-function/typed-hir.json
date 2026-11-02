@@ -472,6 +472,42 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "T"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {
@@ -626,6 +662,37 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "T"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {

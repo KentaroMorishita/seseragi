@@ -18,18 +18,15 @@ mod candidates;
 
 use candidates::{select_trait_method_candidate, type_trait_method_selection_error};
 
-fn unconstrained_generic_signature(
-    signature: &TopLevelPureFunction,
-) -> Option<crate::TypedCallSignature> {
-    (signature.constraints.is_empty()
-        && signature.trait_identity.is_none()
-        && !signature.type_parameters.is_empty())
-    .then(|| crate::TypedCallSignature {
-        type_parameters: signature.type_parameters.clone(),
-        parameters: signature.parameters.clone(),
-        result: signature.result.clone(),
-        argument_types: Vec::new(),
-        instantiated_type_arguments: Vec::new(),
+fn generic_call_signature(signature: &TopLevelPureFunction) -> Option<crate::TypedCallSignature> {
+    (signature.trait_identity.is_none() && !signature.type_parameters.is_empty()).then(|| {
+        crate::TypedCallSignature {
+            type_parameters: signature.type_parameters.clone(),
+            parameters: signature.parameters.clone(),
+            result: signature.result.clone(),
+            argument_types: Vec::new(),
+            instantiated_type_arguments: Vec::new(),
+        }
     })
 }
 
@@ -39,38 +36,9 @@ fn unconstrained_generic_signature(
 fn unconstrained_hkt_signature(
     signature: &TopLevelPureFunction,
 ) -> Option<crate::TypedCallSignature> {
-    unconstrained_generic_signature(signature)
+    generic_call_signature(signature)
+        .filter(|_| signature.constraints.is_empty())
         .filter(|value| value.type_parameters.iter().any(|p| p.is_constructor()))
-}
-
-fn json_codec_generic_signature(
-    signature: &TopLevelPureFunction,
-) -> Option<crate::TypedCallSignature> {
-    (signature.trait_identity.is_none()
-        && !signature.type_parameters.is_empty()
-        && signature
-            .type_parameters
-            .iter()
-            .all(|p| !p.is_constructor())
-        && signature
-            .constraints
-            .iter()
-            .zip(&signature.constraint_identities)
-            .any(|(constraint, identity)| {
-                constraint.arguments.len() == 1
-                    && matches!(
-                        (constraint.name.as_str(), identity.as_deref()),
-                        ("JsonEncode", Some("std/prelude::JsonEncode"))
-                            | ("JsonDecode", Some("std/prelude::JsonDecode"))
-                    )
-            }))
-    .then(|| crate::TypedCallSignature {
-        type_parameters: signature.type_parameters.clone(),
-        parameters: signature.parameters.clone(),
-        result: signature.result.clone(),
-        argument_types: Vec::new(),
-        instantiated_type_arguments: Vec::new(),
-    })
 }
 
 fn callable_reference(
@@ -977,8 +945,7 @@ pub(crate) fn type_known_application_with_explicit(
     context: &PureExpressionContext<'_>,
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
-    let callee_signature = unconstrained_generic_signature(&signature)
-        .or_else(|| json_codec_generic_signature(&signature));
+    let callee_signature = generic_call_signature(&signature);
     let explicit_instantiation = explicit_type_arguments.map(|arguments| {
         arguments
             .iter()

@@ -603,6 +603,13 @@
                           "kind": "identifier",
                           "name": "__ssrg$evidence$0"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
                       ]
                     },
                     "type": {
@@ -672,6 +679,13 @@
                       {
                         "kind": "identifier",
                         "name": "__ssrg$evidence$0"
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
                       }
                     ]
                   },
@@ -1145,6 +1159,11 @@
                             {
                               "kind": "runtime-reference",
                               "name": "_ssrg_show_intShow"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "number"
                             }
                           ]
                         },

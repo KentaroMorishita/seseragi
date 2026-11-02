@@ -1,0 +1,10 @@
+<div style="color: red">Hello</div>
+<div style="color: red">Hello</div>
+<div style="z-index: 2; color: blue; --accent-color: &lt;&amp;&gt;">&lt;&amp;&gt;</div>
+<div style="z-index: 2; color: blue; --accent-color: &lt;&amp;&gt;">&lt;&amp;&gt;</div>
+<div style=""></div>
+
+fragment
+single
+array
+list

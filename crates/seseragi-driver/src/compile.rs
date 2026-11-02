@@ -2090,8 +2090,12 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
         let output = &compiled.generated.typescript;
         assert!(output.contains("_ssrg_collection_reduceUntil"));
         assert!(output.contains("type ReduceStep"));
-        assert!(output.contains("generic as unknown as (argument: string) =>"));
-        assert!(output.contains("generic as unknown as (argument: readonly [number, string]) =>"));
+        // Explicit type arguments replace the earlier callable casts (#1195).
+        assert!(output.contains("generic<ReadonlyArray<string>, string, string>(\"\")"));
+        assert!(output.contains(
+            "generic<ReadonlyArray<string>, string, readonly [number, string]>([0, \"\"] as const)"
+        ));
+        assert!(!output.contains("generic as unknown as"));
         assert!(!output.contains("from \"std/"));
         assert!(!output.contains("_ssrg_array_fromIterable"));
     }

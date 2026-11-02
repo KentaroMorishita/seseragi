@@ -244,6 +244,16 @@
                 }
               ]
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "maybe",
+              "element": {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              }
+            }
           ]
         },
         "type": {

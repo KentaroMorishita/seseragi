@@ -646,6 +646,17 @@
                             "kind": "identifier",
                             "name": "value"
                           }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "kind-application",
+                            "constructor": "F",
+                            "arguments": [
+                              {
+                                "kind": "number"
+                              }
+                            ]
+                          }
                         ]
                       },
                       "type": {
@@ -821,6 +832,14 @@
                                 "value": "0"
                               }
                             ]
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "maybe",
+                            "element": {
+                              "kind": "number"
+                            }
                           }
                         ]
                       },
@@ -1016,6 +1035,17 @@
                               }
                             ],
                             "typeArguments": [
+                              {
+                                "kind": "string"
+                              }
+                            ]
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "Box",
+                            "arguments": [
                               {
                                 "kind": "string"
                               }
@@ -1484,6 +1514,11 @@
                     "kind": "runtime-reference",
                     "name": "_ssrg_show_intShow"
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
                 ]
               },
               "type": {
@@ -1503,6 +1538,11 @@
                   {
                     "kind": "runtime-reference",
                     "name": "_ssrg_show_charShow"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "string"
                   }
                 ]
               },

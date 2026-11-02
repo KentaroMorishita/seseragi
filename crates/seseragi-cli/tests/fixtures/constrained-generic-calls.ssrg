@@ -1,0 +1,6 @@
+type Renderer<A> = | Renderer (A -> String)
+
+fn render<A> prefix: String -> renderer: Renderer<A> -> value: A -> String where Show<A> =
+  match renderer { Renderer apply -> prefix + apply value + show value }
+
+pub effect fn main = println (render "" (Renderer (\value: Int -> show value)) 42)

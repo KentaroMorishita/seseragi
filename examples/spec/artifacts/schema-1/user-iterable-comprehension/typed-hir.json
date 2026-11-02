@@ -613,6 +613,90 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "C",
+                        "A",
+                        "B"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          }
+                        },
+                        {
+                          "kind": "named",
+                          "name": "C",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          }
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Range",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {
@@ -1624,6 +1708,84 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C",
+            "A",
+            "B"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            },
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "B",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            },
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1814,6 +1976,90 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "C",
+                "A",
+                "B"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                },
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                },
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                },
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {
@@ -1872,6 +2118,37 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "C"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                }
+              ]
+            },
             "evidence": [
               {
                 "constraint": {

@@ -8720,6 +8720,50 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ],
+                          "result": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "external-named",
+                              "name": "NormalizationForm",
+                              "canonical": "std/text/unicode::NormalizationForm",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "NormalizationForm",
+                              "canonical": "std/text/unicode::NormalizationForm",
+                              "arguments": []
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "NormalizationForm",
+                              "canonical": "std/text/unicode::NormalizationForm",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "evidence": [
                           {
                             "constraint": {
@@ -8816,6 +8860,50 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ],
+                          "result": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "external-named",
+                              "name": "UnicodeGeneralCategory",
+                              "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "UnicodeGeneralCategory",
+                              "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                              "arguments": []
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "UnicodeGeneralCategory",
+                              "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "evidence": [
                           {
                             "constraint": {
@@ -8947,6 +9035,57 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "Array",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ],
+                          "result": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "named",
+                              "name": "Array",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "UnicodeGeneralCategory",
+                                  "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "UnicodeGeneralCategory",
+                              "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "evidence": [
                           {
                             "constraint": {
@@ -9374,6 +9513,50 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ],
+                          "result": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "external-named",
+                              "name": "text.TextSliceError",
+                              "canonical": "std/text::TextSliceError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "text.TextSliceError",
+                              "canonical": "std/text::TextSliceError",
+                              "arguments": []
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "text.TextSliceError",
+                              "canonical": "std/text::TextSliceError",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "evidence": [
                           {
                             "constraint": {
@@ -9678,6 +9861,50 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ],
+                          "result": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "external-named",
+                              "name": "graphemes.GraphemeSliceError",
+                              "canonical": "std/text/grapheme::GraphemeSliceError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "graphemes.GraphemeSliceError",
+                              "canonical": "std/text/grapheme::GraphemeSliceError",
+                              "arguments": []
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "graphemes.GraphemeSliceError",
+                              "canonical": "std/text/grapheme::GraphemeSliceError",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "evidence": [
                           {
                             "constraint": {
@@ -9814,6 +10041,39 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "NormalizationForm",
+                          "canonical": "std/text/unicode::NormalizationForm",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "NormalizationForm",
+                          "canonical": "std/text/unicode::NormalizationForm",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {
@@ -9896,6 +10156,39 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "UnicodeGeneralCategory",
+                          "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "UnicodeGeneralCategory",
+                          "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {
@@ -10095,6 +10388,39 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "text.TextSliceError",
+                          "canonical": "std/text::TextSliceError",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "text.TextSliceError",
+                          "canonical": "std/text::TextSliceError",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {
@@ -10281,6 +10607,39 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "graphemes.GraphemeSliceError",
+                          "canonical": "std/text/grapheme::GraphemeSliceError",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "graphemes.GraphemeSliceError",
+                          "canonical": "std/text/grapheme::GraphemeSliceError",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "evidence": [
                       {
                         "constraint": {

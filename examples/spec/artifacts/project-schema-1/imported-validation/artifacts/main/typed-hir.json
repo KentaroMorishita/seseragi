@@ -1462,6 +1462,67 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "E",
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "evidence": [
                     {
                       "constraint": {
@@ -1579,6 +1640,67 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "E",
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "evidence": [
                     {
                       "constraint": {
@@ -1703,6 +1825,101 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "E",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "external-named",
+                    "name": "validation.Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "validation.Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "validation.Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "validation.Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "evidence": [
                 {
                   "constraint": {

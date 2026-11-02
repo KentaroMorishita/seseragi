@@ -124,6 +124,14 @@
               "kind": "runtime-reference",
               "name": "_ssrg_array_reducible"
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
+            }
           ]
         },
         "type": {
@@ -165,6 +173,14 @@
               "kind": "runtime-reference",
               "name": "_ssrg_list_reducible"
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "list",
+              "element": {
+                "kind": "string"
+              }
+            }
           ]
         },
         "type": {
@@ -205,6 +221,14 @@
             {
               "kind": "runtime-reference",
               "name": "_ssrg_array_reducible"
+            }
+          ],
+          "typeArguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
             }
           ]
         },

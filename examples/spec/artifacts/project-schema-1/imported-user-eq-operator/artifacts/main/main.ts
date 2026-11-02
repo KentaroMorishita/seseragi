@@ -3,7 +3,7 @@ import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/ru
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const same = <T,>(left: T) => (right: T) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["eq"](left)(right)
-const different = <T,>(left: T) => (right: T) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["eq"](left)(right) === false
+const same = <T,>(left: T) => (right: T) => (__ssrg$evidence$0: import("@seseragi/runtime/equality").Eq<T>) => __ssrg$evidence$0["eq"](left)(right)
+const different = <T,>(left: T) => (right: T) => (__ssrg$evidence$0: import("@seseragi/runtime/equality").Eq<T>) => __ssrg$evidence$0["eq"](left)(right) === false
 const render = (checks: readonly [boolean, boolean]) => (($ssrg_match: readonly [boolean, boolean]): string => $ssrg_match[0] === true && $ssrg_match[1] === true ? "Imported Eq: same / different" : "unexpected imported Eq result")(checks)
-export const main = (_unit: undefined) => _ssrg_console_println(render([((same(Ready)(Ready)(__ssrg$instance$Eq$0)) as boolean), ((different(Ready)(Waiting)(__ssrg$instance$Eq$0)) as boolean)] as const))
+export const main = (_unit: undefined) => _ssrg_console_println(render([((same<Status>(Ready)(Ready)(__ssrg$instance$Eq$0)) as boolean), ((different<Status>(Ready)(Waiting)(__ssrg$instance$Eq$0)) as boolean)] as const))

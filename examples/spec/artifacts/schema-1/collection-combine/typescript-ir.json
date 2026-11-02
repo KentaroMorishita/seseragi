@@ -180,6 +180,17 @@
               "kind": "runtime-reference",
               "name": "_ssrg_string_monoid"
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
+            },
+            {
+              "kind": "string"
+            }
           ]
         },
         "type": {
@@ -255,6 +266,23 @@
             {
               "kind": "runtime-reference",
               "name": "_ssrg_array_monoid"
+            }
+          ],
+          "typeArguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "array",
+                "element": {
+                  "kind": "string"
+                }
+              }
+            },
+            {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
             }
           ]
         },
@@ -387,6 +415,23 @@
               "kind": "runtime-reference",
               "name": "_ssrg_list_monoid"
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "list",
+                "element": {
+                  "kind": "string"
+                }
+              }
+            },
+            {
+              "kind": "list",
+              "element": {
+                "kind": "string"
+              }
+            }
           ]
         },
         "type": {
@@ -500,6 +545,17 @@
               "kind": "runtime-reference",
               "name": "_ssrg_string_monoid"
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
+            },
+            {
+              "kind": "string"
+            }
           ]
         },
         "type": {
@@ -604,6 +660,11 @@
             {
               "kind": "runtime-reference",
               "name": "_ssrg_string_monoid"
+            }
+          ],
+          "typeArguments": [
+            {
+              "kind": "string"
             }
           ]
         },

@@ -33,6 +33,7 @@ pub use query::{
     StandardReferenceModule, StandardReferenceSurface,
 };
 pub use resolve::{resolve_linked_module, resolve_module, resolve_module_interface};
+pub use standard::standard_instance_has_empty_dictionary;
 pub use type_document::{
     TypeCallableDocument, TypeCallableParameterDocument, TypeConstraintDocument, TypeDocument,
     TypeDocumentField, TypeParameterDocument, TypeRenderLayout, TypeRenderMarkup,

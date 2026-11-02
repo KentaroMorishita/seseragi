@@ -205,7 +205,7 @@ fn scalar_codec_type_argument_is_not_captured_by_a_same_name_generic_binder() {
         compiled
             .generated
             .typescript
-            .contains("echo(true)(\"bool\")) as boolean"),
+            .contains("echo<boolean>(true)(\"bool\")) as boolean"),
         "{}",
         compiled.generated.typescript
     );
@@ -453,7 +453,7 @@ fn foreign_result_proof_follows_import_aliases_and_reexports() {
         let emitted = &compiled.modules["fixture/proof::main"].generated.typescript;
         assert!(
             emitted.contains(&format!(
-                "{emitted_call}(\"ok\")(true)(\"string\")(\"bool\")) as boolean"
+                "{emitted_call}<string, boolean>(\"ok\")(true)(\"string\")(\"bool\")) as boolean"
             )),
             "{emitted}"
         );
