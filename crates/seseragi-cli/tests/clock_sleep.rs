@@ -500,7 +500,11 @@ fn run_transform(
                 assert!(stderr.contains(reason), "{label}/{case}: {stderr}");
             }
             if code == 70 {
-                expected_defect = Some(diagnostics::ts_defect_from_native(&result.stderr));
+                let diagnostic = diagnostics::ts_defect_from_native(&result.stderr);
+                // TS builds the unchanged standalone body as a package entry.
+                // Only its source label differs; keep positions and messages exact.
+                let positioned = diagnostic.strip_prefix("original.ssrg:").unwrap();
+                expected_defect = Some(format!("src/main.ssrg:{positioned}"));
             }
         } else if code == 70 {
             assert_eq!(stderr, *expected_defect.as_ref().unwrap(), "{label}/{case}");
