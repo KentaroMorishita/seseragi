@@ -15,6 +15,61 @@ fn stream_item(value: V) -> V {
 fn stream_cell(value: V) -> V {
     V::Reference(Shared::new(RefCell::new(value)))
 }
+fn stream_open(source: &V) -> V {
+    let cursor = source.apply(V::Unit);
+    if matches!(cursor, V::Effect(_)) {
+        cursor
+    } else {
+        stream_pure(cursor)
+    }
+}
+fn stream_pull(cursor: &V) -> V {
+    if matches!(cursor, V::Record(_)) {
+        cursor.field("pull").apply(V::Unit)
+    } else {
+        cursor.apply(V::Unit)
+    }
+}
+fn stream_close(cursor: &V) -> V {
+    if matches!(cursor, V::Record(_)) {
+        cursor.field("close").apply(V::Unit)
+    } else {
+        stream_pure(V::Unit)
+    }
+}
+fn stream_cursor(pull: V, close: V) -> V {
+    let closed = stream_cell(V::Bool(false));
+    V::Record(Shared::new(BTreeMap::from([
+        (
+            "pull".into(),
+            V::fun(vec![pull, closed.clone()], |captures, _| {
+                if captures[1].read_reference().boolean() {
+                    stream_pure(stream_done())
+                } else {
+                    captures[0].apply(V::Unit)
+                }
+            }),
+        ),
+        (
+            "close".into(),
+            V::fun(vec![close, closed], |captures, _| {
+                native_stream_defer(captures.to_vec(), |captures, _| {
+                    if captures[1].read_reference().boolean() {
+                        return stream_pure(V::Unit);
+                    }
+                    captures[1].write_reference(V::Bool(true));
+                    captures[0].apply(V::Unit)
+                })
+            }),
+        ),
+    ])))
+}
+fn stream_forward_close(pull: V, source: V) -> V {
+    stream_cursor(
+        pull,
+        V::fun(vec![source], |captures, _| stream_close(&captures[0])),
+    )
+}
 fn native_stream_singleton(value: V) -> V {
     V::fun(vec![value], |captures, _| {
         V::fun(
@@ -31,67 +86,95 @@ fn native_stream_singleton(value: V) -> V {
 }
 fn native_stream_bind(callback: V, source: V) -> V {
     V::fun(vec![callback, source], |captures, _| {
-        stream_flat_cursor(
-            captures[0].clone(),
-            captures[1].apply(V::Unit),
-            stream_cell(V::Unit),
+        V::bind(
+            stream_open(&captures[1]),
+            V::fun(vec![captures[0].clone()], |captures, outer| {
+                stream_pure(stream_flat_cursor(
+                    captures[0].clone(),
+                    outer,
+                    stream_cell(V::Unit),
+                ))
+            }),
         )
     })
 }
 fn stream_flat_cursor(callback: V, outer: V, inner: V) -> V {
-    V::fun(vec![callback, outer, inner], |captures, _| {
+    let close = V::fun(vec![outer.clone(), inner.clone()], |captures, _| {
+        V::bind(
+            stream_close(&captures[1].read_reference()),
+            V::fun(vec![captures[0].clone()], |captures, _| {
+                stream_close(&captures[0])
+            }),
+        )
+    });
+    let pull = V::fun(vec![callback, outer, inner], |captures, _| {
         native_stream_defer(captures.to_vec(), |captures, _| {
             let inner = captures[2].read_reference();
             if matches!(inner, V::Unit) {
                 V::bind(
-                    captures[1].apply(V::Unit),
+                    stream_pull(&captures[1]),
                     V::fun(captures.to_vec(), |captures, value| {
                         if value.tagged("std/prelude::Nothing") {
                             return stream_pure(value);
                         }
-                        let inner = captures[0].apply(value.payload()).apply(V::Unit);
-                        captures[2].write_reference(inner);
-                        stream_flat_cursor(
-                            captures[0].clone(),
-                            captures[1].clone(),
-                            captures[2].clone(),
+                        V::bind(
+                            stream_open(&captures[0].apply(value.payload())),
+                            V::fun(captures.to_vec(), |captures, inner| {
+                                captures[2].write_reference(inner);
+                                stream_pull(&stream_flat_cursor(
+                                    captures[0].clone(),
+                                    captures[1].clone(),
+                                    captures[2].clone(),
+                                ))
+                            }),
                         )
-                        .apply(V::Unit)
                     }),
                 )
             } else {
                 V::bind(
-                    inner.apply(V::Unit),
+                    stream_pull(&inner),
                     V::fun(captures.to_vec(), |captures, value| {
                         if value.tagged("std/prelude::Just") {
                             return stream_pure(value);
                         }
-                        captures[2].write_reference(V::Unit);
-                        stream_flat_cursor(
-                            captures[0].clone(),
-                            captures[1].clone(),
-                            captures[2].clone(),
+                        V::bind(
+                            stream_close(&captures[2].read_reference()),
+                            V::fun(captures.to_vec(), |captures, _| {
+                                captures[2].write_reference(V::Unit);
+                                stream_pull(&stream_flat_cursor(
+                                    captures[0].clone(),
+                                    captures[1].clone(),
+                                    captures[2].clone(),
+                                ))
+                            }),
                         )
-                        .apply(V::Unit)
                     }),
                 )
             }
         })
-    })
+    });
+    stream_cursor(pull, close)
 }
 fn stream_transform(name: &'static str, callback: V, source: V) -> V {
     V::fun(vec![V::text(name), callback, source], |captures, _| {
-        stream_transform_cursor(
-            captures[0].clone(),
-            captures[1].clone(),
-            captures[2].apply(V::Unit),
+        let opening = stream_open(&captures[2]);
+        V::bind(
+            opening,
+            V::fun(captures[..2].to_vec(), |captures, source| {
+                stream_pure(stream_transform_cursor(
+                    captures[0].clone(),
+                    captures[1].clone(),
+                    source,
+                ))
+            }),
         )
     })
 }
 fn stream_transform_cursor(name: V, callback: V, source: V) -> V {
-    V::fun(vec![name, callback, source], |captures, _| {
+    let upstream = source.clone();
+    let pull = V::fun(vec![name, callback, source], |captures, _| {
         native_stream_defer(captures.to_vec(), |captures, _| {
-            let source = captures[2].apply(V::Unit);
+            let source = stream_pull(&captures[2]);
             if captures[0].render() == "std/stream::mapError" {
                 return V::effect(Instruction::MapError, vec![captures[1].clone(), source]);
             }
@@ -112,29 +195,33 @@ fn stream_transform_cursor(name: V, callback: V, source: V) -> V {
                     };
                     match result {
                         Some(result) => stream_pure(result),
-                        None => stream_transform_cursor(
+                        None => stream_pull(&stream_transform_cursor(
                             captures[0].clone(),
                             captures[1].clone(),
                             captures[2].clone(),
-                        )
-                        .apply(V::Unit),
+                        )),
                     }
                 }),
             )
         })
-    })
+    });
+    stream_forward_close(pull, upstream)
 }
 fn stream_count_cursor(take: bool, count: V, source: V) -> V {
-    V::fun(vec![V::Bool(take), count, source], |captures, _| {
+    let upstream = source.clone();
+    let pull = V::fun(vec![V::Bool(take), count, source], |captures, _| {
         native_stream_defer(captures.to_vec(), |captures, _| {
             let V::Int(count) = captures[1].read_reference() else {
                 unreachable!()
             };
             if captures[0].boolean() && count <= 0 {
-                return stream_pure(stream_done());
+                return V::bind(
+                    stream_close(&captures[2]),
+                    V::fun(vec![], |_, _| stream_pure(stream_done())),
+                );
             }
             V::bind(
-                captures[2].apply(V::Unit),
+                stream_pull(&captures[2]),
                 V::fun(captures.to_vec(), |captures, value| {
                     let V::Int(count) = captures[1].read_reference() else {
                         unreachable!()
@@ -148,50 +235,74 @@ fn stream_count_cursor(take: bool, count: V, source: V) -> V {
                     if captures[0].boolean() || count <= 0 {
                         return stream_pure(value);
                     }
-                    stream_count_cursor(false, captures[1].clone(), captures[2].clone())
-                        .apply(V::Unit)
+                    stream_pull(&stream_count_cursor(
+                        false,
+                        captures[1].clone(),
+                        captures[2].clone(),
+                    ))
                 }),
             )
         })
-    })
+    });
+    stream_forward_close(pull, upstream)
 }
 fn stream_concat_cursor(suffix: V, current: V) -> V {
-    V::fun(vec![suffix, current], |captures, _| {
+    let current_close = current.clone();
+    let pull = V::fun(vec![suffix, current], |captures, _| {
         native_stream_defer(captures.to_vec(), |captures, _| {
             V::bind(
-                captures[1].read_reference().apply(V::Unit),
+                stream_pull(&captures[1].read_reference()),
                 V::fun(captures.to_vec(), |captures, value| {
                     if value.tagged("std/prelude::Just")
                         || matches!(captures[0].read_reference(), V::Unit)
                     {
                         return stream_pure(value);
                     }
-                    let suffix = captures[0].read_reference().apply(V::Unit);
-                    captures[0].write_reference(V::Unit);
-                    captures[1].write_reference(suffix.clone());
-                    suffix.apply(V::Unit)
+                    V::bind(
+                        stream_close(&captures[1].read_reference()),
+                        V::fun(captures.to_vec(), |captures, _| {
+                            V::bind(
+                                stream_open(&captures[0].read_reference()),
+                                V::fun(captures.to_vec(), |captures, suffix| {
+                                    captures[0].write_reference(V::Unit);
+                                    captures[1].write_reference(suffix.clone());
+                                    stream_pull(&suffix)
+                                }),
+                            )
+                        }),
+                    )
                 }),
             )
         })
-    })
+    });
+    stream_cursor(
+        pull,
+        V::fun(vec![current_close], |captures, _| {
+            stream_close(&captures[0].read_reference())
+        }),
+    )
 }
 fn stream_terminal_loop(mode: i64, cursor: V, state: V, step: V) -> V {
     native_stream_defer(vec![V::Int(mode), cursor, state, step], |captures, _| {
         V::bind(
-            captures[1].apply(V::Unit),
+            stream_pull(&captures[1]),
             V::fun(captures.to_vec(), |captures, value| {
                 let V::Int(mode) = captures[0] else {
                     unreachable!()
                 };
                 if value.tagged("std/prelude::Nothing") {
                     let result = captures[2].read_reference();
-                    return stream_pure(if mode == 0 {
+                    let result = if mode == 0 {
                         let mut values = result.list_values();
                         values.reverse();
                         V::Array(Shared::new(values))
                     } else {
                         result
-                    });
+                    };
+                    return V::bind(
+                        stream_close(&captures[1]),
+                        V::fun(vec![result], |captures, _| stream_pure(captures[0].clone())),
+                    );
                 }
                 let value = value.payload();
                 let resume = V::fun(captures.to_vec(), |captures, _| {
@@ -223,6 +334,16 @@ fn stream_terminal_loop(mode: i64, cursor: V, state: V, step: V) -> V {
 }
 pub fn native_stream_operation(name: &'static str, arguments: Vec<V>) -> V {
     match (name, arguments.as_slice()) {
+        ("std/stream::bufferCapacity", [V::Int(value)]) => {
+            if *value > 0 {
+                native_right(V::adt("std/stream::BufferCapacity", V::Int(*value)))
+            } else {
+                native_left(V::adt(
+                    "std/stream::NonPositiveBufferCapacity",
+                    V::Int(*value),
+                ))
+            }
+        }
         ("std/stream::singleton", [value]) => native_stream_singleton(value.clone()),
         ("std/stream::fromArray", [values]) => V::fun(vec![values.clone()], |captures, _| {
             V::fun(
@@ -298,18 +419,28 @@ pub fn native_stream_operation(name: &'static str, arguments: Vec<V>) -> V {
                 source.clone(),
             ],
             |captures, _| {
-                stream_count_cursor(
-                    captures[0].boolean(),
-                    stream_cell(captures[1].clone()),
-                    captures[2].apply(V::Unit),
+                V::bind(
+                    stream_open(&captures[2]),
+                    V::fun(captures[..2].to_vec(), |captures, source| {
+                        stream_pure(stream_count_cursor(
+                            captures[0].boolean(),
+                            stream_cell(captures[1].clone()),
+                            source,
+                        ))
+                    }),
                 )
             },
         ),
         ("std/stream::concat", [suffix, prefix]) => {
             V::fun(vec![suffix.clone(), prefix.clone()], |captures, _| {
-                stream_concat_cursor(
-                    stream_cell(captures[0].clone()),
-                    stream_cell(captures[1].apply(V::Unit)),
+                V::bind(
+                    stream_open(&captures[1]),
+                    V::fun(vec![captures[0].clone()], |captures, prefix| {
+                        stream_pure(stream_concat_cursor(
+                            stream_cell(captures[0].clone()),
+                            stream_cell(prefix),
+                        ))
+                    }),
                 )
             })
         }
@@ -339,11 +470,22 @@ fn stream_terminal(mode: i64, source: V, initial: V, step: V) -> V {
                 } else {
                     captures[2].clone()
                 };
-                stream_terminal_loop(
-                    mode,
-                    captures[1].apply(V::Unit),
-                    stream_cell(initial),
-                    captures[3].clone(),
+                V::bind(
+                    stream_open(&captures[1]),
+                    V::fun(
+                        vec![V::Int(mode), initial, captures[3].clone()],
+                        |captures, cursor| {
+                            let V::Int(mode) = captures[0] else {
+                                unreachable!()
+                            };
+                            stream_terminal_loop(
+                                mode,
+                                cursor,
+                                stream_cell(captures[1].clone()),
+                                captures[2].clone(),
+                            )
+                        },
+                    ),
                 )
             },
         )],

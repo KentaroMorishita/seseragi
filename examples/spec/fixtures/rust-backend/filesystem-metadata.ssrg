@@ -1,0 +1,66 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+effect fn failureResult<A> error: fs.FileSystemError -> Either<fs.FileSystemError,A> with FileSystem = do {
+  let result: Either<fs.FileSystemError,A> = Left error
+  effects.succeed result
+}
+
+effect fn outcome<A> action: Effect<{fileSystem: fs.FileSystem},fs.FileSystemError,A>
+  -> Either<fs.FileSystemError,A> with FileSystem =
+  {
+    let wrapped: Effect<{fileSystem: fs.FileSystem},fs.FileSystemError,Either<fs.FileSystemError,A>> = do {
+      value <- action
+      let result: Either<fs.FileSystemError,A> = Right value
+      effects.succeed result
+    }
+    effects.recover failureResult wrapped
+  }
+
+fn present<A> value: Maybe<A> -> Bool = match value {
+  Just _ -> True
+  Nothing -> False
+}
+
+fn fileType value: fs.FileType -> String = match value {
+  fs.RegularFile -> "file"
+  fs.Directory -> "directory"
+  fs.SymbolicLink -> "link"
+  fs.OtherFileType -> "other"
+}
+
+fn describe value: fs.FileMetadata -> String =
+  show value + " | " + debug value + " | " + fileType value.fileType
+    + " | " + show value.fileType + " | " + debug value.fileType
+    + " | " + show value.sizeBytes
+    + " | " + show (present value.modified) + " | " + show (present value.created)
+
+fn metadataResult value: Either<fs.FileSystemError, fs.FileMetadata> -> String =
+  match value {
+    Left error -> "Left " + show error
+    Right metadata -> "Right " + describe metadata
+  }
+
+fn pathResult value: Either<fs.FileSystemError, paths.Path> -> String =
+  match value {
+    Left error -> "Left " + show error
+    Right path -> "Right " + paths.render path
+  }
+
+pub effect fn main -> Unit with FileSystem, Stdin, Console fails String = do {
+  input <- readLine () |> effects.mapError show
+  text <- match input {
+    Just value -> effects.succeed value
+    Nothing -> effects.fail "missing path"
+  }
+  path <- paths.parse text |> effects.fromEither |> effects.mapError show
+  found <- fs.exists path |> outcome
+  metadata <- fs.metadata path |> outcome
+  link <- fs.symlinkMetadata path |> outcome
+  resolved <- fs.canonicalize path |> outcome
+  println ("exists " + show found) |> effects.mapError show
+  println ("metadata " + metadataResult metadata) |> effects.mapError show
+  println ("symlinkMetadata " + metadataResult link) |> effects.mapError show
+  println ("canonicalize " + pathResult resolved) |> effects.mapError show
+}

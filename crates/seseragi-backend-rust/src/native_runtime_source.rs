@@ -60,6 +60,8 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/runtime_path.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_process.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_filesystem.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_filesystem_chunks.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_filesystem_paths.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_host.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_clock.rs"),
 );

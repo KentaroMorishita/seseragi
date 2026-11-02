@@ -1,0 +1,94 @@
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+
+fn identity<A> value: A -> A = value
+
+fn converted value: Int -> String = match bytes.byte value {
+  Left (bytes.ByteOutOfRange invalid) -> "bad:" + show invalid
+  Right byte -> "byte:" + show (bytes.toInt byte)
+}
+
+fn sliced start: Int -> end: Int -> values: bytes.Bytes -> String =
+  match bytes.slice start end values {
+    Left (bytes.InvalidByteRange range) ->
+      "range:" + show range.start + ":" + show range.end + ":" + show range.length
+    Right result -> show (bytes.toInts result)
+  }
+
+fn operations high: bytes.Byte -> values: bytes.Bytes -> String = {
+  let vacant: Unit -> bytes.Bytes = identity bytes.empty
+  let single: bytes.Byte -> bytes.Bytes = identity bytes.singleton
+  let from: Array<bytes.Byte> -> bytes.Bytes = identity bytes.fromArray
+  let to: bytes.Bytes -> Array<bytes.Byte> = identity bytes.toArray
+  let size: bytes.Bytes -> Int = identity bytes.length
+  let isEmpty: bytes.Bytes -> Bool = identity bytes.isEmpty
+  let slice: Int -> Int -> bytes.Bytes -> Either<bytes.BytesSliceError, bytes.Bytes> = identity bytes.slice
+  let copy: bytes.Bytes -> bytes.Bytes = identity bytes.copy
+  let append: bytes.Bytes -> bytes.Bytes -> bytes.Bytes = identity bytes.append
+  let concat: Array<bytes.Bytes> -> bytes.Bytes = identity bytes.concat
+  let empty = vacant ()
+  let one = single high
+  let suffix = append one
+  let tail = slice 1
+  let middle = tail 4
+  text.join "\n" [
+    show (bytes.toInts empty),
+    show (bytes.toInts one),
+    show (bytes.toInts (from (to values))),
+    show (bytes.toInts (from [])),
+    show (bytes.toInts (from (to empty))),
+    show (size values),
+    show (size empty),
+    show (isEmpty values),
+    show (isEmpty empty),
+    match middle values {
+      Left _ -> "unexpected"
+      Right result -> show (bytes.toInts result)
+    },
+    show (bytes.toInts (copy values)),
+    show (bytes.toInts (copy empty)),
+    show (bytes.toInts (suffix values)),
+    show (bytes.toInts (append empty values)),
+    show (bytes.toInts (append values empty)),
+    show (bytes.toInts (concat [empty, values, empty, one, values, empty])),
+    show (bytes.toInts (concat [])),
+    show (bytes.toInts (concat [empty, empty])),
+    show (bytes.toInts values)
+  ]
+}
+
+pub fn probe -> String = {
+  let byte: Int -> Either<bytes.ByteError, bytes.Byte> = identity bytes.byte
+  match byte 255 {
+    Left _ -> "unexpected"
+    Right high -> match bytes.fromInts [0, 1, 127, 128, 255] {
+      Left _ -> "unexpected"
+      Right values -> {
+        let empty = bytes.empty ()
+        text.join "\n" [
+          operations high values,
+          text.join "|" (map converted [-9007199254740991, -1, 0, 1, 127, 128, 254, 255, 256, 9007199254740991]),
+          sliced 0 5 values,
+          sliced 1 4 values,
+          sliced 0 0 values,
+          sliced 5 5 values,
+          sliced 2 2 values,
+          sliced (-1) 1 values,
+          sliced 2 1 values,
+          sliced 0 6 values,
+          sliced 6 6 values,
+          sliced 0 (-1) values,
+          sliced (-1) (-1) values,
+          sliced (-9007199254740991) 9007199254740991 values,
+          sliced 9007199254740991 9007199254740991 values,
+          sliced 0 0 empty,
+          sliced 0 1 empty,
+          sliced 1 1 empty,
+          sliced (-1) 0 empty
+        ]
+      }
+    }
+  }
+}
+
+pub effect fn main = println (probe ())

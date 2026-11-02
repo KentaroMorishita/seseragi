@@ -167,6 +167,7 @@ struct NativeTask {
     handle: V,
     waiting: Option<NativeWait>,
     file: Option<NativeFileTask>,
+    stdin: Option<NativeStdinTask>,
     timer: Option<NativeTimer>,
 }
 #[derive(Default)]
@@ -198,6 +199,7 @@ impl NativeScheduler {
                 handle: handle.clone(),
                 waiting: None,
                 file: None,
+                stdin: None,
                 timer: None,
             },
         );
@@ -210,11 +212,22 @@ impl NativeScheduler {
         let root_id = root.fiber().task;
         loop {
             scheduler.poll_files();
+            scheduler.poll_stdin();
             scheduler.poll_timers();
             let Some(id) = scheduler.ready.pop_front() else {
                 // A program awaiting an uncompleted Deferred stays pending.
                 // No artificial typed failure or Defect is invented for it.
-                if let Some(timeout) = scheduler.next_timer_wait() {
+                let timeout = scheduler.next_timer_wait();
+                let timeout = if scheduler.tasks.values().any(|task| task.stdin.is_some()) {
+                    Some(
+                        timeout
+                            .unwrap_or(std::time::Duration::MAX)
+                            .min(std::time::Duration::from_millis(10)),
+                    )
+                } else {
+                    timeout
+                };
+                if let Some(timeout) = timeout {
                     std::thread::park_timeout(timeout);
                 } else {
                     std::thread::park();
@@ -230,6 +243,19 @@ impl NativeScheduler {
                 NativeTurn::FileSystem(operation, captures) => {
                     match NativeFileTask::start(operation, captures) {
                         Ok(file) => task.file = Some(file),
+                        Err(exit) => {
+                            task.machine.resume(Err(exit));
+                            scheduler.ready.push_back(id);
+                        }
+                    }
+                }
+                NativeTurn::Stdin(operation, captures) => {
+                    match NativeStdinTask::start(
+                        task.machine.context.stdin.clone(),
+                        operation,
+                        &captures[0],
+                    ) {
+                        Ok(stdin) => task.stdin = Some(stdin),
                         Err(exit) => {
                             task.machine.resume(Err(exit));
                             scheduler.ready.push_back(id);
@@ -296,6 +322,10 @@ impl NativeScheduler {
             task.machine.resume(Err(NativeExit::Cancelled));
             self.ready.push_back(id);
         }
+        if task.stdin.take().is_some() {
+            task.machine.resume(Err(NativeExit::Cancelled));
+            self.ready.push_back(id);
+        }
         if let Some(file) = &task.file {
             // A blocking OS call has no invented abort. Observe it and join
             // its worker after close, before running language finalizers.
@@ -322,6 +352,15 @@ impl NativeScheduler {
                     eprintln!("native filesystem: {note}");
                 }
                 task.file = None;
+                task.machine.resume(outcome);
+                self.ready.push_back(*id);
+            }
+        }
+    }
+    fn poll_stdin(&mut self) {
+        for (id, task) in &mut self.tasks {
+            if let Some(outcome) = task.stdin.as_mut().and_then(NativeStdinTask::poll) {
+                task.stdin = None;
                 task.machine.resume(outcome);
                 self.ready.push_back(*id);
             }
@@ -367,7 +406,8 @@ impl NativeScheduler {
                 let child = self.spawn(
                     NativeContext {
                         gc_every: task.machine.context.gc_every,
-                        stdin_offset: task.machine.context.stdin_offset.clone(),
+                        stdin: task.machine.context.stdin.clone(),
+                        temporaries: task.machine.context.temporaries.clone(),
                         ..NativeContext::default()
                     },
                     c[0].clone(),

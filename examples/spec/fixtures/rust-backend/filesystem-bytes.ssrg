@@ -1,0 +1,151 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+import * as bytes from "std/bytes"
+import * as streams from "std/stream"
+import * as deferred from "std/deferred"
+
+effect fn line -> String with Stdin fails String = do {
+  input <- readLine () |> effects.mapError show
+  match input {
+    Just value -> effects.succeed value
+    Nothing -> effects.fail "missing input"
+  }
+}
+
+effect fn report<E> error: E -> String with FileSystem where Show<E> =
+  effects.succeed ("Left " + show error)
+
+effect fn result<E,A> action: Effect<{fileSystem:fs.FileSystem},E,A> -> String with FileSystem where Show<E>, Show<A> = {
+  let success: Effect<{fileSystem:fs.FileSystem},E,String> = do {
+    value <- action
+    effects.succeed ("Right " + show value)
+  }
+  effects.recover report success
+}
+
+fn keep<A> value: A -> A = value
+
+effect fn storedRead path: paths.Path -> bytes.Bytes with FileSystem fails fs.FileSystemError = fs.readBytes path
+effect fn storedWrite mode: fs.WriteMode -> content: bytes.Bytes -> path: paths.Path -> Unit with FileSystem fails fs.FileSystemError = fs.writeBytes mode content path
+effect fn storedChunks mode: fs.WriteMode -> source: streams.Stream<{},String,bytes.Bytes> -> path: paths.Path -> Unit with FileSystem fails Either<String,fs.FileSystemError> = fs.writeChunks mode source path
+effect fn provided value: bytes.Bytes -> bytes.Bytes fails String = effects.succeed value
+fn single value: bytes.Bytes -> streams.Stream<{},String,bytes.Bytes> = {
+  let action: Effect<{},String,bytes.Bytes> = provided value
+  streams.fromEffect action
+}
+
+effect fn read path: paths.Path -> Unit with FileSystem, Console fails String = do {
+  let saved = keep storedRead
+  let action = saved path
+  first <- action |> map bytes.toInts |> result
+  second <- action |> map bytes.toInts |> result
+  println first |> effects.mapError show
+  println second |> effects.mapError show
+}
+
+effect fn chunks size: Int -> count: Int -> path: paths.Path -> Unit with FileSystem, Console fails String = do {
+  capacity <- streams.bufferCapacity size |> effects.fromEither |> effects.mapError show
+  let saved = \path: paths.Path -> fs.readChunks capacity path
+  let source = saved path |> streams.take count |> streams.map bytes.toInts
+  let terminal = streams.runCollect source
+  first <- terminal |> result
+  second <- terminal |> result
+  println first |> effects.mapError show
+  println second |> effects.mapError show
+}
+
+effect fn write chunked: Bool -> path: paths.Path -> Unit with FileSystem, Console fails String = do {
+  a <- bytes.fromInts [0,128,255] |> effects.fromEither |> effects.mapError show
+  b <- bytes.fromInts [13,10,254,1] |> effects.fromEither |> effects.mapError show
+  empty <- bytes.fromInts [] |> effects.fromEither |> effects.mapError show
+  let blank = single empty
+  let source = streams.concat blank (streams.concat (single b) (streams.concat blank (streams.concat (single a) blank)))
+  let savedBytes = keep storedWrite
+  let savedChunks = keep storedChunks
+  let replacing: Effect<{fileSystem:fs.FileSystem},Never,String> = if chunked then result (savedChunks fs.Replace source path) else result (savedBytes fs.Replace a path)
+  replaced <- replacing
+  println replaced |> effects.mapError show
+  let appending: Effect<{fileSystem:fs.FileSystem},Never,String> = if chunked then result (savedChunks fs.Append source path) else result (savedBytes fs.Append b path)
+  appended <- appending
+  println appended |> effects.mapError show
+  let creating: Effect<{fileSystem:fs.FileSystem},Never,String> = if chunked then result (savedChunks fs.CreateNew source path) else result (savedBytes fs.CreateNew b path)
+  created <- creating
+  println created |> effects.mapError show
+  read path
+}
+
+effect fn sourceFailure -> bytes.Bytes fails String = effects.fail "source failed"
+
+effect fn failed path: paths.Path -> Unit with FileSystem, Console fails String = do {
+  a <- bytes.fromInts [0,128,255] |> effects.fromEither |> effects.mapError show
+  let prefix = single a
+  let failure: Effect<{},String,bytes.Bytes> = sourceFailure ()
+  let suffix = streams.fromEffect failure
+  let source = streams.concat suffix prefix
+  written <- fs.writeChunks fs.Replace source path |> result
+  println written |> effects.mapError show
+}
+
+effect fn suspended ready: deferred.Deferred<Never,Unit> -> wait: deferred.Deferred<String,bytes.Bytes> -> bytes.Bytes fails String = do {
+  deferred.succeed () ready
+  deferred.await wait
+}
+
+effect fn cancelWrite path: paths.Path -> Unit with FileSystem, Console fails String = do {
+  a <- bytes.fromInts [0,128,255] |> effects.fromEither |> effects.mapError show
+  ready <- deferred.make<Never,Unit> ()
+  wait <- deferred.make<String,bytes.Bytes> ()
+  let prefix = single a
+  let waiting: Effect<{},String,bytes.Bytes> = suspended ready wait
+  let suffix = streams.fromEffect waiting
+  worker <- effects.fork (fs.writeChunks fs.Replace (streams.concat suffix prefix) path)
+  deferred.await ready
+  effects.interrupt worker
+  exit <- effects.await worker
+  match exit {
+    effects.FiberCancelled -> println "cancelled" |> effects.mapError show
+    _ -> effects.fail "unexpected writer exit"
+  }
+}
+
+effect fn once chunked: Bool -> mode: fs.WriteMode -> empty: Bool -> path: paths.Path -> Unit with FileSystem, Console fails String = do {
+  content <- bytes.fromInts (if empty then [] else [0,128,255]) |> effects.fromEither |> effects.mapError show
+  let source = single content |> streams.take (if empty then 0 else 1)
+  let action: Effect<{fileSystem:fs.FileSystem},Never,String> = if chunked then result (fs.writeChunks mode source path) else result (fs.writeBytes mode content path)
+  written <- action
+  println written |> effects.mapError show
+  read path
+}
+
+pub effect fn main -> Unit with FileSystem, Stdin, Console fails String = do {
+  command <- line ()
+  text <- line ()
+  path <- paths.parse text |> effects.fromEither |> effects.mapError show
+  match command {
+    "read" -> read path
+    "small" -> chunks 3 1000000 path
+    "large" -> chunks 65536 1000000 path
+    "one" -> chunks 1 1 path
+    "zero" -> chunks 3 0 path
+    "negative" -> chunks 3 (-1) path
+    "write" -> write False path
+    "write-chunks" -> write True path
+    "failed" -> failed path
+    "huge" -> chunks 9007199254740991 1 path
+    "copy" -> do {
+      target <- paths.parse "copy.bin" |> effects.fromEither |> effects.mapError show
+      capacity <- streams.bufferCapacity 65536 |> effects.fromEither |> effects.mapError show
+      copied <- fs.writeChunks fs.Replace (fs.readChunks capacity path) target |> result
+      println copied |> effects.mapError show
+    }
+    "cancel" -> cancelWrite path
+    "empty-bytes" -> once False fs.Replace True path
+    "empty-chunks" -> once True fs.Replace True path
+    "create-bytes" -> once False fs.CreateNew False path
+    "create-chunks" -> once True fs.CreateNew False path
+    "append-bytes" -> once False fs.Append False path
+    "append-chunks" -> once True fs.Append False path
+    _ -> effects.fail "unknown command"
+  }
+}

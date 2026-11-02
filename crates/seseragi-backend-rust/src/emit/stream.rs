@@ -2,6 +2,7 @@ use super::*;
 fn arity(name: &str) -> Option<usize> {
     Some(match name {
         "std/stream::singleton"
+        | "std/stream::bufferCapacity"
         | "std/stream::fromArray"
         | "std/stream::fromEffect"
         | "std/stream::runCollect" => 1,
@@ -74,6 +75,16 @@ impl Backend<'_> {
         let array = |a| named("std/prelude::Array", vec![a]);
         let maybe = |a| named("std/prelude::Maybe", vec![a]);
         let (parameters, result) = match name {
+            "std/stream::bufferCapacity" => (
+                vec![named("std/prelude::Int", vec![])],
+                named(
+                    "std/prelude::Either",
+                    vec![
+                        named("std/stream::BufferCapacityError", vec![]),
+                        named("std/stream::BufferCapacity", vec![]),
+                    ],
+                ),
+            ),
             "std/stream::singleton" => (vec![a.clone()], stream(a.clone())),
             "std/stream::fromArray" => (vec![array(a.clone())], stream(a.clone())),
             "std/stream::fromEffect" => (vec![effect(a.clone())], stream(a.clone())),

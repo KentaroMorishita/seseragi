@@ -21,6 +21,7 @@ enum Instruction {
     Release,
     Concurrent(ConcurrentOperation),
     FileSystem(NativeFileOperation),
+    Stdin(NativeStdinOperation),
     SignalTransaction,
     SignalSubscribe,
 }
@@ -96,7 +97,8 @@ pub struct NativeContext {
     gc_every: usize,
     reclaimed: usize,
     pub peak_frames: usize,
-    stdin_offset: Rc<Cell<u64>>,
+    stdin: Rc<RefCell<NativeStdin>>,
+    temporaries: Rc<RefCell<Vec<NativeTemporaryHandle>>>,
 }
 impl Default for NativeContext {
     fn default() -> Self {
@@ -108,7 +110,8 @@ impl Default for NativeContext {
             gc_every: 512,
             reclaimed: 0,
             peak_frames: 0,
-            stdin_offset: Rc::new(Cell::new(0)),
+            stdin: Rc::default(),
+            temporaries: Rc::default(),
         }
     }
 }
@@ -192,6 +195,7 @@ enum NativeTurn {
     Runnable,
     Operation(ConcurrentOperation, Vec<V>),
     FileSystem(NativeFileOperation, Vec<V>),
+    Stdin(NativeStdinOperation, Vec<V>),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -236,6 +240,7 @@ impl NativeMachine {
                             Instruction::Native(_)
                                 | Instruction::Concurrent(_)
                                 | Instruction::FileSystem(_)
+                                | Instruction::Stdin(_)
                         )
                     {
                         stack.push(NativeFrame::Source(source));
@@ -272,6 +277,13 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::FileSystem(operation, c);
+                            }
+                        }
+                        Instruction::Stdin(operation) => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::Stdin(operation, c);
                             }
                         }
                         Instruction::Bind => {
@@ -433,12 +445,7 @@ pub fn native_operation(name: &str, args: Vec<V>) -> V {
             })
         }
         "stdin.readLine" | "std/prelude::readLine" | "std/stdin::readLine" => {
-            V::leaf(args, |_, context| {
-                let mut offset = context.stdin_offset.get();
-                let result = native_read_line(&mut std::io::stdin().lock(), &mut offset);
-                context.stdin_offset.set(offset);
-                result
-            })
+            native_stdin_operation(name, args)
         }
         "std/effect::succeed" | "effect.succeed" => V::leaf(args, |c, _| Ok(c[0].clone())),
         "std/effect::fail" | "effect.fail" => {
@@ -548,6 +555,16 @@ fn run_native_program_with_show(
             Ok(V::Unit)
         }
     });
+    let result = match catch_native(|| native_temporary_shutdown(&context)) {
+        Ok(_) => result,
+        Err(NativeExit::Defect(mut cleanup)) => {
+            if let Err(NativeExit::Defect(original)) = result {
+                cleanup.extend(original);
+            }
+            Err(NativeExit::Defect(cleanup))
+        }
+        Err(exit) => Err(exit),
+    };
     let result = match result {
         Err(NativeExit::Failure(error)) => match catch_native(|| {
             let rendered = show(error.value);

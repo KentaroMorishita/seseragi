@@ -441,6 +441,11 @@ impl Backend<'_> {
         }
         if !self.program_wasm_library {
             match name.as_str() {
+                "std/fs::FileType"
+                | "std/fs::FileMetadata"
+                | "std/fs::DirectoryEntry"
+                | "std/time::Instant"
+                | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"
                 | "std/signal::MutableSignal"
                 | "std/prelude::Sum"
@@ -503,7 +508,9 @@ impl Backend<'_> {
             | "std/prelude::Console"
             | "std/prelude::ConsoleError"
             | "std/prelude::Stdin"
-            | "std/prelude::StdinError" => Some(vec![]),
+            | "std/prelude::StdinError"
+            | "std/stdin::ReadSize"
+            | "std/stdin::LineLimit" => Some(vec![]),
             "std/prelude::Array"
             | "std/prelude::List"
             | "std/prelude::Range"
