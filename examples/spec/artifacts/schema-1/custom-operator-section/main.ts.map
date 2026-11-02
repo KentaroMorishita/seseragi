@@ -11,23 +11,32 @@
   "names": [
     "__ssrg$instance$Difference$0",
     "__ssrg$operator$3c5e3e",
+    "$ssrg$atSource",
     "__ssrg$evidence$0",
     "applyPair",
+    "$ssrg$atSource",
     "step",
     "applyOne",
+    "$ssrg$atSource",
     "step",
     "subtractFromTen",
+    "$ssrg$atSource",
     "applyOne",
+    "$ssrg$atSource",
     "__ssrg$partial$stage",
     "__ssrg$operator$3c5e3e",
     "__ssrg$partial$stage",
     "main",
+    "$ssrg$atSource",
     "println",
     "intShow",
+    "$ssrg$atSource",
     "applyPair",
+    "$ssrg$atSource",
     "__ssrg$operator$3c5e3e",
     "intShow",
+    "$ssrg$atSource",
     "subtractFromTen"
   ],
-  "mappings": ";;;;;;AAKAA;AAKAC;AAKAE;AAOAE;AAMAE;AAGAK"
+  "mappings": ";;;;;;;;;;;;;;;;;AAKAA;AAKAC;AAKAG;AAOAG;AAMAG;AAGAO"
 }

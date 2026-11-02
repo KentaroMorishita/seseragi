@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/std-math",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 453,
+      "end": 462
+    },
+    {
+      "source": "main.ssrg",
+      "start": 487,
+      "end": 505
+    },
+    {
+      "source": "main.ssrg",
+      "start": 530,
+      "end": 541
+    }
+  ],
   "runtimeRequirements": [
     "core.math.api.pi",
     "core.math.api.e",
@@ -266,43 +283,61 @@
         }
       },
       "initializer": {
-        "kind": "sequence",
-        "statements": [
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
           {
-            "kind": "pure-let",
-            "name": "__ssrg$numeric$saved0",
-            "type": {
-              "kind": "number"
-            },
-            "initializer": {
-              "kind": "number",
-              "value": "1.0"
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 453,
-              "end": 462
-            }
-          }
-        ],
-        "result": {
-          "kind": "lambda",
-          "parameter": "__ssrg$numeric$partial$0: number",
-          "body": {
-            "kind": "runtime-call",
-            "callee": "_ssrg_math_atan2",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$numeric$saved0"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$numeric$partial$0"
+            "kind": "identifier",
+            "name": "$ssrg$source453"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$numeric$saved0",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "1.0"
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 453,
+                    "end": 462
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$numeric$partial$0: number",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_math_atan2",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$numeric$saved0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$numeric$partial$0"
+                    }
+                  ]
+                }
               }
-            ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
-        }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -319,15 +354,33 @@
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_math_hypot",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "number",
-            "value": "3.0"
+            "kind": "identifier",
+            "name": "$ssrg$source487"
           },
           {
-            "kind": "number",
-            "value": "4.0"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_math_hypot",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "3.0"
+                },
+                {
+                  "kind": "number",
+                  "value": "4.0"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -345,12 +398,30 @@
         "kind": "number"
       },
       "initializer": {
-        "kind": "call",
-        "callee": "partial",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "number",
-            "value": "1.0"
+            "kind": "identifier",
+            "name": "$ssrg$source530"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "partial",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "1.0"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

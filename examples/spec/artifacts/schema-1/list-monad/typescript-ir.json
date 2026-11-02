@@ -2,6 +2,43 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/list-monad",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 33,
+      "end": 42
+    },
+    {
+      "source": "main.ssrg",
+      "start": 89,
+      "end": 99
+    },
+    {
+      "source": "main.ssrg",
+      "start": 138,
+      "end": 157
+    },
+    {
+      "source": "main.ssrg",
+      "start": 263,
+      "end": 287
+    },
+    {
+      "source": "main.ssrg",
+      "start": 346,
+      "end": 378
+    },
+    {
+      "source": "main.ssrg",
+      "start": 353,
+      "end": 367
+    },
+    {
+      "source": "main.ssrg",
+      "start": 439,
+      "end": 461
+    }
+  ],
   "runtimeRequirements": [
     "core.list",
     "core.int",
@@ -89,6 +126,10 @@
           {
             "kind": "number",
             "value": "1"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source33"
           }
         ]
       },
@@ -131,6 +172,10 @@
                   {
                     "kind": "number",
                     "value": "10"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "$ssrg$source89"
                   }
                 ]
               }
@@ -160,38 +205,56 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_list_reduce",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "number",
-            "value": "0"
+            "kind": "identifier",
+            "name": "$ssrg$source138"
           },
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "curried-runtime-reference",
-              "name": "_ssrg_int_add",
-              "arity": 2
-            },
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "number"
-              },
-              "result": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "number"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_list_reduce",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "0"
                 },
-                "result": {
-                  "kind": "number"
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "curried-runtime-reference",
+                    "name": "_ssrg_int_add",
+                    "arity": 2
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "number"
+                      },
+                      "result": {
+                        "kind": "number"
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
                 }
-              }
+              ]
             }
           },
           {
-            "kind": "identifier",
-            "name": "values"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -281,72 +344,144 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "render",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "List map"
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "total",
-                      "arguments": [
-                        {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_list_functor"
-                            },
-                            "method": "map",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "increment"
-                              },
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_list_from_array",
-                                "arguments": [
-                                  {
-                                    "kind": "array",
-                                    "elements": [
-                                      {
-                                        "kind": "number",
-                                        "value": "1"
-                                      },
-                                      {
-                                        "kind": "number",
-                                        "value": "2"
-                                      },
-                                      {
-                                        "kind": "number",
-                                        "value": "3"
-                                      }
-                                    ],
-                                    "elementType": {
-                                      "kind": "number"
-                                    }
-                                  }
-                                ]
-                              }
-                            ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source263"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source263"
                           },
-                          "type": {
-                            "kind": "list",
-                            "element": {
-                              "kind": "number"
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "render",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "List map"
+                                },
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source263"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "call",
+                                        "callee": "total",
+                                        "arguments": [
+                                          {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source263"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "checked-result",
+                                                  "value": {
+                                                    "kind": "dictionary-call",
+                                                    "dictionary": {
+                                                      "kind": "runtime-reference",
+                                                      "name": "_ssrg_list_functor"
+                                                    },
+                                                    "method": "map",
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "identifier",
+                                                        "name": "increment"
+                                                      },
+                                                      {
+                                                        "kind": "runtime-call",
+                                                        "callee": "_ssrg_list_from_array",
+                                                        "arguments": [
+                                                          {
+                                                            "kind": "array",
+                                                            "elements": [
+                                                              {
+                                                                "kind": "number",
+                                                                "value": "1"
+                                                              },
+                                                              {
+                                                                "kind": "number",
+                                                                "value": "2"
+                                                              },
+                                                              {
+                                                                "kind": "number",
+                                                                "value": "3"
+                                                              }
+                                                            ],
+                                                            "elementType": {
+                                                              "kind": "number"
+                                                            }
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  },
+                                                  "type": {
+                                                    "kind": "list",
+                                                    "element": {
+                                                      "kind": "number"
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": false
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
                             }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
-                        }
-                      ]
-                    }
-                  ]
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -355,93 +490,183 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "render",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "List apply"
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "total",
-                      "arguments": [
-                        {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_list_applicative"
-                            },
-                            "method": "apply",
-                            "arguments": [
-                              {
-                                "kind": "checked-result",
-                                "value": {
-                                  "kind": "dictionary-call",
-                                  "dictionary": {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_list_applicative"
-                                  },
-                                  "method": "pure",
+                  "kind": "identifier",
+                  "name": "$ssrg$source346"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source346"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "render",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "List apply"
+                                },
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
                                   "arguments": [
                                     {
                                       "kind": "identifier",
-                                      "name": "increment"
+                                      "name": "$ssrg$source346"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "call",
+                                        "callee": "total",
+                                        "arguments": [
+                                          {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source346"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "checked-result",
+                                                  "value": {
+                                                    "kind": "dictionary-call",
+                                                    "dictionary": {
+                                                      "kind": "runtime-reference",
+                                                      "name": "_ssrg_list_applicative"
+                                                    },
+                                                    "method": "apply",
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "runtime-call",
+                                                        "callee": "$ssrg$atSource",
+                                                        "arguments": [
+                                                          {
+                                                            "kind": "identifier",
+                                                            "name": "$ssrg$source353"
+                                                          },
+                                                          {
+                                                            "kind": "lambda",
+                                                            "parameter": "",
+                                                            "body": {
+                                                              "kind": "checked-result",
+                                                              "value": {
+                                                                "kind": "dictionary-call",
+                                                                "dictionary": {
+                                                                  "kind": "runtime-reference",
+                                                                  "name": "_ssrg_list_applicative"
+                                                                },
+                                                                "method": "pure",
+                                                                "arguments": [
+                                                                  {
+                                                                    "kind": "identifier",
+                                                                    "name": "increment"
+                                                                  }
+                                                                ]
+                                                              },
+                                                              "type": {
+                                                                "kind": "list",
+                                                                "element": {
+                                                                  "kind": "function",
+                                                                  "parameter": {
+                                                                    "kind": "number"
+                                                                  },
+                                                                  "result": {
+                                                                    "kind": "number"
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          },
+                                                          {
+                                                            "kind": "boolean",
+                                                            "value": false
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "kind": "runtime-call",
+                                                        "callee": "_ssrg_list_from_array",
+                                                        "arguments": [
+                                                          {
+                                                            "kind": "array",
+                                                            "elements": [
+                                                              {
+                                                                "kind": "number",
+                                                                "value": "40"
+                                                              },
+                                                              {
+                                                                "kind": "number",
+                                                                "value": "41"
+                                                              }
+                                                            ],
+                                                            "elementType": {
+                                                              "kind": "number"
+                                                            }
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  },
+                                                  "type": {
+                                                    "kind": "list",
+                                                    "element": {
+                                                      "kind": "number"
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": false
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
                                     }
                                   ]
-                                },
-                                "type": {
-                                  "kind": "list",
-                                  "element": {
-                                    "kind": "function",
-                                    "parameter": {
-                                      "kind": "number"
-                                    },
-                                    "result": {
-                                      "kind": "number"
-                                    }
-                                  }
                                 }
-                              },
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_list_from_array",
-                                "arguments": [
-                                  {
-                                    "kind": "array",
-                                    "elements": [
-                                      {
-                                        "kind": "number",
-                                        "value": "40"
-                                      },
-                                      {
-                                        "kind": "number",
-                                        "value": "41"
-                                      }
-                                    ],
-                                    "elementType": {
-                                      "kind": "number"
-                                    }
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          "type": {
-                            "kind": "list",
-                            "element": {
-                              "kind": "number"
+                              ]
                             }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
-                        }
-                      ]
-                    }
-                  ]
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -449,68 +674,140 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "render",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "List flatMap"
-                },
-                {
-                  "kind": "call",
-                  "callee": "total",
-                  "arguments": [
-                    {
-                      "kind": "checked-result",
-                      "value": {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_list_monad"
-                        },
-                        "method": "flatMap",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "expand"
-                          },
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_list_from_array",
-                            "arguments": [
-                              {
-                                "kind": "array",
-                                "elements": [
-                                  {
-                                    "kind": "number",
-                                    "value": "1"
-                                  },
-                                  {
-                                    "kind": "number",
-                                    "value": "2"
-                                  }
-                                ],
-                                "elementType": {
-                                  "kind": "number"
-                                }
-                              }
-                            ]
-                          }
-                        ]
+              "kind": "identifier",
+              "name": "$ssrg$source439"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source439"
                       },
-                      "type": {
-                        "kind": "list",
-                        "element": {
-                          "kind": "number"
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "render",
+                          "arguments": [
+                            {
+                              "kind": "string",
+                              "value": "List flatMap"
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source439"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "total",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source439"
+                                          },
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "checked-result",
+                                              "value": {
+                                                "kind": "dictionary-call",
+                                                "dictionary": {
+                                                  "kind": "runtime-reference",
+                                                  "name": "_ssrg_list_monad"
+                                                },
+                                                "method": "flatMap",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "expand"
+                                                  },
+                                                  {
+                                                    "kind": "runtime-call",
+                                                    "callee": "_ssrg_list_from_array",
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "array",
+                                                        "elements": [
+                                                          {
+                                                            "kind": "number",
+                                                            "value": "1"
+                                                          },
+                                                          {
+                                                            "kind": "number",
+                                                            "value": "2"
+                                                          }
+                                                        ],
+                                                        "elementType": {
+                                                          "kind": "number"
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              "type": {
+                                                "kind": "list",
+                                                "element": {
+                                                  "kind": "number"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
                         }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
-                    }
-                  ]
-                }
-              ]
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

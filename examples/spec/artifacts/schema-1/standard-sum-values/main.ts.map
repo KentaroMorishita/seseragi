@@ -14,10 +14,13 @@
     "HandInputError",
     "InvalidHand",
     "standardSumValues",
+    "$ssrg$atSource",
     "Right",
+    "$ssrg$atSource",
     "Left",
+    "$ssrg$atSource",
     "Just",
     "Nothing"
   ],
-  "mappings": ";;;;AAAAA;;AACIC;AAEJC;;AACIC;AAEJC"
+  "mappings": ";;;;;;;;AAAAA;;AACIC;AAEJC;;AACIC;AAEJC"
 }

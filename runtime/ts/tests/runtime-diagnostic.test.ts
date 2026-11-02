@@ -254,3 +254,30 @@ test("source tracking preserves typed failure, cancellation and LIFO finalizers"
     expect(events).toEqual(["inner", "outer"])
   }
 })
+
+test("Decimal host magnitude limits have a stable located diagnostic", async () => {
+  const decimal = await import("../src/decimal")
+  const number = await import("../src/number")
+  const huge = decimal.parse("1e100000000000000000000000")
+  expect(huge.tag).toBe("Right")
+  if (huge.tag !== "Right") throw new Error("valid decimal")
+  const precision = decimal.context(Number.MAX_SAFE_INTEGER, number.HalfEven)
+  expect(precision.tag).toBe("Right")
+  if (precision.tag !== "Right") throw new Error("valid precision")
+  for (const action of [
+    () => decimal.add(huge.value, decimal.fromInt(2)),
+    () =>
+      decimal.divide(precision.value, decimal.fromInt(1), decimal.fromInt(7)),
+  ]) {
+    expect(() => atSource(inner, action, false)).toThrow(
+      "Decimal canonical spelling exceeds host limits"
+    )
+    try {
+      atSource(inner, action, false)
+    } catch (error) {
+      expect(renderRuntimeDefectText(error)).toBe(
+        "例-🙂.ssrg:3:25: Seseragi Defect: Decimal canonical spelling exceeds host limits\n"
+      )
+    }
+  }
+})

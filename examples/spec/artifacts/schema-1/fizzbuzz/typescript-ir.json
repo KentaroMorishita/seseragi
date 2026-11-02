@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/fizzbuzz",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 45,
+      "end": 55
+    },
+    {
+      "source": "main.ssrg",
+      "start": 57,
+      "end": 67
+    },
+    {
+      "source": "main.ssrg",
+      "start": 219,
+      "end": 234
+    },
+    {
+      "source": "main.ssrg",
+      "start": 247,
+      "end": 253
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.string",
@@ -58,6 +80,10 @@
                 {
                   "kind": "number",
                   "value": "3"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source45"
                 }
               ]
             },
@@ -72,6 +98,10 @@
                 {
                   "kind": "number",
                   "value": "5"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source57"
                 }
               ]
             }
@@ -198,15 +228,33 @@
         "arguments": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_range_inclusive",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "1"
+                "kind": "identifier",
+                "name": "$ssrg$source247"
               },
               {
-                "kind": "number",
-                "value": "30"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_range_inclusive",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "1"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "30"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
@@ -222,12 +270,30 @@
             "kind": "lambda",
             "parameter": "number",
             "body": {
-              "kind": "call",
-              "callee": "fizzBuzz",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "number"
+                  "name": "$ssrg$source219"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "fizzBuzz",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "number"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }

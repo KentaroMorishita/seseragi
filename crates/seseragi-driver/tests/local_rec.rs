@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{compile_module, CompileInput};
 
 #[test]
@@ -52,7 +56,10 @@ fn local_rec_formatter_preserves_execution_and_reference_identity() {
             &formatted.text,
         ))
         .unwrap();
-        assert_eq!(original.generated.typescript, compiled.generated.typescript);
+        assert_eq!(
+            source_locations::canonical_typescript(&original, source),
+            source_locations::canonical_typescript(&compiled, &formatted.text)
+        );
     }
     let analysis =
         seseragi_driver::analyze_module(CompileInput::new("main.ssrg", "fixture/local", source));

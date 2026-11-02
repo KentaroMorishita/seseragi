@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/array-comprehension",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 51,
+      "end": 63
+    },
+    {
+      "source": "main.ssrg",
+      "start": 117,
+      "end": 128
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.int",
@@ -96,20 +108,38 @@
                   "kind": "lambda",
                   "parameter": "right",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_int_eq_dictionary"
-                    },
-                    "method": "eq",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "right"
+                        "name": "$ssrg$source117"
                       },
                       {
-                        "kind": "number",
-                        "value": "20"
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_int_eq_dictionary"
+                          },
+                          "method": "eq",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "right"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "20"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -128,6 +158,10 @@
                       {
                         "kind": "identifier",
                         "name": "right"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source51"
                       }
                     ]
                   }

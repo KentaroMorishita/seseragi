@@ -1,4 +1,6 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
+import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
+const $ssrg$source189 = { file: "project/imported-inherent-method/src/domain.ssrg", line: 10, column: 18, uri: "seseragi://fixture/imported-inherent-method::domain", start: 189, end: 209 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
 interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
@@ -14,6 +16,6 @@ type __ssrg$representation$Box<A> = {
   readonly [__ssrg$brand$Box]: readonly [A];
 };
 export const box = <A,>(value: A) => (({ "value": value } as const) as unknown as Box<A>)
-export const __ssrg$method$Box$map = <A,>(self: Box<A>) => (transform: (argument: A) => A) => (({ "value": transform((((((((self) as unknown)) as __ssrg$representation$Box<A>))["value"]) as A)) } as const) as unknown as Box<A>)
+export const __ssrg$method$Box$map = <A,>(self: Box<A>) => (transform: (argument: A) => A) => (({ "value": $ssrg$atSource($ssrg$source189, () => transform((((((((self) as unknown)) as __ssrg$representation$Box<A>))["value"]) as A)), false) } as const) as unknown as Box<A>)
 export const __ssrg$method$Box$get = <A,>(self: Box<A>) => (((((((self) as unknown)) as __ssrg$representation$Box<A>))["value"]) as A)
 const __ssrg$method$Box$hidden = <A,>(self: Box<A>) => (((((((self) as unknown)) as __ssrg$representation$Box<A>))["value"]) as A)

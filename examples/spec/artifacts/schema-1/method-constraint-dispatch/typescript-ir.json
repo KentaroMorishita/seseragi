@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/method-constraint-dispatch",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 323,
+      "end": 334
+    },
+    {
+      "source": "main.ssrg",
+      "start": 401,
+      "end": 424
+    },
+    {
+      "source": "main.ssrg",
+      "start": 410,
+      "end": 423
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -122,24 +139,42 @@
               }
             ],
             "body": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
                   "kind": "identifier",
-                  "name": "__ssrg$evidence$0"
+                  "name": "$ssrg$source323"
                 },
-                "method": "label",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "value"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "identifier",
+                        "name": "__ssrg$evidence$0"
+                      },
+                      "method": "label",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             },
             "origin": {
               "source": "main.ssrg",
@@ -165,31 +200,67 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Render$1"
-              },
-              "method": "render",
+            "kind": "identifier",
+            "name": "$ssrg$source401"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "identifier",
-                  "name": "Active"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$instance$Labeled$0"
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source410"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Render$1"
+                          },
+                          "method": "render",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "Active"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Labeled$0"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
                 }
               ]
-            },
-            "type": {
-              "kind": "string"
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{
     analyze_module, analyze_project, compile_module, BuildProfile, CompileInput, ProjectModuleInput,
 };
@@ -68,7 +72,10 @@ fn trait_method_implementation_is_not_a_use_and_call_keeps_the_original_notice()
             CompileInput::new("λ/trait.ssrg", "deprecation/trait", source).with_profile(profile),
         )
         .unwrap();
-        assert_eq!(after.generated.typescript, before.generated.typescript);
+        assert_eq!(
+            source_locations::canonical_typescript(&after, source),
+            source_locations::canonical_typescript(&before, &plain)
+        );
         let contracts = |module: &seseragi_driver::CompiledModule| {
             module
                 .core_ir

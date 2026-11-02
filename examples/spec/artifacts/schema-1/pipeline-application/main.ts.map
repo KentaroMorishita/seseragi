@@ -15,10 +15,14 @@
     "multiply",
     "describe",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "describe",
+    "$ssrg$atSource",
     "double",
+    "$ssrg$atSource",
     "add"
   ],
-  "mappings": ";;;;;AAEAA;AAEAE;AAEAE;AAMAC"
+  "mappings": ";;;;;;;;;;AAEAA;AAEAE;AAEAE;AAMAC"
 }

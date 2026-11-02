@@ -18,19 +18,27 @@
     "addInt",
     "add",
     "total",
+    "$ssrg$atSource",
     "__ssrg$evidence$0",
     "totals",
+    "$ssrg$atSource",
     "_ssrg_array_reduce",
     "add",
+    "$ssrg$atSource",
     "oddSquares",
+    "$ssrg$atSource",
     "total",
     "std/prelude::Reducible<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
     "renderTotals",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "renderTotals",
+    "$ssrg$atSource",
     "totals",
+    "$ssrg$atSource",
     "Countdown"
   ],
-  "mappings": ";;;;;;;;;AAEAA;AAGAM;AAGAE;AAKAE;AAMAM;AAMAC"
+  "mappings": ";;;;;;;;;;;;;;;;;AAEAA;AAGAM;AAGAE;AAKAG;AAMAS;AAMAC"
 }

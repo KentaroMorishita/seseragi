@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/pure-call",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 44,
+      "end": 56
+    },
+    {
+      "source": "main.ssrg",
+      "start": 91,
+      "end": 102
+    },
+    {
+      "source": "main.ssrg",
+      "start": 136,
+      "end": 145
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
@@ -41,6 +58,10 @@
           {
             "kind": "identifier",
             "name": "right"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source44"
           }
         ]
       },
@@ -62,16 +83,34 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "add",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source91"
           },
           {
-            "kind": "number",
-            "value": "1"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "number",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -93,12 +132,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "addOne",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "number",
-            "value": "41"
+            "kind": "identifier",
+            "name": "$ssrg$source136"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "addOne",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "41"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

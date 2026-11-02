@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{compile_module, CompileInput};
 
 #[test]
@@ -9,11 +13,14 @@ let result = (values, prepend 4 values, 1 + 2 : `[4])
 "#;
     let result = compile_module(CompileInput::new("cons.ssrg", "fixture/cons", source));
     assert!(result.is_ok(), "{result:#?}");
-    let generated = result.unwrap().generated.typescript;
+    let result = result.unwrap();
+    source_locations::canonical_typescript(&result, source);
+    let generated = result.generated.typescript;
     assert!(
-        generated.contains(
-            "_ssrg_list_cons<number>(1, _ssrg_list_cons<number>(2, _ssrg_list_cons<number>(3,"
-        ),
+        generated.contains(&format!(
+            "_ssrg_list_cons<number>(1, $ssrg$atSource($ssrg$source{}, () => _ssrg_list_cons<number>(2, $ssrg$atSource($ssrg$source{}, () => _ssrg_list_cons<number>(3,",
+            source.find("2 : 3").unwrap(), source.find("3 : `[]").unwrap()
+        )),
         "{generated}"
     );
     assert!(generated.contains("Cons as _ssrg_list_cons"), "{generated}");
@@ -54,10 +61,8 @@ fn cons_continues_across_lines_and_preserves_formatted_execution_shape() {
 #[test]
 fn formatted_cons_keeps_the_same_generated_program() {
     let source = "pub let values: List<Int> = 1:2:3:`[]\n";
-    let original = compile_module(CompileInput::new("format.ssrg", "fixture/cons", source))
-        .unwrap()
-        .generated
-        .typescript;
+    let original =
+        compile_module(CompileInput::new("format.ssrg", "fixture/cons", source)).unwrap();
     for width in [20, 88] {
         let tokens = seseragi_syntax::lex("format.ssrg", source);
         let cst = seseragi_syntax::parse_cst_from_tokens(tokens.clone());
@@ -71,10 +76,11 @@ fn formatted_cons_keeps_the_same_generated_program() {
             "fixture/cons",
             &formatted.text,
         ))
-        .unwrap()
-        .generated
-        .typescript;
-        assert_eq!(original, generated);
+        .unwrap();
+        assert_eq!(
+            source_locations::canonical_typescript(&original, source),
+            source_locations::canonical_typescript(&generated, &formatted.text)
+        );
     }
 }
 

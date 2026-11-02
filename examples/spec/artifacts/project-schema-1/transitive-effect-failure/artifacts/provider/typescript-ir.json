@@ -2,6 +2,18 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/transitive-effect-failure::provider",
+  "runtimeSources": [
+    {
+      "source": "project/transitive-effect-failure/src/provider.ssrg",
+      "start": 100,
+      "end": 125
+    },
+    {
+      "source": "project/transitive-effect-failure/src/provider.ssrg",
+      "start": 106,
+      "end": 124
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -112,17 +124,53 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_effect_fail",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "InvalidInput",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "input"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source100"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_fail",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source106"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "InvalidInput",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "input"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

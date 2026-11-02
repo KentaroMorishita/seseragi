@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/feature-module-composition::main",
+  "runtimeSources": [
+    {
+      "source": "project/feature-module-composition/src/main.ssrg",
+      "start": 52,
+      "end": 60
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.string"
@@ -45,11 +52,29 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "start",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "undefined"
+            "kind": "identifier",
+            "name": "$ssrg$source52"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "start",
+              "arguments": [
+                {
+                  "kind": "undefined"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

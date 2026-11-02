@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-explicit-failure-contract",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 160,
+      "end": 170
+    },
+    {
+      "source": "main.ssrg",
+      "start": 227,
+      "end": 257
+    },
+    {
+      "source": "main.ssrg",
+      "start": 245,
+      "end": 256
+    },
+    {
+      "source": "main.ssrg",
+      "start": 262,
+      "end": 272
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.show.dictionary",
@@ -175,10 +197,28 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_effect_succeed",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "undefined"
+            "kind": "identifier",
+            "name": "$ssrg$source160"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_succeed",
+              "arguments": [
+                {
+                  "kind": "undefined"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },
@@ -206,21 +246,57 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "Wrapped"
+                  "name": "$ssrg$source227"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_effect_fail",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "Source"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Wrapped"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source245"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_effect_fail",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "Source"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -228,10 +304,28 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_succeed",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "undefined"
+              "kind": "identifier",
+              "name": "$ssrg$source262"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_succeed",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

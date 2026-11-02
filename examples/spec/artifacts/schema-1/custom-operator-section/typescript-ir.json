@@ -2,6 +2,58 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/custom-operator-section",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 251,
+      "end": 263
+    },
+    {
+      "source": "main.ssrg",
+      "start": 343,
+      "end": 364
+    },
+    {
+      "source": "main.ssrg",
+      "start": 451,
+      "end": 466
+    },
+    {
+      "source": "main.ssrg",
+      "start": 530,
+      "end": 540
+    },
+    {
+      "source": "main.ssrg",
+      "start": 583,
+      "end": 608
+    },
+    {
+      "source": "main.ssrg",
+      "start": 593,
+      "end": 601
+    },
+    {
+      "source": "main.ssrg",
+      "start": 673,
+      "end": 774
+    },
+    {
+      "source": "main.ssrg",
+      "start": 722,
+      "end": 742
+    },
+    {
+      "source": "main.ssrg",
+      "start": 733,
+      "end": 736
+    },
+    {
+      "source": "main.ssrg",
+      "start": 755,
+      "end": 772
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.subtract",
@@ -67,6 +119,10 @@
                 {
                   "kind": "identifier",
                   "name": "right"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source251"
                 }
               ]
             },
@@ -114,30 +170,48 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
             "kind": "identifier",
-            "name": "__ssrg$evidence$0"
+            "name": "$ssrg$source343"
           },
-          "method": "difference",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "left"
-            },
-            {
-              "kind": "identifier",
-              "name": "right"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "difference",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "right"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "reference",
-          "name": "A",
-          "arguments": []
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -167,16 +241,34 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "step",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "$ssrg$source451"
           },
           {
-            "kind": "identifier",
-            "name": "right"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "step",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -203,12 +295,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "step",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source530"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "step",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -230,104 +340,140 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "applyOne",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "sequence",
-              "statements": [
+            "kind": "identifier",
+            "name": "$ssrg$source583"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "applyOne",
+              "arguments": [
                 {
-                  "kind": "pure-let",
-                  "name": "__ssrg$partial$stage",
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "number"
-                    },
-                    "result": {
-                      "kind": "function",
-                      "parameter": {
-                        "kind": "unknown"
-                      },
-                      "result": {
-                        "kind": "number"
-                      }
-                    }
-                  },
-                  "initializer": {
-                    "kind": "checked-result",
-                    "value": {
-                      "kind": "call",
-                      "callee": "__ssrg$operator$3c5e3e",
-                      "arguments": [
-                        {
-                          "kind": "number",
-                          "value": "10"
-                        }
-                      ],
-                      "typeArguments": [
-                        {
-                          "kind": "number"
-                        }
-                      ]
-                    },
-                    "type": {
-                      "kind": "function",
-                      "parameter": {
-                        "kind": "number"
-                      },
-                      "result": {
-                        "kind": "function",
-                        "parameter": {
-                          "kind": "unknown"
-                        },
-                        "result": {
-                          "kind": "number"
-                        }
-                      }
-                    }
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 593,
-                    "end": 601
-                  }
-                }
-              ],
-              "result": {
-                "kind": "lambda",
-                "parameter": "__ssrg$partial$0: number",
-                "body": {
-                  "kind": "call",
-                  "callee": "__ssrg$partial$stage",
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
                   "arguments": [
                     {
                       "kind": "identifier",
-                      "name": "__ssrg$partial$0"
+                      "name": "$ssrg$source593"
                     },
                     {
-                      "kind": "identifier",
-                      "name": "__ssrg$instance$Difference$0"
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "sequence",
+                          "statements": [
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$partial$stage",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "unknown"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
+                                }
+                              },
+                              "initializer": {
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "call",
+                                  "callee": "__ssrg$operator$3c5e3e",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "10"
+                                    }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "unknown"
+                                    },
+                                    "result": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 593,
+                                "end": 601
+                              }
+                            }
+                          ],
+                          "result": {
+                            "kind": "lambda",
+                            "parameter": "__ssrg$partial$0: number",
+                            "body": {
+                              "kind": "call",
+                              "callee": "__ssrg$partial$stage",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$partial$0"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Difference$0"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "number"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
                   ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
                 }
-              }
-            },
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "number"
-              },
-              "result": {
-                "kind": "number"
-              }
+              ]
             }
           },
           {
-            "kind": "identifier",
-            "name": "right"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -350,108 +496,180 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "binary",
-            "operator": "+",
-            "left": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "binary",
-                "operator": "+",
-                "left": {
-                  "kind": "string",
-                  "value": "Custom operator section: higher-order="
-                },
-                "right": {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "applyPair",
-                      "arguments": [
-                        {
-                          "kind": "lambda",
-                          "parameter": "__ssrg$partial$0: number",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "__ssrg$partial$1: number",
-                            "body": {
-                              "kind": "checked-result",
-                              "value": {
-                                "kind": "call",
-                                "callee": "__ssrg$operator$3c5e3e",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "__ssrg$partial$0"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "__ssrg$partial$1"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "__ssrg$instance$Difference$0"
-                                  }
-                                ],
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ]
-                              },
-                              "type": {
-                                "kind": "number"
-                              }
-                            }
-                          }
-                        },
-                        {
-                          "kind": "number",
-                          "value": "10"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "3"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              "right": {
-                "kind": "string",
-                "value": ", partial="
-              }
-            },
-            "right": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
-              },
-              "method": "show",
+            "kind": "identifier",
+            "name": "$ssrg$source673"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "subtractFromTen",
-                  "arguments": [
-                    {
-                      "kind": "number",
-                      "value": "3"
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "string",
+                        "value": "Custom operator section: higher-order="
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source722"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "applyPair",
+                                  "arguments": [
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "__ssrg$partial$0: number",
+                                      "body": {
+                                        "kind": "lambda",
+                                        "parameter": "__ssrg$partial$1: number",
+                                        "body": {
+                                          "kind": "runtime-call",
+                                          "callee": "$ssrg$atSource",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "$ssrg$source733"
+                                            },
+                                            {
+                                              "kind": "lambda",
+                                              "parameter": "",
+                                              "body": {
+                                                "kind": "checked-result",
+                                                "value": {
+                                                  "kind": "call",
+                                                  "callee": "__ssrg$operator$3c5e3e",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "__ssrg$partial$0"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "__ssrg$partial$1"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "__ssrg$instance$Difference$0"
+                                                    }
+                                                  ],
+                                                  "typeArguments": [
+                                                    {
+                                                      "kind": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "type": {
+                                                  "kind": "number"
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "kind": "boolean",
+                                              "value": false
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "10"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "3"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": ", partial="
                     }
-                  ]
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source755"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "subtractFromTen",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "3"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
                 }
               ]
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

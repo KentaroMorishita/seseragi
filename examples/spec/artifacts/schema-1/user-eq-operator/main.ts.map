@@ -14,15 +14,20 @@
     "Waiting",
     "__ssrg$instance$Eq$0",
     "same",
+    "$ssrg$atSource",
     "__ssrg$instance$Eq$0",
     "different",
     "__ssrg$evidence$0",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "same",
+    "$ssrg$atSource",
     "different"
   ],
-  "mappings": ";;;;AAAAA;;;AACIC;AACAC;AAEJC;AASAC;AAGAE;AAIAE;AAMAC"
+  "mappings": ";;;;;;;;;AAAAA;;;AACIC;AACAC;AAEJC;AASAC;AAGAG;AAIAE;AAMAC"
 }

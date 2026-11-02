@@ -2,6 +2,103 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/web-html-ssr",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 147,
+      "end": 472
+    },
+    {
+      "source": "main.ssrg",
+      "start": 217,
+      "end": 256
+    },
+    {
+      "source": "main.ssrg",
+      "start": 262,
+      "end": 326
+    },
+    {
+      "source": "main.ssrg",
+      "start": 332,
+      "end": 462
+    },
+    {
+      "source": "main.ssrg",
+      "start": 378,
+      "end": 456
+    },
+    {
+      "source": "main.ssrg",
+      "start": 622,
+      "end": 632
+    },
+    {
+      "source": "main.ssrg",
+      "start": 654,
+      "end": 696
+    },
+    {
+      "source": "main.ssrg",
+      "start": 675,
+      "end": 695
+    },
+    {
+      "source": "main.ssrg",
+      "start": 824,
+      "end": 834
+    },
+    {
+      "source": "main.ssrg",
+      "start": 860,
+      "end": 911
+    },
+    {
+      "source": "main.ssrg",
+      "start": 983,
+      "end": 1047
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1005,
+      "end": 1046
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1165,
+      "end": 1175
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1250,
+      "end": 1305
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1266,
+      "end": 1304
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1379,
+      "end": 1404
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1388,
+      "end": 1403
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1409,
+      "end": 1436
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1418,
+      "end": 1435
+    }
+  ],
   "runtimeRequirements": [
     "web.html.url-type",
     "web.html.type",
@@ -120,144 +217,234 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_html_div",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "id",
-                "value": {
-                  "kind": "string",
-                  "value": "app"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "class",
-                "value": {
-                  "kind": "string",
-                  "value": "container"
-                }
-              },
-              {
-                "kind": "field",
-                "name": "children",
-                "value": {
-                  "kind": "array",
-                  "elements": [
+            "kind": "identifier",
+            "name": "$ssrg$source147"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_div",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_p",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "Hello <Seseragi>"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "Confirm"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "OK"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_a",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "href",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "docsUrl"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_html_img",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "items": [
-                                      {
-                                        "kind": "field",
-                                        "name": "src",
-                                        "value": {
-                                          "kind": "identifier",
-                                          "name": "markUrl"
-                                        }
-                                      },
-                                      {
-                                        "kind": "field",
-                                        "name": "alt",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "Seseragi documentation"
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ],
-                  "elementType": {
-                    "kind": "reference",
-                    "name": "Html",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Action",
-                        "arguments": []
+                      "kind": "field",
+                      "name": "id",
+                      "value": {
+                        "kind": "string",
+                        "value": "app"
                       }
-                    ]
-                  }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "class",
+                      "value": {
+                        "kind": "string",
+                        "value": "container"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "children",
+                      "value": {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source217"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_p",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "Hello <Seseragi>"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source262"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_button",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "onClick",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "Confirm"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "OK"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source332"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_html_a",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "items": [
+                                        {
+                                          "kind": "field",
+                                          "name": "href",
+                                          "value": {
+                                            "kind": "identifier",
+                                            "name": "docsUrl"
+                                          }
+                                        },
+                                        {
+                                          "kind": "field",
+                                          "name": "children",
+                                          "value": {
+                                            "kind": "runtime-call",
+                                            "callee": "$ssrg$atSource",
+                                            "arguments": [
+                                              {
+                                                "kind": "identifier",
+                                                "name": "$ssrg$source378"
+                                              },
+                                              {
+                                                "kind": "lambda",
+                                                "parameter": "",
+                                                "body": {
+                                                  "kind": "runtime-call",
+                                                  "callee": "_ssrg_html_img",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "record",
+                                                      "items": [
+                                                        {
+                                                          "kind": "field",
+                                                          "name": "src",
+                                                          "value": {
+                                                            "kind": "identifier",
+                                                            "name": "markUrl"
+                                                          }
+                                                        },
+                                                        {
+                                                          "kind": "field",
+                                                          "name": "alt",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "Seseragi documentation"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "kind": "boolean",
+                                                "value": false
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Html",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Action",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
                 }
-              }
-            ]
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -327,24 +514,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_show_htmlBuildErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source622"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_htmlBuildErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -372,21 +577,57 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_html_renderToString",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "page",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "docsUrl"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "markUrl"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source654"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_html_renderToString",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source675"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "page",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "docsUrl"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "markUrl"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -457,24 +698,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_show_htmlBuildErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source824"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_htmlBuildErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -501,22 +760,58 @@
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "renderedPageWithMark",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "docsUrl"
+                  "name": "$ssrg$source860"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_html_parseWebUrl",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "https://example.com/seseragi.png"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "renderedPageWithMark",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "docsUrl"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source860"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_html_parseWebUrl",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "https://example.com/seseragi.png"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -544,18 +839,54 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "renderedPageFromDocs",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "runtime-call",
-            "callee": "_ssrg_html_parseWebUrl",
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "/docs?from=ssr#web-url"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source983"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "renderedPageFromDocs",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source1005"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_html_parseWebUrl",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "/docs?from=ssr#web-url"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -620,24 +951,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_show_htmlBuildErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source1165"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_htmlBuildErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -670,18 +1019,54 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "renderRejected",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "runtime-call",
-            "callee": "_ssrg_html_parseWebUrl",
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "javascript:alert(1)"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source1250"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "renderRejected",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source1266"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_html_parseWebUrl",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "javascript:alert(1)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -709,16 +1094,52 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "renderedPage",
-                  "arguments": [
-                    {
-                      "kind": "undefined"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source1379"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1388"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "renderedPage",
+                              "arguments": [
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -726,16 +1147,52 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "rejectedScheme",
-              "arguments": [
-                {
-                  "kind": "undefined"
-                }
-              ]
+              "kind": "identifier",
+              "name": "$ssrg$source1409"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source1418"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "rejectedScheme",
+                          "arguments": [
+                            {
+                              "kind": "undefined"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

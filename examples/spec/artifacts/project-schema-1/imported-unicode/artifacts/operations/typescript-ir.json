@@ -2,6 +2,53 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-unicode::operations",
+  "runtimeSources": [
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 195,
+      "end": 224
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 290,
+      "end": 311
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 390,
+      "end": 409
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 454,
+      "end": 472
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 549,
+      "end": 566
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 654,
+      "end": 673
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 719,
+      "end": 743
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 778,
+      "end": 798
+    },
+    {
+      "source": "project/imported-unicode/src/operations.ssrg",
+      "start": 858,
+      "end": 869
+    }
+  ],
   "runtimeRequirements": [
     "core.text.unicode.normalization-form",
     "core.text.slice-error",
@@ -78,45 +125,63 @@
         }
       },
       "initializer": {
-        "kind": "sequence",
-        "statements": [
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
           {
-            "kind": "pure-let",
-            "name": "__ssrg$text_bytes$saved0",
-            "type": {
-              "kind": "reference",
-              "name": "NormalizationForm",
-              "arguments": []
-            },
-            "initializer": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_unicode_NFC"
-            },
-            "origin": {
-              "source": "operations.ssrg",
-              "start": 195,
-              "end": 224
-            }
-          }
-        ],
-        "result": {
-          "kind": "lambda",
-          "parameter": "__ssrg$text_bytes$partial$0: string",
-          "body": {
-            "kind": "runtime-call",
-            "callee": "_ssrg_unicode_normalize",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$saved0"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$partial$0"
+            "kind": "identifier",
+            "name": "$ssrg$source195"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$text_bytes$saved0",
+                  "type": {
+                    "kind": "reference",
+                    "name": "NormalizationForm",
+                    "arguments": []
+                  },
+                  "initializer": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_unicode_NFC"
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 195,
+                    "end": 224
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$text_bytes$partial$0: string",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_unicode_normalize",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$saved0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$partial$0"
+                    }
+                  ]
+                }
               }
-            ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
-        }
+        ]
       },
       "origin": {
         "source": "operations.ssrg",
@@ -146,63 +211,81 @@
         }
       },
       "initializer": {
-        "kind": "sequence",
-        "statements": [
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
           {
-            "kind": "pure-let",
-            "name": "__ssrg$text_bytes$saved0",
-            "type": {
-              "kind": "number"
-            },
-            "initializer": {
-              "kind": "number",
-              "value": "1"
-            },
-            "origin": {
-              "source": "operations.ssrg",
-              "start": 290,
-              "end": 311
+            "kind": "identifier",
+            "name": "$ssrg$source290"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$text_bytes$saved0",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "1"
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 290,
+                    "end": 311
+                  }
+                },
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$text_bytes$saved1",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "3"
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 290,
+                    "end": 311
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$text_bytes$partial$0: string",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_text_sliceScalars",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$saved0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$saved1"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$partial$0"
+                    }
+                  ]
+                }
+              }
             }
           },
           {
-            "kind": "pure-let",
-            "name": "__ssrg$text_bytes$saved1",
-            "type": {
-              "kind": "number"
-            },
-            "initializer": {
-              "kind": "number",
-              "value": "3"
-            },
-            "origin": {
-              "source": "operations.ssrg",
-              "start": 290,
-              "end": 311
-            }
+            "kind": "boolean",
+            "value": false
           }
-        ],
-        "result": {
-          "kind": "lambda",
-          "parameter": "__ssrg$text_bytes$partial$0: string",
-          "body": {
-            "kind": "runtime-call",
-            "callee": "_ssrg_text_sliceScalars",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$saved0"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$saved1"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$partial$0"
-              }
-            ]
-          }
-        }
+        ]
       },
       "origin": {
         "source": "operations.ssrg",
@@ -232,63 +315,81 @@
         }
       },
       "initializer": {
-        "kind": "sequence",
-        "statements": [
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
           {
-            "kind": "pure-let",
-            "name": "__ssrg$text_bytes$saved0",
-            "type": {
-              "kind": "number"
-            },
-            "initializer": {
-              "kind": "number",
-              "value": "1"
-            },
-            "origin": {
-              "source": "operations.ssrg",
-              "start": 390,
-              "end": 409
+            "kind": "identifier",
+            "name": "$ssrg$source390"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$text_bytes$saved0",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "1"
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 390,
+                    "end": 409
+                  }
+                },
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$text_bytes$saved1",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "3"
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 390,
+                    "end": 409
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$text_bytes$partial$0: string",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_grapheme_slice",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$saved0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$saved1"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$text_bytes$partial$0"
+                    }
+                  ]
+                }
+              }
             }
           },
           {
-            "kind": "pure-let",
-            "name": "__ssrg$text_bytes$saved1",
-            "type": {
-              "kind": "number"
-            },
-            "initializer": {
-              "kind": "number",
-              "value": "3"
-            },
-            "origin": {
-              "source": "operations.ssrg",
-              "start": 390,
-              "end": 409
-            }
+            "kind": "boolean",
+            "value": false
           }
-        ],
-        "result": {
-          "kind": "lambda",
-          "parameter": "__ssrg$text_bytes$partial$0: string",
-          "body": {
-            "kind": "runtime-call",
-            "callee": "_ssrg_grapheme_slice",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$saved0"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$saved1"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$text_bytes$partial$0"
-              }
-            ]
-          }
-        }
+        ]
       },
       "origin": {
         "source": "operations.ssrg",
@@ -310,12 +411,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "canonicalize",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source454"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "canonicalize",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -337,12 +456,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "takeScalars",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source549"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "takeScalars",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -364,12 +501,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "takeGraphemes",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source654"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "takeGraphemes",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -392,11 +547,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_char_fromCodePoint",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source719"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_char_fromCodePoint",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -419,11 +592,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_char_codePoint",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source778"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_char_codePoint",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -445,24 +636,42 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_textSliceErrorDebug"
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source858"
           },
-          "method": "debug",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_textSliceErrorDebug"
+                },
+                "method": "debug",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "operations.ssrg",

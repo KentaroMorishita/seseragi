@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/generic-higher-order-call",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 52,
+      "end": 59
+    },
+    {
+      "source": "main.ssrg",
+      "start": 100,
+      "end": 109
+    },
+    {
+      "source": "main.ssrg",
+      "start": 148,
+      "end": 169
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add"
@@ -34,12 +51,30 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "f",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
+            "name": "$ssrg$source52"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "f",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -71,6 +106,10 @@
           {
             "kind": "number",
             "value": "1"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source100"
           }
         ]
       },
@@ -92,24 +131,42 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "apply",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "increment"
+            "name": "$ssrg$source148"
           },
           {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ],
-        "typeArguments": [
-          {
-            "kind": "number"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "apply",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "increment"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            }
           },
           {
-            "kind": "number"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

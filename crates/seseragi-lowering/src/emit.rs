@@ -1061,6 +1061,9 @@ fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity:
         return contains_direct_self_tail_call(value, self_name, arity);
     }
     match expr {
+        TypeScriptExpr::CheckedResult { value, .. } => {
+            contains_direct_self_tail_call(value, self_name, arity)
+        }
         TypeScriptExpr::Call {
             callee, arguments, ..
         } => callee == self_name && arguments.len() == arity,
@@ -1135,6 +1138,11 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
         );
     }
     match expr {
+        TypeScriptExpr::CheckedResult { value, type_ref } => format!(
+            "(({}) as {})",
+            render_tail_position_expr(value, self_name, arity),
+            render_typescript_type(type_ref)
+        ),
         TypeScriptExpr::Call {
             callee, arguments, ..
         } if callee == self_name && arguments.len() == arity => {

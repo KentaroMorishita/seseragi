@@ -2,6 +2,43 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-generic-adt-monad::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-generic-adt-monad/src/domain.ssrg",
+      "start": 274,
+      "end": 288
+    },
+    {
+      "source": "project/imported-generic-adt-monad/src/domain.ssrg",
+      "start": 282,
+      "end": 288
+    },
+    {
+      "source": "project/imported-generic-adt-monad/src/domain.ssrg",
+      "start": 499,
+      "end": 510
+    },
+    {
+      "source": "project/imported-generic-adt-monad/src/domain.ssrg",
+      "start": 646,
+      "end": 667
+    },
+    {
+      "source": "project/imported-generic-adt-monad/src/domain.ssrg",
+      "start": 654,
+      "end": 667
+    },
+    {
+      "source": "project/imported-generic-adt-monad/src/domain.ssrg",
+      "start": 907,
+      "end": 913
+    },
+    {
+      "source": "project/imported-generic-adt-monad/src/domain.ssrg",
+      "start": 1010,
+      "end": 1025
+    }
+  ],
   "higherKinds": {
     "constructors": [
       {
@@ -173,25 +210,61 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Boxed",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "f",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "item"
-                          }
-                        ]
-                      }
-                    ],
-                    "typeArguments": [
+                        "kind": "identifier",
+                        "name": "$ssrg$source274"
+                      },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Boxed",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source282"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "f",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "item"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -260,19 +333,37 @@
               }
             ],
             "body": {
-              "kind": "call",
-              "callee": "Boxed",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "value"
-                }
-              ],
-              "typeArguments": [
+                  "name": "$ssrg$source499"
+                },
                 {
-                  "kind": "reference",
-                  "name": "A",
-                  "arguments": []
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "Boxed",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -419,25 +510,61 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "Boxed",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "_function",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "item"
-                          }
-                        ]
-                      }
-                    ],
-                    "typeArguments": [
+                        "kind": "identifier",
+                        "name": "$ssrg$source646"
+                      },
                       {
-                        "kind": "reference",
-                        "name": "B",
-                        "arguments": []
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "Boxed",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source654"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "_function",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "item"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -553,12 +680,30 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "f",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "item"
+                        "name": "$ssrg$source907"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "f",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "item"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -625,36 +770,54 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
             "kind": "identifier",
-            "name": "__ssrg$evidence$0"
+            "name": "$ssrg$source1010"
           },
-          "method": "flatMap",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "f"
-            },
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "flatMap",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "f"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "kind-application",
+                "constructor": "M",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "kind-application",
-          "constructor": "M",
-          "arguments": [
-            {
-              "kind": "reference",
-              "name": "B",
-              "arguments": []
-            }
-          ]
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "domain.ssrg",

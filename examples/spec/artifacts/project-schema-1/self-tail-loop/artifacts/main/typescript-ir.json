@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/self-tail-loop::main",
+  "runtimeSources": [
+    {
+      "source": "project/self-tail-loop/src/main.ssrg",
+      "start": 89,
+      "end": 126
+    },
+    {
+      "source": "project/self-tail-loop/src/main.ssrg",
+      "start": 96,
+      "end": 107
+    },
+    {
+      "source": "project/self-tail-loop/src/main.ssrg",
+      "start": 110,
+      "end": 125
+    },
+    {
+      "source": "project/self-tail-loop/src/main.ssrg",
+      "start": 176,
+      "end": 190
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.ord-dictionary",
@@ -99,36 +121,62 @@
           "name": "total"
         },
         "elseBranch": {
-          "kind": "call",
-          "callee": "sumTo",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "runtime-call",
-              "callee": "_ssrg_int_subtract",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "current"
-                },
-                {
-                  "kind": "number",
-                  "value": "1"
-                }
-              ]
+              "kind": "identifier",
+              "name": "$ssrg$source89"
             },
             {
-              "kind": "runtime-call",
-              "callee": "_ssrg_int_add",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "total"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "current"
-                }
-              ]
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "call",
+                "callee": "sumTo",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_subtract",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "current"
+                      },
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source96"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "total"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "current"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source110"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         }
@@ -151,30 +199,66 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_int_eq_dictionary"
-        },
-        "method": "eq",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "sumTo",
-            "arguments": [
-              {
-                "kind": "number",
-                "value": "100000"
-              },
-              {
-                "kind": "number",
-                "value": "0"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source176"
           },
           {
-            "kind": "number",
-            "value": "5000050000"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_eq_dictionary"
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source176"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "sumTo",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "100000"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "number",
+                  "value": "5000050000"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

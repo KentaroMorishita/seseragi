@@ -20,9 +20,12 @@
     "stringShow",
     "intShow",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "improve"
   ],
-  "mappings": ";;;;;;AAAAA;;;;;AAKAC;AAMAC;AAMAQ"
+  "mappings": ";;;;;;;;AAAAA;;;;;AAKAC;AAMAC;AAMAQ"
 }

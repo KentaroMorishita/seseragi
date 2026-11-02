@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/transitive-instance-dispatch::facade",
+  "runtimeSources": [
+    {
+      "source": "project/transitive-instance-dispatch/src/facade.ssrg",
+      "start": 183,
+      "end": 205
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.string"
@@ -106,31 +113,49 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "call",
-          "callee": "providerDescribe",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
-            },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$0"
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source183"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "providerDescribe",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "T",
+                    "arguments": []
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
-          ],
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "T",
-              "arguments": []
-            }
-          ]
-        },
-        "type": {
-          "kind": "string"
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "facade.ssrg",

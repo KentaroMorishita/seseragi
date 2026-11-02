@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/transitive-instance-dispatch::main",
+  "runtimeSources": [
+    {
+      "source": "project/transitive-instance-dispatch/src/main.ssrg",
+      "start": 108,
+      "end": 138
+    },
+    {
+      "source": "project/transitive-instance-dispatch/src/main.ssrg",
+      "start": 117,
+      "end": 137
+    },
+    {
+      "source": "project/transitive-instance-dispatch/src/main.ssrg",
+      "start": 127,
+      "end": 136
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.console.println",
@@ -101,39 +118,93 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "checked-result",
-            "value": {
-              "kind": "call",
-              "callee": "describe",
+            "kind": "identifier",
+            "name": "$ssrg$source108"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "call",
-                  "callee": "active",
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
                   "arguments": [
                     {
-                      "kind": "undefined"
+                      "kind": "identifier",
+                      "name": "$ssrg$source117"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "call",
+                          "callee": "describe",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source127"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "active",
+                                    "arguments": [
+                                      {
+                                        "kind": "undefined"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Ready$0"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Badge",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
                     }
                   ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$instance$Ready$0"
-                }
-              ],
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "Badge",
-                  "arguments": []
                 }
               ]
-            },
-            "type": {
-              "kind": "string"
             }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

@@ -2,6 +2,48 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/rps-cli-split::main",
+  "runtimeSources": [
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 233,
+      "end": 268
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 256,
+      "end": 267
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 283,
+      "end": 318
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 306,
+      "end": 317
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 337,
+      "end": 356
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 361,
+      "end": 418
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 386,
+      "end": 417
+    },
+    {
+      "source": "project/rock-paper-scissors-cli-split/src/main.ssrg",
+      "start": 395,
+      "end": 416
+    }
+  ],
   "runtimeRequirements": [
     "effect.console.error",
     "core.adt",
@@ -285,20 +327,56 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "InputFailure"
+                  "name": "$ssrg$source233"
                 },
                 {
-                  "kind": "call",
-                  "callee": "readHand",
-                  "arguments": [
-                    {
-                      "kind": "undefined"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "InputFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source256"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "readHand",
+                              "arguments": [
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -318,20 +396,56 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "InputFailure"
+                  "name": "$ssrg$source283"
                 },
                 {
-                  "kind": "call",
-                  "callee": "readHand",
-                  "arguments": [
-                    {
-                      "kind": "undefined"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_effect_mapError",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "InputFailure"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source306"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "readHand",
+                              "arguments": [
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             },
@@ -350,16 +464,34 @@
               "arguments": []
             },
             "initializer": {
-              "kind": "call",
-              "callee": "decide",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "first"
+                  "name": "$ssrg$source337"
                 },
                 {
-                  "kind": "identifier",
-                  "name": "second"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "decide",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "first"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "second"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -372,27 +504,81 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_effect_mapError",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "ConsoleFailure"
+              "name": "$ssrg$source361"
             },
             {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "call",
-                  "callee": "renderOutcome",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "outcome"
-                    }
-                  ]
-                }
-              ]
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_effect_mapError",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "ConsoleFailure"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source386"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_console_println",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source395"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "renderOutcome",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "outcome"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

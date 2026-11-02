@@ -13,10 +13,14 @@
     "choose",
     "render",
     "run",
+    "$ssrg$atSource",
     "domain.identity",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "domain.identity",
+    "$ssrg$atSource",
     "choose"
   ],
-  "mappings": ";;;;AAEAA;AAEAC;AAOAC;AAOAC"
+  "mappings": ";;;;;;;;;AAEAA;AAEAC;AAOAC;AAOAC"
 }

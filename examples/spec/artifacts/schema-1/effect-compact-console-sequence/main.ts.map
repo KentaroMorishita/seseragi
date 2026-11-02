@@ -10,9 +10,12 @@
   ],
   "names": [
     "announce",
+    "$ssrg$atSource",
     "print",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "println"
   ],
-  "mappings": ";;;;;AAAAA"
+  "mappings": ";;;;;;;;;AAAAA"
 }

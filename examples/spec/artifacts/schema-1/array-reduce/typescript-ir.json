@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/array-reduce",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 47,
+      "end": 82
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.int.eq-dictionary",
@@ -37,81 +44,117 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_int_eq_dictionary"
-        },
-        "method": "eq",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "runtime-call",
-            "callee": "_ssrg_array_reduce",
-            "arguments": [
-              {
-                "kind": "number",
-                "value": "0"
-              },
-              {
-                "kind": "checked-result",
-                "value": {
-                  "kind": "curried-runtime-reference",
-                  "name": "_ssrg_int_add",
-                  "arity": 2
-                },
-                "type": {
-                  "kind": "function",
-                  "parameter": {
-                    "kind": "number"
-                  },
-                  "result": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "number"
-                    },
-                    "result": {
-                      "kind": "number"
-                    }
-                  }
-                }
-              },
-              {
-                "kind": "array",
-                "elements": [
-                  {
-                    "kind": "number",
-                    "value": "4"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "8"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "15"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "16"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "23"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "42"
-                  }
-                ],
-                "elementType": {
-                  "kind": "number"
-                }
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source47"
           },
           {
-            "kind": "number",
-            "value": "108"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_eq_dictionary"
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source47"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_array_reduce",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "0"
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "curried-runtime-reference",
+                              "name": "_ssrg_int_add",
+                              "arity": 2
+                            },
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "number"
+                              },
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "number"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "kind": "array",
+                            "elements": [
+                              {
+                                "kind": "number",
+                                "value": "4"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "8"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "15"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "16"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "23"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "42"
+                              }
+                            ],
+                            "elementType": {
+                              "kind": "number"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "number",
+                  "value": "108"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

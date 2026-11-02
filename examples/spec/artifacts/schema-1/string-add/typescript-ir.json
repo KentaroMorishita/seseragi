@@ -2,6 +2,23 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/string-add",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 147,
+      "end": 164
+    },
+    {
+      "source": "main.ssrg",
+      "start": 261,
+      "end": 304
+    },
+    {
+      "source": "main.ssrg",
+      "start": 271,
+      "end": 304
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "core.string.add-dictionary",
@@ -36,62 +53,134 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_string_add_dictionary"
-        },
-        "method": "add",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_string_add_dictionary"
-            },
-            "method": "add",
-            "arguments": [
-              {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_string_add_dictionary"
-                },
-                "method": "add",
-                "arguments": [
-                  {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_string_add_dictionary"
-                    },
-                    "method": "add",
-                    "arguments": [
-                      {
-                        "kind": "string",
-                        "value": "Hello, "
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "guest"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "string",
-                    "value": "! Welcome to "
-                  }
-                ]
-              },
-              {
-                "kind": "identifier",
-                "name": "event"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source147"
           },
           {
-            "kind": "string",
-            "value": "."
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source147"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_string_add_dictionary"
+                        },
+                        "method": "add",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source147"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_string_add_dictionary"
+                                  },
+                                  "method": "add",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source147"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "dictionary-call",
+                                            "dictionary": {
+                                              "kind": "runtime-reference",
+                                              "name": "_ssrg_string_add_dictionary"
+                                            },
+                                            "method": "add",
+                                            "arguments": [
+                                              {
+                                                "kind": "string",
+                                                "value": "Hello, "
+                                              },
+                                              {
+                                                "kind": "identifier",
+                                                "name": "guest"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "string",
+                                      "value": "! Welcome to "
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "event"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "string",
+                  "value": "."
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -114,21 +203,57 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "invitation",
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "Mio"
-              },
-              {
-                "kind": "string",
-                "value": "Seseragi Night"
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source261"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source271"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "invitation",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "Mio"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "Seseragi Night"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

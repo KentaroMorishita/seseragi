@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-functor-dispatch::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-functor-dispatch/src/domain.ssrg",
+      "start": 227,
+      "end": 240
+    },
+    {
+      "source": "project/imported-functor-dispatch/src/domain.ssrg",
+      "start": 234,
+      "end": 240
+    },
+    {
+      "source": "project/imported-functor-dispatch/src/domain.ssrg",
+      "start": 283,
+      "end": 292
+    },
+    {
+      "source": "project/imported-functor-dispatch/src/domain.ssrg",
+      "start": 369,
+      "end": 388
+    }
+  ],
   "higherKinds": {
     "constructors": [],
     "partials": [],
@@ -118,17 +140,53 @@
                   ],
                   "value": {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_maybe_Just",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "f",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "item"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source227"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source234"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "f",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "item"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -176,6 +234,10 @@
           {
             "kind": "number",
             "value": "1"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source283"
           }
         ]
       },
@@ -216,34 +278,52 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
+        "arguments": [
+          {
             "kind": "identifier",
-            "name": "__ssrg$evidence$0"
+            "name": "$ssrg$source369"
           },
-          "method": "map",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "increment"
-            },
-            {
-              "kind": "identifier",
-              "name": "value"
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "map",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "increment"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "kind-application",
+                "constructor": "F",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             }
-          ]
-        },
-        "type": {
-          "kind": "kind-application",
-          "constructor": "F",
-          "arguments": [
-            {
-              "kind": "number"
-            }
-          ]
-        }
+          },
+          {
+            "kind": "boolean",
+            "value": false
+          }
+        ]
       },
       "origin": {
         "source": "domain.ssrg",

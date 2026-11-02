@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{compile_module, format_module, BuildProfile, CompileInput};
 
 #[test]
@@ -16,7 +20,10 @@ fn deprecation_changes_metadata_without_changing_ts_or_curried_abi() {
                 CompileInput::new("main.ssrg", "app/main", &source).with_profile(profile),
             )
             .unwrap();
-            assert_eq!(compiled.generated.typescript, plain.generated.typescript);
+            assert_eq!(
+                source_locations::canonical_typescript(&compiled, &source),
+                source_locations::canonical_typescript(&plain, body)
+            );
             assert_eq!(
                 compiled.core_ir.functions.len(),
                 plain.core_ir.functions.len()
@@ -49,7 +56,10 @@ fn deprecation_changes_metadata_without_changing_ts_or_curried_abi() {
                 CompileInput::new("main.ssrg", "app/main", &formatted.text).with_profile(profile),
             )
             .unwrap();
-            assert_eq!(after.generated.typescript, compiled.generated.typescript);
+            assert_eq!(
+                source_locations::canonical_typescript(&after, &formatted.text),
+                source_locations::canonical_typescript(&compiled, &source)
+            );
         }
     }
 }

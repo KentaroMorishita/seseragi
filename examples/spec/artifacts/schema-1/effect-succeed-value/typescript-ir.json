@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-succeed-value",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 22,
+      "end": 37
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "effect.core.succeed",
@@ -27,11 +34,29 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_effect_succeed",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "string",
-            "value": "ready"
+            "kind": "identifier",
+            "name": "$ssrg$source22"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_succeed",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "ready"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

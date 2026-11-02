@@ -2,6 +2,73 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/maybe-fallback",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 98,
+      "end": 103
+    },
+    {
+      "source": "main.ssrg",
+      "start": 171,
+      "end": 185
+    },
+    {
+      "source": "main.ssrg",
+      "start": 214,
+      "end": 258
+    },
+    {
+      "source": "main.ssrg",
+      "start": 261,
+      "end": 295
+    },
+    {
+      "source": "main.ssrg",
+      "start": 271,
+      "end": 295
+    },
+    {
+      "source": "main.ssrg",
+      "start": 277,
+      "end": 283
+    },
+    {
+      "source": "main.ssrg",
+      "start": 287,
+      "end": 294
+    },
+    {
+      "source": "main.ssrg",
+      "start": 298,
+      "end": 327
+    },
+    {
+      "source": "main.ssrg",
+      "start": 308,
+      "end": 327
+    },
+    {
+      "source": "main.ssrg",
+      "start": 330,
+      "end": 365
+    },
+    {
+      "source": "main.ssrg",
+      "start": 340,
+      "end": 365
+    },
+    {
+      "source": "main.ssrg",
+      "start": 346,
+      "end": 364
+    },
+    {
+      "source": "main.ssrg",
+      "start": 355,
+      "end": 361
+    }
+  ],
   "runtimeRequirements": [
     "core.maybe.nothing",
     "core.maybe",
@@ -74,11 +141,29 @@
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_maybe_Just",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "string",
-            "value": "request"
+            "kind": "identifier",
+            "name": "$ssrg$source171"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_maybe_Just",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "request"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -194,6 +279,10 @@
           {
             "kind": "number",
             "value": "0"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source98"
           }
         ]
       },
@@ -221,54 +310,24 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "decision",
-                  "scrutinee": {
-                    "kind": "identifier",
-                    "name": "cached"
-                  },
-                  "scrutineeType": {
-                    "kind": "maybe",
-                    "element": {
-                      "kind": "string"
-                    }
-                  },
-                  "branches": [
-                    {
-                      "tests": [
-                        {
-                          "kind": "tag-equals",
-                          "path": [],
-                          "tag": "Just"
-                        }
-                      ],
-                      "bindings": [
-                        {
-                          "name": "$ssrg$fallbackValue",
-                          "type": {
-                            "kind": "string"
-                          },
-                          "path": [
-                            {
-                              "kind": "adt-payload"
-                            }
-                          ]
-                        }
-                      ],
-                      "value": {
-                        "kind": "identifier",
-                        "name": "$ssrg$fallbackValue"
-                      }
-                    },
-                    {
-                      "tests": [],
-                      "value": {
+                  "kind": "identifier",
+                  "name": "$ssrg$source214"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
                         "kind": "decision",
                         "scrutinee": {
                           "kind": "identifier",
-                          "name": "requested"
+                          "name": "cached"
                         },
                         "scrutineeType": {
                           "kind": "maybe",
@@ -306,8 +365,55 @@
                           {
                             "tests": [],
                             "value": {
-                              "kind": "string",
-                              "value": "anonymous"
+                              "kind": "decision",
+                              "scrutinee": {
+                                "kind": "identifier",
+                                "name": "requested"
+                              },
+                              "scrutineeType": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "string"
+                                }
+                              },
+                              "branches": [
+                                {
+                                  "tests": [
+                                    {
+                                      "kind": "tag-equals",
+                                      "path": [],
+                                      "tag": "Just"
+                                    }
+                                  ],
+                                  "bindings": [
+                                    {
+                                      "name": "$ssrg$fallbackValue",
+                                      "type": {
+                                        "kind": "string"
+                                      },
+                                      "path": [
+                                        {
+                                          "kind": "adt-payload"
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "value": {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$fallbackValue"
+                                  }
+                                },
+                                {
+                                  "tests": [],
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "anonymous"
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "string"
+                              }
                             }
                           }
                         ],
@@ -315,11 +421,12 @@
                           "kind": "string"
                         }
                       }
-                    }
-                  ],
-                  "type": {
-                    "kind": "string"
+                    ]
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -328,85 +435,157 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_intShow"
-                    },
-                    "method": "show",
+                  "kind": "identifier",
+                  "name": "$ssrg$source261"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
                     "arguments": [
                       {
-                        "kind": "decision",
-                        "scrutinee": {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_maybe_Just",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "7"
-                            }
-                          ]
-                        },
-                        "scrutineeType": {
-                          "kind": "maybe",
-                          "element": {
-                            "kind": "number"
-                          }
-                        },
-                        "branches": [
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
                           {
-                            "tests": [
-                              {
-                                "kind": "tag-equals",
-                                "path": [],
-                                "tag": "Just"
-                              }
-                            ],
-                            "bindings": [
-                              {
-                                "name": "$ssrg$fallbackValue",
-                                "type": {
-                                  "kind": "number"
+                            "kind": "identifier",
+                            "name": "$ssrg$source271"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
                                 },
-                                "path": [
+                                "method": "show",
+                                "arguments": [
                                   {
-                                    "kind": "adt-payload"
+                                    "kind": "decision",
+                                    "scrutinee": {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source277"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "runtime-call",
+                                            "callee": "_ssrg_maybe_Just",
+                                            "arguments": [
+                                              {
+                                                "kind": "number",
+                                                "value": "7"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    },
+                                    "scrutineeType": {
+                                      "kind": "maybe",
+                                      "element": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "branches": [
+                                      {
+                                        "tests": [
+                                          {
+                                            "kind": "tag-equals",
+                                            "path": [],
+                                            "tag": "Just"
+                                          }
+                                        ],
+                                        "bindings": [
+                                          {
+                                            "name": "$ssrg$fallbackValue",
+                                            "type": {
+                                              "kind": "number"
+                                            },
+                                            "path": [
+                                              {
+                                                "kind": "adt-payload"
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "value": {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$fallbackValue"
+                                        }
+                                      },
+                                      {
+                                        "tests": [],
+                                        "value": {
+                                          "kind": "runtime-call",
+                                          "callee": "$ssrg$atSource",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "$ssrg$source287"
+                                            },
+                                            {
+                                              "kind": "lambda",
+                                              "parameter": "",
+                                              "body": {
+                                                "kind": "call",
+                                                "callee": "fail",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "undefined"
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            {
+                                              "kind": "boolean",
+                                              "value": false
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "number"
+                                    }
                                   }
                                 ]
+                              },
+                              "type": {
+                                "kind": "string"
                               }
-                            ],
-                            "value": {
-                              "kind": "identifier",
-                              "name": "$ssrg$fallbackValue"
                             }
                           },
                           {
-                            "tests": [],
-                            "value": {
-                              "kind": "call",
-                              "callee": "fail",
-                              "arguments": [
-                                {
-                                  "kind": "undefined"
-                                }
-                              ]
-                            }
+                            "kind": "boolean",
+                            "value": false
                           }
-                        ],
-                        "type": {
-                          "kind": "number"
-                        }
+                        ]
                       }
                     ]
-                  },
-                  "type": {
-                    "kind": "string"
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -415,74 +594,110 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_intShow"
-                    },
-                    "method": "show",
+                  "kind": "identifier",
+                  "name": "$ssrg$source298"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
                     "arguments": [
                       {
-                        "kind": "decision",
-                        "scrutinee": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_maybe_Nothing"
-                        },
-                        "scrutineeType": {
-                          "kind": "maybe",
-                          "element": {
-                            "kind": "number"
-                          }
-                        },
-                        "branches": [
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
                           {
-                            "tests": [
-                              {
-                                "kind": "tag-equals",
-                                "path": [],
-                                "tag": "Just"
-                              }
-                            ],
-                            "bindings": [
-                              {
-                                "name": "$ssrg$fallbackValue",
-                                "type": {
-                                  "kind": "number"
+                            "kind": "identifier",
+                            "name": "$ssrg$source308"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
                                 },
-                                "path": [
+                                "method": "show",
+                                "arguments": [
                                   {
-                                    "kind": "adt-payload"
+                                    "kind": "decision",
+                                    "scrutinee": {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_maybe_Nothing"
+                                    },
+                                    "scrutineeType": {
+                                      "kind": "maybe",
+                                      "element": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "branches": [
+                                      {
+                                        "tests": [
+                                          {
+                                            "kind": "tag-equals",
+                                            "path": [],
+                                            "tag": "Just"
+                                          }
+                                        ],
+                                        "bindings": [
+                                          {
+                                            "name": "$ssrg$fallbackValue",
+                                            "type": {
+                                              "kind": "number"
+                                            },
+                                            "path": [
+                                              {
+                                                "kind": "adt-payload"
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "value": {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$fallbackValue"
+                                        }
+                                      },
+                                      {
+                                        "tests": [],
+                                        "value": {
+                                          "kind": "number",
+                                          "value": "8"
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "number"
+                                    }
                                   }
                                 ]
+                              },
+                              "type": {
+                                "kind": "string"
                               }
-                            ],
-                            "value": {
-                              "kind": "identifier",
-                              "name": "$ssrg$fallbackValue"
                             }
                           },
                           {
-                            "tests": [],
-                            "value": {
-                              "kind": "number",
-                              "value": "8"
-                            }
+                            "kind": "boolean",
+                            "value": false
                           }
-                        ],
-                        "type": {
-                          "kind": "number"
-                        }
+                        ]
                       }
                     ]
-                  },
-                  "type": {
-                    "kind": "string"
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -490,48 +705,120 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_show_intShow"
-                },
-                "method": "show",
+              "kind": "identifier",
+              "name": "$ssrg$source330"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "resolve",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_maybe_Just",
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "9"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source340"
                       },
                       {
-                        "kind": "number",
-                        "value": "0"
-                      }
-                    ],
-                    "typeArguments": [
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            },
+                            "method": "show",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source346"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "resolve",
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "$ssrg$atSource",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "$ssrg$source355"
+                                            },
+                                            {
+                                              "kind": "lambda",
+                                              "parameter": "",
+                                              "body": {
+                                                "kind": "runtime-call",
+                                                "callee": "_ssrg_maybe_Just",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "number",
+                                                    "value": "9"
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            {
+                                              "kind": "boolean",
+                                              "value": false
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "0"
+                                        }
+                                      ],
+                                      "typeArguments": [
+                                        {
+                                          "kind": "number"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "string"
+                          }
+                        }
+                      },
                       {
-                        "kind": "number"
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
                 ]
-              },
-              "type": {
-                "kind": "string"
               }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

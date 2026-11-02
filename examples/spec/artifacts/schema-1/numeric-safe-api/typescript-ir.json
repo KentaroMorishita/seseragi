@@ -2,6 +2,78 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/numeric-safe-api",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 238,
+      "end": 256
+    },
+    {
+      "source": "main.ssrg",
+      "start": 368,
+      "end": 387
+    },
+    {
+      "source": "main.ssrg",
+      "start": 687,
+      "end": 706
+    },
+    {
+      "source": "main.ssrg",
+      "start": 942,
+      "end": 986
+    },
+    {
+      "source": "main.ssrg",
+      "start": 956,
+      "end": 985
+    },
+    {
+      "source": "main.ssrg",
+      "start": 990,
+      "end": 1040
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1003,
+      "end": 1039
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1022,
+      "end": 1038
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1044,
+      "end": 1088
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1071,
+      "end": 1087
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1092,
+      "end": 1115
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1138,
+      "end": 1155
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1176,
+      "end": 1209
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1232,
+      "end": 1262
+    }
+  ],
   "runtimeRequirements": [
     "core.int.parse-error",
     "core.float64.conversion-error",
@@ -156,11 +228,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int_format",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "parsed"
+                  "name": "$ssrg$source238"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_format",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "parsed"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -236,11 +326,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int_format",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "integer"
+                  "name": "$ssrg$source368"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_format",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "integer"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -400,11 +508,29 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int_format",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "integer"
+                  "name": "$ssrg$source687"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_format",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "integer"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -500,142 +626,412 @@
         "kind": "tuple",
         "elements": [
           {
-            "kind": "call",
-            "callee": "renderParsed",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_int_parse",
-                "arguments": [
-                  {
-                    "kind": "string",
-                    "value": "9007199254740991"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "call",
-            "callee": "renderMaybe",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_int_checkedAdd",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "1"
-                  },
-                  {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int_maxValue",
-                    "arguments": [
-                      {
-                        "kind": "undefined"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
             "kind": "runtime-call",
-            "callee": "_ssrg_int_saturatingSubtract",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "1"
+                "kind": "identifier",
+                "name": "$ssrg$source942"
               },
               {
-                "kind": "runtime-call",
-                "callee": "_ssrg_int_minValue",
-                "arguments": [
-                  {
-                    "kind": "undefined"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "call",
-            "callee": "renderFormatted",
-            "arguments": [
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "renderParsed",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source956"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_parse",
+                            "arguments": [
+                              {
+                                "kind": "string",
+                                "value": "9007199254740991"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
               {
-                "kind": "runtime-call",
-                "callee": "_ssrg_int_formatRadix",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "16"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "255"
-                  }
-                ]
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_float_format",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "runtime-call",
-                "callee": "_ssrg_float_fromInt",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "42"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "call",
-            "callee": "renderConverted",
-            "arguments": [
+                "kind": "identifier",
+                "name": "$ssrg$source990"
+              },
               {
-                "kind": "runtime-call",
-                "callee": "_ssrg_float_toInt",
-                "arguments": [
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_number_HalfEven"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "2.5"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "call",
-            "callee": "renderOrdering",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_float_totalCompare",
-                "arguments": [
-                  {
-                    "kind": "unary",
-                    "operator": "-",
-                    "operand": {
-                      "kind": "number",
-                      "value": "0.0"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "renderMaybe",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source1003"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_checkedAdd",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1022"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_int_maxValue",
+                                      "arguments": [
+                                        {
+                                          "kind": "undefined"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
                     }
-                  },
-                  {
-                    "kind": "number",
-                    "value": "0.0"
-                  }
-                ]
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source1044"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_saturatingSubtract",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "1"
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source1071"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_minValue",
+                            "arguments": [
+                              {
+                                "kind": "undefined"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source1092"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "renderFormatted",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source1092"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_formatRadix",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "16"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "255"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source1138"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_float_format",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source1138"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_float_fromInt",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "42"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source1176"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "renderConverted",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source1176"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_float_toInt",
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_number_HalfEven"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "2.5"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source1232"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "renderOrdering",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "$ssrg$atSource",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "$ssrg$source1232"
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": "",
+                          "body": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_float_totalCompare",
+                            "arguments": [
+                              {
+                                "kind": "unary",
+                                "operator": "-",
+                                "operand": {
+                                  "kind": "number",
+                                  "value": "0.0"
+                                }
+                              },
+                              {
+                                "kind": "number",
+                                "value": "0.0"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           }

@@ -2,6 +2,228 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/bytes-codecs",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 230,
+      "end": 244
+    },
+    {
+      "source": "main.ssrg",
+      "start": 351,
+      "end": 369
+    },
+    {
+      "source": "main.ssrg",
+      "start": 418,
+      "end": 438
+    },
+    {
+      "source": "main.ssrg",
+      "start": 442,
+      "end": 463
+    },
+    {
+      "source": "main.ssrg",
+      "start": 548,
+      "end": 569
+    },
+    {
+      "source": "main.ssrg",
+      "start": 618,
+      "end": 638
+    },
+    {
+      "source": "main.ssrg",
+      "start": 642,
+      "end": 663
+    },
+    {
+      "source": "main.ssrg",
+      "start": 751,
+      "end": 775
+    },
+    {
+      "source": "main.ssrg",
+      "start": 824,
+      "end": 844
+    },
+    {
+      "source": "main.ssrg",
+      "start": 848,
+      "end": 869
+    },
+    {
+      "source": "main.ssrg",
+      "start": 985,
+      "end": 995
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1161,
+      "end": 1171
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1269,
+      "end": 1325
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1283,
+      "end": 1324
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1346,
+      "end": 1362
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1380,
+      "end": 1399
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1416,
+      "end": 1438
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1472,
+      "end": 1503
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1509,
+      "end": 1543
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1576,
+      "end": 1607
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1642,
+      "end": 1675
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1698,
+      "end": 1728
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1711,
+      "end": 1727
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1734,
+      "end": 1765
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1747,
+      "end": 1764
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1791,
+      "end": 1826
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1807,
+      "end": 1825
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1832,
+      "end": 1869
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1848,
+      "end": 1868
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1875,
+      "end": 1912
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1891,
+      "end": 1911
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1918,
+      "end": 1955
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1934,
+      "end": 1954
+    },
+    {
+      "source": "main.ssrg",
+      "start": 1984,
+      "end": 2021
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2000,
+      "end": 2020
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2027,
+      "end": 2066
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2043,
+      "end": 2065
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2087,
+      "end": 2105
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2109,
+      "end": 2127
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2133,
+      "end": 2174
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2178,
+      "end": 2219
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2293,
+      "end": 2333
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2305,
+      "end": 2316
+    },
+    {
+      "source": "main.ssrg",
+      "start": 2319,
+      "end": 2331
+    }
+  ],
   "runtimeRequirements": [
     "core.bytes.byte-error-type",
     "core.bytes.type",
@@ -216,10 +438,28 @@
             ],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_bytes_empty",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "undefined"
+                  "kind": "identifier",
+                  "name": "$ssrg$source230"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bytes_empty",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -285,11 +525,29 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "runtime-call",
-          "callee": "_ssrg_hex_decode",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "encoded"
+              "name": "$ssrg$source351"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_hex_decode",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "encoded"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
@@ -359,43 +617,97 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "_ssrg_array_eq_dictionary",
-                "typeArguments": [
-                  {
-                    "kind": "number"
-                  }
-                ],
-                "arguments": [
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_int_eq_dictionary"
-                  }
-                ]
-              },
-              "method": "eq",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bytes_toInts",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "decoded"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source418"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bytes_toInts",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "original"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_array_eq_dictionary",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
+                        }
+                      ]
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source418"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bytes_toInts",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "decoded"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source442"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bytes_toInts",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "original"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -431,11 +743,29 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "runtime-call",
-          "callee": "_ssrg_base64_decode",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "encoded"
+              "name": "$ssrg$source548"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_base64_decode",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "encoded"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
@@ -505,43 +835,97 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "_ssrg_array_eq_dictionary",
-                "typeArguments": [
-                  {
-                    "kind": "number"
-                  }
-                ],
-                "arguments": [
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_int_eq_dictionary"
-                  }
-                ]
-              },
-              "method": "eq",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bytes_toInts",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "decoded"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source618"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bytes_toInts",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "original"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_array_eq_dictionary",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
+                        }
+                      ]
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source618"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bytes_toInts",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "decoded"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source642"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bytes_toInts",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "original"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -577,11 +961,29 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "runtime-call",
-          "callee": "_ssrg_base64_decodeUrl",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "encoded"
+              "name": "$ssrg$source751"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_base64_decodeUrl",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "encoded"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
@@ -651,43 +1053,97 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "_ssrg_array_eq_dictionary",
-                "typeArguments": [
-                  {
-                    "kind": "number"
-                  }
-                ],
-                "arguments": [
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_int_eq_dictionary"
-                  }
-                ]
-              },
-              "method": "eq",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bytes_toInts",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "decoded"
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "$ssrg$source824"
                 },
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bytes_toInts",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "original"
-                    }
-                  ]
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_array_eq_dictionary",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
+                        }
+                      ]
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source824"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bytes_toInts",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "decoded"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source848"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bytes_toInts",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "original"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             }
@@ -758,24 +1214,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_hexDecodeErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source985"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_hexDecodeErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -872,24 +1346,42 @@
               }
             ],
             "value": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_base64DecodeErrorShow"
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source1161"
                 },
-                "method": "show",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "error"
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_base64DecodeErrorShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "error"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
-                ]
-              },
-              "type": {
-                "kind": "string"
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             }
           },
           {
@@ -954,46 +1446,82 @@
               "arguments": []
             },
             "initializer": {
-              "kind": "call",
-              "callee": "requireBytes",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_bytes_fromInts",
-                  "arguments": [
-                    {
-                      "kind": "array",
-                      "elements": [
-                        {
-                          "kind": "number",
-                          "value": "0"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "15"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "16"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "251"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "239"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "255"
-                        }
-                      ],
-                      "elementType": {
-                        "kind": "number"
+                  "kind": "identifier",
+                  "name": "$ssrg$source1269"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "requireBytes",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source1283"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bytes_fromInts",
+                              "arguments": [
+                                {
+                                  "kind": "array",
+                                  "elements": [
+                                    {
+                                      "kind": "number",
+                                      "value": "0"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "15"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "16"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "251"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "239"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "255"
+                                    }
+                                  ],
+                                  "elementType": {
+                                    "kind": "number"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
                       }
-                    }
-                  ]
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1011,11 +1539,29 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_hex_encode",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "value"
+                  "name": "$ssrg$source1346"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_hex_encode",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1033,11 +1579,29 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_base64_encode",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "value"
+                  "name": "$ssrg$source1380"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_base64_encode",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1055,11 +1619,29 @@
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_base64_encodeUrl",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "value"
+                  "name": "$ssrg$source1416"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_base64_encodeUrl",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -1121,16 +1703,34 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "hexRoundTrips",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
                             "kind": "identifier",
-                            "name": "value"
+                            "name": "$ssrg$source1472"
                           },
                           {
-                            "kind": "identifier",
-                            "name": "hexadecimal"
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "hexRoundTrips",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "value"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "hexadecimal"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1151,16 +1751,34 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "hexRoundTrips",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "value"
+                        "name": "$ssrg$source1509"
                       },
                       {
-                        "kind": "string",
-                        "value": "000F10FBEFFF"
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "hexRoundTrips",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "000F10FBEFFF"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1209,16 +1827,34 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "base64RoundTrips",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "value"
+                        "name": "$ssrg$source1576"
                       },
                       {
-                        "kind": "identifier",
-                        "name": "standard"
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "base64RoundTrips",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "standard"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1267,16 +1903,34 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "base64UrlRoundTrips",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "value"
+                        "name": "$ssrg$source1642"
                       },
                       {
-                        "kind": "identifier",
-                        "name": "urlSafe"
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "base64UrlRoundTrips",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "urlSafe"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1305,18 +1959,54 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "describeHex",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_hex_decode",
-                            "arguments": [
-                              {
-                                "kind": "string",
-                                "value": "abc"
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source1698"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "describeHex",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source1711"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_hex_decode",
+                                        "arguments": [
+                                          {
+                                            "kind": "string",
+                                            "value": "abc"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1337,18 +2027,54 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "describeHex",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_hex_decode",
-                        "arguments": [
-                          {
-                            "kind": "string",
-                            "value": "00é"
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source1734"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "describeHex",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1747"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_hex_decode",
+                                    "arguments": [
+                                      {
+                                        "kind": "string",
+                                        "value": "00é"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1389,18 +2115,54 @@
                             "method": "show",
                             "arguments": [
                               {
-                                "kind": "call",
-                                "callee": "describeBase64",
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
                                 "arguments": [
                                   {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_base64_decode",
-                                    "arguments": [
-                                      {
-                                        "kind": "string",
-                                        "value": "Zg"
-                                      }
-                                    ]
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source1791"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "call",
+                                      "callee": "describeBase64",
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "$ssrg$atSource",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "$ssrg$source1807"
+                                            },
+                                            {
+                                              "kind": "lambda",
+                                              "parameter": "",
+                                              "body": {
+                                                "kind": "runtime-call",
+                                                "callee": "_ssrg_base64_decode",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "string",
+                                                    "value": "Zg"
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            {
+                                              "kind": "boolean",
+                                              "value": false
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
                                   }
                                 ]
                               }
@@ -1421,18 +2183,54 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "call",
-                            "callee": "describeBase64",
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
                             "arguments": [
                               {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_base64_decode",
-                                "arguments": [
-                                  {
-                                    "kind": "string",
-                                    "value": "AA A"
-                                  }
-                                ]
+                                "kind": "identifier",
+                                "name": "$ssrg$source1832"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "describeBase64",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source1848"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "runtime-call",
+                                            "callee": "_ssrg_base64_decode",
+                                            "arguments": [
+                                              {
+                                                "kind": "string",
+                                                "value": "AA A"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
                               }
                             ]
                           }
@@ -1453,18 +2251,54 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "describeBase64",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_base64_decode",
-                            "arguments": [
-                              {
-                                "kind": "string",
-                                "value": "AA=A"
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source1875"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "describeBase64",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source1891"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_base64_decode",
+                                        "arguments": [
+                                          {
+                                            "kind": "string",
+                                            "value": "AA=A"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1485,18 +2319,54 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "describeBase64",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_base64_decode",
-                        "arguments": [
-                          {
-                            "kind": "string",
-                            "value": "AB=="
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source1918"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "describeBase64",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source1934"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_base64_decode",
+                                    "arguments": [
+                                      {
+                                        "kind": "string",
+                                        "value": "AB=="
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1525,18 +2395,54 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "describeBase64",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_base64_decodeUrl",
-                            "arguments": [
-                              {
-                                "kind": "string",
-                                "value": "A"
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source1984"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "call",
+                              "callee": "describeBase64",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source2000"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_base64_decodeUrl",
+                                        "arguments": [
+                                          {
+                                            "kind": "string",
+                                            "value": "A"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1557,18 +2463,54 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "describeBase64",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_base64_decodeUrl",
-                        "arguments": [
-                          {
-                            "kind": "string",
-                            "value": "AA="
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source2027"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "call",
+                          "callee": "describeBase64",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2043"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_base64_decodeUrl",
+                                    "arguments": [
+                                      {
+                                        "kind": "string",
+                                        "value": "AA="
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1597,32 +2539,86 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_hexDecodeErrorEq"
-                        },
-                        "method": "eq",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_hex_OddHexLength",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "3"
-                              }
-                            ]
+                            "kind": "identifier",
+                            "name": "$ssrg$source2087"
                           },
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_hex_OddHexLength",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "3"
-                              }
-                            ]
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_hexDecodeErrorEq"
+                              },
+                              "method": "eq",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source2087"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_hex_OddHexLength",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "3"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "$ssrg$atSource",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "$ssrg$source2109"
+                                    },
+                                    {
+                                      "kind": "lambda",
+                                      "parameter": "",
+                                      "body": {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_hex_OddHexLength",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "3"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "boolean",
+                                      "value": false
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
@@ -1643,50 +2639,104 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_base64DecodeErrorEq"
-                    },
-                    "method": "eq",
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_base64_InvalidBase64Padding",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "items": [
-                              {
-                                "kind": "field",
-                                "name": "offset",
-                                "value": {
-                                  "kind": "number",
-                                  "value": "2"
-                                }
-                              }
-                            ]
-                          }
-                        ]
+                        "kind": "identifier",
+                        "name": "$ssrg$source2133"
                       },
                       {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_base64_InvalidBase64Padding",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "items": [
-                              {
-                                "kind": "field",
-                                "name": "offset",
-                                "value": {
-                                  "kind": "number",
-                                  "value": "2"
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_base64DecodeErrorEq"
+                          },
+                          "method": "eq",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2133"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_base64_InvalidBase64Padding",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "items": [
+                                          {
+                                            "kind": "field",
+                                            "name": "offset",
+                                            "value": {
+                                              "kind": "number",
+                                              "value": "2"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
                                 }
-                              }
-                            ]
-                          }
-                        ]
+                              ]
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source2178"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_base64_InvalidBase64Padding",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "items": [
+                                          {
+                                            "kind": "field",
+                                            "name": "offset",
+                                            "value": {
+                                              "kind": "number",
+                                              "value": "2"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
                       }
                     ]
                   }
@@ -1718,86 +2768,140 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_collection_for_each",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_iterable"
+            "kind": "identifier",
+            "name": "$ssrg$source2293"
           },
           {
             "kind": "lambda",
-            "parameter": "$ssrg_for_value: string",
+            "parameter": "",
             "body": {
-              "kind": "decision",
-              "scrutinee": {
-                "kind": "identifier",
-                "name": "$ssrg_for_value"
-              },
-              "scrutineeType": {
-                "kind": "string"
-              },
-              "branches": [
+              "kind": "runtime-call",
+              "callee": "_ssrg_collection_for_each",
+              "arguments": [
                 {
-                  "tests": [],
-                  "bindings": [
-                    {
-                      "name": "line",
-                      "type": {
-                        "kind": "string"
-                      },
-                      "path": []
-                    }
-                  ],
-                  "value": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_console_println",
-                    "arguments": [
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "$ssrg_for_value: string",
+                  "body": {
+                    "kind": "decision",
+                    "scrutinee": {
+                      "kind": "identifier",
+                      "name": "$ssrg_for_value"
+                    },
+                    "scrutineeType": {
+                      "kind": "string"
+                    },
+                    "branches": [
                       {
-                        "kind": "identifier",
-                        "name": "line"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "type": {
-                "kind": "reference",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "fields": [
-                      {
-                        "name": "console",
-                        "optional": false,
-                        "type": {
-                          "kind": "reference",
-                          "name": "Console",
-                          "arguments": []
+                        "tests": [],
+                        "bindings": [
+                          {
+                            "name": "line",
+                            "type": {
+                              "kind": "string"
+                            },
+                            "path": []
+                          }
+                        ],
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "$ssrg$atSource",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "$ssrg$source2319"
+                            },
+                            {
+                              "kind": "lambda",
+                              "parameter": "",
+                              "body": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_console_println",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "line"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "boolean",
+                              "value": true
+                            }
+                          ]
                         }
                       }
-                    ]
-                  },
-                  {
-                    "kind": "reference",
-                    "name": "ConsoleError",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "undefined"
+                    ],
+                    "type": {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": [
+                            {
+                              "name": "console",
+                              "optional": false,
+                              "type": {
+                                "kind": "reference",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
                   }
-                ]
-              }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source2305"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "exercise",
+                        "arguments": [
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
             }
           },
           {
-            "kind": "call",
-            "callee": "exercise",
-            "arguments": [
-              {
-                "kind": "undefined"
-              }
-            ]
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

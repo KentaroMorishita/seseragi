@@ -16,8 +16,10 @@
     "stringShow",
     "__ssrg$instance$Show$0",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render"
   ],
-  "mappings": ";;;;;AAAAA;;AACIC;AADJC;AAGAC;AAGAG"
+  "mappings": ";;;;;;;AAAAA;;AACIC;AADJC;AAGAC;AAGAG"
 }

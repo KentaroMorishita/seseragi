@@ -2,6 +2,153 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/arithmetic-result-inference",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 118,
+      "end": 123
+    },
+    {
+      "source": "main.ssrg",
+      "start": 146,
+      "end": 151
+    },
+    {
+      "source": "main.ssrg",
+      "start": 180,
+      "end": 185
+    },
+    {
+      "source": "main.ssrg",
+      "start": 189,
+      "end": 194
+    },
+    {
+      "source": "main.ssrg",
+      "start": 198,
+      "end": 203
+    },
+    {
+      "source": "main.ssrg",
+      "start": 207,
+      "end": 212
+    },
+    {
+      "source": "main.ssrg",
+      "start": 216,
+      "end": 221
+    },
+    {
+      "source": "main.ssrg",
+      "start": 225,
+      "end": 231
+    },
+    {
+      "source": "main.ssrg",
+      "start": 267,
+      "end": 277
+    },
+    {
+      "source": "main.ssrg",
+      "start": 281,
+      "end": 291
+    },
+    {
+      "source": "main.ssrg",
+      "start": 295,
+      "end": 304
+    },
+    {
+      "source": "main.ssrg",
+      "start": 308,
+      "end": 317
+    },
+    {
+      "source": "main.ssrg",
+      "start": 321,
+      "end": 330
+    },
+    {
+      "source": "main.ssrg",
+      "start": 334,
+      "end": 344
+    },
+    {
+      "source": "main.ssrg",
+      "start": 361,
+      "end": 376
+    },
+    {
+      "source": "main.ssrg",
+      "start": 452,
+      "end": 478
+    },
+    {
+      "source": "main.ssrg",
+      "start": 461,
+      "end": 477
+    },
+    {
+      "source": "main.ssrg",
+      "start": 483,
+      "end": 508
+    },
+    {
+      "source": "main.ssrg",
+      "start": 492,
+      "end": 507
+    },
+    {
+      "source": "main.ssrg",
+      "start": 513,
+      "end": 545
+    },
+    {
+      "source": "main.ssrg",
+      "start": 522,
+      "end": 544
+    },
+    {
+      "source": "main.ssrg",
+      "start": 550,
+      "end": 587
+    },
+    {
+      "source": "main.ssrg",
+      "start": 559,
+      "end": 586
+    },
+    {
+      "source": "main.ssrg",
+      "start": 592,
+      "end": 628
+    },
+    {
+      "source": "main.ssrg",
+      "start": 601,
+      "end": 627
+    },
+    {
+      "source": "main.ssrg",
+      "start": 608,
+      "end": 626
+    },
+    {
+      "source": "main.ssrg",
+      "start": 619,
+      "end": 625
+    },
+    {
+      "source": "main.ssrg",
+      "start": 633,
+      "end": 655
+    },
+    {
+      "source": "main.ssrg",
+      "start": 642,
+      "end": 654
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.subtract",
@@ -124,6 +271,10 @@
           {
             "kind": "number",
             "value": "2"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source118"
           }
         ]
       },
@@ -151,6 +302,10 @@
           {
             "kind": "number",
             "value": "2"
+          },
+          {
+            "kind": "identifier",
+            "name": "$ssrg$source146"
           }
         ]
       },
@@ -184,6 +339,10 @@
               {
                 "kind": "number",
                 "value": "2"
+              },
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source180"
               }
             ]
           },
@@ -198,6 +357,10 @@
               {
                 "kind": "number",
                 "value": "1"
+              },
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source189"
               }
             ]
           },
@@ -212,6 +375,10 @@
               {
                 "kind": "number",
                 "value": "3"
+              },
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source198"
               }
             ]
           },
@@ -226,6 +393,10 @@
               {
                 "kind": "number",
                 "value": "2"
+              },
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source207"
               }
             ]
           },
@@ -240,6 +411,10 @@
               {
                 "kind": "number",
                 "value": "4"
+              },
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source216"
               }
             ]
           },
@@ -254,6 +429,10 @@
               {
                 "kind": "number",
                 "value": "3"
+              },
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source225"
               }
             ]
           }
@@ -282,110 +461,218 @@
         "kind": "array",
         "elements": [
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_float_add_dictionary"
-            },
-            "method": "add",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "1.5"
+                "kind": "identifier",
+                "name": "$ssrg$source267"
               },
               {
-                "kind": "number",
-                "value": "2.25"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_float_add_dictionary"
+                  },
+                  "method": "add",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "1.5"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2.25"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_float_sub_dictionary"
-            },
-            "method": "sub",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "4.5"
+                "kind": "identifier",
+                "name": "$ssrg$source281"
               },
               {
-                "kind": "number",
-                "value": "1.25"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_float_sub_dictionary"
+                  },
+                  "method": "sub",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "4.5"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "1.25"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_float_mul_dictionary"
-            },
-            "method": "mul",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "2.5"
+                "kind": "identifier",
+                "name": "$ssrg$source295"
               },
               {
-                "kind": "number",
-                "value": "3.0"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_float_mul_dictionary"
+                  },
+                  "method": "mul",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "2.5"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "3.0"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_float_div_dictionary"
-            },
-            "method": "div",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "8.0"
+                "kind": "identifier",
+                "name": "$ssrg$source308"
               },
               {
-                "kind": "number",
-                "value": "2.0"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_float_div_dictionary"
+                  },
+                  "method": "div",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "8.0"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2.0"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_float_rem_dictionary"
-            },
-            "method": "rem",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "7.5"
+                "kind": "identifier",
+                "name": "$ssrg$source321"
               },
               {
-                "kind": "number",
-                "value": "4.0"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_float_rem_dictionary"
+                  },
+                  "method": "rem",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "7.5"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "4.0"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           },
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_float_pow_dictionary"
-            },
-            "method": "pow",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "number",
-                "value": "2.0"
+                "kind": "identifier",
+                "name": "$ssrg$source334"
               },
               {
-                "kind": "number",
-                "value": "3.0"
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_float_pow_dictionary"
+                  },
+                  "method": "pow",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "2.0"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "3.0"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           }
@@ -408,20 +695,38 @@
         "kind": "string"
       },
       "initializer": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_string_add_dictionary"
-        },
-        "method": "add",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "string",
-            "value": "Sese"
+            "kind": "identifier",
+            "name": "$ssrg$source361"
           },
           {
-            "kind": "string",
-            "value": "ragi"
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Sese"
+                },
+                {
+                  "kind": "string",
+                  "value": "ragi"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -472,181 +777,383 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_debug_intDebug"
-                    },
-                    "method": "debug",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "difference"
-                      }
-                    ]
-                  },
-                  "type": {
-                    "kind": "string"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
+                  "kind": "identifier",
+                  "name": "$ssrg$source452"
+                },
                 {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_debug_intDebug"
-                    },
-                    "method": "debug",
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
                     "arguments": [
                       {
-                        "kind": "identifier",
-                        "name": "annotated"
-                      }
-                    ]
-                  },
-                  "type": {
-                    "kind": "string"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_debug_arrayDebug",
-                      "typeArguments": [
-                        {
-                          "kind": "number"
-                        }
-                      ],
-                      "arguments": [
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_debug_intDebug"
-                        }
-                      ]
-                    },
-                    "method": "debug",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "arithmeticMatrix"
-                      }
-                    ]
-                  },
-                  "type": {
-                    "kind": "string"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_debug_arrayDebug",
-                      "typeArguments": [
-                        {
-                          "kind": "number"
-                        }
-                      ],
-                      "arguments": [
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_debug_floatDebug"
-                        }
-                      ]
-                    },
-                    "method": "debug",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "floatArithmeticMatrix"
-                      }
-                    ]
-                  },
-                  "type": {
-                    "kind": "string"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "checked-result",
-                  "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_debug_intDebug"
-                    },
-                    "method": "debug",
-                    "arguments": [
-                      {
-                        "kind": "call",
-                        "callee": "acceptInt",
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_int_subtract",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "10"
+                            "kind": "identifier",
+                            "name": "$ssrg$source461"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_debug_intDebug"
+                                },
+                                "method": "debug",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "difference"
+                                  }
+                                ]
                               },
-                              {
-                                "kind": "number",
-                                "value": "3"
+                              "type": {
+                                "kind": "string"
                               }
-                            ]
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
                           }
                         ]
                       }
                     ]
-                  },
-                  "type": {
-                    "kind": "string"
                   }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source483"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source492"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_debug_intDebug"
+                                },
+                                "method": "debug",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "annotated"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source513"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source522"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "type-application-call",
+                                  "callee": "_ssrg_debug_arrayDebug",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_debug_intDebug"
+                                    }
+                                  ]
+                                },
+                                "method": "debug",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "arithmeticMatrix"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source550"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source559"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "type-application-call",
+                                  "callee": "_ssrg_debug_arrayDebug",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_debug_floatDebug"
+                                    }
+                                  ]
+                                },
+                                "method": "debug",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "floatArithmeticMatrix"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source592"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "$ssrg$atSource",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "$ssrg$source601"
+                          },
+                          {
+                            "kind": "lambda",
+                            "parameter": "",
+                            "body": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_debug_intDebug"
+                                },
+                                "method": "debug",
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "$ssrg$atSource",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "$ssrg$source608"
+                                      },
+                                      {
+                                        "kind": "lambda",
+                                        "parameter": "",
+                                        "body": {
+                                          "kind": "call",
+                                          "callee": "acceptInt",
+                                          "arguments": [
+                                            {
+                                              "kind": "runtime-call",
+                                              "callee": "_ssrg_int_subtract",
+                                              "arguments": [
+                                                {
+                                                  "kind": "number",
+                                                  "value": "10"
+                                                },
+                                                {
+                                                  "kind": "number",
+                                                  "value": "3"
+                                                },
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "$ssrg$source619"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "boolean",
+                                        "value": false
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "string"
+                              }
+                            }
+                          },
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
                 }
               ]
             }
@@ -654,27 +1161,63 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
-              "kind": "checked-result",
-              "value": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_debug_stringDebug"
-                },
-                "method": "debug",
+              "kind": "identifier",
+              "name": "$ssrg$source633"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
                 "arguments": [
                   {
-                    "kind": "identifier",
-                    "name": "joined"
+                    "kind": "runtime-call",
+                    "callee": "$ssrg$atSource",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source642"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "",
+                        "body": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_debug_stringDebug"
+                            },
+                            "method": "debug",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "joined"
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "string"
+                          }
+                        }
+                      },
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
                   }
                 ]
-              },
-              "type": {
-                "kind": "string"
               }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

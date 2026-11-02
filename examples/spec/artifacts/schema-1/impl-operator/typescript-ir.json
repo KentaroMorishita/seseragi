@@ -2,6 +2,43 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/impl-operator",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 107,
+      "end": 125
+    },
+    {
+      "source": "main.ssrg",
+      "start": 178,
+      "end": 203
+    },
+    {
+      "source": "main.ssrg",
+      "start": 240,
+      "end": 264
+    },
+    {
+      "source": "main.ssrg",
+      "start": 306,
+      "end": 334
+    },
+    {
+      "source": "main.ssrg",
+      "start": 509,
+      "end": 536
+    },
+    {
+      "source": "main.ssrg",
+      "start": 519,
+      "end": 536
+    },
+    {
+      "source": "main.ssrg",
+      "start": 528,
+      "end": 536
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
@@ -116,6 +153,10 @@
                       {
                         "kind": "identifier",
                         "name": "bonus"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "$ssrg$source107"
                       }
                     ]
                   }
@@ -170,28 +211,46 @@
               }
             ],
             "body": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_eq_dictionary"
-              },
-              "method": "eq",
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
               "arguments": [
                 {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "self"
-                  },
-                  "field": "value"
+                  "kind": "identifier",
+                  "name": "$ssrg$source178"
                 },
                 {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "other"
-                  },
-                  "field": "value"
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_eq_dictionary"
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "self"
+                        },
+                        "field": "value"
+                      },
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "other"
+                        },
+                        "field": "value"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
               ]
             },
@@ -218,34 +277,52 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$instance$Add$0"
-        },
-        "method": "add",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "record",
-            "items": [
-              {
-                "kind": "field",
-                "name": "value",
-                "value": {
+            "kind": "identifier",
+            "name": "$ssrg$source240"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Add$0"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "value": {
+                        "kind": "number",
+                        "value": "21"
+                      }
+                    }
+                  ],
+                  "assertedType": {
+                    "kind": "reference",
+                    "name": "Score",
+                    "arguments": []
+                  }
+                },
+                {
                   "kind": "number",
                   "value": "21"
                 }
-              }
-            ],
-            "assertedType": {
-              "kind": "reference",
-              "name": "Score",
-              "arguments": []
+              ]
             }
           },
           {
-            "kind": "number",
-            "value": "21"
+            "kind": "boolean",
+            "value": false
           }
         ]
       },
@@ -269,34 +346,52 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "identifier",
-            "name": "__ssrg$instance$Eq$1"
-          },
-          "method": "eq",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "score"
+              "name": "$ssrg$source306"
             },
             {
-              "kind": "record",
-              "items": [
-                {
-                  "kind": "field",
-                  "name": "value",
-                  "value": {
-                    "kind": "number",
-                    "value": "42"
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Eq$1"
+                },
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "score"
+                  },
+                  {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "value",
+                        "value": {
+                          "kind": "number",
+                          "value": "42"
+                        }
+                      }
+                    ],
+                    "assertedType": {
+                      "kind": "reference",
+                      "name": "Score",
+                      "arguments": []
+                    }
                   }
-                }
-              ],
-              "assertedType": {
-                "kind": "reference",
-                "name": "Score",
-                "arguments": []
+                ]
               }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },
@@ -380,22 +475,76 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "total",
-                "arguments": [
-                  {
-                    "kind": "undefined"
-                  }
-                ]
-              }
-            ]
+            "kind": "identifier",
+            "name": "$ssrg$source509"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source519"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "render",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source528"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "total",
+                                  "arguments": [
+                                    {
+                                      "kind": "undefined"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

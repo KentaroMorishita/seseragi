@@ -11,15 +11,20 @@
   "names": [
     "__ssrg$instance$Functor$0",
     "transform",
+    "$ssrg$atSource",
     "__ssrg$evidence$0",
     "increment",
     "add",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "transform",
+    "$ssrg$atSource",
     "Just"
   ],
-  "mappings": ";;;;;;;;;AAIAA;AAQAC;AAMAE;AAEAE;AAOAC"
+  "mappings": ";;;;;;;;;;;;;;;AAIAA;AAQAC;AAMAG;AAEAE;AAOAC"
 }

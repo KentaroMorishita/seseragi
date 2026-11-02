@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/imported-alias-return::domain",
+  "runtimeSources": [
+    {
+      "source": "project/imported-alias-return/src/domain.ssrg",
+      "start": 127,
+      "end": 136
+    }
+  ],
   "higherKinds": {
     "constructors": [
       {
@@ -160,19 +167,37 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "Box",
+        "kind": "runtime-call",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "value"
-          }
-        ],
-        "typeArguments": [
+            "name": "$ssrg$source127"
+          },
           {
-            "kind": "reference",
-            "name": "A",
-            "arguments": []
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "call",
+              "callee": "Box",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": false
           }
         ]
       },

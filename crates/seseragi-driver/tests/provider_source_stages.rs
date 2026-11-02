@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "support/source_locations.rs"]
+mod source_locations;
+
 use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 use seseragi_lowering::{
     CoreExpr, CoreStatement, CoreType, TypeScriptExpr, TypeScriptFunction, TypeScriptStatement,
@@ -60,6 +64,7 @@ fn source_reference(value: &CoreExpr) {
 }
 
 fn cold_callback(value: &TypeScriptExpr) {
+    let value = source_locations::source_action(value, false);
     let TypeScriptExpr::Lambda { parameter, body } = value else {
         panic!("constructing a saved function must not call its provider: {value:?}");
     };
@@ -116,7 +121,7 @@ fn saved_clock_operation_keeps_its_checked_source_argument_until_application() {
         .unwrap();
         let TypeScriptFunction::ConstFunction { body, .. } = &direct.typescript_ir.functions[0];
         assert!(
-            matches!(body, TypeScriptExpr::RuntimeCall { callee, arguments }
+            matches!(source_locations::source_action(body, true), TypeScriptExpr::RuntimeCall { callee, arguments }
             if callee == "_ssrg_clock_sleep" && arguments.len() == 1)
         );
     }
@@ -200,7 +205,7 @@ fn clock_callable_keeps_nominal_argument_identity_and_user_function_ownership() 
         .unwrap();
     let TypeScriptFunction::ConstFunction { body, .. } = factory;
     assert!(
-        matches!(body, TypeScriptExpr::Call { callee, arguments, .. }
+        matches!(source_locations::source_action(body, false), TypeScriptExpr::Call { callee, arguments, .. }
         if callee == "sleep" && arguments.len() == 1)
     );
 }

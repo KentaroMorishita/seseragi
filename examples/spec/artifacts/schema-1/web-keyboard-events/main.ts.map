@@ -15,17 +15,23 @@
     "KeyPressed",
     "ControlKey",
     "keyAction",
+    "$ssrg$atSource",
     "Dispatch",
+    "$ssrg$atSource",
     "KeyPressed",
     "taskKey",
+    "$ssrg$atSource",
     "Dispatch",
     "ignoreKey",
     "IgnoreEvent",
     "view",
+    "$ssrg$atSource",
     "button",
     "taskView",
+    "$ssrg$atSource",
     "button",
+    "$ssrg$atSource",
     "taskKey"
   ],
-  "mappings": ";;;;;AAEAA;;;;;AACIC;AACAC;AACAC;AACAC;AAEJC;AAGAG;AAGAE;AAGAE;AAUAE"
+  "mappings": ";;;;;;;;;;;;AAEAA;;;;;AACIC;AACAC;AACAC;AACAC;AAEJC;AAGAK;AAGAG;AAGAE;AAUAG"
 }

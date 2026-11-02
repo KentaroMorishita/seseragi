@@ -13,10 +13,14 @@
     "add",
     "render",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "render",
+    "$ssrg$atSource",
     "transform",
+    "$ssrg$atSource",
     "Just"
   ],
-  "mappings": ";;;;;;;AAEAA;AAEAE;AAOAC"
+  "mappings": ";;;;;;;;;;AAEAA;AAEAE;AAOAC"
 }

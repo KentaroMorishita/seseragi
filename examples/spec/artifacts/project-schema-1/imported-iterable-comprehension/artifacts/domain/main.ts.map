@@ -15,9 +15,10 @@
     "__ssrg$instance$Reducible$1",
     "advance",
     "intOrd",
+    "$ssrg$atSource",
     "Just",
     "add",
     "Nothing"
   ],
-  "mappings": ";;;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC"
+  "mappings": ";;;;;;;;;;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC"
 }

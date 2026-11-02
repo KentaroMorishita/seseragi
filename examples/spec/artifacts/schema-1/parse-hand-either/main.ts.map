@@ -16,12 +16,17 @@
     "HandInputError",
     "UnknownHand",
     "parseHand",
+    "$ssrg$atSource",
     "Right",
+    "$ssrg$atSource",
     "Right",
+    "$ssrg$atSource",
     "Right",
     "other",
+    "$ssrg$atSource",
     "Left",
+    "$ssrg$atSource",
     "UnknownHand"
   ],
-  "mappings": ";;;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;AACIC;AAEJC"
+  "mappings": ";;;;;;;;;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;AACIC;AAEJC"
 }

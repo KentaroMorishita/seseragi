@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/pure-if",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 42,
+      "end": 52
+    }
+  ],
   "runtimeRequirements": [
     "core.int",
     "core.string",
@@ -29,20 +36,38 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_int_eq_dictionary"
-          },
-          "method": "eq",
+          "kind": "runtime-call",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "value"
+              "name": "$ssrg$source42"
             },
             {
-              "kind": "number",
-              "value": "0"
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_int_eq_dictionary"
+                },
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "0"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": false
             }
           ]
         },

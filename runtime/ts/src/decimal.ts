@@ -502,7 +502,12 @@ function floorLog10Ratio(numerator: bigint, denominator: bigint): bigint {
 }
 
 function powerOfTen(exponent: bigint): bigint {
-  return 10n ** exponent
+  try {
+    return 10n ** exponent
+  } catch (error) {
+    if (!(error instanceof RangeError)) throw error
+    throw new RangeError("Decimal canonical spelling exceeds host limits")
+  }
 }
 
 function zeros(count: bigint): string {

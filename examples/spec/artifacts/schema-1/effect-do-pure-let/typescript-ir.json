@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-do-pure-let",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 98,
+      "end": 113
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.string",
@@ -47,11 +54,29 @@
         ],
         "result": {
           "kind": "runtime-call",
-          "callee": "_ssrg_console_println",
+          "callee": "$ssrg$atSource",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "message"
+              "name": "$ssrg$source98"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "message"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "boolean",
+              "value": true
             }
           ]
         }

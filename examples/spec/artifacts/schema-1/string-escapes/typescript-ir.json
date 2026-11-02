@@ -2,6 +2,13 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/string-escapes",
+  "runtimeSources": [
+    {
+      "source": "main.ssrg",
+      "start": 316,
+      "end": 337
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "core.unit"
@@ -102,12 +109,30 @@
             "value": "nul:\u0000end"
           },
           {
-            "kind": "call",
-            "callee": "classify",
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
             "arguments": [
               {
-                "kind": "string",
-                "value": "line\nnext"
+                "kind": "identifier",
+                "name": "$ssrg$source316"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "classify",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "line\nnext"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
             ]
           }

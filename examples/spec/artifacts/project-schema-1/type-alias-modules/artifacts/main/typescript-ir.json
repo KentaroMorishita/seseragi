@@ -2,6 +2,28 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/type-alias-modules::main",
+  "runtimeSources": [
+    {
+      "source": "project/type-alias-modules/src/main.ssrg",
+      "start": 247,
+      "end": 300
+    },
+    {
+      "source": "project/type-alias-modules/src/main.ssrg",
+      "start": 257,
+      "end": 300
+    },
+    {
+      "source": "project/type-alias-modules/src/main.ssrg",
+      "start": 267,
+      "end": 300
+    },
+    {
+      "source": "project/type-alias-modules/src/main.ssrg",
+      "start": 274,
+      "end": 300
+    }
+  ],
   "runtimeRequirements": [
     "core.string",
     "core.unit",
@@ -127,34 +149,106 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
+        "callee": "$ssrg$atSource",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "message",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "swap",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "duplicate",
-                    "arguments": [
-                      {
-                        "kind": "string",
-                        "value": "Imported alias"
+            "kind": "identifier",
+            "name": "$ssrg$source247"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source257"
+                    },
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
+                        "kind": "call",
+                        "callee": "message",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source267"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "swap",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source274"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "call",
+                                            "callee": "duplicate",
+                                            "arguments": [
+                                              {
+                                                "kind": "string",
+                                                "value": "Imported alias"
+                                              }
+                                            ],
+                                            "typeArguments": [
+                                              {
+                                                "kind": "string"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
+                          }
+                        ]
                       }
-                    ],
-                    "typeArguments": [
-                      {
-                        "kind": "string"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true
           }
         ]
       },

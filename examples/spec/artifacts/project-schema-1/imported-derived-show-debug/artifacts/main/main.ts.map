@@ -10,9 +10,11 @@
   ],
   "names": [
     "render",
+    "$ssrg$atSource",
     "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
     "inspect",
+    "$ssrg$atSource",
     "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>"
   ],
-  "mappings": ";;;;AAEAA;AAGAE"
+  "mappings": ";;;;;;;AAEAA;AAGAG"
 }

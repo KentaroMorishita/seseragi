@@ -10,13 +10,16 @@
   ],
   "names": [
     "render",
+    "$ssrg$atSource",
     "arrayShow",
     "inspect",
+    "$ssrg$atSource",
     "maybeDebug",
     "renderThroughImported",
+    "$ssrg$atSource",
     "renderImported",
     "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
     "arrayShow"
   ],
-  "mappings": ";;;;;AAEAA;AAGAE;AAGAE"
+  "mappings": ";;;;;;;;;AAEAA;AAGAG;AAGAG"
 }

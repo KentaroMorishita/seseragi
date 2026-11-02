@@ -14,8 +14,10 @@
     "__ssrg$instance$Labeled$0",
     "__ssrg$instance$Render$1",
     "main",
+    "$ssrg$atSource",
     "println",
+    "$ssrg$atSource",
     "__ssrg$instance$Render$1"
   ],
-  "mappings": ";;;;AAAAA;;AACIC;AAWJC;AAIAC;AAMAC"
+  "mappings": ";;;;;;;;AAAAA;;AACIC;AAWJC;AAIAC;AAMAC"
 }

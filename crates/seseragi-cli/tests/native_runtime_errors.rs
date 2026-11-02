@@ -30,6 +30,16 @@ impl Drop for Scratch {
 }
 
 fn compare(source: &str, marker: &str, message: &str, defect: bool) {
+    compare_with_initialization(source, marker, message, defect, false);
+}
+
+fn compare_with_initialization(
+    source: &str,
+    marker: &str,
+    message: &str,
+    defect: bool,
+    initializing: bool,
+) {
     let scratch = Scratch::new();
     let file = scratch.0.join("probe-雪🙂.ssrg");
     fs::write(&file, source).unwrap();
@@ -42,6 +52,7 @@ fn compare(source: &str, marker: &str, message: &str, defect: bool) {
         marker,
         message,
         defect,
+        initializing,
     );
 }
 
@@ -54,6 +65,7 @@ fn compare_program(
     marker: &str,
     message: &str,
     defect: bool,
+    initializing: bool,
 ) {
     let plain = bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -93,8 +105,13 @@ fn compare_program(
         String::from_utf8(plain.stderr).unwrap(),
         if defect {
             format!(
-                "{}:{line}:{column}: Seseragi Defect: {message}\n",
-                relative_file
+                "{}:{line}:{column}: Seseragi Defect: {message}{}\n",
+                relative_file,
+                if initializing {
+                    " (during module initialization)"
+                } else {
+                    ""
+                }
             )
         } else if message.ends_with('\n') {
             message.to_owned()
@@ -133,7 +150,6 @@ fn compare_program(
 fn native_defects_keep_the_innermost_source_position_and_ts_exit_contract() {
     for (source, marker, message) in [
         ("fn boom n: Int -> Int = n / 0\n\npub effect fn main -> Unit with { console: Console } fails ConsoleError =\n  println `${boom 3}`\n", "n / 0", "Seseragi Int division by zero"),
-        ("import * as effects from \"std/effect\"\nlet broken: Int = 1 / 0\npub effect fn main -> Unit = effects.succeed ()\n", "1 / 0", "Seseragi Int division by zero"),
         ("import * as effects from \"std/effect\"\nfn broken value: Int -> Int = value / 0\npub effect fn main -> Unit = do {\n  let value = broken 4\n  effects.succeed ()\n}\n", "value / 0", "Seseragi Int division by zero"),
         ("import * as effects from \"std/effect\"\npub effect fn main -> Unit = do {\n  let value = 9007199254740991 + 1\n  effects.succeed ()\n}\n", "9007199254740991 + 1", "Seseragi Int overflow"),
         ("import * as effects from \"std/effect\"\nimport * as ints from \"std/int\"\npub effect fn main -> Unit = do {\n  let value = ints.clamp 4 2 1\n  effects.succeed ()\n}\n", "ints.clamp 4 2 1", "Seseragi Int clamp lower bound exceeds upper bound"),
@@ -142,6 +158,9 @@ fn native_defects_keep_the_innermost_source_position_and_ts_exit_contract() {
         ("import * as effects from \"std/effect\"\npub effect fn main -> Unit = do {\n  let values = map (\\value: Int -> value / 0) [1]\n  effects.succeed ()\n}\n", "value / 0", "Seseragi Int division by zero"),
         ("import * as effects from \"std/effect\"\npub effect fn main -> Unit = do {\n  let text = \"雪🙂\"; let value = 1 / 0\n  effects.succeed ()\n}\n", "1 / 0", "Seseragi Int division by zero"),
     ] { compare(source, marker, message, true); }
+    // JavaScript imports report the initialization phase as well as the exact
+    // expression location; native execution retains its existing text format.
+    compare_with_initialization("import * as effects from \"std/effect\"\nlet broken: Int = 1 / 0\npub effect fn main -> Unit = effects.succeed ()\n", "1 / 0", "Seseragi Int division by zero", true, true);
 }
 
 #[test]
@@ -175,6 +194,7 @@ fn imported_failures_keep_the_dependency_file_and_its_show_instance() {
         "effects.fail (Problem",
         "remote 9",
         false,
+        false,
     );
 }
 
@@ -202,6 +222,7 @@ fn imported_defects_keep_the_innermost_dependency_source_in_both_targets() {
         "value / 0",
         "Seseragi Int division by zero",
         true,
+        false,
     );
 }
 
@@ -235,5 +256,6 @@ fn path_dependencies_use_their_own_package_relative_runtime_paths() {
         "value / 0",
         "Seseragi Int division by zero",
         true,
+        false,
     );
 }

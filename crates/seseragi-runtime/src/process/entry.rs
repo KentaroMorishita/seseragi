@@ -628,7 +628,7 @@ pub(super) fn entry_source(
     let initialization_defect = if options.diagnostic_format == DiagnosticFormat::Json {
         "renderRuntimeDefectDiagnostic(runtimeDefect, readDiagnosticSource) + \"\\n\""
     } else {
-        "renderRuntimeDefectText(runtimeDefect)"
+        "renderRuntimeDefectText(runtimeDefect).trimEnd() + \" (during module initialization)\\n\""
     };
     startup.push(format!("const reportApplicationImportDefect = async (runtimeDefect: unknown) => {{ await new Promise((resolve) => process.stderr.write({initialization_defect}, resolve)); process.exit(70); }};"));
     let application_imports = application_imports
