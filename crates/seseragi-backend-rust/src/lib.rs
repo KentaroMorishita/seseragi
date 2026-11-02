@@ -146,3 +146,12 @@ pub fn emit_rust_tests(
 ) -> Result<RustArtifact, RustBackendError> {
     project::emit_tests(modules, tests)
 }
+
+/// Emits a native runner for checked exported Benchmark bindings.
+/// Each pair contains the displayed module name and the binding's canonical symbol.
+pub fn emit_rust_benchmarks(
+    modules: &[&CoreModule],
+    benchmarks: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    project::emit_benchmarks(modules, benchmarks)
+}

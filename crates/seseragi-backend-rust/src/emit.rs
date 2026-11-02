@@ -12,6 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod array_operations;
 mod arrays;
+mod benchmark;
 mod big_int;
 mod big_int_traits;
 mod booleans;
@@ -145,6 +146,7 @@ pub(crate) fn emit_library(
 pub(crate) fn emit_tests(
     module: &CoreModule,
     tests: &[(String, String)],
+    benchmark: bool,
     owners: &BTreeMap<String, String>,
     scalar_globals: &seseragi_lowering::CoreScalarGlobals,
     type_names: &BTreeMap<(String, String), String>,
@@ -159,7 +161,7 @@ pub(crate) fn emit_tests(
         type_names,
         trait_names,
         options,
-        Some(tests),
+        Some((tests, benchmark)),
     )
 }
 
@@ -180,7 +182,7 @@ fn emit_body(
     type_names: &BTreeMap<(String, String), String>,
     trait_names: &BTreeMap<(String, String), String>,
     options: &crate::RustTargetOptions,
-    tests: Option<&[(String, String)]>,
+    tests: Option<(&[(String, String)], bool)>,
 ) -> Result<RustArtifact> {
     if !module.foreign_modules.is_empty() {
         return Err("Rust backend: foreign modules are unsupported".into());
@@ -195,7 +197,7 @@ fn emit_body(
         clock_origins: Vec::new(),
         html_ordered_records: html_flow::ordered_records(module, owners),
         program_wasm_library: entry.is_none() && tests.is_none(),
-        test_runner: tests.is_some(),
+        test_runner: tests.is_some_and(|(_, benchmark)| !benchmark),
         owner: &module.module,
         functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
         globals: module
@@ -453,7 +455,13 @@ fn emit_body(
         }
         output.push_str(&backend.direct_function(function, &setup, &scope)?);
     }
-    if let Some(tests) = tests {
+    if let Some((tests, benchmark)) = tests {
+        let kind = if benchmark { "Benchmark" } else { "Test" };
+        let runner = if benchmark {
+            "run_native_benchmarks_entry"
+        } else {
+            "run_native_tests_entry"
+        };
         let mut values = Vec::new();
         for (name, symbol) in tests {
             let binding = module
@@ -467,11 +475,18 @@ fn emit_body(
             if !binding.type_parameters.is_empty()
                 || backend.local_canonical_type(&ty, &Scope::new())?
                     != (CoreType::Named {
-                        name: "std/test::Test".into(),
+                        name: if benchmark {
+                            "std/benchmark::Benchmark"
+                        } else {
+                            "std/test::Test"
+                        }
+                        .into(),
                         arguments: vec![],
                     })
             {
-                return Err("Rust backend: test export must have canonical Test type".into());
+                return Err(
+                    format!("Rust backend: tool export must have canonical {kind} type").into(),
+                );
             }
             values.push(format!(
                 "({}.to_owned(), get_global({}))",
@@ -479,7 +494,7 @@ fn emit_body(
                 backend.globals[symbol]
             ));
         }
-        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_tests_entry(|| {{ initialize_globals(); vec![{}] }})); }}\n", values.join(",")));
+        output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ initialize_globals(); vec![{}] }})); }}\n", values.join(",")));
     }
     if let Some(entry) = entry {
         backend.owner = &owners[&entry.symbol];
@@ -545,6 +560,7 @@ fn emit_body(
             entry_kind: match entry {
                 Some(entry) if entry.is_effect => "effect",
                 Some(_) => "pure",
+                None if tests.is_some_and(|(_, benchmark)| benchmark) => "benchmark",
                 None if tests.is_some() => "test",
                 None => "library",
             }
@@ -1060,6 +1076,9 @@ impl Backend<'_> {
                 if let Some(value) = self.test_call(expr, scope)? {
                     return Ok(value);
                 }
+                if let Some(value) = self.benchmark_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.effect_control_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -1132,6 +1151,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.test_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.benchmark_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.effect_control_call(expr, scope)? {

@@ -49,6 +49,9 @@ impl Backend<'_> {
         if let Some(value) = self.test_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.benchmark_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.log_call(expr, scope)? {
             return Ok(value);
         }

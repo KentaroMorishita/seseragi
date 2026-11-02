@@ -1,0 +1,43 @@
+import * as b from "std/benchmark"
+import * as e from "std/effect"
+import * as refs from "std/ref"
+
+fn boxed<A> value:A -> A = b.blackBox value
+fn direct value:Int -> Int = b.blackBox value
+fn increment value:Int -> Int = value + 1
+effect fn report action:Effect<{},b.BenchmarkFailure,Unit> -> Unit with Console fails ConsoleError = do {
+  result <- e.attempt action
+  println (match result { Left error -> show error; Right _ -> "ok" })
+}
+pub effect fn main = do {
+  let make = b.benchmark
+  let group = b.suite "group"
+  let size = b.inputSize 0
+  let tree = boxed (size (group [make "" (b.fail "unexecuted")]))
+  let fail = b.fail
+  let box:Int -> Int = b.blackBox
+  println (show (box (-9007199254740991)))
+  println (show (boxed 9007199254740991))
+  println (boxed "雪\n🙂")
+  let empty:Array<Int> = []
+  println (show (boxed empty))
+  println (show (boxed [1,2,3]))
+  println (show (boxed (True, Just "x")))
+  let saved = boxed increment
+  println (show (direct (saved 41)))
+  reference <- refs.make 0
+  let same = boxed reference
+  refs.set 42 same
+  value <- refs.get reference
+  println (show value)
+  let cold = boxed (do { refs.update increment reference; e.succeed () })
+  before <- refs.get reference
+  println (show before)
+  cold
+  after <- refs.get reference
+  println (show after)
+  let failure = fail "雪\n\""
+  report failure
+  report failure
+  report (b.fail "")
+}
