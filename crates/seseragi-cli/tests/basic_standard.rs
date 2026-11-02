@@ -391,6 +391,66 @@ fn basic_bytes_codecs_preserve_the_existing_spec_example() {
 }
 
 #[test]
+fn basic_validation_preserves_ordered_errors_conversions_instances_and_saved_generic_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-validation.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-validation.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_validation_preserves_original_constructors_patterns_and_instances() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/validation-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/validation-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_validation_keeps_cold_captured_functions_typed_failures_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-validation-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-validation-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_validation_source_and_selected_callback_defects_keep_their_kind_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-validation-effects.ssrg");
+    let needle = "validation.valid 42";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "validation.valid (42 / 0)",
+        "validation.invalid (show (42 / 0))",
+        "validation.invalidMany (pure (show (42 / 0)))",
+        "validation.fromEither (Right (42 / 0))",
+        "{let value:Validation<String,Int> = if 42 / 0 == 0 then validation.valid 1 else validation.invalid \"unreachable\";let _result = validation.toEither value;value}",
+        "(\\value:Int -> value / 0) <$> validation.valid 42",
+        "validation.valid (\\value:Int -> value / 0) <*> validation.valid 42",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("validation-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"created\nacquired\nInvalid `[\"captured\"]\nValid 42\nInvalid `[\"captured\"]\nValid 42\nreleased\n")
+            }],
+        );
+    }
+}
+
+#[test]
 fn basic_either_operations_keep_original_selected_branches_traversals_and_returned_functions() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-either-operations.ssrg"),
