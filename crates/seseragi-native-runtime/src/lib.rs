@@ -74,3 +74,5 @@ include!("runtime_filesystem_paths.rs");
 include!("runtime_host.rs");
 include!("runtime_clock.rs");
 include!("runtime_time.rs");
+include!("timezone_data.rs");
+include!("runtime_timezones.rs");

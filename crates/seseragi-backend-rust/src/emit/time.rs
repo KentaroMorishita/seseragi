@@ -16,6 +16,28 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let instant = || value("std/time::Instant");
     let int = || value("std/prelude::Int");
     let text = || value("std/prelude::String");
+    let zone = || value("std/time::TimeZone");
+    let zoned_time = || value("std/time::ZonedDateTime");
+    let resolution = || value("std/time::LocalResolution");
+    let record = |fields: Vec<(&str, CoreType)>| CoreType::Record {
+        closed: true,
+        fields: fields
+            .into_iter()
+            .map(|(name, type_ref)| seseragi_lowering::CoreRecordField {
+                name: name.into(),
+                optional: false,
+                type_ref,
+            })
+            .collect(),
+    };
+    let effect = |failure, success| CoreType::Named {
+        name: "std/prelude::Effect".into(),
+        arguments: vec![
+            record(vec![("timeZones", value("std/time::TimeZones"))]),
+            failure,
+            success,
+        ],
+    };
     let either = |success| CoreType::Named {
         name: "std/prelude::Either".into(),
         arguments: vec![value("std/time::DateTimeError"), success],
@@ -36,8 +58,58 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         "std/time::atOffset" => (vec![offset(), instant()], zoned()),
         "std/time::offsetInstant" => (vec![zoned()], instant()),
         "std/time::offsetLocalDateTime" => (vec![zoned()], local()),
+        "std/time::databaseVersion" => (
+            vec![value("std/prelude::Unit")],
+            effect(value("std/prelude::Never"), text()),
+        ),
+        "std/time::loadTimeZone" => (
+            vec![text()],
+            effect(value("std/time::TimeZoneError"), zone()),
+        ),
+        "std/time::timeZoneId" | "std/time::timeZoneVersion" => (vec![zone()], text()),
+        "std/time::atTimeZone" => (vec![instant(), zone()], zoned_time()),
+        "std/time::resolveLocal" => (vec![local(), zone()], resolution()),
+        "std/time::zonedInstant" => (vec![zoned_time()], instant()),
+        "std/time::zonedLocalDateTime" => (vec![zoned_time()], local()),
+        "std/time::zonedOffset" => (vec![zoned_time()], offset()),
+        "std/time::zonedTimeZone" => (vec![zoned_time()], zone()),
+        "std/time::Unique" => (vec![zoned_time()], resolution()),
+        "std/time::Ambiguous" => (
+            vec![record(vec![
+                ("earlier", zoned_time()),
+                ("later", zoned_time()),
+            ])],
+            resolution(),
+        ),
+        "std/time::Gap" => (
+            vec![record(vec![
+                ("transition", instant()),
+                ("offsetBefore", offset()),
+                ("offsetAfter", offset()),
+            ])],
+            resolution(),
+        ),
         _ => return None,
     })
+}
+
+fn timezone_operation(name: &str) -> bool {
+    matches!(
+        name,
+        "std/time::databaseVersion"
+            | "std/time::loadTimeZone"
+            | "std/time::timeZoneId"
+            | "std/time::timeZoneVersion"
+            | "std/time::atTimeZone"
+            | "std/time::resolveLocal"
+            | "std/time::zonedInstant"
+            | "std/time::zonedLocalDateTime"
+            | "std/time::zonedOffset"
+            | "std/time::zonedTimeZone"
+            | "std/time::Unique"
+            | "std/time::Ambiguous"
+            | "std/time::Gap"
+    )
 }
 
 fn arrow(parameters: &[CoreType], result: &CoreType) -> CoreType {
@@ -65,13 +137,19 @@ impl Backend<'_> {
         Ok(())
     }
 
-    fn require_time_calendar(&mut self) -> Result<()> {
+    fn require_time_calendar(&mut self, name: &str) -> Result<()> {
         if self.program_wasm_library {
             return Err(
                 "Rust backend: native calendar APIs are not admitted in program WASM".into(),
             );
         }
         self.capabilities.insert("time-calendar".into());
+        if timezone_operation(name) {
+            self.capabilities.insert("time-zones".into());
+        }
+        if matches!(name, "std/time::databaseVersion" | "std/time::loadTimeZone") {
+            self.capabilities.insert("effect-sync".into());
+        }
         Ok(())
     }
 
@@ -84,7 +162,12 @@ impl Backend<'_> {
             .map(|name| format!("{}.clone()", id(name)))
             .collect::<Vec<_>>()
             .join(",");
-        let mut result = format!("native_time_operation({}, vec![{args}])", quoted(name));
+        let operation = if timezone_operation(name) {
+            "native_timezone_operation"
+        } else {
+            "native_time_operation"
+        };
+        let mut result = format!("{operation}({}, vec![{args}])", quoted(name));
         for i in (0..arity).rev() {
             result = Self::closure(&names[i], &result, &names[..i].iter().cloned().collect());
         }
@@ -108,25 +191,71 @@ impl Backend<'_> {
             return Err("Rust backend: calendar APIs have no dictionary evidence".into());
         }
         self.time_type_matches(ty, &arrow(&parameters, &result), scope)?;
-        self.require_time_calendar()?;
+        self.require_time_calendar(name)?;
         Ok(Some(Self::time_callable(name, parameters.len())))
     }
 
     pub(super) fn time_call(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<Option<String>> {
-        let CoreExpr::Call {
-            callee,
-            arguments,
-            type_ref,
-            evidence,
-            trait_dispatch,
-            deferred_evidence_parameters,
-            deferred_evidence_type_constructor_parameters,
-            evidence_argument_index,
-            callee_signature,
-            ..
-        } = expr
-        else {
-            return Ok(None);
+        let (callee, arguments, type_ref, valid, callee_signature) = match expr {
+            CoreExpr::Call {
+                callee,
+                arguments,
+                type_ref,
+                evidence,
+                trait_dispatch,
+                deferred_evidence_parameters,
+                deferred_evidence_type_constructor_parameters,
+                evidence_argument_index,
+                callee_signature,
+                ..
+            } => (
+                callee,
+                arguments,
+                type_ref.clone(),
+                evidence.is_empty()
+                    && trait_dispatch.is_none()
+                    && deferred_evidence_parameters.is_empty()
+                    && deferred_evidence_type_constructor_parameters.is_empty()
+                    && evidence_argument_index.is_none(),
+                callee_signature.as_ref(),
+            ),
+            CoreExpr::EffectInvoke {
+                callee,
+                arguments,
+                requirements,
+                failure,
+                success,
+                evidence,
+                callee_signature,
+                ..
+            } => (
+                callee,
+                arguments,
+                CoreType::Named {
+                    name: "std/prelude::Effect".into(),
+                    arguments: vec![requirements.clone(), failure.clone(), success.clone()],
+                },
+                evidence.is_empty(),
+                callee_signature.as_ref(),
+            ),
+            CoreExpr::EffectOperation {
+                operation,
+                arguments,
+                requirements,
+                failure,
+                success,
+                ..
+            } => (
+                operation,
+                arguments,
+                CoreType::Named {
+                    name: "std/prelude::Effect".into(),
+                    arguments: vec![requirements.clone(), failure.clone(), success.clone()],
+                },
+                true,
+                None,
+            ),
+            _ => return Ok(None),
         };
         if scope.contains(callee) {
             return Ok(None);
@@ -134,13 +263,7 @@ impl Backend<'_> {
         let Some((parameters, expected)) = signature(callee) else {
             return Ok(None);
         };
-        if !evidence.is_empty()
-            || trait_dispatch.is_some()
-            || !deferred_evidence_parameters.is_empty()
-            || !deferred_evidence_type_constructor_parameters.is_empty()
-            || evidence_argument_index.is_some()
-            || arguments.len() > parameters.len()
-        {
+        if !valid || arguments.len() > parameters.len() {
             return Err("Rust backend: unproven calendar source arity or evidence".into());
         }
         if let Some(signature) = callee_signature {
@@ -169,11 +292,11 @@ impl Backend<'_> {
             self.time_type_matches(&actual, expected, scope)?;
         }
         self.time_type_matches(
-            type_ref,
+            &type_ref,
             &arrow(&parameters[arguments.len()..], &expected),
             scope,
         )?;
-        self.require_time_calendar()?;
+        self.require_time_calendar(callee)?;
         let temporary = self.fresh();
         let mut output = format!(
             "{{ let mut {temporary} = {};",

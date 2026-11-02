@@ -454,6 +454,10 @@ impl Backend<'_> {
                 | "std/time::LocalDateTime"
                 | "std/time::UtcOffset"
                 | "std/time::OffsetDateTime"
+                | "std/time::TimeZones"
+                | "std/time::TimeZone"
+                | "std/time::ZonedDateTime"
+                | "std/time::LocalResolution"
                 | "std/stream::BufferCapacity" => return Some(vec![]),
                 "std/signal::Signal"
                 | "std/signal::MutableSignal"

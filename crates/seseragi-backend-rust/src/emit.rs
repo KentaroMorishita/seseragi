@@ -972,6 +972,9 @@ impl Backend<'_> {
                 success,
                 ..
             } => {
+                if let Some(value) = self.time_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.clock_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -1016,6 +1019,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.time_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.stream_operation_call(expr, scope)? {
                     return Ok(value);
                 }

@@ -72,4 +72,6 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/runtime_host.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_clock.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_time.rs"),
+    include_str!("../../seseragi-native-runtime/src/timezone_data.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_timezones.rs"),
 );

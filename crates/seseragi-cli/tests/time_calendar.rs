@@ -250,3 +250,68 @@ fn calendar_matches_strict_ts_bun_node_and_native_in_both_profiles() {
     }
     assert_eq!(fs::read_to_string(source).unwrap(), original);
 }
+
+#[test]
+fn timezones_match_strict_ts_bun_node_and_native_in_both_profiles() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("timezones.ssrg");
+    let original = include_str!("../../../examples/spec/fixtures/rust-backend/timezones.ssrg");
+    let expected = include_bytes!("../../../examples/spec/fixtures/rust-backend/timezones.stdout");
+    fs::write(&source, original).unwrap();
+    for (profile, value) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let native = scratch.0.join(format!("native-{profile}"));
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--profile", profile, "--out-dir"])
+                .arg(&native),
+            &scratch.0,
+        ));
+        let metadata: serde_json::Value =
+            serde_json::from_slice(&fs::read(native.join("rust-backend.json")).unwrap()).unwrap();
+        assert!(metadata["capabilities"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|c| c == "time-zones"));
+        let output = successful(bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .current_dir(&scratch.0)
+                .env("PATH", "")
+                .env("TZ", "Pacific/Honolulu")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, expected, "native {profile}");
+        assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+        let ts = scratch.0.join(format!("ts-{profile}"));
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--profile", profile, "--out-dir"])
+                .arg(&ts),
+            &scratch.0,
+        ));
+        check_raw_strict(original, profile, value, &ts, &scratch.0);
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(ts.join("artifact-manifest.json")).unwrap()).unwrap();
+        for engine in ["bun", "node"] {
+            let output = successful(bounded(
+                Command::new(runtime(engine, &scratch.0))
+                    .arg(ts.join(manifest["entry"].as_str().unwrap()))
+                    .current_dir(&scratch.0)
+                    .env("PATH", "")
+                    .env("TZ", "Asia/Tokyo"),
+                &scratch.0,
+            ));
+            assert_eq!(output.stdout, expected, "{engine} {profile}");
+            assert!(output.stderr.is_empty(), "{engine} {profile}: {output:?}");
+        }
+    }
+    assert_eq!(fs::read_to_string(source).unwrap(), original);
+}
