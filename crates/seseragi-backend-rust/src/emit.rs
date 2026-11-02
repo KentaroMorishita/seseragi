@@ -59,6 +59,7 @@ mod operators;
 mod prelude_collections;
 mod prelude_effects;
 mod process;
+mod random;
 mod range;
 mod returned_calls;
 mod scalar;
@@ -1035,6 +1036,9 @@ impl Backend<'_> {
                     return Ok(value);
                 }
                 if let Some(value) = self.process_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.random_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(callable) = scope.callables.get(callee) {

@@ -21,7 +21,6 @@ fn run_native(invocation: &Invocation) -> Result<i32, String> {
     if invocation.signal_mode.is_some()
         || invocation.shutdown_grace_ms.is_some()
         || invocation.hash_seed.is_some()
-        || invocation.random_seed.is_some()
         || invocation.diagnostic_format == Some(DiagnosticFormat::Json)
     {
         return Err(
@@ -38,10 +37,33 @@ fn run_native(invocation: &Invocation) -> Result<i32, String> {
         ProjectCommand::Run,
         invocation.profile.unwrap_or_default(),
     )?;
-    let status =
-        std::process::Command::new(output.path().join(crate::experimental::output::EXECUTABLE))
-            .status()
-            .map_err(|error| format!("could not run native program: {error}"))?;
+    let mut command =
+        std::process::Command::new(output.path().join(crate::experimental::output::EXECUTABLE));
+    let random_seed = if let Some(seed) = invocation.random_seed {
+        seed
+    } else if let Some(package) = crate::local_project::containing_package(&invocation.path) {
+        let source = std::fs::read_to_string(package.join("seseragi.toml"))
+            .map_err(|error| error.to_string())?;
+        let manifest =
+            seseragi_project::parse_manifest(&source).map_err(|error| error.to_string())?;
+        match manifest
+            .run
+            .map(|run| run.random_seed)
+            .unwrap_or(seseragi_project::RunSeed::Entropy)
+        {
+            seseragi_project::RunSeed::Entropy => RandomSeed::Entropy,
+            seseragi_project::RunSeed::Fixed(seed) => RandomSeed::Fixed(seed),
+        }
+    } else {
+        RandomSeed::Entropy
+    };
+    match random_seed {
+        RandomSeed::Fixed(seed) => command.env("SESERAGI_RANDOM_SEED", seed.to_string()),
+        RandomSeed::Entropy => command.env_remove("SESERAGI_RANDOM_SEED"),
+    };
+    let status = command
+        .status()
+        .map_err(|error| format!("could not run native program: {error}"))?;
     if let Some(code) = status.code() {
         return Ok(code);
     }
