@@ -1,0 +1,28 @@
+import * as effects from "std/effect"
+import * as logs from "std/log"
+import { LogEvent, LogValue } from "std/log"
+
+fn event message: String -> LogEvent = {
+  let fields: List<(String, LogValue)> = `[]
+  LogEvent { level: logs.LogInfo, message, fields }
+}
+
+effect fn ignoreLog _error: logs.LogError -> Unit with logger: logs.Logger = effects.succeed ()
+
+effect fn say message: String -> Unit with logger: logs.Logger =
+  logs.log (event message) |> effects.recover ignoreLog
+
+effect fn release _unit: Unit -> Unit with logger: logs.Logger = say "released"
+
+effect fn body mode: String -> Unit with logger: logs.Logger fails String = effects.scoped $ do {
+  effects.acquireRelease (say "acquired") release
+  logs.log (event "body") |> effects.mapError show
+  if mode == "fail" then effects.fail "body failure"
+  else if mode == "defect" then effects.die "body defect"
+  else effects.succeed ()
+}
+
+pub effect fn main = do {
+  result <- effects.attempt (body "ready")
+  println (show result)
+}

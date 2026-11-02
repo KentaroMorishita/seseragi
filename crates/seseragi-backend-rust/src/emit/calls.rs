@@ -46,6 +46,9 @@ impl Backend<'_> {
                 self.validate_float_power_type(&actual, 2, scope)?;
             }
         }
+        if let Some(value) = self.log_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.clock_call(expr, scope)? {
             return Ok(value);
         }

@@ -58,6 +58,7 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/runtime_json_derived_adts.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_derived.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_standard_errors.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_log.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_int_parse.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_int_checked.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_float_parse.rs"),
