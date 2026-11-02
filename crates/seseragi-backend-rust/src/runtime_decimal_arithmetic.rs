@@ -5,6 +5,21 @@ fn native_decimal_copy(value: &NativeDecimal) -> NativeDecimal {
     }
 }
 
+fn native_decimal_host_count(count: Option<usize>, message: &'static str) -> usize {
+    count.unwrap_or_else(|| native_defect_at(message, None))
+}
+
+fn native_decimal_product_buffer(left_digits: usize, right_digits: usize) -> Vec<u8> {
+    const MESSAGE: &str = "Decimal coefficient exceeds host limits";
+    let length = native_decimal_host_count(left_digits.checked_add(right_digits), MESSAGE);
+    let mut output = Vec::new();
+    output
+        .try_reserve_exact(length)
+        .unwrap_or_else(|_| native_defect_at(MESSAGE, None));
+    output.resize(length, 0);
+    output
+}
+
 fn native_decimal_coefficient_multiply(left: &str, right: &str) -> String {
     if left == "0" || right == "0" {
         return "0".into();
@@ -12,11 +27,7 @@ fn native_decimal_coefficient_multiply(left: &str, right: &str) -> String {
     let negative = left.starts_with('-') != right.starts_with('-');
     let left = left.trim_start_matches('-').as_bytes();
     let right = right.trim_start_matches('-').as_bytes();
-    let length = left
-        .len()
-        .checked_add(right.len())
-        .expect("Decimal coefficient exceeds host limits");
-    let mut output = vec![0_u8; length];
+    let mut output = native_decimal_product_buffer(left.len(), right.len());
     // Decimal words avoid a quadratic radix conversion when one operand is
     // much shorter. This is O(n*m) digit operations and O(n+m) storage.
     for i in (0..left.len()).rev() {
@@ -142,6 +153,28 @@ fn native_decimal_display_dictionary(debug: bool) -> V {
 #[cfg(test)]
 mod decimal_arithmetic_tests {
     use super::*;
+    #[test]
+    fn product_storage_limits_are_defects_before_allocation_or_digit_work() {
+        for (left, right) in [
+            (usize::MAX, 1),
+            (usize::MAX - 1, 1),
+            (isize::MAX as usize, 1),
+        ] {
+            let result = catch_native(|| {
+                native_decimal_product_buffer(left, right);
+                Ok(V::Unit)
+            });
+            assert!(
+                matches!(result, Err(NativeExit::Defect(ref errors)) if errors == &["Decimal coefficient exceeds host limits"]),
+                "{left} + {right}"
+            );
+        }
+        let buffer = native_decimal_product_buffer(4095, 1);
+        assert_eq!(buffer.len(), 4096);
+        assert!(buffer.iter().all(|digit| *digit == 0));
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
     #[test]
     fn signed_scaled_arithmetic_matches_independent_i128_coefficients() {
         for left in [

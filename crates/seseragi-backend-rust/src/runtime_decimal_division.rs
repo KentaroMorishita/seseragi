@@ -47,9 +47,10 @@ fn native_decimal_remove_factor(mut value: NativeBigInt, prime: u32) -> (NativeB
             return (value, count);
         }
         value = quotient;
-        count = count
-            .checked_add(1)
-            .expect("Decimal factor count exceeds host limits");
+        count = native_decimal_host_count(
+            count.checked_add(1),
+            "Decimal factor count exceeds host limits",
+        );
     }
 }
 
@@ -222,9 +223,10 @@ fn native_decimal_quantize(
     } else {
         // The string comparison proves that this count is bounded by an
         // already materialized coefficient. No arbitrary scale is expanded.
-        let count = difference
-            .parse::<usize>()
-            .expect("bounded Decimal quantize count");
+        let count = native_decimal_host_count(
+            difference.parse::<usize>().ok(),
+            "bounded Decimal quantize count",
+        );
         let (kept, dropped) = digits.split_at(digits.len() - count);
         let half = dropped.as_bytes()[0].cmp(&b'5').then_with(|| {
             if dropped.as_bytes()[1..].iter().any(|digit| *digit != b'0') {
@@ -266,6 +268,70 @@ mod decimal_division_tests {
         let V::Decimal(value) = parsed else { panic!() };
         native_decimal_copy(value.get())
     }
+    #[test]
+    fn host_counts_keep_the_last_valid_value_and_overflow_is_a_defect() {
+        let maximum = usize::MAX.to_string();
+        let overflow = native_decimal_add(&maximum, "1");
+        for message in [
+            "Decimal factor count exceeds host limits",
+            "bounded Decimal quantize count",
+        ] {
+            assert_eq!(
+                native_decimal_host_count((usize::MAX - 1).checked_add(1), message),
+                usize::MAX
+            );
+            assert_eq!(
+                native_decimal_host_count(maximum.parse().ok(), message),
+                usize::MAX
+            );
+            for count in [usize::MAX.checked_add(1), overflow.parse().ok()] {
+                let result = catch_native(|| {
+                    native_decimal_host_count(count, message);
+                    Ok(V::Unit)
+                });
+                assert!(
+                    matches!(result, Err(NativeExit::Defect(ref errors)) if errors == &[message])
+                );
+            }
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn factor_counts_cross_limb_boundaries_without_losing_precision() {
+        for prime in [2, 5] {
+            for count in [31, 32, 33, 63, 64, 65, 127, 128, 129] {
+                let input = native_decimal_integer_power(prime.into(), count)
+                    .multiply(&NativeBigInt::from_i64(3));
+                let (remainder, actual) = native_decimal_remove_factor(input, prime);
+                assert_eq!(remainder.decimal(), "3", "{prime}^{count}");
+                assert_eq!(actual, count, "{prime}^{count}");
+            }
+        }
+    }
+
+    #[test]
+    fn quantize_scales_around_host_count_limits_do_not_materialize_a_power() {
+        let maximum = usize::MAX.to_string();
+        for scale in [
+            native_decimal_add(&maximum, "-1"),
+            maximum.clone(),
+            native_decimal_add(&maximum, "1"),
+        ] {
+            for (coefficient, mode, expected) in [
+                ("5", NativeRoundingMode::HalfEven, "0"),
+                ("-5", NativeRoundingMode::HalfUp, "0"),
+                ("5", NativeRoundingMode::Ceiling, "1"),
+                ("-5", NativeRoundingMode::Floor, "-1"),
+            ] {
+                let input = native_decimal_make(coefficient, scale.clone());
+                let result = native_decimal_quantize(0, mode, &input);
+                assert_eq!(result.coefficient, expected);
+                assert_eq!(result.scale, "0");
+            }
+        }
+    }
+
     #[test]
     fn exact_division_reduces_factors_preserves_sign_scale_and_typed_errors() {
         for (divisor, dividend, expected) in [
