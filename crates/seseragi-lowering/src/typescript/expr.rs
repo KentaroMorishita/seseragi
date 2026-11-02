@@ -730,45 +730,16 @@ pub(super) fn lower_core_expr_to_typescript(
                         .collect(),
                     origin.clone(),
                 );
-                let result = if returned_arguments.is_empty() {
-                    result
-                } else {
-                    let name = "__ssrg$collection$returned".to_owned();
-                    let callable_type = checked_argument_types[operation.source_arity..]
-                        .iter()
-                        .rev()
-                        .fold(
-                            type_ref_from_core_type(&type_ref, imported_types),
-                            |result, parameter| super::TypeScriptType::Function {
-                                parameter: Box::new(parameter.clone()),
-                                result: Box::new(result),
-                            },
-                        );
-                    let initializer = if operation.result_erased {
-                        TypeScriptExpr::CheckedResult {
-                            value: Box::new(result),
-                            type_ref: callable_type.clone(),
-                        }
-                    } else {
-                        result
-                    };
-                    TypeScriptExpr::Sequence {
-                        statements: vec![TypeScriptStatement::PureLet {
-                            type_parameters: Vec::new(),
-                            name: name.clone(),
-                            type_ref: callable_type,
-                            initializer,
-                            initializer_in_outer_scope: false,
-                            origin,
-                        }],
-                        result: Box::new(TypeScriptExpr::Call {
-                            callee: name,
-                            arguments: returned_arguments,
-                            type_arguments: Vec::new(),
-                            checked_callee_type: None,
-                        }),
-                    }
-                };
+                let result = apply_returned_runtime_arguments(
+                    result,
+                    returned_arguments,
+                    &checked_argument_types
+                        [operation.source_arity.min(checked_argument_types.len())..],
+                    type_ref_from_core_type(&type_ref, imported_types),
+                    "collection",
+                    operation.result_erased,
+                    origin,
+                );
                 if operation.result_erased {
                     TypeScriptExpr::CheckedResult {
                         value: Box::new(result),
@@ -913,12 +884,12 @@ pub(super) fn lower_core_expr_to_typescript(
                 }
             } else if let Some(operation) = runtime_provider_service_operation(&callee) {
                 if let Some(source_arity) = operation.source_arity {
-                    // An imported Effect function may be a zero-argument
-                    // partial Call. The standard declaration fixes its source
-                    // stages; a returned function and the host function's
-                    // implementation arity must not add or remove a stage.
+                    // The standard declaration fixes the source stages.
+                    // Apply extra arguments to the returned function only
+                    // after the runtime export has consumed its parameters.
                     let remaining = source_arity.saturating_sub(arguments.len());
-                    lower_uncurried_runtime_call(
+                    let returned_arguments = arguments.split_off(arguments.len().min(source_arity));
+                    let result = lower_uncurried_runtime_call(
                         operation.local_name.to_owned(),
                         arguments,
                         &type_ref,
@@ -926,7 +897,21 @@ pub(super) fn lower_core_expr_to_typescript(
                         "provider",
                         Vec::new(),
                         Some(remaining),
-                        checked_argument_types.iter().cloned().enumerate().collect(),
+                        checked_argument_types
+                            .iter()
+                            .take(source_arity)
+                            .cloned()
+                            .enumerate()
+                            .collect(),
+                        origin.clone(),
+                    );
+                    apply_returned_runtime_arguments(
+                        result,
+                        returned_arguments,
+                        &checked_argument_types[source_arity.min(checked_argument_types.len())..],
+                        type_ref_from_core_type(&type_ref, imported_types),
+                        "provider",
+                        false,
                         origin,
                     )
                 } else {
@@ -1768,6 +1753,54 @@ fn core_function_arity(type_ref: &CoreType) -> usize {
     match type_ref {
         CoreType::Function { result, .. } => 1 + core_function_arity(result),
         _ => 0,
+    }
+}
+
+fn apply_returned_runtime_arguments(
+    initializer: TypeScriptExpr,
+    arguments: Vec<TypeScriptExpr>,
+    argument_types: &[super::TypeScriptType],
+    result_type: super::TypeScriptType,
+    parameter_scope: &str,
+    result_erased: bool,
+    origin: crate::SourceSpan,
+) -> TypeScriptExpr {
+    if arguments.is_empty() {
+        return initializer;
+    }
+    let name = format!("__ssrg${parameter_scope}$returned");
+    let callable_type = argument_types
+        .iter()
+        .rev()
+        .fold(result_type, |result, parameter| {
+            super::TypeScriptType::Function {
+                parameter: Box::new(parameter.clone()),
+                result: Box::new(result),
+            }
+        });
+    let initializer = if result_erased {
+        TypeScriptExpr::CheckedResult {
+            value: Box::new(initializer),
+            type_ref: callable_type.clone(),
+        }
+    } else {
+        initializer
+    };
+    TypeScriptExpr::Sequence {
+        statements: vec![TypeScriptStatement::PureLet {
+            type_parameters: Vec::new(),
+            name: name.clone(),
+            type_ref: callable_type,
+            initializer,
+            initializer_in_outer_scope: false,
+            origin,
+        }],
+        result: Box::new(TypeScriptExpr::Call {
+            callee: name,
+            arguments,
+            type_arguments: Vec::new(),
+            checked_callee_type: None,
+        }),
     }
 }
 
