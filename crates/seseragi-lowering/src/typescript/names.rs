@@ -1,4 +1,5 @@
 const RESERVED_TYPESCRIPT_WORDS: &[&str] = &[
+    "arguments",
     "await",
     "break",
     "case",
@@ -40,10 +41,10 @@ const RESERVED_TYPESCRIPT_WORDS: &[&str] = &[
 ];
 
 pub(super) fn safe_identifier(name: &str) -> String {
-    // Compiler intrinsics use the host global namespace. `$` cannot occur in
-    // a source identifier, so this binding cannot collide with a user name.
-    if name == "globalThis" {
-        return "__ssrg$source$globalThis".to_owned();
+    // `$` cannot occur in a source identifier, so escaped bindings cannot
+    // collide with source names. Compiler intrinsics also need `globalThis`.
+    if name == "globalThis" || RESERVED_TYPESCRIPT_WORDS.contains(&name) {
+        return format!("__ssrg$source${name}");
     }
     let mut output = String::with_capacity(name.len());
     for (index, char) in name.chars().enumerate() {
@@ -73,7 +74,6 @@ pub(super) fn safe_identifier(name: &str) -> String {
             .chars()
             .next()
             .is_some_and(|char| char.is_ascii_digit())
-        || RESERVED_TYPESCRIPT_WORDS.contains(&output.as_str())
     {
         output.insert(0, '_');
     }
@@ -130,7 +130,7 @@ fn canonical_operator_name(symbol: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{local_name, module_value_name, safe_identifier};
+    use super::{local_name, module_value_name, safe_identifier, RESERVED_TYPESCRIPT_WORDS};
 
     #[test]
     fn preserves_simple_identifiers() {
@@ -138,8 +138,28 @@ mod tests {
     }
 
     #[test]
-    fn prefixes_reserved_words() {
-        assert_eq!(safe_identifier("default"), "_default");
+    fn escapes_reserved_words() {
+        assert_eq!(safe_identifier("default"), "__ssrg$source$default");
+        assert_eq!(safe_identifier("arguments"), "__ssrg$source$arguments");
+    }
+
+    #[test]
+    fn escaped_bindings_do_not_collide_with_valid_source_names() {
+        for name in RESERVED_TYPESCRIPT_WORDS
+            .iter()
+            .copied()
+            .chain(["globalThis"])
+        {
+            let escaped = safe_identifier(name);
+            for source_name in [
+                format!("_{name}"),
+                format!("__ssrg_source_{name}"),
+                format!("__ssrg'source'{name}"),
+                format!("{name}'"),
+            ] {
+                assert_ne!(escaped, safe_identifier(&source_name), "{source_name}");
+            }
+        }
     }
 
     #[test]
