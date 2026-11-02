@@ -1,6 +1,49 @@
 use seseragi_semantics::{semantic_diagnostics, type_module, TypedDecl, TypedParameter, TypedType};
 
 #[test]
+fn an_omitted_local_parameter_can_be_returned_as_a_unit_function() {
+    for source in [
+        "fn value -> Int = 42\npub fn make -> (Unit -> Int) = value\n",
+        "pub fn make -> (Unit -> Int) = { fn value unit: Unit -> Int = 42; value }\n",
+        "pub fn make -> (Unit -> Int) = {\n  fn value -> Int = 42\n  value\n}\n",
+        "alias Thunk = Unit -> Int\npub fn make -> Thunk = { fn value -> Int = 42; value }\n",
+        "pub fn make -> (Unit -> Int) = { fn value -> Int = 42; let saved: Unit -> Int = value; saved }\n",
+        "pub fn make -> (Unit -> Int) = { fn factory -> (Unit -> Int) = { fn value -> Int = 42; value }; factory () }\n",
+        "pub fn make -> (Unit -> Int) = { rec { fn value -> Int = other (); fn other -> Int = 42 }; value }\n",
+        "fn invoke action: (Unit -> Int) -> Int = action ()\npub fn probe -> Int = { fn value -> Int = 42; invoke value }\n",
+        "pub fn make -> Array<Unit -> Int> = { fn value -> Int = 42; [value] }\n",
+        "pub fn make -> { value: Unit -> Int } = { fn value -> Int = 42; { value: value } }\n",
+    ] {
+        let diagnostics = semantic_diagnostics("returned-unit-function.ssrg", source);
+        assert!(diagnostics.diagnostics.is_empty(), "{source}\n{diagnostics:#?}");
+    }
+}
+
+#[test]
+fn returned_local_functions_distinguish_prelude_unit_from_shadowing_types() {
+    for source in [
+        "type Unit = | FakeUnit\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "struct Unit { value: Int }\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "type Token = | FakeUnit\nalias Unit = Token\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "pub fn make<Unit> -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "alias PreludeUnit = Unit\npub fn make<Unit> -> (PreludeUnit -> Int) = { fn value unit: Unit -> Int = 42; value }\n",
+    ] {
+        let diagnostics = semantic_diagnostics("returned-unit-owner.ssrg", source);
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{source}\n{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(diagnostics.diagnostics[0].message_key, "function.return-type-mismatch");
+    }
+    for source in [
+        "type Unit = | FakeUnit\npub fn make -> (Unit -> Int) = { fn value unit: Unit -> Int = 42; value }\n",
+        "pub fn make<Unit> -> (Unit -> Int) = { fn value unit: Unit -> Int = 42; value }\n",
+        "type Unit = | FakeUnit\npub fn probe -> Int = { fn value -> Int = 42; value () }\n",
+    ] {
+        let diagnostics = semantic_diagnostics("returned-own-unit.ssrg", source);
+        assert!(diagnostics.diagnostics.is_empty(), "{source}\n{diagnostics:#?}");
+    }
+}
+
+#[test]
 fn a_function_annotation_keeps_a_constructor_binder_named_int() {
     for binder in ["Int", "F"] {
         let source = format!("trait Pick<{binder}<_>> {{ fn pick<A> left: {binder}<A> -> right: {binder}<A> -> Bool }}\ninstance Pick<Maybe> {{ fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool) = {{ let bad = 9007199254740991 + 1; \\right -> True }} }}\nfn selected<{binder}<_>, A> left: {binder}<A> -> ({binder}<A> -> Bool) where Pick<{binder}> = {{ let chosen: {binder}<A> -> {binder}<A> -> Bool = pick; chosen left }}\npub effect fn main = do {{ let saved = selected (Just 1); println \"created\" }}\n");

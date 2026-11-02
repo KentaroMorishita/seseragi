@@ -170,6 +170,43 @@ fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
 }
 
 #[test]
+fn returned_unit_functions_match_raw_strict_ts_and_native() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("returned-unit-functions", 0),
+        ("returned-unit-function-defect", 70),
+    ]);
+}
+
+#[test]
+fn returned_unit_functions_reject_nominal_and_generic_units_in_both_targets() {
+    for source in [
+        "type Unit = | FakeUnit\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "struct Unit { value: Int }\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "type Token = | FakeUnit\nalias Unit = Token\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "pub fn make<Unit> -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "alias PreludeUnit = Unit\npub fn make<Unit> -> (PreludeUnit -> Int) = { fn value unit: Unit -> Int = 42; value }\n",
+    ] {
+        for profile in [
+            seseragi_driver::BuildProfile::Development,
+            seseragi_driver::BuildProfile::Release,
+        ] {
+            let input = seseragi_driver::CompileInput::new(
+                "main.ssrg",
+                "fixture/returned-unit-functions",
+                source,
+            )
+            .with_profile(profile);
+            let native = seseragi_driver::compile_core_module(input.clone()).unwrap_err();
+            let ts = seseragi_driver::compile_module(input).unwrap_err();
+            assert_eq!(native, ts, "{source}");
+            assert_eq!(ts.diagnostics.len(), 1, "{source}\n{ts:#?}");
+            assert_eq!(ts.diagnostics[0].code, "SES-T0101");
+            assert_eq!(ts.diagnostics[0].message_key, "function.return-type-mismatch");
+        }
+    }
+}
+
+#[test]
 fn native_polymorphic_globals_match_ts_in_both_profiles() {
     use prefix_process::{bounded, successful};
     let scratch = Scratch(std::env::temp_dir().join(format!(
