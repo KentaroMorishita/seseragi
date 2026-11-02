@@ -714,6 +714,13 @@
                     }
                   ]
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Countdown",
+                  "arguments": []
+                }
               ]
             },
             "type": {

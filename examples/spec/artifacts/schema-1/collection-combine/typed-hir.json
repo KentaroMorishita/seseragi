@@ -93,6 +93,31 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C",
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -228,6 +253,55 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C",
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -434,6 +508,73 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C",
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -599,6 +740,46 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -788,6 +969,73 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C",
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -953,6 +1201,46 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1122,6 +1410,55 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C",
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1369,6 +1706,47 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -1734,6 +2112,46 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {
@@ -2013,6 +2431,46 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "C"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "evidence": [
           {
             "constraint": {

@@ -1,0 +1,54 @@
+import * as streams from "std/stream"
+import * as effects from "std/effect"
+
+fn increment value: Int -> Int = value + 1
+fn add total: Int -> value: Int -> Int = total + value
+fn advance state: Int -> Maybe<(Int, Int)> =
+  if state < 3 then Just (state, state + 1) else Nothing
+fn addFunction total: (Int -> Int) -> value: Int -> (Int -> Int) =
+  \seed: Int -> total (seed + value)
+fn applyTo transform: (streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int>)
+  -> source: streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int> =
+  transform source
+fn mapped<R, E> mapper: (Int -> Int)
+  -> (streams.Stream<R, E, Int> -> streams.Stream<R, E, Int>) = streams.map mapper
+fn collector<R, E> -> (streams.Stream<R, E, Int> -> Effect<R, E, Array<Int>>) =
+  streams.runCollect
+effect fn produce -> Int with Console fails ConsoleError = do {
+  println "pulled"
+  effects.succeed 9
+}
+
+pub effect fn main = do {
+  let fromArray: Array<Int> -> streams.Stream<{}, Never, Int> = streams.fromArray
+  let source = fromArray [1, 2, 3]
+  let savedMap: (Int -> Int) -> streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int> = streams.map
+  let partial: streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int> = savedMap increment
+  first <- (collector ()) (applyTo partial source)
+  println (show first)
+  second <- streams.runCollect (mapped increment source)
+  println (show second)
+  let unfolding: Int -> streams.Stream<{}, Never, Int> = streams.unfold advance
+  unfolded <- streams.runCollect (unfolding 0)
+  println (show unfolded)
+  let savedFold: Int -> (Int -> Int -> Int) -> streams.Stream<{}, Never, Int> -> Effect<{}, Never, Int> = streams.runFold
+  let seeded: (Int -> Int -> Int) -> streams.Stream<{}, Never, Int> -> Effect<{}, Never, Int> = savedFold 10
+  let total: streams.Stream<{}, Never, Int> -> Effect<{}, Never, Int> = seeded add
+  folded <- total source
+  println (show folded)
+  repeated <- total source
+  println (show repeated)
+  functionResult <- streams.runFold increment addFunction source
+  println (show (functionResult 0))
+  let consume: streams.Stream<{}, Never, Int> -> Effect<{}, Never, Unit> = streams.runForEach (\_value: Int -> effects.succeed ())
+  consume source
+  println "consumed"
+  let cold = streams.fromEffect (produce ())
+  let collectCold: streams.Stream<{console: Console}, ConsoleError, Int> -> Effect<{console: Console}, ConsoleError, Array<Int>> = collector ()
+  let pending = collectCold cold
+  println "created"
+  coldFirst <- pending
+  println (show coldFirst)
+  coldSecond <- pending
+  println (show coldSecond)
+}

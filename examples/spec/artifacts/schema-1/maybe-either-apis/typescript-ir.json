@@ -3683,6 +3683,13 @@
                                     "kind": "identifier",
                                     "name": "__ssrg$instance$Semigroup$2"
                                   }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "Token",
+                                    "arguments": []
+                                  }
                                 ]
                               },
                               "type": {

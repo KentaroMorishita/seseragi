@@ -195,6 +195,7 @@ fn substitute_bindings(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, Str
         | TypeScriptExpr::MonadDo { .. }
         | TypeScriptExpr::Decision { .. } => unreachable!("scope-free substitution"),
         TypeScriptExpr::Undefined
+        | TypeScriptExpr::EmptyDictionary
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::String { .. }
@@ -511,6 +512,7 @@ fn contains_scope(expr: &TypeScriptExpr) -> bool {
             contains_scope(value)
         }
         TypeScriptExpr::Undefined
+        | TypeScriptExpr::EmptyDictionary
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::String { .. }

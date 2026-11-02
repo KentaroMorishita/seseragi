@@ -367,11 +367,11 @@
       "message": "A required trait instance is not available",
       "primary": {
         "start": 1484,
-        "end": 1494
+        "end": 1488
       },
       "related": [
         {
-          "message": "no Show<unknown> instance matches the inferred call arguments",
+          "message": "no Show<Decimal> instance matches the inferred call arguments",
           "primary": {
             "start": 1346,
             "end": 1498
@@ -380,7 +380,7 @@
       ],
       "labels": [
         {
-          "message": "no Show<unknown> instance matches the inferred call arguments",
+          "message": "no Show<Decimal> instance matches the inferred call arguments",
           "primary": {
             "start": 1346,
             "end": 1498
@@ -405,11 +405,11 @@
       "message": "A required trait instance is not available",
       "primary": {
         "start": 2181,
-        "end": 2211
+        "end": 2185
       },
       "related": [
         {
-          "message": "no Show<unknown> instance matches the inferred call arguments",
+          "message": "no Show<A> instance matches the inferred call arguments",
           "primary": {
             "start": 1500,
             "end": 4186
@@ -418,7 +418,7 @@
       ],
       "labels": [
         {
-          "message": "no Show<unknown> instance matches the inferred call arguments",
+          "message": "no Show<A> instance matches the inferred call arguments",
           "primary": {
             "start": 1500,
             "end": 4186

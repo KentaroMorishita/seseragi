@@ -3,6 +3,7 @@
   "stage": "typescript-ir",
   "module": "artifact/collection-aggregates",
   "runtimeRequirements": [
+    "core.list",
     "core.int.one-dictionary",
     "core.int.mul-dictionary",
     "core.collection.product",
@@ -16,7 +17,6 @@
     "core.int.show",
     "core.array.reducible",
     "core.list.reducible",
-    "core.list",
     "core.list.from-array",
     "core.range.reducible",
     "core.range",
@@ -85,6 +85,12 @@
     {
       "feature": "core.range.iterable",
       "local": "_ssrg_range_iterable"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
     }
   ],
   "functions": [
@@ -446,6 +452,14 @@
                   "kind": "runtime-reference",
                   "name": "_ssrg_array_reducible"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "array",
+                  "element": {
+                    "kind": "number"
+                  }
+                }
               ]
             },
             "type": {
@@ -511,6 +525,14 @@
                   "kind": "runtime-reference",
                   "name": "_ssrg_list_reducible"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "list",
+                  "element": {
+                    "kind": "number"
+                  }
+                }
               ]
             },
             "type": {
@@ -564,6 +586,11 @@
                   "kind": "runtime-reference",
                   "name": "_ssrg_range_reducible"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "range"
+                }
               ]
             },
             "type": {
@@ -611,6 +638,14 @@
                 {
                   "kind": "runtime-reference",
                   "name": "_ssrg_array_reducible"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "array",
+                  "element": {
+                    "kind": "number"
+                  }
                 }
               ]
             },
@@ -670,6 +705,14 @@
                 {
                   "kind": "runtime-reference",
                   "name": "_ssrg_array_iterable"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "array",
+                  "element": {
+                    "kind": "number"
+                  }
                 }
               ]
             },
@@ -736,6 +779,14 @@
                   "kind": "runtime-reference",
                   "name": "_ssrg_list_iterable"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "list",
+                  "element": {
+                    "kind": "number"
+                  }
+                }
               ]
             },
             "type": {
@@ -789,6 +840,11 @@
                   "kind": "runtime-reference",
                   "name": "_ssrg_range_iterable"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "range"
+                }
               ]
             },
             "type": {
@@ -836,6 +892,14 @@
                 {
                   "kind": "runtime-reference",
                   "name": "_ssrg_array_iterable"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "array",
+                  "element": {
+                    "kind": "number"
+                  }
                 }
               ]
             },
@@ -895,6 +959,14 @@
                 {
                   "kind": "runtime-reference",
                   "name": "_ssrg_array_iterable"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "array",
+                  "element": {
+                    "kind": "number"
+                  }
                 }
               ]
             },
@@ -961,6 +1033,14 @@
                   "kind": "runtime-reference",
                   "name": "_ssrg_list_iterable"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "list",
+                  "element": {
+                    "kind": "number"
+                  }
+                }
               ]
             },
             "type": {
@@ -1014,6 +1094,11 @@
                   "kind": "runtime-reference",
                   "name": "_ssrg_range_iterable"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "range"
+                }
               ]
             },
             "type": {
@@ -1061,6 +1146,14 @@
                 {
                   "kind": "runtime-reference",
                   "name": "_ssrg_array_iterable"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "array",
+                  "element": {
+                    "kind": "number"
+                  }
                 }
               ]
             },

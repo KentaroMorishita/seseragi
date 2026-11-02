@@ -87,21 +87,18 @@ fn execute(source: &str) -> (Output, Output) {
 }
 
 #[test]
-fn non_empty_ord_passes_parent_eq_while_ts_exposes_its_missing_parent() {
+fn non_empty_ord_passes_parent_eq_in_ts_and_native() {
     let (native, typescript) = execute(
         r#"
 import { NonEmptyList } from "std/non-empty-list"
 fn inherited<A> left: A -> right: A -> Bool where Ord<A> = left == right
 fn singleton value: Int -> NonEmptyList<Int> = pure value
-pub fn probe -> Bool = inherited (singleton 1) (singleton 1)
+pub fn probe -> String = show (inherited (singleton 1) (singleton 1))
 "#,
     );
     assert_eq!(native.stdout, b"True\n");
-    assert!(!typescript.status.success(), "{typescript:?}");
-    assert!(
-        String::from_utf8_lossy(&typescript.stderr).contains("eq is not a function"),
-        "{typescript:?}"
-    );
+    assert!(typescript.status.success(), "{typescript:?}");
+    assert_eq!(typescript.stdout, native.stdout);
 }
 
 #[test]

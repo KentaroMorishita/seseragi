@@ -403,6 +403,58 @@
                     }
                   }
                 ],
+                "calleeSignature": {
+                  "typeParameters": [
+                    {
+                      "name": "F",
+                      "arity": 1
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ],
+                  "result": {
+                    "kind": "named",
+                    "name": "F",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "argumentTypes": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ],
+                  "instantiatedTypeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": []
+                    }
+                  ]
+                },
                 "evidence": [
                   {
                     "constraint": {

@@ -3604,6 +3604,13 @@
                                       "kind": "runtime-reference",
                                       "name": "_ssrg_normalizationFormEq"
                                     }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "NormalizationForm",
+                                      "arguments": []
+                                    }
                                   ]
                                 },
                                 "type": {
@@ -3643,6 +3650,13 @@
                                 {
                                   "kind": "runtime-reference",
                                   "name": "_ssrg_unicodeGeneralCategoryOrd"
+                                }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "UnicodeGeneralCategory",
+                                  "arguments": []
                                 }
                               ]
                             },
@@ -3844,6 +3858,13 @@
                                   "kind": "runtime-reference",
                                   "name": "_ssrg_textSliceErrorEq"
                                 }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "TextSliceError",
+                                  "arguments": []
+                                }
                               ]
                             },
                             "type": {
@@ -3946,6 +3967,13 @@
                               "kind": "runtime-reference",
                               "name": "_ssrg_graphemeSliceErrorEq"
                             }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "GraphemeSliceError",
+                              "arguments": []
+                            }
                           ]
                         },
                         "type": {
@@ -4010,6 +4038,13 @@
                                       "kind": "runtime-reference",
                                       "name": "_ssrg_normalizationFormDebug"
                                     }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "NormalizationForm",
+                                      "arguments": []
+                                    }
                                   ]
                                 },
                                 "type": {
@@ -4045,6 +4080,13 @@
                                 {
                                   "kind": "runtime-reference",
                                   "name": "_ssrg_unicodeGeneralCategoryDebug"
+                                }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "UnicodeGeneralCategory",
+                                  "arguments": []
                                 }
                               ]
                             },
@@ -4123,6 +4165,13 @@
                               "kind": "runtime-reference",
                               "name": "_ssrg_textSliceErrorDebug"
                             }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "TextSliceError",
+                              "arguments": []
+                            }
                           ]
                         },
                         "type": {
@@ -4189,6 +4238,13 @@
                         {
                           "kind": "runtime-reference",
                           "name": "_ssrg_graphemeSliceErrorDebug"
+                        }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "GraphemeSliceError",
+                          "arguments": []
                         }
                       ]
                     },

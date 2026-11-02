@@ -5050,6 +5050,47 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "evidence": [
                             {
                               "constraint": {
@@ -5132,6 +5173,47 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "evidence": [
                             {
                               "constraint": {

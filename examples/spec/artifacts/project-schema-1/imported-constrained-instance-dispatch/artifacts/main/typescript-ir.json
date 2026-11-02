@@ -117,6 +117,14 @@
                     }
                   ]
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "maybe",
+                  "element": {
+                    "kind": "number"
+                  }
+                }
               ]
             },
             "type": {

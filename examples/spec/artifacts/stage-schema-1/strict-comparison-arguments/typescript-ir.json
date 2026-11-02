@@ -898,6 +898,11 @@
                     "kind": "runtime-reference",
                     "name": "_ssrg_int_ord_dictionary"
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
                 ]
               },
               "type": {

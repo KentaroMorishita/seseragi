@@ -500,6 +500,8 @@ pub enum TypeScriptType {
 )]
 pub enum TypeScriptExpr {
     Undefined,
+    /// A selected methodless trait instance, without source-record field guards.
+    EmptyDictionary,
     Bigint {
         value: String,
     },

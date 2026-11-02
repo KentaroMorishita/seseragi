@@ -6139,6 +6139,91 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "C",
+                          "A",
+                          "B"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "B",
+                                "arguments": []
+                              }
+                            }
+                          },
+                          {
+                            "kind": "named",
+                            "name": "C",
+                            "arguments": []
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            }
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "evidence": [
                         {
                           "constraint": {

@@ -250,6 +250,13 @@
                           "kind": "identifier",
                           "name": "value"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "T",
+                          "arguments": []
+                        }
                       ]
                     },
                     "type": {
@@ -340,6 +347,13 @@
                 {
                   "kind": "identifier",
                   "name": "__ssrg$instance$Ready$0"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Badge",
+                  "arguments": []
                 }
               ]
             },

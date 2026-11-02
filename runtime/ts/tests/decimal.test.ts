@@ -32,6 +32,7 @@ import {
   toFloat,
   toIntExact,
 } from "../src/decimal"
+import { attempt, defer, succeed } from "../src/effect"
 import {
   decimalJsonDecode,
   decimalJsonEncode,
@@ -60,6 +61,21 @@ const decimalContext = (digits: number, mode = HalfEven): DecimalContext => {
 }
 
 describe("exact Decimal representation", () => {
+  test("host-limited arithmetic remains a Defect through attempt", async () => {
+    const huge = value("1e18446744073709551616")
+    const one = fromInt(1)
+    const operations = [
+      () => add(huge, one),
+      () => subtract(huge, one),
+      () => divide(decimalContext(9007199254740991), fromInt(3), one),
+    ]
+    for (const operation of operations) {
+      expect(operation).toThrow(RangeError)
+      const effect = defer(() => succeed(operation()))
+      await expect(attempt(effect)({})).rejects.toBeInstanceOf(RangeError)
+    }
+  })
+
   test("parses the grammar and produces canonical non-exponent spelling", () => {
     for (const [source, expected] of [
       ["0", "0"],

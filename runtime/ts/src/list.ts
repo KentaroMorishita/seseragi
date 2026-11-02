@@ -1,6 +1,6 @@
 import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import type { Unit } from "./effect"
-import type { Eq } from "./equality"
+import { type Eq, nonEmptyListEq } from "./equality"
 import type { Hash } from "./hash"
 import type { Iterator as SeseragiIterator } from "./iterator"
 import * as maps from "./map"
@@ -314,15 +314,12 @@ function appendValues<A>(left: List<A>, right: List<A>): List<A> {
   return result
 }
 
-type OrdEvidence<Value> = Readonly<{
-  compare: (left: Value) => (right: Value) => Ordering
-}>
-
 /** Runtime dictionary for lexicographic `Ord<NonEmptyList<A>>`. */
 export const nonEmptyListOrd = <Value>(
-  element: OrdEvidence<Value>
-): OrdEvidence<NonEmptyList<Value>> =>
+  element: Ord<Value> & Eq<Value>
+): Ord<NonEmptyList<Value>> & Eq<NonEmptyList<Value>> =>
   Object.freeze({
+    ...nonEmptyListEq(element),
     compare:
       (left: NonEmptyList<Value>) =>
       (right: NonEmptyList<Value>): Ordering => {

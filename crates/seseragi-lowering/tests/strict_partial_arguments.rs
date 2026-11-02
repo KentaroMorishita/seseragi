@@ -25,7 +25,7 @@ fn constrained_partials_stage_supplied_source_calls_before_remaining_lambdas() {
 }
 
 #[test]
-fn constrained_first_callback_and_saved_prefix_use_checked_callable_types() {
+fn constrained_first_callback_and_saved_prefix_use_checked_type_arguments() {
     let source = "fn transform<E,A,B> callback:(A -> Either<E,B>) -> value:A -> (Int -> Either<E,B>) where Show<A> = \\_stage:Int -> callback value\n\
                   fn choose value:Int -> Either<String,Int> = Right value\n\
                   pub fn complete -> Either<String,Int> = transform choose 7 42\n\
@@ -37,7 +37,8 @@ fn constrained_first_callback_and_saved_prefix_use_checked_callable_types() {
         panic!("{body:#?}");
     };
     let TypeScriptExpr::Call {
-        checked_callee_type: Some(checked),
+        checked_callee_type: None,
+        type_arguments,
         arguments,
         ..
     } = &**value
@@ -46,17 +47,17 @@ fn constrained_first_callback_and_saved_prefix_use_checked_callable_types() {
     };
     // callback, original value, dictionary, then the returned function's arg.
     assert_eq!(arguments.len(), 4);
-    let TypeScriptType::Function { result, .. } = checked else {
-        panic!("{checked:#?}");
-    };
-    let TypeScriptType::Function { result, .. } = &**result else {
-        panic!("{checked:#?}");
-    };
+    assert_eq!(
+        type_arguments,
+        &[
+            TypeScriptType::String,
+            TypeScriptType::Number,
+            TypeScriptType::Number,
+        ]
+    );
     assert!(matches!(
-        &**result,
-        TypeScriptType::Function { parameter, result }
-            if **parameter == TypeScriptType::Unknown
-                && matches!(&**result, TypeScriptType::Function { .. })
+        &arguments[2],
+        TypeScriptExpr::RuntimeReference { name } if name == "_ssrg_show_intShow"
     ));
 
     let TypeScriptFunction::ConstFunction { body, .. } = &ir.functions[3];
@@ -79,10 +80,34 @@ fn constrained_first_callback_and_saved_prefix_use_checked_callable_types() {
             &**value,
             TypeScriptExpr::Call {
                 arguments,
-                checked_callee_type: Some(TypeScriptType::Function { result, .. }),
+                type_arguments,
+                checked_callee_type: None,
                 ..
-            } if arguments.len() == 1 && **result == *type_ref
+            } if arguments.len() == 1 && type_arguments == &[
+                TypeScriptType::String,
+                TypeScriptType::Number,
+                TypeScriptType::Number,
+            ]
         ),
         "{value:#?}"
+    );
+    let TypeScriptType::Function { parameter, result } = type_ref else {
+        panic!("{type_ref:#?}");
+    };
+    assert_eq!(**parameter, TypeScriptType::Number);
+    let TypeScriptType::Function { parameter, result } = &**result else {
+        panic!("{type_ref:#?}");
+    };
+    assert_eq!(**parameter, TypeScriptType::Unknown);
+    let TypeScriptType::Function { parameter, result } = &**result else {
+        panic!("{type_ref:#?}");
+    };
+    assert_eq!(**parameter, TypeScriptType::Number);
+    assert_eq!(
+        **result,
+        TypeScriptType::Either {
+            error: Box::new(TypeScriptType::String),
+            value: Box::new(TypeScriptType::Number),
+        }
     );
 }

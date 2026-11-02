@@ -1113,6 +1113,15 @@ mod tests {
     use super::*;
     use crate::{CoreInstanceConstraint, CoreType};
 
+    #[test]
+    fn macro_generated_runtime_modules_are_public() {
+        crate::runtime_exports::assert_public_runtime_modules(
+            STANDARD_COLLECTION_OPERATIONS
+                .iter()
+                .map(|(_, operation)| operation.module),
+        );
+    }
+
     fn parameter_evidence(name: &str, index: usize) -> CoreCallEvidence {
         CoreCallEvidence {
             constraint: CoreInstanceConstraint {

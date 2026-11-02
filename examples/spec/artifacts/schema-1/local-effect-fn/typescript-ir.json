@@ -1026,6 +1026,11 @@
                                       "kind": "runtime-reference",
                                       "name": "_ssrg_show_intShow"
                                     }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
                                   ]
                                 },
                                 "type": {

@@ -164,6 +164,13 @@
                   "kind": "identifier",
                   "name": "__ssrg$instance$Ready$0"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Badge",
+                  "arguments": []
+                }
               ]
             },
             "type": {

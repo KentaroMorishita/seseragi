@@ -4,4 +4,4 @@ import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/ru
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
 
-export const main = (_unit: undefined) => _ssrg_console_println(((describe(active(undefined))(__ssrg$instance$Ready$0)) as string))
+export const main = (_unit: undefined) => _ssrg_console_println(((describe<Badge>(active(undefined))(__ssrg$instance$Ready$0)) as string))

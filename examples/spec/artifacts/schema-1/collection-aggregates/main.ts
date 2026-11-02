@@ -4,7 +4,7 @@ import { product as _ssrg_collection_product, any as _ssrg_collection_any, all a
 import { intOrd as _ssrg_int_ord_dictionary } from "@seseragi/runtime/equality"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { arrayReducible as _ssrg_array_reducible, arrayIterable as _ssrg_array_iterable } from "@seseragi/runtime/array"
-import { listReducible as _ssrg_list_reducible, fromArray as _ssrg_list_from_array, listIterable as _ssrg_list_iterable } from "@seseragi/runtime/list"
+import { listReducible as _ssrg_list_reducible, fromArray as _ssrg_list_from_array, listIterable as _ssrg_list_iterable, type List as List } from "@seseragi/runtime/list"
 import { rangeReducible as _ssrg_range_reducible, inclusive as _ssrg_range_inclusive, rangeIterable as _ssrg_range_iterable } from "@seseragi/runtime/range"
 $ssrg$assertUnicodeVersion("17.0.0")
 
@@ -14,16 +14,16 @@ const allPositive = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<strin
 const emptyValues = (unit: undefined) => [] as ReadonlyArray<number>
 const yesNo = (value: boolean) => value ? "true" : "false"
 const number = (value: number) => _ssrg_show_intShow["show"](value)
-const productArray = (unit: undefined) => number(((productValues([2, 3, 4])(_ssrg_array_reducible)) as number))
-const productList = (unit: undefined) => number(((productValues(_ssrg_list_from_array([2, 3, 4]))(_ssrg_list_reducible)) as number))
-const productRange = (unit: undefined) => number(((productValues(_ssrg_range_inclusive(1, 4))(_ssrg_range_reducible)) as number))
-const productEmpty = (unit: undefined) => number(((productValues(emptyValues(undefined))(_ssrg_array_reducible)) as number))
-const anyArray = (unit: undefined) => yesNo(((anyPositive([0, 0, 2])(_ssrg_array_iterable)) as boolean))
-const anyList = (unit: undefined) => yesNo(((anyPositive(_ssrg_list_from_array([0, 0, 0]))(_ssrg_list_iterable)) as boolean))
-const anyRange = (unit: undefined) => yesNo(((anyPositive(_ssrg_range_inclusive(0, 2))(_ssrg_range_iterable)) as boolean))
-const anyEmpty = (unit: undefined) => yesNo(((anyPositive(emptyValues(undefined))(_ssrg_array_iterable)) as boolean))
-const allArray = (unit: undefined) => yesNo(((allPositive([1, 2, 3])(_ssrg_array_iterable)) as boolean))
-const allList = (unit: undefined) => yesNo(((allPositive(_ssrg_list_from_array([1, 2, 3]))(_ssrg_list_iterable)) as boolean))
-const allRange = (unit: undefined) => yesNo(((allPositive(_ssrg_range_inclusive(1, 3))(_ssrg_range_iterable)) as boolean))
-const allEmpty = (unit: undefined) => yesNo(((allPositive(emptyValues(undefined))(_ssrg_array_iterable)) as boolean))
+const productArray = (unit: undefined) => number(((productValues<ReadonlyArray<number>>([2, 3, 4])(_ssrg_array_reducible)) as number))
+const productList = (unit: undefined) => number(((productValues<List<number>>(_ssrg_list_from_array([2, 3, 4]))(_ssrg_list_reducible)) as number))
+const productRange = (unit: undefined) => number(((productValues<Readonly<{ start: number; end: number; inclusive: boolean }>>(_ssrg_range_inclusive(1, 4))(_ssrg_range_reducible)) as number))
+const productEmpty = (unit: undefined) => number(((productValues<ReadonlyArray<number>>(emptyValues(undefined))(_ssrg_array_reducible)) as number))
+const anyArray = (unit: undefined) => yesNo(((anyPositive<ReadonlyArray<number>>([0, 0, 2])(_ssrg_array_iterable)) as boolean))
+const anyList = (unit: undefined) => yesNo(((anyPositive<List<number>>(_ssrg_list_from_array([0, 0, 0]))(_ssrg_list_iterable)) as boolean))
+const anyRange = (unit: undefined) => yesNo(((anyPositive<Readonly<{ start: number; end: number; inclusive: boolean }>>(_ssrg_range_inclusive(0, 2))(_ssrg_range_iterable)) as boolean))
+const anyEmpty = (unit: undefined) => yesNo(((anyPositive<ReadonlyArray<number>>(emptyValues(undefined))(_ssrg_array_iterable)) as boolean))
+const allArray = (unit: undefined) => yesNo(((allPositive<ReadonlyArray<number>>([1, 2, 3])(_ssrg_array_iterable)) as boolean))
+const allList = (unit: undefined) => yesNo(((allPositive<List<number>>(_ssrg_list_from_array([1, 2, 3]))(_ssrg_list_iterable)) as boolean))
+const allRange = (unit: undefined) => yesNo(((allPositive<Readonly<{ start: number; end: number; inclusive: boolean }>>(_ssrg_range_inclusive(1, 3))(_ssrg_range_iterable)) as boolean))
+const allEmpty = (unit: undefined) => yesNo(((allPositive<ReadonlyArray<number>>(emptyValues(undefined))(_ssrg_array_iterable)) as boolean))
 export const collectionAggregateResults = (unit: undefined) => [productArray(undefined), productList(undefined), productRange(undefined), productEmpty(undefined), anyArray(undefined), anyList(undefined), anyRange(undefined), anyEmpty(undefined), allArray(undefined), allList(undefined), allRange(undefined), allEmpty(undefined)]

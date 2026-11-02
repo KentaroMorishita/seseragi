@@ -103,6 +103,7 @@
   ],
   "runtimeRequirements": [
     "core.collection.reduce-step",
+    "core.list",
     "core.iterator",
     "core.adt",
     "core.int",
@@ -129,7 +130,6 @@
     "core.string",
     "core.int.subtract",
     "core.list.iterable",
-    "core.list",
     "core.list.from-array",
     "core.range.iterable",
     "core.iterator.iterable",
@@ -239,6 +239,10 @@
     {
       "feature": "core.collection.reduce-step",
       "local": "ReduceStep"
+    },
+    {
+      "feature": "core.list",
+      "local": "List"
     },
     {
       "feature": "core.iterator",
@@ -976,6 +980,13 @@
               "kind": "identifier",
               "name": "__ssrg$evidence$0"
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            }
           ]
         },
         "type": {
@@ -1707,6 +1718,14 @@
                                   "kind": "runtime-reference",
                                   "name": "_ssrg_array_iterable"
                                 }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "array",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
                               ]
                             },
                             "type": {
@@ -1762,6 +1781,14 @@
                                 {
                                   "kind": "runtime-reference",
                                   "name": "_ssrg_list_iterable"
+                                }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "list",
+                                  "element": {
+                                    "kind": "number"
+                                  }
                                 }
                               ]
                             },
@@ -1824,6 +1851,11 @@
                                   "kind": "runtime-reference",
                                   "name": "_ssrg_range_iterable"
                                 }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "range"
+                                }
                               ]
                             },
                             "type": {
@@ -1849,6 +1881,13 @@
                                 {
                                   "kind": "identifier",
                                   "name": "__ssrg$instance$Iterable$0"
+                                }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "Countdown",
+                                  "arguments": []
                                 }
                               ]
                             },
@@ -1882,6 +1921,13 @@
                                       "name": "__ssrg$instance$Iterable$0"
                                     }
                                   ]
+                                }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "Countdown",
+                                  "arguments": []
                                 }
                               ]
                             },
@@ -1981,6 +2027,13 @@
                     "kind": "identifier",
                     "name": "__ssrg$instance$Iterable$2"
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Forever",
+                    "arguments": []
+                  }
                 ]
               },
               "type": {
@@ -2012,6 +2065,17 @@
                   {
                     "kind": "runtime-reference",
                     "name": "_ssrg_iterator_iterable"
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "number"
+                      }
+                    ]
                   }
                 ]
               },
@@ -2228,54 +2292,20 @@
                         "name": "_ssrg_array_iterable"
                       }
                     ],
-                    "checkedCalleeType": {
-                      "kind": "function",
-                      "parameter": {
+                    "typeArguments": [
+                      {
+                        "kind": "array",
+                        "element": {
+                          "kind": "string"
+                        }
+                      },
+                      {
                         "kind": "string"
                       },
-                      "result": {
-                        "kind": "function",
-                        "parameter": {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "string"
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "string"
-                            },
-                            "result": {
-                              "kind": "reference",
-                              "name": "ReduceStep",
-                              "arguments": [
-                                {
-                                  "kind": "string"
-                                }
-                              ]
-                            }
-                          }
-                        },
-                        "result": {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "array",
-                            "element": {
-                              "kind": "string"
-                            }
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "unknown"
-                            },
-                            "result": {
-                              "kind": "string"
-                            }
-                          }
-                        }
+                      {
+                        "kind": "string"
                       }
-                    }
+                    ]
                   },
                   "type": {
                     "kind": "string"
@@ -2497,9 +2527,17 @@
                               "name": "_ssrg_array_iterable"
                             }
                           ],
-                          "checkedCalleeType": {
-                            "kind": "function",
-                            "parameter": {
+                          "typeArguments": [
+                            {
+                              "kind": "array",
+                              "element": {
+                                "kind": "string"
+                              }
+                            },
+                            {
+                              "kind": "string"
+                            },
+                            {
                               "kind": "tuple",
                               "elements": [
                                 {
@@ -2509,74 +2547,8 @@
                                   "kind": "string"
                                 }
                               ]
-                            },
-                            "result": {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "function",
-                                "parameter": {
-                                  "kind": "tuple",
-                                  "elements": [
-                                    {
-                                      "kind": "number"
-                                    },
-                                    {
-                                      "kind": "string"
-                                    }
-                                  ]
-                                },
-                                "result": {
-                                  "kind": "function",
-                                  "parameter": {
-                                    "kind": "string"
-                                  },
-                                  "result": {
-                                    "kind": "reference",
-                                    "name": "ReduceStep",
-                                    "arguments": [
-                                      {
-                                        "kind": "tuple",
-                                        "elements": [
-                                          {
-                                            "kind": "number"
-                                          },
-                                          {
-                                            "kind": "string"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                }
-                              },
-                              "result": {
-                                "kind": "function",
-                                "parameter": {
-                                  "kind": "array",
-                                  "element": {
-                                    "kind": "string"
-                                  }
-                                },
-                                "result": {
-                                  "kind": "function",
-                                  "parameter": {
-                                    "kind": "unknown"
-                                  },
-                                  "result": {
-                                    "kind": "tuple",
-                                    "elements": [
-                                      {
-                                        "kind": "number"
-                                      },
-                                      {
-                                        "kind": "string"
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
                             }
-                          }
+                          ]
                         },
                         "type": {
                           "kind": "tuple",

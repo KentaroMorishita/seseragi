@@ -558,6 +558,69 @@ fn basic_iterable_build_path_package_keeps_imported_opaque_sources_keys_and_gene
 }
 
 #[test]
+fn basic_stream_saved_functions_keep_checked_callable_types() {
+    let scratch = Scratch::new();
+    let path = scratch.0.join("stream-saved-effect.ssrg");
+    fs::write(
+        &path,
+        r#"
+import * as streams from "std/stream"
+import * as effects from "std/effect"
+fn increment value: Int -> Int = value + 1
+fn add total: Int -> value: Int -> Int = total + value
+fn runCollect value: Int -> Int = value + 1
+fn map value: Int -> Int = value * 2
+pub effect fn main = do {
+  let action: Effect<{}, Never, Int> = effects.succeed 1
+  let source: streams.Stream<{}, Never, Int> = streams.fromEffect action
+  let collect: streams.Stream<{}, Never, Int> -> Effect<{}, Never, Array<Int>> = streams.runCollect
+  let mapped: streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int> = streams.map increment
+  values <- collect (mapped source)
+  println (show values)
+  let fold: (Int -> Int -> Int) -> streams.Stream<{}, Never, Int> -> Effect<{}, Never, Int> = streams.runFold 10
+  total <- fold add source
+  println (show total)
+  let ownCollect: Int -> Int = runCollect
+  let ownMap: Int -> Int = map
+  println (show (ownMap (ownCollect 20)))
+}
+"#,
+    )
+    .unwrap();
+    compare(&path, &[Case::success(b"[2]\n11\n42\n")]);
+}
+
+#[test]
+fn basic_stream_partial_arguments_are_evaluated_before_the_remaining_call() {
+    for expression in ["streams.map (callback (42 / 0))", "streams.take (42 / 0)"] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("stream-partial-defect.ssrg");
+        fs::write(
+            &path,
+            format!(
+                "import * as streams from \"std/stream\"\n\
+                 fn callback seed: Int -> (Int -> Int) = \\value: Int -> seed + value\n\
+                 pub effect fn main = do {{\n\
+                   println \"before\"\n\
+                   let pending: streams.Stream<{{}}, Never, Int> -> streams.Stream<{{}}, Never, Int> = {expression}\n\
+                   println \"unreachable\"\n\
+                 }}\n"
+            ),
+        )
+        .unwrap();
+        compare(
+            &path,
+            &[Case {
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"before\n")
+            }],
+        );
+    }
+}
+
+#[test]
 fn basic_iterator_original_minimal_saved_runtime_regression_matches_strict_ts_and_native() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend-regressions/iterator-saved-runtime.ssrg"),
