@@ -1,6 +1,38 @@
 use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 
 #[test]
+fn nested_located_arithmetic_compiles_on_the_default_test_stack() {
+    let terms = 64;
+    let arithmetic = std::iter::repeat_n("value", terms)
+        .collect::<Vec<_>>()
+        .join(" + ");
+    let source = format!("pub fn sum value: Float -> Float = {arithmetic}\n");
+    for profile in [BuildProfile::Development, BuildProfile::Release] {
+        let compiled = compile_module(
+            CompileInput::new("arithmetic.ssrg", "fixture/arithmetic-depth", &source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        assert_eq!(
+            compiled
+                .generated
+                .typescript
+                .matches("$ssrg$atSource(")
+                .count(),
+            terms - 1
+        );
+        assert_eq!(
+            compiled
+                .generated
+                .typescript
+                .matches("_ssrg_float_add_dictionary[\"add\"]")
+                .count(),
+            terms - 1
+        );
+    }
+}
+
+#[test]
 fn runtime_sources_keep_file_names_scalar_columns_and_expression_ranges() {
     let source = "pub fn broken value: Int -> Int = {\n  let text = \"雪🙂\"; let result = value / 0\n  result\n}\n";
     let start = source.find("value / 0").unwrap();
