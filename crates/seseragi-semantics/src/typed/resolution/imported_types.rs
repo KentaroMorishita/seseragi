@@ -96,8 +96,10 @@ impl ImportedTypeContext {
                 super::implicit_unit_value_type(resolved).type_ref,
                 TypedType::ExternalNamed { .. }
             ) || resolved.symbols.iter().any(|symbol| {
-                symbol.kind == crate::SymbolKind::Type
-                    && symbol.spelling == "Unit"
+                matches!(
+                    symbol.kind,
+                    crate::SymbolKind::Type | crate::SymbolKind::TypeParameter
+                ) && symbol.spelling == "Unit"
                     && symbol.canonical.as_deref() != Some("std/prelude::Unit")
             }),
             names,

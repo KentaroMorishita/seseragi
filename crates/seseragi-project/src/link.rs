@@ -5,6 +5,7 @@ use seseragi_syntax::{
 use std::collections::{BTreeMap, BTreeSet};
 
 mod model;
+mod reexports;
 mod target;
 mod type_providers;
 
@@ -78,7 +79,7 @@ pub fn link_module_with_type_providers(
                         origin,
                         export,
                     } => {
-                        let mut reexport = export.clone();
+                        let mut reexport = reexports::capture_types(export, target.interface());
                         reexport.name = local_name.clone();
                         reexport.visibility = Visibility::Public;
                         reexport.declaration = *origin;
@@ -90,7 +91,7 @@ pub fn link_module_with_type_providers(
                         operator,
                         ..
                     } => {
-                        let mut reexport = export.clone();
+                        let mut reexport = reexports::capture_types(export, target.interface());
                         reexport.visibility = Visibility::Public;
                         reexport.declaration = *origin;
                         reexported_exports.push(reexport);
@@ -108,7 +109,7 @@ pub fn link_module_with_type_providers(
                         // Retain the namespace path, not unqualified copies of its members.
                         // Canonical identities and schemes still belong to the source module.
                         for export in &target.interface().exports {
-                            let mut reexport = export.clone();
+                            let mut reexport = reexports::capture_types(export, target.interface());
                             reexport.name = format!("{local_name}.{}", export.name);
                             reexport.visibility = Visibility::Public;
                             reexport.declaration = *origin;

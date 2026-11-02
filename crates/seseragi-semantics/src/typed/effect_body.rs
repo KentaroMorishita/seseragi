@@ -399,11 +399,15 @@ fn type_do_block(
     resolution: &TypedResolution<'_>,
     issues: &mut EffectBodyIssues<'_>,
 ) -> SurfaceExpressionAnalysis {
+    let scoped_context = base_context.with_lexical_scope(origin);
+    let base_context = &scoped_context;
     let mut locals = BTreeMap::new();
     let mut inferred_callables = BTreeMap::new();
     let mut statements = Vec::new();
+    let inferred_bindings =
+        super::surface_expr::let_inference::infer_do_bindings(items, result, base_context);
 
-    for item in items {
+    for (index, item) in items.iter().enumerate() {
         let context = base_context
             .with_locals(locals.clone())
             .with_inferred_callables(inferred_callables.clone());
@@ -418,6 +422,11 @@ fn type_do_block(
                 value,
                 span,
             } => {
+                let context = context.with_expected(
+                    inferred_bindings
+                        .as_ref()
+                        .and_then(|bindings| bindings[index].clone()),
+                );
                 let analysis = type_effect_expression_analysis(value, &context, resolution, issues);
                 let success = effect_success_semantic(&analysis);
                 let input = success.cloned().unwrap_or_else(|| {

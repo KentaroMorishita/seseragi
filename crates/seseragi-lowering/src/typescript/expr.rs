@@ -1376,6 +1376,23 @@ pub(super) fn lower_core_expr_to_typescript(
                 imported_types,
             ));
             if let Some(operation) = runtime_effect_operation(&callee) {
+                if matches!(
+                    callee.as_str(),
+                    "std/queue::bounded" | "std/queue::unbounded"
+                ) {
+                    let type_arguments = ordinary_call_type_arguments(
+                        callee_signature.as_ref(),
+                        !evidence.is_empty(),
+                        imported_types,
+                    );
+                    if !type_arguments.is_empty() {
+                        return TypeScriptExpr::TypeApplicationCall {
+                            callee: operation.local_name.to_owned(),
+                            type_arguments,
+                            arguments,
+                        };
+                    }
+                }
                 if callee == "std/deferred::make" {
                     let payloads = match &success {
                         CoreType::ExternalNamed {
