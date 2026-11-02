@@ -747,9 +747,7 @@ fn basic_non_empty_list_path_package_keeps_opaque_elements_aliases_and_imported_
 }
 
 #[test]
-fn basic_non_empty_list_native_saved_binary_partials_and_returned_function_application() {
-    // TS emits saved binary exports without curry wrappers and passes returned
-    // function arguments directly to the head/reduce1 runtime exports.
+fn basic_non_empty_list_saved_binary_partials_and_returned_functions_match_ts_and_native() {
     let mut source =
         include_str!("../../../examples/spec/fixtures/rust-backend/non-empty-list.ssrg").to_owned();
     for (before, after) in [
@@ -774,26 +772,75 @@ fn basic_non_empty_list_native_saved_binary_partials_and_returned_function_appli
     let scratch = Scratch::new();
     let input = scratch.0.join("functions.ssrg");
     fs::write(&input, source).unwrap();
-    let out = scratch.0.join("native");
-    successful(bounded(
-        Command::new(env!("CARGO_BIN_EXE_seseragi"))
-            .args(["experimental", "build-native"])
-            .arg(&input)
-            .args(["--entry", "main", "--out-dir"])
-            .arg(&out),
-        &scratch.0,
-    ));
-    let result = successful(bounded(
-        Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
-            .env("PATH", "")
-            .env("SESERAGI_NATIVE_METRICS", "1"),
-        &scratch.0,
-    ));
-    assert_eq!(
-        result.stdout,
-        include_bytes!("../../../examples/spec/fixtures/rust-backend/non-empty-list.stdout")
+    compare(
+        &input,
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/non-empty-list.stdout"
+        ))],
     );
-    assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
+}
+
+#[test]
+fn basic_non_empty_list_function_values_keep_empty_tails_and_multiple_returned_arguments() {
+    compare(
+        &root()
+            .join("examples/spec/fixtures/rust-backend-regressions/non-empty-list-functions.ssrg"),
+        &[Case::success(
+            "`[10]\n`[10, 3, 2]\n5\n5\n10\n`[雪🙂]\n`[]\nNothing\n42\n42\n42\n42\n42\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_invalid_saved_partials_and_returned_arguments_match_diagnostics() {
+    for expression in [
+        "nonEmpty.head (nonEmpty.singleton 1) 2",
+        "nonEmpty.head (nonEmpty.singleton (\\value:Int -> value)) True",
+        "nonEmpty.head (nonEmpty.singleton (\\value:Int -> value)) 1 2",
+        "nonEmpty.reduce1 (\\a:Int -> \\b:Int -> a + b) (nonEmpty.singleton 1) 2",
+        "nonEmpty.reduce1 (\\left:(Int -> Int) -> \\_right:(Int -> Int) -> left) (nonEmpty.singleton (\\value:Int -> value)) True",
+        "{ let saved:Int -> List<Int> -> nonEmpty.NonEmptyList<Int> = nonEmpty.cons; nonEmpty.head (saved 1 `[True]) }",
+        "{ let partial = nonEmpty.cons 1; nonEmpty.head (partial `[True]) }",
+        "{ let saved:(Int -> Int -> Int) -> nonEmpty.NonEmptyList<Int> -> Int = nonEmpty.reduce1; saved (\\a:Int -> \\b:Int -> a + b) (nonEmpty.singleton True) }",
+        "{ let partial = nonEmpty.reduce1 (\\a:Int -> \\b:Int -> a + b); partial (nonEmpty.singleton True) }",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid-functions.ssrg");
+        fs::write(
+            &source,
+            format!("import * as nonEmpty from \"std/non-empty-list\"\npub effect fn main = println (show ({expression}))\n"),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{expression}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{expression}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{expression}");
+        assert_eq!(native.stdout, ts.stdout, "{expression}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{expression}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{expression}"
+        );
+    }
 }
 
 #[test]
@@ -825,6 +872,14 @@ fn basic_non_empty_list_source_and_both_reducer_stage_defects_match_ts_and_relea
         ("{let _value = nonEmpty.toList (source (42 / 0)); 0}", "Int division by zero"),
         ("nonEmpty.head (source (42 / 0))", "Int division by zero"),
         ("{let _value = nonEmpty.tail (source (42 / 0)); 0}", "Int division by zero"),
+        ("{let _partial = nonEmpty.cons (42 / 0); 0}", "Int division by zero"),
+        ("{let saved:Int -> List<Int> -> nonEmpty.NonEmptyList<Int> = nonEmpty.cons; let _partial = saved (42 / 0); 0}", "Int division by zero"),
+        ("{let _partial = nonEmpty.reduce1 (step (42 / 0)); 0}", "Int division by zero"),
+        ("{let saved:(Int -> Int -> Int) -> nonEmpty.NonEmptyList<Int> -> Int = nonEmpty.reduce1; let _partial = saved (step (42 / 0)); 0}", "Int division by zero"),
+        ("nonEmpty.head (nonEmpty.singleton (\\value:Int -> value / 0)) 42", "Int division by zero"),
+        ("nonEmpty.head (nonEmpty.singleton (\\value:Int -> value + 1)) (42 / 0)", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\left:(Int -> Int) -> \\_right:(Int -> Int) -> left) (nonEmpty.singleton (\\value:Int -> value / 0)) 42", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\left:(Int -> Int) -> \\right:(Int -> Int) -> if 42 / 0 == 0 then left else right) (nonEmpty.cons (\\value:Int -> value + 1) `[\\value:Int -> value + 2]) (9007199254740991 + 1)", "Int division by zero"),
     ] {
         let scratch = Scratch::new();
         let path = scratch.0.join("non-empty-list-defect.ssrg");

@@ -238,14 +238,17 @@ macro_rules! entropy_operation {
 }
 
 macro_rules! non_empty_list_operation {
-    ($name:literal, $feature:literal, $export:literal) => {
-        operation!(
-            concat!("std/non-empty-list::", $name),
-            concat!("core.non-empty-list.", $feature),
-            concat!("_ssrg_non_empty_list_", $name),
-            "@seseragi/runtime/list",
-            $export
-        )
+    ($name:literal, $feature:literal, $export:literal, $arity:literal) => {
+        RuntimeProviderServiceOperation {
+            source_arity: Some($arity),
+            ..operation!(
+                concat!("std/non-empty-list::", $name),
+                concat!("core.non-empty-list.", $feature),
+                concat!("_ssrg_non_empty_list_", $name),
+                "@seseragi/runtime/list",
+                $export
+            )
+        }
     };
 }
 
@@ -410,13 +413,13 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     entropy_operation!("EntropyReadFailure", "error.read-failure"),
     entropy_operation!("entropySize", "config.size"),
     entropy_operation!("secureBytes", "secure-bytes"),
-    non_empty_list_operation!("singleton", "singleton", "singleton"),
-    non_empty_list_operation!("cons", "cons", "consNonEmpty"),
-    non_empty_list_operation!("fromList", "from-list", "fromListNonEmpty"),
-    non_empty_list_operation!("toList", "to-list", "toListNonEmpty"),
-    non_empty_list_operation!("head", "head", "headNonEmpty"),
-    non_empty_list_operation!("tail", "tail", "tailNonEmpty"),
-    non_empty_list_operation!("reduce1", "reduce1", "reduce1NonEmpty"),
+    non_empty_list_operation!("singleton", "singleton", "singleton", 1),
+    non_empty_list_operation!("cons", "cons", "consNonEmpty", 2),
+    non_empty_list_operation!("fromList", "from-list", "fromListNonEmpty", 1),
+    non_empty_list_operation!("toList", "to-list", "toListNonEmpty", 1),
+    non_empty_list_operation!("head", "head", "headNonEmpty", 1),
+    non_empty_list_operation!("tail", "tail", "tailNonEmpty", 1),
+    non_empty_list_operation!("reduce1", "reduce1", "reduce1NonEmpty", 2),
     operation!(
         "std/clock::now",
         "clock.now",
@@ -1020,6 +1023,44 @@ use crate::CoreType;
 #[cfg(test)]
 mod tests {
     use super::runtime_provider_service_operation;
+
+    #[test]
+    fn non_empty_list_source_stages_match_the_standard_interface() {
+        use seseragi_syntax::InterfaceType;
+
+        let target = seseragi_project::standard_module_target("std/non-empty-list").unwrap();
+        for (name, arity) in [
+            ("singleton", 1),
+            ("cons", 2),
+            ("fromList", 1),
+            ("toList", 1),
+            ("head", 1),
+            ("tail", 1),
+            ("reduce1", 2),
+        ] {
+            let canonical = format!("std/non-empty-list::{name}");
+            let operation = runtime_provider_service_operation(&canonical).unwrap();
+            let export = target
+                .interface()
+                .exports
+                .iter()
+                .find(|export| export.symbol == canonical)
+                .unwrap();
+            assert!(export.scheme.constraints.is_empty());
+            let mut remaining = &export.scheme.type_ref;
+            let mut actual = 0;
+            while let InterfaceType::Function { result, .. } = remaining {
+                actual += 1;
+                remaining = result;
+            }
+            assert_eq!(actual, arity, "{canonical}");
+            assert_eq!(operation.source_arity, Some(arity), "{canonical}");
+            assert!(
+                runtime_provider_service_operation(&format!("fixture/non-empty-list::{name}"))
+                    .is_none()
+            );
+        }
+    }
 
     #[test]
     fn child_process_source_stages_match_the_standard_interface() {
