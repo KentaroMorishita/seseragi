@@ -1,0 +1,95 @@
+import * as regex from "std/regex"
+import { RegexOptions } from "std/regex"
+import * as maps from "std/map"
+import * as text from "std/text"
+import * as effects from "std/effect"
+
+fn keep<A> value:A -> A = value
+fn span value:regex.RegexSpan -> String = show value.start + ".." + show value.end
+fn capture value:Maybe<regex.RegexCapture> -> String = match value {
+  Nothing -> "Nothing"
+  Just found -> span found.span + ":" + debug found.text
+}
+fn named value:(String,Maybe<regex.RegexCapture>) -> String = match value {
+  (name, found) -> debug name + "=" + capture found
+}
+fn matched value:regex.RegexMatch -> String = span value.span + ":" + debug value.text
+  + ":[" + text.join "," (map capture value.captures)
+  + "]:{" + text.join "," (map named (maps.entries value.named)) + "}"
+fn replace value:regex.RegexMatch -> String = "[" + matched value + "]"
+fn inspect options:regex.RegexOptions -> pattern:String -> input:String -> String =
+  match regex.compileWith options pattern {
+    Left error -> show error
+    Right compiled -> "all=[" + text.join ";" (map matched (regex.findAll compiled input))
+      + "] split=" + debug (regex.split compiled input)
+      + " literal=" + debug (regex.replaceAll compiled "$1\\$&${name}🙂" input)
+      + " callback=" + debug (regex.replaceAllWith compiled replace input)
+  }
+effect fn say value:String -> Unit with Console fails String = println value |> effects.mapError show
+
+pub effect fn main = do {
+  let run = keep (inspect (regex.defaultOptions ()))
+  say (run "" "")
+  say (run "" "a👍é")
+  say (run "a*" "bbb")
+  say (run "a*" "aa🙂a")
+  say (run "a+" "")
+  say (run "a+" "bbb")
+  say (run "aa" "aaa")
+  say (run "a|aa" "xaa")
+  say (run "aa|a" "xaa")
+  say (run "a|" "a🙂")
+  say (run "|a" "a🙂")
+  say (run "a{2,4}" "xaaaaaa")
+  say (run "(a?)*" "aa🙂a")
+  say (run "(a?)+" "")
+  say (run "(a?){1000000000}" "")
+  say (run "((a)|b)+" "ab ab")
+  say (run "(a(b)?)+" "aba aba")
+  say (run "(?<word>\\w+)(?:-(a+))?" "👍 é́-aa 漢́٣_")
+  say (run "(?<z>b)?(?<a>a)?(?<m>c)?" "ba🙂")
+  say (run "(?<empty>)(x)?" "雫🙂")
+  say (run "(a)|(b)" "a🙂b")
+  say (run "(,)" ",a,,b,")
+  say (run ",+" ",a,,b,")
+  say (run "." "雫🙂\n\u{0}é")
+  say (run "\\p{Decimal_Number}+" "1٣🙂42")
+  say (run "^" "雫🙂")
+  say (run "$" "雫🙂")
+  say (run "\\A|\\z" "雫🙂")
+  say (run "^a|b" "aba")
+  say (run "^a|^b" "ab")
+  let multiline:regex.RegexOptions = RegexOptions {caseInsensitive:False,multiline:True,dotMatchesNewline:False}
+  let lines = inspect multiline
+  say (lines "^|$" "a\r\nb\n")
+  say (lines "^.$" "雫\u{2028}🙂\u{2029}")
+  let folded:regex.RegexOptions = RegexOptions {caseInsensitive:True,multiline:False,dotMatchesNewline:False}
+  say (inspect folded "(?<letter>[A-ZΣ])" "aςσKſ")
+  let dotAll:regex.RegexOptions = RegexOptions {caseInsensitive:False,multiline:False,dotMatchesNewline:True}
+  say (inspect dotAll "." "雫\n🙂")
+  say (run "é[" "input")
+  say (run "(?<名前>a)(?<名前>b)" "input")
+  say (run "[z-a]" "input")
+  say (run "a{3,2}" "input")
+  say (run "\\p{Unknown}" "input")
+  say (run "(a)\\1" "input")
+  say (run "a+?" "input")
+  match regex.compile "(?<digits>[0-9]+)" {
+    Left error -> say (show error)
+    Right compiled -> do {
+      let all = keep regex.findAll
+      let parts = keep (regex.split compiled)
+      let literal = keep (regex.replaceAll compiled)
+      let replaceLiteral = keep (literal "")
+      let callback = keep regex.replaceAllWith
+      let withPattern = keep (callback compiled)
+      let replaceCallback = keep (withPattern replace)
+      say (text.join ";" (map matched (all compiled "a12b3")))
+      say (debug (parts "12a3"))
+      say (debug (replaceLiteral "a12b3"))
+      say (debug (replaceCallback "a12b3"))
+      say (debug (replaceCallback "no matches"))
+      say (debug (replaceCallback "a12b3"))
+    }
+  }
+}

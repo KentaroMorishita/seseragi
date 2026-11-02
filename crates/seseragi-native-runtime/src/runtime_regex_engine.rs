@@ -312,9 +312,13 @@ impl NativeRegex {
     }
 
     fn find(&self, input: &[char]) -> Option<NativeRegexMatch> {
+        self.find_from(input, 0)
+    }
+
+    fn find_from(&self, input: &[char], first_start: usize) -> Option<NativeRegexMatch> {
         let mut seeds = vec![];
         let mut matched = None;
-        for position in 0..=input.len() {
+        for position in first_start..=input.len() {
             if matched.is_none() {
                 seeds.push(NativeRegexThread {
                     instruction: self.start,
@@ -350,6 +354,26 @@ impl NativeRegex {
             }
         }
         matched
+    }
+
+    fn find_all(&self, input: &[char]) -> Vec<NativeRegexMatch> {
+        let mut matches = Vec::new();
+        let mut next = 0;
+        while next <= input.len() {
+            let Some(matched) = self.find_from(input, next) else {
+                break;
+            };
+            let (start, end) = (matched.start, matched.end);
+            matches.push(matched);
+            if end > start {
+                next = end;
+            } else if end < input.len() {
+                next = end + 1;
+            } else {
+                break;
+            }
+        }
+        matches
     }
 }
 

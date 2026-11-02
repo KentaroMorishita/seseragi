@@ -248,4 +248,152 @@ mod regex_tests {
         drop(matched);
         assert_eq!(LIVE.with(Cell::get), 0);
     }
+
+    fn strings(value: &V) -> Vec<String> {
+        let V::Array(values) = value else { panic!() };
+        values.get().iter().map(|v| native_text(v).to_owned()).collect()
+    }
+
+    #[test]
+    fn all_matches_advance_by_scalars_keep_absolute_anchors_and_include_the_end() {
+        for (pattern, text, expected) in [
+            ("", "", vec![(0, 0, "")]),
+            ("", "a🙂é", vec![(0, 0, ""), (1, 1, ""), (5, 5, ""), (6, 6, ""), (8, 8, "")]),
+            ("a*", "aa🙂a", vec![(0, 2, "aa"), (2, 2, ""), (6, 7, "a"), (7, 7, "")]),
+            ("aa", "aaa", vec![(0, 2, "aa")]),
+            ("a|aa", "xaa", vec![(1, 2, "a"), (2, 3, "a")]),
+            ("aa|a", "xaa", vec![(1, 3, "aa")]),
+            ("^a|^b", "ab", vec![(0, 1, "a")]),
+            ("\\A|\\z", "雫🙂", vec![(0, 0, ""), (7, 7, "")]),
+            ("z", "雫🙂", vec![]),
+        ] {
+            let result = native_regex_operation("std/regex::findAll", vec![compiled(pattern), V::text(text)]);
+            let V::Array(values) = &result else { panic!() };
+            let actual: Vec<_> = values.get().iter().map(|hit| {
+                let V::Int(start) = hit.field("span").field("start") else { panic!() };
+                let V::Int(end) = hit.field("span").field("end") else { panic!() };
+                (start, end, native_text(&hit.field("text")).to_owned())
+            }).collect();
+            let expected: Vec<_> = expected.into_iter().map(|(start, end, text)| (start, end, text.to_owned())).collect();
+            assert_eq!(actual, expected, "{pattern:?}/{text:?}");
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn all_matches_reset_captures_and_keep_named_absence_and_utf8_spans() {
+        let result = native_regex_operation("std/regex::findAll", vec![compiled("(?<word>a(b)?)(?<empty>)|(?<other>雫)"), V::text("ab🙂a雫")]);
+        let V::Array(values) = &result else { panic!() };
+        assert_eq!(values.get().len(), 3);
+        for (index, start, end) in [(0, 0, 2), (1, 6, 7), (2, 7, 10)] {
+            let hit = &values.get()[index];
+            assert!(matches!(hit.field("span").field("start"), V::Int(n) if n == start));
+            assert!(matches!(hit.field("span").field("end"), V::Int(n) if n == end));
+            let optional = hit.field("captures").index(1);
+            assert_eq!(optional.tagged("std/prelude::Just"), index == 0);
+            let empty = hit.field("captures").index(2);
+            assert_eq!(empty.tagged("std/prelude::Just"), index != 2);
+            if index != 2 {
+                assert_eq!(native_text(&empty.payload().field("text")), "");
+                assert!(matches!(empty.payload().field("span").field("start"), V::Int(n) if n == end));
+                assert!(matches!(empty.payload().field("span").field("end"), V::Int(n) if n == end));
+            }
+            let entries = native_map_operation("std/map::entries", vec![], vec![hit.field("named")]);
+            for (slot, name) in ["word", "empty", "other"].iter().enumerate() {
+                assert_eq!(native_text(&entries.index(slot).index(0)), *name);
+                assert_eq!(entries.index(slot).index(1).tagged("std/prelude::Just"), if slot == 2 { index == 2 } else { index != 2 });
+            }
+        }
+        let saved = result.index(2);
+        drop(result);
+        assert_eq!(native_text(&saved.field("captures").index(3).payload().field("text")), "雫");
+        drop(saved);
+        clear_dictionaries();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn split_keeps_empty_parts_without_inserting_captures() {
+        for (pattern, text, expected) in [
+            ("", "", vec!["", ""]),
+            ("", "a🙂é", vec!["", "a", "🙂", "e", "́", ""]),
+            ("(,)", ",a,,b,", vec!["", "a", "", "b", ""]),
+            (",+", ",a,,b,", vec!["", "a", "b", ""]),
+            ("a*", "a🙂", vec!["", "", "🙂", ""]),
+            ("z", "", vec![""]),
+            ("z", "雫🙂", vec!["雫🙂"]),
+        ] {
+            assert_eq!(strings(&native_regex_operation("std/regex::split", vec![compiled(pattern), V::text(text)])), expected, "{pattern:?}/{text:?}");
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn replacement_is_literal_can_delete_matches_and_keeps_unmatched_scalars() {
+        for (pattern, replacement, text, expected) in [
+            ("", "$1\\$&${name}", "a🙂", "$1\\$&${name}a$1\\$&${name}🙂$1\\$&${name}"),
+            ("(?<digits>[0-9]+)", "$1\\", "a12b3", "a$1\\b$1\\"),
+            ("[0-9]+", "", "a12b3", "ab"),
+            ("a*", "_", "a🙂", "__🙂_"),
+            ("", "_", "", "_"),
+            ("z", "_", "", ""),
+            ("z", "_", "雫🙂", "雫🙂"),
+            (".", "\0🙂", "ab", "\0🙂\0🙂"),
+        ] {
+            let result = native_regex_operation("std/regex::replaceAll", vec![compiled(pattern), V::text(replacement), V::text(text)]);
+            assert_eq!(native_text(&result), expected, "{pattern:?}/{text:?}");
+        }
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn replacement_callbacks_run_once_in_order_skip_absence_and_allow_reentry() {
+        enable_cycle_collection();
+        let calls = V::reference(V::text(""));
+        let saved = V::reference(V::Unit);
+        let callback = V::fun(vec![calls.clone(), saved.clone(), compiled(".")], |captures, hit| {
+            let start = hit.field("span").field("start").render();
+            let previous = captures[0].read_reference();
+            captures[0].write_reference(V::text(&format!("{}{start},", native_text(&previous))));
+            captures[1].write_reference(hit.clone());
+            let nested = native_regex_operation("std/regex::replaceAll", vec![captures[2].clone(), V::text("_"), V::text("雫🙂")]);
+            assert_eq!(native_text(&nested), "__");
+            collect_cycles().unwrap();
+            V::text(&format!("[{start}]"))
+        });
+        let result = native_regex_operation("std/regex::replaceAllWith", vec![compiled("(?<empty>)"), callback.clone(), V::text("a🙂b")]);
+        assert_eq!(native_text(&result), "[0]a[1]🙂[5]b[6]");
+        assert_eq!(native_text(&calls.read_reference()), "0,1,5,6,");
+        for text in ["", "雫🙂"] {
+            let result = native_regex_operation("std/regex::replaceAllWith", vec![compiled("z"), callback.clone(), V::text(text)]);
+            assert_eq!(native_text(&result), text);
+        }
+        assert_eq!(native_text(&calls.read_reference()), "0,1,5,6,");
+        assert!(matches!(saved.read_reference().field("captures").index(0).payload().field("span").field("start"), V::Int(6)));
+        drop((result, callback, calls, saved));
+        clear_dictionaries();
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn replacement_callback_defects_stop_later_calls_and_release_captured_cycles() {
+        enable_cycle_collection();
+        let calls = V::reference(V::text(""));
+        let cycle = V::reference(V::Unit);
+        let callback = V::fun(vec![calls.clone(), cycle.clone()], |captures, hit| {
+            let V::Int(start) = hit.field("span").field("start") else { panic!() };
+            let previous = captures[0].read_reference();
+            captures[0].write_reference(V::text(&format!("{}{start},", native_text(&previous))));
+            assert_ne!(start, 5, "replacement stop");
+            V::text("_")
+        });
+        cycle.write_reference(V::Tuple(Shared::new(vec![cycle.clone(), callback.clone()])));
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| native_regex_operation("std/regex::replaceAllWith", vec![compiled(""), callback.clone(), V::text("a🙂b")])));
+        assert!(result.is_err());
+        assert_eq!(native_text(&calls.read_reference()), "0,1,5,");
+        drop((callback, calls, cycle));
+        assert!(collect_cycles().unwrap().reclaimed > 0);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
 }

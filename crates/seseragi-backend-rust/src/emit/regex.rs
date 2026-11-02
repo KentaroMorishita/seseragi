@@ -25,6 +25,32 @@ fn regex_signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
                 arguments: vec![ty("std/regex::RegexMatch")],
             },
         ),
+        "std/regex::findAll" => (
+            vec![regex, string],
+            CoreType::Named {
+                name: "std/prelude::Array".into(),
+                arguments: vec![ty("std/regex::RegexMatch")],
+            },
+        ),
+        "std/regex::split" => (
+            vec![regex, string.clone()],
+            CoreType::Named {
+                name: "std/prelude::Array".into(),
+                arguments: vec![string],
+            },
+        ),
+        "std/regex::replaceAll" => (vec![regex, string.clone(), string.clone()], string),
+        "std/regex::replaceAllWith" => (
+            vec![
+                regex,
+                CoreType::Function {
+                    parameter: Box::new(ty("std/regex::RegexMatch")),
+                    result: Box::new(string.clone()),
+                },
+                string.clone(),
+            ],
+            string,
+        ),
         "std/regex::escape" => (vec![string.clone()], string),
         _ => return None,
     })

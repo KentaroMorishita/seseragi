@@ -242,17 +242,26 @@ fn native_regex_capture(text: &str, boundaries: &[usize], start: usize, end: usi
     ])
 }
 
-fn native_regex_public_match(regex: &NativeRegex, text: &str, matched: NativeRegexMatch) -> V {
+fn native_regex_boundaries(text: &str) -> Vec<usize> {
     let mut boundaries: Vec<_> = text.char_indices().map(|s| s.0).collect();
     boundaries.push(text.len());
-    let whole = native_regex_capture(text, &boundaries, matched.start, matched.end);
+    boundaries
+}
+
+fn native_regex_public_match(
+    regex: &NativeRegex,
+    text: &str,
+    boundaries: &[usize],
+    matched: NativeRegexMatch,
+) -> V {
+    let whole = native_regex_capture(text, boundaries, matched.start, matched.end);
     let captures: Vec<_> = matched
         .captures
         .chunks_exact(2)
         .map(|slots| match (slots[0], slots[1]) {
             (Some(start), Some(end)) => V::adt(
                 "std/prelude::Just",
-                native_regex_capture(text, &boundaries, start, end),
+                native_regex_capture(text, boundaries, start, end),
             ),
             _ => V::adt("std/prelude::Nothing", V::Unit),
         })
@@ -306,10 +315,65 @@ pub fn native_regex_operation(name: &str, arguments: Vec<V>) -> V {
             match matched {
                 Some(matched) => V::adt(
                     "std/prelude::Just",
-                    native_regex_public_match(regex.get(), text, matched),
+                    native_regex_public_match(
+                        regex.get(),
+                        text,
+                        &native_regex_boundaries(text),
+                        matched,
+                    ),
                 ),
                 None => V::adt("std/prelude::Nothing", V::Unit),
             }
+        }
+        ("std/regex::findAll" | "std/regex::split", [V::Regex(regex), text]) => {
+            let text = native_text(text);
+            let boundaries = native_regex_boundaries(text);
+            let matches = regex.get().find_all(&text.chars().collect::<Vec<_>>());
+            if name == "std/regex::findAll" {
+                return V::Array(Shared::new(
+                    matches
+                        .into_iter()
+                        .map(|matched| {
+                            native_regex_public_match(regex.get(), text, &boundaries, matched)
+                        })
+                        .collect(),
+                ));
+            }
+            let mut parts = Vec::new();
+            let mut previous = 0;
+            for matched in matches {
+                parts.push(V::text(&text[previous..boundaries[matched.start]]));
+                previous = boundaries[matched.end];
+            }
+            parts.push(V::text(&text[previous..]));
+            V::Array(Shared::new(parts))
+        }
+        (
+            "std/regex::replaceAll" | "std/regex::replaceAllWith",
+            [V::Regex(regex), replacement, text],
+        ) => {
+            let text = native_text(text);
+            let boundaries = native_regex_boundaries(text);
+            let matches = regex.get().find_all(&text.chars().collect::<Vec<_>>());
+            let mut output = String::new();
+            let mut previous = 0;
+            for matched in matches {
+                output.push_str(&text[previous..boundaries[matched.start]]);
+                previous = boundaries[matched.end];
+                if name == "std/regex::replaceAllWith" {
+                    let value = replacement.apply(native_regex_public_match(
+                        regex.get(),
+                        text,
+                        &boundaries,
+                        matched,
+                    ));
+                    output.push_str(native_text(&value));
+                } else {
+                    output.push_str(native_text(replacement));
+                }
+            }
+            output.push_str(&text[previous..]);
+            V::text(&output)
         }
         ("std/regex::escape", [text]) => {
             let mut escaped = String::new();
