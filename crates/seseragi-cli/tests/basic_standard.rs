@@ -643,6 +643,170 @@ fn basic_non_empty_list_source_and_both_reducer_stage_defects_match_ts_and_relea
 }
 
 #[test]
+fn basic_maybe_transformer_apis_and_instances_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/maybe-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/maybe-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_maybe_transformer_effects_keep_cold_runs_short_circuit_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/maybe-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/maybe-transformer-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_maybe_transformer_imported_opaque_values_and_monads_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/maybe-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as mt from "std/transformer/maybe"
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+pub alias Work<A> = mt.MaybeT<Box,A>
+pub fn value -> Value = Value 7
+pub fn render value:Value -> String = match value { Value n -> show n }
+pub fn saved<A> -> (Maybe<A> -> Work<A>) = mt.fromMaybe
+pub fn raised<A> -> (Box<A> -> Work<A>) = mt.lift
+pub fn unwrap<A> -> (Work<A> -> Box<Maybe<A>>) = mt.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe box:Box<Maybe<Value>> -> String = match box { Box Nothing -> "none"; Box (Just value) -> render value }
+"#).unwrap();
+    fs::write(
+        project.join("src/main.ssrg"),
+        r#"
+import * as mt from "std/transformer/maybe"
+import { Box, Work, Value, value, describe, saved, raised, unwrap, box } from "./domain"
+let wrap:Maybe<Value> -> Work<Value> = saved ()
+let lift:Box<Value> -> Work<Value> = raised ()
+let run:Work<Value> -> Box<Maybe<Value>> = unwrap ()
+let some:Work<Value> = wrap (Just (value ()))
+let none:Work<Value> = wrap Nothing
+let mapped:Work<Value> = map (\n:Value -> n) some
+pub effect fn main = do {
+  println (describe (run mapped))
+  println (describe (run none))
+  println (describe (mt.run (lift (box (value ())))))
+}
+"#,
+    )
+    .unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(&project, &[Case::success(b"7\nnone\n7\n")]);
+}
+
+#[test]
+fn basic_maybe_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> mt.MaybeT<Maybe,Int> = Just 1",
+        "pub fn invalid -> mt.MaybeT<Maybe,Int> = mt.fromMaybe True",
+        "pub fn invalid -> mt.MaybeT<Maybe,Int> = mt.lift 1",
+        "pub fn invalid -> Maybe<Maybe<Int>> = mt.run (Just 1)",
+        "struct Box<A> { value:A }\npub fn invalid -> mt.MaybeT<Box,Int> = mt.fromMaybe (Just 1)",
+        "pub fn invalid -> mt.MaybeT<Int,Int> = mt.fromMaybe (Just 1)",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!(
+            "import * as mt from \"std/transformer/maybe\"\n{declaration}\npub fn main -> Int = 0\n"
+        ),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_maybe_transformer_defects_preserve_error_kind_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/maybe-transformer-effects.ssrg");
+    let needle = "mt.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "mt.fromMaybe (Just (42 / 0))",
+        "mt.lift (pass (42 / 0))",
+        "mt.lift (effects.defer (\\_:Unit -> pass (42 / 0)))",
+        "map (\\n:Int -> n / 0) (mt.fromMaybe (Just 42))",
+        "(mt.fromMaybe (Just 42)) >>= (\\n:Int -> mt.fromMaybe (Just (n / 0)))",
+        "(pure (\\n:Int -> n / 0)) <*> (mt.fromMaybe (Just 42))",
+        "{ let selected:Work<Int> = mt.fromMaybe (Just 42); mt.lift (mt.run (if 42 / 0 == 0 then selected else selected)) |> map (\\_:Maybe<Int> -> 0) }",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("maybe-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created: 0\nacquired\nJust 5\nJust 5\nNothing\nNothing\ncalls: 4\nJust 0\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
 fn basic_maybe_operations_keep_original_fallbacks_traversals_saved_and_returned_functions() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-maybe-operations.ssrg"),
