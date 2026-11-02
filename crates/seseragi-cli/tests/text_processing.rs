@@ -247,6 +247,17 @@ fn scalar_boundaries() -> (String, String) {
 }
 
 #[test]
+fn text_errors_match_strict_ts_and_native_for_constructors_and_api_results() {
+    compare_text_cases([(
+        "text-error-show",
+        include_str!("../../../examples/spec/fixtures/rust-backend/text-error-show.ssrg")
+            .to_owned(),
+        0,
+        include_str!("../../../examples/spec/fixtures/rust-backend/text-error-show.stdout"),
+    )]);
+}
+
+#[test]
 fn text_operations_match_strict_ts_and_native_lifetimes() {
     let (boundaries, expected_boundaries) = scalar_boundaries();
     let fixture = fs::read_to_string(
