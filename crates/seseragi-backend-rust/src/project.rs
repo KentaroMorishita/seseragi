@@ -68,10 +68,30 @@ pub(crate) fn emit_tests(
     modules: &[&CoreModule],
     tests: &[(String, String)],
 ) -> Result<RustArtifact, RustBackendError> {
+    emit_tool(modules, tests, false)
+}
+
+pub(crate) fn emit_benchmarks(
+    modules: &[&CoreModule],
+    benchmarks: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    emit_tool(modules, benchmarks, true)
+}
+
+fn emit_tool(
+    modules: &[&CoreModule],
+    bindings: &[(String, String)],
+    benchmark: bool,
+) -> Result<RustArtifact, RustBackendError> {
     let root = CoreModule {
         schema: 1,
         stage: "core-ir".into(),
-        module: "\0native-tests".into(),
+        module: if benchmark {
+            "\0native-benchmarks"
+        } else {
+            "\0native-tests"
+        }
+        .into(),
         foreign_modules: vec![],
         external_type_bindings: vec![],
         module_dependencies: modules
@@ -102,7 +122,7 @@ pub(crate) fn emit_tests(
         &root.module,
         None,
         &crate::RustTargetOptions::default(),
-        Some(tests),
+        Some((bindings, benchmark)),
     )?;
     artifact
         .metadata
@@ -116,7 +136,7 @@ fn emit_body(
     entry_module: &str,
     entry: Option<&str>,
     options: &crate::RustTargetOptions,
-    tests: Option<&[(String, String)]>,
+    tests: Option<(&[(String, String)], bool)>,
 ) -> Result<RustArtifact, RustBackendError> {
     let entry_core = modules
         .iter()
@@ -294,10 +314,11 @@ fn emit_body(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = if let Some(tests) = tests {
+    let mut artifact = if let Some((tests, benchmark)) = tests {
         emit::emit_tests(
             &linked,
             tests,
+            benchmark,
             &owners,
             &scalar_globals,
             &type_names,

@@ -20,7 +20,7 @@ seseragi-project = { path = "../seseragi-project" }
 seseragi-release = { path = "../seseragi-release" }
 seseragi-runtime = { path = "../seseragi-runtime" }
 seseragi-syntax = { path = "../seseragi-syntax" }
-serde_json.workspace = true
+serde_json = { workspace = true, features = ["float_roundtrip"] }
 sha2.workspace = true
 tempfile = "3.27"
 toml.workspace = true

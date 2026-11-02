@@ -444,6 +444,8 @@ impl Backend<'_> {
                 "std/fs::FileType"
                 | "std/test::Test"
                 | "std/test::TestFailure"
+                | "std/benchmark::Benchmark"
+                | "std/benchmark::BenchmarkFailure"
                 | "std/log::Logger"
                 | "std/log::LogLevel"
                 | "std/log::LogValue"

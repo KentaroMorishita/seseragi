@@ -69,6 +69,7 @@ include!("runtime_trace.rs");
 include!("runtime_effect.rs");
 include!("runtime_effect_control.rs");
 include!("runtime_test.rs");
+include!("runtime_benchmark.rs");
 include!("runtime_diagnostic.rs");
 include!("runtime_stdin.rs");
 include!("runtime_effect_defect.rs");
