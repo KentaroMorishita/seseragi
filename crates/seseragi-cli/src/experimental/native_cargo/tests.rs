@@ -152,7 +152,7 @@ impl Fixture {
     }
 
     fn stdout(&self) -> String {
-        let output = Command::new(self.executable()).output().unwrap();
+        let output = run_published(&self.executable());
         assert!(output.status.success(), "{output:?}");
         assert!(output.stderr.is_empty(), "{output:?}");
         String::from_utf8(output.stdout).unwrap()
@@ -524,7 +524,7 @@ fn native_build_rejects_symlinked_build_inputs() {
         .contains("symlink"));
 }
 
-/// Runs a published program. A sibling thread may fork while this program was
+/// Runs a published program. A sibling test thread may fork while this program was
 /// still being copied, leaving the new executable briefly open for writing in
 /// that child until it execs. Linux reports that as ETXTBSY, so retry briefly.
 fn run_published(path: &Path) -> std::process::Output {
