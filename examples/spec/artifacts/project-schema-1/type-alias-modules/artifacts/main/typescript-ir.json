@@ -225,6 +225,11 @@
                                         }
                                       ]
                                     }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "string"
+                                    }
                                   ]
                                 }
                               },

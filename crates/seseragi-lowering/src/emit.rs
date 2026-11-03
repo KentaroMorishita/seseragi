@@ -797,12 +797,27 @@ fn render_generic_initializer(
     value: &TypeScriptExpr,
     parameters: &[seseragi_syntax::TypeParameter],
 ) -> String {
-    let rendered = render_typescript_expr(value);
     if !parameters.is_empty() && matches!(value, TypeScriptExpr::Lambda { .. }) {
-        format!("{}{}", render_arrow_type_parameters(parameters), rendered)
-    } else {
-        rendered
+        return format!(
+            "{}{}",
+            render_arrow_type_parameters(parameters),
+            render_typescript_expr(value)
+        );
     }
+    if !parameters.is_empty() {
+        if let Some(action) = source_action(value) {
+            let TypeScriptExpr::RuntimeCall { callee, arguments } = value else {
+                unreachable!("source action requires a runtime call")
+            };
+            return format!(
+                "{callee}({}, () => {}, {})",
+                render_typescript_expr(&arguments[0]),
+                render_generic_initializer(action, parameters),
+                render_typescript_expr(&arguments[2])
+            );
+        }
+    }
+    render_typescript_expr(value)
 }
 
 fn render_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> String {

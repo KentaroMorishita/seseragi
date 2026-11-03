@@ -291,14 +291,7 @@ fn signal_streams_match_strict_ts_bun_node_and_native() {
             running.signal("USR1");
             let (code, error) = match mode {
                 "failure" => (1, Some("signal callback failed")),
-                "defect" => (
-                    70,
-                    Some(if program.entry.is_some() {
-                        "seseragi: runtime defect"
-                    } else {
-                        "signal callback defect"
-                    }),
-                ),
+                "defect" => (70, Some("Seseragi Defect: signal callback defect")),
                 _ => (0, None),
             };
             check(program, running.finish(), code, expected, error, false);

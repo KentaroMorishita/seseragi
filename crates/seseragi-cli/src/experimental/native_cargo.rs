@@ -2,6 +2,7 @@ use super::native_toolchain::{self, Toolchain};
 use seseragi_project::BuildProfile;
 use sha2::{Digest, Sha256};
 use std::{
+    ffi::OsString,
     fs::{self, File},
     io::{self, Write},
     path::{Path, PathBuf},
@@ -142,8 +143,21 @@ impl Project {
         )?;
         regular_file(&self.directory.join("Cargo.lock"))?;
         let target = self.target_for(profile, runtime)?;
-        let output = toolchain
-            .cargo()?
+        let mut command = toolchain.cargo()?;
+        let remapping = format!("{}=.", self.directory.display());
+        let flags =
+            toml::Value::Array(vec!["--remap-path-prefix".into(), remapping.clone().into()]);
+        command
+            .arg("--config")
+            .arg(format!("build.rustflags={flags}"));
+        if let Some(flags) = remapped_environment_flags(
+            std::env::var_os("CARGO_ENCODED_RUSTFLAGS"),
+            std::env::var_os("RUSTFLAGS"),
+            &remapping,
+        )? {
+            command.env("CARGO_ENCODED_RUSTFLAGS", flags);
+        }
+        let output = command
             .current_dir(&self.directory)
             .args([
                 "rustc",
@@ -161,9 +175,6 @@ impl Project {
             })
             .arg("--target-dir")
             .arg(&target)
-            .arg("--")
-            .arg("--remap-path-prefix")
-            .arg(format!("{}=.", self.directory.display()))
             .output()
             .map_err(|error| format!("could not start managed cargo: {error}"))?;
         if !output.status.success() {
@@ -191,7 +202,16 @@ impl Project {
             })
             .and_then(|message| message["executable"].as_str().map(PathBuf::from))
             .ok_or("Cargo did not report a native executable")?;
-        fs::copy(built, executable).map_err(|error| error.to_string())?;
+        let staged = tempfile::NamedTempFile::new_in(
+            executable
+                .parent()
+                .ok_or("native executable must have a parent directory")?,
+        )
+        .map_err(|error| error.to_string())?;
+        fs::copy(built, staged.path()).map_err(|error| error.to_string())?;
+        staged
+            .persist(executable)
+            .map_err(|error| error.to_string())?;
         Ok(())
     }
 
@@ -213,6 +233,30 @@ impl Project {
             .target
             .join(format!("{:x}", Sha256::digest(identity.as_bytes()))))
     }
+}
+
+fn remapped_environment_flags(
+    encoded: Option<OsString>,
+    plain: Option<OsString>,
+    remapping: &str,
+) -> Result<Option<OsString>, String> {
+    let mut flags = match (encoded, plain) {
+        (Some(flags), _) => flags,
+        (None, Some(flags)) => flags
+            .to_str()
+            .ok_or("RUSTFLAGS must contain valid Unicode")?
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .join("\x1f")
+            .into(),
+        (None, None) => return Ok(None),
+    };
+    if !flags.is_empty() {
+        flags.push("\x1f");
+    }
+    flags.push("--remap-path-prefix\x1f");
+    flags.push(remapping);
+    Ok(Some(flags))
 }
 
 #[cfg(test)]

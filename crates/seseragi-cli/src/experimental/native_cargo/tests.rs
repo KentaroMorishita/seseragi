@@ -6,6 +6,38 @@ mod native_cache;
 const RUNTIME: &str = "pub fn answer() -> i64 { 42 }\n";
 const SOURCE: &str = "fn main() { println!(\"{}\", seseragi_native_runtime::answer()); }\n";
 
+#[test]
+fn path_remapping_preserves_environment_flag_precedence_and_argument_boundaries() {
+    let remapping = "native cargo 雪 =.";
+    for (encoded, plain, prefix) in [
+        (None, None, None),
+        (
+            None,
+            Some("-C opt-level=1\t--cfg caller"),
+            Some("-C\x1fopt-level=1\x1f--cfg\x1fcaller"),
+        ),
+        (
+            Some("--cfg\x1fencoded"),
+            Some("ignored"),
+            Some("--cfg\x1fencoded"),
+        ),
+        (Some(""), Some("ignored"), Some("")),
+    ] {
+        let actual =
+            remapped_environment_flags(encoded.map(Into::into), plain.map(Into::into), remapping)
+                .unwrap();
+        let expected = prefix.map(|prefix| {
+            let prefix = if prefix.is_empty() {
+                String::new()
+            } else {
+                format!("{prefix}\x1f")
+            };
+            OsString::from(format!("{prefix}--remap-path-prefix\x1f{remapping}"))
+        });
+        assert_eq!(actual, expected);
+    }
+}
+
 struct Fixture {
     root: tempfile::TempDir,
     target: PathBuf,
@@ -129,6 +161,7 @@ fn cargo_reuses_files_and_distinguishes_program_and_runtime_changes() {
         .join(format!("debug/{}", super::super::output::EXECUTABLE));
     let binary_time = modified(&binary);
     build(SOURCE, RUNTIME);
+    assert_eq!(fixture.stdout(), "42\n");
     assert_eq!(files.each_ref().map(|file| modified(file)), times);
     assert_eq!(modified(&library), library_time);
     assert_eq!(modified(&binary), binary_time);

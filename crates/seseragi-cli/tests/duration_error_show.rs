@@ -30,7 +30,7 @@ fn compare(source: &str, stdout: &str, stderr: &str, exit: i32, directory: &Path
         );
         assert_eq!(native_output.stdout, stdout.as_bytes(), "native {profile}");
         let native_message = if exit == 1 {
-            let location = format!("{}:3:55: ", input.display());
+            let location = format!("{}:3:55: ", input.file_name().unwrap().to_string_lossy());
             native_output
                 .stderr
                 .strip_prefix(location.as_bytes())

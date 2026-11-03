@@ -20,6 +20,86 @@ fn std_test_accepts_direct_saved_partial_generic_and_user_dictionaries() {
 }
 
 #[test]
+fn std_test_instantiates_checked_declarations_without_losing_caller_type_identity() {
+    for (declaration, actual) in [
+        (
+            "fn probe -> Effect<{},t.TestFailure,Unit> = t.equal 1 2",
+            "Int",
+        ),
+        (
+            "fn probe<A> value:A -> Effect<{},t.TestFailure,Unit> where Eq<A>, Debug<A> = t.equal value value",
+            "A",
+        ),
+        (
+            "fn probe<Unit> value:Unit -> Assertion where Eq<Unit>, Debug<Unit> = t.equal value value",
+            "Unit",
+        ),
+    ] {
+        let source = format!(
+            "import * as t from \"std/test\"\nalias Assertion = Effect<{{}},t.TestFailure,Unit>\n{declaration}\npub fn main -> Int = 42\n"
+        );
+        let mut core = checked("native/test", &source);
+        let CoreExpr::Call {
+            type_ref,
+            callee_signature,
+            ..
+        } = &mut core.functions[0].body
+        else {
+            panic!("checked std/test call")
+        };
+        let value = |name: &str| CoreType::Named {
+            name: name.into(),
+            arguments: vec![],
+        };
+        let mut result = type_ref.clone();
+        let (CoreType::Named { arguments, .. }
+        | CoreType::ExternalNamed { arguments, .. }) = &mut result
+        else {
+            panic!("checked Effect result")
+        };
+        arguments[2] = value("Unit");
+        *callee_signature = Some(seseragi_lowering::CoreCallSignature {
+            type_parameters: vec![seseragi_syntax::TypeParameter {
+                name: "A".into(),
+                arity: 0,
+            }],
+            parameters: vec![value("A"), value("A")],
+            result,
+            argument_types: vec![value(actual), value(actual)],
+            instantiated_type_arguments: vec![value(actual)],
+        });
+        emit_rust_module(&core, "main").unwrap();
+        for mutation in 0..7 {
+            let mut forged = core.clone();
+            let CoreExpr::Call {
+                callee_signature: Some(signature),
+                ..
+            } = &mut forged.functions[0].body
+            else {
+                panic!("checked std/test declaration")
+            };
+            match mutation {
+                0 => signature.instantiated_type_arguments.clear(),
+                1 => signature.instantiated_type_arguments.push(value(actual)),
+                2 => signature.instantiated_type_arguments[0] = CoreType::Hole,
+                3 => signature.instantiated_type_arguments[0] = value("Array"),
+                4 => signature.instantiated_type_arguments[0] = value("String"),
+                5 => signature.type_parameters[0].arity = 1,
+                6 => {
+                    signature.type_parameters.push(signature.type_parameters[0].clone());
+                    signature.instantiated_type_arguments.push(value(actual));
+                }
+                _ => unreachable!(),
+            }
+            assert!(
+                emit_rust_module(&forged, "main").is_err(),
+                "accepted {actual} mutation {mutation}"
+            );
+        }
+    }
+}
+
+#[test]
 fn native_test_entry_links_independent_test_modules_and_checks_export_types() {
     let first = checked("native/first", "import * as t from \"std/test\"\npub let tests:t.Test = t.test \"first\" (t.isTrue True)\n");
     let second = checked("native/second", "import * as t from \"std/test\"\npub let tests:t.Test = t.skip \"later\" (t.test \"second\" (t.isFalse False))\n");

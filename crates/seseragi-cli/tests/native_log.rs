@@ -10,6 +10,10 @@ use std::{
 mod process;
 use process::{bounded, runtime, successful};
 
+#[allow(dead_code)]
+#[path = "support/runtime_diagnostics.rs"]
+mod diagnostics;
+
 fn root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .ancestors()
@@ -378,11 +382,14 @@ fn structured_logs_preserve_failure_defect_finalizers_and_release_captures() {
                     program.name
                 );
             } else if program.entry.is_some() {
-                assert_eq!(
-                    diagnostic, b"seseragi: runtime defect\n",
-                    "{label}/{}",
-                    program.name
-                );
+                let (marker, message) = if label == "defect" {
+                    ("effects.die \"body defect\"", "body defect")
+                } else {
+                    ("9007199254740991 + 1", "Seseragi Int overflow")
+                };
+                let expected =
+                    diagnostics::defect_at_source(Path::new("main.ssrg"), &text, marker, message);
+                assert_eq!(diagnostic, expected.as_bytes(), "{label}/{}", program.name);
             } else {
                 let message = if label == "defect" {
                     "body defect"

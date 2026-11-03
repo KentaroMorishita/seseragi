@@ -3330,6 +3330,18 @@
                         "name": "Int",
                         "arguments": []
                       }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
                     ]
                   },
                   "type": {

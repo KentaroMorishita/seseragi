@@ -77,7 +77,7 @@ fn compare(source: &str, stdout: &[u8], error: Option<(&str, &str)>) {
     if let Some((kind, message)) = error {
         let diagnostic = lines.next().unwrap();
         assert!(
-            diagnostic.starts_with(&format!("{}:", file.display())),
+            diagnostic.starts_with(&format!("{}:", file.file_name().unwrap().to_string_lossy())),
             "{diagnostic}"
         );
         let expected = if kind == "Defect" {

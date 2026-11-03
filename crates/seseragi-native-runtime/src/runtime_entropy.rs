@@ -140,14 +140,16 @@ mod entropy_tests {
     #[test]
     fn configuration_preserves_error_kinds_values_and_inclusive_limits() {
         for (value, tag) in [
-            (-9_007_199_254_740_991, "std/entropy::NonPositiveEntropySize"),
+            (
+                -9_007_199_254_740_991,
+                "std/entropy::NonPositiveEntropySize",
+            ),
             (-1, "std/entropy::NonPositiveEntropySize"),
             (0, "std/entropy::NonPositiveEntropySize"),
             (1_048_577, "std/entropy::EntropySizeTooLarge"),
             (9_007_199_254_740_991, "std/entropy::EntropySizeTooLarge"),
         ] {
-            let result =
-                native_entropy_operation("std/entropy::entropySize", vec![V::Int(value)]);
+            let result = native_entropy_operation("std/entropy::entropySize", vec![V::Int(value)]);
             assert!(result.tagged("std/prelude::Left"));
             assert!(result.payload().tagged(tag));
             assert_eq!(result.payload().payload().render(), value.to_string());
@@ -209,9 +211,7 @@ mod entropy_tests {
             }
         }
         failure(
-            native_entropy_secure_bytes(&size, |bytes| {
-                native_entropy_read(Ok(Failing), bytes)
-            }),
+            native_entropy_secure_bytes(&size, |bytes| native_entropy_read(Ok(Failing), bytes)),
             "std/entropy::EntropyReadFailure",
         );
         let result = native_entropy_secure_bytes(&size, |bytes| {
@@ -263,7 +263,10 @@ mod entropy_tests {
             cancelled: true,
             ..NativeContext::default()
         };
-        assert!(matches!(context.root(plan.clone()), Err(NativeExit::Cancelled)));
+        assert!(matches!(
+            context.root(plan.clone()),
+            Err(NativeExit::Cancelled)
+        ));
         assert_eq!(READS.with(Cell::get), 0);
         context.cancelled = false;
         let first = context.root(plan.clone()).unwrap_or_else(|_| panic!());

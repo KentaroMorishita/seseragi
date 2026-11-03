@@ -81,15 +81,18 @@ pub fn native_reader_transformer_callable(name: &str, dictionaries: Vec<V>) -> V
             })
         }),
         "std/transformer/reader::ask" => V::fun(dictionaries, |captures, _| {
-            native_transformer_wrap(V::fun(vec![captures[0].clone()], |captures, environment| {
-                captures[0].field("pure").apply(environment)
-            }))
+            native_transformer_wrap(V::fun(
+                vec![captures[0].clone()],
+                |captures, environment| captures[0].field("pure").apply(environment),
+            ))
         }),
         "std/transformer/reader::asks" => V::fun(dictionaries, |captures, callback| {
             native_transformer_wrap(V::fun(
                 vec![captures[0].clone(), callback],
                 |captures, environment| {
-                    captures[0].field("pure").apply(captures[1].apply(environment))
+                    captures[0]
+                        .field("pure")
+                        .apply(captures[1].apply(environment))
                 },
             ))
         }),
@@ -98,7 +101,9 @@ pub fn native_reader_transformer_callable(name: &str, dictionaries: Vec<V>) -> V
                 native_transformer_wrap(V::fun(
                     vec![captures[0].clone(), value],
                     |captures, environment| {
-                        captures[1].field("run").apply(captures[0].apply(environment))
+                        captures[1]
+                            .field("run")
+                            .apply(captures[0].apply(environment))
                     },
                 ))
             })
@@ -375,19 +380,22 @@ mod reader_transformer_tests {
                 V::adt("test::Box", value)
             }),
         )]);
-        let ask = native_reader_transformer_callable("std/transformer/reader::ask", vec![base.clone()])
-            .apply(V::Unit);
-        let asks = native_reader_transformer_callable("std/transformer/reader::asks", vec![base.clone()])
-            .apply(V::fun(vec![projections.clone()], |c, environment| {
-                c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
-                binary("*", environment, V::Int(2))
-            }));
-        let local = native_reader_transformer_callable("std/transformer/reader::local", vec![base.clone()])
-            .apply(V::fun(vec![changes.clone()], |c, environment| {
-                c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
-                binary("+", environment, V::Int(10))
-            }))
-            .apply(asks.clone());
+        let ask =
+            native_reader_transformer_callable("std/transformer/reader::ask", vec![base.clone()])
+                .apply(V::Unit);
+        let asks =
+            native_reader_transformer_callable("std/transformer/reader::asks", vec![base.clone()])
+                .apply(V::fun(vec![projections.clone()], |c, environment| {
+                    c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
+                    binary("*", environment, V::Int(2))
+                }));
+        let local =
+            native_reader_transformer_callable("std/transformer/reader::local", vec![base.clone()])
+                .apply(V::fun(vec![changes.clone()], |c, environment| {
+                    c[0].write_reference(binary("+", c[0].read_reference(), V::Int(1)));
+                    binary("+", environment, V::Int(10))
+                }))
+                .apply(asks.clone());
         assert_eq!(calls.read_reference().render(), "0");
         assert_eq!(projections.read_reference().render(), "0");
         assert_eq!(changes.read_reference().render(), "0");
@@ -397,13 +405,33 @@ mod reader_transformer_tests {
         assert!(result.tagged("test::Box"));
         assert_eq!(result.payload().node_id(), environment.node_id());
         for (value, expected) in [(2, "24"), (5, "30")] {
-            assert_eq!(run.apply(V::Int(value)).apply(local.clone()).payload().render(), expected);
+            assert_eq!(
+                run.apply(V::Int(value))
+                    .apply(local.clone())
+                    .payload()
+                    .render(),
+                expected
+            );
         }
-        assert_eq!(run.apply(V::Int(3)).apply(asks.clone()).payload().render(), "6");
+        assert_eq!(
+            run.apply(V::Int(3)).apply(asks.clone()).payload().render(),
+            "6"
+        );
         assert_eq!(calls.read_reference().render(), "4");
         assert_eq!(projections.read_reference().render(), "3");
         assert_eq!(changes.read_reference().render(), "2");
-        drop((calls, projections, changes, base, ask, asks, local, run, environment, result));
+        drop((
+            calls,
+            projections,
+            changes,
+            base,
+            ask,
+            asks,
+            local,
+            run,
+            environment,
+            result,
+        ));
         collect_cycles().unwrap();
         assert_eq!(LIVE.with(Cell::get), 0);
     }
@@ -411,16 +439,29 @@ mod reader_transformer_tests {
     #[test]
     fn lift_preserves_the_base_identity_and_local_never_invokes_base_methods() {
         enable_cycle_collection();
-        let base = V::dict(vec![("pure", V::fun(vec![], |_, _| panic!("unused base pure")))]);
+        let base = V::dict(vec![(
+            "pure",
+            V::fun(vec![], |_, _| panic!("unused base pure")),
+        )]);
         let value = V::adt("std/prelude::Left", V::reference(V::Int(7)));
-        let lifted = native_reader_transformer_callable("std/transformer/reader::lift", vec![base.clone()])
-            .apply(value.clone());
-        let localized = native_reader_transformer_callable("std/transformer/reader::local", vec![base.clone()])
-            .apply(V::fun(vec![], |_, value| value))
-            .apply(lifted.clone());
+        let lifted =
+            native_reader_transformer_callable("std/transformer/reader::lift", vec![base.clone()])
+                .apply(value.clone());
+        let localized =
+            native_reader_transformer_callable("std/transformer/reader::local", vec![base.clone()])
+                .apply(V::fun(vec![], |_, value| value))
+                .apply(lifted.clone());
         let run = native_reader_transformer_callable("std/transformer/reader::run", vec![]);
-        for environment in [V::Unit, V::Int(0), V::text("雪🙂"), V::Array(Shared::new(vec![]))] {
-            assert_eq!(run.apply(environment).apply(localized.clone()).node_id(), value.node_id());
+        for environment in [
+            V::Unit,
+            V::Int(0),
+            V::text("雪🙂"),
+            V::Array(Shared::new(vec![])),
+        ] {
+            assert_eq!(
+                run.apply(environment).apply(localized.clone()).node_id(),
+                value.node_id()
+            );
         }
         drop((base, value, lifted, localized, run));
         collect_cycles().unwrap();
@@ -433,7 +474,10 @@ mod reader_transformer_tests {
         for defect in [false, true] {
             let cell = V::reference(V::Unit);
             let base = native_monad_dictionary(5, "Monad");
-            let lift = native_reader_transformer_callable("std/transformer/reader::lift", vec![base.clone()]);
+            let lift = native_reader_transformer_callable(
+                "std/transformer/reader::lift",
+                vec![base.clone()],
+            );
             let source = V::leaf(vec![cell.clone(), V::Bool(defect)], |c, _| {
                 if c[1].boolean() {
                     panic!("deliberate ReaderT base defect");
@@ -447,7 +491,9 @@ mod reader_transformer_tests {
                 .apply(work.clone());
             let result = NativeContext::default().root(effect);
             match result {
-                Err(NativeExit::Failure(error)) if !defect => assert_eq!(error.node_id(), cell.node_id()),
+                Err(NativeExit::Failure(error)) if !defect => {
+                    assert_eq!(error.node_id(), cell.node_id())
+                }
                 Err(NativeExit::Defect(errors)) if defect => {
                     assert_eq!(errors.len(), 1);
                     assert_eq!(errors[0].value, "deliberate ReaderT base defect");

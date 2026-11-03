@@ -1311,6 +1311,17 @@ fn lower_call(
             arguments,
         }
     } else if let Some(operation) = runtime_web_html_operation(&callee) {
+        if callee == "std/web/dom::DomFailure" {
+            let type_arguments =
+                ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
+            if !type_arguments.is_empty() {
+                return TypeScriptExpr::TypeApplicationCall {
+                    callee: operation.local_name.to_owned(),
+                    type_arguments,
+                    arguments,
+                };
+            }
+        }
         TypeScriptExpr::RuntimeCall {
             callee: operation.local_name.to_owned(),
             arguments,

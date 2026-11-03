@@ -575,13 +575,9 @@ fn directory_mutations_atomic_writes_and_scoped_temporaries_match_both_ts_profil
                 let observed = fs::read_to_string(cwd.join("observed")).unwrap();
                 if mode == "defect" {
                     assert_eq!(output.status.code(), Some(70));
-                    let message = if program.argument.is_none() {
-                        "callback defect"
-                    } else {
-                        "seseragi: runtime defect"
-                    };
                     assert!(
-                        String::from_utf8_lossy(&output.stderr).contains(message),
+                        String::from_utf8_lossy(&output.stderr)
+                            .contains("Seseragi Defect: callback defect\n"),
                         "{}: {output:?}",
                         program.name
                     );

@@ -201,7 +201,10 @@ fn benchmark_failure_show_and_main_failures_match_bun_node_and_cargo_native() {
             let native_stderr = if code == 0 {
                 String::new()
             } else {
-                format!("{}:2:22: {stderr}", input.display())
+                format!(
+                    "{}:2:22: {stderr}",
+                    input.file_name().unwrap().to_string_lossy()
+                )
             };
             assert_eq!(native.stderr, native_stderr.as_bytes(), "{expression}");
             for profile in ["development", "release"] {

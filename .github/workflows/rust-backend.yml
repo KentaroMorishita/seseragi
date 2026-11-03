@@ -12,6 +12,8 @@ on:
       - "crates/seseragi-backend-rust/**"
       - "crates/seseragi-native-runtime/**"
       - "crates/test-support/native_runtime.rs"
+      - "crates/test-support/native_cache.rs"
+      - "crates/test-support/temporary.rs"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-lowering/**"
       - "crates/seseragi-runtime/**"
@@ -27,7 +29,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
-      - "crates/seseragi-cli/tests/native_runtime_cache.rs"
+      - "crates/seseragi-cli/tests/native_toolchain.rs"
       - "crates/seseragi-cli/tests/differential.rs"
       - "crates/seseragi-cli/tests/support/differential/**"
       - "crates/seseragi-cli/tests/support/generic_impl_process.rs"
@@ -91,6 +93,8 @@ on:
       - "crates/seseragi-backend-rust/**"
       - "crates/seseragi-native-runtime/**"
       - "crates/test-support/native_runtime.rs"
+      - "crates/test-support/native_cache.rs"
+      - "crates/test-support/temporary.rs"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-lowering/**"
       - "crates/seseragi-runtime/**"
@@ -106,7 +110,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/build.rs"
       - "crates/seseragi-cli/tests/rust_backend.rs"
-      - "crates/seseragi-cli/tests/native_runtime_cache.rs"
+      - "crates/seseragi-cli/tests/native_toolchain.rs"
       - "crates/seseragi-cli/tests/differential.rs"
       - "crates/seseragi-cli/tests/support/differential/**"
       - "crates/seseragi-cli/tests/support/generic_impl_process.rs"
@@ -211,26 +215,26 @@ jobs:
         if: runner.os == 'Windows'
         run: bun test scripts/native-release.test.ts
       - name: Drain pending file stages, close real handles and join exceptional workers
-        run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
+        run: cargo test --locked -p seseragi-native-runtime --lib host_tests
       - name: Keep locked provider identities identical across checkout hosts
         run: cargo test --locked -p seseragi-runtime --test provider_catalog_identity
       - name: Verify native text, byte and Array boundaries and portable math values on every host
         run: |
-          cargo test --locked -p seseragi-backend-rust --lib runtime::text_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::math_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::bytes_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::array_operation_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::sequence_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::big_int_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::decimal_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_codec_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_decoder_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_container_codec_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_derived_adt_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::hashing_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::map_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::set_tests
+          cargo test --locked -p seseragi-native-runtime --lib text_tests
+          cargo test --locked -p seseragi-native-runtime --lib math_tests
+          cargo test --locked -p seseragi-native-runtime --lib bytes_tests
+          cargo test --locked -p seseragi-native-runtime --lib array_operation_tests
+          cargo test --locked -p seseragi-native-runtime --lib sequence_tests
+          cargo test --locked -p seseragi-native-runtime --lib big_int_tests
+          cargo test --locked -p seseragi-native-runtime --lib decimal_tests
+          cargo test --locked -p seseragi-native-runtime --lib json_tests
+          cargo test --locked -p seseragi-native-runtime --lib json_codec_tests
+          cargo test --locked -p seseragi-native-runtime --lib json_decoder_tests
+          cargo test --locked -p seseragi-native-runtime --lib json_container_codec_tests
+          cargo test --locked -p seseragi-native-runtime --lib json_derived_adt_tests
+          cargo test --locked -p seseragi-native-runtime --lib hashing_tests
+          cargo test --locked -p seseragi-native-runtime --lib map_tests
+          cargo test --locked -p seseragi-native-runtime --lib set_tests
       - name: Compare complete file, numeric, identity and program WASM suites
         run: >-
           cargo test --locked -p seseragi-cli
@@ -316,7 +320,9 @@ jobs:
       - name: Verify native values, captures, dictionaries, and teardown
         run: cargo test --locked -p seseragi-native-runtime -p seseragi-backend-rust
       - name: Compare the CLI Rust target with TypeScript execution
-        run: cargo test --locked -p seseragi-cli --test rust_backend --test native_runtime_cache
+        run: |
+          cargo test --locked -p seseragi-cli --test rust_backend --test native_toolchain
+          cargo test --locked -p seseragi-cli --bin seseragi experimental::
       - name: Compare fixed-seed generated programs on Bun, Node and native
         run: cargo test --locked -p seseragi-cli --test differential -- --nocapture
       - name: Verify canonical reexport process builds on Bun and Node

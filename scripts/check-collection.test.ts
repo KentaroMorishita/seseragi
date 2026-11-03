@@ -28,7 +28,7 @@ test.each([true, false])(
         join(root, "scripts/check-scoped.sh")
       )
       const stub = `#!/bin/bash
-printf '%s %s\\n' "$(basename "$0")" "$*" >> "$GATE_TRACE"
+printf '%s %s\\n' "\${0##*/}" "$*" >> "$GATE_TRACE"
 case "$*" in
   *check-readme.ts*|*samples:check*) exit ${failures ? 7 : 0} ;;
 esac

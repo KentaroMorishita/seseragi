@@ -385,6 +385,33 @@ impl Backend<'_> {
                 return Err("Rust backend: std/test declaration arity mismatch".into());
             }
             let full = arrow(&checked.parameters, checked.result.clone());
+            if checked.type_parameters.len() != checked.instantiated_type_arguments.len() {
+                return Err("Rust backend: std/test requires proven type arguments".into());
+            }
+            let full = if checked.type_parameters.is_empty() {
+                full
+            } else {
+                let mut substitutions = BTreeMap::new();
+                let mut names = BTreeSet::new();
+                for (parameter, argument) in checked
+                    .type_parameters
+                    .iter()
+                    .zip(&checked.instantiated_type_arguments)
+                {
+                    if parameter.arity != 0
+                        || !names.insert(&parameter.name)
+                        || self.declared_method_type_kind(argument, scope) != Some(0)
+                    {
+                        return Err("Rust backend: std/test requires value type arguments".into());
+                    }
+                    substitutions.insert(
+                        parameter.name.clone(),
+                        self.local_canonical_type(argument, scope)?,
+                    );
+                }
+                display::canonical_type(&full, self.owner, &substitutions, self.type_names, false)
+                    .ok_or("Rust backend: unproven std/test declaration type")?
+            };
             self.test_type(name, &[], &full, evidence, scope)?;
             if !checked.argument_types.is_empty() {
                 if checked.argument_types.len() != arguments.len() {

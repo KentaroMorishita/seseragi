@@ -112,7 +112,7 @@ fn compare(source: &str, expected: &[u8], failure: Option<&str>) {
     assert_eq!(output.stdout, expected);
     if let Some(message) = failure {
         let stderr = String::from_utf8(output.stderr).unwrap();
-        let location = format!("{}:2:", file.display());
+        let location = format!("{}:2:", file.file_name().unwrap().to_string_lossy());
         let (column, actual) = stderr
             .strip_prefix(&location)
             .unwrap()

@@ -139,7 +139,7 @@ esac
         assert_eq!(native.status.code(), ts.status.code(), "{native:?}");
         assert_eq!(native.stdout, ts.stdout);
         let message = String::from_utf8(native.stderr).unwrap();
-        let location = format!("{}:2:", source.display());
+        let location = format!("{}:2:", source.file_name().unwrap().to_string_lossy());
         let (column, message) = message
             .strip_prefix(&location)
             .unwrap()

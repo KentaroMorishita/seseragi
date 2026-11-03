@@ -533,9 +533,14 @@ fn map_execution_detects_dictionary_reordering_even_when_typescript_accepts_it()
         .current_dir(&directory)
         .output()
         .unwrap();
-    assert!(!output.status.success());
-    assert_ne!(output.stdout, STDOUT.as_bytes());
-    assert!(String::from_utf8_lossy(&output.stderr).contains("runtime defect"));
+    assert_eq!(output.status.code(), Some(70), "{output:?}");
+    assert!(output.stdout.is_empty(), "{output:?}");
+    assert!(
+        String::from_utf8_lossy(&output.stderr).starts_with(
+            "stdlib-map-parity.ssrg:35:36: Seseragi Defect: iterable.iterate is not a function"
+        ),
+        "{output:?}"
+    );
 }
 
 #[test]
