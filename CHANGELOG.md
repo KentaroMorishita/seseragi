@@ -1,5 +1,32 @@
 # Change Log
 
+## [0.61.142] - 2026-11-03
+
+### Added
+
+- The native target builds programs as Cargo projects with a cached runtime crate, and prepares the pinned Rust toolchain (1.97.1) automatically. `SESERAGI_NATIVE_TOOLCHAIN` overrides it and `SESERAGI_NATIVE_CACHE` sets the cache location.
+- Native support for process arguments, environment and current directory; process signals with graceful shutdown; and child processes.
+- Native file system support: exists, metadata, canonicalize, byte and chunk reads and writes, directory operations, moves, removal and temporary files; chunked, line and stream stdin reads.
+- Native text and byte APIs: `std/text` length, scalar, trim, replaceAll, case conversion, UTF-8 encoding, Unicode normalization and classification, graphemes, `std/bytes`, and Base64, Base64URL and Hex conversions.
+- Native `std/regex` compile, match, search, findAll, split and replace.
+- Native time and randomness: `Clock.now` and the remaining Duration APIs, date and time creation, parsing and formatting, timezones with the bundled tzdb, `std/random` with the same sequences and seeds as TS, and `std/entropy`.
+- Native `std/non-empty-list`, `std/transformer/maybe`, `std/transformer/either`, ReaderT, StateT and WriterT, Effect `attempt`, `fromMaybe` and `forEachUntil`, and `std/log`.
+- `seseragi test --target native` and `seseragi benchmark --target native` run `std/test` suites and `std/benchmark` on the native target.
+- Standard error types have the same Show and Eq instances on native and TS.
+- The language server warns about features that are unavailable on the native and WASM targets.
+
+### Fixed
+
+- TS string literals are emitted with JSON escapes, so a NUL followed by a digit stays valid.
+- Bindings named after TS reserved words, including `arguments`, are renamed safely, and the implicit unit argument can no longer shadow a global `unit`.
+- Saved unary runtime effect functions, saved bare function references such as `logs.log`, a saved prelude `readLine`, and saved or partially applied non-empty-list functions keep working as function values on TS.
+- Type parameter identity is kept through alias expansion, and the standard `Unit` identity through signatures and aliases.
+- StateT `put` and `get` are inferred inside `do` blocks, queue element types are inferred from later uses, and re-exported queue functions stay callable.
+- Local no-argument functions are returned as `Unit -> T`, structs can be constructed through a namespace such as `regex.RegexSpan`, and alias field origins resolve without a direct import.
+- Empty list annotations import their element types in generated TS.
+- TS standard functions accept their Unit argument; Duration projection overflow is an Int overflow defect; write close failures are reported as WriteFile errors; Node keeps running after a handled stderr write failure; and `main` failing with DurationError or BenchmarkFailure selects the right Show instance.
+- `seseragi dev` rejects `process` target packages before binding a port.
+
 ## [0.61.141] - 2026-11-02
 
 ### Added
