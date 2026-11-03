@@ -524,6 +524,22 @@ fn native_build_rejects_symlinked_build_inputs() {
         .contains("symlink"));
 }
 
+/// Runs a published program. A sibling thread may fork while this program was
+/// still being copied, leaving the new executable briefly open for writing in
+/// that child until it execs. Linux reports that as ETXTBSY, so retry briefly.
+fn run_published(path: &Path) -> std::process::Output {
+    let mut attempts = 0;
+    loop {
+        match Command::new(path).output() {
+            Err(error) if error.kind() == io::ErrorKind::ExecutableFileBusy && attempts < 100 => {
+                attempts += 1;
+                std::thread::sleep(std::time::Duration::from_millis(50));
+            }
+            result => return result.unwrap(),
+        }
+    }
+}
+
 #[test]
 fn concurrent_builds_of_the_same_project_keep_each_published_program() {
     let fixture = Fixture::new();
@@ -545,7 +561,7 @@ fn concurrent_builds_of_the_same_project_keep_each_published_program() {
                         &fixture.toolchain,
                     )
                     .unwrap();
-                let result = Command::new(output).output().unwrap();
+                let result = run_published(&output);
                 assert!(result.status.success(), "{result:?}");
                 assert_eq!(result.stdout, format!("{value}\n").as_bytes());
             });
