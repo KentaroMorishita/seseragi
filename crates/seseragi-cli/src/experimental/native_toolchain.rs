@@ -51,7 +51,26 @@ pub(super) fn cache_root() -> Result<PathBuf, String> {
     };
     fs::create_dir_all(&root)
         .map_err(|error| format!("could not create native cache {}: {error}", root.display()))?;
-    fs::canonicalize(root).map_err(|error| error.to_string())
+    fs::canonicalize(root)
+        .map(simplified)
+        .map_err(|error| error.to_string())
+}
+
+/// Turns a Windows verbatim drive path (`\\?\C:\dir`) back into `C:\dir`.
+/// rustc and MSVC `link.exe` mishandle verbatim paths in build-script output
+/// names (`cannot open input file '.obj'`). Other paths are returned as is.
+fn simplified(path: PathBuf) -> PathBuf {
+    let text = path.to_string_lossy();
+    match text.strip_prefix(r"\\?\") {
+        Some(rest)
+            if cfg!(windows)
+                && rest.as_bytes().get(1) == Some(&b':')
+                && rest.as_bytes()[0].is_ascii_alphabetic() =>
+        {
+            PathBuf::from(rest)
+        }
+        _ => path,
+    }
 }
 
 pub(super) struct Toolchain {
