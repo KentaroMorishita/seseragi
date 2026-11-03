@@ -77,7 +77,9 @@ jobs:
         run: cargo test -p seseragi-lsp
 
   package:
-    if: inputs.linux-portability-only != true
+    # Every package target is macOS or Windows. Pull requests rely on the Linux
+    # linux-native package lane; push to main and manual runs keep these hosts.
+    if: inputs.linux-portability-only != true && github.event_name != 'pull_request'
     name: ${{ matrix.target }}
     strategy:
       fail-fast: false
