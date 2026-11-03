@@ -197,7 +197,9 @@ else if (['cancel-captured', 'cancel-inherited', 'cancel-stream', 'stream-input-
     else if (mode === 'default-limit') { alive(); process.stdout.write(Buffer.alloc(8 * 1024 * 1024 + 1)); }
     else if (mode === 'arguments') process.stdout.write(JSON.stringify(process.argv.slice(3)));
     else if ((mode === 'directory' || mode === 'default-directory')) process.stdout.write(basename(process.cwd()));
-    else if (mode === 'environment') process.stdout.write(process.env[''] + '|' + process.env.A);
+    // libuv drops a leading '=' entry (the empty name) from process.env on POSIX,
+    // so Node cannot observe it there; the spawn itself is still checked via A=B.
+    else if (mode === 'environment') process.stdout.write((process.env[''] ?? (process.platform === 'win32' ? undefined : 'empty')) + '|' + process.env.A);
     else if (mode === 'context') process.stdout.write([process.env.SESERAGI_CHILD_VALUE, process.env.SESERAGI_CHILD_EMPTY === '', process.env.SESERAGI_CHILD_PARENT === undefined].join('|'));
     else if (mode === 'duplex' || mode === 'stream-duplex') { process.stdout.write(String(Buffer.concat(input).length)); }
     else if (mode !== 'empty') { process.stdout.write(Buffer.concat(input)); process.stderr.write('warn'); process.exitCode = 7; }
