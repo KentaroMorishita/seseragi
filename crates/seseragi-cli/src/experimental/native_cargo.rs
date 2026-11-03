@@ -243,7 +243,13 @@ fn target_root(directory: &Path, requested: Option<OsString>) -> Result<PathBuf,
         // MSVC build-script outputs must fit even when the source project is
         // deep in a checkout. Keep targets outside that tree on Windows.
         None if cfg!(windows) => Ok(native_toolchain::cache_root()?.join("build")),
-        None => Ok(directory.parent().unwrap().join("target")),
+        // Projects share one target beside, not inside, `.seseragi/native/`,
+        // which holds only per-input project directories.
+        None => Ok(directory
+            .parent()
+            .and_then(Path::parent)
+            .ok_or("native project must be under .seseragi/native")?
+            .join("native-target")),
     }
 }
 

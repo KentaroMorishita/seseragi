@@ -31,7 +31,9 @@ fn cargo_targets_use_one_full_key_and_separate_inputs_and_entry_points() {
                 native_toolchain::cache_root().unwrap().join("build")
             );
         } else {
-            assert_eq!(default, project.directory.parent().unwrap().join("target"));
+            let native = project.directory.parent().unwrap();
+            assert_eq!(default, native.parent().unwrap().join("native-target"));
+            assert!(!default.starts_with(native));
         }
         assert!(!default.starts_with(&project.directory));
         let selected = root.path().join("cargo-output");
