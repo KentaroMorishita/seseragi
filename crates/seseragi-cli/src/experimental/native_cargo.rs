@@ -42,6 +42,15 @@ overflow-checks = false
 opt-level = 3
 "#;
 
+const WINDOWS_MAIN_STACK: &str = r#"    if std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
+        if std::env::var("CARGO_CFG_TARGET_ENV").as_deref() == Ok("msvc") {
+            println!("cargo:rustc-link-arg-bins=/STACK:8388608");
+        } else {
+            println!("cargo:rustc-link-arg-bins=-Wl,--stack,8388608");
+        }
+    }
+"#;
+
 pub(crate) fn build(
     input: &Path,
     entry: &str,
@@ -360,6 +369,10 @@ impl Config {
     fn build_script(&self) -> String {
         let mut source =
             "fn main() {\n    println!(\"cargo:rerun-if-changed=build.rs\");\n".to_owned();
+        // Windows reserves only 1 MiB for the main thread. Unoptimized
+        // development builds need the 8 MiB Linux and macOS give by default
+        // to reach managed limits such as the JSON codec nesting bound.
+        source.push_str(WINDOWS_MAIN_STACK);
         for library in &self.libraries {
             source.push_str(&format!(
                 "    println!(\"cargo:rustc-link-lib={{}}\", {library:?});\n"
