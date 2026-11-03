@@ -68,6 +68,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.97.1
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: local-web-product-e2e-product-e2e
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24.22.1"

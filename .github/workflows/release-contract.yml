@@ -103,6 +103,11 @@ jobs:
         with:
           toolchain: 1.97.1
           targets: wasm32-unknown-unknown
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-contract-check
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24.22.1"

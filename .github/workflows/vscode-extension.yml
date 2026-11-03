@@ -65,6 +65,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.97.1
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: vscode-extension-test
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version

@@ -121,6 +121,12 @@ jobs:
           toolchain: 1.97.1
           targets: wasm32-unknown-unknown
           components: rustfmt
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        if: runner.os == 'Linux'
+        with:
+          key: dts-portable-convert
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24.22.1"
