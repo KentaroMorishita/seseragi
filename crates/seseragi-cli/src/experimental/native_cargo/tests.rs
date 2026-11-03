@@ -7,6 +7,78 @@ const RUNTIME: &str = "pub fn answer() -> i64 { 42 }\n";
 const SOURCE: &str = "fn main() { println!(\"{}\", seseragi_native_runtime::answer()); }\n";
 
 #[test]
+fn cargo_targets_use_one_full_key_and_separate_inputs_and_entry_points() {
+    let root = tempfile::tempdir().unwrap();
+    let source = root
+        .path()
+        .join("workspace/packages/examples/nested/native-project");
+    fs::create_dir_all(&source).unwrap();
+    for name in ["main.ssrg", "other.ssrg"] {
+        fs::write(source.join(name), "").unwrap();
+    }
+    let mut targets = Vec::new();
+    for (name, entry) in [
+        ("main.ssrg", "main"),
+        ("main.ssrg", "other"),
+        ("other.ssrg", "main"),
+        ("main.ssrg", "main"),
+    ] {
+        let mut project = Project::open(&source.join(name), entry).unwrap();
+        let default = target_root(&project.directory, None).unwrap();
+        if cfg!(windows) {
+            assert_eq!(
+                default,
+                native_toolchain::cache_root().unwrap().join("build")
+            );
+        } else {
+            assert_eq!(default, project.directory.parent().unwrap().join("target"));
+        }
+        assert!(!default.starts_with(&project.directory));
+        let selected = root.path().join("cargo-output");
+        assert_eq!(
+            target_root(&project.directory, Some(selected.clone().into())).unwrap(),
+            selected.join("seseragi-native")
+        );
+        let relative = PathBuf::from("native cargo output 雪");
+        assert_eq!(
+            target_root(&project.directory, Some(relative.clone().into())).unwrap(),
+            std::path::absolute(relative)
+                .unwrap()
+                .join("seseragi-native")
+        );
+        assert_eq!(
+            target_root(&project.directory, Some("".into())).unwrap(),
+            default
+        );
+
+        // Model the default Windows cache independently of the checkout depth.
+        project.target = "C:/Users/developer/AppData/Local/seseragi/cache/native/build".into();
+        let target = project
+            .target_for(BuildProfile::Development, RUNTIME)
+            .unwrap();
+        assert_eq!(target.parent(), Some(project.target.as_path()));
+        let key = target.file_name().unwrap().to_str().unwrap();
+        assert_eq!(key.len(), 64);
+        assert!(key.bytes().all(|byte| byte.is_ascii_hexdigit()));
+        for artifact in [
+            "debug/build/seseragi-program-0123456789abcdef/build_script_build-0123456789abcdef.exe",
+            "x86_64-pc-windows-msvc/debug/deps/libseseragi_native_runtime-0123456789abcdef.rlib",
+        ] {
+            let path = target.join(artifact);
+            assert!(
+                path.as_os_str().to_string_lossy().encode_utf16().count() < 260,
+                "{}",
+                path.display()
+            );
+        }
+        targets.push(target);
+    }
+    assert_ne!(targets[0], targets[1]);
+    assert_ne!(targets[0], targets[2]);
+    assert_eq!(targets[0], targets[3]);
+}
+
+#[test]
 fn path_remapping_preserves_environment_flag_precedence_and_argument_boundaries() {
     let remapping = "native cargo 雪 =.";
     for (encoded, plain, prefix) in [

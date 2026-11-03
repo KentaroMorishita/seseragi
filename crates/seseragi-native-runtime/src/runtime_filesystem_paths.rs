@@ -406,12 +406,14 @@ fn native_temporary_base() -> std::path::PathBuf {
 fn native_create_temporary(prefix: &str, file: bool) -> std::io::Result<NativeTemporary> {
     let root = loop {
         let root = native_temporary_base().join(format!("{prefix}{}", native_unique_suffix()));
-        let mut builder = std::fs::DirBuilder::new();
+        let builder = std::fs::DirBuilder::new();
         #[cfg(unix)]
-        {
+        let builder = {
             use std::os::unix::fs::DirBuilderExt;
+            let mut builder = builder;
             builder.mode(0o700);
-        }
+            builder
+        };
         match builder.create(&root) {
             Ok(()) => break root,
             Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,

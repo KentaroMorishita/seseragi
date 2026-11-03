@@ -359,7 +359,7 @@ fn native_poll_stdin(bytes: &mut [u8]) -> std::io::Result<Option<usize>> {
         fn GetFileType(handle: *mut c_void) -> u32;
         fn PeekNamedPipe(
             handle: *mut c_void,
-            buffer: *mut u8,
+            buffer: *mut c_void,
             size: u32,
             read: *mut u32,
             available: *mut u32,

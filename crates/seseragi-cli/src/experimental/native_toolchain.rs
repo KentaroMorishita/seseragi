@@ -27,7 +27,7 @@ pub(super) fn host() -> Result<&'static str, String> {
     }
 }
 
-fn cache_root() -> Result<PathBuf, String> {
+pub(super) fn cache_root() -> Result<PathBuf, String> {
     let nonempty = |key| std::env::var_os(key).filter(|value| !value.is_empty());
     let root = if let Some(root) = nonempty("SESERAGI_NATIVE_CACHE") {
         PathBuf::from(root)

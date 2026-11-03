@@ -95,17 +95,7 @@ impl Project {
             .open(directory.join("build.lock"))
             .map_err(|error| error.to_string())?;
         lock.lock().map_err(|error| error.to_string())?;
-        let target = match std::env::var_os("CARGO_TARGET_DIR").filter(|value| !value.is_empty()) {
-            Some(base) => {
-                let base = std::path::absolute(base).map_err(|error| error.to_string())?;
-                let key = format!(
-                    "{:x}",
-                    Sha256::digest(directory.to_string_lossy().as_bytes())
-                );
-                base.join("seseragi-native").join(key)
-            }
-            None => directory.join("target"),
-        };
+        let target = target_root(&directory, std::env::var_os("CARGO_TARGET_DIR"))?;
         Ok(Self {
             directory,
             target,
@@ -219,6 +209,7 @@ impl Project {
         let identity = format!(
             "{:?}",
             (
+                &self.directory,
                 env!("CARGO_PKG_VERSION"),
                 Sha256::digest(runtime.as_bytes()),
                 native_toolchain::version(),
@@ -232,6 +223,18 @@ impl Project {
         Ok(self
             .target
             .join(format!("{:x}", Sha256::digest(identity.as_bytes()))))
+    }
+}
+
+fn target_root(directory: &Path, requested: Option<OsString>) -> Result<PathBuf, String> {
+    match requested.filter(|value| !value.is_empty()) {
+        Some(base) => Ok(std::path::absolute(base)
+            .map_err(|error| error.to_string())?
+            .join("seseragi-native")),
+        // MSVC build-script outputs must fit even when the source project is
+        // deep in a checkout. Keep targets outside that tree on Windows.
+        None if cfg!(windows) => Ok(native_toolchain::cache_root()?.join("build")),
+        None => Ok(directory.parent().unwrap().join("target")),
     }
 }
 

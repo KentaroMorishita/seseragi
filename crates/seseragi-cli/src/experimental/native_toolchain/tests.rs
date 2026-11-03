@@ -59,8 +59,24 @@ mod unix {
     use super::*;
     use std::os::unix::fs::PermissionsExt;
 
+    fn write_download(path: &Path, source: &str) -> Result<(), String> {
+        // As with curl, only the downloader process opens the output for writing.
+        // A concurrent fork in this test process cannot inherit that descriptor
+        // and keep the executable busy after the downloader has returned.
+        let output = Command::new("/bin/sh")
+            .args(["-c", "printf '%s' \"$2\" > \"$1\"", "write-download"])
+            .arg(path)
+            .arg(source)
+            .output()
+            .map_err(|error| error.to_string())?;
+        if !output.status.success() {
+            return Err(String::from_utf8_lossy(&output.stderr).into_owned());
+        }
+        Ok(())
+    }
+
     fn script(path: &Path, source: &str) {
-        fs::write(path, source).unwrap();
+        write_download(path, source).unwrap();
         fs::set_permissions(path, fs::Permissions::from_mode(0o700)).unwrap();
     }
 
@@ -217,20 +233,19 @@ mod unix {
     fn installer_is_checksum_checked_and_uses_only_private_homes_and_fixed_arguments() {
         for host in HOSTS {
             let directory = tempfile::tempdir().unwrap();
-            let payload = b"#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$CARGO_HOME-arguments\"\nprintf '%s\\n' \"$RUSTUP_HOME\" > \"$CARGO_HOME-rustup\"\nprintf '%s\\n' \"$RUSTUP_DIST_SERVER\" > \"$CARGO_HOME-server\"\n";
+            let payload = "#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$CARGO_HOME-arguments\"\nprintf '%s\\n' \"$RUSTUP_HOME\" > \"$CARGO_HOME-rustup\"\nprintf '%s\\n' \"$RUSTUP_DIST_SERVER\" > \"$CARGO_HOME-server\"\n";
             let expected = format!("{:x}  rustup-init\n", Sha256::digest(payload));
             let mut urls = Vec::new();
             install_with(directory.path(), host, |url, path| {
                 urls.push(url.to_owned());
-                fs::write(
+                write_download(
                     path,
                     if url.ends_with(".sha256") {
-                        expected.as_bytes()
+                        &expected
                     } else {
                         payload
                     },
                 )
-                .map_err(|error| error.to_string())
             })
             .unwrap();
             assert_eq!(urls.len(), 2);
@@ -258,21 +273,20 @@ mod unix {
                 "https://static.rust-lang.org"
             );
             let error = install_with(directory.path(), host, |_, path| {
-                fs::write(path, payload).map_err(|error| error.to_string())
+                write_download(path, payload)
             })
             .unwrap_err();
             assert!(error.contains("checksum mismatch"), "{error}");
             fs::remove_file(directory.path().join("cargo-arguments")).unwrap();
             let error = install_with(directory.path(), host, |url, path| {
-                fs::write(
+                write_download(
                     path,
                     if url.ends_with(".sha256") {
-                        &b"invalid"[..]
+                        "invalid"
                     } else {
                         payload
                     },
                 )
-                .map_err(|error| error.to_string())
             })
             .unwrap_err();
             assert!(error.contains("checksum mismatch"), "{error}");
