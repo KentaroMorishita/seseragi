@@ -792,6 +792,13 @@ full gateを実行した場合は、作業ログまたはPR本文へ「必要理
 - PR起点のworkflowは`concurrency`（workflow + event + PR番号、PRだけcancel）を持つ。
 - UbuntuのRust jobは`Swatinem/rust-cache@v2`をjob別keyで使い、保存は`main`へのpushだけ
   （PRは復元のみ）。`CARGO_INCREMENTAL=0`は維持する。
+- `rust-backend.yml`の`file-transform`は全OSで`shard: [1..6]`のmatrixに分割する。CLI suite群
+  （`basic_standard`ほか21 binary、計307 test）は`cargo nextest run --partition count:<shard>/6`で
+  実行し、6 shardの和集合は従来の`cargo test`と同一（`cargo nextest list`と
+  `cargo test -- --list`の一覧が一致することを確認済み）。各testはrustc `-O`、tsc、Bun、Nodeを
+  起動するCPU律速で、`cargo test`がbinaryを直列実行していたことが長時間化の原因だった。
+  CLI suite以外のstepは`shard == 1`だけで実行する。shard数を変える場合はmatrixと
+  partitionの分母を同時に変える。
 
 ### local MacでmacOS CIを再現する手順
 
@@ -811,6 +818,8 @@ cargo test --locked -p seseragi-backend-rust --lib -- \
   runtime::decimal_tests runtime::json_tests runtime::json_codec_tests \
   runtime::json_decoder_tests runtime::json_container_codec_tests \
   runtime::json_derived_adt_tests runtime::hashing_tests runtime::map_tests runtime::set_tests
+# CIは同じ集合をnextestの6 partitionに分割する（`cargo install cargo-nextest --locked`、
+# 例: `cargo nextest run --locked -p seseragi-cli --partition count:1/6 --test ...`）。
 cargo test --locked -p seseragi-cli \
   --test filesystem --test fibers --test async_filesystem --test inherited_equality \
   --test string_equality --test text_processing --test int_parse --test float_parse \
