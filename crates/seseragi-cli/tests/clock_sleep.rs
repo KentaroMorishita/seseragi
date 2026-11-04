@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 #[allow(dead_code)]
 #[path = "support/runtime_diagnostics.rs"]
 mod diagnostics;
@@ -37,6 +40,7 @@ struct OwnedChild {
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command
@@ -224,18 +228,21 @@ fn build_programs(
     project: bool,
     scratch: &Path,
 ) -> Vec<(String, PathBuf, Option<PathBuf>, bool)> {
+    build_programs_with_provider(source, project, scratch, PROVIDER)
+}
+
+fn build_programs_with_provider(
+    source: &Path,
+    project: bool,
+    scratch: &Path,
+    provider: &str,
+) -> Vec<(String, PathBuf, Option<PathBuf>, bool)> {
     let native = scratch.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .args(["experimental", "build-native"])
             .arg(&source)
-            .args([
-                "--entry",
-                "main",
-                "--provider",
-                "std/clock::Clock=seseragi/runtime-native#clock-sleep",
-                "--out-dir",
-            ])
+            .args(["--entry", "main", "--provider", provider, "--out-dir"])
             .arg(&native),
         &scratch,
     ));
@@ -245,7 +252,10 @@ fn build_programs(
         None,
         true,
     )];
-    let ts_package = (!project).then(|| standalone_ts_package(source, scratch));
+    let metadata: serde_json::Value =
+        serde_json::from_slice(&fs::read(native.join("rust-backend.json")).unwrap()).unwrap();
+    let uses_clock = metadata.get("providers").is_some();
+    let ts_package = (!project && uses_clock).then(|| standalone_ts_package(source, scratch));
     let ts_input = ts_package.as_deref().unwrap_or(source);
     let frozen = ts_package.as_ref().map(|package| {
         ["seseragi.toml", "seseragi.lock", "src/main.ssrg"]
@@ -338,6 +348,7 @@ fn build_programs(
 }
 
 const PROVIDER: &str = "std/clock::Clock=seseragi/runtime-native#clock-sleep";
+const CLOCK_PROVIDER: &str = "std/clock::Clock=seseragi/runtime-native#clock";
 const ORIGINAL: &str =
     include_str!("../../../examples/spec/fixtures/rust-backend/filesystem-delayed-transform.ssrg");
 const OLD: &[u8] = b"old output survives a pending/cancelled/failed transform";
@@ -345,6 +356,170 @@ const INPUT: &[u8] = "初期値\n42\n".as_bytes();
 const CREATED: &str = "created\n";
 const ACQUIRED: &str = "acquired\npending\n";
 const RELEASED: &str = "release-start\nreleased\n";
+
+#[test]
+fn duration_operations_match_original_raw_strict_ts_bun_node_and_native() {
+    compare_clock_fixture("clock-duration", PROVIDER, false);
+}
+
+#[test]
+fn duration_projection_matches_ts_at_and_above_the_safe_int_boundary() {
+    compare_clock_fixture("clock-duration-projection", PROVIDER, true);
+}
+
+#[test]
+fn clock_now_keeps_saved_cold_replay_and_finalizers_on_all_targets() {
+    compare_clock_fixture("clock-now", CLOCK_PROVIDER, false);
+}
+
+#[test]
+fn clock_now_evaluates_the_unit_argument_before_constructing_the_cold_effect() {
+    compare_clock_fixture("clock-now-unit-defect", CLOCK_PROVIDER, true);
+}
+
+fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("main.ssrg");
+    let original =
+        fs::read(root().join(format!("examples/spec/fixtures/rust-backend/{name}.ssrg"))).unwrap();
+    fs::write(&source, &original).unwrap();
+    let expected =
+        fs::read(root().join(format!("examples/spec/fixtures/rust-backend/{name}.stdout")))
+            .unwrap();
+    let programs = build_programs_with_provider(&source, false, &scratch.0, provider);
+    let metadata: serde_json::Value =
+        serde_json::from_slice(&fs::read(scratch.0.join("native/rust-backend.json")).unwrap())
+            .unwrap();
+    if provider != CLOCK_PROVIDER {
+        assert!(metadata.get("providers").is_none());
+    } else {
+        assert_eq!(metadata["providers"].as_array().unwrap().len(), 1);
+        assert_eq!(
+            metadata["providers"][0]["provider"],
+            "seseragi/runtime-native#clock"
+        );
+        assert_eq!(metadata["providers"][0]["selection"], "command-line");
+        assert_eq!(
+            metadata["providers"][0]["supportedOperations"],
+            serde_json::json!(["std/clock::Clock#now", "std/clock::Clock#sleep"])
+        );
+    }
+    let mut failures = Vec::new();
+    let mut expected_defect = None;
+    for (label, executable, argument, native) in programs {
+        let directory = scratch.0.join(format!("run-{label}"));
+        fs::create_dir(&directory).unwrap();
+        let mut command = Command::new(executable);
+        command.current_dir(&directory).env("PATH", "");
+        if let Some(argument) = argument {
+            command.arg(argument);
+        }
+        if native {
+            command.env("SESERAGI_NATIVE_METRICS", "1");
+        }
+        let result = bounded(&mut command, &directory);
+        let expected_exit = if defect { 70 } else { 0 };
+        if result.status.code() != Some(expected_exit) || result.stdout != expected {
+            failures.push(format!("{}: {result:?}", directory.display()));
+        }
+        if native {
+            let stderr = String::from_utf8_lossy(&result.stderr);
+            assert!(stderr.contains("managed-live=0"), "{name}: {stderr}");
+            if defect {
+                assert!(
+                    stderr.contains("Seseragi Defect: Seseragi Int overflow"),
+                    "{name}: {stderr}"
+                );
+                let diagnostic = diagnostics::ts_defect_from_native(&result.stderr);
+                expected_defect = Some(if provider == CLOCK_PROVIDER {
+                    let positioned = diagnostic.strip_prefix("main.ssrg:").unwrap();
+                    format!("src/main.ssrg:{positioned}")
+                } else {
+                    diagnostic
+                });
+            }
+            if provider == CLOCK_PROVIDER {
+                assert!(stderr.contains("timers-live=0"), "{stderr}");
+            }
+        } else if defect {
+            assert_eq!(
+                String::from_utf8_lossy(&result.stderr),
+                *expected_defect.as_ref().unwrap(),
+                "{name}"
+            );
+        } else {
+            assert!(result.stderr.is_empty(), "{name}: {result:?}");
+        }
+    }
+    assert_eq!(fs::read(source).unwrap(), original);
+    assert!(failures.is_empty(), "{name}: {}", failures.join("\n"));
+}
+
+#[test]
+fn clock_now_provider_preflight_preserves_outputs_without_an_admitted_selection() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("main.ssrg");
+    fs::write(&source, "import * as clock from \"std/clock\"\npub effect fn main -> Unit with Clock = do { clock.now (); succeed () }\n").unwrap();
+    for provider in [
+        None,
+        Some(PROVIDER),
+        Some("std/clock::Clock=seseragi/runtime-bun#clock"),
+    ] {
+        let output = scratch.0.join("rejected").join("program.rs");
+        let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+        command
+            .args(["experimental", "emit-rust"])
+            .arg(&source)
+            .args(["--entry", "main", "--output"])
+            .arg(&output);
+        if let Some(provider) = provider {
+            command.args(["--provider", provider]);
+        }
+        let result = bounded(&mut command, &scratch.0);
+        assert_eq!(result.status.code(), Some(2), "{result:?}");
+        assert!(result.stdout.is_empty());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("SES-RUST-0001"));
+        assert!(!output.parent().unwrap().exists());
+    }
+}
+
+#[test]
+fn now_only_package_rejects_manifest_clock_pins_before_publishing_outputs() {
+    let scratch = Scratch::new();
+    let package = scratch.0.join("package");
+    fs::create_dir_all(package.join("src")).unwrap();
+    fs::write(package.join("src/main.ssrg"), "import * as clock from \"std/clock\"\npub effect fn main -> Unit with Clock = do { clock.now (); succeed () }\n").unwrap();
+    fs::write(package.join("seseragi.toml"), concat!(
+        "[package]\nname = \"acceptance/native-now-pin\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n",
+        "[run]\nentry = \"main\"\ntarget = \"process\"\n",
+        "[providers]\n\"std/clock::Clock\" = \"seseragi/runtime-bun#clock\"\n",
+    )).unwrap();
+    lock(&package, &scratch.0);
+    let frozen = ["seseragi.toml", "seseragi.lock", "src/main.ssrg"]
+        .map(|name| (name, fs::read(package.join(name)).unwrap()));
+    let output = scratch.0.join("rejected").join("program.rs");
+    let result = bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "emit-rust"])
+            .arg(&package)
+            .args(["--entry", "main", "--provider", CLOCK_PROVIDER, "--output"])
+            .arg(&output),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(2), "{result:?}");
+    assert!(result.stdout.is_empty());
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        error.contains("SES-RUST-0001")
+            && error.contains("seseragi.toml:")
+            && error.contains("manifest provider"),
+        "{error}"
+    );
+    assert!(!output.parent().unwrap().exists());
+    for (name, bytes) in frozen {
+        assert_eq!(fs::read(package.join(name)).unwrap(), bytes, "{name}");
+    }
+}
 
 fn run_transform(
     programs: &[(String, PathBuf, Option<PathBuf>, bool)],

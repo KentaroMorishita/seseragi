@@ -1,0 +1,73 @@
+import * as effects from "std/effect"
+import * as iterator from "std/iterator"
+
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+
+fn capture<R,E,A> operation:Effect<R,E,A> -> Effect<R,Never,Either<E,A>> =
+  effects.attempt operation
+fn require<E,A> error:E -> value:Maybe<A> -> Effect<{},E,A> =
+  effects.fromMaybe error value
+fn visit<C,R,E,A> action:(A -> Effect<R,E,effects.LoopControl>) -> values:C -> Effect<R,E,Unit>
+where Iterable<C,A> = effects.forEachUntil action values
+fn advance n:Int -> Maybe<(Int,Int)> =
+  if n > 3 then Just (n / 0,n + 1) else Just (n,n + 1)
+newtype Counting = Int
+instance Iterable<Counting,Int> {
+  fn iterate values:Counting -> Iterator<Int> = match values {
+    Counting start -> iterator.unfold advance start
+  }
+}
+fn controlName control:effects.LoopControl -> String = match control {
+  effects.Continue -> "continue"
+  effects.Break -> "break"
+}
+effect fn observe n:Int = do {
+  say (show n)
+  effects.succeed (if n == 3 then effects.Break else effects.Continue)
+}
+effect fn keepGoing n:Int = do {
+  say ("all: " + show n)
+  effects.succeed effects.Continue
+}
+effect fn stopWithFailure n:Int -> effects.LoopControl fails String with Console = do {
+  say ("failure: " + show n)
+  if n == 2 then effects.fail "stopped" else effects.succeed effects.Continue
+}
+effect fn neverCalled _n:Int -> effects.LoopControl = effects.die "empty callback"
+pub effect fn main = do {
+  success <- capture (effects.succeed 42)
+  say (match success { Left _error -> "unexpected"; Right value -> "Right " + show value })
+  failure <- capture (effects.fail "typed")
+  say (match failure { Left error -> error; Right _value -> "unexpected" })
+  just <- capture (require "missing" (Just 0))
+  say (show just)
+  let absent:Maybe<Int> = Nothing
+  nothing <- capture (require "missing" absent)
+  say (show nothing)
+  let saved:Maybe<String> -> Effect<{},Int,String> = effects.fromMaybe 7
+  missing <- effects.attempt (saved Nothing)
+  say (show missing)
+  let savedAttempt:Effect<{},String,Unit> -> Effect<{},Never,Either<String,Unit>> = effects.attempt
+  unit <- savedAttempt (effects.succeed ())
+  say (match unit { Left error -> error; Right _value -> "unit" })
+  callback <- capture (require "missing" (Just (\n:Int -> n + 1)))
+  say (match callback { Left error -> error; Right f -> show (f 41) })
+  say (controlName effects.Continue)
+  say (controlName effects.Break)
+  visit observe [1,2,3,4]
+  visit observe `[1,2,3,4]
+  visit observe (1..=4)
+  visit observe (Counting 1)
+  visit observe (iterator.unfold advance 1)
+  visit keepGoing [4,5]
+  let empty:Array<Int> = []
+  effects.forEachUntil neverCalled empty
+  let partial:Array<Int> -> Effect<{console:Console},Never,Unit> = effects.forEachUntil observe
+  partial [3,4]
+  let savedVisit:(Int -> Effect<{console:Console},Never,effects.LoopControl>) -> Array<Int> -> Effect<{console:Console},Never,Unit> = effects.forEachUntil
+  savedVisit observe [3,4]
+  stopped <- effects.attempt (visit stopWithFailure [1,2,3])
+  say (match stopped { Left error -> error; Right _value -> "unexpected" })
+  say "done"
+}

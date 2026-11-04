@@ -1,0 +1,13 @@
+Just (1, 1)
+Just (4(), 5)
+Just (1, 1)
+Just (kept, 7)
+Nothing
+[(1, 1), (2, 2)]
+[]
+Left stopped
+Just (雪, 雪)
+Just (True, 6)
+Just ((2, 2), inner)
+Just (kept, -9007199254740991)
+Just (kept, 9007199254740991)

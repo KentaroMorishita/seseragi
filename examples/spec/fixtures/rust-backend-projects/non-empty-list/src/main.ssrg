@@ -1,0 +1,30 @@
+import * as model from "./model"
+import * as nonEmpty from "std/non-empty-list"
+import * as maybe from "std/maybe"
+import * as arrays from "std/array"
+
+alias Values<A> = model.Values<A>
+fn order value:Ordering -> String = match value { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
+pub effect fn main = do {
+  let singleton:model.Key -> Values<model.Key> = nonEmpty.singleton
+  let fromList:List<model.Key> -> Maybe<Values<model.Key>> = nonEmpty.fromList
+  let toList:Values<model.Key> -> List<model.Key> = nonEmpty.toList
+  let values = nonEmpty.cons (model.make 1) `[model.make 2,model.make 3]
+  let same = model.cons (model.make 11) `[model.make 12,model.make 13]
+  let none:List<model.Key> = `[]
+  let reduced = model.reduce model.add
+  println (show (singleton (model.make 7)))
+  println (show (fromList none))
+  println (show (fromList (toList values)))
+  println (show (model.first values))
+  println (show (model.rest values))
+  println (show (reduced values))
+  println (show (values == same))
+  println (order (compare values same))
+  println (show (hash values == hash same))
+  println (debug values)
+  println (show (append values (singleton (model.make 4))))
+  println (show (arrays.fromIterable values))
+  println (show (map show values))
+  println (show (maybe.traverse (\value:model.Key -> Just value) values))
+}

@@ -3,6 +3,8 @@
 Only measurement entrypoints are attached. A baseline directory is a temporary
 input to the final balanced comparison, not a rewritten program body.
 """
+from native_runtime import compile_native
+
 import argparse
 import hashlib
 import json
@@ -104,7 +106,7 @@ def main():
         offset = generated.rfind("\nfn main()")
         assert offset > 1000
         (stage / "timing.rs").write_text(generated[:offset] + RUST.replace("KERNELS", ",".join(symbols)))
-        run(["rustc", "--edition=2021", "-O", stage / "timing.rs", "-o", stage / "timing"])
+        compile_native(stage / "timing.rs", stage / "timing")
     (stage / "measure.mjs").write_text(JS)
     commands = {"bun": ["bun", stage / "measure.mjs"], "node": ["node", stage / "measure.mjs"]}
     controls = ["module.mjs", "measure.mjs"]

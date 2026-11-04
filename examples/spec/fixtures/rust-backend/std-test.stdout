@@ -1,0 +1,22 @@
+ok
+values are not equal|Just 42|Just 0
+ok
+values are equal|Nothing|Just 1
+ok
+values are not equal|Just key:1|Just key:2
+values are not equal|Just "雪\n\""|Just "🙂"
+ok
+values are not equal|Just [1, 2]|Just [1, 3]
+ok
+expected true|Just true|Just false
+ok
+expected false|Just false|Just true
+explicit|雪
+boom
+ok
+unmatched|"typed"
+expected failure
+expected failure
+unmatched|manual
+explicit|manual
+manual|Nothing|Just x

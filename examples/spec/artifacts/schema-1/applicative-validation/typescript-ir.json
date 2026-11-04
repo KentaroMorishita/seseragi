@@ -872,7 +872,7 @@
                   ],
                   "bindings": [
                     {
-                      "name": "_function",
+                      "name": "__ssrg$source$function",
                       "type": {
                         "kind": "function",
                         "parameter": {
@@ -942,7 +942,7 @@
                                   "parameter": "",
                                   "body": {
                                     "kind": "call",
-                                    "callee": "_function",
+                                    "callee": "__ssrg$source$function",
                                     "arguments": [
                                       {
                                         "kind": "identifier",

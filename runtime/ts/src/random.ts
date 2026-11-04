@@ -1,5 +1,5 @@
-import { fromUint8Array, type Bytes } from "./bytes"
-import type { Effect, EffectContext } from "./effect"
+import { type Bytes, fromUint8Array } from "./bytes"
+import type { Effect, EffectContext, Unit } from "./effect"
 import type { NonEmptyList } from "./list"
 import { serviceEffect, type serviceFailure, serviceSuccess } from "./service"
 import { type Either, Left, Right } from "./sum"
@@ -82,19 +82,25 @@ export function randomSize(
     : Right(value as RandomSize)
 }
 
-export function algorithmId(): Effect<RandomEnvironment, never, string> {
+export function algorithmId(
+  _unit?: Unit
+): Effect<RandomEnvironment, never, string> {
   return serviceEffect(async (environment, context) =>
     serviceSuccess(await environment.random.algorithmId(context))
   )
 }
 
-export function nextBool(): Effect<RandomEnvironment, never, boolean> {
+export function nextBool(
+  _unit?: Unit
+): Effect<RandomEnvironment, never, boolean> {
   return serviceEffect(async (environment, context) =>
     serviceSuccess(await environment.random.nextBool(context))
   )
 }
 
-export function nextInt(): Effect<RandomEnvironment, never, number> {
+export function nextInt(
+  _unit?: Unit
+): Effect<RandomEnvironment, never, number> {
   return serviceEffect(async (environment, context) =>
     serviceSuccess(await environment.random.nextInt(context))
   )
@@ -109,7 +115,9 @@ export function intBetween(
   )
 }
 
-export function unitFloat(): Effect<RandomEnvironment, never, number> {
+export function unitFloat(
+  _unit?: Unit
+): Effect<RandomEnvironment, never, number> {
   return serviceEffect(async (environment, context) =>
     serviceSuccess(await environment.random.unitFloat(context))
   )

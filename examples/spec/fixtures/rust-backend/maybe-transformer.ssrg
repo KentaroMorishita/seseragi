@@ -1,0 +1,81 @@
+import * as mt from "std/transformer/maybe"
+import { MaybeT } from "std/transformer/maybe"
+
+struct Box<A> { value: A }
+instance Functor<Box> {
+  fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = Box { value: f box.value }
+}
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box { value }
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = Box { value: f.value box.value }
+}
+instance Monad<Box> {
+  fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = f box.value
+}
+struct Raw<A> { value: A }
+
+fn wrapMaybe<M<_>,A> value:Maybe<A> -> mt.MaybeT<M,A> where Monad<M> = mt.fromMaybe value
+fn lift<M<_>,A> value:M<A> -> mt.MaybeT<M,A> where Monad<M> = mt.lift value
+fn run<M<_>,A> value:mt.MaybeT<M,A> -> M<Maybe<A>> = mt.run value
+fn saved<M<_>,A> -> (Maybe<A> -> mt.MaybeT<M,A>) where Monad<M> = mt.fromMaybe
+
+let some:mt.MaybeT<Maybe,Int> = wrapMaybe (Just 3)
+let none:mt.MaybeT<Maybe,Int> = wrapMaybe Nothing
+let absent:mt.MaybeT<Maybe,Int> = lift Nothing
+let mapped:mt.MaybeT<Maybe,String> = map (\n:Int -> show (n + 1)) some
+let skipped:mt.MaybeT<Maybe,Int> = map (\n:Int -> n / 0) none
+let bound:mt.MaybeT<Maybe,Int> = some >>= (\n:Int -> wrapMaybe (Just (n + 2)))
+let stopped:mt.MaybeT<Maybe,Int> = none >>= (\n:Int -> wrapMaybe (Just (n / 0)))
+let applied:mt.MaybeT<Maybe,Int> = (pure (\n:Int -> n * 2)) <*> some
+let noFunction:mt.MaybeT<Maybe,Int -> Int> = wrapMaybe Nothing
+let noApplied:mt.MaybeT<Maybe,Int> = noFunction <*> some
+let sequence:mt.MaybeT<Maybe,Int> = do { n <- some; next <- bound; pure (n + next) }
+let savedFrom:Maybe<Int> -> mt.MaybeT<Maybe,Int> = mt.fromMaybe
+let savedLift:Maybe<Int> -> mt.MaybeT<Maybe,Int> = mt.lift
+let savedRun:mt.MaybeT<Maybe,Int> -> Maybe<Maybe<Int>> = mt.run
+let returned:Maybe<Int> -> mt.MaybeT<Maybe,Int> = saved ()
+let functions:mt.MaybeT<Maybe,Int -> Int> = wrapMaybe (Just (\n:Int -> n + 10))
+let call = match run functions { Just (Just f) -> f 2; _ -> 0 }
+let array:mt.MaybeT<Array,Int> = lift [1,2,3]
+let mixed:mt.MaybeT<Array,Int> = array >>= (\n:Int -> wrapMaybe (if n == 2 then Nothing else Just (n + 10)))
+let blank:mt.MaybeT<Array,Int> = lift []
+let arrayNone:mt.MaybeT<Array,Int> = wrapMaybe Nothing
+let list:mt.MaybeT<List,Int> = lift `[4,5]
+let failed:mt.MaybeT<Either<String>,Int> = lift (Left "base failure")
+let rightNone:mt.MaybeT<Either<String>,Int> = wrapMaybe Nothing
+let box:mt.MaybeT<Box,Int> = lift (Box { value: 6 })
+let boxMapped:mt.MaybeT<Box,Int> = do { n <- box; pure (n + 1) }
+let boxNone:mt.MaybeT<Box,Int> = wrapMaybe Nothing
+let nested:mt.MaybeT<mt.MaybeT<Maybe>,Int> = wrapMaybe (Just 8)
+let nestedNone:mt.MaybeT<mt.MaybeT<Maybe>,Int> = wrapMaybe Nothing
+let innerNone:mt.MaybeT<mt.MaybeT<Maybe>,Int> = lift none
+let raw:mt.MaybeT<Raw,Int> = MaybeT { run: Raw { value: Just 9 } }
+
+pub effect fn main = do {
+  println (show (run some))
+  println (show (run none))
+  println (show (run absent))
+  println (show (run mapped))
+  println (show (run skipped))
+  println (show (run bound))
+  println (show (run stopped))
+  println (show (run applied))
+  println (show (run noApplied))
+  println (show (run sequence))
+  println (show (savedRun (savedFrom (Just 10))))
+  println (show (run (savedLift (Just 11))))
+  println (show (run (returned (Just 12))))
+  println (show call)
+  println (show (run mixed))
+  println (show (run blank))
+  println (show (run arrayNone))
+  println (show (run list))
+  println (show (run failed))
+  println (show (run rightNone))
+  println (show (run boxMapped).value)
+  println (show (run boxNone).value)
+  println (show (run (run nested)))
+  println (show (run (run nestedNone)))
+  println (show (run (run innerNone)))
+  println (show (run raw).value)
+}

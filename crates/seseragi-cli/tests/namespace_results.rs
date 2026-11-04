@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use sha2::{Digest, Sha256};
 use std::{
     fs,
@@ -151,7 +154,7 @@ fn namespace_constructor_results_keep_strict_types_through_saved_functions() {
         };
         fs::write(main, &source).unwrap();
         success(
-            Command::new(cli)
+            native_cache::command(cli)
                 .args(["lock", "update"])
                 .arg(&project)
                 .output()
@@ -159,7 +162,7 @@ fn namespace_constructor_results_keep_strict_types_through_saved_functions() {
         );
         let native = scratch.path().join(format!("{label}-native"));
         success(
-            Command::new(cli)
+            native_cache::command(cli)
                 .args(["experimental", "build-native"])
                 .arg(&project)
                 .args(["--entry", "main", "--out-dir"])
@@ -192,7 +195,7 @@ fn namespace_constructor_results_keep_strict_types_through_saved_functions() {
         ] {
             let site = scratch.path().join(format!("{label}-{profile}"));
             success(
-                Command::new(cli)
+                native_cache::command(cli)
                     .arg("build")
                     .arg(&project)
                     .args(["--profile", profile, "--out-dir"])
@@ -302,14 +305,14 @@ fn namespace_constructor_results_keep_strict_types_through_saved_functions() {
                     format!("{source}\npub fn wrong -> model.{expected_type}<Int> = Local 42\n");
                 fs::write(project.join("src/main.ssrg"), wrong).unwrap();
                 success(
-                    Command::new(cli)
+                    native_cache::command(cli)
                         .args(["lock", "update"])
                         .arg(&project)
                         .output()
                         .unwrap(),
                 );
                 let site = scratch.path().join(suffix);
-                let refused = Command::new(cli)
+                let refused = native_cache::command(cli)
                     .arg("build")
                     .arg(&project)
                     .arg("--out-dir")
@@ -320,7 +323,7 @@ fn namespace_constructor_results_keep_strict_types_through_saved_functions() {
                 assert!(String::from_utf8_lossy(&refused.stderr).contains("SES-T0101"));
                 assert!(!site.exists());
                 let rust = scratch.path().join(format!("{suffix}.rs"));
-                let refused = Command::new(cli)
+                let refused = native_cache::command(cli)
                     .args(["experimental", "emit-rust"])
                     .arg(&project)
                     .args(["--entry", "main", "--output"])

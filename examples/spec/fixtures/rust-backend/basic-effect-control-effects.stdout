@@ -1,0 +1,19 @@
+created
+acquired
+visit: 1
+visit: 2
+visit: 1
+visit: 2
+released
+total: 6
+failure acquired
+failure: 1
+failure: 2
+failure released
+typed
+payload: 99
+nested
+waiting: 1
+cancel released: 1
+cancelled
+releases: 1

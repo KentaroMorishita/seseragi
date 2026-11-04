@@ -321,14 +321,14 @@ pub effect fn main -> Unit with Clock = do {
 }
 
 #[test]
-fn finite_selection_never_admits_now_or_another_provider_or_program_wasm_clock() {
-    for identity in [
-        "bun/process#clock",
-        "seseragi/runtime-native#clock",
-        "other#clock-sleep",
-    ] {
+fn sleep_only_selection_rejects_now_and_program_wasm_rejects_native_clock() {
+    for identity in ["bun/process#clock", "other#clock-sleep"] {
         assert!(NativeClockProvider::from_identity(identity).is_err());
     }
+    assert_eq!(
+        NativeClockProvider::from_identity("seseragi/runtime-native#clock").unwrap(),
+        NativeClockProvider::BuiltinClock
+    );
     let now = checked("import * as clock from \"std/clock\"\npub effect fn main -> Unit with Clock = do { clock.now (); succeed () }\n");
     let error = emit_rust_module_with_options(&now, "main", &options()).unwrap_err();
     assert_eq!(error.code, "SES-RUST-0001");

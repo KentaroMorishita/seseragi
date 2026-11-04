@@ -79,6 +79,20 @@ fn basic_standard_calls_reject_forged_types_evidence_and_source_stages() {
         ("text", "startsWith \"雫\" \"雫🙂\"", "Bool"),
         ("text", "endsWith \"🙂\" \"雫🙂\"", "Bool"),
         ("text", "replace \"雫\" \"川\" \"雫🙂\"", "String"),
+        ("text", "isEmpty \"雫🙂\"", "Bool"),
+        ("text", "concat [\"雫\", \"🙂\"]", "String"),
+        ("text", "lengthScalars \"雫🙂\"", "Int"),
+        ("text", "lengthBytes \"雫🙂\"", "Int"),
+        ("text", "scalarAt 1 \"雫🙂\"", "Maybe<Char>"),
+        (
+            "text",
+            "sliceScalars 0 1 \"雫🙂\"",
+            "Either<api.TextSliceError, String>",
+        ),
+        ("text", "words \"雫 🙂\"", "Array<String>"),
+        ("text", "trimStart \" 雫🙂 \"", "String"),
+        ("text", "trimEnd \" 雫🙂 \"", "String"),
+        ("text", "replaceAll \"雫\" \"川\" \"雫🙂雫\"", "String"),
     ] {
         let source = format!(
             "import * as api from \"std/{module}\"\npub fn probe -> {result} = api.{expression}\n"

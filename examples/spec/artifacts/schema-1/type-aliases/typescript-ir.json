@@ -1142,6 +1142,14 @@
                                   "kind": "identifier",
                                   "name": "current"
                                 }
+                              ],
+                              "typeArguments": [
+                                {
+                                  "kind": "number"
+                                },
+                                {
+                                  "kind": "number"
+                                }
                               ]
                             }
                           },

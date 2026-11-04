@@ -13,7 +13,7 @@ import {
   type ProviderCommand,
   type ProviderStreamingFailure,
 } from "./child-process"
-import type { EffectContext } from "./effect"
+import { fail, mapError, type Effect, type EffectContext } from "./effect"
 import { pathFromProvider } from "./path"
 import type { ProcessSignal } from "./process"
 import {
@@ -79,7 +79,9 @@ export function createProviderChildProcesses(
       "resolved provider does not implement std/child-process::ChildProcesses"
     )
   }
-  const codecs = codecsFor()
+  // Only decoded subscription failures enter the Effect failure channel.
+  const streamingFailures = new WeakSet<object>()
+  const codecs = codecsFor(streamingFailures)
   return Object.freeze({
     async runCaptured(
       command: ProviderCommand,
@@ -122,7 +124,12 @@ export function createProviderChildProcesses(
       environment: Environment,
       context: EffectContext
     ): Promise<StreamCursor<ChildEvent>> {
-      const inputCursor = await input.open(environment, context)
+      const inputCursor = await mapError((error: Failure) => Left(error), (() =>
+        input.open(environment, context)) as Effect<
+        Environment,
+        Failure,
+        StreamCursor<ChildInput>
+      >)(environment, context)
       const source = openProviderSubscription({
         provider: loaded.provider,
         service: loaded.service,
@@ -163,7 +170,23 @@ export function createProviderChildProcesses(
         return closing
       }
       return Object.freeze({
-        next: () => source.pull(context) as Promise<IteratorResult<ChildEvent>>,
+        async next() {
+          try {
+            return (await source.pull(context)) as IteratorResult<ChildEvent>
+          } catch (error) {
+            if (
+              typeof error === "object" &&
+              error !== null &&
+              streamingFailures.has(error)
+            ) {
+              return fail(error as Either<Failure, ChildProcessError>)(
+                environment,
+                context
+              )
+            }
+            throw error
+          }
+        },
         close,
       })
     },
@@ -204,14 +227,18 @@ function operation(
   })
 }
 
-function codecsFor(): ProviderCodecRegistry {
+function codecsFor(streamingFailures: WeakSet<object>): ProviderCodecRegistry {
   return new ProviderCodecRegistry([
     namedCodec(commandType.identity, validateCommand),
     namedCodec(errorType.identity, validateError),
     namedCodec(capturedType.identity, validateCaptured),
     namedCodec(statusType.identity, validateStatus),
     namedCodec(eventType.identity, validateEvent),
-    namedCodec(streamingFailureType.identity, validateStreamingFailure),
+    namedCodec(streamingFailureType.identity, (value) => {
+      const failure = validateStreamingFailure(value)
+      streamingFailures.add(failure)
+      return failure
+    }),
   ])
 }
 
@@ -224,7 +251,8 @@ function capturedResult(
 ): ServiceResult<ChildProcessError, ProviderCapturedProcess> {
   if (outcome.kind === "defect") throw outcome.defect
   if (outcome.kind === "failure") {
-    return serviceFailure(validateError(outcome.failure))
+    // The bridge has already decoded the declared failure, including Path.
+    return serviceFailure(outcome.failure as ChildProcessError)
   }
   return serviceSuccess(validateCaptured(outcome.value))
 }
@@ -234,7 +262,7 @@ function statusResult(
 ): ServiceResult<ChildProcessError, ChildExitStatus> {
   if (outcome.kind === "defect") throw outcome.defect
   if (outcome.kind === "failure") {
-    return serviceFailure(validateError(outcome.failure))
+    return serviceFailure(outcome.failure as ChildProcessError)
   }
   return serviceSuccess(validateStatus(outcome.value))
 }

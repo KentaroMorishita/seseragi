@@ -72,7 +72,18 @@ pub(crate) fn type_pattern_binding(
     let expression_context = context
         .with_expected(expected.clone())
         .with_let_expectation(value);
-    let expression = analyze(value, &expression_context);
+    let mut ungrouped = value;
+    while let SurfaceExpr::Grouped { value, .. } = ungrouped {
+        ungrouped = value;
+    }
+    let expression = if matches!(
+        ungrouped,
+        SurfaceExpr::Name { .. } | SurfaceExpr::Member { .. }
+    ) {
+        super::analyze_resolved_expression(value, &expression_context)
+    } else {
+        analyze(value, &expression_context)
+    };
     let actual = SemanticValueType {
         type_ref: application_argument_type_from_expr(&expression.value),
         key: expression.semantic_type.clone(),

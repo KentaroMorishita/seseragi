@@ -1,0 +1,59 @@
+import * as nonEmpty from "std/non-empty-list"
+import * as arrays from "std/array"
+import * as maybe from "std/maybe"
+
+alias Values<A> = nonEmpty.NonEmptyList<A>
+fn roundtrip<A> values:List<A> -> Maybe<List<A>> = map nonEmpty.toList (nonEmpty.fromList values)
+fn first<A> values:Values<A> -> A = nonEmpty.head values
+fn rest<A> values:Values<A> -> List<A> = nonEmpty.tail values
+fn fold<A> step:(A -> A -> A) -> values:Values<A> -> A = nonEmpty.reduce1 step values
+fn withHead<A> value:A -> tail:List<A> -> Values<A> = nonEmpty.cons value tail
+fn order value:Ordering -> String = match value { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" }
+
+pub fn probe -> String = {
+  let singleton:Int -> Values<Int> = nonEmpty.singleton
+  let cons:Int -> List<Int> -> Values<Int> = withHead
+  let fromList:List<Int> -> Maybe<Values<Int>> = nonEmpty.fromList
+  let toList:Values<Int> -> List<Int> = nonEmpty.toList
+  let head:Values<Int> -> Int = nonEmpty.head
+  let tail:Values<Int> -> List<Int> = nonEmpty.tail
+  let reduce1:(Int -> Int -> Int) -> Values<Int> -> Int = fold
+  let prefix = cons 10
+  let subtract = reduce1 (\acc:Int -> \value:Int -> acc - value)
+  let one = singleton 7
+  let values = prefix `[3,2]
+  let empty:List<Int> = `[]
+  let functions = nonEmpty.cons (\value:Int -> value + 10) `[\value:Int -> value * 2]
+  let functionValues = nonEmpty.cons (\value:Int -> value + 1) `[\value:Int -> value * 2]
+  let pick:(Int -> Int) -> (Int -> Int) -> (Int -> Int) = \left -> \_right -> left
+  let selected = nonEmpty.head functionValues
+  let selectedFold = nonEmpty.reduce1 pick functionValues
+  let missing:Values<Maybe<Int>> = nonEmpty.cons (Just 1) `[Nothing,Just 3]
+  join "\n" [
+    show one, debug values, show (head values), show (tail values),
+    show (tail one), show (toList one), show (toList values),
+    show (fromList empty), show (fromList `[7]), show (fromList `[10,3,2]),
+    show (roundtrip empty), show (roundtrip `[10,3,2]),
+    show (first values), show (rest values), show (withHead 4 `[5,6]),
+    show (subtract values), show (fold (\a:Int -> \b:Int -> a * 10 + b) (nonEmpty.cons 1 `[2,3,4])),
+    show (nonEmpty.reduce1 (\_a:Int -> \_b:Int -> 1 / 0) one),
+    show (nonEmpty.singleton ()), show (nonEmpty.singleton "雪🙂"),
+    show (nonEmpty.cons (-9007199254740991) `[0,9007199254740991]),
+    show (selected 41), show (first functionValues 41),
+    show (selectedFold 41),
+    show (values == nonEmpty.cons 10 `[3,2]), show (values == nonEmpty.cons 10 `[3]),
+    order (compare values (nonEmpty.cons 10 `[3,3])),
+    order (compare values (nonEmpty.cons 10 `[3])),
+    order (compare values (nonEmpty.cons 10 `[3,2])),
+    show (hash values == hash (nonEmpty.cons 10 `[3,2])),
+    show (append values (nonEmpty.singleton 8)),
+    show (map (\value:Int -> show value) values),
+    show (apply functions (nonEmpty.cons 1 `[2])),
+    show (flatMap (\value:Int -> nonEmpty.cons value `[value + 10]) (nonEmpty.cons 1 `[2])),
+    show (arrays.fromIterable values), show (reduce 0 (\acc:Int -> \value:Int -> acc * 10 + value) (nonEmpty.cons 1 `[2,3])),
+    show (maybe.traverse (\value:Int -> Just (value + 1)) values),
+    show (maybe.sequence missing),
+    show (toList values), show (tail values)
+  ]
+}
+pub effect fn main = println (probe ())

@@ -1,4 +1,6 @@
 """Measure the original ordinary tuple Show kernel and separate allocator runs."""
+from native_runtime import compile_native
+
 import argparse
 import json
 import os
@@ -106,7 +108,7 @@ def main():
     allocator=Path(__file__).with_name("char_allocation.rs").read_text().split("fn main()",1)[0]
     for name,harness in [("timing",RUST),("allocation",allocator+ALLOCATION)]:
         (stage/(name+".rs")).write_text(generated[:offset]+harness.replace("KERNEL",symbol))
-        run(["rustc","--edition=2021","-O",stage/(name+".rs"),"-o",stage/name])
+        compile_native(stage/(name+".rs"), stage/name)
     (stage/"measure.mjs").write_text(JS)
     allocation=json.loads(run([stage/"allocation"],env=env))
     warm_allocation=json.loads(run([stage/"allocation","--warm"],env=env))

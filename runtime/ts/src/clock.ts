@@ -1,6 +1,11 @@
-import { createDuration, type Duration, type Instant } from "./clock-value"
-import { durationNanoseconds } from "./clock-value"
+import {
+  createDuration,
+  type Duration,
+  durationNanoseconds,
+  type Instant,
+} from "./clock-value"
 import type { Effect, EffectContext, Unit } from "./effect"
+import { assertInt } from "./int"
 import { serviceEffect, serviceSuccess } from "./service"
 import { type Either, Left, Right } from "./sum"
 
@@ -58,7 +63,7 @@ export function hours(value: number): Either<DurationError, Duration> {
 }
 
 export function toNanoseconds(value: Duration): number {
-  return Number(durationNanoseconds(value))
+  return assertInt(Number(durationNanoseconds(value)))
 }
 
 export function addDuration(
@@ -91,7 +96,7 @@ function durationFromUnit(
 }
 
 /** Reads the selected Clock without exposing its provider identity. */
-export function now(): Effect<ClockEnvironment, never, Instant> {
+export function now(_unit?: Unit): Effect<ClockEnvironment, never, Instant> {
   return serviceEffect(async (environment, context) =>
     serviceSuccess(await environment.clock.now(context))
   )

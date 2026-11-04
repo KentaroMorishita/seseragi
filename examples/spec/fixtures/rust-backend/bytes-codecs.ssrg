@@ -1,0 +1,233 @@
+import * as arrays from "std/array"
+import * as base64 from "std/bytes/base64"
+import * as bytes from "std/bytes"
+import * as hex from "std/bytes/hex"
+import * as text from "std/text"
+
+fn identity<A> value: A -> A = value
+fn through<A, B> operation: (A -> B) -> value: A -> B = operation value
+
+fn hexResult result: Either<hex.HexDecodeError, bytes.Bytes> -> String = match result {
+  Left error -> "Left " + show error
+  Right value -> "Right " + show (bytes.toInts value)
+}
+
+fn base64Result result: Either<base64.Base64DecodeError, bytes.Bytes> -> String =
+  match result {
+    Left error -> "Left " + show error
+    Right value -> "Right " + show (bytes.toInts value)
+  }
+
+fn sample length: Int -> Array<Int> =
+  (\index: Int -> (index * 67 + length) % 256)
+  <$> arrays.fromIterable (0 .. length)
+
+fn encoded values: Array<Int> -> String = match bytes.fromInts values {
+  Left error -> "unexpected: " + show error
+  Right value -> {
+    let encodeHex: bytes.Bytes -> String = identity hex.encode
+    let encodeBase64: bytes.Bytes -> String = identity base64.encode
+    let encodeUrl: bytes.Bytes -> String = identity base64.encodeUrl
+    let decodeHex: String -> Either<hex.HexDecodeError, bytes.Bytes> =
+      identity hex.decode
+    let decodeBase64: String -> Either<base64.Base64DecodeError, bytes.Bytes> =
+      identity base64.decode
+    let decodeUrl: String -> Either<base64.Base64DecodeError, bytes.Bytes> =
+      identity base64.decodeUrl
+    let hexadecimal = through encodeHex value
+    let standard = through encodeBase64 value
+    let url = through encodeUrl value
+    hexadecimal + "|" + standard + "|" + url + "|" + hexResult (through decodeHex hexadecimal) + "|" + base64Result (through decodeBase64 standard) + "|" + base64Result (through decodeUrl url) + "|" + show (bytes.toInts value)
+  }
+}
+
+fn decodeHex value: String -> String =
+  "hex:" + debug value + "|" + hexResult (hex.decode value)
+fn decodeBase64 value: String -> String =
+  "base64:" + debug value + "|" + base64Result (base64.decode value)
+fn decodeUrl value: String -> String =
+  "url:" + debug value + "|" + base64Result (base64.decodeUrl value)
+
+fn base64Error result: Either<base64.Base64DecodeError, bytes.Bytes>
+  -> base64.Base64DecodeError =
+  match result {
+    Left error -> error
+    Right _ -> base64.InvalidBase64Length (-1)
+  }
+
+fn hexError result: Either<hex.HexDecodeError, bytes.Bytes> -> hex.HexDecodeError =
+  match result {
+    Left error -> error
+    Right _ -> hex.OddHexLength (-1)
+  }
+
+fn errors -> String = text.join "|" [
+  show (base64Error (base64.decode "A") == base64.InvalidBase64Length 1),
+  show (base64Error (base64.decode "AA?A") == base64.InvalidBase64Digit { offset: 2 }),
+  show (base64Error (base64.decode "AA=A") == base64.InvalidBase64Padding { offset: 2 }),
+  show
+    (base64Error (base64.decode "AB==") == base64.NonCanonicalBase64Bits { offset: 1 }),
+  show (hexError (hex.decode "0") == hex.OddHexLength 1),
+  show (hexError (hex.decode "00xz") == hex.InvalidHexDigit { offset: 2 }),
+  show (base64Error (base64.decode "AA?A") == base64.InvalidBase64Padding { offset: 2 }),
+  show (base64Error (base64.decode "AA?A") == base64.InvalidBase64Digit { offset: 1 }),
+  show (hexError (hex.decode "00xz") == hex.InvalidHexDigit { offset: 1 }),
+  debug (base64Error (base64.decode "AB==")),
+  debug (hexError (hex.decode "00xz"))
+]
+
+pub fn probe -> String = text.join "\n" [
+  text.join "\n" (
+    encoded <$> [
+      [],
+      [102],
+      [102, 111],
+      [102, 111, 111],
+      [102, 111, 111, 98],
+      [102, 111, 111, 98, 97],
+      [102, 111, 111, 98, 97, 114],
+      [0],
+      [0, 0],
+      [0, 0, 0],
+      [255],
+      [255, 255],
+      [255, 255, 255],
+      [251, 239, 255],
+      [251, 255],
+      [0, 1, 15, 16, 171, 255],
+      arrays.fromIterable (0 .. 256),
+      sample 7,
+      sample 8,
+      sample 9,
+      sample 16,
+      sample 31,
+      sample 32,
+      sample 33,
+      sample 63,
+      sample 64
+    ]
+  ),
+  text.join "\n"
+    (decodeHex <$> [
+      "",
+      "00",
+      "FF",
+      "aBfF",
+      "00010F10aBfF",
+      "0",
+      "abc",
+      "0x00",
+      " 0",
+      "00 ",
+      "00\n",
+      "00\r\n",
+      "0g",
+      "g0",
+      "00xz",
+      "é",
+      "é0",
+      "0é0",
+      "00é",
+      "雪",
+      "雪0",
+      "🙂",
+      "00🙂",
+      "0\0",
+      "\0\0"
+    ]),
+  text.join "\n"
+    (decodeBase64 <$> [
+      "",
+      "AA==",
+      "AAA=",
+      "AAAA",
+      "Zg==",
+      "Zm8=",
+      "Zm9v",
+      "++//",
+      "/w==",
+      "A",
+      "AA",
+      "AAA",
+      "AAAAA",
+      "Zg",
+      "Zg=",
+      "Zg===",
+      "AA A",
+      "AA-A",
+      "AA_A",
+      "AA\nA",
+      "AA\r\nAA",
+      "AA\0A",
+      "====",
+      "A===",
+      "AA==",
+      "AAA=",
+      "AAAA====",
+      "=AAA",
+      "A=AA",
+      "AA=A",
+      "AA=?",
+      "=AA?",
+      "AAA?",
+      "AB==",
+      "AAB=",
+      "//==",
+      "///=",
+      "AAAAAB==",
+      "AAAAAAB=",
+      "AAé",
+      "éAA=",
+      "éé",
+      "雪A",
+      "🙂",
+      "AA🙂AA",
+      "AA=éAAA"
+    ]),
+  text.join "\n"
+    (decodeUrl <$> [
+      "",
+      "AA",
+      "AAA",
+      "AAAA",
+      "Zg",
+      "Zm8",
+      "Zm9v",
+      "--__",
+      "-_8",
+      "_w",
+      "A",
+      "AAAAA",
+      "=",
+      "==",
+      "AA=",
+      "AA==",
+      "AA===",
+      "AA=A",
+      "=AA?",
+      "?=",
+      "+A",
+      "/w",
+      "AA A",
+      "AA\nA",
+      "AA\0A",
+      "AB",
+      "AAB",
+      "__",
+      "___",
+      "AAAAAB",
+      "AAAAAAB",
+      "é",
+      "éAA",
+      "éAAA",
+      "AAé",
+      "雪",
+      "🙂",
+      "AA🙂AA",
+      "=é",
+      "AA=éAAA"
+    ]),
+  errors ()
+]
+
+pub effect fn main = println (probe ())

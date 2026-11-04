@@ -656,7 +656,7 @@
       "capabilityServices": [
         "std/fs::FileSystem"
       ],
-      "interfaceFingerprint": "fnv1a64:09454cd809cab08d",
+      "interfaceFingerprint": "fnv1a64:d23776e472a9be15",
       "implementation": "lowering-runtime",
       "route": "filesystem-provider-project"
     },

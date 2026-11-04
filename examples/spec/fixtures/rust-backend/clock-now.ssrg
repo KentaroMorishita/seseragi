@@ -1,0 +1,38 @@
+import * as clock from "std/clock"
+import { Clock } from "std/clock"
+import * as time from "std/time"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+fn reader -> (Unit -> Effect<{clock: Clock}, Never, time.Instant>) = clock.now
+fn keep value: time.Instant -> time.Instant = value
+
+effect fn acquire log: Ref<String> -> Unit with Clock = do {
+  clock.now ()
+  refs.update (\text -> text + "A") log
+}
+
+effect fn release log: Ref<String> -> _resource: Unit -> Unit with Clock = do {
+  clock.now ()
+  refs.update (\text -> text + "R") log
+}
+
+pub effect fn main -> Unit with Clock, Console fails ConsoleError = do {
+  let read = reader ()
+  let observation = read ()
+  println "created"
+  first <- observation
+  let _retained = keep first
+  clock.sleep (time.zeroDuration ())
+  observation
+  println "replayed"
+  log <- refs.make ""
+  effects.scoped $ do {
+    effects.acquireRelease (acquire log) (release log)
+    observation
+    refs.update (\text -> text + "B") log
+  }
+  result <- refs.get log
+  println result
+}

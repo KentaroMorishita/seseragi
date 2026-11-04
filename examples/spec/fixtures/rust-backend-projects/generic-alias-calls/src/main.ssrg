@@ -1,0 +1,18 @@
+import { Check as ImportedCheck, Items } from "./model"
+import * as model from "./model"
+import { NonEmptyList } from "std/non-empty-list"
+import * as arrays from "std/array"
+
+alias Check<A, E> = ImportedCheck<E, A>
+fn extract<E, A> value: Check<A, E> -> Either<NonEmptyList<E>, A> =
+  model.extract value
+fn first<A> values: Items<A> -> Maybe<A> = arrays.head values
+
+pub effect fn main = do {
+  println (debug (extract (model.accept<String, Int> 42)))
+  println (debug (extract (model.reject<String, Int> "")))
+  println (debug (model.extract (model.reject<String, Int> "雪🙂")))
+  println (debug (extract (model.accept<String, Array<Int>> [])))
+  println (debug (first ["雪🙂"]))
+  println (debug (first<Int> []))
+}

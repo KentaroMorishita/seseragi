@@ -4,6 +4,7 @@ use seseragi_syntax::{InterfaceRecordField, InterfaceType};
 #[derive(Clone)]
 pub(super) struct InterfaceTypes<'a> {
     bindings: &'a [ExternalTypeBinding],
+    canonical_unit: bool,
     parameters: std::collections::BTreeSet<String>,
     local_nominals: std::collections::BTreeMap<String, (String, String)>,
     nominal_owners: std::collections::BTreeMap<String, (String, String)>,
@@ -13,6 +14,7 @@ impl<'a> InterfaceTypes<'a> {
     pub(super) fn new(bindings: &'a [ExternalTypeBinding]) -> Self {
         Self {
             bindings,
+            canonical_unit: false,
             parameters: Default::default(),
             local_nominals: Default::default(),
             nominal_owners: Default::default(),
@@ -66,6 +68,14 @@ impl<'a> InterfaceTypes<'a> {
             .parameters
             .extend(parameters.iter().map(|parameter| parameter.name.clone()));
         scoped
+    }
+
+    pub(super) fn convert_alias(&self, type_ref: &TypedType) -> InterfaceType {
+        let mut types = self.clone();
+        // An alias can travel through a module that exports a different Unit.
+        // Capture its intrinsic leaves before that module rebuilds bindings.
+        types.canonical_unit = true;
+        types.convert(type_ref)
     }
 
     /// Public declaration identity must travel with aliases and callable
@@ -144,7 +154,10 @@ impl<'a> InterfaceTypes<'a> {
                         binding.spelling == *name
                             && binding.canonical != format!("std/prelude::{name}")
                     });
-                if primitive_or_collection && collision && !self.parameters.contains(name) {
+                if primitive_or_collection
+                    && (collision
+                        || (self.canonical_unit && name == "Unit" && arguments.is_empty()))
+                {
                     return InterfaceType::ExternalNamed {
                         name: name.clone(),
                         canonical: format!("std/prelude::{name}"),

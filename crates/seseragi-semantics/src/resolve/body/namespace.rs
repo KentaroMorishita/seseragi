@@ -136,6 +136,19 @@ impl NamespaceImports {
 }
 
 impl Resolver {
+    pub(super) fn namespace_construction_namespace(&self, spelling: &str) -> SymbolNamespace {
+        let Some((alias, member)) = spelling.split_once('.') else {
+            return SymbolNamespace::Value;
+        };
+        match self
+            .namespace_imports
+            .member(alias, SymbolNamespace::Value, member)
+        {
+            Some(NamespaceMemberLookup::Missing) => SymbolNamespace::Type,
+            _ => SymbolNamespace::Value,
+        }
+    }
+
     pub(super) fn register_namespace_import(
         &mut self,
         local_name: &str,

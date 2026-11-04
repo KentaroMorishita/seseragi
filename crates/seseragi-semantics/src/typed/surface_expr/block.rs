@@ -4,7 +4,7 @@ use crate::{
     SymbolId, SymbolKind, SymbolNamespace, TypedBlockStatement, TypedConstraint, TypedExpr,
     TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceBlockItem, SurfaceExpr};
+use seseragi_syntax::{ByteSpan, SurfaceBlockItem, SurfaceExpr, SurfaceParameter};
 
 use super::pattern::type_pattern_binding;
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
@@ -66,13 +66,9 @@ pub(crate) fn type_block_with(
                         if member_group != group {
                             continue;
                         }
-                        let parameters =
-                            typed_parameters_from_surface(parameters, base_context.resolution);
-                        let mut result = base_context
-                            .semantic_value_from_type_ref(return_type)
-                            .type_ref;
+                        let mut result = base_context.semantic_value_from_type_ref(return_type);
                         if let Some(effect) = effect {
-                            result = crate::typed::type_ref::effect_value_type(
+                            let type_ref = crate::typed::type_ref::effect_value_type(
                                 &crate::typed::effect::typed_effect_from_surface(
                                     &Some(return_type.clone()),
                                     &effect.requirements,
@@ -82,17 +78,12 @@ pub(crate) fn type_block_with(
                                     base_context.resolution,
                                 ),
                             );
+                            result = base_context.semantic_value_from_typed_type(&type_ref);
                         }
                         if let Some(symbol) =
                             base_context.declaration_symbol(*name_span, SymbolKind::Function)
                         {
-                            locals.insert(
-                                symbol,
-                                SemanticValueType {
-                                    type_ref: function_type(&parameters, result),
-                                    key: SemanticTypeKey::Other,
-                                },
-                            );
+                            locals.insert(symbol, function_type(parameters, result, base_context));
                         }
                     }
                 }
@@ -235,26 +226,13 @@ pub(crate) fn type_block_with(
                         &crate::typed::type_ref::effect_value_type(&contract),
                     );
                 }
-                let local_function_type =
-                    function_type(&typed_parameters, expected.type_ref.clone());
+                let local_function_type = function_type(parameters, expected.clone(), base_context);
                 let mut function_locals = locals.clone();
                 if let Some(symbol) =
                     base_context.declaration_symbol(*name_span, SymbolKind::Function)
                 {
-                    function_locals.insert(
-                        symbol,
-                        SemanticValueType {
-                            type_ref: local_function_type.clone(),
-                            key: SemanticTypeKey::Other,
-                        },
-                    );
-                    locals.insert(
-                        symbol,
-                        SemanticValueType {
-                            type_ref: local_function_type,
-                            key: SemanticTypeKey::Other,
-                        },
-                    );
+                    function_locals.insert(symbol, local_function_type.clone());
+                    locals.insert(symbol, local_function_type);
                 }
                 function_locals.extend(base_context.parameter_locals(&typed_parameters));
                 let scoped_evidence =
@@ -312,13 +290,7 @@ pub(crate) fn type_block_with(
                     {
                         locals.insert(
                             symbol,
-                            SemanticValueType {
-                                type_ref: function_type(
-                                    &typed_parameters,
-                                    expected.type_ref.clone(),
-                                ),
-                                key: SemanticTypeKey::Other,
-                            },
+                            function_type(parameters, expected.clone(), base_context),
                         );
                     }
                     analysis
@@ -443,16 +415,22 @@ pub(crate) fn type_block_with(
     merged
 }
 
-fn function_type(parameters: &[crate::TypedParameter], result: TypedType) -> TypedType {
+fn function_type(
+    parameters: &[SurfaceParameter],
+    result: SemanticValueType,
+    context: &PureExpressionContext<'_>,
+) -> SemanticValueType {
+    if parameters.is_empty() {
+        return SemanticValueType::function(
+            crate::typed::resolution::canonical_unit_value_type(),
+            result,
+        );
+    }
     parameters.iter().rev().fold(result, |result, parameter| {
-        let parameter = match parameter {
-            crate::TypedParameter::ImplicitUnit { type_ref }
-            | crate::TypedParameter::Named { type_ref, .. } => type_ref.clone(),
-        };
-        TypedType::Function {
-            parameter: Box::new(parameter),
-            result: Box::new(result),
-        }
+        SemanticValueType::function(
+            context.semantic_value_from_type_ref(&parameter.type_ref),
+            result,
+        )
     })
 }
 

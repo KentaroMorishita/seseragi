@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{fs, path::Path, process::Command};
 
 fn successful(command: &mut Command) -> std::process::Output {
@@ -36,7 +39,7 @@ fn check_fixture(name: &str) {
     ] {
         let directory = scratch.path().join(profile);
         successful(
-            Command::new(cli)
+            native_cache::command(cli)
                 .arg("build")
                 .arg(&source)
                 .args(["--target", "process", "--profile", profile, "--out-dir"])
@@ -114,12 +117,12 @@ fn check_fixture(name: &str) {
             assert!(output.stderr.is_empty(), "{output:?}");
         }
     }
-    let output = successful(Command::new(cli).arg("run").arg(&source));
+    let output = successful(native_cache::command(cli).arg("run").arg(&source));
     assert_eq!(output.stdout, expected);
     assert!(output.stderr.is_empty(), "{output:?}");
     let directory = scratch.path().join("native");
     successful(
-        Command::new(cli)
+        native_cache::command(cli)
             .args(["experimental", "build-native"])
             .arg(&source)
             .args(["--entry", "main", "--out-dir"])

@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 #[allow(dead_code)]
 #[path = "support/runtime_diagnostics.rs"]
 mod diagnostics;
@@ -69,6 +72,8 @@ struct Case<'a> {
 
 fn compare_cases(source: &Path, cases: &[Case<'_>]) {
     let scratch = Scratch::new();
+    let input = process::copy_input(source, &scratch.0);
+    let source = input.as_path();
     let native = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -467,9 +472,9 @@ fn powers_evaluate_source_operands_once_in_order_across_saved_stages() {
     let binary = scratch
         .0
         .join(format!("trace{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&file, rust).unwrap();
+    native_runtime::write_program(&file, rust).unwrap();
     successful(bounded(
-        Command::new(std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()))
+        Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&file),

@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -35,6 +38,7 @@ struct OwnedChild {
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command

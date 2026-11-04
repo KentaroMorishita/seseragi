@@ -20,6 +20,18 @@ fn basic_bytes_accept_closed_signatures_saved_functions_and_buffers() {
 }
 
 #[test]
+fn bytes_operations_accept_closed_signatures_saved_functions_and_partial_applications() {
+    let artifact = emit_rust_module(
+        &checked(include_str!(
+            "../../../examples/spec/fixtures/rust-backend/basic-bytes-operations.ssrg"
+        )),
+        "main",
+    )
+    .unwrap();
+    assert!(artifact.metadata.capabilities.iter().any(|c| c == "bytes"));
+}
+
+#[test]
 fn basic_bytes_reject_forged_types_evidence_and_source_stages_at_the_original_span() {
     let eq = checked("pub fn probe -> Bool = 1 == 1");
     let CoreExpr::Binary {
@@ -30,17 +42,52 @@ fn basic_bytes_reject_forged_types_evidence_and_source_stages_at_the_original_sp
     };
     for (parameters, result, expression) in [
         (
+            " value: Int",
+            "Either<bytes.ByteError, bytes.Byte>",
+            "bytes.byte value",
+        ),
+        (" value: Unit", "bytes.Bytes", "bytes.empty value"),
+        (" value: bytes.Byte", "bytes.Bytes", "bytes.singleton value"),
+        (
+            " value: Array<bytes.Byte>",
+            "bytes.Bytes",
+            "bytes.fromArray value",
+        ),
+        (
             "",
             "Either<bytes.ByteError, bytes.Bytes>",
             "bytes.fromInts [0, 255]",
         ),
+        (
+            " value: bytes.Bytes",
+            "Array<bytes.Byte>",
+            "bytes.toArray value",
+        ),
         (" value: bytes.Bytes", "Array<Int>", "bytes.toInts value"),
+        (" value: bytes.Bytes", "Int", "bytes.length value"),
+        (" value: bytes.Bytes", "Bool", "bytes.isEmpty value"),
         (
             " value: bytes.Bytes",
             "Maybe<bytes.Byte>",
             "bytes.get 0 value",
         ),
         (" value: bytes.Byte", "Int", "bytes.toInt value"),
+        (
+            " value: bytes.Bytes",
+            "Either<bytes.BytesSliceError, bytes.Bytes>",
+            "bytes.slice 0 0 value",
+        ),
+        (" value: bytes.Bytes", "bytes.Bytes", "bytes.copy value"),
+        (
+            " value: bytes.Bytes",
+            "bytes.Bytes",
+            "bytes.append value value",
+        ),
+        (
+            " value: Array<bytes.Bytes>",
+            "bytes.Bytes",
+            "bytes.concat value",
+        ),
     ] {
         let source = format!("// 雪🙂\nimport * as bytes from \"std/bytes\"\npub fn probe{parameters} -> {result} = {expression}\npub fn main -> Int = 0\n");
         let core = checked(&source);
@@ -86,6 +133,12 @@ fn basic_bytes_reject_forged_types_evidence_and_source_stages_at_the_original_sp
                 6 => deferred_evidence_parameters.push(CoreType::Hole),
                 7 => deferred_evidence_type_constructor_parameters.push("F".into()),
                 8 => *evidence_argument_index = Some(0),
+                9 if expression == "bytes.empty value" => {
+                    arguments[0] = CoreExpr::Integer {
+                        value: "0".into(),
+                        origin: core_expr_origin(&arguments[0]).clone(),
+                    }
+                }
                 _ => {
                     arguments[0] = CoreExpr::Unit {
                         origin: core_expr_origin(&arguments[0]).clone(),
@@ -100,6 +153,66 @@ fn basic_bytes_reject_forged_types_evidence_and_source_stages_at_the_original_sp
                 "{expression}/{mutation}"
             );
         }
+    }
+}
+
+#[test]
+fn bytes_slice_and_append_validate_every_argument_and_partial_result() {
+    for (result, expression) in [
+        (
+            "Either<bytes.BytesSliceError, bytes.Bytes>",
+            "bytes.slice 0 0 value",
+        ),
+        (
+            "Int -> bytes.Bytes -> Either<bytes.BytesSliceError, bytes.Bytes>",
+            "bytes.slice 0",
+        ),
+        (
+            "bytes.Bytes -> Either<bytes.BytesSliceError, bytes.Bytes>",
+            "bytes.slice 0 0",
+        ),
+        ("bytes.Bytes", "bytes.append value value"),
+        ("bytes.Bytes -> bytes.Bytes", "bytes.append value"),
+    ] {
+        let core = checked(&format!("import * as bytes from \"std/bytes\"\npub fn probe value: bytes.Bytes -> {result} = {expression}\npub fn main -> Int = 0\n"));
+        emit_rust_module(&core, "main").unwrap();
+        let probe = core
+            .functions
+            .iter()
+            .position(|f| f.symbol.ends_with("::probe"))
+            .unwrap();
+        let CoreExpr::Call { arguments, .. } = &core.functions[probe].body else {
+            panic!()
+        };
+        let expected_origin = core_expr_origin(&core.functions[probe].body).clone();
+        for index in 0..arguments.len() {
+            let mut changed = core.clone();
+            let CoreExpr::Call { arguments, .. } = &mut changed.functions[probe].body else {
+                panic!()
+            };
+            arguments[index] = CoreExpr::Variable {
+                name: "value".into(),
+                callable_signature: None,
+                type_ref: CoreType::Hole,
+                evidence: vec![],
+                origin: core_expr_origin(&arguments[index]).clone(),
+            };
+            let error = emit_rust_module(&changed, "main").expect_err("unproven Bytes argument");
+            assert_eq!(error.code, "SES-RUST-0001", "{expression}/{index}");
+            assert_eq!(
+                error.origin.unwrap(),
+                expected_origin,
+                "{expression}/{index}"
+            );
+        }
+        let mut changed = core.clone();
+        let CoreExpr::Call { type_ref, .. } = &mut changed.functions[probe].body else {
+            panic!()
+        };
+        *type_ref = CoreType::Hole;
+        let error = emit_rust_module(&changed, "main").expect_err("unproven Bytes result");
+        assert_eq!(error.code, "SES-RUST-0001", "{expression}");
+        assert_eq!(error.origin.unwrap(), expected_origin, "{expression}");
     }
 }
 
@@ -139,6 +252,17 @@ fn basic_bytes_do_not_silently_expand_program_wasm_admission() {
         "bytes.toInts",
         "bytes.get",
         "bytes.toInt",
+        "bytes.byte",
+        "bytes.empty",
+        "bytes.singleton",
+        "bytes.fromArray",
+        "bytes.toArray",
+        "bytes.length",
+        "bytes.isEmpty",
+        "bytes.slice",
+        "bytes.copy",
+        "bytes.append",
+        "bytes.concat",
     ] {
         let source = format!("import * as bytes from \"std/bytes\"\npub fn probe value: Int -> Int = {{ let result = {expression}; value }}\npub fn main -> Int = probe 1\n");
         let core = checked(&source);

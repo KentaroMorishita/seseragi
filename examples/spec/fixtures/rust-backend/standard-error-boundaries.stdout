@@ -1,0 +1,50 @@
+Right 42
+Left EmptyInt
+Left InvalidIntDigit { offset: 1, radix: 10 }
+Left InvalidIntDigit { offset: 1, radix: 10 }
+Right 9007199254740991
+Left IntOutsideRange
+Left InvalidIntRadix 1
+Right [[1], [2]]
+Left NonPositiveSize 0
+Left NonPositiveSize -9007199254740991
+Right 雪🙂
+Left InvalidScalarRange { start: -1, end: 1, length: 2 }
+Left InvalidScalarRange { start: 0, end: 3, length: 2 }
+Right 12.5
+Left InvalidDecimal { offset: 2 }
+"ExplicitBenchmarkFailure "
+ExplicitBenchmarkFailure 雪🙂
+second
+local:雪🙂
+True
+False
+True|False
+False|True
+NonPositiveSize 9007199254740991
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+False|True
+True|False
+False|True
+False|True
+True|False
+False|True
+False|True
+InvalidProbability NaN
+InvalidProbability Infinity
+InvalidProbability -Infinity
+InvalidProbability -0.0

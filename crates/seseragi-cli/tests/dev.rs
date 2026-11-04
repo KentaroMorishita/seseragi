@@ -1341,6 +1341,7 @@ fn rejects_process_target_packages_before_entering_the_watch_loop() {
     assert!(fs::read_to_string(&log_path)
         .unwrap()
         .contains("dev does not support the `process` target"));
+    assert!(!package.join(".seseragi/dev").exists());
     fs::remove_dir_all(directory).unwrap();
 }
 

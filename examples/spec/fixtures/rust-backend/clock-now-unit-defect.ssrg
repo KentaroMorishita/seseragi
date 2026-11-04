@@ -1,0 +1,16 @@
+import * as clock from "std/clock"
+import { Clock } from "std/clock"
+import * as effects from "std/effect"
+
+fn argument -> Unit = { let _value = 9007199254740991 + 1; () }
+effect fn ignore _error: ConsoleError -> Unit with Clock, Console = effects.succeed ()
+effect fn say text: String -> Unit with Clock, Console =
+  println text
+  |> effects.recover ignore
+
+pub effect fn main = effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> say "released")
+    clock.now (argument ())
+    say "unreachable"
+  }
+)

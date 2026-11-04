@@ -1,6 +1,6 @@
-//! Rank-1 inference for non-recursive lambda initializers. Inference variables
-//! live only in this pass; the ordinary checker validates the inferred type and
-//! selects required dictionaries before a binding acquires a scheme.
+//! Local constraint inference for lambda initializers, applications and Effect
+//! binds. Inference variables live only in this pass; the ordinary checker
+//! validates inferred types and selects required dictionaries.
 use super::PureExpressionContext;
 use crate::typed::functions::{substitute_type_parameters, TopLevelPureFunction};
 use crate::typed::semantic_types::{
@@ -9,7 +9,7 @@ use crate::typed::semantic_types::{
 use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 use crate::{SymbolId, TypedConstraint, TypedRecordField, TypedType};
 use seseragi_syntax::{
-    SurfaceBlockItem, SurfaceExpr, SurfacePattern, SurfaceRecordItem, TypeParameter,
+    SurfaceBlockItem, SurfaceDoItem, SurfaceExpr, SurfacePattern, SurfaceRecordItem, TypeParameter,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -406,6 +406,107 @@ pub(super) fn infer_call_arguments(
     )
 }
 
+/// Effect binds share monomorphic variables with later statements. Supply
+/// solved initializer expectations to the ordinary checker without assigning
+/// a polymorphic scheme to values produced by executing an Effect.
+pub(crate) fn infer_do_bindings(
+    items: &[SurfaceDoItem],
+    result: Option<&SurfaceExpr>,
+    context: &PureExpressionContext<'_>,
+) -> Option<Vec<Option<SemanticValueType>>> {
+    if !items
+        .iter()
+        .any(|item| matches!(item, SurfaceDoItem::Bind { .. }))
+    {
+        return None;
+    }
+    let mut environment = inference_environment(context);
+    let mut inference = Inference {
+        prefix: match items.first()? {
+            SurfaceDoItem::Bind { span, .. }
+            | SurfaceDoItem::Let { span, .. }
+            | SurfaceDoItem::Expression { span, .. } => span.start,
+        },
+        next: 0,
+        substitutions: BTreeMap::new(),
+        obligations: Vec::new(),
+        context,
+    };
+    let mut initializers = Vec::new();
+    for item in items {
+        let (pattern, input, initializer, quantified) = match item {
+            SurfaceDoItem::Bind { pattern, value, .. } => {
+                let initializer = inference.expression(value, &environment)?;
+                let effect = crate::typed::type_ref::effect_from_value_type(
+                    &inference.resolve(&initializer),
+                )?;
+                (pattern, effect.success, Some(initializer), BTreeSet::new())
+            }
+            SurfaceDoItem::Let {
+                pattern,
+                type_ref,
+                value,
+                ..
+            } => {
+                let inferred = inference.expression(value, &environment)?;
+                if let Some(annotation) = type_ref {
+                    let annotation = context.semantic_value_from_type_ref(annotation);
+                    inference.unify(&inferred, &context.evidence_type(&annotation))?;
+                }
+                let quantified = if context.infer_let(value).is_some() {
+                    inference.generalize(&inferred, &environment)
+                } else {
+                    BTreeSet::new()
+                };
+                (pattern, inference.resolve(&inferred), None, quantified)
+            }
+            SurfaceDoItem::Expression { value, .. } => {
+                inference.expression(value, &environment)?;
+                initializers.push(None);
+                continue;
+            }
+        };
+        let input = context.semantic_value_from_typed_type(&input);
+        let pattern = super::pattern::type_pattern(pattern, &input, context);
+        if !pattern.is_irrefutable() || !pattern.issues.is_empty() {
+            return None;
+        }
+        for (symbol, value) in pattern.locals {
+            environment.insert(
+                symbol,
+                Scheme {
+                    value: context.evidence_type(&value),
+                    quantified: quantified.clone(),
+                    constraints: Vec::new(),
+                },
+            );
+        }
+        initializers.push(initializer);
+    }
+    if let Some(result) = result {
+        let actual = inference.expression(result, &environment)?;
+        if let Some(expected) = context.expected() {
+            let success = |value: &TypedType| {
+                crate::typed::type_ref::effect_from_value_type(value)
+                    .map(|effect| effect.success)
+                    .unwrap_or_else(|| value.clone())
+            };
+            inference.unify(&success(&actual), &success(&expected.type_ref))?;
+        }
+    }
+    inference.solve_outputs()?;
+    Some(
+        initializers
+            .into_iter()
+            .map(|initializer| {
+                let value = inference.resolve(&initializer?);
+                (variables(&value).is_empty() && !typed_type_contains_hole(&value))
+                    .then(|| context.semantic_value_from_typed_type(&value))
+            })
+            .collect(),
+    )
+}
+
 /// Refine an absent/partial branch expectation without generalizing locals.
 /// The ordinary checker still validates both branches and their identities.
 pub(super) fn infer_branch_result(
@@ -656,7 +757,12 @@ impl Inference<'_, '_> {
                 return self.resolve(replacement);
             }
         }
-        map_children(value, |child| self.resolve(child))
+        match map_children(value, |child| self.resolve(child)) {
+            TypedType::RequirementMerge { operands } => {
+                crate::typed::type_ref::normalize_requirement_merge(operands)
+            }
+            resolved => resolved,
+        }
     }
 
     fn nominal_application(&self, value: &TypedType) -> Option<(String, Vec<TypedType>)> {
@@ -919,6 +1025,56 @@ impl Inference<'_, '_> {
                 if let Some(signature) = self.context.callable_value(target) {
                     return Some(self.signature(&signature));
                 }
+                if let Some(symbol) = self
+                    .context
+                    .resolution
+                    .symbol(target)
+                    .filter(|symbol| symbol.kind == crate::SymbolKind::Prelude)
+                {
+                    let operation =
+                        crate::effect_ops::known_effect_operation_by_surface(&symbol.spelling)?;
+                    let (module, _) = operation.semantic_name.rsplit_once("::")?;
+                    let provider = seseragi_project::standard_module_target(module)?;
+                    let export = provider
+                        .interface()
+                        .exports
+                        .iter()
+                        .find(|export| export.symbol == operation.semantic_name)?;
+                    let constraints = export
+                        .scheme
+                        .constraints
+                        .iter()
+                        .map(|constraint| {
+                            let arguments = constraint
+                                .arguments
+                                .iter()
+                                .cloned()
+                                .map(crate::typed::type_ref::typed_type_from_interface_type)
+                                .collect::<Option<_>>()?;
+                            Some((
+                                TypedConstraint {
+                                    name: constraint.name.clone(),
+                                    arguments,
+                                },
+                                constraint.trait_identity.clone(),
+                            ))
+                        })
+                        .collect::<Option<_>>()?;
+                    let value = crate::typed::type_ref::typed_type_from_interface_type(
+                        export.scheme.type_ref.clone(),
+                    )?;
+                    let quantified = export
+                        .scheme
+                        .type_parameters
+                        .iter()
+                        .map(|parameter| parameter.name.clone())
+                        .collect();
+                    return Some(self.instantiate(&Scheme {
+                        value,
+                        quantified,
+                        constraints,
+                    }));
+                }
                 self.context
                     .resolution
                     .top_level_value_type(target)
@@ -1016,6 +1172,7 @@ impl Inference<'_, '_> {
                 receiver,
                 field,
                 span,
+                type_arguments: None,
                 ..
             } => {
                 if let Some(signature) = self

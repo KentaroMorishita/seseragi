@@ -43,9 +43,9 @@ pub(crate) fn test(arguments: &[String]) -> Result<i32, String> {
         .ok_or_else(|| {
             "test target is required; pass `--target node` or set test.target/run.target".to_owned()
         })?;
-    if !matches!(target, "node" | "process" | "test-js") {
+    if !matches!(target, "node" | "process" | "test-js" | "native") {
         return Err(format!(
-            "test target `{target}` is unsupported; expected `node`"
+            "test target `{target}` is unsupported; expected `node` or `native`"
         ));
     }
     let compiled = match compile_local_tests(&project) {
@@ -72,8 +72,76 @@ pub(crate) fn test(arguments: &[String]) -> Result<i32, String> {
             .or_else(|| settings.map(|test| test.seed))
             .unwrap_or(0),
     };
+    if target == "native" {
+        return run_native_tests(&compiled, &root, &options);
+    }
     run_local_tests_in_directory(&compiled, &root, &options)
         .map(|outcome| outcome.exit_code)
+        .map_err(|error| error.to_string())
+}
+
+fn run_native_tests(
+    compiled: &seseragi_driver::CompiledLocalTests,
+    root: &Path,
+    options: &TestRunOptions,
+) -> Result<i32, String> {
+    let modules = compiled
+        .compiled
+        .order
+        .iter()
+        .map(|id| &compiled.compiled.modules[id].core_ir)
+        .collect::<Vec<_>>();
+    let tests = compiled
+        .test_modules
+        .iter()
+        .map(|module| {
+            let export = compiled.compiled.modules[&module.module_id]
+                .typed_interface
+                .exports
+                .iter()
+                .find(|export| export.namespace == "value" && export.name == "tests")
+                .expect("discovered Test export");
+            (module.name.clone(), export.symbol.clone())
+        })
+        .collect::<Vec<_>>();
+    let artifact = seseragi_backend_rust::emit_rust_tests(&modules, &tests).map_err(|error| {
+        match &error.origin {
+            Some(origin) => format!(
+                "{}:{}..{}: {error}",
+                origin.source, origin.start, origin.end
+            ),
+            None => error.to_string(),
+        }
+    })?;
+    let scratch = tempfile::tempdir().map_err(|error| error.to_string())?;
+    let executable = scratch.path().join(crate::experimental::output::EXECUTABLE);
+    crate::experimental::native_cargo::build(
+        root,
+        "tests",
+        seseragi_project::BuildProfile::Development,
+        &artifact.source,
+        &executable,
+    )?;
+    let mut command = std::process::Command::new(executable);
+    command.current_dir(root).args([
+        "--jobs",
+        &options.jobs.to_string(),
+        "--timeout-ms",
+        &options.timeout_ms.to_string(),
+        "--cleanup-grace-ms",
+        &options.cleanup_grace_ms.to_string(),
+        "--seed",
+        &options.seed.to_string(),
+    ]);
+    if let Some(filter) = &options.filter {
+        command.args(["--filter", filter]);
+    }
+    if let Some(exact) = &options.exact {
+        command.args(["--exact", exact]);
+    }
+    command
+        .status()
+        .map(|status| status.code().unwrap_or(1))
         .map_err(|error| error.to_string())
 }
 

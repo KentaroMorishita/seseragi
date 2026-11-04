@@ -84442,8 +84442,11 @@
                 {
                   "name": "fileType",
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "FileType",
+                    "canonical": "std/fs::FileType",
+                    "providerModule": "std/fs",
+                    "providerExport": "FileType",
                     "arguments": []
                   }
                 },

@@ -1,0 +1,78 @@
+import * as children from "std/child-process"
+import * as effects from "std/effect"
+import * as paths from "std/path"
+import * as process from "std/process"
+import * as streams from "std/stream"
+import * as text from "std/text"
+import * as hex from "std/bytes/hex"
+import * as time from "std/time"
+
+alias Output = {out: String, err: String, status: String}
+
+fn collect output: Output -> event: children.ChildEvent -> Output = match event {
+  children.ChildStdoutChunk chunk -> {out: output.out + hex.encode chunk, err: output.err, status: output.status}
+  children.ChildStderrChunk chunk -> {out: output.out, err: output.err + hex.encode chunk, status: output.status}
+  children.ChildExitedWith status -> {out: output.out, err: output.err, status: show status}
+}
+
+effect fn input -> children.ChildInput with process: process.Process fails String = do {
+  _args <- process.arguments () |> effects.mapError show
+  effects.succeed (children.WriteChildStdin (text.encodeUtf8 "saved"))
+}
+
+effect fn execute node: String -> script: String -> Unit
+with Console, childProcesses: children.ChildProcesses, process: process.Process
+fails String = do {
+  let makeCommand = children.command
+  let addArgument = children.addArgument
+  let addArguments = children.addArguments
+  let inDirectory = children.inDirectory
+  let setEnvironment = children.setEnvironment
+  let unsetEnvironment = children.unsetEnvironment
+  let clearEnvironment = children.clearEnvironment
+  let terminationGrace = children.terminationGrace
+  let outputBuffer = children.outputBuffer
+  let captureLimit = children.captureLimit
+  let defaultCaptureLimit = children.defaultCaptureLimit
+  let runCaptured = children.runCaptured
+  let runInherited = children.runInherited
+  path <- paths.parse node |> effects.fromEither |> effects.mapError show
+  base <- makeCommand (children.ExecutablePath path) |> effects.fromEither |> effects.mapError show
+  scripted <- addArgument script base |> effects.fromEither |> effects.mapError show
+  let named = setEnvironment "SESERAGI_SAVED_CHILD"
+  let valued = named "value"
+  withEnvironment <- valued (clearEnvironment scripted) |> effects.fromEither |> effects.mapError show
+  configured <- unsetEnvironment "SESERAGI_SAVED_CHILD" withEnvironment |> effects.fromEither |> effects.mapError show
+  capacity <- streams.bufferCapacity 1 |> effects.fromEither |> effects.mapError show
+  let buffered = outputBuffer capacity
+  let graceful = terminationGrace (time.zeroDuration ())
+  let directory = inDirectory (paths.current ())
+  let ready = directory (graceful (buffered configured))
+  let appendEcho = addArguments ["echo"]
+  echo <- appendEcho ready |> effects.fromEither |> effects.mapError show
+  limit <- captureLimit 1024 |> effects.fromEither |> effects.mapError show
+  let limited = runCaptured limit
+  let supplied = limited (text.encodeUtf8 "saved")
+  captured <- supplied echo |> effects.mapError show
+  println (show captured.status + ":" + hex.encode captured.stdout + ":" + hex.encode captured.stderr) |> effects.mapError show
+  defaulted <- runCaptured (defaultCaptureLimit ()) (text.encodeUtf8 "saved") echo |> effects.mapError show
+  println (show defaulted.status + ":" + hex.encode defaulted.stdout + ":" + hex.encode defaulted.stderr) |> effects.mapError show
+  let runStreaming = children.runStreaming
+  let suppliedStream = runStreaming (streams.fromEffect (input ()))
+  let initial: Output = {out: "", err: "", status: "pending"}
+  streamed <- streams.runFold initial collect (suppliedStream echo) |> effects.mapError show
+  println (streamed.status + ":" + streamed.out + ":" + streamed.err) |> effects.mapError show
+  empty <- addArguments ["empty"] ready |> effects.fromEither |> effects.mapError show
+  inherited <- runInherited empty |> effects.mapError show
+  println (show inherited) |> effects.mapError show
+}
+
+pub effect fn main -> Unit
+with Console, childProcesses: children.ChildProcesses, process: process.Process
+fails String = do {
+  args <- process.arguments () |> effects.mapError show
+  match args {
+    [node, script, _mode] -> execute node script
+    _ -> effects.fail "expected node, script and scenario"
+  }
+}

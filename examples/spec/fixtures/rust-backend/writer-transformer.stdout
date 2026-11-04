@@ -1,0 +1,26 @@
+Just (7, first-雪🙂)
+Just (7, first-雪🙂)
+Just (8, first-雪🙂)
+Just (9, first-雪🙂-last)
+Just (21, function-first-雪🙂)
+Just (0, )
+Just ((), )
+Just (11, )
+Just (12, )
+Just ((7, first-雪🙂), first-雪🙂)
+Just (((7, first-雪🙂), first-雪🙂), first-雪🙂)
+Nothing
+Nothing
+Left typed
+[(1, 1), (11, 1), (2, 2), (12, 2)]
+[]
+`[(3, `[1, 2]), (4, `[1, 2])]
+(6, ab)
+(8, { text: raw })
+Just ((9, outer), `[1, 2])
+Just (Nothing, kept)
+Just Nothing
+Just ((42, state), 42)
+13
+(5, function)
+(6, function)

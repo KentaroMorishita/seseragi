@@ -1,0 +1,66 @@
+import * as text from "std/text"
+
+fn through<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn returned start: Int -> end: Int -> (String -> Either<text.TextSliceError, String>) = text.sliceScalars start end
+fn describe result: Either<text.TextSliceError, String> -> String = match result {
+  Left error -> "Left " + show error
+  Right value -> "Right " + value
+}
+
+pub fn probe -> String = {
+  let empty: String -> Bool = text.isEmpty
+  let concat: Array<String> -> String = text.concat
+  let scalars: String -> Int = text.lengthScalars
+  let bytes: String -> Int = text.lengthBytes
+  let at: Int -> String -> Maybe<Char> = text.scalarAt
+  let slice: Int -> Int -> String -> Either<text.TextSliceError, String> = text.sliceScalars
+  let words: String -> Array<String> = text.words
+  let start: String -> String = text.trimStart
+  let end: String -> String = text.trimEnd
+  let replace: String -> String -> String -> String = text.replaceAll
+  let from = slice 1
+  let between = from 3
+  let second = at 1
+  let replacing = replace "aa"
+  let literal = replacing "$&"
+  let source = "A👍🏽e\u{301}\0"
+  let noWords: Array<String> = []
+  let missing: Maybe<Char> = Nothing
+  text.join "\n" [
+    "empty:" + show (text.isEmpty ""),
+    "nul:" + show (empty "\0" == False),
+    "concat-empty:" + show (concat noWords == ""),
+    "concat:" + show (through concat ["", "雫", "👍🏽", "e\u{301}", "\0", ""] == "雫👍🏽e\u{301}\0"),
+    "lengths:" + show (scalars source == 6 && bytes source == 13),
+    "empty-lengths:" + show (scalars "" == 0 && bytes "" == 0),
+    "scalar:" + show (text.scalarAt 0 source == Just 'A' && second source == Just '👍'),
+    "combining:" + show (at 4 source == Just '\u{301}' && at 5 source == Just '\0'),
+    "scalar-bounds:" + show (at (-1) source == missing && at 6 source == missing && at 0 "" == missing),
+    "scalar-extremes:" + show (at (-9007199254740991) source == missing && at 9007199254740991 source == missing),
+    "slice:" + show (describe (text.sliceScalars 1 3 source) == "Right 👍🏽" && describe (between source) == "Right 👍🏽"),
+    "slice-returned:" + show (describe (through (returned 3 5) source) == "Right e\u{301}"),
+    "slice-whole:" + show (describe (slice 0 6 source) == "Right " + source),
+    "slice-empty:" + show (describe (slice 0 0 "") == "Right " && describe (slice 6 6 source) == "Right "),
+    "slice-negative:" + show (describe (slice (-1) 2 source) == "Left InvalidScalarRange { start: -1, end: 2, length: 6 }"),
+    "slice-reversed:" + show (describe (slice 3 1 source) == "Left InvalidScalarRange { start: 3, end: 1, length: 6 }"),
+    "slice-overrun:" + show (describe (slice 0 7 source) == "Left InvalidScalarRange { start: 0, end: 7, length: 6 }"),
+    "slice-empty-error:" + show (describe (slice 0 1 "") == "Left InvalidScalarRange { start: 0, end: 1, length: 0 }"),
+    "slice-extremes:" + show (describe (slice (-9007199254740991) 9007199254740991 source) == "Left InvalidScalarRange { start: -9007199254740991, end: 9007199254740991, length: 6 }"),
+    "words-empty:" + show (words "" == noWords && words " \t\r\n\u{85}\u{2003}" == noWords),
+    "words:" + show (words " \u{85}hello,\u{2003}世界!\u{FEFF} \0🙂 " == ["hello,", "世界!\u{FEFF}", "\0🙂"]),
+    "trim-start:" + show (start "\u{85} \t雫🙂 \u{2003}" == "雫🙂 \u{2003}"),
+    "trim-end:" + show (end "\u{85} 雫🙂 \u{2003}" == "\u{85} 雫🙂"),
+    "trim-content:" + show (start "\u{FEFF} a \u{FEFF}" == "\u{FEFF} a \u{FEFF}" && end "\u{FEFF} a \u{FEFF}" == "\u{FEFF} a \u{FEFF}"),
+    "trim-empty:" + show (start "" == "" && end "" == "" && start " \u{85}" == "" && end " \u{85}" == ""),
+    "replace-literal:" + show (literal "aaaaa" == "$&$&a"),
+    "replace-overlap:" + show (text.replaceAll "aba" "X" "ababa" == "Xba"),
+    "replace-absent:" + show (replace "missing" "$1" source == source && replace "x" "y" "" == ""),
+    "replace-empty:" + show (replace "" "/" "A👍🏽e\u{301}" == "/A/👍/🏽/e/\u{301}/" && replace "" "/" "" == "/"),
+    "replace-delete:" + show (replace "🙂" "" "🙂🙂" == "" && replace "" "" source == source),
+    "replace-nul:" + show (replace "\0" "$1\\" "a\0🙂\0" == "a$1\\🙂$1\\"),
+    "no-normalization:" + show (scalars "é" == 1 && scalars "e\u{301}" == 2 && replace "é" "x" "e\u{301}" == "e\u{301}"),
+    "error-display:" + show (describe (slice (-1) 7 source) == "Left InvalidScalarRange { start: -1, end: 7, length: 6 }")
+  ]
+}
+
+pub effect fn main = println (probe ())

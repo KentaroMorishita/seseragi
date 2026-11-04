@@ -1,3 +1,9 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 #[allow(dead_code)]
 #[path = "support/runtime_diagnostics.rs"]
 mod diagnostics;
@@ -36,6 +42,7 @@ struct OwnedChild {
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command
@@ -581,9 +588,9 @@ fn conversion_evaluates_mode_and_value_once_across_saved_and_returned_stages() {
     let binary = scratch
         .0
         .join(format!("trace{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&file, rust).unwrap();
+    native_runtime::write_program(&file, rust).unwrap();
     successful(bounded(
-        Command::new(std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()))
+        Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&file),

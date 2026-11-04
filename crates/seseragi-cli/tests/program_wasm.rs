@@ -1,3 +1,9 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -32,6 +38,7 @@ struct OwnedChild {
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command
@@ -234,7 +241,7 @@ fn standard_web_build_owns_program_assets_types_and_the_selected_import_closure(
         .collect::<Vec<_>>();
     let native =
         seseragi_backend_rust::emit_rust_project(&modules, &core.entry_module, "probe").unwrap();
-    fs::write(scratch.0.join("oracle.rs"), native.source).unwrap();
+    native_runtime::write_program(scratch.0.join("oracle.rs"), native.source).unwrap();
     let binary = scratch.0.join(if cfg!(windows) {
         "oracle.exe"
     } else {

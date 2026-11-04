@@ -1,0 +1,3 @@
+import * as t from "std/test"
+
+pub let tests:t.Test = t.test "pass" (t.isTrue True)

@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_module, CompileInput};
 use std::{
@@ -62,7 +65,7 @@ fn compare(source: &str, expected: &str, trace_scrutinee: bool) {
     let binary = scratch
         .0
         .join(format!("program{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&program, rust).unwrap();
+    link::write_program(&program, rust).unwrap();
     let built = Command::new("rustc")
         .args(["--edition=2021", "-O"])
         .arg(&program)

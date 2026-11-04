@@ -4,8 +4,8 @@ use crate::{
     ProjectProviderConfiguration, ProjectProviderDiagnostic, ProviderResolution,
 };
 use seseragi_project::{
-    link_module, standard_module_target, LinkError, LinkTargetError, ModuleGraph, ModuleGraphError,
-    ModuleLinkTarget,
+    link_module_with_type_providers, standard_module_target, LinkError, LinkTargetError,
+    ModuleGraph, ModuleGraphError, ModuleLinkTarget,
 };
 use seseragi_semantics::{
     analysis_document_with_source, analyze_linked_module, analyze_linked_module_recovering,
@@ -515,11 +515,17 @@ fn analyze_project_frontend(
             };
             targets.insert(specifier, target);
         }
-        let linked =
-            link_module(unlinked, &targets).map_err(|errors| ProjectCompileError::Link {
+        let type_providers = outputs::reachable_modules(module, graph)
+            .iter()
+            .filter_map(|provider| analyzed.get(provider))
+            .map(|provider| provider.typed_interface.clone().into_link_interface())
+            .collect::<Vec<_>>();
+        let linked = link_module_with_type_providers(unlinked, &targets, &type_providers).map_err(
+            |errors| ProjectCompileError::Link {
                 module: module.clone(),
                 errors,
-            })?;
+            },
+        )?;
         let analysis = if recovery != FrontendRecovery::None {
             analyze_linked_module_recovering(diagnostics, linked, &input.source)
         } else {

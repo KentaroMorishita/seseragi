@@ -180,7 +180,8 @@ impl seseragi_syntax::type_functions::TypeFunctionTerm
                 },
                 Key::Adt { arguments, .. }
                 | Key::Struct { arguments, .. }
-                | Key::ExternalNominal { arguments, .. },
+                | Key::ExternalNominal { arguments, .. }
+                | Key::NamedGeneric { arguments, .. },
             ) => {
                 *arguments = arguments.iter().map(map).collect::<Option<_>>()?;
                 TypedType::ExternalNamed {

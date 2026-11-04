@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 #[allow(dead_code)]
 #[path = "support/runtime_diagnostics.rs"]
 mod diagnostics;
@@ -293,9 +296,9 @@ fn generic_impl_operand_and_selected_dictionary_stages_evaluate_once_in_source_o
     rust.push_str(&format!("\nthread_local! {{ static TRACE: RefCell<Vec<&'static str>> = const {{ RefCell::new(Vec::new()) }}; }}\nfn main() {{ let result = {}(vec![]).apply(V::Unit); assert_eq!(result.render(), \"4\"); TRACE.with(|trace| assert_eq!(&*trace.borrow(), &{events:?})); drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0); }}", id("probe")));
     let file = directory.join("trace.rs");
     let binary = directory.join(format!("trace{}", std::env::consts::EXE_SUFFIX));
-    fs::write(&file, rust).unwrap();
+    native_runtime::write_program(&file, rust).unwrap();
     successful(bounded(
-        Command::new(std::env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()))
+        Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)
             .arg(&file),

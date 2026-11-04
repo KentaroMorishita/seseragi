@@ -1,12 +1,12 @@
-import {
-  resolveTimeZoneLocal,
-  timeZoneOffsetAtEpochSecond,
-  type RuleLocalResolution,
-} from "./timezone-rules.js"
 import { createInstant, type Instant, instantNanoseconds } from "./clock-value"
-import type { Effect, EffectContext } from "./effect"
+import type { Effect, EffectContext, Unit } from "./effect"
 import { serviceEffect, type serviceFailure, serviceSuccess } from "./service"
 import { type Either, Left, type Left as LeftValue, Right } from "./sum"
+import {
+  type RuleLocalResolution,
+  resolveTimeZoneLocal,
+  timeZoneOffsetAtEpochSecond,
+} from "./timezone-rules.js"
 
 const NANOS_PER_SECOND = 1_000_000_000n
 const SECONDS_PER_DAY = 86_400n
@@ -322,7 +322,9 @@ export type TimeZones = Readonly<{
 
 export type TimeZonesEnvironment = Readonly<{ timeZones: TimeZones }>
 
-export function databaseVersion(): Effect<TimeZonesEnvironment, never, string> {
+export function databaseVersion(
+  _unit?: Unit
+): Effect<TimeZonesEnvironment, never, string> {
   return serviceEffect(async (environment, context) =>
     serviceSuccess(await environment.timeZones.databaseVersion(context))
   )

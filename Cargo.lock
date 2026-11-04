@@ -532,7 +532,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-backend-rust"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-cli"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "ctrlc",
  "pulldown-cmark",
@@ -562,15 +562,17 @@ dependencies = [
  "seseragi-syntax",
  "sha2",
  "tempfile",
+ "toml",
  "url",
 ]
 
 [[package]]
 name = "seseragi-conformance"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
+ "seseragi-backend-rust",
  "seseragi-driver",
  "seseragi-lowering",
  "seseragi-project",
@@ -582,7 +584,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-driver"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "semver",
  "serde_json",
@@ -597,7 +599,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-dts"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
@@ -613,14 +615,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-formatter"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "seseragi-syntax",
 ]
 
 [[package]]
 name = "seseragi-interop"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
@@ -629,7 +631,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-lowering"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "semver",
  "serde",
@@ -642,10 +644,11 @@ dependencies = [
 
 [[package]]
 name = "seseragi-lsp"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
+ "seseragi-backend-rust",
  "seseragi-driver",
  "seseragi-project",
  "seseragi-release",
@@ -655,8 +658,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-native-runtime"
+version = "0.61.142"
+
+[[package]]
 name = "seseragi-project"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "semver",
  "serde",
@@ -673,7 +680,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-projection"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
@@ -686,7 +693,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-provider"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "semver",
  "serde",
@@ -697,14 +704,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-release"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "seseragi-runtime"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
@@ -718,7 +725,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-schema"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
@@ -729,7 +736,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-semantics"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",
@@ -739,14 +746,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-source"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "seseragi-syntax"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "semver",
  "serde",
@@ -758,7 +765,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-wasm"
-version = "0.61.141"
+version = "0.61.142"
 dependencies = [
  "serde",
  "serde_json",

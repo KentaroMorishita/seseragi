@@ -3,7 +3,7 @@ use seseragi_driver::{compile_core_module, CompileInput};
 use seseragi_lowering::{CoreExpr, CoreType};
 
 #[test]
-fn die_emits_an_explicit_cold_defect_only_when_the_module_uses_it() {
+fn die_calls_the_runtime_cold_defect_only_when_the_module_uses_it() {
     let source = include_str!("../../../examples/spec/fixtures/rust-backend/effect-die.ssrg");
     let checked = compile_core_module(CompileInput::new("effect-die.ssrg", "fixture/die", source))
         .expect("source die contract");
@@ -13,11 +13,10 @@ fn die_emits_an_explicit_cold_defect_only_when_the_module_uses_it() {
         .metadata
         .capabilities
         .contains(&"effect-defect".to_owned()));
-    assert!(artifact
-        .source
+    assert!(artifact.source.contains("native_effect_die("));
+    assert!(seseragi_backend_rust::native_runtime::SOURCE
         .contains("fn native_effect_die(message: V) -> V"));
-    assert!(artifact
-        .source
+    assert!(seseragi_backend_rust::native_runtime::SOURCE
         .contains("Err(NativeExit::defects(vec![message.get().clone()]))"));
 
     let plain = compile_core_module(CompileInput::new(

@@ -1,0 +1,48 @@
+import * as logs from "std/log"
+import { log, LogEvent, LogValue } from "std/log"
+import * as effects from "std/effect"
+
+let topLevel = logs.log
+
+fn identity<A> value: A -> A = value
+
+fn event message: String -> LogEvent = {
+  let fields: List<(String, LogValue)> = `[
+    ("same", logs.LogString message),
+    ("same", logs.LogInt 42),
+  ]
+  LogEvent { level: logs.LogInfo, message, fields }
+}
+
+fn factory -> (LogEvent -> Effect<{ logger: logs.Logger }, logs.LogError, Unit>) = {
+  let saved = logs.log
+  saved
+}
+
+effect fn block message: String = {
+  let saved = logs.log
+  saved (event message)
+}
+
+effect fn sequence message: String = do {
+  let saved = log
+  saved (event message)
+}
+
+pub effect fn main = do {
+  let saved = logs.log
+  let grouped = (logs.log)
+  let indirect = identity logs.log
+  let returned = factory ()
+  let unused = logs.log
+  let cold = saved (event "cold")
+  topLevel (event "top-level")
+  block "block"
+  sequence "do"
+  indirect (event "雪🙂\n\"\\")
+  returned (event "returned")
+  grouped (LogEvent { level: logs.LogTrace, message: "", fields: `[] })
+  cold
+  cold
+  effects.succeed ()
+}

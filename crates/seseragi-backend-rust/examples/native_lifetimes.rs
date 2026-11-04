@@ -47,8 +47,18 @@ fn main() -> Result<(), String> {
             }
             // Only the existing checked pure ABI is used. The typed bridge is
             // scalar-only; no managed handle can escape the WASM instance.
-            let artifact = seseragi_backend_rust::emit_rust_module(&checked.core_ir, "probe")
+            let mut artifact = seseragi_backend_rust::emit_rust_module(&checked.core_ir, "probe")
                 .map_err(|e| e.to_string())?;
+            artifact.source = artifact
+                .source
+                .replace(
+                    "use seseragi_native_runtime::*;",
+                    seseragi_backend_rust::native_runtime::SOURCE,
+                )
+                .replace(
+                    "use std::{cell::{Cell, RefCell}, collections::BTreeMap};\n",
+                    "",
+                );
             let end = artifact
                 .source
                 .rfind("\nfn main()")

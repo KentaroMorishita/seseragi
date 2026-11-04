@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -70,7 +73,7 @@ fn successful(output: Output) -> Output {
     output
 }
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
 }
 fn runtime(name: &str) -> PathBuf {
     let output = Command::new(if cfg!(windows) { "where" } else { "which" })

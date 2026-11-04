@@ -1,0 +1,36 @@
+import { Validation } from "std/validation"
+import { NonEmptyList } from "std/non-empty-list"
+import * as validation from "std/validation"
+import * as arrays from "std/array"
+
+alias Reversed<A, E> = Validation<E, A>
+alias Check<E, A> = Reversed<A, E>
+alias Same<A> = Check<A, A>
+alias Items<A> = Array<A>
+alias Callback<A> = A -> A
+
+fn accept<E, A> value: A -> Validation<E, A> = validation.valid value
+fn reject<E, A> error: E -> Validation<E, A> = validation.invalid error
+fn extract<E, A> value: Check<E, A> -> Either<NonEmptyList<E>, A> =
+  validation.toEither value
+fn relay<X, Y> value: Check<X, Y> -> Either<NonEmptyList<X>, Y> = extract value
+fn repeated<A> value: Same<A> -> Either<NonEmptyList<A>, A> = extract value
+fn first<A> values: Items<A> -> Maybe<A> = arrays.head values
+fn apply<A> callback: Callback<A> -> value: A -> A = callback value
+fn increment value: Int -> Int = value + 1
+
+pub effect fn main = do {
+  println (debug (extract (accept<String, Int> 0)))
+  println (debug (extract (reject<String, Int> "")))
+  println (debug (relay (reject<String, Int> "雪🙂")))
+  println (debug (repeated (accept<Int, Int> 42)))
+  println (debug (repeated (reject<Int, Int> 0)))
+  println (debug (extract (accept<String, String> "")))
+  println (debug (extract (accept<String, Array<Int>> [])))
+  println (debug (extract (accept<String, Unit> ())))
+  println (debug (extract (accept<String, Int> (-9007199254740991))))
+  println (debug (extract (accept<String, Int> 9007199254740991)))
+  println (debug (first<Int> []))
+  println (debug (first ["雪🙂"]))
+  println (show (apply increment 41))
+}

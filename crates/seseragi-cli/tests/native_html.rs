@@ -30,6 +30,8 @@ fn compare(source: &Path, expected: &Path, scratch: &Path) {
 }
 
 fn compare_native(source: &Path, expected: &[u8], scratch: &Path) {
+    let input = process::copy_input(source, scratch);
+    let source = input.as_path();
     let cli = env!("CARGO_BIN_EXE_seseragi");
     let native = scratch.join("native");
     successful(bounded(

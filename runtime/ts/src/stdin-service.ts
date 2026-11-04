@@ -189,11 +189,9 @@ export function readChunk(
 }
 
 /** Reads one default-limited line from the supplied Stdin service. */
-export function readLine(): Effect<
-  StdinEnvironment,
-  StdinError,
-  Maybe<string>
-> {
+export function readLine(
+  _unit?: Unit
+): Effect<StdinEnvironment, StdinError, Maybe<string>> {
   return readLineWith(defaultLineLimit())
 }
 

@@ -68,6 +68,9 @@ impl<'a> Case<'a> {
 
 fn compare(source: &Path, cases: &[Case<'_>]) {
     let scratch = Scratch::new();
+    let original_source = source;
+    let input = process::copy_input(source, &scratch.0);
+    let source = input.as_path();
     let original = source.is_file().then(|| fs::read(source).unwrap());
     let native = scratch.0.join("native");
     successful(bounded(
@@ -224,7 +227,38 @@ fn compare(source: &Path, cases: &[Case<'_>]) {
     }
     if let Some(original) = original {
         assert_eq!(fs::read(source).unwrap(), original);
+        assert_eq!(fs::read(original_source).unwrap(), original);
     }
+}
+
+#[test]
+fn inferred_validation_alias_calls_keep_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/validation-inferred-return.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/validation-inferred-return.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn generic_alias_calls_keep_success_errors_and_boundaries_in_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/generic-alias-calls.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/generic-alias-calls.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn imported_generic_alias_calls_keep_strict_ts_and_native_results() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/generic-alias-calls"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-projects/generic-alias-calls/expected.stdout"
+        ))],
+    );
 }
 
 #[test]
@@ -233,6 +267,36 @@ fn basic_long_effect_sequence_keeps_every_statement_in_both_profiles() {
         &root().join("examples/spec/fixtures/rust-backend/basic-long-effect-sequence.ssrg"),
         &[Case::success(include_bytes!(
             "../../../examples/spec/fixtures/rust-backend/basic-long-effect-sequence.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_effect_control_matches_original_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-effect-control.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-effect-control.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_effect_control_keeps_cold_failure_payloads_cancellation_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-effect-control-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-effect-control-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_effect_control_keeps_imported_iterable_and_generic_effect_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/projects/effect-until"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/projects/effect-until/expected.stdout"
         ))],
     );
 }
@@ -325,6 +389,306 @@ fn basic_bytes_match_original_raw_strict_ts_and_native() {
 }
 
 #[test]
+fn basic_bytes_operations_match_raw_strict_ts_and_native_for_errors_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-bytes-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-bytes-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_grapheme_matches_raw_strict_ts_and_native_for_errors_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/text-grapheme.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/text-grapheme.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_grapheme_pinned_corpus_and_range_matrix_match_ts_and_native() {
+    let scratch = Scratch::new();
+    let mut cases = vec![vec![]];
+    for line in include_str!("../../../runtime/unicode/ucd/auxiliary/GraphemeBreakTest.txt").lines()
+    {
+        let value = line.split('#').next().unwrap().trim();
+        if value.is_empty() {
+            continue;
+        }
+        cases.push(
+            value
+                .split('÷')
+                .filter_map(|group| {
+                    let cluster = group
+                        .split_whitespace()
+                        .filter(|token| *token != "×")
+                        .map(|hex| char::from_u32(u32::from_str_radix(hex, 16).unwrap()).unwrap())
+                        .collect::<String>();
+                    (!cluster.is_empty()).then_some(cluster)
+                })
+                .collect::<Vec<_>>(),
+        );
+    }
+    assert!(cases.len() > 700);
+    let mut source = String::from(
+        r#"import * as grapheme from "std/text/grapheme"
+import * as text from "std/text"
+import * as bytes from "std/bytes"
+
+fn encoded value: String -> Array<Int> = bytes.toInts (text.encodeUtf8 value)
+fn describeAt result: Maybe<String> -> String = match result {
+  Nothing -> "Nothing"
+  Just value -> "Just " + show (encoded value)
+}
+fn describeSlice result: Either<grapheme.GraphemeSliceError, String> -> String = match result {
+  Left error -> "Left " + show error
+  Right value -> "Right " + show (encoded value)
+}
+fn inspect value: String -> String = {
+  let size = grapheme.length value
+  let indices = [-9007199254740991, -1, 0, 1, size - 1, size, size + 1, 9007199254740991]
+  let selected = map (\index: Int -> describeAt (grapheme.at index value)) indices
+  let sliced = map (\start: Int -> text.join "," (map (\end: Int -> describeSlice (grapheme.slice start end value)) indices)) indices
+  text.join "|" [show size, show (map encoded (grapheme.clusters value)), show (grapheme.byteBoundaries value), text.join ";" selected, text.join ";" sliced]
+}
+"#,
+    );
+    let mut expected = String::new();
+    let mut groups = Vec::new();
+    for (group, cases) in cases.chunks(24).enumerate() {
+        source.push_str(&format!(
+            "fn group{group} -> String = text.join \"\\n\" [\n"
+        ));
+        for clusters in cases {
+            let text = clusters.concat();
+            source.push_str(&format!("inspect {text:?},\n"));
+            let size = clusters.len() as i64;
+            let mut boundaries = vec![0];
+            for cluster in clusters {
+                boundaries.push(boundaries.last().unwrap() + cluster.len());
+            }
+            let encoded = clusters.iter().map(|s| s.as_bytes()).collect::<Vec<_>>();
+            let indices = [
+                -9_007_199_254_740_991,
+                -1,
+                0,
+                1,
+                size - 1,
+                size,
+                size + 1,
+                9_007_199_254_740_991,
+            ];
+            let mut selected = Vec::new();
+            let mut sliced = Vec::new();
+            for &start in &indices {
+                selected.push(if (0..size).contains(&start) {
+                    format!("Just {:?}", encoded[start as usize])
+                } else {
+                    "Nothing".into()
+                });
+                let mut ends = Vec::new();
+                for &end in &indices {
+                    ends.push(if 0 <= start && start <= end && end <= size {
+                        let slice = clusters[start as usize..end as usize].concat();
+                        format!("Right {:?}", slice.as_bytes())
+                    } else {
+                        format!("Left InvalidGraphemeRange {{ start: {start}, end: {end}, length: {size} }}")
+                    });
+                }
+                sliced.push(ends.join(","));
+            }
+            expected.push_str(&format!(
+                "{size}|{encoded:?}|{boundaries:?}|{}|{}\n",
+                selected.join(";"),
+                sliced.join(";")
+            ));
+        }
+        source.push_str("]\n");
+        groups.push(format!("group{group} ()"));
+    }
+    source.push_str(&format!(
+        "pub fn probe -> String = text.join \"\\n\" [{}]\npub effect fn main = println (probe ())\n",
+        groups.join(", ")
+    ));
+    let path = scratch.0.join("grapheme-corpus.ssrg");
+    fs::write(&path, source).unwrap();
+    compare(&path, &[Case::success(expected.as_bytes())]);
+}
+
+#[test]
+fn basic_utf8_matches_original_raw_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/text-utf8.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/text-utf8.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_bytes_codecs_match_raw_strict_ts_and_native_for_errors_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/bytes-codecs.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/bytes-codecs.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_bytes_codecs_preserve_the_existing_spec_example() {
+    let lines: Vec<String> = serde_json::from_str(include_str!(
+        "../../../examples/spec/artifacts/execution-schema-1/bytes-codecs/stdout.txt"
+    ))
+    .unwrap();
+    let stdout = format!("{}\n", lines.join("\n"));
+    compare(
+        &root().join("examples/spec/artifacts/schema-1/bytes-codecs/main.ssrg"),
+        &[Case::success(stdout.as_bytes())],
+    );
+}
+
+#[test]
+fn basic_validation_preserves_ordered_errors_conversions_instances_and_saved_generic_functions() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-validation.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-validation.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_validation_preserves_original_constructors_patterns_and_instances() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/validation-operations.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/validation-operations.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_validation_keeps_cold_captured_functions_typed_failures_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-validation-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-validation-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_validation_source_and_selected_callback_defects_keep_their_kind_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/basic-validation-effects.ssrg");
+    let needle = "validation.valid 42";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "validation.valid (42 / 0)",
+        "validation.invalid (show (42 / 0))",
+        "validation.invalidMany (pure (show (42 / 0)))",
+        "validation.fromEither (Right (42 / 0))",
+        "{let value:Validation<String,Int> = if 42 / 0 == 0 then validation.valid 1 else validation.invalid \"unreachable\";let _result = validation.toEither value;value}",
+        "(\\value:Int -> value / 0) <$> validation.valid 42",
+        "validation.valid (\\value:Int -> value / 0) <*> validation.valid 42",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("validation-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"created\nacquired\nInvalid `[\"captured\"]\nValid 42\nInvalid `[\"captured\"]\nValid 42\nreleased\n")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_transformer_either_matches_strict_ts_bun_node_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-transformer-either.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-transformer-either.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_transformer_either_keeps_cold_effects_inner_lefts_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/basic-transformer-either-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/basic-transformer-either-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_transformer_either_preserves_imported_opaque_types_aliases_and_base_instances() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/transformer-either"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-projects/transformer-either/main.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_transformer_either_preserves_base_failure_and_defect_kinds() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/basic-transformer-either-effects.ssrg"
+    );
+    for (needle, replacement, stdout, defect) in [
+        (
+            "effects.succeed 41",
+            "effects.fail \"typed\"",
+            "created\nacquired\nbase\nreleased\nfailure: typed\nreleased: 1\n",
+            false,
+        ),
+        (
+            "effects.succeed 41",
+            "effects.die \"deliberate\"",
+            "created\nacquired\nbase\nreleased\n",
+            true,
+        ),
+        (
+            "effects.succeed 41",
+            "effects.succeed (41 / 0)",
+            "created\nacquired\nbase\nreleased\n",
+            true,
+        ),
+        (
+            "value + 1",
+            "value / 0",
+            "created\nacquired\nbase\nreleased\n",
+            true,
+        ),
+    ] {
+        assert_eq!(original.matches(needle).count(), 1);
+        let scratch = Scratch::new();
+        let path = scratch.0.join("either-transformer-error.ssrg");
+        fs::write(&path, original.replace(needle, replacement)).unwrap();
+        let mut case = Case::success(stdout.as_bytes());
+        case.exit = if defect { 70 } else { 0 };
+        case.defect = defect;
+        case.native_defect = if replacement.contains("/ 0") {
+            "Int division by zero"
+        } else {
+            "deliberate"
+        };
+        compare(&path, &[case]);
+    }
+}
+
+#[test]
 fn basic_either_operations_keep_original_selected_branches_traversals_and_returned_functions() {
     compare(
         &root().join("examples/spec/fixtures/rust-backend/basic-either-operations.ssrg"),
@@ -402,6 +766,976 @@ fn basic_either_operations_host_error_and_global_this_source_names_keep_raw_stri
             )),
             &[Case::success(b"42\n")],
         );
+    }
+}
+
+#[test]
+fn basic_non_empty_list_matches_strict_ts_and_native_for_apis_instances_and_boundaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/non-empty-list.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/non-empty-list.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_path_package_keeps_opaque_elements_aliases_and_imported_dictionaries() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-projects/non-empty-list"),
+        &[Case::success(b"`[key:7]\nNothing\nJust `[key:1, key:2, key:3]\nkey:1\n`[key:2, key:3]\nkey:6\nTrue\nEqual\nTrue\n`[debug:1, debug:2, debug:3]\n`[key:1, key:2, key:3, key:4]\n[key:1, key:2, key:3]\n`[key:1, key:2, key:3]\nJust `[key:1, key:2, key:3]\n")],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_saved_binary_partials_and_returned_functions_match_ts_and_native() {
+    let mut source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/non-empty-list.ssrg").to_owned();
+    for (before, after) in [
+        ("= withHead\n", "= nonEmpty.cons\n"),
+        ("= fold\n", "= nonEmpty.reduce1\n"),
+        (
+            "show (selected 41)",
+            "show (nonEmpty.head functionValues 41)",
+        ),
+        (
+            "show (selectedFold 41)",
+            "show (nonEmpty.reduce1 pick functionValues 41)",
+        ),
+        (
+            "fn withHead<A> value:A -> tail:List<A> -> Values<A> = nonEmpty.cons value tail",
+            "fn withHead<A> value:A -> (List<A> -> Values<A>) = nonEmpty.cons value",
+        ),
+    ] {
+        assert_eq!(source.matches(before).count(), 1);
+        source = source.replace(before, after);
+    }
+    let scratch = Scratch::new();
+    let input = scratch.0.join("functions.ssrg");
+    fs::write(&input, source).unwrap();
+    compare(
+        &input,
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/non-empty-list.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_function_values_keep_empty_tails_and_multiple_returned_arguments() {
+    compare(
+        &root()
+            .join("examples/spec/fixtures/rust-backend-regressions/non-empty-list-functions.ssrg"),
+        &[Case::success(
+            "`[10]\n`[10, 3, 2]\n5\n5\n10\n`[雪🙂]\n`[]\nNothing\n42\n42\n42\n42\n42\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_invalid_saved_partials_and_returned_arguments_match_diagnostics() {
+    for expression in [
+        "nonEmpty.head (nonEmpty.singleton 1) 2",
+        "nonEmpty.head (nonEmpty.singleton (\\value:Int -> value)) True",
+        "nonEmpty.head (nonEmpty.singleton (\\value:Int -> value)) 1 2",
+        "nonEmpty.reduce1 (\\a:Int -> \\b:Int -> a + b) (nonEmpty.singleton 1) 2",
+        "nonEmpty.reduce1 (\\left:(Int -> Int) -> \\_right:(Int -> Int) -> left) (nonEmpty.singleton (\\value:Int -> value)) True",
+        "{ let saved:Int -> List<Int> -> nonEmpty.NonEmptyList<Int> = nonEmpty.cons; nonEmpty.head (saved 1 `[True]) }",
+        "{ let partial = nonEmpty.cons 1; nonEmpty.head (partial `[True]) }",
+        "{ let saved:(Int -> Int -> Int) -> nonEmpty.NonEmptyList<Int> -> Int = nonEmpty.reduce1; saved (\\a:Int -> \\b:Int -> a + b) (nonEmpty.singleton True) }",
+        "{ let partial = nonEmpty.reduce1 (\\a:Int -> \\b:Int -> a + b); partial (nonEmpty.singleton True) }",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid-functions.ssrg");
+        fs::write(
+            &source,
+            format!("import * as nonEmpty from \"std/non-empty-list\"\npub effect fn main = println (show ({expression}))\n"),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{expression}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{expression}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{expression}");
+        assert_eq!(native.stdout, ts.stdout, "{expression}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{expression}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{expression}"
+        );
+    }
+}
+
+#[test]
+fn basic_non_empty_list_keeps_cold_replay_typed_failure_and_finalizer_cleanup() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/non-empty-list-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/non-empty-list-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_non_empty_list_source_and_both_reducer_stage_defects_match_ts_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/non-empty-list-effects.ssrg");
+    let needle = "nonEmpty.reduce1 (callback 0) (source 10)";
+    assert_eq!(original.matches(needle).count(), 1);
+    for (expression, defect) in [
+        ("nonEmpty.reduce1 (step (42 / 0)) (source (9007199254740991 + 1))", "Int division by zero"),
+        ("nonEmpty.reduce1 (callback 0) (source (42 / 0))", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\acc:Int -> if acc == 10 then callback (acc / 0) acc else callback 0 acc) (source 10)", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\acc:Int -> \\value:Int -> if value == 3 then acc / 0 else acc) (source 10)", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\acc:Int -> \\value:Int -> acc + value) (nonEmpty.cons 9007199254740991 `[1,2])", "Int overflow"),
+        ("{let _value = nonEmpty.singleton (42 / 0); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.cons (42 / 0) (if 9007199254740991 + 1 == 0 then `[] else `[1]); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.cons 1 (if 42 / 0 == 0 then `[] else `[1]); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.fromList (if 42 / 0 == 0 then `[1] else `[]); 0}", "Int division by zero"),
+        ("{let _value = nonEmpty.toList (source (42 / 0)); 0}", "Int division by zero"),
+        ("nonEmpty.head (source (42 / 0))", "Int division by zero"),
+        ("{let _value = nonEmpty.tail (source (42 / 0)); 0}", "Int division by zero"),
+        ("{let _partial = nonEmpty.cons (42 / 0); 0}", "Int division by zero"),
+        ("{let saved:Int -> List<Int> -> nonEmpty.NonEmptyList<Int> = nonEmpty.cons; let _partial = saved (42 / 0); 0}", "Int division by zero"),
+        ("{let _partial = nonEmpty.reduce1 (step (42 / 0)); 0}", "Int division by zero"),
+        ("{let saved:(Int -> Int -> Int) -> nonEmpty.NonEmptyList<Int> -> Int = nonEmpty.reduce1; let _partial = saved (step (42 / 0)); 0}", "Int division by zero"),
+        ("nonEmpty.head (nonEmpty.singleton (\\value:Int -> value / 0)) 42", "Int division by zero"),
+        ("nonEmpty.head (nonEmpty.singleton (\\value:Int -> value + 1)) (42 / 0)", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\left:(Int -> Int) -> \\_right:(Int -> Int) -> left) (nonEmpty.singleton (\\value:Int -> value / 0)) 42", "Int division by zero"),
+        ("nonEmpty.reduce1 (\\left:(Int -> Int) -> \\right:(Int -> Int) -> if 42 / 0 == 0 then left else right) (nonEmpty.cons (\\value:Int -> value + 1) `[\\value:Int -> value + 2]) (9007199254740991 + 1)", "Int division by zero"),
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("non-empty-list-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created\nacquired\ncold\n17\ncold\n17\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: defect,
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
+fn basic_reader_transformer_apis_and_instances_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/reader-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/reader-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_reader_transformer_effects_keep_cold_runs_local_scope_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/reader-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/reader-transformer-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_reader_transformer_imported_opaque_environment_and_monad_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/reader-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as rt from "std/transformer/reader"
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+pub alias Work<A> = rt.ReaderT<Value,Box,A>
+pub fn value -> Value = Value 7
+pub fn bump value:Value -> Value = match value { Value n -> Value (n + 1) }
+pub fn render value:Value -> String = match value { Value n -> show n }
+pub fn savedAsk -> (Unit -> Work<Value>) = rt.ask
+pub fn savedAsks<A> -> ((Value -> A) -> Work<A>) = rt.asks
+pub fn savedLocal<A> -> ((Value -> Value) -> Work<A> -> Work<A>) = rt.local
+pub fn savedLift<A> -> (Box<A> -> Work<A>) = rt.lift
+pub fn savedRun<A> -> (Value -> Work<A> -> Box<A>) = rt.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe value:Box<Value> -> String = match value { Box item -> render item }
+pub fn text value:Box<String> -> String = match value { Box item -> item }
+"#).unwrap();
+    fs::write(project.join("src/main.ssrg"), r#"
+import * as rt from "std/transformer/reader"
+import { Value, Box, Work, value, bump, render, savedAsk, savedAsks, savedLocal, savedLift, savedRun, box, describe, text } from "./domain"
+let ask:Unit -> Work<Value> = savedAsk ()
+let asks:(Value -> String) -> Work<String> = savedAsks ()
+let local:(Value -> Value) -> Work<Value> -> Work<Value> = savedLocal ()
+let lift:Box<Value> -> Work<Value> = savedLift ()
+let run:Value -> Work<Value> -> Box<Value> = savedRun ()
+let environment:Work<Value> = ask ()
+let changed:Work<Value> = local bump environment
+let mapped:Work<Value> = map bump changed
+let bound:Work<Value> = changed >>= (\_:Value -> environment)
+pub effect fn main = do {
+  println (describe (run (value ()) environment))
+  println (describe (run (value ()) changed))
+  println (describe (run (value ()) mapped))
+  println (describe (run (value ()) bound))
+  println (describe (run (value ()) (lift (box (value ())))))
+  println (text (rt.run (value ()) (asks render)))
+}
+"#).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(&project, &[Case::success(b"7\n8\n9\n7\n7\n7\n")]);
+}
+
+#[test]
+fn basic_reader_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = Just 1",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.ask 1",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,String> = rt.ask ()",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.asks (\\n:String -> n)",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.local (\\n:Int -> show n) (rt.ask ())",
+        "pub fn invalid -> rt.ReaderT<Int,Maybe,Int> = rt.lift 1",
+        "pub fn invalid -> Maybe<Int> = rt.run True (rt.asks (\\n:Int -> n))",
+        "pub fn invalid -> Maybe<Int> = rt.run 1 (Just 2)",
+        "struct Box<A> { value:A }\npub fn invalid -> rt.ReaderT<Int,Box,Int> = rt.ask ()",
+        "pub fn invalid -> rt.ReaderT<Int,Int,Int> = rt.ask ()",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!(
+                "import * as rt from \"std/transformer/reader\"\n{declaration}\npub fn main -> Int = 0\n"
+            ),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_reader_transformer_defects_preserve_error_kind_and_release_roots() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/reader-transformer-effects.ssrg"
+    );
+    let needle = "rt.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "rt.lift (pass (42 / 0))",
+        "rt.lift (effects.defer (\\_:Unit -> pass (42 / 0)))",
+        "{ let selected:Work<Int> = rt.ask (if 42 / 0 == 0 then () else ()); selected }",
+        "rt.asks (if 42 / 0 == 0 then (\\n:Int -> n) else (\\n:Int -> n))",
+        "rt.asks (\\n:Int -> n / 0)",
+        "rt.local (if 42 / 0 == 0 then (\\n:Int -> n) else (\\n:Int -> n)) (rt.ask ())",
+        "rt.local (\\n:Int -> n) (if 42 / 0 == 0 then rt.ask () else rt.ask ())",
+        "rt.local (\\n:Int -> n / 0) (rt.ask ())",
+        "map (\\n:Int -> n / 0) (rt.asks (\\n:Int -> n))",
+        "(rt.asks (\\n:Int -> n)) >>= (\\n:Int -> rt.lift (pass (n / 0)))",
+        "(pure (\\n:Int -> n / 0)) <*> (rt.asks (\\n:Int -> n))",
+        "rt.lift (rt.run (42 / 0) (rt.ask ()))",
+        "rt.lift (rt.run 42 (if 42 / 0 == 0 then rt.ask () else rt.ask ()))",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("reader-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(
+            &path,
+            &[Case {
+                stdout: b"created: 0\nacquired\n13\n13\n16\n2\n6\n9\n5\ncalls: 4\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_writer_transformer_apis_instances_errors_and_boundaries_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/writer-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/writer-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_writer_transformer_effects_keep_cold_runs_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/writer-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/writer-transformer-effects.stdout"
+        ))],
+    );
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/writer-transformer-effects.ssrg"
+    );
+    let recovery = "|> effects.recover (\\error:String -> say (\"recovered: \" + error))";
+    assert_eq!(original.matches(recovery).count(), 1);
+    let scratch = Scratch::new();
+    let path = scratch.0.join("writer-transformer-failure.ssrg");
+    fs::write(&path, original.replace(recovery, "")).unwrap();
+    compare(&path, &[Case {
+        stdout: b"created: 0\nacquired\n((5, first-next), first-next)\n((5, first-next), first-next)\n(0, )\n((), only)\ncalls: 4\nreleased\n",
+        exit: 1,
+        failure: Some("typed"),
+        ..Case::success(b"")
+    }]);
+}
+
+#[test]
+fn basic_writer_transformer_imported_opaque_output_and_custom_monad_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/writer-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as wt from "std/transformer/writer"
+pub opaque newtype Log = String
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+instance Semigroup<Log> { fn append first:Log -> second:Log -> Log = match (first,second) { (Log a,Log b) -> Log (a + b) } }
+instance Monoid<Log> { fn empty _unit:Unit -> Log = Log "" }
+pub alias Work<A> = wt.WriterT<Log,Box,A>
+pub fn log text:String -> Log = Log text
+pub fn value -> Value = Value 7
+pub fn bump value:Value -> Value = match value { Value n -> Value (n + 1) }
+pub fn savedTell -> (Log -> Work<Unit>) = wt.tell
+pub fn savedListen<A> -> (Work<A> -> Work<(A,Log)>) = wt.listen
+pub fn savedLift<A> -> (Box<A> -> Work<A>) = wt.lift
+pub fn savedRun<A> -> (Work<A> -> Box<(A,Log)>) = wt.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe box:Box<(Value,Log)> -> String = match box { Box (Value n,Log text) -> show n + ":" + text }
+pub fn observed box:Box<((Value,Log),Log)> -> String = match box { Box ((Value n,Log first),Log second) -> show n + ":" + first + ":" + second }
+"#).unwrap();
+    fs::write(project.join("src/main.ssrg"), r#"
+import * as wt from "std/transformer/writer"
+import { Log, Value, Box, Work, log, value, bump, savedTell, savedListen, savedLift, savedRun, box, describe, observed } from "./domain"
+let tell:Log -> Work<Unit> = savedTell ()
+let listen:Work<Value> -> Work<(Value,Log)> = savedListen ()
+let lift:Box<Value> -> Work<Value> = savedLift ()
+let run:Work<Value> -> Box<(Value,Log)> = savedRun ()
+let first:Work<Unit> = tell (log "雪")
+let second:Work<Unit> = tell (log "🙂")
+let flow:Work<Value> = do { first; second; lift (box (value ())) }
+let mapped:Work<Value> = map bump flow
+let applied:Work<Value> = (pure bump) <*> flow
+let bound:Work<Value> = flow >>= (\n:Value -> pure (bump n))
+pub effect fn main = do {
+  println (describe (run flow))
+  println (describe (run mapped))
+  println (describe (run applied))
+  println (describe (run bound))
+  println (observed (wt.run (listen flow)))
+  println (describe (wt.run (lift (box (value ())))))
+}
+"#).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(
+        &project,
+        &[Case::success(
+            "7:雪🙂\n8:雪🙂\n8:雪🙂\n8:雪🙂\n7:雪🙂:雪🙂\n7:\n".as_bytes(),
+        )],
+    );
+}
+
+#[test]
+fn basic_writer_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> wt.WriterT<String,Maybe,Int> = Just 1",
+        "pub fn invalid -> wt.WriterT<String,Maybe,Int> = wt.tell \"a\"",
+        "pub fn invalid -> wt.WriterT<String,Maybe,Unit> = wt.tell 1",
+        "pub fn invalid -> wt.WriterT<String,Maybe,Int> = wt.lift 1",
+        "pub fn invalid -> wt.WriterT<String,Maybe,(Int,String)> = wt.listen (Just 1)",
+        "pub fn invalid value:wt.WriterT<String,Maybe,Int> -> wt.WriterT<String,Maybe,Int> = wt.listen value",
+        "pub fn invalid -> Maybe<Int> = wt.run (wt.tell \"a\")",
+        "pub fn invalid -> Maybe<(Int,String)> = wt.run (Just 1)",
+        "struct Box<A> { value:A }\npub fn invalid -> wt.WriterT<String,Box,Unit> = wt.tell \"a\"",
+        "struct Log { value:Int }\npub fn invalid -> wt.WriterT<Log,Maybe,Unit> = wt.tell (Log { value:1 })",
+        "pub fn invalid -> wt.WriterT<String,Int,Unit> = wt.tell \"a\"",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!("import * as wt from \"std/transformer/writer\"\n{declaration}\npub fn main -> Int = 0\n"),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_writer_transformer_selected_monoid_defects_keep_tell_listen_and_finalizers() {
+    for (empty, append, operation) in [
+        ("show (42 / 0)", "first.text + second.text", "lifted"),
+        ("\"\"", "show (42 / 0)", "lifted >>= (\\n:Int -> pure n)"),
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("writer-monoid-defect.ssrg");
+        let template = r#"
+import * as wt from "std/transformer/writer"
+import * as effects from "std/effect"
+struct Log { text:String }
+instance Semigroup<Log> { fn append first:Log -> second:Log -> Log = Log { text:APPEND } }
+instance Monoid<Log> { fn empty _unit:Unit -> Log = Log { text:EMPTY } }
+alias Work<A> = wt.WriterT<Log,Effect<{},String>,A>
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say text:String -> Unit with Console = println text |> effects.recover ignore
+effect fn pass value:Int -> Int fails String = effects.succeed value
+pub effect fn main = do {
+  let logged:Work<Unit> = wt.tell (Log { text:"kept" })
+  let lifted:Work<Int> = wt.lift (pass 42)
+  say "created"
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> say "released")
+    observed <- wt.run (wt.listen logged)
+    let text = match observed { ((_,first),second) -> first.text + ":" + second.text }
+    say text
+    let work:Work<Int> = OPERATION
+    wt.run work
+    effects.succeed ()
+  })
+}
+"#;
+        fs::write(
+            &source,
+            template
+                .replace("APPEND", append)
+                .replace("EMPTY", empty)
+                .replace("OPERATION", operation),
+        )
+        .unwrap();
+        compare(
+            &source,
+            &[Case {
+                stdout: b"created\nacquired\nkept:kept\nreleased\n",
+                exit: 70,
+                defect: true,
+                native_defect: "Int division by zero",
+                ..Case::success(b"")
+            }],
+        );
+    }
+}
+
+#[test]
+fn basic_writer_transformer_defects_preserve_error_kind_and_release_roots() {
+    let original = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/writer-transformer-effects.ssrg"
+    );
+    let needle = "wt.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "wt.lift (pass (42 / 0))",
+        "wt.lift (effects.defer (\\_:Unit -> pass (42 / 0)))",
+        "map (\\_:Unit -> 42) (wt.tell (show (42 / 0)))",
+        "map (\\pair:(Int,String) -> match pair { (n,_) -> n }) (wt.listen (if 42 / 0 == 0 then pure 1 else pure 2))",
+        "map (\\n:Int -> n / 0) (wt.lift (pass 42))",
+        "(wt.lift (pass 42)) >>= (\\n:Int -> pure (n / 0))",
+        "(pure (\\n:Int -> n / 0)) <*> (wt.lift (pass 42))",
+        "wt.lift (wt.run ({ let selected:Work<Int> = if 42 / 0 == 0 then pure 1 else pure 2; selected }) |> map (\\pair:(Int,String) -> match pair { (n,_) -> n }))",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("writer-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created: 0\nacquired\n((5, first-next), first-next)\n((5, first-next), first-next)\n(0, )\n((), only)\ncalls: 4\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
+fn basic_state_transformer_apis_instances_errors_and_boundaries_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/state-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/state-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_state_transformer_do_inference_matches_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend-regressions/state-transformer-do-inference.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/state-transformer-do-inference.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_state_transformer_effects_keep_cold_runs_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/state-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/state-transformer-effects.stdout"
+        ))],
+    );
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/state-transformer-effects.ssrg");
+    let recovery = "|> effects.recover (\\error:String -> say (\"recovered: \" + error))";
+    assert_eq!(original.matches(recovery).count(), 1);
+    let scratch = Scratch::new();
+    let path = scratch.0.join("state-transformer-failure.ssrg");
+    fs::write(&path, original.replace(recovery, "")).unwrap();
+    compare(&path, &[Case {
+        stdout: b"created: 0\nacquired\n(15, 15)\n(15, 15)\n(25, 25)\n((), -7)\n(0, 0)\ncalls: 6\nreleased\n",
+        exit: 1,
+        failure: Some("typed"),
+        ..Case::success(b"")
+    }]);
+}
+
+#[test]
+fn basic_state_transformer_imported_opaque_state_and_custom_monad_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/state-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as st from "std/transformer/state"
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+pub alias Work<A> = st.StateT<Value,Box,A>
+pub fn value n:Int -> Value = Value n
+pub fn next value:Value -> Value = match value { Value n -> Value (n + 1) }
+pub fn savedGet -> (Unit -> Work<Value>) = st.get
+pub fn savedPut -> (Value -> Work<Unit>) = st.put
+pub fn savedModify -> ((Value -> Value) -> Work<Unit>) = st.modify
+pub fn savedLift<A> -> (Box<A> -> Work<A>) = st.lift
+pub fn savedRun<A> -> (Value -> Work<A> -> Box<(A,Value)>) = st.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe box:Box<(Value,Value)> -> String = match box { Box (Value result,Value state) -> show (result,state) }
+"#).unwrap();
+    fs::write(project.join("src/main.ssrg"), r#"
+import * as st from "std/transformer/state"
+import { Box, Work, Value, value, next, describe, savedGet, savedPut, savedModify, savedLift, savedRun, box } from "./domain"
+let get:Unit -> Work<Value> = savedGet ()
+let put:Value -> Work<Unit> = savedPut ()
+let modify:(Value -> Value) -> Work<Unit> = savedModify ()
+let lift:Box<Value> -> Work<Value> = savedLift ()
+let run:Value -> Work<Value> -> Box<(Value,Value)> = savedRun ()
+let current:Work<Value> = get ()
+let set:Work<Unit> = put (value 7)
+let changed:Work<Unit> = modify next
+let flow:Work<Value> = do { set; changed; get () }
+let partial:Work<Value> -> Box<(Value,Value)> = st.run (value 10)
+pub effect fn main = do {
+  println (describe (run (value 0) flow))
+  println (describe (partial current))
+  println (describe (st.run (value 3) (lift (box (value 9)))))
+}
+"#).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(&project, &[Case::success(b"(8, 8)\n(10, 10)\n(9, 3)\n")]);
+}
+
+#[test]
+fn basic_state_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = Just 1",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = st.get 1",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = st.put 1",
+        "pub fn invalid -> st.StateT<Int,Maybe,Unit> = st.put True",
+        "pub fn invalid -> st.StateT<Int,Maybe,Unit> = st.modify (\\n:Int -> show n)",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = st.lift 1",
+        "pub fn invalid -> Maybe<(Int,Int)> = st.run 0 (Just 1)",
+        "pub fn invalid value:st.StateT<Int,Maybe,Int> -> Maybe<(Int,Int)> = st.run True value",
+        "struct Box<A> { value:A }\npub fn invalid -> st.StateT<Int,Box,Int> = st.get ()",
+        "pub fn invalid -> st.StateT<Int,Int,Int> = st.get ()",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put True; st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.modify (\\n:Int -> show n); st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.lift (Right 1); st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put<Int,List> 1; st.get () }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { unit <- st.put 1; pure (unit + 1) }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put 1; pure True }",
+        "pub fn invalid -> st.StateT<Int,Maybe,Int> = do { st.put 1; let wrong:Int = True; st.get () }",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!(
+            "import * as st from \"std/transformer/state\"\n{declaration}\npub fn main -> Int = 0\n"
+        ),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_state_transformer_defects_preserve_error_kind_evaluation_order_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/state-transformer-effects.ssrg");
+    let needle = "st.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for (expression, defect) in [
+        ("st.get (if 42 / 0 == 0 then () else ())", "Int division by zero"),
+        ("st.put (42 / 0) |> map (\\_:Unit -> 0)", "Int division by zero"),
+        ("st.modify (if 42 / 0 == 0 then (\\s:Int -> s) else (\\s:Int -> s)) |> map (\\_:Unit -> 0)", "Int division by zero"),
+        ("st.modify (\\s:Int -> s / 0) |> map (\\_:Unit -> 0)", "Int division by zero"),
+        ("st.modify (\\_s:Int -> 9007199254740991 + 1) |> map (\\_:Unit -> 0)", "Int overflow"),
+        ("st.lift (pass (42 / 0))", "Int division by zero"),
+        ("st.lift (effects.defer (\\_:Unit -> pass (42 / 0)))", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); map (\\n:Int -> n / 0) selected }", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); selected >>= (\\n:Int -> st.lift (pass (n / 0))) }", "Int division by zero"),
+        ("{ let functions:Work<Int -> Int> = pure (\\n:Int -> n / 0); let selected:Work<Int> = st.get (); functions <*> selected }", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); st.lift (st.run (42 / 0) selected) |> map (\\_pair:(Int,Int) -> 0) }", "Int division by zero"),
+        ("{ let selected:Work<Int> = st.get (); st.lift (st.run 0 (if 42 / 0 == 0 then selected else selected)) |> map (\\_pair:(Int,Int) -> 0) }", "Int division by zero"),
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("state-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created: 0\nacquired\n(15, 15)\n(15, 15)\n(25, 25)\n((), -7)\n(0, 0)\ncalls: 6\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: defect,
+            ..Case::success(b"")
+        }]);
+    }
+}
+
+#[test]
+fn basic_maybe_transformer_apis_and_instances_match_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/maybe-transformer.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/maybe-transformer.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_maybe_transformer_effects_keep_cold_runs_short_circuit_failure_and_finalizers() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/maybe-transformer-effects.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/maybe-transformer-effects.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn basic_maybe_transformer_imported_opaque_values_and_monads_keep_saved_apis() {
+    let scratch = Scratch::new();
+    let project = scratch.0.join("project");
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        r#"[package]
+name = "fixture/maybe-transformer"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "process"
+"#,
+    )
+    .unwrap();
+    fs::write(project.join("src/domain.ssrg"), r#"
+import * as mt from "std/transformer/maybe"
+pub opaque newtype Value = Int
+pub type Box<A> = | Box A
+instance Functor<Box> { fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = match box { Box value -> Box (f value) } }
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box value
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = match (f,box) { (Box operation,Box value) -> Box (operation value) }
+}
+instance Monad<Box> { fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = match box { Box value -> f value } }
+pub alias Work<A> = mt.MaybeT<Box,A>
+pub fn value -> Value = Value 7
+pub fn render value:Value -> String = match value { Value n -> show n }
+pub fn saved<A> -> (Maybe<A> -> Work<A>) = mt.fromMaybe
+pub fn raised<A> -> (Box<A> -> Work<A>) = mt.lift
+pub fn unwrap<A> -> (Work<A> -> Box<Maybe<A>>) = mt.run
+pub fn box value:Value -> Box<Value> = Box value
+pub fn describe box:Box<Maybe<Value>> -> String = match box { Box Nothing -> "none"; Box (Just value) -> render value }
+"#).unwrap();
+    fs::write(
+        project.join("src/main.ssrg"),
+        r#"
+import * as mt from "std/transformer/maybe"
+import { Box, Work, Value, value, describe, saved, raised, unwrap, box } from "./domain"
+let wrap:Maybe<Value> -> Work<Value> = saved ()
+let lift:Box<Value> -> Work<Value> = raised ()
+let run:Work<Value> -> Box<Maybe<Value>> = unwrap ()
+let some:Work<Value> = wrap (Just (value ()))
+let none:Work<Value> = wrap Nothing
+let mapped:Work<Value> = map (\n:Value -> n) some
+pub effect fn main = do {
+  println (describe (run mapped))
+  println (describe (run none))
+  println (describe (mt.run (lift (box (value ())))))
+}
+"#,
+    )
+    .unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&project),
+        &scratch.0,
+    ));
+    compare(&project, &[Case::success(b"7\nnone\n7\n")]);
+}
+
+#[test]
+fn basic_maybe_transformer_invalid_inputs_have_identical_ts_and_native_diagnostics() {
+    for declaration in [
+        "pub fn invalid -> mt.MaybeT<Maybe,Int> = Just 1",
+        "pub fn invalid -> mt.MaybeT<Maybe,Int> = mt.fromMaybe True",
+        "pub fn invalid -> mt.MaybeT<Maybe,Int> = mt.lift 1",
+        "pub fn invalid -> Maybe<Maybe<Int>> = mt.run (Just 1)",
+        "struct Box<A> { value:A }\npub fn invalid -> mt.MaybeT<Box,Int> = mt.fromMaybe (Just 1)",
+        "pub fn invalid -> mt.MaybeT<Int,Int> = mt.fromMaybe (Just 1)",
+    ] {
+        let scratch = Scratch::new();
+        let source = scratch.0.join("invalid.ssrg");
+        fs::write(
+            &source,
+            format!(
+            "import * as mt from \"std/transformer/maybe\"\n{declaration}\npub fn main -> Int = 0\n"
+        ),
+        )
+        .unwrap();
+        let ts = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&source)
+                .args(["--target", "process", "--out-dir"])
+                .arg(scratch.0.join("ts")),
+            &scratch.0,
+        );
+        let native = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(scratch.0.join("native")),
+            &scratch.0,
+        );
+        assert_eq!(ts.status.code(), Some(2), "{declaration}: {ts:?}");
+        assert_eq!(native.status.code(), Some(2), "{declaration}: {native:?}");
+        assert!(ts.stdout.is_empty(), "{declaration}");
+        assert_eq!(native.stdout, ts.stdout, "{declaration}");
+        assert!(
+            String::from_utf8_lossy(&ts.stderr).contains("error[SES-T"),
+            "{declaration}: {ts:?}"
+        );
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            "{declaration}"
+        );
+    }
+}
+
+#[test]
+fn basic_maybe_transformer_defects_preserve_error_kind_and_release_roots() {
+    let original =
+        include_str!("../../../examples/spec/fixtures/rust-backend/maybe-transformer-effects.ssrg");
+    let needle = "mt.lift (failValue ())";
+    assert_eq!(original.matches(needle).count(), 1);
+    for expression in [
+        "mt.fromMaybe (Just (42 / 0))",
+        "mt.lift (pass (42 / 0))",
+        "mt.lift (effects.defer (\\_:Unit -> pass (42 / 0)))",
+        "map (\\n:Int -> n / 0) (mt.fromMaybe (Just 42))",
+        "(mt.fromMaybe (Just 42)) >>= (\\n:Int -> mt.fromMaybe (Just (n / 0)))",
+        "(pure (\\n:Int -> n / 0)) <*> (mt.fromMaybe (Just 42))",
+        "{ let selected:Work<Int> = mt.fromMaybe (Just 42); mt.lift (mt.run (if 42 / 0 == 0 then selected else selected)) |> map (\\_:Maybe<Int> -> 0) }",
+    ] {
+        let scratch = Scratch::new();
+        let path = scratch.0.join("maybe-transformer-defect.ssrg");
+        fs::write(&path, original.replace(needle, expression)).unwrap();
+        compare(&path, &[Case {
+            stdout: b"created: 0\nacquired\nJust 5\nJust 5\nNothing\nNothing\ncalls: 4\nJust 0\nreleased\n",
+            exit: 70,
+            defect: true,
+            native_defect: "Int division by zero",
+            ..Case::success(b"")
+        }]);
     }
 }
 
@@ -3389,6 +4723,7 @@ fn remaining_prelude_matches_ts_with_selected_providers_short_circuit_and_saved_
 fn prelude_read_line_matches_ts_with_remaining_stdin_and_eof() {
     let scratch = Scratch::new();
     let source = root().join("examples/spec/fixtures/rust-backend/prelude-read-line.ssrg");
+    let source = process::copy_input(&source, &scratch.0);
     let native = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -3440,6 +4775,7 @@ fn prelude_read_line_matches_ts_with_remaining_stdin_and_eof() {
 fn remaining_prelude_native_partials_keep_original_source_and_output() {
     let scratch = Scratch::new();
     let source = root().join("examples/spec/fixtures/rust-backend/prelude-native-partials.ssrg");
+    let source = process::copy_input(&source, &scratch.0);
     let out = scratch.0.join("native");
     successful(bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -3471,6 +4807,26 @@ fn standard_instances_match_ts_with_generic_saved_and_user_dictionaries() {
         &root().join("examples/spec/fixtures/rust-backend/standard-instances.ssrg"),
         &[Case::success(include_bytes!(
             "../../../examples/spec/fixtures/rust-backend/standard-instances.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn standard_errors_match_raw_strict_ts_and_native_with_saved_and_generic_instances() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/standard-errors.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/standard-errors.stdout"
+        ))],
+    );
+}
+
+#[test]
+fn standard_error_boundaries_match_raw_strict_ts_and_native() {
+    compare(
+        &root().join("examples/spec/fixtures/rust-backend/standard-error-boundaries.ssrg"),
+        &[Case::success(include_bytes!(
+            "../../../examples/spec/fixtures/rust-backend/standard-error-boundaries.stdout"
         ))],
     );
 }

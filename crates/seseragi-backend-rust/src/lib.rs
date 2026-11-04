@@ -2,13 +2,14 @@
 //! rustc validates generated implementation code, not Seseragi source types.
 mod clock_provider;
 mod emit;
+pub mod native_runtime;
 mod program_wasm;
 mod program_wasm_effect;
 mod project;
 mod type_names;
 pub use clock_provider::{
     NativeClockProvider, NativeProviderReceipt, NativeProviderSelectionOrigin, RustTargetOptions,
-    NATIVE_CLOCK_SLEEP_PROVIDER,
+    NATIVE_CLOCK_PROVIDER, NATIVE_CLOCK_SLEEP_PROVIDER,
 };
 pub use program_wasm::{
     emit_program_wasm, ProgramCodec, ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata,
@@ -22,6 +23,20 @@ pub struct RustSourceFile {
     /// Package-relative path displayed by runtime diagnostics.
     pub path: String,
     pub text: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct NativeProcessOptions {
+    pub forward_signals: bool,
+    pub shutdown_grace_ms: u64,
+}
+impl Default for NativeProcessOptions {
+    fn default() -> Self {
+        Self {
+            forward_signals: false,
+            shutdown_grace_ms: 10_000,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -83,7 +98,7 @@ pub struct RustArtifact {
     pub metadata: RustMetadata,
 }
 
-/// Emits a self-contained executable source file. The explicit entry must be
+/// Emits an executable source file using `seseragi-native-runtime`. The explicit entry must be
 /// an unconstrained Unit function. Pure entries print an inspection result;
 /// Effect entries execute cold plans with native resource scopes and cooperative Fibers.
 pub fn emit_rust_module(
@@ -124,69 +139,37 @@ pub fn emit_rust_project_with_options(
     project::emit_with_options(modules, entry_module, entry, options)
 }
 
-#[cfg(test)]
-#[allow(dead_code)]
-mod runtime {
-    include!("runtime.rs");
-    include!("runtime_record.rs");
-    include!("runtime_html.rs");
-    include!("runtime_char.rs");
-    include!("runtime_float_display.rs");
-    include!("runtime_float.rs");
-    include!("runtime_math.rs");
-    include!("runtime_list.rs");
-    include!("runtime_tuple.rs");
-    include!("runtime_array.rs");
-    include!("runtime_array_operations.rs");
-    include!("runtime_sequence.rs");
-    include!("runtime_sequence_order.rs");
-    include!("runtime_iterator.rs");
-    include!("runtime_range.rs");
-    include!("runtime_signal.rs");
-    include!("runtime_iterable.rs");
-    include!("runtime_collection_control.rs");
-    include!("runtime_prelude_collections.rs");
-    include!("runtime_traversable.rs");
-    include!("runtime_maybe.rs");
-    include!("runtime_either.rs");
-    include!("runtime_monad.rs");
-    include!("runtime_stream.rs");
-    include!("runtime_validation.rs");
-    include!("runtime_standard_values.rs");
-    include!("runtime_transformer.rs");
-    include!("runtime_text.rs");
-    include!("runtime_bytes.rs");
-    include!("runtime_big_int_value.rs");
-    include!("runtime_big_int_arithmetic.rs");
-    include!("runtime_big_int.rs");
-    include!("runtime_big_int_traits.rs");
-    include!("runtime_decimal.rs");
-    include!("runtime_decimal_context.rs");
-    include!("runtime_decimal_conversion.rs");
-    include!("runtime_decimal_arithmetic.rs");
-    include!("runtime_decimal_division.rs");
-    include!("runtime_hashing.rs");
-    include!("runtime_map.rs");
-    include!("runtime_set.rs");
-    include!("runtime_json.rs");
-    include!("runtime_json_codecs.rs");
-    include!("runtime_json_decoders.rs");
-    include!("runtime_json_container_codecs.rs");
-    include!("runtime_json_derived_adts.rs");
-    include!("runtime_derived.rs");
-    include!("runtime_standard_errors.rs");
-    include!("runtime_int_parse.rs");
-    include!("runtime_int_checked.rs");
-    include!("runtime_float_parse.rs");
-    include!("runtime_float_conversion.rs");
-    include!("runtime_trace.rs");
-    include!("runtime_effect.rs");
-    include!("runtime_diagnostic.rs");
-    include!("runtime_stdin.rs");
-    include!("runtime_effect_defect.rs");
-    include!("runtime_scheduler.rs");
-    include!("runtime_path.rs");
-    include!("runtime_filesystem.rs");
-    include!("runtime_host.rs");
-    include!("runtime_clock.rs");
+/// Emits a native test runner for checked exported Test bindings.
+/// Each pair contains the displayed module name and the binding's canonical symbol.
+pub fn emit_rust_tests(
+    modules: &[&CoreModule],
+    tests: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    project::emit_tests(modules, tests)
+}
+
+/// Emits a native runner for checked exported Benchmark bindings.
+/// Each pair contains the displayed module name and the binding's canonical symbol.
+pub fn emit_rust_benchmarks(
+    modules: &[&CoreModule],
+    benchmarks: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    project::emit_benchmarks(modules, benchmarks)
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum RustDiagnosticTarget {
+    Native,
+    ProgramWasm,
+}
+
+/// Checks source features with the target emitter without requiring an entry
+/// function, compiling Rust, or executing the program.
+pub fn diagnose_rust_project(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    target: RustDiagnosticTarget,
+    options: &RustTargetOptions,
+) -> Vec<RustBackendError> {
+    project::diagnose(modules, entry_module, target, options)
 }

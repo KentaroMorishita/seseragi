@@ -1,0 +1,104 @@
+import * as et from "std/transformer/either"
+import { EitherT } from "std/transformer/either"
+
+alias Stack<E, M<_>, A> = EitherT<E, M, A>
+fn embed<E, M<_>, A> value: Either<E, A> -> Stack<E, M, A> where Monad<M> =
+  et.fromEither value
+fn promote<E, M<_>, A> value: M<A> -> Stack<E, M, A> where Monad<M> = et.lift value
+fn extract<E, M<_>, A> value: Stack<E, M, A> -> M<Either<E, A>> = et.run value
+fn mapped<F<_>, A, B> callback: (A -> B) -> value: F<A> -> F<B> where Functor<F> =
+  map callback value
+fn applied<F<_>, A, B> functions: F<(A -> B)> -> value: F<A> -> F<B>
+where Applicative<F> = functions <*> value
+fn bound<M<_>, A, B> callback: (A -> M<B>) -> value: M<A> -> M<B>
+where Monad<M> = value >>= callback
+fn increment value: Int -> Int = value + 1
+fn unused value: Int -> Int = value / 0
+fn next value: Int -> Stack<String, Array, String> = embed (Right (show value))
+fn saved<M<_>> -> (Either<String, Int> -> Stack<String, M, Int>) where Monad<M> =
+  et.fromEither
+fn combinations source: Stack<String, Array, Int> -> Stack<String, Array, Int> = do {
+  first <- source
+  second <- promote<String, Array, Int> [10, 20]
+  pure (first + second)
+}
+fn stop source: Stack<String, Maybe, Int> -> Stack<String, Maybe, Int> = do {
+  first <- source
+  second <- embed<String, Maybe, Int> (Right (1 / 0))
+  pure (first + second)
+}
+
+struct Box<A> { value: A, trace: String }
+instance Functor<Box> {
+  fn map<A, B> callback: (A -> B) -> source: Box<A> -> Box<B> =
+    Box { value: callback source.value, trace: source.trace + "map;" }
+}
+instance Applicative<Box> {
+  fn pure<A> value: A -> Box<A> = Box { value, trace: "pure;" }
+  fn apply<A, B> functions: Box<(A -> B)> -> source: Box<A> -> Box<B> =
+    Box { value: functions.value source.value, trace: functions.trace + source.trace }
+}
+instance Monad<Box> {
+  fn flatMap<A, B> callback: (A -> Box<B>) -> source: Box<A> -> Box<B> = {
+    let next = callback source.value
+    Box { value: next.value, trace: source.trace + "bind;" + next.trace }
+  }
+}
+
+pub effect fn main = do {
+  let from: Either<String, Int> -> Stack<String, Maybe, Int> = et.fromEither
+  let lift: Array<Int> -> Stack<String, Array, Int> = et.lift
+  let run: Stack<String, Maybe, Int> -> Maybe<Either<String, Int>> = et.run
+  println (debug (run (from (Right 0))))
+  println (debug (run (from (Left ""))))
+  println (debug (extract<String, Maybe, Int> (embed (Left "雪🙂"))))
+  println (debug (extract (lift [])))
+  println (debug (extract (lift [-9007199254740991, 9007199254740991])))
+  let nothing: Stack<String, Maybe, Int> = promote Nothing
+  let just: Stack<String, Maybe, String> = promote (Just "")
+  let list: Stack<String, List, Int> = promote `[1, 2]
+  let emptyList: Stack<String, List, Int> = promote `[]
+  println (debug (extract nothing))
+  println (debug (extract just))
+  println (debug (extract list))
+  println (debug (extract emptyList))
+  let outer: Stack<String, Either<Int>, Int> = promote (Left 7)
+  let inner: Stack<String, Either<Int>, Int> = embed (Left "inner")
+  println (debug (extract outer))
+  println (debug (extract inner))
+  println (debug (run ((saved<Maybe> ()) (Right 41))))
+  let good: Stack<String, Array, Int> = promote [1, 2]
+  let bad: Stack<String, Array, Int> = embed (Left "value")
+  let functions: Stack<String, Array, (Int -> Int)> = pure increment
+  let failedFunctions: Stack<String, Array, (Int -> Int)> = embed (Left "function")
+  let skipped: Stack<String, Array, (Int -> Int)> = pure unused
+  println (debug (extract (mapped increment good)))
+  println (debug (extract (mapped unused bad)))
+  println (debug (extract (applied functions good)))
+  println (debug (extract (applied functions bad)))
+  println (debug (extract (applied failedFunctions good)))
+  println (debug (extract (applied failedFunctions bad)))
+  println (debug (extract (applied skipped bad)))
+  println (debug (extract (bound next good)))
+  println (debug (extract (bound next bad)))
+  let mixed: Stack<String, Array, Int> = EitherT { run: [Right 1, Left "stop", Right 2] }
+  let flow = combinations mixed
+  println (debug (extract flow))
+  let stopped = stop (from (Left "stopped"))
+  println (debug (extract stopped))
+  let nested: Stack<String, EitherT<Int, Maybe>, Int> = embed (Left "nested")
+  println (debug (extract<Int, Maybe, Either<String, Int>> (extract nested)))
+  let callable: Stack<String, Maybe, (Int -> Int)> = embed (Right increment)
+  println (match extract callable { Just (Right callback) -> show (callback 41); _ -> "missing" })
+  let callableError: Stack<(Int -> Int), Maybe, Int> = embed (Left increment)
+  println (match extract callableError { Just (Left callback) -> show (callback 41); _ -> "missing" })
+  let boxed: Stack<String, Box, Int> = promote (Box { value: 41, trace: "source;" })
+  let boxedLeft: Stack<String, Box, Int> = embed (Left "box")
+  let mappedBox = extract (mapped increment boxed)
+  let skippedBox = extract (mapped unused boxedLeft)
+  println (extract boxed).trace
+  println (debug mappedBox.value)
+  println mappedBox.trace
+  println (debug skippedBox.value)
+  println skippedBox.trace
+}

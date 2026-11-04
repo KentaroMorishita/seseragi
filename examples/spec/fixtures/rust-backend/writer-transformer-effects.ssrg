@@ -1,0 +1,61 @@
+import * as wt from "std/transformer/writer"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+alias Work<A> = wt.WriterT<String,Effect<{},String>,A>
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+effect fn mark counter:refs.Ref<Int> -> value:Int -> Int fails String = do {
+  refs.update (\n:Int -> n + 1) counter
+  effects.succeed value
+}
+effect fn failValue -> Int fails String = effects.fail "typed"
+effect fn pass value:Int -> Int fails String = effects.succeed value
+fn write text:String -> Work<Unit> = wt.tell text
+fn callback counter:refs.Ref<Int> -> (Int -> Work<Int>) = \n:Int -> do {
+  write "next"
+  wt.lift (mark counter (n + 1))
+}
+fn start initial:Work<Int> -> operation:(Int -> Work<Int>) -> Work<Int> = do {
+  write "first-"
+  initial >>= operation
+}
+fn divide n:Int -> Work<Int> = pure (n / 0)
+effect fn failBody -> Unit fails String = do {
+  let failure:Work<Int> = wt.lift (failValue ())
+  let work:Work<Int> = failure >>= divide
+  wt.run work
+  effects.succeed ()
+}
+pub effect fn main = do {
+  released <- refs.make 0
+  counter <- refs.make 0
+  saved <- refs.make (callback counter)
+  operation <- refs.get saved
+  let initial:Work<Int> = wt.lift (mark counter 4)
+  let cold:Work<Int> = start initial operation
+  let materialized = wt.run (wt.listen cold)
+  before <- refs.get counter
+  say ("created: " + show before)
+  effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_:Unit -> do {
+      refs.update (\n:Int -> n + 1) released
+      say "released"
+    })
+    first <- materialized
+    say (show first)
+    second <- materialized
+    say (show second)
+    let empty:Work<Int> = pure 0
+    emptyResult <- wt.run empty
+    say (show emptyResult)
+    let logged:Work<Unit> = wt.tell "only"
+    logResult <- wt.run logged
+    say (show logResult)
+    count <- refs.get counter
+    say ("calls: " + show count)
+    failBody ()
+  }) |> effects.recover (\error:String -> say ("recovered: " + error))
+  count <- refs.get released
+  say ("released: " + show count)
+}

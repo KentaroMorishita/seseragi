@@ -1,0 +1,44 @@
+Valid 41
+Invalid `[""]
+Invalid `["first", "", "雪🙂", "first"]
+Valid 0
+Invalid `["left"]
+Right 41
+Left `["first", "", "雪🙂", "first"]
+Right ""
+Left `["雪🙂"]
+Left `["first", "", "雪🙂", "first"]
+Invalid `[`["first", "", "雪🙂", "first"]]
+Left `[`["first", "", "雪🙂", "first"]]
+Invalid `[`["first", "", "雪🙂", "first"]]
+Valid []
+Valid ()
+Valid -9007199254740991
+Valid 9007199254740991
+Valid 42
+Invalid `["first", "", "雪🙂", "first"]
+Valid 42
+Invalid `["first", "", "雪🙂", "first"]
+Invalid `["next", "last"]
+Invalid `["next", "last", "first", "", "雪🙂", "first"]
+Invalid `["first", "", "雪🙂", "first"]
+Invalid `["first", "", "雪🙂", "first", "next", "last"]
+Invalid `["first", "", "雪🙂", "first"]
+`["first", "", "雪🙂", "first"]
+True
+False
+False
+False
+True
+False
+False
+42
+42
+Valid label:7
+Valid debug:7
+Invalid `[label:11, label:12]
+Invalid `[debug:11, debug:12]
+True
+True
+Valid "ok\n\"\\"
+Right "ok\n\"\\"

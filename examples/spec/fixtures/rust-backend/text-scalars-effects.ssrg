@@ -1,0 +1,33 @@
+import * as effects from "std/effect"
+import * as text from "std/text"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn release _unit: Unit -> Unit with Console = say "released"
+
+effect fn body mode: String -> String with Console fails text.TextSliceError = effects.scoped $ do {
+  effects.acquireRelease (say "acquired") release
+  let from = text.sliceScalars 1
+  let replace = text.replaceAll "\0" "!"
+  let source = " \u{85}A👍🏽e\u{301}\0 \u{2003}"
+  let plan = effects.defer $ \_: Unit -> do {
+    let clean = text.concat (text.words (text.trimEnd (text.trimStart source)))
+    let sliced = if mode == "fail" then text.sliceScalars (-1) 7 clean
+      else from (text.lengthScalars clean) (if mode == "defect" then show (42 / 0) else clean)
+    match sliced {
+      Left error -> effects.fail error
+      Right value -> effects.succeed (if text.isEmpty clean || text.lengthBytes clean != 13 || text.scalarAt 1 clean != Just '👍' then "unexpected" else replace value)
+    }
+  }
+  say "cold"
+  first <- plan
+  second <- plan
+  effects.succeed (first + "\n" + second)
+}
+
+effect fn report error: text.TextSliceError -> String with Console = effects.succeed ("Failure: " + show error)
+
+pub effect fn main = do {
+  result <- body "ready" |> effects.recover report
+  println result
+}

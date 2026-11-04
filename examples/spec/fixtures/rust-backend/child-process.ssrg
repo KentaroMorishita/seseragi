@@ -1,0 +1,103 @@
+import * as children from "std/child-process"
+import * as effects from "std/effect"
+import * as process from "std/process"
+import * as paths from "std/path"
+import * as text from "std/text"
+import * as hex from "std/bytes/hex"
+import * as bytes from "std/bytes"
+import * as streams from "std/stream"
+import * as time from "std/time"
+
+fn payload depth: Int -> String = if depth == 0 then "x" else {
+  let half = payload (depth - 1)
+  half + half
+}
+
+fn childError error: children.ChildProcessError -> String = match error {
+  children.ChildSpawnFailed info ->
+    if info.detail == "SearchPath executable requires PATH in the child environment" then show error else "spawn failed"
+  children.ChildInputFailed _ -> "input failed"
+  _ -> show error
+}
+
+fn streamError error: Either<String, children.ChildProcessError> -> String = match error {
+  Left message -> "input: " + message
+  Right child -> "child: " + childError child
+}
+
+alias Summary = {out: String, err: String, status: String}
+
+fn accumulate state: Summary -> event: children.ChildEvent -> Summary = match event {
+  children.ChildStdoutChunk chunk -> {out: state.out + hex.encode chunk, err: state.err, status: state.status}
+  children.ChildStderrChunk chunk -> {out: state.out, err: state.err + hex.encode chunk, status: state.status}
+  children.ChildExitedWith status -> {out: state.out, err: state.err, status: show status}
+}
+
+effect fn inputEvent mode: String -> children.ChildInput with process: process.Process fails String = do {
+  _args <- process.arguments () |> effects.mapError show
+  if mode == "stream-input-fail" then effects.fail "broken input"
+  else effects.succeed (
+    if mode == "close" then children.CloseChildStdin
+    else if mode == "signal" then children.SignalChild process.Terminate
+    else if mode == "kill" then children.KillChild
+    else children.WriteChildStdin (text.encodeUtf8 (if mode == "stream-duplex" then payload 20 else "h🙂\0"))
+  )
+}
+
+fn input mode: String -> streams.Stream<{process: process.Process}, String, children.ChildInput> =
+  if mode == "after-close" then streams.concat (streams.fromEffect (inputEvent "write")) (streams.fromEffect (inputEvent "close"))
+  else streams.fromEffect (inputEvent mode)
+
+effect fn execute node: String -> script: String -> mode: String -> String with ChildProcesses, process: process.Process fails String = do {
+  path <- paths.parse (if mode == "relative" || mode == "relative-parent" then "./child-node" else if mode == "missing" then "./missing-executable" else if mode == "permission" then "./not-executable" else node) |> effects.fromEither |> effects.mapError show
+  executable <- children.command (if mode == "no-path" || mode == "search" then children.SearchPath "node" else if mode == "nul-name" then children.SearchPath "bad\0name" else children.ExecutablePath path) |> effects.fromEither |> effects.mapError show
+  base <- children.addArguments [script, mode] executable |> effects.fromEither |> effects.mapError show
+  withEmptyArgument <- children.addArgument "" base |> effects.fromEither |> effects.mapError show
+  withArguments <- children.addArguments ["two words", "雪🙂", ";echo unexpected"] withEmptyArgument |> effects.fromEither |> effects.mapError show
+  let directory = if mode == "bad-directory" then paths.parse "missing-directory" else if mode == "relative-parent" then paths.parse "link/.." else if mode == "directory" then paths.parse "working directory雪🙂" else Right (paths.current ())
+  cwd <- directory |> effects.fromEither |> effects.mapError show
+  let positioned = children.inDirectory cwd (if mode == "arguments" then withArguments else base)
+  withValue <- children.setEnvironment "SESERAGI_CHILD_VALUE" "old" positioned |> effects.fromEither |> effects.mapError show
+  updated <- children.setEnvironment "SESERAGI_CHILD_VALUE" "雪🙂" withValue |> effects.fromEither |> effects.mapError show
+  unset <- children.unsetEnvironment "SESERAGI_CHILD_PARENT" updated |> effects.fromEither |> effects.mapError show
+  let isolated = children.clearEnvironment unset
+  withEmpty <- children.setEnvironment "SESERAGI_CHILD_EMPTY" "" isolated |> effects.fromEither |> effects.mapError show
+  withEmptyName <- children.setEnvironment "" "empty" withEmpty |> effects.fromEither |> effects.mapError show
+  withEquals <- children.setEnvironment "A=B" "eq" withEmptyName |> effects.fromEither |> effects.mapError show
+  withPath <- children.setEnvironment "PATH" node withEmpty |> effects.fromEither |> effects.mapError show
+  let environment = if mode == "default-directory" then base else if mode == "no-path" then children.clearEnvironment executable else if mode == "context" then withEmpty else if mode == "environment" then withEquals else if mode == "search" then positioned else withPath
+  grace <- time.milliseconds (if mode == "cancel-stream" then 500 else 20) |> effects.fromEither |> effects.mapError show
+  capacity <- streams.bufferCapacity 1 |> effects.fromEither |> effects.mapError show
+  let configured = children.terminationGrace grace (children.outputBuffer capacity environment)
+  let isStream = mode == "stream" || mode == "stream-duplex" || mode == "stream-input-fail" || mode == "after-close" || mode == "signal" || mode == "kill" || mode == "cancel-stream"
+  if isStream then do {
+    let events = children.runStreaming (input mode) configured
+    let selected = if mode == "cancel-stream" then streams.take 1 events else events
+    let initial: Summary = {out: "", err: "", status: "pending"}
+    folded <- streams.runFold initial accumulate selected |> effects.mapError streamError
+    effects.succeed (if mode == "stream-duplex" then folded.status + ":" + show (text.lengthScalars folded.out) + ":" + show (text.lengthScalars folded.err) else folded.status + ":" + folded.out + ":" + folded.err)
+  } else if mode == "inherited" then do {
+    status <- children.runInherited configured |> effects.mapError childError
+    effects.succeed (show status)
+  } else do {
+    limit <- children.captureLimit (if mode == "exact" || mode == "overflow-stdout" || mode == "overflow-stderr" then 4 else 1024) |> effects.fromEither |> effects.mapError show
+    let selected = if mode == "default-limit" || mode == "duplex" || mode == "reject-input" then children.defaultCaptureLimit () else limit
+    let cold = children.runCaptured selected (text.encodeUtf8 (if mode == "duplex" || mode == "reject-input" then payload 20 else "h🙂\0")) configured
+    captured <- cold |> effects.mapError childError
+    if mode == "repeat" then do {
+      again <- cold |> effects.mapError childError
+      effects.succeed (show again.status + ":" + hex.encode again.stdout + ":" + hex.encode again.stderr)
+    } else effects.succeed (if mode == "duplex" then show captured.status + ":" + show (bytes.length captured.stdout) + ":" + show (bytes.length captured.stderr) else show captured.status + ":" + hex.encode captured.stdout + ":" + hex.encode captured.stderr)
+  }
+}
+
+effect fn recoverError error: String -> String with ChildProcesses, process: process.Process = effects.succeed ("error: " + error)
+
+pub effect fn main -> Unit with Console, process: process.Process, ChildProcesses fails String = do {
+  args <- process.arguments () |> effects.mapError show
+  message <- match args {
+    [node, script, mode] -> effects.recover recoverError (execute node script mode)
+    _ -> effects.fail "expected node, script and scenario"
+  }
+  println message |> effects.mapError show
+}

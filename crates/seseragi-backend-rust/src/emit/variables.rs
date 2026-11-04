@@ -22,10 +22,25 @@ impl Backend<'_> {
         {
             return Ok(value);
         }
+        if let Some(value) = self.test_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.benchmark_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.log_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.time_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.prelude_effect_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.die_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.effect_control_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.concurrency_reference(name, evidence, type_ref, scope)? {
@@ -37,7 +52,22 @@ impl Backend<'_> {
         if let Some(value) = self.filesystem_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.child_process_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.process_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.random_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.entropy_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.text_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.regex_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.html_reference(name, evidence, type_ref, scope)? {
@@ -91,10 +121,28 @@ impl Backend<'_> {
         if let Some(value) = self.maybe_operation_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.maybe_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.reader_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.writer_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.state_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.either_operation_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.either_transformer_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.sequence_reference(name, evidence, type_ref, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.non_empty_list_reference(name, evidence, type_ref, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.math_reference(name, evidence, type_ref, scope)? {

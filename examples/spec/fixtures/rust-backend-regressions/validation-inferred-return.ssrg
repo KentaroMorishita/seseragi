@@ -1,0 +1,10 @@
+import { Validation } from "std/validation"
+import { NonEmptyList } from "std/non-empty-list"
+import * as validation from "std/validation"
+
+alias Check<E, A> = Validation<E, A>
+fn reject<E, A> error: E -> Validation<E, A> = validation.invalid error
+fn extract<E, A> value: Check<E, A> -> Either<NonEmptyList<E>, A> =
+  validation.toEither value
+
+pub effect fn main = println (debug (extract (reject<String, Int> "bad")))

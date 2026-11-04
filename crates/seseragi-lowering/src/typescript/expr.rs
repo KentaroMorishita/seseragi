@@ -39,6 +39,114 @@ use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement};
 
 mod comprehension;
 
+#[cfg(test)]
+mod std_test_tests {
+    use super::*;
+    use crate::{CoreCallEvidence, CoreInstanceConstraint, CoreInstanceEvidence, SourceSpan};
+
+    fn value(name: &str) -> CoreType {
+        CoreType::Named {
+            name: name.into(),
+            arguments: vec![],
+        }
+    }
+    fn evidence(name: &str, index: usize) -> CoreCallEvidence {
+        CoreCallEvidence {
+            constraint: CoreInstanceConstraint {
+                name: name.into(),
+                trait_identity: Some(format!("std/prelude::{name}")),
+                arguments: vec![value("String")],
+            },
+            evidence: CoreInstanceEvidence::Parameter { index },
+        }
+    }
+    #[test]
+    fn std_test_effect_invocations_and_pure_calls_pass_the_same_selected_methods() {
+        for name in ["std/test::equal", "std/test::notEqual"] {
+            let origin = SourceSpan {
+                source: "test.ssrg".into(),
+                start: 0,
+                end: 1,
+            };
+            let arguments = ["left", "right"]
+                .map(|text| CoreExpr::String {
+                    value: text.into(),
+                    origin: origin.clone(),
+                })
+                .to_vec();
+            let evidence = vec![evidence("Eq", 0), evidence("Debug", 1)];
+            let requirements = CoreType::Record {
+                closed: true,
+                fields: vec![],
+            };
+            let failure = value("std/test::TestFailure");
+            let success = value("Unit");
+            let invoke = CoreExpr::EffectInvoke {
+                callee: name.into(),
+                callee_signature: None,
+                arguments: arguments.clone(),
+                evidence: evidence.clone(),
+                requirements: requirements.clone(),
+                failure: failure.clone(),
+                success: success.clone(),
+                origin: origin.clone(),
+            };
+            let call = CoreExpr::Call {
+                callee: name.into(),
+                callee_signature: None,
+                arguments,
+                evidence,
+                deferred_evidence_parameters: vec![],
+                deferred_evidence_type_constructor_parameters: vec![],
+                evidence_argument_index: None,
+                trait_dispatch: None,
+                type_ref: CoreType::Named {
+                    name: "std/prelude::Effect".into(),
+                    arguments: vec![requirements, failure, success],
+                },
+                origin,
+            };
+            let imports = BTreeMap::new();
+            let types = TypeScriptTypeContext::default();
+            let invoke = lower_core_expr_to_typescript(invoke, &imports, &types);
+            assert_eq!(
+                invoke,
+                lower_core_expr_to_typescript(call, &imports, &types)
+            );
+            let TypeScriptExpr::RuntimeCall { arguments, .. } = invoke else {
+                panic!("runtime call")
+            };
+            assert_eq!(arguments.len(), 4);
+            assert!(
+                matches!(&arguments[2], TypeScriptExpr::DictionaryCall { method, arguments, .. } if method == "eq" && arguments.is_empty())
+            );
+            let TypeScriptExpr::Record {
+                items,
+                asserted_type: None,
+            } = &arguments[3]
+            else {
+                panic!("structural Debug dictionary")
+            };
+            assert!(
+                matches!(items.as_slice(), [TypeScriptRecordValueItem::Field { name, value: TypeScriptExpr::FieldAccess { field, .. } }] if name == "debug" && field == "debug")
+            );
+        }
+    }
+    #[test]
+    fn std_test_dictionary_adaptation_does_not_change_user_effect_calls() {
+        let evidence = vec![evidence("Eq", 0), evidence("Debug", 1)];
+        let dictionaries = effect_call_dictionaries(
+            "app::equal",
+            &evidence,
+            &BTreeMap::new(),
+            &TypeScriptTypeContext::default(),
+        );
+        assert!(dictionaries
+            .iter()
+            .all(|value| matches!(value, TypeScriptExpr::Identifier { .. })));
+    }
+}
+
 use comprehension::lower_array_comprehension;
 
 pub(super) fn lower_core_expr_to_typescript(
@@ -371,11 +479,27 @@ fn lower_structural_expr(
             ..
         } => {
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
-            arguments.extend(evidence.iter().map(|selected| {
-                selected_dictionary_expression(&selected, imported_values, imported_types)
-                    .expect("constrained effect call requires materializable evidence")
-            }));
+            arguments.extend(effect_call_dictionaries(
+                &callee,
+                &evidence,
+                imported_values,
+                imported_types,
+            ));
             if let Some(operation) = runtime_effect_operation(&callee) {
+                if matches!(
+                    callee.as_str(),
+                    "std/queue::bounded" | "std/queue::unbounded"
+                ) {
+                    let type_arguments =
+                        ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
+                    if !type_arguments.is_empty() {
+                        return TypeScriptExpr::TypeApplicationCall {
+                            callee: operation.local_name.to_owned(),
+                            type_arguments,
+                            arguments,
+                        };
+                    }
+                }
                 if callee == "std/deferred::make" {
                     let payloads = match &success {
                         CoreType::ExternalNamed {
@@ -508,6 +632,12 @@ fn lower_variable(
         if runtime_prelude_collection_operation(&name, &evidence).is_some()
             || runtime_standard_operation(&name).is_some()
             || runtime_iterator_operation(&name).is_some()
+            || matches!(
+                name.as_str(),
+                "std/test::equal" | "std/test::notEqual" | "std/test::expectFailure"
+            )
+            || runtime_provider_service_operation(&name)
+                .is_some_and(|operation| operation.source_arity.is_some_and(|arity| arity > 1))
             || runtime_stream_operation(&name).is_some()
         {
             // A bare function reference is a partial application with
@@ -768,28 +898,18 @@ fn lower_call(
     else {
         unreachable!("call lowering requires a call expression")
     };
-    // These canonical Console declarations have exactly one source
-    // parameter. A zero-argument partial is the function value, not a
-    // call that constructs an Effect with a missing String argument.
-    if arguments.is_empty()
-        && matches!(type_ref, CoreType::Function { .. })
-        && matches!(
-            callee.as_str(),
-            "std/prelude::print"
-                | "std/prelude::println"
-                | "std/console::print"
-                | "std/console::println"
-        )
-    {
-        let name = runtime_effect_operation(&callee)
+    // A zero-argument partial retains the unary runtime function.
+    if arguments.is_empty() && evidence.is_empty() && core_function_arity(&type_ref) == 1 {
+        if let Some(name) = runtime_effect_operation(&callee)
             .map(|operation| operation.local_name)
             .or_else(|| {
                 runtime_provider_service_operation(&callee).map(|operation| operation.local_name)
             })
-            .expect("canonical Console text operation has a runtime binding");
-        return TypeScriptExpr::RuntimeReference {
-            name: name.to_owned(),
-        };
+        {
+            return TypeScriptExpr::RuntimeReference {
+                name: name.to_owned(),
+            };
+        }
     }
     if imported_types.is_erased_newtype(&callee) && arguments.len() == 1 {
         return super::types::assert_private_representation(
@@ -950,12 +1070,17 @@ fn lower_call(
         // recover the element type from C. Preserve the types already
         // selected by Seseragi instead of accepting host `unknown`.
         let type_arguments = match (callee.as_str(), evidence.first()) {
-            (name, _) if name.starts_with("std/either::") => checked_either_runtime_arguments(
-                name,
-                &checked_argument_types,
-                &type_ref,
-                imported_types,
-            ),
+            (name, _)
+                if name.starts_with("std/either::")
+                    || name == "std/transformer/either::fromEither" =>
+            {
+                checked_either_runtime_arguments(
+                    name,
+                    &checked_argument_types,
+                    &type_ref,
+                    imported_types,
+                )
+            }
             ("std/array::empty" | "std/array::append", _) => {
                 checked_array_result_element(&type_ref, imported_types)
                     .into_iter()
@@ -1022,45 +1147,15 @@ fn lower_call(
                 .collect(),
             origin.clone(),
         );
-        let result = if returned_arguments.is_empty() {
-            result
-        } else {
-            let name = "__ssrg$collection$returned".to_owned();
-            let callable_type = checked_argument_types[operation.source_arity..]
-                .iter()
-                .rev()
-                .fold(
-                    type_ref_from_core_type(&type_ref, imported_types),
-                    |result, parameter| super::TypeScriptType::Function {
-                        parameter: Box::new(parameter.clone()),
-                        result: Box::new(result),
-                    },
-                );
-            let initializer = if operation.result_erased {
-                TypeScriptExpr::CheckedResult {
-                    value: Box::new(result),
-                    type_ref: callable_type.clone(),
-                }
-            } else {
-                result
-            };
-            TypeScriptExpr::Sequence {
-                statements: vec![TypeScriptStatement::PureLet {
-                    type_parameters: Vec::new(),
-                    name: name.clone(),
-                    type_ref: callable_type,
-                    initializer,
-                    initializer_in_outer_scope: false,
-                    origin,
-                }],
-                result: Box::new(TypeScriptExpr::Call {
-                    callee: name,
-                    arguments: returned_arguments,
-                    type_arguments: Vec::new(),
-                    checked_callee_type: None,
-                }),
-            }
-        };
+        let result = apply_returned_runtime_arguments(
+            result,
+            returned_arguments,
+            &checked_argument_types[operation.source_arity.min(checked_argument_types.len())..],
+            type_ref_from_core_type(&type_ref, imported_types),
+            "collection",
+            operation.result_erased,
+            origin,
+        );
         if operation.result_erased {
             TypeScriptExpr::CheckedResult {
                 value: Box::new(result),
@@ -1216,18 +1311,29 @@ fn lower_call(
             arguments,
         }
     } else if let Some(operation) = runtime_web_html_operation(&callee) {
+        if callee == "std/web/dom::DomFailure" {
+            let type_arguments =
+                ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
+            if !type_arguments.is_empty() {
+                return TypeScriptExpr::TypeApplicationCall {
+                    callee: operation.local_name.to_owned(),
+                    type_arguments,
+                    arguments,
+                };
+            }
+        }
         TypeScriptExpr::RuntimeCall {
             callee: operation.local_name.to_owned(),
             arguments,
         }
     } else if let Some(operation) = runtime_provider_service_operation(&callee) {
         if let Some(source_arity) = operation.source_arity {
-            // An imported Effect function may be a zero-argument
-            // partial Call. The standard declaration fixes its source
-            // stages; a returned function and the host function's
-            // implementation arity must not add or remove a stage.
+            // The standard declaration fixes the source stages.
+            // Apply extra arguments to the returned function only
+            // after the runtime export has consumed its parameters.
             let remaining = source_arity.saturating_sub(arguments.len());
-            lower_uncurried_runtime_call(
+            let returned_arguments = arguments.split_off(arguments.len().min(source_arity));
+            let result = lower_uncurried_runtime_call(
                 operation.local_name.to_owned(),
                 arguments,
                 Vec::new(),
@@ -1236,7 +1342,21 @@ fn lower_call(
                 "provider",
                 Vec::new(),
                 Some(remaining),
-                checked_argument_types.iter().cloned().enumerate().collect(),
+                checked_argument_types
+                    .iter()
+                    .take(source_arity)
+                    .cloned()
+                    .enumerate()
+                    .collect(),
+                origin.clone(),
+            );
+            apply_returned_runtime_arguments(
+                result,
+                returned_arguments,
+                &checked_argument_types[source_arity.min(checked_argument_types.len())..],
+                type_ref_from_core_type(&type_ref, imported_types),
+                "provider",
+                false,
                 origin,
             )
         } else {
@@ -1246,34 +1366,8 @@ fn lower_call(
             }
         }
     } else if let Some(operation) = runtime_effect_operation(&callee) {
-        let mut dictionary_arguments = Vec::new();
-        if matches!(callee.as_str(), "std/test::equal" | "std/test::notEqual") {
-            let equality = evidence
-                .iter()
-                .find(|selected| selected.constraint.name == "Eq")
-                .expect("std/test equality assertion requires selected Eq evidence");
-            dictionary_arguments.push(
-                equality_reference_from_evidence(
-                    std::slice::from_ref(equality),
-                    imported_values,
-                    imported_types,
-                )
-                .expect("std/test equality assertion requires Eq evidence"),
-            );
-            let debug = evidence
-                .iter()
-                .find(|selected| selected.constraint.name == "Debug")
-                .and_then(|selected| {
-                    selected_dictionary_expression(&selected, imported_values, imported_types)
-                })
-                .expect("std/test equality assertion requires Debug evidence");
-            dictionary_arguments.push(debug);
-        } else {
-            dictionary_arguments.extend(evidence.iter().map(|selected| {
-                selected_dictionary_expression(&selected, imported_values, imported_types)
-                    .expect("constrained standard effect call requires materializable evidence")
-            }));
-        }
+        let dictionary_arguments =
+            effect_call_dictionaries(&callee, &evidence, imported_values, imported_types);
         let mut parameters = Vec::new();
         let mut remaining = &type_ref;
         while let CoreType::Function { parameter, result } = remaining {
@@ -1741,6 +1835,54 @@ fn core_function_arity(type_ref: &CoreType) -> usize {
     }
 }
 
+fn apply_returned_runtime_arguments(
+    initializer: TypeScriptExpr,
+    arguments: Vec<TypeScriptExpr>,
+    argument_types: &[super::TypeScriptType],
+    result_type: super::TypeScriptType,
+    parameter_scope: &str,
+    result_erased: bool,
+    origin: crate::SourceSpan,
+) -> TypeScriptExpr {
+    if arguments.is_empty() {
+        return initializer;
+    }
+    let name = format!("__ssrg${parameter_scope}$returned");
+    let callable_type = argument_types
+        .iter()
+        .rev()
+        .fold(result_type, |result, parameter| {
+            super::TypeScriptType::Function {
+                parameter: Box::new(parameter.clone()),
+                result: Box::new(result),
+            }
+        });
+    let initializer = if result_erased {
+        TypeScriptExpr::CheckedResult {
+            value: Box::new(initializer),
+            type_ref: callable_type.clone(),
+        }
+    } else {
+        initializer
+    };
+    TypeScriptExpr::Sequence {
+        statements: vec![TypeScriptStatement::PureLet {
+            type_parameters: Vec::new(),
+            name: name.clone(),
+            type_ref: callable_type,
+            initializer,
+            initializer_in_outer_scope: false,
+            origin,
+        }],
+        result: Box::new(TypeScriptExpr::Call {
+            callee: name,
+            arguments,
+            type_arguments: Vec::new(),
+            checked_callee_type: None,
+        }),
+    }
+}
+
 fn lower_uncurried_runtime_call(
     callee: String,
     mut arguments: Vec<TypeScriptExpr>,
@@ -1970,7 +2112,7 @@ fn checked_either_runtime_arguments(
                 let (error, value) = sum(parameters[2])?;
                 vec![error, value, remaining.clone()]
             }
-            "std/either::swap" => {
+            "std/either::swap" | "std/transformer/either::fromEither" => {
                 let (error, value) = sum(parameters[0])?;
                 vec![error, value]
             }
@@ -2400,6 +2542,53 @@ fn curried_binary_reference(operator: &str) -> TypeScriptExpr {
             }),
         }),
     }
+}
+
+fn effect_call_dictionaries(
+    callee: &str,
+    evidence: &[crate::CoreCallEvidence],
+    imported_values: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
+) -> Vec<TypeScriptExpr> {
+    let assertion = matches!(callee, "std/test::equal" | "std/test::notEqual");
+    let test = assertion || callee == "std/test::expectFailure";
+    evidence
+        .iter()
+        .map(|selected| {
+            if assertion && selected.constraint.trait_identity.as_deref() == Some("std/prelude::Eq")
+            {
+                return equality_reference_from_evidence(
+                    std::slice::from_ref(selected),
+                    imported_values,
+                    imported_types,
+                )
+                .expect("std/test assertion requires selected Eq evidence");
+            }
+            let dictionary =
+                selected_dictionary_expression(selected, imported_values, imported_types)
+                    .expect("constrained effect call requires materializable evidence");
+            if test
+                && selected.constraint.trait_identity.as_deref() == Some("std/prelude::Debug")
+                && matches!(
+                    selected.evidence,
+                    crate::CoreInstanceEvidence::Parameter { .. }
+                )
+            {
+                TypeScriptExpr::Record {
+                    items: vec![TypeScriptRecordValueItem::Field {
+                        name: "debug".into(),
+                        value: TypeScriptExpr::FieldAccess {
+                            receiver: Box::new(dictionary),
+                            field: "debug".into(),
+                        },
+                    }],
+                    asserted_type: None,
+                }
+            } else {
+                dictionary
+            }
+        })
+        .collect()
 }
 
 fn lower_effect_operation(

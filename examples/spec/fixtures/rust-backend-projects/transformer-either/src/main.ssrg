@@ -1,0 +1,23 @@
+import * as et from "std/transformer/either"
+import * as model from "./model"
+import { Box, Item, Label, Wrapped } from "./model"
+
+fn render value: Either<Label, Item> -> String = match value {
+  Left error -> "error:" + model.text error
+  Right item -> show (model.number item)
+}
+fn mapped<F<_>> value: F<Item> -> F<Item> where Functor<F> = map model.increment value
+
+pub effect fn main = do {
+  let from: Either<Label, Item> -> Wrapped<Box, Item> = et.fromEither
+  let lift: Box<Item> -> Wrapped<Box, Item> = et.lift
+  let run: Wrapped<Box, Item> -> Box<Either<Label, Item>> = et.run
+  let good = lift (model.wrap (model.item 41))
+  let bad = from (Left (model.label "雪🙂"))
+  let function: Wrapped<Box, (Item -> Item)> = pure model.increment
+  println (render (model.unwrap (run good)))
+  println (render (model.unwrap (run bad)))
+  println (render (model.unwrap (run (mapped good))))
+  println (render (model.unwrap (run (function <*> good))))
+  println (render (model.unwrap (run (from (Right (model.item 0))))))
+}

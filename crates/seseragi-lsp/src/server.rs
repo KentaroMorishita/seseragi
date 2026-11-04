@@ -935,8 +935,15 @@ fn publish_with_sources<'a>(
     } else {
         document.analysis.diagnostics.clone()
     };
-    let diagnostics =
+    let mut diagnostics =
         diagnostics::convert_with_sources(&artifact, &document.source, encoding, related_source)?;
+    for diagnostic in &document.target_diagnostics {
+        diagnostics.push(diagnostics::convert_target(
+            diagnostic,
+            &document.source,
+            encoding,
+        )?);
+    }
     let mut params = json!({"uri": uri, "diagnostics": diagnostics});
     if let Some(version) = document.version {
         params["version"] = json!(version);
@@ -1583,6 +1590,75 @@ pub fn view -> html.Html<Never> =
         Url::from_file_path(path.canonicalize().unwrap())
             .unwrap()
             .into()
+    }
+
+    #[test]
+    fn target_diagnostics_follow_manifest_changes_and_unsaved_source_versions() {
+        let workspace = TempWorkspace::new();
+        let manifest = "[package]\nname = \"fixture/target-refresh\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n[run]\nentry = \"main\"\n";
+        workspace.write(
+            "seseragi.toml",
+            &(manifest.to_owned() + "target = \"process\"\n"),
+        );
+        let source = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
+        workspace.write("src/main.ssrg", source);
+        let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let manifest_uri = file_uri(&workspace.path().join("seseragi.toml"));
+        let diagnostics = |messages: Vec<Value>| {
+            messages
+                .into_iter()
+                .find(|message| message["params"]["uri"] == uri)
+                .unwrap()["params"]["diagnostics"]
+                .clone()
+        };
+        let mut state = State::default();
+        state
+            .handle(json!({
+                "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                "params": {"rootUri": file_uri(workspace.path())}
+            }))
+            .unwrap();
+        let opened = state.handle(json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {"uri": uri, "languageId": "seseragi", "version": 1, "text": source}}
+        })).unwrap();
+        assert_eq!(diagnostics(opened), json!([]));
+        workspace.write(
+            "seseragi.toml",
+            &(manifest.to_owned() + "target = \"native\"\n"),
+        );
+        let watch = json!({
+            "jsonrpc": "2.0", "method": "workspace/didChangeWatchedFiles",
+            "params": {"changes": [{"uri": manifest_uri, "type": 2}]}
+        });
+        let native = diagnostics(state.handle(watch.clone()).unwrap());
+        assert_eq!(native.as_array().unwrap().len(), 1, "{native:?}");
+        assert_eq!(
+            native[0]["data"]["messageKey"],
+            "target.unsupported-feature"
+        );
+        for (version, text, expected) in [
+            (2, "pub fn main -> Int = 42\n", json!([])),
+            (3, source, native.clone()),
+        ] {
+            let publications = state.handle(json!({
+                "jsonrpc": "2.0", "method": "textDocument/didChange",
+                "params": {"textDocument": {"uri": uri, "version": version}, "contentChanges": [{"text": text}]}
+            })).unwrap();
+            assert_eq!(
+                publications
+                    .iter()
+                    .find(|message| message["params"]["uri"] == uri)
+                    .unwrap()["params"]["version"],
+                version
+            );
+            assert_eq!(diagnostics(publications), expected);
+        }
+        workspace.write(
+            "seseragi.toml",
+            &(manifest.to_owned() + "target = \"process\"\n"),
+        );
+        assert_eq!(diagnostics(state.handle(watch).unwrap()), json!([]));
     }
 
     struct TempWorkspace {

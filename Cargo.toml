@@ -9,6 +9,7 @@ members = [
   "crates/seseragi-interop",
   "crates/seseragi-lowering",
   "crates/seseragi-lsp",
+  "crates/seseragi-native-runtime",
   "crates/seseragi-provider",
   "crates/seseragi-projection",
   "crates/seseragi-project",
@@ -23,7 +24,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.61.141"
+version = "0.61.142"
 edition = "2021"
 license = "Apache-2.0"
 repository = "https://github.com/morishita/seseragi"

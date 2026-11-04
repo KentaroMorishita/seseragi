@@ -1,0 +1,78 @@
+import * as time from "std/time"
+import * as effects from "std/effect"
+
+fn describe value: Either<time.DurationError, time.Duration> -> String =
+  match value {
+    Left error -> show error
+    Right duration -> show (time.toNanoseconds duration)
+  }
+
+fn accepted value: Either<time.DurationError, time.Duration> -> String =
+  match value {
+    Left error -> show error
+    Right _ -> "duration"
+  }
+
+fn add right: Either<time.DurationError, time.Duration>
+  -> left: Either<time.DurationError, time.Duration>
+  -> Either<time.DurationError, time.Duration> =
+  match right {
+    Left error -> Left error
+    Right rightValue -> match left {
+      Left error -> Left error
+      Right leftValue -> time.addDuration rightValue leftValue
+    }
+  }
+
+fn conversion -> (Int -> Either<time.DurationError, time.Duration>) = time.seconds
+fn projection -> (time.Duration -> Int) = time.toNanoseconds
+fn zero -> (Unit -> time.Duration) = time.zeroDuration
+fn addition -> (time.Duration -> time.Duration -> Either<time.DurationError, time.Duration>) = time.addDuration
+
+pub effect fn main = do {
+  let makeZero = zero ()
+  let project = projection ()
+  println (show (project (makeZero ())))
+  println (describe (time.nanoseconds 1))
+  println (describe (time.milliseconds 1))
+  println (describe (time.seconds 1))
+  println (describe (time.minutes 1))
+  println (describe (time.hours 1))
+  println (describe (time.nanoseconds 9007199254740991))
+  println (describe (time.nanoseconds (-1)))
+  println (describe (time.milliseconds (-1)))
+  println (describe (time.seconds (-1)))
+  println (describe (time.minutes (-1)))
+  println (describe (time.hours (-9007199254740991)))
+  println (accepted (time.milliseconds 9223372036854))
+  println (accepted (time.milliseconds 9223372036855))
+  println (accepted (time.seconds 9223372036))
+  println (accepted (time.seconds 9223372037))
+  println (accepted (time.minutes 153722867))
+  println (accepted (time.minutes 153722868))
+  println (accepted (time.hours 2562047))
+  println (accepted (time.hours 2562048))
+  println (accepted (time.milliseconds 9007199254740991))
+  println (accepted (time.seconds 9007199254740991))
+  println (accepted (time.minutes 9007199254740991))
+  println (accepted (time.hours 9007199254740991))
+  println (describe (add (time.nanoseconds 2) (time.nanoseconds 999999999)))
+  let maximum = add (time.nanoseconds 854775807) (time.seconds 9223372036)
+  println (accepted maximum)
+  println (accepted (add (Right (time.zeroDuration ())) maximum))
+  println (accepted (add maximum (Right (time.zeroDuration ()))))
+  println (accepted (add (time.nanoseconds 1) maximum))
+  println (accepted (add maximum maximum))
+  println (accepted (add (time.nanoseconds 1) (time.nanoseconds 9007199254740991)))
+  let convert = conversion ()
+  match convert 2 {
+    Left _ -> effects.succeed ()
+    Right value -> do {
+      let plus = addition ()
+      let increase = plus value
+      println (describe (increase value))
+      println (describe (increase (makeZero ())))
+      println (show (project value))
+    }
+  }
+}

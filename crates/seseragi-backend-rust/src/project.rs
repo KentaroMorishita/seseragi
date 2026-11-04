@@ -48,7 +48,7 @@ pub(crate) fn emit_with_options(
     entry: &str,
     options: &crate::RustTargetOptions,
 ) -> Result<RustArtifact, RustBackendError> {
-    emit_body(modules, entry_module, Some(entry), options)
+    emit_body(modules, entry_module, Some(entry), options, None)
 }
 
 pub(crate) fn emit_library(
@@ -60,7 +60,75 @@ pub(crate) fn emit_library(
         entry_module,
         None,
         &crate::RustTargetOptions::default(),
+        None,
     )
+}
+
+pub(crate) fn emit_tests(
+    modules: &[&CoreModule],
+    tests: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    emit_tool(modules, tests, false)
+}
+
+pub(crate) fn emit_benchmarks(
+    modules: &[&CoreModule],
+    benchmarks: &[(String, String)],
+) -> Result<RustArtifact, RustBackendError> {
+    emit_tool(modules, benchmarks, true)
+}
+
+fn emit_tool(
+    modules: &[&CoreModule],
+    bindings: &[(String, String)],
+    benchmark: bool,
+) -> Result<RustArtifact, RustBackendError> {
+    let root = CoreModule {
+        schema: 1,
+        stage: "core-ir".into(),
+        module: if benchmark {
+            "\0native-benchmarks"
+        } else {
+            "\0native-tests"
+        }
+        .into(),
+        foreign_modules: vec![],
+        external_type_bindings: vec![],
+        module_dependencies: modules
+            .iter()
+            .map(|module| seseragi_lowering::CoreModuleDependency {
+                specifier: module.module.clone(),
+                module: module.module.clone(),
+                imports: vec![],
+                origin: SourceSpan {
+                    source: module.module.clone(),
+                    start: 0,
+                    end: 0,
+                },
+            })
+            .collect(),
+        adts: vec![],
+        aliases: vec![],
+        structs: vec![],
+        instances: vec![],
+        trait_methods: vec![],
+        bindings: vec![],
+        functions: vec![],
+    };
+    let mut graph = modules.to_vec();
+    graph.push(&root);
+    let mut artifact = emit_body(
+        &graph,
+        &root.module,
+        None,
+        &crate::RustTargetOptions::default(),
+        Some((bindings, benchmark)),
+    )?;
+    artifact
+        .metadata
+        .modules
+        .retain(|module| module != &root.module);
+    Ok(artifact)
 }
 
 fn emit_body(
@@ -68,6 +136,7 @@ fn emit_body(
     entry_module: &str,
     entry: Option<&str>,
     options: &crate::RustTargetOptions,
+    tests: Option<(&[(String, String)], bool)>,
 ) -> Result<RustArtifact, RustBackendError> {
     let entry_core = modules
         .iter()
@@ -111,6 +180,56 @@ fn emit_body(
             ))
         })
         .transpose()?;
+    let LinkedProject {
+        linked,
+        owners,
+        scalar_globals,
+        type_names,
+        trait_names,
+        initialization,
+    } = link(modules, entry_module)?;
+    let mut artifact = if let Some((tests, benchmark)) = tests {
+        emit::emit_tests(
+            &linked,
+            tests,
+            benchmark,
+            &owners,
+            &scalar_globals,
+            &type_names,
+            &trait_names,
+            options,
+        )
+    } else if let Some(entry) = &entry {
+        emit::emit(
+            &linked,
+            entry,
+            &owners,
+            &scalar_globals,
+            &type_names,
+            &trait_names,
+            options,
+        )
+    } else {
+        emit::emit_library(&linked, &owners, &scalar_globals, &type_names, &trait_names)
+    }?;
+    artifact.metadata.modules = initialization;
+    Ok(artifact)
+}
+
+struct LinkedProject {
+    linked: CoreModule,
+    owners: BTreeMap<String, String>,
+    scalar_globals: seseragi_lowering::CoreScalarGlobals,
+    type_names: BTreeMap<(String, String), String>,
+    trait_names: BTreeMap<(String, String), String>,
+    initialization: Vec<String>,
+}
+
+fn link(modules: &[&CoreModule], entry_module: &str) -> Result<LinkedProject, RustBackendError> {
+    let entry_core = modules
+        .iter()
+        .find(|module| module.module == entry_module)
+        .ok_or("Rust backend: entry module not found")?;
     let mut linked = (*entry_core).clone();
     linked.adts.clear();
     linked.aliases.clear();
@@ -245,19 +364,48 @@ fn emit_body(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = if let Some(entry) = &entry {
-        emit::emit(
-            &linked,
-            entry,
-            &owners,
-            &scalar_globals,
-            &type_names,
-            &trait_names,
+    Ok(LinkedProject {
+        linked,
+        owners,
+        scalar_globals,
+        type_names,
+        trait_names,
+        initialization,
+    })
+}
+
+pub(crate) fn diagnose(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    target: crate::RustDiagnosticTarget,
+    options: &crate::RustTargetOptions,
+) -> Vec<RustBackendError> {
+    let mut diagnostics = Vec::new();
+    let modules = modules
+        .iter()
+        .map(|module| {
+            let mut module = (*module).clone();
+            for foreign in module.foreign_modules.drain(..) {
+                diagnostics.push(at(
+                    "Rust backend: foreign modules are unsupported",
+                    &foreign.origin,
+                    &module.module,
+                ));
+            }
+            module
+        })
+        .collect::<Vec<_>>();
+    match link(&modules.iter().collect::<Vec<_>>(), entry_module) {
+        Ok(project) => diagnostics.extend(emit::diagnose(
+            &project.linked,
+            &project.owners,
+            &project.scalar_globals,
+            &project.type_names,
+            &project.trait_names,
             options,
-        )
-    } else {
-        emit::emit_library(&linked, &owners, &scalar_globals, &type_names, &trait_names)
-    }?;
-    artifact.metadata.modules = initialization;
-    Ok(artifact)
+            target,
+        )),
+        Err(error) => diagnostics.push(error),
+    }
+    diagnostics
 }

@@ -1,0 +1,21 @@
+import * as effects from "std/effect"
+import * as process from "std/process"
+import * as paths from "std/path"
+
+effect fn report error: process.ProcessError -> String with process: process.Process =
+  effects.succeed (show error)
+
+effect fn directory -> String with process: process.Process fails process.ProcessError = do {
+  path <- process.currentDirectory ()
+  effects.succeed (paths.render path)
+}
+
+pub effect fn main -> Unit with process: process.Process, Console, Stdin fails String = do {
+  let cold = directory ()
+  println "ready" |> effects.mapError show
+  line <- readLine () |> effects.mapError show
+  first <- cold |> effects.recover report
+  println first |> effects.mapError show
+  second <- cold |> effects.recover report
+  println second |> effects.mapError show
+}
