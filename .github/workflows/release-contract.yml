@@ -84,6 +84,11 @@ on:
       - "docs/RELEASE.md"
   workflow_dispatch:
 
+# Manual canonical runs have unique groups; only superseded PR runs cancel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
@@ -98,6 +103,11 @@ jobs:
         with:
           toolchain: 1.97.1
           targets: wasm32-unknown-unknown
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-contract-check
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24.22.1"
@@ -108,5 +118,11 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Check canonical version metadata
         run: bun run check:release
+      # Only the version/distribution contract tests; the full CLI suites run in
+      # their own scoped workflows.
       - name: Exercise CLI and LSP version contracts
-        run: cargo test -p seseragi-release -p seseragi-cli -p seseragi-lsp
+        run: |
+          cargo test --locked -p seseragi-release
+          cargo test --locked -p seseragi-cli --test build -- --exact reports_version_commit_and_channel
+          cargo test --locked -p seseragi-lsp --test stdio -- --exact binary_reports_its_distribution_contract
+          cargo test --locked -p seseragi-cli --test run -- --exact single_file_and_package_compile_diagnostics_share_the_json_envelope

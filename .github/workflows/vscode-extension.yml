@@ -47,6 +47,11 @@ on:
         type: boolean
         default: false
 
+# Manual canonical runs have unique groups; only superseded PR runs cancel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
@@ -60,6 +65,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.97.1
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: vscode-extension-test
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -77,7 +87,9 @@ jobs:
         run: cargo test -p seseragi-lsp
 
   package:
-    if: inputs.linux-portability-only != true
+    # Every package target is macOS or Windows. Pull requests rely on the Linux
+    # linux-native package lane; push to main and manual runs keep these hosts.
+    if: inputs.linux-portability-only != true && github.event_name != 'pull_request'
     name: ${{ matrix.target }}
     strategy:
       fail-fast: false

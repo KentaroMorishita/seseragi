@@ -177,7 +177,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-15, windows-latest]
+        # Pull requests run Linux only; push to main and manual runs keep all hosts.
+        os: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-24.04"]' || '["ubuntu-24.04", "macos-15", "windows-latest"]') }}
     runs-on: ${{ matrix.os }}
     # Batch all CLI suites in one Cargo invocation to reuse compilation.
     # Preserve every test and its individual deadline, with cold-build headroom.
@@ -194,6 +195,12 @@ jobs:
         with:
           toolchain: 1.97.1
           targets: wasm32-unknown-unknown
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        if: runner.os == 'Linux'
+        with:
+          key: rust-backend-file-transform
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -209,22 +216,24 @@ jobs:
       - name: Keep locked provider identities identical across checkout hosts
         run: cargo test --locked -p seseragi-runtime --test provider_catalog_identity
       - name: Verify native text, byte and Array boundaries and portable math values on every host
-        run: |
-          cargo test --locked -p seseragi-backend-rust --lib runtime::text_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::math_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::bytes_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::array_operation_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::sequence_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::big_int_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::decimal_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_codec_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_decoder_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_container_codec_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::json_derived_adt_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::hashing_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::map_tests
-          cargo test --locked -p seseragi-backend-rust --lib runtime::set_tests
+        # One Cargo invocation with several libtest filters selects the same union.
+        run: >-
+          cargo test --locked -p seseragi-backend-rust --lib --
+          runtime::text_tests
+          runtime::math_tests
+          runtime::bytes_tests
+          runtime::array_operation_tests
+          runtime::sequence_tests
+          runtime::big_int_tests
+          runtime::decimal_tests
+          runtime::json_tests
+          runtime::json_codec_tests
+          runtime::json_decoder_tests
+          runtime::json_container_codec_tests
+          runtime::json_derived_adt_tests
+          runtime::hashing_tests
+          runtime::map_tests
+          runtime::set_tests
       - name: Compare complete file, numeric, identity and program WASM suites
         run: >-
           cargo test --locked -p seseragi-cli
@@ -248,17 +257,23 @@ jobs:
           --test captured_primitive_identity
           --test program_wasm
           --test program_wasm_host_effect
-      - name: Preserve checked cursors and lazy standard display on every host
+          --test alias_constructor_sections
+      # Each extra Cargo invocation after the CLI suites rebuilt the workspace
+      # (~32s on Ubuntu) because seseragi-release reruns on .git/index changes.
+      # The filters below match only the intended tests in each binary.
+      - name: Preserve checked cursors and lazy standard display, and rebuild selected program dependencies
+        run: >-
+          cargo test --locked -p seseragi-cli
+          --test rust_backend
+          --test dev
+          --
+          list_prefix_
+          closed_display_
+          watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
+          watches_host_effect_programs_and_drains_the_old_application_before_reload
+          initial_program_
+      - name: Drain old browser owners in the TypeScript program lifecycle
         run: |
-          cargo test --locked -p seseragi-cli --test rust_backend list_prefix_
-          cargo test --locked -p seseragi-cli --test rust_backend closed_display_
-      - name: Preserve alias identities and returned source stages on every host
-        run: cargo test --locked -p seseragi-cli --test alias_constructor_sections
-      - name: Rebuild selected program dependencies and drain old browser owners
-        run: |
-          cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
-          cargo test --locked -p seseragi-cli --test dev watches_host_effect_programs_and_drains_the_old_application_before_reload
-          cargo test --locked -p seseragi-cli --test dev initial_program_
           bun test ./runtime/ts/tests/program-lifecycle.test.ts ./runtime/ts/tests/program-lifecycle-async.test.ts
           bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts
 
@@ -274,6 +289,11 @@ jobs:
         with:
           toolchain: 1.97.1
           targets: wasm32-unknown-unknown
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: rust-backend-native
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -353,6 +373,12 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.97.1
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        if: runner.os == 'Linux'
+        with:
+          key: rust-backend-async-io
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -375,6 +401,11 @@ jobs:
         with:
           toolchain: 1.97.1
           targets: wasm32-unknown-unknown
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: rust-backend-canonical-wasm
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
