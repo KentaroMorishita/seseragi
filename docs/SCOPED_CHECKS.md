@@ -764,13 +764,96 @@ full gateを実行した場合は、作業ログまたはPR本文へ「必要理
   `check:extension`はhost platformの短い再現確認であり、tag releaseでも同じ検証器を
   upload前のrelease VSIXへ再実行する。
 - `.github/workflows/release-contract.yml` はversion sourceやartifact namingの変更で
-  `check:release`を実行し、Linux native archiveも実binaryで検証する。tag releaseは
+  `check:release`と、version/distribution契約のcargo testだけを実行する
+  （`seseragi-release`全体、`seseragi-cli --test build reports_version_commit_and_channel`、
+  `seseragi-lsp --test stdio binary_reports_its_distribution_contract`、
+  `seseragi-cli --test run single_file_and_package_compile_diagnostics_share_the_json_envelope`。
+  いずれも`--locked`、個別testは`-- --exact`）。CLI/LSPの全suiteは各scoped workflowが担当し、
+  Linux native archiveの実binary検証は`linux-native.yml`とtag releaseが担当する。tag releaseは
   `v<version>`だけを受け付け、tag commitのmain包含と`check:release-gate`成功後にだけ
   同一SHAの全platform artifactを生成し、upload前と再download後に検証する。
 - repository-wideのfull gateは、compiler/runtime/WASM変更、release、queue統合などの
   integration pointで明示的に実行する。CIに同じ長時間検査を各sample変更へ無条件に重ねない。
 - scoped laneが不足している場合は、対象コマンドを個別に実行して結果を記録し、lane追加を
   次の基盤Issueとして扱う。
+
+### CIのOS方針（イベント別）
+
+- `pull_request`ではLinuxだけを実行する。対象は`rust-backend.yml`の`file-transform`、
+  `dts-portable.yml`の`convert`（PRでは`cross-host-results`も省略）、
+  `vscode-extension.yml`の`package`（macOS/Windows targetのみのためPRではjobごと省略。
+  Linux VSIXは`linux-native`が担当）。matrix要素には`if`を書けないため、OS配列は
+  `fromJSON(github.event_name == 'pull_request' && '[...Linux]' || '[...全OS]')`で切り替える。
+- macOS/Windowsは`main`へのpushと`workflow_dispatch`で従来どおり実行する
+  （`dts-portable.yml`にはそのため`main` pushを追加）。nightly scheduleは置かない。
+  `release.yml`のmacOS/Windows gateは変更しない。
+- macOS/Windows固有の失敗はmerge後に初めて見えるため、OS依存の変更（path、process、
+  file handle、改行、WASM再生成など）はPR前にlocal Macで下記を実行する。
+- PR起点のworkflowは`concurrency`（workflow + event + PR番号、PRだけcancel）を持つ。
+- UbuntuのRust jobは`Swatinem/rust-cache@v2`をjob別keyで使い、保存は`main`へのpushだけ
+  （PRは復元のみ）。`CARGO_INCREMENTAL=0`は維持する。
+
+### local MacでmacOS CIを再現する手順
+
+固定toolchain（`rust-toolchain.toml`の1.97.1、`wasm32-unknown-unknown`）、`.bun-version`のBun、
+Node 24.22.1を用意し、repository rootで実行する。CIと同じ環境変数を使う。
+
+```sh
+export CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0
+bun install --frozen-lockfile
+
+# rust-backend.yml file-transform (macos-15)
+cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
+cargo test --locked -p seseragi-runtime --test provider_catalog_identity
+cargo test --locked -p seseragi-backend-rust --lib -- \
+  runtime::text_tests runtime::math_tests runtime::bytes_tests \
+  runtime::array_operation_tests runtime::sequence_tests runtime::big_int_tests \
+  runtime::decimal_tests runtime::json_tests runtime::json_codec_tests \
+  runtime::json_decoder_tests runtime::json_container_codec_tests \
+  runtime::json_derived_adt_tests runtime::hashing_tests runtime::map_tests runtime::set_tests
+cargo test --locked -p seseragi-cli \
+  --test filesystem --test fibers --test async_filesystem --test inherited_equality \
+  --test string_equality --test text_processing --test int_parse --test float_parse \
+  --test float_conversion --test int_remainder --test native_power --test basic_standard \
+  --test process_entry_strict --test public_aliases --test namespace_results \
+  --test computed_callees --test nominal_lambda_identity --test captured_primitive_identity \
+  --test program_wasm --test program_wasm_host_effect --test alias_constructor_sections
+cargo test --locked -p seseragi-cli --test rust_backend --test dev -- \
+  list_prefix_ closed_display_ \
+  watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances \
+  watches_host_effect_programs_and_drains_the_old_application_before_reload \
+  initial_program_
+bun test ./runtime/ts/tests/program-lifecycle.test.ts ./runtime/ts/tests/program-lifecycle-async.test.ts
+bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext \
+  --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts
+
+# dts-portable.yml convert (macos-15)。WASI SDK 25.0を展開しWASI_SDK_PATHを設定、
+# wasm-pack v0.15.0と`cargo install wasm-bindgen-cli --version 0.2.126 --locked`を用意する。
+cargo fmt --all -- --check
+cargo test --locked -p seseragi-dts
+cargo test --locked -p seseragi-dts --no-default-features
+cargo test --locked -p seseragi-cli --test dts
+cargo test --locked -p seseragi-wasm
+cargo test --locked -p seseragi-conformance --bin seseragi-conformance runtime_package::http_server::tests
+bun run check:dts:wasm
+builds="$(mktemp -d)"
+SESERAGI_WASM_BUILD_EVIDENCE="$builds/evidence-first" CARGO_TARGET_DIR="$builds/target-first" \
+  ./scripts/build-playground-wasm.sh "$builds/pkg-first"
+SESERAGI_WASM_BUILD_EVIDENCE="$builds/evidence-second" CARGO_TARGET_DIR="$builds/target-second" \
+  bun run build:playground:wasm
+diff -r "$builds/pkg-first" apps/playground/src/wasm/pkg
+(cd apps/playground && bun install --frozen-lockfile \
+  && bun test tests/binding-wasm.test.ts tests/workspace-*.test.ts && bunx tsc --noEmit \
+  && bunx playwright install chromium && bunx playwright test e2e/workspace-bindings.spec.ts)
+git checkout -- apps/playground/src/wasm/pkg  # macOS生成物はcommitしない
+
+# vscode-extension.yml package (macos-15 / darwin-arm64。Intel Macはdarwin-x64)
+(cd extensions/seseragi && bun install --frozen-lockfile \
+  && SESERAGI_EXTENSION_TARGET=darwin-arm64 bun scripts/package-extension.ts)
+```
+
+Windows固有の確認（`bun test scripts/native-release.test.ts`など）はlocalで代替できないため、
+必要な場合は`workflow_dispatch`でrust-backend/vscode-extensionを手動実行する。
 
 ### Release profile implementation checks
 
