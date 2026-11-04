@@ -179,12 +179,15 @@ jobs:
       matrix:
         # Pull requests run Linux only; push to main and manual runs keep all hosts.
         os: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-24.04"]' || '["ubuntu-24.04", "macos-15", "windows-latest"]') }}
+        # The CLI suites are CPU-bound (each test runs rustc -O, tsc, Bun and
+        # Node); cargo test ran their binaries one after another (~83m on
+        # Ubuntu). nextest pools every test of every binary and each shard
+        # runs one count partition, so the union is exactly the same tests.
+        # Keep `shard` and the partition denominator below in sync.
+        shard: [1, 2, 3, 4, 5, 6]
     runs-on: ${{ matrix.os }}
-    # Batch all CLI suites in one Cargo invocation to reuse compilation.
     # Preserve every test and its individual deadline, with cold-build headroom.
-    # Ubuntu cold runs can exceed 45m after reaching the final rebuild suite.
-    # Keep every command and individual deadline; Windows/macOS runs exceed 90m.
-    timeout-minutes: 150
+    timeout-minutes: 90
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -209,13 +212,16 @@ jobs:
           node-version: "24.22.1"
       - run: bun install --frozen-lockfile
       - name: Preserve smoke failures and bound Windows temporary cleanup
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && matrix.shard == 1
         run: bun test scripts/native-release.test.ts
       - name: Drain pending file stages, close real handles and join exceptional workers
+        if: matrix.shard == 1
         run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
       - name: Keep locked provider identities identical across checkout hosts
+        if: matrix.shard == 1
         run: cargo test --locked -p seseragi-runtime --test provider_catalog_identity
       - name: Verify native text, byte and Array boundaries and portable math values on every host
+        if: matrix.shard == 1
         # One Cargo invocation with several libtest filters selects the same union.
         run: >-
           cargo test --locked -p seseragi-backend-rust --lib --
@@ -234,9 +240,14 @@ jobs:
           runtime::hashing_tests
           runtime::map_tests
           runtime::set_tests
-      - name: Compare complete file, numeric, identity and program WASM suites
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-nextest@0.9.151
+      - name: Compare complete file, numeric, identity and program WASM suites (shard ${{ matrix.shard }}/6)
         run: >-
-          cargo test --locked -p seseragi-cli
+          cargo nextest run --locked -p seseragi-cli
+          --partition count:${{ matrix.shard }}/6
+          --no-fail-fast
           --test filesystem
           --test fibers
           --test async_filesystem
@@ -262,6 +273,7 @@ jobs:
       # (~32s on Ubuntu) because seseragi-release reruns on .git/index changes.
       # The filters below match only the intended tests in each binary.
       - name: Preserve checked cursors and lazy standard display, and rebuild selected program dependencies
+        if: matrix.shard == 1
         run: >-
           cargo test --locked -p seseragi-cli
           --test rust_backend
@@ -273,6 +285,7 @@ jobs:
           watches_host_effect_programs_and_drains_the_old_application_before_reload
           initial_program_
       - name: Drain old browser owners in the TypeScript program lifecycle
+        if: matrix.shard == 1
         run: |
           bun test ./runtime/ts/tests/program-lifecycle.test.ts ./runtime/ts/tests/program-lifecycle-async.test.ts
           bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts
