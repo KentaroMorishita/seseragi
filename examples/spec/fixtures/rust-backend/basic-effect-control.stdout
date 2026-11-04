@@ -1,0 +1,32 @@
+Right 42
+typed
+Right 0
+Left missing
+Left 7
+unit
+42
+continue
+break
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+all: 4
+all: 5
+3
+3
+failure: 1
+failure: 2
+stopped
+done

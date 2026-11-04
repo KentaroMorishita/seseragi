@@ -63,8 +63,8 @@ pub fn logical_module_id(module: &ModuleIdentity) -> String {
     )
 }
 pub use link::{
-    link_module, LinkError, LinkTargetError, LinkedDependency, LinkedImport, LinkedModule,
-    ModuleLinkTarget,
+    link_module, link_module_with_type_providers, LinkError, LinkTargetError, LinkedDependency,
+    LinkedImport, LinkedModule, ModuleLinkTarget,
 };
 pub use loader::{
     load_package, LoadedModule, LoadedPackage, PackageLoadError, IMPLEMENTED_LANGUAGE_VERSION,

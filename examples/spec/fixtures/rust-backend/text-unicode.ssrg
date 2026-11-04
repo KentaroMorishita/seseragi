@@ -1,0 +1,74 @@
+import * as unicode from "std/text/unicode"
+import * as text from "std/text"
+import * as char from "std/char"
+
+fn through<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn choose operation: (String -> String) -> String -> String = operation
+
+fn normalized form: unicode.NormalizationForm -> value: String -> String = {
+  let operation: unicode.NormalizationForm -> String -> String = unicode.normalize
+  let partial: String -> String = operation form
+  through (choose partial) value
+}
+
+fn classified value: Char -> String = {
+  let category: Char -> unicode.UnicodeGeneralCategory = unicode.generalCategory
+  let alphabetic: Char -> Bool = unicode.isAlphabetic
+  let whitespace: Char -> Bool = unicode.isWhitespace
+  let decimal: Char -> Bool = unicode.isDecimalDigit
+  let mark: Char -> Bool = unicode.isMark
+  let simple: Char -> Char = unicode.simpleCaseFold
+  text.join ":" [
+    show (through category value),
+    show (through alphabetic value),
+    show (through whitespace value),
+    show (through decimal value),
+    show (through mark value),
+    show (char.codePoint (through simple value))
+  ]
+}
+
+pub fn probe -> String = {
+  let version: Unit -> String = unicode.version
+  let full: String -> String = unicode.fullCaseFold
+  let isNormalized: unicode.NormalizationForm -> String -> Bool = unicode.isNormalized
+  let isNfc: String -> Bool = isNormalized unicode.NFC
+  text.join "\n" ["version:" + through version (), "forms:" + text.join ","
+      (map show [
+        unicode.NFC,
+        unicode.NFD,
+        unicode.NFKC,
+        unicode.NFKD
+      ]), "nfc:" + normalized unicode.NFC "e\u{301}", "nfd:" + normalized unicode.NFD
+      "é", "nfkc:" + normalized unicode.NFKC "ﬃ①Ａ\u{a0}", "nfkd:" + normalized unicode.NFKD
+      "ﬃ①é", "hangul:" + normalized unicode.NFC "\u{1100}\u{1161}\u{11a8}", "hangul-decomposed:" + normalized
+      unicode.NFD "각", "ordered:" + normalized unicode.NFD "a\u{301}\u{323}\u{300}", "blocked:" + normalized
+      unicode.NFC "A\u{305}\u{301}", "excluded:" + normalized unicode.NFC "\u{344}", "leading-marks:" + normalized
+      unicode.NFC "\u{301}\u{323}", "normalized:" + show (isNfc "é") + ":" + show
+      (isNfc "e\u{301}"), "empty:" + show (unicode.isNormalized unicode.NFKD "") + ":" + show
+      (normalized unicode.NFC "" == ""), "boundaries:" + show (
+        normalized unicode.NFC "\0\u{d7ff}\u{e000}\u{ffff}\u{10000}\u{10ffff}" == "\0\u{d7ff}\u{e000}\u{ffff}\u{10000}\u{10ffff}"
+      ), "fold:" + through full "Straße İ Σς ﬃ Ꮳꮳ\u{a7ce}\u{16ea0}", "fold-empty:" + show
+      (full "" == ""), "fold-text:" + show
+      (unicode.fullCaseFold "ẞςİ" == text.caseFold "ẞςİ"), "simple:" + text.join "," (
+        map (\value: Char -> show (char.codePoint (unicode.simpleCaseFold value))) [
+          'ß',
+          'ẞ',
+          'İ',
+          'ı',
+          'ς',
+          'K',
+          'ﬃ'
+        ]
+      ), "category-pattern:" + (match unicode.generalCategory 'A' {
+        unicode.UppercaseLetter -> "upper"
+        _ -> "other"
+    }), "category-eq:" + show (unicode.generalCategory 'A' == unicode.UppercaseLetter), "form-eq:" + show (unicode.NFC != unicode.NFKC), "category-order:" + (match compare unicode.UppercaseLetter unicode.LowercaseLetter {
+        Less -> "Less"
+        Equal -> "Equal"
+        Greater -> "Greater"
+    }), "category-less:" + show (unicode.UppercaseLetter<unicode.Unassigned), "category-debug:" + debug (unicode.generalCategory '\u{10ffff}'), "form-debug:" + debug unicode.NFKD, classified 'A', classified '\u{345}', classified '\u{903}', classified '\u{20dd}', classified '\u{85}', classified '\u{a0}', classified '\u{feff}', classified '٣', classified '²', classified '\u{1e6c0}', classified '\0', classified '\u{e000}', classified '\u{10ffff}'
+  ]
+}
+
+pub effect fn main = println (probe ())

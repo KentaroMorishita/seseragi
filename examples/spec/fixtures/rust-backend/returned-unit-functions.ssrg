@@ -1,0 +1,76 @@
+pub fn make -> (Unit -> Int) = {
+  fn value -> Int = 42
+  value
+}
+
+fn topValue -> Int = 42
+
+fn makeTop -> (Unit -> Int) = topValue
+
+fn makeExplicit -> (Unit -> Int) = {
+  fn value unit: Unit -> Int = 42
+  value
+}
+
+fn makeCaptured value: Int -> (Unit -> Int) = {
+  fn current -> Int = value
+  current
+}
+
+alias Thunk = Unit -> Int
+
+fn makeAliased -> Thunk = {
+  fn value -> Int = 42
+  let saved: Thunk = value
+  saved
+}
+
+fn makeNested -> Thunk = {
+  fn factory -> Thunk = {
+    fn value -> Int = 42
+    value
+  }
+  factory ()
+}
+
+fn makeRecursive -> Thunk = {
+  rec {
+    fn value -> Int = other ()
+    fn other -> Int = 42
+  }
+  value
+}
+
+fn invoke action: Thunk -> Int = action ()
+
+fn invokeLocal -> Int = {
+  fn value -> Int = 42
+  invoke value
+}
+
+fn makeRecord -> { value: Thunk } = {
+  fn value -> Int = 42
+  { value: value }
+}
+
+pub effect fn main = do {
+  let local = make ()
+  let top = makeTop ()
+  let explicit = makeExplicit ()
+  let minimum = makeCaptured (-9007199254740991)
+  let maximum = makeCaptured 9007199254740991
+  let aliased = makeAliased ()
+  let nested = makeNested ()
+  let recursive = makeRecursive ()
+  let record = makeRecord ()
+  println (show (local ()))
+  println (show (top ()))
+  println (show (explicit ()))
+  println (show (minimum ()))
+  println (show (maximum ()))
+  println (show (aliased ()))
+  println (show (nested ()))
+  println (show (recursive ()))
+  println (show (invokeLocal ()))
+  println (show (record.value ()))
+}

@@ -3,6 +3,7 @@ use seseragi_syntax::{InterfaceExport, InterfaceType};
 use std::sync::OnceLock;
 
 pub(super) const ERROR_TYPES: &[&str] = &[
+    "std/benchmark::BenchmarkFailure",
     "std/big-int::BigIntConversionError",
     "std/big-int::BigIntDivisionError",
     "std/big-int::BigIntParseError",
@@ -13,6 +14,7 @@ pub(super) const ERROR_TYPES: &[&str] = &[
     "std/bytes::BytesSliceError",
     "std/child-process::ChildProcessConfigError",
     "std/child-process::ChildProcessError",
+    "std/child-process::ChildExitStatus",
     "std/collection::SizeError",
     "std/decimal::DecimalArithmeticError",
     "std/decimal::DecimalContextError",
@@ -56,9 +58,13 @@ pub(super) const ERROR_TYPES: &[&str] = &[
     "std/web/storage::StorageError",
 ];
 const RELATED_TYPES: &[&str] = &[
+    "std/text/unicode::NormalizationForm",
+    "std/text/unicode::UnicodeGeneralCategory",
     "std/process::ProcessSignal",
     "std/child-process::ChildOutputChannel",
     "std/child-process::Executable",
+    "std/child-process::ChildInput",
+    "std/child-process::ChildEvent",
     "std/web/storage::StorageArea",
 ];
 pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {
@@ -70,7 +76,8 @@ pub(super) fn constructor_slots(name: &str) -> Option<Vec<u32>> {
 fn eq_type(name: &str) -> bool {
     matches!(
         name,
-        "std/decimal::DecimalParseError"
+        "std/benchmark::BenchmarkFailure"
+            | "std/decimal::DecimalParseError"
             | "std/decimal::DecimalContextError"
             | "std/decimal::DecimalArithmeticError"
             | "std/decimal::DecimalConversionError"
@@ -88,20 +95,43 @@ fn eq_type(name: &str) -> bool {
     )
 }
 fn contract(identity: &str) -> Option<(&'static str, &'static str)> {
+    for name in [
+        "std/text/unicode::NormalizationForm",
+        "std/text/unicode::UnicodeGeneralCategory",
+    ] {
+        for class in ["Eq", "Show", "Debug", "Ord"] {
+            if class == "Ord" && name.ends_with("::NormalizationForm") {
+                continue;
+            }
+            if identity == format!("{class}<{name}>") {
+                return Some((class, name));
+            }
+        }
+    }
+    if identity == "Show<std/process::ProcessSignal>" {
+        return Some(("Show", "std/process::ProcessSignal"));
+    }
     for &name in ERROR_TYPES {
         for class in ["Show", "Debug", "Eq"] {
             if class == "Debug"
-                && matches!(name, "std/int::IntParseError" | "std/prelude::Js.Error")
+                && matches!(
+                    name,
+                    "std/benchmark::BenchmarkFailure"
+                        | "std/int::IntParseError"
+                        | "std/prelude::Js.Error"
+                )
             {
                 continue;
             }
             if class == "Eq" && !eq_type(name) {
                 continue;
             }
-            let expected = if class == "Eq" && name == "std/collection::SizeError" {
-                "std/collection::EqSizeError".to_owned()
-            } else {
-                format!("{class}<{name}>")
+            let expected = match (class, name) {
+                ("Eq", "std/benchmark::BenchmarkFailure") => {
+                    "std/benchmark::EqBenchmarkFailure".to_owned()
+                }
+                ("Eq", "std/collection::SizeError") => "std/collection::EqSizeError".to_owned(),
+                _ => format!("{class}<{name}>"),
             };
             if identity == expected {
                 return Some((class, name));
@@ -274,6 +304,9 @@ impl Backend<'_> {
             unreachable!()
         };
         let (class, name) = contract(identity).unwrap();
+        if class == "Ord" {
+            return Ok(Some("native_unicode_category_ord_dictionary()".into()));
+        }
         let children = self.evidence(evidence_arguments, scope)?;
         Ok(Some(format!(
             "native_standard_error_dictionary({}, {}, {children})",

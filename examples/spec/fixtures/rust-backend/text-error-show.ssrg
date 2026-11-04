@@ -1,0 +1,50 @@
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+
+fn through<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn display<A> value: A -> String where Show<A> = show value
+fn constructor -> ({ start: Int, end: Int, length: Int } -> text.TextSliceError) =
+  text.InvalidScalarRange
+
+fn slice start: Int -> end: Int -> value: String -> String =
+  match text.sliceScalars start end value {
+    Left error -> "Left " + show error
+    Right result -> "Right [" + result + "]"
+  }
+
+fn decode values: Array<Int> -> String = match bytes.fromInts values {
+  Left error -> "Bytes " + show error
+  Right buffer -> match text.decodeUtf8 buffer {
+    Left error -> "Left " + show error
+    Right result -> "Right [" + result + "]"
+  }
+}
+
+pub effect fn main = do {
+  println (show (text.InvalidScalarRange { start: -1, end: 2, length: 6 }))
+  println (show (text.InvalidScalarRange { length: 0, start: 0, end: 1 }))
+  let create: { length: Int, end: Int, start: Int } -> text.TextSliceError = text.InvalidScalarRange
+  let render: text.TextSliceError -> String = show
+  println (render (create { end: 1, start: 3, length: 6 }))
+  println (display (through create { start: 0, length: 6, end: 7 }))
+  println (show (constructor () { length: 6, end: 2, start: -1 }))
+  println (debug (text.InvalidScalarRange { end: 2, length: 6, start: -1 }))
+  println (show (text.InvalidScalarRange { start: -9007199254740991, end: 9007199254740991, length: 6 }))
+  println (show (text.InvalidUtf8 { offset: 0 }))
+  let invalid: { offset: Int } -> text.Utf8DecodeError = text.InvalidUtf8
+  let utf8: text.Utf8DecodeError -> String = show
+  println (utf8 (through invalid { offset: 4 }))
+  println (debug (invalid { offset: 9007199254740991 }))
+  println (slice 1 3 "A👍🏽e\u{301}\0")
+  println (slice 0 0 "")
+  println (slice 6 6 "A👍🏽e\u{301}\0")
+  println (slice (-1) 2 "A👍🏽e\u{301}\0")
+  println (slice 3 1 "A👍🏽e\u{301}\0")
+  println (slice 0 7 "A👍🏽e\u{301}\0")
+  println (slice 0 1 "")
+  println (decode [])
+  println (decode [65, 240, 159, 153, 130])
+  println (decode [128])
+  println (decode [65, 240, 159, 153, 130, 255])
+  println (decode [65, 226, 130])
+}

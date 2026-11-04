@@ -8,6 +8,7 @@ import {
   find,
   findAll,
   isMatch,
+  type RegexMatch,
   replaceAll,
   replaceAllWith,
   split,
@@ -177,6 +178,40 @@ describe("portable regex runtime", () => {
         "a12b3"
       )
     ).toBe("a[12]b[3]")
+  })
+
+  test("calls replacements once in input order and skips absent matches", () => {
+    const calls: number[] = []
+    const nested = compiled(".")
+    const replacement = (matched: RegexMatch): string => {
+      calls.push(matched.span.start)
+      expect(replaceAll(nested, "_", "雫🙂")).toBe("__")
+      return `[${matched.span.start}]`
+    }
+    expect(replaceAllWith(compiled("(?<empty>)"), replacement, "a🙂b")).toBe(
+      "[0]a[1]🙂[5]b[6]"
+    )
+    expect(calls).toEqual([0, 1, 5, 6])
+    expect(replaceAllWith(compiled("z"), replacement, "")).toBe("")
+    expect(replaceAllWith(compiled("z"), replacement, "雫🙂")).toBe("雫🙂")
+    expect(calls).toEqual([0, 1, 5, 6])
+  })
+
+  test("stops replacement callbacks at the first error", () => {
+    const calls: number[] = []
+    const failure = new Error("replacement stop")
+    expect(() =>
+      replaceAllWith(
+        compiled(""),
+        (matched) => {
+          calls.push(matched.span.start)
+          if (matched.span.start === 5) throw failure
+          return "_"
+        },
+        "a🙂b"
+      )
+    ).toThrow(failure)
+    expect(calls).toEqual([0, 1, 5])
   })
 
   test("escape produces a literal fragment for every metacharacter", () => {

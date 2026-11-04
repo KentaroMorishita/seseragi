@@ -1,0 +1,62 @@
+import * as t from "std/test"
+import * as effects from "std/effect"
+import * as time from "std/time"
+
+newtype Key = Int
+instance Eq<Key> {
+  fn eq left:Key -> right:Key -> Bool = match (left, right) {
+    (Key a, Key b) -> a % 10 == b % 10
+  }
+}
+instance Debug<Key> {
+  fn debug value:Key -> String = match value { Key n -> "key:" + show n }
+}
+fn generic<A> expected:A -> actual:A -> Effect<{},t.TestFailure,Unit>
+where Eq<A>, Debug<A> = t.equal expected actual
+fn expected<R,E,A> predicate:(E -> Bool) -> source:Effect<R,E,A> -> Effect<R,t.TestFailure,Unit>
+where Debug<E> = t.expectFailure predicate source
+fn details error:t.TestFailure -> String = match error {
+  t.AssertionFailed fields -> fields.message + "|" + show fields.expected + "|" + show fields.actual
+  t.ExpectedTypedFailure -> "expected failure"
+  t.TypedFailureDidNotMatch value -> "unmatched|" + value
+  t.ExplicitTestFailure value -> "explicit|" + value
+}
+effect fn report<A> action:Effect<{},t.TestFailure,A> -> Unit with Console fails ConsoleError = do {
+  result <- effects.attempt action
+  println (match result { Left error -> details error; Right _ -> "ok" })
+}
+effect fn succeeds -> Unit fails String = effects.succeed ()
+pub effect fn main = do {
+  let make = t.test
+  let group = t.suite "group"
+  let skipped = t.skip "later"
+  let limited = t.timeout (time.zeroDuration ())
+  let tree = group [skipped (limited (make "cold" (t.fail "must not execute")))]
+  let same:Int -> Effect<{},t.TestFailure,Unit> = t.equal 42
+  let different:Int -> Int -> Effect<{},t.TestFailure,Unit> = t.notEqual
+  report (same 42)
+  report (same 0)
+  report (different 1 2)
+  report (different 1 1)
+  report (generic (Key 1) (Key 11))
+  report (generic (Key 1) (Key 2))
+  report (t.equal "雪\n\"" "🙂")
+  let empty:Array<Int> = []
+  report (generic empty empty)
+  report (generic [1,2] [1,3])
+  report (t.isTrue True)
+  report (t.isTrue False)
+  report (t.isFalse False)
+  report (t.isFalse True)
+  report (t.fail "雪\nboom")
+  let typed:Effect<{},String,Never> = effects.fail "typed"
+  let success = succeeds ()
+  let expect:String -> Bool = \message:String -> message == "typed"
+  report (t.expectFailure expect typed)
+  report (t.expectFailure (\_:String -> False) typed)
+  report (t.expectFailure expect success)
+  report (effects.fail t.ExpectedTypedFailure)
+  report (effects.fail (t.TypedFailureDidNotMatch "manual"))
+  report (effects.fail (t.ExplicitTestFailure "manual"))
+  report (effects.fail (t.AssertionFailed {message:"manual",expected:Nothing,actual:Just "x"}))
+}

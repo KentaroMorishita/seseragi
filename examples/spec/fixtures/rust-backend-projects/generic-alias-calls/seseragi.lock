@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/generic-alias-calls@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/generic-alias-calls@0.0.0#workspace:."
+name = "fixture/generic-alias-calls"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:d476426f95cf5345fd4c592bf329182dda08f7d1ec751e445582334a08e922a4"
+content_digest = "sha256:ac4d8a620046aced1d0388e264cf1de735144b9e96679cc1446fefde1705d7b9"
+dependencies = []

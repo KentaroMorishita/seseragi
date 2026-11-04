@@ -1,0 +1,49 @@
+import * as effects from "std/effect"
+import * as logs from "std/log"
+import { LogEvent, LogValue } from "std/log"
+
+fn event level: logs.LogLevel -> message: String -> LogEvent = {
+  let fields: List<(String, LogValue)> = `[]
+  LogEvent { level, message, fields }
+}
+
+effect fn ignoreConsole _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+pub effect fn main = do {
+  logs.log (event logs.LogTrace "")
+  logs.log (event logs.LogDebug "debug")
+  logs.log (event logs.LogInfo "雪🙂\n\"\\\t\r\u{0}\u{1f}")
+  logs.log (event logs.LogWarn "warning")
+  logs.log (LogEvent {
+    level: logs.LogFailure,
+    message: "fields",
+    fields: `[
+      ("same", logs.LogString "first"),
+      ("same", logs.LogString "second"),
+      ("", logs.LogString ""),
+      ("\"\\\n\u{b}", logs.LogString "雪🙂\u{2028}\u{2029}"),
+      ("min", logs.LogInt (-9007199254740991)),
+      ("max", logs.LogInt 9007199254740991),
+      ("true", logs.LogBool True),
+      ("false", logs.LogBool False),
+      ("zero", logs.LogFloat 0.0),
+      ("negative zero", logs.LogFloat (-0.0)),
+      ("float", logs.LogFloat 42.5),
+      ("integer float", logs.LogFloat 42.0),
+      ("small", logs.LogFloat 0.0000001),
+      ("fixed", logs.LogFloat 0.000001),
+      ("large", logs.LogFloat 1.0e21),
+      ("nan", logs.LogFloat (0.0 / 0.0)),
+      ("infinity", logs.LogFloat (1.0 / 0.0)),
+      ("negative infinity", logs.LogFloat (-1.0 / 0.0)),
+      ("large fixed", logs.LogFloat 1.0e20),
+      ("subnormal", logs.LogFloat 5.0e-324),
+      ("largest", logs.LogFloat 1.7976931348623157e308),
+      ("midpoint", logs.LogFloat 705360935656145.25),
+    ],
+  })
+  let cold = logs.log (event logs.LogInfo "repeated")
+  println "before" |> effects.recover ignoreConsole
+  cold
+  cold
+}

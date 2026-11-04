@@ -1,0 +1,19 @@
+[]
+[(first, 10)]
+[(first, 3), (second, 20)]
+Just 3
+Nothing
+True
+[(first, 3), (second, 20), (fresh, 30)]
+[(first, 4), (second, 20)]
+[(first, 3), (second, 20), (fresh, 7)]
+[(second, 20)]
+[(second, 20)]
+[(first, v3), (second, v20)]
+[(True, 50)]
+[(first, 34), (second, 20), (fresh, 5)]
+[first, second]
+[3, 20]
+2
+True
+[(first, 3), (second, 20)]

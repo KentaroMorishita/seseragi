@@ -16,3 +16,6 @@ seseragi-provider = { path = "../seseragi-provider" }
 seseragi-runtime = { path = "../seseragi-runtime" }
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }
+
+[dev-dependencies]
+seseragi-backend-rust = { path = "../seseragi-backend-rust" }

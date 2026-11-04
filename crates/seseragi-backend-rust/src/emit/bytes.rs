@@ -9,7 +9,36 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let byte = named("std/bytes::Byte", vec![]);
     let bytes = named("std/bytes::Bytes", vec![]);
     let ints = named("std/prelude::Array", vec![int.clone()]);
+    let byte_array = named("std/prelude::Array", vec![byte.clone()]);
+    let string = named("std/prelude::String", vec![]);
     Some(match name {
+        "std/bytes/base64::encode" | "std/bytes/base64::encodeUrl" | "std/bytes/hex::encode" => {
+            (vec![bytes], string)
+        }
+        "std/bytes/base64::decode" | "std/bytes/base64::decodeUrl" => (
+            vec![string],
+            named(
+                "std/prelude::Either",
+                vec![named("std/bytes/base64::Base64DecodeError", vec![]), bytes],
+            ),
+        ),
+        "std/bytes/hex::decode" => (
+            vec![string],
+            named(
+                "std/prelude::Either",
+                vec![named("std/bytes/hex::HexDecodeError", vec![]), bytes],
+            ),
+        ),
+        "std/bytes::byte" => (
+            vec![int],
+            named(
+                "std/prelude::Either",
+                vec![named("std/bytes::ByteError", vec![]), byte],
+            ),
+        ),
+        "std/bytes::empty" => (vec![named("std/prelude::Unit", vec![])], bytes),
+        "std/bytes::singleton" => (vec![byte], bytes),
+        "std/bytes::fromArray" => (vec![byte_array], bytes),
         "std/bytes::fromInts" => (
             vec![ints.clone()],
             named(
@@ -17,9 +46,25 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
                 vec![named("std/bytes::ByteError", vec![]), bytes],
             ),
         ),
+        "std/bytes::toArray" => (vec![bytes], byte_array),
         "std/bytes::toInts" => (vec![bytes], ints),
+        "std/bytes::length" => (vec![bytes], int),
+        "std/bytes::isEmpty" => (vec![bytes], named("std/prelude::Bool", vec![])),
         "std/bytes::get" => (vec![int, bytes], named("std/prelude::Maybe", vec![byte])),
         "std/bytes::toInt" => (vec![byte], int),
+        "std/bytes::slice" => (
+            vec![int.clone(), int, bytes.clone()],
+            named(
+                "std/prelude::Either",
+                vec![named("std/bytes::BytesSliceError", vec![]), bytes],
+            ),
+        ),
+        "std/bytes::copy" => (vec![bytes.clone()], bytes),
+        "std/bytes::append" => (vec![bytes.clone(), bytes.clone()], bytes),
+        "std/bytes::concat" => (
+            vec![named("std/prelude::Array", vec![bytes.clone()])],
+            bytes,
+        ),
         _ => return None,
     })
 }

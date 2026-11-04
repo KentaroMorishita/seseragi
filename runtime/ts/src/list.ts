@@ -653,19 +653,20 @@ export const listMonad = /* @__PURE__ */ Object.freeze({
     },
 })
 
-export const listTraversable = /* @__PURE__ */ Object.freeze({
-  ...listFunctor,
-  traverse:
-    <Value, Result>(f: (value: Value) => unknown) =>
-    (values: List<Value>) =>
-    (applicativeEvidence: RuntimeDictionary) =>
-      traverseValues<Value, Result, List<Result>>(
-        toArray(values),
-        f,
-        applicativeEvidence,
-        fromArray
-      ),
-})
+export const listTraversable = /* @__PURE__ */ (() =>
+  Object.freeze({
+    ...listFunctor,
+    traverse:
+      <Value, Result>(f: (value: Value) => unknown) =>
+      (values: List<Value>) =>
+      (applicativeEvidence: RuntimeDictionary) =>
+        traverseValues<Value, Result, List<Result>>(
+          toArray(values),
+          f,
+          applicativeEvidence,
+          fromArray
+        ),
+  }))()
 
 function fromNonEmptyArray<A>(values: ReadonlyArray<A>): NonEmptyList<A> {
   const head = values[0]
@@ -722,16 +723,17 @@ export const nonEmptyListMonad = /* @__PURE__ */ Object.freeze({
     },
 })
 
-export const nonEmptyListTraversable = /* @__PURE__ */ Object.freeze({
-  ...nonEmptyListFunctor,
-  traverse:
-    <Value, Result>(f: (value: Value) => unknown) =>
-    (values: NonEmptyList<Value>) =>
-    (applicativeEvidence: RuntimeDictionary) =>
-      traverseValues<Value, Result, NonEmptyList<Result>>(
-        toArray(toListNonEmpty(values)),
-        f,
-        applicativeEvidence,
-        fromNonEmptyArray
-      ),
-})
+export const nonEmptyListTraversable = /* @__PURE__ */ (() =>
+  Object.freeze({
+    ...nonEmptyListFunctor,
+    traverse:
+      <Value, Result>(f: (value: Value) => unknown) =>
+      (values: NonEmptyList<Value>) =>
+      (applicativeEvidence: RuntimeDictionary) =>
+        traverseValues<Value, Result, NonEmptyList<Result>>(
+          toArray(toListNonEmpty(values)),
+          f,
+          applicativeEvidence,
+          fromNonEmptyArray
+        ),
+  }))()

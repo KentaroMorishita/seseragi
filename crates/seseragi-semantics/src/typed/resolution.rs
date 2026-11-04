@@ -21,6 +21,7 @@ mod imports;
 mod inherent_methods;
 mod module_dependencies;
 mod source_facts;
+mod stdin;
 mod type_bindings;
 
 pub(crate) struct TypedResolution<'a> {
@@ -952,6 +953,9 @@ fn collect_callables(
             continue;
         }
         match symbol.canonical.as_deref() {
+            Some("std/prelude::readLine") => {
+                callables.insert(symbol.id, stdin::read_line_callable());
+            }
             Some(canonical @ ("std/prelude::print" | "std/prelude::println")) => {
                 callables.insert(
                     symbol.id,

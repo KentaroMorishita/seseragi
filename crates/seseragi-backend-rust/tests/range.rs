@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_core_module, CompileInput};
 use seseragi_lowering::{core_expr_origin, CoreExpr, CoreInstanceEvidence, CoreType};
@@ -28,7 +31,7 @@ fn range_fixture_executes_with_native_iterable_reducible_and_display() {
     } else {
         "program"
     });
-    fs::write(&source, artifact.source).unwrap();
+    link::write_program(&source, artifact.source).unwrap();
     let build = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&binary)

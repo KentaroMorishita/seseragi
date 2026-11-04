@@ -5,14 +5,26 @@ use seseragi_syntax::{
 use std::collections::{BTreeMap, BTreeSet};
 
 mod model;
+mod reexports;
 mod target;
+mod type_providers;
 
 pub use model::{LinkError, LinkTargetError, LinkedDependency, LinkedImport, LinkedModule};
 pub use target::ModuleLinkTarget;
 
 pub fn link_module(
+    unlinked: UnlinkedModuleInterface,
+    targets: &BTreeMap<String, ModuleLinkTarget>,
+) -> Result<LinkedModule, Vec<LinkError>> {
+    link_module_with_type_providers(unlinked, targets, &[])
+}
+
+/// Retains public struct definitions referenced by dependency signatures.
+/// Providers supply type information without adding source import edges.
+pub fn link_module_with_type_providers(
     mut unlinked: UnlinkedModuleInterface,
     targets: &BTreeMap<String, ModuleLinkTarget>,
+    type_providers: &[seseragi_syntax::ModuleInterface],
 ) -> Result<LinkedModule, Vec<LinkError>> {
     let mut dependencies = Vec::with_capacity(unlinked.imports.len());
     let mut interface_dependencies = Vec::with_capacity(unlinked.imports.len());
@@ -67,7 +79,7 @@ pub fn link_module(
                         origin,
                         export,
                     } => {
-                        let mut reexport = export.clone();
+                        let mut reexport = reexports::capture_types(export, target.interface());
                         reexport.name = local_name.clone();
                         reexport.visibility = Visibility::Public;
                         reexport.declaration = *origin;
@@ -79,7 +91,7 @@ pub fn link_module(
                         operator,
                         ..
                     } => {
-                        let mut reexport = export.clone();
+                        let mut reexport = reexports::capture_types(export, target.interface());
                         reexport.visibility = Visibility::Public;
                         reexport.declaration = *origin;
                         reexported_exports.push(reexport);
@@ -97,7 +109,7 @@ pub fn link_module(
                         // Retain the namespace path, not unqualified copies of its members.
                         // Canonical identities and schemes still belong to the source module.
                         for export in &target.interface().exports {
-                            let mut reexport = export.clone();
+                            let mut reexport = reexports::capture_types(export, target.interface());
                             reexport.name = format!("{local_name}.{}", export.name);
                             reexport.visibility = Visibility::Public;
                             reexport.declaration = *origin;
@@ -132,6 +144,7 @@ pub fn link_module(
         .extend(reexported_namespaces);
     unlinked.interface.operators.extend(reexported_operators);
     unlinked.interface.dependencies = interface_dependencies;
+    type_providers::retain_struct_definitions(&mut dependencies, targets, type_providers);
     Ok(LinkedModule {
         header: unlinked.header,
         interface: unlinked.interface,

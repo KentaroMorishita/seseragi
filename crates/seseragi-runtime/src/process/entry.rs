@@ -15,6 +15,7 @@ pub(super) fn entry_source(
 ) -> Result<String, String> {
     let mut imports = vec![
         "import { createEffectExecution, isEffectCancellation, run } from \"@seseragi/runtime/effect\";".to_owned(),
+        "import { liveConsole } from \"@seseragi/runtime/console\";".to_owned(),
         "import { installProcessShutdown } from \"@seseragi/runtime/process\";".to_owned(),
         "import { processHashSeed } from \"@seseragi/runtime/hash\";".to_owned(),
     ];
@@ -38,7 +39,6 @@ pub(super) fn entry_source(
     let mut setup = Vec::new();
     let mut fields = Vec::new();
     let mut cleanup = Vec::new();
-    let mut imports_console = false;
     let mut imports_logger = false;
     let mut imports_stdin = false;
     let mut imports_process = false;
@@ -72,12 +72,6 @@ pub(super) fn entry_source(
         let field = format!("{:?}", binding.field);
         match binding.service {
             HostService::Console => {
-                if !imports_console {
-                    imports.push(
-                        "import { liveConsole } from \"@seseragi/runtime/console\";".to_owned(),
-                    );
-                    imports_console = true;
-                }
                 fields.push(format!("{field}: liveConsole"));
             }
             HostService::Logger => {
@@ -571,7 +565,7 @@ pub(super) fn entry_source(
     }
     let failure = match &contract.failure_renderer {
         FailureRenderer::Never => {
-            "process.stderr.write(\"seseragi: unreachable typed failure\\n\");\n  process.exitCode = 1;".to_owned()
+            "await liveConsole.error(\"seseragi: unreachable typed failure\\n\");\n  process.exitCode = 1;".to_owned()
         }
         FailureRenderer::Show {
             module,
@@ -600,7 +594,7 @@ pub(super) fn entry_source(
             } else {
                 human.to_owned()
             };
-            format!("const message = {message};\n  if (typeof message !== \"string\") throw new TypeError(\"failure renderer returned a non-string value\");\n  process.stderr.write(message.endsWith(\"\\n\") ? message : message + \"\\n\");\n  process.exitCode = 1;")
+            format!("const message = {message};\n  if (typeof message !== \"string\") throw new TypeError(\"failure renderer returned a non-string value\");\n  await liveConsole.error(message.endsWith(\"\\n\") ? message : message + \"\\n\");\n  process.exitCode = 1;")
         }
     };
     let cleanup_source = cleanup
@@ -613,12 +607,12 @@ pub(super) fn entry_source(
         ProcessSignalMode::Forward => "forward",
     };
     let defect = if options.diagnostic_format == DiagnosticFormat::Json {
-        "process.stderr.write(renderRuntimeDefectDiagnostic(runtimeDefect, readDiagnosticSource) + \"\\n\");\n  process.exitCode = 70;"
+        "await liveConsole.error(renderRuntimeDefectDiagnostic(runtimeDefect, readDiagnosticSource) + \"\\n\");\n  process.exitCode = 70;"
     } else {
-        "process.stderr.write(renderRuntimeDefectText(runtimeDefect));\n  process.exitCode = 70;"
+        "await liveConsole.error(renderRuntimeDefectText(runtimeDefect));\n  process.exitCode = 70;"
     };
     let cancellation = if options.diagnostic_format == DiagnosticFormat::Json {
-        "process.stderr.write(renderCancellationDiagnostic() + \"\\n\");\n  process.exitCode = processShutdown.exitCode() ?? 130;"
+        "await liveConsole.error(renderCancellationDiagnostic() + \"\\n\");\n  process.exitCode = processShutdown.exitCode() ?? 130;"
     } else {
         "process.exitCode = processShutdown.exitCode() ?? 130;"
     };
@@ -630,7 +624,7 @@ pub(super) fn entry_source(
     } else {
         "renderRuntimeDefectText(runtimeDefect).trimEnd() + \" (during module initialization)\\n\""
     };
-    startup.push(format!("const reportApplicationImportDefect = async (runtimeDefect: unknown) => {{ await new Promise((resolve) => process.stderr.write({initialization_defect}, resolve)); process.exit(70); }};"));
+    startup.push(format!("const reportApplicationImportDefect = async (runtimeDefect: unknown) => {{ await liveConsole.error({initialization_defect}); process.exit(70); }};"));
     let application_imports = application_imports
         .iter()
         .map(|line| {

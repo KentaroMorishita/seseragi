@@ -1,0 +1,34 @@
+import * as nonEmpty from "std/non-empty-list"
+
+alias Values<A> = nonEmpty.NonEmptyList<A>
+fn prefix<A> value:A -> (List<A> -> Values<A>) = nonEmpty.cons value
+fn reduce<A> step:(A -> A -> A) -> (Values<A> -> A) = nonEmpty.reduce1 step
+fn choose<A> left:A -> _right:A -> A = left
+
+pub fn probe -> String = {
+  let cons:Int -> List<Int> -> Values<Int> = nonEmpty.cons
+  let fold:(Int -> Int -> Int) -> Values<Int> -> Int = nonEmpty.reduce1
+  let head:Values<Int -> Int -> Int> -> Int -> Int -> Int = nonEmpty.head
+  let withTen = cons 10
+  let subtract = fold (\acc:Int -> \value:Int -> acc - value)
+  let functions = nonEmpty.cons (\a:Int -> \b:Int -> a * 10 + b) `[\a:Int -> \b:Int -> a + b]
+  let only = prefix "雪🙂" `[]
+  let empty:List<Int> = `[]
+  join "\n" [
+    show (withTen `[]),
+    show (withTen `[3,2]),
+    show (subtract (withTen `[3,2])),
+    show (reduce (\acc:Int -> \value:Int -> acc - value) (withTen `[3,2])),
+    show (nonEmpty.reduce1 (\_acc:Int -> \_value:Int -> 1 / 0) (withTen `[])),
+    show only,
+    show (nonEmpty.tail only),
+    show (nonEmpty.fromList empty),
+    show (head functions 4 2),
+    show (nonEmpty.head functions 4 2),
+    show (nonEmpty.reduce1 choose functions 4 2),
+    show (reduce choose functions 4 2),
+    show (nonEmpty.head (prefix (\a:Int -> \b:Int -> a * 10 + b) `[]) 4 2)
+  ]
+}
+
+pub effect fn main = println (probe ())

@@ -1,0 +1,6 @@
+Right 42
+Left `[""]
+Left `["雪🙂"]
+Right []
+Just "雪🙂"
+Nothing

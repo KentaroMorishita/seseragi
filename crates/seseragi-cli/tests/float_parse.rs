@@ -1,3 +1,9 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 #[allow(dead_code)]
 #[path = "support/runtime_diagnostics.rs"]
 mod diagnostics;
@@ -36,6 +42,7 @@ struct OwnedChild {
 }
 impl OwnedChild {
     fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command
@@ -611,7 +618,7 @@ fn float_parse_evaluates_direct_and_saved_source_once() {
         let binary = scratch
             .0
             .join(format!("{entry}{}", std::env::consts::EXE_SUFFIX));
-        fs::write(&file, rust).unwrap();
+        native_runtime::write_program(&file, rust).unwrap();
         successful(bounded(
             Command::new("rustc")
                 .args(["--edition=2021", "-O", "-o"])

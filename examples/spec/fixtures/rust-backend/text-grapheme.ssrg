@@ -1,0 +1,55 @@
+import * as grapheme from "std/text/grapheme"
+import * as text from "std/text"
+
+fn through<A, B> operation: (A -> B) -> value: A -> B = operation value
+fn choose<A, B> operation: (A -> B) -> A -> B = operation
+
+fn describe result: Either<grapheme.GraphemeSliceError, String> -> String = match result {
+  Left error -> "Left " + show error
+  Right value -> "Right " + value
+}
+
+pub fn probe -> String = {
+  let source = "A👍🏽e\u{301}"
+  let length: String -> Int = grapheme.length
+  let clusters: String -> Array<String> = grapheme.clusters
+  let boundaries: String -> Array<Int> = grapheme.byteBoundaries
+  let at: Int -> String -> Maybe<String> = grapheme.at
+  let slice: Int -> Int -> String -> Either<grapheme.GraphemeSliceError, String> = grapheme.slice
+  let indexOne: String -> Maybe<String> = at 1
+  let fromOne: Int -> String -> Either<grapheme.GraphemeSliceError, String> = slice 1
+  let range: String -> Either<grapheme.GraphemeSliceError, String> = fromOne 3
+  let missing: Maybe<String> = Nothing
+  let empty: Array<String> = []
+  let invalid = grapheme.InvalidGraphemeRange { start: -1, end: 2, length: 3 }
+  let rejected: Either<grapheme.GraphemeSliceError, String> = Left invalid
+  text.join "\n" [
+    "units:" + show (text.lengthBytes source) + ":" + show (text.lengthScalars source) + ":" + show (grapheme.length source),
+    "length:" + show (through (choose length) source),
+    "clusters:" + show (through (choose clusters) source == ["A", "👍🏽", "e\u{301}"]),
+    "boundaries:" + show (through (choose boundaries) source),
+    "at:" + show (grapheme.at 0 source == Just "A") + ":" + show (through (choose indexOne) source == Just "👍🏽") + ":" + show (at 2 source == Just "e\u{301}"),
+    "at-missing:" + show (at (-1) source == missing) + ":" + show (at 3 source == missing) + ":" + show (at 9007199254740991 source == missing),
+    "slice:" + describe (through (choose range) source),
+    "slice-direct:" + describe (grapheme.slice 0 2 source),
+    "slice-end:" + describe (slice 3 3 source),
+    "slice-negative:" + describe (slice (-1) 2 source),
+    "slice-reversed:" + describe (slice 2 1 source),
+    "slice-long:" + describe (slice 0 4 source),
+    "slice-extreme:" + describe (slice (-9007199254740991) 9007199254740991 source),
+    "error:" + show (slice (-1) 2 source == rejected) + ":" + debug invalid,
+    "empty:" + show (length "") + ":" + show (boundaries "") + ":" + show (clusters "" == empty) + ":" + show (at 0 "" == missing),
+    "empty-slice:" + describe (slice 0 0 ""),
+    "empty-error:" + describe (slice 0 1 ""),
+    "emoji:" + show (grapheme.clusters "👩‍💻👨‍👩‍👧‍👦1\u{fe0f}\u{20e3}" == ["👩‍💻", "👨‍👩‍👧‍👦", "1\u{fe0f}\u{20e3}"]),
+    "flags:" + show (grapheme.clusters "🇯🇵🇺🇸🇦" == ["🇯🇵", "🇺🇸", "🇦"]),
+    "indic:" + show (grapheme.clusters "क्‍कक्कक" == ["क्‍क", "क्क", "क"]),
+    "hangul:" + show (grapheme.clusters "\u{1100}\u{1161}\u{11a8}각\u{11a8}" == ["\u{1100}\u{1161}\u{11a8}", "각\u{11a8}"]),
+    "controls:" + show (grapheme.clusters "\0\r\n\n\u{301}x" == ["\0", "\r\n", "\n", "\u{301}", "x"]),
+    "marks:" + show (grapheme.clusters "\u{301}\u{308}a\u{903}\u{600}b" == ["\u{301}\u{308}", "a\u{903}", "\u{600}b"]),
+    "normalization:" + show (grapheme.clusters "ée\u{301}" == ["é", "e\u{301}"]) + ":" + show (grapheme.at 0 "é" != grapheme.at 0 "e\u{301}"),
+    "unchanged:" + show (source == "A👍🏽e\u{301}")
+  ]
+}
+
+pub effect fn main = println (probe ())

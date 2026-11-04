@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, process::Command};
@@ -32,7 +35,7 @@ fn partial_captures_keep_cold_effects_ref_cycles_and_finalizers() {
             std::process::id()
         ));
         fs::create_dir(&path).unwrap();
-        fs::write(path.join("program.rs"), rust.source).unwrap();
+        link::write_program(path.join("program.rs"), rust.source).unwrap();
         let binary = path.join(if cfg!(windows) {
             "program.exe"
         } else {
@@ -154,7 +157,7 @@ fn main() {{
 "#, id(&rust.metadata.entry)));
     let path = std::env::temp_dir().join(format!("seseragi-strict-trace-{}", std::process::id()));
     fs::create_dir(&path).unwrap();
-    fs::write(path.join("program.rs"), generated).unwrap();
+    link::write_program(path.join("program.rs"), generated).unwrap();
     let binary = path.join(if cfg!(windows) {
         "program.exe"
     } else {
@@ -202,7 +205,7 @@ fn saved_partials_keep_polymorphic_locals_hkt_children_and_returned_source_arity
     let generated = format!("{}\nfn main() {{ for n in 0..1000 {{ let value = {entry}(vec![]).apply(V::Unit); if n == 0 {{ println!(\"{{}}\", value.render()); }} drop(value); }} clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0); }}", &rust.source[..main]);
     let path = std::env::temp_dir().join(format!("seseragi-strict-saved-{}", std::process::id()));
     fs::create_dir(&path).unwrap();
-    fs::write(path.join("program.rs"), generated).unwrap();
+    link::write_program(path.join("program.rs"), generated).unwrap();
     let binary = path.join(if cfg!(windows) {
         "program.exe"
     } else {
@@ -243,7 +246,7 @@ fn unused_global_local_and_method_partials_evaluate_supplied_arguments() {
         let rust = emit_rust_module(&core.core_ir, "probe").unwrap();
         let path = std::env::temp_dir().join(format!("seseragi-strict-partial-{}-{index}", std::process::id()));
         fs::create_dir(&path).unwrap();
-        fs::write(path.join("program.rs"), rust.source).unwrap();
+        link::write_program(path.join("program.rs"), rust.source).unwrap();
         let binary = path.join(if cfg!(windows) { "program.exe" } else { "program" });
         let built = Command::new("rustc").args(["--edition=2021", "-O", "-o"]).arg(&binary).arg(path.join("program.rs")).output().unwrap();
         assert!(built.status.success(), "{}", String::from_utf8_lossy(&built.stderr));

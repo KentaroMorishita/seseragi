@@ -200,7 +200,7 @@ pub(crate) fn typed_interface_from_modules(
                         && export.declaration_kind.as_deref() == Some("alias")
                         && export.symbol == *symbol
                 }) {
-                    export.representation = Some(types.convert(target));
+                    export.representation = Some(types.convert_alias(target));
                 }
             }
             TypedDecl::Struct {

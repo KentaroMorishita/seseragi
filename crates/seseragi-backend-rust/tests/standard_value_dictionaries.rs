@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_module, CompileInput};
 use std::{fs, path::PathBuf, process::Command};
@@ -49,7 +52,7 @@ fn standard_display_and_append_dictionaries_match_typescript() {
         symbol("sumProbe"),
         symbol("productProbe")
     );
-    fs::write(
+    link::write_program(
         &rust,
         artifact.source.replace(
             "initialize_globals();",

@@ -58,3 +58,11 @@ examples/spec/fixtures/rust-backend/captured-primitive-identity.ssrg text eol=lf
 # Numeric conversion acceptance has byte-pinned source and package locks.
 examples/spec/fixtures/rust-backend/float-conversion*.ssrg text eol=lf
 examples/spec/fixtures/rust-backend-projects/float-round-file/** text eol=lf
+
+# Native M2 acceptance packages pin manifest and source bytes in their locks,
+# and tests rewrite this source by exact LF-terminated snippets.
+examples/spec/fixtures/projects/effect-until/** text eol=lf
+examples/spec/fixtures/rust-backend-projects/generic-alias-calls/** text eol=lf
+examples/spec/fixtures/rust-backend-projects/transformer-either/** text eol=lf
+examples/spec/fixtures/rust-backend-projects/non-empty-list/** text eol=lf
+examples/spec/fixtures/rust-backend/non-empty-list.ssrg text eol=lf

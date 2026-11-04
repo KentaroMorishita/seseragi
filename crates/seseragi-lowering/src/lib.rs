@@ -304,7 +304,7 @@ mod tests {
 
         assert!(core.bindings.is_empty());
         assert_eq!(core.functions.len(), 1);
-        assert_eq!(core.functions[0].parameters[0].id, "unit");
+        assert_eq!(core.functions[0].parameters[0].id, "$ssrg$unit");
         assert!(matches!(
             core.functions[0].body,
             CoreExpr::EffectOperation { .. }
@@ -1173,10 +1173,13 @@ pub fn listLength values: List<Int> -> Int = {
             bundle.typescript,
             with_unicode_header(
                 "",
-                "export const invoke = (value: number) => _default(value)\n"
+                "export const invoke = (value: number) => __ssrg$source$default(value)\n"
             )
         );
-        assert_eq!(bundle.source_map.names, vec!["invoke", "_default"]);
+        assert_eq!(
+            bundle.source_map.names,
+            vec!["invoke", "__ssrg$source$default"]
+        );
     }
 
     #[test]
@@ -1279,7 +1282,10 @@ fails ConsoleError =
 
         assert_eq!(
             bundle.typescript,
-            with_unicode_header("", "export const pick = (_default: number) => _default\n")
+            with_unicode_header(
+                "",
+                "export const pick = (__ssrg$source$default: number) => __ssrg$source$default\n"
+            )
         );
     }
 

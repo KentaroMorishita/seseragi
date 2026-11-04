@@ -1,0 +1,105 @@
+import * as wt from "std/transformer/writer"
+import * as mt from "std/transformer/maybe"
+import * as st from "std/transformer/state"
+import { WriterT } from "std/transformer/writer"
+
+struct Box<A> { value:A }
+instance Functor<Box> {
+  fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = Box { value:f box.value }
+}
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box { value }
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = Box { value:f.value box.value }
+}
+instance Monad<Box> {
+  fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = f box.value
+}
+struct Raw<A> { value:A }
+struct Log { text:String }
+instance Semigroup<Log> {
+  fn append first:Log -> second:Log -> Log = Log { text:first.text + second.text }
+}
+instance Monoid<Log> { fn empty _unit:Unit -> Log = Log { text:"" } }
+
+fn tell<W,M<_>> output:W -> wt.WriterT<W,M,Unit> where Monad<M>, Monoid<W> = wt.tell output
+fn listen<W,M<_>,A> value:wt.WriterT<W,M,A> -> wt.WriterT<W,M,(A,W)> where Monad<M>, Monoid<W> = wt.listen value
+fn lift<W,M<_>,A> value:M<A> -> wt.WriterT<W,M,A> where Monad<M>, Monoid<W> = wt.lift value
+fn run<W,M<_>,A> value:wt.WriterT<W,M,A> -> M<(A,W)> = wt.run value
+fn saved<W,M<_>,A> -> (M<A> -> wt.WriterT<W,M,A>) where Monad<M>, Monoid<W> = wt.lift
+
+alias Work<A> = wt.WriterT<String,Maybe,A>
+fn write text:String -> Work<Unit> = tell text
+let first:Work<Unit> = write "first-"
+let second:Work<Unit> = write "雪🙂"
+let work:Work<Int> = do { first; second; pure 7 }
+let mapped:Work<String> = map (\n:Int -> show (n + 1)) work
+let bound:Work<Int> = work >>= (\n:Int -> do { write "-last"; pure (n + 2) })
+let functions:Work<Int -> Int> = do { write "function-"; pure (\n:Int -> n * 3) }
+let applied:Work<Int> = functions <*> work
+let empty:Work<Int> = pure 0
+let savedTell:String -> Work<Unit> = wt.tell
+let savedListen:Work<Int> -> Work<(Int,String)> = wt.listen
+let savedLift:Maybe<Int> -> Work<Int> = wt.lift
+let savedRun:Work<Int> -> Maybe<(Int,String)> = wt.run
+let returned:Maybe<Int> -> Work<Int> = saved ()
+let absent:Work<Int> = lift Nothing
+let skipped:Work<Int> = absent >>= (\n:Int -> pure (n / 0))
+let noFunction:Work<Int -> Int> = lift Nothing
+let noApplied:Work<Int> = noFunction <*> (map (\n:Int -> n / 0) absent)
+let failed:wt.WriterT<String,Either<String>,Int> = lift (Left "typed")
+let stopped:wt.WriterT<String,Either<String>,Int> = failed >>= (\n:Int -> pure (n / 0))
+let array:wt.WriterT<String,Array,Int> = lift [1,2]
+fn arrayTell text:String -> wt.WriterT<String,Array,Unit> = tell text
+fn arrayStep n:Int -> wt.WriterT<String,Array,Int> = do { arrayTell (show n); lift [n,n + 10] }
+let branches:wt.WriterT<String,Array,Int> = array >>= arrayStep
+let blank:wt.WriterT<String,Array,Int> = lift []
+fn listTell values:List<Int> -> wt.WriterT<List<Int>,List,Unit> = tell values
+let list:wt.WriterT<List<Int>,List,Int> = do { listTell `[1,2]; lift `[3,4] }
+fn boxTell text:String -> wt.WriterT<Log,Box,Unit> = tell (Log { text })
+let boxed:wt.WriterT<Log,Box,Int> = do { boxTell "a"; boxTell "b"; lift (Box { value:6 }) }
+let boxText = match (run boxed).value { (n,output) -> (n,output.text) }
+let raw:wt.WriterT<{text:String},Raw,Int> = WriterT { run:Raw { value:(8,{text:"raw"}) } }
+let nestedTell:wt.WriterT<String,wt.WriterT<List<Int>,Maybe>,Unit> = tell "outer"
+let innerTell:wt.WriterT<List<Int>,Maybe,Unit> = wt.tell `[1,2]
+let nestedLift:wt.WriterT<String,wt.WriterT<List<Int>,Maybe>,Unit> = lift innerTell
+let nested:wt.WriterT<String,wt.WriterT<List<Int>,Maybe>,Int> = do { nestedTell; nestedLift; pure 9 }
+let logFirst:mt.MaybeT<wt.WriterT<String,Maybe>,Unit> = mt.lift (write "kept")
+let outerMaybe:mt.MaybeT<wt.WriterT<String,Maybe>,Int> = do { logFirst; mt.fromMaybe Nothing }
+let maybeFirst:wt.WriterT<String,mt.MaybeT<Maybe>,Unit> = tell "lost"
+let outerWriter:wt.WriterT<String,mt.MaybeT<Maybe>,Int> = do { maybeFirst; lift (mt.fromMaybe Nothing) }
+let stateTell:wt.WriterT<String,st.StateT<Int,Maybe>,Unit> = tell "state"
+let state:wt.WriterT<String,st.StateT<Int,Maybe>,Int> = do { stateTell; lift (st.get ()) }
+let functionValue:Work<Int -> Int> = pure (\n:Int -> n + 10)
+let called = match run functionValue { Just (f,_) -> f 3; _ -> 0 }
+alias FunctionBase<A> = Int -> A
+let functionBase:wt.WriterT<String,FunctionBase<_>,Int> = WriterT { run:\n:Int -> (n + 1,"function") }
+let runFunction:wt.WriterT<String,FunctionBase<_>,Int> -> Int -> (Int,String) = wt.run
+
+pub effect fn main = do {
+  println (show (run work))
+  println (show (run work))
+  println (show (run mapped))
+  println (show (run bound))
+  println (show (run applied))
+  println (show (run empty))
+  println (show (run (savedTell "")))
+  println (show (savedRun (savedLift (Just 11))))
+  println (show (run (returned (Just 12))))
+  println (show (run (savedListen work)))
+  println (show (run (listen (listen work))))
+  println (show (run skipped))
+  println (show (run noApplied))
+  println (show (run stopped))
+  println (show (run branches))
+  println (show (run blank))
+  println (show (run list))
+  println (show boxText)
+  println (show (run raw).value)
+  println (show (run (run nested)))
+  println (show (run (mt.run outerMaybe)))
+  println (show (mt.run (run outerWriter)))
+  println (show (st.run 42 (run state)))
+  println (show called)
+  println (show (wt.run functionBase 4))
+  println (show (runFunction functionBase 5))
+}

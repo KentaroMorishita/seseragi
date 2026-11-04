@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -76,7 +79,7 @@ pub effect fn main = do {
     )
     .unwrap();
     let cli = env!("CARGO_BIN_EXE_seseragi");
-    let locked = Command::new(cli)
+    let locked = native_cache::command(cli)
         .args(["lock", "update"])
         .arg(&project)
         .output()
@@ -88,7 +91,7 @@ pub effect fn main = do {
     );
     let expected = b"True\nFalse\nTrue\n";
     let native = scratch.0.join("native");
-    let built = Command::new(cli)
+    let built = native_cache::command(cli)
         .args(["experimental", "build-native"])
         .arg(&project)
         .args(["--entry", "main", "--out-dir"])
@@ -123,7 +126,7 @@ pub effect fn main = do {
         ("release", seseragi_driver::BuildProfile::Release),
     ] {
         let site = scratch.0.join(profile);
-        let built = Command::new(cli)
+        let built = native_cache::command(cli)
             .arg("build")
             .arg(&project)
             .args(["--profile", profile, "--out-dir"])
@@ -262,7 +265,7 @@ fn inherited_ord_eq_matches_raw_strict_profiles_and_native_stages() {
         ),
     ] {
         let native_out = scratch.0.join(format!("{name}-native"));
-        let built = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        let built = native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
             .args(["experimental", "build-native"])
             .arg(&source)
             .args(["--entry", "main", "--out-dir"])
@@ -297,7 +300,7 @@ fn inherited_ord_eq_matches_raw_strict_profiles_and_native_stages() {
             ("release", seseragi_driver::BuildProfile::Release),
         ] {
             let destination = scratch.0.join(format!("{name}-{profile}"));
-            let built = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            let built = native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
                 .arg("build")
                 .arg(&source)
                 .args(["--profile", profile, "--out-dir"])

@@ -46,7 +46,19 @@ impl Backend<'_> {
                 self.validate_float_power_type(&actual, 2, scope)?;
             }
         }
+        if let Some(value) = self.test_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.benchmark_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.log_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.clock_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.time_call(expr, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.stdin_call(expr, scope)? {
@@ -58,6 +70,9 @@ impl Backend<'_> {
         if let Some(value) = self.die_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.effect_control_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.concurrency_call(expr, scope)? {
             return Ok(value);
         }
@@ -67,7 +82,22 @@ impl Backend<'_> {
         if let Some(value) = self.filesystem_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.child_process_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.process_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.random_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.entropy_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.text_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.regex_call(expr, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.html_call(expr, scope)? {
@@ -100,7 +130,22 @@ impl Backend<'_> {
         if let Some(value) = self.maybe_operation_call(expr, scope)? {
             return Ok(value);
         }
+        if let Some(value) = self.maybe_transformer_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.reader_transformer_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.writer_transformer_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.state_transformer_call(expr, scope)? {
+            return Ok(value);
+        }
         if let Some(value) = self.either_operation_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.either_transformer_call(expr, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.collection_control_call(expr, scope)? {
@@ -126,6 +171,9 @@ impl Backend<'_> {
             return Ok(value);
         }
         if let Some(value) = self.sequence_call(expr, scope)? {
+            return Ok(value);
+        }
+        if let Some(value) = self.non_empty_list_call(expr, scope)? {
             return Ok(value);
         }
         if let Some(value) = self.math_call(expr, scope)? {
@@ -161,7 +209,7 @@ impl Backend<'_> {
                 if let [selected] = evidence.as_slice() {
                     if self.validate_standard_error_evidence(selected, scope)? {
                         if arguments.len()
-                            > if selected.constraint.name == "Eq" {
+                            > if matches!(selected.constraint.name.as_str(), "Eq" | "Ord") {
                                 2
                             } else {
                                 1

@@ -2846,7 +2846,7 @@
       },
       "parameters": [
         {
-          "id": "unit",
+          "id": "$ssrg$unit",
           "kind": "implicit",
           "type": {
             "kind": "external-named",
@@ -2942,7 +2942,7 @@
       },
       "parameters": [
         {
-          "id": "unit",
+          "id": "$ssrg$unit",
           "kind": "implicit",
           "type": {
             "kind": "external-named",
@@ -3425,6 +3425,18 @@
                           "name": "Int",
                           "arguments": []
                         }
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
                       },
                       {
                         "kind": "named",

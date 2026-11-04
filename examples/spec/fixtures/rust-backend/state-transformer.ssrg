@@ -1,0 +1,125 @@
+import * as st from "std/transformer/state"
+import * as mt from "std/transformer/maybe"
+import { StateT } from "std/transformer/state"
+
+struct Box<A> { value:A }
+instance Functor<Box> {
+  fn map<A,B> f:(A -> B) -> box:Box<A> -> Box<B> = Box { value:f box.value }
+}
+instance Applicative<Box> {
+  fn pure<A> value:A -> Box<A> = Box { value }
+  fn apply<A,B> f:Box<A -> B> -> box:Box<A> -> Box<B> = Box { value:f.value box.value }
+}
+instance Monad<Box> {
+  fn flatMap<A,B> f:(A -> Box<B>) -> box:Box<A> -> Box<B> = f box.value
+}
+struct Raw<A> { value:A }
+
+fn get<S,M<_>> -> st.StateT<S,M,S> where Monad<M> = st.get ()
+fn put<S,M<_>> value:S -> st.StateT<S,M,Unit> where Monad<M> = st.put value
+fn modify<S,M<_>> f:(S -> S) -> st.StateT<S,M,Unit> where Monad<M> = st.modify f
+fn lift<S,M<_>,A> value:M<A> -> st.StateT<S,M,A> where Monad<M> = st.lift value
+fn run<S,M<_>,A> initial:S -> value:st.StateT<S,M,A> -> M<(A,S)> = st.run initial value
+fn saved<S,M<_>> -> (Unit -> st.StateT<S,M,S>) where Monad<M> = st.get
+fn returned<S,M<_>,A> initial:S -> (st.StateT<S,M,A> -> M<(A,S)>) = st.run initial
+
+alias Work<A> = st.StateT<Int,Maybe,A>
+fn set value:Int -> Work<Unit> = put value
+fn update f:(Int -> Int) -> Work<Unit> = modify f
+let current:Work<Int> = get ()
+let changed:Work<Int> = do {
+  before <- current
+  set (before + 3)
+  update (\n:Int -> n * 2)
+  after <- current
+  pure (before + after)
+}
+let mapped:Work<String> = map (\n:Int -> show (n + 1)) current
+let bound:Work<Int> = current >>= (\n:Int -> pure (n + 2))
+let functions:Work<Int -> Int> = do { update (\n:Int -> n + 1); pure (\n:Int -> n * 3) }
+let applied:Work<Int> = functions <*> current
+let savedGet:Unit -> Work<Int> = st.get
+let savedPut:Int -> Work<Unit> = st.put
+let savedModify:(Int -> Int) -> Work<Unit> = st.modify
+let savedLift:Maybe<Int> -> Work<Int> = st.lift
+let savedRun:Int -> Work<Int> -> Maybe<(Int,Int)> = st.run
+let partial:Work<Int> -> Maybe<(Int,Int)> = st.run 11
+let fromFunction:Unit -> Work<Int> = saved ()
+let returnedRun:Work<Int> -> Maybe<(Int,Int)> = returned 12
+let array:st.StateT<Int,Array,Int> = lift [1,2]
+fn arrayStep n:Int -> st.StateT<Int,Array,Unit> = modify (\s:Int -> s + n)
+let branches:st.StateT<Int,Array,Int> = do {
+  n <- array
+  arrayStep n
+  get ()
+}
+let blank:st.StateT<Int,Array,Int> = lift []
+let list:st.StateT<Int,List,Int> = lift `[4,5]
+let absent:Work<Int> = lift Nothing
+let skipped:Work<Int> = absent >>= (\n:Int -> pure (n / 0))
+let noFunction:Work<Int -> Int> = lift Nothing
+let noApplied:Work<Int> = noFunction <*> (map (\n:Int -> n / 0) current)
+let failed:st.StateT<Int,Either<String>,Int> = lift (Left "typed")
+let stopped:st.StateT<Int,Either<String>,Int> = failed >>= (\n:Int -> pure (n / 0))
+let boxed:st.StateT<Int,Box,Int> = lift (Box { value:6 })
+fn boxStep n:Int -> st.StateT<Int,Box,Unit> = modify (\s:Int -> s + n)
+let box:st.StateT<Int,Box,Int> = do { n <- boxed; boxStep n; get () }
+let raw:st.StateT<Int,Raw,Int> = StateT { run: \s:Int -> Raw { value:(s + 1,s + 2) } }
+let nestedSet:st.StateT<Int,st.StateT<String,Maybe>,Unit> = put 5
+let innerSet:st.StateT<String,Maybe,Unit> = st.put "inner"
+let nestedLift:st.StateT<Int,st.StateT<String,Maybe>,Unit> = lift innerSet
+let nested:st.StateT<Int,st.StateT<String,Maybe>,Int> = do { nestedSet; nestedLift; get () }
+let maybeSet:mt.MaybeT<st.StateT<Int,Maybe>,Unit> = mt.lift (set 7)
+let outerMaybe:mt.MaybeT<st.StateT<Int,Maybe>,Int> = do { maybeSet; mt.fromMaybe Nothing }
+let stateSet:st.StateT<Int,mt.MaybeT<Maybe>,Unit> = put 7
+let outerState:st.StateT<Int,mt.MaybeT<Maybe>,Int> = do { stateSet; lift (mt.fromMaybe Nothing) }
+let recordStep:st.StateT<{name:String,count:Int},Maybe,Unit> = modify (\s:{name:String,count:Int} -> {name:s.name,count:s.count + 1})
+let recordGet:st.StateT<{name:String,count:Int},Maybe,{name:String,count:Int}> = get ()
+let record:st.StateT<{name:String,count:Int},Maybe,String> = do {
+  recordStep
+  s <- recordGet
+  pure s.name
+}
+let functionGet:st.StateT<Int -> Int,Maybe,Int -> Int> = get ()
+let functionState:st.StateT<Int -> Int,Maybe,Int> = do { f <- functionGet; pure (f 3) }
+let functionValue:Work<Int -> Int> = pure (\n:Int -> n + 10)
+let call = match run 2 functionValue { Just (f,s) -> f s; _ -> 0 }
+let zero:Work<Int> = pure 0
+alias FunctionBase<A> = Int -> A
+let functionBase:st.StateT<Int,FunctionBase<_>,Int> = StateT { run: \s:Int -> \n:Int -> (s + n,s) }
+let runFunctionBase:Int -> st.StateT<Int,FunctionBase<_>,Int> -> Int -> (Int,Int) = st.run
+let partialFunctionBase:st.StateT<Int,FunctionBase<_>,Int> -> Int -> (Int,Int) = st.run 5
+
+pub effect fn main = do {
+  println (show (run 4 changed))
+  println (show (run 4 changed))
+  println (show (run 9 current))
+  println (show (run 0 mapped))
+  println (show (run (-1) bound))
+  println (show (run 4 applied))
+  println (show (savedRun 8 (savedGet ())))
+  println (show (run 0 (savedPut 7)))
+  println (show (run 5 (savedModify (\n:Int -> n - 2))))
+  println (show (partial (savedLift (Just 10))))
+  println (show (returnedRun (fromFunction ())))
+  println (show (run 10 branches))
+  println (show (run 10 blank))
+  println (show (run 10 list))
+  println (show (run 10 skipped))
+  println (show (run 10 noApplied))
+  println (show (run 10 stopped))
+  println (show (run 10 box).value)
+  println (show (run 10 raw).value)
+  println (show (run "start" (run 0 nested)))
+  println (show (run 0 (mt.run outerMaybe)))
+  println (show (mt.run (run 0 outerState)))
+  println (show (run {name:"雪🦀",count:0} record))
+  println (show (map (\pair:(Int,Int -> Int) -> match pair { (value,_) -> value }) (run (\n:Int -> n * 2) functionState)))
+  println (show call)
+  println (show (run (-9007199254740991) current))
+  println (show (run 9007199254740991 current))
+  println (show (run 0 zero))
+  println (show (st.run 3 functionBase 4))
+  println (show (runFunctionBase 5 functionBase 6))
+  println (show (partialFunctionBase functionBase 8))
+}

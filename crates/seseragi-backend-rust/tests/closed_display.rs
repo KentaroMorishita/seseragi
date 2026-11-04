@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{
@@ -24,7 +27,7 @@ impl Scratch {
         let exe = self
             .0
             .join(format!("program{}", std::env::consts::EXE_SUFFIX));
-        fs::write(&file, source).unwrap();
+        link::write_program(&file, source).unwrap();
         let output = Command::new("rustc")
             .args(["--edition=2021", "-O"])
             .arg(&file)
@@ -72,9 +75,10 @@ fn standard_tuple_factories_stay_lazy_reuse_only_the_dictionary_and_clear_every_
     assert!(artifact.source.contains("closed-standard-display:"));
     // Observe the actual factory separately from timing. Keep all generated
     // callable/runtime bodies and add only the counter plus a test entrypoint.
+    let inline = link::inline_runtime(&artifact.source);
     let signature = "fn native_tuple_display_dictionary(elements: Vec<V>, debug: bool) -> V {";
-    assert_eq!(artifact.source.matches(signature).count(), 1);
-    let mut rust = artifact.source[..artifact.source.rfind("\nfn main()").unwrap()].replace(
+    assert_eq!(inline.matches(signature).count(), 1);
+    let mut rust = inline[..inline.rfind("\nfn main()").unwrap()].replace(
         signature,
         &format!("{signature} FACTORIES.with(|n| n.set(n.get()+1));"),
     );

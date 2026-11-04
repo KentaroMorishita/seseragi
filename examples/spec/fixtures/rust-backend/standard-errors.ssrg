@@ -1,0 +1,962 @@
+import * as benchmarks from "std/benchmark"
+import * as big from "std/big-int"
+import * as bytes from "std/bytes"
+import * as base64 from "std/bytes/base64"
+import * as hex from "std/bytes/hex"
+import * as children from "std/child-process"
+import * as collection from "std/collection"
+import * as decimal from "std/decimal"
+import * as effects from "std/effect"
+import * as entropy from "std/entropy"
+import * as fs from "std/fs"
+import * as http from "std/http"
+import * as ints from "std/int"
+import * as paths from "std/path"
+import * as process from "std/process"
+import * as queue from "std/queue"
+import * as random from "std/random"
+import * as regex from "std/regex"
+import * as semaphore from "std/semaphore"
+import * as stdin from "std/stdin"
+import * as stream from "std/stream"
+import * as text from "std/text"
+import * as grapheme from "std/text/grapheme"
+import * as time from "std/time"
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as navigation from "std/web/navigation"
+import * as storage from "std/web/storage"
+
+fn displayed<A> value: A -> String where Show<A> = show value
+fn inspected<A> value: A -> String where Debug<A> = debug value
+fn equal<A> left: A -> right: A -> Bool where Eq<A> = left == right
+fn regexError -> regex.RegexCompileError = match regex.compile "(" { Left error -> error; Right _ -> regexError () }
+fn domFailure value: dom.DomError -> dom.DomRuntimeError<String> = dom.DomFailure value
+
+fn checkBenchmarkFailure -> String = {
+  let savedShow: benchmarks.BenchmarkFailure -> String = show
+  let savedEq: benchmarks.BenchmarkFailure -> benchmarks.BenchmarkFailure -> Bool = eq
+  let partial = savedEq (benchmarks.ExplicitBenchmarkFailure "")
+  join "\n" [
+    "std/benchmark::BenchmarkFailure",
+    displayed (benchmarks.ExplicitBenchmarkFailure ""),
+    displayed (benchmarks.ExplicitBenchmarkFailure "雪🙂\n\t\"\\\u{0}"),
+    savedShow (benchmarks.ExplicitBenchmarkFailure "雪🙂\n\t\"\\\u{0}"),
+    show (equal (benchmarks.ExplicitBenchmarkFailure "") (benchmarks.ExplicitBenchmarkFailure "")),
+    show (equal (benchmarks.ExplicitBenchmarkFailure "雪🙂\n\t\"\\\u{0}") (benchmarks.ExplicitBenchmarkFailure "雪🙂\n\t\"\\\u{0}")),
+    show (partial (benchmarks.ExplicitBenchmarkFailure "")),
+    show (partial (benchmarks.ExplicitBenchmarkFailure "雪🙂\n\t\"\\\u{0}"))
+  ]
+}
+
+fn checkBigIntConversionError -> String = {
+  let savedShow: big.BigIntConversionError -> String = show
+  let savedDebug: big.BigIntConversionError -> String = debug
+  let savedEq: big.BigIntConversionError -> big.BigIntConversionError -> Bool = eq
+  let partial = savedEq big.BigIntOutsideIntRange
+  join "\n" [
+    "std/big-int::BigIntConversionError",
+    displayed big.BigIntOutsideIntRange + " | " + inspected big.BigIntOutsideIntRange,
+    savedShow big.BigIntOutsideIntRange,
+    savedDebug big.BigIntOutsideIntRange,
+    show (equal big.BigIntOutsideIntRange big.BigIntOutsideIntRange),
+    show (partial big.BigIntOutsideIntRange)
+  ]
+}
+
+fn checkBigIntDivisionError -> String = {
+  let savedShow: big.BigIntDivisionError -> String = show
+  let savedDebug: big.BigIntDivisionError -> String = debug
+  let savedEq: big.BigIntDivisionError -> big.BigIntDivisionError -> Bool = eq
+  let partial = savedEq big.BigIntDivisionByZero
+  join "\n" [
+    "std/big-int::BigIntDivisionError",
+    displayed big.BigIntDivisionByZero + " | " + inspected big.BigIntDivisionByZero,
+    savedShow big.BigIntDivisionByZero,
+    savedDebug big.BigIntDivisionByZero,
+    show (equal big.BigIntDivisionByZero big.BigIntDivisionByZero),
+    show (partial big.BigIntDivisionByZero)
+  ]
+}
+
+fn checkBigIntParseError -> String = {
+  let savedShow: big.BigIntParseError -> String = show
+  let savedDebug: big.BigIntParseError -> String = debug
+  let savedEq: big.BigIntParseError -> big.BigIntParseError -> Bool = eq
+  let partial = savedEq big.EmptyBigInt
+  join "\n" [
+    "std/big-int::BigIntParseError",
+    displayed big.EmptyBigInt + " | " + inspected big.EmptyBigInt,
+    displayed (big.InvalidBigIntRadix 0) + " | " + inspected (big.InvalidBigIntRadix 0),
+    displayed (big.InvalidBigIntRadix (-9007199254740991)) + " | " + inspected (big.InvalidBigIntRadix (-9007199254740991)),
+    displayed (big.InvalidBigIntDigit { offset: 0, radix: 0 }) + " | " + inspected (big.InvalidBigIntDigit { offset: 0, radix: 0 }),
+    displayed (big.InvalidBigIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) }) + " | " + inspected (big.InvalidBigIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) }),
+    savedShow (big.InvalidBigIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) }),
+    savedDebug (big.InvalidBigIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) }),
+    show (equal big.EmptyBigInt big.EmptyBigInt),
+    show (equal (big.InvalidBigIntRadix 0) (big.InvalidBigIntRadix 0)),
+    show (equal (big.InvalidBigIntRadix (-9007199254740991)) (big.InvalidBigIntRadix (-9007199254740991))),
+    show (equal (big.InvalidBigIntDigit { offset: 0, radix: 0 }) (big.InvalidBigIntDigit { offset: 0, radix: 0 })),
+    show (equal (big.InvalidBigIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) }) (big.InvalidBigIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) })),
+    show (partial big.EmptyBigInt),
+    show (partial (big.InvalidBigIntRadix 0)),
+    show (partial (big.InvalidBigIntRadix (-9007199254740991))),
+    show (partial (big.InvalidBigIntDigit { offset: 0, radix: 0 })),
+    show (partial (big.InvalidBigIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) }))
+  ]
+}
+
+fn checkBigIntPowerError -> String = {
+  let savedShow: big.BigIntPowerError -> String = show
+  let savedDebug: big.BigIntPowerError -> String = debug
+  let savedEq: big.BigIntPowerError -> big.BigIntPowerError -> Bool = eq
+  let partial = savedEq (big.NegativeBigIntExponent 0)
+  join "\n" [
+    "std/big-int::BigIntPowerError",
+    displayed (big.NegativeBigIntExponent 0) + " | " + inspected (big.NegativeBigIntExponent 0),
+    displayed (big.NegativeBigIntExponent (-9007199254740991)) + " | " + inspected (big.NegativeBigIntExponent (-9007199254740991)),
+    savedShow (big.NegativeBigIntExponent (-9007199254740991)),
+    savedDebug (big.NegativeBigIntExponent (-9007199254740991)),
+    show (equal (big.NegativeBigIntExponent 0) (big.NegativeBigIntExponent 0)),
+    show (equal (big.NegativeBigIntExponent (-9007199254740991)) (big.NegativeBigIntExponent (-9007199254740991))),
+    show (partial (big.NegativeBigIntExponent 0)),
+    show (partial (big.NegativeBigIntExponent (-9007199254740991)))
+  ]
+}
+
+fn checkBase64DecodeError -> String = {
+  let savedShow: base64.Base64DecodeError -> String = show
+  let savedDebug: base64.Base64DecodeError -> String = debug
+  let savedEq: base64.Base64DecodeError -> base64.Base64DecodeError -> Bool = eq
+  let partial = savedEq (base64.InvalidBase64Length 0)
+  join "\n" [
+    "std/bytes/base64::Base64DecodeError",
+    displayed (base64.InvalidBase64Length 0) + " | " + inspected (base64.InvalidBase64Length 0),
+    displayed (base64.InvalidBase64Length (-9007199254740991)) + " | " + inspected (base64.InvalidBase64Length (-9007199254740991)),
+    displayed (base64.InvalidBase64Digit { offset: 0 }) + " | " + inspected (base64.InvalidBase64Digit { offset: 0 }),
+    displayed (base64.InvalidBase64Digit { offset: (-9007199254740991) }) + " | " + inspected (base64.InvalidBase64Digit { offset: (-9007199254740991) }),
+    displayed (base64.InvalidBase64Padding { offset: 0 }) + " | " + inspected (base64.InvalidBase64Padding { offset: 0 }),
+    displayed (base64.InvalidBase64Padding { offset: (-9007199254740991) }) + " | " + inspected (base64.InvalidBase64Padding { offset: (-9007199254740991) }),
+    displayed (base64.NonCanonicalBase64Bits { offset: 0 }) + " | " + inspected (base64.NonCanonicalBase64Bits { offset: 0 }),
+    displayed (base64.NonCanonicalBase64Bits { offset: (-9007199254740991) }) + " | " + inspected (base64.NonCanonicalBase64Bits { offset: (-9007199254740991) }),
+    savedShow (base64.NonCanonicalBase64Bits { offset: (-9007199254740991) }),
+    savedDebug (base64.NonCanonicalBase64Bits { offset: (-9007199254740991) }),
+    show (equal (base64.InvalidBase64Length 0) (base64.InvalidBase64Length 0)),
+    show (equal (base64.InvalidBase64Length (-9007199254740991)) (base64.InvalidBase64Length (-9007199254740991))),
+    show (equal (base64.InvalidBase64Digit { offset: 0 }) (base64.InvalidBase64Digit { offset: 0 })),
+    show (equal (base64.InvalidBase64Digit { offset: (-9007199254740991) }) (base64.InvalidBase64Digit { offset: (-9007199254740991) })),
+    show (equal (base64.InvalidBase64Padding { offset: 0 }) (base64.InvalidBase64Padding { offset: 0 })),
+    show (equal (base64.InvalidBase64Padding { offset: (-9007199254740991) }) (base64.InvalidBase64Padding { offset: (-9007199254740991) })),
+    show (equal (base64.NonCanonicalBase64Bits { offset: 0 }) (base64.NonCanonicalBase64Bits { offset: 0 })),
+    show (equal (base64.NonCanonicalBase64Bits { offset: (-9007199254740991) }) (base64.NonCanonicalBase64Bits { offset: (-9007199254740991) })),
+    show (partial (base64.InvalidBase64Length 0)),
+    show (partial (base64.InvalidBase64Length (-9007199254740991))),
+    show (partial (base64.InvalidBase64Digit { offset: 0 })),
+    show (partial (base64.InvalidBase64Digit { offset: (-9007199254740991) })),
+    show (partial (base64.InvalidBase64Padding { offset: 0 })),
+    show (partial (base64.InvalidBase64Padding { offset: (-9007199254740991) })),
+    show (partial (base64.NonCanonicalBase64Bits { offset: 0 })),
+    show (partial (base64.NonCanonicalBase64Bits { offset: (-9007199254740991) }))
+  ]
+}
+
+fn checkHexDecodeError -> String = {
+  let savedShow: hex.HexDecodeError -> String = show
+  let savedDebug: hex.HexDecodeError -> String = debug
+  let savedEq: hex.HexDecodeError -> hex.HexDecodeError -> Bool = eq
+  let partial = savedEq (hex.OddHexLength 0)
+  join "\n" [
+    "std/bytes/hex::HexDecodeError",
+    displayed (hex.OddHexLength 0) + " | " + inspected (hex.OddHexLength 0),
+    displayed (hex.OddHexLength (-9007199254740991)) + " | " + inspected (hex.OddHexLength (-9007199254740991)),
+    displayed (hex.InvalidHexDigit { offset: 0 }) + " | " + inspected (hex.InvalidHexDigit { offset: 0 }),
+    displayed (hex.InvalidHexDigit { offset: (-9007199254740991) }) + " | " + inspected (hex.InvalidHexDigit { offset: (-9007199254740991) }),
+    savedShow (hex.InvalidHexDigit { offset: (-9007199254740991) }),
+    savedDebug (hex.InvalidHexDigit { offset: (-9007199254740991) }),
+    show (equal (hex.OddHexLength 0) (hex.OddHexLength 0)),
+    show (equal (hex.OddHexLength (-9007199254740991)) (hex.OddHexLength (-9007199254740991))),
+    show (equal (hex.InvalidHexDigit { offset: 0 }) (hex.InvalidHexDigit { offset: 0 })),
+    show (equal (hex.InvalidHexDigit { offset: (-9007199254740991) }) (hex.InvalidHexDigit { offset: (-9007199254740991) })),
+    show (partial (hex.OddHexLength 0)),
+    show (partial (hex.OddHexLength (-9007199254740991))),
+    show (partial (hex.InvalidHexDigit { offset: 0 })),
+    show (partial (hex.InvalidHexDigit { offset: (-9007199254740991) }))
+  ]
+}
+
+fn checkByteError -> String = {
+  let savedShow: bytes.ByteError -> String = show
+  let savedDebug: bytes.ByteError -> String = debug
+  join "\n" [
+    "std/bytes::ByteError",
+    displayed (bytes.ByteOutOfRange 0) + " | " + inspected (bytes.ByteOutOfRange 0),
+    displayed (bytes.ByteOutOfRange (-9007199254740991)) + " | " + inspected (bytes.ByteOutOfRange (-9007199254740991)),
+    savedShow (bytes.ByteOutOfRange (-9007199254740991)),
+    savedDebug (bytes.ByteOutOfRange (-9007199254740991))
+  ]
+}
+
+fn checkBytesSliceError -> String = {
+  let savedShow: bytes.BytesSliceError -> String = show
+  let savedDebug: bytes.BytesSliceError -> String = debug
+  join "\n" [
+    "std/bytes::BytesSliceError",
+    displayed (bytes.InvalidByteRange { start: 0, end: 0, length: 0 }) + " | " + inspected (bytes.InvalidByteRange { start: 0, end: 0, length: 0 }),
+    displayed (bytes.InvalidByteRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }) + " | " + inspected (bytes.InvalidByteRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    savedShow (bytes.InvalidByteRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    savedDebug (bytes.InvalidByteRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) })
+  ]
+}
+
+fn checkChildProcessConfigError -> String = {
+  let savedShow: children.ChildProcessConfigError -> String = show
+  let savedDebug: children.ChildProcessConfigError -> String = debug
+  join "\n" [
+    "std/child-process::ChildProcessConfigError",
+    displayed children.EmptyExecutableName + " | " + inspected children.EmptyExecutableName,
+    displayed (children.ExecutableNameContainsSeparator "") + " | " + inspected (children.ExecutableNameContainsSeparator ""),
+    displayed (children.ExecutableNameContainsSeparator "雪🙂\n\t\"\\\u{0}") + " | " + inspected (children.ExecutableNameContainsSeparator "雪🙂\n\t\"\\\u{0}"),
+    displayed (children.ArgumentContainsNul { index: 0, offset: 0 }) + " | " + inspected (children.ArgumentContainsNul { index: 0, offset: 0 }),
+    displayed (children.ArgumentContainsNul { index: (-9007199254740991), offset: (-9007199254740991) }) + " | " + inspected (children.ArgumentContainsNul { index: (-9007199254740991), offset: (-9007199254740991) }),
+    displayed (children.EnvironmentNameContainsNul "") + " | " + inspected (children.EnvironmentNameContainsNul ""),
+    displayed (children.EnvironmentNameContainsNul "雪🙂\n\t\"\\\u{0}") + " | " + inspected (children.EnvironmentNameContainsNul "雪🙂\n\t\"\\\u{0}"),
+    displayed (children.EnvironmentValueContainsNul "") + " | " + inspected (children.EnvironmentValueContainsNul ""),
+    displayed (children.EnvironmentValueContainsNul "雪🙂\n\t\"\\\u{0}") + " | " + inspected (children.EnvironmentValueContainsNul "雪🙂\n\t\"\\\u{0}"),
+    displayed (children.InvalidCaptureLimit 0) + " | " + inspected (children.InvalidCaptureLimit 0),
+    displayed (children.InvalidCaptureLimit (-9007199254740991)) + " | " + inspected (children.InvalidCaptureLimit (-9007199254740991)),
+    savedShow (children.InvalidCaptureLimit (-9007199254740991)),
+    savedDebug (children.InvalidCaptureLimit (-9007199254740991))
+  ]
+}
+
+fn checkChildProcessError -> String = {
+  let savedShow: children.ChildProcessError -> String = show
+  let savedDebug: children.ChildProcessError -> String = debug
+  join "\n" [
+    "std/child-process::ChildProcessError",
+    displayed (children.ChildSpawnFailed { executable: (children.SearchPath "tool"), detail: "" }) + " | " + inspected (children.ChildSpawnFailed { executable: (children.SearchPath "tool"), detail: "" }),
+    displayed (children.ChildSpawnFailed { executable: (children.SearchPath "tool"), detail: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (children.ChildSpawnFailed { executable: (children.SearchPath "tool"), detail: "雪🙂\n\t\"\\\u{0}" }),
+    displayed children.ChildInputAfterClose + " | " + inspected children.ChildInputAfterClose,
+    displayed (children.ChildOutputReadFailed { channel: children.ChildStderr, detail: "" }) + " | " + inspected (children.ChildOutputReadFailed { channel: children.ChildStderr, detail: "" }),
+    displayed (children.ChildOutputReadFailed { channel: children.ChildStderr, detail: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (children.ChildOutputReadFailed { channel: children.ChildStderr, detail: "雪🙂\n\t\"\\\u{0}" }),
+    displayed (children.UnsupportedChildSignal process.User2) + " | " + inspected (children.UnsupportedChildSignal process.User2),
+    displayed (children.UnsupportedChildSignal process.User2) + " | " + inspected (children.UnsupportedChildSignal process.User2),
+    displayed (children.ChildInputFailed "") + " | " + inspected (children.ChildInputFailed ""),
+    displayed (children.ChildInputFailed "雪🙂\n\t\"\\\u{0}") + " | " + inspected (children.ChildInputFailed "雪🙂\n\t\"\\\u{0}"),
+    displayed (children.ChildOutputLimitExceeded { channel: children.ChildStderr, limitBytes: 0 }) + " | " + inspected (children.ChildOutputLimitExceeded { channel: children.ChildStderr, limitBytes: 0 }),
+    displayed (children.ChildOutputLimitExceeded { channel: children.ChildStderr, limitBytes: (-9007199254740991) }) + " | " + inspected (children.ChildOutputLimitExceeded { channel: children.ChildStderr, limitBytes: (-9007199254740991) }),
+    displayed (children.ChildWaitFailed "") + " | " + inspected (children.ChildWaitFailed ""),
+    displayed (children.ChildWaitFailed "雪🙂\n\t\"\\\u{0}") + " | " + inspected (children.ChildWaitFailed "雪🙂\n\t\"\\\u{0}"),
+    displayed (children.ChildTerminationFailed "") + " | " + inspected (children.ChildTerminationFailed ""),
+    displayed (children.ChildTerminationFailed "雪🙂\n\t\"\\\u{0}") + " | " + inspected (children.ChildTerminationFailed "雪🙂\n\t\"\\\u{0}"),
+    savedShow (children.ChildTerminationFailed "雪🙂\n\t\"\\\u{0}"),
+    savedDebug (children.ChildTerminationFailed "雪🙂\n\t\"\\\u{0}")
+  ]
+}
+
+fn checkSizeError -> String = {
+  let savedShow: collection.SizeError -> String = show
+  let savedDebug: collection.SizeError -> String = debug
+  let savedEq: collection.SizeError -> collection.SizeError -> Bool = eq
+  let partial = savedEq (collection.NonPositiveSize 0)
+  join "\n" [
+    "std/collection::SizeError",
+    displayed (collection.NonPositiveSize 0) + " | " + inspected (collection.NonPositiveSize 0),
+    displayed (collection.NonPositiveSize (-9007199254740991)) + " | " + inspected (collection.NonPositiveSize (-9007199254740991)),
+    savedShow (collection.NonPositiveSize (-9007199254740991)),
+    savedDebug (collection.NonPositiveSize (-9007199254740991)),
+    show (equal (collection.NonPositiveSize 0) (collection.NonPositiveSize 0)),
+    show (equal (collection.NonPositiveSize (-9007199254740991)) (collection.NonPositiveSize (-9007199254740991))),
+    show (partial (collection.NonPositiveSize 0)),
+    show (partial (collection.NonPositiveSize (-9007199254740991)))
+  ]
+}
+
+fn checkDecimalArithmeticError -> String = {
+  let savedShow: decimal.DecimalArithmeticError -> String = show
+  let savedDebug: decimal.DecimalArithmeticError -> String = debug
+  let savedEq: decimal.DecimalArithmeticError -> decimal.DecimalArithmeticError -> Bool = eq
+  let partial = savedEq decimal.DecimalDivisionByZero
+  join "\n" [
+    "std/decimal::DecimalArithmeticError",
+    displayed decimal.DecimalDivisionByZero + " | " + inspected decimal.DecimalDivisionByZero,
+    displayed decimal.NonTerminatingDecimal + " | " + inspected decimal.NonTerminatingDecimal,
+    savedShow decimal.NonTerminatingDecimal,
+    savedDebug decimal.NonTerminatingDecimal,
+    show (equal decimal.DecimalDivisionByZero decimal.DecimalDivisionByZero),
+    show (equal decimal.NonTerminatingDecimal decimal.NonTerminatingDecimal),
+    show (partial decimal.DecimalDivisionByZero),
+    show (partial decimal.NonTerminatingDecimal)
+  ]
+}
+
+fn checkDecimalContextError -> String = {
+  let savedShow: decimal.DecimalContextError -> String = show
+  let savedDebug: decimal.DecimalContextError -> String = debug
+  let savedEq: decimal.DecimalContextError -> decimal.DecimalContextError -> Bool = eq
+  let partial = savedEq (decimal.NonPositiveDecimalPrecision 0)
+  join "\n" [
+    "std/decimal::DecimalContextError",
+    displayed (decimal.NonPositiveDecimalPrecision 0) + " | " + inspected (decimal.NonPositiveDecimalPrecision 0),
+    displayed (decimal.NonPositiveDecimalPrecision (-9007199254740991)) + " | " + inspected (decimal.NonPositiveDecimalPrecision (-9007199254740991)),
+    savedShow (decimal.NonPositiveDecimalPrecision (-9007199254740991)),
+    savedDebug (decimal.NonPositiveDecimalPrecision (-9007199254740991)),
+    show (equal (decimal.NonPositiveDecimalPrecision 0) (decimal.NonPositiveDecimalPrecision 0)),
+    show (equal (decimal.NonPositiveDecimalPrecision (-9007199254740991)) (decimal.NonPositiveDecimalPrecision (-9007199254740991))),
+    show (partial (decimal.NonPositiveDecimalPrecision 0)),
+    show (partial (decimal.NonPositiveDecimalPrecision (-9007199254740991)))
+  ]
+}
+
+fn checkDecimalConversionError -> String = {
+  let savedShow: decimal.DecimalConversionError -> String = show
+  let savedDebug: decimal.DecimalConversionError -> String = debug
+  let savedEq: decimal.DecimalConversionError -> decimal.DecimalConversionError -> Bool = eq
+  let partial = savedEq decimal.DecimalNotIntegral
+  join "\n" [
+    "std/decimal::DecimalConversionError",
+    displayed decimal.DecimalNotIntegral + " | " + inspected decimal.DecimalNotIntegral,
+    displayed decimal.DecimalOutsideIntRange + " | " + inspected decimal.DecimalOutsideIntRange,
+    displayed decimal.DecimalOutsideFloatRange + " | " + inspected decimal.DecimalOutsideFloatRange,
+    displayed decimal.FloatNotFinite + " | " + inspected decimal.FloatNotFinite,
+    savedShow decimal.FloatNotFinite,
+    savedDebug decimal.FloatNotFinite,
+    show (equal decimal.DecimalNotIntegral decimal.DecimalNotIntegral),
+    show (equal decimal.DecimalOutsideIntRange decimal.DecimalOutsideIntRange),
+    show (equal decimal.DecimalOutsideFloatRange decimal.DecimalOutsideFloatRange),
+    show (equal decimal.FloatNotFinite decimal.FloatNotFinite),
+    show (partial decimal.DecimalNotIntegral),
+    show (partial decimal.DecimalOutsideIntRange),
+    show (partial decimal.DecimalOutsideFloatRange),
+    show (partial decimal.FloatNotFinite)
+  ]
+}
+
+fn checkDecimalParseError -> String = {
+  let savedShow: decimal.DecimalParseError -> String = show
+  let savedDebug: decimal.DecimalParseError -> String = debug
+  let savedEq: decimal.DecimalParseError -> decimal.DecimalParseError -> Bool = eq
+  let partial = savedEq (decimal.InvalidDecimal { offset: 0 })
+  join "\n" [
+    "std/decimal::DecimalParseError",
+    displayed (decimal.InvalidDecimal { offset: 0 }) + " | " + inspected (decimal.InvalidDecimal { offset: 0 }),
+    displayed (decimal.InvalidDecimal { offset: (-9007199254740991) }) + " | " + inspected (decimal.InvalidDecimal { offset: (-9007199254740991) }),
+    savedShow (decimal.InvalidDecimal { offset: (-9007199254740991) }),
+    savedDebug (decimal.InvalidDecimal { offset: (-9007199254740991) }),
+    show (equal (decimal.InvalidDecimal { offset: 0 }) (decimal.InvalidDecimal { offset: 0 })),
+    show (equal (decimal.InvalidDecimal { offset: (-9007199254740991) }) (decimal.InvalidDecimal { offset: (-9007199254740991) })),
+    show (partial (decimal.InvalidDecimal { offset: 0 })),
+    show (partial (decimal.InvalidDecimal { offset: (-9007199254740991) }))
+  ]
+}
+
+fn checkParallelismError -> String = {
+  let savedShow: effects.ParallelismError -> String = show
+  let savedDebug: effects.ParallelismError -> String = debug
+  join "\n" [
+    "std/effect::ParallelismError",
+    displayed (effects.NonPositiveParallelism 0) + " | " + inspected (effects.NonPositiveParallelism 0),
+    displayed (effects.NonPositiveParallelism (-9007199254740991)) + " | " + inspected (effects.NonPositiveParallelism (-9007199254740991)),
+    savedShow (effects.NonPositiveParallelism (-9007199254740991)),
+    savedDebug (effects.NonPositiveParallelism (-9007199254740991))
+  ]
+}
+
+fn checkScheduleError -> String = {
+  let savedShow: effects.ScheduleError -> String = show
+  let savedDebug: effects.ScheduleError -> String = debug
+  join "\n" [
+    "std/effect::ScheduleError",
+    displayed (effects.NegativeRecurrences 0) + " | " + inspected (effects.NegativeRecurrences 0),
+    displayed (effects.NegativeRecurrences (-9007199254740991)) + " | " + inspected (effects.NegativeRecurrences (-9007199254740991)),
+    savedShow (effects.NegativeRecurrences (-9007199254740991)),
+    savedDebug (effects.NegativeRecurrences (-9007199254740991))
+  ]
+}
+
+fn checkEntropyConfigError -> String = {
+  let savedShow: entropy.EntropyConfigError -> String = show
+  let savedDebug: entropy.EntropyConfigError -> String = debug
+  join "\n" [
+    "std/entropy::EntropyConfigError",
+    displayed (entropy.NonPositiveEntropySize 0) + " | " + inspected (entropy.NonPositiveEntropySize 0),
+    displayed (entropy.NonPositiveEntropySize (-9007199254740991)) + " | " + inspected (entropy.NonPositiveEntropySize (-9007199254740991)),
+    displayed (entropy.EntropySizeTooLarge 0) + " | " + inspected (entropy.EntropySizeTooLarge 0),
+    displayed (entropy.EntropySizeTooLarge (-9007199254740991)) + " | " + inspected (entropy.EntropySizeTooLarge (-9007199254740991)),
+    savedShow (entropy.EntropySizeTooLarge (-9007199254740991)),
+    savedDebug (entropy.EntropySizeTooLarge (-9007199254740991))
+  ]
+}
+
+fn checkEntropyError -> String = {
+  let savedShow: entropy.EntropyError -> String = show
+  let savedDebug: entropy.EntropyError -> String = debug
+  join "\n" [
+    "std/entropy::EntropyError",
+    displayed entropy.EntropyUnavailable + " | " + inspected entropy.EntropyUnavailable,
+    displayed entropy.EntropyReadFailure + " | " + inspected entropy.EntropyReadFailure,
+    savedShow entropy.EntropyReadFailure,
+    savedDebug entropy.EntropyReadFailure
+  ]
+}
+
+fn checkFileSystemErrorKind -> String = {
+  let savedShow: fs.FileSystemErrorKind -> String = show
+  let savedDebug: fs.FileSystemErrorKind -> String = debug
+  join "\n" [
+    "std/fs::FileSystemErrorKind",
+    displayed fs.FileNotFound + " | " + inspected fs.FileNotFound,
+    displayed fs.FileAlreadyExists + " | " + inspected fs.FileAlreadyExists,
+    displayed fs.PermissionDenied + " | " + inspected fs.PermissionDenied,
+    displayed fs.NotADirectory + " | " + inspected fs.NotADirectory,
+    displayed fs.IsADirectory + " | " + inspected fs.IsADirectory,
+    displayed fs.DirectoryNotEmpty + " | " + inspected fs.DirectoryNotEmpty,
+    displayed fs.SymbolicLinkLoop + " | " + inspected fs.SymbolicLinkLoop,
+    displayed fs.CrossDeviceMove + " | " + inspected fs.CrossDeviceMove,
+    displayed fs.PathNotSupported + " | " + inspected fs.PathNotSupported,
+    displayed fs.FileSystemUnavailable + " | " + inspected fs.FileSystemUnavailable,
+    displayed (fs.OtherFileSystemError "") + " | " + inspected (fs.OtherFileSystemError ""),
+    displayed (fs.OtherFileSystemError "雪🙂\n\t\"\\\u{0}") + " | " + inspected (fs.OtherFileSystemError "雪🙂\n\t\"\\\u{0}"),
+    savedShow (fs.OtherFileSystemError "雪🙂\n\t\"\\\u{0}"),
+    savedDebug (fs.OtherFileSystemError "雪🙂\n\t\"\\\u{0}")
+  ]
+}
+
+fn checkFileTextError -> String = {
+  let savedShow: fs.FileTextError -> String = show
+  let savedDebug: fs.FileTextError -> String = debug
+  join "\n" [
+    "std/fs::FileTextError",
+    displayed (fs.FileUtf8Failure (text.InvalidUtf8 { offset: 1 })) + " | " + inspected (fs.FileUtf8Failure (text.InvalidUtf8 { offset: 1 })),
+    displayed (fs.FileUtf8Failure (text.InvalidUtf8 { offset: 1 })) + " | " + inspected (fs.FileUtf8Failure (text.InvalidUtf8 { offset: 1 })),
+    savedShow (fs.FileUtf8Failure (text.InvalidUtf8 { offset: 1 })),
+    savedDebug (fs.FileUtf8Failure (text.InvalidUtf8 { offset: 1 }))
+  ]
+}
+
+fn checkHttpBuildError -> String = {
+  let savedShow: http.HttpBuildError -> String = show
+  let savedDebug: http.HttpBuildError -> String = debug
+  join "\n" [
+    "std/http::HttpBuildError",
+    displayed (http.InvalidHttpUrl { offset: 0 }) + " | " + inspected (http.InvalidHttpUrl { offset: 0 }),
+    displayed (http.InvalidHttpUrl { offset: (-9007199254740991) }) + " | " + inspected (http.InvalidHttpUrl { offset: (-9007199254740991) }),
+    displayed (http.UnsupportedHttpScheme "") + " | " + inspected (http.UnsupportedHttpScheme ""),
+    displayed (http.UnsupportedHttpScheme "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.UnsupportedHttpScheme "雪🙂\n\t\"\\\u{0}"),
+    displayed http.HttpUrlContainsUserInfo + " | " + inspected http.HttpUrlContainsUserInfo,
+    displayed http.HttpUrlContainsFragment + " | " + inspected http.HttpUrlContainsFragment,
+    displayed (http.InvalidHttpMethod "") + " | " + inspected (http.InvalidHttpMethod ""),
+    displayed (http.InvalidHttpMethod "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.InvalidHttpMethod "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.InvalidHeaderName "") + " | " + inspected (http.InvalidHeaderName ""),
+    displayed (http.InvalidHeaderName "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.InvalidHeaderName "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.InvalidHeaderValue { name: "", offset: 0 }) + " | " + inspected (http.InvalidHeaderValue { name: "", offset: 0 }),
+    displayed (http.InvalidHeaderValue { name: "雪🙂\n\t\"\\\u{0}", offset: (-9007199254740991) }) + " | " + inspected (http.InvalidHeaderValue { name: "雪🙂\n\t\"\\\u{0}", offset: (-9007199254740991) }),
+    displayed (http.ManagedHttpHeader "") + " | " + inspected (http.ManagedHttpHeader ""),
+    displayed (http.ManagedHttpHeader "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.ManagedHttpHeader "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.InvalidHttpStatus 0) + " | " + inspected (http.InvalidHttpStatus 0),
+    displayed (http.InvalidHttpStatus (-9007199254740991)) + " | " + inspected (http.InvalidHttpStatus (-9007199254740991)),
+    displayed (http.InvalidHttpBodyLimit 0) + " | " + inspected (http.InvalidHttpBodyLimit 0),
+    displayed (http.InvalidHttpBodyLimit (-9007199254740991)) + " | " + inspected (http.InvalidHttpBodyLimit (-9007199254740991)),
+    savedShow (http.InvalidHttpBodyLimit (-9007199254740991)),
+    savedDebug (http.InvalidHttpBodyLimit (-9007199254740991))
+  ]
+}
+
+fn checkHttpError -> String = {
+  let savedShow: http.HttpError -> String = show
+  let savedDebug: http.HttpError -> String = debug
+  join "\n" [
+    "std/http::HttpError",
+    displayed (http.HttpDnsFailure "") + " | " + inspected (http.HttpDnsFailure ""),
+    displayed (http.HttpDnsFailure "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.HttpDnsFailure "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.HttpConnectionFailure "") + " | " + inspected (http.HttpConnectionFailure ""),
+    displayed (http.HttpConnectionFailure "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.HttpConnectionFailure "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.HttpTlsFailure "") + " | " + inspected (http.HttpTlsFailure ""),
+    displayed (http.HttpTlsFailure "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.HttpTlsFailure "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.HttpProtocolFailure "") + " | " + inspected (http.HttpProtocolFailure ""),
+    displayed (http.HttpProtocolFailure "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.HttpProtocolFailure "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.HttpRequestBodyFailure "") + " | " + inspected (http.HttpRequestBodyFailure ""),
+    displayed (http.HttpRequestBodyFailure "雪🙂\n\t\"\\\u{0}") + " | " + inspected (http.HttpRequestBodyFailure "雪🙂\n\t\"\\\u{0}"),
+    displayed (http.HttpRequestLengthMismatch { declared: 0, actual: 0 }) + " | " + inspected (http.HttpRequestLengthMismatch { declared: 0, actual: 0 }),
+    displayed (http.HttpRequestLengthMismatch { declared: (-9007199254740991), actual: (-9007199254740991) }) + " | " + inspected (http.HttpRequestLengthMismatch { declared: (-9007199254740991), actual: (-9007199254740991) }),
+    displayed (http.HttpResponseBodyLimitExceeded { limitBytes: 0 }) + " | " + inspected (http.HttpResponseBodyLimitExceeded { limitBytes: 0 }),
+    displayed (http.HttpResponseBodyLimitExceeded { limitBytes: (-9007199254740991) }) + " | " + inspected (http.HttpResponseBodyLimitExceeded { limitBytes: (-9007199254740991) }),
+    displayed http.HttpClientUnavailable + " | " + inspected http.HttpClientUnavailable,
+    savedShow http.HttpClientUnavailable,
+    savedDebug http.HttpClientUnavailable
+  ]
+}
+
+fn checkIntParseError -> String = {
+  let savedShow: ints.IntParseError -> String = show
+  join "\n" [
+    "std/int::IntParseError",
+    displayed ints.EmptyInt,
+    displayed (ints.InvalidIntRadix 0),
+    displayed (ints.InvalidIntRadix (-9007199254740991)),
+    displayed (ints.InvalidIntDigit { offset: 0, radix: 0 }),
+    displayed (ints.InvalidIntDigit { offset: (-9007199254740991), radix: (-9007199254740991) }),
+    displayed ints.IntOutsideRange,
+    savedShow ints.IntOutsideRange
+  ]
+}
+
+fn checkPathError -> String = {
+  let savedShow: paths.PathError -> String = show
+  let savedDebug: paths.PathError -> String = debug
+  join "\n" [
+    "std/path::PathError",
+    displayed paths.EmptyPath + " | " + inspected paths.EmptyPath,
+    displayed (paths.PathContainsNul { offset: 0 }) + " | " + inspected (paths.PathContainsNul { offset: 0 }),
+    displayed (paths.PathContainsNul { offset: (-9007199254740991) }) + " | " + inspected (paths.PathContainsNul { offset: (-9007199254740991) }),
+    displayed (paths.PathContainsBackslash { offset: 0 }) + " | " + inspected (paths.PathContainsBackslash { offset: 0 }),
+    displayed (paths.PathContainsBackslash { offset: (-9007199254740991) }) + " | " + inspected (paths.PathContainsBackslash { offset: (-9007199254740991) }),
+    displayed paths.InvalidDriveRoot + " | " + inspected paths.InvalidDriveRoot,
+    displayed paths.InvalidUncRoot + " | " + inspected paths.InvalidUncRoot,
+    displayed (paths.InvalidPathSegment "") + " | " + inspected (paths.InvalidPathSegment ""),
+    displayed (paths.InvalidPathSegment "雪🙂\n\t\"\\\u{0}") + " | " + inspected (paths.InvalidPathSegment "雪🙂\n\t\"\\\u{0}"),
+    displayed paths.AbsoluteChildPath + " | " + inspected paths.AbsoluteChildPath,
+    savedShow paths.AbsoluteChildPath,
+    savedDebug paths.AbsoluteChildPath
+  ]
+}
+
+fn checkStdinError -> String = {
+  let savedShow: StdinError -> String = show
+  let savedDebug: StdinError -> String = debug
+  join "\n" [
+    "std/prelude::StdinError",
+    displayed stdin.StdinUnavailable + " | " + inspected stdin.StdinUnavailable,
+    displayed stdin.StdinReadFailure + " | " + inspected stdin.StdinReadFailure,
+    displayed stdin.ConcurrentStdinRead + " | " + inspected stdin.ConcurrentStdinRead,
+    displayed (stdin.InvalidStdinUtf8 { offset: 0 }) + " | " + inspected (stdin.InvalidStdinUtf8 { offset: 0 }),
+    displayed (stdin.InvalidStdinUtf8 { offset: (-9007199254740991) }) + " | " + inspected (stdin.InvalidStdinUtf8 { offset: (-9007199254740991) }),
+    displayed (stdin.StdinLineTooLong { limitBytes: 0 }) + " | " + inspected (stdin.StdinLineTooLong { limitBytes: 0 }),
+    displayed (stdin.StdinLineTooLong { limitBytes: (-9007199254740991) }) + " | " + inspected (stdin.StdinLineTooLong { limitBytes: (-9007199254740991) }),
+    displayed stdin.StdinPositionOverflow + " | " + inspected stdin.StdinPositionOverflow,
+    savedShow stdin.StdinPositionOverflow,
+    savedDebug stdin.StdinPositionOverflow
+  ]
+}
+
+fn checkProcessError -> String = {
+  let savedShow: process.ProcessError -> String = show
+  let savedDebug: process.ProcessError -> String = debug
+  join "\n" [
+    "std/process::ProcessError",
+    displayed (process.UnsupportedProcessSignal process.User2) + " | " + inspected (process.UnsupportedProcessSignal process.User2),
+    displayed (process.UnsupportedProcessSignal process.User2) + " | " + inspected (process.UnsupportedProcessSignal process.User2),
+    displayed (process.ReservedProcessSignal process.User2) + " | " + inspected (process.ReservedProcessSignal process.User2),
+    displayed (process.ReservedProcessSignal process.User2) + " | " + inspected (process.ReservedProcessSignal process.User2),
+    displayed (process.InvalidArgumentEncoding 0) + " | " + inspected (process.InvalidArgumentEncoding 0),
+    displayed (process.InvalidArgumentEncoding (-9007199254740991)) + " | " + inspected (process.InvalidArgumentEncoding (-9007199254740991)),
+    displayed (process.InvalidEnvironmentName "") + " | " + inspected (process.InvalidEnvironmentName ""),
+    displayed (process.InvalidEnvironmentName "雪🙂\n\t\"\\\u{0}") + " | " + inspected (process.InvalidEnvironmentName "雪🙂\n\t\"\\\u{0}"),
+    displayed (process.InvalidEnvironmentEncoding "") + " | " + inspected (process.InvalidEnvironmentEncoding ""),
+    displayed (process.InvalidEnvironmentEncoding "雪🙂\n\t\"\\\u{0}") + " | " + inspected (process.InvalidEnvironmentEncoding "雪🙂\n\t\"\\\u{0}"),
+    displayed process.CurrentDirectoryUnavailable + " | " + inspected process.CurrentDirectoryUnavailable,
+    savedShow process.CurrentDirectoryUnavailable,
+    savedDebug process.CurrentDirectoryUnavailable
+  ]
+}
+
+fn checkQueueClosed -> String = {
+  let savedShow: queue.QueueClosed -> String = show
+  let savedDebug: queue.QueueClosed -> String = debug
+  join "\n" [
+    "std/queue::QueueClosed",
+    displayed queue.QueueClosed + " | " + inspected queue.QueueClosed,
+    savedShow queue.QueueClosed,
+    savedDebug queue.QueueClosed
+  ]
+}
+
+fn checkQueueCreateError -> String = {
+  let savedShow: queue.QueueCreateError -> String = show
+  let savedDebug: queue.QueueCreateError -> String = debug
+  join "\n" [
+    "std/queue::QueueCreateError",
+    displayed (queue.NonPositiveCapacity 0) + " | " + inspected (queue.NonPositiveCapacity 0),
+    displayed (queue.NonPositiveCapacity (-9007199254740991)) + " | " + inspected (queue.NonPositiveCapacity (-9007199254740991)),
+    savedShow (queue.NonPositiveCapacity (-9007199254740991)),
+    savedDebug (queue.NonPositiveCapacity (-9007199254740991))
+  ]
+}
+
+fn checkRandomConfigError -> String = {
+  let savedShow: random.RandomConfigError -> String = show
+  let savedDebug: random.RandomConfigError -> String = debug
+  join "\n" [
+    "std/random::RandomConfigError",
+    displayed (random.NonPositiveRandomSize 0) + " | " + inspected (random.NonPositiveRandomSize 0),
+    displayed (random.NonPositiveRandomSize (-9007199254740991)) + " | " + inspected (random.NonPositiveRandomSize (-9007199254740991)),
+    displayed (random.RandomSizeTooLarge 0) + " | " + inspected (random.RandomSizeTooLarge 0),
+    displayed (random.RandomSizeTooLarge (-9007199254740991)) + " | " + inspected (random.RandomSizeTooLarge (-9007199254740991)),
+    savedShow (random.RandomSizeTooLarge (-9007199254740991)),
+    savedDebug (random.RandomSizeTooLarge (-9007199254740991))
+  ]
+}
+
+fn checkRandomRangeError -> String = {
+  let savedShow: random.RandomRangeError -> String = show
+  let savedDebug: random.RandomRangeError -> String = debug
+  join "\n" [
+    "std/random::RandomRangeError",
+    displayed (random.EmptyRandomIntRange { lower: 0, upperExclusive: 0 }) + " | " + inspected (random.EmptyRandomIntRange { lower: 0, upperExclusive: 0 }),
+    displayed (random.EmptyRandomIntRange { lower: (-9007199254740991), upperExclusive: (-9007199254740991) }) + " | " + inspected (random.EmptyRandomIntRange { lower: (-9007199254740991), upperExclusive: (-9007199254740991) }),
+    displayed (random.InvalidProbability 0.0) + " | " + inspected (random.InvalidProbability 0.0),
+    displayed (random.InvalidProbability (-0.0)) + " | " + inspected (random.InvalidProbability (-0.0)),
+    savedShow (random.InvalidProbability (-0.0)),
+    savedDebug (random.InvalidProbability (-0.0))
+  ]
+}
+
+fn checkRegexCompileError -> String = {
+  let savedShow: regex.RegexCompileError -> String = show
+  let savedDebug: regex.RegexCompileError -> String = debug
+  let savedEq: regex.RegexCompileError -> regex.RegexCompileError -> Bool = eq
+  let partial = savedEq (regexError ())
+  join "\n" [
+    "std/regex::RegexCompileError",
+    displayed (regexError ()) + " | " + inspected (regexError ()),
+    savedShow (regexError ()),
+    savedDebug (regexError ()),
+    show (equal (regexError ()) (regexError ())),
+    show (partial (regexError ()))
+  ]
+}
+
+fn checkRegexCompileErrorKind -> String = {
+  let savedShow: regex.RegexCompileErrorKind -> String = show
+  let savedDebug: regex.RegexCompileErrorKind -> String = debug
+  let savedEq: regex.RegexCompileErrorKind -> regex.RegexCompileErrorKind -> Bool = eq
+  let partial = savedEq regex.UnexpectedRegexEnd
+  join "\n" [
+    "std/regex::RegexCompileErrorKind",
+    displayed regex.UnexpectedRegexEnd + " | " + inspected regex.UnexpectedRegexEnd,
+    displayed (regex.UnexpectedRegexToken '🙂') + " | " + inspected (regex.UnexpectedRegexToken '🙂'),
+    displayed (regex.UnexpectedRegexToken '\n') + " | " + inspected (regex.UnexpectedRegexToken '\n'),
+    displayed regex.InvalidRegexEscape + " | " + inspected regex.InvalidRegexEscape,
+    displayed regex.InvalidRegexRange + " | " + inspected regex.InvalidRegexRange,
+    displayed regex.InvalidRegexQuantifier + " | " + inspected regex.InvalidRegexQuantifier,
+    displayed (regex.DuplicateCaptureName "") + " | " + inspected (regex.DuplicateCaptureName ""),
+    displayed (regex.DuplicateCaptureName "雪🙂\n\t\"\\\u{0}") + " | " + inspected (regex.DuplicateCaptureName "雪🙂\n\t\"\\\u{0}"),
+    displayed (regex.UnsupportedRegexFeature "") + " | " + inspected (regex.UnsupportedRegexFeature ""),
+    displayed (regex.UnsupportedRegexFeature "雪🙂\n\t\"\\\u{0}") + " | " + inspected (regex.UnsupportedRegexFeature "雪🙂\n\t\"\\\u{0}"),
+    savedShow (regex.UnsupportedRegexFeature "雪🙂\n\t\"\\\u{0}"),
+    savedDebug (regex.UnsupportedRegexFeature "雪🙂\n\t\"\\\u{0}"),
+    show (equal regex.UnexpectedRegexEnd regex.UnexpectedRegexEnd),
+    show (equal (regex.UnexpectedRegexToken '🙂') (regex.UnexpectedRegexToken '🙂')),
+    show (equal (regex.UnexpectedRegexToken '\n') (regex.UnexpectedRegexToken '\n')),
+    show (equal regex.InvalidRegexEscape regex.InvalidRegexEscape),
+    show (equal regex.InvalidRegexRange regex.InvalidRegexRange),
+    show (equal regex.InvalidRegexQuantifier regex.InvalidRegexQuantifier),
+    show (equal (regex.DuplicateCaptureName "") (regex.DuplicateCaptureName "")),
+    show (equal (regex.DuplicateCaptureName "雪🙂\n\t\"\\\u{0}") (regex.DuplicateCaptureName "雪🙂\n\t\"\\\u{0}")),
+    show (equal (regex.UnsupportedRegexFeature "") (regex.UnsupportedRegexFeature "")),
+    show (equal (regex.UnsupportedRegexFeature "雪🙂\n\t\"\\\u{0}") (regex.UnsupportedRegexFeature "雪🙂\n\t\"\\\u{0}")),
+    show (partial regex.UnexpectedRegexEnd),
+    show (partial (regex.UnexpectedRegexToken '🙂')),
+    show (partial (regex.UnexpectedRegexToken '\n')),
+    show (partial regex.InvalidRegexEscape),
+    show (partial regex.InvalidRegexRange),
+    show (partial regex.InvalidRegexQuantifier),
+    show (partial (regex.DuplicateCaptureName "")),
+    show (partial (regex.DuplicateCaptureName "雪🙂\n\t\"\\\u{0}")),
+    show (partial (regex.UnsupportedRegexFeature "")),
+    show (partial (regex.UnsupportedRegexFeature "雪🙂\n\t\"\\\u{0}"))
+  ]
+}
+
+fn checkSemaphoreCreateError -> String = {
+  let savedShow: semaphore.SemaphoreCreateError -> String = show
+  let savedDebug: semaphore.SemaphoreCreateError -> String = debug
+  join "\n" [
+    "std/semaphore::SemaphoreCreateError",
+    displayed (semaphore.NonPositivePermits 0) + " | " + inspected (semaphore.NonPositivePermits 0),
+    displayed (semaphore.NonPositivePermits (-9007199254740991)) + " | " + inspected (semaphore.NonPositivePermits (-9007199254740991)),
+    savedShow (semaphore.NonPositivePermits (-9007199254740991)),
+    savedDebug (semaphore.NonPositivePermits (-9007199254740991))
+  ]
+}
+
+fn checkStdinConfigError -> String = {
+  let savedShow: stdin.StdinConfigError -> String = show
+  let savedDebug: stdin.StdinConfigError -> String = debug
+  join "\n" [
+    "std/stdin::StdinConfigError",
+    displayed (stdin.NonPositiveReadSize 0) + " | " + inspected (stdin.NonPositiveReadSize 0),
+    displayed (stdin.NonPositiveReadSize (-9007199254740991)) + " | " + inspected (stdin.NonPositiveReadSize (-9007199254740991)),
+    displayed (stdin.ReadSizeTooLarge 0) + " | " + inspected (stdin.ReadSizeTooLarge 0),
+    displayed (stdin.ReadSizeTooLarge (-9007199254740991)) + " | " + inspected (stdin.ReadSizeTooLarge (-9007199254740991)),
+    displayed (stdin.NonPositiveLineLimit 0) + " | " + inspected (stdin.NonPositiveLineLimit 0),
+    displayed (stdin.NonPositiveLineLimit (-9007199254740991)) + " | " + inspected (stdin.NonPositiveLineLimit (-9007199254740991)),
+    displayed (stdin.LineLimitTooLarge 0) + " | " + inspected (stdin.LineLimitTooLarge 0),
+    displayed (stdin.LineLimitTooLarge (-9007199254740991)) + " | " + inspected (stdin.LineLimitTooLarge (-9007199254740991)),
+    savedShow (stdin.LineLimitTooLarge (-9007199254740991)),
+    savedDebug (stdin.LineLimitTooLarge (-9007199254740991))
+  ]
+}
+
+fn checkBufferCapacityError -> String = {
+  let savedShow: stream.BufferCapacityError -> String = show
+  let savedDebug: stream.BufferCapacityError -> String = debug
+  join "\n" [
+    "std/stream::BufferCapacityError",
+    displayed (stream.NonPositiveBufferCapacity 0) + " | " + inspected (stream.NonPositiveBufferCapacity 0),
+    displayed (stream.NonPositiveBufferCapacity (-9007199254740991)) + " | " + inspected (stream.NonPositiveBufferCapacity (-9007199254740991)),
+    savedShow (stream.NonPositiveBufferCapacity (-9007199254740991)),
+    savedDebug (stream.NonPositiveBufferCapacity (-9007199254740991))
+  ]
+}
+
+fn checkGraphemeSliceError -> String = {
+  let savedShow: grapheme.GraphemeSliceError -> String = show
+  let savedDebug: grapheme.GraphemeSliceError -> String = debug
+  let savedEq: grapheme.GraphemeSliceError -> grapheme.GraphemeSliceError -> Bool = eq
+  let partial = savedEq (grapheme.InvalidGraphemeRange { start: 0, end: 0, length: 0 })
+  join "\n" [
+    "std/text/grapheme::GraphemeSliceError",
+    displayed (grapheme.InvalidGraphemeRange { start: 0, end: 0, length: 0 }) + " | " + inspected (grapheme.InvalidGraphemeRange { start: 0, end: 0, length: 0 }),
+    displayed (grapheme.InvalidGraphemeRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }) + " | " + inspected (grapheme.InvalidGraphemeRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    savedShow (grapheme.InvalidGraphemeRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    savedDebug (grapheme.InvalidGraphemeRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    show (equal (grapheme.InvalidGraphemeRange { start: 0, end: 0, length: 0 }) (grapheme.InvalidGraphemeRange { start: 0, end: 0, length: 0 })),
+    show (equal (grapheme.InvalidGraphemeRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }) (grapheme.InvalidGraphemeRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) })),
+    show (partial (grapheme.InvalidGraphemeRange { start: 0, end: 0, length: 0 })),
+    show (partial (grapheme.InvalidGraphemeRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }))
+  ]
+}
+
+fn checkTextSliceError -> String = {
+  let savedShow: text.TextSliceError -> String = show
+  let savedDebug: text.TextSliceError -> String = debug
+  let savedEq: text.TextSliceError -> text.TextSliceError -> Bool = eq
+  let partial = savedEq (text.InvalidScalarRange { start: 0, end: 0, length: 0 })
+  join "\n" [
+    "std/text::TextSliceError",
+    displayed (text.InvalidScalarRange { start: 0, end: 0, length: 0 }) + " | " + inspected (text.InvalidScalarRange { start: 0, end: 0, length: 0 }),
+    displayed (text.InvalidScalarRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }) + " | " + inspected (text.InvalidScalarRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    savedShow (text.InvalidScalarRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    savedDebug (text.InvalidScalarRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }),
+    show (equal (text.InvalidScalarRange { start: 0, end: 0, length: 0 }) (text.InvalidScalarRange { start: 0, end: 0, length: 0 })),
+    show (equal (text.InvalidScalarRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }) (text.InvalidScalarRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) })),
+    show (partial (text.InvalidScalarRange { start: 0, end: 0, length: 0 })),
+    show (partial (text.InvalidScalarRange { start: (-9007199254740991), end: (-9007199254740991), length: (-9007199254740991) }))
+  ]
+}
+
+fn checkUtf8DecodeError -> String = {
+  let savedShow: text.Utf8DecodeError -> String = show
+  let savedDebug: text.Utf8DecodeError -> String = debug
+  join "\n" [
+    "std/text::Utf8DecodeError",
+    displayed (text.InvalidUtf8 { offset: 0 }) + " | " + inspected (text.InvalidUtf8 { offset: 0 }),
+    displayed (text.InvalidUtf8 { offset: (-9007199254740991) }) + " | " + inspected (text.InvalidUtf8 { offset: (-9007199254740991) }),
+    savedShow (text.InvalidUtf8 { offset: (-9007199254740991) }),
+    savedDebug (text.InvalidUtf8 { offset: (-9007199254740991) })
+  ]
+}
+
+fn checkDateTimeError -> String = {
+  let savedShow: time.DateTimeError -> String = show
+  let savedDebug: time.DateTimeError -> String = debug
+  join "\n" [
+    "std/time::DateTimeError",
+    displayed (time.InvalidDate { year: 0, month: 0, day: 0 }) + " | " + inspected (time.InvalidDate { year: 0, month: 0, day: 0 }),
+    displayed (time.InvalidDate { year: (-9007199254740991), month: (-9007199254740991), day: (-9007199254740991) }) + " | " + inspected (time.InvalidDate { year: (-9007199254740991), month: (-9007199254740991), day: (-9007199254740991) }),
+    displayed (time.InvalidTime { hour: 0, minute: 0, second: 0, nanosecond: 0 }) + " | " + inspected (time.InvalidTime { hour: 0, minute: 0, second: 0, nanosecond: 0 }),
+    displayed (time.InvalidTime { hour: (-9007199254740991), minute: (-9007199254740991), second: (-9007199254740991), nanosecond: (-9007199254740991) }) + " | " + inspected (time.InvalidTime { hour: (-9007199254740991), minute: (-9007199254740991), second: (-9007199254740991), nanosecond: (-9007199254740991) }),
+    displayed (time.InvalidUtcOffsetSeconds 0) + " | " + inspected (time.InvalidUtcOffsetSeconds 0),
+    displayed (time.InvalidUtcOffsetSeconds (-9007199254740991)) + " | " + inspected (time.InvalidUtcOffsetSeconds (-9007199254740991)),
+    displayed (time.InvalidDateTimeText { offset: 0 }) + " | " + inspected (time.InvalidDateTimeText { offset: 0 }),
+    displayed (time.InvalidDateTimeText { offset: (-9007199254740991) }) + " | " + inspected (time.InvalidDateTimeText { offset: (-9007199254740991) }),
+    savedShow (time.InvalidDateTimeText { offset: (-9007199254740991) }),
+    savedDebug (time.InvalidDateTimeText { offset: (-9007199254740991) })
+  ]
+}
+
+fn checkDurationError -> String = {
+  let savedShow: time.DurationError -> String = show
+  let savedDebug: time.DurationError -> String = debug
+  join "\n" [
+    "std/time::DurationError",
+    displayed (time.NegativeDuration 0) + " | " + inspected (time.NegativeDuration 0),
+    displayed (time.NegativeDuration (-9007199254740991)) + " | " + inspected (time.NegativeDuration (-9007199254740991)),
+    displayed time.DurationOutsideRange + " | " + inspected time.DurationOutsideRange,
+    savedShow time.DurationOutsideRange,
+    savedDebug time.DurationOutsideRange
+  ]
+}
+
+fn checkTimeZoneError -> String = {
+  let savedShow: time.TimeZoneError -> String = show
+  let savedDebug: time.TimeZoneError -> String = debug
+  join "\n" [
+    "std/time::TimeZoneError",
+    displayed (time.UnknownTimeZone "") + " | " + inspected (time.UnknownTimeZone ""),
+    displayed (time.UnknownTimeZone "雪🙂\n\t\"\\\u{0}") + " | " + inspected (time.UnknownTimeZone "雪🙂\n\t\"\\\u{0}"),
+    displayed (time.TimeZoneDatabaseUnavailable "") + " | " + inspected (time.TimeZoneDatabaseUnavailable ""),
+    displayed (time.TimeZoneDatabaseUnavailable "雪🙂\n\t\"\\\u{0}") + " | " + inspected (time.TimeZoneDatabaseUnavailable "雪🙂\n\t\"\\\u{0}"),
+    displayed (time.TimeZoneDatabaseVersionMismatch { required: "", actual: "" }) + " | " + inspected (time.TimeZoneDatabaseVersionMismatch { required: "", actual: "" }),
+    displayed (time.TimeZoneDatabaseVersionMismatch { required: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (time.TimeZoneDatabaseVersionMismatch { required: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" }),
+    savedShow (time.TimeZoneDatabaseVersionMismatch { required: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" }),
+    savedDebug (time.TimeZoneDatabaseVersionMismatch { required: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" })
+  ]
+}
+
+fn checkDomError -> String = {
+  let savedShow: dom.DomError -> String = show
+  let savedDebug: dom.DomError -> String = debug
+  join "\n" [
+    "std/web/dom::DomError",
+    displayed (dom.InvalidSelector "") + " | " + inspected (dom.InvalidSelector ""),
+    displayed (dom.InvalidSelector "雪🙂\n\t\"\\\u{0}") + " | " + inspected (dom.InvalidSelector "雪🙂\n\t\"\\\u{0}"),
+    displayed (dom.DomTargetNotFound "") + " | " + inspected (dom.DomTargetNotFound ""),
+    displayed (dom.DomTargetNotFound "雪🙂\n\t\"\\\u{0}") + " | " + inspected (dom.DomTargetNotFound "雪🙂\n\t\"\\\u{0}"),
+    displayed dom.DomTargetAlreadyMounted + " | " + inspected dom.DomTargetAlreadyMounted,
+    displayed (dom.HydrationMismatch { path: [], expected: "", actual: "" }) + " | " + inspected (dom.HydrationMismatch { path: [], expected: "", actual: "" }),
+    displayed (dom.HydrationMismatch { path: [0, 9007199254740991], expected: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (dom.HydrationMismatch { path: [0, 9007199254740991], expected: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" }),
+    displayed (dom.DomEventQueueOverflow 0) + " | " + inspected (dom.DomEventQueueOverflow 0),
+    displayed (dom.DomEventQueueOverflow (-9007199254740991)) + " | " + inspected (dom.DomEventQueueOverflow (-9007199254740991)),
+    displayed dom.DomTargetRemoved + " | " + inspected dom.DomTargetRemoved,
+    displayed (dom.DomOperationFailed "") + " | " + inspected (dom.DomOperationFailed ""),
+    displayed (dom.DomOperationFailed "雪🙂\n\t\"\\\u{0}") + " | " + inspected (dom.DomOperationFailed "雪🙂\n\t\"\\\u{0}"),
+    savedShow (dom.DomOperationFailed "雪🙂\n\t\"\\\u{0}"),
+    savedDebug (dom.DomOperationFailed "雪🙂\n\t\"\\\u{0}")
+  ]
+}
+
+fn checkDomRuntimeError -> String = {
+  let savedShow: dom.DomRuntimeError<String> -> String = show
+  let savedDebug: dom.DomRuntimeError<String> -> String = debug
+  join "\n" [
+    "std/web/dom::DomRuntimeError",
+    displayed (domFailure (dom.InvalidSelector "雪")) + " | " + inspected (domFailure (dom.InvalidSelector "雪")),
+    displayed (domFailure (dom.InvalidSelector "雪")) + " | " + inspected (domFailure (dom.InvalidSelector "雪")),
+    displayed (dom.DispatchFailure "") + " | " + inspected (dom.DispatchFailure ""),
+    displayed (dom.DispatchFailure "雪🙂\n\t\"\\\u{0}") + " | " + inspected (dom.DispatchFailure "雪🙂\n\t\"\\\u{0}"),
+    savedShow (dom.DispatchFailure "雪🙂\n\t\"\\\u{0}"),
+    savedDebug (dom.DispatchFailure "雪🙂\n\t\"\\\u{0}")
+  ]
+}
+
+fn checkHtmlBuildError -> String = {
+  let savedShow: html.HtmlBuildError -> String = show
+  let savedDebug: html.HtmlBuildError -> String = debug
+  join "\n" [
+    "std/web/html::HtmlBuildError",
+    displayed (html.InvalidTagName "") + " | " + inspected (html.InvalidTagName ""),
+    displayed (html.InvalidTagName "雪🙂\n\t\"\\\u{0}") + " | " + inspected (html.InvalidTagName "雪🙂\n\t\"\\\u{0}"),
+    displayed (html.InvalidAttributeName "") + " | " + inspected (html.InvalidAttributeName ""),
+    displayed (html.InvalidAttributeName "雪🙂\n\t\"\\\u{0}") + " | " + inspected (html.InvalidAttributeName "雪🙂\n\t\"\\\u{0}"),
+    displayed (html.ReservedAttributeName "") + " | " + inspected (html.ReservedAttributeName ""),
+    displayed (html.ReservedAttributeName "雪🙂\n\t\"\\\u{0}") + " | " + inspected (html.ReservedAttributeName "雪🙂\n\t\"\\\u{0}"),
+    displayed (html.UnsafeWebUrlScheme "") + " | " + inspected (html.UnsafeWebUrlScheme ""),
+    displayed (html.UnsafeWebUrlScheme "雪🙂\n\t\"\\\u{0}") + " | " + inspected (html.UnsafeWebUrlScheme "雪🙂\n\t\"\\\u{0}"),
+    savedShow (html.UnsafeWebUrlScheme "雪🙂\n\t\"\\\u{0}"),
+    savedDebug (html.UnsafeWebUrlScheme "雪🙂\n\t\"\\\u{0}")
+  ]
+}
+
+fn checkNavigationError -> String = {
+  let savedShow: navigation.NavigationError -> String = show
+  let savedDebug: navigation.NavigationError -> String = debug
+  join "\n" [
+    "std/web/navigation::NavigationError",
+    displayed (navigation.CrossOriginNavigation { expected: "", actual: "" }) + " | " + inspected (navigation.CrossOriginNavigation { expected: "", actual: "" }),
+    displayed (navigation.CrossOriginNavigation { expected: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (navigation.CrossOriginNavigation { expected: "雪🙂\n\t\"\\\u{0}", actual: "雪🙂\n\t\"\\\u{0}" }),
+    displayed (navigation.NavigationUnavailable "") + " | " + inspected (navigation.NavigationUnavailable ""),
+    displayed (navigation.NavigationUnavailable "雪🙂\n\t\"\\\u{0}") + " | " + inspected (navigation.NavigationUnavailable "雪🙂\n\t\"\\\u{0}"),
+    displayed (navigation.NavigationSecurityFailure "") + " | " + inspected (navigation.NavigationSecurityFailure ""),
+    displayed (navigation.NavigationSecurityFailure "雪🙂\n\t\"\\\u{0}") + " | " + inspected (navigation.NavigationSecurityFailure "雪🙂\n\t\"\\\u{0}"),
+    savedShow (navigation.NavigationSecurityFailure "雪🙂\n\t\"\\\u{0}"),
+    savedDebug (navigation.NavigationSecurityFailure "雪🙂\n\t\"\\\u{0}")
+  ]
+}
+
+fn checkUrlBuildError -> String = {
+  let savedShow: navigation.UrlBuildError -> String = show
+  let savedDebug: navigation.UrlBuildError -> String = debug
+  join "\n" [
+    "std/web/navigation::UrlBuildError",
+    displayed (navigation.InvalidUrl { offset: 0 }) + " | " + inspected (navigation.InvalidUrl { offset: 0 }),
+    displayed (navigation.InvalidUrl { offset: (-9007199254740991) }) + " | " + inspected (navigation.InvalidUrl { offset: (-9007199254740991) }),
+    displayed (navigation.UnsupportedUrlScheme "") + " | " + inspected (navigation.UnsupportedUrlScheme ""),
+    displayed (navigation.UnsupportedUrlScheme "雪🙂\n\t\"\\\u{0}") + " | " + inspected (navigation.UnsupportedUrlScheme "雪🙂\n\t\"\\\u{0}"),
+    displayed navigation.UrlContainsUserInfo + " | " + inspected navigation.UrlContainsUserInfo,
+    displayed (navigation.InvalidPercentEncoding { offset: 0 }) + " | " + inspected (navigation.InvalidPercentEncoding { offset: 0 }),
+    displayed (navigation.InvalidPercentEncoding { offset: (-9007199254740991) }) + " | " + inspected (navigation.InvalidPercentEncoding { offset: (-9007199254740991) }),
+    savedShow (navigation.InvalidPercentEncoding { offset: (-9007199254740991) }),
+    savedDebug (navigation.InvalidPercentEncoding { offset: (-9007199254740991) })
+  ]
+}
+
+fn checkStorageError -> String = {
+  let savedShow: storage.StorageError -> String = show
+  let savedDebug: storage.StorageError -> String = debug
+  join "\n" [
+    "std/web/storage::StorageError",
+    displayed (storage.StorageQuotaExceeded { area: storage.Session, key: "", message: "" }) + " | " + inspected (storage.StorageQuotaExceeded { area: storage.Session, key: "", message: "" }),
+    displayed (storage.StorageQuotaExceeded { area: storage.Session, key: "雪🙂\n\t\"\\\u{0}", message: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (storage.StorageQuotaExceeded { area: storage.Session, key: "雪🙂\n\t\"\\\u{0}", message: "雪🙂\n\t\"\\\u{0}" }),
+    displayed (storage.StorageSecurityFailure { area: storage.Session, message: "" }) + " | " + inspected (storage.StorageSecurityFailure { area: storage.Session, message: "" }),
+    displayed (storage.StorageSecurityFailure { area: storage.Session, message: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (storage.StorageSecurityFailure { area: storage.Session, message: "雪🙂\n\t\"\\\u{0}" }),
+    displayed (storage.StorageUnavailable { area: storage.Session, message: "" }) + " | " + inspected (storage.StorageUnavailable { area: storage.Session, message: "" }),
+    displayed (storage.StorageUnavailable { area: storage.Session, message: "雪🙂\n\t\"\\\u{0}" }) + " | " + inspected (storage.StorageUnavailable { area: storage.Session, message: "雪🙂\n\t\"\\\u{0}" }),
+    savedShow (storage.StorageUnavailable { area: storage.Session, message: "雪🙂\n\t\"\\\u{0}" }),
+    savedDebug (storage.StorageUnavailable { area: storage.Session, message: "雪🙂\n\t\"\\\u{0}" })
+  ]
+}
+
+pub fn probe -> String = join "\n" [
+  debug (checkBenchmarkFailure ()),
+  debug (checkBigIntConversionError ()),
+  debug (checkBigIntDivisionError ()),
+  debug (checkBigIntParseError ()),
+  debug (checkBigIntPowerError ()),
+  debug (checkBase64DecodeError ()),
+  debug (checkHexDecodeError ()),
+  debug (checkByteError ()),
+  debug (checkBytesSliceError ()),
+  debug (checkChildProcessConfigError ()),
+  debug (checkChildProcessError ()),
+  debug (checkSizeError ()),
+  debug (checkDecimalArithmeticError ()),
+  debug (checkDecimalContextError ()),
+  debug (checkDecimalConversionError ()),
+  debug (checkDecimalParseError ()),
+  debug (checkParallelismError ()),
+  debug (checkScheduleError ()),
+  debug (checkEntropyConfigError ()),
+  debug (checkEntropyError ()),
+  debug (checkFileSystemErrorKind ()),
+  debug (checkFileTextError ()),
+  debug (checkHttpBuildError ()),
+  debug (checkHttpError ()),
+  debug (checkIntParseError ()),
+  debug (checkPathError ()),
+  debug (checkStdinError ()),
+  debug (checkProcessError ()),
+  debug (checkQueueClosed ()),
+  debug (checkQueueCreateError ()),
+  debug (checkRandomConfigError ()),
+  debug (checkRandomRangeError ()),
+  debug (checkRegexCompileError ()),
+  debug (checkRegexCompileErrorKind ()),
+  debug (checkSemaphoreCreateError ()),
+  debug (checkStdinConfigError ()),
+  debug (checkBufferCapacityError ()),
+  debug (checkGraphemeSliceError ()),
+  debug (checkTextSliceError ()),
+  debug (checkUtf8DecodeError ()),
+  debug (checkDateTimeError ()),
+  debug (checkDurationError ()),
+  debug (checkTimeZoneError ()),
+  debug (checkDomError ()),
+  debug (checkDomRuntimeError ()),
+  debug (checkHtmlBuildError ()),
+  debug (checkNavigationError ()),
+  debug (checkUrlBuildError ()),
+  debug (checkStorageError ())
+]
+pub effect fn main = println (probe ())

@@ -2,6 +2,9 @@ use seseragi_runtime::{run_local_benchmarks_in_directory, BenchmarkConfig, Bench
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
+mod baseline;
+mod native;
+
 pub(crate) fn benchmark(arguments: &[String]) -> Result<i32, String> {
     let invocation = Invocation::parse(arguments)?;
     let root = crate::local_project::containing_package(&invocation.path)
@@ -35,11 +38,11 @@ pub(crate) fn benchmark(arguments: &[String]) -> Result<i32, String> {
                 .map(|value| value.as_str())
         })
         .ok_or(
-            "benchmark target is required; pass --target node or set benchmark.target/run.target",
+            "benchmark target is required; pass --target node or --target native, or set benchmark.target/run.target",
         )?;
-    if !matches!(target, "node" | "process" | "test-js") {
+    if !matches!(target, "node" | "process" | "test-js" | "native") {
         return Err(format!(
-            "benchmark target `{target}` is unsupported by the CLI process adapter; expected node"
+            "benchmark target `{target}` is unsupported; expected node or native"
         ));
     }
     let compiled = match seseragi_driver::compile_local_benchmarks(
@@ -102,6 +105,9 @@ pub(crate) fn benchmark(arguments: &[String]) -> Result<i32, String> {
         json: invocation.json,
         version: seseragi_release::TOOLCHAIN_VERSION.to_owned(),
     };
+    if target == "native" {
+        return native::run(&compiled, &root, &options);
+    }
     run_local_benchmarks_in_directory(&compiled, &root, &options)
         .map(|result| result.exit_code)
         .map_err(|error| error.to_string())

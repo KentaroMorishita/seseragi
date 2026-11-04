@@ -1,0 +1,114 @@
+2024-02-29
+InvalidDate { year: 1900, month: 2, day: 29 }
+2000-02-29
+0000-02-29
+-000400-02-29
+InvalidDate { year: -100, month: 2, day: 29 }
+InvalidDate { year: 2024, month: 0, day: 1 }
+InvalidDate { year: 2024, month: 13, day: 1 }
+InvalidDate { year: 2024, month: 1, day: 0 }
+InvalidDate { year: 2024, month: 4, day: 31 }
++9007199254740991-12-31
+-9007199254740991-01-01
+00:00:00
+23:59:59.999999999
+01:02:03.000000001
+01:02:03.1
+InvalidTime { hour: -1, minute: 0, second: 0, nanosecond: 0 }
+InvalidTime { hour: 24, minute: 0, second: 0, nanosecond: 0 }
+InvalidTime { hour: 0, minute: -1, second: 0, nanosecond: 0 }
+InvalidTime { hour: 0, minute: 60, second: 0, nanosecond: 0 }
+InvalidTime { hour: 0, minute: 0, second: -1, nanosecond: 0 }
+InvalidTime { hour: 23, minute: 59, second: 60, nanosecond: 0 }
+InvalidTime { hour: 0, minute: 0, second: 0, nanosecond: -1 }
+InvalidTime { hour: 0, minute: 0, second: 0, nanosecond: 1000000000 }
+2024-02-29
+0000-02-29
++010000-01-01
+-000001-12-31
+0000-01-01
+0001-01-01
++9007199254740991-12-31
+-9007199254740991-01-01
+InvalidDate { year: 9007199254740992, month: 1, day: 1 }
+InvalidDate { year: 9007199254740992, month: 1, day: 1 }
+InvalidDate { year: 1e+25, month: 1, day: 1 }
+InvalidDate { year: 2023, month: 2, day: 29 }
+InvalidDateTimeText { offset: 0 }
+InvalidDateTimeText { offset: 4 }
+InvalidDateTimeText { offset: 7 }
+InvalidDateTimeText { offset: 4 }
+InvalidDateTimeText { offset: 4 }
+InvalidDateTimeText { offset: 11 }
+InvalidDateTimeText { offset: 6 }
+InvalidDateTimeText { offset: 6 }
+00:00:00
+23:59:59.123456789
+01:02:03.12
+01:02:03
+InvalidTime { hour: 24, minute: 0, second: 0, nanosecond: 0 }
+InvalidTime { hour: 0, minute: 60, second: 0, nanosecond: 0 }
+InvalidTime { hour: 0, minute: 0, second: 60, nanosecond: 0 }
+InvalidDateTimeText { offset: 0 }
+InvalidDateTimeText { offset: 5 }
+InvalidDateTimeText { offset: 2 }
+InvalidDateTimeText { offset: 2 }
+InvalidDateTimeText { offset: 9 }
+InvalidDateTimeText { offset: 19 }
+InvalidDateTimeText { offset: 9 }
+InvalidDateTimeText { offset: 10 }
+InvalidDateTimeText { offset: 7 }
+2024-02-29T23:59:59.000000001
++010000-01-01T00:00:00
+InvalidDate { year: 2023, month: 2, day: 29 }
+InvalidTime { hour: 24, minute: 0, second: 0, nanosecond: 0 }
+InvalidDateTimeText { offset: 19 }
+InvalidDateTimeText { offset: 0 }
+InvalidDateTimeText { offset: 10 }
+InvalidDateTimeText { offset: 15 }
+InvalidDateTimeText { offset: 18 }
+InvalidDateTimeText { offset: 11 }
+1970-01-01T00:00:00Z
+1969-12-31T23:59:59.999999999Z
+2024-02-29T12:34:56.1234+09:30
+2024-01-01T00:00:00Z
+2024-01-01T00:00:00+18:00
+2024-01-01T00:00:00-18:00
+InvalidUtcOffsetSeconds 64860
+InvalidUtcOffsetSeconds -64860
+InvalidDateTimeText { offset: 23 }
+InvalidUtcOffsetSeconds 68400
+InvalidDateTimeText { offset: 28 }
+InvalidDateTimeText { offset: 19 }
+InvalidDateTimeText { offset: 20 }
+InvalidDateTimeText { offset: 21 }
+InvalidDate { year: 2023, month: 2, day: 29 }
+InvalidDateTimeText { offset: 15 }
+InvalidDateTimeText { offset: 4 }
+1970-01-01T00:00:00Z
+1970-01-01T17:59:59.999999999+18:00
+-000001-12-31T06:00:00-18:00
+1970-01-01T00:00:00.999999999+00:00
+1969-12-31T23:59:59-00:00
+2024-02-29T00:00:58+00:00
+2024-02-29T23:59:01-00:00
+2000-03-01T09:30:00.000000001+09:30
+1969-12-31T23:00:00Z
+1970-01-01T17:59:59.999999999Z
+1969-12-30T12:00:00-18:00
++9007199254740991-12-31T23:59:59.999999999Z
+-9007199254740991-01-01T00:00:00Z
+InvalidUtcOffsetSeconds 64801
+InvalidUtcOffsetSeconds -64801
+InvalidUtcOffsetSeconds 9007199254740991
+2024-02-29
+12:34:56.123456789
+2024-02-29T12:34:56.123456789
+2000-02-29
+01:02:03.456
+2000-02-29T01:02:03
+2000-03-01T00:59:59.123456789+01:00
+2000-03-01T00:59:59.123456789
+9007199254740992
+1e+25
+-1e+25

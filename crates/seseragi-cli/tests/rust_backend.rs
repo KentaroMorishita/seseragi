@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 #[allow(dead_code)]
 #[path = "support/runtime_diagnostics.rs"]
 mod diagnostics;
@@ -13,24 +16,47 @@ static SERIAL: AtomicUsize = AtomicUsize::new(0);
 struct Scratch(PathBuf);
 impl Scratch {
     fn new() -> Self {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../target")
-            .join(format!(
-                "rust-cli-test-{}-{}",
-                std::process::id(),
-                SERIAL.fetch_add(1, Ordering::Relaxed)
-            ));
+        let path = std::env::temp_dir().join(format!(
+            "rust-cli-test-{}-{}",
+            std::process::id(),
+            SERIAL.fetch_add(1, Ordering::Relaxed)
+        ));
         fs::create_dir_all(&path).unwrap();
-        Self(path.canonicalize().unwrap())
+        let scratch = Self(path.canonicalize().unwrap());
+        let dependencies = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../node_modules");
+        if dependencies.is_dir() {
+            let link = scratch.0.join("node_modules");
+            #[cfg(unix)]
+            std::os::unix::fs::symlink(&dependencies, link).unwrap();
+            #[cfg(windows)]
+            prefix_process::successful(prefix_process::bounded(
+                Command::new("node")
+                    .args([
+                        "-e",
+                        "require('node:fs').symlinkSync(process.argv[1], process.argv[2], 'junction')",
+                    ])
+                    .arg(&dependencies)
+                    .arg(link),
+                &scratch.0,
+            ));
+        }
+        scratch
     }
 }
 impl Drop for Scratch {
     fn drop(&mut self) {
+        let dependencies = self.0.join("node_modules");
+        #[cfg(unix)]
+        let _ = fs::remove_file(dependencies);
+        #[cfg(windows)]
+        let _ = fs::remove_dir(dependencies);
         let _ = fs::remove_dir_all(&self.0);
     }
 }
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+    native_runtime::configure(&mut command);
+    command
 }
 
 #[test]
@@ -189,6 +215,43 @@ fn compare_raw_ts_and_native_fixtures(fixtures: &[(&str, i32)]) {
 }
 
 #[test]
+fn returned_unit_functions_match_raw_strict_ts_and_native() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("returned-unit-functions", 0),
+        ("returned-unit-function-defect", 70),
+    ]);
+}
+
+#[test]
+fn returned_unit_functions_reject_nominal_and_generic_units_in_both_targets() {
+    for source in [
+        "type Unit = | FakeUnit\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "struct Unit { value: Int }\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "type Token = | FakeUnit\nalias Unit = Token\npub fn make -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "pub fn make<Unit> -> (Unit -> Int) = { fn value -> Int = 42; value }\n",
+        "alias PreludeUnit = Unit\npub fn make<Unit> -> (PreludeUnit -> Int) = { fn value unit: Unit -> Int = 42; value }\n",
+    ] {
+        for profile in [
+            seseragi_driver::BuildProfile::Development,
+            seseragi_driver::BuildProfile::Release,
+        ] {
+            let input = seseragi_driver::CompileInput::new(
+                "main.ssrg",
+                "fixture/returned-unit-functions",
+                source,
+            )
+            .with_profile(profile);
+            let native = seseragi_driver::compile_core_module(input.clone()).unwrap_err();
+            let ts = seseragi_driver::compile_module(input).unwrap_err();
+            assert_eq!(native, ts, "{source}");
+            assert_eq!(ts.diagnostics.len(), 1, "{source}\n{ts:#?}");
+            assert_eq!(ts.diagnostics[0].code, "SES-T0101");
+            assert_eq!(ts.diagnostics[0].message_key, "function.return-type-mismatch");
+        }
+    }
+}
+
+#[test]
 fn native_polymorphic_globals_match_ts_in_both_profiles() {
     use prefix_process::{bounded, successful};
     let scratch = Scratch(std::env::temp_dir().join(format!(
@@ -211,6 +274,7 @@ fn native_polymorphic_globals_match_ts_in_both_profiles() {
         let directory = scratch
             .0
             .join(if input.is_dir() { "package" } else { "file" });
+        let input = prefix_process::copy_input(&input, &scratch.0);
         successful(bounded(
             cli()
                 .args(["experimental", "build-native"])
@@ -335,6 +399,7 @@ fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
         ("int-division-defect", 70),
     ] {
         let source = fixtures.join(format!("{name}.ssrg"));
+        let source = prefix_process::copy_input(&source, &scratch.0);
         let expected = if code == 0 {
             fs::read(fixtures.join(format!("{name}.stdout"))).unwrap()
         } else {
@@ -792,6 +857,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
             .join(fixture);
+        let project = prefix_process::copy_input(&project, &scratch.0);
         for entry in ["main", "probe"] {
             let directory = scratch.0.join(fixture).join(entry);
             let built = cli()
@@ -904,12 +970,12 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 ("error[", Some(main.clone()), "value")
             }
             "unsupported" => {
-                let addition = "\nimport * as regex from \"std/regex\"\npub fn unsupported -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n";
+                let addition = "\nimport * as effects from \"std/effect\"\npub effect fn unsupported -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
                 fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
                 (
                     "SES-RUST-0001",
                     Some(library.clone()),
-                    "regex.compile \"x\"",
+                    "effects.race (effects.succeed 1) (effects.succeed 2)",
                 )
             }
             _ => ("SES-K0102", None, ""),
@@ -970,35 +1036,36 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
 }
 
 #[test]
-fn native_project_accepts_the_formerly_unsupported_imported_power() {
+fn native_project_accepts_formerly_unsupported_imported_operations() {
     let scratch = Scratch::new();
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../examples/spec/fixtures/rust-backend-projects/linked");
-    let project = scratch.0.join("power");
-    copy_project(&fixture, &project);
-    let library = project.join("vendor/model/src/lib.ssrg");
-    fs::write(
-        &library,
-        fs::read_to_string(&library).unwrap() + "\npub fn unsupported -> Float = 2.0 ** 3.0\n",
-    )
-    .unwrap();
-    write_project_lock(&project);
-    let output = scratch.0.join("power.rs");
-    let result = cli()
-        .env("PATH", "")
-        .args(["experimental", "emit-rust"])
-        .arg(&project)
-        .args(["--entry", "probe", "--output"])
-        .arg(&output)
-        .output()
-        .unwrap();
-    assert!(
-        result.status.success(),
-        "{}",
-        String::from_utf8_lossy(&result.stderr)
-    );
-    assert!(output.is_file());
-    assert!(output.with_extension("rust-backend.json").is_file());
+    for (name, addition) in [
+        ("power", "\npub fn unsupported -> Float = 2.0 ** 3.0\n"),
+        ("regex", "\nimport * as regex from \"std/regex\"\npub fn unsupported -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n"),
+    ] {
+        let project = scratch.0.join(name);
+        copy_project(&fixture, &project);
+        let library = project.join("vendor/model/src/lib.ssrg");
+        fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
+        write_project_lock(&project);
+        let output = scratch.0.join(format!("{name}.rs"));
+        let result = cli()
+            .env("PATH", "")
+            .args(["experimental", "emit-rust"])
+            .arg(&project)
+            .args(["--entry", "probe", "--output"])
+            .arg(&output)
+            .output()
+            .unwrap();
+        assert!(
+            result.status.success(),
+            "{name}: {}",
+            String::from_utf8_lossy(&result.stderr)
+        );
+        assert!(output.is_file());
+        assert!(output.with_extension("rust-backend.json").is_file());
+    }
 }
 
 #[test]
@@ -1044,6 +1111,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
         ));
+        let path = prefix_process::copy_input(&path, &scratch.0);
         let destination = scratch.0.join(name);
         let built = cli()
             .args(["experimental", "build-native"])
@@ -1246,7 +1314,7 @@ fn main() {
     .replace("<DISPLAY>", &display);
     let main = artifact.source.rfind("fn main()").unwrap();
     let rust = scratch.0.join("format.rs");
-    fs::write(&rust, artifact.source[..main].to_owned() + &harness).unwrap();
+    native_runtime::write_program(&rust, artifact.source[..main].to_owned() + &harness).unwrap();
     let executable = scratch.0.join(if cfg!(windows) {
         "format.exe"
     } else {
@@ -1541,6 +1609,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         ("float-math-cbrt", "import * as math from \"std/math\"\npub fn answer -> Float = math.cbrt 4.0\n", "math"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n", "hash"),
         ("hash-big-int", "import * as big from \"std/big-int\"\npub fn answer -> Int = hash (big.fromInt 1)\n", "big-int"),
+        ("regex-compile", "import * as regex from \"std/regex\"\npub fn answer -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n", "regex"),
     ] {
         let path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&path, source).unwrap();
@@ -1552,11 +1621,12 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         let metadata: serde_json::Value = serde_json::from_slice(&fs::read(output.with_extension("rust-backend.json")).unwrap()).unwrap();
         assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == capability));
     }
-    for (name, source) in [("regex-compile", "import * as regex from \"std/regex\"\npub fn answer -> Either<regex.RegexCompileError, regex.Regex> = regex.compile \"x\"\n")] {
+    for (name, source) in [("effect-race", "import * as effects from \"std/effect\"\npub effect fn answer -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n")] {
         let bad_path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&bad_path, source).unwrap();
         let bad_output = scratch.0.join(format!("{name}.rs"));
         let bad = cli()
+            .env("PATH", "")
             .args(["experimental", "emit-rust"])
             .arg(&bad_path)
             .args(["--entry", "answer", "--output"])
@@ -2329,6 +2399,7 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
         ),
     ] {
         let path = fixtures.join(relative);
+        let path = prefix_process::copy_input(&path, &scratch.0);
         let destination = scratch.0.join(name);
         let built = cli()
             .args(["experimental", "build-native"])

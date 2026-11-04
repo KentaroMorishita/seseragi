@@ -1,3 +1,9 @@
+#[path = "../../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[allow(unused_imports)]
+pub use native_cache::copy_input;
+
 use std::{
     fs::{self, File},
     path::{Path, PathBuf},
@@ -6,14 +12,15 @@ use std::{
     time::{Duration, Instant},
 };
 
-struct OwnedChild {
+pub(crate) struct OwnedChild {
     child: Child,
     stdout: PathBuf,
     stderr: PathBuf,
     record: Option<PathBuf>,
 }
 impl OwnedChild {
-    fn start(command: &mut Command, directory: &Path) -> Self {
+    pub(crate) fn start(command: &mut Command, directory: &Path) -> Self {
+        native_cache::configure(command);
         let stdout = directory.join("stdout");
         let stderr = directory.join("stderr");
         command
@@ -51,7 +58,12 @@ impl OwnedChild {
         });
         owned
     }
-    fn wait(&mut self, timeout: Duration) -> Output {
+    #[allow(dead_code)]
+    pub(crate) fn id(&self) -> u32 {
+        self.child.id()
+    }
+
+    pub(crate) fn wait(&mut self, timeout: Duration) -> Output {
         let deadline = Instant::now() + timeout;
         let status = loop {
             if let Some(status) = self.child.try_wait().unwrap() {

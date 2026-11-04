@@ -1,3 +1,9 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/native_runtime.rs"]
+mod native_runtime;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -5,7 +11,7 @@ use std::{
 };
 
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
 }
 
 #[test]
@@ -289,7 +295,7 @@ fn main() {{
 "#, id(&rust.metadata.entry)));
     fs::create_dir(folder).unwrap();
     let program = folder.join("program.rs");
-    fs::write(&program, observed).unwrap();
+    native_runtime::write_program(&program, observed).unwrap();
     let binary = folder.join(if cfg!(windows) {
         "program.exe"
     } else {

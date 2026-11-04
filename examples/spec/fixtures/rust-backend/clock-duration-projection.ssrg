@@ -1,0 +1,27 @@
+import * as time from "std/time"
+import * as effects from "std/effect"
+
+effect fn duration value: Either<time.DurationError, time.Duration>
+  -> time.Duration fails String =
+  effects.fromEither value |> effects.mapError show
+
+effect fn output value: time.Duration -> Unit with Console fails String =
+  println (show (time.toNanoseconds value)) |> effects.mapError show
+
+pub effect fn main -> Unit with Console fails String = do {
+  safe <- duration (time.nanoseconds 9007199254740991)
+  one <- duration (time.nanoseconds 1)
+  two <- duration (time.nanoseconds 2)
+  output safe
+  next <- duration (time.addDuration one safe)
+  output next
+  rounded <- duration (time.addDuration two safe)
+  output rounded
+  seconds <- duration (time.seconds 9223372036)
+  output seconds
+  milliseconds <- duration (time.milliseconds 9223372036854)
+  output milliseconds
+  remainder <- duration (time.nanoseconds 854775807)
+  maximum <- duration (time.addDuration remainder seconds)
+  output maximum
+}

@@ -7,6 +7,48 @@ use seseragi_syntax::{parse_unlinked_module_interface, InterfaceType};
 use std::collections::BTreeMap;
 
 #[test]
+fn an_imported_unit_alias_uses_its_definition_scope_before_interface_normalization() {
+    let domain_source = "pub alias StandardUnit = Unit\n";
+    for (value, accepted) in [("()", true), ("FakeUnit", false)] {
+        let main_source = format!("import {{ StandardUnit }} from \"./domain\"\ntype Unit = | FakeUnit\npub fn unit -> StandardUnit = {value}\n");
+        let domain = parse_unlinked_module_interface(
+            "domain.ssrg",
+            "fixture/unit-alias::domain",
+            domain_source,
+        );
+        let targets = BTreeMap::from([(
+            "./domain".to_owned(),
+            ModuleLinkTarget::same_package(domain.header, domain.interface).unwrap(),
+        )]);
+        let main =
+            parse_unlinked_module_interface("main.ssrg", "fixture/unit-alias::main", &main_source);
+        let result = analyze_linked_module(
+            seseragi_syntax::parse_diagnostics("main.ssrg", &main_source),
+            link_module(main, &targets).unwrap(),
+            &main_source,
+        );
+        if accepted {
+            let analyzed = result.unwrap();
+            assert!(analyzed.typed_hir.declarations.iter().any(|declaration| {
+                matches!(declaration, TypedDecl::Fn {
+                    body: TypedExpr::Unit {
+                        type_ref: TypedType::ExternalNamed { canonical, .. }, ..
+                    }, ..
+                } if canonical == "std/prelude::Unit")
+            }));
+        } else {
+            let errors = result.unwrap_err();
+            assert_eq!(errors.diagnostics.len(), 1);
+            assert_eq!(errors.diagnostics[0].code, "SES-T0101");
+            assert_eq!(
+                errors.diagnostics[0].message_key,
+                "function.return-type-mismatch"
+            );
+        }
+    }
+}
+
+#[test]
 fn preserves_an_imported_struct_payload_inside_an_adt_constructor() {
     let domain_source = "pub struct Head { status: Int }\npub type Event =\n  | Started Head\n";
     let main_source = "import * as domain from \"./domain\"\n\npub fn status event: domain.Event -> Int =\n  match event {\n    domain.Started head -> head.status\n  }\n";

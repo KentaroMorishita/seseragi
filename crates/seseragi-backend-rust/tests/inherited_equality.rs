@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
 use seseragi_backend_rust::emit_rust_module;
 use seseragi_driver::{compile_core_module, CompileInput};
 use seseragi_lowering::{CoreExpr, CoreInstanceEvidence, CoreType};
@@ -162,7 +165,7 @@ fn execute(source: &str, name: &str, expected: &str, exit: i32) {
     )));
     fs::create_dir(&directory.0).unwrap();
     let file = directory.0.join("program.rs");
-    fs::write(&file, artifact.source).unwrap();
+    link::write_program(&file, artifact.source).unwrap();
     let exe = directory.0.join(if cfg!(windows) {
         "program.exe"
     } else {

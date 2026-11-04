@@ -278,8 +278,13 @@ impl Backend<'_> {
         }
         let mut inner = scope.clone();
         let (name, value) = match first {
-            CoreStatement::PureLet { name, value, .. } => {
-                let value = self.expr(value, scope)?;
+            CoreStatement::PureLet {
+                name,
+                value,
+                type_parameters,
+                ..
+            } => {
+                let value = self.pure_let_value(value, type_parameters, scope)?;
                 inner.insert(name.clone());
                 (name, value)
             }

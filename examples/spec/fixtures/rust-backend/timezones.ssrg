@@ -1,0 +1,102 @@
+import * as time from "std/time"
+import * as effects from "std/effect"
+import { ZonedDateTime, TimeZones } from "std/time"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console =
+  println message |> effects.recover ignore
+effect fn report error: time.TimeZoneError -> Unit with Console, TimeZones = say (show error)
+
+fn savedLoad -> (String -> Effect<{timeZones: time.TimeZones}, time.TimeZoneError, time.TimeZone>) = time.loadTimeZone
+fn savedAt -> (time.Instant -> time.TimeZone -> time.ZonedDateTime) = time.atTimeZone
+fn partial local: time.LocalDateTime -> (time.TimeZone -> time.LocalResolution) = time.resolveLocal local
+fn savedLocal -> (time.ZonedDateTime -> time.LocalDateTime) = time.zonedLocalDateTime
+
+fn render value: ZonedDateTime -> String =
+  time.formatLocalDateTime (savedLocal () value) + "|" +
+  time.formatOffsetDateTime (time.atOffset (time.zonedOffset value) (time.zonedInstant value)) + "|" +
+  time.timeZoneId (time.zonedTimeZone value) + "@" + time.timeZoneVersion (time.zonedTimeZone value)
+
+fn resolve zone: time.TimeZone -> text: String -> String = match time.parseLocalDateTime text {
+  Left error -> show error
+  Right local -> match partial local zone {
+    time.Unique _ -> "Unique"
+    time.Ambiguous _ -> "Ambiguous"
+    time.Gap _ -> "Gap"
+  }
+}
+
+fn convert zone: time.TimeZone -> text: String -> String = match time.parseOffsetDateTime text {
+  Left error -> show error
+  Right value -> render (savedAt () (time.offsetInstant value) zone)
+}
+
+effect fn probe id: String -> Unit with Console, TimeZones =
+  (do {
+    zone <- savedLoad () id
+    say (time.timeZoneId zone + "@" + time.timeZoneVersion zone)
+    say (resolve zone "2024-01-01T00:00:00.123456789")
+    say (resolve zone "2024-03-31T01:59:59.999999999")
+    say (resolve zone "2024-03-31T02:00:00")
+    say (resolve zone "2024-03-31T02:59:59.999999999")
+    say (resolve zone "2024-03-31T03:00:00")
+    say (resolve zone "2024-10-27T01:59:59.999999999")
+    say (resolve zone "2024-10-27T02:00:00")
+    say (resolve zone "2024-10-27T02:30:00.123456789")
+    say (resolve zone "2024-10-27T02:59:59.999999999")
+    say (resolve zone "2024-10-27T03:00:00")
+    say (resolve zone "2024-03-10T02:30:00")
+    say (resolve zone "2024-11-03T01:30:00")
+    say (resolve zone "2024-04-07T01:45:00")
+    say (resolve zone "2024-10-06T02:15:00")
+    say (resolve zone "2011-12-30T12:00:00")
+    say (resolve zone "1799-12-31T23:59:59.999999999")
+    say (resolve zone "1800-01-01T00:00:00")
+    say (resolve zone "2499-12-31T23:59:59.999999999")
+    say (resolve zone "2500-03-28T02:30:00")
+    say (resolve zone "+012345-10-28T02:30:00")
+    say (resolve zone "-000001-01-01T00:00:00.000000001")
+    say (resolve zone "+9007199254740991-06-07T08:09:10.123456789")
+    say (resolve zone "-9007199254740991-06-07T08:09:10.123456789")
+    say (resolve zone "2024-02-30T00:00:00")
+    say (resolve zone "2024-01-01T00:00:00あ")
+    say (convert zone "2024-03-31T00:59:59.999999999Z")
+    say (convert zone "2024-03-31T01:00:00Z")
+    say (convert zone "2024-10-27T00:59:59.999999999Z")
+    say (convert zone "2024-10-27T01:00:00Z")
+    say (convert zone "1893-03-31T23:06:31.999999999Z")
+    say (convert zone "1969-12-31T23:59:59.999999999Z")
+    say (convert zone "1799-12-31T23:59:59.999999999Z")
+    say (convert zone "1800-01-01T00:00:00Z")
+    say (convert zone "2499-12-31T23:59:59.999999999Z")
+    say (convert zone "2500-01-01T00:00:00Z")
+    say (convert zone "+012345-06-07T08:09:10.123456789+18:00")
+    say (convert zone "-000001-06-07T08:09:10.123456789-18:00")
+  }) |> effects.recover report
+
+pub effect fn main -> Unit with Console, TimeZones = do {
+  let versionQuery: Unit -> Effect<{timeZones: time.TimeZones}, Never, String> = time.databaseVersion
+  version <- versionQuery ()
+  say version
+  again <- versionQuery ()
+  say again
+  let unused = savedLoad () "unknown-cold"
+  probe "Europe/Berlin"
+  probe "US/Eastern"
+  probe "Australia/Lord_Howe"
+  probe "Pacific/Apia"
+  probe "Asia/Tokyo"
+  probe "Asia/Kathmandu"
+  probe "UTC"
+  probe "Etc/GMT+5"
+  probe "America/Coyhaique"
+  probe "Europe/Kyiv"
+  probe ""
+  probe "europe/berlin"
+  probe " Europe/Berlin"
+  probe "Europe/Berlin "
+  probe "Europe/Berlin\n"
+  probe "Unknown/雫🙂"
+  probe "__proto__"
+  probe "+01:00"
+}

@@ -17,6 +17,49 @@ pub effect fn failed -> Int fails String = do {
 "#;
 
 #[test]
+fn runtime_constructor_retains_its_checked_phantom_type_argument() {
+    let source = "import * as dom from \"std/web/dom\"\nfn concrete value: dom.DomError -> dom.DomRuntimeError<String> = dom.DomFailure value\nfn generic<E> value: dom.DomError -> dom.DomRuntimeError<E> = dom.DomFailure value\n";
+    for profile in [BuildProfile::Development, BuildProfile::Release] {
+        let compiled = compile_module(
+            CompileInput::new("dom-error.ssrg", "fixture/dom-error", source).with_profile(profile),
+        )
+        .unwrap();
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("_ssrg_dom_DomFailure<string>(value)")
+                && compiled
+                    .generated
+                    .typescript
+                    .contains("_ssrg_dom_DomFailure<E>(value)"),
+            "{}",
+            compiled.generated.typescript
+        );
+    }
+}
+
+#[test]
+fn saved_child_stream_call_retains_instantiated_environment_and_failure_types() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/child-process-callables.ssrg");
+    for profile in [BuildProfile::Development, BuildProfile::Release] {
+        let compiled = compile_module(
+            CompileInput::new("child.ssrg", "fixture/child", source).with_profile(profile),
+        )
+        .unwrap();
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("<R, E,>(__ssrg$provider$partial$0: Stream<R, E, ChildInput>)"),
+            "{}",
+            compiled.generated.typescript
+        );
+    }
+}
+
+#[test]
 fn ordinary_generic_effect_factory_retains_checked_call_instantiation() {
     let mut outputs = Vec::new();
     for (name, profile) in [

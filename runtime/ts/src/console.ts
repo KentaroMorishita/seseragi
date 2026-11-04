@@ -59,10 +59,31 @@ function writeStdout(value: string): ServiceOperation<ConsoleError, Unit> {
   })
 }
 
+let pendingStderrWrites = 0
+
+function handleStderrWriteError() {
+  // The write callback reports this failure as ConsoleError.
+}
+
+function releaseStderrWrite() {
+  if (--pendingStderrWrites === 0) {
+    stderr.off("error", handleStderrWriteError)
+  }
+}
+
 function writeStderr(value: string): ServiceOperation<ConsoleError, Unit> {
   return new Promise((resolve, reject) => {
+    if (pendingStderrWrites++ === 0) {
+      stderr.on("error", handleStderrWriteError)
+    }
     try {
       stderr.write(value, (writeError) => {
+        if (writeError === null || writeError === undefined) {
+          releaseStderrWrite()
+        } else {
+          // Node emits the stream error after the write callback.
+          queueMicrotask(releaseStderrWrite)
+        }
         resolve(
           writeError === null || writeError === undefined
             ? serviceSuccess(unit)
@@ -70,6 +91,7 @@ function writeStderr(value: string): ServiceOperation<ConsoleError, Unit> {
         )
       })
     } catch (writeError) {
+      releaseStderrWrite()
       if (writeError instanceof Error) {
         resolve(serviceFailure(consoleError(writeError)))
         return

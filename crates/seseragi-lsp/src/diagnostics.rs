@@ -172,6 +172,38 @@ fn position(position: EncodedPosition) -> Position {
     }
 }
 
+pub(crate) fn convert_target(
+    diagnostic: &crate::target_diagnostics::TargetDiagnostic,
+    source: &str,
+    encoding: PositionEncoding,
+) -> Result<LspDiagnostic, LineIndexError> {
+    let origin = diagnostic.error.origin.as_ref().unwrap();
+    let index = LineIndex::new(source);
+    Ok(LspDiagnostic {
+        range: Range {
+            start: position(index.try_locate_encoded(origin.start, encoding)?),
+            end: position(index.try_locate_encoded(origin.end, encoding)?),
+        },
+        severity: severity(DiagnosticSeverity::Warning),
+        code: diagnostic.error.code.clone(),
+        source: "seseragi",
+        message: format!("{} target: {}", diagnostic.target, diagnostic.error.message),
+        tags: Vec::new(),
+        related_information: Vec::new(),
+        data: LspDiagnosticData {
+            lint: None,
+            message_key: "target.unsupported-feature".to_owned(),
+            notes: Vec::new(),
+            helps: Vec::new(),
+            fixes: Vec::new(),
+            expected_type: None,
+            actual_type: None,
+            type_difference: None,
+            related_sources: Vec::new(),
+        },
+    })
+}
+
 fn severity(severity: DiagnosticSeverity) -> u8 {
     match severity {
         DiagnosticSeverity::Error => 1,

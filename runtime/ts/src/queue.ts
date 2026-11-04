@@ -150,7 +150,9 @@ export function bounded<Value>(
       : fail(NonPositiveCapacity(capacity))(environment, context)
 }
 
-export function unbounded<Value>(): Effect<unknown, never, Queue<Value>> {
+export function unbounded<Value>(
+  _unit?: Unit
+): Effect<unknown, never, Queue<Value>> {
   return () => createQueue(Number.POSITIVE_INFINITY)
 }
 

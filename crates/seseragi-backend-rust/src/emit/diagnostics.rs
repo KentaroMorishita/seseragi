@@ -82,9 +82,22 @@ impl Backend<'_> {
         entry: &seseragi_lowering::CoreFunction,
     ) -> Result<String> {
         let scope = Scope::new();
-        let ty = local::method_argument_type(&entry.body)
-            .ok_or("Rust backend: unproven entry Effect type")?;
-        let CoreType::Named { name, arguments } = self.local_canonical_type(&ty, &scope)? else {
+        let ty = entry
+            .value_type
+            .as_ref()
+            .ok_or("Rust backend: missing checked entry signature")?;
+        if self.declared_method_type_kind(ty, &scope) != Some(0) {
+            return Err("Rust backend: unproven entry signature kinds".into());
+        }
+        let CoreType::Function { parameter, result } = self.local_canonical_type(ty, &scope)?
+        else {
+            return Err("Rust backend: unproven entry function signature".into());
+        };
+        if !matches!(*parameter, CoreType::Named { name, arguments } if name == "std/prelude::Unit" && arguments.is_empty())
+        {
+            return Err("Rust backend: entry signature requires canonical Unit input".into());
+        }
+        let CoreType::Named { name, arguments } = *result else {
             return Err("Rust backend: unproven entry Effect type".into());
         };
         if name != "std/prelude::Effect" || arguments.len() != 3 {

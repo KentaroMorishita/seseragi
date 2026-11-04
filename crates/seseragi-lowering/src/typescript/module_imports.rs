@@ -68,6 +68,16 @@ pub(super) fn lower_module_imports(
         let group = &mut imports[index];
 
         for import in &dependency.imports {
+            // Reexporting an intrinsic keeps its runtime owner. Its calls and
+            // types use that ABI directly, just as for a standard import.
+            // The facade's initialization edge is still retained above.
+            if import
+                .canonical
+                .rsplit_once("::")
+                .is_some_and(|(owner, _)| is_runtime_provided_module(owner))
+            {
+                continue;
+            }
             if let Some(exported) = &import.reexported_as {
                 if matches!(import.namespace.as_str(), "value" | "type") {
                     push_reexport(

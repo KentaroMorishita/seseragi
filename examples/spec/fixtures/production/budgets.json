@@ -5,6 +5,7 @@
     "target": "process",
     "maxMinifiedBytes": 15000,
     "requiredRuntime": [
+      "@seseragi/runtime/console",
       "@seseragi/runtime/decimal",
       "@seseragi/runtime/equality",
       "@seseragi/runtime/foreign",
@@ -23,6 +24,7 @@
       "@seseragi/runtime/cleanup-defect",
       "@seseragi/runtime/clock-value",
       "@seseragi/runtime/collection",
+      "@seseragi/runtime/console",
       "@seseragi/runtime/decimal",
       "@seseragi/runtime/effect",
       "@seseragi/runtime/equality",
@@ -35,9 +37,10 @@
       "@seseragi/runtime/process",
       "@seseragi/runtime/runtime-diagnostic",
       "@seseragi/runtime/service",
+      "@seseragi/runtime/set",
+      "@seseragi/runtime/show",
       "@seseragi/runtime/stream",
       "@seseragi/runtime/sum",
-      "@seseragi/runtime/traversable",
       "@seseragi/runtime/unicode-version",
       "@seseragi/runtime/unicode-version-data"
     ],

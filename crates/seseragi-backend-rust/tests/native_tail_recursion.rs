@@ -44,7 +44,7 @@ fn scalar_global_reads_preserve_defect_order_zero_step_and_partial_lifetimes() {
         .unwrap();
     assert!(fallback.contains("get_global(0)") && fallback.contains("binary("));
     let end = artifact.source.rfind("fn main()").unwrap();
-    let mut generated = artifact.source[..end].to_owned();
+    let mut generated = support::inline_runtime(&artifact.source[..end]);
     for (name, op, result) in [
         ("int_add_value", "+", "i64"),
         ("int_subtract_value", "-", "i64"),
@@ -127,7 +127,7 @@ fn scalar_tail_helpers_preserve_abi_checked_boundaries_and_primitive_order() {
         .unwrap();
     assert!(fallback.contains(".clone()") && fallback.contains("binary("));
     let main = artifact.source.rfind("fn main()").unwrap();
-    let mut generated = artifact.source[..main].to_owned();
+    let mut generated = support::inline_runtime(&artifact.source[..main]);
     for (name, op, result) in [
         ("int_add_value", "+", "i64"),
         ("int_subtract_value", "-", "i64"),

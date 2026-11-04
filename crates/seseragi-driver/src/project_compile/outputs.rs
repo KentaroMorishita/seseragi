@@ -35,7 +35,7 @@ pub(super) fn reachable_compiled_module_outputs(
         .collect()
 }
 
-fn reachable_modules(module: &str, graph: &ModuleGraph<String>) -> BTreeSet<String> {
+pub(super) fn reachable_modules(module: &str, graph: &ModuleGraph<String>) -> BTreeSet<String> {
     let mut reachable = BTreeSet::new();
     let module = module.to_owned();
     let mut pending = graph

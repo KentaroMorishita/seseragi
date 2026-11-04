@@ -58,7 +58,9 @@ export function errorLine(
   )
 }
 
-export function flush(): Effect<ConsoleEnvironment, ConsoleError, Unit> {
+export function flush(
+  _unit?: Unit
+): Effect<ConsoleEnvironment, ConsoleError, Unit> {
   return serviceEffect((environment: ConsoleEnvironment) =>
     environment.console.flush()
   )

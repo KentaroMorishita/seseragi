@@ -1,0 +1,189 @@
+import * as time from "std/time"
+
+fn date value: Either<time.DateTimeError, time.LocalDate> -> String = match value {
+  Left error -> show error
+  Right value -> time.formatLocalDate value
+}
+fn clock value: Either<time.DateTimeError, time.LocalTime> -> String = match value {
+  Left error -> show error
+  Right value -> time.formatLocalTime value
+}
+fn local value: Either<time.DateTimeError, time.LocalDateTime> -> String = match value {
+  Left error -> show error
+  Right value -> time.formatLocalDateTime value
+}
+fn offset value: Either<time.DateTimeError, time.OffsetDateTime> -> String = match value {
+  Left error -> show error
+  Right value -> time.formatOffsetDateTime value
+}
+fn shifted seconds: Int -> text: String -> String = match time.utcOffset seconds {
+  Left error -> show error
+  Right zone -> match time.parseOffsetDateTime text {
+    Left error -> show error
+    Right value -> time.formatOffsetDateTime (time.atOffset zone (time.offsetInstant value))
+  }
+}
+
+fn makeDate -> (Int -> Int -> Int -> Either<time.DateTimeError, time.LocalDate>) = time.localDate
+fn makeTime -> (Int -> Int -> Int -> Int -> Either<time.DateTimeError, time.LocalTime>) = time.localTime
+fn makeLocal -> (time.LocalDate -> time.LocalTime -> time.LocalDateTime) = time.localDateTime
+
+fn invalidYear text: String -> String = match time.parseLocalDate text {
+  Right _ -> "accepted"
+  Left error -> match error {
+    time.InvalidDate fields -> show fields.year
+    _ -> show error
+  }
+}
+
+pub effect fn main = do {
+  println (date (time.localDate 2024 2 29))
+  println (date (time.localDate 1900 2 29))
+  println (date (time.localDate 2000 2 29))
+  println (date (time.localDate 0 2 29))
+  println (date (time.localDate (-400) 2 29))
+  println (date (time.localDate (-100) 2 29))
+  println (date (time.localDate 2024 0 1))
+  println (date (time.localDate 2024 13 1))
+  println (date (time.localDate 2024 1 0))
+  println (date (time.localDate 2024 4 31))
+  println (date (time.localDate 9007199254740991 12 31))
+  println (date (time.localDate (-9007199254740991) 1 1))
+  println (clock (time.localTime 0 0 0 0))
+  println (clock (time.localTime 23 59 59 999999999))
+  println (clock (time.localTime 1 2 3 1))
+  println (clock (time.localTime 1 2 3 100000000))
+  println (clock (time.localTime (-1) 0 0 0))
+  println (clock (time.localTime 24 0 0 0))
+  println (clock (time.localTime 0 (-1) 0 0))
+  println (clock (time.localTime 0 60 0 0))
+  println (clock (time.localTime 0 0 (-1) 0))
+  println (clock (time.localTime 23 59 60 0))
+  println (clock (time.localTime 0 0 0 (-1)))
+  println (clock (time.localTime 0 0 0 1000000000))
+  println (date (time.parseLocalDate "2024-02-29"))
+  println (date (time.parseLocalDate "0000-02-29"))
+  println (date (time.parseLocalDate "+010000-01-01"))
+  println (date (time.parseLocalDate "-000001-12-31"))
+  println (date (time.parseLocalDate "-000000-01-01"))
+  println (date (time.parseLocalDate "+000001-01-01"))
+  println (date (time.parseLocalDate "+9007199254740991-12-31"))
+  println (date (time.parseLocalDate "-9007199254740991-01-01"))
+  println (date (time.parseLocalDate "+9007199254740992-01-01"))
+  println (date (time.parseLocalDate "+9007199254740993-01-01"))
+  println (date (time.parseLocalDate "+9999999999999999999999999-01-01"))
+  println (date (time.parseLocalDate "2023-02-29"))
+  println (date (time.parseLocalDate ""))
+  println (date (time.parseLocalDate "2024/01/01"))
+  println (date (time.parseLocalDate "2024-1-01"))
+  println (date (time.parseLocalDate "10000-01-01"))
+  println (date (time.parseLocalDate "+01000-01-01"))
+  println (date (time.parseLocalDate "2024-01-01\n"))
+  println (date (time.parseLocalDate "あ2024-01-01"))
+  println (date (time.parseLocalDate "202🙂-01-01"))
+  println (clock (time.parseLocalTime "00:00:00"))
+  println (clock (time.parseLocalTime "23:59:59.123456789"))
+  println (clock (time.parseLocalTime "01:02:03.120000000"))
+  println (clock (time.parseLocalTime "01:02:03.0"))
+  println (clock (time.parseLocalTime "24:00:00"))
+  println (clock (time.parseLocalTime "00:60:00"))
+  println (clock (time.parseLocalTime "00:00:60"))
+  println (clock (time.parseLocalTime ""))
+  println (clock (time.parseLocalTime "01:02"))
+  println (clock (time.parseLocalTime "1:02:03"))
+  println (clock (time.parseLocalTime "01-02-03"))
+  println (clock (time.parseLocalTime "01:02:03."))
+  println (clock (time.parseLocalTime "01:02:03.1234567890"))
+  println (clock (time.parseLocalTime "01:02:03\n"))
+  println (clock (time.parseLocalTime "🙂:00:00"))
+  println (clock (time.parseLocalTime "01:0🙂:00"))
+  println (local (time.parseLocalDateTime "2024-02-29T23:59:59.000000001"))
+  println (local (time.parseLocalDateTime "+010000-01-01T00:00:00"))
+  println (local (time.parseLocalDateTime "2023-02-29T00:00:00"))
+  println (local (time.parseLocalDateTime "2024-01-01T24:00:00"))
+  println (local (time.parseLocalDateTime "2024-01-01t00:00:00"))
+  println (local (time.parseLocalDateTime "T00:00:00"))
+  println (local (time.parseLocalDateTime "2024-01-01TT00:00:00"))
+  println (local (time.parseLocalDateTime "2024-01-01T🙂"))
+  println (local (time.parseLocalDateTime "2024-01-01T01:0🙂:00"))
+  println (local (time.parseLocalDateTime "2024-01-01T"))
+  println (offset (time.parseOffsetDateTime "1970-01-01T00:00:00Z"))
+  println (offset (time.parseOffsetDateTime "1969-12-31T23:59:59.999999999Z"))
+  println (offset (time.parseOffsetDateTime "2024-02-29T12:34:56.123400000+09:30"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00-00:00"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00+18:00"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00-18:00"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00+18:01"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00-18:01"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00+00:60"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00+19:00"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00+01:02:03"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00z"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T00:00:00Z\n"))
+  println (offset (time.parseOffsetDateTime "2023-02-29T24:00:00+00:60"))
+  println (offset (time.parseOffsetDateTime "2024-01-01T🙂+00:60"))
+  println (offset (time.parseOffsetDateTime "🙂"))
+  println (shifted 0 "1970-01-01T00:00:00Z")
+  println (shifted 64800 "1969-12-31T23:59:59.999999999Z")
+  println (shifted (-64800) "0000-01-01T00:00:00Z")
+  println (shifted 1 "1969-12-31T23:59:59.999999999Z")
+  println (shifted (-1) "1970-01-01T00:00:00Z")
+  println (shifted 59 "2024-02-28T23:59:59Z")
+  println (shifted (-59) "2024-03-01T00:00:00Z")
+  println (shifted 34201 "2000-02-29T23:59:59.000000001Z")
+  println (shifted 0 "1970-01-01T00:00:00+01:00")
+  println (shifted 0 "1969-12-31T23:59:59.999999999-18:00")
+  println (shifted (-64800) "1970-01-01T00:00:00+18:00")
+  println (shifted 0 "+9007199254740991-12-31T23:59:59.999999999Z")
+  println (shifted 0 "-9007199254740991-01-01T00:00:00Z")
+  println (shifted 64801 "1970-01-01T00:00:00Z")
+  println (shifted (-64801) "1970-01-01T00:00:00Z")
+  println (shifted 9007199254740991 "1970-01-01T00:00:00Z")
+  let dateStage = (makeDate ()) 2024
+  let monthStage = dateStage 2
+  let timeStage = (makeTime ()) 12 34
+  match monthStage 29 {
+    Left error -> println (show error)
+    Right day -> match timeStage 56 123456789 {
+      Left error -> println (show error)
+      Right value -> do {
+        let combine = (makeLocal ()) day
+        let formatDate = time.formatLocalDate
+        let formatTime = time.formatLocalTime
+        let formatLocal = time.formatLocalDateTime
+        println (formatDate day)
+        println (formatTime value)
+        println (formatLocal (combine value))
+      }
+    }
+  }
+  let parseDate = time.parseLocalDate
+  let parseTime = time.parseLocalTime
+  let parseLocal = time.parseLocalDateTime
+  let parseOffset = time.parseOffsetDateTime
+  println (date (parseDate "2000-02-29"))
+  println (clock (parseTime "01:02:03.456"))
+  println (local (parseLocal "2000-02-29T01:02:03"))
+  match parseOffset "2000-02-29T23:59:59.123456789Z" {
+    Left error -> println (show error)
+    Right value -> do {
+      let makeOffset = time.utcOffset
+      match makeOffset 3600 {
+        Left error -> println (show error)
+        Right zone -> do {
+          let attach = time.atOffset
+          let project = time.offsetInstant
+          let extract = time.offsetLocalDateTime
+          let format = time.formatOffsetDateTime
+          let inZone = attach zone
+          println (format (inZone (project value)))
+          println (time.formatLocalDateTime (extract (inZone (project value))))
+        }
+      }
+    }
+  }
+  println (invalidYear "+9007199254740993-01-01")
+  println (invalidYear "+9999999999999999999999999-01-01")
+  println (invalidYear "-9999999999999999999999999-01-01")
+}

@@ -303,6 +303,9 @@ fn effect_application(
         return None;
     }
     let mut operation = known_effect_operation_by_surface(&symbol.spelling)?;
+    if operation.surface_name == "readLine" && argument_nodes.is_empty() {
+        return None;
+    }
     if matches!(operation.surface_name, "print" | "println") {
         if argument_nodes.len() != 1 {
             return None;
@@ -396,11 +399,15 @@ fn type_do_block(
     resolution: &TypedResolution<'_>,
     issues: &mut EffectBodyIssues<'_>,
 ) -> SurfaceExpressionAnalysis {
+    let scoped_context = base_context.with_lexical_scope(origin);
+    let base_context = &scoped_context;
     let mut locals = BTreeMap::new();
     let mut inferred_callables = BTreeMap::new();
     let mut statements = Vec::new();
+    let inferred_bindings =
+        super::surface_expr::let_inference::infer_do_bindings(items, result, base_context);
 
-    for item in items {
+    for (index, item) in items.iter().enumerate() {
         let context = base_context
             .with_locals(locals.clone())
             .with_inferred_callables(inferred_callables.clone());
@@ -415,6 +422,11 @@ fn type_do_block(
                 value,
                 span,
             } => {
+                let context = context.with_expected(
+                    inferred_bindings
+                        .as_ref()
+                        .and_then(|bindings| bindings[index].clone()),
+                );
                 let analysis = type_effect_expression_analysis(value, &context, resolution, issues);
                 let success = effect_success_semantic(&analysis);
                 let input = success.cloned().unwrap_or_else(|| {
@@ -457,6 +469,12 @@ fn type_do_block(
                 if let Some(issue) = binding.mismatch {
                     issues.calls.push(issue);
                 }
+                if let Some(issue) = binding.expression.conditional_issue.clone() {
+                    issues.conditionals.push(issue);
+                }
+                if let Some(issue) = binding.expression.pure_call_issue.clone() {
+                    issues.calls.push(issue);
+                }
                 if let Some(issue) = binding.expression.array_issue.clone() {
                     issues.arrays.push(issue);
                 }
@@ -477,6 +495,9 @@ fn type_do_block(
                 }
                 locals.extend(binding.pattern.locals.clone());
                 issues.patterns.extend(binding.pattern.issues);
+                issues
+                    .patterns
+                    .extend(binding.expression.match_issues.clone());
                 statements.push(TypedDoStatement::PureLet {
                     constraints: binding
                         .inferred_callable

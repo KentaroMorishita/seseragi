@@ -1,0 +1,55 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+effect fn failureResult<A> error: fs.FileSystemError -> Either<fs.FileSystemError,A> with FileSystem = do {
+  let result: Either<fs.FileSystemError,A> = Left error
+  effects.succeed result
+}
+
+effect fn outcome<A> action: Effect<{fileSystem: fs.FileSystem},fs.FileSystemError,A>
+  -> Either<fs.FileSystemError,A> with FileSystem =
+  {
+    let wrapped: Effect<{fileSystem: fs.FileSystem},fs.FileSystemError,Either<fs.FileSystemError,A>> = do {
+      value <- action
+      let result: Either<fs.FileSystemError,A> = Right value
+      effects.succeed result
+    }
+    effects.recover failureResult wrapped
+  }
+
+pub effect fn main -> Unit with FileSystem, Console fails String = do {
+  path <- paths.parse "changing.txt" |> effects.fromEither |> effects.mapError show
+  missing <- paths.parse "unused.txt" |> effects.fromEither |> effects.mapError show
+  let unused = fs.metadata missing
+  let exists = fs.exists path
+  let metadata = fs.metadata path
+  let link = fs.symlinkMetadata path
+  let canonical = fs.canonicalize path
+  absent <- exists |> effects.mapError show
+  println (show absent) |> effects.mapError show
+  before <- metadata |> outcome
+  println (show before) |> effects.mapError show
+  beforeLink <- link |> outcome
+  println (show beforeLink) |> effects.mapError show
+  beforePath <- canonical |> outcome
+  println (match beforePath {
+    Left error -> show error
+    Right _ -> "unexpected path"
+  }) |> effects.mapError show
+  fs.writeTextUtf8 fs.Replace "a" path |> effects.mapError show
+  found <- exists |> effects.mapError show
+  println (show found) |> effects.mapError show
+  first <- metadata |> effects.mapError show
+  println (show first) |> effects.mapError show
+  firstLink <- link |> effects.mapError show
+  println (show firstLink) |> effects.mapError show
+  resolved <- canonical |> effects.mapError show
+  println (show (paths.isAbsolute resolved)) |> effects.mapError show
+  println (show (paths.fileName resolved)) |> effects.mapError show
+  fs.writeTextUtf8 fs.Append "bc" path |> effects.mapError show
+  second <- metadata |> effects.mapError show
+  println (show second) |> effects.mapError show
+  secondLink <- link |> effects.mapError show
+  println (show secondLink) |> effects.mapError show
+}

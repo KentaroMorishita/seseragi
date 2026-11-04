@@ -1152,8 +1152,16 @@
             "body": {
               "kind": "checked-result",
               "value": {
-                "kind": "runtime-call",
+                "kind": "type-application-call",
                 "callee": "_ssrg_eitherTFromEither",
+                "typeArguments": [
+                  {
+                    "kind": "string"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ],
                 "arguments": [
                   {
                     "kind": "runtime-reference",

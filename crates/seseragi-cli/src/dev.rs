@@ -16,6 +16,7 @@ const DEFAULT_HOST: &str = "127.0.0.1";
 const DEFAULT_PORT: u16 = 3000;
 const RELOAD_PATH: &str = "/__seseragi_dev/version";
 const WATCH_INTERVAL: Duration = Duration::from_millis(100);
+const CLIENT_IO_POLL_INTERVAL: Duration = Duration::from_millis(100);
 
 pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     let options = DevOptions::parse(arguments)?;
@@ -43,6 +44,18 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     let listener = if options.target == Some(Target::Native) {
         None
     } else {
+        let manifest_path = project.join("seseragi.toml");
+        let manifest_source = fs::read_to_string(&manifest_path)
+            .map_err(|error| format!("failed to read {}: {error}", manifest_path.display()))?;
+        let manifest = seseragi_project::parse_manifest(&manifest_source)
+            .map_err(|error| format!("{}: {error}", error.code()))?;
+        seseragi_project::select_project_target(
+            ProjectCommand::Dev,
+            options.target.and_then(Target::project),
+            manifest.run.as_ref().and_then(|run| run.target.as_ref()),
+            None,
+        )
+        .map_err(|error| error.to_string())?;
         let listener =
             TcpListener::bind((options.host.as_str(), options.port)).map_err(|error| {
                 format!(
@@ -71,7 +84,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
         .map_err(|error| format!("failed to install shutdown handler: {error}"))?;
 
     let mut watch_roots = watched_package_roots(&project).unwrap_or_else(|_| vec![root.to_owned()]);
-    let mut files = watch_snapshot(&watch_roots)?;
+    let mut files = Some(watch_snapshot(&watch_roots)?);
     let version = AtomicU64::new(0);
     let rebuild = || rebuild_target(&project, &output, &version, options.target);
     let mut build_available = if options.target == Some(Target::Native) {
@@ -93,67 +106,77 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     while !stopping.load(Ordering::SeqCst) {
         if let Some(listener) = &listener {
             if !serve_pending_requests(listener, &stopping, |stream| {
-                if let Err(error) = serve(stream, &output, &version, build_available, &options.host)
-                {
-                    eprintln!("seseragi dev: {error}");
+                if let Err(error) = serve(
+                    stream,
+                    &output,
+                    &version,
+                    build_available,
+                    &options.host,
+                    &stopping,
+                ) {
+                    if !stopping.load(Ordering::SeqCst) {
+                        eprintln!("seseragi dev: {error}");
+                    }
                 }
             })? {
                 break;
             }
         }
-        let next = watch_snapshot(&watch_roots)?;
+        build_available =
+            rebuild_if_changed(&project, &mut watch_roots, &mut files, &stopping, rebuild)?
+                || build_available;
         if stopping.load(Ordering::SeqCst) {
             break;
-        }
-        if next != files {
-            let mut rebuilt = match rebuild() {
-                Ok(rebuilt) => rebuilt,
-                Err(error) => {
-                    eprintln!("seseragi dev: {error}");
-                    eprintln!("Build failed");
-                    false
-                }
-            };
-            if stopping.load(Ordering::SeqCst) {
-                break;
-            }
-            let (refreshed_roots, refresh_succeeded) = refresh_watch_roots(&project, &watch_roots);
-            let roots_changed = refreshed_roots != watch_roots;
-            for root in refreshed_roots
-                .iter()
-                .filter(|root| !watch_roots.contains(root))
-            {
-                println!("Watching {}", root.display());
-            }
-            // A lockfile can become valid between a failed rebuild and graph
-            // refresh. When that refresh also discovers a new package root,
-            // rebuild once against the stable graph before consuming its
-            // snapshot; otherwise the dependency change has no later event to
-            // trigger recovery.
-            if !rebuilt && refresh_succeeded && roots_changed && !stopping.load(Ordering::SeqCst) {
-                rebuilt = match rebuild() {
-                    Ok(rebuilt) => rebuilt,
-                    Err(error) => {
-                        eprintln!("seseragi dev: {error}");
-                        eprintln!("Build failed");
-                        false
-                    }
-                };
-            }
-            build_available = rebuilt || build_available;
-            watch_roots = refreshed_roots;
-            if refresh_succeeded {
-                // Only acknowledge what this attempt observed before building.
-                // A repair/edit during compilation or graph refresh still needs
-                // another build, even when it leaves the package roots unchanged.
-                // Newly discovered roots likewise remain visible to the next poll.
-                files = next;
-            }
         }
         std::thread::sleep(WATCH_INTERVAL);
     }
     println!("Stopped dev server");
     Ok(0)
+}
+
+fn rebuild_if_changed(
+    project: &Path,
+    watch_roots: &mut Vec<PathBuf>,
+    files: &mut Option<BTreeMap<PathBuf, WatchStamp>>,
+    stopping: &AtomicBool,
+    mut rebuild: impl FnMut() -> Result<bool, String>,
+) -> Result<bool, String> {
+    let next = watch_snapshot(watch_roots)?;
+    if stopping.load(Ordering::SeqCst) || files.as_ref() == Some(&next) {
+        return Ok(false);
+    }
+    let mut attempt = || match rebuild() {
+        Ok(rebuilt) => rebuilt,
+        Err(error) => {
+            eprintln!("seseragi dev: {error}");
+            eprintln!("Build failed");
+            false
+        }
+    };
+    let mut rebuilt = attempt();
+    if stopping.load(Ordering::SeqCst) {
+        return Ok(false);
+    }
+    let (refreshed_roots, refresh_succeeded) = refresh_watch_roots(project, watch_roots);
+    let roots_changed = &refreshed_roots != watch_roots;
+    for root in refreshed_roots
+        .iter()
+        .filter(|root| !watch_roots.contains(root))
+    {
+        println!("Watching {}", root.display());
+    }
+    // A lockfile can become valid between a failed rebuild and graph refresh.
+    // Rebuild against a newly discovered package before acknowledging the change.
+    if !rebuilt && refresh_succeeded && roots_changed && !stopping.load(Ordering::SeqCst) {
+        rebuilt = attempt();
+    }
+    *watch_roots = refreshed_roots;
+    // A failed graph refresh must stay pending even if a manifest is restored
+    // to identical contents or only the unwatched lockfile is repaired.
+    // Otherwise, acknowledge only inputs observed before building: edits made
+    // during the build or graph refresh still belong to the next poll.
+    *files = refresh_succeeded.then_some(next);
+    Ok(rebuilt)
 }
 
 fn serve_pending_requests(
@@ -170,6 +193,7 @@ fn serve_pending_requests(
             Err(error) if error.kind() == ErrorKind::WouldBlock => {
                 return Ok(!stopping.load(Ordering::SeqCst));
             }
+            Err(error) if error.kind() == ErrorKind::Interrupted => continue,
             Err(error) => return Err(format!("dev server accept failed: {error}")),
         }
     }
@@ -388,23 +412,11 @@ fn watch_snapshot(roots: &[PathBuf]) -> Result<BTreeMap<PathBuf, WatchStamp>, St
                             .is_some_and(|public| relative.starts_with(public.as_str()))
                 })
             {
-                let fingerprint = if metadata.is_file() {
-                    let Some(fingerprint) = fingerprint(&path)? else {
-                        // An editor or asset deletion can race the directory scan.
-                        continue;
-                    };
-                    fingerprint
-                } else {
-                    0
+                let Some(stamp) = watch_stamp(&path, &metadata)? else {
+                    // An editor or asset deletion can race the directory scan.
+                    continue;
                 };
-                files.insert(
-                    path,
-                    WatchStamp {
-                        modified: metadata.modified().ok(),
-                        length: metadata.len(),
-                        fingerprint,
-                    },
-                );
+                files.insert(path, stamp);
             }
         }
         Ok(())
@@ -421,7 +433,14 @@ fn watch_snapshot(roots: &[PathBuf]) -> Result<BTreeMap<PathBuf, WatchStamp>, St
     Ok(files)
 }
 
-fn fingerprint(path: &Path) -> Result<Option<u64>, String> {
+fn watch_stamp(path: &Path, metadata: &fs::Metadata) -> Result<Option<WatchStamp>, String> {
+    if !metadata.is_file() {
+        return Ok(Some(WatchStamp {
+            modified: metadata.modified().ok(),
+            length: metadata.len(),
+            fingerprint: 0,
+        }));
+    }
     let bytes = match fs::read(path) {
         Ok(bytes) => bytes,
         Err(error) if error.kind() == ErrorKind::NotFound => return Ok(None),
@@ -432,11 +451,16 @@ fn fingerprint(path: &Path) -> Result<Option<u64>, String> {
             ))
         }
     };
-    Ok(Some(
-        bytes.into_iter().fold(0xcbf29ce484222325, |hash, byte| {
+    // An editor can write between metadata lookup and the read. Derive the
+    // entire regular-file stamp from the same bytes, so stale size/mtime alone
+    // cannot queue another long build after these contents were already built.
+    Ok(Some(WatchStamp {
+        modified: None,
+        length: bytes.len() as u64,
+        fingerprint: bytes.into_iter().fold(0xcbf29ce484222325, |hash, byte| {
             (hash ^ u64::from(byte)).wrapping_mul(0x100000001b3)
         }),
-    ))
+    }))
 }
 
 fn ignored(path: &Path) -> bool {
@@ -453,11 +477,12 @@ fn watched(path: &Path) -> bool {
 }
 
 fn serve(
-    mut stream: TcpStream,
+    stream: TcpStream,
     output: &Path,
     version: &AtomicU64,
     build_available: bool,
     configured_host: &str,
+    stopping: &AtomicBool,
 ) -> Result<(), String> {
     // Accepted sockets can inherit the nonblocking listener state on macOS.
     // Complete large bundles/assets with bounded blocking writes instead of
@@ -466,14 +491,23 @@ fn serve(
         .set_nonblocking(false)
         .map_err(|error| format!("failed to configure client: {error}"))?;
     stream
-        .set_write_timeout(Some(Duration::from_secs(5)))
+        .set_write_timeout(Some(CLIENT_IO_POLL_INTERVAL))
         .map_err(|error| format!("failed to configure client: {error}"))?;
     stream
-        .set_read_timeout(Some(Duration::from_millis(100)))
+        .set_read_timeout(Some(CLIENT_IO_POLL_INTERVAL))
         .map_err(|error| format!("failed to configure client: {error}"))?;
-    let request = match read_request_head(&mut stream) {
+    let local_address = stream
+        .local_addr()
+        .map_err(|error| format!("failed to read client address: {error}"))?;
+    let mut stream = ClientIo {
+        stream,
+        stopping,
+        deadline: Instant::now() + Duration::from_secs(5),
+    };
+    let request = match read_request_head(&mut stream, stopping) {
         Ok(Some(request)) => request,
         Ok(None) => return Ok(()),
+        Err(_) if stopping.load(Ordering::SeqCst) => return Ok(()),
         Err(_) => {
             // The incomplete request may be HEAD; do not send a response body.
             return response(&mut stream, 400, "text/plain; charset=utf-8", b"", "GET");
@@ -485,9 +519,6 @@ fn serve(
     let mut parts = line.split_whitespace();
     let method = parts.next().unwrap_or("");
     let request_path = parts.next().unwrap_or("");
-    let local_address = stream
-        .local_addr()
-        .map_err(|error| format!("failed to read client address: {error}"))?;
     // Binding to loopback alone does not authorize a browser's origin: a
     // rebinding hostname can resolve to that same address. Never resolve Host
     // or trust proxy headers when deciding which authority may read artifacts.
@@ -559,11 +590,66 @@ fn serve(
     response(&mut stream, 200, content_type(&path), &body, method)
 }
 
-fn read_request_head(stream: &mut TcpStream) -> std::io::Result<Option<String>> {
+struct ClientIo<'a, S> {
+    stream: S,
+    stopping: &'a AtomicBool,
+    deadline: Instant,
+}
+
+impl<S: Read> Read for ClientIo<'_, S> {
+    fn read(&mut self, bytes: &mut [u8]) -> std::io::Result<usize> {
+        self.stream.read(bytes)
+    }
+}
+
+impl<S: Write> Write for ClientIo<'_, S> {
+    fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+        loop {
+            // write_all retries Interrupted itself, so use ConnectionAborted
+            // when stopping. Each socket wait is short, and partial writes must
+            // not restart the deadline for the whole response.
+            if self.stopping.load(Ordering::SeqCst) {
+                return Err(std::io::Error::new(
+                    ErrorKind::ConnectionAborted,
+                    "dev server stopping",
+                ));
+            }
+            if Instant::now() >= self.deadline {
+                return Err(std::io::Error::new(
+                    ErrorKind::TimedOut,
+                    "dev response timed out",
+                ));
+            }
+            match self.stream.write(bytes) {
+                Err(error)
+                    if matches!(
+                        error.kind(),
+                        ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
+                    ) => {}
+                result => return result,
+            }
+        }
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        self.stream.flush()
+    }
+}
+
+fn read_request_head(
+    stream: &mut impl Read,
+    stopping: &AtomicBool,
+) -> std::io::Result<Option<String>> {
     let started = Instant::now();
     let mut request = [0_u8; 8192];
     let mut length = 0;
     while started.elapsed() < Duration::from_secs(1) && length < request.len() {
+        if stopping.load(Ordering::SeqCst) {
+            return Err(std::io::Error::new(
+                ErrorKind::ConnectionAborted,
+                "dev server stopping",
+            ));
+        }
         match stream.read(&mut request[length..]) {
             Ok(0) if length == 0 => return Ok(None),
             Ok(0) => break,
@@ -578,7 +664,11 @@ fn read_request_head(stream: &mut TcpStream) -> std::io::Result<Option<String>> 
                         .map_err(|error| std::io::Error::new(ErrorKind::InvalidData, error));
                 }
             }
-            Err(error) if matches!(error.kind(), ErrorKind::WouldBlock | ErrorKind::TimedOut) => {}
+            Err(error)
+                if matches!(
+                    error.kind(),
+                    ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
+                ) => {}
             Err(error) => return Err(error),
         }
     }
@@ -762,7 +852,7 @@ fn content_type(path: &Path) -> &'static str {
 }
 
 fn response(
-    stream: &mut TcpStream,
+    stream: &mut impl Write,
     status: u16,
     content_type: &str,
     body: &[u8],
@@ -816,6 +906,333 @@ fn open_browser(url: &str) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn watch_project() -> (tempfile::TempDir, PathBuf, PathBuf, String) {
+        let directory = tempfile::tempdir().unwrap();
+        let project = directory.path().join("project");
+        let dependency = directory.path().join("release-copy");
+        for root in [&project, &dependency] {
+            fs::create_dir_all(root.join("src")).unwrap();
+        }
+        fs::write(dependency.join("seseragi.toml"), "[package]\nname = \"fixture/release-copy\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[exports]\n\".\" = \"lib\"\n").unwrap();
+        fs::write(dependency.join("src/lib.ssrg"), "pub let value: Int = 1\n").unwrap();
+        let manifest = "[package]\nname = \"fixture/watch-app\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[run]\nentry = \"main\"\ntarget = \"web\"\n\n[dependencies]\nrelease-copy = { package = \"fixture/release-copy\", path = \"../release-copy\" }\n";
+        fs::write(project.join("seseragi.toml"), manifest).unwrap();
+        fs::write(project.join("src/main.ssrg"), "pub let value: Int = 42\n").unwrap();
+        write_watch_lock(&project);
+        (
+            directory,
+            project.canonicalize().unwrap(),
+            dependency.canonicalize().unwrap(),
+            manifest.into(),
+        )
+    }
+
+    fn write_watch_lock(project: &Path) {
+        crate::lock::write(
+            project,
+            &seseragi_project::generate_lockfile(project).unwrap(),
+        )
+        .unwrap();
+    }
+
+    #[test]
+    fn watch_retries_an_identical_manifest_after_failed_graph_refresh() {
+        let (_directory, project, dependency, manifest) = watch_project();
+        let mut roots = watched_package_roots(&project).unwrap();
+        let mut files = Some(watch_snapshot(&roots).unwrap());
+        let original = files.clone();
+        let stopping = AtomicBool::new(false);
+        let attempts = std::cell::Cell::new(0);
+        let attempt = || {
+            attempts.set(attempts.get() + 1);
+            watched_package_roots(&project).map(|_| true)
+        };
+        fs::write(project.join("seseragi.toml"), "[package\n").unwrap();
+        assert!(!rebuild_if_changed(&project, &mut roots, &mut files, &stopping, attempt).unwrap());
+        assert!(
+            roots.contains(&dependency),
+            "failed refresh must retain the dependency"
+        );
+        fs::write(project.join("seseragi.toml"), manifest).unwrap();
+        assert_eq!(Some(watch_snapshot(&roots).unwrap()), original);
+        assert!(
+            rebuild_if_changed(&project, &mut roots, &mut files, &stopping, attempt).unwrap(),
+            "restoring identical manifest contents must retry after a failed graph refresh"
+        );
+        assert_eq!(attempts.get(), 2);
+        assert!(!rebuild_if_changed(&project, &mut roots, &mut files, &stopping, attempt).unwrap());
+        assert_eq!(
+            attempts.get(),
+            2,
+            "successful recovery must resume normal change polling"
+        );
+    }
+
+    #[test]
+    fn watch_retries_a_lock_only_repair_without_a_new_content_change() {
+        let (_directory, project, _dependency, manifest) = watch_project();
+        let mut roots = watched_package_roots(&project).unwrap();
+        let mut files = Some(watch_snapshot(&roots).unwrap());
+        let stopping = AtomicBool::new(false);
+        let attempts = std::cell::Cell::new(0);
+        let attempt = || {
+            attempts.set(attempts.get() + 1);
+            watched_package_roots(&project).map(|_| true)
+        };
+        fs::write(project.join("seseragi.toml"), "[package\n").unwrap();
+        assert!(!rebuild_if_changed(&project, &mut roots, &mut files, &stopping, attempt).unwrap());
+        fs::write(project.join("seseragi.toml"), manifest).unwrap();
+        fs::write(project.join("seseragi.lock"), "invalid lockfile").unwrap();
+        assert!(!rebuild_if_changed(&project, &mut roots, &mut files, &stopping, attempt).unwrap());
+        assert_eq!(
+            attempts.get(),
+            2,
+            "the failed refresh must remain pending after contents are restored"
+        );
+        let before_lock_repair = watch_snapshot(&roots).unwrap();
+        write_watch_lock(&project);
+        assert_eq!(watch_snapshot(&roots).unwrap(), before_lock_repair);
+        assert!(rebuild_if_changed(&project, &mut roots, &mut files, &stopping, attempt).unwrap());
+        assert_eq!(attempts.get(), 3);
+    }
+
+    #[test]
+    fn watch_keeps_a_manifest_repair_during_a_failed_build_pending() {
+        let (_directory, project, _dependency, manifest) = watch_project();
+        let mut roots = watched_package_roots(&project).unwrap();
+        let original_roots = roots.clone();
+        let mut files = Some(watch_snapshot(&roots).unwrap());
+        let stopping = AtomicBool::new(false);
+        fs::write(project.join("seseragi.toml"), "[package\n").unwrap();
+        assert!(
+            !rebuild_if_changed(&project, &mut roots, &mut files, &stopping, || {
+                fs::write(project.join("seseragi.toml"), &manifest).unwrap();
+                Ok(false)
+            })
+            .unwrap()
+        );
+        assert_eq!(roots, original_roots);
+        assert!(
+            rebuild_if_changed(&project, &mut roots, &mut files, &stopping, || {
+                watched_package_roots(&project).map(|_| true)
+            })
+            .unwrap(),
+            "graph refresh must not consume a repair made during a failed build"
+        );
+    }
+
+    #[test]
+    fn watch_discovers_a_new_dependency_after_a_failed_build_and_observes_its_repair() {
+        let (_directory, project, dependency, manifest) = watch_project();
+        let manifest_path = project.join("seseragi.toml");
+        fs::write(
+            &manifest_path,
+            manifest.split("\n[dependencies]").next().unwrap(),
+        )
+        .unwrap();
+        write_watch_lock(&project);
+        let mut roots = watched_package_roots(&project).unwrap();
+        let mut files = Some(watch_snapshot(&roots).unwrap());
+        let stopping = AtomicBool::new(false);
+        assert!(!roots.contains(&dependency));
+        fs::write(&manifest_path, manifest).unwrap();
+        let attempts = std::cell::Cell::new(0);
+        assert!(
+            !rebuild_if_changed(&project, &mut roots, &mut files, &stopping, || {
+                attempts.set(attempts.get() + 1);
+                if attempts.get() == 1 {
+                    assert!(
+                        watched_package_roots(&project).is_err(),
+                        "the build sees the stale lockfile"
+                    );
+                    write_watch_lock(&project);
+                }
+                Ok(false)
+            })
+            .unwrap()
+        );
+        assert!(roots.contains(&dependency));
+        assert_eq!(
+            attempts.get(),
+            2,
+            "a new graph discovered after the failure must get its own attempt"
+        );
+        // Consume the newly observed package, still with compiler diagnostics.
+        assert!(
+            !rebuild_if_changed(&project, &mut roots, &mut files, &stopping, || Ok(false)).unwrap()
+        );
+        let mut repaired = false;
+        assert!(
+            !rebuild_if_changed(&project, &mut roots, &mut files, &stopping, || {
+                repaired = true;
+                Ok(true)
+            })
+            .unwrap()
+        );
+        assert!(!repaired);
+        fs::write(dependency.join("src/lib.ssrg"), "pub let value: Int = 2\n").unwrap();
+        assert!(
+            rebuild_if_changed(&project, &mut roots, &mut files, &stopping, || {
+                repaired = true;
+                Ok(true)
+            })
+            .unwrap()
+        );
+        assert!(repaired, "the dependency repair must trigger another build");
+    }
+
+    struct Writer<F>(F);
+
+    impl<F: FnMut(&[u8]) -> std::io::Result<usize>> Write for Writer<F> {
+        fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+            (self.0)(bytes)
+        }
+
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+
+    struct Reader<F>(F);
+
+    impl<F: FnMut(&mut [u8]) -> std::io::Result<usize>> Read for Reader<F> {
+        fn read(&mut self, bytes: &mut [u8]) -> std::io::Result<usize> {
+            (self.0)(bytes)
+        }
+    }
+
+    #[test]
+    fn client_io_retries_transient_errors_and_partial_writes_without_losing_response_bytes() {
+        let stopping = AtomicBool::new(false);
+        let mut transient = [
+            ErrorKind::Interrupted,
+            ErrorKind::WouldBlock,
+            ErrorKind::TimedOut,
+        ]
+        .into_iter();
+        let mut written = Vec::new();
+        let mut client = ClientIo {
+            stream: Writer(|bytes: &[u8]| {
+                if let Some(error) = transient.next() {
+                    return Err(error.into());
+                }
+                let count = bytes.len().min(3);
+                written.extend_from_slice(&bytes[..count]);
+                Ok(count)
+            }),
+            stopping: &stopping,
+            deadline: Instant::now() + Duration::from_secs(5),
+        };
+        response(&mut client, 200, "text/plain", b"bundle", "GET").unwrap();
+        assert_eq!(written, b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nCache-Control: no-store\r\nConnection: close\r\n\r\nbundle");
+    }
+
+    #[test]
+    fn client_io_shutdown_interrupts_full_buffers_and_partial_responses() {
+        for partial in [false, true] {
+            let stopping = AtomicBool::new(false);
+            let mut attempts = 0;
+            let mut client = ClientIo {
+                stream: Writer(|_: &[u8]| {
+                    attempts += 1;
+                    stopping.store(true, Ordering::SeqCst);
+                    if partial {
+                        Ok(1)
+                    } else {
+                        Err(ErrorKind::WouldBlock.into())
+                    }
+                }),
+                stopping: &stopping,
+                deadline: Instant::now() + Duration::from_secs(5),
+            };
+            let error = client.write_all(b"large response").unwrap_err();
+            assert_eq!(error.kind(), ErrorKind::ConnectionAborted);
+            assert_eq!(attempts, 1);
+        }
+    }
+
+    #[test]
+    fn client_io_deadline_is_not_restarted_by_another_write() {
+        let stopping = AtomicBool::new(false);
+        let mut client = ClientIo {
+            stream: Writer(|_: &[u8]| panic!("an expired response must not write again")),
+            stopping: &stopping,
+            deadline: Instant::now(),
+        };
+        for _ in 0..2 {
+            assert_eq!(
+                client.write_all(b"bundle").unwrap_err().kind(),
+                ErrorKind::TimedOut
+            );
+        }
+    }
+
+    #[test]
+    fn client_io_preserves_disconnected_peer_errors_without_retrying() {
+        let stopping = AtomicBool::new(false);
+        let mut attempts = 0;
+        let mut client = ClientIo {
+            stream: Writer(|_: &[u8]| {
+                attempts += 1;
+                Err(ErrorKind::ConnectionReset.into())
+            }),
+            stopping: &stopping,
+            deadline: Instant::now() + Duration::from_secs(5),
+        };
+        assert_eq!(
+            client.write_all(b"bundle").unwrap_err().kind(),
+            ErrorKind::ConnectionReset
+        );
+        assert_eq!(attempts, 1);
+    }
+
+    #[test]
+    fn client_io_shutdown_interrupts_an_incomplete_request_head() {
+        let stopping = AtomicBool::new(false);
+        let mut attempts = 0;
+        let mut reader = Reader(|_: &mut [u8]| {
+            attempts += 1;
+            stopping.store(true, Ordering::SeqCst);
+            Err(ErrorKind::WouldBlock.into())
+        });
+        assert_eq!(
+            read_request_head(&mut reader, &stopping)
+                .unwrap_err()
+                .kind(),
+            ErrorKind::ConnectionAborted
+        );
+        assert_eq!(attempts, 1);
+    }
+
+    #[test]
+    fn client_io_reads_fragmented_headers_after_transient_errors() {
+        let mut transient = [
+            ErrorKind::Interrupted,
+            ErrorKind::WouldBlock,
+            ErrorKind::TimedOut,
+        ]
+        .into_iter();
+        let mut chunks = [
+            b"GET / HTTP/1.1\r\nHo".as_slice(),
+            b"st: localhost\r\n\r\n".as_slice(),
+        ]
+        .into_iter();
+        let mut reader = Reader(|bytes: &mut [u8]| {
+            if let Some(error) = transient.next() {
+                return Err(error.into());
+            }
+            let chunk = chunks.next().unwrap();
+            bytes[..chunk.len()].copy_from_slice(chunk);
+            Ok(chunk.len())
+        });
+        assert_eq!(
+            read_request_head(&mut reader, &AtomicBool::new(false))
+                .unwrap()
+                .as_deref(),
+            Some("GET / HTTP/1.1\r\nHost: localhost\r\n\r\n")
+        );
+    }
 
     fn queued_connections(count: usize) -> (TcpListener, Vec<TcpStream>) {
         let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
@@ -953,6 +1370,7 @@ mod tests {
                 &AtomicU64::new(7),
                 build_available,
                 "127.0.0.1",
+                &AtomicBool::new(false),
             )
             .unwrap();
         });
@@ -1054,6 +1472,37 @@ mod tests {
     }
 
     #[test]
+    fn watch_file_stamps_do_not_requeue_builds_for_metadata_captured_before_an_edit() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("main.ssrg");
+        fs::write(&path, "let value = 1\n").unwrap();
+        let before_edit = fs::metadata(&path).unwrap();
+        let initial = watch_stamp(&path, &before_edit).unwrap();
+        let changed = "let value = 42\n";
+        fs::write(&path, changed).unwrap();
+        assert_ne!(before_edit.len(), changed.len() as u64);
+        let observed_during_edit = watch_stamp(&path, &before_edit).unwrap();
+        assert_ne!(observed_during_edit, initial);
+        let next_poll = watch_snapshot(&[directory.path().to_owned()]).unwrap();
+        assert_eq!(observed_during_edit.as_ref(), next_poll.get(&path));
+
+        let file = fs::File::options().write(true).open(&path).unwrap();
+        file.set_times(
+            fs::FileTimes::new().set_modified(SystemTime::UNIX_EPOCH + Duration::from_secs(1)),
+        )
+        .unwrap();
+        assert_eq!(
+            watch_snapshot(&[directory.path().to_owned()]).unwrap(),
+            next_poll
+        );
+        fs::write(&path, "let value = 43\n").unwrap();
+        assert_ne!(
+            watch_snapshot(&[directory.path().to_owned()]).unwrap(),
+            next_poll
+        );
+    }
+
+    #[test]
     fn watch_snapshots_survive_files_deleted_during_enumeration() {
         let unique = SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
@@ -1067,8 +1516,9 @@ mod tests {
         let path = directory.join("main.ssrg");
         fs::write(&path, "let value = 1\n").unwrap();
         let enumerated = fs::read_dir(&directory).unwrap().next().unwrap().unwrap();
+        let metadata = enumerated.metadata().unwrap();
         fs::remove_file(&path).unwrap();
-        assert_eq!(fingerprint(&enumerated.path()).unwrap(), None);
+        assert_eq!(watch_stamp(&enumerated.path(), &metadata).unwrap(), None);
         let stopping = Arc::new(AtomicBool::new(false));
         let writer_stop = Arc::clone(&stopping);
         let writer = std::thread::spawn(move || {

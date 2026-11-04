@@ -61,12 +61,18 @@ pub(super) fn type_monad_do(
     let mut statements = Vec::new();
     let mut merged =
         SurfaceExpressionAnalysis::valid_with_semantic_type(hole(origin), expected.key.clone());
+    // Intermediate actions share the constructor, but infer their own payload.
+    let intermediate_expected = base_context
+        .semantic_value_from_typed_type(&apply_constructor(&constructor, TypedType::Hole));
 
     for item in items {
         let context = base_context
             .with_locals(locals.clone())
             .with_inferred_callables(inferred_callables.clone())
-            .without_expected();
+            .with_expected(match item {
+                SurfaceDoItem::Let { .. } => None,
+                _ => Some(intermediate_expected.clone()),
+            });
         match item {
             SurfaceDoItem::Expression { value, .. } => {
                 let analysis = type_surface_expression(value, &context);

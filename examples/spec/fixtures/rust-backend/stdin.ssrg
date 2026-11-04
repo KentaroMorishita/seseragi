@@ -1,0 +1,172 @@
+import * as effects from "std/effect"
+import * as stdin from "std/stdin"
+import * as bytes from "std/bytes"
+import * as arrays from "std/array"
+import * as streams from "std/stream"
+import * as deferred from "std/deferred"
+
+fn keep<A> value: A -> A = value
+
+fn configured<A> result: Either<stdin.StdinConfigError,A> -> String = match result {
+  Left error -> show error
+  Right _ -> "Right"
+}
+
+effect fn say text: String -> Unit with Console fails String = println text |> effects.mapError show
+
+effect fn failure error: StdinError -> String with Stdin = effects.succeed ("Left " + show error)
+
+effect fn result<A> action: Effect<{stdin:Stdin},StdinError,A> -> String with Stdin where Show<A> = {
+  let success: Effect<{stdin:Stdin},StdinError,String> = do {
+    value <- action
+    effects.succeed ("Right " + show value)
+  }
+  effects.recover failure success
+}
+
+effect fn report<A> action: Effect<{stdin:Stdin},StdinError,A> -> Unit with Stdin, Console fails String where Show<A> = do {
+  text <- result action
+  say text
+}
+
+effect fn readWith limit: stdin.LineLimit -> Maybe<String> with Stdin fails StdinError = stdin.readLineWith limit
+effect fn readChunk size: stdin.ReadSize -> Maybe<bytes.Bytes> with Stdin fails StdinError = stdin.readChunk size
+fn byteInts value: Maybe<bytes.Bytes> -> Maybe<Array<Int>> = map bytes.toInts value
+
+effect fn chunks -> Unit with Stdin, Console fails String = do {
+  size <- stdin.readSize 3 |> effects.fromEither |> effects.mapError show
+  let saved = keep readChunk
+  let action = saved size |> map byteInts
+  say "created"
+  report action
+  report action
+  report action
+  report action
+  report action
+  report action
+}
+
+effect fn chunkTotal size: stdin.ReadSize -> limit: Int -> total: Int -> Int with Stdin fails String = do {
+  value <- stdin.readChunk size |> effects.mapError show
+  match value {
+    Nothing -> effects.succeed total
+    Just data -> {
+      let values = bytes.toInts data
+      let length = arrays.length values
+      if length > 0 && length <= limit && sum values == length * 255
+      then chunkTotal size limit (total + length)
+      else effects.fail "invalid chunk"
+    }
+  }
+}
+
+effect fn chunkLengths maximum: Bool -> Unit with Stdin, Console fails String = do {
+  largest <- stdin.readSize 1048576 |> effects.fromEither |> effects.mapError show
+  let size = if maximum then largest else stdin.defaultReadSize ()
+  total <- chunkTotal size (if maximum then 1048576 else 65536) 0
+  say ("Right " + show total)
+  report (stdin.readChunk size |> map byteInts)
+  report (stdin.readChunk size |> map byteInts)
+}
+
+effect fn mixed -> Unit with Stdin, Console fails String = do {
+  size <- stdin.readSize 2 |> effects.fromEither |> effects.mapError show
+  limit <- stdin.lineLimit 4 |> effects.fromEither |> effects.mapError show
+  let saved = keep readWith
+  report (stdin.readChunk size |> map byteInts)
+  report (saved limit)
+  report (stdin.readChunk size |> map byteInts)
+  report (stdin.readLine ())
+  report (readLine ())
+  report (stdin.readChunk (stdin.defaultReadSize ()) |> map byteInts)
+}
+
+effect fn limited -> Unit with Stdin, Console fails String = do {
+  limit <- stdin.lineLimit 4 |> effects.fromEither |> effects.mapError show
+  let action = readWith limit
+  report action
+  report action
+  report action
+  report action
+  report action
+  report action
+}
+
+effect fn streaming count: Int -> Unit with Stdin, Console fails String = do {
+  limit <- stdin.lineLimit 4 |> effects.fromEither |> effects.mapError show
+  let saved = keep stdin.lines
+  let terminal = saved limit |> streams.take count |> streams.map debug |> streams.runCollect
+  say "created"
+  report terminal
+  report terminal
+  report (stdin.readLineWith (stdin.defaultLineLimit ()))
+}
+
+effect fn config -> Unit with Console fails String = do {
+  say (configured (stdin.readSize (-1)))
+  say (configured (stdin.readSize 0))
+  say (configured (stdin.readSize 1))
+  say (configured (stdin.readSize 1048576))
+  say (configured (stdin.readSize 1048577))
+  say (configured (stdin.readSize 9007199254740991))
+  say (configured (stdin.lineLimit (-1)))
+  say (configured (stdin.lineLimit 0))
+  say (configured (stdin.lineLimit 1))
+  say (configured (stdin.lineLimit 67108864))
+  say (configured (stdin.lineLimit 67108865))
+  say (configured (stdin.lineLimit 9007199254740991))
+}
+
+effect fn wait ready: deferred.Deferred<Never,Unit> -> chunk: Bool -> Maybe<String> with Stdin fails StdinError = do {
+  deferred.succeed () ready
+  if chunk then stdin.readChunk (stdin.defaultReadSize ()) |> map (\value: Maybe<bytes.Bytes> -> map (\data: bytes.Bytes -> show (bytes.toInts data)) value) else stdin.readLine ()
+}
+
+effect fn concurrent cancel: Bool -> chunk: Bool -> Unit with Stdin, Console fails String = do {
+  ready <- deferred.make<Never,Unit> ()
+  worker <- effects.fork (wait ready chunk)
+  deferred.await ready
+  effects.yieldNow ()
+  effects.yieldNow ()
+  if cancel then do {
+    effects.interrupt worker
+    exit <- effects.await worker
+    say (match exit { effects.FiberCancelled -> "cancelled"; _ -> "unexpected exit" })
+    say "resume"
+    report (stdin.readLine ())
+  } else do {
+    report (stdin.readLine ())
+    report (stdin.readChunk (stdin.defaultReadSize ()) |> map byteInts)
+    limit <- stdin.lineLimit 4 |> effects.fromEither |> effects.mapError show
+    report (stdin.lines limit |> streams.runCollect)
+    say "resume"
+    joined <- effects.join worker |> effects.mapError show
+    say (show joined)
+    report (stdin.readLine ())
+  }
+}
+
+pub effect fn main -> Unit with Stdin, Console fails String = do {
+  selected <- readLine () |> effects.mapError show
+  match selected {
+    Just "config" -> config ()
+    Just "chunks" -> chunks ()
+    Just "default-chunks" -> chunkLengths False
+    Just "maximum-chunks" -> chunkLengths True
+    Just "mixed" -> mixed ()
+    Just "limited" -> limited ()
+    Just "lines" -> streaming 100
+    Just "take" -> streaming 1
+    Just "zero" -> streaming 0
+    Just "concurrent-line" -> concurrent False False
+    Just "concurrent-chunk" -> concurrent False True
+    Just "cancel-line" -> concurrent True False
+    Just "cancel-chunk" -> concurrent True True
+    Just "defaults" -> do {
+      report (stdin.readLineWith (stdin.defaultLineLimit ()))
+      report (stdin.readLine ())
+      report (stdin.readChunk (stdin.defaultReadSize ()) |> map byteInts)
+    }
+    _ -> effects.fail "unknown command"
+  }
+}

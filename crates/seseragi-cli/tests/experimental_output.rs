@@ -1,3 +1,11 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
+#[path = "../../test-support/temporary.rs"]
+mod first_temporary;
+#[path = "../../test-support/temporary.rs"]
+mod second_temporary;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -20,6 +28,7 @@ fn fixture() -> (tempfile::TempDir, PathBuf) {
 
 fn command(operation: &str, source: &Path, destination: &Path) -> Command {
     let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+    native_cache::configure(&mut command);
     command
         .args(["experimental", operation])
         .arg(source)
@@ -49,6 +58,16 @@ fn assert_success(output: &Output) {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
+}
+
+#[test]
+fn temporary_helpers_do_not_reuse_another_modules_removed_directory() {
+    let first = first_temporary::temporary_directory("seseragi-temporary-namespaces");
+    fs::remove_dir(&first).unwrap();
+    let second = second_temporary::temporary_directory("seseragi-temporary-namespaces");
+    assert_ne!(first, second);
+    assert!(!first.exists());
+    fs::remove_dir(second).unwrap();
 }
 
 fn assert_no_staging(directory: &Path) {
@@ -284,7 +303,7 @@ fn regular_outputs_are_updated_and_native_unrelated_files_are_preserved() {
 
 #[cfg(unix)]
 #[test]
-fn rustc_failure_preserves_all_previous_outputs_and_cleans_owned_staging() {
+fn cargo_failure_preserves_all_previous_outputs_and_cleans_owned_staging() {
     use std::os::unix::fs::PermissionsExt;
     let (root, source) = fixture();
     let directory = root.path().join("native");
@@ -294,17 +313,12 @@ fn rustc_failure_preserves_all_previous_outputs_and_cleans_owned_staging() {
     }
     let compiler_directory = root.path().join("compiler");
     fs::create_dir(&compiler_directory).unwrap();
-    let compiler = compiler_directory.join("rustc");
+    let compiler = compiler_directory.join("cargo");
     fs::write(
         &compiler,
         r#"#!/bin/sh
-set -eu
-for argument in "$@"; do
-    case "$argument" in
-        */program.rs) printf '%s\n' "$argument" > "$SESERAGI_TEST_STAGE_LOG" ;;
-    esac
-done
-printf 'forced rustc failure\n' >&2
+printf '%s/program.rs\n' "$PWD" > "$SESERAGI_TEST_STAGE_LOG"
+printf 'forced cargo failure\n' >&2
 exit 17
 "#,
     )
@@ -312,12 +326,16 @@ exit 17
     fs::set_permissions(compiler, fs::Permissions::from_mode(0o700)).unwrap();
     let stage_log = root.path().join("stage-path");
     let output = command("build-native", &source, &directory)
+        .env(
+            "SESERAGI_NATIVE_TOOLCHAIN",
+            native_cache::mock_toolchain(&compiler_directory),
+        )
         .env("PATH", &compiler_directory)
         .env("SESERAGI_TEST_STAGE_LOG", &stage_log)
         .output()
         .unwrap();
     assert_eq!(output.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&output.stderr).contains("forced rustc failure"));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("forced cargo failure"));
     for name in ["program.rs", "rust-backend.json", EXECUTABLE, "keep.txt"] {
         assert_eq!(
             fs::read_to_string(directory.join(name)).unwrap(),
@@ -325,8 +343,8 @@ exit 17
         );
     }
     let staged = PathBuf::from(fs::read_to_string(stage_log).unwrap().trim());
-    assert!(staged.to_string_lossy().contains(".seseragi-rust-stage-"));
-    assert!(!staged.parent().unwrap().exists());
+    assert!(staged.starts_with(root.path().canonicalize().unwrap().join(".seseragi/native")));
+    assert!(staged.is_file());
     assert_no_staging(root.path());
 }
 
@@ -378,26 +396,27 @@ fn publish_io_failure_rolls_back_and_removes_owned_staging() {
 
             let compiler_directory = root.path().join("compiler");
             fs::create_dir(&compiler_directory).unwrap();
-            let compiler = compiler_directory.join("rustc");
+            let compiler = compiler_directory.join("cargo");
             fs::write(
                 &compiler,
                 r#"#!/bin/sh
 set -eu
-while [ "$#" -gt 0 ]; do
-    if [ "$1" = "-o" ]; then
-        shift
-        printf 'staged executable\n' > "$1"
-        exit 0
-    fi
-    shift
-done
-exit 1
+printf 'staged executable\n' > "$SESERAGI_TEST_EXECUTABLE"
+printf '{"reason":"compiler-artifact","target":{"name":"program"},"executable":"%s"}\n' "$SESERAGI_TEST_EXECUTABLE"
 "#,
             )
             .unwrap();
             fs::set_permissions(compiler, fs::Permissions::from_mode(0o700)).unwrap();
             let output = command("build-native", &source, &directory)
-                .env("PATH", compiler_directory)
+                .env(
+                    "SESERAGI_NATIVE_TOOLCHAIN",
+                    native_cache::mock_toolchain(&compiler_directory),
+                )
+                .env("PATH", &compiler_directory)
+                .env(
+                    "SESERAGI_TEST_EXECUTABLE",
+                    compiler_directory.join("executable"),
+                )
                 .output()
                 .unwrap();
             assert_eq!(output.status.code(), Some(2));

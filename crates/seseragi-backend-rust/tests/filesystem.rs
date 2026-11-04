@@ -1,4 +1,7 @@
-use seseragi_backend_rust::emit_rust_module;
+#[path = "../../test-support/native_runtime.rs"]
+mod link;
+
+use seseragi_backend_rust::{emit_program_wasm, emit_rust_module};
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, process::Command};
 
@@ -27,7 +30,7 @@ fn file_transform_preserves_utf8_input_and_typed_failures() {
     fs::create_dir(&temp).unwrap();
     let _cleanup = Cleanup(temp.clone());
     let rust = temp.join("program.rs");
-    fs::write(&rust, artifact.source).unwrap();
+    link::write_program(&rust, artifact.source).unwrap();
     let binary = temp.join(if cfg!(windows) {
         "program.exe"
     } else {
@@ -184,4 +187,90 @@ fn either_conversion_checks_scoped_value_kinds_before_erasure() {
         error.message.contains("fromEither argument/result kinds"),
         "{error}"
     );
+}
+
+#[test]
+fn filesystem_queries_preserve_checked_owners_results_requirements_and_source_arity() {
+    for (name, success) in [
+        ("exists", "Bool"),
+        ("metadata", "fs.FileMetadata"),
+        ("symlinkMetadata", "fs.FileMetadata"),
+        ("canonicalize", "paths.Path"),
+    ] {
+        let source = format!(
+            "import * as fs from \"std/fs\"\nimport * as paths from \"std/path\"\neffect fn query path: paths.Path -> {success} with FileSystem fails fs.FileSystemError = fs.{name} path\npub fn main -> Int = 0\n"
+        );
+        let core = compile_core_module(CompileInput::new(
+            "metadata.ssrg",
+            "native/metadata",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "main").unwrap();
+        for case in 0..8 {
+            let mut changed = core.clone();
+            let query = changed
+                .functions
+                .iter_mut()
+                .find(|f| f.symbol == "native/metadata::query")
+                .unwrap();
+            let mut body = serde_json::to_value(&query.body).unwrap();
+            assert_eq!(body["kind"], "effect-invoke");
+            assert_eq!(body["callee"], format!("std/fs::{name}"));
+            match case {
+                0 => body["arguments"][0]["type"]["canonical"] = "fake::Path".into(),
+                1 => body["failure"]["canonical"] = "fake::FileSystemError".into(),
+                2 => {
+                    body["success"] = serde_json::json!({
+                        "kind":"named", "name":"fake::Result", "arguments":[]
+                    })
+                }
+                3 => {
+                    body["requirements"]["fields"][0]["type"]["canonical"] =
+                        "fake::FileSystem".into()
+                }
+                4 => body["requirements"]["closed"] = false.into(),
+                5 => body["arguments"].as_array_mut().unwrap().clear(),
+                6 => {
+                    let argument = body["arguments"][0].clone();
+                    body["arguments"].as_array_mut().unwrap().push(argument);
+                }
+                7 => body["success"] = serde_json::json!({"kind":"hole"}),
+                _ => unreachable!(),
+            }
+            query.body = serde_json::from_value(body)
+                .unwrap_or_else(|error| panic!("{name}/{case}: {error}"));
+            let error = emit_rust_module(&changed, "main")
+                .err()
+                .unwrap_or_else(|| panic!("{name}/{case} accepted"));
+            assert_eq!(error.code, "SES-RUST-0001");
+            assert_eq!(error.origin.unwrap().source, "metadata.ssrg");
+        }
+    }
+}
+
+#[test]
+fn filesystem_queries_keep_program_wasm_admission_explicit_even_for_unused_references() {
+    for (name, success) in [
+        ("exists", "Bool"),
+        ("metadata", "fs.FileMetadata"),
+        ("symlinkMetadata", "fs.FileMetadata"),
+        ("canonicalize", "paths.Path"),
+    ] {
+        let source = format!(
+            "import * as fs from \"std/fs\"\nimport * as paths from \"std/path\"\npub fn probe value: Int -> Int = {{ let saved: paths.Path -> Effect<{{fileSystem: fs.FileSystem}}, fs.FileSystemError, {success}> = fs.{name}; value }}\npub fn main -> Int = probe 1\n"
+        );
+        let core = compile_core_module(CompileInput::new(
+            "metadata.ssrg",
+            "native/metadata",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "main").unwrap();
+        let error = emit_program_wasm(&[&core], &core.module, &["probe".into()]).unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert_eq!(error.origin.unwrap().source, "metadata.ssrg");
+    }
 }

@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -32,7 +35,7 @@ fn root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
 }
 fn cli() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_seseragi"))
+    native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
 }
 fn successful(output: Output) -> Output {
     assert!(
@@ -87,6 +90,8 @@ impl Program {
     }
 }
 fn programs(source: &Path, directory: &Path) -> Vec<Program> {
+    let input = native_cache::copy_input(source, directory);
+    let source = input.as_path();
     let native = directory.join("native");
     successful(
         cli()
@@ -353,6 +358,8 @@ fn filesystem_generated_typescript_is_strict_in_both_profiles() {
         "filesystem-transform",
         "filesystem-effects",
         "filesystem-async",
+        "filesystem-metadata",
+        "filesystem-metadata-effects",
         "path-portable",
     ] {
         let source = fs::read_to_string(

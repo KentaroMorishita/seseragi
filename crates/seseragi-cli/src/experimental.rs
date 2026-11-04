@@ -1,5 +1,7 @@
 use seseragi_driver::{compile_core_module, CompileInput};
-use std::{fs, path::PathBuf, process::Command};
+use std::{fs, path::PathBuf};
+pub(crate) mod native_cargo;
+pub(crate) mod native_toolchain;
 pub(crate) mod output;
 pub(crate) mod program_wasm;
 
@@ -20,6 +22,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     let mut entry = None;
     let mut destination = None;
     let mut provider = None;
+    let mut profile = None;
     for pair in flags.chunks(2) {
         let [flag, value] = pair else {
             return Err(usage().into());
@@ -27,6 +30,9 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
         match flag.as_str() {
             "--entry" if entry.is_none() => entry = Some(value.as_str()),
             "--provider" if provider.is_none() => provider = Some(value.as_str()),
+            "--profile" if native && profile.is_none() => {
+                profile = Some(seseragi_project::BuildProfile::parse(value)?)
+            }
             "--output" if !native && destination.is_none() => {
                 destination = Some(PathBuf::from(value))
             }
@@ -43,9 +49,18 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
         entry,
         provider,
         seseragi_project::ProjectCommand::Build,
-        seseragi_project::BuildProfile::Development,
+        profile.unwrap_or_default(),
     )?;
-    publish_artifact(&artifact, &source_paths, &destination, native)?;
+    publish_artifact(
+        &artifact,
+        &source_paths,
+        &destination,
+        native.then_some((
+            std::path::Path::new(path),
+            entry,
+            profile.unwrap_or_default(),
+        )),
+    )?;
     if native {
         println!("{}", destination.join(output::EXECUTABLE).display());
     } else {
@@ -64,7 +79,12 @@ pub(crate) fn build_native(
     let path = package.as_deref().unwrap_or(path);
     let path = path.to_str().ok_or("native source path must be UTF-8")?;
     let (artifact, source_paths) = compile_native(path, "main", None, command, profile)?;
-    publish_artifact(&artifact, &source_paths, destination, true)
+    publish_artifact(
+        &artifact,
+        &source_paths,
+        destination,
+        Some((std::path::Path::new(path), "main", profile)),
+    )
 }
 
 fn compile_native(
@@ -113,11 +133,11 @@ fn publish_artifact(
     artifact: &seseragi_backend_rust::RustArtifact,
     source_paths: &[PathBuf],
     destination: &std::path::Path,
-    native: bool,
+    native: Option<(&std::path::Path, &str, seseragi_project::BuildProfile)>,
 ) -> Result<(), String> {
-    // Target admission precedes filesystem changes. Generate and compile only
-    // inside owned staging, then replace the checked output leaves together.
-    let selected = if native {
+    // Target admission precedes filesystem changes. Prepare all outputs before
+    // replacing the checked destination leaves together.
+    let selected = if native.is_some() {
         output::Destination::Native(destination)
     } else {
         output::Destination::Rust(destination)
@@ -130,28 +150,8 @@ fn publish_artifact(
         )
         .map_err(|e| e.to_string())?;
         if let Some(executable) = &staged.executable {
-            let output = Command::new("rustc")
-                .args(["--edition=2021", "--crate-name", "seseragi_program", "-O"])
-                .arg("--remap-path-prefix")
-                .arg(format!(
-                    "{}=.",
-                    staged
-                        .rust
-                        .parent()
-                        .expect("staged Rust source has a parent")
-                        .display()
-                ))
-                .arg(&staged.rust)
-                .arg("-o")
-                .arg(executable)
-                .output()
-                .map_err(|e| format!("could not start rustc: {e}; install a Rust toolchain"))?;
-            if !output.status.success() {
-                return Err(format!(
-                    "Rust target compilation failed:\n{}",
-                    String::from_utf8_lossy(&output.stderr)
-                ));
-            }
+            let (path, entry, profile) = native.expect("native output has a build input");
+            native_cargo::build(path, entry, profile, &artifact.source, executable)?;
         }
         Ok(())
     })?;
@@ -194,6 +194,10 @@ fn compile_project(
         .expect("checked root package");
     let manifest_path = root.root().join("seseragi.toml");
     let mut options = native_clock_options(provider)?;
+    if let Some(run) = &root.manifest().run {
+        options.process.forward_signals = run.signal_mode == seseragi_project::SignalMode::Forward;
+        options.process.shutdown_grace_ms = run.shutdown_grace_ms.unwrap_or(10_000);
+    }
     options.sources = project
         .modules()
         .map(|(identity, module)| {
@@ -223,7 +227,7 @@ fn compile_project(
         .metadata
         .capabilities
         .iter()
-        .any(|c| c == "clock-sleep")
+        .any(|c| matches!(c.as_str(), "clock-sleep" | "clock-now"))
     {
         reject_clock_manifest_pin(
             root.manifest()
@@ -240,7 +244,7 @@ fn compile_project(
                         .providers
                         .contains_key("std/clock::Clock"))
             {
-                return Err(format!("{}: SES-RUST-0001: native Clock sleep requires the explicit native CLI selection; provider artifacts and dependency provider selections are not admitted", package.root().join("seseragi.toml").display()));
+                return Err(format!("{}: SES-RUST-0001: native Clock requires the explicit native CLI selection; provider artifacts and dependency provider selections are not admitted", package.root().join("seseragi.toml").display()));
             }
         }
     }
@@ -258,6 +262,57 @@ fn compile_project(
                 || !package.manifest().provider_artifacts.is_empty()
             {
                 return Err(format!("{}: SES-RUST-0001: unsupported native filesystem provider selection/artifact configuration; this target currently uses its built-in filesystem host", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
+        .any(|capability| capability == "child-process")
+    {
+        for (_, package) in project.packages().packages() {
+            if package
+                .manifest()
+                .providers
+                .contains_key("std/child-process::ChildProcesses")
+                || !package.manifest().provider_artifacts.is_empty()
+            {
+                return Err(format!("{}: SES-RUST-0001: unsupported native ChildProcesses provider selection/artifact configuration; this target currently uses its built-in child process host", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
+        .any(|capability| capability == "random")
+    {
+        for (_, package) in project.packages().packages() {
+            if package
+                .manifest()
+                .providers
+                .contains_key("std/random::Random")
+                || !package.manifest().provider_artifacts.is_empty()
+            {
+                return Err(format!("{}: SES-RUST-0001: unsupported native Random provider selection/artifact configuration; this target currently uses its built-in Random host", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
+        .any(|capability| capability == "entropy")
+    {
+        for (_, package) in project.packages().packages() {
+            if package
+                .manifest()
+                .providers
+                .contains_key("std/entropy::Entropy")
+                || !package.manifest().provider_artifacts.is_empty()
+            {
+                return Err(format!("{}: SES-RUST-0001: unsupported native Entropy provider selection/artifact configuration; this target currently uses its built-in Entropy host", package.root().join("seseragi.toml").display()));
             }
         }
     }
@@ -279,7 +334,7 @@ fn native_clock_options(
             return Err("SES-RUST-0001: --provider requires std/clock::Clock=provider-identity".to_owned());
         };
         if service != "std/clock::Clock" {
-            return Err(format!("SES-RUST-0001: unsupported native provider service {service}; this finite selection supports Clock sleep only"));
+            return Err(format!("SES-RUST-0001: unsupported native provider service {service}; this selection supports Clock only"));
         }
         Ok(provider)
     }).transpose()?;
@@ -297,7 +352,7 @@ fn native_clock_options(
 
 fn reject_clock_manifest_pin(manifest: Option<&str>, path: &std::path::Path) -> Result<(), String> {
     if let Some(identity) = manifest {
-        return Err(format!("{}: SES-RUST-0001: native Clock sleep does not admit the target-shared manifest provider selection {identity}; use the explicit native --provider selection without a Clock manifest pin; JavaScript providers are not substituted", path.display()));
+        return Err(format!("{}: SES-RUST-0001: native Clock does not admit the target-shared manifest provider selection {identity}; use the explicit native --provider selection without a Clock manifest pin; JavaScript providers are not substituted", path.display()));
     }
     Ok(())
 }
@@ -411,5 +466,5 @@ fn load_checked_project_entry_with_profile(
 }
 
 fn usage() -> &'static str {
-    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep] | build-native source.ssrg|package-root --entry function --out-dir path [--provider std/clock::Clock=seseragi/runtime-native#clock-sleep]"
+    "usage: seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock] | build-native source.ssrg|package-root --entry function --out-dir path [--profile development|release] [--provider std/clock::Clock=seseragi/runtime-native#clock]"
 }

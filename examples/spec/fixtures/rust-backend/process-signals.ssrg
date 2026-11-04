@@ -1,0 +1,203 @@
+import * as effects from "std/effect"
+import * as clock from "std/clock"
+import * as time from "std/time"
+import * as nonEmpty from "std/non-empty-list"
+import * as process from "std/process"
+import * as streams from "std/stream"
+import * as deferred from "std/deferred"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+
+fn identity<A> value: A -> A = value
+
+effect fn say text: String -> Unit with Console fails String =
+  println text
+  |> effects.mapError show
+
+effect fn ignore _error: String -> Unit with Console = effects.succeed ()
+
+effect fn acquire -> Unit with Console, Clock = effects.succeed ()
+
+effect fn pause milliseconds: Int -> Unit with Clock =
+  match time.milliseconds milliseconds {
+    Right duration -> clock.sleep duration
+    Left _ -> effects.succeed ()
+  }
+
+effect fn release label: String
+  -> delay: Int
+  -> _unit: Unit
+  -> Unit
+with Console, Clock =
+  do {
+    say (label + ":start") |> effects.recover ignore
+    if delay > 0 then pause delay else effects.succeed ()
+    say (label + ":done") |> effects.recover ignore
+  }
+
+effect fn child -> Unit with Console, Clock = do {
+  effects.acquireRelease (acquire ()) (release "child" 30)
+  pause 60000
+}
+
+effect fn keepAlive mode: String -> Unit with Clock = match mode {
+  "cold" -> effects.succeed ()
+  "values" -> effects.succeed ()
+  "zero" -> effects.succeed ()
+  "reserved-int" -> effects.succeed ()
+  "reserved-term" -> effects.succeed ()
+  "wait" -> effects.succeed ()
+  "slow" -> effects.succeed ()
+  "sync" -> effects.succeed ()
+  _ -> do {
+    _keeper <- effects.fork (pause 60000)
+    effects.succeed ()
+  }
+}
+
+fn watching head: process.ProcessSignal
+  -> tail: List<process.ProcessSignal>
+  -> nonEmpty.NonEmptyList<process.ProcessSignal> =
+  nonEmpty.cons head tail
+
+fn watched mode: String -> nonEmpty.NonEmptyList<process.ProcessSignal> = match mode {
+  "reserved-term" -> watching process.Terminate `[process.Interrupt]
+  "reserved-int" -> watching process.User1 `[process.Interrupt, process.Terminate]
+  _ -> watching process.Interrupt `[
+    process.Terminate,
+    process.Hangup,
+    process.Quit,
+    process.User1,
+    process.User2,
+    process.Interrupt,
+    process.User1
+  ]
+}
+
+effect fn observe mode: String
+  -> arrived: deferred.Deferred<Never, process.ProcessSignal>
+  -> resume: deferred.Deferred<Never, Unit>
+  -> values: refs.Ref<Array<process.ProcessSignal>>
+  -> signal: process.ProcessSignal
+  -> Unit
+with process: process.Process
+fails process.ProcessError =
+  do {
+    refs.update (arrays.append [signal]) values
+    first <- deferred.succeed signal arrived
+    if first && mode == "queue" then deferred.await resume else effects.succeed ()
+    match mode {
+      "failure" -> effects.fail (process.InvalidEnvironmentName "signal callback failed")
+      "defect" -> effects.die "signal callback defect"
+      _ -> effects.succeed ()
+    }
+  }
+
+pub effect fn main -> Unit with Console, process: process.Process, Clock fails String =
+  do {
+    args <- process.arguments () |> effects.mapError show
+    let mode = match args { [value, ..._] -> value; _ -> "one" }
+    let saved = identity process.signals
+    let source = saved (watched mode)
+    let delay = match mode { "slow" -> 30000; "sync" -> 0; _ -> 30 }
+    effects.acquireRelease (acquire ()) (release "root" delay)
+    keepAlive mode
+    match mode {
+      "cold" -> say "cold"
+      "values" -> do {
+        say (
+          show [
+            process.Interrupt,
+            process.Terminate,
+            process.Hangup,
+            process.Quit,
+            process.User1,
+            process.User2
+          ]
+        )
+      }
+      "zero" -> do {
+        values <- streams.take 0 source |> streams.runCollect |> effects.mapError show
+        say (show values)
+      }
+      "reserved-int" -> do {
+        _values <- streams.take 0 source
+          |> streams.runCollect
+          |> effects.mapError show
+        effects.succeed ()
+      }
+      "reserved-term" -> do {
+        _values <- streams.take 0 source
+          |> streams.runCollect
+          |> effects.mapError show
+        effects.succeed ()
+      }
+      "wait" -> do {
+        worker <- effects.fork (child ())
+        effects.yieldNow ()
+        say "ready"
+        effects.join worker
+      }
+      "slow" -> do { say "ready"; pause 60000 }
+      "sync" -> do { say "ready"; pause 60000 }
+      "broadcast" -> do {
+        left <- effects.fork (streams.take 1 source |> streams.runCollect |> effects.mapError show)
+        right <- effects.fork (streams.take 1 source |> streams.runCollect |> effects.mapError show)
+        effects.yieldNow ()
+        say "ready"
+        a <- effects.join left
+        b <- effects.join right
+        say (show a)
+        say (show b)
+      }
+      "cancel-subscriber" -> do {
+        first <- effects.fork (streams.take 1 source |> streams.runCollect |> effects.mapError show)
+        effects.yieldNow ()
+        effects.interrupt first
+        exit <- effects.await first
+        match exit {
+          effects.FiberCancelled -> say "FiberCancelled"
+          _ -> effects.fail "unexpected signal subscriber exit"
+        }
+        second <- effects.fork (streams.take 1 source |> streams.runCollect |> effects.mapError show)
+        effects.yieldNow ()
+        say "ready"
+        values <- effects.join second
+        say (show values)
+      }
+      "replay" -> do {
+        first <- effects.fork (streams.take 1 source |> streams.runCollect |> effects.mapError show)
+        effects.yieldNow ()
+        say "ready"
+        a <- effects.join first
+        say (show a)
+        second <- effects.fork (streams.take 1 source |> streams.runCollect |> effects.mapError show)
+        effects.yieldNow ()
+        say "next"
+        b <- effects.join second
+        say (show b)
+      }
+      _ -> do {
+        let count = if mode == "queue" then 3 else 1
+        arrived <- deferred.make<Never, process.ProcessSignal> ()
+        resume <- deferred.make<Never, Unit> ()
+        let empty: Array<process.ProcessSignal> = []
+        values <- refs.make empty
+        collector <- effects.fork (
+          streams.take count source |> streams.runForEach
+            (observe mode arrived resume values) |> effects.mapError show
+        )
+        effects.yieldNow ()
+        say "ready"
+        first <- deferred.await arrived
+        say (show first)
+        if mode == "queue" then pause 300 else effects.succeed ()
+        _completed <- deferred.succeed () resume
+        effects.join collector
+        if mode == "queue" then do {
+          received <- refs.get values
+          say (show received)
+        } else effects.succeed ()
+      }
+    }
+  }

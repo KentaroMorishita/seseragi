@@ -1,5 +1,11 @@
 #![allow(dead_code)]
 
+#[path = "../../../test-support/native_runtime.rs"]
+mod link;
+pub fn inline_runtime(source: &str) -> String {
+    link::inline_runtime(source)
+}
+
 use seseragi_backend_rust::{emit_rust_module, RustArtifact};
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{
@@ -29,7 +35,7 @@ impl Scratch {
         } else {
             "native"
         });
-        fs::write(&input, source).unwrap();
+        link::write_program(&input, source).unwrap();
         let result = Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
             .arg(&binary)

@@ -1,0 +1,55 @@
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+
+fn through<A, B> operation: (A -> B) -> value: A -> B = operation value
+
+fn describe values: Array<Int> -> String = match bytes.fromInts values {
+  Left error -> "unexpected: " + show error
+  Right buffer -> {
+    let strict: bytes.Bytes -> Either<text.Utf8DecodeError, String> = text.decodeUtf8
+    let lossy: bytes.Bytes -> String = text.decodeUtf8Lossy
+    let encoded: String -> bytes.Bytes = text.encodeUtf8
+    let decoded = match through strict buffer {
+      Left (text.InvalidUtf8 error) -> "Left " + show error.offset
+        + " " + show (text.InvalidUtf8 error)
+      Right value -> "Right " + show (bytes.toInts (through encoded value))
+    }
+    show values + "|" + decoded + "|"
+      + show (bytes.toInts (encoded (through lossy buffer)))
+      + "|" + show (bytes.toInts buffer)
+  }
+}
+
+fn encoded value: String -> String = show (bytes.toInts (text.encodeUtf8 value))
+
+pub fn probe -> String = text.join "\n" [
+  "encode-empty:" + encoded "",
+  "encode-ascii:" + encoded "A\0\n\u{7f}",
+  "encode-unicode:" + encoded "せせらぎ🙂e\u{301}",
+  "encode-boundaries:" + encoded "\u{80}\u{7ff}\u{800}\u{d7ff}\u{e000}\u{ffff}\u{10000}\u{10ffff}",
+  "encode-bom:" + encoded "\u{feff}A\u{feff}",
+  text.join "\n" (describe <$> [
+    [], [0], [65, 0, 127],
+    [194, 128], [223, 191], [224, 160, 128], [237, 159, 191],
+    [238, 128, 128], [239, 191, 191], [240, 144, 128, 128], [244, 143, 191, 191],
+    [239, 187, 191], [239, 187, 191, 65, 239, 187, 191],
+    [101, 204, 129, 240, 159, 153, 130],
+    [128], [191], [192], [193], [245], [254], [255],
+    [192, 128], [193, 191], [224, 128, 128], [240, 128, 128, 128],
+    [237, 160, 128], [237, 191, 191], [244, 144, 128, 128], [245, 128, 128, 128],
+    [194], [194, 65], [194, 255],
+    [224], [224, 160], [224, 160, 65], [224, 159, 128],
+    [225], [225, 128], [225, 65, 128], [225, 128, 65],
+    [237, 160], [239, 187],
+    [240], [240, 144], [240, 144, 128], [240, 143, 128, 128],
+    [241, 128, 65, 128], [241, 128, 128, 65],
+    [244, 143, 191], [244, 144],
+    [128, 128, 255], [226, 130, 194, 162], [226, 130, 240, 159, 153, 130],
+    [97, 195, 169, 226, 130, 65, 255],
+    [240, 159, 153, 130, 255, 128],
+    [239, 187, 191, 226, 130],
+    [226, 130, 239, 187, 191]
+  ])
+]
+
+pub effect fn main = println (probe ())

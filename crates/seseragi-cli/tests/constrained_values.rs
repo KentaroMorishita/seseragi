@@ -1,3 +1,6 @@
+#[path = "../../test-support/native_cache.rs"]
+mod native_cache;
+
 use std::{fs, path::Path, process::Command};
 
 fn success(command: &mut Command) -> std::process::Output {
@@ -24,7 +27,7 @@ fn constrained_values_match_ts_in_every_first_class_position() {
         let source = fixtures.join(format!("{name}.ssrg"));
         let expected = fs::read(source.with_extension("stdout")).unwrap();
         let ts = success(
-            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
                 .arg("run")
                 .arg(&source),
         );
@@ -32,7 +35,7 @@ fn constrained_values_match_ts_in_every_first_class_position() {
         assert!(ts.stderr.is_empty(), "TS {name}: {ts:?}");
         let directory = scratch.path().join(name);
         success(
-            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            native_cache::command(env!("CARGO_BIN_EXE_seseragi"))
                 .args(["experimental", "build-native"])
                 .arg(&source)
                 .args(["--entry", "main", "--out-dir"])

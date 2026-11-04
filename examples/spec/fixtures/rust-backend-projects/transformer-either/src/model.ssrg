@@ -1,0 +1,28 @@
+import { EitherT } from "std/transformer/either"
+
+pub opaque struct Box<A> { value: A }
+pub opaque struct Label { text: String }
+pub opaque struct Item { number: Int }
+pub alias Wrapped<M<_>, A> = EitherT<Label, M, A>
+
+pub fn wrap<A> value: A -> Box<A> = Box { value }
+pub fn unwrap<A> box: Box<A> -> A = box.value
+pub fn label text: String -> Label = Label { text }
+pub fn text label: Label -> String = label.text
+pub fn item number: Int -> Item = Item { number }
+pub fn number item: Item -> Int = item.number
+pub fn increment item: Item -> Item = Item { number: item.number + 1 }
+
+instance Functor<Box> {
+  fn map<A, B> callback: (A -> B) -> source: Box<A> -> Box<B> =
+    Box { value: callback source.value }
+}
+instance Applicative<Box> {
+  fn pure<A> value: A -> Box<A> = Box { value }
+  fn apply<A, B> functions: Box<(A -> B)> -> source: Box<A> -> Box<B> =
+    Box { value: functions.value source.value }
+}
+instance Monad<Box> {
+  fn flatMap<A, B> callback: (A -> Box<B>) -> source: Box<A> -> Box<B> =
+    callback source.value
+}

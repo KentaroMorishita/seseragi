@@ -1,0 +1,72 @@
+import * as maps from "std/map"
+import * as iterator from "std/iterator"
+
+type Key = | Key { identity: Int, label: String }
+
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool = match left {
+    Key a -> match right { Key b -> a.identity == b.identity }
+  }
+}
+instance Hash<Key> { fn hash _value: Key -> Int = 0 }
+instance Show<Key> { fn show value: Key -> String = match value { Key detail -> detail.label } }
+
+type Rows = | Rows (Array<(Key, Int)>)
+instance Iterable<Rows, (Key, Int)> {
+  fn iterate rows: Rows -> iterator.Iterator<(Key, Int)> =
+    match rows { Rows values -> iterate values }
+}
+
+fn update value: Maybe<Int> -> Int = match value {
+  Nothing -> 7
+  Just current -> current + 1
+}
+fn resolve current: Int -> incoming: Int -> Int = current * 10 + incoming
+fn selected key: Key -> value: Int -> Bool =
+  match key { Key detail -> detail.identity == 2 && value == 20 }
+
+pub effect fn main = do {
+  let first = Key ({ identity: 1, label: "first" })
+  let second = Key ({ identity: 2, label: "second" })
+  let equal = Key ({ identity: 1, label: "replacement" })
+  let fresh = Key ({ identity: 3, label: "fresh" })
+  let empty: maps.Map<Key, Int> = maps.empty ()
+  let one: maps.Map<Key, Int> = maps.singleton first 10
+  let source: maps.Map<Key, Int> = maps.fromEntries (Rows [(first, 10), (second, 20), (equal, 3)])
+  let inserted: maps.Map<Key, Int> = maps.insert fresh 30 source
+  let updated: maps.Map<Key, Int> = maps.upsert equal update source
+  let missing: maps.Map<Key, Int> = maps.upsert fresh update source
+  let removed: maps.Map<Key, Int> = maps.remove equal source
+  let filtered: maps.Map<Key, Int> = maps.filter selected source
+  let mapped: maps.Map<Key, String> = maps.mapValues (\value: Int -> "v" + show value) source
+  let rekeyed: maps.Map<Bool, Int> = maps.mapKeysWith resolve (\_: Key -> True) source
+  let right: maps.Map<Key, Int> = maps.singleton equal 4 |> maps.insert fresh 5
+  let merged: maps.Map<Key, Int> = maps.mergeWith resolve right source
+  let found: Maybe<Int> = maps.get equal source
+  let absent: Maybe<Int> = maps.get fresh source
+  let contains: Bool = maps.containsKey equal source
+  let keys: Array<Key> = maps.keys source
+  let values: Array<Int> = maps.values source
+  let entries: Array<(Key, Int)> = maps.entries source
+  let size: Int = maps.size source
+  let isEmpty: Bool = maps.isEmpty empty
+  println (show (maps.entries empty))
+  println (show (maps.entries one))
+  println (show entries)
+  println (show found)
+  println (show absent)
+  println (show contains)
+  println (show (maps.entries inserted))
+  println (show (maps.entries updated))
+  println (show (maps.entries missing))
+  println (show (maps.entries removed))
+  println (show (maps.entries filtered))
+  println (show (maps.entries mapped))
+  println (show (maps.entries rekeyed))
+  println (show (maps.entries merged))
+  println (show keys)
+  println (show values)
+  println (show size)
+  println (show isEmpty)
+  println (show (maps.entries source))
+}
