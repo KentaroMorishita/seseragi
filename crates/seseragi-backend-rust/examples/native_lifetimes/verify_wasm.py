@@ -45,7 +45,11 @@ def main():
     source_dir.mkdir(exist_ok=True)
     shutil.copyfile(ROOT / "examples/spec/fixtures/rust-backend-research/web-ui.ssrg", source_dir / "main.ssrg")
     shutil.copyfile(Path(__file__).with_name("wasm-host.ts"), source_dir / "wasm-host.ts")
-    run([cli, "build", source_dir / "main.ssrg", "--target", "web", "--out-dir", out / "ui"])
+    ui = out / "ui"
+    # target/ may be restored from the CI Cargo cache; this script owns ui/,
+    # so start every run from a fresh output instead of an old copy.
+    shutil.rmtree(ui, ignore_errors=True)
+    run([cli, "build", source_dir / "main.ssrg", "--target", "web", "--out-dir", ui])
     manifest = json.loads((out / "ui/artifact-manifest.json").read_text())
     entry = manifest["entry"]
     assert not Path(entry).is_absolute() and ".." not in Path(entry).parts
