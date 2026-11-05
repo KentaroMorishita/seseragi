@@ -19,6 +19,12 @@ def main():
     args = parser.parse_args()
     emitter, cli, bun = [Path(shutil.which(p) or p).resolve() for p in (args.emitter, args.cli, args.bun)]
     out = ROOT / "target/native-wasm"
+    # The script deletes out/"ui" below, so it must stay inside this checkout.
+    # ROOT is already resolved; refuse a symlinked target/ or native-wasm/
+    # before writing anything.
+    for path in (ROOT / "target", out):
+        if path.is_symlink():
+            raise SystemExit(f"refusing to use symlinked build output {path}")
     out.mkdir(exist_ok=True)
     env = dict(os.environ, PATH=f"{bun.parent}{os.pathsep}{os.environ['PATH']}")
 
@@ -46,9 +52,12 @@ def main():
     shutil.copyfile(ROOT / "examples/spec/fixtures/rust-backend-research/web-ui.ssrg", source_dir / "main.ssrg")
     shutil.copyfile(Path(__file__).with_name("wasm-host.ts"), source_dir / "wasm-host.ts")
     ui = out / "ui"
+    if ui.is_symlink():
+        raise SystemExit(f"refusing to replace symlinked build output {ui}")
     # target/ may be restored from the CI Cargo cache; this script owns ui/,
     # so start every run from a fresh output instead of an old copy.
-    shutil.rmtree(ui, ignore_errors=True)
+    if ui.exists():
+        shutil.rmtree(ui)
     run([cli, "build", source_dir / "main.ssrg", "--target", "web", "--out-dir", ui])
     manifest = json.loads((out / "ui/artifact-manifest.json").read_text())
     entry = manifest["entry"]
