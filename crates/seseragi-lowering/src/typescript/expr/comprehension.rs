@@ -7,6 +7,7 @@ use std::collections::BTreeMap;
 use super::lower_core_expr_to_typescript;
 use crate::typescript::decision::lower_core_pattern_decision;
 use crate::typescript::dictionaries::local_dictionary_expression;
+use crate::typescript::failure::{missing_evidence, unexpected_shape, Lowered};
 use crate::typescript::names::safe_identifier;
 use crate::typescript::types::type_ref_from_core_expr;
 use crate::typescript::{TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptType};
@@ -17,18 +18,18 @@ pub(super) fn lower_array_comprehension(
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
     depth: usize,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     let mut clauses = clauses.into_iter();
-    let CoreComprehensionClause::Generator {
+    let Some(CoreComprehensionClause::Generator {
         pattern,
         source,
         evidence,
         ..
-    } = clauses
-        .next()
-        .expect("typed comprehension requires a generator")
+    }) = clauses.next()
     else {
-        panic!("typed comprehension must begin with a generator");
+        return Err(unexpected_shape(
+            "typed comprehension must begin with a generator",
+        ));
     };
     let direct_parameter = match &pattern {
         CorePattern::Binding { name, .. } => Some(safe_identifier(name)),
@@ -53,6 +54,8 @@ pub(super) fn lower_array_comprehension(
             ),
             CoreComprehensionClause::Generator { .. } => None,
         })
+        .collect::<Lowered<Vec<_>>>()?
+        .into_iter()
         .reduce(|left, right| TypeScriptExpr::Binary {
             operator: "&&".to_owned(),
             left: Box::new(left),
@@ -74,9 +77,9 @@ pub(super) fn lower_array_comprehension(
             imported_values,
             imported_types,
             depth + 1,
-        )
+        )?
     } else {
-        lower_core_expr_to_typescript(element, imported_values, imported_types)
+        lower_core_expr_to_typescript(element, imported_values, imported_types)?
     };
     let (parameter, predicate, transform) = match (direct_parameter, pattern) {
         (Some(parameter), None) => (
@@ -92,13 +95,17 @@ pub(super) fn lower_array_comprehension(
         }
         _ => unreachable!("comprehension pattern lowering mode is total"),
     };
-    let source = lower_core_expr_to_typescript(source, imported_values, imported_types);
+    let source = lower_core_expr_to_typescript(source, imported_values, imported_types)?;
     let (callee, source) = if let Some(operation) = runtime_iterable_operation(&evidence, flatten) {
         (operation.local_name, source)
     } else {
         let dictionary =
             local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
-                .expect("user Iterable comprehension requires materialized dictionary evidence");
+                .ok_or_else(|| {
+                    missing_evidence(
+                        "user Iterable comprehension requires materialized dictionary evidence",
+                    )
+                })?;
         (
             runtime_iterator_comprehension_operation(flatten).local_name,
             TypeScriptExpr::DictionaryCall {
@@ -108,7 +115,7 @@ pub(super) fn lower_array_comprehension(
             },
         )
     };
-    TypeScriptExpr::RuntimeCall {
+    Ok(TypeScriptExpr::RuntimeCall {
         callee: callee.to_owned(),
         arguments: vec![
             source,
@@ -121,7 +128,7 @@ pub(super) fn lower_array_comprehension(
                 body: Box::new(transform),
             },
         ],
-    }
+    })
 }
 
 fn pattern_predicate(

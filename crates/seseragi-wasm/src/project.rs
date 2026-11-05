@@ -1362,6 +1362,16 @@ fn output_plan_problem(error: TypeScriptOutputPlanError, path: String) -> Projec
 
 fn typescript_plan_problem(error: TypeScriptLoweringError, path: String) -> ProjectProblem {
     let message = match error {
+        // The driver turns lowering invariants into located diagnostics; keep
+        // a direct caller's failure distinct from project configuration.
+        TypeScriptLoweringError::Internal(error) => {
+            return ProjectProblem::file(
+                "SES-I0001",
+                format!("Internal compiler error: {error}"),
+                path,
+                None,
+            );
+        }
         TypeScriptLoweringError::MissingOutputSpecifier {
             module,
             source_specifier,

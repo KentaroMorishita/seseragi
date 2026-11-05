@@ -11,9 +11,11 @@ use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
 /// public interface; source-package imports still require the project driver.
 pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, DiagnosticArtifact> {
     let core = crate::compile_core_module(input)?;
-    crate::lowering_panic::catch_lowering_panic(core.diagnostics.clone(), move || {
+    let diagnostics = core.diagnostics.clone();
+    crate::lowering_panic::catch_lowering_panic(diagnostics.clone(), move || {
         finish_compilation(core, input.source_name(), input.source(), input.profile())
-    })
+    })?
+    .map_err(|error| crate::lowering_panic::lowering_error_diagnostics(diagnostics, &error))
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -73,8 +75,11 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
 ) -> Result<CompiledModule, LinkedCompileError> {
     let analyzed =
         crate::lower_analyzed_module(analyzed).map_err(LinkedCompileError::Diagnostics)?;
-    crate::lowering_panic::catch_lowering_panic(analyzed.diagnostics.clone(), move || {
+    let diagnostics = analyzed.diagnostics.clone();
+    crate::lowering_panic::catch_lowering_panic(diagnostics.clone(), move || {
         let core_ir = analyzed.core_ir;
+        #[cfg(test)]
+        let core_ir = crate::lowering_panic::fault::edit_core(core_ir);
         let options = lowering_options(&core_ir, profile, project_newtypes);
         let mut typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
             core_ir.clone(),
@@ -109,7 +114,14 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
         })
     })
     .map_err(LinkedCompileError::Diagnostics)?
-    .map_err(LinkedCompileError::TypeScriptPlan)
+    .map_err(|error| match error {
+        // Output-plan failures stay project problems; lowering invariants
+        // become internal diagnostics at their Core source location.
+        TypeScriptLoweringError::Internal(_) => LinkedCompileError::Diagnostics(
+            crate::lowering_panic::lowering_error_diagnostics(diagnostics, &error),
+        ),
+        error => LinkedCompileError::TypeScriptPlan(error),
+    })
 }
 
 fn finish_compilation(
@@ -117,20 +129,21 @@ fn finish_compilation(
     source_name: &str,
     source: &str,
     profile: seseragi_project::BuildProfile,
-) -> CompiledModule {
+) -> Result<CompiledModule, TypeScriptLoweringError> {
     let CoreCompilation {
         diagnostics,
         typed_hir,
         typed_interface,
         core_ir,
     } = core;
+    #[cfg(test)]
+    let core_ir = crate::lowering_panic::fault::edit_core(core_ir);
     let options = lowering_options(&core_ir, profile, &std::collections::BTreeSet::new());
     let mut typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
         core_ir.clone(),
         &TypeScriptOutputPlan::default(),
         &options,
-    )
-    .expect("single module output plan");
+    )?;
     for origin in &mut typescript_ir.runtime_sources {
         origin.source = seseragi_project::standalone_runtime_source_path(source_name);
     }
@@ -148,14 +161,14 @@ fn finish_compilation(
     );
     crate::generated_metadata::retain_deprecations(&typed_interface, &mut generated);
 
-    CompiledModule {
+    Ok(CompiledModule {
         diagnostics,
         typed_hir,
         typed_interface,
         core_ir,
         typescript_ir,
         generated,
-    }
+    })
 }
 
 #[cfg(test)]
