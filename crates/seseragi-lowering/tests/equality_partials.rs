@@ -5,8 +5,14 @@ use seseragi_semantics::type_module;
 
 fn output(operator: &str) -> String {
     let source = format!("type Mark = | Mark Int\ninstance Eq<Mark> {{ fn eq left: Mark -> (Mark -> Bool) = {{ let bad = 9007199254740991 + 1; \\right -> True }} }}\npub fn probe -> Unit = {{ let op: Mark -> Mark -> Bool = ({operator}); let saved = op (Mark 1); () }}");
-    let core = lower_typed_module(type_module("equality-λ.ssrg", &source));
-    emit_typescript_module(lower_core_module_to_typescript_ir(core), &source).typescript
+    let core = lower_typed_module(type_module("equality-λ.ssrg", &source))
+        .expect("valid test lowering input");
+    emit_typescript_module(
+        lower_core_module_to_typescript_ir(core).expect("valid test lowering input"),
+        &source,
+    )
+    .expect("valid test lowering input")
+    .typescript
 }
 
 #[test]

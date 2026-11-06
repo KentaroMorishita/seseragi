@@ -4,9 +4,9 @@ use seseragi_lowering::{
 
 fn compile(source_name: &str, source: &str) -> seseragi_lowering::GeneratedBundle {
     let typed = seseragi_semantics::type_module(source_name, source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    emit_typescript_module(typescript, source)
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    emit_typescript_module(typescript, source).expect("valid test lowering input")
 }
 
 #[test]

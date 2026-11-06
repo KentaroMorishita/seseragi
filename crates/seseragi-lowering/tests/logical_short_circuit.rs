@@ -10,7 +10,7 @@ fn desugars_logical_operators_to_core_control_flow() {
         "  left || middle && right\n",
     );
     let typed = type_module("artifact/logical-short-circuit/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
 
     let CoreExpr::If {
         then_branch,
@@ -26,8 +26,8 @@ fn desugars_logical_operators_to_core_control_flow() {
     ));
     assert!(matches!(else_branch.as_ref(), CoreExpr::If { .. }));
 
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let generated = emit_typescript_module(typescript, source);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let generated = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         generated.typescript,
         concat!(
@@ -45,7 +45,7 @@ fn keeps_each_required_right_hand_side_in_one_conditional_branch() {
         "pub fn orValue left: Bool -> right: Bool -> Bool = left || right\n",
     );
     let typed = type_module("artifact/logical-branches/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
 
     assert!(matches!(
         &core.functions[0].body,
@@ -79,9 +79,11 @@ fn preserves_compound_logical_conditions_before_selecting_branch_values() {
         "pub fn compoundResult a: Bool -> b: Bool -> Bool = a && b\n",
     );
     let typed = type_module("artifact/logical-condition-branches/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let generated = emit_typescript_module(typescript, source).typescript;
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let generated = emit_typescript_module(typescript, source)
+        .expect("valid test lowering input")
+        .typescript;
 
     assert!(
         generated.contains("(a ? b : false) ? \"both\" : \"not-both\""),

@@ -24,7 +24,7 @@ fn frontend(path: &str, source: &str) -> Result<CoreModule, String> {
     let linked = link_module(interface, &targets).map_err(|error| format!("{error:#?}"))?;
     let analyzed = analyze_linked_module(parse_diagnostics(path, source), linked, source)
         .map_err(|error| format!("{error:#?}"))?;
-    Ok(lower_typed_module(analyzed.typed_hir))
+    lower_typed_module(analyzed.typed_hir).map_err(|error| error.to_string())
 }
 
 fn main() -> Result<(), String> {

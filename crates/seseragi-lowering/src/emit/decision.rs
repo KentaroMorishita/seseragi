@@ -44,6 +44,7 @@ fn render_prefix_branches(
     result: &TypeScriptType,
     render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
 ) -> String {
+    // The caller selects this path only after finding a list-prefix plan.
     let length = branches
         .iter()
         .filter_map(|branch| branch.list_prefix.as_ref().map(|plan| plan.length))

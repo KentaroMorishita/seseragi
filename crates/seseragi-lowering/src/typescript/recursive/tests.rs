@@ -52,7 +52,7 @@ fn a_long_acyclic_graph_does_not_use_recursive_compiler_stack() {
 
 #[test]
 fn effect_dependency_analysis_does_not_weaken_pure_capture_refusals() {
-    let module=lower_typed_module(type_module("mutual.ssrg", "import * as effects from \"std/effect\"\neffect fn checkpoint _unit: Unit -> String = do { effects.yieldNow (); wait () }\nfn wait -> Effect<{}, Never, String> = effects.defer checkpoint\n"));
+    let module=lower_typed_module(type_module("mutual.ssrg", "import * as effects from \"std/effect\"\neffect fn checkpoint _unit: Unit -> String = do { effects.yieldNow (); wait () }\nfn wait -> Effect<{}, Never, String> = effects.defer checkpoint\n")).expect("valid test lowering input");
     assert!(crate::core_free_variables(&module.functions[0].body).is_none());
     let refs = crate::core_analysis::core_term_dependencies(&module.functions[0].body).unwrap();
     assert!(refs.names.contains(&module.functions[1].symbol));
@@ -63,6 +63,7 @@ fn module() -> CoreModule {
         "recursive.ssrg",
         "fn wait -> Effect<{}, Never, Unit> = wait ()\n",
     ))
+    .expect("valid test lowering input")
 }
 
 fn external(canonical: &str) -> CoreType {
@@ -190,7 +191,8 @@ fn canonical_identity_and_kind_override_display_spelling() {
 #[test]
 fn lexical_nominals_and_ambiguous_import_owners_are_not_prelude_types() {
     let original = module();
-    let local = lower_typed_module(type_module("local.ssrg", "type Unit = | LocalUnit\n"));
+    let local = lower_typed_module(type_module("local.ssrg", "type Unit = | LocalUnit\n"))
+        .expect("valid test lowering input");
     let mut nominal = original.clone();
     nominal.adts.extend(local.adts);
     channels(nominal.functions[0].value_type.as_mut().unwrap())[2] = CoreType::Named {

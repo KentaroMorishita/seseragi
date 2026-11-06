@@ -20,17 +20,25 @@ pub fn compile_core_module(input: CompileInput<'_>) -> Result<CoreCompilation, D
 pub fn lower_analyzed_module(
     analyzed: AnalyzedModule,
 ) -> Result<CoreCompilation, DiagnosticArtifact> {
-    crate::lowering_panic::catch_lowering_panic(analyzed.diagnostics.clone(), move || {
-        let core_ir = lower_typed_module(analyzed.typed_hir.clone());
+    let diagnostics = analyzed.diagnostics.clone();
+    crate::lowering_panic::catch_lowering_panic(diagnostics.clone(), move || {
+        #[cfg(test)]
+        let analyzed = {
+            let mut analyzed = analyzed;
+            crate::lowering_panic::fault::edit_typed(&mut analyzed.typed_hir);
+            analyzed
+        };
+        let core_ir = lower_typed_module(analyzed.typed_hir.clone())?;
         #[cfg(test)]
         crate::lowering_panic::fault::after_core();
-        CoreCompilation {
+        Ok(CoreCompilation {
             core_ir,
             diagnostics: analyzed.diagnostics,
             typed_hir: analyzed.typed_hir,
             typed_interface: analyzed.typed_interface,
-        }
-    })
+        })
+    })?
+    .map_err(|error| crate::lowering_panic::internal_error_diagnostics(diagnostics, &error))
 }
 
 #[cfg(test)]
@@ -91,7 +99,8 @@ mod tests {
         ));
         let mut missing = compiled.core_ir.clone();
         missing.functions[0].value_type = None;
-        let lowered = seseragi_lowering::lower_core_module_to_typescript_ir(missing);
+        let lowered = seseragi_lowering::lower_core_module_to_typescript_ir(missing)
+            .expect("valid test lowering input");
         assert!(matches!(
             &lowered.functions[0],
             TypeScriptFunction::ConstFunction {

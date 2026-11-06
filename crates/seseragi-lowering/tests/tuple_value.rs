@@ -11,7 +11,7 @@ use support::with_unicode_header;
 fn lowers_tuple_values_without_a_runtime_helper() {
     let source = "pub fn pair left: Int -> right: Bool -> (Int, Bool) = (left, right)\n";
     let typed = type_module("artifact/tuple-value/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     let CoreExpr::Tuple {
         elements, type_ref, ..
     } = &core.functions[0].body
@@ -26,7 +26,7 @@ fn lowers_tuple_values_without_a_runtime_helper() {
         }
     );
 
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     assert_eq!(
         typescript.runtime_requirements,
         vec!["core.int", "core.bool"]
@@ -41,7 +41,7 @@ fn lowers_tuple_values_without_a_runtime_helper() {
         } if elements.len() == 2
     ));
 
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
         with_unicode_header(
@@ -55,11 +55,11 @@ fn lowers_tuple_values_without_a_runtime_helper() {
 fn emits_a_top_level_tuple_with_a_readonly_typescript_type() {
     let source = "pub let pair: (Int, Bool) = (1, True)\n";
     let typed = type_module("artifact/tuple-binding/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert!(typescript.imports.is_empty());
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
         with_unicode_header(

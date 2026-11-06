@@ -82,7 +82,8 @@ pub type Label =
   | Missing
   | Present String
 ";
-        let core = lower_typed_module(type_module("artifact/adts/main.ssrg", source));
+        let core = lower_typed_module(type_module("artifact/adts/main.ssrg", source))
+            .expect("valid test lowering input");
 
         assert_eq!(core.adts.len(), 2);
         let hand = &core.adts[0];
@@ -118,7 +119,8 @@ pub opaque type Token =
 type Internal =
   | Hidden
 ";
-        let core = lower_typed_module(type_module("artifact/adts/main.ssrg", source));
+        let core = lower_typed_module(type_module("artifact/adts/main.ssrg", source))
+            .expect("valid test lowering input");
 
         let token = &core.adts[0];
         assert_eq!(token.visibility, seseragi_syntax::Visibility::Public);

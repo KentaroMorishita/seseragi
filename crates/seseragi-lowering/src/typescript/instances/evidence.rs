@@ -8,7 +8,7 @@ use crate::{
 
 use super::super::{push_import_unique, push_unique, TypeScriptImport};
 use super::TypeScriptShowDictionaryReference;
-use crate::typescript::failure::{missing_dictionary, missing_dictionary_runtime, Lowered};
+use crate::failure::{missing_dictionary, missing_dictionary_runtime, Lowered};
 
 pub(super) fn resolve_show_dictionary(
     evidence: &CoreInstanceEvidence,
@@ -97,7 +97,7 @@ pub(super) fn resolve_show_dictionary(
                 evidence,
                 expression_value_names,
                 imported_type_names,
-            )
+            )?
             .ok_or_else(|| {
                 missing_dictionary(
                     "selected derived display evidence must materialize a dictionary",

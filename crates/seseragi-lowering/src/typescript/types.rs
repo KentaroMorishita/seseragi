@@ -1,7 +1,8 @@
+use crate::failure::{type_error, Lowered};
 use crate::{CoreExpr, CoreParameter, CoreType};
 use seseragi_syntax::TypeParameter;
 use std::collections::{BTreeMap, BTreeSet};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, PoisonError};
 
 use super::names::{local_name, safe_identifier};
 use super::{TypeScriptParameter, TypeScriptType};
@@ -10,6 +11,11 @@ use crate::runtime_types::runtime_type_import_for_surface;
 /// Import names and lexical type-constructor scope used only for TypeScript annotations.
 #[derive(Clone, Debug, Default)]
 pub(super) struct TypeScriptTypeContext {
+    origin: Option<crate::SourceSpan>,
+    // These mutexes protect append-only registries of complete derived values.
+    // Guards never expose an in-progress value or run user code. A panic can
+    // leave fewer entries, but every retained entry remains valid, so poisoning
+    // does not prevent later lowering from reusing or completing the registries.
     runtime_sources: Arc<Mutex<BTreeMap<usize, crate::SourceSpan>>>,
     retain_runtime_sources: bool,
     imported_names: Arc<BTreeMap<String, String>>,
@@ -34,6 +40,7 @@ pub(super) struct TypeScriptTypeContext {
 impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
     fn from(imported_names: BTreeMap<String, String>) -> Self {
         Self {
+            origin: None,
             runtime_sources: Default::default(),
             retain_runtime_sources: false,
             imported_names: Arc::new(imported_names),
@@ -57,6 +64,12 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn with_origin(&self, origin: &crate::SourceSpan) -> Self {
+        let mut context = self.clone();
+        context.origin = Some(origin.clone());
+        context
+    }
+
     pub(super) fn with_runtime_sources(mut self, enabled: bool) -> Self {
         self.retain_runtime_sources = enabled;
         self
@@ -70,7 +83,7 @@ impl TypeScriptTypeContext {
         let name = format!("$ssrg$source{}", origin.start);
         self.runtime_sources
             .lock()
-            .expect("runtime source positions")
+            .unwrap_or_else(PoisonError::into_inner)
             .entry(origin.start)
             .or_insert(origin);
         name
@@ -79,7 +92,7 @@ impl TypeScriptTypeContext {
     pub(super) fn runtime_sources(&self) -> Vec<crate::SourceSpan> {
         self.runtime_sources
             .lock()
-            .expect("runtime source positions")
+            .unwrap_or_else(PoisonError::into_inner)
             .values()
             .cloned()
             .collect()
@@ -106,7 +119,7 @@ impl TypeScriptTypeContext {
         let mut entries = self
             .closed_display_dictionaries
             .lock()
-            .expect("closed display factories");
+            .unwrap_or_else(PoisonError::into_inner);
         if let Some(entry) = entries.get(&key) {
             return entry.name.clone();
         }
@@ -126,35 +139,38 @@ impl TypeScriptTypeContext {
     ) -> Vec<super::TypeScriptClosedDisplayDictionary> {
         self.closed_display_dictionaries
             .lock()
-            .expect("closed display factories")
+            .unwrap_or_else(PoisonError::into_inner)
             .values()
             .cloned()
             .collect()
     }
 
-    fn project_type_function(&self, value: &CoreType) -> Option<TypeScriptType> {
+    fn project_type_function(&self, value: &CoreType) -> Lowered<Option<TypeScriptType>> {
         let CoreType::TypeFunction {
             parameter_kinds,
             body,
         } = value
         else {
-            return None;
+            return Ok(None);
         };
-        let identity = format!("type-function:{}", value.type_function_key()?);
+        let Some(key) = value.type_function_key() else {
+            return Ok(None);
+        };
+        let identity = format!("type-function:{key}");
         let mut body_context = self.clone();
         body_context
             .type_function_scopes
             .push(parameter_kinds.clone());
         body_context.project_higher_kinds = true;
         body_context.constructor_position = false;
-        let target = type_ref_from_core_type_with_erasure(body, &body_context, &[]);
+        let target = type_ref_from_core_type_with_erasure(body, &body_context, &[])?;
         if !crate::emit::exact_alias_target(&target) {
-            return None;
+            return Ok(None);
         }
         let mut requirements = self
             .kind_requirements
             .lock()
-            .expect("module type witnesses");
+            .unwrap_or_else(PoisonError::into_inner);
         let name = if let Some(existing) = requirements
             .constructors
             .values()
@@ -191,10 +207,10 @@ impl TypeScriptTypeContext {
             );
             name
         };
-        Some(TypeScriptType::KindConstructor {
+        Ok(Some(TypeScriptType::KindConstructor {
             name,
             arguments: vec![None; parameter_kinds.len()],
-        })
+        }))
     }
 
     pub(super) fn with_higher_kinds(&self) -> Self {
@@ -212,11 +228,15 @@ impl TypeScriptTypeContext {
     pub(super) fn higher_kinds(&self) -> Option<super::TypeScriptKinds> {
         self.kind_requirements
             .lock()
-            .expect("module type witnesses")
+            .unwrap_or_else(PoisonError::into_inner)
             .output()
     }
 
-    fn project_constructor(&self, key: &str, arguments: &[CoreType]) -> Option<TypeScriptType> {
+    fn project_constructor(
+        &self,
+        key: &str,
+        arguments: &[CoreType],
+    ) -> Lowered<Option<TypeScriptType>> {
         let template = self
             .kind_templates
             .get(key)
@@ -230,17 +250,19 @@ impl TypeScriptTypeContext {
                         .iter()
                         .any(|argument| matches!(argument, CoreType::Hole)))
             {
-                return None;
+                return Ok(None);
             }
             let name = template.name.clone();
             self.kind_requirements
                 .lock()
-                .expect("module type witnesses")
+                .unwrap_or_else(PoisonError::into_inner)
                 .constructors
                 .insert(name.clone(), template);
             (name, arity)
         } else {
-            let arity = *self.arities.get(key)?;
+            let Some(&arity) = self.arities.get(key) else {
+                return Ok(None);
+            };
             if arguments.len() > arity as usize
                 || (arguments.len() == arity as usize
                     && !arguments
@@ -248,12 +270,15 @@ impl TypeScriptTypeContext {
                         .any(|argument| matches!(argument, CoreType::Hole)))
                 || crate::runtime_types::runtime_type_import(key).is_some()
             {
-                return None;
+                return Ok(None);
             }
-            let name = super::kinds::constructor_name(self.imported_names.get(key)?);
+            let Some(imported_name) = self.imported_names.get(key) else {
+                return Ok(None);
+            };
+            let name = super::kinds::constructor_name(imported_name);
             (name, arity)
         };
-        Some(self.constructor_prefix(name, arity, arguments))
+        Ok(Some(self.constructor_prefix(name, arity, arguments)?))
     }
 
     fn constructor_prefix(
@@ -261,7 +286,7 @@ impl TypeScriptTypeContext {
         name: String,
         arity: u32,
         arguments: &[CoreType],
-    ) -> TypeScriptType {
+    ) -> Lowered<TypeScriptType> {
         let slots = (0..arity as usize)
             .map(|index| {
                 arguments
@@ -270,20 +295,22 @@ impl TypeScriptTypeContext {
                     .map(|argument| {
                         type_ref_from_core_type(argument, &self.with_constructor_position())
                     })
+                    .transpose()
             })
-            .collect::<Vec<_>>();
+            .collect::<Lowered<Vec<_>>>()?;
         let shape = slots.iter().map(Option::is_some).collect::<Vec<_>>();
         if shape.iter().any(|fixed| *fixed) {
             self.kind_requirements
                 .lock()
-                .expect("module type witnesses")
+                .unwrap_or_else(PoisonError::into_inner)
                 .partials
-                .insert(shape);
+                .entry(shape)
+                .or_insert_with(|| self.origin.clone());
         }
-        TypeScriptType::KindConstructor {
+        Ok(TypeScriptType::KindConstructor {
             name,
             arguments: slots,
-        }
+        })
     }
 
     pub(super) fn with_runtime_type_name(mut self, canonical: String, name: String) -> Self {
@@ -390,7 +417,7 @@ impl TypeScriptTypeContext {
             if template.exported {
                 self.kind_requirements
                     .lock()
-                    .expect("module type witnesses")
+                    .unwrap_or_else(PoisonError::into_inner)
                     .constructors
                     .insert(template.name.clone(), template);
             }
@@ -437,7 +464,7 @@ impl TypeScriptTypeContext {
             if template.exported {
                 self.kind_requirements
                     .lock()
-                    .expect("module type witnesses")
+                    .unwrap_or_else(PoisonError::into_inner)
                     .constructors
                     .insert(template.name.clone(), template);
             }
@@ -609,43 +636,49 @@ impl TypeScriptTypeContext {
 pub(super) fn type_ref_from_core_expr(
     expr: &CoreExpr,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptType {
-    match expr {
-        CoreExpr::Unit { .. } => TypeScriptType::Undefined,
-        CoreExpr::Integer { .. } => TypeScriptType::Number,
-        CoreExpr::Float64 { .. } => TypeScriptType::Number,
-        CoreExpr::String { .. } | CoreExpr::Char { .. } => TypeScriptType::String,
-        CoreExpr::Template { .. } => TypeScriptType::String,
-        CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
-        CoreExpr::Variable { type_ref, .. }
-        | CoreExpr::Call { type_ref, .. }
-        | CoreExpr::Lambda { type_ref, .. }
-        | CoreExpr::Tuple { type_ref, .. }
-        | CoreExpr::FieldAccess { type_ref, .. }
-        | CoreExpr::OptionalFieldAccess { type_ref, .. }
-        | CoreExpr::Record { type_ref, .. }
-        | CoreExpr::Array { type_ref, .. }
-        | CoreExpr::List { type_ref, .. }
-        | CoreExpr::ArrayComprehension { type_ref, .. }
-        | CoreExpr::ListComprehension { type_ref, .. }
-        | CoreExpr::Binary { type_ref, .. }
-        | CoreExpr::Unary { type_ref, .. }
-        | CoreExpr::If { type_ref, .. }
-        | CoreExpr::Decision { type_ref, .. }
-        | CoreExpr::MonadDo { type_ref, .. } => type_ref_from_core_type(type_ref, imported_types),
-        CoreExpr::EffectOperation { success, .. } | CoreExpr::EffectInvoke { success, .. } => {
-            type_ref_from_core_type(success, imported_types)
-        }
-        CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result, imported_types),
-    }
+) -> Lowered<TypeScriptType> {
+    let origin = crate::core_expr_origin(expr).clone();
+    (|| {
+        Ok(match expr {
+            CoreExpr::Unit { .. } => TypeScriptType::Undefined,
+            CoreExpr::Integer { .. } => TypeScriptType::Number,
+            CoreExpr::Float64 { .. } => TypeScriptType::Number,
+            CoreExpr::String { .. } | CoreExpr::Char { .. } => TypeScriptType::String,
+            CoreExpr::Template { .. } => TypeScriptType::String,
+            CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
+            CoreExpr::Variable { type_ref, .. }
+            | CoreExpr::Call { type_ref, .. }
+            | CoreExpr::Lambda { type_ref, .. }
+            | CoreExpr::Tuple { type_ref, .. }
+            | CoreExpr::FieldAccess { type_ref, .. }
+            | CoreExpr::OptionalFieldAccess { type_ref, .. }
+            | CoreExpr::Record { type_ref, .. }
+            | CoreExpr::Array { type_ref, .. }
+            | CoreExpr::List { type_ref, .. }
+            | CoreExpr::ArrayComprehension { type_ref, .. }
+            | CoreExpr::ListComprehension { type_ref, .. }
+            | CoreExpr::Binary { type_ref, .. }
+            | CoreExpr::Unary { type_ref, .. }
+            | CoreExpr::If { type_ref, .. }
+            | CoreExpr::Decision { type_ref, .. }
+            | CoreExpr::MonadDo { type_ref, .. } => {
+                type_ref_from_core_type(type_ref, imported_types)?
+            }
+            CoreExpr::EffectOperation { success, .. } | CoreExpr::EffectInvoke { success, .. } => {
+                type_ref_from_core_type(success, imported_types)?
+            }
+            CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result, imported_types)?,
+        })
+    })()
+    .map_err(|error: crate::LoweringInternalError| error.at(&origin))
 }
 
 pub(super) fn lower_core_parameter_to_typescript(
     parameter: CoreParameter,
     imported_types: &TypeScriptTypeContext,
     type_constructor_parameters: &[String],
-) -> TypeScriptParameter {
-    TypeScriptParameter {
+) -> Lowered<TypeScriptParameter> {
+    Ok(TypeScriptParameter {
         name: if parameter.kind == "implicit" {
             "_unit".to_owned()
         } else {
@@ -655,15 +688,15 @@ pub(super) fn lower_core_parameter_to_typescript(
             &parameter.type_ref,
             imported_types,
             type_constructor_parameters,
-        )),
+        )?),
         implicit: parameter.kind == "implicit",
-    }
+    })
 }
 
 pub(super) fn type_ref_from_core_type(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptType {
+) -> Lowered<TypeScriptType> {
     type_ref_from_core_type_with_erasure(type_ref, imported_types, &[])
 }
 
@@ -764,7 +797,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,
     type_constructor_parameters: &[String],
-) -> TypeScriptType {
+) -> Lowered<TypeScriptType> {
     let in_kind_position = imported_types.constructor_position;
     let value_context;
     let imported_types = if in_kind_position {
@@ -781,10 +814,10 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         CoreType::Named { name, arguments } => {
             if let Some(&arity) = imported_types.constructor_kinds.get(name) {
                 if arguments.is_empty() {
-                    return TypeScriptType::Reference {
+                    return Ok(TypeScriptType::Reference {
                         name: name.clone(),
                         arguments: vec![],
-                    };
+                    });
                 }
                 if imported_types.project_higher_kinds || in_kind_position {
                     if arguments.len() < arity as usize
@@ -800,30 +833,30 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                         imported_types
                             .kind_requirements
                             .lock()
-                            .expect("module type witnesses")
+                            .unwrap_or_else(PoisonError::into_inner)
                             .application = true;
-                        return TypeScriptType::KindApplication {
+                        return Ok(TypeScriptType::KindApplication {
                             constructor: name.clone(),
                             arguments: arguments
                                 .iter()
                                 .map(|arg| type_ref_from_core_type(arg, imported_types))
-                                .collect(),
-                        };
+                                .collect::<Lowered<Vec<_>>>()?,
+                        });
                     }
                 }
                 // The ordinary erased function/dictionary ABI remains separate
                 // from exact data declarations. A name alone proves no kind.
-                return TypeScriptType::Unknown;
+                return Ok(TypeScriptType::Unknown);
             }
             if in_kind_position && !imported_types.value_parameters.contains(name) {
-                if let Some(projected) = imported_types.project_constructor(name, arguments) {
-                    return projected;
+                if let Some(projected) = imported_types.project_constructor(name, arguments)? {
+                    return Ok(projected);
                 }
                 if !imported_types.arities.contains_key(name) {
                     if let Some(projected) = imported_types
-                        .project_constructor(&format!("std/prelude::{name}"), arguments)
+                        .project_constructor(&format!("std/prelude::{name}"), arguments)?
                     {
-                        return projected;
+                        return Ok(projected);
                     }
                 }
             }
@@ -833,19 +866,27 @@ pub(super) fn type_ref_from_core_type_with_erasure(
             arguments,
             ..
         } if in_kind_position => {
-            if let Some(projected) = imported_types.project_constructor(canonical, arguments) {
-                return projected;
+            if let Some(projected) = imported_types.project_constructor(canonical, arguments)? {
+                return Ok(projected);
             }
         }
         _ => {}
     }
-    match type_ref {
-        CoreType::TypeFunction { .. } => imported_types.project_type_function(type_ref).unwrap_or(TypeScriptType::Unknown),
+    Ok(match type_ref {
+        CoreType::TypeFunction { .. } => imported_types
+            .project_type_function(type_ref)?
+            .unwrap_or(TypeScriptType::Unknown),
         CoreType::TypeFunctionParameter { depth, index } => {
-            if *depth == 0 && imported_types.type_function_scopes.last()
-                .and_then(|scope| scope.get(*index as usize)).is_some_and(|kind| *kind == 0)
+            if *depth == 0
+                && imported_types
+                    .type_function_scopes
+                    .last()
+                    .and_then(|scope| scope.get(*index as usize))
+                    .is_some_and(|kind| *kind == 0)
             {
-                TypeScriptType::KindArgument { index: *index as usize }
+                TypeScriptType::KindArgument {
+                    index: *index as usize,
+                }
             } else {
                 TypeScriptType::Unknown
             }
@@ -853,23 +894,41 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         CoreType::Named { name, arguments }
             if arguments.is_empty() && imported_types.value_parameters.contains(name) =>
         {
-            TypeScriptType::Reference { name: name.clone(), arguments: Vec::new() }
+            TypeScriptType::Reference {
+                name: name.clone(),
+                arguments: Vec::new(),
+            }
         }
         // A source constructor is a kind, not a TypeScript value type. Erase
         // unsaturated heads in value positions using declaration metadata.
         // Selected dictionary type arguments use constructor positions.
         CoreType::Named { name, arguments }
-            if imported_types.arities.get(name).copied()
+            if imported_types
+                .arities
+                .get(name)
+                .copied()
                 .or_else(|| seseragi_semantics::prelude_type_constructor_arity(name))
-                .is_some_and(|arity| arguments.len() < arity as usize) => TypeScriptType::Unknown,
-        CoreType::ExternalNamed { canonical, arguments, .. }
-            if imported_types.arities.get(canonical)
-                .is_some_and(|arity| arguments.len() < *arity as usize) => TypeScriptType::Unknown,
+                .is_some_and(|arity| arguments.len() < arity as usize) =>
+        {
+            TypeScriptType::Unknown
+        }
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if imported_types
+            .arities
+            .get(canonical)
+            .is_some_and(|arity| arguments.len() < *arity as usize) =>
+        {
+            TypeScriptType::Unknown
+        }
         CoreType::Named { name, arguments }
             if !arguments.is_empty()
-                && (imported_types.constructors.contains(name) || type_constructor_parameters
-                    .iter()
-                    .any(|parameter| parameter == name)) =>
+                && (imported_types.constructors.contains(name)
+                    || type_constructor_parameters
+                        .iter()
+                        .any(|parameter| parameter == name)) =>
         {
             TypeScriptType::Unknown
         }
@@ -903,7 +962,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                     &arguments[0],
                     imported_types,
                     type_constructor_parameters,
-                )),
+                )?),
             }
         }
         CoreType::Named { name, arguments } if name == "Either" && arguments.len() == 2 => {
@@ -912,12 +971,12 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                     &arguments[0],
                     imported_types,
                     type_constructor_parameters,
-                )),
+                )?),
                 value: Box::new(type_ref_from_core_type_with_erasure(
                     &arguments[1],
                     imported_types,
                     type_constructor_parameters,
-                )),
+                )?),
             }
         }
         CoreType::Named { name, arguments } if name == "Array" && arguments.len() == 1 => {
@@ -926,18 +985,23 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                     &arguments[0],
                     imported_types,
                     type_constructor_parameters,
-                )),
+                )?),
             }
         }
         CoreType::Named { name, arguments } if name == "List" && arguments.len() == 1 => {
             let element = type_ref_from_core_type_with_erasure(
-                &arguments[0], imported_types, type_constructor_parameters,
-            );
+                &arguments[0],
+                imported_types,
+                type_constructor_parameters,
+            )?;
             match imported_types.imported_names.get("std/prelude::List") {
                 Some(alias) if alias != "List" => TypeScriptType::Reference {
-                    name: alias.clone(), arguments: vec![element],
+                    name: alias.clone(),
+                    arguments: vec![element],
                 },
-                _ => TypeScriptType::List {element: Box::new(element)},
+                _ => TypeScriptType::List {
+                    element: Box::new(element),
+                },
             }
         }
         CoreType::Named { name, arguments }
@@ -964,7 +1028,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                             type_constructor_parameters,
                         )
                     })
-                    .collect(),
+                    .collect::<Lowered<Vec<_>>>()?,
             }
         }
         CoreType::Named { name, arguments } => TypeScriptType::Reference {
@@ -980,28 +1044,45 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                         type_constructor_parameters,
                     )
                 })
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
         },
-        CoreType::ExternalNamed {name, canonical, arguments}
-            if imported_types.private_representation && imported_types.private_struct_names.contains(canonical) =>
+        CoreType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } if imported_types.private_representation
+            && imported_types.private_struct_names.contains(canonical) =>
         {
             TypeScriptType::Reference {
                 name: private_representation_name(&local_name(name)),
-                arguments: arguments.iter().map(|argument| type_ref_from_core_type_with_erasure(argument, &imported_types.with_constructor_position(), type_constructor_parameters)).collect(),
+                arguments: arguments
+                    .iter()
+                    .map(|argument| {
+                        type_ref_from_core_type_with_erasure(
+                            argument,
+                            &imported_types.with_constructor_position(),
+                            type_constructor_parameters,
+                        )
+                    })
+                    .collect::<Lowered<Vec<_>>>()?,
             }
         }
         // Instance selection can preserve primitive identity canonically when
         // its display name is shadowed. These builtins need no external import,
         // and must bypass lexical nominal/type-parameter name translation.
-        CoreType::ExternalNamed { name, arguments, .. }
-            if arguments.is_empty() && canonical_inline_type_name(type_ref).is_some() =>
-        {
+        CoreType::ExternalNamed {
+            name, arguments, ..
+        } if arguments.is_empty() && canonical_inline_type_name(type_ref).is_some() => {
             match name.as_str() {
                 "Bool" => TypeScriptType::Boolean,
                 "Int" | "Float" => TypeScriptType::Number,
                 "Char" | "String" => TypeScriptType::String,
                 "Unit" => TypeScriptType::Undefined,
-                _ => unreachable!(),
+                _ => {
+                    return Err(type_error(
+                        "canonical inline scalar must have a TypeScript representation",
+                    ))
+                }
             }
         }
         CoreType::ExternalNamed { arguments, .. }
@@ -1009,23 +1090,20 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         {
             TypeScriptType::Array {
                 element: Box::new(type_ref_from_core_type_with_erasure(
-                    &arguments[0], imported_types, type_constructor_parameters,
-                )),
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )?),
             }
         }
         CoreType::ExternalNamed {
-            name,
             canonical,
             arguments,
+            ..
         } => TypeScriptType::Reference {
-            name: imported_types
-                .get(canonical)
-                .cloned()
-                .unwrap_or_else(|| {
-                    panic!(
-                        "external type {canonical} ({name}) was not validated by module import planning"
-                    )
-                }),
+            name: imported_types.get(canonical).cloned().ok_or_else(|| {
+                type_error("external type must have a validated module import binding")
+            })?,
             arguments: arguments
                 .iter()
                 .map(|argument| {
@@ -1035,7 +1113,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                         type_constructor_parameters,
                     )
                 })
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
         },
         CoreType::Tuple { elements } => TypeScriptType::Tuple {
             elements: elements
@@ -1047,33 +1125,35 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                         type_constructor_parameters,
                     )
                 })
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
         },
         CoreType::Record { fields, .. } => TypeScriptType::Record {
             fields: fields
                 .iter()
-                .map(|field| super::TypeScriptRecordTypeField {
-                    name: field.name.clone(),
-                    optional: field.optional,
-                    type_ref: type_ref_from_core_type_with_erasure(
-                        &field.type_ref,
-                        imported_types,
-                        type_constructor_parameters,
-                    ),
+                .map(|field| {
+                    Ok(super::TypeScriptRecordTypeField {
+                        name: field.name.clone(),
+                        optional: field.optional,
+                        type_ref: type_ref_from_core_type_with_erasure(
+                            &field.type_ref,
+                            imported_types,
+                            type_constructor_parameters,
+                        )?,
+                    })
                 })
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
         },
         CoreType::Function { parameter, result } => TypeScriptType::Function {
             parameter: Box::new(type_ref_from_core_type_with_erasure(
                 parameter,
                 imported_types,
                 type_constructor_parameters,
-            )),
+            )?),
             result: Box::new(type_ref_from_core_type_with_erasure(
                 result,
                 imported_types,
                 type_constructor_parameters,
-            )),
+            )?),
         },
         CoreType::RequirementMerge { operands } => TypeScriptType::Intersection {
             operands: operands
@@ -1085,10 +1165,10 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                         type_constructor_parameters,
                     )
                 })
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
         },
         CoreType::Hole => TypeScriptType::Unknown,
-    }
+    })
 }
 
 pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
@@ -1270,6 +1350,66 @@ mod tests {
     use seseragi_syntax::TypeParameter;
 
     #[test]
+    fn poisoned_registries_retain_complete_entries_and_accept_new_ones() {
+        use std::sync::Mutex;
+        fn poison<T>(mutex: &Mutex<T>) {
+            assert!(std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                let _guard = mutex.lock().expect("initially healthy registry");
+                panic!("poison a complete registry");
+            }))
+            .is_err());
+            assert!(mutex.is_poisoned());
+        }
+        let origin = crate::SourceSpan {
+            source: "cache.ssrg".into(),
+            start: 2,
+            end: 5,
+        };
+        let context = super::TypeScriptTypeContext::default().with_origin(&origin);
+        let source_name = context.runtime_source(origin.clone());
+        let dictionary = crate::TypeScriptExpr::RuntimeReference {
+            name: "display".into(),
+        };
+        let first = context.closed_display_dictionary("first".into(), dictionary.clone());
+        let int = CoreType::Named {
+            name: "Int".into(),
+            arguments: vec![],
+        };
+        let partial = context
+            .constructor_prefix("Pair".into(), 2, &[int.clone()])
+            .unwrap();
+        poison(&context.runtime_sources);
+        poison(&context.closed_display_dictionaries);
+        poison(&context.kind_requirements);
+        assert_eq!(context.runtime_source(origin.clone()), source_name);
+        assert_eq!(context.runtime_sources(), [origin.clone()]);
+        assert_eq!(
+            context.closed_display_dictionary("first".into(), dictionary.clone()),
+            first
+        );
+        let second = context.closed_display_dictionary("second".into(), dictionary);
+        assert_ne!(first, second);
+        assert_eq!(context.closed_display_dictionaries().len(), 2);
+        assert_eq!(
+            context
+                .constructor_prefix("Pair".into(), 2, &[int])
+                .unwrap(),
+            partial
+        );
+        let kinds = context.higher_kinds().expect("partial witness retained");
+        assert_eq!(kinds.partials.len(), 1);
+        assert_eq!(kinds.partials[0], [true, false]);
+        assert_eq!(kinds.partial_origins[0], Some(origin));
+        let later = crate::SourceSpan {
+            source: "cache.ssrg".into(),
+            start: 10,
+            end: 12,
+        };
+        context.runtime_source(later);
+        assert_eq!(context.runtime_sources().len(), 2);
+    }
+
+    #[test]
     fn canonical_array_evidence_bypasses_local_and_parameter_name_translation() {
         let element = CoreType::ExternalNamed {
             name: "Int".into(),
@@ -1286,7 +1426,7 @@ mod tests {
                 arguments: vec![element.clone()],
             };
             assert_eq!(
-                type_ref_from_core_type(&ty, &context),
+                type_ref_from_core_type(&ty, &context).expect("valid test lowering input"),
                 TypeScriptType::Array {
                     element: Box::new(TypeScriptType::Number),
                 }
@@ -1302,7 +1442,12 @@ mod tests {
                 canonical: canonical.into(),
                 arguments,
             };
-            assert!(std::panic::catch_unwind(|| type_ref_from_core_type(&ty, &context)).is_err());
+            let error = type_ref_from_core_type(&ty, &context).unwrap_err();
+            assert_eq!(error.stage, crate::LoweringStage::Type);
+            assert_eq!(
+                error.kind,
+                crate::LoweringInternalErrorKind::MissingTypeInformation
+            );
         }
     }
 
@@ -1321,7 +1466,11 @@ mod tests {
                 canonical: format!("std/prelude::{name}"),
                 arguments: Vec::new(),
             };
-            assert_eq!(type_ref_from_core_type(&ty, &Default::default()), expected);
+            assert_eq!(
+                type_ref_from_core_type(&ty, &Default::default())
+                    .expect("valid test lowering input"),
+                expected
+            );
         }
     }
 
@@ -1345,9 +1494,11 @@ mod tests {
                 canonical: canonical.into(),
                 arguments,
             };
-            assert!(
-                std::panic::catch_unwind(|| type_ref_from_core_type(&ty, &Default::default()))
-                    .is_err(),
+            let error = type_ref_from_core_type(&ty, &Default::default()).unwrap_err();
+            assert_eq!(error.stage, crate::LoweringStage::Type, "{ty:?}");
+            assert_eq!(
+                error.kind,
+                crate::LoweringInternalErrorKind::MissingTypeInformation,
                 "{ty:?}"
             );
         }
@@ -1361,7 +1512,10 @@ mod tests {
         };
 
         assert_eq!(
-            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            render_typescript_type(
+                &type_ref_from_core_type(&type_ref, &Default::default())
+                    .expect("valid test lowering input")
+            ),
             "Hand"
         );
     }
@@ -1377,13 +1531,17 @@ mod tests {
         };
 
         assert_eq!(
-            type_ref_from_core_type(&type_ref, &Default::default()),
+            type_ref_from_core_type(&type_ref, &Default::default())
+                .expect("valid test lowering input"),
             TypeScriptType::Maybe {
                 element: Box::new(TypeScriptType::String),
             }
         );
         assert_eq!(
-            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            render_typescript_type(
+                &type_ref_from_core_type(&type_ref, &Default::default())
+                    .expect("valid test lowering input")
+            ),
             "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }"
         );
     }
@@ -1405,7 +1563,8 @@ mod tests {
         };
 
         assert_eq!(
-            type_ref_from_core_type(&type_ref, &Default::default()),
+            type_ref_from_core_type(&type_ref, &Default::default())
+                .expect("valid test lowering input"),
             TypeScriptType::Either {
                 error: Box::new(TypeScriptType::Reference {
                     name: "InputError".to_owned(),
@@ -1415,7 +1574,7 @@ mod tests {
             }
         );
         assert_eq!(
-            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default()).expect("valid test lowering input")),
             "{ readonly tag: \"Left\"; readonly value: InputError } | { readonly tag: \"Right\"; readonly value: string }"
         );
     }
@@ -1428,11 +1587,15 @@ mod tests {
         };
 
         assert_eq!(
-            type_ref_from_core_type(&type_ref, &Default::default()),
+            type_ref_from_core_type(&type_ref, &Default::default())
+                .expect("valid test lowering input"),
             TypeScriptType::Never
         );
         assert_eq!(
-            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            render_typescript_type(
+                &type_ref_from_core_type(&type_ref, &Default::default())
+                    .expect("valid test lowering input")
+            ),
             "never"
         );
     }
@@ -1445,11 +1608,15 @@ mod tests {
         };
 
         assert_eq!(
-            type_ref_from_core_type(&type_ref, &Default::default()),
+            type_ref_from_core_type(&type_ref, &Default::default())
+                .expect("valid test lowering input"),
             TypeScriptType::Number
         );
         assert_eq!(
-            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            render_typescript_type(
+                &type_ref_from_core_type(&type_ref, &Default::default())
+                    .expect("valid test lowering input")
+            ),
             "number"
         );
     }
@@ -1469,7 +1636,8 @@ mod tests {
         };
 
         let lowered =
-            lower_core_parameter_to_typescript(parameter, &Default::default(), &["F".to_owned()]);
+            lower_core_parameter_to_typescript(parameter, &Default::default(), &["F".to_owned()])
+                .expect("valid test lowering input");
 
         assert_eq!(lowered.type_name, "unknown");
     }

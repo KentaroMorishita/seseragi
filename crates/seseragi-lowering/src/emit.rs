@@ -1,3 +1,4 @@
+use crate::failure::{emission_error, Lowered};
 use crate::typescript::types::{render_typescript_kind_body, render_typescript_type};
 use crate::{
     TypeScriptAdt, TypeScriptAdtVariant, TypeScriptAlias, TypeScriptBinding, TypeScriptExpr,
@@ -66,7 +67,10 @@ pub struct GeneratedBundle {
     pub source_map: SourceMap,
 }
 
-pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> GeneratedBundle {
+pub fn emit_typescript_module(
+    module: TypeScriptModule,
+    source_text: &str,
+) -> Result<GeneratedBundle, crate::LoweringInternalError> {
     emit_typescript_module_with_output_paths(module, source_text, GeneratedOutputPaths::default())
 }
 
@@ -79,24 +83,24 @@ pub fn emit_typescript_module_with_output_paths(
     module: TypeScriptModule,
     source_text: &str,
     output_paths: GeneratedOutputPaths,
-) -> GeneratedBundle {
-    let typescript = render_typescript_with_sources(&module, source_text);
-    let source_map = source_map_for_module(&module, source_text, &output_paths.typescript);
+) -> Result<GeneratedBundle, crate::LoweringInternalError> {
+    let typescript = render_typescript_with_sources(&module, source_text)?;
+    let source_map = source_map_for_module(&module, source_text, &output_paths.typescript)?;
     let metadata = generated_module_for(module, output_paths);
 
-    GeneratedBundle {
+    Ok(GeneratedBundle {
         metadata,
         typescript,
         source_map,
-    }
+    })
 }
 
 #[cfg(test)]
 fn render_typescript(module: &TypeScriptModule) -> String {
-    render_typescript_with_sources(module, "")
+    render_typescript_with_sources(module, "").expect("valid test TypeScript IR")
 }
 
-fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) -> String {
+fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) -> Lowered<String> {
     let mut output = String::new();
     let aliases = module
         .aliases
@@ -167,7 +171,7 @@ fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) 
         output.push('\n');
     }
     render_foreign_modules(&mut output, module);
-    output.push_str(&render_kind_declarations(module));
+    output.push_str(&render_kind_declarations(module)?);
     for dictionary in &module.closed_display_dictionaries {
         // Only the getter is created at module initialization. Its complete
         // proved factory stays at the original first evidence read. Storage
@@ -179,7 +183,7 @@ fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) 
         ));
     }
     for adt in &module.adts {
-        render_adt(&mut output, adt);
+        render_adt(&mut output, adt)?;
     }
     for structure in &module.structs {
         render_struct(&mut output, structure);
@@ -193,7 +197,7 @@ fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) 
         &module.type_imports,
         &module.structs,
         &module.adts,
-    );
+    )?;
     for function in &module.functions {
         match function {
             TypeScriptFunction::ConstFunction {
@@ -266,7 +270,7 @@ fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) 
             }
         }
     }
-    output
+    Ok(output)
 }
 
 /// A transparent public alias needs an actual type export for facade reexports.
@@ -664,17 +668,24 @@ pub(super) fn evidence_type(constraint: &crate::TypeScriptInstanceConstraint) ->
     }
 }
 
-fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
+fn render_adt(output: &mut String, adt: &TypeScriptAdt) -> Lowered<()> {
     if adt.erased_newtype {
-        let variant = adt.variants.first().expect("newtype constructor");
-        let payload = variant.payload.as_ref().expect("newtype payload");
+        let [variant] = adt.variants.as_slice() else {
+            return Err(
+                emission_error("erased newtype must retain exactly one constructor")
+                    .at(&adt.origin),
+            );
+        };
+        let payload = variant.payload.as_ref().ok_or_else(|| {
+            emission_error("erased newtype must retain its payload").at(&adt.origin)
+        })?;
         let parameters = render_type_parameters(&adt.type_parameters);
         let arguments = render_type_arguments(&adt.type_parameters);
         let export = if adt.exported { "export " } else { "" };
         output.push_str(&format!("declare const __ssrg$newtype${}: unique symbol;\n{export}type {}{parameters} = {} & {{ readonly [__ssrg$newtype${}]: true }};\n", adt.name, adt.name, render_typescript_type(payload), adt.name));
         let export = if variant.exported { "export " } else { "" };
         output.push_str(&format!("{export}const {} = {parameters}(value: {}): {}{arguments} => value as {}{arguments};\n", variant.name, render_typescript_type(payload), adt.name, adt.name));
-        return;
+        return Ok(());
     }
     if adt.exported {
         output.push_str("export ");
@@ -726,6 +737,7 @@ fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
             }
         }
     }
+    Ok(())
 }
 
 fn render_struct(output: &mut String, structure: &TypeScriptStruct) {
@@ -805,15 +817,12 @@ fn render_generic_initializer(
         );
     }
     if !parameters.is_empty() {
-        if let Some(action) = source_action(value) {
-            let TypeScriptExpr::RuntimeCall { callee, arguments } = value else {
-                unreachable!("source action requires a runtime call")
-            };
+        if let Some((callee, source, action, frame)) = source_action(value) {
             return format!(
                 "{callee}({}, () => {}, {})",
-                render_typescript_expr(&arguments[0]),
+                render_typescript_expr(source),
                 render_generic_initializer(action, parameters),
-                render_typescript_expr(&arguments[2])
+                render_typescript_expr(frame)
             );
         }
     }
@@ -862,21 +871,28 @@ fn render_type_parameter(parameter: &seseragi_syntax::TypeParameter) -> String {
     }
 }
 
-fn render_kind_declarations(module: &TypeScriptModule) -> String {
+fn render_kind_declarations(module: &TypeScriptModule) -> Lowered<String> {
     let Some(kinds) = &module.higher_kinds else {
-        return String::new();
+        return Ok(String::new());
     };
     let mut output = concat!(
         "interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }\n",
         "type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })[\"type\"];\n",
         "type $ssrg$Apply<F extends $ssrg$Kind, Args extends F[\"args\"]> = $ssrg$Invoke<F, Args>;\n",
     ).to_owned();
-    for shape in &kinds.partials {
+    for (index, shape) in kinds.partials.iter().enumerate() {
         let arity = shape.len() as u32;
-        assert!(
-            shape.iter().any(|fixed| *fixed) && shape.iter().any(|fixed| !fixed),
-            "checked partial kind application"
-        );
+        if !shape.iter().any(|fixed| *fixed) || !shape.iter().any(|fixed| !fixed) {
+            let error = emission_error(
+                "partial kind application must retain both fixed and open arguments",
+            );
+            return Err(
+                match kinds.partial_origins.get(index).and_then(Option::as_ref) {
+                    Some(origin) => error.at(origin),
+                    None => error,
+                },
+            );
+        }
         let mut fixed_index = 0;
         let mut hole_index = 0;
         let mut parameters = Vec::new();
@@ -964,7 +980,7 @@ fn render_kind_declarations(module: &TypeScriptModule) -> String {
             target,
         ));
     }
-    output
+    Ok(output)
 }
 
 fn kind_body_has_object(value: &TypeScriptType) -> bool {
@@ -1074,7 +1090,7 @@ fn statements_bind_name(statements: &[TypeScriptStatement], name: &str) -> bool 
 }
 
 fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> bool {
-    if let Some(value) = source_action(expr) {
+    if let Some((_, _, value, _)) = source_action(expr) {
         return contains_direct_self_tail_call(value, self_name, arity);
     }
     match expr {
@@ -1143,15 +1159,12 @@ fn render_tail_recursive_body(
 }
 
 fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> String {
-    if let Some(value) = source_action(expr) {
-        let TypeScriptExpr::RuntimeCall { callee, arguments } = expr else {
-            unreachable!();
-        };
+    if let Some((callee, source, value, frame)) = source_action(expr) {
         return format!(
             "{callee}({}, () => {}, {})",
-            render_typescript_expr(&arguments[0]),
+            render_typescript_expr(source),
             render_tail_position_expr(value, self_name, arity),
-            render_typescript_expr(&arguments[2]),
+            render_typescript_expr(frame),
         );
     }
     match expr {
@@ -1217,17 +1230,16 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
     }
 }
 
-fn source_action(expr: &TypeScriptExpr) -> Option<&TypeScriptExpr> {
+fn source_action(
+    expr: &TypeScriptExpr,
+) -> Option<(&str, &TypeScriptExpr, &TypeScriptExpr, &TypeScriptExpr)> {
     let TypeScriptExpr::RuntimeCall { callee, arguments } = expr else {
         return None;
     };
-    if callee != "$ssrg$atSource" || arguments.len() != 3 {
+    let [source, TypeScriptExpr::Lambda { parameter, body }, frame] = arguments.as_slice() else {
         return None;
-    }
-    match &arguments[1] {
-        TypeScriptExpr::Lambda { parameter, body } if parameter.is_empty() => Some(body),
-        _ => None,
-    }
+    };
+    (callee == "$ssrg$atSource" && parameter.is_empty()).then_some((callee, source, body, frame))
 }
 
 fn render_arrow_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> String {
@@ -1249,6 +1261,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::Number { value } => value.clone(),
         TypeScriptExpr::String { value } => {
+            // A str has no custom serializer or fallible I/O operation.
             serde_json::to_string(value).expect("serializing a string cannot fail")
         }
         TypeScriptExpr::Boolean { value } => value.to_string(),

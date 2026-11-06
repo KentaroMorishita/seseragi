@@ -9,6 +9,8 @@ pub use core_analysis::{
 };
 mod display_ops;
 mod effect_ops;
+mod failure;
+pub use failure::{LoweringInternalError, LoweringInternalErrorKind, LoweringStage};
 mod emit;
 mod equality_ops;
 mod initialization;
@@ -72,9 +74,8 @@ pub use typescript::{
     TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptForeignMember, TypeScriptForeignModule,
     TypeScriptForeignNamespace, TypeScriptForeignOpaqueType, TypeScriptForeignValue,
     TypeScriptFunction, TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
-    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptInternalError,
-    TypeScriptInternalErrorKind, TypeScriptKindConstructor, TypeScriptKinds,
-    TypeScriptLoweringError, TypeScriptLoweringOptions, TypeScriptLoweringStage, TypeScriptModule,
+    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptKindConstructor,
+    TypeScriptKinds, TypeScriptLoweringError, TypeScriptLoweringOptions, TypeScriptModule,
     TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
     TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
     TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct, TypeScriptType,
@@ -98,7 +99,7 @@ mod tests {
     #[test]
     fn lowers_public_let_to_core_binding() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert_eq!(core.stage, "core-ir");
         assert_eq!(core.module, "artifact/basic");
@@ -118,9 +119,11 @@ mod tests {
             "}\n",
         );
         let typed = type_module("artifact/foreign/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let generated = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let generated =
+            emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(generated
             .typescript
@@ -142,14 +145,16 @@ mod tests {
             "pub fn answer -> String = (User { name: \"Aki\", score: 42 } |> rename).name\n",
         );
         let typed = type_module("artifact/struct-user/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert_eq!(core.structs.len(), 1);
         assert_eq!(core.structs[0].name, "User");
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert_eq!(typescript.structs.len(), 1);
         assert_eq!(typescript.structs[0].name, "User");
-        let generated = emit_typescript_module(typescript, source);
+        let generated =
+            emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(generated
             .typescript
             .contains("declare const __ssrg$brand$User: unique symbol;"));
@@ -165,7 +170,7 @@ mod tests {
             "pub fn answer -> String = displayName (profile \"Mio\" 42)\n",
         );
         let typed = type_module("artifact/record-profile/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert!(matches!(core.functions[0].body, CoreExpr::Record { .. }));
         assert!(matches!(
@@ -173,8 +178,9 @@ mod tests {
             CoreExpr::FieldAccess { ref field, .. } if field == "name"
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle.typescript.contains(
             "const profile = (name: string) => (score: number) => (<$ssrg_record_type,>($ssrg_record: $ssrg_record_type) => $ssrg_record as $ssrg_record_type & { readonly [K in keyof globalThis.Object as K extends keyof $ssrg_record_type ? never : K]?: never })(({ \"name\": name, \"score\": score } as const))"
         ), "{}", bundle.typescript);
@@ -187,15 +193,16 @@ mod tests {
     fn lowers_optional_record_field_access_to_maybe_presence() {
         let source = "pub fn optionalId user: { id?: String } -> Maybe<String> = user.id\n";
         let typed = type_module("artifact/record-optional/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert!(matches!(
             core.functions[0].body,
             CoreExpr::OptionalFieldAccess { ref field, .. } if field == "id"
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(
             bundle
                 .typescript
@@ -229,7 +236,7 @@ mod tests {
             "  { ...base, label }\n",
         );
         let typed = type_module("artifact/record-spread/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         let CoreExpr::Record { items, .. } = &core.functions[0].body else {
             panic!("expected record value");
@@ -240,8 +247,9 @@ mod tests {
             CoreRecordValueItem::Field { ref name, .. } if name == "label"
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(
             bundle
                 .typescript
@@ -283,7 +291,7 @@ mod tests {
             declarations: Vec::new(),
         };
 
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert_eq!(core.module_dependencies.len(), 1);
         assert_eq!(core.module_dependencies[0].specifier, "./domain");
@@ -301,7 +309,7 @@ mod tests {
             "artifact/effect-main/main.ssrg",
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println \"hello\"\n",
         );
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert!(core.bindings.is_empty());
         assert_eq!(core.functions.len(), 1);
@@ -315,8 +323,9 @@ mod tests {
     #[test]
     fn lowers_core_binding_to_typescript_const() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         assert_eq!(typescript.stage, "typescript-ir");
         assert_eq!(typescript.runtime_requirements, vec!["core.int"]);
@@ -329,7 +338,7 @@ mod tests {
         let source = "pub type Badge deriving Show = | Active\n\
                       pub fn label name: String -> badge: Badge -> String = `Hello ${name}: ${badge}`\n";
         let typed = type_module("artifact/template-show/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         assert!(matches!(
             &core.functions[0].body,
             CoreExpr::Template { parts, .. }
@@ -345,7 +354,8 @@ mod tests {
                 )
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert_eq!(
             typescript.runtime_requirements,
             vec![
@@ -364,7 +374,7 @@ mod tests {
             }
         ));
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle
             .typescript
             .contains("_ssrg_show_stringShow[\"show\"](name)"));
@@ -379,8 +389,9 @@ mod tests {
         let source = "pub fn render values: Array<Maybe<String>> -> String = show values\n\
                       pub fn inspect value: Either<String, List<Bool>> -> String = debug value\n";
         let typed = type_module("artifact/collection-display/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         for requirement in [
             "core.array.show",
@@ -400,7 +411,7 @@ mod tests {
             );
         }
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         for factory in [
             "_ssrg_show_arrayShow",
             "_ssrg_show_maybeShow",
@@ -426,8 +437,9 @@ mod tests {
                       pub fn renderNever value: Never -> String = show value\n\
                       pub fn inspectNever value: Never -> String = debug value\n";
         let typed = type_module("artifact/primitive-display/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         for requirement in [
             "core.int.debug",
@@ -445,7 +457,7 @@ mod tests {
             );
         }
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         for dictionary in [
             "_ssrg_debug_intDebug",
             "_ssrg_show_floatShow",
@@ -469,8 +481,9 @@ mod tests {
                       pub fn inspect value: Range<Int> -> String = debug value\n\
                       pub fn inspectMany values: Array<Range<Int>> -> String = debug values\n";
         let typed = type_module("artifact/range-display/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         for requirement in [
             "core.range.show",
@@ -488,7 +501,7 @@ mod tests {
             );
         }
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle.typescript.contains("_ssrg_show_rangeShow<number>"));
         assert!(bundle.typescript.contains("_ssrg_debug_rangeDebug<number>"));
         assert!(bundle.typescript.contains("_ssrg_debug_arrayDebug"));
@@ -500,8 +513,9 @@ mod tests {
                       pub fn inspect value: { zeta?: String, alpha: Int } -> String = debug value\n\
                       pub fn inspectNested value: { pairs: Array<(Int, Range<Int>)> } -> String = debug value\n";
         let typed = type_module("artifact/structural-display/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         for requirement in [
             "core.tuple.show",
@@ -523,7 +537,7 @@ mod tests {
             );
         }
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle.typescript.contains("_ssrg_show_tupleShow"));
         assert!(bundle.typescript.contains("_ssrg_debug_recordDebug"));
         assert!(bundle.typescript.contains("[\"alpha\", \"zeta\"] as const"));
@@ -550,8 +564,9 @@ pub fn wrap value: String -> Label =
   Present value
 ";
         let typed = type_module("artifact/adt-constructors/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         assert_eq!(typescript.adts.len(), 2);
         assert_eq!(
@@ -565,7 +580,7 @@ pub fn wrap value: String -> Label =
         );
         assert!(typescript.imports.is_empty());
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert_eq!(
             bundle.metadata.exports,
             vec!["Rock", "Paper", "Scissors", "Missing", "Present", "opening", "wrap"]
@@ -615,9 +630,10 @@ type Internal =
   | Hidden
 ";
         let typed = type_module("artifact/opaque-adts/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle.typescript.contains("export type Token ="));
         assert!(bundle
@@ -637,8 +653,9 @@ type Internal =
             "artifact/effect-main/main.ssrg",
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println \"hello\"\n",
         );
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         assert_eq!(
             typescript.runtime_requirements,
@@ -652,9 +669,10 @@ type Internal =
     fn lowers_string_binding_to_typescript_string_const() {
         let source = "pub let greeting: String = \"hello\"\n";
         let typed = type_module("artifact/string-let/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.string"]);
         assert_eq!(
@@ -667,9 +685,10 @@ type Internal =
     fn lowers_boolean_binding_to_typescript_boolean_const() {
         let source = "pub let enabled: Bool = True\n";
         let typed = type_module("artifact/bool-let/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.bool"]);
         assert_eq!(
@@ -682,9 +701,10 @@ type Internal =
     fn lowers_identity_function_to_typescript_arrow_function() {
         let source = "pub fn identity value: Int -> Int = value\n";
         let typed = type_module("artifact/identity-fn/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int"]);
         assert_eq!(bundle.metadata.exports, vec!["identity"]);
@@ -698,11 +718,12 @@ type Internal =
     fn preserves_generic_function_binders_through_typescript_emission() {
         let source = "pub fn first<A, B> left: A -> right: B -> A = left\n";
         let typed = type_module("artifact/generic-first/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert_eq!(core.functions[0].type_parameters, vec!["A", "B"]);
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
@@ -714,7 +735,7 @@ type Internal =
                 && parameters[1].type_name == "B"
         ));
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert_eq!(
             bundle.typescript,
             with_unicode_header(
@@ -736,7 +757,7 @@ where Lift<F> =
   lift value
 ";
         let typed = type_module("artifact/hkt-constraint/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let function = &core.functions[0];
 
         assert_eq!(
@@ -751,7 +772,8 @@ where Lift<F> =
             Some("artifact/hkt-constraint::trait(Lift)")
         );
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
@@ -772,12 +794,14 @@ where Lift<F> =
             "pub alias UnitField<Unit> = { value: Unit }\n",
             "pub alias MyUnit = Unit\n",
         );
-        let core = lower_typed_module(type_module("artifact/alias-binders/main.ssrg", source));
+        let core = lower_typed_module(type_module("artifact/alias-binders/main.ssrg", source))
+            .expect("valid test lowering input");
         assert!(matches!(
             &core.aliases[0].target,
             CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty()
         ));
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert!(matches!(
             &typescript.aliases[0].target,
             TypeScriptType::Reference { name, arguments }
@@ -792,7 +816,8 @@ where Lift<F> =
                 if name == "Unit" && arguments.is_empty()
         ));
         assert_eq!(typescript.aliases[2].target, TypeScriptType::Undefined);
-        let generated = emit_typescript_module(typescript, source);
+        let generated =
+            emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(generated
             .typescript
             .contains("export type Identity<Int> = Int"));
@@ -809,7 +834,8 @@ where Lift<F> =
     #[test]
     fn preserves_higher_kinded_alias_binders_in_core_and_typescript_ir() {
         let source = "pub alias StateT<S, M<_>, A> = S -> M<(A, S)>\n";
-        let core = lower_typed_module(type_module("artifact/hkt-alias/main.ssrg", source));
+        let core = lower_typed_module(type_module("artifact/hkt-alias/main.ssrg", source))
+            .expect("valid test lowering input");
 
         assert_eq!(core.aliases.len(), 1);
         assert_eq!(
@@ -821,11 +847,13 @@ where Lift<F> =
             ]
         );
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert_eq!(typescript.aliases.len(), 1);
         assert_eq!(typescript.aliases[0].type_parameters[1].name, "M");
         assert_eq!(typescript.aliases[0].type_parameters[1].arity, 1);
-        let generated = emit_typescript_module(typescript, source);
+        let generated =
+            emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(generated
             .typescript
             .contains("export type StateT<S, M extends"));
@@ -856,7 +884,8 @@ where Lift<F> = {
         let core = lower_typed_module(type_module(
             "artifact/local-hkt-constraint/main.ssrg",
             source,
-        ));
+        ))
+        .expect("valid test lowering input");
         assert!(matches!(
             &core.functions[0].body,
             CoreExpr::Sequence { statements, .. }
@@ -877,9 +906,10 @@ where Lift<F> = {
     fn lowers_multi_parameter_function_to_typescript_arrow_function() {
         let source = "pub fn first left: Int -> right: Int -> Int = left\n";
         let typed = type_module("artifact/first-fn/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int"]);
         assert_eq!(
@@ -898,9 +928,10 @@ pub fn sum current: Int -> total: Int -> Int =
   if current == 0 then total else sum (current - 1) (total + current)
 ";
         let typed = type_module("artifact/self-tail-loop/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(!bundle.typescript.contains("const $ssrg$tail = Symbol();"));
         assert!(bundle.typescript.contains("while (true)"));
@@ -920,7 +951,10 @@ pub fn sum current: Int -> total: Int -> Int =
     fn older_typescript_ir_uses_the_conservative_tail_loop() {
         let source = "pub fn sum n: Int -> total: Int -> Int = if n == 0 then total else sum (n - 1) (total + n)\n";
         let typed = type_module("artifact/older-tail/main.ssrg", source);
-        let mut typescript = lower_core_module_to_typescript_ir(lower_typed_module(typed));
+        let mut typescript = lower_core_module_to_typescript_ir(
+            lower_typed_module(typed).expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         let mut serialized = serde_json::to_value(&typescript.functions[0]).unwrap();
         let function = serialized.as_object_mut().unwrap();
         assert_eq!(
@@ -928,7 +962,8 @@ pub fn sum current: Int -> total: Int -> Int =
             Some(serde_json::json!(true))
         );
         typescript.functions[0] = serde_json::from_value(serialized).unwrap();
-        let generated = emit_typescript_module(typescript, source);
+        let generated =
+            emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(generated
             .typescript
             .contains("const $ssrg$tail = Symbol();"));
@@ -948,8 +983,9 @@ effect fn count remaining: Int -> Unit =
   }
 ";
         let typed = type_module("artifact/effect-tail-loop/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         assert!(matches!(
             &typescript.functions[0],
@@ -958,7 +994,7 @@ effect fn count remaining: Int -> Unit =
                 ..
             }
         ));
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(
             !bundle.typescript.contains("while (true)"),
             "{}",
@@ -986,9 +1022,10 @@ pub fn listLength values: List<Int> -> Int = {
 }
 ";
         let typed = type_module("artifact/local-match-tail-loop/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(
             bundle
@@ -1009,9 +1046,10 @@ pub fn listLength values: List<Int> -> Int = {
     fn lowers_integer_add_function_to_checked_runtime_call() {
         let source = "pub fn add x: Int -> y: Int -> Int = x + y\n";
         let typed = type_module("artifact/add-fn/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(
             bundle.metadata.runtime.requirements,
@@ -1032,9 +1070,10 @@ pub fn listLength values: List<Int> -> Int = {
                       pub fn values unit: Unit -> (Bool, Int, Float, String) =\n\
                         (eq 21 21, addTwenty 22, mul 6.0 7.0, add \"sese\" \"ragi\")\n";
         let typed = type_module("artifact/direct-trait-methods/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle
             .typescript
@@ -1066,9 +1105,10 @@ pub fn listLength values: List<Int> -> Int = {
     fn freshens_runtime_import_that_collides_with_user_function() {
         let source = "pub fn _ssrg_int_add value: Int -> Int = value\npub fn add x: Int -> y: Int -> Int = x + y\n";
         let typed = type_module("artifact/runtime-name-collision/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle
             .typescript
@@ -1086,9 +1126,10 @@ pub fn listLength values: List<Int> -> Int = {
         let source = "pub fn _ssrg_show_arrayShow value: String -> String = value\n\
              pub fn render values: Array<String> -> String = show values\n";
         let typed = type_module("artifact/display-factory-name-collision/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(
             bundle
@@ -1161,8 +1202,10 @@ pub fn listLength values: List<Int> -> Int = {
             }],
         };
 
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript.clone(), source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle =
+            emit_typescript_module(typescript.clone(), source).expect("valid test lowering input");
 
         assert_eq!(typescript.runtime_requirements, vec!["core.int"]);
         assert!(typescript
@@ -1190,7 +1233,7 @@ pub fn identity value: Int -> Int = value
 pub fn useIdentity value: Int -> Int = identity value
 ";
         let typed = type_module("artifact/calls/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::Call {
             callee,
             arguments,
@@ -1211,8 +1254,10 @@ pub fn useIdentity value: Int -> Int = identity value
             }
         );
 
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript.clone(), source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle =
+            emit_typescript_module(typescript.clone(), source).expect("valid test lowering input");
 
         assert_eq!(typescript.runtime_requirements, vec!["core.int"]);
         assert!(typescript
@@ -1234,9 +1279,10 @@ pub fn useIdentity value: Int -> Int = identity value
     fn lowers_partial_application_to_curried_typescript_call() {
         let source = "pub fn add left: Int -> right: Int -> Int = left + right\npub fn addTo value: Int -> (Int -> Int) = add value\n";
         let typed = type_module("artifact/partial-call/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle
             .metadata
@@ -1266,8 +1312,9 @@ fails ConsoleError =
   println \"two\"
 ";
         let typed = type_module("artifact/two-effects/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         assert_eq!(typescript.imports.len(), 1);
         assert_eq!(typescript.imports[0].feature, "effect.console.println");
@@ -1277,9 +1324,10 @@ fails ConsoleError =
     fn sanitizes_typescript_parameter_and_variable_names() {
         let source = "pub fn pick default: Int -> Int = default\n";
         let typed = type_module("artifact/reserved-param/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(
             bundle.typescript,
@@ -1298,9 +1346,10 @@ fails ConsoleError =
             "pub let result: Int = left + right\n",
         );
         let typed = type_module("artifact/pattern-top/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(bundle.typescript.matches("makePair(undefined)").count(), 1);
         assert!(bundle.typescript.contains("const left: number"));
@@ -1321,9 +1370,10 @@ fails ConsoleError =
             "}\n",
         );
         let typed = type_module("artifact/pattern-local/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle.typescript.matches("const left: number").count() >= 2);
         assert!(bundle.typescript.matches("const right: number").count() >= 2);
@@ -1334,8 +1384,9 @@ fails ConsoleError =
     fn lowers_succeed_final_do_result_to_cold_effect() {
         let source = "pub effect fn main -> Unit =\n  do { succeed () }\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         assert_eq!(
             typescript.runtime_requirements,
@@ -1355,7 +1406,7 @@ fails ConsoleError =
     fn lowers_succeed_value_with_its_concrete_success_type() {
         let source = "pub effect fn ready = succeed \"ready\"\n";
         let typed = type_module("artifact/effect-succeed-value/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::EffectOperation {
             success, arguments, ..
         } = &core.functions[0].body
@@ -1373,8 +1424,9 @@ fails ConsoleError =
             matches!(arguments.as_slice(), [CoreExpr::String { value, .. }] if value == "ready")
         );
 
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle
             .typescript
             .contains("_ssrg_effect_succeed(\"ready\")"));
@@ -1384,7 +1436,7 @@ fails ConsoleError =
     fn lowers_adt_failure_to_a_cold_runtime_effect() {
         let source = "pub type AppError = | Invalid\npub effect fn reject = fail Invalid\n";
         let typed = type_module("artifact/effect-fail-adt/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::EffectOperation {
             failure, success, ..
         } = &core.functions[0].body
@@ -1406,7 +1458,8 @@ fails ConsoleError =
             }
         );
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert!(typescript
             .runtime_requirements
             .iter()
@@ -1418,7 +1471,7 @@ fails ConsoleError =
                 ..
             }
         ));
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle.typescript.contains("_ssrg_effect_fail(Invalid)"));
         assert!(!bundle.typescript.contains("throw"));
         assert!(!bundle.typescript.contains("await"));
@@ -1428,7 +1481,7 @@ fails ConsoleError =
     fn lowers_adt_failure_mapping_to_nested_cold_runtime_calls() {
         let source = "pub type HandInputError = | UnknownHand String\npub type AppError = | InvalidHand HandInputError\npub effect fn rejectUnknownHand input: String = mapError InvalidHand (fail (UnknownHand input))\n";
         let typed = type_module("artifact/effect-map-error-adt/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::EffectOperation {
             operation,
             failure,
@@ -1449,7 +1502,8 @@ fails ConsoleError =
                     && source == "effect.fail"
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert!(typescript
             .runtime_requirements
             .iter()
@@ -1465,7 +1519,7 @@ fails ConsoleError =
                 ..
             }
         ));
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle
             .typescript
             .contains("_ssrg_effect_mapError(InvalidHand, _ssrg_effect_fail(UnknownHand(input)))"));
@@ -1478,14 +1532,15 @@ fails ConsoleError =
         let source =
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"hello\" }\n";
         let typed = type_module("artifact/effect-do-println/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         assert!(matches!(
             &core.functions[0].body,
             CoreExpr::EffectOperation { operation, success, .. }
                 if operation == "console.println" && success == &CoreType::Named { name: "Unit".to_owned(), arguments: Vec::new() }
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert_eq!(
             typescript.runtime_requirements,
             vec!["core.unit", "effect.console.println", "core.string"]
@@ -1498,7 +1553,7 @@ fails ConsoleError =
                 ..
             }
         ));
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle.typescript.contains(
             "export const main = (_unit: undefined) => _ssrg_console_println(\"hello\")"
@@ -1509,7 +1564,7 @@ fails ConsoleError =
     fn lowers_single_async_operation_as_cold_value_producing_effect() {
         let source = "pub effect fn main =\n  do { readLine () }\n";
         let typed = type_module("artifact/effect-do-read-line/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::EffectOperation { success, .. } = &core.functions[0].body else {
             panic!("expected readLine do result");
         };
@@ -1524,7 +1579,8 @@ fails ConsoleError =
             }
         );
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert_eq!(
             typescript.runtime_requirements,
             vec![
@@ -1542,7 +1598,7 @@ fails ConsoleError =
                 ..
             }
         ));
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle
             .typescript
@@ -1553,9 +1609,10 @@ fails ConsoleError =
     fn lowers_multiple_effect_do_statements_to_typescript_sequence() {
         let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    println \"one\"\n    println \"two\"\n  }\n";
         let typed = type_module("artifact/effect-do-multiple/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle.typescript.contains(
             "export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(\"one\"), () => _ssrg_console_println(\"two\"))"
@@ -1567,7 +1624,7 @@ fails ConsoleError =
         let source =
             "pub effect fn main =\n  do {\n    let message = \"hello\"\n    println message\n  }\n";
         let typed = type_module("artifact/effect-do-pure-let/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::Sequence { statements, .. } = &core.functions[0].body else {
             panic!("expected do sequence");
         };
@@ -1580,7 +1637,8 @@ fails ConsoleError =
             }] if name == "message" && value == "hello"
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert!(typescript
             .runtime_requirements
             .iter()
@@ -1589,7 +1647,7 @@ fails ConsoleError =
             .imports
             .iter()
             .all(|import| import.feature != "effect.core.flatMap"));
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle.typescript.contains(
             "(() => { const message: string = \"hello\"; return _ssrg_console_println(message); })()"
         ));
@@ -1599,14 +1657,15 @@ fails ConsoleError =
     fn keeps_pure_do_let_inside_the_preceding_effect_continuation() {
         let source = "pub effect fn main =\n  do {\n    line <- readLine ()\n    let copy = line\n    succeed copy\n  }\n";
         let typed = type_module("artifact/effect-do-bind-pure-let/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
         assert!(typescript
             .runtime_requirements
             .iter()
             .any(|requirement| requirement == "effect.core.flatMap"));
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle.typescript.contains(
             "_ssrg_effect_flatMap(_ssrg_stdin_readLine(), (line: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }) => (() => { const copy: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string } = line; return _ssrg_effect_succeed(copy); })())"
         ));
@@ -1616,9 +1675,10 @@ fails ConsoleError =
     fn lowers_do_bind_statement_to_typescript_const() {
         let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    ignored <- print \"hello\"\n    println \"done\"\n  }\n";
         let typed = type_module("artifact/effect-do-bind/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle.typescript.contains(
             "_ssrg_effect_flatMap(_ssrg_console_print(\"hello\"), (ignored: undefined) => _ssrg_console_println(\"done\"))"
@@ -1630,7 +1690,7 @@ fails ConsoleError =
         let source =
             "pub effect fn main =\n  do {\n    first <- readLine ()\n    second <- readLine ()\n    succeed ()\n  }\n";
         let typed = type_module("artifact/effect-stdin-read-line/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::Sequence { statements, .. } = &core.functions[0].body else {
             panic!("expected do block sequence");
         };
@@ -1680,8 +1740,9 @@ fails ConsoleError =
                 }],
             }
         );
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(
             bundle.metadata.runtime.requirements,
@@ -1702,9 +1763,11 @@ fails ConsoleError =
     #[test]
     fn emits_basic_typescript_module() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, "pub let answer: Int = 42\n");
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, "pub let answer: Int = 42\n")
+            .expect("valid test lowering input");
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int"]);
         assert_eq!(bundle.metadata.exports, vec!["answer"]);
@@ -1725,9 +1788,10 @@ fails ConsoleError =
                       let first: Maybe<Int> = make 42\n\
                       pub let second: Maybe<Int> = first\n";
         let typed = type_module("artifact/top-level-initialization/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         let function = bundle
             .typescript
@@ -1757,7 +1821,7 @@ fails ConsoleError =
     fn lowers_float_literals_to_typescript_numbers_without_recovery_holes() {
         let source = "pub let values: Array<Float> = [1.0, 2.3, -0.0, 6.022e23]\n";
         let typed = type_module("artifact/float-literal/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let CoreExpr::Array { elements, .. } = &core.bindings[0].value else {
             panic!("expected Core Float array");
         };
@@ -1785,8 +1849,9 @@ fails ConsoleError =
                 && exponent == "6.022e23"
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.float64"]);
         assert!(bundle.typescript.contains("[1.0, 2.3, -(0.0), 6.022e23]"));
@@ -1797,7 +1862,7 @@ fails ConsoleError =
     fn lowers_unary_values_through_formal_ir_and_checked_int_negation() {
         let source = "pub struct Snapshot {\n  number: Int,\n  ratio: Float,\n  flag: Bool,\n}\n\npub let negative: Int = -2\npub let negativeZero: Float = -0.0\npub let inverted: Bool = !True\npub let values: Array<Int> = [-1, -2, -3]\npub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]\npub let flags: Array<Bool> = [!True, !False]\npub let snapshot: Snapshot = Snapshot { number: -2, ratio: -0.0, flag: !True }\n";
         let typed = type_module("artifact/unary-values/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
 
         assert!(matches!(
             &core.bindings[0].value,
@@ -1845,7 +1910,8 @@ fails ConsoleError =
                 && arguments.is_empty()
         ));
 
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         assert!(matches!(
             &typescript.bindings[0],
             TypeScriptBinding::Const {
@@ -1884,7 +1950,7 @@ fails ConsoleError =
                 && matches!(operand.as_ref(), TypeScriptExpr::Boolean { value: true })
         ));
 
-        let bundle = emit_typescript_module(typescript, source);
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
         assert!(bundle
             .metadata
             .runtime
@@ -1912,13 +1978,15 @@ fails ConsoleError =
                 "{declaration}let direct = `[1]\nlet nested = {{let item = 1; `[item]}}\nlet comprehension = `[value | value <- `[1]]\n"
             );
             let typed = type_module("artifact/list-bindings/main.ssrg", &source);
-            let core = lower_typed_module(typed);
-            let typescript = lower_core_module_to_typescript_ir(core);
+            let core = lower_typed_module(typed).expect("valid test lowering input");
+            let typescript =
+                lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
             assert!(typescript
                 .type_imports
                 .iter()
                 .any(|import| import.feature == "core.list" && import.local == name));
-            let bundle = emit_typescript_module(typescript, &source);
+            let bundle =
+                emit_typescript_module(typescript, &source).expect("valid test lowering input");
             for binding in ["direct", "nested", "comprehension"] {
                 assert!(
                     bundle
@@ -1935,9 +2003,10 @@ fails ConsoleError =
     fn emits_persistent_list_literals_through_the_runtime_abi() {
         let source = "pub fn values -> List<Int> = `[1, 2, 3]\n";
         let typed = type_module("artifact/list-literal/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle.typescript.contains(
             "import { fromArray as _ssrg_list_from_array } from \"@seseragi/runtime/list\""
@@ -1956,13 +2025,15 @@ fails ConsoleError =
     fn emits_project_selected_output_paths_into_metadata_and_source_map() {
         let source = "pub let answer: Int = 42\n";
         let typed = type_module("artifact/output-paths/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         let bundle = emit_typescript_module_with_output_paths(
             typescript,
             source,
             GeneratedOutputPaths::new("dist/game/main.ts", "dist/game/main.ts.map"),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert_eq!(bundle.metadata.outputs.typescript, "dist/game/main.ts");
         assert_eq!(bundle.metadata.outputs.source_map, "dist/game/main.ts.map");
@@ -1977,9 +2048,10 @@ fails ConsoleError =
     fn maps_generated_declaration_to_its_original_source_line() {
         let source = "// generated code keeps this offset\n\npub let answer: Int = 42\n";
         let typed = type_module("artifact/source-map/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(bundle.source_map.mappings, ";;;AAEAA");
     }
@@ -1989,9 +2061,10 @@ fails ConsoleError =
         let source =
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println \"hello\"\n";
         let typed = type_module("artifact/effect-main/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert!(bundle
             .typescript
@@ -2005,9 +2078,10 @@ fails ConsoleError =
     fn emits_unit_result_as_plain_undefined() {
         let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);
-        let core = lower_typed_module(typed);
-        let typescript = lower_core_module_to_typescript_ir(core);
-        let bundle = emit_typescript_module(typescript, source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(
             bundle.typescript,

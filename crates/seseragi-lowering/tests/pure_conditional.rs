@@ -12,7 +12,7 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
     let source =
         "pub fn classify value: Int -> String = if value == 0 then \"zero\" else \"other\"\n";
     let typed = type_module("artifact/pure-if/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     let CoreExpr::If {
         condition,
         type_ref,
@@ -30,7 +30,7 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
         }
     );
 
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     assert_eq!(
         typescript.runtime_requirements,
         vec![
@@ -49,7 +49,7 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
         }
     ));
 
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
         with_unicode_header("import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\"\n", "export const classify = (value: number) => _ssrg_int_eq_dictionary[\"eq\"](value)(0) ? \"zero\" : \"other\"\n")

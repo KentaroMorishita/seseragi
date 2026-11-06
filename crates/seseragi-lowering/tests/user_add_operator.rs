@@ -14,7 +14,7 @@ instance Add<Score, Score, Score> {
 pub fn combine left: Score -> right: Score -> Score = left + right
 ";
     let typed = type_module("artifact/user-add-operator/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     assert!(matches!(
         core.functions[0].body,
         CoreExpr::Binary { ref evidence, .. }
@@ -22,7 +22,7 @@ pub fn combine left: Score -> right: Score -> Score = left + right
                 if matches!(selected.evidence, seseragi_lowering::CoreInstanceEvidence::Local { .. }))
     ));
 
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     assert!(matches!(
         &typescript.functions[0],
         seseragi_lowering::TypeScriptFunction::ConstFunction {
@@ -30,7 +30,7 @@ pub fn combine left: Score -> right: Score -> Score = left + right
             ..
         } if method == "add" && arguments.len() == 2
     ));
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle
         .typescript
         .contains("__ssrg$instance$Add$0[\"add\"](left)(right)"));
@@ -50,7 +50,7 @@ pub fn addBonus score: Score -> bonus: Int -> Score = score + bonus
     assert_eq!(typed.instances.len(), 1);
     assert_eq!(typed.instances[0].trait_name, "Add");
 
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     assert!(matches!(
         core.functions[0].body,
         CoreExpr::Binary { ref evidence, .. }
@@ -58,8 +58,8 @@ pub fn addBonus score: Score -> bonus: Int -> Score = score + bonus
                 if matches!(selected.evidence, seseragi_lowering::CoreInstanceEvidence::Local { .. }))
     ));
 
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle
         .typescript
         .contains("__ssrg$instance$Add$0[\"add\"](score)(bonus)"));
@@ -82,7 +82,7 @@ where Add<A, A, A> =
     assert_eq!(typed.instances.len(), 1);
     assert_eq!(typed.instances[0].constraints.len(), 1);
 
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     assert!(matches!(
         core.functions[0].body,
         CoreExpr::Binary { ref evidence, .. }
@@ -113,8 +113,8 @@ where Add<T, T, T> =
   apply (+) left right
 ";
     let typed = type_module("artifact/user-add-section/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     let seseragi_lowering::TypeScriptFunction::ConstFunction { body, .. } =
         &typescript.functions[1];
     let TypeScriptExpr::Call { arguments, .. } = body else {
@@ -134,7 +134,7 @@ where Add<T, T, T> =
                 && matches!(dictionary.as_ref(), TypeScriptExpr::Identifier { name }
                     if name == "__ssrg$evidence$0")
     ));
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle.typescript.contains("__ssrg$evidence$0[\"add\"]"));
 }
 
@@ -147,9 +147,9 @@ pub fn name unit: Unit -> String =
   apply (+)
 ";
     let typed = type_module("artifact/string-add-section/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle
         .typescript
         .contains("_ssrg_string_add_dictionary[\"add\"]"));

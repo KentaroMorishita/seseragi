@@ -205,6 +205,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
             for name in ["std/prelude::Nothing", "std/prelude::Just"] {
+                // A fixed entry of the built-in runtime table.
                 let constructor = runtime_sum_constructor(name)
                     .expect("standard Maybe constructor must have a runtime feature");
                 push_unique(requirements, constructor.runtime_feature);
@@ -304,6 +305,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
             if operator == "-" && is_int_type(type_ref) {
+                // A fixed entry of the built-in runtime table.
                 let operation =
                     runtime_int_operation("-").expect("Int subtraction runtime is registered");
                 push_unique(requirements, operation.runtime_feature);
@@ -796,6 +798,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         }
         CoreExpr::OptionalFieldAccess { receiver, .. } => {
             for name in ["std/prelude::Nothing", "std/prelude::Just"] {
+                // A fixed entry of the built-in runtime table.
                 let constructor = runtime_sum_constructor(name)
                     .expect("standard Maybe constructor must have a runtime import");
                 push_sum_constructor_import(imports, constructor);
@@ -923,6 +926,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             ..
         } => {
             if operator == "-" && is_int_type(type_ref) {
+                // A fixed entry of the built-in runtime table.
                 let operation =
                     runtime_int_operation("-").expect("Int subtraction runtime is registered");
                 push_import_unique(
@@ -962,6 +966,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             statements, result, ..
         } => {
             if statements.iter().any(statement_is_monadic) {
+                // A fixed entry of the built-in runtime table.
                 let operation = runtime_effect_operation("effect.flatMap")
                     .expect("effect.flatMap runtime operation must be registered");
                 push_import_unique(

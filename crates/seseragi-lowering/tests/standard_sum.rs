@@ -13,8 +13,8 @@ fn lowers_standard_sum_constructors_to_runtime_bindings() {
                   pub fn present hand: Hand -> Maybe<Hand> = Just hand\n\
                   pub fn absent unit: Unit -> Maybe<Hand> = Nothing\n";
     let typed = type_module("artifact/standard-sum/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     for feature in [
         "core.either.right",
@@ -47,7 +47,7 @@ fn lowers_standard_sum_constructors_to_runtime_bindings() {
         } if name == "_ssrg_maybe_Nothing"
     ));
 
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle.typescript.contains(
         "import { Right as _ssrg_either_Right, Left as _ssrg_either_Left, Just as _ssrg_maybe_Just, Nothing as _ssrg_maybe_Nothing } from \"@seseragi/runtime/sum\""
     ));
@@ -63,8 +63,8 @@ fn lowers_standard_sum_constructors_to_runtime_bindings() {
 fn imports_a_standard_sum_value_used_by_a_top_level_binding() {
     let source = "type Hand = | Rock\npub let absent: Maybe<Hand> = Nothing\n";
     let typed = type_module("artifact/standard-sum-binding/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert!(typescript
         .imports
@@ -86,8 +86,8 @@ fn keeps_local_sum_constructors_out_of_runtime_imports() {
                   fn present hand: Hand -> Maybe<Hand> = Just hand\n\
                   fn absent unit: Unit -> Maybe<Hand> = Nothing\n";
     let typed = type_module("artifact/local-sum/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert!(typescript.imports.iter().all(|runtime_import| {
         !runtime_import.feature.starts_with("core.maybe.")
@@ -101,8 +101,8 @@ fn freshens_only_the_colliding_runtime_reference() {
                   fn _ssrg_maybe_Nothing unit: Unit -> Unit = unit\n\
                   pub fn absent unit: Unit -> Maybe<Hand> = Nothing\n";
     let typed = type_module("artifact/sum-import-collision/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert!(matches!(
         &typescript.functions[0],

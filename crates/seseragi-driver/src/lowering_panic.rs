@@ -1,4 +1,4 @@
-use seseragi_lowering::{TypeScriptInternalError, TypeScriptLoweringError};
+use seseragi_lowering::{LoweringInternalError, TypeScriptLoweringError};
 use seseragi_syntax::{
     ByteRange, Diagnostic, DiagnosticArtifact, DiagnosticSeverity, RelatedDiagnostic,
 };
@@ -15,7 +15,7 @@ pub(crate) fn catch_lowering_panic<T>(
 }
 
 /// Reports a lowering failure as an internal compiler error. A failed lowering
-/// invariant points at the Core node that owns it, and a label names the step,
+/// invariant points at its Typed HIR, Core or TypeScript source owner. A label names the step,
 /// the missing fact and the invariant. Ordinary type errors never reach here.
 pub(crate) fn lowering_error_diagnostics(
     diagnostics: DiagnosticArtifact,
@@ -31,9 +31,9 @@ pub(crate) fn lowering_error_diagnostics(
     }
 }
 
-fn internal_error_diagnostics(
+pub(crate) fn internal_error_diagnostics(
     diagnostics: DiagnosticArtifact,
-    error: &TypeScriptInternalError,
+    error: &LoweringInternalError,
 ) -> DiagnosticArtifact {
     let (primary, source) = match &error.origin {
         Some(origin) => (
@@ -154,6 +154,53 @@ pub(crate) mod fault {
             edit(&mut core);
         }
         core
+    }
+    thread_local! {
+        static TYPED_EDIT: Cell<Option<fn(&mut seseragi_semantics::TypedModule)>> = const { Cell::new(None) };
+        static TYPESCRIPT_EDIT: Cell<Option<fn(&mut seseragi_lowering::TypeScriptModule)>> = const { Cell::new(None) };
+    }
+
+    pub(crate) fn with_typed_edit<T>(
+        edit: fn(&mut seseragi_semantics::TypedModule),
+        action: impl FnOnce() -> T,
+    ) -> T {
+        struct Reset(Option<fn(&mut seseragi_semantics::TypedModule)>);
+        impl Drop for Reset {
+            fn drop(&mut self) {
+                TYPED_EDIT.with(|slot| slot.set(self.0));
+            }
+        }
+        let _reset = Reset(TYPED_EDIT.with(|slot| slot.replace(Some(edit))));
+        action()
+    }
+
+    pub(crate) fn edit_typed(module: &mut seseragi_semantics::TypedModule) {
+        if let Some(edit) = TYPED_EDIT.with(Cell::get) {
+            edit(module);
+        }
+    }
+
+    pub(crate) fn with_typescript_edit<T>(
+        edit: fn(&mut seseragi_lowering::TypeScriptModule),
+        action: impl FnOnce() -> T,
+    ) -> T {
+        struct Reset(Option<fn(&mut seseragi_lowering::TypeScriptModule)>);
+        impl Drop for Reset {
+            fn drop(&mut self) {
+                TYPESCRIPT_EDIT.with(|slot| slot.set(self.0));
+            }
+        }
+        let _reset = Reset(TYPESCRIPT_EDIT.with(|slot| slot.replace(Some(edit))));
+        action()
+    }
+
+    pub(crate) fn edit_typescript(
+        mut module: seseragi_lowering::TypeScriptModule,
+    ) -> seseragi_lowering::TypeScriptModule {
+        if let Some(edit) = TYPESCRIPT_EDIT.with(Cell::get) {
+            edit(&mut module);
+        }
+        module
     }
 }
 

@@ -11,7 +11,7 @@ use support::with_unicode_header;
 fn lowers_int_comparison_to_sync_boolean_function() {
     let source = "pub fn isZero value: Int -> Bool = value == 0\n";
     let typed = type_module("artifact/pure-comparison/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     let CoreExpr::Binary {
         operator, type_ref, ..
     } = &core.functions[0].body
@@ -27,7 +27,7 @@ fn lowers_int_comparison_to_sync_boolean_function() {
         }
     );
 
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     assert_eq!(
         typescript.runtime_requirements,
         vec!["core.int", "core.int.eq-dictionary", "core.bool"]
@@ -41,7 +41,7 @@ fn lowers_int_comparison_to_sync_boolean_function() {
         }
     ));
 
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
         with_unicode_header(
@@ -58,7 +58,7 @@ pub fn sameBool left: Bool -> right: Bool -> Bool = left == right
 pub fn sameString left: String -> right: String -> Bool = left != right
 ";
     let typed = type_module("artifact/primitive-equality/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     assert!(core.functions.iter().all(|function| matches!(
         function.body,
         CoreExpr::Binary {
@@ -67,7 +67,7 @@ pub fn sameString left: String -> right: String -> Bool = left != right
         } if name == "Bool"
     )));
 
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     assert_eq!(
         typescript.runtime_requirements,
         vec![
@@ -78,7 +78,7 @@ pub fn sameString left: String -> right: String -> Bool = left != right
         ]
     );
     assert_eq!(typescript.imports.len(), 2);
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
         with_unicode_header("import { boolEq as _ssrg_bool_eq_dictionary, stringEq as _ssrg_string_eq_dictionary } from \"@seseragi/runtime/equality\"\n", "export const sameBool = (left: boolean) => (right: boolean) => _ssrg_bool_eq_dictionary[\"eq\"](left)(right)\nexport const sameString = (left: string) => (right: string) => _ssrg_string_eq_dictionary[\"eq\"](left)(right) === false\n")

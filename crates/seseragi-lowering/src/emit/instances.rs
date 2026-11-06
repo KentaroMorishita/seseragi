@@ -1,3 +1,4 @@
+use crate::failure::{emission_evidence_error, Lowered};
 use crate::typescript::types::render_typescript_type;
 use crate::{
     TypeScriptDerivedShowField, TypeScriptDerivedShowVariant, TypeScriptInstance,
@@ -18,10 +19,7 @@ pub(super) fn render_typescript_instances(
     type_imports: &[TypeScriptTypeImport],
     structures: &[crate::TypeScriptStruct],
     adts: &[crate::TypeScriptAdt],
-) {
-    if instances.is_empty() {
-        return;
-    }
+) -> Lowered<()> {
     for instance in instances {
         let dictionary_feature = match instance.trait_name.as_str() {
             "Show" => SHOW_DICTIONARY_FEATURE,
@@ -32,14 +30,13 @@ pub(super) fn render_typescript_instances(
             .iter()
             .find(|import| import.feature == dictionary_feature)
             .map(|import| import.local.as_str());
-        output.push_str(&render_instance(
-            instance,
-            display_type_local,
-            structures,
-            adts,
-        ));
+        output.push_str(
+            &render_instance(instance, display_type_local, structures, adts)
+                .map_err(|error| error.at(&instance.origin))?,
+        );
         output.push('\n');
     }
+    Ok(())
 }
 
 fn render_instance(
@@ -47,8 +44,8 @@ fn render_instance(
     display_type_local: Option<&str>,
     structures: &[crate::TypeScriptStruct],
     adts: &[crate::TypeScriptAdt],
-) -> String {
-    let head = render_instance_head(instance);
+) -> Lowered<String> {
+    let head = render_instance_head(instance)?;
     let erased = adts
         .iter()
         .any(|adt| adt.erased_newtype && head.split('<').next() == Some(adt.name.as_str()));
@@ -58,12 +55,12 @@ fn render_instance(
             structure.opaque && head.split('<').next() == Some(structure.name.as_str())
         })
         .then(|| crate::typescript::types::private_representation_name(&head));
-    match &instance.implementation {
+    Ok(match &instance.implementation {
         TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } => {
             let _ = adt_name;
             render_derived_display_instance(instance, display_type_local, |head, method| {
                 render_derived_adt_body(head, method, variants, erased)
-            })
+            })?
         }
         TypeScriptInstanceImplementation::DerivedStructShow {
             struct_name,
@@ -71,16 +68,21 @@ fn render_instance(
         } => {
             let _ = struct_name;
             render_derived_display_instance(instance, display_type_local, |head, method| {
-                render_derived_struct_body(head, method, fields, private_head.as_deref())
-            })
+                Ok(render_derived_struct_body(
+                    head,
+                    method,
+                    fields,
+                    private_head.as_deref(),
+                ))
+            })?
         }
         TypeScriptInstanceImplementation::DerivedJson {
             variants,
             transparent_newtype,
             ..
-        } => render_derived_json_adt_instance(instance, variants, *transparent_newtype, erased),
+        } => render_derived_json_adt_instance(instance, variants, *transparent_newtype, erased)?,
         TypeScriptInstanceImplementation::DerivedStructJson { fields, .. } => {
-            render_derived_json_struct_instance(instance, fields)
+            render_derived_json_struct_instance(instance, fields)?
         }
         TypeScriptInstanceImplementation::DerivedStructural {
             variants,
@@ -92,14 +94,14 @@ fn render_instance(
             &[],
             None,
             erased,
-        ),
+        )?,
         TypeScriptInstanceImplementation::DerivedStructStructural { fields, .. } => {
-            render_structural_instance(instance, None, fields, private_head.as_deref(), false)
+            render_structural_instance(instance, None, fields, private_head.as_deref(), false)?
         }
         TypeScriptInstanceImplementation::UserDefined { methods } => {
             render_user_defined_instance(instance, methods)
         }
-    }
+    })
 }
 
 fn render_structural_instance(
@@ -108,13 +110,17 @@ fn render_structural_instance(
     fields: &[TypeScriptDerivedShowField],
     private_head: Option<&str>,
     erased: bool,
-) -> String {
-    let head = render_instance_head(instance);
+) -> Lowered<String> {
+    let head = render_instance_head(instance)?;
     let method = match instance.trait_name.as_str() {
         "Eq" => "eq",
         "Ord" => "compare",
         "Hash" => "hash",
-        _ => unreachable!(),
+        _ => {
+            return Err(emission_evidence_error(
+                "structural instance must derive Eq, Ord or Hash",
+            ))
+        }
     };
     let result = match method {
         "eq" => "boolean",
@@ -126,12 +132,12 @@ fn render_structural_instance(
             let payload = variants
                 .first()
                 .and_then(|variant| variant.payload.as_ref())
-                .expect("erased newtype payload");
+                .ok_or_else(|| emission_evidence_error("erased newtype must retain its payload"))?;
             structural_body(
                 method,
                 &[("left".to_owned(), "right".to_owned(), &payload.dictionary)],
                 None,
-            )
+            )?
         } else {
             let mut body = String::new();
             if method == "eq" {
@@ -165,7 +171,7 @@ fn render_structural_instance(
                     method,
                     &members,
                     if transparent { None } else { Some(index) },
-                ));
+                )?);
                 body.push_str(" } ");
             }
             body.push_str("} throw new globalThis.Error(\"invalid derived value\");");
@@ -182,7 +188,7 @@ fn render_structural_instance(
                 )
             })
             .collect::<Vec<_>>();
-        structural_body(method, &members, Some(0))
+        structural_body(method, &members, Some(0))?
     };
     let function = if method == "hash" {
         format!("(left: {head}): {result} => {{ {body} }}")
@@ -195,59 +201,65 @@ fn render_structural_instance(
         String::new()
     };
     let dictionary = format!("{{ {inherited}{method}: {function} }}");
-    let annotation = render_structural_constraint_type(&instance.trait_name, &head);
-    if instance.type_parameters.is_empty() && instance.constraints.is_empty() {
-        format!(
-            "export const {}: {annotation} = {dictionary};",
-            instance.dictionary_export
-        )
-    } else {
-        let generics = super::render_arrow_type_parameters(&instance.type_parameters);
-        let evidence = instance
-            .constraints
-            .iter()
-            .enumerate()
-            .map(|(index, _)| format!("__ssrg$input${index}: {}", super::ERASED_EVIDENCE_TYPE))
-            .collect::<Vec<_>>()
-            .join(", ");
-        let bindings = instance
-            .constraints
-            .iter()
-            .enumerate()
-            .map(|(index, constraint)| {
-                let dictionary_type = render_structural_constraint_type(
-                    &constraint.name,
-                    &render_typescript_type(&constraint.arguments[0]),
-                );
-                format!(
-                    "const {} = __ssrg$input${index} as {dictionary_type};",
-                    crate::typescript::evidence_parameter_name(index)
-                )
-            })
-            .collect::<Vec<_>>()
-            .join(" ");
-        format!(
+    let annotation = render_structural_constraint_type(&instance.trait_name, &head)?;
+    Ok(
+        if instance.type_parameters.is_empty() && instance.constraints.is_empty() {
+            format!(
+                "export const {}: {annotation} = {dictionary};",
+                instance.dictionary_export
+            )
+        } else {
+            let generics = super::render_arrow_type_parameters(&instance.type_parameters);
+            let evidence = instance
+                .constraints
+                .iter()
+                .enumerate()
+                .map(|(index, _)| format!("__ssrg$input${index}: {}", super::ERASED_EVIDENCE_TYPE))
+                .collect::<Vec<_>>()
+                .join(", ");
+            let bindings = instance
+                .constraints
+                .iter()
+                .enumerate()
+                .map(|(index, constraint)| {
+                    let dictionary_type = render_structural_constraint_type(
+                        &constraint.name,
+                        &render_typescript_type(constraint.arguments.first().ok_or_else(|| {
+                            emission_evidence_error(
+                                "structural constraint must retain its head argument",
+                            )
+                        })?),
+                    )?;
+                    Ok(format!(
+                        "const {} = __ssrg$input${index} as {dictionary_type};",
+                        crate::typescript::evidence_parameter_name(index)
+                    ))
+                })
+                .collect::<Lowered<Vec<_>>>()?
+                .join(" ");
+            format!(
             "export const {} = {generics}({evidence}): {annotation} => {{ {bindings} return {dictionary}; }};",
             instance.dictionary_export
         )
-    }
+        },
+    )
 }
 
-fn render_structural_constraint_type(trait_name: &str, head: &str) -> String {
+fn render_structural_constraint_type(trait_name: &str, head: &str) -> Lowered<String> {
     let eq = format!("eq: (left: {head}) => (right: {head}) => boolean");
-    match trait_name {
+    Ok(match trait_name {
         "Eq" => format!("{{ {eq} }}"),
         "Ord" => format!("{{ {eq}; compare: (left: {head}) => (right: {head}) => {{ readonly tag: \"Less\" | \"Equal\" | \"Greater\" }} }}"),
         "Hash" => format!("{{ hash: (value: {head}) => number }}"),
-        _ => unreachable!("structural deriving only uses standard structural constraints"),
-    }
+        _ => return Err(emission_evidence_error("structural constraint must be Eq, Ord or Hash")),
+    })
 }
 
 fn structural_body(
     method: &str,
     members: &[(String, String, &TypeScriptShowDictionaryReference)],
     seed: Option<usize>,
-) -> String {
+) -> Lowered<String> {
     let calls = members
         .iter()
         .map(|(left, right, dictionary)| {
@@ -259,29 +271,34 @@ fn structural_body(
             }
         })
         .collect::<Vec<_>>();
-    match method {
+    Ok(match method {
         "eq" => format!("return {};", if calls.is_empty() { "true".to_owned() } else { calls.join(" && ") }),
         "compare" => format!("{} return {{ tag: \"Equal\" }};", calls.iter().enumerate().map(|(index, call)| format!("const order{index} = {call}; if (order{index}.tag !== \"Equal\") return order{index};")).collect::<Vec<_>>().join(" ")),
-        "hash" if seed.is_none() => format!("return {};", calls[0]),
-        "hash" => format!("let state = {}; {} return state | 0;", seed.unwrap(), calls.iter().map(|call| format!("state = Math.imul(state ^ ({call}), 16777619);")).collect::<Vec<_>>().join(" ")),
-        _ => unreachable!(),
-    }
+        "hash" => match seed {
+            Some(seed) => format!("let state = {seed}; {} return state | 0;", calls.iter().map(|call| format!("state = Math.imul(state ^ ({call}), 16777619);")).collect::<Vec<_>>().join(" ")),
+            None => {
+                let [call] = calls.as_slice() else { return Err(emission_evidence_error("transparent Hash instance must retain exactly one payload")); };
+                format!("return {call};")
+            }
+        },
+        _ => return Err(emission_evidence_error("structural method must be eq, compare or hash")),
+    })
 }
 
 fn render_derived_json_struct_instance(
     instance: &TypeScriptInstance,
     fields: &[TypeScriptDerivedShowField],
-) -> String {
-    let head = render_instance_head(instance);
+) -> Lowered<String> {
+    let head = render_instance_head(instance)?;
     let names = render_string_array(fields.iter().map(|field| field.name.as_str()));
     let dictionaries = render_dictionary_thunk_array(fields.iter().map(|field| &field.dictionary));
-    let direction = json_direction(instance);
+    let direction = json_direction(instance)?;
     let helper = format!("_ssrg_json_derivedstruct_{direction}");
-    render_derived_json_factory(
+    Ok(render_derived_json_factory(
         instance,
         &head,
         format!("{helper}<{head}>({names}, {dictionaries})"),
-    )
+    )?)
 }
 
 fn render_derived_json_adt_instance(
@@ -289,17 +306,16 @@ fn render_derived_json_adt_instance(
     variants: &[TypeScriptDerivedShowVariant],
     transparent_newtype: bool,
     erased: bool,
-) -> String {
-    let head = render_instance_head(instance);
-    let direction = json_direction(instance);
+) -> Lowered<String> {
+    let head = render_instance_head(instance)?;
+    let direction = json_direction(instance)?;
     let body = if transparent_newtype {
-        let variant = variants
-            .first()
-            .expect("derived newtype JSON codec must retain its constructor");
-        let payload = variant
-            .payload
-            .as_ref()
-            .expect("derived newtype JSON codec must retain its representation");
+        let variant = variants.first().ok_or_else(|| {
+            emission_evidence_error("derived newtype JSON codec must retain its constructor")
+        })?;
+        let payload = variant.payload.as_ref().ok_or_else(|| {
+            emission_evidence_error("derived newtype JSON codec must retain its representation")
+        })?;
         let thunk = render_dictionary_thunk(&payload.dictionary);
         let helper = format!("_ssrg_json_derivednewtype_{direction}");
         if erased {
@@ -329,24 +345,28 @@ fn render_derived_json_adt_instance(
         let helper = format!("_ssrg_json_derivedadt_{direction}");
         format!("{helper}<{head}>([{cases}])")
     };
-    render_derived_json_factory(instance, &head, body)
+    Ok(render_derived_json_factory(instance, &head, body)?)
 }
 
 fn render_derived_json_factory(
     instance: &TypeScriptInstance,
     head: &str,
     dictionary: String,
-) -> String {
+) -> Lowered<String> {
     let dictionary_type = match instance.trait_name.as_str() {
         "JsonEncode" => "_ssrg_json_JsonEncode",
         "JsonDecode" => "_ssrg_json_JsonDecode",
-        trait_name => panic!("unsupported derived JSON trait {trait_name}"),
+        _ => {
+            return Err(emission_evidence_error(
+                "derived JSON trait must be JsonEncode or JsonDecode",
+            ))
+        }
     };
     if instance.type_parameters.is_empty() && instance.constraints.is_empty() {
-        return format!(
+        return Ok(format!(
             "export const {}: {dictionary_type}<{head}> = {dictionary};",
             instance.dictionary_export
-        );
+        ));
     }
     let generics = super::render_arrow_type_parameters(&instance.type_parameters);
     let evidence = instance
@@ -362,27 +382,30 @@ fn render_derived_json_factory(
         })
         .collect::<Vec<_>>()
         .join(", ");
-    format!(
+    Ok(format!(
         "export const {} = {generics}({evidence}): {dictionary_type}<{head}> => ({dictionary});",
         instance.dictionary_export
-    )
+    ))
 }
 
-fn render_instance_head(instance: &TypeScriptInstance) -> String {
-    render_typescript_type(
-        instance
-            .arguments
-            .first()
-            .expect("derived instance must retain one head argument"),
-    )
+fn render_instance_head(instance: &TypeScriptInstance) -> Lowered<String> {
+    Ok(render_typescript_type(
+        instance.arguments.first().ok_or_else(|| {
+            emission_evidence_error("derived instance must retain one head argument")
+        })?,
+    ))
 }
 
-fn json_direction(instance: &TypeScriptInstance) -> &'static str {
-    match instance.trait_name.as_str() {
+fn json_direction(instance: &TypeScriptInstance) -> Lowered<&'static str> {
+    Ok(match instance.trait_name.as_str() {
         "JsonEncode" => "encode",
         "JsonDecode" => "decode",
-        trait_name => panic!("unsupported derived JSON trait {trait_name}"),
-    }
+        _ => {
+            return Err(emission_evidence_error(
+                "derived JSON trait must be JsonEncode or JsonDecode",
+            ))
+        }
+    })
 }
 
 fn render_string_array<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
@@ -416,33 +439,39 @@ fn render_dictionary_thunk(reference: &TypeScriptShowDictionaryReference) -> Str
 fn render_derived_display_instance(
     instance: &TypeScriptInstance,
     display_type_local: Option<&str>,
-    render_body: impl FnOnce(&str, &str) -> String,
-) -> String {
-    let display_type_local = display_type_local
-        .expect("TypeScript derived display instances require their dictionary type import");
-    let head = render_typescript_type(
-        instance
-            .arguments
-            .first()
-            .expect("derived display instance must retain one head argument"),
-    );
+    render_body: impl FnOnce(&str, &str) -> Lowered<String>,
+) -> Lowered<String> {
+    let display_type_local = display_type_local.ok_or_else(|| {
+        emission_evidence_error("derived display instance must retain its dictionary type import")
+    })?;
+    let head = render_typescript_type(instance.arguments.first().ok_or_else(|| {
+        emission_evidence_error("derived display instance must retain one head argument")
+    })?);
     let method = match instance.trait_name.as_str() {
         "Show" => "show",
         "Debug" => "debug",
-        trait_name => panic!("unsupported derived display trait {trait_name}"),
+        _ => {
+            return Err(emission_evidence_error(
+                "derived display trait must be Show or Debug",
+            ))
+        }
     };
-    let body = render_body(&head, method);
+    let body = render_body(&head, method)?;
     let bounded = match instance.trait_name.as_str() {
         "Show" => "_ssrg_show_boundedShow",
         "Debug" => "_ssrg_debug_boundedDebug",
-        trait_name => panic!("unsupported derived display trait {trait_name}"),
+        _ => {
+            return Err(emission_evidence_error(
+                "derived display trait must be Show or Debug",
+            ))
+        }
     };
     let dictionary = format!("{bounded}({body})");
     if instance.type_parameters.is_empty() && instance.constraints.is_empty() {
-        return format!(
+        return Ok(format!(
             "export const {}: {display_type_local}<{head}> = {dictionary};",
             instance.dictionary_export
-        );
+        ));
     }
     let generics = super::render_arrow_type_parameters(&instance.type_parameters);
     let evidence = instance
@@ -458,10 +487,10 @@ fn render_derived_display_instance(
         })
         .collect::<Vec<_>>()
         .join(", ");
-    format!(
+    Ok(format!(
         "export const {} = {generics}({evidence}): {display_type_local}<{head}> => ({dictionary});",
         instance.dictionary_export
-    )
+    ))
 }
 
 fn render_user_defined_instance(
@@ -545,25 +574,32 @@ fn render_derived_adt_body(
     method: &str,
     variants: &[TypeScriptDerivedShowVariant],
     erased: bool,
-) -> String {
+) -> Lowered<String> {
     if erased {
-        let variant = variants.first().expect("erased newtype constructor");
-        let payload = variant.payload.as_ref().expect("erased newtype payload");
-        return format!(
+        let variant = variants
+            .first()
+            .ok_or_else(|| emission_evidence_error("erased newtype constructor"))?;
+        let payload = variant
+            .payload
+            .as_ref()
+            .ok_or_else(|| emission_evidence_error("erased newtype must retain its payload"))?;
+        return Ok(format!(
             r#"(value: {head}): string => {:?} + " " + {}.{method}(value)"#,
             variant.tag,
             render_dictionary_reference(&payload.dictionary)
-        );
+        ));
     }
     if variants.is_empty() {
-        return format!("(value: {head}): string => value");
+        return Ok(format!("(value: {head}): string => value"));
     }
     let cases = variants
         .iter()
         .map(|variant| render_derived_adt_variant(variant, method))
         .collect::<Vec<_>>()
         .join(" ");
-    format!("(value: {head}): string => {{ switch (value.tag) {{ {cases} }} }}")
+    Ok(format!(
+        "(value: {head}): string => {{ switch (value.tag) {{ {cases} }} }}"
+    ))
 }
 
 fn render_derived_adt_variant(variant: &TypeScriptDerivedShowVariant, method: &str) -> String {

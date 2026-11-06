@@ -11,9 +11,9 @@ pub fn matchingValues values: Array<(Int, Int)> -> Array<Int> =
   [value | (1, value) <- values]
 "#;
     let typed = type_module("artifact/comprehension-pattern-filter/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains("$ssrg_match.tag === \"Just\""),
@@ -51,9 +51,9 @@ pub fn values bucket: Bucket -> Array<Int> =
   [value | value <- bucket]
 "#;
     let typed = type_module("artifact/user-iterable/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle

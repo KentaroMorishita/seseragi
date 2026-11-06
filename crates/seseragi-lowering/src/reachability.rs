@@ -659,17 +659,22 @@ fn instance_refs(instance: &TypeScriptInstance) -> Names {
 mod tests {
     use super::*;
     fn module(id: &str) -> TypeScriptModule {
-        lower_core_module_to_typescript_ir(lower_typed_module(seseragi_semantics::type_module(
-            id,
-            "pub fn main value: Int -> Int = value\nfn unused value: Int -> Int = value\n",
-        )))
+        lower_core_module_to_typescript_ir(
+            lower_typed_module(seseragi_semantics::type_module(
+                id,
+                "pub fn main value: Int -> Int = value\nfn unused value: Int -> Int = value\n",
+            ))
+            .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input")
     }
     #[test]
     fn retains_runtime_sources_only_for_surviving_declarations() {
         let source =
             "pub fn main value: Int -> Int = value + 1\nfn unused value: Int -> Int = value + 2\n";
         let module = lower_core_module_to_typescript_ir_with_options(
-            lower_typed_module(seseragi_semantics::type_module("positions", source)),
+            lower_typed_module(seseragi_semantics::type_module("positions", source))
+                .expect("valid test lowering input"),
             &TypeScriptOutputPlan::default(),
             &TypeScriptLoweringOptions {
                 runtime_sources: true,
@@ -692,9 +697,11 @@ mod tests {
     #[test]
     fn lazy_display_factories_retain_their_imports_only_with_a_live_reader() {
         let source="pub fn main value: Int -> String = show (value, True)\nfn unused value: Int -> String = debug (value, True)";
-        let module = lower_core_module_to_typescript_ir(lower_typed_module(
-            seseragi_semantics::type_module("display/main.ssrg", source),
-        ));
+        let module = lower_core_module_to_typescript_ir(
+            lower_typed_module(seseragi_semantics::type_module("display/main.ssrg", source))
+                .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         assert_eq!(module.closed_display_dictionaries.len(), 2);
         let mut modules = BTreeMap::from([("display".to_owned(), module)]);
         retain_application(&mut modules, &[("display".into(), "main".into())]);
@@ -710,9 +717,11 @@ mod tests {
             .any(|import| import.feature == "core.tuple.debug"));
 
         let source="pub fn main value: Int -> Int = value\nfn unused value: Int -> String = show (value, True)";
-        let module = lower_core_module_to_typescript_ir(lower_typed_module(
-            seseragi_semantics::type_module("display/main.ssrg", source),
-        ));
+        let module = lower_core_module_to_typescript_ir(
+            lower_typed_module(seseragi_semantics::type_module("display/main.ssrg", source))
+                .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         assert_eq!(module.closed_display_dictionaries.len(), 1);
         let mut modules = BTreeMap::from([("display".to_owned(), module)]);
         retain_application(&mut modules, &[("display".into(), "main".into())]);
@@ -839,12 +848,14 @@ mod tests {
     fn module_initialization_keeps_unused_values_through_an_empty_facade() {
         let mut main = module("main");
         main.module = "main".into();
-        let mut side = lower_core_module_to_typescript_ir(lower_typed_module(
-            seseragi_semantics::type_module(
+        let mut side = lower_core_module_to_typescript_ir(
+            lower_typed_module(seseragi_semantics::type_module(
                 "side",
                 "let bad: Int = 9007199254740991 + 1\npub fn unused value: Int -> Int = value\n",
-            ),
-        ));
+            ))
+            .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         side.module = "side".into();
         let mut unreachable = side.clone();
         unreachable.module = "unreachable".into();
@@ -881,12 +892,14 @@ mod tests {
     }
     #[test]
     fn a_live_entry_module_keeps_its_own_eager_initializers() {
-        let mut main = lower_core_module_to_typescript_ir(lower_typed_module(
-            seseragi_semantics::type_module(
+        let mut main = lower_core_module_to_typescript_ir(
+            lower_typed_module(seseragi_semantics::type_module(
                 "main",
                 "let bad: Int = 9007199254740991 + 1\npub fn main value: Int -> Int = value\n",
-            ),
-        ));
+            ))
+            .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         main.module = "main".into();
         let mut modules = BTreeMap::from([("main".into(), main)]);
         retain_application(&mut modules, &[("main".into(), "main".into())]);

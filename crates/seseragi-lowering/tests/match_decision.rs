@@ -5,7 +5,10 @@ use seseragi_lowering::{
 use seseragi_semantics::type_module;
 
 fn lower(source_name: &str, source: &str) -> seseragi_lowering::TypeScriptModule {
-    lower_core_module_to_typescript_ir(lower_typed_module(type_module(source_name, source)))
+    lower_core_module_to_typescript_ir(
+        lower_typed_module(type_module(source_name, source)).expect("valid test lowering input"),
+    )
+    .expect("valid test lowering input")
 }
 
 #[test]
@@ -13,7 +16,7 @@ fn wide_list_decisions_share_only_proved_cursors() {
     let source =
         include_str!("../../../examples/spec/fixtures/rust-backend/list-prefix-kernel.ssrg");
     let module = lower("prefix/main.ssrg", source);
-    let bundle = emit_typescript_module(module, source);
+    let bundle = emit_typescript_module(module, source).expect("valid test lowering input");
     assert!(bundle.typescript.contains("$ssrg_prefix31.head"));
     assert!(bundle
         .typescript
@@ -32,14 +35,16 @@ fn wide_list_decisions_share_only_proved_cursors() {
 fn a_lexical_list_constructor_binder_never_receives_a_builtin_prefix_plan() {
     let source =
         "pub fn probe xs: List<Int> -> Int = match xs { `[a,b,...tail] -> a + b\n _ -> 0 }";
-    let mut core = lower_typed_module(type_module("prefix/main.ssrg", source));
+    let mut core = lower_typed_module(type_module("prefix/main.ssrg", source))
+        .expect("valid test lowering input");
     let bound = lower_typed_module(type_module(
         "prefix/main.ssrg",
         "pub fn bound<List<_>> xs: List<Int> -> List<Int> = xs",
-    ));
+    ))
+    .expect("valid test lowering input");
     core.functions[0].type_parameters = bound.functions[0].type_parameters.clone();
     assert_eq!(core.functions[0].type_parameters[0].name, "List");
-    let ts = lower_core_module_to_typescript_ir(core);
+    let ts = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     let TypeScriptFunction::ConstFunction { body, .. } = &ts.functions[0];
     let TypeScriptExpr::Decision { branches, .. } = body else {
         panic!("decision")
@@ -50,7 +55,8 @@ fn a_lexical_list_constructor_binder_never_receives_a_builtin_prefix_plan() {
 #[test]
 fn prefix_guards_share_the_once_evaluated_scrutinee_without_sharing_arms() {
     let source = "fn input values: List<Int> -> List<Int> = values\n\npub fn guarded values: List<Int> -> Int = match input values { `[a,b] when a == 0 -> b\n `[a,b] when a == 1 -> a\n `[a,b,...tail] -> b\n _ -> -1 }";
-    let bundle = emit_typescript_module(lower("prefix/main.ssrg", source), source);
+    let bundle = emit_typescript_module(lower("prefix/main.ssrg", source), source)
+        .expect("valid test lowering input");
     assert_eq!(bundle.typescript.matches("input(values)").count(), 1);
     assert_eq!(
         bundle
@@ -113,7 +119,7 @@ pub fn unwrap label: Label -> String =
     );
     assert!(branches[1].tests.is_empty());
 
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle.typescript.contains(
         "(($ssrg_match: Label): string => $ssrg_match.tag === \"Present\" ? ((value: string): string => value)($ssrg_match.value) : \"none\")(label)"
     ));
@@ -135,7 +141,7 @@ pub fn render hand: Hand -> String =
   }
 "#;
     let typescript = lower("artifact/match-on-call/main.ssrg", source);
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert_eq!(bundle.typescript.matches("identity(hand)").count(), 1);
 }
@@ -159,7 +165,7 @@ pub fn score hand: Hand -> Int =
         .iter()
         .any(|requirement| requirement == "core.int.add"));
     assert_eq!(typescript.imports.len(), 1);
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle.typescript.contains("_ssrg_int_add(1, 2)"));
 }
 
@@ -176,7 +182,7 @@ pub fn unwrap label: Label -> String =
   }
 "#;
     let typescript = lower("artifact/match-final-payload/main.ssrg", source);
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle.typescript.contains(
         "$ssrg_match.tag === \"Present\" ? ((value: string): string => value)($ssrg_match.value) : (()"
@@ -197,7 +203,7 @@ pub fn render choice: Choice -> String =
   }
 "#;
     let typescript = lower("artifact/match-guard-binding/main.ssrg", source);
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle.typescript.contains(
         "$ssrg_match.tag === \"Value\" && ((enabled: boolean): boolean => enabled)($ssrg_match.value)"
@@ -237,7 +243,7 @@ fn lowers_literal_patterns_to_strict_equality_tests() {
     ));
     assert!(branches[1].tests.is_empty());
 
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle.typescript.contains(
         "$ssrg_match[0] === 42 && $ssrg_match[1] === \"ready\" && $ssrg_match[2] === true"
     ));
@@ -252,7 +258,7 @@ fn emits_structural_record_pattern_projections() {
   }
 "#;
     let typescript = lower("artifact/record-match/main.ssrg", source);
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle
         .typescript

@@ -1,3 +1,4 @@
+use crate::failure::Lowered;
 use crate::{source_span, CoreCallEvidence, CoreType, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{
@@ -119,16 +120,19 @@ pub enum CoreInstanceEvidence {
     },
 }
 
-pub(super) fn lower_instances(source: &str, instances: Vec<TypedInstance>) -> Vec<CoreInstance> {
+pub(super) fn lower_instances(
+    source: &str,
+    instances: Vec<TypedInstance>,
+) -> Lowered<Vec<CoreInstance>> {
     instances
         .into_iter()
         .map(|instance| lower_instance(source, instance))
         .collect()
 }
 
-fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
+fn lower_instance(source: &str, instance: TypedInstance) -> Lowered<CoreInstance> {
     let constraint_identities = instance.constraint_identities;
-    CoreInstance {
+    Ok(CoreInstance {
         identity: instance.identity,
         trait_name: instance.trait_name,
         type_parameters: instance.type_parameters,
@@ -191,20 +195,20 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
                     methods: methods
                         .into_iter()
                         .map(|method| lower_method(source, method))
-                        .collect(),
+                        .collect::<Lowered<Vec<_>>>()?,
                 }
             }
         },
-    }
+    })
 }
 
 fn is_zero(value: &usize) -> bool {
     *value == 0
 }
 
-fn lower_method(source: &str, method: TypedInstanceMethod) -> CoreInstanceMethod {
+fn lower_method(source: &str, method: TypedInstanceMethod) -> Lowered<CoreInstanceMethod> {
     let constraint_identities = method.scheme.constraint_identities;
-    CoreInstanceMethod {
+    Ok(CoreInstanceMethod {
         name: method.name,
         type_parameters: method.scheme.type_parameters,
         constraints: method
@@ -220,9 +224,9 @@ fn lower_method(source: &str, method: TypedInstanceMethod) -> CoreInstanceMethod
             })
             .collect(),
         parameters: method.parameters.iter().map(lower_parameter).collect(),
-        body: lower_expr(source, method.body),
+        body: lower_expr(source, method.body)?,
         origin: source_span(source, method.origin),
-    }
+    })
 }
 
 fn lower_show_payload_evidence(evidence: TypedShowPayloadEvidence) -> CoreShowPayloadEvidence {

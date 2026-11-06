@@ -180,7 +180,8 @@ fn build_main_with_optional_source(
     };
     let id = compiled.generated.metadata.module.clone();
     let mut application = std::collections::BTreeMap::from([(id.clone(), compiled.clone())]);
-    let reachability = optimize_application(&mut application, &id, &contract);
+    let reachability =
+        optimize_application(&mut application, &id, &contract).map_err(BuildError::Host)?;
     let compiled = application.get(&id).expect("application root retained");
     let prepared = source
         .map(|source| source.prepare(compiled, target == BuildTarget::Web))
@@ -353,7 +354,8 @@ pub fn build_local_project_with_programs(
         &mut application.compiled.modules,
         &project.entry_module,
         &contract,
-    );
+    )
+    .map_err(BuildError::Host)?;
     application
         .compiled
         .order
@@ -947,9 +949,12 @@ fn optimize_application(
     modules: &mut std::collections::BTreeMap<String, CompiledModule>,
     entry: &str,
     contract: &crate::MainContract,
-) -> Option<seseragi_driver::ApplicationReachability> {
-    if modules.get(entry)?.generated.metadata.profile != "release" {
-        return None;
+) -> Result<Option<seseragi_driver::ApplicationReachability>, String> {
+    if modules
+        .get(entry)
+        .is_none_or(|module| module.generated.metadata.profile != "release")
+    {
+        return Ok(None);
     }
     let mut roots = vec![(entry.to_owned(), "main".to_owned())];
     fn dictionary_roots(
@@ -1000,7 +1005,17 @@ fn optimize_application(
     }
     roots.sort();
     roots.dedup();
-    Some(seseragi_driver::retain_application_outputs(modules, &roots))
+    seseragi_driver::retain_application_outputs(modules, &roots)
+        .map(Some)
+        .map_err(|diagnostics| {
+            let source = modules
+                .values()
+                .find(|module| module.diagnostics.source == diagnostics.source)
+                .and_then(|module| module.generated.source_map.sources_content.first())
+                .map(String::as_str)
+                .unwrap_or_default();
+            seseragi_driver::render_terminal_diagnostics(&diagnostics, source)
+        })
 }
 
 // Native Node cannot strip TypeScript under node_modules. Emit one shared

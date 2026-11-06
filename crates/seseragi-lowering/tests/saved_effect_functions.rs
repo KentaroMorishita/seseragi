@@ -14,7 +14,7 @@ fn core(source: &str) -> seseragi_lowering::CoreModule {
     let linked = link_module(unlinked, &BTreeMap::from(imports)).unwrap();
     let analyzed = analyze_linked_module(parse_diagnostics("saved.ssrg", source), linked, source)
         .unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
-    lower_typed_module(analyzed.typed_hir)
+    lower_typed_module(analyzed.typed_hir).expect("valid test lowering input")
 }
 
 #[test]
@@ -57,8 +57,11 @@ fn saved_effect_functions_remain_function_values() {
             }) if actual == name && evidence.is_empty()),
                 "{source}\n{statements:#?}"
             );
-            let generated =
-                emit_typescript_module(lower_core_module_to_typescript_ir(core), &source);
+            let generated = emit_typescript_module(
+                lower_core_module_to_typescript_ir(core).expect("valid test lowering input"),
+                &source,
+            )
+            .expect("valid test lowering input");
             assert!(
                 generated.typescript.contains(&format!("= {runtime};")),
                 "{source}\n{}",
@@ -103,7 +106,11 @@ fn passing_effect_functions_as_arguments_does_not_invoke_them() {
             "{statement:#?}"
         );
     }
-    let generated = emit_typescript_module(lower_core_module_to_typescript_ir(core), source);
+    let generated = emit_typescript_module(
+        lower_core_module_to_typescript_ir(core).expect("valid test lowering input"),
+        source,
+    )
+    .expect("valid test lowering input");
     assert!(!generated.typescript.contains("_ssrg_console_flush()"));
     assert!(!generated.typescript.contains("_ssrg_stdin_readLine()"));
 }
@@ -129,7 +136,11 @@ fn applied_unit_functions_construct_effects() {
         }) if matches!(arguments.as_slice(), [CoreExpr::Unit { .. }])),
             "{statements:#?}"
         );
-        let generated = emit_typescript_module(lower_core_module_to_typescript_ir(core), &source);
+        let generated = emit_typescript_module(
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input"),
+            &source,
+        )
+        .expect("valid test lowering input");
         assert!(
             generated
                 .typescript

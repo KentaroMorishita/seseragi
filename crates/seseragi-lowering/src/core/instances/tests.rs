@@ -15,7 +15,8 @@ pub type AppError deriving Show =
   | EndOfInput
 ";
 
-    let core = lower_typed_module(type_module("artifact/derived-show/main.ssrg", source));
+    let core = lower_typed_module(type_module("artifact/derived-show/main.ssrg", source))
+        .expect("valid test lowering input");
 
     assert_eq!(core.instances.len(), 1);
     let instance = &core.instances[0];
@@ -58,7 +59,8 @@ pub type AppError deriving Show =
 fn carries_local_show_payload_evidence_into_core_ir() {
     let source = "type Detail deriving Show = | Message String\ntype AppError deriving Show = | Wrapped Detail\n";
 
-    let core = lower_typed_module(type_module("artifact/local-show/main.ssrg", source));
+    let core = lower_typed_module(type_module("artifact/local-show/main.ssrg", source))
+        .expect("valid test lowering input");
     let app_error = core
         .instances
         .iter()
@@ -111,7 +113,7 @@ fn carries_imported_show_payload_evidence_into_core_ir() {
     .unwrap()
     .typed_hir;
 
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
 
     assert_eq!(core.instances.len(), 1);
     let instance = &core.instances[0];
@@ -141,7 +143,8 @@ pub type AppError =
   | EndOfInput
 ";
 
-    let core = lower_typed_module(type_module("artifact/no-show/main.ssrg", source));
+    let core = lower_typed_module(type_module("artifact/no-show/main.ssrg", source))
+        .expect("valid test lowering input");
 
     assert!(core.instances.is_empty());
 }

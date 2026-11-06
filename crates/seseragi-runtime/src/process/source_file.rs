@@ -167,7 +167,20 @@ impl SourceFileContext {
                 .or_insert_with(|| b"{}\n".to_vec());
         }
         Ok(PreparedSourceFile {
-            compiled: seseragi_driver::relocate_foreign_outputs(compiled, &specifiers),
+            compiled: seseragi_driver::relocate_foreign_outputs(compiled, &specifiers).map_err(
+                |diagnostics| {
+                    seseragi_driver::render_terminal_diagnostics(
+                        &diagnostics,
+                        compiled
+                            .generated
+                            .source_map
+                            .sources_content
+                            .first()
+                            .map(String::as_str)
+                            .unwrap_or_default(),
+                    )
+                },
+            )?,
             files,
         })
     }

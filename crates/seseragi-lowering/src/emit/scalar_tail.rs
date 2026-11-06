@@ -35,25 +35,19 @@ pub(super) fn render(
 }
 
 fn tail(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> String {
-    if let Some(value) = super::source_action(expr) {
+    if let Some((_, source, value, frame)) = super::source_action(expr) {
         if let TypeScriptExpr::Call {
             callee, arguments, ..
         } = value
         {
             if callee == self_name && arguments.len() == arity {
-                let TypeScriptExpr::RuntimeCall {
-                    arguments: located, ..
-                } = expr
-                else {
-                    unreachable!();
-                };
                 let mut output = String::new();
                 for (index, argument) in arguments.iter().enumerate() {
                     output.push_str(&format!(
                         "const $ssrg$scalarNext{index} = $ssrg$atSource({}, () => {}, {});",
-                        render_typescript_expr(&located[0]),
+                        render_typescript_expr(source),
                         render_typescript_expr(argument),
-                        render_typescript_expr(&located[2]),
+                        render_typescript_expr(frame),
                     ));
                 }
                 for index in 0..arity {

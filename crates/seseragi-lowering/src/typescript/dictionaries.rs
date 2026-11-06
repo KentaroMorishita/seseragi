@@ -1,3 +1,4 @@
+use crate::failure::Lowered;
 use crate::typescript::types::TypeScriptTypeContext;
 use std::collections::BTreeMap;
 
@@ -14,79 +15,71 @@ pub(super) fn local_dictionary_expression(
     evidence: &CoreInstanceEvidence,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> Option<TypeScriptExpr> {
+) -> Lowered<Option<TypeScriptExpr>> {
     if let CoreInstanceEvidence::Parameter { index } = evidence {
-        return Some(TypeScriptExpr::Identifier {
+        return Ok(Some(TypeScriptExpr::Identifier {
             name: super::evidence_parameter_name(*index),
-        });
+        }));
     }
-    if let CoreInstanceEvidence::Standard {
-        identity,
-        type_arguments,
-        evidence_arguments,
-    } = evidence
-    {
-        if type_arguments.is_empty()
-            && evidence_arguments.is_empty()
-            && seseragi_semantics::standard_instance_has_empty_dictionary(identity)
-        {
-            return Some(TypeScriptExpr::EmptyDictionary);
-        }
-        if identity == "@seseragi/foreign-codec" {
-            let (name, arguments) = match type_arguments.as_slice() {
-                [crate::CoreType::Named { name, arguments }] => (name, arguments),
-                [crate::CoreType::ExternalNamed {
-                    name,
-                    canonical,
-                    arguments,
-                }] if canonical == &format!("std/prelude::{name}") => (name, arguments),
-                _ => return None,
-            };
-            if !arguments.is_empty() || !evidence_arguments.is_empty() {
-                return None;
+    let (callee, type_arguments, evidence_arguments, standard) = match evidence {
+        CoreInstanceEvidence::Standard {
+            identity,
+            type_arguments,
+            evidence_arguments,
+        } => {
+            if type_arguments.is_empty()
+                && evidence_arguments.is_empty()
+                && seseragi_semantics::standard_instance_has_empty_dictionary(identity)
+            {
+                return Ok(Some(TypeScriptExpr::EmptyDictionary));
             }
-            let codec = match name.as_str() {
-                "Unit" => "unit",
-                "Bool" => "bool",
-                "Char" => "char",
-                "String" => "string",
-                "Int" => "int",
-                "Float" => "float",
-                _ => return None,
-            };
-            return Some(TypeScriptExpr::String {
-                value: codec.into(),
-            });
-        }
-        let local_name = runtime_display_dictionary_for_identity(identity)
-            .map(|dictionary| dictionary.local_name)
-            .or_else(|| {
-                runtime_prelude_dictionary_for_identity(identity)
-                    .map(|dictionary| dictionary.local_name)
-            })?;
-        if type_arguments.is_empty() && evidence_arguments.is_empty() {
-            return Some(TypeScriptExpr::RuntimeReference {
-                name: local_name.to_owned(),
-            });
-        }
-        let arguments = evidence_arguments
-            .iter()
-            .map(|evidence| {
-                local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
-            })
-            .collect::<Option<Vec<_>>>()?;
-        return Some(TypeScriptExpr::TypeApplicationCall {
-            callee: local_name.to_owned(),
-            type_arguments: type_arguments
-                .iter()
-                .map(|type_ref| {
-                    type_ref_from_core_type(type_ref, &imported_types.with_constructor_position())
+            if identity == "@seseragi/foreign-codec" {
+                let (name, arguments) = match type_arguments.as_slice() {
+                    [crate::CoreType::Named { name, arguments }] => (name, arguments),
+                    [crate::CoreType::ExternalNamed {
+                        name,
+                        canonical,
+                        arguments,
+                    }] if canonical == &format!("std/prelude::{name}") => (name, arguments),
+                    _ => return Ok(None),
+                };
+                if !arguments.is_empty() || !evidence_arguments.is_empty() {
+                    return Ok(None);
+                }
+                let codec = match name.as_str() {
+                    "Unit" => "unit",
+                    "Bool" => "bool",
+                    "Char" => "char",
+                    "String" => "string",
+                    "Int" => "int",
+                    "Float" => "float",
+                    _ => return Ok(None),
+                };
+                return Ok(Some(TypeScriptExpr::String {
+                    value: codec.into(),
+                }));
+            }
+            let Some(local) = runtime_display_dictionary_for_identity(identity)
+                .map(|dictionary| dictionary.local_name)
+                .or_else(|| {
+                    runtime_prelude_dictionary_for_identity(identity)
+                        .map(|dictionary| dictionary.local_name)
                 })
-                .collect(),
-            arguments: structural_dictionary_arguments(identity, type_arguments, arguments)?,
-        });
-    }
-    let (identity, type_arguments, evidence_arguments) = match evidence {
+            else {
+                return Ok(None);
+            };
+            if type_arguments.is_empty() && evidence_arguments.is_empty() {
+                return Ok(Some(TypeScriptExpr::RuntimeReference {
+                    name: local.to_owned(),
+                }));
+            }
+            (
+                local.to_owned(),
+                type_arguments,
+                evidence_arguments,
+                Some(identity.as_str()),
+            )
+        }
         CoreInstanceEvidence::Local {
             identity,
             type_arguments,
@@ -97,35 +90,44 @@ pub(super) fn local_dictionary_expression(
             type_arguments,
             evidence_arguments,
             ..
-        } => (identity, type_arguments, evidence_arguments),
-        CoreInstanceEvidence::Standard { .. } | CoreInstanceEvidence::Parameter { .. } => {
-            return None;
+        } => {
+            let Some(callee) = imported_values.get(&local_instance_expression_key(identity)) else {
+                return Ok(None);
+            };
+            (callee.clone(), type_arguments, evidence_arguments, None)
         }
+        CoreInstanceEvidence::Parameter { .. } => return Ok(None),
     };
-    let callee = imported_values
-        .get(&local_instance_expression_key(identity))?
-        .clone();
-    let arguments = evidence_arguments
-        .iter()
-        .map(|evidence| {
-            local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
-        })
-        .collect::<Option<Vec<_>>>()?;
-    if type_arguments.is_empty() && arguments.is_empty() {
-        return Some(TypeScriptExpr::Identifier { name: callee });
+    let mut arguments = Vec::with_capacity(evidence_arguments.len());
+    for evidence in evidence_arguments {
+        let Some(argument) =
+            local_dictionary_expression(&evidence.evidence, imported_values, imported_types)?
+        else {
+            return Ok(None);
+        };
+        arguments.push(argument);
+    }
+    if let Some(identity) = standard {
+        let Some(structural) = structural_dictionary_arguments(identity, type_arguments, arguments)
+        else {
+            return Ok(None);
+        };
+        arguments = structural;
+    } else if type_arguments.is_empty() && arguments.is_empty() {
+        return Ok(Some(TypeScriptExpr::Identifier { name: callee }));
     }
     // Selected instance arguments can be constructors; retain their checked
     // kind witnesses just as the corresponding data annotations do.
-    Some(TypeScriptExpr::TypeApplicationCall {
+    Ok(Some(TypeScriptExpr::TypeApplicationCall {
         callee,
         type_arguments: type_arguments
             .iter()
             .map(|type_ref| {
                 type_ref_from_core_type(type_ref, &imported_types.with_constructor_position())
             })
-            .collect(),
+            .collect::<Lowered<Vec<_>>>()?,
         arguments,
-    })
+    }))
 }
 
 fn structural_dictionary_arguments(
@@ -223,7 +225,8 @@ mod tests {
                     },
                     &Default::default(),
                     &Default::default(),
-                ),
+                )
+                .expect("valid test lowering input"),
                 None,
                 "{identity}"
             );
@@ -240,7 +243,8 @@ mod tests {
             },
             &Default::default(),
             &Default::default(),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert_eq!(
             expression,
@@ -260,7 +264,8 @@ mod tests {
             },
             &Default::default(),
             &Default::default(),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert_eq!(
             expression,
@@ -297,7 +302,8 @@ mod tests {
             },
             &Default::default(),
             &Default::default(),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert_eq!(
             expression,
@@ -334,7 +340,8 @@ mod tests {
             },
             &Default::default(),
             &Default::default(),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert!(matches!(
             expression,
@@ -412,7 +419,8 @@ mod tests {
             },
             &Default::default(),
             &Default::default(),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert!(matches!(
             expression,
@@ -458,7 +466,8 @@ mod tests {
             },
             &Default::default(),
             &Default::default(),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert_eq!(
             expression,
@@ -478,7 +487,8 @@ mod tests {
             },
             &Default::default(),
             &Default::default(),
-        );
+        )
+        .expect("valid test lowering input");
 
         assert_eq!(
             expression,

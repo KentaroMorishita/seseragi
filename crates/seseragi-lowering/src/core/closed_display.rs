@@ -121,7 +121,8 @@ mod tests {
         let module = crate::lower_typed_module(seseragi_semantics::type_module(
             "display/main.ssrg",
             &source,
-        ));
+        ))
+        .expect("valid test lowering input");
         let super::super::CoreExpr::Call { evidence, .. } = &module.functions[0].body else {
             panic!("call")
         };
@@ -145,7 +146,8 @@ mod tests {
     fn unproved_factories_and_deep_type_trees_fall_back_without_cloning_them() {
         let source = "pub fn generic<A> value: A -> String where Show<A> = show (value, True)";
         let module =
-            crate::lower_typed_module(seseragi_semantics::type_module("display/main.ssrg", source));
+            crate::lower_typed_module(seseragi_semantics::type_module("display/main.ssrg", source))
+                .expect("valid test lowering input");
         let super::super::CoreExpr::Call { evidence, .. } = &module.functions[0].body else {
             panic!("call")
         };

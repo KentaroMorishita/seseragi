@@ -90,9 +90,11 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
             origin.source = seseragi_project::runtime_source_path(source_name);
         }
         #[cfg(test)]
+        let typescript_ir = crate::lowering_panic::fault::edit_typescript(typescript_ir);
+        #[cfg(test)]
         crate::lowering_panic::fault::after_typescript();
         let mut generated =
-            emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
+            emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths)?;
         #[cfg(test)]
         crate::lowering_panic::fault::after_emission();
         configure_profile_metadata(
@@ -148,8 +150,10 @@ fn finish_compilation(
         origin.source = seseragi_project::standalone_runtime_source_path(source_name);
     }
     #[cfg(test)]
+    let typescript_ir = crate::lowering_panic::fault::edit_typescript(typescript_ir);
+    #[cfg(test)]
     crate::lowering_panic::fault::after_typescript();
-    let mut generated = emit_typescript_module(typescript_ir.clone(), source);
+    let mut generated = emit_typescript_module(typescript_ir.clone(), source)?;
     #[cfg(test)]
     crate::lowering_panic::fault::after_emission();
     configure_profile_metadata(

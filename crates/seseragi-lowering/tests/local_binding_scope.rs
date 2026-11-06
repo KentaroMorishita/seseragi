@@ -42,7 +42,8 @@ pub fn probe -> String = {
   }
 }
 "#;
-    let core = lower_typed_module(type_module("local-binding-scope.ssrg", source));
+    let core = lower_typed_module(type_module("local-binding-scope.ssrg", source))
+        .expect("valid test lowering input");
     let json = serde_json::to_value(&core).unwrap();
     let mut bindings = vec![];
     local_bindings(&json, &mut bindings);
@@ -56,7 +57,7 @@ pub fn probe -> String = {
         ]
     );
 
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     let mut projected = vec![];
     local_bindings(&serde_json::to_value(typescript).unwrap(), &mut projected);
     projected.sort();
@@ -74,7 +75,8 @@ fn capture unit: Int -> Int = {
   read ()
 }
 "#;
-    let core = lower_typed_module(type_module("implicit-unit.ssrg", source));
+    let core = lower_typed_module(type_module("implicit-unit.ssrg", source))
+        .expect("valid test lowering input");
     for name in ["read", "report"] {
         let function = core
             .functions
@@ -107,7 +109,8 @@ fn capture unit: Int -> Int = {
 #[test]
 fn omitted_binding_scope_metadata_keeps_named_declaration_compatibility() {
     let source = "pub fn probe -> Int = { fn identity value: Int -> Int = value; identity 42 }\n";
-    let core = lower_typed_module(type_module("named-binding-scope.ssrg", source));
+    let core = lower_typed_module(type_module("named-binding-scope.ssrg", source))
+        .expect("valid test lowering input");
     let json = serde_json::to_value(core).unwrap();
     fn find(value: &Value) -> Option<&Value> {
         match value {
@@ -136,9 +139,12 @@ fn omitted_binding_scope_metadata_keeps_named_declaration_compatibility() {
 #[test]
 fn parameters_locals_and_patterns_do_not_become_self_tail_calls() {
     let source = include_str!("../../../examples/spec/fixtures/rust-backend/binding-scope.ssrg");
-    let core = lower_typed_module(type_module("binding-scope.ssrg", source));
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let emitted = seseragi_lowering::emit_typescript_module(typescript, source).typescript;
+    let core = lower_typed_module(type_module("binding-scope.ssrg", source))
+        .expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let emitted = seseragi_lowering::emit_typescript_module(typescript, source)
+        .expect("valid test lowering input")
+        .typescript;
     for name in ["parameter", "shadow", "branch"] {
         let line = emitted
             .lines()
