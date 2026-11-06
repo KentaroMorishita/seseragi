@@ -143,16 +143,23 @@ impl Project {
         regular_file(&self.directory.join("Cargo.lock"))?;
         let target = self.target_for(profile, runtime)?;
         let mut command = toolchain.cargo()?;
-        let path_flags = path_flags(&self.directory, &target, &toolchain.host);
+        let encoded = std::env::var_os("CARGO_ENCODED_RUSTFLAGS");
+        let plain = std::env::var_os("RUSTFLAGS");
+        let linker = std::env::var(format!(
+            "CARGO_TARGET_{}_LINKER",
+            toolchain.host.to_uppercase().replace(['-', '.'], "_")
+        ))
+        .ok();
+        let invocation = linker_invocation(
+            &environment_flags(encoded.as_deref(), plain.as_deref()),
+            linker.as_deref(),
+        );
+        let path_flags = path_flags(&self.directory, &target, &toolchain.host, invocation);
         let flags = toml::Value::Array(path_flags.iter().cloned().map(Into::into).collect());
         command
             .arg("--config")
             .arg(format!("build.rustflags={flags}"));
-        if let Some(flags) = remapped_environment_flags(
-            std::env::var_os("CARGO_ENCODED_RUSTFLAGS"),
-            std::env::var_os("RUSTFLAGS"),
-            &path_flags,
-        )? {
+        if let Some(flags) = remapped_environment_flags(encoded, plain, &path_flags)? {
             command.env("CARGO_ENCODED_RUSTFLAGS", flags);
         }
         let output = command
@@ -252,13 +259,97 @@ fn target_root(directory: &Path, requested: Option<OsString>) -> Result<PathBuf,
     }
 }
 
+/// How rustc starts the linker on this build.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum LinkerInvocation {
+    /// Through a C compiler driver such as `cc` or `clang` (the Apple default).
+    CompilerDriver,
+    /// The linker itself, such as `ld`, `ld64.lld` or `rust-lld`.
+    Direct,
+}
+
+/// Classifies the linker the same way rustc does: an explicit
+/// `-C linker-flavor` wins, otherwise the file stem of the last `-C linker`
+/// (from rustflags, then `CARGO_TARGET_<host>_LINKER`) decides. A linker set
+/// only in a Cargo config file is not visible here and keeps the default.
+fn linker_invocation(flags: &[String], environment_linker: Option<&str>) -> LinkerInvocation {
+    let mut flavor = None;
+    let mut linker = None;
+    let mut arguments = flags.iter().map(String::as_str);
+    while let Some(argument) = arguments.next() {
+        let option = match argument {
+            "-C" | "--codegen" => arguments.next(),
+            _ => argument
+                .strip_prefix("--codegen=")
+                .or_else(|| argument.strip_prefix("-C")),
+        };
+        if let Some(value) = option.and_then(|option| option.strip_prefix("linker-flavor=")) {
+            flavor = Some(value);
+        } else if let Some(value) = option.and_then(|option| option.strip_prefix("linker=")) {
+            linker = Some(value);
+        }
+    }
+    if let Some(flavor) = flavor {
+        return if flavor == "gcc" || flavor == "em" || flavor.ends_with("-cc") {
+            LinkerInvocation::CompilerDriver
+        } else {
+            LinkerInvocation::Direct
+        };
+    }
+    let Some(stem) = linker
+        .or(environment_linker)
+        .and_then(|linker| Path::new(linker).file_stem())
+        .and_then(|stem| stem.to_str())
+    else {
+        return LinkerInvocation::CompilerDriver;
+    };
+    let direct = [
+        "ld", "ld64", "lld", "ld.lld", "ld64.lld", "rust-lld", "lld-link",
+    ]
+    .contains(&stem)
+        || stem.ends_with("-ld");
+    if direct {
+        LinkerInvocation::Direct
+    } else {
+        LinkerInvocation::CompilerDriver
+    }
+}
+
+/// Splits the rustflags Cargo will use, with Cargo's precedence.
+fn environment_flags(
+    encoded: Option<&std::ffi::OsStr>,
+    plain: Option<&std::ffi::OsStr>,
+) -> Vec<String> {
+    match (encoded, plain) {
+        (Some(flags), _) => flags
+            .to_string_lossy()
+            .split('\x1f')
+            .filter(|flag| !flag.is_empty())
+            .map(Into::into)
+            .collect(),
+        (None, Some(flags)) => flags
+            .to_string_lossy()
+            .split_whitespace()
+            .map(Into::into)
+            .collect(),
+        (None, None) => Vec::new(),
+    }
+}
+
 /// Compiler flags that keep the package's absolute location out of the
 /// executable. `--remap-path-prefix` covers paths that rustc writes. On Apple
 /// hosts the linker also records each object file's absolute path (the debug
 /// map read by `dsymutil`); those objects live under the Cargo target
 /// directory, which can be inside the package, so `-oso_prefix` makes them
-/// relative to it. `-Xlinker` keeps a path containing commas as one argument.
-fn path_flags(directory: &Path, target: &Path, host: &str) -> Vec<String> {
+/// relative to it. Both ld64 and ld64.lld accept `-oso_prefix`. A compiler
+/// driver needs `-Xlinker` before each linker argument, which also keeps a
+/// path containing commas as one argument; a direct linker takes them as is.
+fn path_flags(
+    directory: &Path,
+    target: &Path,
+    host: &str,
+    invocation: LinkerInvocation,
+) -> Vec<String> {
     let mut flags = vec![
         "--remap-path-prefix".to_owned(),
         format!("{}=.", directory.display()),
@@ -266,10 +357,18 @@ fn path_flags(directory: &Path, target: &Path, host: &str) -> Vec<String> {
     if host.ends_with("-apple-darwin") {
         let mut prefix = target.as_os_str().to_owned();
         prefix.push("/");
-        for argument in ["-Xlinker", "-oso_prefix", "-Xlinker"] {
-            flags.push(format!("-Clink-arg={argument}"));
-        }
-        flags.push(format!("-Clink-arg={}", prefix.to_string_lossy()));
+        let prefix = prefix.to_string_lossy().into_owned();
+        let arguments = match invocation {
+            LinkerInvocation::CompilerDriver => {
+                vec!["-Xlinker", "-oso_prefix", "-Xlinker", &prefix]
+            }
+            LinkerInvocation::Direct => vec!["-oso_prefix", &prefix],
+        };
+        flags.extend(
+            arguments
+                .into_iter()
+                .map(|argument| format!("-Clink-arg={argument}")),
+        );
     }
     flags
 }

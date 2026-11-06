@@ -120,18 +120,97 @@ fn apple_hosts_also_make_linker_object_paths_relative_to_the_target() {
     let directory = Path::new("/work/a,b/.seseragi/native/id");
     let target = Path::new("/work/a,b/.seseragi/native-target/key");
     let remap = ["--remap-path-prefix", "/work/a,b/.seseragi/native/id=."];
+    for invocation in [LinkerInvocation::CompilerDriver, LinkerInvocation::Direct] {
+        assert_eq!(
+            path_flags(directory, target, "x86_64-unknown-linux-gnu", invocation),
+            remap
+        );
+    }
+    let link = |arguments: &[&str]| {
+        let mut flags = remap.map(String::from).to_vec();
+        flags.extend(
+            arguments
+                .iter()
+                .map(|argument| format!("-Clink-arg={argument}")),
+        );
+        flags
+    };
+    let prefix = "/work/a,b/.seseragi/native-target/key/";
     assert_eq!(
-        path_flags(directory, target, "x86_64-unknown-linux-gnu"),
-        remap
+        path_flags(
+            directory,
+            target,
+            "aarch64-apple-darwin",
+            LinkerInvocation::CompilerDriver
+        ),
+        link(&["-Xlinker", "-oso_prefix", "-Xlinker", prefix])
     );
-    let mut apple = remap.to_vec();
-    apple.extend([
-        "-Clink-arg=-Xlinker",
-        "-Clink-arg=-oso_prefix",
-        "-Clink-arg=-Xlinker",
-        "-Clink-arg=/work/a,b/.seseragi/native-target/key/",
-    ]);
-    assert_eq!(path_flags(directory, target, "aarch64-apple-darwin"), apple);
+    // A linker started directly rejects the compiler driver's -Xlinker.
+    assert_eq!(
+        path_flags(
+            directory,
+            target,
+            "aarch64-apple-darwin",
+            LinkerInvocation::Direct
+        ),
+        link(&["-oso_prefix", prefix])
+    );
+}
+
+#[test]
+fn linker_invocation_follows_rustc_flavor_and_linker_name_rules() {
+    use LinkerInvocation::{CompilerDriver, Direct};
+    let flags = |text: &str| {
+        text.split_whitespace()
+            .map(String::from)
+            .collect::<Vec<_>>()
+    };
+    for (rustflags, environment, expected) in [
+        ("", None, CompilerDriver),
+        ("-C opt-level=1", None, CompilerDriver),
+        ("-C linker=rust-lld", None, Direct),
+        ("-Clinker=/opt/llvm/bin/ld64.lld", None, Direct),
+        ("--codegen=linker=ld", None, Direct),
+        ("--codegen linker=x86_64-apple-darwin-ld", None, Direct),
+        ("-C linker=/usr/bin/clang", None, CompilerDriver),
+        ("-C linker=cc", None, CompilerDriver),
+        ("", Some("rust-lld"), Direct),
+        ("", Some("/usr/bin/clang"), CompilerDriver),
+        ("-C linker=clang", Some("rust-lld"), CompilerDriver),
+        ("-C linker=rust-lld -C linker=clang", None, CompilerDriver),
+        ("-C linker-flavor=darwin", None, Direct),
+        ("-C linker-flavor=darwin-lld", None, Direct),
+        ("-C linker-flavor=ld64.lld", None, Direct),
+        ("-C linker-flavor=darwin-lld-cc", None, CompilerDriver),
+        ("-C linker-flavor=gcc", None, CompilerDriver),
+        (
+            "-C linker=rust-lld -C linker-flavor=darwin-lld-cc",
+            None,
+            CompilerDriver,
+        ),
+        ("-C linker=clang -C linker-flavor=darwin-lld", None, Direct),
+    ] {
+        assert_eq!(
+            linker_invocation(&flags(rustflags), environment),
+            expected,
+            "{rustflags} / {environment:?}"
+        );
+    }
+}
+
+#[test]
+fn environment_flags_use_cargo_precedence() {
+    let encoded = OsString::from("-C\x1flinker=rust-lld\x1f");
+    let plain = OsString::from("-C  linker=clang");
+    assert_eq!(
+        environment_flags(Some(&encoded), Some(&plain)),
+        ["-C", "linker=rust-lld"]
+    );
+    assert_eq!(
+        environment_flags(None, Some(&plain)),
+        ["-C", "linker=clang"]
+    );
+    assert!(environment_flags(None, None).is_empty());
 }
 
 struct Fixture {
