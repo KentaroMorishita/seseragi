@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.143] - 2026-11-06
+
+### Fixed
+
+- When TS lowering of an expression, trait dictionary or instance is missing trait evidence or meets an unexpected shape, the compiler reports an internal compiler error (`SES-I0001`) at the failing expression instead of stopping. The Playground returns the same diagnostic instead of aborting.
+
 ## [0.61.142] - 2026-11-03
 
 ### Added
