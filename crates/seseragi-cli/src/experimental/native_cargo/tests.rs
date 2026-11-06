@@ -62,11 +62,13 @@ fn cargo_targets_use_one_full_key_and_separate_inputs_and_entry_points() {
         let key = target.file_name().unwrap().to_str().unwrap();
         assert_eq!(key.len(), 64);
         assert!(key.bytes().all(|byte| byte.is_ascii_hexdigit()));
-        for artifact in [
-            "debug/build/seseragi-program-0123456789abcdef/build_script_build-0123456789abcdef.exe",
-            "x86_64-pc-windows-msvc/debug/deps/libseseragi_native_runtime-0123456789abcdef.rlib",
+        for path in [
+            target.join("debug/build/seseragi-program-0123456789abcdef/build_script_build-0123456789abcdef.exe"),
+            target.join("x86_64-pc-windows-msvc/debug/deps/program-0123456789abcdef.exe"),
+            project.target.join("runtime").join("0".repeat(32)).join(
+                "target/x86_64-pc-windows-msvc/debug/deps/libseseragi_native_runtime-0123456789abcdef.rlib",
+            ),
         ] {
-            let path = target.join(artifact);
             assert!(
                 path.as_os_str().to_string_lossy().encode_utf16().count() < 260,
                 "{}",
@@ -557,24 +559,40 @@ fn modified(path: &Path) -> std::time::SystemTime {
     fs::metadata(path).unwrap().modified().unwrap()
 }
 
+/// The development runtime libraries built under a target root.
+fn runtime_libraries(target: &Path) -> Vec<PathBuf> {
+    let Ok(builds) = fs::read_dir(target.join("runtime")) else {
+        return Vec::new();
+    };
+    let mut libraries = builds
+        .flat_map(|build| {
+            let deps = build
+                .unwrap()
+                .path()
+                .join("target")
+                .join(native_toolchain::host().unwrap())
+                .join("debug/deps");
+            fs::read_dir(deps)
+                .into_iter()
+                .flatten()
+                .map(|entry| entry.unwrap().path())
+        })
+        .filter(|path| {
+            path.file_name()
+                .unwrap()
+                .to_string_lossy()
+                .starts_with("libseseragi_native_runtime-")
+                && path
+                    .extension()
+                    .is_some_and(|extension| extension == "rlib")
+        })
+        .collect::<Vec<_>>();
+    libraries.sort();
+    libraries
+}
+
 fn runtime_library(target: &Path) -> PathBuf {
-    let libraries = fs::read_dir(
-        target
-            .join(native_toolchain::host().unwrap())
-            .join("debug/deps"),
-    )
-    .unwrap()
-    .map(|entry| entry.unwrap().path())
-    .filter(|path| {
-        path.file_name()
-            .unwrap()
-            .to_string_lossy()
-            .starts_with("libseseragi_native_runtime-")
-            && path
-                .extension()
-                .is_some_and(|extension| extension == "rlib")
-    })
-    .collect::<Vec<_>>();
+    let libraries = runtime_libraries(target);
     assert_eq!(libraries.len(), 1, "{libraries:?}");
     libraries.into_iter().next().unwrap()
 }
@@ -596,21 +614,22 @@ fn cargo_reuses_files_and_distinguishes_program_and_runtime_changes() {
     };
     build(SOURCE, RUNTIME);
     assert_eq!(fixture.stdout(), "42\n");
-    let files = [
-        "Cargo.toml",
-        "Cargo.lock",
-        "build.rs",
-        "program.rs",
-        "runtime/Cargo.toml",
-        "runtime/lib.rs",
-    ]
-    .map(|file| project.directory.join(file));
-    let times = files.each_ref().map(|file| modified(file));
-    let library = runtime_library(
-        &project
-            .target_for(BuildProfile::Development, RUNTIME)
-            .unwrap(),
+    let library = runtime_library(&project.target);
+    let runtime = library.ancestors().nth(5).unwrap().to_owned();
+    assert_eq!(
+        runtime.parent(),
+        Some(project.target.join("runtime").as_path())
     );
+    assert!(!project.directory.join("runtime").exists());
+    let files = [
+        project.directory.join("Cargo.toml"),
+        project.directory.join("Cargo.lock"),
+        project.directory.join("build.rs"),
+        project.directory.join("program.rs"),
+        runtime.join("Cargo.toml"),
+        runtime.join("lib.rs"),
+    ];
+    let times = files.each_ref().map(|file| modified(file));
     let library_time = modified(&library);
     let binary = project
         .target_for(BuildProfile::Development, RUNTIME)
@@ -638,15 +657,12 @@ fn cargo_reuses_files_and_distinguishes_program_and_runtime_changes() {
     let changed_runtime = RUNTIME.replace("42", "43");
     build(&changed, &changed_runtime);
     assert_eq!(fixture.stdout(), "changed 43\n");
-    let rebuilt = runtime_library(
-        &project
-            .target_for(BuildProfile::Development, &changed_runtime)
-            .unwrap(),
-    );
-    assert_ne!(rebuilt, library);
-    assert_ne!(modified(&rebuilt), library_time);
+    // A changed runtime gets its own build; the earlier one stays usable.
+    let libraries = runtime_libraries(&project.target);
+    assert_eq!(libraries.len(), 2, "{libraries:?}");
+    assert!(libraries.contains(&library));
     assert_eq!(modified(&library), library_time);
-    assert_ne!(modified(&files[5]), times[5]);
+    assert_eq!(modified(&files[5]), times[5]);
     assert_eq!(modified(&files[3]), program_time);
     assert_eq!(modified(&files[1]), times[1]);
     let directory = project.directory.clone();
@@ -657,6 +673,71 @@ fn cargo_reuses_files_and_distinguishes_program_and_runtime_changes() {
     assert_eq!(reopened.target, target);
     assert!(!fixture.root.path().join("Cargo.toml").exists());
     assert!(!fixture.root.path().join("target").exists());
+}
+
+#[test]
+fn programs_under_one_target_root_share_one_runtime_build() {
+    let fixture = Fixture::new();
+    fs::write(fixture.root.path().join("other.ssrg"), "").unwrap();
+    let first = fixture.project();
+    let mut second = Project::open(&fixture.root.path().join("other.ssrg"), "main").unwrap();
+    second.target = fixture.target.clone();
+    assert_ne!(first.directory, second.directory);
+    let other = fixture
+        .root
+        .path()
+        .join(format!("other{}", std::env::consts::EXE_SUFFIX));
+    first
+        .build(
+            BuildProfile::Development,
+            SOURCE,
+            RUNTIME,
+            &fixture.executable(),
+            &fixture.toolchain,
+        )
+        .unwrap();
+    let library = runtime_library(&fixture.target);
+    let library_time = modified(&library);
+    second
+        .build(
+            BuildProfile::Development,
+            &SOURCE.replace("{}", "other {}"),
+            RUNTIME,
+            &other,
+            &fixture.toolchain,
+        )
+        .unwrap();
+    assert_eq!(runtime_libraries(&fixture.target), [library.clone()]);
+    assert_eq!(modified(&library), library_time);
+    assert_ne!(
+        first
+            .target_for(BuildProfile::Development, RUNTIME)
+            .unwrap(),
+        second
+            .target_for(BuildProfile::Development, RUNTIME)
+            .unwrap()
+    );
+    assert_eq!(fixture.stdout(), "42\n");
+    let output = run_published(&other);
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(output.stdout, b"other 42\n");
+    // The release runtime is a separate build.
+    second
+        .build(
+            BuildProfile::Release,
+            SOURCE,
+            RUNTIME,
+            &other,
+            &fixture.toolchain,
+        )
+        .unwrap();
+    assert_eq!(
+        fs::read_dir(fixture.target.join("runtime"))
+            .unwrap()
+            .count(),
+        2
+    );
+    assert_eq!(modified(&library), library_time);
 }
 
 #[test]
@@ -797,11 +878,7 @@ fn external_crate_and_system_c_library_link_offline_and_bad_link_preserves_binar
     assert_eq!(fixture.stdout(), "1\n");
     let lock = fs::read_to_string(project.directory.join("Cargo.lock")).unwrap();
     assert!(lock.contains("name = \"adapter\""), "{lock}");
-    let runtime = runtime_library(
-        &project
-            .target_for(BuildProfile::Development, RUNTIME)
-            .unwrap(),
-    );
+    let runtime = runtime_library(&project.target);
     let runtime_time = modified(&runtime);
     fs::write(root.join("adapter 雪/lib.rs"), "#[cfg(feature = \"selected\")] pub fn input() -> f64 { std::hint::black_box(std::f64::consts::PI) }\n").unwrap();
     project
@@ -887,8 +964,22 @@ fn native_build_rejects_symlinked_build_inputs() {
         .contains("regular file"));
     assert_eq!(fs::read_to_string(&victim).unwrap(), "keep victim");
     fs::remove_file(project.directory.join("Cargo.lock")).unwrap();
-    fs::remove_file(project.directory.join("runtime/lib.rs")).unwrap();
-    symlink(&victim, project.directory.join("runtime/lib.rs")).unwrap();
+    project
+        .build(
+            BuildProfile::Development,
+            SOURCE,
+            RUNTIME,
+            &fixture.executable(),
+            &fixture.toolchain,
+        )
+        .unwrap();
+    let runtime = runtime_library(&project.target)
+        .ancestors()
+        .nth(5)
+        .unwrap()
+        .join("lib.rs");
+    fs::remove_file(&runtime).unwrap();
+    symlink(&victim, &runtime).unwrap();
     assert!(project
         .build(
             BuildProfile::Development,

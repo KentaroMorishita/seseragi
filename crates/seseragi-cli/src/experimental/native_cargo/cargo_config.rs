@@ -125,23 +125,11 @@ pub(super) fn linker_settings(
     cfg: &[CfgEntry],
     environment: &dyn Fn(&str) -> Option<OsString>,
 ) -> LinkerSettings {
-    let mut directories = directory
-        .ancestors()
-        .map(|ancestor| ancestor.join(".cargo"))
-        .collect::<Vec<_>>();
-    if !directories.iter().any(|candidate| candidate == cargo_home) {
-        directories.push(cargo_home.to_owned());
-    }
     let mut targets = BTreeMap::<String, TargetTable>::new();
     let mut build_flags = MergedFlags::Unset;
     // Lowest precedence first, so later values override or append.
-    for directory in directories.iter().rev() {
-        let Some(config) = [directory.join("config"), directory.join("config.toml")]
-            .into_iter()
-            .find(|file| file.is_file())
-            .and_then(|file| fs::read_to_string(file).ok())
-            .and_then(|source| source.parse::<toml::Table>().ok())
-        else {
+    for source in config_sources(directory, cargo_home) {
+        let Ok(config) = source.parse::<toml::Table>() else {
             continue;
         };
         if let Some(tables) = config.get("target").and_then(toml::Value::as_table) {
@@ -199,6 +187,30 @@ pub(super) fn linker_settings(
         }
     };
     LinkerSettings { linker, rustflags }
+}
+
+/// The contents of the Cargo configuration files that apply to `directory`,
+/// lowest precedence first: `CARGO_HOME`, then each `.cargo/` from the file
+/// system root down to `directory`. In one directory, `config` wins over
+/// `config.toml`.
+pub(super) fn config_sources(directory: &Path, cargo_home: &Path) -> Vec<String> {
+    let mut directories = directory
+        .ancestors()
+        .map(|ancestor| ancestor.join(".cargo"))
+        .collect::<Vec<_>>();
+    if !directories.iter().any(|candidate| candidate == cargo_home) {
+        directories.push(cargo_home.to_owned());
+    }
+    directories
+        .iter()
+        .rev()
+        .filter_map(|directory| {
+            [directory.join("config"), directory.join("config.toml")]
+                .into_iter()
+                .find(|file| file.is_file())
+                .and_then(|file| fs::read_to_string(file).ok())
+        })
+        .collect()
 }
 
 /// Splits the rustflags environment variables with Cargo's precedence.
