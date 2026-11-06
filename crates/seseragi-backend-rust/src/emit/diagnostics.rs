@@ -13,9 +13,6 @@ impl Backend<'_> {
     }
 
     pub(super) fn located_expr(&self, expr: &CoreExpr, value: String, scope: &Scope) -> String {
-        if self.program_wasm_library {
-            return value;
-        }
         let Some(source) = self.source_location(core_expr_origin(expr)) else {
             return value;
         };

@@ -493,6 +493,15 @@ pub extern "C" fn ssrg_cancel() -> u32 {
     })
 }
 
+// The source location of a typed failure or a Defect, as
+// `file:line:column`, or an empty text without one.
+fn program_location(out: &mut Vec<u8>, source: Option<&'static NativeSource>) -> ProgramResult<()> {
+    let location = source.map(ToString::to_string).unwrap_or_default();
+    let count = u32::try_from(location.len())
+        .map_err(|_| "program ABI: source location exceeds boundary limit")?;
+    program_bytes(out, &count.to_le_bytes())?;
+    program_bytes(out, location.as_bytes())
+}
 fn program_outcome(
     outcome: NativeOutcome,
     failure: Option<usize>,
@@ -512,6 +521,7 @@ fn program_outcome(
         }
         Err(NativeExit::Failure(error)) => {
             program_bytes(&mut out, &[2])?;
+            program_location(&mut out, error.source)?;
             program_encode(
                 error.value,
                 failure.ok_or("program ABI: Never failure produced a value")?,
@@ -525,6 +535,7 @@ fn program_outcome(
                 .map_err(|_| "program ABI: too many Defect messages")?;
             program_bytes(&mut out, &count.to_le_bytes())?;
             for message in messages {
+                program_location(&mut out, message.source)?;
                 let bytes = message.as_bytes();
                 let count = u32::try_from(bytes.len())
                     .map_err(|_| "program ABI: Defect message exceeds boundary limit")?;

@@ -2977,3 +2977,56 @@ console.log('located defects');
     ));
     assert_eq!(output.stdout, b"located defects\n");
 }
+
+#[test]
+fn effect_failures_and_defects_carry_their_source_location() {
+    let scratch = Scratch::new();
+    let program = "import * as effects from \"std/effect\"\n\npub effect fn failing value: Int -> Unit fails String =\n  effects.fail \"boom\"\n\npub effect fn broken value: Int -> Unit =\n  effects.die \"broken\"\n";
+    let source = scratch.0.join("effects.ssrg");
+    fs::write(&source, program).unwrap();
+    successful(bounded(
+        &mut build(&source, &scratch.0.join("wasm"), &["failing", "broken"]),
+        &scratch.0,
+    ));
+    // The TS target prints the same Defect at the same location.
+    let ts = scratch.0.join("ts");
+    fs::create_dir(&ts).unwrap();
+    fs::write(
+        ts.join("effects.ssrg"),
+        format!("{program}\npub effect fn main = broken 1\n"),
+    )
+    .unwrap();
+    let result = bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(ts.join("effects.ssrg")),
+        &scratch.0,
+    );
+    assert!(!result.status.success(), "{result:?}");
+    assert_eq!(
+        String::from_utf8_lossy(&result.stderr).lines().next(),
+        Some("effects.ssrg:7:3: Seseragi Defect: broken")
+    );
+    fs::write(scratch.0.join("effects.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+// The location is readable but not part of the outcome's compared shape.
+const failure = await program.exports.failing(1).run().result;
+assert.deepStrictEqual(failure, {tag: 'Failure', error: 'boom'});
+assert.deepStrictEqual(failure.location, {file: 'effects.ssrg', line: 4, column: 3});
+const defect = await program.exports.broken(1).run().result;
+assert.deepStrictEqual(defect, {tag: 'Defect', messages: ['broken']});
+assert.deepStrictEqual(defect.locations, [{file: 'effects.ssrg', line: 7, column: 3}]);
+await program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('located outcomes');
+"#).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("effects.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"located outcomes\n");
+}

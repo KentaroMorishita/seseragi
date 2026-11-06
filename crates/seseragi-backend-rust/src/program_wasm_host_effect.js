@@ -280,6 +280,26 @@ function sequenceLength(input) {
   return count
 }
 
+// Adds a source location to an outcome without making it part of the
+// outcome's enumerable shape, so outcomes still compare as before.
+function located(outcome, key, value) {
+  if (value !== null)
+    Object.defineProperty(outcome, key, { value, enumerable: false })
+  return outcome
+}
+
+// A typed failure's or Defect's source location, from `file:line:column`.
+function sourceLocation(text) {
+  const place = /^(.*):(\d+):(\d+)$/.exec(text)
+  return place
+    ? Object.freeze({
+        file: place[1],
+        line: Number(place[2]),
+        column: Number(place[3]),
+      })
+    : null
+}
+
 function read(id, input, state, provenance) {
   const code = schema.codecs[id]
   switch (code.kind) {
@@ -606,19 +626,32 @@ async function pumpEffect(state, execution, codec, provenance) {
         const terminal = tag === 1 ? code.success : code.failure
         if (terminal === null)
           throw new TypeError("Program produced a value of Never")
+        const location =
+          tag === 2
+            ? sourceLocation(decoder.decode(input.take(input.u32())))
+            : null
         const value = read(terminal, input, state, provenance)
         outcome =
           tag === 1
             ? { tag: "Success", value }
-            : { tag: "Failure", error: value }
+            : located({ tag: "Failure", error: value }, "location", location)
       } else if (tag === 3) {
         const count = input.u32()
         if (count > bytes.length / 4)
           throw new TypeError("Invalid Defect message count")
         const messages = []
-        for (let index = 0; index < count; index++)
+        const locations = []
+        for (let index = 0; index < count; index++) {
+          locations.push(
+            sourceLocation(decoder.decode(input.take(input.u32())))
+          )
           messages.push(decoder.decode(input.take(input.u32())))
-        outcome = { tag: "Defect", messages: Object.freeze(messages) }
+        }
+        outcome = located(
+          { tag: "Defect", messages: Object.freeze(messages) },
+          "locations",
+          Object.freeze(locations)
+        )
       } else if (tag === 4) outcome = { tag: "Cancelled" }
       else throw new TypeError("Invalid Effect outcome")
       input.end()

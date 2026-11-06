@@ -182,6 +182,11 @@ trap し、loader は `ProgramWasmDefect` を投げる。そのメッセージ�
 `{file, line, column}` になる。Defect を記録しないまま止まった trap（スタックの使い切りなど）は
 `kind: "trap"` で区別する。どちらの場合も、起きた公開関数は `origin` に残る。
 
+Effect を返す公開関数では、型付きの失敗は `{tag: "Failure", error}`、明示的な Defect は
+`{tag: "Defect", messages}` として結果に返る。起きた場所は、失敗なら `location`、Defect なら
+メッセージごとの `locations`（位置のないものは `null`）で読める。どちらも結果の比較に影響しない
+ように、列挙されないプロパティにしている。
+
 このcheckedな完全関数型は共有TS loweringでも使う。pureで単相・制約なしの自己参照関数は、
 primitive／Tuple／Maybe／Eitherと関数で閉じる型をconst注釈へ残し、TSの再帰推論による
 TS7023を防ぐ。unknown、nominal参照、generic、辞書やasyncの署名へ型を補う処理は加えない。
