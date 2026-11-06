@@ -980,10 +980,10 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
     let scratch = Scratch::new();
     for (index,source) in [
         "pub fn selected<A> value: A -> A = value",
-        "pub fn selected value: Float -> Float = value",
+        "import * as bigs from \"std/big-int\"\npub fn selected value: bigs.BigInt -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
-        "type Int = | NominalInt\npub fn selected value: Int -> Int = value",
+        "pub opaque type Secret =\n  | Secret Int\npub fn selected value: Secret -> Int = 1",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
