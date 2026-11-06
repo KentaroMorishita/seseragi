@@ -143,16 +143,15 @@ impl Project {
         regular_file(&self.directory.join("Cargo.lock"))?;
         let target = self.target_for(profile, runtime)?;
         let mut command = toolchain.cargo()?;
-        let remapping = format!("{}=.", self.directory.display());
-        let flags =
-            toml::Value::Array(vec!["--remap-path-prefix".into(), remapping.clone().into()]);
+        let path_flags = path_flags(&self.directory, &target, &toolchain.host);
+        let flags = toml::Value::Array(path_flags.iter().cloned().map(Into::into).collect());
         command
             .arg("--config")
             .arg(format!("build.rustflags={flags}"));
         if let Some(flags) = remapped_environment_flags(
             std::env::var_os("CARGO_ENCODED_RUSTFLAGS"),
             std::env::var_os("RUSTFLAGS"),
-            &remapping,
+            &path_flags,
         )? {
             command.env("CARGO_ENCODED_RUSTFLAGS", flags);
         }
@@ -253,10 +252,32 @@ fn target_root(directory: &Path, requested: Option<OsString>) -> Result<PathBuf,
     }
 }
 
+/// Compiler flags that keep the package's absolute location out of the
+/// executable. `--remap-path-prefix` covers paths that rustc writes. On Apple
+/// hosts the linker also records each object file's absolute path (the debug
+/// map read by `dsymutil`); those objects live under the Cargo target
+/// directory, which can be inside the package, so `-oso_prefix` makes them
+/// relative to it. `-Xlinker` keeps a path containing commas as one argument.
+fn path_flags(directory: &Path, target: &Path, host: &str) -> Vec<String> {
+    let mut flags = vec![
+        "--remap-path-prefix".to_owned(),
+        format!("{}=.", directory.display()),
+    ];
+    if host.ends_with("-apple-darwin") {
+        let mut prefix = target.as_os_str().to_owned();
+        prefix.push("/");
+        for argument in ["-Xlinker", "-oso_prefix", "-Xlinker"] {
+            flags.push(format!("-Clink-arg={argument}"));
+        }
+        flags.push(format!("-Clink-arg={}", prefix.to_string_lossy()));
+    }
+    flags
+}
+
 fn remapped_environment_flags(
     encoded: Option<OsString>,
     plain: Option<OsString>,
-    remapping: &str,
+    path_flags: &[String],
 ) -> Result<Option<OsString>, String> {
     let mut flags = match (encoded, plain) {
         (Some(flags), _) => flags,
@@ -272,8 +293,7 @@ fn remapped_environment_flags(
     if !flags.is_empty() {
         flags.push("\x1f");
     }
-    flags.push("--remap-path-prefix\x1f");
-    flags.push(remapping);
+    flags.push(path_flags.join("\x1f"));
     Ok(Some(flags))
 }
 

@@ -191,7 +191,10 @@ pub effect fn main -> Unit with Console, process: process.Process, Clock fails S
         say "ready"
         first <- deferred.await arrived
         say (show first)
-        if mode == "queue" then pause 300 else effects.succeed ()
+        // The test sends four more signals during this pause. They must all
+        // arrive before the stream completes; a later HUP would terminate the
+        // process. Slow CI hosts need well over 300 ms to send them.
+        if mode == "queue" then pause 2000 else effects.succeed ()
         _completed <- deferred.succeed () resume
         effects.join collector
         if mode == "queue" then do {

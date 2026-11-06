@@ -82,7 +82,10 @@ fn cargo_targets_use_one_full_key_and_separate_inputs_and_entry_points() {
 
 #[test]
 fn path_remapping_preserves_environment_flag_precedence_and_argument_boundaries() {
-    let remapping = "native cargo 雪 =.";
+    let path_flags = [
+        "--remap-path-prefix".to_owned(),
+        "native cargo 雪 =.".to_owned(),
+    ];
     for (encoded, plain, prefix) in [
         (None, None, None),
         (
@@ -98,7 +101,7 @@ fn path_remapping_preserves_environment_flag_precedence_and_argument_boundaries(
         (Some(""), Some("ignored"), Some("")),
     ] {
         let actual =
-            remapped_environment_flags(encoded.map(Into::into), plain.map(Into::into), remapping)
+            remapped_environment_flags(encoded.map(Into::into), plain.map(Into::into), &path_flags)
                 .unwrap();
         let expected = prefix.map(|prefix| {
             let prefix = if prefix.is_empty() {
@@ -106,10 +109,29 @@ fn path_remapping_preserves_environment_flag_precedence_and_argument_boundaries(
             } else {
                 format!("{prefix}\x1f")
             };
-            OsString::from(format!("{prefix}--remap-path-prefix\x1f{remapping}"))
+            OsString::from(format!("{prefix}--remap-path-prefix\x1fnative cargo 雪 =."))
         });
         assert_eq!(actual, expected);
     }
+}
+
+#[test]
+fn apple_hosts_also_make_linker_object_paths_relative_to_the_target() {
+    let directory = Path::new("/work/a,b/.seseragi/native/id");
+    let target = Path::new("/work/a,b/.seseragi/native-target/key");
+    let remap = ["--remap-path-prefix", "/work/a,b/.seseragi/native/id=."];
+    assert_eq!(
+        path_flags(directory, target, "x86_64-unknown-linux-gnu"),
+        remap
+    );
+    let mut apple = remap.to_vec();
+    apple.extend([
+        "-Clink-arg=-Xlinker",
+        "-Clink-arg=-oso_prefix",
+        "-Clink-arg=-Xlinker",
+        "-Clink-arg=/work/a,b/.seseragi/native-target/key/",
+    ]);
+    assert_eq!(path_flags(directory, target, "aarch64-apple-darwin"), apple);
 }
 
 struct Fixture {
