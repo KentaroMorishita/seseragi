@@ -152,10 +152,11 @@ fn remaining_type(parameters: &[CoreType], result: &CoreType) -> CoreType {
 impl Backend<'_> {
     fn text_target(&self, name: &str) -> Result<()> {
         // `std/text` operations on String values are pure and match TS in
-        // program WASM. Bytes, the Unicode tables and the standard error ADT
-        // of `sliceScalars` need their own proof.
+        // program WASM. Bytes, the Unicode and grapheme tables and the
+        // standard error ADT of `sliceScalars` need their own proof.
         if self.program_wasm_library
             && (name.starts_with("std/text/unicode::")
+                || name.starts_with("std/text/grapheme::")
                 || matches!(
                     name,
                     "std/text::encodeUtf8"
