@@ -1,0 +1,58 @@
+name: Conformance artifacts
+
+# Compares the committed compiler artifacts in examples/spec/artifacts (tokens,
+# trees, diagnostics, interfaces, typed HIR, Core IR and TypeScript IR) with
+# the current compiler on every pull request, so an output change without its
+# regenerated artifact fails here instead of in the release source gate. The
+# kinds that need tsc, Node or provider tools stay in the full gate.
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/conformance-artifacts.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "crates/**"
+      - "runtime/ts/**"
+      - "examples/spec/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/conformance-artifacts.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "crates/**"
+      - "runtime/ts/**"
+      - "examples/spec/**"
+  workflow_dispatch:
+
+# Manual canonical runs have unique groups; only superseded PR runs cancel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  compiler-artifacts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_PROFILE_DEV_DEBUG: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: conformance-artifacts
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      - name: Compare the committed compiler artifacts with the current compiler
+        run: >-
+          cargo run --locked -p seseragi-conformance -- .
+          --only=tokenStream,losslessCst,surfaceAst,diagnostics,semanticDiagnostics,analysis,moduleInterface,resolvedAst,typedHir,typedInterface,coreIr,typescriptIr

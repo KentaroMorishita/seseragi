@@ -24,9 +24,15 @@ use crate::suite::Suite;
 use crate::typescript_ir::check_typescript_ir_json;
 use std::path::{Path, PathBuf};
 
-pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
+pub(crate) fn run(root: PathBuf, list: bool, json: bool, only: Option<Vec<String>>) {
     let artifacts = root.join("examples/spec/artifacts");
-    let suite = Suite::discover(&artifacts);
+    let mut suite = Suite::discover(&artifacts);
+    if let Some(kinds) = &only {
+        if let Err(error) = suite.retain_kinds(kinds) {
+            eprintln!("{error}");
+            std::process::exit(2);
+        }
+    }
 
     if case_count(&suite) == 0 {
         let failure = Failure {
@@ -282,7 +288,7 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
         std::process::exit(1);
     }
     if !json {
-        print_success_text(&suite);
+        print_success_text(&suite, only.is_some());
     }
 }
 

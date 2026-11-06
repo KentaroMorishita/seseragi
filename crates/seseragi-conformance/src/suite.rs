@@ -213,3 +213,108 @@ mod tests {
         fs::remove_dir_all(root).unwrap();
     }
 }
+
+impl Suite {
+    /// Each check kind, as failures report it, with its cases.
+    fn kinds_mut(&mut self) -> [(&'static str, &mut Vec<PathBuf>); 26] {
+        [
+            ("tokenStream", &mut self.token_cases),
+            ("losslessCst", &mut self.cst_cases),
+            ("surfaceAst", &mut self.surface_ast_cases),
+            ("diagnostics", &mut self.diagnostics_cases),
+            ("semanticDiagnostics", &mut self.semantic_diagnostics_cases),
+            ("analysis", &mut self.analysis_cases),
+            ("moduleInterface", &mut self.interface_cases),
+            ("resolvedAst", &mut self.resolved_ast_cases),
+            ("typedHir", &mut self.typed_hir_cases),
+            ("typedInterface", &mut self.typed_interface_cases),
+            ("coreIr", &mut self.core_ir_cases),
+            ("typescriptIr", &mut self.typescript_ir_cases),
+            ("generatedModule", &mut self.generated_module_cases),
+            ("projectCompile", &mut self.project_compile_cases),
+            ("projectExecution", &mut self.project_execution_cases),
+            ("execution", &mut self.execution_cases),
+            ("providerContract", &mut self.provider_contract_cases),
+            (
+                "providerConformanceProfile",
+                &mut self.provider_conformance_profile_cases,
+            ),
+            (
+                "providerCompatibility",
+                &mut self.provider_compatibility_cases,
+            ),
+            (
+                "providerDesignValidation",
+                &mut self.provider_design_validation_cases,
+            ),
+            ("providerLifecycle", &mut self.provider_lifecycle_cases),
+            ("providerManifest", &mut self.provider_manifest_cases),
+            ("providerStream", &mut self.provider_stream_cases),
+            (
+                "providerTypescriptAbi",
+                &mut self.provider_typescript_abi_cases,
+            ),
+            ("runtimeAbi", &mut self.runtime_abi_cases),
+            ("standardLibrary", &mut self.standard_library_cases),
+        ]
+    }
+
+    /// Keeps only the cases of the selected check kinds, so a short CI job can
+    /// compare the compiler artifacts without the tools other kinds need.
+    pub(crate) fn retain_kinds(&mut self, selected: &[String]) -> Result<(), String> {
+        let mut kinds = self.kinds_mut();
+        if let Some(unknown) = selected
+            .iter()
+            .find(|kind| !kinds.iter().any(|(known, _)| known == kind))
+        {
+            return Err(format!("unknown check kind `{unknown}`"));
+        }
+        for (kind, cases) in &mut kinds {
+            if !selected.iter().any(|selected| selected == kind) {
+                cases.clear();
+            }
+        }
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod retain_tests {
+    use super::Suite;
+    use std::path::Path;
+
+    fn suite() -> Suite {
+        Suite::discover(
+            &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec/artifacts"),
+        )
+    }
+
+    #[test]
+    fn retain_kinds_keeps_only_the_selected_kinds() {
+        let mut suite = suite();
+        let typescript_ir = suite.typescript_ir_cases.len();
+        assert!(typescript_ir > 0);
+        suite
+            .retain_kinds(&["typescriptIr".into(), "coreIr".into()])
+            .unwrap();
+        assert_eq!(suite.typescript_ir_cases.len(), typescript_ir);
+        assert!(!suite.core_ir_cases.is_empty());
+        let mut kinds = suite.kinds_mut();
+        for (kind, cases) in &mut kinds {
+            if !matches!(*kind, "typescriptIr" | "coreIr") {
+                assert!(cases.is_empty(), "{kind}");
+            }
+        }
+    }
+
+    #[test]
+    fn retain_kinds_rejects_an_unknown_kind_without_changing_the_suite() {
+        let mut suite = suite();
+        let before = suite.typescript_ir_cases.len();
+        let error = suite
+            .retain_kinds(&["typescriptIr".into(), "typescript-ir".into()])
+            .unwrap_err();
+        assert!(error.contains("typescript-ir"), "{error}");
+        assert_eq!(suite.typescript_ir_cases.len(), before);
+    }
+}
