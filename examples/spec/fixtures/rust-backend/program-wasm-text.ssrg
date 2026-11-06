@@ -1,0 +1,21 @@
+// Program WASM runs `std/text` String operations with the same results as
+// the TS target.
+import * as text from "std/text"
+
+pub fn trimmed value: String -> String = text.trim value
+pub fn upper value: String -> String = text.toUpper value
+pub fn lower value: String -> String = text.toLower value
+pub fn folded value: String -> String = text.caseFold value
+pub fn pieces value: String -> Array<String> = text.split "," value
+pub fn joined values: Array<String> -> String = text.join "-" values
+pub fn lined value: String -> Array<String> = text.lines value
+pub fn worded value: String -> Array<String> = text.words value
+pub fn replaced value: String -> String = text.replaceAll "a" "o" value
+pub fn first value: String -> String = text.replace "a" "$&$1" value
+pub fn has value: String -> Bool = text.contains "🙂" value
+pub fn starts value: String -> Bool = text.startsWith "雪" value
+pub fn ends value: String -> Bool = text.endsWith "!" value
+pub fn scalars value: String -> Int = text.lengthScalars value
+pub fn bytes value: String -> Int = text.lengthBytes value
+pub fn empty value: String -> Bool = text.isEmpty value
+pub fn glued values: Array<String> -> String = text.concat values

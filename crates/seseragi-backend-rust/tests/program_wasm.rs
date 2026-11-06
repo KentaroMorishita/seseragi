@@ -104,15 +104,26 @@ fn refuses_unproved_public_types_and_staging_before_any_artifact() {
     for source in [
         "pub fn value<A> input: A -> A = input\n",
         "pub fn value input: (Int -> Int) -> Int = input 1\n",
-        "pub fn value input: Float -> Float = input\n",
-        "pub fn value input: {x: Int} -> {x: Int} = input\n",
-        "type Int = | Number\npub fn value input: Int -> Int = input\n",
-        "pub fn value input: Array<Int> -> Array<Int> = input\n",
+        "import * as bigs from \"std/big-int\"\npub fn value input: bigs.BigInt -> Int = 1\n",
+        "import * as bigs from \"std/big-int\"\npub fn value input: {x: Int, y: bigs.BigInt} -> Int = input.x\n",
+        "import * as bigs from \"std/big-int\"\npub fn value input: Array<bigs.BigInt> -> Int = 1\n",
     ] {
         let module = checked(source);
         let error = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap_err();
         assert!(error.origin.is_some(), "{source}: {error}");
     }
+    // A user type named `Int` is that ADT, never the prelude Int.
+    let module = checked("type Int = | Number\npub fn value input: Int -> Int = input\n");
+    let artifact = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
+    assert!(artifact.metadata.codecs.iter().any(|codec| matches!(
+        codec,
+        seseragi_backend_rust::ProgramCodec::Adt { variants, .. }
+            if variants.len() == 1 && variants[0].tag == "Number" && variants[0].payload.is_none()
+    )));
+    assert!(!artifact
+        .metadata
+        .codecs
+        .contains(&seseragi_backend_rust::ProgramCodec::Int));
 }
 
 #[test]

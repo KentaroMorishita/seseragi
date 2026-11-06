@@ -41,21 +41,15 @@ fn basic_standard_operations_keep_saved_callables_and_the_former_sqrt_refusal() 
 }
 
 #[test]
-fn text_boundaries_keep_saved_stages_and_reject_unused_program_wasm_references() {
+fn text_boundaries_keep_saved_stages_and_program_wasm_admission() {
     let source =
         include_str!("../../../examples/spec/fixtures/rust-backend/basic-text-boundaries.ssrg");
     emit_rust_module(&checked(source), "main").unwrap();
     for operation in ["startsWith", "endsWith"] {
         let source = format!("// 雪🙂\nimport * as text from \"std/text\"\npub fn probe value: Int -> Int = {{ let saved: String -> String -> Bool = text.{operation}; value }}\n");
         let core = checked(&source);
-        let error = emit_program_wasm(&[&core], "native/standard", &["probe".into()]).unwrap_err();
-        assert!(
-            error
-                .message
-                .contains("native text extension requires a target-specific proof"),
-            "{error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "standard-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/standard", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{operation}: {error}"));
     }
 }
 
@@ -188,7 +182,7 @@ fn canonical_standard_arguments_do_not_substitute_lexical_float_or_string_binder
 }
 
 #[test]
-fn native_basic_extensions_do_not_silently_expand_program_wasm_admission() {
+fn program_wasm_admits_text_and_keeps_math_explicit() {
     for (module, expression) in [
         ("math", "sqrt 4.0"),
         ("math", "sin 0.5"),
@@ -204,7 +198,13 @@ fn native_basic_extensions_do_not_silently_expand_program_wasm_admission() {
         let source = format!("import * as api from \"std/{module}\"\npub fn probe value: Int -> Int = {{ let result = api.{expression}; value }}\npub fn main -> Int = probe 1\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/standard", &["probe".into()]).unwrap_err();
+        let emitted = emit_program_wasm(&[&core], "native/standard", &["probe".into()]);
+        // String text operations are admitted; math still needs its proof.
+        if module == "text" {
+            emitted.unwrap_or_else(|error| panic!("{expression}: {error}"));
+            continue;
+        }
+        let error = emitted.unwrap_err();
         assert_eq!(error.code, "SES-RUST-0001");
         assert!(
             error.message.contains("requires a target-specific"),

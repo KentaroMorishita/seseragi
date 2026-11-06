@@ -45,6 +45,25 @@ function write(id, value, writer) {
       writer.add(bytes)
       break
     }
+    case "float": {
+      if (typeof value !== "number") throw new TypeError("Expected a Float")
+      const bytes = new Uint8Array(8)
+      new DataView(bytes.buffer).setFloat64(0, value, true)
+      writer.add(bytes)
+      break
+    }
+    case "char": {
+      const point = typeof value === "string" ? value.codePointAt(0) : undefined
+      if (
+        point === undefined ||
+        String.fromCodePoint(point) !== value ||
+        (point >= 0xd800 && point <= 0xdfff)
+      ) {
+        throw new TypeError("Expected a Char (one Unicode scalar value)")
+      }
+      writer.u32(point)
+      break
+    }
     case "string": {
       if (typeof value !== "string" || value.length > schema.maxBoundaryBytes) {
         throw new TypeError("Expected a bounded String")
@@ -107,6 +126,78 @@ function write(id, value, writer) {
       write(data.tag === "Left" ? code.left : code.right, data.value, writer)
       break
     }
+    case "array": {
+      if (
+        !Array.isArray(value) ||
+        Object.getPrototypeOf(value) !== Array.prototype
+      ) {
+        throw new TypeError("Expected an Array")
+      }
+      const fields = Object.getOwnPropertyDescriptors(value)
+      const length = fields.length?.value
+      if (
+        !Number.isSafeInteger(length) ||
+        Reflect.ownKeys(fields).length !== length + 1
+      ) {
+        throw new TypeError("Invalid Array elements")
+      }
+      if (length > schema.maxSequenceItems)
+        throw new TypeError("Array exceeds the program boundary length limit")
+      writer.u32(length)
+      for (let index = 0; index < length; index++) {
+        if (!fields[index] || !("value" in fields[index]))
+          throw new TypeError("Invalid Array element")
+        write(code.element, fields[index].value, writer)
+      }
+      break
+    }
+    case "list": {
+      // Read the whole List before writing so a cyclic object is rejected
+      // instead of looping, and each cell is checked like the TS ABI.
+      const values = []
+      const seen = new Set()
+      let cursor = value
+      for (;;) {
+        const tag = Object.getOwnPropertyDescriptors(cursor ?? {}).tag?.value
+        if (tag === "Empty") {
+          dataObject(cursor, ["tag"])
+          break
+        }
+        if (tag !== "Cons") throw new TypeError("Expected List variant")
+        if (seen.has(cursor)) throw new TypeError("Cyclic List")
+        seen.add(cursor)
+        const cell = dataObject(cursor, ["tag", "head", "tail"])
+        values.push(cell.head)
+        if (values.length > schema.maxSequenceItems)
+          throw new TypeError("List exceeds the program boundary length limit")
+        cursor = cell.tail
+      }
+      writer.u32(values.length)
+      for (const item of values) write(code.element, item, writer)
+      break
+    }
+    case "record": {
+      const data = dataObject(
+        value,
+        code.fields.map((field) => field.name)
+      )
+      for (const field of code.fields)
+        write(field.codec, data[field.name], writer)
+      break
+    }
+    case "adt": {
+      const tag = Object.getOwnPropertyDescriptors(value ?? {}).tag?.value
+      const index = code.variants.findIndex((variant) => variant.tag === tag)
+      if (index < 0) throw new TypeError("Expected a checked variant")
+      const variant = code.variants[index]
+      const data = dataObject(
+        value,
+        variant.payload === null ? ["tag"] : ["tag", "value"]
+      )
+      writer.u32(index)
+      if (variant.payload !== null) write(variant.payload, data.value, writer)
+      break
+    }
     default:
       throw new TypeError(
         "Host function arguments are outside this program ABI"
@@ -167,6 +258,13 @@ function reader(bytes) {
   }
 }
 
+function sequenceLength(input) {
+  const count = input.u32()
+  if (count > schema.maxSequenceItems)
+    throw new TypeError("Invalid sequence length result")
+  return count
+}
+
 function read(id, input, state, provenance) {
   const code = schema.codecs[id]
   switch (code.kind) {
@@ -187,6 +285,16 @@ function read(id, input, state, provenance) {
       if (!Number.isSafeInteger(value) || BigInt(value) !== big)
         throw new TypeError("Invalid Int result")
       return value
+    }
+    case "float": {
+      const bytes = input.take(8)
+      return new DataView(bytes.buffer, bytes.byteOffset, 8).getFloat64(0, true)
+    }
+    case "char": {
+      const point = input.u32()
+      if (point > 0x10ffff || (point >= 0xd800 && point <= 0xdfff))
+        throw new TypeError("Invalid Char result")
+      return String.fromCodePoint(point)
     }
     case "string":
       return decoder.decode(input.take(input.u32()))
@@ -216,6 +324,44 @@ function read(id, input, state, provenance) {
           provenance
         ),
       })
+    }
+    case "array": {
+      const count = sequenceLength(input)
+      const values = []
+      for (let index = 0; index < count; index++)
+        values.push(read(code.element, input, state, provenance))
+      return Object.freeze(values)
+    }
+    case "list": {
+      const count = sequenceLength(input)
+      const values = []
+      for (let index = 0; index < count; index++)
+        values.push(read(code.element, input, state, provenance))
+      let list = Object.freeze({ tag: "Empty" })
+      for (let index = values.length - 1; index >= 0; index--)
+        list = Object.freeze({ tag: "Cons", head: values[index], tail: list })
+      return list
+    }
+    case "record":
+      return Object.freeze(
+        Object.fromEntries(
+          code.fields.map((field) => [
+            field.name,
+            read(field.codec, input, state, provenance),
+          ])
+        )
+      )
+    case "adt": {
+      const variant = code.variants[input.u32()]
+      if (!variant) throw new TypeError("Invalid variant result")
+      return Object.freeze(
+        variant.payload === null
+          ? { tag: variant.tag }
+          : {
+              tag: variant.tag,
+              value: read(variant.payload, input, state, provenance),
+            }
+      )
     }
     case "function":
       return callback(state, input.u32(), id, provenance)

@@ -1,0 +1,22 @@
+// Program WASM passes Float and Char values in the same shape as the TS
+// target, including NaN, the infinities and negative zero.
+import * as floats from "std/float"
+
+pub fn add pair: (Float, Float) -> Float = match pair { (left, right) -> left + right }
+
+pub fn divide pair: (Float, Float) -> Float =
+  match pair { (left, right) -> left / right }
+
+pub fn negate value: Float -> Float = 0.0 - value
+
+pub fn missing value: Float -> Bool = floats.isNaN value
+
+pub fn render value: Float -> String = show value
+
+pub fn floats value: Float -> Array<Float> = [value, 0.5, -0.0]
+
+pub fn same pair: (Char, Char) -> Bool = match pair { (left, right) -> left == right }
+
+pub fn echo value: Char -> Char = value
+
+pub fn letters value: Char -> Array<Char> = [value, 'a', '雪']

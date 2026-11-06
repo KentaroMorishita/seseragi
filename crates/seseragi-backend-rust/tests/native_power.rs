@@ -176,17 +176,30 @@ fn power_rejects_forged_canonical_evidence_operand_and_result_types() {
 }
 
 #[test]
-fn native_power_does_not_expand_program_wasm_admission() {
-    for source in [
+fn program_wasm_admits_int_power_and_keeps_rejecting_other_power() {
+    // Int power fails with a Defect, as in TS; in program WASM a Defect traps
+    // and retires the instance.
+    let core = compile_core_module(CompileInput::new(
+        "power-wasm-雪.ssrg",
+        "native/power",
         "pub fn square value: Int -> Int = value ** 2\npub fn probe -> Int = square 3\n",
-        "fn selected<A> base: A -> exponent: A -> A where Pow<A,A,A> = base ** exponent\npub fn square value: Int -> Int = selected value 2\npub fn probe -> Int = square 3\n",
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    seseragi_backend_rust::emit_program_wasm(&[&core], "native/power", &["square".into()])
+        .expect("program WASM Int power");
+    // Power through a generic dictionary and Float power are not proven yet.
+    for (source, selected) in [
+        ("fn selected<A> base: A -> exponent: A -> A where Pow<A,A,A> = base ** exponent\npub fn square value: Int -> Int = selected value 2\npub fn probe -> Int = square 3\n", "square"),
+        ("pub fn square value: Float -> Float = value ** 2.0\npub fn probe -> Int = 1\npub fn amount -> Int = 1\nfn used -> Float = square 3.0\n", "amount"),
     ] {
         let core = compile_core_module(CompileInput::new(
             "power-wasm-雪.ssrg", "native/power", source,
         )).unwrap().core_ir;
         emit_rust_module(&core, "probe").unwrap();
-        let error = seseragi_backend_rust::emit_program_wasm(&[&core], "native/power", &["square".into()])
-            .expect_err("program WASM needs a separate arithmetic proof");
+        let error = seseragi_backend_rust::emit_program_wasm(&[&core], "native/power", &[selected.into()])
+            .expect_err("program WASM power needs a separate arithmetic proof");
         assert_eq!(error.code, "SES-RUST-0001");
         assert!(error.message.contains("arithmetic proof"), "{error:?}");
         assert_eq!(error.origin.unwrap().source, "power-wasm-雪.ssrg");

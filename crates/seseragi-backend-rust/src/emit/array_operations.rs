@@ -39,11 +39,8 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native Array operation requires a target-specific ABI proof".into(),
-            );
-        }
+        // Array operations are pure and match TS in program WASM; a Defect in
+        // a callback traps and retires the instance, like any other Defect.
         let arity = arity(name).expect("known Array operation");
         if scope.has_unproven_type_scope() || arguments.len() > arity {
             return Err("Rust backend: unproven Array source application".into());

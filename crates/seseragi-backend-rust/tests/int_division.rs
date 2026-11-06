@@ -83,7 +83,7 @@ fn native_int_division_accepts_checked_canonical_division() {
 }
 
 #[test]
-fn native_division_does_not_expand_program_wasm_arithmetic_admission() {
+fn program_wasm_admits_checked_int_division() {
     let source = "pub fn quotient n: Int -> Int = n / 2\npub fn probe -> Int = quotient 7\n";
     let core = compile_core_module(CompileInput::new(
         "div-target-雪.ssrg",
@@ -93,11 +93,10 @@ fn native_division_does_not_expand_program_wasm_arithmetic_admission() {
     .unwrap()
     .core_ir;
     emit_rust_module(&core, "probe").expect("ordinary native target supports checked Int Div");
-    let error =
-        seseragi_backend_rust::emit_program_wasm(&[&core], "native/main", &["quotient".into()])
-            .expect_err("program WASM arithmetic still requires its own proof");
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert_eq!(error.origin.unwrap().source, "div-target-雪.ssrg");
+    // A zero divisor is a Defect, as in TS; in program WASM it traps and
+    // retires the instance.
+    seseragi_backend_rust::emit_program_wasm(&[&core], "native/main", &["quotient".into()])
+        .expect("program WASM supports checked Int Div");
 }
 
 #[test]

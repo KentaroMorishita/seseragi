@@ -87,9 +87,6 @@ impl Backend<'_> {
         {
             return Ok(None);
         }
-        if self.program_wasm_library {
-            return Err("program WASM: native descending Int comparison requires a target-specific arithmetic proof".into());
-        }
         let selected = &evidence[0];
         int_ord_dictionary(selected).expect("selected standard Int Ord")?;
         self.validate_ord_evidence(selected, scope)?;

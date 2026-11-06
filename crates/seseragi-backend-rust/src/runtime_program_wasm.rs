@@ -6,10 +6,16 @@ enum ProgramCode {
     Bool,
     Int,
     Text,
+    Float,
+    Char,
     Tuple(Vec<usize>),
     Maybe(usize),
     Either(usize, usize),
     Function(usize, usize),
+    Array(usize),
+    List(usize),
+    Record(Vec<(&'static str, usize)>),
+    Adt(Vec<(&'static str, Option<usize>)>),
 }
 struct ProgramRoot {
     value: V,
@@ -69,6 +75,39 @@ fn program_u32(input: &mut &[u8]) -> ProgramResult<u32> {
         program_take(input, 4)?.try_into().unwrap(),
     ))
 }
+// The fewest bytes one value of `codec` occupies on the wire.
+fn program_width(codec: usize, codes: &[ProgramCode]) -> usize {
+    match &codes[codec] {
+        ProgramCode::Unit => 0,
+        ProgramCode::Bool | ProgramCode::Maybe(_) | ProgramCode::Either(_, _) => 1,
+        ProgramCode::Int | ProgramCode::Float => 8,
+        ProgramCode::Tuple(elements) => elements.iter().map(|c| program_width(*c, codes)).sum(),
+        ProgramCode::Record(fields) => fields.iter().map(|(_, c)| program_width(*c, codes)).sum(),
+        _ => 4,
+    }
+}
+fn program_decode_items(
+    input: &mut &[u8],
+    element: usize,
+    codes: &[ProgramCode],
+) -> ProgramResult<Vec<V>> {
+    let count = program_u32(input)? as usize;
+    // Each element needs its fixed width, so a longer count is invalid.
+    let width = program_width(element, codes);
+    if count > PROGRAM_MAX_ITEMS || (width > 0 && count > input.len() / width) {
+        return Err("program ABI: invalid sequence length");
+    }
+    (0..count)
+        .map(|_| program_decode(input, element, codes))
+        .collect()
+}
+fn program_count(out: &mut Vec<u8>, count: usize) -> ProgramResult<()> {
+    if count > PROGRAM_MAX_ITEMS {
+        return Err("program ABI: sequence exceeds boundary limit");
+    }
+    let count = u32::try_from(count).map_err(|_| "program ABI: sequence exceeds boundary limit")?;
+    program_bytes(out, &count.to_le_bytes())
+}
 fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> ProgramResult<V> {
     Ok(match &codes[codec] {
         ProgramCode::Unit => V::Unit,
@@ -83,6 +122,12 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
                 return Err("program ABI: Int outside safe range");
             }
             V::Int(value)
+        }
+        ProgramCode::Float => V::Float(f64::from_le_bytes(
+            program_take(input, 8)?.try_into().unwrap(),
+        )),
+        ProgramCode::Char => {
+            V::Char(char::from_u32(program_u32(input)?).ok_or("program ABI: invalid Char")?)
         }
         ProgramCode::Text => {
             let length = program_u32(input)? as usize;
@@ -106,6 +151,29 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
             1 => V::adt("std/prelude::Right", program_decode(input, *right, codes)?),
             _ => return Err("program ABI: invalid Either variant"),
         },
+        ProgramCode::Array(element) => {
+            V::Array(Shared::new(program_decode_items(input, *element, codes)?))
+        }
+        ProgramCode::List(element) => {
+            V::list_from_values(program_decode_items(input, *element, codes)?)
+        }
+        ProgramCode::Record(fields) => {
+            let mut values = BTreeMap::new();
+            for (name, codec) in fields {
+                values.insert((*name).to_owned(), program_decode(input, *codec, codes)?);
+            }
+            V::Record(Shared::new(values))
+        }
+        ProgramCode::Adt(variants) => {
+            let (owner, payload) = variants
+                .get(program_u32(input)? as usize)
+                .ok_or("program ABI: invalid variant")?;
+            let payload = match payload {
+                Some(codec) => program_decode(input, *codec, codes)?,
+                None => V::Unit,
+            };
+            V::adt(owner, payload)
+        }
         ProgramCode::Function(_, _) => return Err("program ABI: host callbacks are unsupported"),
     })
 }
@@ -134,6 +202,8 @@ fn program_encode(
         {
             program_bytes(out, &value.to_le_bytes())
         }
+        (ProgramCode::Float, V::Float(value)) => program_bytes(out, &value.to_le_bytes()),
+        (ProgramCode::Char, V::Char(value)) => program_bytes(out, &u32::from(value).to_le_bytes()),
         (ProgramCode::Text, V::Text(value)) => {
             let bytes = value.get().as_bytes();
             let len = u32::try_from(bytes.len())
@@ -170,6 +240,49 @@ fn program_encode(
         (ProgramCode::Function(_, _), value @ V::Fun(_)) => {
             let token = program_register(value, codec)?;
             program_bytes(out, &token.to_le_bytes())
+        }
+        (ProgramCode::Array(element), V::Array(values)) => {
+            program_count(out, values.get().len())?;
+            for value in values.get().iter() {
+                program_encode(value.clone(), *element, codes, out)?;
+            }
+            Ok(())
+        }
+        (ProgramCode::List(element), list @ (V::ListEmpty | V::List(_))) => {
+            let mut values = Vec::new();
+            let mut cursor = &list;
+            while let Some(cell) = cursor.list_cell() {
+                values.push(cell.head.clone());
+                cursor = &cell.tail;
+            }
+            program_count(out, values.len())?;
+            for value in values {
+                program_encode(value, *element, codes, out)?;
+            }
+            Ok(())
+        }
+        (ProgramCode::Record(fields), V::Record(values)) if values.get().len() == fields.len() => {
+            for (name, codec) in fields {
+                let value = values
+                    .get()
+                    .get(*name)
+                    .ok_or("program ABI: result violates checked public type")?
+                    .clone();
+                program_encode(value, *codec, codes, out)?;
+            }
+            Ok(())
+        }
+        (ProgramCode::Adt(variants), V::Adt(value)) => {
+            let index = variants
+                .iter()
+                .position(|(owner, _)| *owner == value.get().0)
+                .ok_or("program ABI: unexpected variant owner")?;
+            program_bytes(out, &(index as u32).to_le_bytes())?;
+            match (variants[index].1, &value.get().1) {
+                (Some(codec), payload) => program_encode(payload.clone(), codec, codes, out),
+                (None, V::Unit) => Ok(()),
+                (None, _) => Err("program ABI: result violates checked public type"),
+            }
         }
         _ => Err("program ABI: result violates checked public type"),
     }
