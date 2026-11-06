@@ -143,23 +143,26 @@ impl Project {
         regular_file(&self.directory.join("Cargo.lock"))?;
         let target = self.target_for(profile, runtime)?;
         let mut command = toolchain.cargo()?;
-        let encoded = std::env::var_os("CARGO_ENCODED_RUSTFLAGS");
-        let plain = std::env::var_os("RUSTFLAGS");
-        let linker = linker_settings(
+        let linker = cargo_config::linker_settings(
             &self.directory,
             toolchain.cargo_home(),
             &toolchain.host,
+            &host_cfg(toolchain),
             &|key| std::env::var_os(key),
         );
         let invocation = linker_invocation(&linker.rustflags, linker.linker.as_deref());
         let path_flags = path_flags(&self.directory, &target, &toolchain.host, invocation);
-        let flags = toml::Value::Array(path_flags.iter().cloned().map(Into::into).collect());
-        command
-            .arg("--config")
-            .arg(format!("build.rustflags={flags}"));
-        if let Some(flags) = remapped_environment_flags(encoded, plain, &path_flags)? {
-            command.env("CARGO_ENCODED_RUSTFLAGS", flags);
-        }
+        // Cargo uses only one rustflags source, so pass the selected flags
+        // with the path flags appended instead of adding to build.rustflags.
+        command.env(
+            "CARGO_ENCODED_RUSTFLAGS",
+            rustflags_with_paths(
+                std::env::var_os("CARGO_ENCODED_RUSTFLAGS"),
+                std::env::var_os("RUSTFLAGS"),
+                &linker.rustflags,
+                &path_flags,
+            )?,
+        );
         let output = command
             .current_dir(&self.directory)
             .args([
@@ -329,125 +332,21 @@ fn linker_invocation(flags: &[String], configured_linker: Option<&str>) -> Linke
     }
 }
 
-/// The linker and rustflags Cargo uses for the host target.
-#[derive(Debug, Default, Eq, PartialEq)]
-struct LinkerSettings {
-    /// `target.<host>.linker`, from config files or `CARGO_TARGET_<HOST>_LINKER`.
-    linker: Option<String>,
-    rustflags: Vec<String>,
-}
-
-/// Resolves the settings with Cargo's rules. Config files are read from the
-/// build directory's `.cargo/` up to the file system root, then `CARGO_HOME`;
-/// a nearer file wins, and in one directory `config` wins over `config.toml`.
-/// Environment variables override config files. Rustflags come from
-/// `CARGO_ENCODED_RUSTFLAGS`, `RUSTFLAGS`, `target.<host>.rustflags` or
-/// `build.rustflags`, the first that is set. A file Cargo cannot parse is
-/// skipped here; Cargo reports it when the build starts.
-fn linker_settings(
-    directory: &Path,
-    cargo_home: &Path,
-    host: &str,
-    environment: &dyn Fn(&str) -> Option<OsString>,
-) -> LinkerSettings {
-    let mut directories = directory
-        .ancestors()
-        .map(|ancestor| ancestor.join(".cargo"))
-        .collect::<Vec<_>>();
-    if !directories.iter().any(|candidate| candidate == cargo_home) {
-        directories.push(cargo_home.to_owned());
-    }
-    let key = host.to_uppercase().replace(['-', '.'], "_");
-    let mut linker = None;
-    let mut target_flags: Option<Vec<String>> = None;
-    let mut build_flags: Option<Vec<String>> = None;
-    let extend = |slot: &mut Option<Vec<String>>, flags: Vec<String>| {
-        slot.get_or_insert_with(Vec::new).extend(flags);
-    };
-    // Lowest precedence first, so later values override or append.
-    for directory in directories.iter().rev() {
-        let file = [directory.join("config"), directory.join("config.toml")]
-            .into_iter()
-            .find(|file| file.is_file());
-        let Some(config) = file
-            .and_then(|file| fs::read_to_string(file).ok())
-            .and_then(|source| source.parse::<toml::Table>().ok())
-        else {
-            continue;
-        };
-        let target = config.get("target").and_then(|targets| targets.get(host));
-        if let Some(value) = target
-            .and_then(|target| target.get("linker"))
-            .and_then(toml::Value::as_str)
-        {
-            linker = Some(value.to_owned());
-        }
-        if let Some(flags) = target
-            .and_then(|target| target.get("rustflags"))
-            .and_then(config_flags)
-        {
-            extend(&mut target_flags, flags);
-        }
-        if let Some(flags) = config
-            .get("build")
-            .and_then(|build| build.get("rustflags"))
-            .and_then(config_flags)
-        {
-            extend(&mut build_flags, flags);
-        }
-    }
-    let text = |name: &str| environment(name).map(|value| value.to_string_lossy().into_owned());
-    if let Some(value) = text(&format!("CARGO_TARGET_{key}_LINKER")) {
-        linker = Some(value);
-    }
-    let words = |value: String| value.split_whitespace().map(Into::into).collect::<Vec<_>>();
-    if let Some(value) = text(&format!("CARGO_TARGET_{key}_RUSTFLAGS")) {
-        extend(&mut target_flags, words(value));
-    }
-    if let Some(value) = text("CARGO_BUILD_RUSTFLAGS") {
-        extend(&mut build_flags, words(value));
-    }
-    let encoded = environment("CARGO_ENCODED_RUSTFLAGS");
-    let plain = environment("RUSTFLAGS");
-    let rustflags = if encoded.is_some() || plain.is_some() {
-        environment_flags(encoded.as_deref(), plain.as_deref())
-    } else {
-        target_flags.or(build_flags).unwrap_or_default()
-    };
-    LinkerSettings { linker, rustflags }
-}
-
-/// A Cargo config rustflags value: a whitespace-separated string or an array.
-fn config_flags(value: &toml::Value) -> Option<Vec<String>> {
-    match value {
-        toml::Value::String(flags) => Some(flags.split_whitespace().map(Into::into).collect()),
-        toml::Value::Array(flags) => flags
-            .iter()
-            .map(|flag| flag.as_str().map(Into::into))
-            .collect(),
-        _ => None,
-    }
-}
-
-/// Splits the rustflags Cargo will use, with Cargo's precedence.
-fn environment_flags(
-    encoded: Option<&std::ffi::OsStr>,
-    plain: Option<&std::ffi::OsStr>,
-) -> Vec<String> {
-    match (encoded, plain) {
-        (Some(flags), _) => flags
-            .to_string_lossy()
-            .split('\x1f')
-            .filter(|flag| !flag.is_empty())
-            .map(Into::into)
-            .collect(),
-        (None, Some(flags)) => flags
-            .to_string_lossy()
-            .split_whitespace()
-            .map(Into::into)
-            .collect(),
-        (None, None) => Vec::new(),
-    }
+/// The host's `rustc --print cfg`, used to match `target.'cfg(..)'` tables.
+/// Without it no cfg table matches, and Cargo reports the rustc failure.
+fn host_cfg(toolchain: &Toolchain) -> Vec<cargo_config::CfgEntry> {
+    toolchain
+        .rustc()
+        .ok()
+        .and_then(|mut rustc| {
+            rustc
+                .args(["--print", "cfg", "--target", &toolchain.host])
+                .output()
+                .ok()
+        })
+        .filter(|output| output.status.success())
+        .map(|output| cargo_config::parse_cfg(&String::from_utf8_lossy(&output.stdout)))
+        .unwrap_or_default()
 }
 
 /// Compiler flags that keep the package's absolute location out of the
@@ -487,11 +386,14 @@ fn path_flags(
     flags
 }
 
-fn remapped_environment_flags(
+/// The rustflags value for `CARGO_ENCODED_RUSTFLAGS`: the flags Cargo would
+/// select, then `path_flags`. Environment flags keep their exact bytes.
+fn rustflags_with_paths(
     encoded: Option<OsString>,
     plain: Option<OsString>,
+    configured: &[String],
     path_flags: &[String],
-) -> Result<Option<OsString>, String> {
+) -> Result<OsString, String> {
     let mut flags = match (encoded, plain) {
         (Some(flags), _) => flags,
         (None, Some(flags)) => flags
@@ -501,14 +403,16 @@ fn remapped_environment_flags(
             .collect::<Vec<_>>()
             .join("\x1f")
             .into(),
-        (None, None) => return Ok(None),
+        (None, None) => configured.join("\x1f").into(),
     };
     if !flags.is_empty() {
         flags.push("\x1f");
     }
     flags.push(path_flags.join("\x1f"));
-    Ok(Some(flags))
+    Ok(flags)
 }
+
+mod cargo_config;
 
 #[cfg(test)]
 mod tests;
