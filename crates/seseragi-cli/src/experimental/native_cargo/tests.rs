@@ -1111,3 +1111,42 @@ fn concurrent_builds_of_the_same_project_keep_each_published_program() {
         }
     });
 }
+
+#[test]
+fn programs_link_a_runtime_copy_that_a_fresh_build_leaves_in_place() {
+    // Cargo rewrites its own copy of the library on every build, even a fresh
+    // one. A program linking that copy while another build of the same
+    // runtime runs could find no file, so programs link a copy that is only
+    // replaced, atomically, when its content changes.
+    let fixture = Fixture::new();
+    let project = fixture.project();
+    let library = || {
+        project
+            .runtime_library(BuildProfile::Development, RUNTIME, &fixture.toolchain, &[])
+            .unwrap()
+    };
+    let first = library();
+    assert_eq!(
+        first.file_name().unwrap(),
+        "libseseragi_native_runtime.rlib"
+    );
+    assert_eq!(
+        first.parent().unwrap().parent(),
+        Some(fixture.target.join("runtime").as_path())
+    );
+    let built = modified(&first);
+    let second = library();
+    assert_eq!(second, first);
+    assert_eq!(modified(&second), built);
+    project
+        .build(
+            BuildProfile::Development,
+            SOURCE,
+            RUNTIME,
+            &fixture.executable(),
+            &fixture.toolchain,
+        )
+        .unwrap();
+    assert_eq!(fixture.stdout(), "42\n");
+    assert_eq!(modified(&first), built);
+}
