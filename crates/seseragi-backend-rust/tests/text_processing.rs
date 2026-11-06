@@ -145,17 +145,13 @@ pub effect fn main = do {
 }
 
 #[test]
-fn native_text_extensions_keep_unused_program_wasm_references_rejected() {
+fn program_wasm_admits_string_text_operations_and_rejects_bytes_and_unicode() {
     for (operation, signature) in [
         ("isEmpty", "String -> Bool"),
         ("concat", "Array<String> -> String"),
         ("lengthScalars", "String -> Int"),
         ("lengthBytes", "String -> Int"),
         ("scalarAt", "Int -> String -> Maybe<Char>"),
-        (
-            "sliceScalars",
-            "Int -> Int -> String -> Either<text.TextSliceError, String>",
-        ),
         ("words", "String -> Array<String>"),
         ("trimStart", "String -> String"),
         ("trimEnd", "String -> String"),
@@ -166,12 +162,32 @@ fn native_text_extensions_keep_unused_program_wasm_references_rejected() {
             .unwrap()
             .core_ir;
         emit_rust_module(&core, "nativeProbe").unwrap();
+        emit_program_wasm(&[&core], "native/main", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{operation}: {error}"));
+    }
+    // UTF-8 Bytes conversions and the Unicode tables need their own proof.
+    for (import, value) in [
+        ("std/text", "let saved = text.encodeUtf8"),
+        (
+            "std/text",
+            "let saved: Int -> Int -> String -> Either<text.TextSliceError, String> = text.sliceScalars",
+        ),
+        (
+            "std/text/unicode",
+            "let saved: String -> String = text.fullCaseFold",
+        ),
+    ] {
+        let source = format!("import * as text from \"{import}\"\npub fn probe value: Int -> Int = {{ {value}; value }}\npub fn nativeProbe -> Int = probe 42\n");
+        let core = compile_core_module(CompileInput::new("text-wasm.ssrg", "native/main", &source))
+            .unwrap()
+            .core_ir;
+        emit_rust_module(&core, "nativeProbe").unwrap();
         let error = emit_program_wasm(&[&core], "native/main", &["probe".into()]).unwrap_err();
         assert!(
             error
                 .message
                 .contains("native text extension requires a target-specific proof"),
-            "{operation}: {error}"
+            "{import}: {error}"
         );
         assert_eq!(error.origin.unwrap().source, "text-wasm.ssrg");
     }

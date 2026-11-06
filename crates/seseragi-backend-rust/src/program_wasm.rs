@@ -16,6 +16,10 @@ pub enum ProgramCodec {
     Bool,
     Int,
     String,
+    /// A JS number, including NaN, the infinities and negative zero.
+    Float,
+    /// A JS string holding exactly one Unicode scalar value.
+    Char,
     Tuple {
         elements: Vec<usize>,
     },
@@ -39,6 +43,83 @@ pub enum ProgramCodec {
         failure: Option<usize>,
         success: Option<usize>,
     },
+    Array {
+        element: usize,
+    },
+    List {
+        element: usize,
+    },
+    /// A closed record or a struct, with fields in name order.
+    Record {
+        fields: Vec<ProgramField>,
+    },
+    /// A sum type. The wire tag is the variant's index.
+    Adt {
+        name: String,
+        variants: Vec<ProgramVariant>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProgramField {
+    pub name: String,
+    pub codec: usize,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProgramVariant {
+    /// The constructor's source name, used as the boundary `tag`.
+    pub tag: String,
+    /// The constructor's checked identity in the native runtime.
+    pub owner: String,
+    pub payload: Option<usize>,
+}
+
+/// The codecs of one artifact. Data types declared in `modules` (ADTs and
+/// structs) are found by name; each named type gets one codec, so a
+/// recursive type refers to itself by index.
+struct Codecs<'a> {
+    items: Vec<ProgramCodec>,
+    modules: Option<&'a [&'a CoreModule]>,
+    named: Vec<(CoreType, usize)>,
+}
+
+impl<'a> Codecs<'a> {
+    fn new(modules: &'a [&'a CoreModule]) -> Self {
+        Self {
+            items: Vec::new(),
+            modules: Some(modules),
+            named: Vec::new(),
+        }
+    }
+
+    /// Only the original Unit, Bool, Int, String, tuple, Maybe and Either
+    /// data codecs.
+    fn original() -> Self {
+        Self {
+            items: Vec::new(),
+            modules: None,
+            named: Vec::new(),
+        }
+    }
+
+    fn intern(&mut self, item: ProgramCodec) -> usize {
+        if let Some(index) = self.items.iter().position(|c| c == &item) {
+            index
+        } else {
+            self.items.push(item);
+            self.items.len() - 1
+        }
+    }
+}
+
+impl std::ops::Deref for Codecs<'_> {
+    type Target = Vec<ProgramCodec>;
+    fn deref(&self) -> &Self::Target {
+        &self.items
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -62,6 +143,11 @@ pub struct ProgramWasmMetadata {
     pub modules: Vec<String>,
     pub exports: Vec<ProgramWasmExport>,
     pub codecs: Vec<ProgramCodec>,
+    /// The standard runtime areas the linked program uses, such as `text`
+    /// or `list`. A standard API without a program WASM proof fails the
+    /// build instead of appearing here.
+    #[serde(default)]
+    pub capabilities: Vec<String>,
     pub trap_policy: String,
     pub max_boundary_bytes: usize,
 }
@@ -87,7 +173,7 @@ pub fn emit_program_wasm(
         return Err("program WASM: select at least one public function".into());
     }
     let mut seen = BTreeSet::new();
-    let mut codecs = Vec::new();
+    let mut codecs = Codecs::new(modules);
     let mut public = Vec::new();
     let mut effect_abi = false;
     for name in exports {
@@ -162,7 +248,7 @@ pub fn emit_program_wasm(
             }
             matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Effect" && arguments.len() == 3)
         };
-        if body_type.as_ref() != Some(remainder)
+        if body_type.as_ref().map(records_in_name_order) != Some(records_in_name_order(remainder))
             && !(effect_result(remainder)
                 && body_type.as_ref().is_some_and(|actual| {
                     crate::program_wasm_effect::boundary_accepts(remainder, actual)
@@ -239,7 +325,13 @@ pub fn emit_program_wasm(
         module: entry_module.into(),
         modules: library.metadata.modules,
         exports: public,
-        codecs,
+        codecs: codecs.items,
+        capabilities: {
+            let mut capabilities = library.metadata.capabilities.clone();
+            capabilities.sort();
+            capabilities.dedup();
+            capabilities
+        },
         trap_policy: "retire-instance".into(),
         max_boundary_bytes: 16 * 1024 * 1024,
     };
@@ -282,7 +374,7 @@ pub fn emit_program_wasm(
     let schema = serde_json::to_string(&metadata).expect("serializable checked ABI");
     library.source.push_str(&format!("\nconst PROGRAM_CONTRACT: &str = {schema:?};\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_ptr() -> usize {{ PROGRAM_CONTRACT.as_ptr() as usize }}\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_len() -> usize {{ PROGRAM_CONTRACT.len() }}\n"));
     let quoted_schema = serde_json::to_string(&schema).expect("serializable checked ABI text");
-    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n{}", if host_abi { include_str!("program_wasm_host_effect.js") } else if effect_abi { include_str!("program_wasm_effect.js") } else { include_str!("program_wasm.js") });
+    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n// The standard runtime areas this program uses.\nexport const capabilities = Object.freeze(schema.capabilities.slice());\n{}", if host_abi { include_str!("program_wasm_host_effect.js") } else if effect_abi { include_str!("program_wasm_effect.js") } else { include_str!("program_wasm.js") });
     let declarations = declarations(&metadata);
     Ok(ProgramWasmArtifact {
         source: library.source,
@@ -292,7 +384,7 @@ pub fn emit_program_wasm(
     })
 }
 
-fn host_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
+fn host_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let CoreType::Function { parameter, result } = ty else {
         return effect_codec(ty, codecs).or_else(|| codec(ty, true, codecs));
     };
@@ -300,16 +392,10 @@ fn host_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
         codec(parameter, false, codecs).or_else(|| host_parameter_codec(parameter, codecs))?;
     let result = host_codec(result, codecs)?;
     let item = ProgramCodec::Function { parameter, result };
-    if let Some(index) = codecs.iter().position(|existing| existing == &item) {
-        Some(index)
-    } else {
-        let index = codecs.len();
-        codecs.push(item);
-        Some(index)
-    }
+    Some(codecs.intern(item))
 }
 
-fn host_parameter_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
+fn host_parameter_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     // The transport's AbortSignal is out of band. This checked Function is
     // exactly one Seseragi source argument followed by one cold Effect plan.
     let CoreType::Function { parameter, result } = ty else {
@@ -344,16 +430,10 @@ fn host_parameter_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option
         failure,
         success,
     };
-    if let Some(index) = codecs.iter().position(|existing| existing == &item) {
-        Some(index)
-    } else {
-        let index = codecs.len();
-        codecs.push(item);
-        Some(index)
-    }
+    Some(codecs.intern(item))
 }
 
-fn effect_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
+fn effect_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let item = match ty {
         CoreType::Function { parameter, result } => ProgramCodec::Function {
             parameter: codec(parameter, false, codecs)?,
@@ -367,7 +447,7 @@ fn effect_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> 
             {
                 return None;
             }
-            let terminal = |ty: &CoreType, callable, codecs: &mut Vec<ProgramCodec>| {
+            let terminal = |ty: &CoreType, callable, codecs: &mut Codecs| {
                 if matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Never" && arguments.is_empty())
                 {
                     Some(None)
@@ -388,28 +468,24 @@ fn effect_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> 
         }
         _ => return None,
     };
-    if let Some(index) = codecs.iter().position(|c| c == &item) {
-        Some(index)
-    } else {
-        let index = codecs.len();
-        codecs.push(item);
-        Some(index)
-    }
+    Some(codecs.intern(item))
 }
 
 pub(crate) fn has_closed_data_codec(ty: &CoreType) -> bool {
     // Internal cells reuse the exact existing data fragment. This creates no
     // Ref transport codec and admits neither callbacks nor Effect values.
-    codec(ty, false, &mut Vec::new()).is_some()
+    codec(ty, false, &mut Codecs::original()).is_some()
 }
 
-fn codec(ty: &CoreType, callable: bool, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
+fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
     let item = match ty {
         CoreType::Named { name, arguments } => match (name.as_str(), arguments.as_slice()) {
             ("std/prelude::Unit", []) => ProgramCodec::Unit,
             ("std/prelude::Bool", []) => ProgramCodec::Bool,
             ("std/prelude::Int", []) => ProgramCodec::Int,
             ("std/prelude::String", []) => ProgramCodec::String,
+            ("std/prelude::Float", []) if codecs.modules.is_some() => ProgramCodec::Float,
+            ("std/prelude::Char", []) if codecs.modules.is_some() => ProgramCodec::Char,
             ("std/prelude::Maybe", [value]) => ProgramCodec::Maybe {
                 value: codec(value, false, codecs)?,
             },
@@ -417,8 +493,37 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Vec<ProgramCodec>) -> Optio
                 left: codec(left, false, codecs)?,
                 right: codec(right, false, codecs)?,
             },
-            _ => return None,
+            ("std/prelude::Array", [element]) if codecs.modules.is_some() => ProgramCodec::Array {
+                element: codec(element, false, codecs)?,
+            },
+            ("std/prelude::List", [element]) if codecs.modules.is_some() => ProgramCodec::List {
+                element: codec(element, false, codecs)?,
+            },
+            _ => return named_codec(ty, codecs),
         },
+        CoreType::Record {
+            closed: true,
+            fields,
+        } if codecs.modules.is_some() => {
+            let mut sorted = fields.iter().collect::<Vec<_>>();
+            sorted.sort_by(|left, right| left.name.cmp(&right.name));
+            if sorted.iter().any(|field| field.optional)
+                || sorted.windows(2).any(|pair| pair[0].name == pair[1].name)
+            {
+                return None;
+            }
+            ProgramCodec::Record {
+                fields: sorted
+                    .into_iter()
+                    .map(|field| {
+                        Some(ProgramField {
+                            name: field.name.clone(),
+                            codec: codec(&field.type_ref, false, codecs)?,
+                        })
+                    })
+                    .collect::<Option<Vec<_>>>()?,
+            }
+        }
         CoreType::Tuple { elements } if (2..=32).contains(&elements.len()) => ProgramCodec::Tuple {
             elements: elements
                 .iter()
@@ -431,12 +536,133 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Vec<ProgramCodec>) -> Optio
         },
         _ => return None,
     };
-    if let Some(index) = codecs.iter().position(|c| c == &item) {
-        Some(index)
+    Some(codecs.intern(item))
+}
+
+/// `ty` with every record's fields in name order. Records are structural,
+/// so a record literal and its declared type can list fields differently.
+fn records_in_name_order(ty: &CoreType) -> CoreType {
+    let recur = |ty: &CoreType| Box::new(records_in_name_order(ty));
+    match ty {
+        CoreType::Record { closed, fields } => {
+            let mut fields = fields
+                .iter()
+                .map(|field| seseragi_lowering::CoreRecordField {
+                    type_ref: records_in_name_order(&field.type_ref),
+                    ..field.clone()
+                })
+                .collect::<Vec<_>>();
+            fields.sort_by(|left, right| left.name.cmp(&right.name));
+            CoreType::Record {
+                closed: *closed,
+                fields,
+            }
+        }
+        CoreType::Named { name, arguments } => CoreType::Named {
+            name: name.clone(),
+            arguments: arguments.iter().map(records_in_name_order).collect(),
+        },
+        CoreType::Tuple { elements } => CoreType::Tuple {
+            elements: elements.iter().map(records_in_name_order).collect(),
+        },
+        CoreType::Function { parameter, result } => CoreType::Function {
+            parameter: recur(parameter),
+            result: recur(result),
+        },
+        other => other.clone(),
+    }
+}
+
+/// The codec of an ADT or struct declared in the linked modules. Opaque types
+/// and newtypes keep their representation private, so they are not data
+/// codecs. The codec is registered before its fields so that a recursive
+/// type refers to its own index.
+fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
+    let modules = codecs.modules?;
+    let CoreType::Named { name, arguments } = ty else {
+        return None;
+    };
+    if let Some((_, index)) = codecs.named.iter().find(|(named, _)| named == ty) {
+        return Some(*index);
+    }
+    let (owner, adt, structure) = modules.iter().find_map(|module| {
+        module
+            .adts
+            .iter()
+            .find(|adt| &adt.symbol == name)
+            .map(|adt| (*module, Some(adt), None))
+            .or_else(|| {
+                module
+                    .structs
+                    .iter()
+                    .find(|structure| &structure.symbol == name)
+                    .map(|structure| (*module, None, Some(structure)))
+            })
+    })?;
+    let parameters = adt
+        .map(|adt| &adt.type_parameters)
+        .or_else(|| structure.map(|structure| &structure.type_parameters))?;
+    if adt.is_some_and(|adt| adt.opaque || adt.newtype)
+        || structure.is_some_and(|structure| structure.opaque)
+        || parameters.len() != arguments.len()
+    {
+        return None;
+    }
+    let substitutions = parameters
+        .iter()
+        .zip(arguments)
+        .map(|(parameter, argument)| (parameter.name.clone(), argument.clone()))
+        .collect();
+    let declared = |ty: &CoreType| emit::canonical_declared_type(owner, ty, &substitutions);
+    let index = codecs.items.len();
+    let named = codecs.named.len();
+    codecs.items.push(ProgramCodec::Adt {
+        name: "\0pending".into(),
+        variants: Vec::new(),
+    });
+    codecs.named.push((ty.clone(), index));
+    let item = if let Some(adt) = adt {
+        adt.variants
+            .iter()
+            .map(|variant| {
+                Some(ProgramVariant {
+                    tag: variant.name.clone(),
+                    owner: variant.symbol.clone(),
+                    payload: match &variant.payload {
+                        Some(payload) => Some(codec(&declared(payload)?, false, codecs)?),
+                        None => None,
+                    },
+                })
+            })
+            .collect::<Option<Vec<_>>>()
+            .map(|variants| ProgramCodec::Adt {
+                name: adt.name.clone(),
+                variants,
+            })
     } else {
-        let index = codecs.len();
-        codecs.push(item);
-        Some(index)
+        let mut fields = structure?.fields.iter().collect::<Vec<_>>();
+        fields.sort_by(|left, right| left.name.cmp(&right.name));
+        fields
+            .into_iter()
+            .map(|field| {
+                Some(ProgramField {
+                    name: field.name.clone(),
+                    codec: codec(&declared(&field.type_ref)?, false, codecs)?,
+                })
+            })
+            .collect::<Option<Vec<_>>>()
+            .map(|fields| ProgramCodec::Record { fields })
+    };
+    match item {
+        Some(item) => {
+            codecs.items[index] = item;
+            Some(index)
+        }
+        None => {
+            codecs.items.truncate(index);
+            codecs.named.truncate(named);
+            None
+        }
     }
 }
 
@@ -446,6 +672,8 @@ fn rust_codec(codec: &ProgramCodec) -> String {
         ProgramCodec::Bool => "ProgramCode::Bool".into(),
         ProgramCodec::Int => "ProgramCode::Int".into(),
         ProgramCodec::String => "ProgramCode::Text".into(),
+        ProgramCodec::Float => "ProgramCode::Float".into(),
+        ProgramCodec::Char => "ProgramCode::Char".into(),
         ProgramCodec::Tuple { elements } => format!("ProgramCode::Tuple(vec!{:?})", elements),
         ProgramCodec::Maybe { value } => format!("ProgramCode::Maybe({value})"),
         ProgramCodec::Either { left, right } => format!("ProgramCode::Either({left}, {right})"),
@@ -460,46 +688,112 @@ fn rust_codec(codec: &ProgramCodec) -> String {
             failure,
             success,
         } => format!("ProgramCode::HostEffect({parameter}, {failure:?}, {success:?})"),
+        ProgramCodec::Array { element } => format!("ProgramCode::Array({element})"),
+        ProgramCodec::List { element } => format!("ProgramCode::List({element})"),
+        ProgramCodec::Record { fields } => format!(
+            "ProgramCode::Record(vec![{}])",
+            fields
+                .iter()
+                .map(|field| format!("({:?}, {})", field.name, field.codec))
+                .collect::<Vec<_>>()
+                .join(",")
+        ),
+        ProgramCodec::Adt { variants, .. } => format!(
+            "ProgramCode::Adt(vec![{}])",
+            variants
+                .iter()
+                .map(|variant| format!("({:?}, {:?})", variant.owner, variant.payload))
+                .collect::<Vec<_>>()
+                .join(",")
+        ),
     }
 }
 
+/// The TS type names of ADT codecs. A sum type can be recursive, so it is
+/// declared once by name instead of being expanded where it is used.
+fn adt_aliases(metadata: &ProgramWasmMetadata) -> std::collections::BTreeMap<usize, String> {
+    const RESERVED: &[&str] = &[
+        "Ownership",
+        "OwnedCallback",
+        "OwnedEffect",
+        "ProgramWasmDefect",
+        "ProgramWasmClosed",
+        "ProgramExports",
+        "ProgramInstance",
+        "ProgramList",
+        "ProgramOutcome",
+        "ProgramExecution",
+        "HostResult",
+        "HostEffect",
+        "HostEffectContext",
+        "loadProgram",
+    ];
+    let names = metadata
+        .codecs
+        .iter()
+        .enumerate()
+        .filter_map(|(index, codec)| match codec {
+            ProgramCodec::Adt { name, .. } => Some((index, name.as_str())),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    names
+        .iter()
+        .map(|(index, name)| {
+            let unique = names.iter().filter(|(_, other)| other == name).count() == 1;
+            let valid = name
+                .chars()
+                .next()
+                .is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
+                && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_');
+            let alias = if unique && valid && !RESERVED.contains(name) {
+                (*name).to_owned()
+            } else {
+                format!("ProgramData{index}")
+            };
+            (*index, alias)
+        })
+        .collect()
+}
+
 fn declarations(metadata: &ProgramWasmMetadata) -> String {
-    fn ty(metadata: &ProgramWasmMetadata, index: usize) -> String {
+    let aliases = adt_aliases(metadata);
+    fn ty(
+        metadata: &ProgramWasmMetadata,
+        aliases: &std::collections::BTreeMap<usize, String>,
+        index: usize,
+    ) -> String {
+        let ty = |index| ty(metadata, aliases, index);
         match &metadata.codecs[index] {
             ProgramCodec::Unit => "undefined".into(),
             ProgramCodec::Bool => "boolean".into(),
             ProgramCodec::Int => "number".into(),
-            ProgramCodec::String => "string".into(),
+            ProgramCodec::String | ProgramCodec::Char => "string".into(),
+            ProgramCodec::Float => "number".into(),
             ProgramCodec::Tuple { elements } => format!(
                 "readonly [{}]",
                 elements
                     .iter()
-                    .map(|i| ty(metadata, *i))
+                    .map(|i| ty(*i))
                     .collect::<Vec<_>>()
                     .join(", ")
             ),
             ProgramCodec::Maybe { value } => format!(
                 "Readonly<{{tag: 'Nothing'}}> | Readonly<{{tag: 'Just'; value: {}}}>",
-                ty(metadata, *value)
+                ty(*value)
             ),
             ProgramCodec::Either { left, right } => format!(
                 "Readonly<{{tag: 'Left'; value: {}}}> | Readonly<{{tag: 'Right'; value: {}}}>",
-                ty(metadata, *left),
-                ty(metadata, *right)
+                ty(*left),
+                ty(*right)
             ),
-            ProgramCodec::Function { parameter, result } => format!(
-                "OwnedCallback<{}, {}>",
-                ty(metadata, *parameter),
-                ty(metadata, *result)
-            ),
+            ProgramCodec::Function { parameter, result } => {
+                format!("OwnedCallback<{}, {}>", ty(*parameter), ty(*result))
+            }
             ProgramCodec::Effect { failure, success } => format!(
                 "OwnedEffect<{}, {}>",
-                failure
-                    .map(|id| ty(metadata, id))
-                    .unwrap_or_else(|| "never".into()),
-                success
-                    .map(|id| ty(metadata, id))
-                    .unwrap_or_else(|| "never".into())
+                failure.map(ty).unwrap_or_else(|| "never".into()),
+                success.map(ty).unwrap_or_else(|| "never".into())
             ),
             ProgramCodec::HostEffect {
                 parameter,
@@ -507,22 +801,64 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
                 success,
             } => format!(
                 "HostEffect<{}, {}, {}>",
-                ty(metadata, *parameter),
-                failure
-                    .map(|id| ty(metadata, id))
-                    .unwrap_or_else(|| "never".into()),
-                success
-                    .map(|id| ty(metadata, id))
-                    .unwrap_or_else(|| "never".into()),
+                ty(*parameter),
+                failure.map(ty).unwrap_or_else(|| "never".into()),
+                success.map(ty).unwrap_or_else(|| "never".into()),
             ),
+            ProgramCodec::Array { element } => format!("ReadonlyArray<{}>", ty(*element)),
+            ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
+            ProgramCodec::Record { fields } => format!(
+                "Readonly<{{{}}}>",
+                fields
+                    .iter()
+                    .map(|field| format!(
+                        "{}: {}",
+                        serde_json::to_string(&field.name).unwrap(),
+                        ty(field.codec)
+                    ))
+                    .collect::<Vec<_>>()
+                    .join("; ")
+            ),
+            ProgramCodec::Adt { .. } => aliases[&index].clone(),
         }
     }
-    let mut result = String::from("export interface Ownership { readonly alive: boolean; readonly retired: boolean; readonly callbacks: number; readonly managedLiveAtClose: number | null; }\nexport interface OwnedCallback<A, B> { (argument: A): B; dispose(): void; readonly disposed: boolean; }\nexport class ProgramWasmDefect extends Error { readonly origin?: Readonly<{source: string; start: number; end: number}>; }\nexport class ProgramWasmClosed extends Error {}\nexport interface ProgramExports {\n");
+    let mut result = String::from("export declare const capabilities: readonly string[];\nexport interface Ownership { readonly alive: boolean; readonly retired: boolean; readonly callbacks: number; readonly managedLiveAtClose: number | null; }\nexport interface OwnedCallback<A, B> { (argument: A): B; dispose(): void; readonly disposed: boolean; }\nexport class ProgramWasmDefect extends Error { readonly origin?: Readonly<{source: string; start: number; end: number}>; }\nexport class ProgramWasmClosed extends Error {}\nexport interface ProgramExports {\n");
+    if metadata
+        .codecs
+        .iter()
+        .any(|codec| matches!(codec, ProgramCodec::List { .. }))
+    {
+        result.insert_str(0, "export type ProgramList<A> = Readonly<{tag: 'Empty'}> | Readonly<{tag: 'Cons'; head: A; tail: ProgramList<A>}>;\n");
+    }
+    for (index, alias) in &aliases {
+        let ProgramCodec::Adt { variants, .. } = &metadata.codecs[*index] else {
+            unreachable!("ADT aliases name ADT codecs")
+        };
+        let union = variants
+            .iter()
+            .map(|variant| {
+                let tag = serde_json::to_string(&variant.tag).unwrap();
+                match variant.payload {
+                    Some(payload) => format!(
+                        "Readonly<{{tag: {tag}; value: {}}}>",
+                        ty(metadata, &aliases, payload)
+                    ),
+                    None => format!("Readonly<{{tag: {tag}}}>"),
+                }
+            })
+            .collect::<Vec<_>>();
+        let union = if union.is_empty() {
+            "never".to_owned()
+        } else {
+            union.join(" | ")
+        };
+        result.insert_str(0, &format!("export type {alias} = {union};\n"));
+    }
     for export in &metadata.exports {
         result.push_str(&format!(
             "readonly {}: {};\n",
             serde_json::to_string(&export.name).unwrap(),
-            ty(metadata, export.codec)
+            ty(metadata, &aliases, export.codec)
         ));
     }
     if metadata.abi == PROGRAM_WASM_HOST_EFFECT_ABI {

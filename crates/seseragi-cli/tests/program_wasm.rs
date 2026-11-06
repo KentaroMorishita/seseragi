@@ -2396,3 +2396,200 @@ for (const [name, left, right] of [{defects}]) {{
         String::from_utf8(expected).unwrap()
     );
 }
+
+#[test]
+fn data_types_cross_the_boundary_in_the_same_shape_as_the_ts_target() {
+    let scratch = Scratch::new();
+    let root = root();
+    let exports = [
+        "shapes", "area", "point", "swap", "person", "greet", "items", "total", "lengths", "tree",
+        "depth",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-data.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+// Values from WASM have the TS target's shape.
+for (const [name, input] of [['shapes', 5], ['point', 9], ['person', '雪'], ['items', 4], ['lengths', ['a']], ['tree', 7]]) {
+  assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), name);
+}
+// Values from the TS target are accepted by WASM, and the reverse.
+for (const shape of ts.shapes(5)) assert.equal(wasm.area(shape), ts.area(shape));
+assert.deepStrictEqual(plain(wasm.swap(ts.point(9))), plain(ts.swap(ts.point(9))));
+assert.equal(wasm.greet(ts.person('雪')), ts.greet(ts.person('雪')));
+assert.equal(wasm.total(ts.items(4)), ts.total(ts.items(4)));
+assert.equal(wasm.depth(ts.tree(7)), ts.depth(ts.tree(7)));
+assert.equal(ts.depth(wasm.tree(7)), 2);
+// Values outside the checked shape are rejected before they reach WASM.
+for (const input of [{tag: 'Square', value: 1}, {tag: 'Empty', value: 1}, {tag: 'Circle'}]) {
+  assert.throws(() => wasm.area(input), TypeError);
+}
+assert.throws(() => wasm.swap({x: 1}), TypeError);
+assert.throws(() => wasm.total({tag: 'Cons', head: 1}), TypeError);
+const cycle = {tag: 'Cons', head: 1};
+cycle.tail = cycle;
+assert.throws(() => wasm.total(cycle), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same shapes');
+"#).unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same shapes\n");
+    fs::write(scratch.0.join("types.mts"), r#"import {loadProgram, type Shape, type Tree, type ProgramList} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const shapes: ReadonlyArray<Shape> = owner.exports.shapes(1);
+const area: number = owner.exports.area({tag: 'Rect', value: [2, 3]});
+// @ts-expect-error a variant name outside the checked type
+owner.exports.area({tag: 'Square', value: 1});
+const point: Readonly<{x: number; y: number}> = owner.exports.swap({x: 1, y: 2});
+const list: ProgramList<number> = owner.exports.items(1);
+const total: number = owner.exports.total({tag: 'Cons', head: 1, tail: {tag: 'Empty'}});
+const tree: Tree = owner.exports.tree(1);
+const pairs: ReadonlyArray<readonly [string, Readonly<{tag: 'Nothing'}> | Readonly<{tag: 'Just'; value: number}>]> = owner.exports.lengths(['a']);
+"#).unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root.join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+/// Builds `fixture` as program WASM in `wasm/` and for the TS target in
+/// `ts/`. The TS target needs an entry, which program WASM rejects when it
+/// uses Console, so only the TS copy gets one.
+fn wasm_and_ts(scratch: &Path, fixture: &str, exports: &[&str]) {
+    let text = fs::read_to_string(
+        root()
+            .join("examples/spec/fixtures/rust-backend")
+            .join(fixture),
+    )
+    .unwrap();
+    let source = scratch.join("program.ssrg");
+    fs::write(&source, &text).unwrap();
+    successful(bounded(
+        &mut build(&source, &scratch.join("wasm"), exports),
+        scratch,
+    ));
+    let ts_source = scratch.join("ts-source");
+    fs::create_dir(&ts_source).unwrap();
+    fs::write(
+        ts_source.join("program.ssrg"),
+        format!("{text}\npub effect fn main = println \"entry\"\n"),
+    )
+    .unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg(ts_source.join("program.ssrg"))
+            .args(["--target", "process", "--out-dir"])
+            .arg(scratch.join("ts")),
+        scratch,
+    ));
+}
+
+#[test]
+fn text_operations_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "trimmed", "upper", "lower", "folded", "pieces", "joined", "lined", "worded", "replaced",
+        "first", "has", "starts", "ends", "scalars", "bytes", "empty", "glued",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-text.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+import {capabilities} from './wasm/program.mjs';
+const manifest = JSON.parse(await readFile(new URL('./wasm/program-wasm.json', import.meta.url), 'utf8'));
+assert.ok(capabilities.includes('text'));
+assert.deepStrictEqual([...capabilities], manifest.capabilities);
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+// Unicode case rules, combining marks, separators, line endings and the
+// replacement pattern's `$` are where hosts most often differ.
+const strings = ['', '  雪 🙂 ab\t', 'a,b,,c', 'İstanbul ß ǅ Σσς', 'line1\nline2\r\nline3\r', 'banana!', '雪国', 'Ａ\u0301 e\u0301', '   ', 'a$1a'];
+const arrays = [[], ['a'], ['雪', '', '🙂'], ['x', 'y', 'z']];
+for (const name of Object.keys(wasm)) {
+  for (const input of ['joined', 'glued'].includes(name) ? arrays : strings) {
+    assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+  }
+}
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+}
+
+#[test]
+fn float_and_char_values_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "add", "divide", "negate", "missing", "render", "floats", "same", "echo", "letters",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-scalars.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+// Object.is tells negative zero and NaN apart from other numbers.
+const same = (actual, expected, label) => {
+  if (typeof actual === 'number') assert.ok(Object.is(actual, expected), `${label}: ${actual} vs ${expected}`);
+  else assert.deepStrictEqual(actual, expected, label);
+};
+const floats = [0, -0, 1.5, -2.25, NaN, Infinity, -Infinity, 1e300, 5e-324, 0.1 + 0.2];
+for (const x of floats) {
+  for (const y of floats) {
+    same(wasm.add([x, y]), ts.add([x, y]), `add ${x} ${y}`);
+    same(wasm.divide([x, y]), ts.divide([x, y]), `divide ${x} ${y}`);
+  }
+  same(wasm.negate(x), ts.negate(x), `negate ${x}`);
+  same(wasm.missing(x), ts.missing(x), `missing ${x}`);
+  same(wasm.render(x), ts.render(x), `render ${x}`);
+  const actual = wasm.floats(x);
+  const expected = ts.floats(x);
+  assert.equal(actual.length, expected.length);
+  actual.forEach((value, index) => same(value, expected[index], `floats ${x}[${index}]`));
+}
+for (const value of ['a', '雪', '🙂', '\u0000']) {
+  same(wasm.echo(value), ts.echo(value), `echo ${value}`);
+  same(wasm.same([value, 'a']), ts.same([value, 'a']), `same ${value}`);
+  assert.deepStrictEqual([...wasm.letters(value)], [...ts.letters(value)]);
+}
+// A Char is exactly one Unicode scalar value.
+for (const invalid of ['', 'ab', '\ud800', 1]) assert.throws(() => wasm.echo(invalid), TypeError);
+assert.throws(() => wasm.negate('1'), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+}

@@ -1,0 +1,47 @@
+// Program WASM passes Arrays, Lists, records, structs and ADTs in the same
+// shape as the TS target.
+type Shape =
+  | Circle Int
+  | Rect (Int, Int)
+  | Empty
+
+type Tree<A> =
+  | Leaf
+  | Node (Tree<A>, A, Tree<A>)
+
+struct Point { y: Int, x: Int }
+
+pub fn shapes size: Int -> Array<Shape> = [Circle size, Rect (2, 3), Empty]
+
+pub fn area shape: Shape -> Int = match shape {
+  Circle radius -> radius * radius * 3
+  Rect (width, height) -> width * height
+  Empty -> 0
+}
+
+pub fn point x: Int -> Point = Point { x: x, y: 2 }
+
+pub fn swap point: Point -> Point = match point {
+  Point { x, y } -> Point { x: y, y: x }
+}
+
+pub fn person name: String -> { name: String, age: Int } = { name: name, age: 1 }
+
+pub fn greet person: { name: String, age: Int } -> String = person.name
+
+pub fn items size: Int -> List<Int> = `[size, 2]
+
+pub fn total values: List<Int> -> Int = match values {
+  `[] -> 0
+  `[first, ...rest] -> first + total rest
+}
+
+pub fn lengths values: Array<String> -> Array<(String, Maybe<Int>)> =
+  [("count", Just 2), ("none", Nothing)]
+
+pub fn tree value: Int -> Tree<Int> = Node (Node (Leaf, 1, Leaf), value, Leaf)
+
+pub fn depth tree: Tree<Int> -> Int = match tree {
+  Leaf -> 0
+  Node (left, _, _) -> 1 + depth left
+}
