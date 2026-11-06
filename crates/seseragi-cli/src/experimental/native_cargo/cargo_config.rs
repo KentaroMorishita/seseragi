@@ -85,20 +85,21 @@ impl MergedFlags {
 
 /// Cargo asks rustc for the target cfg with the selected rustflags, and
 /// `target.'cfg(..)'` tables can change those rustflags, so the query repeats
-/// until the cfg no longer changes.
+/// until the cfg no longer changes. Like Cargo, the first query uses the
+/// rustflags selected without the cfg tables; `resolve(None)` selects them.
 pub(super) fn settle_with_cfg(
     query_cfg: &dyn Fn(&[String]) -> Vec<CfgEntry>,
-    resolve: &dyn Fn(&[CfgEntry]) -> LinkerSettings,
+    resolve: &dyn Fn(Option<&[CfgEntry]>) -> LinkerSettings,
 ) -> LinkerSettings {
-    let mut cfg = query_cfg(&[]);
-    let mut settings = resolve(&cfg);
+    let mut cfg = query_cfg(&resolve(None).rustflags);
+    let mut settings = resolve(Some(&cfg));
     for _ in 0..4 {
         let next = query_cfg(&settings.rustflags);
         if next == cfg {
             break;
         }
         cfg = next;
-        settings = resolve(&cfg);
+        settings = resolve(Some(&cfg));
     }
     settings
 }
@@ -111,7 +112,8 @@ pub(super) fn settle_with_cfg(
 ///   how rustflags values merge.
 /// - Environment variables override config files.
 /// - The linker is `target.<host>.linker`, else the matching
-///   `target.'cfg(..)'.linker`.
+///   `target.'cfg(..)'.linker`. Without a `cfg`, no cfg table applies, as
+///   before Cargo's first `rustc --print cfg`.
 /// - Rustflags are the first of `CARGO_ENCODED_RUSTFLAGS` or `RUSTFLAGS`
 ///   when set, else the joined `target.<host>.rustflags` and matching
 ///   `target.'cfg(..)'.rustflags` when not empty, else `build.rustflags`.
@@ -122,7 +124,7 @@ pub(super) fn linker_settings(
     directory: &Path,
     cargo_home: &Path,
     host: &str,
-    cfg: &[CfgEntry],
+    cfg: Option<&[CfgEntry]>,
     environment: &dyn Fn(&str) -> Option<OsString>,
 ) -> LinkerSettings {
     let mut targets = BTreeMap::<String, TargetTable>::new();
@@ -162,7 +164,7 @@ pub(super) fn linker_settings(
 
     let matching = targets
         .iter()
-        .filter(|(key, _)| cfg_matches(key, cfg))
+        .filter(|(key, _)| cfg.is_some_and(|cfg| cfg_matches(key, cfg)))
         .map(|(_, table)| table)
         .collect::<Vec<_>>();
     let linker = targets[host]
