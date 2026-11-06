@@ -46,6 +46,11 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
   complete only when parser/semantics/lowering/runtime behavior and diagnostics
   are verified at the appropriate boundaries.
 
+## Communication
+
+- Claude always replies and reports to the user and セセ in Japanese. Code,
+  commit messages and identifiers stay as before.
+
 ## Writing documentation and comments
 
 Docs are read by people who did not see your work. Write for that reader.
