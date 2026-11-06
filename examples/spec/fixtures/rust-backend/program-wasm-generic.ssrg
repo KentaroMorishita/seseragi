@@ -1,0 +1,17 @@
+// Program WASM exports generic functions without trait constraints. Values
+// of a type parameter cross back to the host unchanged, as in the TS target.
+pub fn identity<A> value: A -> A = value
+
+pub fn pair<A, B> left: A -> right: B -> (B, A) = (right, left)
+
+pub fn firsts<A> values: Array<A> -> Maybe<A> = match values {
+  [first, ..._] -> Just first
+  _ -> Nothing
+}
+
+pub fn swapped<A, B> value: Either<A, B> -> Either<B, A> = match value {
+  Left left -> Right left
+  Right right -> Left right
+}
+
+pub fn repeated<A> value: A -> Array<A> = [value, value]

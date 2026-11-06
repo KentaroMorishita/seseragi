@@ -184,6 +184,16 @@ pub(crate) fn canonical_declared_type(
     display::canonical_type(ty, &module.module, substitutions, &names, true)
 }
 
+/// The checked type of `body`, with the function's type parameters replaced
+/// by `substitutions`.
+pub(crate) fn checked_declared_body_type(
+    module: &CoreModule,
+    body: &CoreExpr,
+    substitutions: &BTreeMap<String, CoreType>,
+) -> Option<CoreType> {
+    canonical_declared_type(module, &local::method_argument_type(body)?, substitutions)
+}
+
 pub(crate) fn checked_boundary_body_type(module: &CoreModule, body: &CoreExpr) -> Option<CoreType> {
     canonical_boundary_type(module, &local::method_argument_type(body)?)
 }

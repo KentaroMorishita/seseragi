@@ -18,6 +18,7 @@ enum ProgramCode {
     List(usize),
     Record(Vec<(&'static str, usize)>),
     Adt(Vec<(&'static str, Option<usize>)>),
+    Parameter,
     Effect(Option<usize>, Option<usize>),
     HostEffect(usize, Option<usize>, Option<usize>),
 }
@@ -49,6 +50,7 @@ thread_local! {
     static PROGRAM: RefCell<ProgramState> = RefCell::new(ProgramState::default());
 }
 const PROGRAM_MAX_BYTES: usize = 16 * 1024 * 1024;
+const PROGRAM_HOST_VALUE: &str = "program/host::Value";
 type ProgramResult<T> = Result<T, &'static str>;
 
 fn program_register(value: V, codec: usize) -> ProgramResult<u32> {
@@ -169,6 +171,10 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
             }
             V::Record(Shared::new(values))
         }
+        // WASM only holds a type parameter's host value, by its token.
+        ProgramCode::Parameter => {
+            V::adt(PROGRAM_HOST_VALUE, V::Int(i64::from(program_u32(input)?)))
+        }
         ProgramCode::Adt(variants) => {
             let (owner, payload) = variants
                 .get(program_u32(input)? as usize)
@@ -282,6 +288,17 @@ fn program_encode(
                 program_encode(value, *codec, codes, out)?;
             }
             Ok(())
+        }
+        (ProgramCode::Parameter, V::Adt(value)) if value.get().0 == PROGRAM_HOST_VALUE => {
+            match value.get().1 {
+                V::Int(token) => program_bytes(
+                    out,
+                    &u32::try_from(token)
+                        .map_err(|_| "program ABI: invalid host value")?
+                        .to_le_bytes(),
+                ),
+                _ => Err("program ABI: invalid host value"),
+            }
         }
         (ProgramCode::Adt(variants), V::Adt(value)) => {
             let index = variants

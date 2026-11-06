@@ -102,7 +102,8 @@ fn refuses_unproved_public_types_and_staging_before_any_artifact() {
         assert!(error.origin.is_some(), "mutation{mutation}: {error}");
     }
     for source in [
-        "pub fn value<A> input: A -> A = input\n",
+        "pub fn value<A> input: A -> String where Show<A> = show input\n",
+        "type Box<A> = | Box A\npub fn value<A> input: A -> Box<A> = Box input\n",
         "pub fn value input: (Int -> Int) -> Int = input 1\n",
         "import * as bigs from \"std/big-int\"\npub fn value input: bigs.BigInt -> Int = 1\n",
         "import * as bigs from \"std/big-int\"\npub fn value input: {x: Int, y: bigs.BigInt} -> Int = input.x\n",

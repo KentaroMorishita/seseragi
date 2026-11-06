@@ -56,6 +56,11 @@ pub enum ProgramCodec {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         name: Option<String>,
     },
+    /// A value of a function's type parameter. WASM only holds and returns
+    /// it, so the loader passes the host value itself by token.
+    Parameter {
+        name: String,
+    },
     /// A sum type. The wire tag is the variant's index.
     Adt {
         name: String,
@@ -79,6 +84,9 @@ pub struct ProgramVariant {
     pub owner: String,
     pub payload: Option<usize>,
 }
+
+/// The prefix of a type parameter's name in a checked public type.
+const TYPE_PARAMETER: &str = "\0type-parameter::";
 
 fn max_sequence_items() -> usize {
     1 << 20
@@ -215,18 +223,37 @@ pub fn emit_program_wasm(
         if function.visibility != seseragi_syntax::Visibility::Public {
             return Err(error("program WASM: selected function must be public"));
         }
-        if !function.type_parameters.is_empty()
-            || !function.constraints.is_empty()
+        // Type parameters cross the boundary as host values that WASM only
+        // holds and returns; a trait constraint would need an instance for
+        // them, which the boundary cannot select yet.
+        if !function.constraints.is_empty()
             || function.parameters.is_empty()
+            || function
+                .type_parameters
+                .iter()
+                .any(|parameter| parameter.arity != 0)
         {
             return Err(error(
-                "program WASM: an unconstrained monomorphic source function is required",
+                "program WASM: an unconstrained source function with value type parameters is required",
             ));
         }
+        let substitutions = function
+            .type_parameters
+            .iter()
+            .map(|parameter| {
+                (
+                    parameter.name.clone(),
+                    CoreType::Named {
+                        name: format!("{TYPE_PARAMETER}{}", parameter.name),
+                        arguments: Vec::new(),
+                    },
+                )
+            })
+            .collect();
         let ty = function
             .value_type
             .as_ref()
-            .and_then(|ty| emit::canonical_boundary_type(module, ty))
+            .and_then(|ty| emit::canonical_declared_type(module, ty, &substitutions))
             .ok_or_else(|| error("program WASM: checked public value type is unavailable"))?;
         // Source arity is declaration metadata. A returned function is never
         // silently folded into the declaration's parameter list.
@@ -242,7 +269,8 @@ pub fn emit_program_wasm(
                 ));
             };
             if !matches!(parameter.kind.as_str(), "named" | "implicit")
-                || emit::canonical_boundary_type(module, &parameter.type_ref).as_ref()
+                || emit::canonical_declared_type(module, &parameter.type_ref, &substitutions)
+                    .as_ref()
                     != Some(expected.as_ref())
                 || (parameter.kind == "implicit"
                     && !matches!(expected.as_ref(), CoreType::Named {name, arguments} if name == "std/prelude::Unit" && arguments.is_empty()))
@@ -253,7 +281,7 @@ pub fn emit_program_wasm(
             }
             remainder = result;
         }
-        let body_type = emit::checked_boundary_body_type(module, &function.body);
+        let body_type = emit::checked_declared_body_type(module, &function.body, &substitutions);
         let effect_result = |mut ty: &CoreType| {
             while let CoreType::Function { result, .. } = ty {
                 ty = result;
@@ -279,6 +307,11 @@ pub fn emit_program_wasm(
             terminal = *result;
         }
         let returns_effect = matches!(codecs[terminal], ProgramCodec::Effect { .. });
+        if returns_effect && !function.type_parameters.is_empty() {
+            return Err(error(
+                "program WASM: generic Effect functions need the Effect ABI's own proof",
+            ));
+        }
         if function.is_effect && !returns_effect {
             return Err(error(
                 "program WASM: checked Effect declaration contract is unavailable",
@@ -516,6 +549,14 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
             ("std/prelude::List", [element]) if codecs.modules.is_some() => ProgramCodec::List {
                 element: codec(element, false, codecs)?,
             },
+            _ if codecs.modules.is_some()
+                && name.starts_with(TYPE_PARAMETER)
+                && arguments.is_empty() =>
+            {
+                ProgramCodec::Parameter {
+                    name: name[TYPE_PARAMETER.len()..].to_owned(),
+                }
+            }
             _ => return named_codec(ty, codecs),
         },
         CoreType::Record {
@@ -591,6 +632,22 @@ fn records_in_name_order(ty: &CoreType) -> CoreType {
     }
 }
 
+fn mentions_type_parameter(ty: &CoreType) -> bool {
+    match ty {
+        CoreType::Named { name, arguments } => {
+            name.starts_with(TYPE_PARAMETER) || arguments.iter().any(mentions_type_parameter)
+        }
+        CoreType::Tuple { elements } => elements.iter().any(mentions_type_parameter),
+        CoreType::Function { parameter, result } => {
+            mentions_type_parameter(parameter) || mentions_type_parameter(result)
+        }
+        CoreType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| mentions_type_parameter(&field.type_ref)),
+        _ => false,
+    }
+}
+
 /// The codec of an ADT or struct declared in the linked modules. Opaque types
 /// and newtypes keep their representation private, so they are not data
 /// codecs. The codec is registered before its fields so that a recursive
@@ -602,6 +659,10 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     };
     if let Some((_, index)) = codecs.named.iter().find(|(named, _)| named == ty) {
         return Some(*index);
+    }
+    // A named type over a type parameter would need a generic declaration.
+    if arguments.iter().any(mentions_type_parameter) {
+        return None;
     }
     let (owner, adt, structure) = modules.iter().find_map(|module| {
         module
@@ -711,6 +772,7 @@ fn rust_codec(codec: &ProgramCodec) -> String {
             success,
         } => format!("ProgramCode::HostEffect({parameter}, {failure:?}, {success:?})"),
         ProgramCodec::Array { element } => format!("ProgramCode::Array({element})"),
+        ProgramCodec::Parameter { .. } => "ProgramCode::Parameter".into(),
         ProgramCodec::List { element } => format!("ProgramCode::List({element})"),
         ProgramCodec::Record { fields, .. } => format!(
             "ProgramCode::Record(vec![{}])",
@@ -773,13 +835,20 @@ fn type_aliases(metadata: &ProgramWasmMetadata) -> std::collections::BTreeMap<us
             let unique = names.iter().filter(|(_, other)| other == name).count() == 1;
             let identifier = name.chars().next().is_some_and(|c| c.is_ascii_uppercase())
                 && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_');
-            let alias =
-                if unique && identifier && !RESERVED.contains(name) && !name.starts_with("Program")
-                {
-                    (*name).to_owned()
-                } else {
-                    format!("ProgramData{index}")
-                };
+            // A type parameter of an export is written by its name too.
+            let parameter = metadata.codecs.iter().any(|codec| {
+                matches!(codec, ProgramCodec::Parameter { name: parameter } if parameter == name)
+            });
+            let alias = if unique
+                && identifier
+                && !parameter
+                && !RESERVED.contains(name)
+                && !name.starts_with("Program")
+            {
+                (*name).to_owned()
+            } else {
+                format!("ProgramData{index}")
+            };
             (*index, alias)
         })
         .collect()
@@ -834,11 +903,90 @@ fn declared_type(
         ),
         ProgramCodec::Array { element } => format!("ReadonlyArray<{}>", ty(*element)),
         ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
+        ProgramCodec::Parameter { name } => name.clone(),
         ProgramCodec::Record { name: Some(_), .. } | ProgramCodec::Adt { .. } => {
             aliases[&index].clone()
         }
         ProgramCodec::Record { fields, .. } => record_type(metadata, aliases, fields),
     }
+}
+
+/// A callback that mentions type parameters. Each call binds the type
+/// parameters that first appear in its argument, so TS can infer them; the
+/// last call also binds any that appear only in its result.
+fn generic_callback_type(
+    metadata: &ProgramWasmMetadata,
+    aliases: &std::collections::BTreeMap<usize, String>,
+    index: usize,
+    bound: &[String],
+) -> String {
+    let ProgramCodec::Function { parameter, result } = &metadata.codecs[index] else {
+        return declared_type(metadata, aliases, index);
+    };
+    let callable = matches!(metadata.codecs[*result], ProgramCodec::Function { .. });
+    let mut binding = type_parameters(metadata, *parameter);
+    if !callable {
+        binding.extend(type_parameters(metadata, *result));
+    }
+    let mut seen = Vec::new();
+    binding.retain(|name| {
+        !bound.contains(name) && {
+            let first = !seen.contains(name);
+            seen.push(name.clone());
+            first
+        }
+    });
+    let mut inner = bound.to_vec();
+    inner.extend(binding.iter().cloned());
+    let result = if callable
+        && !type_parameters(metadata, *result)
+            .iter()
+            .all(|name| inner.contains(name))
+    {
+        generic_callback_type(metadata, aliases, *result, &inner)
+    } else {
+        declared_type(metadata, aliases, *result)
+    };
+    let generics = if binding.is_empty() {
+        String::new()
+    } else {
+        format!("<{}>", binding.join(", "))
+    };
+    format!(
+        "{{{generics}(argument: {}): {result}; dispose(): void; readonly disposed: boolean}}",
+        declared_type(metadata, aliases, *parameter),
+    )
+}
+
+/// The type parameters an export's codec mentions, in first-use order.
+fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
+    let mut found = Vec::new();
+    let mut visited = BTreeSet::new();
+    let mut pending = vec![root];
+    while let Some(index) = pending.pop() {
+        if !visited.insert(index) {
+            continue;
+        }
+        match &metadata.codecs[index] {
+            ProgramCodec::Parameter { name } => {
+                if !found.contains(name) {
+                    found.push(name.clone());
+                }
+            }
+            ProgramCodec::Tuple { elements } => pending.extend(elements.iter().rev()),
+            ProgramCodec::Maybe { value } => pending.push(*value),
+            ProgramCodec::Either { left, right } => pending.extend([*right, *left]),
+            ProgramCodec::Function { parameter, result } => pending.extend([*result, *parameter]),
+            ProgramCodec::Array { element } | ProgramCodec::List { element } => {
+                pending.push(*element)
+            }
+            ProgramCodec::Record { fields, name: None } => {
+                pending.extend(fields.iter().rev().map(|field| field.codec))
+            }
+            _ => {}
+        }
+    }
+    found
 }
 
 fn record_type(
@@ -893,10 +1041,14 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
         result.insert_str(0, &format!("export type {alias} = {body};\n"));
     }
     for export in &metadata.exports {
-        result.push_str(&format!(
-            "readonly {}: {};\n",
-            serde_json::to_string(&export.name).unwrap(),
+        let ty = if type_parameters(metadata, export.codec).is_empty() {
             declared_type(metadata, &aliases, export.codec)
+        } else {
+            generic_callback_type(metadata, &aliases, export.codec, &[])
+        };
+        result.push_str(&format!(
+            "readonly {}: {ty};\n",
+            serde_json::to_string(&export.name).unwrap(),
         ));
     }
     if metadata.abi == PROGRAM_WASM_HOST_EFFECT_ABI {

@@ -979,7 +979,7 @@ fn initialization_defect_is_an_opaque_program_defect_before_exports_escape() {
 fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
     let scratch = Scratch::new();
     for (index,source) in [
-        "pub fn selected<A> value: A -> A = value",
+        "pub fn selected<A> value: A -> String where Show<A> = show value",
         "import * as bigs from \"std/big-int\"\npub fn selected value: bigs.BigInt -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
@@ -2824,6 +2824,66 @@ const done: Promise<number> = Promise.resolve(owner.exports.done(1).tag === 'Don
 "#,
     )
     .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn generic_exports_return_host_values_unchanged_like_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-generic.ssrg",
+        &["identity", "pair", "firsts", "swapped", "repeated"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+// Values of a type parameter come back as the same host values, as in TS.
+const object = {name: '雪'};
+const callback = () => 1;
+for (const value of [object, callback, undefined, null, 'text', 1.5, NaN, [1, 2]]) {
+  assert.ok(Object.is(wasm.identity(value), ts.identity(value)));
+}
+const [right, left] = wasm.pair(object)(callback);
+assert.ok(right === callback && left === object);
+assert.deepStrictEqual(wasm.firsts([object, 2]), ts.firsts([object, 2]));
+assert.equal(wasm.firsts([object]).value, object);
+assert.deepStrictEqual({...wasm.firsts([])}, ts.firsts([]));
+assert.equal(wasm.swapped({tag: 'Left', value: object}).value, object);
+assert.deepStrictEqual({...wasm.swapped({tag: 'Right', value: 1})}, ts.swapped({tag: 'Right', value: 1}));
+assert.deepStrictEqual([...wasm.repeated(object)], ts.repeated(object));
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+    // TS infers each type parameter from the call that first receives it.
+    fs::write(scratch.0.join("types.mts"), r#"import {loadProgram} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const same: {name: string} = owner.exports.identity({name: 'a'});
+const pair: readonly [string, number] = owner.exports.pair(1)('a');
+const first: Readonly<{tag: 'Nothing'}> | Readonly<{tag: 'Just'; value: boolean}> = owner.exports.firsts([true]);
+const repeated: ReadonlyArray<number> = owner.exports.repeated(1);
+// @ts-expect-error the second call returns the first argument's type second
+const wrong: readonly [number, string] = owner.exports.pair(1)('a');
+"#).unwrap();
     fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
     successful(bounded(
         Command::new(&node)
