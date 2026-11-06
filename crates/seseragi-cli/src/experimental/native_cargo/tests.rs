@@ -169,7 +169,16 @@ fn linker_invocation_follows_rustc_flavor_and_linker_name_rules() {
         ("", None, CompilerDriver),
         ("-C opt-level=1", None, CompilerDriver),
         ("-C linker=rust-lld", None, Direct),
-        ("-Clinker=/opt/llvm/bin/ld64.lld", None, Direct),
+        // rustc gives ld64.lld no hint, so the Apple default driver stays.
+        ("-Clinker=/opt/llvm/bin/ld64.lld", None, CompilerDriver),
+        // rustc removes a numeric suffix after the last `-`.
+        ("-C linker=/opt/bin/ld-21", None, Direct),
+        ("-C linker=rust-lld-19", None, Direct),
+        ("-C linker=ld.lld-18.exe", None, Direct),
+        ("-C linker=clang-18", None, CompilerDriver),
+        ("-C linker=gcc-", None, CompilerDriver),
+        ("-C linker=ld-x", None, CompilerDriver),
+        ("", Some("/opt/bin/ld-21"), Direct),
         ("--codegen=linker=ld", None, Direct),
         ("--codegen linker=x86_64-apple-darwin-ld", None, Direct),
         ("-C linker=/usr/bin/clang", None, CompilerDriver),
@@ -196,6 +205,98 @@ fn linker_invocation_follows_rustc_flavor_and_linker_name_rules() {
             "{rustflags} / {environment:?}"
         );
     }
+}
+
+#[test]
+fn linker_settings_read_cargo_config_files_with_cargo_precedence() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let package = root.path().join("package");
+    let directory = package.join(".seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    for path in [&directory, &home] {
+        fs::create_dir_all(path).unwrap();
+    }
+    let write = |directory: &Path, name: &str, source: &str| {
+        fs::create_dir_all(directory).unwrap();
+        fs::write(directory.join(name), source).unwrap();
+    };
+    let none = |_: &str| None;
+    let resolve = |environment: &dyn Fn(&str) -> Option<OsString>| {
+        linker_settings(&directory, &home, host, environment)
+    };
+    assert_eq!(resolve(&none), LinkerSettings::default());
+
+    // A linker set only in the package's Cargo config is the one Cargo uses.
+    write(
+        &package.join(".cargo"),
+        "config.toml",
+        "[target.aarch64-apple-darwin]\nlinker = \"/opt/llvm/bin/rust-lld\"\n[target.x86_64-apple-darwin]\nlinker = \"clang\"\n",
+    );
+    let settings = resolve(&none);
+    assert_eq!(settings.linker.as_deref(), Some("/opt/llvm/bin/rust-lld"));
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::Direct
+    );
+
+    // CARGO_HOME has the lowest precedence; a nearer `config` beats
+    // `config.toml` in the same directory and every farther file.
+    write(&home, "config.toml", "[target.aarch64-apple-darwin]\nlinker = \"home-ld\"\n[build]\nrustflags = \"-C opt-level=1\"\n");
+    write(
+        &directory.join(".cargo"),
+        "config",
+        "[target.aarch64-apple-darwin]\nlinker = \"clang\"\n",
+    );
+    write(
+        &directory.join(".cargo"),
+        "config.toml",
+        "[target.aarch64-apple-darwin]\nlinker = \"rust-lld\"\n",
+    );
+    let settings = resolve(&none);
+    assert_eq!(settings.linker.as_deref(), Some("clang"));
+    assert_eq!(settings.rustflags, ["-C", "opt-level=1"]);
+
+    // Target rustflags replace build rustflags; config arrays append in
+    // precedence order, so a nearer -C linker comes last and wins.
+    write(
+        &package.join(".cargo"),
+        "config.toml",
+        "[target.aarch64-apple-darwin]\nrustflags = [\"-C\", \"linker=rust-lld\"]\n",
+    );
+    write(
+        &directory.join(".cargo"),
+        "config",
+        "[target.aarch64-apple-darwin]\nrustflags = \"-C linker=clang-18\"\n",
+    );
+    let settings = resolve(&none);
+    assert_eq!(
+        settings.rustflags,
+        ["-C", "linker=rust-lld", "-C", "linker=clang-18"]
+    );
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::CompilerDriver
+    );
+
+    // Environment variables override config files, and RUSTFLAGS replaces
+    // every configured rustflags value.
+    let environment = |key: &str| match key {
+        "CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER" => Some(OsString::from("/opt/bin/ld-21")),
+        "RUSTFLAGS" => Some(OsString::from("-C opt-level=2")),
+        _ => None,
+    };
+    let settings = resolve(&environment);
+    assert_eq!(settings.linker.as_deref(), Some("/opt/bin/ld-21"));
+    assert_eq!(settings.rustflags, ["-C", "opt-level=2"]);
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::Direct
+    );
+
+    // A file Cargo cannot parse is left for Cargo to report.
+    write(&directory.join(".cargo"), "config", "[target");
+    assert_eq!(resolve(&none).rustflags, ["-C", "linker=rust-lld"]);
 }
 
 #[test]
