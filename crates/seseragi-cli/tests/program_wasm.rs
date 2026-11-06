@@ -1095,7 +1095,7 @@ fn providerless_program_effects_run_cancel_and_release_on_bun_and_node() {
             &scratch.0,
         ));
         let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
-        assert_eq!(report["abi"], "seseragi-program-wasm-effect-v1");
+        assert_eq!(report["abi"], "seseragi-program-wasm-effect-v2");
         assert_eq!(report["callbacks"], 3);
         assert_eq!(report["cancelled"], 2);
         assert_eq!(report["disposeDefectObservable"], true);
@@ -1739,7 +1739,7 @@ fn standard_web_effect_build_owns_async_program_types_and_lifetimes() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v1"
+            "seseragi-program-wasm-effect-v2"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2039,7 +2039,7 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v1"
+            "seseragi-program-wasm-effect-v2"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2239,7 +2239,7 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v1"
+            "seseragi-program-wasm-effect-v2"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2840,7 +2840,14 @@ fn generic_exports_return_host_values_unchanged_like_the_ts_target() {
     wasm_and_ts(
         &scratch.0,
         "program-wasm-generic.ssrg",
-        &["identity", "pair", "firsts", "swapped", "repeated"],
+        &[
+            "identity",
+            "pair",
+            "firsts",
+            "swapped",
+            "repeated",
+            "shadowing",
+        ],
     );
     fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -2854,6 +2861,11 @@ const callback = () => 1;
 for (const value of [object, callback, undefined, null, 'text', 1.5, NaN, [1, 2]]) {
   assert.ok(Object.is(wasm.identity(value), ts.identity(value)));
 }
+// +0 and -0 stay apart in either order.
+assert.ok(Object.is(wasm.identity(0), 0));
+assert.ok(Object.is(wasm.identity(-0), -0));
+assert.ok(Object.is(wasm.identity(0), 0));
+assert.deepStrictEqual([...wasm.shadowing(object)], ts.shadowing(object));
 const [right, left] = wasm.pair(object)(callback);
 assert.ok(right === callback && left === object);
 assert.deepStrictEqual(wasm.firsts([object, 2]), ts.firsts([object, 2]));
@@ -2881,6 +2893,7 @@ const same: {name: string} = owner.exports.identity({name: 'a'});
 const pair: readonly [string, number] = owner.exports.pair(1)('a');
 const first: Readonly<{tag: 'Nothing'}> | Readonly<{tag: 'Just'; value: boolean}> = owner.exports.firsts([true]);
 const repeated: ReadonlyArray<number> = owner.exports.repeated(1);
+const shadowing: ReadonlyArray<string> = owner.exports.shadowing('a');
 // @ts-expect-error the second call returns the first argument's type second
 const wrong: readonly [number, string] = owner.exports.pair(1)('a');
 "#).unwrap();

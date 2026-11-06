@@ -6,8 +6,8 @@ use seseragi_lowering::{CoreModule, CoreType, SourceSpan};
 use std::collections::BTreeSet;
 
 pub const PROGRAM_WASM_ABI: &str = "seseragi-program-wasm-pure-v1";
-pub const PROGRAM_WASM_EFFECT_ABI: &str = "seseragi-program-wasm-effect-v1";
-pub const PROGRAM_WASM_HOST_EFFECT_ABI: &str = "seseragi-program-wasm-host-effect-v1";
+pub const PROGRAM_WASM_EFFECT_ABI: &str = "seseragi-program-wasm-effect-v2";
+pub const PROGRAM_WASM_HOST_EFFECT_ABI: &str = "seseragi-program-wasm-host-effect-v2";
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
@@ -830,6 +830,37 @@ fn rust_codec(codec: &ProgramCodec) -> String {
     }
 }
 
+/// Names a generated declaration must not redefine: the TS globals the
+/// declarations refer to and the names the declarations define.
+const RESERVED: &[&str] = &[
+    // TS globals the declarations refer to.
+    "AbortSignal",
+    "BufferSource",
+    "Error",
+    "Promise",
+    "PromiseLike",
+    "Readonly",
+    "ReadonlyArray",
+    // Names the declarations define.
+    "Ownership",
+    "OwnedCallback",
+    "OwnedEffect",
+    "HostResult",
+    "HostEffect",
+    "HostEffectContext",
+];
+
+/// The TS name of a type parameter. A name the declarations already use, or
+/// one starting with `Program` like generated names, gets a `ProgramType`
+/// prefix; ADT and struct names never take a type parameter's name.
+fn type_parameter_name(name: &str) -> String {
+    if RESERVED.contains(&name) || name.starts_with("Program") {
+        format!("ProgramType{name}")
+    } else {
+        name.to_owned()
+    }
+}
+
 /// The TS type names of ADT and struct codecs. These types can be
 /// recursive, so each is declared once by name instead of being expanded
 /// where it is used. A source name becomes the TS name only when it is a
@@ -837,23 +868,6 @@ fn rust_codec(codec: &ProgramCodec) -> String {
 /// or a name these declarations use; otherwise the codec gets
 /// `ProgramData<index>`.
 fn type_aliases(metadata: &ProgramWasmMetadata) -> std::collections::BTreeMap<usize, String> {
-    const RESERVED: &[&str] = &[
-        // TS globals the declarations refer to.
-        "AbortSignal",
-        "BufferSource",
-        "Error",
-        "Promise",
-        "PromiseLike",
-        "Readonly",
-        "ReadonlyArray",
-        // Names the declarations define.
-        "Ownership",
-        "OwnedCallback",
-        "OwnedEffect",
-        "HostResult",
-        "HostEffect",
-        "HostEffectContext",
-    ];
     let names = metadata
         .codecs
         .iter()
@@ -940,7 +954,7 @@ fn declared_type(
         ),
         ProgramCodec::Array { element } => format!("ReadonlyArray<{}>", ty(*element)),
         ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
-        ProgramCodec::Parameter { name } => name.clone(),
+        ProgramCodec::Parameter { name } => type_parameter_name(name),
         ProgramCodec::Record { name: Some(_), .. } | ProgramCodec::Adt { .. } => {
             aliases[&index].clone()
         }
@@ -1006,8 +1020,9 @@ fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
         }
         match &metadata.codecs[index] {
             ProgramCodec::Parameter { name } => {
-                if !found.contains(name) {
-                    found.push(name.clone());
+                let name = type_parameter_name(name);
+                if !found.contains(&name) {
+                    found.push(name);
                 }
             }
             ProgramCodec::Tuple { elements } => pending.extend(elements.iter().rev()),

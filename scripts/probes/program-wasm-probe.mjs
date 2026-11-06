@@ -102,7 +102,10 @@ assert.throws(
     // The Defect is reported at its source location, as the TS target does;
     // the export it happened in stays in `origin`.
     assert.equal(error.kind, "defect")
-    assert.match(error.message, /\.ssrg:\d+:\d+: Seseragi Defect: Seseragi Int overflow$/)
+    assert.match(
+      error.message,
+      /\.ssrg:\d+:\d+: Seseragi Defect: Seseragi Int overflow$/
+    )
     assert.equal(error.message.startsWith(`${error.location.file}:`), true)
     assert.ok(error.origin)
     // A copied cause cannot hold a native RuntimeError or WASM instance alive.

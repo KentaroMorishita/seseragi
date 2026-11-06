@@ -15,3 +15,6 @@ pub fn swapped<A, B> value: Either<A, B> -> Either<B, A> = match value {
 }
 
 pub fn repeated<A> value: A -> Array<A> = [value, value]
+
+// A type parameter may share a name with a TS global type.
+pub fn shadowing<ReadonlyArray> value: ReadonlyArray -> Array<ReadonlyArray> = [value]

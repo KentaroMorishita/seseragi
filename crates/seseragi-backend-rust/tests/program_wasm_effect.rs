@@ -14,7 +14,7 @@ fn checked_cold_effect_uses_a_distinct_resumable_program_contract() {
          pub effect fn value input: String -> String fails String = effects.succeed input\n",
     );
     let artifact = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
-    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v1");
+    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v2");
     assert_eq!(artifact.metadata.exports[0].source_arity, 1);
     assert!(artifact
         .declarations

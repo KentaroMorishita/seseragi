@@ -7,6 +7,7 @@ export class ProgramWasmClosed extends Error {
 }
 
 const encoder = new TextEncoder()
+const negativeZero = Symbol("negative zero")
 const decoder = new TextDecoder("utf-8", { fatal: true })
 
 function dataObject(value, keys) {
@@ -202,13 +203,15 @@ function write(id, value, writer) {
       // WASM only holds and returns a type parameter's value, so the host
       // value itself stays here and crosses by token.
       const state = writer.state
-      let token = state.hostTokens.get(value)
+      // A Map key treats -0 as +0, so negative zero has its own key.
+      const key = Object.is(value, -0) ? negativeZero : value
+      let token = state.hostTokens.get(key)
       if (token === undefined) {
         if (state.nextHostValue > 0xffffffff)
           throw new TypeError("Host value token space exhausted")
         token = state.nextHostValue++
         state.hostValues.set(token, value)
-        state.hostTokens.set(value, token)
+        state.hostTokens.set(key, token)
       }
       writer.u32(token)
       break

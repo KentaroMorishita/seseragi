@@ -213,7 +213,7 @@ Defect後の再生成を確認できる。assetの配置はsample scriptで明�
 
 ## providerless Effectを実行・取消する
 
-閉じた公開Effectを選ぶと、`seseragi-program-wasm-effect-v1`を生成する。
+閉じた公開Effectを選ぶと、`seseragi-program-wasm-effect-v2`を生成する。
 pure ABIとは別のloaderとresumable runtimeを使い、従来のpure出力を保つ。
 source引数を適用するとcoldな`OwnedEffect<E, A>`を返し、`run()`で実行を開始する。
 辞書factory、source引数、返り値関数とEffectの実行を一段階へまとめない。
@@ -268,7 +268,7 @@ Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿�
 ## 型付きhost Effect callbackを渡す
 
 公開関数の引数に、閉じた`A -> Effect<{}, E, B>`を持つ関数を渡せる。
-この場合は`seseragi-program-wasm-host-effect-v1`を生成し、pure／providerlessの出力を保つ。
+この場合は`seseragi-program-wasm-host-effect-v2`を生成し、pure／providerlessの出力を保つ。
 引数・成功値・失敗値には既存の閉じた値codecを使い、成功／失敗の`Never`は値を持たない。
 同期host関数、複数のsource引数を取るhost関数、open row、generic、公開Ref／Fiber／Deferred、
 foreign handleや一般provider ABIは生成前に拒否する。
