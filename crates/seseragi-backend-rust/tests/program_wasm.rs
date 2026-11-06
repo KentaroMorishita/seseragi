@@ -102,7 +102,8 @@ fn refuses_unproved_public_types_and_staging_before_any_artifact() {
         assert!(error.origin.is_some(), "mutation{mutation}: {error}");
     }
     for source in [
-        "pub fn value<A> input: A -> A = input\n",
+        "pub fn value<A> input: A -> String where Show<A> = show input\n",
+        "type Box<A> = | Box A\npub fn value<A> input: A -> Box<A> = Box input\n",
         "pub fn value input: (Int -> Int) -> Int = input 1\n",
         "import * as bigs from \"std/big-int\"\npub fn value input: bigs.BigInt -> Int = 1\n",
         "import * as bigs from \"std/big-int\"\npub fn value input: {x: Int, y: bigs.BigInt} -> Int = input.x\n",
@@ -220,4 +221,20 @@ fn main() {
         String::from_utf8_lossy(&run.stderr)
     );
     assert_eq!(run.stdout, b"program roots released\n");
+}
+
+#[test]
+fn a_type_nested_in_itself_with_other_arguments_is_a_diagnostic() {
+    // Each level adds an Array, so the codecs would never end.
+    let module = checked("type Nested<A> =\n  | End\n  | Next (Nested<Array<A>>)\n\npub fn value input: Nested<Int> -> Nested<Int> = input\n");
+    let error = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap_err();
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert!(
+        error.message.contains("unsupported public codec"),
+        "{error}"
+    );
+    assert!(error.origin.is_some());
+    // A finite change of arguments still has codecs.
+    let module = checked("type Pair<A> =\n  | Pair (A, Maybe<Pair<Int>>)\n\npub fn value input: Pair<String> -> Pair<String> = input\n");
+    emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
 }

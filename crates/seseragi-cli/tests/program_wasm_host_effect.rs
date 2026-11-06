@@ -168,7 +168,7 @@ fn typed_host_effect_callbacks_suspend_cleanup_and_release_their_last_host_refer
     ));
     let manifest: serde_json::Value =
         serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
-    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v1");
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v2");
     for engine in ["bun", "node"] {
         let result = successful(bounded(
             Command::new(runtime(engine, &scratch.0))
@@ -250,7 +250,7 @@ fn standard_web_host_effect_build_keeps_typed_assets_and_source_stages() {
         assert_eq!(manifest["profile"], profile);
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         let program = &manifest["programs"][0];
-        assert_eq!(program["abi"], "seseragi-program-wasm-host-effect-v1");
+        assert_eq!(program["abi"], "seseragi-program-wasm-host-effect-v2");
         assert_eq!(program["hostImport"], "@seseragi/programs/calculation");
         let directory = site.join("programs/calculation");
         let receipt: serde_json::Value =
@@ -390,7 +390,7 @@ fn private_data_host_effect_factory_retains_state_and_drains_cleanup() {
     ));
     let manifest: serde_json::Value =
         serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
-    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v1");
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v2");
     for engine in ["bun", "node"] {
         let result = successful(bounded(
             Command::new(runtime(engine, &scratch.0))
@@ -523,7 +523,7 @@ fn private_data_host_effect_standard_package_keeps_the_original_typed_bridge() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-host-effect-v1"
+            "seseragi-program-wasm-host-effect-v2"
         );
         assert_eq!(fs::read(site.join("input.txt")).unwrap(), "流れ".as_bytes());
         let directory = site.join("programs/calculation");

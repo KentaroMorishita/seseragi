@@ -8,6 +8,21 @@
 - Native runs `timeout` and `timeoutFail`, which race the source against a Clock sleep; the source wins a tie, including with a zero Duration.
 - Native runs `schedule`, `recurs`, `spaced`, `whileInput`, `retry` and `repeat`. A retry ends at the first success, a repeat at the first failure, and a Defect is never retried. These operations need the native Clock selection, like `clock.sleep`.
 
+## [0.61.150] - 2026-11-07
+
+### Added
+
+- Program WASM exports generic functions without trait constraints. A value of a type parameter crosses as the host value itself and comes back unchanged, as in the TS target, and the generated declarations bind each type parameter at the call that first receives it.
+- A program WASM Defect is reported at its source location, in the same `file:line:column: Seseragi Defect: message` form as the TS target and native, with `kind: "defect"` and `location` on the `ProgramWasmDefect`. A trap without a Defect has `kind: "trap"`. Effect exports report the location of a typed failure (`location`) and of each Defect message (`locations`).
+
+### Changed
+
+- The program WASM Effect ABIs are now `seseragi-program-wasm-effect-v2` and `seseragi-program-wasm-host-effect-v2`, because their outcomes carry source locations. A loader rejects a WASM built for the earlier ABI instead of misreading it.
+
+### Fixed
+
+- Program WASM reports a type that nests itself with other type arguments as an unsupported public codec instead of overflowing the stack, and passes empty Arrays and Lists of a struct that contains itself.
+
 ## [0.61.149] - 2026-11-07
 
 ### Fixed

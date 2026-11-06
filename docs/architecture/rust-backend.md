@@ -150,8 +150,11 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 | List | `{tag: "Cons", head, tail}` と `{tag: "Empty"}` |
 | 閉じた record・struct | 普通のオブジェクト |
 | Maybe・Either・ADT | `{tag}` または `{tag, value}`。generic や再帰する ADT も使える |
+| 関数の型パラメータ | JS の値そのもの。WASM は預かって返すだけで、同じ値が返る |
 
-opaque 型、newtype、BigInt、Decimal などは受け渡せない。形が合わない入力（循環した List を
+trait 制約のない generic な関数も公開できる。型宣言では、型パラメータを最初に受け取る呼び出しで
+それを決めるので、TS が推論できる。trait 制約のある関数と、型パラメータを含む ADT・struct は
+まだ公開できない。opaque 型、newtype、BigInt、Decimal などは受け渡せない。形が合わない入力（循環した List を
 含む）は、WASM に入る前に `TypeError` で拒否する。manifest と loader の `capabilities` は、
 プログラムが使う標準ランタイムの領域（`text`、`list` など）を表す。証明のない標準 API は、
 ここに載らずにビルドが失敗する。Effect を返す公開関数の ABI は受け入れ判定が別で、
@@ -172,6 +175,17 @@ JSの一回の呼出しは一つのsource値を適用する。Unitも一段階�
 返り値関数の引数と混ぜない。返却callbackはstrongな外部rootで、detachするまで捕捉を保つ。
 tokenは再利用せず、detach／instance dispose後の呼出しはWASMへ入らず拒否する。
 通常disposeはglobal・辞書・callbackのrootを解放し、managed-live0を検査する。
+
+Effect を返さない公開関数の実行中に Defect（ゼロ除算やオーバーフローなど）が起きると、WASM は
+trap し、loader は `ProgramWasmDefect` を投げる。そのメッセージは TS ターゲットと同じ
+`ファイル:行:列: Seseragi Defect: 内容` の形で、`kind` は `"defect"`、`location` は
+`{file, line, column}` になる。Defect を記録しないまま止まった trap（スタックの使い切りなど）は
+`kind: "trap"` で区別する。どちらの場合も、起きた公開関数は `origin` に残る。
+
+Effect を返す公開関数では、型付きの失敗は `{tag: "Failure", error}`、明示的な Defect は
+`{tag: "Defect", messages}` として結果に返る。起きた場所は、失敗なら `location`、Defect なら
+メッセージごとの `locations`（位置のないものは `null`）で読める。どちらも結果の比較に影響しない
+ように、列挙されないプロパティにしている。
 
 このcheckedな完全関数型は共有TS loweringでも使う。pureで単相・制約なしの自己参照関数は、
 primitive／Tuple／Maybe／Eitherと関数で閉じる型をconst注釈へ残し、TSの再帰推論による
@@ -199,7 +213,7 @@ Defect後の再生成を確認できる。assetの配置はsample scriptで明�
 
 ## providerless Effectを実行・取消する
 
-閉じた公開Effectを選ぶと、`seseragi-program-wasm-effect-v1`を生成する。
+閉じた公開Effectを選ぶと、`seseragi-program-wasm-effect-v2`を生成する。
 pure ABIとは別のloaderとresumable runtimeを使い、従来のpure出力を保つ。
 source引数を適用するとcoldな`OwnedEffect<E, A>`を返し、`run()`で実行を開始する。
 辞書factory、source引数、返り値関数とEffectの実行を一段階へまとめない。
@@ -254,7 +268,7 @@ Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿�
 ## 型付きhost Effect callbackを渡す
 
 公開関数の引数に、閉じた`A -> Effect<{}, E, B>`を持つ関数を渡せる。
-この場合は`seseragi-program-wasm-host-effect-v1`を生成し、pure／providerlessの出力を保つ。
+この場合は`seseragi-program-wasm-host-effect-v2`を生成し、pure／providerlessの出力を保つ。
 引数・成功値・失敗値には既存の閉じた値codecを使い、成功／失敗の`Never`は値を持たない。
 同期host関数、複数のsource引数を取るhost関数、open row、generic、公開Ref／Fiber／Deferred、
 foreign handleや一般provider ABIは生成前に拒否する。
