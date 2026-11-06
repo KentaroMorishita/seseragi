@@ -69,6 +69,8 @@ on:
       - "scripts/probes/program-wasm-text-line-filter-probe.mjs"
       - "scripts/probes/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
+      - "scripts/cargo-test-shard.ts"
+      - "scripts/cargo-test-shard.test.ts"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "examples/spec/fixtures/rust-backend-projects/**"
@@ -150,6 +152,8 @@ on:
       - "scripts/probes/program-wasm-text-line-filter-probe.mjs"
       - "scripts/probes/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
+      - "scripts/cargo-test-shard.ts"
+      - "scripts/cargo-test-shard.test.ts"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "examples/spec/fixtures/rust-backend-projects/**"
@@ -184,17 +188,18 @@ permissions:
 jobs:
   file-transform:
     if: github.event_name != 'workflow_dispatch' || !inputs.async_io_only || inputs.integration
+    name: file-transform (${{ matrix.os }}, ${{ matrix.shard }}/3)
     strategy:
       fail-fast: false
       matrix:
         # Pull requests run Linux only; push to main and manual runs keep all hosts.
         os: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-24.04"]' || '["ubuntu-24.04", "macos-15", "windows-latest"]') }}
+        # Every host runs every test: the CLI suites are split across shards,
+        # and shard 1 also runs the other steps.
+        shard: [1, 2, 3]
     runs-on: ${{ matrix.os }}
-    # Batch all CLI suites in one Cargo invocation to reuse compilation.
     # Preserve every test and its individual deadline, with cold-build headroom.
-    # Ubuntu cold runs can exceed 45m after reaching the final rebuild suite.
-    # Keep every command and individual deadline; Windows/macOS runs exceed 90m.
-    timeout-minutes: 150
+    timeout-minutes: 75
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -210,7 +215,8 @@ jobs:
         if: runner.os == 'Linux'
         with:
           key: rust-backend-file-transform
-          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          # Shards share the key; shard 1 builds the most, so it saves.
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.shard == 1 }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -219,13 +225,19 @@ jobs:
           node-version: "24.22.1"
       - run: bun install --frozen-lockfile
       - name: Preserve smoke failures and bound Windows temporary cleanup
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && matrix.shard == 1
         run: bun test scripts/native-release.test.ts
+      - name: Split the CLI suites so every test runs in exactly one shard
+        if: matrix.shard == 1
+        run: bun test scripts/cargo-test-shard.test.ts
       - name: Drain pending file stages, close real handles and join exceptional workers
+        if: matrix.shard == 1
         run: cargo test --locked -p seseragi-native-runtime --lib host_tests
       - name: Keep locked provider identities identical across checkout hosts
+        if: matrix.shard == 1
         run: cargo test --locked -p seseragi-runtime --test provider_catalog_identity
       - name: Verify native text, byte and Array boundaries and portable math values on every host
+        if: matrix.shard == 1
         # One Cargo invocation with several libtest filters selects the same union.
         run: >-
           cargo test --locked -p seseragi-native-runtime --lib --
@@ -244,9 +256,16 @@ jobs:
           hashing_tests
           map_tests
           set_tests
+      # With CARGO_TARGET_DIR, the tests of one suite build native programs
+      # under one shared directory, so they share one runtime build. Windows
+      # already shares it through the tests' native cache.
+      - name: Share one native runtime build per test suite
+        if: runner.os != 'Windows'
+        run: echo "CARGO_TARGET_DIR=$GITHUB_WORKSPACE/target" >> "$GITHUB_ENV"
       - name: Compare complete file, numeric, identity and program WASM suites
         run: >-
-          cargo test --locked -p seseragi-cli
+          bun scripts/cargo-test-shard.ts ${{ matrix.shard }}/3
+          --locked -p seseragi-cli
           --test filesystem
           --test fibers
           --test async_filesystem
@@ -272,6 +291,7 @@ jobs:
       # (~32s on Ubuntu) because seseragi-release reruns on .git/index changes.
       # The filters below match only the intended tests in each binary.
       - name: Preserve checked cursors and lazy standard display, and rebuild selected program dependencies
+        if: matrix.shard == 1
         run: >-
           cargo test --locked -p seseragi-cli
           --test rust_backend
@@ -283,6 +303,7 @@ jobs:
           watches_host_effect_programs_and_drains_the_old_application_before_reload
           initial_program_
       - name: Drain old browser owners in the TypeScript program lifecycle
+        if: matrix.shard == 1
         run: |
           bun test ./runtime/ts/tests/program-lifecycle.test.ts ./runtime/ts/tests/program-lifecycle-async.test.ts
           bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts

@@ -11,17 +11,39 @@ use std::{
 #[cfg(test)]
 use std::process::Command;
 
-const RUNTIME_MANIFEST: &str = r#"[package]
+// The runtime and every program use the same profiles, which keep rustc
+// -O's overflow and assertion settings in development builds.
+macro_rules! profiles {
+    () => {
+        r#"
+[profile.dev]
+opt-level = 0
+debug-assertions = false
+overflow-checks = false
+
+[profile.release]
+opt-level = 3
+"#
+    };
+}
+
+const RUNTIME_MANIFEST: &str = concat!(
+    r#"[package]
 name = "seseragi-native-runtime"
 version = "0.0.0"
 edition = "2021"
 
+[workspace]
+resolver = "2"
+
 [lib]
 path = "lib.rs"
-"#;
+"#,
+    profiles!()
+);
 
-// Keep rustc -O's overflow and assertion settings in development builds.
-const PROGRAM_MANIFEST: &str = r#"[package]
+const PROGRAM_MANIFEST: &str = concat!(
+    r#"[package]
 name = "seseragi-program"
 version = "0.0.0"
 edition = "2021"
@@ -32,15 +54,9 @@ resolver = "2"
 [[bin]]
 name = "program"
 path = "program.rs"
-
-[profile.dev]
-opt-level = 0
-debug-assertions = false
-overflow-checks = false
-
-[profile.release]
-opt-level = 3
-"#;
+"#,
+    profiles!()
+);
 
 const WINDOWS_MAIN_STACK: &str = r#"    if std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
         if std::env::var("CARGO_CFG_TARGET_ENV").as_deref() == Ok("msvc") {
@@ -121,16 +137,17 @@ impl Project {
         executable: &Path,
         toolchain: &Toolchain,
     ) -> Result<(), String> {
-        let runtime_directory = self.directory.join("runtime");
-        ensure_directory(&runtime_directory)?;
-        write_if_changed(
-            &runtime_directory.join("Cargo.toml"),
-            RUNTIME_MANIFEST.as_bytes(),
-        )?;
-        write_if_changed(
-            &runtime_directory.join("lib.rs"),
-            format!("#![allow(dead_code)]\n{runtime}").as_bytes(),
-        )?;
+        let linker =
+            cargo_config::settle_with_cfg(&|rustflags| host_cfg(toolchain, rustflags), &|cfg| {
+                cargo_config::linker_settings(
+                    &self.directory,
+                    toolchain.cargo_home(),
+                    &toolchain.host,
+                    cfg,
+                    &|key| std::env::var_os(key),
+                )
+            });
+        let library = self.runtime_library(profile, runtime, toolchain, &linker.rustflags)?;
         write_if_changed(&self.directory.join("program.rs"), source.as_bytes())?;
         write_if_changed(
             &self.directory.join("Cargo.toml"),
@@ -142,19 +159,11 @@ impl Project {
         )?;
         regular_file(&self.directory.join("Cargo.lock"))?;
         let target = self.target_for(profile, runtime)?;
-        let mut command = toolchain.cargo()?;
-        let linker =
-            cargo_config::settle_with_cfg(&|rustflags| host_cfg(toolchain, rustflags), &|cfg| {
-                cargo_config::linker_settings(
-                    &self.directory,
-                    toolchain.cargo_home(),
-                    &toolchain.host,
-                    cfg,
-                    &|key| std::env::var_os(key),
-                )
-            });
         let invocation = linker_invocation(&linker.rustflags, linker.linker.as_deref());
-        let path_flags = path_flags(&self.directory, &target, &toolchain.host, invocation);
+        // The program also links the shared runtime, so object paths are made
+        // relative to the target root that holds both.
+        let path_flags = path_flags(&self.directory, &self.target, &toolchain.host, invocation);
+        let mut command = toolchain.cargo()?;
         // Cargo uses only one rustflags source, so pass the selected flags
         // with the path flags appended instead of adding to build.rustflags.
         command.env(
@@ -166,7 +175,9 @@ impl Project {
                 &path_flags,
             )?,
         );
-        let output = command
+        let mut runtime_crate = OsString::from("seseragi_native_runtime=");
+        runtime_crate.push(&library);
+        command
             .current_dir(&self.directory)
             .args([
                 "rustc",
@@ -177,33 +188,16 @@ impl Project {
                 "--target",
                 &toolchain.host,
                 "--profile",
+                cargo_profile(profile),
+                "--target-dir",
             ])
-            .arg(match profile {
-                BuildProfile::Development => "dev",
-                BuildProfile::Release => "release",
-            })
-            .arg("--target-dir")
             .arg(&target)
-            .output()
-            .map_err(|error| format!("could not start managed cargo: {error}"))?;
-        if !output.status.success() {
-            let mut diagnostics = String::from_utf8_lossy(&output.stderr).into_owned();
-            for line in output.stdout.split(|byte| *byte == b'\n') {
-                if let Ok(message) = serde_json::from_slice::<serde_json::Value>(line) {
-                    if let Some(rendered) = message["message"]["rendered"].as_str() {
-                        diagnostics.push_str(rendered);
-                    }
-                }
-            }
-            return Err(native_toolchain::compilation_error(
-                &toolchain.host,
-                &diagnostics,
-            ));
-        }
-        let built = output
-            .stdout
-            .split(|byte| *byte == b'\n')
-            .filter_map(|line| serde_json::from_slice::<serde_json::Value>(line).ok())
+            // Arguments after `--` reach only the program crate.
+            .arg("--")
+            .arg("--extern")
+            .arg(runtime_crate);
+        let built = run_cargo(&mut command, &toolchain.host)?
+            .into_iter()
             .find(|message| {
                 message["reason"] == "compiler-artifact"
                     && message["target"]["name"] == "program"
@@ -222,6 +216,124 @@ impl Project {
             .persist(executable)
             .map_err(|error| error.to_string())?;
         Ok(())
+    }
+
+    /// Builds the runtime crate, or reuses an earlier build, and returns its
+    /// library. Every program under the same target root shares one runtime
+    /// build for each runtime source, toolchain, profile and set of Cargo
+    /// settings, so a new program compiles only its own code.
+    ///
+    /// Cargo runs from the program's directory so the runtime sees the same
+    /// Cargo configuration as the program. Each program keeps its own target,
+    /// so builds of different programs do not wait for each other.
+    fn runtime_library(
+        &self,
+        profile: BuildProfile,
+        runtime: &str,
+        toolchain: &Toolchain,
+        rustflags: &[String],
+    ) -> Result<PathBuf, String> {
+        let directory = self.runtime_directory(profile, runtime, toolchain, rustflags)?;
+        fs::create_dir_all(&directory).map_err(|error| error.to_string())?;
+        ensure_directory(&directory)?;
+        regular_file(&directory.join("build.lock"))?;
+        let lock = File::options()
+            .create(true)
+            .truncate(false)
+            .read(true)
+            .write(true)
+            .open(directory.join("build.lock"))
+            .map_err(|error| error.to_string())?;
+        lock.lock().map_err(|error| error.to_string())?;
+        write_if_changed(&directory.join("Cargo.toml"), RUNTIME_MANIFEST.as_bytes())?;
+        write_if_changed(
+            &directory.join("lib.rs"),
+            format!("#![allow(dead_code)]\n{runtime}").as_bytes(),
+        )?;
+        regular_file(&directory.join("Cargo.lock"))?;
+        // Source paths read `./runtime/lib.rs`, as when the runtime was a
+        // directory of each program.
+        let path_flags = [
+            "--remap-path-prefix".to_owned(),
+            format!(
+                "{}={}",
+                directory.display(),
+                Path::new(".").join("runtime").display()
+            ),
+        ];
+        let mut command = toolchain.cargo()?;
+        command.env(
+            "CARGO_ENCODED_RUSTFLAGS",
+            rustflags_with_paths(
+                std::env::var_os("CARGO_ENCODED_RUSTFLAGS"),
+                std::env::var_os("RUSTFLAGS"),
+                rustflags,
+                &path_flags,
+            )?,
+        );
+        command
+            .current_dir(&self.directory)
+            .args([
+                "build",
+                "--offline",
+                "--lib",
+                "--message-format=json-render-diagnostics",
+                "--target",
+                &toolchain.host,
+                "--profile",
+                cargo_profile(profile),
+                "--manifest-path",
+            ])
+            .arg(directory.join("Cargo.toml"))
+            .arg("--target-dir")
+            .arg(directory.join("target"));
+        run_cargo(&mut command, &toolchain.host)?
+            .into_iter()
+            .filter(|message| {
+                message["reason"] == "compiler-artifact"
+                    && message["target"]["name"] == "seseragi_native_runtime"
+            })
+            .flat_map(|message| {
+                message["filenames"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .filter_map(|file| file.as_str().map(PathBuf::from))
+                    .collect::<Vec<_>>()
+            })
+            .find(|file| {
+                file.extension()
+                    .is_some_and(|extension| extension == "rlib")
+            })
+            .ok_or_else(|| "Cargo did not report the native runtime library".to_owned())
+    }
+
+    /// The shared runtime build for these settings. The key also covers the
+    /// Cargo configuration files, whose profile settings must match the
+    /// program's.
+    fn runtime_directory(
+        &self,
+        profile: BuildProfile,
+        runtime: &str,
+        toolchain: &Toolchain,
+        rustflags: &[String],
+    ) -> Result<PathBuf, String> {
+        let identity = format!(
+            "{:?}",
+            (
+                env!("CARGO_PKG_VERSION"),
+                Sha256::digest(runtime.as_bytes()),
+                native_toolchain::version(),
+                native_toolchain::host()?,
+                profile,
+                native_toolchain::build_settings(),
+                rustflags,
+                cargo_config::config_sources(&self.directory, toolchain.cargo_home()),
+            )
+        );
+        // Half of the digest keeps Windows paths under the target short.
+        let key = format!("{:x}", Sha256::digest(identity.as_bytes()));
+        Ok(self.target.join("runtime").join(&key[..32]))
     }
 
     fn target_for(&self, profile: BuildProfile, runtime: &str) -> Result<PathBuf, String> {
@@ -357,9 +469,9 @@ fn host_cfg(toolchain: &Toolchain, rustflags: &[String]) -> Vec<cargo_config::Cf
 /// Compiler flags that keep the package's absolute location out of the
 /// executable. `--remap-path-prefix` covers paths that rustc writes. On Apple
 /// hosts the linker also records each object file's absolute path (the debug
-/// map read by `dsymutil`); those objects live under the Cargo target
-/// directory, which can be inside the package, so `-oso_prefix` makes them
-/// relative to it. Both ld64 and ld64.lld accept `-oso_prefix`. A compiler
+/// map read by `dsymutil`); the program's objects and the shared runtime live
+/// under the target root, which can be inside the package, so `-oso_prefix`
+/// makes them relative to it. Both ld64 and ld64.lld accept `-oso_prefix`. A compiler
 /// driver needs `-Xlinker` before each linker argument, which also keeps a
 /// path containing commas as one argument; a direct linker takes them as is.
 fn path_flags(
@@ -415,6 +527,39 @@ fn rustflags_with_paths(
     }
     flags.push(path_flags.join("\x1f"));
     Ok(flags)
+}
+
+fn cargo_profile(profile: BuildProfile) -> &'static str {
+    match profile {
+        BuildProfile::Development => "dev",
+        BuildProfile::Release => "release",
+    }
+}
+
+/// Runs a managed Cargo build and returns its JSON messages, or the
+/// compiler diagnostics when it fails.
+fn run_cargo(
+    command: &mut std::process::Command,
+    host: &str,
+) -> Result<Vec<serde_json::Value>, String> {
+    let output = command
+        .output()
+        .map_err(|error| format!("could not start managed cargo: {error}"))?;
+    let messages = output
+        .stdout
+        .split(|byte| *byte == b'\n')
+        .filter_map(|line| serde_json::from_slice::<serde_json::Value>(line).ok())
+        .collect::<Vec<_>>();
+    if !output.status.success() {
+        let mut diagnostics = String::from_utf8_lossy(&output.stderr).into_owned();
+        for message in &messages {
+            if let Some(rendered) = message["message"]["rendered"].as_str() {
+                diagnostics.push_str(rendered);
+            }
+        }
+        return Err(native_toolchain::compilation_error(host, &diagnostics));
+    }
+    Ok(messages)
 }
 
 mod cargo_config;
@@ -498,16 +643,12 @@ impl Config {
     }
 
     fn manifest(&self) -> Result<String, String> {
-        let mut dependencies = self.dependencies.clone();
-        dependencies.insert(
-            "seseragi-native-runtime".into(),
-            toml::Value::Table(toml::Table::from_iter([("path".into(), "runtime".into())])),
-        );
+        // The runtime is passed to rustc directly; see `runtime_library`.
         let mut source = PROGRAM_MANIFEST.to_owned();
         source.push_str(
             &toml::to_string(&toml::Table::from_iter([(
                 "dependencies".into(),
-                toml::Value::Table(dependencies),
+                toml::Value::Table(self.dependencies.clone()),
             )]))
             .map_err(|error| error.to_string())?,
         );
