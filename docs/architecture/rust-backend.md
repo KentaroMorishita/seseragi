@@ -252,13 +252,15 @@ scopeの全finalizerをLIFO順で試み、cleanup Defectを失わず結果へ渡
 同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
 host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
 
-内部ではcanonicalな`std/ref::Ref<A>`の`make`／`get`／`set`を使える。
+内部ではcanonicalな`std/ref::Ref<A>`の`make`／`get`／`set`／`update`／`modify`を使える。
+`update`と`modify`の変換関数は、ほかのbodyと同じ規則で検査する（Intの演算は含めない）。
+`modify`は変換関数が返すTupleの1つ目を結果に、2つ目を次の中身にする。
 payloadの`A`は既存の閉じたdata codecに限り、callback・Effect・別のRefを保持できない。
 Refの型やhandleを公開codecへ加えず、内部状態をcaptureした返却callbackとcold planが
 同じcellを保持する。factory planを再実行すると独立したcellを作り、保存済みplanは元の
 callbackをdetachした後もその状態を更新できる。tracingはglobal初期化前に有効にする。
 受入例は`program-wasm-private-ref.ssrg`と標準Web packageの
-`program-wasm-private-ref-package`。文字列の蓄積とFailure・Defectは同じbodyのstrict TS／nativeと比較する。
+`program-wasm-private-ref-package`。文字列の蓄積、update・modify、Failure・Defectは同じbodyのstrict TS／nativeと比較する。
 取消後のLIFO cleanupとinstance終了時のroot解放は実WASMでも確認する。
 `update`／`modify`、tuple pattern、fallibleなInt演算は含めない。
 

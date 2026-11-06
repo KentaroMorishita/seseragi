@@ -11,8 +11,8 @@ name = "fixture/program-wasm-private-ref-package"
 version = "0.0.0"
 source_kind = "workspace"
 source = "."
-manifest_digest = "sha256:12d49a6743fea2e7ee7f315f631edb715e8a1cea67cd8f4cac5488d70af044b4"
-content_digest = "sha256:27d400786537467f78d697352da2c00054a21e8fa887cdeef4353f47678c33ae"
+manifest_digest = "sha256:f36cf7b839d5865ac15794e4657ddb3b209c61c897824bdd4bb10567b3e90d8d"
+content_digest = "sha256:4638016a41f6e3b7c2a8365ec9038e2158d8cfaabc0b11fd3a56dc6af2472f01"
 dependencies = []
 
 [[foreign_modules]]

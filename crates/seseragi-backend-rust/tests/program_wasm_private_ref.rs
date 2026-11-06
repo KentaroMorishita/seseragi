@@ -19,7 +19,10 @@ fn private_cells_preserve_the_existing_data_transport_boundary() {
     let artifact = emit_program_wasm(
         &[&module],
         &module.module,
-        &["create", "reader", "unit", "failing", "snapshot", "session"].map(String::from),
+        &[
+            "create", "reader", "unit", "failing", "snapshot", "session", "journal",
+        ]
+        .map(String::from),
     )
     .unwrap();
     assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v2");
@@ -114,6 +117,82 @@ fn cell_operations_prove_source_arity_and_payload_before_emitting_runtime_code()
             .expect_err("an unproved cell operation produced an artifact");
         assert_eq!(error.code, "SES-RUST-0001");
         let origin = error.origin.expect("cell refusal retains its source range");
+        assert!(origin.end > origin.start);
+    }
+}
+
+#[test]
+fn cell_transforms_prove_their_payload_stage_before_emitting_runtime_code() {
+    use seseragi_lowering::CoreExpr;
+    for (operation, result, transform) in [
+        ("update", "Unit", "\\current: String -> current + \"!\""),
+        (
+            "modify",
+            "String",
+            "\\current: String -> (current, current + \"!\")",
+        ),
+    ] {
+        let original = checked(&format!(
+            "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nimport {{ Ref }} from \"std/ref\"\neffect fn change cell: Ref<String> -> {result} = refs.{operation} ({transform}) cell\npub effect fn value input: String -> String = effects.succeed input\n"
+        ));
+        emit_program_wasm(&[&original], &original.module, &["value".into()])
+            .unwrap_or_else(|error| panic!("{operation}: {error:?}"));
+        for mutation in 0..3 {
+            let mut module = original.clone();
+            let change = module
+                .functions
+                .iter_mut()
+                .find(|function| function.symbol.ends_with("::change"))
+                .unwrap();
+            let (arguments, origin) = match &mut change.body {
+                CoreExpr::Call {
+                    arguments, origin, ..
+                }
+                | CoreExpr::EffectInvoke {
+                    arguments, origin, ..
+                }
+                | CoreExpr::EffectOperation {
+                    arguments, origin, ..
+                } => (arguments, origin),
+                other => panic!("expected a checked cell operation: {other:?}"),
+            };
+            match mutation {
+                0 => {
+                    arguments.pop();
+                }
+                1 => {
+                    arguments[0] = CoreExpr::Integer {
+                        value: "42".into(),
+                        origin: origin.clone(),
+                    };
+                }
+                _ => arguments.swap(0, 1),
+            }
+            let error = emit_program_wasm(&[&module], &module.module, &["value".into()])
+                .expect_err("an unproved cell transform produced an artifact");
+            assert_eq!(error.code, "SES-RUST-0001", "{operation}/{mutation}");
+            let origin = error.origin.expect("cell refusal retains its source range");
+            assert!(origin.end > origin.start);
+        }
+    }
+}
+
+#[test]
+fn cell_transforms_keep_the_effect_body_rules() {
+    for source in [
+        "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\npub effect fn value initial: Int -> Int = do { cell <- refs.make initial; refs.update (\\current: Int -> current + 1) cell; refs.get cell }\n",
+        "import * as refs from \"std/ref\"\npub effect fn value initial: Int -> Int = do { cell <- refs.make initial; refs.modify (\\current: Int -> (current * 2, current)) cell }\n",
+    ] {
+        let module = checked(source);
+        let error = emit_program_wasm(&[&module], &module.module, &["value".into()])
+            .expect_err("an unadmitted cell transform produced an artifact");
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert!(
+            error.message.contains("arithmetic requires fallible evaluation"),
+            "{}",
+            error.message
+        );
+        let origin = error.origin.expect("a refusal retains its source range");
         assert!(origin.end > origin.start);
     }
 }

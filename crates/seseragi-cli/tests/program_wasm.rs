@@ -2083,7 +2083,9 @@ fn private_ref_effect_callbacks_retain_state_and_release_the_instance() {
         &mut build(
             &source,
             &destination,
-            &["create", "reader", "unit", "failing", "snapshot", "session"],
+            &[
+                "create", "reader", "unit", "failing", "snapshot", "session", "journal",
+            ],
         ),
         &scratch.0,
     ));
@@ -2095,7 +2097,7 @@ fn private_ref_effect_callbacks_retain_state_and_release_the_instance() {
                 .env("PATH", ""),
             &scratch.0,
         ));
-        assert_eq!(result.stdout, b"private cells: cold independent state, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
+        assert_eq!(result.stdout, b"private cells: cold independent state, update/modify, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
         assert!(result.stderr.is_empty(), "{result:?}");
     }
     fs::write(scratch.0.join("types.mts"), r#"
@@ -2142,7 +2144,15 @@ effect fn oracle -> String fails String = do {
   read <- reader "雪🙂"
   text <- read ()
   unit ()
-  effects.succeed (one + "|" + two + "|" + other + "|" + initial + "|" + failed + "|" + after + "|" + text)
+  record <- journal "log:"
+  let entry = record "a"
+  logged <- entry
+  relogged <- entry
+  let journaled = match (logged, relogged) {
+    (Just left, Just right) -> left + "," + right
+    _ -> "missing"
+  }
+  effects.succeed (one + "|" + two + "|" + other + "|" + initial + "|" + failed + "|" + after + "|" + text + "|" + journaled)
 }
 effect fn unexpected message: String -> String = effects.die message
 pub effect fn main = do {
@@ -2162,7 +2172,7 @@ pub effect fn main = do { answer <- oracle () |> effects.recover unexpected; pri
 "#;
 
     for (label, main, code, expected) in [
-        ("normal", normal, 0, "seed:one|seed:onetwo|seed:one|state:ok|typed failure|state:ok:inner:outer:bad:inner:outer|雪🙂\n42\n"),
+        ("normal", normal, 0, "seed:one|seed:onetwo|seed:one|state:ok|typed failure|state:ok:inner:outer:bad:inner:outer|雪🙂|log:a,log:a;a\n42\n"),
         ("defect", defect, 70, ""),
     ] {
         let source = scratch.0.join(format!("{label}.ssrg"));
@@ -2255,7 +2265,7 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
                     .env("PATH", ""),
                 &scratch.0,
             ));
-            assert_eq!(result.stdout,b"private cells: cold independent state, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
+            assert_eq!(result.stdout,b"private cells: cold independent state, update/modify, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
             assert!(result.stderr.is_empty(), "{result:?}");
         }
         let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false,"paths":{"@seseragi/programs/calculation":[directory.join("index.d.mts")]}},"files":[package.join("host/bridge.ts")]});
