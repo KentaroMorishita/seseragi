@@ -526,6 +526,13 @@
         false
       ]
     ],
+    "partialOrigins": [
+      {
+        "source": "main.ssrg",
+        "start": 1936,
+        "end": 2012
+      }
+    ],
     "application": true
   },
   "runtimeRequirements": [

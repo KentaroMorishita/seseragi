@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.61.147] - 2026-11-06
+
+This release also ships the changes listed under 0.61.142 through 0.61.146, which were not published as separate releases.
+
+### Fixed
+
+- The TypeScript IR conformance artifact for the transformers example records the source location of its partial application (`partialOrigins`), which the compiler has emitted since 0.61.144.
+
+## [0.61.146] - 2026-11-06
+
+### Changed
+
+- Native builds compile the runtime crate once and share it among programs that use the same build output directory, Rust version, build profile and Cargo settings. A new program compiles only its own code, and each generated project needs much less disk space. Shared runtime builds are kept in the `runtime/` directory of the native build output (`.seseragi/native-target/`, `$CARGO_TARGET_DIR/seseragi-native/` or the user cache on Windows).
+
 ## [0.61.145] - 2026-11-06
 
 This release also ships the changes listed under 0.61.142, 0.61.143 and 0.61.144, which were not published as separate releases.

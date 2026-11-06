@@ -317,6 +317,11 @@ fn cargo_failure_preserves_all_previous_outputs_and_cleans_owned_staging() {
     fs::write(
         &compiler,
         r#"#!/bin/sh
+# The runtime library is built first; report a library so the program build runs.
+if [ "$1" = build ]; then
+  printf '{"reason":"compiler-artifact","target":{"name":"seseragi_native_runtime"},"filenames":["%s/libseseragi_native_runtime.rlib"]}\n' "$PWD"
+  exit 0
+fi
 printf '%s/program.rs\n' "$PWD" > "$SESERAGI_TEST_STAGE_LOG"
 printf 'forced cargo failure\n' >&2
 exit 17
@@ -401,6 +406,11 @@ fn publish_io_failure_rolls_back_and_removes_owned_staging() {
                 &compiler,
                 r#"#!/bin/sh
 set -eu
+# The runtime library is built first; report a library so the program build runs.
+if [ "$1" = build ]; then
+  printf '{"reason":"compiler-artifact","target":{"name":"seseragi_native_runtime"},"filenames":["%s/libseseragi_native_runtime.rlib"]}\n' "$PWD"
+  exit 0
+fi
 printf 'staged executable\n' > "$SESERAGI_TEST_EXECUTABLE"
 printf '{"reason":"compiler-artifact","target":{"name":"program"},"executable":"%s"}\n' "$SESERAGI_TEST_EXECUTABLE"
 "#,

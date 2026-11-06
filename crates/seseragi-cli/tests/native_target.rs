@@ -34,14 +34,16 @@ fn native_cargo_reuses_the_project_for_run_build_and_experimental_profiles() {
     let root = scratch.path();
     let source = root.join("main.ssrg");
     fs::write(&source, "pub effect fn main = do { println \"\"; println \"雪🦀\"; println (show (-9007199254740991)); println (show 9007199254740991) }\n").unwrap();
-    let ts = successful(bounded(cli().arg("run").arg(&source), root));
+    let ts = successful(bounded(isolated(root).arg("run").arg(&source), root));
     assert_eq!(
         ts.stdout,
         "\n雪🦀\n-9007199254740991\n9007199254740991\n".as_bytes()
     );
     for _ in 0..2 {
         let native = successful(bounded(
-            cli().args(["run", "--target", "native"]).arg(&source),
+            isolated(root)
+                .args(["run", "--target", "native"])
+                .arg(&source),
             root,
         ));
         assert_eq!(native.stdout, ts.stdout);
@@ -50,7 +52,7 @@ fn native_cargo_reuses_the_project_for_run_build_and_experimental_profiles() {
     for profile in ["development", "release"] {
         for experimental in [false, true] {
             let out = root.join(format!("{profile}-{experimental}"));
-            let mut command = cli();
+            let mut command = isolated(root);
             if experimental {
                 command
                     .args(["experimental", "build-native"])
@@ -77,37 +79,77 @@ fn native_cargo_reuses_the_project_for_run_build_and_experimental_profiles() {
         .collect::<Vec<_>>();
     assert_eq!(projects.len(), 1);
     let project = &projects[0];
-    for path in [
-        "Cargo.toml",
-        "Cargo.lock",
-        "program.rs",
-        "runtime/Cargo.toml",
-        "runtime/lib.rs",
-    ] {
+    for path in ["Cargo.toml", "Cargo.lock", "program.rs"] {
         assert!(project.join(path).is_file(), "{path}");
+    }
+    // The runtime is built once per profile and settings, beside the project.
+    let runtimes = runtime_builds(root);
+    assert!(!runtimes.is_empty());
+    for runtime in &runtimes {
+        for path in ["Cargo.toml", "Cargo.lock", "lib.rs"] {
+            assert!(runtime.join(path).is_file(), "{path}");
+        }
     }
     assert!(!root.join("Cargo.toml").exists());
     assert!(!root.join("Cargo.lock").exists());
     assert!(!root.join("target").exists());
-    let runtime_time = fs::metadata(project.join("runtime/lib.rs"))
-        .unwrap()
-        .modified()
-        .unwrap();
+    let runtime_times = runtimes
+        .iter()
+        .map(|runtime| {
+            fs::metadata(runtime.join("lib.rs"))
+                .unwrap()
+                .modified()
+                .unwrap()
+        })
+        .collect::<Vec<_>>();
     fs::write(&source, "pub effect fn main = println \"changed\"\n").unwrap();
-    let ts = successful(bounded(cli().arg("run").arg(&source), root));
+    let ts = successful(bounded(isolated(root).arg("run").arg(&source), root));
     let native = successful(bounded(
-        cli().args(["run", "--target", "native"]).arg(&source),
+        isolated(root)
+            .args(["run", "--target", "native"])
+            .arg(&source),
         root,
     ));
     assert_eq!(native.stdout, b"changed\n");
     assert_eq!(native.stdout, ts.stdout);
+    // Editing the program reuses the shared runtime build.
+    assert_eq!(runtime_builds(root), runtimes);
     assert_eq!(
-        fs::metadata(project.join("runtime/lib.rs"))
-            .unwrap()
-            .modified()
-            .unwrap(),
-        runtime_time
+        runtimes
+            .iter()
+            .map(|runtime| fs::metadata(runtime.join("lib.rs"))
+                .unwrap()
+                .modified()
+                .unwrap())
+            .collect::<Vec<_>>(),
+        runtime_times
     );
+}
+
+/// The shared runtime builds under the target root that `isolated` selects.
+fn runtime_builds(root: &Path) -> Vec<std::path::PathBuf> {
+    let target = if cfg!(windows) {
+        root.join("native-cache/build")
+    } else {
+        root.join(".seseragi/native-target")
+    };
+    let mut builds = fs::read_dir(target.join("runtime"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .collect::<Vec<_>>();
+    builds.sort();
+    builds
+}
+
+/// A CLI command whose native builds use the default target root of `root`
+/// instead of the target shared by the other tests, so this test alone owns
+/// the shared runtime builds it inspects.
+fn isolated(root: &Path) -> Command {
+    let mut command = cli();
+    command
+        .env_remove("CARGO_TARGET_DIR")
+        .env("SESERAGI_NATIVE_CACHE", root.join("native-cache"));
+    command
 }
 
 fn package(root: &Path) {

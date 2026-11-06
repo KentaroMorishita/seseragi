@@ -798,8 +798,13 @@ full gateを実行した場合は、作業ログまたはPR本文へ「必要理
 固定toolchain（`rust-toolchain.toml`の1.97.1、`wasm32-unknown-unknown`）、`.bun-version`のBun、
 Node 24.22.1を用意し、repository rootで実行する。CIと同じ環境変数を使う。
 
+CIは`file-transform`のCLI suiteを複数のjobに分けて実行する（`scripts/cargo-test-shard.ts`）。
+手元では分けずに下の`cargo test`をまとめて実行してよい。`CARGO_TARGET_DIR`を設定すると、
+同じsuiteのテストがnative runtimeのビルドを共有するので速くなる（CIも設定している）。
+
 ```sh
 export CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0
+export CARGO_TARGET_DIR="$PWD/target"
 bun install --frozen-lockfile
 
 # rust-backend.yml file-transform (macos-15)
