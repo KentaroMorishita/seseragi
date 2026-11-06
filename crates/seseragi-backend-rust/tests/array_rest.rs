@@ -170,7 +170,7 @@ fn array_rest_saved_references_reject_counterfeit_function_stages() {
     }
 }
 #[test]
-fn array_rest_does_not_expand_unused_program_wasm_references() {
+fn program_wasm_admits_array_rest_references() {
     for (name, signature) in [
         ("empty", "Unit -> Array<Int>"),
         ("singleton", "Int -> Array<Int>"),
@@ -190,9 +190,7 @@ fn array_rest_does_not_expand_unused_program_wasm_references() {
     ] {
         let core=checked(&format!("import * as arrays from \"std/array\"\npub fn probe value:Int -> Int = {{let saved:{signature} = arrays.{name};value}}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/array-rest", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "array-rest-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/array-rest", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
     }
 }

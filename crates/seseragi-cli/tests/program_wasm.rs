@@ -2593,3 +2593,36 @@ console.log('same results');
     ));
     assert_eq!(output.stdout, b"same results\n");
 }
+
+#[test]
+fn array_operations_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "size", "reversed", "none", "first", "rest", "evens", "large", "third", "front", "back",
+        "longer", "halves", "twice",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-arrays.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+for (const name of Object.keys(wasm)) {
+  for (const input of [[], [1], [1, 2, 3, 4, 5], [-4, 0, 9007199254740991]]) {
+    assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+  }
+}
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+}

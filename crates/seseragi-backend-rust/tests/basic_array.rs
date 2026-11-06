@@ -189,7 +189,7 @@ fn basic_array_does_not_replace_lexical_array_or_int_binders() {
 }
 
 #[test]
-fn basic_array_keeps_program_wasm_admission_explicit() {
+fn program_wasm_admits_basic_array_references() {
     for (name, signature) in [
         ("filter", "(Int -> Bool) -> Array<Int> -> Array<Int>"),
         ("find", "(Int -> Bool) -> Array<Int> -> Maybe<Int>"),
@@ -201,12 +201,7 @@ fn basic_array_keeps_program_wasm_admission_explicit() {
         let source = format!("import * as arrays from \"std/array\"\npub fn probe value: Int -> Int = {{ let operation: {signature} = arrays.{name}; value }}\npub fn main -> Int = probe 1\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/array", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{name}: {error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "array-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/array", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
     }
 }
