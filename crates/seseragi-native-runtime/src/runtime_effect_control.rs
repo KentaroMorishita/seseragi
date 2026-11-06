@@ -590,6 +590,30 @@ mod effect_control_tests {
             .join()
             .unwrap();
     }
+
+    #[test]
+    fn repeated_races_leave_no_fibers_in_the_caller_scope() {
+        enable_cycle_collection();
+        let owned = V::reference(V::Int(-1));
+        let mut plan = V::leaf(vec![owned.clone()], |c, context| {
+            let scope = context.scopes.last().expect("caller scope");
+            let count = scope.children.len() + scope.finalizers.len();
+            c[0].write_reference(V::Int(count as i64));
+            Ok(V::Unit)
+        });
+        for index in 0..3 {
+            let race = operation(
+                "std/effect::race",
+                vec![succeed(V::Int(index)), succeed(V::Int(index + 10))],
+            );
+            plan = native_effect_then(race, plan);
+        }
+        let mut context = NativeContext::default();
+        assert!(matches!(context.root(plan), Ok(V::Unit)));
+        assert!(matches!(owned.read_reference(), V::Int(0)));
+        drop(owned);
+        finish();
+    }
 }
 
 fn native_effect_then(first: V, next: V) -> V {
@@ -620,8 +644,13 @@ fn native_race_side(effect: V, finished: V, side: i64) -> V {
 // Runs both Effects as Fibers and returns the first that ends with a success
 // or failure. The loser is cancelled and its finalizers finish before the
 // result. Ending in the same scheduler turn records the left side first, as
-// it was forked first.
+// it was forked first. Both Fibers have ended when the result is ready, so
+// the race closes its own scope and leaves no Fiber in the caller's scope.
 fn native_race(left: V, right: V) -> V {
+    native_operation("std/effect::scoped", vec![native_race_fibers(left, right)])
+}
+
+fn native_race_fibers(left: V, right: V) -> V {
     V::bind(
         native_operation("std/deferred::make", vec![V::Unit]),
         V::fun(vec![left, right], |c, finished| {
