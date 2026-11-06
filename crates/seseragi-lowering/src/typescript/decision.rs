@@ -6,6 +6,7 @@ use crate::{
 use std::collections::BTreeMap;
 
 use super::expr::lower_core_expr_to_typescript;
+use super::failure::Lowered;
 use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
 use super::{
@@ -55,14 +56,14 @@ pub(super) fn lower_core_decision(
     type_ref: CoreType,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     let erases_newtype = branches.iter().flat_map(|branch| &branch.tests).any(|test| matches!(test, CoreDecisionTest::Constructor { constructor, .. } if imported_types.is_erased_newtype(constructor)));
     let public_type = type_ref_from_core_type(&scrutinee_type, imported_types);
     let private_type = type_ref_from_core_type(
         &scrutinee_type,
         &imported_types.with_private_representation(),
     );
-    let scrutinee = lower_core_expr_to_typescript(scrutinee, imported_values, imported_types);
+    let scrutinee = lower_core_expr_to_typescript(scrutinee, imported_values, imported_types)?;
     let scrutinee = if public_type != private_type {
         super::types::assert_private_representation(scrutinee, private_type.clone())
     } else {
@@ -76,11 +77,11 @@ pub(super) fn lower_core_decision(
                 &branch,
                 imported_types.bound_type_names(),
             );
-            let mut lowered = lower_branch(branch, imported_values, imported_types);
+            let mut lowered = lower_branch(branch, imported_values, imported_types)?;
             lowered.list_prefix = plan;
-            lowered
+            Ok(lowered)
         })
-        .collect::<Vec<_>>();
+        .collect::<Lowered<Vec<_>>>()?;
     if erases_newtype && branches.len() == 1 {
         let branch = &mut branches[0];
         if let TypeScriptExpr::Identifier { name } = &scrutinee {
@@ -98,19 +99,19 @@ pub(super) fn lower_core_decision(
                     .map(|binding| (binding.name.clone(), name.clone()))
                     .collect();
                 substitute_bindings(&mut branch.value, &renames);
-                return TypeScriptExpr::CheckedResult {
+                return Ok(TypeScriptExpr::CheckedResult {
                     value: Box::new(branch.value.clone()),
                     type_ref: type_ref_from_core_type(&type_ref, imported_types),
-                };
+                });
             }
         }
     }
-    TypeScriptExpr::Decision {
+    Ok(TypeScriptExpr::Decision {
         scrutinee: Box::new(scrutinee),
         scrutinee_type: private_type,
         branches,
         type_ref: type_ref_from_core_type(&type_ref, imported_types),
-    }
+    })
 }
 
 // Called only for scope-free expressions after the scrutinee is an immutable
@@ -209,7 +210,7 @@ fn lower_branch(
     mut branch: CoreDecisionBranch,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptDecisionBranch {
+) -> Lowered<TypeScriptDecisionBranch> {
     let erased_paths = branch
         .tests
         .iter()
@@ -252,7 +253,7 @@ fn lower_branch(
     for binding in &mut branch.bindings {
         erase_projection(&mut binding.path, &erased_paths);
     }
-    TypeScriptDecisionBranch {
+    Ok(TypeScriptDecisionBranch {
         list_prefix: None,
         tests: branch.tests.into_iter().map(lower_test).collect(),
         bindings: branch
@@ -262,9 +263,10 @@ fn lower_branch(
             .collect(),
         guard: branch
             .guard
-            .map(|guard| lower_core_expr_to_typescript(guard, imported_values, imported_types)),
-        value: lower_core_expr_to_typescript(branch.value, imported_values, imported_types),
-    }
+            .map(|guard| lower_core_expr_to_typescript(guard, imported_values, imported_types))
+            .transpose()?,
+        value: lower_core_expr_to_typescript(branch.value, imported_values, imported_types)?,
+    })
 }
 
 fn lower_binding(

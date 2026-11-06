@@ -21,6 +21,8 @@ use super::{
 
 mod evidence;
 
+use super::failure::{missing_derived_evidence, Lowered};
+
 use evidence::resolve_show_dictionary;
 
 const SHOW_DICTIONARY_FEATURE: &str = "core.show.dictionary";
@@ -187,9 +189,9 @@ pub(super) fn lower_core_instances_to_typescript(
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
     type_imports: &mut Vec<TypeScriptTypeImport>,
-) -> Vec<TypeScriptInstance> {
+) -> Lowered<Vec<TypeScriptInstance>> {
     if instances.is_empty() {
-        return Vec::new();
+        return Ok(Vec::new());
     }
 
     if instances.iter().any(|instance| {
@@ -296,6 +298,7 @@ pub(super) fn lower_core_instances_to_typescript(
         .enumerate()
         .map(|(index, instance)| {
             lower_instance(index, instance, &context, runtime_requirements, imports)
+                .map_err(|error| error.at(&instance.origin))
         })
         .collect()
 }
@@ -316,7 +319,7 @@ fn lower_instance(
     context: &InstanceLoweringContext<'_>,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
-) -> TypeScriptInstance {
+) -> Lowered<TypeScriptInstance> {
     let scoped_types = context
         .imported_type_names
         .with_parameters(&instance.type_parameters);
@@ -333,32 +336,42 @@ fn lower_instance(
                 let variants = adt
                     .variants
                     .iter()
-                    .map(|variant| TypeScriptDerivedShowVariant {
-                        name: local_name(&variant.symbol),
-                        tag: variant.name.clone(),
-                        payload: variant.payload.as_ref().map(|payload| {
-                            let evidence = payload_evidence
-                                .iter()
-                                .find(|evidence| evidence.variant_symbol == variant.symbol)
-                                .expect("selected DerivedShow payload must retain typed evidence");
-                            TypeScriptDerivedShowPayload {
-                                type_ref: type_ref_from_core_type(
-                                    payload,
-                                    context.imported_type_names,
-                                ),
-                                dictionary: resolve_show_dictionary(
-                                    &evidence.evidence,
-                                    context.dictionary_exports,
-                                    context.imported_instance_names,
-                                    context.imported_value_names,
-                                    context.imported_type_names,
-                                    runtime_requirements,
-                                    imports,
-                                ),
-                            }
-                        }),
+                    .map(|variant| {
+                        Ok(TypeScriptDerivedShowVariant {
+                            name: local_name(&variant.symbol),
+                            tag: variant.name.clone(),
+                            payload: variant
+                                .payload
+                                .as_ref()
+                                .map(|payload| {
+                                    let evidence = payload_evidence
+                                        .iter()
+                                        .find(|evidence| evidence.variant_symbol == variant.symbol)
+                                        .ok_or_else(|| {
+                                            missing_derived_evidence(
+                                        "selected DerivedShow payload must retain typed evidence",
+                                    )
+                                        })?;
+                                    Ok(TypeScriptDerivedShowPayload {
+                                        type_ref: type_ref_from_core_type(
+                                            payload,
+                                            context.imported_type_names,
+                                        ),
+                                        dictionary: resolve_show_dictionary(
+                                            &evidence.evidence,
+                                            context.dictionary_exports,
+                                            context.imported_instance_names,
+                                            context.imported_value_names,
+                                            context.imported_type_names,
+                                            runtime_requirements,
+                                            imports,
+                                        )?,
+                                    })
+                                })
+                                .transpose()?,
+                        })
                     })
-                    .collect();
+                    .collect::<Lowered<_>>()?;
                 TypeScriptInstanceImplementation::DerivedShow {
                     adt_name: local_name(&adt.symbol),
                     variants,
@@ -368,7 +381,11 @@ fn lower_instance(
                     .structs
                     .iter()
                     .find(|structure| structure.symbol == *adt_symbol)
-                    .expect("selected DerivedShow instance must reference a lowered nominal type");
+                    .ok_or_else(|| {
+                        missing_derived_evidence(
+                            "selected DerivedShow instance must reference a lowered nominal type",
+                        )
+                    })?;
                 let fields = structure
                     .fields
                     .iter()
@@ -376,8 +393,12 @@ fn lower_instance(
                         let evidence = payload_evidence
                             .iter()
                             .find(|evidence| evidence.variant_symbol == field.name)
-                            .expect("selected DerivedShow field must retain typed evidence");
-                        TypeScriptDerivedShowField {
+                            .ok_or_else(|| {
+                                missing_derived_evidence(
+                                    "selected DerivedShow field must retain typed evidence",
+                                )
+                            })?;
+                        Ok(TypeScriptDerivedShowField {
                             name: field.name.clone(),
                             type_ref: type_ref_from_core_type(
                                 &field.type_ref,
@@ -391,10 +412,10 @@ fn lower_instance(
                                 context.imported_type_names,
                                 runtime_requirements,
                                 imports,
-                            ),
-                        }
+                            )?,
+                        })
                     })
-                    .collect();
+                    .collect::<Lowered<_>>()?;
                 TypeScriptInstanceImplementation::DerivedStructShow {
                     struct_name: local_name(&structure.symbol),
                     fields,
@@ -413,7 +434,7 @@ fn lower_instance(
             context,
             runtime_requirements,
             imports,
-        ),
+        )?,
         CoreInstanceImplementation::DerivedStructural {
             adt_symbol,
             payload_evidence,
@@ -426,18 +447,18 @@ fn lower_instance(
             context,
             runtime_requirements,
             imports,
-        ),
+        )?,
         CoreInstanceImplementation::UserDefined { methods } => {
             TypeScriptInstanceImplementation::UserDefined {
                 methods: methods
                     .iter()
                     .map(|method| lower_method(method, context, runtime_requirements, imports))
-                    .collect(),
+                    .collect::<Lowered<_>>()?,
             }
         }
     };
 
-    TypeScriptInstance {
+    Ok(TypeScriptInstance {
         identity: instance.identity.clone(),
         trait_name: instance.trait_name.clone(),
         type_parameters: instance.type_parameters.clone(),
@@ -464,7 +485,7 @@ fn lower_instance(
         origin: instance.origin.clone(),
         dictionary_export: dictionary_export_name(&instance.trait_name, index),
         implementation,
-    }
+    })
 }
 
 fn lower_derived_value_instance(
@@ -475,7 +496,7 @@ fn lower_derived_value_instance(
     context: &InstanceLoweringContext<'_>,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
-) -> TypeScriptInstanceImplementation {
+) -> Lowered<TypeScriptInstanceImplementation> {
     let is_json = matches!(
         instance.implementation,
         CoreInstanceImplementation::DerivedJson { .. }
@@ -484,29 +505,42 @@ fn lower_derived_value_instance(
         let variants = adt
             .variants
             .iter()
-            .map(|variant| TypeScriptDerivedShowVariant {
-                name: local_name(&variant.symbol),
-                tag: variant.name.clone(),
-                payload: variant.payload.as_ref().map(|payload| {
-                    let evidence = payload_evidence
-                        .iter()
-                        .find(|evidence| evidence.variant_symbol == variant.symbol)
-                        .expect("selected derived payload must retain typed evidence");
-                    TypeScriptDerivedShowPayload {
-                        type_ref: type_ref_from_core_type(payload, context.imported_type_names),
-                        dictionary: resolve_show_dictionary(
-                            &evidence.evidence,
-                            context.dictionary_exports,
-                            context.imported_instance_names,
-                            context.imported_value_names,
-                            context.imported_type_names,
-                            runtime_requirements,
-                            imports,
-                        ),
-                    }
-                }),
+            .map(|variant| {
+                Ok(TypeScriptDerivedShowVariant {
+                    name: local_name(&variant.symbol),
+                    tag: variant.name.clone(),
+                    payload: variant
+                        .payload
+                        .as_ref()
+                        .map(|payload| {
+                            let evidence = payload_evidence
+                                .iter()
+                                .find(|evidence| evidence.variant_symbol == variant.symbol)
+                                .ok_or_else(|| {
+                                    missing_derived_evidence(
+                                        "selected derived payload must retain typed evidence",
+                                    )
+                                })?;
+                            Ok(TypeScriptDerivedShowPayload {
+                                type_ref: type_ref_from_core_type(
+                                    payload,
+                                    context.imported_type_names,
+                                ),
+                                dictionary: resolve_show_dictionary(
+                                    &evidence.evidence,
+                                    context.dictionary_exports,
+                                    context.imported_instance_names,
+                                    context.imported_value_names,
+                                    context.imported_type_names,
+                                    runtime_requirements,
+                                    imports,
+                                )?,
+                            })
+                        })
+                        .transpose()?,
+                })
             })
-            .collect();
+            .collect::<Lowered<_>>()?;
         if is_json {
             push_derived_json_helper(
                 &instance.trait_name,
@@ -517,9 +551,9 @@ fn lower_derived_value_instance(
                 },
                 runtime_requirements,
                 imports,
-            );
+            )?;
         }
-        if is_json {
+        Ok(if is_json {
             TypeScriptInstanceImplementation::DerivedJson {
                 adt_name: local_name(&adt.symbol),
                 variants,
@@ -531,13 +565,17 @@ fn lower_derived_value_instance(
                 variants,
                 transparent_newtype,
             }
-        }
+        })
     } else {
         let structure = context
             .structs
             .iter()
             .find(|structure| structure.symbol == adt_symbol)
-            .expect("selected derived instance must reference a lowered nominal type");
+            .ok_or_else(|| {
+                missing_derived_evidence(
+                    "selected derived instance must reference a lowered nominal type",
+                )
+            })?;
         let fields = structure
             .fields
             .iter()
@@ -545,8 +583,12 @@ fn lower_derived_value_instance(
                 let evidence = payload_evidence
                     .iter()
                     .find(|evidence| evidence.variant_symbol == field.name)
-                    .expect("selected derived field must retain typed evidence");
-                TypeScriptDerivedShowField {
+                    .ok_or_else(|| {
+                        missing_derived_evidence(
+                            "selected derived field must retain typed evidence",
+                        )
+                    })?;
+                Ok(TypeScriptDerivedShowField {
                     name: field.name.clone(),
                     type_ref: type_ref_from_core_type(&field.type_ref, context.imported_type_names),
                     dictionary: resolve_show_dictionary(
@@ -557,19 +599,19 @@ fn lower_derived_value_instance(
                         context.imported_type_names,
                         runtime_requirements,
                         imports,
-                    ),
-                }
+                    )?,
+                })
             })
-            .collect();
+            .collect::<Lowered<_>>()?;
         if is_json {
             push_derived_json_helper(
                 &instance.trait_name,
                 "struct",
                 runtime_requirements,
                 imports,
-            );
+            )?;
         }
-        if is_json {
+        Ok(if is_json {
             TypeScriptInstanceImplementation::DerivedStructJson {
                 struct_name: local_name(&structure.symbol),
                 fields,
@@ -579,7 +621,7 @@ fn lower_derived_value_instance(
                 struct_name: local_name(&structure.symbol),
                 fields,
             }
-        }
+        })
     }
 }
 
@@ -588,16 +630,21 @@ fn push_derived_json_helper(
     shape: &str,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
-) {
+) -> Lowered<()> {
     let direction = match trait_name {
         "JsonEncode" => "encode",
         "JsonDecode" => "decode",
-        _ => unreachable!("JSON helper requested for non-JSON trait"),
+        _ => {
+            return Err(missing_derived_evidence(
+                "JSON helper requested for non-JSON trait",
+            ))
+        }
     };
     let feature = format!("json.derived-{shape}.{direction}");
     let local = format!("_ssrg_json_derived{shape}_{direction}");
     push_unique(runtime_requirements, &feature);
     push_import_unique(imports, TypeScriptImport { feature, local });
+    Ok(())
 }
 
 fn lower_method(
@@ -605,7 +652,7 @@ fn lower_method(
     context: &InstanceLoweringContext<'_>,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
-) -> TypeScriptInstanceMethod {
+) -> Lowered<TypeScriptInstanceMethod> {
     let scoped_types = context
         .imported_type_names
         .with_parameters(&method.type_parameters);
@@ -624,8 +671,8 @@ fn lower_method(
         method.body.clone(),
         context.imported_value_names,
         &scoped_types,
-    );
-    TypeScriptInstanceMethod {
+    )?;
+    Ok(TypeScriptInstanceMethod {
         name: method.name.clone(),
         type_parameters: method.type_parameters.clone(),
         constraints: method
@@ -656,7 +703,7 @@ fn lower_method(
             .collect(),
         body,
         origin: method.origin.clone(),
-    }
+    })
 }
 
 pub(super) fn dictionary_export_name(trait_name: &str, index: usize) -> String {

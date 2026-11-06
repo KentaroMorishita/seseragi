@@ -166,3 +166,85 @@ fn non_string_panic_payload_also_returns_an_internal_error() {
     assert_internal_error(&diagnostics, "payload.ssrg");
     assert!(compile_module(CompileInput::new("payload.ssrg", "app/payload", SOURCE)).is_ok());
 }
+
+const TEMPLATE_SOURCE: &str = "pub fn label value: Int -> String = `value=${value}`\n";
+
+fn strip_template_evidence(core: &mut seseragi_lowering::CoreModule) {
+    for function in &mut core.functions {
+        if let seseragi_lowering::CoreExpr::Template { parts, .. } = &mut function.body {
+            for part in parts {
+                if let seseragi_lowering::CoreTemplatePart::Interpolation { evidence, .. } = part {
+                    *evidence = None;
+                }
+            }
+        }
+    }
+}
+
+fn assert_located_lowering_error(diagnostics: &DiagnosticArtifact, source: &str) {
+    assert_eq!(diagnostics.source, source);
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    let diagnostic = &diagnostics.diagnostics[0];
+    assert_eq!(diagnostic.code, "SES-I0001");
+    assert_eq!(diagnostic.severity, DiagnosticSeverity::Error);
+    assert_eq!(diagnostic.message(), "Internal compiler error");
+    let start = TEMPLATE_SOURCE.find('`').unwrap();
+    let end = TEMPLATE_SOURCE.rfind('`').unwrap() + 1;
+    assert_eq!(
+        (diagnostic.primary.start, diagnostic.primary.end),
+        (start, end)
+    );
+    let [label] = diagnostic.related.as_slice() else {
+        panic!("expected one lowering label, got {:?}", diagnostic.related);
+    };
+    assert_eq!(label.source, None);
+    assert_eq!(label.primary, diagnostic.primary);
+    assert!(
+        label.message.starts_with(
+            "missing selected trait evidence during TypeScript lowering of an expression: template interpolation"
+        ),
+        "{}",
+        label.message
+    );
+    let terminal = crate::render_terminal_diagnostics(diagnostics, TEMPLATE_SOURCE);
+    assert!(
+        terminal.contains(&format!("{source}:1:{}: error[SES-I0001]", start + 1)),
+        "{terminal}"
+    );
+}
+
+#[test]
+fn single_module_reports_missing_lowering_facts_at_their_source() {
+    let input = CompileInput::new("template.ssrg", "app/template", TEMPLATE_SOURCE);
+    let expected = compile_module(input).unwrap();
+    let diagnostics = fault::with_core_edit(strip_template_evidence, || compile_module(input))
+        .expect_err("missing evidence must stop compilation");
+    assert_located_lowering_error(&diagnostics, "template.ssrg");
+    assert_eq!(compile_module(input).unwrap(), expected);
+}
+
+#[test]
+fn linked_module_reports_missing_lowering_facts_as_diagnostics() {
+    let linked = seseragi_project::link_module(
+        seseragi_syntax::parse_unlinked_module_interface(
+            "linked.ssrg",
+            "app/linked",
+            TEMPLATE_SOURCE,
+        ),
+        &Default::default(),
+    )
+    .unwrap();
+    let error = fault::with_core_edit(strip_template_evidence, || {
+        compile_linked_module_with_output_paths(
+            linked,
+            TEMPLATE_SOURCE,
+            &TypeScriptOutputPlan::default(),
+            GeneratedOutputPaths::default(),
+        )
+    })
+    .unwrap_err();
+    let LinkedCompileError::Diagnostics(diagnostics) = error else {
+        panic!("expected located internal diagnostics, got {error:?}");
+    };
+    assert_located_lowering_error(&diagnostics, "linked.ssrg");
+}

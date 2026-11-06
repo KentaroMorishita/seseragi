@@ -30,6 +30,7 @@ use std::collections::BTreeMap;
 
 use super::closed_display::selected_dictionary_expression;
 use super::decision::lower_core_decision;
+use super::failure::{missing_evidence, missing_runtime, unexpected_shape, Lowered};
 use super::names::{local_name, safe_identifier};
 use super::types::{
     lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_expr,
@@ -108,10 +109,10 @@ mod std_test_tests {
             };
             let imports = BTreeMap::new();
             let types = TypeScriptTypeContext::default();
-            let invoke = lower_core_expr_to_typescript(invoke, &imports, &types);
+            let invoke = lower_core_expr_to_typescript(invoke, &imports, &types).unwrap();
             assert_eq!(
                 invoke,
-                lower_core_expr_to_typescript(call, &imports, &types)
+                lower_core_expr_to_typescript(call, &imports, &types).unwrap()
             );
             let TypeScriptExpr::RuntimeCall { arguments, .. } = invoke else {
                 panic!("runtime call")
@@ -140,7 +141,8 @@ mod std_test_tests {
             &evidence,
             &BTreeMap::new(),
             &TypeScriptTypeContext::default(),
-        );
+        )
+        .unwrap();
         assert!(dictionaries
             .iter()
             .all(|value| matches!(value, TypeScriptExpr::Identifier { .. })));
@@ -153,7 +155,18 @@ pub(super) fn lower_core_expr_to_typescript(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
+    // Internal failures report the innermost expression that owns them.
+    let origin = crate::core_expr_origin(&expr).clone();
+    lower_core_expr_with_source(expr, imported_values, imported_types)
+        .map_err(|error| error.at(&origin))
+}
+
+fn lower_core_expr_with_source(
+    expr: CoreExpr,
+    imported_values: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
+) -> Lowered<TypeScriptExpr> {
     if !imported_types.retains_runtime_sources() {
         return lower_core_expr_unlocated(expr, imported_values, imported_types);
     }
@@ -176,15 +189,15 @@ pub(super) fn lower_core_expr_to_typescript(
         }
         _ => false,
     };
-    let mut value = lower_core_expr_unlocated(expr, imported_values, imported_types);
+    let mut value = lower_core_expr_unlocated(expr, imported_values, imported_types)?;
     if typescript_expr_contains_await(&value) {
-        return value;
+        return Ok(value);
     }
     if matches!(
         value,
         TypeScriptExpr::Binary { .. } | TypeScriptExpr::Unary { .. }
     ) {
-        return value;
+        return Ok(value);
     }
     let source = TypeScriptExpr::Identifier {
         name: imported_types.runtime_source(origin),
@@ -194,10 +207,10 @@ pub(super) fn lower_core_expr_to_typescript(
             && arguments.len() == 2
         {
             arguments.push(source);
-            return value;
+            return Ok(value);
         }
     }
-    TypeScriptExpr::RuntimeCall {
+    Ok(TypeScriptExpr::RuntimeCall {
         callee: "$ssrg$atSource".to_owned(),
         arguments: vec![
             source,
@@ -207,14 +220,14 @@ pub(super) fn lower_core_expr_to_typescript(
             },
             TypeScriptExpr::Boolean { value: effect },
         ],
-    }
+    })
 }
 
 fn lower_core_expr_unlocated(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     // Keep the large structural/callable handlers out of recursive arithmetic
     // frames even when the compiler is built without optimization.
     match expr {
@@ -244,10 +257,12 @@ fn lower_structural_expr(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
-    match expr {
+) -> Lowered<TypeScriptExpr> {
+    Ok(match expr {
         CoreExpr::Variable { .. } | CoreExpr::Call { .. } | CoreExpr::Binary { .. } => {
-            unreachable!("variables, calls and binary expressions are dispatched separately")
+            return Err(unexpected_shape(
+                "variables, calls and binary expressions are dispatched separately",
+            ));
         }
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Integer { value, .. } => TypeScriptExpr::Number { value },
@@ -255,7 +270,7 @@ fn lower_structural_expr(
         CoreExpr::String { value, .. } | CoreExpr::Char { value, .. } => {
             TypeScriptExpr::String { value }
         }
-        CoreExpr::Template { parts, .. } => lower_template(parts, imported_values, imported_types),
+        CoreExpr::Template { parts, .. } => lower_template(parts, imported_values, imported_types)?,
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::Lambda {
             parameter, body, ..
@@ -267,11 +282,11 @@ fn lower_structural_expr(
                     *body,
                     imported_values,
                     imported_types,
-                )),
+                )?),
             }
         }
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {
-            elements: lower_core_expressions(elements, imported_values, imported_types),
+            elements: lower_core_expressions(elements, imported_values, imported_types)?,
         },
         CoreExpr::FieldAccess {
             receiver,
@@ -283,7 +298,7 @@ fn lower_structural_expr(
             let private_type =
                 type_ref_from_core_expr(&receiver, &imported_types.with_private_representation());
             let receiver =
-                lower_core_expr_to_typescript(*receiver, imported_values, imported_types);
+                lower_core_expr_to_typescript(*receiver, imported_values, imported_types)?;
             if private_type != public_type {
                 TypeScriptExpr::CheckedResult {
                     value: Box::new(TypeScriptExpr::FieldAccess {
@@ -312,18 +327,18 @@ fn lower_structural_expr(
                 *receiver,
                 imported_values,
                 imported_types,
-            )),
+            )?),
             field,
             value_type: match type_ref_from_core_type(&type_ref, imported_types) {
                 super::TypeScriptType::Maybe { element } => *element,
-                _ => unreachable!("optional field access must return Maybe"),
+                _ => return Err(unexpected_shape("optional field access must return Maybe")),
             },
             just_constructor: runtime_sum_constructor("std/prelude::Just")
-                .expect("standard Just constructor must exist")
+                .ok_or_else(|| missing_runtime("standard Just constructor must exist"))?
                 .local_name
                 .to_owned(),
             nothing_constructor: runtime_sum_constructor("std/prelude::Nothing")
-                .expect("standard Nothing constructor must exist")
+                .ok_or_else(|| missing_runtime("standard Nothing constructor must exist"))?
                 .local_name
                 .to_owned(),
         },
@@ -332,35 +347,37 @@ fn lower_structural_expr(
         } => TypeScriptExpr::Record {
             items: items
                 .into_iter()
-                .map(|item| match item {
-                    CoreRecordValueItem::Field { name, value, .. } => {
-                        TypeScriptRecordValueItem::Field {
-                            name,
-                            value: lower_core_expr_to_typescript(
-                                value,
-                                imported_values,
-                                imported_types,
-                            ),
+                .map(|item| {
+                    Ok(match item {
+                        CoreRecordValueItem::Field { name, value, .. } => {
+                            TypeScriptRecordValueItem::Field {
+                                name,
+                                value: lower_core_expr_to_typescript(
+                                    value,
+                                    imported_values,
+                                    imported_types,
+                                )?,
+                            }
                         }
-                    }
-                    CoreRecordValueItem::Spread { value, .. } => {
-                        TypeScriptRecordValueItem::Spread {
-                            value: lower_core_expr_to_typescript(
-                                value,
-                                imported_values,
-                                imported_types,
-                            ),
+                        CoreRecordValueItem::Spread { value, .. } => {
+                            TypeScriptRecordValueItem::Spread {
+                                value: lower_core_expr_to_typescript(
+                                    value,
+                                    imported_values,
+                                    imported_types,
+                                )?,
+                            }
                         }
-                    }
+                    })
                 })
-                .collect(),
+                .collect::<Lowered<_>>()?,
             asserted_type: (!matches!(type_ref, crate::CoreType::Record { .. }))
                 .then(|| super::types::type_ref_from_core_type(&type_ref, imported_types)),
         },
         CoreExpr::Array {
             elements, type_ref, ..
         } => TypeScriptExpr::Array {
-            elements: lower_core_expressions(elements, imported_values, imported_types),
+            elements: lower_core_expressions(elements, imported_values, imported_types)?,
             element_type: match type_ref_from_core_type(&type_ref, imported_types) {
                 super::TypeScriptType::Array { element } => *element,
                 _ => super::TypeScriptType::Unknown,
@@ -379,14 +396,14 @@ fn lower_structural_expr(
             TypeScriptExpr::RuntimeCall {
                 callee: operation.local_name.to_owned(),
                 arguments: vec![TypeScriptExpr::Array {
-                    elements: lower_core_expressions(elements, imported_values, imported_types),
+                    elements: lower_core_expressions(elements, imported_values, imported_types)?,
                     element_type,
                 }],
             }
         }
         CoreExpr::ArrayComprehension {
             element, clauses, ..
-        } => lower_array_comprehension(*element, clauses, imported_values, imported_types, 0),
+        } => lower_array_comprehension(*element, clauses, imported_values, imported_types, 0)?,
         CoreExpr::ListComprehension {
             element, clauses, ..
         } => {
@@ -399,7 +416,7 @@ fn lower_structural_expr(
                     imported_values,
                     imported_types,
                     0,
-                )],
+                )?],
             }
         }
         CoreExpr::Unary {
@@ -408,10 +425,10 @@ fn lower_structural_expr(
             type_ref,
             ..
         } => {
-            let operand = lower_core_expr_to_typescript(*operand, imported_values, imported_types);
+            let operand = lower_core_expr_to_typescript(*operand, imported_values, imported_types)?;
             if operator == "-" && is_int_type(&type_ref) {
-                let operation =
-                    runtime_int_operation("-").expect("Int subtraction runtime is registered");
+                let operation = runtime_int_operation("-")
+                    .ok_or_else(|| missing_runtime("Int subtraction runtime is registered"))?;
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments: vec![
@@ -438,17 +455,17 @@ fn lower_structural_expr(
                 *condition,
                 imported_values,
                 imported_types,
-            )),
+            )?),
             then_branch: Box::new(lower_core_expr_to_typescript(
                 *then_branch,
                 imported_values,
                 imported_types,
-            )),
+            )?),
             else_branch: Box::new(lower_core_expr_to_typescript(
                 *else_branch,
                 imported_values,
                 imported_types,
-            )),
+            )?),
         },
         CoreExpr::Decision {
             scrutinee,
@@ -463,12 +480,12 @@ fn lower_structural_expr(
             type_ref,
             imported_values,
             imported_types,
-        ),
+        )?,
         CoreExpr::EffectOperation {
             operation,
             arguments,
             ..
-        } => lower_effect_operation(operation, arguments, imported_values, imported_types),
+        } => lower_effect_operation(operation, arguments, imported_values, imported_types)?,
         CoreExpr::EffectInvoke {
             callee,
             callee_signature,
@@ -478,13 +495,13 @@ fn lower_structural_expr(
             success,
             ..
         } => {
-            let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
+            let mut arguments = lower_core_expressions(arguments, imported_values, imported_types)?;
             arguments.extend(effect_call_dictionaries(
                 &callee,
                 &evidence,
                 imported_values,
                 imported_types,
-            ));
+            )?);
             if let Some(operation) = runtime_effect_operation(&callee) {
                 if matches!(
                     callee.as_str(),
@@ -493,11 +510,11 @@ fn lower_structural_expr(
                     let type_arguments =
                         ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
                     if !type_arguments.is_empty() {
-                        return TypeScriptExpr::TypeApplicationCall {
+                        return Ok(TypeScriptExpr::TypeApplicationCall {
                             callee: operation.local_name.to_owned(),
                             type_arguments,
                             arguments,
-                        };
+                        });
                     }
                 }
                 if callee == "std/deferred::make" {
@@ -517,14 +534,14 @@ fn lower_structural_expr(
                         _ => None,
                     };
                     if let Some(payloads) = payloads {
-                        return TypeScriptExpr::TypeApplicationCall {
+                        return Ok(TypeScriptExpr::TypeApplicationCall {
                             callee: operation.local_name.to_owned(),
                             type_arguments: payloads
                                 .iter()
                                 .map(|ty| type_ref_from_core_type(ty, imported_types))
                                 .collect(),
                             arguments,
-                        };
+                        });
                     }
                 }
                 TypeScriptExpr::RuntimeCall {
@@ -581,12 +598,12 @@ fn lower_structural_expr(
                 .map(|statement| {
                     lower_core_statement_to_typescript(statement, imported_values, imported_types)
                 })
-                .collect(),
+                .collect::<Lowered<_>>()?,
             result: Box::new(lower_core_expr_to_typescript(
                 *result,
                 imported_values,
                 imported_types,
-            )),
+            )?),
         },
         CoreExpr::MonadDo {
             statements,
@@ -596,28 +613,30 @@ fn lower_structural_expr(
         } => TypeScriptExpr::MonadDo {
             dictionary: Box::new(
                 selected_dictionary_expression(&evidence, imported_values, imported_types)
-                    .expect("monad do requires materialized Monad evidence"),
+                    .ok_or_else(|| {
+                        missing_evidence("monad do requires materialized Monad evidence")
+                    })?,
             ),
             statements: statements
                 .into_iter()
                 .map(|statement| {
                     lower_monad_do_statement(statement, imported_values, imported_types)
                 })
-                .collect(),
+                .collect::<Lowered<_>>()?,
             result: Box::new(lower_core_expr_to_typescript(
                 *result,
                 imported_values,
                 imported_types,
-            )),
+            )?),
         },
-    }
+    })
 }
 
 fn lower_variable(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     let CoreExpr::Variable {
         name,
         callable_signature,
@@ -626,7 +645,9 @@ fn lower_variable(
         origin,
     } = expr
     else {
-        unreachable!("variable lowering requires a variable expression")
+        return Err(unexpected_shape(
+            "variable lowering requires a variable expression",
+        ));
     };
     if matches!(type_ref, CoreType::Function { .. }) {
         if runtime_prelude_collection_operation(&name, &evidence).is_some()
@@ -643,7 +664,7 @@ fn lower_variable(
             // A bare function reference is a partial application with
             // no source arguments. Keep evidence and currying identical
             // to ordinary calls instead of emitting an unbound name.
-            return lower_core_expr_to_typescript(
+            return Ok(lower_core_expr_to_typescript(
                 CoreExpr::Call {
                     callee_signature: callable_signature,
                     callee: name,
@@ -658,40 +679,42 @@ fn lower_variable(
                 },
                 imported_values,
                 imported_types,
-            );
+            )?);
         }
         if let Some(operation) = runtime_signal_distinct_operation(&name, &evidence) {
             let source = "_source".to_owned();
             let equals =
                 equality_reference_from_evidence(&evidence, imported_values, imported_types)
-                    .expect("Signal.distinct requires materialized Eq evidence");
-            return TypeScriptExpr::Lambda {
+                    .ok_or_else(|| {
+                        missing_evidence("Signal.distinct requires materialized Eq evidence")
+                    })?;
+            return Ok(TypeScriptExpr::Lambda {
                 parameter: source.clone(),
                 body: Box::new(TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments: vec![equals, TypeScriptExpr::Identifier { name: source }],
                 }),
-            };
+            });
         }
         if let Some(operation) = runtime_int_operation_with_evidence(&name, &evidence) {
-            return checked_operator_reference(
+            return Ok(checked_operator_reference(
                 TypeScriptExpr::CurriedRuntimeReference {
                     name: operation.local_name.to_owned(),
                     arity: 2,
                 },
                 &type_ref,
                 imported_types,
-            );
+            ));
         }
         if let Some(method) = operator_trait_method(&name) {
             if let Some(dictionary) = evidence.first().and_then(|selected| {
                 selected_dictionary_expression(&selected, imported_values, imported_types)
             }) {
-                return checked_operator_reference(
+                return Ok(checked_operator_reference(
                     curried_dictionary_method_reference(dictionary, method),
                     &type_ref,
                     imported_types,
-                );
+                ));
             }
             if name == "+"
                 && matches!(
@@ -700,11 +723,11 @@ fn lower_variable(
                         if identity == "std/string::Add"
                 )
             {
-                return checked_operator_reference(
+                return Ok(checked_operator_reference(
                     curried_binary_reference("+"),
                     &type_ref,
                     imported_types,
-                );
+                ));
             }
         }
         if standard_operator(&name)
@@ -715,15 +738,17 @@ fn lower_variable(
                 .and_then(|selected| {
                     selected_dictionary_expression(&selected, imported_values, imported_types)
                 })
-                .expect("comparison reference requires materialized Ord evidence");
-            return lower_comparison_call(
+                .ok_or_else(|| {
+                    missing_evidence("comparison reference requires materialized Ord evidence")
+                })?;
+            return Ok(lower_comparison_call(
                 &name,
                 dictionary,
                 vec![],
                 &type_ref,
                 imported_types,
                 origin,
-            );
+            )?);
         }
         if matches!(
             standard_operator(&name).map(|operator| operator.kind),
@@ -732,22 +757,22 @@ fn lower_variable(
             if let Some(dictionary) = evidence.first().and_then(|selected| {
                 selected_dictionary_expression(&selected, imported_values, imported_types)
             }) {
-                return checked_operator_reference(
+                return Ok(checked_operator_reference(
                     if name == "!=" {
-                        negated_equality_reference(dictionary, &type_ref, imported_types, origin)
+                        negated_equality_reference(dictionary, &type_ref, imported_types, origin)?
                     } else {
                         curried_dictionary_method_reference(dictionary, "eq")
                     },
                     &type_ref,
                     imported_types,
-                );
+                ));
             }
             if let Some(operator) = strict_equality_operator_with_evidence(&name, &evidence) {
-                return checked_operator_reference(
+                return Ok(checked_operator_reference(
                     curried_binary_reference(operator),
                     &type_ref,
                     imported_types,
-                );
+                ));
             }
         }
     }
@@ -852,37 +877,37 @@ fn lower_variable(
     {
         // The initializer is checked under its quantifiers and stored
         // once. Restore this use's checked monotype after TS erasure.
-        return TypeScriptExpr::CheckedResult {
+        return Ok(TypeScriptExpr::CheckedResult {
             value: Box::new(TypeScriptExpr::CheckedResult {
                 value: Box::new(value),
                 type_ref: super::TypeScriptType::Unknown,
             }),
             type_ref: type_ref_from_core_type(&type_ref, imported_types),
-        };
+        });
     }
     if matches!(value, TypeScriptExpr::CurriedRuntimeReference { .. }) {
         // A returned runtime function may have no surrounding TS
         // annotation. Its checked source type also types the generated
         // curried parameters without changing their runtime stages.
-        return checked_operator_reference(value, &type_ref, imported_types);
+        return Ok(checked_operator_reference(value, &type_ref, imported_types));
     }
     if let Some(signature) = callable_signature {
         let checked = type_ref_from_core_type(&type_ref, imported_types);
         if super::types::instantiated_hkt_callee(&signature, &[], &checked).is_some() {
-            return TypeScriptExpr::CheckedResult {
+            return Ok(TypeScriptExpr::CheckedResult {
                 value: Box::new(value),
                 type_ref: checked,
-            };
+            });
         }
     }
-    value
+    Ok(value)
 }
 
 fn lower_call(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     let CoreExpr::Call {
         callee,
         arguments,
@@ -896,7 +921,7 @@ fn lower_call(
         origin,
     } = expr
     else {
-        unreachable!("call lowering requires a call expression")
+        return Err(unexpected_shape("call lowering requires a call expression"));
     };
     // A zero-argument partial retains the unary runtime function.
     if arguments.is_empty() && evidence.is_empty() && core_function_arity(&type_ref) == 1 {
@@ -906,20 +931,20 @@ fn lower_call(
                 runtime_provider_service_operation(&callee).map(|operation| operation.local_name)
             })
         {
-            return TypeScriptExpr::RuntimeReference {
+            return Ok(TypeScriptExpr::RuntimeReference {
                 name: name.to_owned(),
-            };
+            });
         }
     }
     if imported_types.is_erased_newtype(&callee) && arguments.len() == 1 {
-        return super::types::assert_private_representation(
+        return Ok(super::types::assert_private_representation(
             lower_core_expr_to_typescript(
                 arguments.into_iter().next().expect("newtype payload"),
                 imported_values,
                 imported_types,
-            ),
+            )?,
             type_ref_from_core_type(&type_ref, imported_types),
-        );
+        ));
     }
     let signal_operation = runtime_signal_operation(&callee);
     let checked_argument_types = arguments
@@ -930,650 +955,706 @@ fn lower_call(
         .iter()
         .flat_map(|operation| operation.type_argument_sources)
         .map(|index| {
-            type_ref_from_core_expr(
-                arguments
-                    .get(*index)
-                    .expect("runtime Signal type argument source must exist"),
-                imported_types,
-            )
+            let source = arguments.get(*index).ok_or_else(|| {
+                unexpected_shape("runtime Signal type argument source must exist")
+            })?;
+            Ok(type_ref_from_core_expr(source, imported_types))
         })
-        .collect::<Vec<_>>();
-    let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
-    if standard_operator(&callee)
-        .is_some_and(|operator| operator.kind == StandardOperatorKind::Comparison)
-    {
-        let dictionary = evidence
-            .first()
-            .and_then(|selected| {
-                selected_dictionary_expression(&selected, imported_values, imported_types)
-            })
-            .expect("comparison application requires materialized Ord evidence");
-        lower_comparison_call(
-            &callee,
-            dictionary,
-            arguments,
-            &type_ref,
-            imported_types,
-            origin,
-        )
-    } else if let Some(operator) = standard_trait_operator(&callee) {
-        let dispatch = trait_dispatch
-            .as_ref()
-            .expect("standard trait operator requires typed trait dispatch");
-        assert_eq!(dispatch.method, operator.method_name);
-        let (selected, method_evidence) = evidence
-            .split_first()
-            .expect("trait operator requires primary instance evidence");
-        let selected = selected_dictionary_expression(&selected, imported_values, imported_types)
-            .expect("trait operator requires materialized primary evidence");
-        let method_evidence = method_evidence
-            .iter()
-            .map(|selected| {
-                selected_dictionary_expression(&selected, imported_values, imported_types)
-                    .expect("trait operator method constraint requires materialized evidence")
-            })
-            .collect();
-        lower_trait_operator_call(selected, operator, arguments, method_evidence)
-    } else if let Some(dispatch) = trait_dispatch {
-        if let Some(lowered) = lower_abi_trait_method_call(
-            &dispatch.method,
-            &evidence,
-            arguments.clone(),
-            &checked_argument_types,
-            &type_ref,
-            imported_types,
-            &origin,
-        ) {
-            return lowered;
-        }
-        let (selected, method_evidence) = evidence
-            .split_first()
-            .expect("trait dispatch requires primary instance evidence");
-        let selected = selected_dictionary_expression(&selected, imported_values, imported_types)
-            .expect("local trait dispatch requires materialized primary evidence");
-        let method_evidence = method_evidence
-            .iter()
-            .map(|selected| {
-                selected_dictionary_expression(&selected, imported_values, imported_types)
-                    .expect("trait method constraint requires materialized evidence")
-            })
-            .collect::<Vec<_>>();
-        let mut deferred = Vec::new();
-        let mut result_type = type_ref.clone();
-        if arguments.is_empty()
-            && dispatch
-                .method_contract
-                .as_ref()
-                .is_some_and(|contract| !contract.parameters.is_empty())
+        .collect::<Lowered<Vec<_>>>()?;
+    let mut arguments = lower_core_expressions(arguments, imported_values, imported_types)?;
+    Ok(
+        if standard_operator(&callee)
+            .is_some_and(|operator| operator.kind == StandardOperatorKind::Comparison)
         {
-            return TypeScriptExpr::CheckedResult {
-                value: Box::new(TypeScriptExpr::DictionaryCall {
-                    dictionary: Box::new(selected),
-                    method: crate::method_value_factory_name(&dispatch.method),
-                    arguments: method_evidence,
-                }),
-                type_ref: type_ref_from_core_type(&type_ref, imported_types),
-            };
-        }
-        let supplied = arguments.len();
-        let index = if let Some(contract) = &dispatch.method_contract {
-            for (index, parameter) in contract.parameters.iter().enumerate().skip(arguments.len()) {
-                let name = format!("__ssrg$method$partial${index}");
-                let parameter_type = type_ref_from_core_type(parameter, imported_types);
-                deferred.push((name, parameter_type));
-                let CoreType::Function { result, .. } = result_type else {
-                    unreachable!("checked method partial has a function result")
-                };
-                result_type = *result;
-            }
-            contract.parameters.len()
-        } else {
-            arguments.len()
-        };
-        if supplied < index {
-            let initializer = TypeScriptExpr::DictionaryCall {
-                dictionary: Box::new(selected),
-                method: dispatch.method,
-                arguments,
-            };
-            return stage_deferred_call(
-                initializer,
-                deferred,
-                method_evidence,
-                type_ref_from_core_type(&result_type, imported_types),
-                origin,
-            );
-        }
-        arguments.splice(index..index, method_evidence);
-        // Dictionary methods can erase higher-kinded results. Restore
-        // the instantiated result already proved by source evidence,
-        // just as for ordinary constrained calls below.
-        let value = TypeScriptExpr::CheckedResult {
-            value: Box::new(TypeScriptExpr::DictionaryCall {
-                dictionary: Box::new(selected),
-                method: dispatch.method,
-                arguments,
-            }),
-            type_ref: type_ref_from_core_type(&result_type, imported_types),
-        };
-        deferred
-            .into_iter()
-            .rev()
-            .fold(value, |body, (name, ty)| TypeScriptExpr::Lambda {
-                parameter: format!("{name}: {}", render_typescript_type(&ty)),
-                body: Box::new(body),
-            })
-    } else if let Some(operation) = runtime_prelude_collection_operation(&callee, &evidence)
-        .or_else(|| runtime_standard_operation(&callee))
-    {
-        // Rank-polymorphic Iterable dictionaries do not let TypeScript
-        // recover the element type from C. Preserve the types already
-        // selected by Seseragi instead of accepting host `unknown`.
-        let type_arguments = match (callee.as_str(), evidence.first()) {
-            (name, _)
-                if name.starts_with("std/either::")
-                    || name == "std/transformer/either::fromEither" =>
-            {
-                checked_either_runtime_arguments(
-                    name,
-                    &checked_argument_types,
-                    &type_ref,
-                    imported_types,
-                )
-            }
-            ("std/array::empty" | "std/array::append", _) => {
-                checked_array_result_element(&type_ref, imported_types)
-                    .into_iter()
-                    .collect()
-            }
-            ("std/prelude:::", _) => {
-                vec![list_cons_element_type(&type_ref, imported_types)]
-            }
-            ("std/map::fromEntries", Some(selected)) => {
-                let [collection, CoreType::Tuple { elements }] =
-                    selected.constraint.arguments.as_slice()
-                else {
-                    unreachable!("Map constructor requires pair Iterable evidence")
-                };
-                std::iter::once(collection)
-                    .chain(elements.iter())
-                    .map(|value| type_ref_from_core_type(value, imported_types))
-                    .collect()
-            }
-            (
-                "std/set::fromIterable" | "std/array::fromIterable" | "std/list::fromIterable",
-                Some(selected),
-            ) => selected
-                .constraint
-                .arguments
-                .iter()
-                .map(|value| type_ref_from_core_type(value, imported_types))
-                .collect(),
-            _ => Vec::new(),
-        };
-        // Standard functions receive their canonical where
-        // dictionaries before user arguments, in interface order.
-        let dictionaries = if runtime_collection_operation(&callee, &evidence).is_some() {
-            // Concrete reduce exports take only source arguments.
-            Vec::new()
-        } else {
-            evidence
-                .iter()
-                .map(|selected| {
-                    selected_dictionary_expression(selected, imported_values, imported_types)
-                        .expect("collection call requires materialized evidence")
+            let dictionary = evidence
+                .first()
+                .and_then(|selected| {
+                    selected_dictionary_expression(&selected, imported_values, imported_types)
                 })
-                .collect::<Vec<_>>()
-        };
-        let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
-        let returned_arguments = arguments.split_off(arguments.len().min(operation.source_arity));
-        let dictionary_count = dictionaries.len();
-        arguments.splice(0..0, dictionaries);
-        let result = lower_uncurried_runtime_call(
-            operation.local_name.to_owned(),
-            arguments,
-            Vec::new(),
-            &type_ref,
-            imported_types,
-            "collection",
-            type_arguments,
-            Some(remaining_parameters),
-            checked_argument_types
-                .iter()
-                .take(operation.source_arity)
-                .cloned()
-                .enumerate()
-                .map(|(index, ty)| (index + dictionary_count, ty))
-                .collect(),
-            origin.clone(),
-        );
-        let result = apply_returned_runtime_arguments(
-            result,
-            returned_arguments,
-            &checked_argument_types[operation.source_arity.min(checked_argument_types.len())..],
-            type_ref_from_core_type(&type_ref, imported_types),
-            "collection",
-            operation.result_erased,
-            origin,
-        );
-        if operation.result_erased {
-            TypeScriptExpr::CheckedResult {
-                value: Box::new(result),
-                type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                .ok_or_else(|| {
+                    missing_evidence("comparison application requires materialized Ord evidence")
+                })?;
+            lower_comparison_call(
+                &callee,
+                dictionary,
+                arguments,
+                &type_ref,
+                imported_types,
+                origin,
+            )?
+        } else if let Some(operator) = standard_trait_operator(&callee) {
+            let dispatch = trait_dispatch.as_ref().ok_or_else(|| {
+                missing_evidence("standard trait operator requires typed trait dispatch")
+            })?;
+            if dispatch.method != operator.method_name {
+                return Err(missing_evidence(
+                    "standard trait operator dispatch must select its operator method",
+                ));
             }
-        } else {
-            result
-        }
-    } else if let Some(operation) = runtime_stream_operation(&callee) {
-        let dictionaries = if callee == "std/stream::fromIterable" {
-            evidence
+            let (selected, method_evidence) = evidence.split_first().ok_or_else(|| {
+                missing_evidence("trait operator requires primary instance evidence")
+            })?;
+            let selected =
+                selected_dictionary_expression(&selected, imported_values, imported_types)
+                    .ok_or_else(|| {
+                        missing_evidence("trait operator requires materialized primary evidence")
+                    })?;
+            let method_evidence = method_evidence
                 .iter()
                 .map(|selected| {
                     selected_dictionary_expression(&selected, imported_values, imported_types)
-                        .expect("Stream.fromIterable requires materialized Iterable evidence")
+                        .ok_or_else(|| {
+                            missing_evidence(
+                                "trait operator method constraint requires materialized evidence",
+                            )
+                        })
                 })
-                .collect()
-        } else {
-            Vec::new()
-        };
-        lower_uncurried_runtime_call(
-            operation.local_name.to_owned(),
-            arguments,
-            dictionaries,
-            &type_ref,
-            imported_types,
-            "stream",
-            Vec::new(),
-            None,
-            checked_argument_types.iter().cloned().enumerate().collect(),
-            origin,
-        )
-    } else if callee == "std/prelude::reduce"
-        && matches!(evidence.as_slice(), [selected] if selected.constraint.name == "Reducible")
-    {
-        let dictionary =
-            selected_dictionary_expression(&evidence[0], imported_values, imported_types)
-                .expect("user Reducible call requires materialized dictionary evidence");
-        TypeScriptExpr::DictionaryCall {
-            dictionary: Box::new(dictionary),
-            method: "reduce".to_owned(),
-            arguments,
-        }
-    } else if let Some(operation) = runtime_iterator_operation(&callee) {
-        let remaining = operation.source_arity.saturating_sub(arguments.len());
-        lower_uncurried_runtime_call(
-            operation.local_name.to_owned(),
-            arguments,
-            Vec::new(),
-            &type_ref,
-            imported_types,
-            "iterator",
-            Vec::new(),
-            Some(remaining),
-            checked_argument_types.iter().cloned().enumerate().collect(),
-            origin,
-        )
-    } else if let Some(operation) = runtime_bytes_operation(&callee)
-        .or_else(|| runtime_text_operation(&callee))
-        .or_else(|| runtime_regex_operation(&callee))
-    {
-        lower_uncurried_runtime_call(
-            operation.local_name.to_owned(),
-            arguments,
-            Vec::new(),
-            &type_ref,
-            imported_types,
-            "text_bytes",
-            Vec::new(),
-            None,
-            checked_argument_types.iter().cloned().enumerate().collect(),
-            origin,
-        )
-    } else if let Some(operation) = runtime_json_operation(&callee) {
-        let factory_arity = json_decoder_factory_arity(&callee);
-        let supplied = arguments.len();
-        let returned_arguments = factory_arity
-            .filter(|arity| supplied > *arity)
-            .map(|arity| arguments.split_off(arity))
-            .unwrap_or_default();
-        arguments.extend(evidence.iter().map(|selected| {
-            selected_dictionary_expression(&selected, imported_values, imported_types)
-                .expect("JSON operation requires materializable codec evidence")
-        }));
-        if let Some(arity) = factory_arity {
-            let call = lower_uncurried_runtime_call(
-                operation.local_name.to_owned(),
-                arguments,
-                Vec::new(),
+                .collect::<Lowered<Vec<_>>>()?;
+            lower_trait_operator_call(selected, operator, arguments, method_evidence)?
+        } else if let Some(dispatch) = trait_dispatch {
+            if let Some(lowered) = lower_abi_trait_method_call(
+                &dispatch.method,
+                &evidence,
+                arguments.clone(),
+                &checked_argument_types,
                 &type_ref,
                 imported_types,
-                "json",
-                Vec::new(),
-                Some(arity.saturating_sub(supplied)),
-                checked_argument_types
-                    .iter()
-                    .take(supplied.min(arity))
-                    .cloned()
-                    .enumerate()
-                    .collect(),
-                origin.clone(),
-            );
-            if returned_arguments.is_empty() {
-                call
-            } else {
-                let name = "__ssrg$json$returned".to_owned();
-                let callable_type = checked_argument_types[arity..].iter().rev().fold(
-                    type_ref_from_core_type(&type_ref, imported_types),
-                    |result, parameter| super::TypeScriptType::Function {
-                        parameter: Box::new(parameter.clone()),
-                        result: Box::new(result),
-                    },
-                );
-                TypeScriptExpr::Sequence {
-                    statements: vec![TypeScriptStatement::PureLet {
-                        type_parameters: Vec::new(),
-                        name: name.clone(),
-                        type_ref: callable_type,
-                        initializer: call,
-                        initializer_in_outer_scope: false,
-                        origin,
-                    }],
-                    result: Box::new(TypeScriptExpr::Call {
-                        callee: name,
-                        arguments: returned_arguments,
-                        type_arguments: Vec::new(),
-                        checked_callee_type: None,
+                &origin,
+            )? {
+                return Ok(lowered);
+            }
+            let (selected, method_evidence) = evidence.split_first().ok_or_else(|| {
+                missing_evidence("trait dispatch requires primary instance evidence")
+            })?;
+            let selected =
+                selected_dictionary_expression(&selected, imported_values, imported_types)
+                    .ok_or_else(|| {
+                        missing_evidence(
+                            "local trait dispatch requires materialized primary evidence",
+                        )
+                    })?;
+            let method_evidence = method_evidence
+                .iter()
+                .map(|selected| {
+                    selected_dictionary_expression(&selected, imported_values, imported_types)
+                        .ok_or_else(|| {
+                            missing_evidence(
+                                "trait method constraint requires materialized evidence",
+                            )
+                        })
+                })
+                .collect::<Lowered<Vec<_>>>()?;
+            let mut deferred = Vec::new();
+            let mut result_type = type_ref.clone();
+            if arguments.is_empty()
+                && dispatch
+                    .method_contract
+                    .as_ref()
+                    .is_some_and(|contract| !contract.parameters.is_empty())
+            {
+                return Ok(TypeScriptExpr::CheckedResult {
+                    value: Box::new(TypeScriptExpr::DictionaryCall {
+                        dictionary: Box::new(selected),
+                        method: crate::method_value_factory_name(&dispatch.method),
+                        arguments: method_evidence,
                     }),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                });
+            }
+            let supplied = arguments.len();
+            let index = if let Some(contract) = &dispatch.method_contract {
+                for (index, parameter) in
+                    contract.parameters.iter().enumerate().skip(arguments.len())
+                {
+                    let name = format!("__ssrg$method$partial${index}");
+                    let parameter_type = type_ref_from_core_type(parameter, imported_types);
+                    deferred.push((name, parameter_type));
+                    let CoreType::Function { result, .. } = result_type else {
+                        return Err(unexpected_shape(
+                            "checked method partial has a function result",
+                        ));
+                    };
+                    result_type = *result;
                 }
-            }
-        } else {
-            TypeScriptExpr::RuntimeCall {
-                callee: operation.local_name.to_owned(),
-                arguments,
-            }
-        }
-    } else if let Some(operation) = runtime_numeric_operation(&callee) {
-        lower_uncurried_runtime_call(
-            operation.local_name.to_owned(),
-            arguments,
-            Vec::new(),
-            &type_ref,
-            imported_types,
-            "numeric",
-            Vec::new(),
-            None,
-            checked_argument_types.iter().cloned().enumerate().collect(),
-            origin,
-        )
-    } else if let Some(constructor) = runtime_sum_constructor(&callee) {
-        TypeScriptExpr::RuntimeCall {
-            callee: constructor.local_name.to_owned(),
-            arguments,
-        }
-    } else if let Some(operation) = runtime_web_html_operation(&callee) {
-        if callee == "std/web/dom::DomFailure" {
-            let type_arguments =
-                ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
-            if !type_arguments.is_empty() {
-                return TypeScriptExpr::TypeApplicationCall {
-                    callee: operation.local_name.to_owned(),
-                    type_arguments,
+                contract.parameters.len()
+            } else {
+                arguments.len()
+            };
+            if supplied < index {
+                let initializer = TypeScriptExpr::DictionaryCall {
+                    dictionary: Box::new(selected),
+                    method: dispatch.method,
                     arguments,
                 };
+                return Ok(stage_deferred_call(
+                    initializer,
+                    deferred,
+                    method_evidence,
+                    type_ref_from_core_type(&result_type, imported_types),
+                    origin,
+                ));
             }
-        }
-        TypeScriptExpr::RuntimeCall {
-            callee: operation.local_name.to_owned(),
-            arguments,
-        }
-    } else if let Some(operation) = runtime_provider_service_operation(&callee) {
-        if let Some(source_arity) = operation.source_arity {
-            // The standard declaration fixes the source stages.
-            // Apply extra arguments to the returned function only
-            // after the runtime export has consumed its parameters.
-            let remaining = source_arity.saturating_sub(arguments.len());
-            let returned_arguments = arguments.split_off(arguments.len().min(source_arity));
+            arguments.splice(index..index, method_evidence);
+            // Dictionary methods can erase higher-kinded results. Restore
+            // the instantiated result already proved by source evidence,
+            // just as for ordinary constrained calls below.
+            let value = TypeScriptExpr::CheckedResult {
+                value: Box::new(TypeScriptExpr::DictionaryCall {
+                    dictionary: Box::new(selected),
+                    method: dispatch.method,
+                    arguments,
+                }),
+                type_ref: type_ref_from_core_type(&result_type, imported_types),
+            };
+            deferred
+                .into_iter()
+                .rev()
+                .fold(value, |body, (name, ty)| TypeScriptExpr::Lambda {
+                    parameter: format!("{name}: {}", render_typescript_type(&ty)),
+                    body: Box::new(body),
+                })
+        } else if let Some(operation) = runtime_prelude_collection_operation(&callee, &evidence)
+            .or_else(|| runtime_standard_operation(&callee))
+        {
+            // Rank-polymorphic Iterable dictionaries do not let TypeScript
+            // recover the element type from C. Preserve the types already
+            // selected by Seseragi instead of accepting host `unknown`.
+            let type_arguments = match (callee.as_str(), evidence.first()) {
+                (name, _)
+                    if name.starts_with("std/either::")
+                        || name == "std/transformer/either::fromEither" =>
+                {
+                    checked_either_runtime_arguments(
+                        name,
+                        &checked_argument_types,
+                        &type_ref,
+                        imported_types,
+                    )?
+                }
+                ("std/array::empty" | "std/array::append", _) => {
+                    checked_array_result_element(&type_ref, imported_types)
+                        .into_iter()
+                        .collect()
+                }
+                ("std/prelude:::", _) => {
+                    vec![list_cons_element_type(&type_ref, imported_types)?]
+                }
+                ("std/map::fromEntries", Some(selected)) => {
+                    let [collection, CoreType::Tuple { elements }] =
+                        selected.constraint.arguments.as_slice()
+                    else {
+                        return Err(missing_evidence(
+                            "Map constructor requires pair Iterable evidence",
+                        ));
+                    };
+                    std::iter::once(collection)
+                        .chain(elements.iter())
+                        .map(|value| type_ref_from_core_type(value, imported_types))
+                        .collect()
+                }
+                (
+                    "std/set::fromIterable" | "std/array::fromIterable" | "std/list::fromIterable",
+                    Some(selected),
+                ) => selected
+                    .constraint
+                    .arguments
+                    .iter()
+                    .map(|value| type_ref_from_core_type(value, imported_types))
+                    .collect(),
+                _ => Vec::new(),
+            };
+            // Standard functions receive their canonical where
+            // dictionaries before user arguments, in interface order.
+            let dictionaries = if runtime_collection_operation(&callee, &evidence).is_some() {
+                // Concrete reduce exports take only source arguments.
+                Vec::new()
+            } else {
+                evidence
+                    .iter()
+                    .map(|selected| {
+                        selected_dictionary_expression(selected, imported_values, imported_types)
+                            .ok_or_else(|| {
+                                missing_evidence("collection call requires materialized evidence")
+                            })
+                    })
+                    .collect::<Lowered<Vec<_>>>()?
+            };
+            let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
+            let returned_arguments =
+                arguments.split_off(arguments.len().min(operation.source_arity));
+            let dictionary_count = dictionaries.len();
+            arguments.splice(0..0, dictionaries);
             let result = lower_uncurried_runtime_call(
                 operation.local_name.to_owned(),
                 arguments,
                 Vec::new(),
                 &type_ref,
                 imported_types,
-                "provider",
-                Vec::new(),
-                Some(remaining),
+                "collection",
+                type_arguments,
+                Some(remaining_parameters),
                 checked_argument_types
                     .iter()
-                    .take(source_arity)
+                    .take(operation.source_arity)
                     .cloned()
                     .enumerate()
+                    .map(|(index, ty)| (index + dictionary_count, ty))
                     .collect(),
                 origin.clone(),
             );
-            apply_returned_runtime_arguments(
+            let result = apply_returned_runtime_arguments(
                 result,
                 returned_arguments,
-                &checked_argument_types[source_arity.min(checked_argument_types.len())..],
+                &checked_argument_types[operation.source_arity.min(checked_argument_types.len())..],
                 type_ref_from_core_type(&type_ref, imported_types),
-                "provider",
-                false,
+                "collection",
+                operation.result_erased,
+                origin,
+            );
+            if operation.result_erased {
+                TypeScriptExpr::CheckedResult {
+                    value: Box::new(result),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                }
+            } else {
+                result
+            }
+        } else if let Some(operation) = runtime_stream_operation(&callee) {
+            let dictionaries = if callee == "std/stream::fromIterable" {
+                evidence
+                    .iter()
+                    .map(|selected| {
+                        selected_dictionary_expression(&selected, imported_values, imported_types)
+                            .ok_or_else(|| {
+                                missing_evidence(
+                                    "Stream.fromIterable requires materialized Iterable evidence",
+                                )
+                            })
+                    })
+                    .collect::<Lowered<Vec<_>>>()?
+            } else {
+                Vec::new()
+            };
+            lower_uncurried_runtime_call(
+                operation.local_name.to_owned(),
+                arguments,
+                dictionaries,
+                &type_ref,
+                imported_types,
+                "stream",
+                Vec::new(),
+                None,
+                checked_argument_types.iter().cloned().enumerate().collect(),
                 origin,
             )
-        } else {
-            TypeScriptExpr::RuntimeCall {
-                callee: operation.local_name.to_owned(),
-                arguments,
-            }
-        }
-    } else if let Some(operation) = runtime_effect_operation(&callee) {
-        let dictionary_arguments =
-            effect_call_dictionaries(&callee, &evidence, imported_values, imported_types);
-        let mut parameters = Vec::new();
-        let mut remaining = &type_ref;
-        while let CoreType::Function { parameter, result } = remaining {
-            let name = format!("__ssrg$effect$partial${}", parameters.len());
-            let type_name =
-                render_typescript_type(&type_ref_from_core_type(parameter, imported_types));
-            arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
-            parameters.push((name, type_name));
-            remaining = result;
-        }
-        arguments.extend(dictionary_arguments);
-        parameters.into_iter().rev().fold(
-            TypeScriptExpr::RuntimeCall {
-                callee: operation.local_name.to_owned(),
-                arguments,
-            },
-            |body, (name, type_name)| TypeScriptExpr::Lambda {
-                parameter: format!("{name}: {type_name}"),
-                body: Box::new(body),
-            },
-        )
-    } else if let Some(operation) = runtime_signal_distinct_operation(&callee, &evidence) {
-        let equals = equality_reference_from_evidence(&evidence, imported_values, imported_types)
-            .expect("Signal.distinct requires materialized Eq evidence");
-        arguments.insert(0, equals);
-        TypeScriptExpr::RuntimeCall {
-            callee: operation.local_name.to_owned(),
-            arguments,
-        }
-    } else if let Some(operation) = signal_operation {
-        if signal_type_arguments.is_empty() {
-            TypeScriptExpr::RuntimeCall {
-                callee: operation.local_name.to_owned(),
-                arguments,
-            }
-        } else {
-            TypeScriptExpr::TypeApplicationCall {
-                callee: operation.local_name.to_owned(),
-                type_arguments: signal_type_arguments,
-                arguments,
-            }
-        }
-    } else {
-        let foreign_result =
-            imported_types.foreign_scalar_result(&callee, arguments.len(), &type_ref, &evidence);
-        let evidence = evidence
-            .iter()
-            .map(|selected| {
-                selected_dictionary_expression(&selected, imported_values, imported_types)
-                    .expect("constrained function call requires materializable evidence")
-            })
-            .collect::<Vec<_>>();
-        let callee = imported_values
-            .get(&callee)
-            .cloned()
-            .unwrap_or_else(|| local_name(&callee));
-        if imported_values.contains_key(&format!("__ssrg$foreign$task:{callee}"))
-            && evidence.is_empty()
-            && deferred_evidence_parameters.is_empty()
-            && deferred_evidence_type_constructor_parameters.is_empty()
+        } else if callee == "std/prelude::reduce"
+            && matches!(evidence.as_slice(), [selected] if selected.constraint.name == "Reducible")
         {
-            TypeScriptExpr::ForeignTaskCall {
-                callee,
+            let dictionary =
+                selected_dictionary_expression(&evidence[0], imported_values, imported_types)
+                    .ok_or_else(|| {
+                        missing_evidence(
+                            "user Reducible call requires materialized dictionary evidence",
+                        )
+                    })?;
+            TypeScriptExpr::DictionaryCall {
+                dictionary: Box::new(dictionary),
+                method: "reduce".to_owned(),
                 arguments,
-                function: imported_values
-                    .get("__ssrg$foreign$function")
-                    .cloned()
-                    .unwrap_or_else(|| "<module>".to_owned()),
-                module: imported_values
-                    .get("__ssrg$foreign$module")
-                    .cloned()
-                    .unwrap_or_else(|| origin.source.clone()),
-                origin,
             }
-        } else {
-            let has_evidence = !evidence.is_empty();
-            let type_arguments =
-                ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
-            let checked_result = type_ref_from_core_type_with_erasure(
-                foreign_result.as_ref().unwrap_or(&type_ref),
+        } else if let Some(operation) = runtime_iterator_operation(&callee) {
+            let remaining = operation.source_arity.saturating_sub(arguments.len());
+            lower_uncurried_runtime_call(
+                operation.local_name.to_owned(),
+                arguments,
+                Vec::new(),
+                &type_ref,
                 imported_types,
-                &deferred_evidence_type_constructor_parameters,
-            );
-            let check_curried_inference = has_evidence
-                && type_arguments.is_empty()
-                && deferred_evidence_parameters.is_empty()
-                && (needs_ordinary_call_annotation(callee_signature.as_ref())
-                    || checked_argument_types.iter().skip(1).any(|argument| {
-                        matches!(argument, super::TypeScriptType::Function { .. })
-                    })
-                    || checked_argument_types
-                        .first()
-                        .is_some_and(callback_returns_either));
-            let hkt_callee = (!has_evidence)
-                .then(|| callee_signature.as_ref())
-                .flatten()
-                .filter(|signature| signature.argument_types.len() == arguments.len())
-                .and_then(|signature| {
-                    let checked = signature
-                        .argument_types
-                        .iter()
-                        .map(|ty| type_ref_from_core_type(ty, imported_types))
-                        .collect::<Vec<_>>();
-                    super::types::instantiated_hkt_callee(signature, &checked, &checked_result)
-                });
-            let evidence_count = evidence.len();
-            let factory_callee = (has_evidence
-                && deferred_evidence_parameters.is_empty()
-                && evidence_argument_index == (!arguments.is_empty()).then_some(0))
-            .then(|| callee_signature.as_ref())
-            .flatten()
-            .filter(|signature| {
-                signature.parameters.is_empty()
-                    && signature.type_parameters.is_empty()
-                    && signature.argument_types.len() == arguments.len()
-                    && matches!(signature.result, CoreType::Function { .. })
-            })
-            .map(|signature| {
-                (0..evidence_count).fold(
-                    type_ref_from_core_type(&signature.result, imported_types),
-                    |result, _| super::TypeScriptType::Function {
-                        parameter: Box::new(super::TypeScriptType::Unknown),
-                        result: Box::new(result),
-                    },
-                )
-            });
-            // Typed HIR represents an imported effect reference as a
-            // zero-argument partial Call. Preserve the callable value;
-            // emitting f() would construct it before its argument exists.
-            let mut call = if arguments.is_empty()
-                && evidence.is_empty()
-                && deferred_evidence_parameters.is_empty()
-                && matches!(type_ref, CoreType::Function { .. })
-            {
-                TypeScriptExpr::Identifier { name: callee }
-            } else {
-                lower_constrained_call(
-                    callee,
+                "iterator",
+                Vec::new(),
+                Some(remaining),
+                checked_argument_types.iter().cloned().enumerate().collect(),
+                origin,
+            )
+        } else if let Some(operation) = runtime_bytes_operation(&callee)
+            .or_else(|| runtime_text_operation(&callee))
+            .or_else(|| runtime_regex_operation(&callee))
+        {
+            lower_uncurried_runtime_call(
+                operation.local_name.to_owned(),
+                arguments,
+                Vec::new(),
+                &type_ref,
+                imported_types,
+                "text_bytes",
+                Vec::new(),
+                None,
+                checked_argument_types.iter().cloned().enumerate().collect(),
+                origin,
+            )
+        } else if let Some(operation) = runtime_json_operation(&callee) {
+            let factory_arity = json_decoder_factory_arity(&callee);
+            let supplied = arguments.len();
+            let returned_arguments = factory_arity
+                .filter(|arity| supplied > *arity)
+                .map(|arity| arguments.split_off(arity))
+                .unwrap_or_default();
+            for selected in &evidence {
+                arguments.push(
+                    selected_dictionary_expression(selected, imported_values, imported_types)
+                        .ok_or_else(|| {
+                            missing_evidence(
+                                "JSON operation requires materializable codec evidence",
+                            )
+                        })?,
+                );
+            }
+            if let Some(arity) = factory_arity {
+                let call = lower_uncurried_runtime_call(
+                    operation.local_name.to_owned(),
                     arguments,
-                    type_arguments,
-                    evidence,
-                    deferred_evidence_parameters,
-                    deferred_evidence_type_constructor_parameters,
-                    evidence_argument_index,
+                    Vec::new(),
+                    &type_ref,
                     imported_types,
-                    checked_result.clone(),
-                    &checked_argument_types,
+                    "json",
+                    Vec::new(),
+                    Some(arity.saturating_sub(supplied)),
+                    checked_argument_types
+                        .iter()
+                        .take(supplied.min(arity))
+                        .cloned()
+                        .enumerate()
+                        .collect(),
+                    origin.clone(),
+                );
+                if returned_arguments.is_empty() {
+                    call
+                } else {
+                    let name = "__ssrg$json$returned".to_owned();
+                    let callable_type = checked_argument_types[arity..].iter().rev().fold(
+                        type_ref_from_core_type(&type_ref, imported_types),
+                        |result, parameter| super::TypeScriptType::Function {
+                            parameter: Box::new(parameter.clone()),
+                            result: Box::new(result),
+                        },
+                    );
+                    TypeScriptExpr::Sequence {
+                        statements: vec![TypeScriptStatement::PureLet {
+                            type_parameters: Vec::new(),
+                            name: name.clone(),
+                            type_ref: callable_type,
+                            initializer: call,
+                            initializer_in_outer_scope: false,
+                            origin,
+                        }],
+                        result: Box::new(TypeScriptExpr::Call {
+                            callee: name,
+                            arguments: returned_arguments,
+                            type_arguments: Vec::new(),
+                            checked_callee_type: None,
+                        }),
+                    }
+                }
+            } else {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            }
+        } else if let Some(operation) = runtime_numeric_operation(&callee) {
+            lower_uncurried_runtime_call(
+                operation.local_name.to_owned(),
+                arguments,
+                Vec::new(),
+                &type_ref,
+                imported_types,
+                "numeric",
+                Vec::new(),
+                None,
+                checked_argument_types.iter().cloned().enumerate().collect(),
+                origin,
+            )
+        } else if let Some(constructor) = runtime_sum_constructor(&callee) {
+            TypeScriptExpr::RuntimeCall {
+                callee: constructor.local_name.to_owned(),
+                arguments,
+            }
+        } else if let Some(operation) = runtime_web_html_operation(&callee) {
+            if callee == "std/web/dom::DomFailure" {
+                let type_arguments =
+                    ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
+                if !type_arguments.is_empty() {
+                    return Ok(TypeScriptExpr::TypeApplicationCall {
+                        callee: operation.local_name.to_owned(),
+                        type_arguments,
+                        arguments,
+                    });
+                }
+            }
+            TypeScriptExpr::RuntimeCall {
+                callee: operation.local_name.to_owned(),
+                arguments,
+            }
+        } else if let Some(operation) = runtime_provider_service_operation(&callee) {
+            if let Some(source_arity) = operation.source_arity {
+                // The standard declaration fixes the source stages.
+                // Apply extra arguments to the returned function only
+                // after the runtime export has consumed its parameters.
+                let remaining = source_arity.saturating_sub(arguments.len());
+                let returned_arguments = arguments.split_off(arguments.len().min(source_arity));
+                let result = lower_uncurried_runtime_call(
+                    operation.local_name.to_owned(),
+                    arguments,
+                    Vec::new(),
+                    &type_ref,
+                    imported_types,
+                    "provider",
+                    Vec::new(),
+                    Some(remaining),
+                    checked_argument_types
+                        .iter()
+                        .take(source_arity)
+                        .cloned()
+                        .enumerate()
+                        .collect(),
+                    origin.clone(),
+                );
+                apply_returned_runtime_arguments(
+                    result,
+                    returned_arguments,
+                    &checked_argument_types[source_arity.min(checked_argument_types.len())..],
+                    type_ref_from_core_type(&type_ref, imported_types),
+                    "provider",
+                    false,
                     origin,
                 )
-            };
-            if check_curried_inference {
-                // TypeScript fixes generic parameters at the first
-                // curried argument. The source checker used every
-                // argument and evidence; retain that instantiated
-                // callable type before applying dictionaries or callbacks. A
-                // returned source function follows the dictionaries;
-                // its arguments must not shift that checked boundary.
-                let mut parameters = checked_argument_types;
-                let index = evidence_argument_index.unwrap_or(parameters.len());
-                parameters.splice(
-                    index..index,
-                    std::iter::repeat_n(super::TypeScriptType::Unknown, evidence_count),
-                );
-                let instantiated = parameters.into_iter().rev().fold(
-                    checked_result.clone(),
-                    |result, parameter| super::TypeScriptType::Function {
-                        parameter: Box::new(parameter),
-                        result: Box::new(result),
-                    },
-                );
-                if let TypeScriptExpr::Call {
-                    checked_callee_type,
-                    ..
-                } = &mut call
-                {
-                    *checked_callee_type = Some(instantiated);
+            } else {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
                 }
             }
-            if let Some(instantiated) = factory_callee.or(hkt_callee) {
-                match &mut call {
-                    TypeScriptExpr::Call {
-                        checked_callee_type,
-                        ..
-                    } => *checked_callee_type = Some(instantiated),
-                    TypeScriptExpr::Identifier { .. } => {
-                        call = TypeScriptExpr::CheckedResult {
-                            value: Box::new(call),
-                            type_ref: checked_result.clone(),
-                        };
-                    }
-                    _ => {}
-                }
+        } else if let Some(operation) = runtime_effect_operation(&callee) {
+            let dictionary_arguments =
+                effect_call_dictionaries(&callee, &evidence, imported_values, imported_types)?;
+            let mut parameters = Vec::new();
+            let mut remaining = &type_ref;
+            while let CoreType::Function { parameter, result } = remaining {
+                let name = format!("__ssrg$effect$partial${}", parameters.len());
+                let type_name =
+                    render_typescript_type(&type_ref_from_core_type(parameter, imported_types));
+                arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
+                parameters.push((name, type_name));
+                remaining = result;
             }
-            if has_evidence {
-                // Host inference commits generics at the first curried
-                // argument, before erased dictionary parameters arrive.
-                // The source checker has already proved this result.
-                TypeScriptExpr::CheckedResult {
-                    value: Box::new(call),
-                    type_ref: checked_result,
+            arguments.extend(dictionary_arguments);
+            parameters.into_iter().rev().fold(
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                },
+                |body, (name, type_name)| TypeScriptExpr::Lambda {
+                    parameter: format!("{name}: {type_name}"),
+                    body: Box::new(body),
+                },
+            )
+        } else if let Some(operation) = runtime_signal_distinct_operation(&callee, &evidence) {
+            let equals =
+                equality_reference_from_evidence(&evidence, imported_values, imported_types)
+                    .ok_or_else(|| {
+                        missing_evidence("Signal.distinct requires materialized Eq evidence")
+                    })?;
+            arguments.insert(0, equals);
+            TypeScriptExpr::RuntimeCall {
+                callee: operation.local_name.to_owned(),
+                arguments,
+            }
+        } else if let Some(operation) = signal_operation {
+            if signal_type_arguments.is_empty() {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
                 }
             } else {
-                call
+                TypeScriptExpr::TypeApplicationCall {
+                    callee: operation.local_name.to_owned(),
+                    type_arguments: signal_type_arguments,
+                    arguments,
+                }
             }
-        }
-    }
+        } else {
+            let foreign_result = imported_types.foreign_scalar_result(
+                &callee,
+                arguments.len(),
+                &type_ref,
+                &evidence,
+            );
+            let evidence = evidence
+                .iter()
+                .map(|selected| {
+                    selected_dictionary_expression(&selected, imported_values, imported_types)
+                        .ok_or_else(|| {
+                            missing_evidence(
+                                "constrained function call requires materializable evidence",
+                            )
+                        })
+                })
+                .collect::<Lowered<Vec<_>>>()?;
+            let callee = imported_values
+                .get(&callee)
+                .cloned()
+                .unwrap_or_else(|| local_name(&callee));
+            if imported_values.contains_key(&format!("__ssrg$foreign$task:{callee}"))
+                && evidence.is_empty()
+                && deferred_evidence_parameters.is_empty()
+                && deferred_evidence_type_constructor_parameters.is_empty()
+            {
+                TypeScriptExpr::ForeignTaskCall {
+                    callee,
+                    arguments,
+                    function: imported_values
+                        .get("__ssrg$foreign$function")
+                        .cloned()
+                        .unwrap_or_else(|| "<module>".to_owned()),
+                    module: imported_values
+                        .get("__ssrg$foreign$module")
+                        .cloned()
+                        .unwrap_or_else(|| origin.source.clone()),
+                    origin,
+                }
+            } else {
+                let has_evidence = !evidence.is_empty();
+                let type_arguments =
+                    ordinary_call_type_arguments(callee_signature.as_ref(), imported_types);
+                let checked_result = type_ref_from_core_type_with_erasure(
+                    foreign_result.as_ref().unwrap_or(&type_ref),
+                    imported_types,
+                    &deferred_evidence_type_constructor_parameters,
+                );
+                let check_curried_inference = has_evidence
+                    && type_arguments.is_empty()
+                    && deferred_evidence_parameters.is_empty()
+                    && (needs_ordinary_call_annotation(callee_signature.as_ref())
+                        || checked_argument_types.iter().skip(1).any(|argument| {
+                            matches!(argument, super::TypeScriptType::Function { .. })
+                        })
+                        || checked_argument_types
+                            .first()
+                            .is_some_and(callback_returns_either));
+                let hkt_callee = (!has_evidence)
+                    .then(|| callee_signature.as_ref())
+                    .flatten()
+                    .filter(|signature| signature.argument_types.len() == arguments.len())
+                    .and_then(|signature| {
+                        let checked = signature
+                            .argument_types
+                            .iter()
+                            .map(|ty| type_ref_from_core_type(ty, imported_types))
+                            .collect::<Vec<_>>();
+                        super::types::instantiated_hkt_callee(signature, &checked, &checked_result)
+                    });
+                let evidence_count = evidence.len();
+                let factory_callee = (has_evidence
+                    && deferred_evidence_parameters.is_empty()
+                    && evidence_argument_index == (!arguments.is_empty()).then_some(0))
+                .then(|| callee_signature.as_ref())
+                .flatten()
+                .filter(|signature| {
+                    signature.parameters.is_empty()
+                        && signature.type_parameters.is_empty()
+                        && signature.argument_types.len() == arguments.len()
+                        && matches!(signature.result, CoreType::Function { .. })
+                })
+                .map(|signature| {
+                    (0..evidence_count).fold(
+                        type_ref_from_core_type(&signature.result, imported_types),
+                        |result, _| super::TypeScriptType::Function {
+                            parameter: Box::new(super::TypeScriptType::Unknown),
+                            result: Box::new(result),
+                        },
+                    )
+                });
+                // Typed HIR represents an imported effect reference as a
+                // zero-argument partial Call. Preserve the callable value;
+                // emitting f() would construct it before its argument exists.
+                let mut call = if arguments.is_empty()
+                    && evidence.is_empty()
+                    && deferred_evidence_parameters.is_empty()
+                    && matches!(type_ref, CoreType::Function { .. })
+                {
+                    TypeScriptExpr::Identifier { name: callee }
+                } else {
+                    lower_constrained_call(
+                        callee,
+                        arguments,
+                        type_arguments,
+                        evidence,
+                        deferred_evidence_parameters,
+                        deferred_evidence_type_constructor_parameters,
+                        evidence_argument_index,
+                        imported_types,
+                        checked_result.clone(),
+                        &checked_argument_types,
+                        origin,
+                    )?
+                };
+                if check_curried_inference {
+                    // TypeScript fixes generic parameters at the first
+                    // curried argument. The source checker used every
+                    // argument and evidence; retain that instantiated
+                    // callable type before applying dictionaries or callbacks. A
+                    // returned source function follows the dictionaries;
+                    // its arguments must not shift that checked boundary.
+                    let mut parameters = checked_argument_types;
+                    let index = evidence_argument_index.unwrap_or(parameters.len());
+                    parameters.splice(
+                        index..index,
+                        std::iter::repeat_n(super::TypeScriptType::Unknown, evidence_count),
+                    );
+                    let instantiated = parameters.into_iter().rev().fold(
+                        checked_result.clone(),
+                        |result, parameter| super::TypeScriptType::Function {
+                            parameter: Box::new(parameter),
+                            result: Box::new(result),
+                        },
+                    );
+                    if let TypeScriptExpr::Call {
+                        checked_callee_type,
+                        ..
+                    } = &mut call
+                    {
+                        *checked_callee_type = Some(instantiated);
+                    }
+                }
+                if let Some(instantiated) = factory_callee.or(hkt_callee) {
+                    match &mut call {
+                        TypeScriptExpr::Call {
+                            checked_callee_type,
+                            ..
+                        } => *checked_callee_type = Some(instantiated),
+                        TypeScriptExpr::Identifier { .. } => {
+                            call = TypeScriptExpr::CheckedResult {
+                                value: Box::new(call),
+                                type_ref: checked_result.clone(),
+                            };
+                        }
+                        _ => {}
+                    }
+                }
+                if has_evidence {
+                    // Host inference commits generics at the first curried
+                    // argument, before erased dictionary parameters arrive.
+                    // The source checker has already proved this result.
+                    TypeScriptExpr::CheckedResult {
+                        value: Box::new(call),
+                        type_ref: checked_result,
+                    }
+                } else {
+                    call
+                }
+            }
+        },
+    )
 }
 
 fn lower_abi_trait_method_call(
@@ -1584,18 +1665,21 @@ fn lower_abi_trait_method_call(
     result_type: &CoreType,
     imported_types: &TypeScriptTypeContext,
     origin: &crate::SourceSpan,
-) -> Option<TypeScriptExpr> {
-    let operation = runtime_trait_method_call_operation(method, evidence, arguments.len())?;
+) -> Lowered<Option<TypeScriptExpr>> {
+    let Some(operation) = runtime_trait_method_call_operation(method, evidence, arguments.len())
+    else {
+        return Ok(None);
+    };
     if let RuntimeTraitMethodOperation::Equality(dictionary) = operation {
         // The runtime method already has typed curried stages. Applying its
         // first operand now also preserves strict partial application.
-        return Some(TypeScriptExpr::DictionaryCall {
+        return Ok(Some(TypeScriptExpr::DictionaryCall {
             dictionary: Box::new(TypeScriptExpr::RuntimeReference {
                 name: dictionary.local_name.to_owned(),
             }),
             method: method.to_owned(),
             arguments,
-        });
+        }));
     }
     let binary = |left, right| match operation {
         RuntimeTraitMethodOperation::Int(operation) => TypeScriptExpr::RuntimeCall {
@@ -1611,11 +1695,13 @@ fn lower_abi_trait_method_call(
             unreachable!("typed equality was lowered through its selected dictionary")
         }
     };
-    match arguments.as_slice() {
+    Ok(match arguments.as_slice() {
         [left, right] => Some(binary(left.clone(), right.clone())),
         [left] => {
             let CoreType::Function { parameter, .. } = result_type else {
-                unreachable!("checked operator partial has one remaining source stage")
+                return Err(unexpected_shape(
+                    "checked operator partial has one remaining source stage",
+                ));
             };
             let saved = "__ssrg$operator$saved0".to_owned();
             let right = "_argument1".to_owned();
@@ -1641,38 +1727,46 @@ fn lower_abi_trait_method_call(
             })
         }
         _ => None,
-    }
+    })
 }
 
 fn lower_template(
     parts: Vec<CoreTemplatePart>,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
-    parts
+) -> Lowered<TypeScriptExpr> {
+    Ok(parts
         .into_iter()
         .map(|part| match part {
-            CoreTemplatePart::Text { value, .. } => TypeScriptExpr::String { value },
+            CoreTemplatePart::Text { value, .. } => Ok(TypeScriptExpr::String { value }),
             CoreTemplatePart::Interpolation {
                 value, evidence, ..
             } => {
-                let evidence = evidence.expect(
-                    "template interpolation must select Show evidence before TypeScript lowering",
-                );
+                let evidence = evidence.ok_or_else(|| {
+                    missing_evidence(
+                        "template interpolation must select Show evidence before TypeScript lowering",
+                    )
+                })?;
                 let dictionary =
                     selected_dictionary_expression(&evidence, imported_values, imported_types)
-                        .expect("template interpolation requires materializable Show evidence");
-                TypeScriptExpr::DictionaryCall {
+                        .ok_or_else(|| {
+                            missing_evidence(
+                                "template interpolation requires materializable Show evidence",
+                            )
+                        })?;
+                Ok(TypeScriptExpr::DictionaryCall {
                     dictionary: Box::new(dictionary),
                     method: "show".to_owned(),
                     arguments: vec![lower_core_expr_to_typescript(
                         value,
                         imported_values,
                         imported_types,
-                    )],
-                }
+                    )?],
+                })
             }
         })
+        .collect::<Lowered<Vec<_>>>()?
+        .into_iter()
         .reduce(|left, right| TypeScriptExpr::Binary {
             operator: "+".to_owned(),
             left: Box::new(left),
@@ -1680,7 +1774,7 @@ fn lower_template(
         })
         .unwrap_or(TypeScriptExpr::String {
             value: String::new(),
-        })
+        }))
 }
 
 fn callback_returns_either(type_ref: &super::TypeScriptType) -> bool {
@@ -1704,16 +1798,16 @@ fn lower_constrained_call(
     mut result_type: super::TypeScriptType,
     supplied_types: &[super::TypeScriptType],
     origin: crate::SourceSpan,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     if deferred_parameters.is_empty() {
         let index = evidence_argument_index.unwrap_or(arguments.len());
         arguments.splice(index..index, evidence);
-        return TypeScriptExpr::Call {
+        return Ok(TypeScriptExpr::Call {
             callee,
             arguments,
             type_arguments,
             checked_callee_type: None,
-        };
+        });
     }
 
     let parameters = deferred_parameters
@@ -1727,12 +1821,12 @@ fn lower_constrained_call(
                 &deferred_type_constructor_parameters,
             );
             let super::TypeScriptType::Function { result, .. } = &result_type else {
-                unreachable!("checked partial source arity");
+                return Err(unexpected_shape("checked partial source arity"));
             };
             result_type = (**result).clone();
-            (name, parameter_type)
+            Ok((name, parameter_type))
         })
-        .collect::<Vec<_>>();
+        .collect::<Lowered<Vec<_>>>()?;
     let initializer = if arguments.is_empty() {
         TypeScriptExpr::Identifier { name: callee }
     } else {
@@ -1767,7 +1861,13 @@ fn lower_constrained_call(
             checked_callee_type,
         }
     };
-    stage_deferred_call(initializer, parameters, evidence, result_type, origin)
+    Ok(stage_deferred_call(
+        initializer,
+        parameters,
+        evidence,
+        result_type,
+        origin,
+    ))
 }
 
 /// Evaluate the callee and the supplied source prefix now. Only the remaining
@@ -2043,7 +2143,7 @@ fn lower_core_expressions(
     expressions: Vec<CoreExpr>,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> Vec<TypeScriptExpr> {
+) -> Lowered<Vec<TypeScriptExpr>> {
     expressions
         .into_iter()
         .map(|expression| {
@@ -2059,10 +2159,10 @@ fn checked_either_runtime_arguments(
     supplied: &[super::TypeScriptType],
     result: &CoreType,
     imported_types: &TypeScriptTypeContext,
-) -> Vec<super::TypeScriptType> {
+) -> Lowered<Vec<super::TypeScriptType>> {
     use super::TypeScriptType as Ty;
     let arity = runtime_standard_operation(name)
-        .expect("checked Either operation")
+        .ok_or_else(|| missing_runtime("checked Either operation"))?
         .source_arity;
     let full = supplied.iter().rev().fold(
         type_ref_from_core_type(result, imported_types),
@@ -2075,7 +2175,7 @@ fn checked_either_runtime_arguments(
     let mut parameters = Vec::new();
     for _ in 0..arity {
         let Ty::Function { parameter, result } = remaining else {
-            return Vec::new();
+            return Ok(Vec::new());
         };
         parameters.push(parameter.as_ref());
         remaining = result;
@@ -2124,7 +2224,7 @@ fn checked_either_runtime_arguments(
             _ => return None,
         })
     })();
-    selected.unwrap_or_default()
+    Ok(selected.unwrap_or_default())
 }
 
 fn checked_array_result_element(
@@ -2157,16 +2257,16 @@ fn checked_array_result_element(
 fn list_cons_element_type(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,
-) -> super::TypeScriptType {
+) -> Lowered<super::TypeScriptType> {
     let mut result = type_ref;
     while let CoreType::Function { result: next, .. } = result {
         result = next;
     }
     match result {
         CoreType::Named { name, arguments } if name == "List" && arguments.len() == 1 => {
-            type_ref_from_core_type(&arguments[0], imported_types)
+            Ok(type_ref_from_core_type(&arguments[0], imported_types))
         }
-        _ => unreachable!("checked List cons must return a List"),
+        _ => Err(unexpected_shape("checked List cons must return a List")),
     }
 }
 
@@ -2178,30 +2278,30 @@ fn lower_binary(
     type_ref: CoreType,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
-    let left = lower_core_expr_to_typescript(left, imported_values, imported_types);
-    let right = lower_core_expr_to_typescript(right, imported_values, imported_types);
+) -> Lowered<TypeScriptExpr> {
+    let left = lower_core_expr_to_typescript(left, imported_values, imported_types)?;
+    let right = lower_core_expr_to_typescript(right, imported_values, imported_types)?;
     if operator == ":" {
-        return TypeScriptExpr::TypeApplicationCall {
+        return Ok(TypeScriptExpr::TypeApplicationCall {
             callee: crate::list_ops::runtime_list_cons_operation()
                 .local_name
                 .to_owned(),
-            type_arguments: vec![list_cons_element_type(&type_ref, imported_types)],
+            type_arguments: vec![list_cons_element_type(&type_ref, imported_types)?],
             arguments: vec![left, right],
-        };
+        });
     }
     if let Some(operation) = runtime_range_operation(&operator) {
-        return TypeScriptExpr::RuntimeCall {
+        return Ok(TypeScriptExpr::RuntimeCall {
             callee: operation.local_name.to_owned(),
             arguments: vec![left, right],
-        };
+        });
     }
     if is_int_type(&type_ref) {
         if let Some(operation) = runtime_int_operation_with_evidence(&operator, &evidence) {
-            return TypeScriptExpr::RuntimeCall {
+            return Ok(TypeScriptExpr::RuntimeCall {
                 callee: operation.local_name.to_owned(),
                 arguments: vec![left, right],
-            };
+            });
         }
     }
     if standard_operator(&operator)
@@ -2212,8 +2312,8 @@ fn lower_binary(
             .and_then(|selected| {
                 selected_dictionary_expression(&selected, imported_values, imported_types)
             })
-            .expect("comparison requires materialized Ord evidence");
-        return comparison_result(&operator, dictionary, left, right);
+            .ok_or_else(|| missing_evidence("comparison requires materialized Ord evidence"))?;
+        return Ok(comparison_result(&operator, dictionary, left, right)?);
     }
     if matches!(operator.as_str(), "==" | "!=") {
         if let Some(selected) = evidence.first().and_then(|selected| {
@@ -2224,7 +2324,7 @@ fn lower_binary(
                 method: "eq".to_owned(),
                 arguments: vec![left, right],
             };
-            return if operator == "==" {
+            return Ok(if operator == "==" {
                 equals
             } else {
                 TypeScriptExpr::Binary {
@@ -2232,32 +2332,32 @@ fn lower_binary(
                     left: Box::new(equals),
                     right: Box::new(TypeScriptExpr::Boolean { value: false }),
                 }
-            };
+            });
         }
         if let Some(operator) = strict_equality_operator_with_evidence(&operator, &evidence) {
-            return TypeScriptExpr::Binary {
+            return Ok(TypeScriptExpr::Binary {
                 operator: operator.to_owned(),
                 left: Box::new(left),
                 right: Box::new(right),
-            };
+            });
         }
     }
     if let Some(method) = operator_trait_method(&operator) {
         if let Some(selected) = evidence.first().and_then(|selected| {
             selected_dictionary_expression(&selected, imported_values, imported_types)
         }) {
-            return TypeScriptExpr::DictionaryCall {
+            return Ok(TypeScriptExpr::DictionaryCall {
                 dictionary: Box::new(selected),
                 method: method.to_owned(),
                 arguments: vec![left, right],
-            };
+            });
         }
     }
-    TypeScriptExpr::Binary {
+    Ok(TypeScriptExpr::Binary {
         operator: typescript_binary_operator(&operator).to_owned(),
         left: Box::new(left),
         right: Box::new(right),
-    }
+    })
 }
 
 // Applying the first operand invokes the selected method's first stage now.
@@ -2269,18 +2369,18 @@ fn lower_comparison_call(
     result_type: &CoreType,
     imported_types: &TypeScriptTypeContext,
     origin: crate::SourceSpan,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     if arguments.len() == 2 {
         let right = arguments.pop().unwrap();
         return comparison_result(operator, dictionary, arguments.pop().unwrap(), right);
     }
     let CoreType::Function { parameter, result } = result_type else {
-        unreachable!("checked comparison partial type")
+        return Err(unexpected_shape("checked comparison partial type"));
     };
     let parameter_type = type_ref_from_core_type(parameter, imported_types);
     if arguments.is_empty() {
         let left = "__ssrg$comparison$left".to_owned();
-        return TypeScriptExpr::Lambda {
+        return Ok(TypeScriptExpr::Lambda {
             parameter: format!("{left}: {}", render_typescript_type(&parameter_type)),
             body: Box::new(lower_comparison_call(
                 operator,
@@ -2289,8 +2389,8 @@ fn lower_comparison_call(
                 result,
                 imported_types,
                 origin,
-            )),
-        };
+            )?),
+        });
     }
     let name = "__ssrg$comparison$stage".to_owned();
     let right = "__ssrg$comparison$right".to_owned();
@@ -2298,7 +2398,7 @@ fn lower_comparison_call(
         parameter: Box::new(parameter_type.clone()),
         result: Box::new(super::TypeScriptType::Ordering),
     };
-    TypeScriptExpr::Sequence {
+    Ok(TypeScriptExpr::Sequence {
         statements: vec![TypeScriptStatement::PureLet {
             type_parameters: vec![],
             name: name.clone(),
@@ -2321,9 +2421,9 @@ fn lower_comparison_call(
                     type_arguments: Vec::new(),
                     checked_callee_type: None,
                 },
-            )),
+            )?),
         }),
-    }
+    })
 }
 
 /// Inspect the canonical Ordering tag once; operands and compare each execute once.
@@ -2332,7 +2432,7 @@ fn comparison_result(
     dictionary: TypeScriptExpr,
     left: TypeScriptExpr,
     right: TypeScriptExpr,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     comparison_ordering_result(
         operator,
         TypeScriptExpr::DictionaryCall {
@@ -2343,15 +2443,19 @@ fn comparison_result(
     )
 }
 
-fn comparison_ordering_result(operator: &str, ordering: TypeScriptExpr) -> TypeScriptExpr {
+fn comparison_ordering_result(operator: &str, ordering: TypeScriptExpr) -> Lowered<TypeScriptExpr> {
     let (test, tag) = match operator {
         "<" => ("===", "Less"),
         "<=" => ("!==", "Greater"),
         ">" => ("===", "Greater"),
         ">=" => ("!==", "Less"),
-        _ => unreachable!("comparison metadata must identify an Ord operator"),
+        _ => {
+            return Err(unexpected_shape(
+                "comparison metadata must identify an Ord operator",
+            ))
+        }
     };
-    TypeScriptExpr::Binary {
+    Ok(TypeScriptExpr::Binary {
         operator: test.to_owned(),
         left: Box::new(TypeScriptExpr::FieldAccess {
             receiver: Box::new(ordering),
@@ -2360,7 +2464,7 @@ fn comparison_ordering_result(operator: &str, ordering: TypeScriptExpr) -> TypeS
         right: Box::new(TypeScriptExpr::String {
             value: tag.to_owned(),
         }),
-    }
+    })
 }
 
 // Preserve source-selected operand types when TypeScript has no contextual
@@ -2417,8 +2521,12 @@ fn lower_trait_operator_call(
     operator: &StandardTraitOperator,
     supplied_source_arguments: Vec<TypeScriptExpr>,
     method_evidence: Vec<TypeScriptExpr>,
-) -> TypeScriptExpr {
-    assert!(supplied_source_arguments.len() <= operator.method_operand_sources.len());
+) -> Lowered<TypeScriptExpr> {
+    if supplied_source_arguments.len() > operator.method_operand_sources.len() {
+        return Err(unexpected_shape(
+            "trait operator receives at most its source operands",
+        ));
+    }
     let supplied_count = supplied_source_arguments.len();
     let mut source_arguments = [None, None];
     for (source_index, argument) in supplied_source_arguments.into_iter().enumerate() {
@@ -2431,12 +2539,14 @@ fn lower_trait_operator_call(
     }
     let mut method_arguments = operator
         .method_operand_sources
+        .iter()
         .map(|source_index| {
-            source_arguments[source_index]
-                .take()
-                .expect("trait operator order must be a permutation")
+            source_arguments
+                .get_mut(*source_index)
+                .and_then(Option::take)
+                .ok_or_else(|| unexpected_shape("trait operator order must be a permutation"))
         })
-        .to_vec();
+        .collect::<Lowered<Vec<_>>>()?;
     method_arguments.extend(method_evidence);
     let mut result = TypeScriptExpr::DictionaryCall {
         dictionary: Box::new(dictionary),
@@ -2449,7 +2559,7 @@ fn lower_trait_operator_call(
             body: Box::new(result),
         };
     }
-    result
+    Ok(result)
 }
 
 fn negated_equality_reference(
@@ -2457,26 +2567,30 @@ fn negated_equality_reference(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,
     origin: crate::SourceSpan,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     let CoreType::Function {
         parameter: left_type,
         result: stage_type,
     } = type_ref
     else {
-        unreachable!("checked equality reference must have two source operands")
+        return Err(unexpected_shape(
+            "checked equality reference must have two source operands",
+        ));
     };
     let CoreType::Function {
         parameter: right_type,
         ..
     } = stage_type.as_ref()
     else {
-        unreachable!("checked equality reference must return its right source stage")
+        return Err(unexpected_shape(
+            "checked equality reference must return its right source stage",
+        ));
     };
     let method = "__ssrg$equality$method".to_owned();
     let stage = "__ssrg$equality$stage".to_owned();
     let left = "__ssrg$equality$left".to_owned();
     let right = "__ssrg$equality$right".to_owned();
-    TypeScriptExpr::Sequence {
+    Ok(TypeScriptExpr::Sequence {
         statements: vec![TypeScriptStatement::PureLet {
             type_parameters: vec![],
             name: method.clone(),
@@ -2525,7 +2639,7 @@ fn negated_equality_reference(
                 }),
             }),
         }),
-    }
+    })
 }
 
 fn curried_binary_reference(operator: &str) -> TypeScriptExpr {
@@ -2549,7 +2663,7 @@ fn effect_call_dictionaries(
     evidence: &[crate::CoreCallEvidence],
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> Vec<TypeScriptExpr> {
+) -> Lowered<Vec<TypeScriptExpr>> {
     let assertion = matches!(callee, "std/test::equal" | "std/test::notEqual");
     let test = assertion || callee == "std/test::expectFailure";
     evidence
@@ -2562,11 +2676,15 @@ fn effect_call_dictionaries(
                     imported_values,
                     imported_types,
                 )
-                .expect("std/test assertion requires selected Eq evidence");
+                .ok_or_else(|| {
+                    missing_evidence("std/test assertion requires selected Eq evidence")
+                });
             }
             let dictionary =
                 selected_dictionary_expression(selected, imported_values, imported_types)
-                    .expect("constrained effect call requires materializable evidence");
+                    .ok_or_else(|| {
+                        missing_evidence("constrained effect call requires materializable evidence")
+                    })?;
             if test
                 && selected.constraint.trait_identity.as_deref() == Some("std/prelude::Debug")
                 && matches!(
@@ -2574,7 +2692,7 @@ fn effect_call_dictionaries(
                     crate::CoreInstanceEvidence::Parameter { .. }
                 )
             {
-                TypeScriptExpr::Record {
+                Ok(TypeScriptExpr::Record {
                     items: vec![TypeScriptRecordValueItem::Field {
                         name: "debug".into(),
                         value: TypeScriptExpr::FieldAccess {
@@ -2583,9 +2701,9 @@ fn effect_call_dictionaries(
                         },
                     }],
                     asserted_type: None,
-                }
+                })
             } else {
-                dictionary
+                Ok(dictionary)
             }
         })
         .collect()
@@ -2596,28 +2714,28 @@ fn lower_effect_operation(
     arguments: Vec<CoreExpr>,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptExpr {
+) -> Lowered<TypeScriptExpr> {
     let runtime_operation = runtime_effect_operation(&operation);
-    let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
+    let mut arguments = lower_core_expressions(arguments, imported_values, imported_types)?;
     if operation == "effect.succeed" && arguments.is_empty() {
         arguments.push(TypeScriptExpr::Undefined);
     }
-    TypeScriptExpr::RuntimeCall {
+    Ok(TypeScriptExpr::RuntimeCall {
         callee: runtime_operation
             .map(|operation| operation.local_name.to_owned())
             .unwrap_or_else(|| safe_identifier(&operation)),
         arguments,
-    }
+    })
 }
 
 fn lower_core_statement_to_typescript(
     statement: CoreStatement,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptStatement {
-    match statement {
+) -> Lowered<TypeScriptStatement> {
+    Ok(match statement {
         CoreStatement::Effect { value } => TypeScriptStatement::Effect {
-            value: lower_core_expr_to_typescript(value, imported_values, imported_types),
+            value: lower_core_expr_to_typescript(value, imported_values, imported_types)?,
         },
         CoreStatement::PureLet {
             type_parameters,
@@ -2646,7 +2764,7 @@ fn lower_core_statement_to_typescript(
                 value,
                 imported_values,
                 &imported_types.with_parameters(&type_parameters),
-            ),
+            )?,
             type_parameters,
             name: safe_identifier(&name),
             origin,
@@ -2659,7 +2777,7 @@ fn lower_core_statement_to_typescript(
         } => TypeScriptStatement::Const {
             name: safe_identifier(&name),
             type_ref: type_ref_from_core_type(&type_ref, imported_types),
-            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
+            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types)?,
             origin,
         },
         CoreStatement::LocalFunction {
@@ -2710,21 +2828,21 @@ fn lower_core_statement_to_typescript(
                         )
                     })
                     .collect(),
-                body: lower_core_expr_to_typescript(body, imported_values, imported_types),
+                body: lower_core_expr_to_typescript(body, imported_values, imported_types)?,
                 origin,
             }
         }
-    }
+    })
 }
 
 fn lower_monad_do_statement(
     statement: CoreMonadDoStatement,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptStatement {
-    match statement {
+) -> Lowered<TypeScriptStatement> {
+    Ok(match statement {
         CoreMonadDoStatement::Expression { value } => TypeScriptStatement::Effect {
-            value: lower_core_expr_to_typescript(value, imported_values, imported_types),
+            value: lower_core_expr_to_typescript(value, imported_values, imported_types)?,
         },
         CoreMonadDoStatement::PureLet {
             type_parameters,
@@ -2763,7 +2881,7 @@ fn lower_monad_do_statement(
                     origin,
                 }
             };
-            lower_core_statement_to_typescript(statement, imported_values, imported_types)
+            lower_core_statement_to_typescript(statement, imported_values, imported_types)?
         }
         CoreMonadDoStatement::Bind {
             name,
@@ -2773,10 +2891,10 @@ fn lower_monad_do_statement(
         } => TypeScriptStatement::Const {
             name: safe_identifier(&name),
             type_ref: type_ref_from_core_type(&type_ref, imported_types),
-            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
+            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types)?,
             origin,
         },
-    }
+    })
 }
 
 fn typescript_binary_operator(operator: &str) -> &str {

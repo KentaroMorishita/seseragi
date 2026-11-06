@@ -1,25 +1,77 @@
-use seseragi_syntax::{ByteRange, Diagnostic, DiagnosticArtifact, DiagnosticSeverity};
+use seseragi_lowering::{TypeScriptInternalError, TypeScriptLoweringError};
+use seseragi_syntax::{
+    ByteRange, Diagnostic, DiagnosticArtifact, DiagnosticSeverity, RelatedDiagnostic,
+};
 use std::panic::{catch_unwind, UnwindSafe};
 
 /// The closure owns intermediate compiler state; only an independent copy of
 /// the frontend diagnostics survives an unwind. Abort-mode panics cannot unwind.
 pub(crate) fn catch_lowering_panic<T>(
-    mut diagnostics: DiagnosticArtifact,
+    diagnostics: DiagnosticArtifact,
     lower: impl FnOnce() -> T + UnwindSafe,
 ) -> Result<T, DiagnosticArtifact> {
-    catch_unwind(lower).map_err(|_| {
-        diagnostics.diagnostics.push(Diagnostic {
-            id: format!("d{}", diagnostics.diagnostics.len() + 1),
-            code: "SES-I0001".to_owned(),
-            severity: DiagnosticSeverity::Error,
-            message_key: "internal.compiler-error".to_owned(),
-            primary: ByteRange { start: 0, end: 0 },
-            related: Vec::new(),
-            fixes: Vec::new(),
-            type_difference: None,
-        });
-        diagnostics
-    })
+    catch_unwind(lower)
+        .map_err(|_| push_internal_error(diagnostics, ByteRange { start: 0, end: 0 }, None))
+}
+
+/// Reports a lowering failure as an internal compiler error. A failed lowering
+/// invariant points at the Core node that owns it, and a label names the step,
+/// the missing fact and the invariant. Ordinary type errors never reach here.
+pub(crate) fn lowering_error_diagnostics(
+    diagnostics: DiagnosticArtifact,
+    error: &TypeScriptLoweringError,
+) -> DiagnosticArtifact {
+    match error {
+        TypeScriptLoweringError::Internal(error) => internal_error_diagnostics(diagnostics, error),
+        other => push_internal_error(
+            diagnostics,
+            ByteRange { start: 0, end: 0 },
+            Some((None, format!("TypeScript output plan failed: {other:?}"))),
+        ),
+    }
+}
+
+fn internal_error_diagnostics(
+    diagnostics: DiagnosticArtifact,
+    error: &TypeScriptInternalError,
+) -> DiagnosticArtifact {
+    let (primary, source) = match &error.origin {
+        Some(origin) => (
+            ByteRange {
+                start: origin.start,
+                end: origin.end,
+            },
+            (origin.source != diagnostics.source).then(|| origin.source.clone()),
+        ),
+        None => (ByteRange { start: 0, end: 0 }, None),
+    };
+    push_internal_error(diagnostics, primary, Some((source, error.to_string())))
+}
+
+fn push_internal_error(
+    mut diagnostics: DiagnosticArtifact,
+    primary: ByteRange,
+    label: Option<(Option<String>, String)>,
+) -> DiagnosticArtifact {
+    let related = label
+        .map(|(source, message)| RelatedDiagnostic {
+            source,
+            message,
+            primary,
+        })
+        .into_iter()
+        .collect();
+    diagnostics.diagnostics.push(Diagnostic {
+        id: format!("d{}", diagnostics.diagnostics.len() + 1),
+        code: "SES-I0001".to_owned(),
+        severity: DiagnosticSeverity::Error,
+        message_key: "internal.compiler-error".to_owned(),
+        primary,
+        related,
+        fixes: Vec::new(),
+        type_difference: None,
+    });
+    diagnostics
 }
 
 #[cfg(test)]
@@ -71,6 +123,37 @@ pub(crate) mod fault {
 
     pub(crate) fn after_emission() {
         after(Stage::Emission);
+    }
+
+    thread_local! {
+        static CORE_EDIT: Cell<Option<fn(&mut seseragi_lowering::CoreModule)>> =
+            const { Cell::new(None) };
+    }
+
+    /// Runs `action` while `edit` removes checker facts from Core IR right
+    /// before TypeScript lowering, as a compiler defect would.
+    pub(crate) fn with_core_edit<T>(
+        edit: fn(&mut seseragi_lowering::CoreModule),
+        action: impl FnOnce() -> T,
+    ) -> T {
+        struct Reset;
+        impl Drop for Reset {
+            fn drop(&mut self) {
+                CORE_EDIT.with(|slot| slot.set(None));
+            }
+        }
+        let _reset = Reset;
+        CORE_EDIT.with(|slot| slot.set(Some(edit)));
+        action()
+    }
+
+    pub(crate) fn edit_core(
+        mut core: seseragi_lowering::CoreModule,
+    ) -> seseragi_lowering::CoreModule {
+        if let Some(edit) = CORE_EDIT.with(Cell::get) {
+            edit(&mut core);
+        }
+        core
     }
 }
 

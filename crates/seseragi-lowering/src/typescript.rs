@@ -9,6 +9,7 @@ mod closed_display;
 mod decision;
 mod dictionaries;
 mod expr;
+mod failure;
 mod imports;
 mod instances;
 pub(crate) mod kinds;
@@ -22,6 +23,7 @@ pub(crate) mod types;
 use adt::lower_core_adt_to_typescript;
 pub use closed_display::TypeScriptClosedDisplayDictionary;
 use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
+pub use failure::{TypeScriptInternalError, TypeScriptInternalErrorKind, TypeScriptLoweringStage};
 use imports::freshen_runtime_imports;
 pub(crate) use instances::evidence_parameter_name;
 use instances::{
@@ -341,6 +343,15 @@ pub enum TypeScriptLoweringError {
     ImportNameCollision {
         local: String,
     },
+    /// Checked facts required by lowering were missing. This is a compiler
+    /// defect, reported separately from source type errors.
+    Internal(TypeScriptInternalError),
+}
+
+impl From<TypeScriptInternalError> for TypeScriptLoweringError {
+    fn from(error: TypeScriptInternalError) -> Self {
+        Self::Internal(error)
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -744,9 +755,12 @@ pub enum TypeScriptStatement {
     },
 }
 
+/// Lowers an import-free module and panics on any lowering error. Compiler
+/// drivers use [`lower_core_module_to_typescript_ir_with_options`], which
+/// returns lowering failures as [`TypeScriptLoweringError`].
 pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModule {
     lower_core_module_to_typescript_ir_with_plan(module, &TypeScriptOutputPlan::default())
-        .expect("import-free lowering requires no linked module dependencies")
+        .unwrap_or_else(|error| panic!("TypeScript lowering failed: {error:?}"))
 }
 
 pub fn lower_core_module_to_typescript_ir_with_plan(
@@ -1057,7 +1071,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         &mut runtime_requirements,
         &mut imports,
         &mut type_imports,
-    );
+    )?;
     let bindings = module
         .bindings
         .into_iter()
@@ -1069,7 +1083,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                 "__ssrg$foreign$function".to_owned(),
                 local_name(&binding.symbol),
             );
-            TypeScriptBinding::Const {
+            Ok(TypeScriptBinding::Const {
                 type_parameters: binding.type_parameters.clone(),
                 exported: binding.visibility == Visibility::Public,
                 name: local_name(&binding.symbol),
@@ -1085,11 +1099,11 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                     &module_imports
                         .type_names
                         .with_parameters(&binding.type_parameters),
-                ),
+                )?,
                 origin: binding.origin,
-            }
+            })
         })
-        .collect();
+        .collect::<Result<_, TypeScriptInternalError>>()?;
     let functions = module
         .functions
         .into_iter()
@@ -1147,9 +1161,9 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                 module_value_name(&module.module, &function.symbol),
             );
             let body =
-                lower_core_expr_to_typescript(function.body, &function_value_names, &scoped_types);
+                lower_core_expr_to_typescript(function.body, &function_value_names, &scoped_types)?;
             let is_async = typescript_expr_contains_await(&body);
-            TypeScriptFunction::ConstFunction {
+            Ok(TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
                 is_async,
                 is_effect: function.is_effect,
@@ -1183,9 +1197,9 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                     .collect(),
                 body,
                 origin: function.origin,
-            }
+            })
         })
-        .collect();
+        .collect::<Result<_, TypeScriptInternalError>>()?;
 
     let mut typescript = TypeScriptModule {
         schema: module.schema,
