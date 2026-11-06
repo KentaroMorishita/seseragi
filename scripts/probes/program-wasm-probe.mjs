@@ -99,7 +99,11 @@ assert.throws(
   () => trapped.exports.staged(1),
   (error) => {
     assert.ok(error instanceof ProgramWasmDefect)
-    assert.match(error.message, /::staged/)
+    // The Defect is reported at its source location, as the TS target does;
+    // the export it happened in stays in `origin`.
+    assert.equal(error.kind, "defect")
+    assert.match(error.message, /\.ssrg:\d+:\d+: Seseragi Defect: Seseragi Int overflow$/)
+    assert.equal(error.message.startsWith(`${error.location.file}:`), true)
     assert.ok(error.origin)
     // A copied cause cannot hold a native RuntimeError or WASM instance alive.
     assert.equal(Object.getPrototypeOf(error.cause), Object.prototype)

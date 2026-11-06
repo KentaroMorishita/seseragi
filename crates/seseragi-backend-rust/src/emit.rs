@@ -133,6 +133,7 @@ pub(crate) fn emit_library(
     scalar_globals: &seseragi_lowering::CoreScalarGlobals,
     type_names: &BTreeMap<(String, String), String>,
     trait_names: &BTreeMap<(String, String), String>,
+    options: &crate::RustTargetOptions,
 ) -> Result<RustArtifact> {
     emit_body(
         module,
@@ -141,7 +142,7 @@ pub(crate) fn emit_library(
         scalar_globals,
         type_names,
         trait_names,
-        &crate::RustTargetOptions::default(),
+        options,
         None,
     )
 }

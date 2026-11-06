@@ -63,10 +63,9 @@ impl Backend<'_> {
         left: String,
         right: String,
     ) -> String {
-        match self
-            .source_location(core_expr_origin(expr))
-            .filter(|_| !self.program_wasm_library)
-        {
+        // The located operation raises its Defect directly, without
+        // catching a panic, so program WASM records the location too.
+        match self.source_location(core_expr_origin(expr)) {
             Some(source) if matches!(operator, "+" | "-" | "*" | "/" | "%" | "**") => format!(
                 "binary_at({}, {left}, {right}, Some({source}))",
                 quoted(operator)

@@ -312,12 +312,52 @@ fn program_result(result: ProgramResult<Vec<u8>>) -> u32 {
     PROGRAM.with(|state| state.borrow_mut().output = bytes);
     status
 }
+thread_local! {
+    static PROGRAM_PANIC: RefCell<Vec<u8>> = const { RefCell::new(Vec::new()) };
+}
+// A Defect panics, and a panic aborts in WASM. Record the Defect and its
+// source location first, so the loader can report them after the trap. The
+// record is the location (`file:line:column`, or empty), a newline and the
+// message.
+fn program_record_panics() {
+    std::panic::set_hook(Box::new(|info| {
+        let payload = info.payload();
+        let (source, message) =
+            if let Some(diagnostic) = payload.downcast_ref::<NativeDiagnostic<String>>() {
+                (
+                    diagnostic.source.map(ToString::to_string),
+                    diagnostic.value.clone(),
+                )
+            } else if let Some(message) = payload.downcast_ref::<&str>() {
+                (None, (*message).to_owned())
+            } else if let Some(message) = payload.downcast_ref::<String>() {
+                (None, message.clone())
+            } else {
+                (None, "Seseragi Defect".to_owned())
+            };
+        let record = format!("{}\n{message}", source.unwrap_or_default());
+        let _ = PROGRAM_PANIC.try_with(|panic| {
+            if let Ok(mut panic) = panic.try_borrow_mut() {
+                *panic = record.into_bytes();
+            }
+        });
+    }));
+}
+#[no_mangle]
+pub extern "C" fn ssrg_panic_ptr() -> usize {
+    PROGRAM_PANIC.with(|panic| panic.borrow().as_ptr() as usize)
+}
+#[no_mangle]
+pub extern "C" fn ssrg_panic_len() -> usize {
+    PROGRAM_PANIC.with(|panic| panic.borrow().len())
+}
 #[no_mangle]
 pub extern "C" fn ssrg_init() -> u32 {
     let fresh = PROGRAM.with(|s| !s.borrow().initialized && !s.borrow().closed);
     if !fresh {
         return program_result(Err("program ABI: instance already initialized or closed"));
     }
+    program_record_panics();
     initialize_globals();
     PROGRAM.with(|state| state.borrow_mut().initialized = true);
     0

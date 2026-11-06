@@ -176,6 +176,12 @@ JSの一回の呼出しは一つのsource値を適用する。Unitも一段階�
 tokenは再利用せず、detach／instance dispose後の呼出しはWASMへ入らず拒否する。
 通常disposeはglobal・辞書・callbackのrootを解放し、managed-live0を検査する。
 
+Effect を返さない公開関数の実行中に Defect（ゼロ除算やオーバーフローなど）が起きると、WASM は
+trap し、loader は `ProgramWasmDefect` を投げる。そのメッセージは TS ターゲットと同じ
+`ファイル:行:列: Seseragi Defect: 内容` の形で、`kind` は `"defect"`、`location` は
+`{file, line, column}` になる。Defect を記録しないまま止まった trap（スタックの使い切りなど）は
+`kind: "trap"` で区別する。どちらの場合も、起きた公開関数は `origin` に残る。
+
 このcheckedな完全関数型は共有TS loweringでも使う。pureで単相・制約なしの自己参照関数は、
 primitive／Tuple／Maybe／Eitherと関数で閉じる型をconst注釈へ残し、TSの再帰推論による
 TS7023を防ぐ。unknown、nominal参照、generic、辞書やasyncの署名へ型を補う処理は加えない。

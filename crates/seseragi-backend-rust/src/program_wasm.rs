@@ -185,6 +185,17 @@ pub fn emit_program_wasm(
     entry_module: &str,
     exports: &[String],
 ) -> Result<ProgramWasmArtifact, RustBackendError> {
+    emit_program_wasm_with_sources(modules, entry_module, exports, Default::default())
+}
+
+/// Like [`emit_program_wasm`], with the original files keyed by Core module
+/// identity, so a Defect reports its source location.
+pub fn emit_program_wasm_with_sources(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    exports: &[String],
+    sources: std::collections::BTreeMap<String, crate::RustSourceFile>,
+) -> Result<ProgramWasmArtifact, RustBackendError> {
     let module = modules
         .iter()
         .find(|m| m.module == entry_module)
@@ -333,7 +344,11 @@ pub fn emit_program_wasm(
     effect_abi |= host_abi;
     // Reuse the ordinary linker and every native evidence/admission check.
     // This explicit library mode changes no native executable entry contract.
-    let mut library = project::emit_library(modules, entry_module)?;
+    let options = crate::RustTargetOptions {
+        sources,
+        ..crate::RustTargetOptions::default()
+    };
+    let mut library = project::emit_library(modules, entry_module, &options)?;
     let tracks_private_refs = library.metadata.capabilities.iter().any(|c| c == "ref");
     if effect_abi {
         // Both resumable ABIs use the same checked data-only cell proof. A
@@ -1010,7 +1025,7 @@ fn record_type(
 
 fn declarations(metadata: &ProgramWasmMetadata) -> String {
     let aliases = type_aliases(metadata);
-    let mut result = String::from("export declare const capabilities: readonly string[];\nexport interface Ownership { readonly alive: boolean; readonly retired: boolean; readonly callbacks: number; readonly managedLiveAtClose: number | null; }\nexport interface OwnedCallback<A, B> { (argument: A): B; dispose(): void; readonly disposed: boolean; }\nexport class ProgramWasmDefect extends Error { readonly origin?: Readonly<{source: string; start: number; end: number}>; }\nexport class ProgramWasmClosed extends Error {}\nexport interface ProgramExports {\n");
+    let mut result = String::from("export declare const capabilities: readonly string[];\nexport interface Ownership { readonly alive: boolean; readonly retired: boolean; readonly callbacks: number; readonly managedLiveAtClose: number | null; }\nexport interface OwnedCallback<A, B> { (argument: A): B; dispose(): void; readonly disposed: boolean; }\nexport class ProgramWasmDefect extends Error { readonly origin?: Readonly<{source: string; start: number; end: number}>; readonly kind?: 'defect' | 'trap'; readonly location?: Readonly<{file: string; line: number; column: number}>; }\nexport class ProgramWasmClosed extends Error {}\nexport interface ProgramExports {\n");
     if metadata
         .codecs
         .iter()

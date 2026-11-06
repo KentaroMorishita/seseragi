@@ -2893,3 +2893,87 @@ const wrong: readonly [number, string] = owner.exports.pair(1)('a');
         &scratch.0,
     ));
 }
+
+#[test]
+fn defects_report_their_source_location_like_the_ts_target() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("defects.ssrg");
+    let program = "pub fn divide left: Int -> right: Int -> Int = left / right\npub fn power base: Int -> exponent: Int -> Int = base ** exponent\npub fn deep depth: Int -> Int = if depth == 0 then 0 else 1 + deep (depth - 1)\n";
+    fs::write(&source, program).unwrap();
+    successful(bounded(
+        &mut build(
+            &source,
+            &scratch.0.join("wasm"),
+            &["divide", "power", "deep"],
+        ),
+        &scratch.0,
+    ));
+    // The TS target reports each Defect as `file:line:column: Seseragi Defect: message`.
+    let mut expected = Vec::new();
+    for (index, call) in ["divide 5 0", "power 2 (-1)"].iter().enumerate() {
+        let ts = scratch.0.join(format!("ts-{index}"));
+        fs::create_dir(&ts).unwrap();
+        fs::write(
+            ts.join("defects.ssrg"),
+            format!("{program}pub effect fn main = println (show ({call}))\n"),
+        )
+        .unwrap();
+        let result = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("run")
+                .arg(ts.join("defects.ssrg")),
+            &scratch.0,
+        );
+        assert!(!result.status.success(), "{result:?}");
+        expected.push(
+            String::from_utf8_lossy(&result.stderr)
+                .lines()
+                .next()
+                .unwrap()
+                .to_owned(),
+        );
+    }
+    assert!(
+        expected[0].starts_with("defects.ssrg:1:48: Seseragi Defect: "),
+        "{expected:?}"
+    );
+    fs::write(
+        scratch.0.join("defects.mjs"),
+        format!(
+            r#"import {{readFile}} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {{loadProgram, ProgramWasmDefect}} from './wasm/program.mjs';
+const bytes = await readFile(new URL('./wasm/program.wasm', import.meta.url));
+const expected = {expected};
+const fail = async (call) => {{
+  const program = await loadProgram(bytes);
+  try {{ call(program.exports); }} catch (error) {{ return error; }}
+  assert.fail('expected a Defect');
+}};
+for (const [index, call] of [(e) => e.divide(5)(0), (e) => e.power(2)(-1)].entries()) {{
+  const defect = await fail(call);
+  assert.ok(defect instanceof ProgramWasmDefect);
+  assert.equal(defect.kind, 'defect');
+  assert.equal(defect.message, expected[index]);
+  assert.equal(defect.location.file, 'defects.ssrg');
+}}
+// A trap without a recorded Defect, such as running out of stack, is
+// reported apart from a Defect.
+const trap = await fail((e) => e.deep(100000000));
+assert.ok(trap instanceof ProgramWasmDefect);
+assert.equal(trap.kind, 'trap');
+assert.equal(trap.location, undefined);
+console.log('located defects');
+"#,
+            expected = serde_json::to_string(&expected).unwrap()
+        ),
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("defects.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"located defects\n");
+}

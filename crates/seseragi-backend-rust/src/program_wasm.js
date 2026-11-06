@@ -430,10 +430,49 @@ function releaseHostRoots(state, retired) {
   state.api = undefined
   state.retired ||= retired
 }
+// The Defect WASM recorded before it trapped, if any: its message and
+// source location.
+function recordedDefect(state) {
+  const api = state.api
+  if (!api) return undefined
+  try {
+    const start = pointer(api.ssrg_panic_ptr())
+    const length = pointer(api.ssrg_panic_len())
+    if (
+      length === 0 ||
+      length > schema.maxBoundaryBytes ||
+      start + length > api.memory.buffer.byteLength
+    )
+      return undefined
+    const record = decoder.decode(
+      new Uint8Array(api.memory.buffer, start, length)
+    )
+    const split = record.indexOf("\n")
+    if (split < 0) return undefined
+    const place = /^(.*):(\d+):(\d+)$/.exec(record.slice(0, split))
+    return {
+      message: record.slice(split + 1),
+      location: place
+        ? Object.freeze({
+            file: place[1],
+            line: Number(place[2]),
+            column: Number(place[3]),
+          })
+        : undefined,
+    }
+  } catch {
+    return undefined
+  }
+}
+
 function trapped(state, error, provenance) {
+  const recorded = recordedDefect(state)
   releaseHostRoots(state, true)
+  const location = recorded?.location
   const defect = new ProgramWasmDefect(
-    `Program WASM trapped at ${provenance.symbol}`,
+    recorded
+      ? `${location ? `${location.file}:${location.line}:${location.column}: ` : ""}Seseragi Defect: ${recorded.message}`
+      : `Program WASM trapped at ${provenance.symbol}`,
     {
       cause: Object.freeze({
         name: error.name,
@@ -442,6 +481,9 @@ function trapped(state, error, provenance) {
       }),
     }
   )
+  // A Defect the program raised, or a trap without one.
+  defect.kind = recorded ? "defect" : "trap"
+  if (location) defect.location = location
   defect.origin = provenance.origin
   return defect
 }
@@ -576,6 +618,8 @@ export async function loadProgram(bytes) {
     "ssrg_dispose",
     "ssrg_live",
     "ssrg_callbacks",
+    "ssrg_panic_ptr",
+    "ssrg_panic_len",
   ]) {
     if (typeof api[name] !== "function")
       throw new TypeError(`Missing program export ${name}`)
