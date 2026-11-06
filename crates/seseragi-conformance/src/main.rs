@@ -30,6 +30,7 @@ fn main() {
     let mut root = None;
     let mut list = false;
     let mut json = false;
+    let mut only = None;
     for arg in std::env::args().skip(1) {
         match arg.as_str() {
             "--help" | "-h" => {
@@ -38,6 +39,17 @@ fn main() {
             }
             "--list" => list = true,
             "--json" => json = true,
+            flag if flag.starts_with("--only=") => {
+                let kinds = flag["--only=".len()..]
+                    .split(',')
+                    .filter(|kind| !kind.is_empty())
+                    .map(str::to_owned)
+                    .collect::<Vec<_>>();
+                if kinds.is_empty() || only.replace(kinds).is_some() {
+                    eprintln!("--only takes one comma-separated list of check kinds");
+                    std::process::exit(2);
+                }
+            }
             flag if flag.starts_with('-') => {
                 eprintln!("unknown option: {flag}");
                 eprintln!();
@@ -54,14 +66,16 @@ fn main() {
             }
         }
     }
-    runner::run(root.unwrap_or_else(|| PathBuf::from(".")), list, json);
+    runner::run(root.unwrap_or_else(|| PathBuf::from(".")), list, json, only);
 }
 
 fn print_usage() {
     println!(
-        "usage: seseragi-conformance [ROOT] [--list] [--json]\n\n\
+        "usage: seseragi-conformance [ROOT] [--list] [--json] [--only=KIND[,KIND...]]\n\n\
          ROOT defaults to the current directory.\n\
          --list  list discovered fixture cases instead of running them\n\
-         --json  emit a machine-readable JSON report"
+         --json  emit a machine-readable JSON report\n\
+         --only  run only these check kinds, named as failures report them\n\
+                 (for example typescriptIr,coreIr)"
     );
 }

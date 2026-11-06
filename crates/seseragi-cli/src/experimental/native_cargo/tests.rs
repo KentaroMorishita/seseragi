@@ -236,7 +236,7 @@ fn linker_settings_read_cargo_config_files_with_cargo_precedence() {
     };
     let none = |_: &str| None;
     let resolve = |environment: &dyn Fn(&str) -> Option<OsString>| {
-        cargo_config::linker_settings(&directory, &home, host, &[], environment)
+        cargo_config::linker_settings(&directory, &home, host, Some(&[]), environment)
     };
     assert_eq!(resolve(&none), cargo_config::LinkerSettings::default());
 
@@ -326,7 +326,7 @@ fn rustflags_strings_replace_arrays_join_and_empty_target_flags_use_build() {
     let resolve = |far: &str, near: &str| {
         write(&package.join(".cargo"), far);
         write(&directory.join(".cargo"), near);
-        cargo_config::linker_settings(&directory, &home, host, &[], &|_: &str| None).rustflags
+        cargo_config::linker_settings(&directory, &home, host, Some(&[]), &|_: &str| None).rustflags
     };
     let target = |value: &str| format!("[target.aarch64-apple-darwin]\nrustflags = {value}\n");
     let build = "[build]\nrustflags = [\"-Cdebuginfo=0\"]\n";
@@ -405,6 +405,72 @@ fn cfg_tables_see_cfg_values_from_the_selected_rustflags() {
 }
 
 #[test]
+fn the_first_cfg_query_uses_rustflags_selected_without_cfg_tables() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("package/.seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    fs::create_dir_all(directory.join(".cargo")).unwrap();
+    fs::write(
+        directory.join(".cargo/config.toml"),
+        "[build]\nrustflags = [\"--cfg\", \"use_cc\"]\n[target.'cfg(not(use_cc))']\nrustflags = [\"-C\", \"linker=/nonexistent/rust-lld\"]\n",
+    )
+    .unwrap();
+    // Before the first query, no cfg table applies, not even `not(..)`.
+    assert_eq!(
+        cargo_config::linker_settings(&directory, &home, host, None, &|_: &str| None).rustflags,
+        ["--cfg", "use_cc"]
+    );
+    assert_eq!(
+        cargo_config::linker_settings(&directory, &home, host, Some(&[]), &|_: &str| None)
+            .rustflags,
+        ["-C", "linker=/nonexistent/rust-lld"]
+    );
+    let queries = std::cell::RefCell::new(Vec::new());
+    let query = |rustflags: &[String]| {
+        queries.borrow_mut().push(rustflags.to_vec());
+        let mut cfg = cargo_config::parse_cfg("target_os=\"macos\"\nunix\n");
+        cfg.extend(
+            rustflags
+                .windows(2)
+                .filter(|pair| pair[0] == "--cfg")
+                .map(|pair| (pair[1].clone(), None)),
+        );
+        cfg
+    };
+    let settings = cargo_config::settle_with_cfg(&query, &|cfg| {
+        cargo_config::linker_settings(&directory, &home, host, cfg, &|_: &str| None)
+    });
+    // Cargo sees `use_cc`, so `cfg(not(use_cc))` does not apply and the
+    // build rustflags stay.
+    assert_eq!(queries.borrow()[0], ["--cfg", "use_cc"]);
+    assert_eq!(settings.rustflags, ["--cfg", "use_cc"]);
+    assert_eq!(settings.linker, None);
+}
+
+#[test]
+fn build_rustflags_with_a_negated_cfg_table_build_like_cargo() {
+    let fixture = Fixture::new();
+    fs::create_dir(fixture.root.path().join(".cargo")).unwrap();
+    fs::write(
+        fixture.root.path().join(".cargo/config.toml"),
+        "[build]\nrustflags = [\"--cfg\", \"use_cc\"]\n[target.'cfg(not(use_cc))']\nrustflags = [\"-C\", \"linker=/nonexistent/rust-lld\"]\n",
+    )
+    .unwrap();
+    let project = fixture.project();
+    project
+        .build(
+            BuildProfile::Development,
+            "fn main() { println!(\"use_cc={}\", cfg!(use_cc)); }\n",
+            RUNTIME,
+            &fixture.executable(),
+            &fixture.toolchain,
+        )
+        .unwrap();
+    assert_eq!(fixture.stdout(), "use_cc=true\n");
+}
+
+#[test]
 fn host_cfg_passes_the_selected_rustflags_to_rustc() {
     let fixture = Fixture::new();
     let cfg = host_cfg(
@@ -432,7 +498,7 @@ fn linker_settings_apply_matching_cfg_tables_after_the_target_triple() {
     let resolve = |source: &str| {
         fs::write(directory.join(".cargo/config.toml"), source).unwrap();
         let settings =
-            cargo_config::linker_settings(&directory, &home, host, &cfg, &|_: &str| None);
+            cargo_config::linker_settings(&directory, &home, host, Some(&cfg), &|_: &str| None);
         let invocation = linker_invocation(&settings.rustflags, settings.linker.as_deref());
         (settings, invocation)
     };

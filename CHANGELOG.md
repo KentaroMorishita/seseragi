@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.149] - 2026-11-07
+
+### Fixed
+
+- Native builds select rustflags and the linker like Cargo when `build.rustflags` sets a `--cfg` that a `target.'cfg(..)'` table tests. The first `rustc --print cfg` now uses the rustflags chosen without the cfg tables, so a `cfg(not(..))` table no longer replaces the build rustflags.
+
+### Changed
+
+- Pull requests compare the committed compiler artifacts in `examples/spec/artifacts` (tokens, trees, diagnostics, interfaces, typed HIR, Core IR and TypeScript IR) with the current compiler. `seseragi-conformance` takes `--only=KIND,...` to run selected check kinds.
+
 ## [0.61.148] - 2026-11-07
 
 ### Added
