@@ -3007,7 +3007,9 @@ fn effect_failures_and_defects_carry_their_source_location() {
         String::from_utf8_lossy(&result.stderr).lines().next(),
         Some("effects.ssrg:7:3: Seseragi Defect: broken")
     );
-    fs::write(scratch.0.join("effects.mjs"), r#"import {readFile} from 'node:fs/promises';
+    fs::write(
+        scratch.0.join("effects.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {loadProgram} from './wasm/program.mjs';
 const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
@@ -3021,7 +3023,9 @@ assert.deepStrictEqual(defect.locations, [{file: 'effects.ssrg', line: 7, column
 await program.dispose();
 assert.equal(program.ownership().managedLiveAtClose, 0);
 console.log('located outcomes');
-"#).unwrap();
+"#,
+    )
+    .unwrap();
     let output = successful(bounded(
         Command::new(runtime("node", &scratch.0))
             .arg(scratch.0.join("effects.mjs"))
