@@ -979,7 +979,7 @@ fn initialization_defect_is_an_opaque_program_defect_before_exports_escape() {
 fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
     let scratch = Scratch::new();
     for (index,source) in [
-        "pub fn selected<A> value: A -> A = value",
+        "pub fn selected<A> value: A -> String where Show<A> = show value",
         "import * as bigs from \"std/big-int\"\npub fn selected value: bigs.BigInt -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
@@ -1095,7 +1095,7 @@ fn providerless_program_effects_run_cancel_and_release_on_bun_and_node() {
             &scratch.0,
         ));
         let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
-        assert_eq!(report["abi"], "seseragi-program-wasm-effect-v1");
+        assert_eq!(report["abi"], "seseragi-program-wasm-effect-v2");
         assert_eq!(report["callbacks"], 3);
         assert_eq!(report["cancelled"], 2);
         assert_eq!(report["disposeDefectObservable"], true);
@@ -1739,7 +1739,7 @@ fn standard_web_effect_build_owns_async_program_types_and_lifetimes() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v1"
+            "seseragi-program-wasm-effect-v2"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2039,7 +2039,7 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v1"
+            "seseragi-program-wasm-effect-v2"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2239,7 +2239,7 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v1"
+            "seseragi-program-wasm-effect-v2"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2832,4 +2832,256 @@ const done: Promise<number> = Promise.resolve(owner.exports.done(1).tag === 'Don
             .arg(scratch.0.join("tsconfig.json")),
         &scratch.0,
     ));
+}
+
+#[test]
+fn generic_exports_return_host_values_unchanged_like_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-generic.ssrg",
+        &[
+            "identity",
+            "pair",
+            "firsts",
+            "swapped",
+            "repeated",
+            "shadowing",
+        ],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+// Values of a type parameter come back as the same host values, as in TS.
+const object = {name: '雪'};
+const callback = () => 1;
+for (const value of [object, callback, undefined, null, 'text', 1.5, NaN, [1, 2]]) {
+  assert.ok(Object.is(wasm.identity(value), ts.identity(value)));
+}
+// +0 and -0 stay apart in either order.
+assert.ok(Object.is(wasm.identity(0), 0));
+assert.ok(Object.is(wasm.identity(-0), -0));
+assert.ok(Object.is(wasm.identity(0), 0));
+assert.deepStrictEqual([...wasm.shadowing(object)], ts.shadowing(object));
+const [right, left] = wasm.pair(object)(callback);
+assert.ok(right === callback && left === object);
+assert.deepStrictEqual(wasm.firsts([object, 2]), ts.firsts([object, 2]));
+assert.equal(wasm.firsts([object]).value, object);
+assert.deepStrictEqual({...wasm.firsts([])}, ts.firsts([]));
+assert.equal(wasm.swapped({tag: 'Left', value: object}).value, object);
+assert.deepStrictEqual({...wasm.swapped({tag: 'Right', value: 1})}, ts.swapped({tag: 'Right', value: 1}));
+assert.deepStrictEqual([...wasm.repeated(object)], ts.repeated(object));
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+    // TS infers each type parameter from the call that first receives it.
+    fs::write(scratch.0.join("types.mts"), r#"import {loadProgram} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const same: {name: string} = owner.exports.identity({name: 'a'});
+const pair: readonly [string, number] = owner.exports.pair(1)('a');
+const first: Readonly<{tag: 'Nothing'}> | Readonly<{tag: 'Just'; value: boolean}> = owner.exports.firsts([true]);
+const repeated: ReadonlyArray<number> = owner.exports.repeated(1);
+const shadowing: ReadonlyArray<string> = owner.exports.shadowing('a');
+// @ts-expect-error the second call returns the first argument's type second
+const wrong: readonly [number, string] = owner.exports.pair(1)('a');
+"#).unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn defects_report_their_source_location_like_the_ts_target() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("defects.ssrg");
+    let program = "pub fn divide left: Int -> right: Int -> Int = left / right\npub fn power base: Int -> exponent: Int -> Int = base ** exponent\npub fn deep depth: Int -> Int = if depth == 0 then 0 else 1 + deep (depth - 1)\n";
+    fs::write(&source, program).unwrap();
+    successful(bounded(
+        &mut build(
+            &source,
+            &scratch.0.join("wasm"),
+            &["divide", "power", "deep"],
+        ),
+        &scratch.0,
+    ));
+    // The TS target reports each Defect as `file:line:column: Seseragi Defect: message`.
+    let mut expected = Vec::new();
+    for (index, call) in ["divide 5 0", "power 2 (-1)"].iter().enumerate() {
+        let ts = scratch.0.join(format!("ts-{index}"));
+        fs::create_dir(&ts).unwrap();
+        fs::write(
+            ts.join("defects.ssrg"),
+            format!("{program}pub effect fn main = println (show ({call}))\n"),
+        )
+        .unwrap();
+        let result = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("run")
+                .arg(ts.join("defects.ssrg")),
+            &scratch.0,
+        );
+        assert!(!result.status.success(), "{result:?}");
+        expected.push(
+            String::from_utf8_lossy(&result.stderr)
+                .lines()
+                .next()
+                .unwrap()
+                .to_owned(),
+        );
+    }
+    assert!(
+        expected[0].starts_with("defects.ssrg:1:48: Seseragi Defect: "),
+        "{expected:?}"
+    );
+    fs::write(
+        scratch.0.join("defects.mjs"),
+        format!(
+            r#"import {{readFile}} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {{loadProgram, ProgramWasmDefect}} from './wasm/program.mjs';
+const bytes = await readFile(new URL('./wasm/program.wasm', import.meta.url));
+const expected = {expected};
+const fail = async (call) => {{
+  const program = await loadProgram(bytes);
+  try {{ call(program.exports); }} catch (error) {{ return error; }}
+  assert.fail('expected a Defect');
+}};
+for (const [index, call] of [(e) => e.divide(5)(0), (e) => e.power(2)(-1)].entries()) {{
+  const defect = await fail(call);
+  assert.ok(defect instanceof ProgramWasmDefect);
+  assert.equal(defect.kind, 'defect');
+  assert.equal(defect.message, expected[index]);
+  assert.equal(defect.location.file, 'defects.ssrg');
+}}
+// A trap without a recorded Defect, such as running out of stack, is
+// reported apart from a Defect.
+const trap = await fail((e) => e.deep(100000000));
+assert.ok(trap instanceof ProgramWasmDefect);
+assert.equal(trap.kind, 'trap');
+assert.equal(trap.location, undefined);
+console.log('located defects');
+"#,
+            expected = serde_json::to_string(&expected).unwrap()
+        ),
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("defects.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"located defects\n");
+}
+
+#[test]
+fn effect_failures_and_defects_carry_their_source_location() {
+    let scratch = Scratch::new();
+    let program = "import * as effects from \"std/effect\"\n\npub effect fn failing value: Int -> Unit fails String =\n  effects.fail \"boom\"\n\npub effect fn broken value: Int -> Unit =\n  effects.die \"broken\"\n";
+    let source = scratch.0.join("effects.ssrg");
+    fs::write(&source, program).unwrap();
+    successful(bounded(
+        &mut build(&source, &scratch.0.join("wasm"), &["failing", "broken"]),
+        &scratch.0,
+    ));
+    // The TS target prints the same Defect at the same location.
+    let ts = scratch.0.join("ts");
+    fs::create_dir(&ts).unwrap();
+    fs::write(
+        ts.join("effects.ssrg"),
+        format!("{program}\npub effect fn main = broken 1\n"),
+    )
+    .unwrap();
+    let result = bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(ts.join("effects.ssrg")),
+        &scratch.0,
+    );
+    assert!(!result.status.success(), "{result:?}");
+    assert_eq!(
+        String::from_utf8_lossy(&result.stderr).lines().next(),
+        Some("effects.ssrg:7:3: Seseragi Defect: broken")
+    );
+    fs::write(
+        scratch.0.join("effects.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+// The location is readable but not part of the outcome's compared shape.
+const failure = await program.exports.failing(1).run().result;
+assert.deepStrictEqual(failure, {tag: 'Failure', error: 'boom'});
+assert.deepStrictEqual(failure.location, {file: 'effects.ssrg', line: 4, column: 3});
+const defect = await program.exports.broken(1).run().result;
+assert.deepStrictEqual(defect, {tag: 'Defect', messages: ['broken']});
+assert.deepStrictEqual(defect.locations, [{file: 'effects.ssrg', line: 7, column: 3}]);
+await program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('located outcomes');
+"#,
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("effects.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"located outcomes\n");
+}
+
+#[test]
+fn empty_sequences_of_a_self_containing_struct_cross_the_boundary() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("loop.ssrg");
+    fs::write(
+        &source,
+        "struct Loop { next: Loop }\n\npub fn same values: Array<Loop> -> Array<Loop> = values\n\npub fn sameList values: List<Loop> -> List<Loop> = values\n",
+    )
+    .unwrap();
+    successful(bounded(
+        &mut build(&source, &scratch.0.join("wasm"), &["same", "sameList"]),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("loop.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+// No Loop value exists, but empty sequences of it are valid inputs.
+assert.deepStrictEqual([...program.exports.same([])], []);
+assert.deepStrictEqual({...program.exports.sameList({tag: 'Empty'})}, {tag: 'Empty'});
+assert.equal(program.ownership().alive, true);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('empty loops');
+"#,
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("loop.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"empty loops\n");
 }

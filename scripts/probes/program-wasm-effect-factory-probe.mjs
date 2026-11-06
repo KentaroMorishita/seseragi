@@ -155,7 +155,7 @@ try {
 assert.equal(fresh.ownership().managedLiveAtClose, 0)
 console.log(
   JSON.stringify({
-    abi: "seseragi-program-wasm-effect-v1",
+    abi: "seseragi-program-wasm-effect-v2",
     factoryReplay: true,
     detachedCallbacksAndPlans: true,
     nestedEffect: true,

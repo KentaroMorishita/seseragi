@@ -20,7 +20,7 @@ fn program(hidden: &str) -> CoreModule {
 fn accepts(module: &CoreModule) {
     let artifact = emit_program_wasm(&[module], MODULE, &["value".into()])
         .unwrap_or_else(|error| panic!("legal control failed admission: {error}"));
-    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v1");
+    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v2");
     assert_eq!(artifact.metadata.exports[0].source_arity, 1);
 }
 fn refuses(module: &CoreModule) {

@@ -95,6 +95,8 @@ fn main() {
             assert_eq!(bytes[0], 3);
             let mut input = &bytes[1..];
             assert_eq!(program_u32(&mut input).unwrap(), 1);
+            // The Defect's source location comes first; a host-only turn has none.
+            assert_eq!(program_u32(&mut input).unwrap(), 0);
             let length = program_u32(&mut input).unwrap() as usize;
             assert_eq!(program_take(&mut input, length).unwrap(), message.as_bytes());
             assert!(input.is_empty());

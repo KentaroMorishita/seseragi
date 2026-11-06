@@ -7,6 +7,7 @@ export class ProgramWasmClosed extends Error {
 }
 
 const encoder = new TextEncoder()
+const negativeZero = Symbol("negative zero")
 const decoder = new TextDecoder("utf-8", { fatal: true })
 
 function dataObject(value, keys) {
@@ -198,6 +199,23 @@ function write(id, value, writer) {
       if (variant.payload !== null) write(variant.payload, data.value, writer)
       break
     }
+    case "parameter": {
+      // WASM only holds and returns a type parameter's value, so the host
+      // value itself stays here and crosses by token.
+      const state = writer.state
+      // A Map key treats -0 as +0, so negative zero has its own key.
+      const key = Object.is(value, -0) ? negativeZero : value
+      let token = state.hostTokens.get(key)
+      if (token === undefined) {
+        if (state.nextHostValue > 0xffffffff)
+          throw new TypeError("Host value token space exhausted")
+        token = state.nextHostValue++
+        state.hostValues.set(token, value)
+        state.hostTokens.set(key, token)
+      }
+      writer.u32(token)
+      break
+    }
     default:
       throw new TypeError(
         "Host function arguments are outside this program ABI"
@@ -205,10 +223,11 @@ function write(id, value, writer) {
   }
 }
 
-function writer() {
+function writer(state) {
   const chunks = []
   let size = 0
   return {
+    state,
     add(bytes) {
       size += bytes.length
       if (size > schema.maxBoundaryBytes)
@@ -363,6 +382,12 @@ function read(id, input, state, provenance) {
             }
       )
     }
+    case "parameter": {
+      const token = input.u32()
+      if (!state.hostValues.has(token))
+        throw new TypeError("Unknown host value result")
+      return state.hostValues.get(token)
+    }
     case "function":
       return callback(state, input.u32(), id, provenance)
     default:
@@ -403,13 +428,54 @@ function requireActive(state) {
 function releaseHostRoots(state, retired) {
   for (const entry of state.callbacks.values()) entry.closed = true
   state.callbacks.clear()
+  state.hostValues.clear()
+  state.hostTokens.clear()
   state.api = undefined
   state.retired ||= retired
 }
+// The Defect WASM recorded before it trapped, if any: its message and
+// source location.
+function recordedDefect(state) {
+  const api = state.api
+  if (!api) return undefined
+  try {
+    const start = pointer(api.ssrg_panic_ptr())
+    const length = pointer(api.ssrg_panic_len())
+    if (
+      length === 0 ||
+      length > schema.maxBoundaryBytes ||
+      start + length > api.memory.buffer.byteLength
+    )
+      return undefined
+    const record = decoder.decode(
+      new Uint8Array(api.memory.buffer, start, length)
+    )
+    const split = record.indexOf("\n")
+    if (split < 0) return undefined
+    const place = /^(.*):(\d+):(\d+)$/.exec(record.slice(0, split))
+    return {
+      message: record.slice(split + 1),
+      location: place
+        ? Object.freeze({
+            file: place[1],
+            line: Number(place[2]),
+            column: Number(place[3]),
+          })
+        : undefined,
+    }
+  } catch {
+    return undefined
+  }
+}
+
 function trapped(state, error, provenance) {
+  const recorded = recordedDefect(state)
   releaseHostRoots(state, true)
+  const location = recorded?.location
   const defect = new ProgramWasmDefect(
-    `Program WASM trapped at ${provenance.symbol}`,
+    recorded
+      ? `${location ? `${location.file}:${location.line}:${location.column}: ` : ""}Seseragi Defect: ${recorded.message}`
+      : `Program WASM trapped at ${provenance.symbol}`,
     {
       cause: Object.freeze({
         name: error.name,
@@ -418,6 +484,9 @@ function trapped(state, error, provenance) {
       }),
     }
   )
+  // A Defect the program raised, or a trap without one.
+  defect.kind = recorded ? "defect" : "trap"
+  if (location) defect.location = location
   defect.origin = provenance.origin
   return defect
 }
@@ -432,7 +501,7 @@ function callback(state, token, codec, provenance) {
     state.busy = true
     let phase = "input"
     try {
-      const encoded = writer()
+      const encoded = writer(state)
       write(schema.codecs[codec].parameter, argument, encoded)
       const bytes = encoded.bytes()
       const api = state.api
@@ -552,6 +621,8 @@ export async function loadProgram(bytes) {
     "ssrg_dispose",
     "ssrg_live",
     "ssrg_callbacks",
+    "ssrg_panic_ptr",
+    "ssrg_panic_len",
   ]) {
     if (typeof api[name] !== "function")
       throw new TypeError(`Missing program export ${name}`)
@@ -561,6 +632,9 @@ export async function loadProgram(bytes) {
     busy: false,
     retired: false,
     callbacks: new Map(),
+    hostValues: new Map(),
+    hostTokens: new Map(),
+    nextHostValue: 1,
     managedLiveAtClose: null,
   }
   let executing = false
