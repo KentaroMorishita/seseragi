@@ -1,0 +1,39 @@
+// Program WASM passes newtypes and opaque types in the same shape as the TS
+// target. The host can keep an opaque value and give it back, but its
+// declared type does not show the representation.
+pub newtype Score = Int
+
+pub opaque type Door =
+  | Open
+  | Closed
+  | Locked String
+
+pub opaque struct Token { owner: String, uses: Int }
+
+pub fn score points: Int -> Score = Score (points * 10)
+
+pub fn points score: Score -> Int = match score {
+  Score value -> value
+}
+
+pub fn door code: Int -> Door = match code {
+  0 -> Open
+  1 -> Closed
+  _ -> Locked "key"
+}
+
+pub fn describe door: Door -> String = match door {
+  Open -> "open"
+  Closed -> "closed"
+  Locked key -> "locked by " + key
+}
+
+pub fn token owner: String -> Token = Token { owner: owner, uses: 0 }
+
+pub fn use token: Token -> Token = match token {
+  Token { owner, uses } -> Token { owner: owner, uses: uses + 1 }
+}
+
+pub fn owner token: Token -> String = match token {
+  Token { owner, uses } -> owner + ":" + show uses
+}

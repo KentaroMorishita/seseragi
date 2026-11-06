@@ -983,7 +983,7 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         "import * as bigs from \"std/big-int\"\npub fn selected value: bigs.BigInt -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
-        "pub opaque type Secret =\n  | Secret Int\npub fn selected value: Secret -> Int = 1",
+        "type Box<A> =\n  | Box A\npub fn selected<A> value: Box<A> -> Int = 1",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
@@ -2471,6 +2471,77 @@ const pairs: ReadonlyArray<readonly [string, Readonly<{tag: 'Nothing'}> | Readon
     successful(bounded(
         Command::new(&node)
             .arg(root.join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn newtypes_and_opaque_types_cross_the_boundary_in_the_ts_target_shape() {
+    let scratch = Scratch::new();
+    let exports = [
+        "score", "points", "door", "describe", "token", "use", "owner",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-opaque.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+// Values from WASM have the TS target's shape.
+assert.deepStrictEqual(plain(wasm.score(4)), plain(ts.score(4)));
+for (const code of [0, 1, 2]) assert.deepStrictEqual(plain(wasm.door(code)), plain(ts.door(code)));
+assert.deepStrictEqual(plain(wasm.token('雪')), plain(ts.token('雪')));
+assert.deepStrictEqual(plain(wasm.use(wasm.use(wasm.token('雪')))), plain(ts.use(ts.use(ts.token('雪')))));
+// Values from the TS target are accepted by WASM, and the reverse.
+assert.equal(wasm.points(ts.score(4)), 40);
+assert.equal(ts.points(wasm.score(4)), 40);
+for (const code of [0, 1, 2]) assert.equal(wasm.describe(ts.door(code)), ts.describe(wasm.door(code)));
+assert.equal(wasm.owner(ts.use(ts.token('雪'))), '雪:1');
+assert.equal(ts.owner(wasm.use(wasm.token('雪'))), '雪:1');
+// Values outside the checked shape are rejected before they reach WASM.
+assert.throws(() => wasm.points(4), TypeError);
+assert.throws(() => wasm.points({tag: 'Other', value: 4}), TypeError);
+assert.throws(() => wasm.describe({tag: 'Locked'}), TypeError);
+assert.throws(() => wasm.owner({owner: '雪'}), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same shapes');
+"#).unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same shapes\n");
+    fs::write(
+        scratch.0.join("types.mts"),
+        r#"import {loadProgram, type Score, type Door, type Token} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const score: Score = owner.exports.score(1);
+const points: number = owner.exports.points({tag: 'Score', value: 3});
+const door: Door = owner.exports.door(0);
+const text: string = owner.exports.describe({tag: 'Locked', value: 'key'});
+const token: Token = owner.exports.use(owner.exports.token('雪'));
+const name: string = owner.exports.owner(token);
+// @ts-expect-error an opaque struct does not show its fields
+const hidden: string = token.owner;
+// @ts-expect-error the host cannot build an opaque struct
+owner.exports.owner({owner: '雪', uses: 0});
+// @ts-expect-error a variant name outside the checked type
+owner.exports.describe({tag: 'Ajar'});
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
             .arg("--project")
             .arg(scratch.0.join("tsconfig.json")),
         &scratch.0,

@@ -50,11 +50,15 @@ pub enum ProgramCodec {
         element: usize,
     },
     /// A closed record or a struct, with fields in name order. A struct
-    /// keeps its name so a recursive struct can be declared by name.
+    /// keeps its name so a recursive struct can be declared by name. An
+    /// opaque struct crosses with its fields, as on the TS target, but its
+    /// declared type hides them behind a brand.
     Record {
         fields: Vec<ProgramField>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         name: Option<String>,
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        opaque: bool,
     },
     /// A value of a function's type parameter. WASM only holds and returns
     /// it, so the loader passes the host value itself by token.
@@ -320,7 +324,7 @@ pub fn emit_program_wasm_with_sources(
         let codec = codec(&ty, true, &mut codecs)
             .or_else(|| effect_codec(&ty, &mut codecs))
             .or_else(|| host_codec(&ty, &mut codecs))
-            .ok_or_else(|| error("program WASM: unsupported public codec; expected a type built from Unit, Bool, Int, Float, Char, String, tuples, Array, List, closed records, structs, ADTs with a finite expansion, type parameters, functions or a providerless Effect"))?;
+            .ok_or_else(|| error("program WASM: unsupported public codec; expected a type built from Unit, Bool, Int, Float, Char, String, tuples, Array, List, closed records, structs, ADTs and newtypes with a finite expansion, type parameters, functions or a providerless Effect"))?;
         let mut terminal = codec;
         while let ProgramCodec::Function { result, .. } = &codecs[terminal] {
             terminal = *result;
@@ -595,6 +599,7 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
             }
             ProgramCodec::Record {
                 name: None,
+                opaque: false,
                 fields: sorted
                     .into_iter()
                     .map(|field| {
@@ -671,10 +676,11 @@ fn mentions_type_parameter(ty: &CoreType) -> bool {
     }
 }
 
-/// The codec of an ADT or struct declared in the linked modules. Opaque types
-/// and newtypes keep their representation private, so they are not data
-/// codecs. The codec is registered before its fields so that a recursive
-/// type refers to its own index.
+/// The codec of an ADT, newtype or struct declared in the linked modules.
+/// They cross in the TS target's shape: a newtype is its single tagged
+/// variant, and an opaque type keeps its representation, with only its
+/// declared type hidden. The codec is registered before its fields so that
+/// a recursive type refers to its own index.
 fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let modules = codecs.modules?;
     let CoreType::Named { name, arguments } = ty else {
@@ -716,10 +722,7 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let parameters = adt
         .map(|adt| &adt.type_parameters)
         .or_else(|| structure.map(|structure| &structure.type_parameters))?;
-    if adt.is_some_and(|adt| adt.opaque || adt.newtype)
-        || structure.is_some_and(|structure| structure.opaque)
-        || parameters.len() != arguments.len()
-    {
+    if parameters.len() != arguments.len() {
         return None;
     }
     let substitutions = parameters
@@ -770,6 +773,7 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
             .map(|fields| ProgramCodec::Record {
                 fields,
                 name: Some(structure.name.clone()),
+                opaque: structure.opaque,
             })
     };
     codecs.building.pop();
@@ -1032,9 +1036,9 @@ fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
             ProgramCodec::Array { element } | ProgramCodec::List { element } => {
                 pending.push(*element)
             }
-            ProgramCodec::Record { fields, name: None } => {
-                pending.extend(fields.iter().rev().map(|field| field.codec))
-            }
+            ProgramCodec::Record {
+                fields, name: None, ..
+            } => pending.extend(fields.iter().rev().map(|field| field.codec)),
             _ => {}
         }
     }
@@ -1087,6 +1091,13 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
                 })
                 .collect::<Vec<_>>()
                 .join(" | "),
+            ProgramCodec::Record { opaque: true, .. } => {
+                // The TS target brands an opaque struct the same way, so the
+                // host can hold and return it but cannot read or build it.
+                let brand = format!("ProgramBrand{index}");
+                result.insert_str(0, &format!("declare const {brand}: unique symbol;\n"));
+                format!("{{ readonly [{brand}]: true }}")
+            }
             ProgramCodec::Record { fields, .. } => record_type(metadata, &aliases, fields),
             _ => unreachable!("aliases name ADT and struct codecs"),
         };

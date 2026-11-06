@@ -150,11 +150,13 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 | List | `{tag: "Cons", head, tail}` と `{tag: "Empty"}` |
 | 閉じた record・struct | 普通のオブジェクト |
 | Maybe・Either・ADT | `{tag}` または `{tag, value}`。generic や再帰する ADT も使える |
+| newtype | `{tag, value}`（tag は型の名前） |
+| opaque な ADT・struct | 中身は ADT・struct と同じ形。opaque struct の型宣言は brand だけを持ち、ホストは中身を読めず、作れない |
 | 関数の型パラメータ | JS の値そのもの。WASM は預かって返すだけで、同じ値が返る |
 
 trait 制約のない generic な関数も公開できる。型宣言では、型パラメータを最初に受け取る呼び出しで
 それを決めるので、TS が推論できる。trait 制約のある関数と、型パラメータを含む ADT・struct は
-まだ公開できない。opaque 型、newtype、BigInt、Decimal などは受け渡せない。形が合わない入力（循環した List を
+まだ公開できない。BigInt、Decimal などは受け渡せない。形が合わない入力（循環した List を
 含む）は、WASM に入る前に `TypeError` で拒否する。manifest と loader の `capabilities` は、
 プログラムが使う標準ランタイムの領域（`text`、`list` など）を表す。証明のない標準 API は、
 ここに載らずにビルドが失敗する。Effect を返す公開関数の ABI は受け入れ判定が別で、
