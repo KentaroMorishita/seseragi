@@ -278,7 +278,7 @@ fn linker_settings_read_cargo_config_files_with_cargo_precedence() {
     write(
         &directory.join(".cargo"),
         "config",
-        "[target.aarch64-apple-darwin]\nrustflags = \"-C linker=clang-18\"\n",
+        "[target.aarch64-apple-darwin]\nrustflags = [\"-C\", \"linker=clang-18\"]\n",
     );
     let settings = resolve(&none);
     assert_eq!(
@@ -308,6 +308,113 @@ fn linker_settings_read_cargo_config_files_with_cargo_precedence() {
     // A file Cargo cannot parse is left for Cargo to report.
     write(&directory.join(".cargo"), "config", "[target");
     assert_eq!(resolve(&none).rustflags, ["-C", "linker=rust-lld"]);
+}
+
+#[test]
+fn rustflags_strings_replace_arrays_join_and_empty_target_flags_use_build() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let package = root.path().join("package");
+    let directory = package.join(".seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    let write = |directory: &Path, source: &str| {
+        fs::create_dir_all(directory).unwrap();
+        fs::write(directory.join("config.toml"), source).unwrap();
+    };
+    let resolve = |far: &str, near: &str| {
+        write(&package.join(".cargo"), far);
+        write(&directory.join(".cargo"), near);
+        cargo_config::linker_settings(&directory, &home, host, &[], &|_: &str| None).rustflags
+    };
+    let target = |value: &str| format!("[target.aarch64-apple-darwin]\nrustflags = {value}\n");
+    let build = "[build]\nrustflags = [\"-Cdebuginfo=0\"]\n";
+
+    // A nearer string replaces a farther string.
+    assert_eq!(
+        resolve(
+            &target("\"-C linker=rust-lld\""),
+            &target("\"-C opt-level=1\"")
+        ),
+        ["-C", "opt-level=1"]
+    );
+    // Arrays join with the farther values first.
+    assert_eq!(
+        resolve(&target("[\"-Ca\"]"), &target("[\"-Cb\"]")),
+        ["-Ca", "-Cb"]
+    );
+    // A string and an array for the same key are a Cargo type error, so no
+    // flags come from that key; build.rustflags is the next source.
+    for (far, near) in [
+        ("\"-Ca\"", "[\"-Cb\"]"),
+        ("[\"-Ca\"]", "\"-Cb\""),
+        ("[1]", "[\"-Cb\"]"),
+    ] {
+        assert_eq!(
+            resolve(&format!("{build}{}", target(far)), &target(near)),
+            ["-Cdebuginfo=0"],
+            "{far} / {near}"
+        );
+    }
+    // Empty target flags fall back to build.rustflags, as Cargo does.
+    assert_eq!(resolve(build, &target("[]")), ["-Cdebuginfo=0"]);
+    assert_eq!(resolve(build, &target("\"\"")), ["-Cdebuginfo=0"]);
+}
+
+#[test]
+fn cfg_tables_see_cfg_values_from_the_selected_rustflags() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("package/.seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    fs::create_dir_all(directory.join(".cargo")).unwrap();
+    fs::write(
+        directory.join(".cargo/config.toml"),
+        "[target.'cfg(use_direct_linker)']\nlinker = \"rust-lld\"\n",
+    )
+    .unwrap();
+    let environment =
+        |key: &str| (key == "RUSTFLAGS").then(|| OsString::from("--cfg use_direct_linker"));
+    // Stands in for `rustc <rustflags> --print cfg`: a `--cfg` flag adds a
+    // name to the printed cfg.
+    let queries = std::cell::RefCell::new(Vec::new());
+    let query = |rustflags: &[String]| {
+        queries.borrow_mut().push(rustflags.to_vec());
+        let mut cfg = cargo_config::parse_cfg("target_os=\"macos\"\nunix\n");
+        cfg.extend(
+            rustflags
+                .windows(2)
+                .filter(|pair| pair[0] == "--cfg")
+                .map(|pair| (pair[1].clone(), None)),
+        );
+        cfg
+    };
+    let settings = cargo_config::settle_with_cfg(&query, &|cfg| {
+        cargo_config::linker_settings(&directory, &home, host, cfg, &environment)
+    });
+    assert_eq!(settings.linker.as_deref(), Some("rust-lld"));
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::Direct
+    );
+    assert!(queries
+        .borrow()
+        .iter()
+        .any(|flags| flags == &["--cfg", "use_direct_linker"]));
+}
+
+#[test]
+fn host_cfg_passes_the_selected_rustflags_to_rustc() {
+    let fixture = Fixture::new();
+    let cfg = host_cfg(
+        &fixture.toolchain,
+        &["--cfg".into(), "use_direct_linker".into()],
+    );
+    assert!(cfg.contains(&("use_direct_linker".into(), None)), "{cfg:?}");
+    assert!(
+        cfg.contains(&("unix".into(), None)) || cfg!(windows),
+        "{cfg:?}"
+    );
+    assert!(!host_cfg(&fixture.toolchain, &[]).contains(&("use_direct_linker".into(), None)));
 }
 
 #[test]

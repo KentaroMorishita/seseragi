@@ -26,21 +26,95 @@ pub(super) struct LinkerSettings {
 #[derive(Default)]
 struct TargetTable {
     linker: Option<String>,
-    rustflags: Option<Vec<String>>,
+    rustflags: MergedFlags,
+}
+
+/// A rustflags value merged across config sources as Cargo merges it: a
+/// nearer string replaces a farther one, arrays are joined with the farther
+/// values first, and a string and an array for the same key do not merge.
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+enum MergedFlags {
+    #[default]
+    Unset,
+    Text(Vec<String>),
+    Array(Vec<String>),
+    /// Cargo rejects the configuration, so no flags are taken from it.
+    Mismatch,
+}
+
+impl MergedFlags {
+    /// Merges a nearer config file's value.
+    fn merge(&mut self, value: &toml::Value) {
+        *self = match (std::mem::take(self), value) {
+            (Self::Unset | Self::Text(_), toml::Value::String(flags)) => Self::Text(words(flags)),
+            (previous @ (Self::Unset | Self::Array(_)), toml::Value::Array(values)) => {
+                let flags = values
+                    .iter()
+                    .map(|flag| flag.as_str().map(String::from))
+                    .collect::<Option<Vec<_>>>();
+                match (previous, flags) {
+                    (Self::Array(mut joined), Some(flags)) => {
+                        joined.extend(flags);
+                        Self::Array(joined)
+                    }
+                    (_, Some(flags)) => Self::Array(flags),
+                    // A non-string element is a type error for Cargo.
+                    (_, None) => Self::Mismatch,
+                }
+            }
+            _ => Self::Mismatch,
+        };
+    }
+
+    /// Appends an environment value, which Cargo adds after config values.
+    fn append(&mut self, flags: &str) {
+        match self {
+            Self::Unset => *self = Self::Array(words(flags)),
+            Self::Text(joined) | Self::Array(joined) => joined.extend(words(flags)),
+            Self::Mismatch => {}
+        }
+    }
+
+    fn flags(&self) -> &[String] {
+        match self {
+            Self::Text(flags) | Self::Array(flags) => flags,
+            Self::Unset | Self::Mismatch => &[],
+        }
+    }
+}
+
+/// Cargo asks rustc for the target cfg with the selected rustflags, and
+/// `target.'cfg(..)'` tables can change those rustflags, so the query repeats
+/// until the cfg no longer changes.
+pub(super) fn settle_with_cfg(
+    query_cfg: &dyn Fn(&[String]) -> Vec<CfgEntry>,
+    resolve: &dyn Fn(&[CfgEntry]) -> LinkerSettings,
+) -> LinkerSettings {
+    let mut cfg = query_cfg(&[]);
+    let mut settings = resolve(&cfg);
+    for _ in 0..4 {
+        let next = query_cfg(&settings.rustflags);
+        if next == cfg {
+            break;
+        }
+        cfg = next;
+        settings = resolve(&cfg);
+    }
+    settings
 }
 
 /// Resolves the settings with Cargo's rules.
 ///
 /// - Config files are read from each `.cargo/` from the build directory up to
 ///   the file system root, then `CARGO_HOME`. A nearer file wins. In one
-///   directory, `config` wins over `config.toml`. Arrays are joined with the
-///   farther values first.
+///   directory, `config` wins over `config.toml`. See [`MergedFlags`] for
+///   how rustflags values merge.
 /// - Environment variables override config files.
 /// - The linker is `target.<host>.linker`, else the matching
 ///   `target.'cfg(..)'.linker`.
-/// - Rustflags are the first that is set of `CARGO_ENCODED_RUSTFLAGS`,
-///   `RUSTFLAGS`, the joined `target.<host>.rustflags` and matching
-///   `target.'cfg(..)'.rustflags`, and `build.rustflags`.
+/// - Rustflags are the first of `CARGO_ENCODED_RUSTFLAGS` or `RUSTFLAGS`
+///   when set, else the joined `target.<host>.rustflags` and matching
+///   `target.'cfg(..)'.rustflags` when not empty, else `build.rustflags`.
 ///
 /// A file Cargo cannot parse is skipped here; Cargo reports it when the build
 /// starts.
@@ -59,7 +133,7 @@ pub(super) fn linker_settings(
         directories.push(cargo_home.to_owned());
     }
     let mut targets = BTreeMap::<String, TargetTable>::new();
-    let mut build_flags: Option<Vec<String>> = None;
+    let mut build_flags = MergedFlags::Unset;
     // Lowest precedence first, so later values override or append.
     for directory in directories.iter().rev() {
         let Some(config) = [directory.join("config"), directory.join("config.toml")]
@@ -76,17 +150,13 @@ pub(super) fn linker_settings(
                 if let Some(linker) = table.get("linker").and_then(toml::Value::as_str) {
                     entry.linker = Some(linker.to_owned());
                 }
-                if let Some(flags) = table.get("rustflags").and_then(config_flags) {
-                    entry.rustflags.get_or_insert_with(Vec::new).extend(flags);
+                if let Some(flags) = table.get("rustflags") {
+                    entry.rustflags.merge(flags);
                 }
             }
         }
-        if let Some(flags) = config
-            .get("build")
-            .and_then(|build| build.get("rustflags"))
-            .and_then(config_flags)
-        {
-            build_flags.get_or_insert_with(Vec::new).extend(flags);
+        if let Some(flags) = config.get("build").and_then(|build| build.get("rustflags")) {
+            build_flags.merge(flags);
         }
     }
     let text = |name: &str| environment(name).map(|value| value.to_string_lossy().into_owned());
@@ -96,15 +166,10 @@ pub(super) fn linker_settings(
         host_table.linker = Some(linker);
     }
     if let Some(flags) = text(&format!("CARGO_TARGET_{key}_RUSTFLAGS")) {
-        host_table
-            .rustflags
-            .get_or_insert_with(Vec::new)
-            .extend(words(&flags));
+        host_table.rustflags.append(&flags);
     }
     if let Some(flags) = text("CARGO_BUILD_RUSTFLAGS") {
-        build_flags
-            .get_or_insert_with(Vec::new)
-            .extend(words(&flags));
+        build_flags.append(&flags);
     }
 
     let matching = targets
@@ -122,15 +187,16 @@ pub(super) fn linker_settings(
     let rustflags = if encoded.is_some() || plain.is_some() {
         environment_flags(encoded.as_deref(), plain.as_deref())
     } else {
-        let mut target_flags = targets[host].rustflags.clone();
+        let mut target_flags = targets[host].rustflags.flags().to_vec();
         for table in &matching {
-            if let Some(flags) = &table.rustflags {
-                target_flags
-                    .get_or_insert_with(Vec::new)
-                    .extend(flags.iter().cloned());
-            }
+            target_flags.extend(table.rustflags.flags().iter().cloned());
         }
-        target_flags.or(build_flags).unwrap_or_default()
+        // Cargo falls back to build.rustflags when the target flags are empty.
+        if target_flags.is_empty() {
+            build_flags.flags().to_vec()
+        } else {
+            target_flags
+        }
     };
     LinkerSettings { linker, rustflags }
 }
@@ -164,18 +230,6 @@ pub(super) fn parse_cfg(output: &str) -> Vec<CfgEntry> {
 
 fn words(flags: &str) -> Vec<String> {
     flags.split_whitespace().map(Into::into).collect()
-}
-
-/// A config rustflags value: a whitespace-separated string or an array.
-fn config_flags(value: &toml::Value) -> Option<Vec<String>> {
-    match value {
-        toml::Value::String(flags) => Some(words(flags)),
-        toml::Value::Array(flags) => flags
-            .iter()
-            .map(|flag| flag.as_str().map(Into::into))
-            .collect(),
-        _ => None,
-    }
 }
 
 /// Whether a `target` key is a `cfg(..)` expression that holds for `cfg`.

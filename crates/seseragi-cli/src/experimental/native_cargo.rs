@@ -143,13 +143,16 @@ impl Project {
         regular_file(&self.directory.join("Cargo.lock"))?;
         let target = self.target_for(profile, runtime)?;
         let mut command = toolchain.cargo()?;
-        let linker = cargo_config::linker_settings(
-            &self.directory,
-            toolchain.cargo_home(),
-            &toolchain.host,
-            &host_cfg(toolchain),
-            &|key| std::env::var_os(key),
-        );
+        let linker =
+            cargo_config::settle_with_cfg(&|rustflags| host_cfg(toolchain, rustflags), &|cfg| {
+                cargo_config::linker_settings(
+                    &self.directory,
+                    toolchain.cargo_home(),
+                    &toolchain.host,
+                    cfg,
+                    &|key| std::env::var_os(key),
+                )
+            });
         let invocation = linker_invocation(&linker.rustflags, linker.linker.as_deref());
         let path_flags = path_flags(&self.directory, &target, &toolchain.host, invocation);
         // Cargo uses only one rustflags source, so pass the selected flags
@@ -332,14 +335,16 @@ fn linker_invocation(flags: &[String], configured_linker: Option<&str>) -> Linke
     }
 }
 
-/// The host's `rustc --print cfg`, used to match `target.'cfg(..)'` tables.
-/// Without it no cfg table matches, and Cargo reports the rustc failure.
-fn host_cfg(toolchain: &Toolchain) -> Vec<cargo_config::CfgEntry> {
+/// The host's `rustc --print cfg` with `rustflags`, as Cargo queries it, used
+/// to match `target.'cfg(..)'` tables. Without it no cfg table matches, and
+/// Cargo reports the rustc failure.
+fn host_cfg(toolchain: &Toolchain, rustflags: &[String]) -> Vec<cargo_config::CfgEntry> {
     toolchain
         .rustc()
         .ok()
         .and_then(|mut rustc| {
             rustc
+                .args(rustflags)
                 .args(["--print", "cfg", "--target", &toolchain.host])
                 .output()
                 .ok()
