@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.145] - 2026-11-06
+
+This release also ships the changes listed under 0.61.142, 0.61.143 and 0.61.144, which were not published as separate releases.
+
+### Fixed
+
+- On macOS, native executables no longer embed the package's absolute location: the linker's object file paths are relative to the Cargo target directory.
+
 ## [0.61.144] - 2026-11-06
 
 ### Fixed
