@@ -215,7 +215,8 @@ jobs:
         if: runner.os == 'Linux'
         with:
           key: rust-backend-file-transform
-          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          # Shards share the key; shard 1 builds the most, so it saves.
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.shard == 1 }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
