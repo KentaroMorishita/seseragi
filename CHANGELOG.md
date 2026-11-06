@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.152] - 2026-11-07
+
+### Added
+
+- Native runs `race`: both Effects run as Fibers, the first success or failure wins, and the loser is cancelled and its finalizers finish first. A tie in one scheduler turn picks the left side.
+- Native runs `timeout` and `timeoutFail`, which race the source against a Clock sleep; the source wins a tie, including with a zero Duration.
+- Native runs `schedule`, `recurs`, `spaced`, `whileInput`, `retry` and `repeat`. A retry ends at the first success, a repeat at the first failure, and a Defect is never retried. These operations need the native Clock selection, like `clock.sleep`.
+
 ## [0.61.149] - 2026-11-07
 
 ### Fixed
