@@ -52,8 +52,13 @@ pub(crate) fn print_list_json(suite: &Suite) {
     );
 }
 
-pub(crate) fn print_success_text(suite: &Suite) {
+/// With `selected_only`, categories without cases (the check kinds that
+/// `--only` did not select) are left out.
+pub(crate) fn print_success_text(suite: &Suite, selected_only: bool) {
     for category in categories(suite) {
+        if selected_only && category.cases.is_empty() {
+            continue;
+        }
         println!(
             "{} fixtures: {} passed",
             category.text_label,
