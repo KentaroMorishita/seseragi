@@ -280,7 +280,7 @@ fn wasm_target_checks_selected_programs_without_warning_in_ts_ui_sources() {
             + "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n"),
     );
     let ui = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
-    let program = "pub fn unused -> Int = 2 ** 3\npub fn amount -> Int = 42\n";
+    let program = "pub fn unused -> Float = 2.0 ** 3.0\npub fn amount -> Int = 42\n";
     workspace.write("src/main.ssrg", ui);
     workspace.write("src/calculation.ssrg", program);
     let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
@@ -298,8 +298,8 @@ fn wasm_target_checks_selected_programs_without_warning_in_ts_ui_sources() {
     assert_eq!(
         diagnostics[0]["range"],
         json!({
-            "start": {"line": 0, "character": 23},
-            "end": {"line": 0, "character": 29},
+            "start": {"line": 0, "character": 25},
+            "end": {"line": 0, "character": 35},
         })
     );
     assert!(diagnostics[0]["message"]

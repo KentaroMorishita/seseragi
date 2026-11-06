@@ -30,7 +30,13 @@ impl Backend<'_> {
                     self.expr(right, scope)?
                 ));
             }
-            if self.program_wasm_library && operator == "**" {
+            if self.program_wasm_library
+                && operator == "**"
+                && !matches!(evidence.as_slice(), [CoreCallEvidence {
+                    evidence: CoreInstanceEvidence::Standard { identity, .. },
+                    ..
+                }] if identity == "std/int::Pow")
+            {
                 return Err(
                     "program WASM: native power requires a target-specific arithmetic proof".into(),
                 );

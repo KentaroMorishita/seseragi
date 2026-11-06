@@ -2270,3 +2270,129 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
         ));
     }
 }
+
+#[test]
+fn int_division_remainder_power_and_descending_comparison_match_ts() {
+    let scratch = Scratch::new();
+    let program = "pub fn divide left: Int -> right: Int -> Int = left / right\npub fn remainder left: Int -> right: Int -> Int = left % right\npub fn power base: Int -> exponent: Int -> Int = base ** exponent\npub fn greater left: Int -> right: Int -> Bool = left > right\npub fn atLeast left: Int -> right: Int -> Bool = left >= right\n";
+    let source = scratch.0.join("arithmetic.ssrg");
+    fs::write(&source, program).unwrap();
+    let output = scratch.0.join("arithmetic");
+    successful(bounded(
+        &mut build(
+            &source,
+            &output,
+            &["divide", "remainder", "power", "greater", "atLeast"],
+        ),
+        &scratch.0,
+    ));
+    // Results include truncation toward zero, the dividend's sign for
+    // remainders, the safe integer bounds, `0 ** 0` and both comparisons.
+    let values = [
+        ("divide", "/", 7, 2),
+        ("divide", "/", -7, 2),
+        ("divide", "/", 7, -2),
+        ("divide", "/", -7, -2),
+        ("divide", "/", -1, 3),
+        ("divide", "/", 9007199254740991, -1),
+        ("divide", "/", -9007199254740991, -1),
+        ("remainder", "%", 7, 2),
+        ("remainder", "%", -7, 2),
+        ("remainder", "%", 7, -2),
+        ("remainder", "%", -6, 3),
+        ("remainder", "%", -9007199254740991, 2),
+        ("power", "**", 2, 52),
+        ("power", "**", 0, 0),
+        ("power", "**", -3, 3),
+        ("power", "**", 1, 1000000),
+        ("greater", ">", 3, 2),
+        ("greater", ">", -9007199254740991, 9007199254740991),
+        ("atLeast", ">=", 2, 2),
+        ("atLeast", ">=", -1, 0),
+    ];
+    // TS reports each of these as a Defect: zero divisors, a negative
+    // exponent and a result outside the safe integer range.
+    let defects = [
+        ("divide", "/", 5, 0),
+        ("remainder", "%", 5, 0),
+        ("power", "**", 2, -1),
+        ("power", "**", 2, 53),
+        ("power", "**", -2, 53),
+    ];
+    let ts = scratch.0.join("ts.ssrg");
+    let mut main = String::from("pub effect fn main = do {\n");
+    for (_, operator, left, right) in values {
+        main.push_str(&format!(
+            "  println (show (({left}) {operator} ({right})))\n"
+        ));
+    }
+    main.push_str("}\n");
+    fs::write(&ts, main).unwrap();
+    let expected = successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(&ts),
+        &scratch.0,
+    ))
+    .stdout;
+    for (index, (_, operator, left, right)) in defects.iter().enumerate() {
+        let file = scratch.0.join(format!("defect-{index}.ssrg"));
+        fs::write(
+            &file,
+            format!("pub effect fn main = println (show (({left}) {operator} ({right})))\n"),
+        )
+        .unwrap();
+        let result = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("run")
+                .arg(&file),
+            &scratch.0,
+        );
+        assert!(!result.status.success(), "{result:?}");
+        assert!(
+            String::from_utf8_lossy(&result.stderr).contains("Seseragi Defect"),
+            "{result:?}"
+        );
+    }
+    let cases = |cases: &[(&str, &str, i64, i64)]| {
+        cases
+            .iter()
+            .map(|(name, _, left, right)| format!("[{name:?},{left},{right}]"))
+            .collect::<Vec<_>>()
+            .join(",")
+    };
+    fs::write(
+        scratch.0.join("arithmetic.mjs"),
+        format!(
+            r#"import {{readFile}} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {{loadProgram,ProgramWasmDefect}} from './arithmetic/program.mjs';
+const bytes = await readFile(new URL('./arithmetic/program.wasm', import.meta.url));
+const show = (value) => typeof value === 'boolean' ? (value ? 'True' : 'False') : String(value);
+const program = await loadProgram(bytes);
+for (const [name, left, right] of [{values}]) {{
+  console.log(show(program.exports[name](left)(right)));
+}}
+await program.dispose();
+for (const [name, left, right] of [{defects}]) {{
+  const failing = await loadProgram(bytes);
+  assert.throws(() => failing.exports[name](left)(right), ProgramWasmDefect);
+}}
+"#,
+            values = cases(&values),
+            defects = cases(&defects),
+        ),
+    )
+    .unwrap();
+    let actual = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("arithmetic.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ))
+    .stdout;
+    assert_eq!(
+        String::from_utf8(actual).unwrap(),
+        String::from_utf8(expected).unwrap()
+    );
+}
