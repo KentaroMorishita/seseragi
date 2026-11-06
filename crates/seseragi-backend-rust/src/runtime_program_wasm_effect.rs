@@ -96,12 +96,7 @@ fn program_decode_items(
     let count = program_u32(input)? as usize;
     // Each element needs its fixed width, so a longer count is invalid.
     let width = program_width(element, codes);
-    let limit = if width == 0 {
-        1 << 20
-    } else {
-        input.len() / width
-    };
-    if count > limit {
+    if count > PROGRAM_MAX_ITEMS || (width > 0 && count > input.len() / width) {
         return Err("program ABI: invalid sequence length");
     }
     (0..count)
@@ -109,6 +104,9 @@ fn program_decode_items(
         .collect()
 }
 fn program_count(out: &mut Vec<u8>, count: usize) -> ProgramResult<()> {
+    if count > PROGRAM_MAX_ITEMS {
+        return Err("program ABI: sequence exceeds boundary limit");
+    }
     let count = u32::try_from(count).map_err(|_| "program ABI: sequence exceeds boundary limit")?;
     program_bytes(out, &count.to_le_bytes())
 }

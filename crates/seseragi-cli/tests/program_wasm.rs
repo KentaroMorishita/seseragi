@@ -2705,3 +2705,131 @@ console.log('same results');
     ));
     assert_eq!(output.stdout, b"same results\n");
 }
+
+#[test]
+fn recursive_structs_builtin_named_types_and_sequence_limits_keep_their_boundary() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("program.ssrg");
+    fs::write(
+        &source,
+        r#"import * as arrays from "std/array"
+import * as lists from "std/list"
+
+struct Link { value: Int, next: Maybe<Link> }
+
+type Readonly =
+  | Box Int
+
+type ReadonlyArray =
+  | Many (Array<Int>)
+
+type Promise =
+  | Done
+
+pub fn chain size: Int -> Link =
+  Link { value: size, next: Just (Link { value: size + 1, next: Nothing }) }
+
+pub fn total link: Link -> Int = match link {
+  Link { value, next } -> match next {
+    Just rest -> value + total rest
+    Nothing -> value
+  }
+}
+
+pub fn boxed value: Int -> Readonly = Box value
+
+pub fn many value: Int -> ReadonlyArray = Many [value, value]
+
+pub fn done value: Int -> Promise = Done
+
+pub fn units values: Array<Unit> -> Int = arrays.length values
+
+pub fn unitList values: List<Unit> -> Int = lists.length values
+"#,
+    )
+    .unwrap();
+    successful(bounded(
+        &mut build(
+            &source,
+            &scratch.0.join("wasm"),
+            &[
+                "chain", "total", "boxed", "many", "done", "units", "unitList",
+            ],
+        ),
+        &scratch.0,
+    ));
+    let declarations = fs::read_to_string(scratch.0.join("wasm/program.d.mts")).unwrap();
+    // A recursive struct is declared by name, and a source name that would
+    // shadow a TS global gets a generated name.
+    assert!(
+        declarations.contains("export type Link = Readonly<{"),
+        "{declarations}"
+    );
+    assert!(
+        !declarations.contains("export type Readonly "),
+        "{declarations}"
+    );
+    assert!(
+        !declarations.contains("export type ReadonlyArray "),
+        "{declarations}"
+    );
+    assert!(
+        !declarations.contains("export type Promise "),
+        "{declarations}"
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+assert.deepStrictEqual(JSON.parse(JSON.stringify(wasm.chain(4))), {next: {tag: 'Just', value: {next: {tag: 'Nothing'}, value: 5}}, value: 4});
+assert.equal(wasm.total(wasm.chain(4)), 9);
+assert.deepStrictEqual({...wasm.boxed(3)}, {tag: 'Box', value: 3});
+assert.deepStrictEqual({...wasm.done(3)}, {tag: 'Done'});
+// The loader and WASM accept the same longest sequence; a longer input is
+// rejected before it reaches WASM, so the instance stays usable.
+const limit = 1 << 20;
+const list = (count) => {
+  let cells = {tag: 'Empty'};
+  for (let index = 0; index < count; index++) cells = {tag: 'Cons', head: undefined, tail: cells};
+  return cells;
+};
+assert.equal(wasm.units(new Array(limit).fill(undefined)), limit);
+assert.throws(() => wasm.units(new Array(limit + 1).fill(undefined)), TypeError);
+assert.equal(wasm.unitList(list(limit)), limit);
+assert.throws(() => wasm.unitList(list(limit + 1)), TypeError);
+assert.equal(wasm.units([undefined]), 1);
+assert.equal(program.ownership().alive, true);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same boundary');
+"#).unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same boundary\n");
+    fs::write(
+        scratch.0.join("types.mts"),
+        r#"import {loadProgram, type Link} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const link: Link = owner.exports.chain(1);
+const next: Link | undefined = link.next.tag === 'Just' ? link.next.value : undefined;
+const boxed: Readonly<{tag: 'Box'; value: number}> = owner.exports.boxed(1);
+const many: ReadonlyArray<number> = owner.exports.many(1).value;
+const done: Promise<number> = Promise.resolve(owner.exports.done(1).tag === 'Done' ? 1 : 0);
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}

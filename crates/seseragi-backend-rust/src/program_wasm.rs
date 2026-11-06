@@ -49,9 +49,12 @@ pub enum ProgramCodec {
     List {
         element: usize,
     },
-    /// A closed record or a struct, with fields in name order.
+    /// A closed record or a struct, with fields in name order. A struct
+    /// keeps its name so a recursive struct can be declared by name.
     Record {
         fields: Vec<ProgramField>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        name: Option<String>,
     },
     /// A sum type. The wire tag is the variant's index.
     Adt {
@@ -75,6 +78,10 @@ pub struct ProgramVariant {
     /// The constructor's checked identity in the native runtime.
     pub owner: String,
     pub payload: Option<usize>,
+}
+
+fn max_sequence_items() -> usize {
+    1 << 20
 }
 
 /// The codecs of one artifact. Data types declared in `modules` (ADTs and
@@ -150,6 +157,11 @@ pub struct ProgramWasmMetadata {
     pub capabilities: Vec<String>,
     pub trap_policy: String,
     pub max_boundary_bytes: usize,
+    /// The most elements one Array or List may hold at the boundary, in
+    /// either direction. The loader rejects a longer input before it enters
+    /// WASM, so the instance stays usable.
+    #[serde(default = "max_sequence_items")]
+    pub max_sequence_items: usize,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -334,12 +346,17 @@ pub fn emit_program_wasm(
         },
         trap_policy: "retire-instance".into(),
         max_boundary_bytes: 16 * 1024 * 1024,
+        max_sequence_items: max_sequence_items(),
     };
     if effect_abi {
         library.source.push_str(&format!(
             "\nconst PROGRAM_TRACK_REFS: bool = {tracks_private_refs};\n"
         ));
     }
+    library.source.push_str(&format!(
+        "\nconst PROGRAM_MAX_ITEMS: usize = {};\n",
+        metadata.max_sequence_items
+    ));
     library.source.push_str(if host_abi {
         include_str!("runtime_program_wasm_host_effect.rs")
     } else if effect_abi {
@@ -513,6 +530,7 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
                 return None;
             }
             ProgramCodec::Record {
+                name: None,
                 fields: sorted
                     .into_iter()
                     .map(|field| {
@@ -640,7 +658,8 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
                 variants,
             })
     } else {
-        let mut fields = structure?.fields.iter().collect::<Vec<_>>();
+        let structure = structure.expect("a named codec is an ADT or a struct");
+        let mut fields = structure.fields.iter().collect::<Vec<_>>();
         fields.sort_by(|left, right| left.name.cmp(&right.name));
         fields
             .into_iter()
@@ -651,7 +670,10 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
                 })
             })
             .collect::<Option<Vec<_>>>()
-            .map(|fields| ProgramCodec::Record { fields })
+            .map(|fields| ProgramCodec::Record {
+                fields,
+                name: Some(structure.name.clone()),
+            })
     };
     match item {
         Some(item) => {
@@ -690,7 +712,7 @@ fn rust_codec(codec: &ProgramCodec) -> String {
         } => format!("ProgramCode::HostEffect({parameter}, {failure:?}, {success:?})"),
         ProgramCodec::Array { element } => format!("ProgramCode::Array({element})"),
         ProgramCodec::List { element } => format!("ProgramCode::List({element})"),
-        ProgramCodec::Record { fields } => format!(
+        ProgramCodec::Record { fields, .. } => format!(
             "ProgramCode::Record(vec![{}])",
             fields
                 .iter()
@@ -709,31 +731,39 @@ fn rust_codec(codec: &ProgramCodec) -> String {
     }
 }
 
-/// The TS type names of ADT codecs. A sum type can be recursive, so it is
-/// declared once by name instead of being expanded where it is used.
-fn adt_aliases(metadata: &ProgramWasmMetadata) -> std::collections::BTreeMap<usize, String> {
+/// The TS type names of ADT and struct codecs. These types can be
+/// recursive, so each is declared once by name instead of being expanded
+/// where it is used. A source name becomes the TS name only when it is a
+/// plain identifier used by no other codec and does not shadow a TS global
+/// or a name these declarations use; otherwise the codec gets
+/// `ProgramData<index>`.
+fn type_aliases(metadata: &ProgramWasmMetadata) -> std::collections::BTreeMap<usize, String> {
     const RESERVED: &[&str] = &[
+        // TS globals the declarations refer to.
+        "AbortSignal",
+        "BufferSource",
+        "Error",
+        "Promise",
+        "PromiseLike",
+        "Readonly",
+        "ReadonlyArray",
+        // Names the declarations define.
         "Ownership",
         "OwnedCallback",
         "OwnedEffect",
-        "ProgramWasmDefect",
-        "ProgramWasmClosed",
-        "ProgramExports",
-        "ProgramInstance",
-        "ProgramList",
-        "ProgramOutcome",
-        "ProgramExecution",
         "HostResult",
         "HostEffect",
         "HostEffectContext",
-        "loadProgram",
     ];
     let names = metadata
         .codecs
         .iter()
         .enumerate()
         .filter_map(|(index, codec)| match codec {
-            ProgramCodec::Adt { name, .. } => Some((index, name.as_str())),
+            ProgramCodec::Adt { name, .. }
+            | ProgramCodec::Record {
+                name: Some(name), ..
+            } => Some((index, name.as_str())),
             _ => None,
         })
         .collect::<Vec<_>>();
@@ -741,87 +771,97 @@ fn adt_aliases(metadata: &ProgramWasmMetadata) -> std::collections::BTreeMap<usi
         .iter()
         .map(|(index, name)| {
             let unique = names.iter().filter(|(_, other)| other == name).count() == 1;
-            let valid = name
-                .chars()
-                .next()
-                .is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
+            let identifier = name.chars().next().is_some_and(|c| c.is_ascii_uppercase())
                 && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_');
-            let alias = if unique && valid && !RESERVED.contains(name) {
-                (*name).to_owned()
-            } else {
-                format!("ProgramData{index}")
-            };
+            let alias =
+                if unique && identifier && !RESERVED.contains(name) && !name.starts_with("Program")
+                {
+                    (*name).to_owned()
+                } else {
+                    format!("ProgramData{index}")
+                };
             (*index, alias)
         })
         .collect()
 }
 
-fn declarations(metadata: &ProgramWasmMetadata) -> String {
-    let aliases = adt_aliases(metadata);
-    fn ty(
-        metadata: &ProgramWasmMetadata,
-        aliases: &std::collections::BTreeMap<usize, String>,
-        index: usize,
-    ) -> String {
-        let ty = |index| ty(metadata, aliases, index);
-        match &metadata.codecs[index] {
-            ProgramCodec::Unit => "undefined".into(),
-            ProgramCodec::Bool => "boolean".into(),
-            ProgramCodec::Int => "number".into(),
-            ProgramCodec::String | ProgramCodec::Char => "string".into(),
-            ProgramCodec::Float => "number".into(),
-            ProgramCodec::Tuple { elements } => format!(
-                "readonly [{}]",
-                elements
-                    .iter()
-                    .map(|i| ty(*i))
-                    .collect::<Vec<_>>()
-                    .join(", ")
-            ),
-            ProgramCodec::Maybe { value } => format!(
-                "Readonly<{{tag: 'Nothing'}}> | Readonly<{{tag: 'Just'; value: {}}}>",
-                ty(*value)
-            ),
-            ProgramCodec::Either { left, right } => format!(
-                "Readonly<{{tag: 'Left'; value: {}}}> | Readonly<{{tag: 'Right'; value: {}}}>",
-                ty(*left),
-                ty(*right)
-            ),
-            ProgramCodec::Function { parameter, result } => {
-                format!("OwnedCallback<{}, {}>", ty(*parameter), ty(*result))
-            }
-            ProgramCodec::Effect { failure, success } => format!(
-                "OwnedEffect<{}, {}>",
-                failure.map(ty).unwrap_or_else(|| "never".into()),
-                success.map(ty).unwrap_or_else(|| "never".into())
-            ),
-            ProgramCodec::HostEffect {
-                parameter,
-                failure,
-                success,
-            } => format!(
-                "HostEffect<{}, {}, {}>",
-                ty(*parameter),
-                failure.map(ty).unwrap_or_else(|| "never".into()),
-                success.map(ty).unwrap_or_else(|| "never".into()),
-            ),
-            ProgramCodec::Array { element } => format!("ReadonlyArray<{}>", ty(*element)),
-            ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
-            ProgramCodec::Record { fields } => format!(
-                "Readonly<{{{}}}>",
-                fields
-                    .iter()
-                    .map(|field| format!(
-                        "{}: {}",
-                        serde_json::to_string(&field.name).unwrap(),
-                        ty(field.codec)
-                    ))
-                    .collect::<Vec<_>>()
-                    .join("; ")
-            ),
-            ProgramCodec::Adt { .. } => aliases[&index].clone(),
+fn declared_type(
+    metadata: &ProgramWasmMetadata,
+    aliases: &std::collections::BTreeMap<usize, String>,
+    index: usize,
+) -> String {
+    let ty = |index| declared_type(metadata, aliases, index);
+    match &metadata.codecs[index] {
+        ProgramCodec::Unit => "undefined".into(),
+        ProgramCodec::Bool => "boolean".into(),
+        ProgramCodec::Int => "number".into(),
+        ProgramCodec::String | ProgramCodec::Char => "string".into(),
+        ProgramCodec::Float => "number".into(),
+        ProgramCodec::Tuple { elements } => format!(
+            "readonly [{}]",
+            elements
+                .iter()
+                .map(|i| ty(*i))
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
+        ProgramCodec::Maybe { value } => format!(
+            "Readonly<{{tag: 'Nothing'}}> | Readonly<{{tag: 'Just'; value: {}}}>",
+            ty(*value)
+        ),
+        ProgramCodec::Either { left, right } => format!(
+            "Readonly<{{tag: 'Left'; value: {}}}> | Readonly<{{tag: 'Right'; value: {}}}>",
+            ty(*left),
+            ty(*right)
+        ),
+        ProgramCodec::Function { parameter, result } => {
+            format!("OwnedCallback<{}, {}>", ty(*parameter), ty(*result))
         }
+        ProgramCodec::Effect { failure, success } => format!(
+            "OwnedEffect<{}, {}>",
+            failure.map(ty).unwrap_or_else(|| "never".into()),
+            success.map(ty).unwrap_or_else(|| "never".into())
+        ),
+        ProgramCodec::HostEffect {
+            parameter,
+            failure,
+            success,
+        } => format!(
+            "HostEffect<{}, {}, {}>",
+            ty(*parameter),
+            failure.map(ty).unwrap_or_else(|| "never".into()),
+            success.map(ty).unwrap_or_else(|| "never".into()),
+        ),
+        ProgramCodec::Array { element } => format!("ReadonlyArray<{}>", ty(*element)),
+        ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
+        ProgramCodec::Record { name: Some(_), .. } | ProgramCodec::Adt { .. } => {
+            aliases[&index].clone()
+        }
+        ProgramCodec::Record { fields, .. } => record_type(metadata, aliases, fields),
     }
+}
+
+fn record_type(
+    metadata: &ProgramWasmMetadata,
+    aliases: &std::collections::BTreeMap<usize, String>,
+    fields: &[ProgramField],
+) -> String {
+    format!(
+        "Readonly<{{{}}}>",
+        fields
+            .iter()
+            .map(|field| format!(
+                "{}: {}",
+                serde_json::to_string(&field.name).unwrap(),
+                declared_type(metadata, aliases, field.codec)
+            ))
+            .collect::<Vec<_>>()
+            .join("; ")
+    )
+}
+
+fn declarations(metadata: &ProgramWasmMetadata) -> String {
+    let aliases = type_aliases(metadata);
     let mut result = String::from("export declare const capabilities: readonly string[];\nexport interface Ownership { readonly alive: boolean; readonly retired: boolean; readonly callbacks: number; readonly managedLiveAtClose: number | null; }\nexport interface OwnedCallback<A, B> { (argument: A): B; dispose(): void; readonly disposed: boolean; }\nexport class ProgramWasmDefect extends Error { readonly origin?: Readonly<{source: string; start: number; end: number}>; }\nexport class ProgramWasmClosed extends Error {}\nexport interface ProgramExports {\n");
     if metadata
         .codecs
@@ -831,34 +871,32 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
         result.insert_str(0, "export type ProgramList<A> = Readonly<{tag: 'Empty'}> | Readonly<{tag: 'Cons'; head: A; tail: ProgramList<A>}>;\n");
     }
     for (index, alias) in &aliases {
-        let ProgramCodec::Adt { variants, .. } = &metadata.codecs[*index] else {
-            unreachable!("ADT aliases name ADT codecs")
+        let body = match &metadata.codecs[*index] {
+            ProgramCodec::Adt { variants, .. } if variants.is_empty() => "never".to_owned(),
+            ProgramCodec::Adt { variants, .. } => variants
+                .iter()
+                .map(|variant| {
+                    let tag = serde_json::to_string(&variant.tag).unwrap();
+                    match variant.payload {
+                        Some(payload) => format!(
+                            "Readonly<{{tag: {tag}; value: {}}}>",
+                            declared_type(metadata, &aliases, payload)
+                        ),
+                        None => format!("Readonly<{{tag: {tag}}}>"),
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join(" | "),
+            ProgramCodec::Record { fields, .. } => record_type(metadata, &aliases, fields),
+            _ => unreachable!("aliases name ADT and struct codecs"),
         };
-        let union = variants
-            .iter()
-            .map(|variant| {
-                let tag = serde_json::to_string(&variant.tag).unwrap();
-                match variant.payload {
-                    Some(payload) => format!(
-                        "Readonly<{{tag: {tag}; value: {}}}>",
-                        ty(metadata, &aliases, payload)
-                    ),
-                    None => format!("Readonly<{{tag: {tag}}}>"),
-                }
-            })
-            .collect::<Vec<_>>();
-        let union = if union.is_empty() {
-            "never".to_owned()
-        } else {
-            union.join(" | ")
-        };
-        result.insert_str(0, &format!("export type {alias} = {union};\n"));
+        result.insert_str(0, &format!("export type {alias} = {body};\n"));
     }
     for export in &metadata.exports {
         result.push_str(&format!(
             "readonly {}: {};\n",
             serde_json::to_string(&export.name).unwrap(),
-            ty(metadata, &aliases, export.codec)
+            declared_type(metadata, &aliases, export.codec)
         ));
     }
     if metadata.abi == PROGRAM_WASM_HOST_EFFECT_ABI {

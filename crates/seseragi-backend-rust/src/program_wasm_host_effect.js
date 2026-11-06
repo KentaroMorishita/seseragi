@@ -157,6 +157,8 @@ function write(id, value, writer, state) {
       ) {
         throw new TypeError("Invalid Array elements")
       }
+      if (length > schema.maxSequenceItems)
+        throw new TypeError("Array exceeds the program boundary length limit")
       writer.u32(length)
       for (let index = 0; index < length; index++) {
         if (!fields[index] || !("value" in fields[index]))
@@ -182,6 +184,8 @@ function write(id, value, writer, state) {
         seen.add(cursor)
         const cell = dataObject(cursor, ["tag", "head", "tail"])
         values.push(cell.head)
+        if (values.length > schema.maxSequenceItems)
+          throw new TypeError("List exceeds the program boundary length limit")
         cursor = cell.tail
       }
       writer.u32(values.length)
@@ -269,6 +273,13 @@ function reader(bytes) {
   }
 }
 
+function sequenceLength(input) {
+  const count = input.u32()
+  if (count > schema.maxSequenceItems)
+    throw new TypeError("Invalid sequence length result")
+  return count
+}
+
 function read(id, input, state, provenance) {
   const code = schema.codecs[id]
   switch (code.kind) {
@@ -330,14 +341,14 @@ function read(id, input, state, provenance) {
       })
     }
     case "array": {
-      const count = input.u32()
+      const count = sequenceLength(input)
       const values = []
       for (let index = 0; index < count; index++)
         values.push(read(code.element, input, state, provenance))
       return Object.freeze(values)
     }
     case "list": {
-      const count = input.u32()
+      const count = sequenceLength(input)
       const values = []
       for (let index = 0; index < count; index++)
         values.push(read(code.element, input, state, provenance))
