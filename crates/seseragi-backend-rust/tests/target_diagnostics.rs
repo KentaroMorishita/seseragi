@@ -67,7 +67,7 @@ fn diagnostics_collect_multiple_uses_in_bindings_and_functions_without_an_entry(
 fn native_support_is_not_confused_with_program_wasm_support() {
     for source in [
         include_str!("../../../examples/spec/fixtures/rust-backend/filesystem-transform.ssrg"),
-        "pub fn main -> Int = 2 ** 3\n",
+        "pub fn main -> Int = { let power: Float = 2.0 ** 3.0; 8 }\n",
     ] {
         let core = compile_core_module(CompileInput::new("supported.ssrg", "target/main", source))
             .unwrap()
@@ -84,7 +84,7 @@ fn native_support_is_not_confused_with_program_wasm_support() {
     let core = compile_core_module(CompileInput::new(
         "power.ssrg",
         "target/power",
-        "pub fn main -> Int = 2 ** 3\n",
+        "pub fn main -> Int = { let power: Float = 2.0 ** 3.0; 8 }\n",
     ))
     .unwrap()
     .core_ir;

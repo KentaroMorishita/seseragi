@@ -138,6 +138,25 @@ source fileとlock済みpackageを受け取り、`program.wasm`、loaderの`prog
 sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録する。失敗したbuildは
 前の完成したartifactを保存し、利用者が編集した出力や無関係なdirectoryは置き換えない。
 
+公開関数で受け渡せる値と、JS側の形は次のとおり。TSターゲットで同じ関数を公開したときと
+同じ形で、両方向に受け渡す。
+
+| Seseragi の型 | JS 側の形 |
+| --- | --- |
+| Unit / Bool / Int / String | `undefined` / `boolean` / 安全な整数の `number` / `string` |
+| Float | `number`（NaN・無限大・-0 を含む） |
+| Char | Unicode スカラー値を 1 つだけ持つ `string` |
+| タプル・Array | 配列 |
+| List | `{tag: "Cons", head, tail}` と `{tag: "Empty"}` |
+| 閉じた record・struct | 普通のオブジェクト |
+| Maybe・Either・ADT | `{tag}` または `{tag, value}`。generic や再帰する ADT も使える |
+
+opaque 型、newtype、BigInt、Decimal などは受け渡せない。形が合わない入力（循環した List を
+含む）は、WASM に入る前に `TypeError` で拒否する。manifest と loader の `capabilities` は、
+プログラムが使う標準ランタイムの領域（`text`、`list` など）を表す。証明のない標準 API は、
+ここに載らずにビルドが失敗する。Effect を返す公開関数の ABI は受け入れ判定が別で、
+上の新しい型にはまだ対応しない。
+
 ```typescript
 import { loadProgram } from "./program/program.mjs"
 const program = await loadProgram(wasmBytes)

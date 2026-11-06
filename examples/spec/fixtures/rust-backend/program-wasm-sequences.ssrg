@@ -1,0 +1,48 @@
+// Program WASM runs the remaining `std/array` and `std/list` sequence
+// operations with the same results as the TS target.
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+pub fn last values: Array<Int> -> Maybe<Int> = arrays.last values
+
+pub fn init values: Array<Int> -> Maybe<Array<Int>> = arrays.init values
+
+pub fn flat values: Array<Int> -> Array<Int> = arrays.concat [values, [9], values]
+
+pub fn position values: Array<Int> -> Maybe<Int> =
+  arrays.findIndex (\value -> value > 2) values
+
+pub fn small values: Array<Int> -> Array<Int> =
+  arrays.takeWhile (\value -> value < 3) values
+
+pub fn large values: Array<Int> -> Array<Int> =
+  arrays.dropWhile (\value -> value < 3) values
+
+pub fn pairs values: Array<Int> -> Array<(Int, String)> = arrays.zip [
+  "a",
+  "b",
+  "c"
+] values
+
+pub fn split values: Array<Int> -> (Array<Int>, Array<Int>) =
+  arrays.unzip (arrays.zip values values)
+
+pub fn sums values: Array<Int> -> Array<Int> =
+  arrays.zipWith (\left -> \right -> left + right) [
+    10,
+    20
+  ] values
+
+pub fn folded values: Array<Int> -> String =
+  arrays.reduceRight "" (\value -> \text -> text + show value) values
+
+pub fn listHalves values: List<Int> -> List<Int> =
+  lists.filterMap (\value -> if value % 2 == 0 then
+    Just (value / 2)
+  else
+    Nothing) values
+
+pub fn listTwice values: List<Int> -> List<Int> = lists.flatMap (\value -> `[
+  value,
+  value
+]) values

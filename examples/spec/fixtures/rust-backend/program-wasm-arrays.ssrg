@@ -1,0 +1,37 @@
+// Program WASM runs `std/array` operations with the same results as the TS
+// target, including callbacks and out-of-range indexes.
+import * as arrays from "std/array"
+
+pub fn size values: Array<Int> -> Int = arrays.length values
+
+pub fn reversed values: Array<Int> -> Array<Int> = arrays.reverse values
+
+pub fn none values: Array<Int> -> Bool = arrays.isEmpty values
+
+pub fn first values: Array<Int> -> Maybe<Int> = arrays.head values
+
+pub fn rest values: Array<Int> -> Maybe<Array<Int>> = arrays.tail values
+
+pub fn evens values: Array<Int> -> Array<Int> =
+  arrays.filter (\value -> value % 2 == 0) values
+
+pub fn large values: Array<Int> -> Maybe<Int> = arrays.find (\value -> value > 2) values
+
+pub fn third values: Array<Int> -> Maybe<Int> = arrays.get 2 values
+
+pub fn front values: Array<Int> -> Array<Int> = arrays.take 2 values
+
+pub fn back values: Array<Int> -> Array<Int> = arrays.drop 2 values
+
+pub fn longer values: Array<Int> -> Array<Int> = arrays.append [7, 8] values
+
+pub fn halves values: Array<Int> -> Array<Int> =
+  arrays.filterMap (\value -> if value % 2 == 0 then
+    Just (value / 2)
+  else
+    Nothing) values
+
+pub fn twice values: Array<Int> -> Array<Int> = arrays.flatMap (\value -> [
+  value,
+  value
+]) values

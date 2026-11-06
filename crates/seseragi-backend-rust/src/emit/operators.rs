@@ -149,19 +149,11 @@ impl Backend<'_> {
         };
         let (trait_name, method, primitive) = primitive_operator(identity)?;
         Some((|| {
-            if self.program_wasm_library
-                && matches!(
-                    identity.as_str(),
-                    "std/int::Div" | "std/int::Rem" | "std/int::Pow" | "std/float::Pow"
-                )
-            {
-                let operation = match identity.as_str() {
-                    "std/int::Div" => "division",
-                    "std/int::Rem" => "remainder",
-                    _ => "power",
-                };
+            // Int division, remainder and power fail with a Defect, as in
+            // TS; a program WASM Defect traps and retires the instance.
+            if self.program_wasm_library && identity == "std/float::Pow" {
                 return Err(format!(
-                    "program WASM: native {primitive} {operation} requires a target-specific arithmetic proof"
+                    "program WASM: native {primitive} power requires a target-specific arithmetic proof"
                 )
                 .into());
             }

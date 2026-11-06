@@ -216,13 +216,19 @@ fn either_operations_refuse_forged_owners_kinds_payloads_dictionaries_and_source
 }
 
 #[test]
-fn either_saved_references_keep_the_full_canonical_curried_signature_and_unused_wasm_refusal() {
+fn either_saved_references_keep_the_full_canonical_curried_signature_and_program_wasm_admission() {
     for (name, _, _, signature) in cases() {
         let source=format!("import * as either from \"std/either\"\nfn saved -> ({signature}) = either.{name}\npub fn probe -> Int = 0\n");
         let core = checked(&source);
         emit_rust_module(&core, "probe").unwrap();
-        let error = emit_program_wasm(&[&core], "native/either", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
+        // Only traverse and sequence, which take an Applicative dictionary,
+        // still need a program WASM proof.
+        let emitted = emit_program_wasm(&[&core], "native/either", &["probe".into()]);
+        if matches!(name, "traverse" | "sequence") {
+            assert_eq!(emitted.unwrap_err().code, "SES-RUST-0001");
+        } else {
+            emitted.unwrap_or_else(|error| panic!("{name}: {error}"));
+        }
         let index = core
             .functions
             .iter()

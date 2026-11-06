@@ -131,26 +131,17 @@ fn descending_int_infix_does_not_replace_a_same_named_type_binder() {
 }
 
 #[test]
-fn descending_int_infix_keeps_program_wasm_admission_explicit() {
-    use seseragi_lowering::core_expr_origin;
+fn descending_int_infix_is_admitted_in_program_wasm() {
     for operator in [">", ">="] {
         let source = format!("pub fn probe value: Int -> Bool = value {operator} 1\n");
         let core =
             compile_core_module(CompileInput::new("descending.ssrg", "native/main", &source))
                 .unwrap()
                 .core_ir;
-        let error =
+        let artifact =
             seseragi_backend_rust::emit_program_wasm(&[&core], "native/main", &["probe".into()])
-                .unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{operator}: {error}"
-        );
-        assert_eq!(
-            error.origin.unwrap(),
-            *core_expr_origin(&core.functions[0].body)
-        );
+                .unwrap_or_else(|error| panic!("{operator}: {error}"));
+        assert!(artifact.source.contains("fn "), "{operator}");
     }
 }
 

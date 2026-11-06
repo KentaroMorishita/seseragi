@@ -101,19 +101,14 @@ fn casing_rejects_unproven_argument_result_evidence_and_source_stages() {
 }
 
 #[test]
-fn casing_keeps_unused_program_wasm_references_rejected() {
+fn program_wasm_admits_casing_references() {
     for operation in ["toLower", "toUpper", "caseFold"] {
         let core = checked(&format!(
             "import * as text from \"std/text\"\npub fn probe value: Int -> Int = {{ let saved: String -> String = text.{operation}; value }}\npub fn main -> Int = probe 42\n"
         ));
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/text-case", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific proof"),
-            "{operation}: {error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "text-case-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/text-case", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{operation}: {error}"));
     }
 }
 

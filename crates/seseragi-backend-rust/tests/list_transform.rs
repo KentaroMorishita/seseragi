@@ -199,7 +199,7 @@ fn list_transform_saved_references_reject_counterfeit_function_stages() {
     }
 }
 #[test]
-fn list_transform_does_not_expand_unused_program_wasm_references() {
+fn program_wasm_admits_list_transform_references() {
     for (name, signature) in [
         (
             "filterMap",
@@ -212,9 +212,7 @@ fn list_transform_does_not_expand_unused_program_wasm_references() {
     ] {
         let core=checked(&format!("import * as lists from \"std/list\"\npub fn probe value:Int -> Int = {{let saved:{signature} = lists.{name};value}}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/list-transform", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "list-transform-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/list-transform", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
     }
 }

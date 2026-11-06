@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.148] - 2026-11-07
+
+### Added
+
+- Program WASM public functions pass Arrays, Lists, closed records, structs and ADTs (including generic and recursive ADTs), Float and Char, in the same shape as the TS target. The generated declarations name each ADT, and inputs outside the checked shape are rejected before they reach WASM.
+- Program WASM runs Int division, remainder, power and descending comparison, `std/text` String operations, `std/array` operations, the Array and List sequence operations, and the `std/maybe` and `std/either` operations that take no dictionary, with the same results as TS. A failing operation is a Defect, as in TS, and retires the instance.
+- The program WASM manifest and loader list the standard runtime areas a program uses (`capabilities`).
+
 ## [0.61.147] - 2026-11-06
 
 This release also ships the changes listed under 0.61.142 through 0.61.146, which were not published as separate releases.
