@@ -530,6 +530,8 @@ impl Backend<'_> {
             | "std/prelude::Unit"
             | "std/prelude::Never"
             | "std/effect::LoopControl"
+            | "std/effect::ScheduleDecision"
+            | "std/effect::ScheduleError"
             | "std/prelude::Int"
             | "std/prelude::Float"
             | "std/prelude::Bool"
@@ -550,7 +552,8 @@ impl Backend<'_> {
             | "std/ref::Ref"
             | "std/set::Set"
             | "std/prelude::Iterator"
-            | "std/collection::ReduceStep" => Some(vec![0]),
+            | "std/collection::ReduceStep"
+            | "std/effect::Schedule" => Some(vec![0]),
             "std/prelude::Either"
             | "std/validation::Validation"
             | "std/map::Map"
