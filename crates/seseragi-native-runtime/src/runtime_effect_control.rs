@@ -684,7 +684,12 @@ fn native_scheduled(retry: bool, decide: V, effect: V, count: i64) -> V {
                 }
                 native_effect_then(
                     native_clock_operation("std/clock::sleep", vec![decision.payload()]),
-                    native_scheduled(retry, c[0].clone(), c[1].clone(), native_effect_int(&c[2]) + 1),
+                    native_scheduled(
+                        retry,
+                        c[0].clone(),
+                        c[1].clone(),
+                        native_effect_int(&c[2]) + 1,
+                    ),
                 )
             },
         ),
