@@ -22,7 +22,7 @@ fn private_cells_preserve_the_existing_data_transport_boundary() {
         &["create", "reader", "unit", "failing", "snapshot", "session"].map(String::from),
     )
     .unwrap();
-    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v1");
+    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v2");
     assert!(artifact.source.contains("PROGRAM_TRACK_REFS: bool = true"));
     assert!(artifact
         .declarations

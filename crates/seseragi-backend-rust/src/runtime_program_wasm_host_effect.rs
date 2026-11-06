@@ -18,6 +18,7 @@ enum ProgramCode {
     List(usize),
     Record(Vec<(&'static str, usize)>),
     Adt(Vec<(&'static str, Option<usize>)>),
+    Parameter,
     Effect(Option<usize>, Option<usize>),
     HostEffect(usize, Option<usize>, Option<usize>),
 }
@@ -49,6 +50,7 @@ thread_local! {
     static PROGRAM: RefCell<ProgramState> = RefCell::new(ProgramState::default());
 }
 const PROGRAM_MAX_BYTES: usize = 16 * 1024 * 1024;
+const PROGRAM_HOST_VALUE: &str = "program/host::Value";
 type ProgramResult<T> = Result<T, &'static str>;
 
 fn program_register(value: V, codec: usize) -> ProgramResult<u32> {
@@ -81,12 +83,27 @@ fn program_u32(input: &mut &[u8]) -> ProgramResult<u32> {
 }
 // The fewest bytes one value of `codec` occupies on the wire.
 fn program_width(codec: usize, codes: &[ProgramCode]) -> usize {
+    program_width_at(codec, codes, 0)
+}
+// A struct can contain itself without indirection, such as
+// `struct Loop { next: Loop }`; no value of it exists, so stop at a depth no
+// acyclic codec reaches and count the rest as zero.
+fn program_width_at(codec: usize, codes: &[ProgramCode], depth: usize) -> usize {
+    if depth > codes.len() {
+        return 0;
+    }
     match &codes[codec] {
         ProgramCode::Unit => 0,
         ProgramCode::Bool | ProgramCode::Maybe(_) | ProgramCode::Either(_, _) => 1,
         ProgramCode::Int | ProgramCode::Float => 8,
-        ProgramCode::Tuple(elements) => elements.iter().map(|c| program_width(*c, codes)).sum(),
-        ProgramCode::Record(fields) => fields.iter().map(|(_, c)| program_width(*c, codes)).sum(),
+        ProgramCode::Tuple(elements) => elements
+            .iter()
+            .map(|c| program_width_at(*c, codes, depth + 1))
+            .sum(),
+        ProgramCode::Record(fields) => fields
+            .iter()
+            .map(|(_, c)| program_width_at(*c, codes, depth + 1))
+            .sum(),
         _ => 4,
     }
 }
@@ -96,6 +113,9 @@ fn program_decode_items(
     codes: &[ProgramCode],
 ) -> ProgramResult<Vec<V>> {
     let count = program_u32(input)? as usize;
+    if count == 0 {
+        return Ok(Vec::new());
+    }
     // Each element needs its fixed width, so a longer count is invalid.
     let width = program_width(element, codes);
     if count > PROGRAM_MAX_ITEMS || (width > 0 && count > input.len() / width) {
@@ -168,6 +188,10 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
                 values.insert((*name).to_owned(), program_decode(input, *codec, codes)?);
             }
             V::Record(Shared::new(values))
+        }
+        // WASM only holds a type parameter's host value, by its token.
+        ProgramCode::Parameter => {
+            V::adt(PROGRAM_HOST_VALUE, V::Int(i64::from(program_u32(input)?)))
         }
         ProgramCode::Adt(variants) => {
             let (owner, payload) = variants
@@ -282,6 +306,17 @@ fn program_encode(
                 program_encode(value, *codec, codes, out)?;
             }
             Ok(())
+        }
+        (ProgramCode::Parameter, V::Adt(value)) if value.get().0 == PROGRAM_HOST_VALUE => {
+            match value.get().1 {
+                V::Int(token) => program_bytes(
+                    out,
+                    &u32::try_from(token)
+                        .map_err(|_| "program ABI: invalid host value")?
+                        .to_le_bytes(),
+                ),
+                _ => Err("program ABI: invalid host value"),
+            }
         }
         (ProgramCode::Adt(variants), V::Adt(value)) => {
             let index = variants
@@ -476,6 +511,15 @@ pub extern "C" fn ssrg_cancel() -> u32 {
     })
 }
 
+// The source location of a typed failure or a Defect, as
+// `file:line:column`, or an empty text without one.
+fn program_location(out: &mut Vec<u8>, source: Option<&'static NativeSource>) -> ProgramResult<()> {
+    let location = source.map(ToString::to_string).unwrap_or_default();
+    let count = u32::try_from(location.len())
+        .map_err(|_| "program ABI: source location exceeds boundary limit")?;
+    program_bytes(out, &count.to_le_bytes())?;
+    program_bytes(out, location.as_bytes())
+}
 fn program_outcome(
     outcome: NativeOutcome,
     failure: Option<usize>,
@@ -495,6 +539,7 @@ fn program_outcome(
         }
         Err(NativeExit::Failure(error)) => {
             program_bytes(&mut out, &[2])?;
+            program_location(&mut out, error.source)?;
             program_encode(
                 error.value,
                 failure.ok_or("program ABI: Never failure produced a value")?,
@@ -508,6 +553,7 @@ fn program_outcome(
                 .map_err(|_| "program ABI: too many Defect messages")?;
             program_bytes(&mut out, &count.to_le_bytes())?;
             for message in messages {
+                program_location(&mut out, message.source)?;
                 let bytes = message.as_bytes();
                 let count = u32::try_from(bytes.len())
                     .map_err(|_| "program ABI: Defect message exceeds boundary limit")?;

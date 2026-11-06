@@ -54,14 +54,9 @@ pub(crate) fn emit_with_options(
 pub(crate) fn emit_library(
     modules: &[&CoreModule],
     entry_module: &str,
+    options: &crate::RustTargetOptions,
 ) -> Result<RustArtifact, RustBackendError> {
-    emit_body(
-        modules,
-        entry_module,
-        None,
-        &crate::RustTargetOptions::default(),
-        None,
-    )
+    emit_body(modules, entry_module, None, options, None)
 }
 
 pub(crate) fn emit_tests(
@@ -210,7 +205,14 @@ fn emit_body(
             options,
         )
     } else {
-        emit::emit_library(&linked, &owners, &scalar_globals, &type_names, &trait_names)
+        emit::emit_library(
+            &linked,
+            &owners,
+            &scalar_globals,
+            &type_names,
+            &trait_names,
+            options,
+        )
     }?;
     artifact.metadata.modules = initialization;
     Ok(artifact)

@@ -16,6 +16,7 @@ enum ProgramCode {
     List(usize),
     Record(Vec<(&'static str, usize)>),
     Adt(Vec<(&'static str, Option<usize>)>),
+    Parameter,
 }
 struct ProgramRoot {
     value: V,
@@ -45,6 +46,7 @@ thread_local! {
     static PROGRAM: RefCell<ProgramState> = RefCell::new(ProgramState::default());
 }
 const PROGRAM_MAX_BYTES: usize = 16 * 1024 * 1024;
+const PROGRAM_HOST_VALUE: &str = "program/host::Value";
 type ProgramResult<T> = Result<T, &'static str>;
 
 fn program_register(value: V, codec: usize) -> ProgramResult<u32> {
@@ -77,12 +79,27 @@ fn program_u32(input: &mut &[u8]) -> ProgramResult<u32> {
 }
 // The fewest bytes one value of `codec` occupies on the wire.
 fn program_width(codec: usize, codes: &[ProgramCode]) -> usize {
+    program_width_at(codec, codes, 0)
+}
+// A struct can contain itself without indirection, such as
+// `struct Loop { next: Loop }`; no value of it exists, so stop at a depth no
+// acyclic codec reaches and count the rest as zero.
+fn program_width_at(codec: usize, codes: &[ProgramCode], depth: usize) -> usize {
+    if depth > codes.len() {
+        return 0;
+    }
     match &codes[codec] {
         ProgramCode::Unit => 0,
         ProgramCode::Bool | ProgramCode::Maybe(_) | ProgramCode::Either(_, _) => 1,
         ProgramCode::Int | ProgramCode::Float => 8,
-        ProgramCode::Tuple(elements) => elements.iter().map(|c| program_width(*c, codes)).sum(),
-        ProgramCode::Record(fields) => fields.iter().map(|(_, c)| program_width(*c, codes)).sum(),
+        ProgramCode::Tuple(elements) => elements
+            .iter()
+            .map(|c| program_width_at(*c, codes, depth + 1))
+            .sum(),
+        ProgramCode::Record(fields) => fields
+            .iter()
+            .map(|(_, c)| program_width_at(*c, codes, depth + 1))
+            .sum(),
         _ => 4,
     }
 }
@@ -92,6 +109,9 @@ fn program_decode_items(
     codes: &[ProgramCode],
 ) -> ProgramResult<Vec<V>> {
     let count = program_u32(input)? as usize;
+    if count == 0 {
+        return Ok(Vec::new());
+    }
     // Each element needs its fixed width, so a longer count is invalid.
     let width = program_width(element, codes);
     if count > PROGRAM_MAX_ITEMS || (width > 0 && count > input.len() / width) {
@@ -163,6 +183,10 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
                 values.insert((*name).to_owned(), program_decode(input, *codec, codes)?);
             }
             V::Record(Shared::new(values))
+        }
+        // WASM only holds a type parameter's host value, by its token.
+        ProgramCode::Parameter => {
+            V::adt(PROGRAM_HOST_VALUE, V::Int(i64::from(program_u32(input)?)))
         }
         ProgramCode::Adt(variants) => {
             let (owner, payload) = variants
@@ -272,6 +296,17 @@ fn program_encode(
             }
             Ok(())
         }
+        (ProgramCode::Parameter, V::Adt(value)) if value.get().0 == PROGRAM_HOST_VALUE => {
+            match value.get().1 {
+                V::Int(token) => program_bytes(
+                    out,
+                    &u32::try_from(token)
+                        .map_err(|_| "program ABI: invalid host value")?
+                        .to_le_bytes(),
+                ),
+                _ => Err("program ABI: invalid host value"),
+            }
+        }
         (ProgramCode::Adt(variants), V::Adt(value)) => {
             let index = variants
                 .iter()
@@ -295,12 +330,52 @@ fn program_result(result: ProgramResult<Vec<u8>>) -> u32 {
     PROGRAM.with(|state| state.borrow_mut().output = bytes);
     status
 }
+thread_local! {
+    static PROGRAM_PANIC: RefCell<Vec<u8>> = const { RefCell::new(Vec::new()) };
+}
+// A Defect panics, and a panic aborts in WASM. Record the Defect and its
+// source location first, so the loader can report them after the trap. The
+// record is the location (`file:line:column`, or empty), a newline and the
+// message.
+fn program_record_panics() {
+    std::panic::set_hook(Box::new(|info| {
+        let payload = info.payload();
+        let (source, message) =
+            if let Some(diagnostic) = payload.downcast_ref::<NativeDiagnostic<String>>() {
+                (
+                    diagnostic.source.map(ToString::to_string),
+                    diagnostic.value.clone(),
+                )
+            } else if let Some(message) = payload.downcast_ref::<&str>() {
+                (None, (*message).to_owned())
+            } else if let Some(message) = payload.downcast_ref::<String>() {
+                (None, message.clone())
+            } else {
+                (None, "Seseragi Defect".to_owned())
+            };
+        let record = format!("{}\n{message}", source.unwrap_or_default());
+        let _ = PROGRAM_PANIC.try_with(|panic| {
+            if let Ok(mut panic) = panic.try_borrow_mut() {
+                *panic = record.into_bytes();
+            }
+        });
+    }));
+}
+#[no_mangle]
+pub extern "C" fn ssrg_panic_ptr() -> usize {
+    PROGRAM_PANIC.with(|panic| panic.borrow().as_ptr() as usize)
+}
+#[no_mangle]
+pub extern "C" fn ssrg_panic_len() -> usize {
+    PROGRAM_PANIC.with(|panic| panic.borrow().len())
+}
 #[no_mangle]
 pub extern "C" fn ssrg_init() -> u32 {
     let fresh = PROGRAM.with(|s| !s.borrow().initialized && !s.borrow().closed);
     if !fresh {
         return program_result(Err("program ABI: instance already initialized or closed"));
     }
+    program_record_panics();
     initialize_globals();
     PROGRAM.with(|state| state.borrow_mut().initialized = true);
     0

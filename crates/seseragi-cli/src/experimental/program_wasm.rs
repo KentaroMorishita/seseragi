@@ -1,6 +1,5 @@
 use seseragi_backend_rust::{
-    emit_program_wasm, ProgramWasmArtifact, PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
-    PROGRAM_WASM_HOST_EFFECT_ABI,
+    ProgramWasmArtifact, PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI, PROGRAM_WASM_HOST_EFFECT_ABI,
 };
 use seseragi_driver::{compile_core_module, CompileInput};
 use sha2::{Digest, Sha256};
@@ -85,8 +84,31 @@ fn compile_package(
         .iter()
         .map(|id| &checked.compiled.modules[id].core_ir)
         .collect::<Vec<_>>();
-    let artifact = emit_program_wasm(&modules, &checked.entry_module, exports)
-        .map_err(|error| super::project_target_error(error, &project))?;
+    let source_files = project
+        .modules()
+        .map(|(identity, module)| {
+            (
+                seseragi_project::logical_module_id(identity),
+                seseragi_backend_rust::RustSourceFile {
+                    path: module.runtime_source_path(
+                        project
+                            .packages()
+                            .package(identity.package())
+                            .expect("checked source package")
+                            .root(),
+                    ),
+                    text: module.source().to_owned(),
+                },
+            )
+        })
+        .collect();
+    let artifact = seseragi_backend_rust::emit_program_wasm_with_sources(
+        &modules,
+        &checked.entry_module,
+        exports,
+        source_files,
+    )
+    .map_err(|error| super::project_target_error(error, &project))?;
     let sources = project
         .modules()
         .map(|(_, module)| {
@@ -121,8 +143,20 @@ fn compile_file(
             seseragi_driver::render_terminal_diagnostics(&checked.diagnostics, &source)
         );
     }
-    let artifact = emit_program_wasm(&[&checked.core_ir], "experimental/main", exports)
-        .map_err(|e| super::target_error(e, Some(path)))?;
+    let artifact = seseragi_backend_rust::emit_program_wasm_with_sources(
+        &[&checked.core_ir],
+        "experimental/main",
+        exports,
+        [(
+            "experimental/main".to_owned(),
+            seseragi_backend_rust::RustSourceFile {
+                path: seseragi_project::standalone_runtime_source_path(path),
+                text: source.clone(),
+            },
+        )]
+        .into(),
+    )
+    .map_err(|e| super::target_error(e, Some(path)))?;
     Ok((
         artifact,
         vec![(

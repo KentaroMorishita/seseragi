@@ -11,7 +11,7 @@ const bytes = await readFile(resolve(directory, "program.wasm"))
 const receipt = JSON.parse(
   await readFile(resolve(directory, "program-wasm.json"), "utf8")
 )
-assert.equal(receipt.abi, "seseragi-program-wasm-effect-v1")
+assert.equal(receipt.abi, "seseragi-program-wasm-effect-v2")
 const taskTurn = () => new Promise((resolve) => setTimeout(resolve, 0))
 const program = await loadProgram(bytes)
 let cancelled = 0
