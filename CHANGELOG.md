@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.147] - 2026-11-06
+
+This release also ships the changes listed under 0.61.142 through 0.61.146, which were not published as separate releases.
+
+### Fixed
+
+- The TypeScript IR conformance artifact for the transformers example records the source location of its partial application (`partialOrigins`), which the compiler has emitted since 0.61.144.
+
 ## [0.61.146] - 2026-11-06
 
 ### Changed
