@@ -4,7 +4,8 @@ import * as floats from "std/float"
 
 pub fn add pair: (Float, Float) -> Float = match pair { (left, right) -> left + right }
 
-pub fn divide pair: (Float, Float) -> Float = match pair { (left, right) -> left / right }
+pub fn divide pair: (Float, Float) -> Float =
+  match pair { (left, right) -> left / right }
 
 pub fn negate value: Float -> Float = 0.0 - value
 

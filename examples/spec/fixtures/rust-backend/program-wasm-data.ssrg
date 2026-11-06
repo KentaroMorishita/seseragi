@@ -36,8 +36,10 @@ pub fn total values: List<Int> -> Int = match values {
   `[first, ...rest] -> first + total rest
 }
 
-pub fn lengths values: Array<String> -> Array<(String, Maybe<Int>)> =
-  [("count", Just 2), ("none", Nothing)]
+pub fn lengths values: Array<String> -> Array<(String, Maybe<Int>)> = [
+  ("count", Just 2),
+  ("none", Nothing)
+]
 
 pub fn tree value: Int -> Tree<Int> = Node (Node (Leaf, 1, Leaf), value, Leaf)
 
