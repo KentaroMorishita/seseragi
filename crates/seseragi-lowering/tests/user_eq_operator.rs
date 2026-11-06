@@ -31,7 +31,7 @@ pub fn answer unit: Unit -> (Bool, Bool) =
   (same Ready Ready, different Ready Waiting)
 ";
     let typed = type_module("artifact/user-eq-operator/main.ssrg", source);
-    let core = lower_typed_module(typed);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
     assert!(matches!(
         core.functions[0].body,
         CoreExpr::Binary { ref evidence, .. }
@@ -45,7 +45,7 @@ pub fn answer unit: Unit -> (Bool, Bool) =
                 if matches!(selected.evidence, seseragi_lowering::CoreInstanceEvidence::Parameter { index: 0 }))
     ));
 
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     assert!(matches!(
         &typescript.functions[0],
         seseragi_lowering::TypeScriptFunction::ConstFunction {
@@ -53,7 +53,7 @@ pub fn answer unit: Unit -> (Bool, Bool) =
             ..
         } if method == "eq"
     ));
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle
         .typescript
         .contains("__ssrg$instance$Eq$0[\"eq\"](left)(right)"));

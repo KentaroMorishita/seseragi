@@ -14,8 +14,9 @@ pub type AppError deriving Show =
   | Wrapped Detail
   | EndOfInput
 ";
-    let core = lower_typed_module(type_module("artifact/derived-show/main.ssrg", source));
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(type_module("artifact/derived-show/main.ssrg", source))
+        .expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert_eq!(typescript.instances.len(), 2);
     assert_eq!(
@@ -103,8 +104,9 @@ fn emits_no_show_requirements_or_imports_without_instances() {
 pub type AppError =
   | EndOfInput
 ";
-    let core = lower_typed_module(type_module("artifact/no-show/main.ssrg", source));
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(type_module("artifact/no-show/main.ssrg", source))
+        .expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert!(typescript.instances.is_empty());
     assert_eq!(typescript.runtime_requirements, vec!["core.adt"]);
@@ -123,8 +125,9 @@ pub type Detail deriving Show =
     let core = lower_typed_module(type_module(
         "artifact/show-name-collision/main.ssrg",
         source,
-    ));
-    let typescript = lower_core_module_to_typescript_ir(core);
+    ))
+    .expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert_eq!(
         typescript.imports,

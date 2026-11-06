@@ -15,7 +15,8 @@ fn runtime_locator_relocation_retains_the_compiler_contract_and_source_provenanc
             "./host/api.mjs".into(),
             "./.seseragi-foreign/host/api.mjs".into(),
         )]),
-    );
+    )
+    .expect("valid test lowering input");
     assert_eq!(original.typed_interface, relocated.typed_interface);
     assert_eq!(original.typed_hir, relocated.typed_hir);
     assert_eq!(original.core_ir, relocated.core_ir);

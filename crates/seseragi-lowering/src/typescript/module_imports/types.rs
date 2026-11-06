@@ -144,6 +144,7 @@ pub(super) fn lower_external_type_imports(
         let spelling = explicit
             .map(|(_, import)| import.local.as_str())
             .unwrap_or_else(|| {
+                // Without an explicit import, exactly one provider was found above.
                 candidates
                     .iter()
                     .find(|binding| binding.provider.is_some())

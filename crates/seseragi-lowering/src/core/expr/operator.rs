@@ -1,11 +1,15 @@
 use super::{CoreExpr, CoreParameter, CoreStatement};
+use crate::failure::{core_error, Lowered};
 use crate::{CoreType, SourceSpan};
 use seseragi_syntax::standard_trait_operator;
 
 /// Keep source operand evaluation independent of a trait method's ABI order.
 /// This uses ordinary Core lets/calls/lambdas so every backend sees the same
 /// saved operands and the same application stages, including unused partials.
-pub(super) fn lower_trait_operator(call: CoreExpr, argument_types: Vec<CoreType>) -> CoreExpr {
+pub(super) fn lower_trait_operator(
+    call: CoreExpr,
+    argument_types: Vec<CoreType>,
+) -> Lowered<CoreExpr> {
     let CoreExpr::Call {
         callee,
         arguments,
@@ -19,10 +23,10 @@ pub(super) fn lower_trait_operator(call: CoreExpr, argument_types: Vec<CoreType>
         ..
     } = &call
     else {
-        return call;
+        return Ok(call);
     };
     let Some(operator) = standard_trait_operator(callee) else {
-        return call;
+        return Ok(call);
     };
     if dispatch.method != operator.method_name
         || evidence.is_empty()
@@ -41,7 +45,7 @@ pub(super) fn lower_trait_operator(call: CoreExpr, argument_types: Vec<CoreType>
         || (dispatch.method_contract.is_none() && evidence.len() != 1)
     {
         // Do not invent a method contract or dictionary-introduction stage.
-        return call;
+        return Ok(call);
     }
 
     let mut source_type = type_ref.clone();
@@ -53,16 +57,17 @@ pub(super) fn lower_trait_operator(call: CoreExpr, argument_types: Vec<CoreType>
         result,
     } = source_type
     else {
-        return call;
+        return Ok(call);
     };
     let CoreType::Function {
         parameter: right,
         result,
     } = *result
     else {
-        return call;
+        return Ok(call);
     };
     let source_types = [*left, *right];
+    // The fixed standard operator table uses a permutation of the two operands.
     let [first, second] = operator.method_operand_sources;
     let method_type = function(
         source_types[first].clone(),
@@ -91,12 +96,12 @@ pub(super) fn lower_trait_operator(call: CoreExpr, argument_types: Vec<CoreType>
         applied: 0,
         operands: [None, None],
     };
-    let result = state.source_stage(0, arguments, type_ref);
-    CoreExpr::Sequence {
+    let result = state.source_stage(0, arguments, type_ref)?;
+    Ok(CoreExpr::Sequence {
         statements,
         result: Box::new(result),
         origin: origin.clone(),
-    }
+    })
 }
 
 struct OperatorStages<'a> {
@@ -115,9 +120,9 @@ impl OperatorStages<'_> {
         index: usize,
         supplied: &[CoreExpr],
         result_type: &CoreType,
-    ) -> CoreExpr {
+    ) -> Lowered<CoreExpr> {
         if index == 2 {
-            return if supplied.len() > 2 {
+            return Ok(if supplied.len() > 2 {
                 apply(
                     self.stage,
                     supplied[2..].to_vec(),
@@ -126,7 +131,7 @@ impl OperatorStages<'_> {
                 )
             } else {
                 variable(self.stage, self.stage_type, self.origin)
-            };
+            });
         }
         let source = format!("__ssrg$trait${}$source{index}", self.origin.start);
         let mut statements = Vec::new();
@@ -148,7 +153,10 @@ impl OperatorStages<'_> {
                 break;
             };
             let CoreType::Function { result, .. } = self.stage_type else {
-                unreachable!("checked operator method has two curried source stages")
+                return Err(
+                    core_error("checked operator method has two curried source stages")
+                        .at(self.origin),
+                );
             };
             self.stage_type = *result;
             let stage = format!("__ssrg$trait${}$stage{}", self.origin.start, self.applied);
@@ -173,18 +181,23 @@ impl OperatorStages<'_> {
         let next_result_type = if index >= supplied.len() {
             match result_type {
                 CoreType::Function { result, .. } => result.as_ref(),
-                _ => unreachable!("checked operator partial retains its source arrow"),
+                _ => {
+                    return Err(
+                        core_error("checked operator partial retains its source arrow")
+                            .at(self.origin),
+                    )
+                }
             }
         } else {
             result_type
         };
-        let result = self.source_stage(index + 1, supplied, next_result_type);
+        let result = self.source_stage(index + 1, supplied, next_result_type)?;
         let body = CoreExpr::Sequence {
             statements,
             result: Box::new(result),
             origin: origin.clone(),
         };
-        if index >= supplied.len() {
+        Ok(if index >= supplied.len() {
             CoreExpr::Lambda {
                 parameter: CoreParameter {
                     id: source,
@@ -197,7 +210,7 @@ impl OperatorStages<'_> {
             }
         } else {
             body
-        }
+        })
     }
 }
 

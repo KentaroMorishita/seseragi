@@ -1,3 +1,4 @@
+use crate::failure::{core_error, Lowered};
 use crate::source_span;
 use seseragi_semantics::{
     TypedBlockStatement, TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr,
@@ -17,8 +18,8 @@ use super::{
 
 mod operator;
 
-pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
-    match body {
+pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> Lowered<CoreExpr> {
+    Ok(match body {
         TypedExpr::EffectCall {
             operation,
             effect,
@@ -29,7 +30,7 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
             requirements: lower_typed_type(effect.environment),
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
-            arguments: lower_exprs(source, arguments),
+            arguments: lower_exprs(source, arguments)?,
             origin: source_span(source, origin),
         },
         TypedExpr::EffectInvoke {
@@ -45,7 +46,7 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
             requirements: lower_typed_type(effect.environment),
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
-            arguments: lower_exprs(source, arguments),
+            arguments: lower_exprs(source, arguments)?,
             evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             origin: source_span(source, origin),
         },
@@ -57,9 +58,12 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
         } => CoreExpr::Sequence {
             statements: statements
                 .into_iter()
-                .flat_map(|statement| lower_block_statement(source, statement))
-                .collect(),
-            result: Box::new(lower_expr(source, *result)),
+                .map(|statement| lower_block_statement(source, statement))
+                .collect::<Lowered<Vec<_>>>()?
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>(),
+            result: Box::new(lower_expr(source, *result)?),
             origin: source_span(source, origin),
         },
         TypedExpr::DoBlock {
@@ -69,24 +73,30 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
         } => {
             let statements = statements
                 .into_iter()
-                .flat_map(|statement| lower_effect_statement(source, statement))
+                .map(|statement| lower_effect_statement(source, statement))
+                .collect::<Lowered<Vec<_>>>()?
+                .into_iter()
+                .flatten()
                 .collect::<Vec<_>>();
             if statements.is_empty() {
-                lower_expr(source, *result)
+                lower_expr(source, *result)?
             } else {
                 CoreExpr::Sequence {
                     statements,
-                    result: Box::new(lower_expr(source, *result)),
+                    result: Box::new(lower_expr(source, *result)?),
                     origin: source_span(source, origin),
                 }
             }
         }
-        expr => lower_expr(source, expr),
-    }
+        expr => lower_expr(source, expr)?,
+    })
 }
 
-fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<CoreStatement> {
-    match statement {
+fn lower_block_statement(
+    source: &str,
+    statement: TypedBlockStatement,
+) -> Lowered<Vec<CoreStatement>> {
+    Ok(match statement {
         TypedBlockStatement::Let {
             constraints,
             constraint_identities,
@@ -102,7 +112,7 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
             type_parameters,
             constraints,
             constraint_identities,
-        ),
+        )?,
         TypedBlockStatement::Function {
             effect: _,
             rec_group,
@@ -131,13 +141,13 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
                 })
                 .collect(),
             parameters: parameters.iter().map(lower_parameter).collect(),
-            body: lower_expr(source, body),
+            body: lower_expr(source, body)?,
             origin: source_span(source, origin),
         }],
-    }
+    })
 }
 
-pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
+pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> Lowered<CoreExpr> {
     // Arithmetic chains must not retain the unrelated structural temporaries
     // from lower_structural_expr at every recursive step in debug builds.
     match expr {
@@ -147,9 +157,10 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
     }
 }
 
-fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
-    match expr {
+fn lower_structural_expr(source: &str, expr: TypedExpr) -> Lowered<CoreExpr> {
+    Ok(match expr {
         TypedExpr::Call { .. } | TypedExpr::Binary { .. } => {
+            // lower_expr dispatches these variants before calling this helper.
             unreachable!("calls and binary expressions are dispatched separately")
         }
         TypedExpr::Unit { origin, .. } => CoreExpr::Unit {
@@ -175,7 +186,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             parts: parts
                 .into_iter()
                 .map(|part| lower_template_part(source, part))
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
             origin: source_span(source, origin),
         },
         TypedExpr::Boolean { value, origin, .. } => CoreExpr::Boolean {
@@ -202,7 +213,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin,
         } => CoreExpr::Lambda {
             parameter: lower_parameter(&parameter),
-            body: Box::new(lower_expr(source, *body)),
+            body: Box::new(lower_expr(source, *body)?),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -211,7 +222,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::Tuple {
-            elements: lower_exprs(source, elements),
+            elements: lower_exprs(source, elements)?,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -221,7 +232,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::FieldAccess {
-            receiver: Box::new(lower_expr(source, *receiver)),
+            receiver: Box::new(lower_expr(source, *receiver)?),
             field,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
@@ -232,7 +243,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::OptionalFieldAccess {
-            receiver: Box::new(lower_expr(source, *receiver)),
+            receiver: Box::new(lower_expr(source, *receiver)?),
             field,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
@@ -244,22 +255,26 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::Record {
             items: items
                 .into_iter()
-                .map(|item| match item {
-                    TypedRecordValueItem::Field {
-                        name,
-                        value,
-                        origin,
-                    } => CoreRecordValueItem::Field {
-                        name,
-                        value: lower_expr(source, value),
-                        origin: source_span(source, origin),
-                    },
-                    TypedRecordValueItem::Spread { value, origin } => CoreRecordValueItem::Spread {
-                        value: lower_expr(source, value),
-                        origin: source_span(source, origin),
-                    },
+                .map(|item| {
+                    Ok(match item {
+                        TypedRecordValueItem::Field {
+                            name,
+                            value,
+                            origin,
+                        } => CoreRecordValueItem::Field {
+                            name,
+                            value: lower_expr(source, value)?,
+                            origin: source_span(source, origin),
+                        },
+                        TypedRecordValueItem::Spread { value, origin } => {
+                            CoreRecordValueItem::Spread {
+                                value: lower_expr(source, value)?,
+                                origin: source_span(source, origin),
+                            }
+                        }
+                    })
                 })
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -268,7 +283,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::Array {
-            elements: lower_exprs(source, elements),
+            elements: lower_exprs(source, elements)?,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -277,7 +292,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::List {
-            elements: lower_exprs(source, elements),
+            elements: lower_exprs(source, elements)?,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -287,11 +302,11 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::ArrayComprehension {
-            element: Box::new(lower_expr(source, *element)),
+            element: Box::new(lower_expr(source, *element)?),
             clauses: clauses
                 .into_iter()
                 .map(|clause| lower_comprehension_clause(source, clause))
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -301,11 +316,11 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::ListComprehension {
-            element: Box::new(lower_expr(source, *element)),
+            element: Box::new(lower_expr(source, *element)?),
             clauses: clauses
                 .into_iter()
                 .map(|clause| lower_comprehension_clause(source, clause))
-                .collect(),
+                .collect::<Lowered<Vec<_>>>()?,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -316,7 +331,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin,
         } => CoreExpr::Unary {
             operator,
-            operand: Box::new(lower_expr(source, *operand)),
+            operand: Box::new(lower_expr(source, *operand)?),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -327,9 +342,9 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => CoreExpr::If {
-            condition: Box::new(lower_expr(source, *condition)),
-            then_branch: Box::new(lower_expr(source, *then_branch)),
-            else_branch: Box::new(lower_expr(source, *else_branch)),
+            condition: Box::new(lower_expr(source, *condition)?),
+            then_branch: Box::new(lower_expr(source, *then_branch)?),
+            else_branch: Box::new(lower_expr(source, *else_branch)?),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -339,7 +354,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             exhaustive,
             type_ref,
             origin,
-        } => lower_match(source, *scrutinee, arms, exhaustive, type_ref, origin),
+        } => lower_match(source, *scrutinee, arms, exhaustive, type_ref, origin)?,
         TypedExpr::EffectCall {
             operation,
             effect,
@@ -350,7 +365,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             requirements: lower_typed_type(effect.environment),
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
-            arguments: lower_exprs(source, arguments),
+            arguments: lower_exprs(source, arguments)?,
             origin: source_span(source, origin),
         },
         TypedExpr::EffectInvoke {
@@ -366,7 +381,7 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             requirements: lower_typed_type(effect.environment),
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
-            arguments: lower_exprs(source, arguments),
+            arguments: lower_exprs(source, arguments)?,
             evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             origin: source_span(source, origin),
         },
@@ -378,9 +393,12 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::Sequence {
             statements: statements
                 .into_iter()
-                .flat_map(|statement| lower_block_statement(source, statement))
-                .collect(),
-            result: Box::new(lower_expr(source, *result)),
+                .map(|statement| lower_block_statement(source, statement))
+                .collect::<Lowered<Vec<_>>>()?
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>(),
+            result: Box::new(lower_expr(source, *result)?),
             origin: source_span(source, origin),
         },
         TypedExpr::DoBlock {
@@ -390,9 +408,12 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::Sequence {
             statements: statements
                 .into_iter()
-                .flat_map(|statement| lower_expr_statement(source, statement))
-                .collect(),
-            result: Box::new(lower_expr(source, *result)),
+                .map(|statement| lower_expr_statement(source, statement))
+                .collect::<Lowered<Vec<_>>>()?
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>(),
+            result: Box::new(lower_expr(source, *result)?),
             origin: source_span(source, origin),
         },
         TypedExpr::MonadDo {
@@ -404,17 +425,20 @@ fn lower_structural_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::MonadDo {
             statements: statements
                 .into_iter()
-                .flat_map(|statement| lower_monad_do_statement(source, statement))
-                .collect(),
-            result: Box::new(lower_expr(source, *result)),
+                .map(|statement| lower_monad_do_statement(source, statement))
+                .collect::<Lowered<Vec<_>>>()?
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>(),
+            result: Box::new(lower_expr(source, *result)?),
             evidence: lower_call_evidence(evidence),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
-    }
+    })
 }
 
-fn lower_call(source: &str, expr: TypedExpr) -> CoreExpr {
+fn lower_call(source: &str, expr: TypedExpr) -> Lowered<CoreExpr> {
     let TypedExpr::Call {
         callee,
         arguments,
@@ -428,6 +452,7 @@ fn lower_call(source: &str, expr: TypedExpr) -> CoreExpr {
         origin,
     } = expr
     else {
+        // lower_expr calls this helper only for TypedExpr::Call.
         unreachable!("call lowering requires a call expression")
     };
     let argument_types = arguments
@@ -437,7 +462,7 @@ fn lower_call(source: &str, expr: TypedExpr) -> CoreExpr {
         .collect();
     let call = CoreExpr::Call {
         callee,
-        arguments: lower_exprs(source, arguments),
+        arguments: lower_exprs(source, arguments)?,
         callee_signature: callee_signature.map(lower_call_signature),
         evidence: evidence.into_iter().map(lower_call_evidence).collect(),
         deferred_evidence_parameters: deferred_evidence_parameters
@@ -476,7 +501,7 @@ fn lower_call(source: &str, expr: TypedExpr) -> CoreExpr {
     operator::lower_trait_operator(call, argument_types)
 }
 
-fn lower_binary(source: &str, expr: TypedExpr) -> CoreExpr {
+fn lower_binary(source: &str, expr: TypedExpr) -> Lowered<CoreExpr> {
     let TypedExpr::Binary {
         operator,
         left,
@@ -486,6 +511,7 @@ fn lower_binary(source: &str, expr: TypedExpr) -> CoreExpr {
         origin,
     } = expr
     else {
+        // lower_expr calls this helper only for TypedExpr::Binary.
         unreachable!("binary lowering requires a binary expression")
     };
     if operator == "??" {
@@ -493,9 +519,9 @@ fn lower_binary(source: &str, expr: TypedExpr) -> CoreExpr {
     }
     let origin = source_span(source, origin);
     let type_ref = lower_typed_type(type_ref);
-    if matches!(operator.as_str(), "&&" | "||") {
-        let left = Box::new(lower_expr(source, *left));
-        let right = Box::new(lower_expr(source, *right));
+    Ok(if matches!(operator.as_str(), "&&" | "||") {
+        let left = Box::new(lower_expr(source, *left)?);
+        let right = Box::new(lower_expr(source, *right)?);
         let (then_branch, else_branch) = if operator == "&&" {
             (
                 right,
@@ -523,17 +549,17 @@ fn lower_binary(source: &str, expr: TypedExpr) -> CoreExpr {
     } else {
         CoreExpr::Binary {
             operator,
-            left: Box::new(lower_expr(source, *left)),
-            right: Box::new(lower_expr(source, *right)),
+            left: Box::new(lower_expr(source, *left)?),
+            right: Box::new(lower_expr(source, *right)?),
             evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             type_ref,
             origin,
         }
-    }
+    })
 }
 
-fn lower_template_part(source: &str, part: TypedTemplatePart) -> CoreTemplatePart {
-    match part {
+fn lower_template_part(source: &str, part: TypedTemplatePart) -> Lowered<CoreTemplatePart> {
+    Ok(match part {
         TypedTemplatePart::Text { value, origin } => CoreTemplatePart::Text {
             value,
             origin: source_span(source, origin),
@@ -544,19 +570,19 @@ fn lower_template_part(source: &str, part: TypedTemplatePart) -> CoreTemplatePar
             trait_identity,
             origin,
         } => CoreTemplatePart::Interpolation {
-            value: lower_expr(source, *value),
+            value: lower_expr(source, *value)?,
             evidence: evidence.map(lower_call_evidence),
             trait_identity,
             origin: source_span(source, origin),
         },
-    }
+    })
 }
 
 fn lower_comprehension_clause(
     source: &str,
     clause: TypedComprehensionClause,
-) -> CoreComprehensionClause {
-    match clause {
+) -> Lowered<CoreComprehensionClause> {
+    Ok(match clause {
         TypedComprehensionClause::Generator {
             pattern,
             source: values,
@@ -564,15 +590,15 @@ fn lower_comprehension_clause(
             origin,
         } => CoreComprehensionClause::Generator {
             pattern: lower_pattern(source, pattern),
-            source: lower_expr(source, values),
+            source: lower_expr(source, values)?,
             evidence: lower_call_evidence(evidence),
             origin: source_span(source, origin),
         },
         TypedComprehensionClause::Guard { condition, origin } => CoreComprehensionClause::Guard {
-            condition: lower_expr(source, condition),
+            condition: lower_expr(source, condition)?,
             origin: source_span(source, origin),
         },
-    }
+    })
 }
 
 fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
@@ -751,7 +777,7 @@ pub(super) fn lower_parameter(parameter: &TypedParameter) -> CoreParameter {
     }
 }
 
-fn lower_exprs(source: &str, expressions: Vec<TypedExpr>) -> Vec<CoreExpr> {
+fn lower_exprs(source: &str, expressions: Vec<TypedExpr>) -> Lowered<Vec<CoreExpr>> {
     expressions
         .into_iter()
         .map(|expression| lower_expr(source, expression))
@@ -778,15 +804,20 @@ fn lower_let_pattern_statements(
     type_parameters: Vec<seseragi_syntax::TypeParameter>,
     constraints: Vec<seseragi_semantics::TypedConstraint>,
     constraint_identities: Vec<Option<String>>,
-) -> Vec<CoreStatement> {
+) -> Lowered<Vec<CoreStatement>> {
     if constraints.is_empty() {
         return lower_pure_pattern_statements(source, pattern, value, origin, type_parameters);
     }
     let TypedPattern::Binding { name, .. } = pattern else {
-        unreachable!("generalized lambda must have one binding")
+        return Err(
+            core_error("generalized lambda must have one binding").at(&source_span(
+                source,
+                super::decision::typed_pattern_origin(&pattern),
+            )),
+        );
     };
     let (parameters, body) = peel_lambdas(value);
-    vec![CoreStatement::LocalFunction {
+    Ok(vec![CoreStatement::LocalFunction {
         initializer_in_outer_scope: true,
         rec_group: None,
         return_type: None,
@@ -803,9 +834,9 @@ fn lower_let_pattern_statements(
             })
             .collect(),
         parameters: parameters.iter().map(lower_parameter).collect(),
-        body: lower_expr(source, body),
+        body: lower_expr(source, body)?,
         origin: source_span(source, origin),
-    }]
+    }])
 }
 
 fn lower_pure_pattern_statements(
@@ -814,9 +845,9 @@ fn lower_pure_pattern_statements(
     value: TypedExpr,
     origin: ByteSpan,
     type_parameters: Vec<seseragi_syntax::TypeParameter>,
-) -> Vec<CoreStatement> {
+) -> Lowered<Vec<CoreStatement>> {
     let mut statements =
-        lower_core_pattern_statements(source, pattern, lower_expr(source, value), origin, false);
+        lower_core_pattern_statements(source, pattern, lower_expr(source, value)?, origin, false);
     if let [CoreStatement::PureLet {
         type_parameters: parameters,
         ..
@@ -824,7 +855,7 @@ fn lower_pure_pattern_statements(
     {
         *parameters = type_parameters;
     }
-    statements
+    Ok(statements)
 }
 
 fn lower_bind_pattern_statements(
@@ -897,12 +928,12 @@ fn lower_monad_pattern_statements(
     value: TypedExpr,
     origin: ByteSpan,
     bind: bool,
-) -> Vec<CoreMonadDoStatement> {
+) -> Lowered<Vec<CoreMonadDoStatement>> {
     let plan = lower_pattern_binding_plan(source, pattern);
-    let value = lower_expr(source, value);
+    let value = lower_expr(source, value)?;
     let lowered_origin = source_span(source, origin);
     if let Some(binding) = direct_binding(&plan) {
-        return vec![if bind {
+        return Ok(vec![if bind {
             CoreMonadDoStatement::Bind {
                 name: binding.name.clone(),
                 type_ref: binding.type_ref.clone(),
@@ -918,7 +949,7 @@ fn lower_monad_pattern_statements(
                 value,
                 origin: lowered_origin,
             }
-        }];
+        }]);
     }
 
     let temporary = pattern_temporary(origin);
@@ -951,12 +982,14 @@ fn lower_monad_pattern_statements(
                 origin: binding.origin.clone(),
             }),
     );
-    statements
+    Ok(statements)
 }
 
 fn direct_binding(plan: &CorePatternBindingPlan) -> Option<&super::CoreDecisionBinding> {
-    (plan.tests.is_empty() && plan.bindings.len() == 1 && plan.bindings[0].path.is_empty())
-        .then(|| &plan.bindings[0])
+    let [binding] = plan.bindings.as_slice() else {
+        return None;
+    };
+    (plan.tests.is_empty() && binding.path.is_empty()).then_some(binding)
 }
 
 fn pattern_temporary(origin: ByteSpan) -> String {
@@ -971,16 +1004,16 @@ pub(super) fn lower_top_level_pattern_binding(
     value: TypedExpr,
     visibility: Visibility,
     origin: ByteSpan,
-) -> Vec<CoreBinding> {
+) -> Lowered<Vec<CoreBinding>> {
     let plan = lower_pattern_binding_plan(source, pattern);
-    if direct_binding(&plan).is_some() && bindings.len() == 1 {
-        return vec![CoreBinding {
+    if let (true, [binding]) = (direct_binding(&plan).is_some(), bindings.as_slice()) {
+        return Ok(vec![CoreBinding {
             type_parameters: Vec::new(),
-            symbol: bindings[0].symbol.clone(),
+            symbol: binding.symbol.clone(),
             visibility,
             origin: source_span(source, origin),
-            value: lower_expr(source, value),
-        }];
+            value: lower_expr(source, value)?,
+        }]);
     }
 
     let temporary = pattern_temporary(origin);
@@ -989,7 +1022,7 @@ pub(super) fn lower_top_level_pattern_binding(
         symbol: format!("{module}::{temporary}"),
         visibility: Visibility::Private,
         origin: source_span(source, origin),
-        value: lower_expr(source, value),
+        value: lower_expr(source, value)?,
     }];
     for binding in bindings {
         let Some(projection) = plan
@@ -1007,13 +1040,16 @@ pub(super) fn lower_top_level_pattern_binding(
             value: projection_expression(&temporary, &plan, projection),
         });
     }
-    lowered
+    Ok(lowered)
 }
 
-fn lower_effect_statement(source: &str, statement: TypedDoStatement) -> Vec<CoreStatement> {
-    match statement {
+fn lower_effect_statement(
+    source: &str,
+    statement: TypedDoStatement,
+) -> Lowered<Vec<CoreStatement>> {
+    Ok(match statement {
         TypedDoStatement::Effect { value } => vec![CoreStatement::Effect {
-            value: lower_effect_body(source, value),
+            value: lower_effect_body(source, value)?,
         }],
         TypedDoStatement::PureLet {
             constraints,
@@ -1030,21 +1066,24 @@ fn lower_effect_statement(source: &str, statement: TypedDoStatement) -> Vec<Core
             type_parameters,
             constraints,
             constraint_identities,
-        ),
+        )?,
         TypedDoStatement::Bind {
             pattern,
             value,
             origin,
-        } => {
-            lower_bind_pattern_statements(source, pattern, lower_effect_body(source, value), origin)
-        }
-    }
+        } => lower_bind_pattern_statements(
+            source,
+            pattern,
+            lower_effect_body(source, value)?,
+            origin,
+        ),
+    })
 }
 
-fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> Vec<CoreStatement> {
-    match statement {
+fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> Lowered<Vec<CoreStatement>> {
+    Ok(match statement {
         TypedDoStatement::Effect { value } => vec![CoreStatement::Effect {
-            value: lower_expr(source, value),
+            value: lower_expr(source, value)?,
         }],
         TypedDoStatement::PureLet {
             constraints,
@@ -1061,22 +1100,22 @@ fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> Vec<CoreSt
             type_parameters,
             constraints,
             constraint_identities,
-        ),
+        )?,
         TypedDoStatement::Bind {
             pattern,
             value,
             origin,
-        } => lower_bind_pattern_statements(source, pattern, lower_expr(source, value), origin),
-    }
+        } => lower_bind_pattern_statements(source, pattern, lower_expr(source, value)?, origin),
+    })
 }
 
 fn lower_monad_do_statement(
     source: &str,
     statement: TypedMonadDoStatement,
-) -> Vec<CoreMonadDoStatement> {
-    match statement {
+) -> Lowered<Vec<CoreMonadDoStatement>> {
+    Ok(match statement {
         TypedMonadDoStatement::Expression { value } => vec![CoreMonadDoStatement::Expression {
-            value: lower_expr(source, value),
+            value: lower_expr(source, value)?,
         }],
         TypedMonadDoStatement::PureLet {
             type_parameters,
@@ -1087,7 +1126,7 @@ fn lower_monad_do_statement(
             origin,
         } => {
             let mut statements =
-                lower_monad_pattern_statements(source, pattern, value, origin, false);
+                lower_monad_pattern_statements(source, pattern, value, origin, false)?;
             if let [CoreMonadDoStatement::PureLet {
                 type_parameters: parameters,
                 constraints: required,
@@ -1112,8 +1151,8 @@ fn lower_monad_do_statement(
             pattern,
             value,
             origin,
-        } => lower_monad_pattern_statements(source, pattern, value, origin, true),
-    }
+        } => lower_monad_pattern_statements(source, pattern, value, origin, true)?,
+    })
 }
 
 fn lower_effect_operation(operation: &str) -> String {

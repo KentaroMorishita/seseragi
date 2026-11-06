@@ -21,7 +21,8 @@ pub fn decide first: Hand -> second: Hand -> Outcome =
     _ -> Player2Wins
   }
 "#;
-    let module = lower_typed_module(type_module("artifact/rps/main.ssrg", source));
+    let module = lower_typed_module(type_module("artifact/rps/main.ssrg", source))
+        .expect("valid test lowering input");
     let CoreExpr::Decision {
         scrutinee,
         branches,
@@ -71,7 +72,8 @@ pub fn unwrap label: Label -> String =
     Missing -> "none"
   }
 "#;
-    let module = lower_typed_module(type_module("artifact/payload/main.ssrg", source));
+    let module = lower_typed_module(type_module("artifact/payload/main.ssrg", source))
+        .expect("valid test lowering input");
     let CoreExpr::Decision {
         branches,
         exhaustive,
@@ -115,7 +117,8 @@ pub fn render flag: Flag -> String =
     _ -> "fallback"
   }
 "#;
-    let module = lower_typed_module(type_module("artifact/guard/main.ssrg", source));
+    let module = lower_typed_module(type_module("artifact/guard/main.ssrg", source))
+        .expect("valid test lowering input");
     let CoreExpr::Decision { branches, .. } = &module.functions[0].body else {
         panic!("expected a core decision");
     };
@@ -141,7 +144,8 @@ pub fn unwrap label: Label -> String =
     Present value -> value
   }
 "#;
-    let module = lower_typed_module(type_module("artifact/non-exhaustive/main.ssrg", source));
+    let module = lower_typed_module(type_module("artifact/non-exhaustive/main.ssrg", source))
+        .expect("valid test lowering input");
     let CoreExpr::Decision {
         branches,
         exhaustive,
@@ -171,7 +175,8 @@ pub fn unwrap label: Label -> String =
     Present value -> value
   }
 "#;
-    let module = lower_typed_module(type_module("artifact/payload-fallback/main.ssrg", source));
+    let module = lower_typed_module(type_module("artifact/payload-fallback/main.ssrg", source))
+        .expect("valid test lowering input");
     let CoreExpr::Decision {
         branches,
         exhaustive,
@@ -200,7 +205,8 @@ fn lowers_record_patterns_to_named_field_projections() {
     { name } -> name
   }
 "#;
-    let module = lower_typed_module(type_module("artifact/record-match/main.ssrg", source));
+    let module = lower_typed_module(type_module("artifact/record-match/main.ssrg", source))
+        .expect("valid test lowering input");
     let CoreExpr::Decision { branches, .. } = &module.functions[0].body else {
         panic!("expected a core decision");
     };
@@ -234,7 +240,8 @@ pub fn listHead values: List<Int> -> Int =
     `[head, ...tail] -> head
   }
 "#;
-    let module = lower_typed_module(type_module("artifact/collection-match/main.ssrg", source));
+    let module = lower_typed_module(type_module("artifact/collection-match/main.ssrg", source))
+        .expect("valid test lowering input");
 
     let CoreExpr::Decision {
         branches: array_branches,

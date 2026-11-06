@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.144] - 2026-11-06
+
+### Fixed
+
+- Type conversion, derived instances, comprehensions, Core lowering and TS output also report broken compiler facts as an internal compiler error (`SES-I0001`) at the failing declaration or expression instead of stopping the compiler.
+
 ## [0.61.143] - 2026-11-06
 
 ### Fixed

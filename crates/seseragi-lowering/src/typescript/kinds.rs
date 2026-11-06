@@ -1,6 +1,6 @@
 use super::{TypeScriptKindConstructor, TypeScriptKinds, TypeScriptType};
 use seseragi_syntax::TypeParameter;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 pub(crate) fn constructor_name(name: &str) -> String {
     // `$` cannot occur in a source identifier. Names have already been selected
@@ -29,7 +29,7 @@ pub(crate) fn kind_constraint(arity: u32) -> String {
 #[derive(Clone, Debug, Default)]
 pub(super) struct Requirements {
     pub(super) constructors: BTreeMap<String, TypeScriptKindConstructor>,
-    pub(super) partials: BTreeSet<Vec<bool>>,
+    pub(super) partials: BTreeMap<Vec<bool>, Option<crate::SourceSpan>>,
     pub(super) application: bool,
 }
 
@@ -38,7 +38,8 @@ impl Requirements {
         (!self.constructors.is_empty() || !self.partials.is_empty() || self.application).then(
             || TypeScriptKinds {
                 constructors: self.constructors.values().cloned().collect(),
-                partials: self.partials.iter().cloned().collect(),
+                partials: self.partials.keys().cloned().collect(),
+                partial_origins: self.partials.values().cloned().collect(),
                 application: self.application,
             },
         )

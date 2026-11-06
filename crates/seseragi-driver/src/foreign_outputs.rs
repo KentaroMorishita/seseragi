@@ -6,9 +6,9 @@ use std::collections::BTreeMap;
 pub fn relocate_foreign_outputs(
     compiled: &CompiledModule,
     specifiers: &BTreeMap<String, String>,
-) -> CompiledModule {
+) -> Result<CompiledModule, seseragi_syntax::DiagnosticArtifact> {
     if specifiers.is_empty() {
-        return compiled.clone();
+        return Ok(compiled.clone());
     }
     let mut relocated = compiled.clone();
     for module in &mut relocated.typescript_ir.foreign_modules {
@@ -28,8 +28,40 @@ pub fn relocate_foreign_outputs(
         relocated.typescript_ir.clone(),
         source,
         seseragi_lowering::GeneratedOutputPaths::new(&outputs.typescript, &outputs.source_map),
-    );
+    )
+    .map_err(|error| {
+        crate::lowering_panic::internal_error_diagnostics(compiled.diagnostics.clone(), &error)
+    })?;
     generated.metadata = compiled.generated.metadata.clone();
     relocated.generated = generated;
-    relocated
+    Ok(relocated)
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn failed_foreign_reemission_returns_located_internal_diagnostics() {
+        let source = "type Box deriving Show = | Box Int\n";
+        let mut compiled =
+            crate::compile_module(crate::CompileInput::new("box.ssrg", "app/box", source)).unwrap();
+        let origin = compiled.typescript_ir.instances[0].origin.clone();
+        compiled
+            .typescript_ir
+            .type_imports
+            .retain(|import| import.feature != "core.show.dictionary");
+        let diagnostics = super::relocate_foreign_outputs(
+            &compiled,
+            &[("./host".into(), "./relocated".into())].into(),
+        )
+        .unwrap_err();
+        let diagnostic = &diagnostics.diagnostics[0];
+        assert_eq!(diagnostic.code, "SES-I0001");
+        assert_eq!(
+            (diagnostic.primary.start, diagnostic.primary.end),
+            (origin.start, origin.end)
+        );
+        assert!(diagnostic.related[0]
+            .message
+            .contains("during TypeScript emission"));
+    }
 }

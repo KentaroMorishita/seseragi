@@ -153,7 +153,8 @@ mod tests {
         let values = crate::lower_typed_module(seseragi_semantics::type_module(
             "values",
             "let unused: Int = 9007199254740991 + 1\n",
-        ));
+        ))
+        .expect("valid test lowering input");
         assert!(core_module_requires_initialization(
             &values,
             &BTreeMap::new()

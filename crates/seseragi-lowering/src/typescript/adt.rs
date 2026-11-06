@@ -1,3 +1,4 @@
+use crate::failure::Lowered;
 use crate::typescript::types::TypeScriptTypeContext;
 use crate::CoreAdt;
 use seseragi_syntax::Visibility;
@@ -11,14 +12,15 @@ pub(super) fn lower_core_adt_to_typescript(
     adt: CoreAdt,
     imported_types: &TypeScriptTypeContext,
     runtime_requirements: &mut Vec<String>,
-) -> TypeScriptAdt {
+) -> Lowered<TypeScriptAdt> {
     push_unique(runtime_requirements, "core.adt");
     let exported = adt.visibility == Visibility::Public;
     let constructors_exported = exported && !adt.opaque;
     let scoped_types = imported_types
         .with_parameters(&adt.type_parameters)
+        .with_origin(&adt.origin)
         .with_higher_kinds();
-    TypeScriptAdt {
+    Ok(TypeScriptAdt {
         erased_newtype: adt.newtype
             && adt
                 .variants
@@ -34,20 +36,22 @@ pub(super) fn lower_core_adt_to_typescript(
                 if let Some(payload) = &variant.payload {
                     collect_type_runtime_requirement(payload, runtime_requirements);
                 }
-                TypeScriptAdtVariant {
+                Ok(TypeScriptAdtVariant {
                     exported: constructors_exported,
                     name: local_name(&variant.symbol),
                     tag: variant.name,
                     payload: variant
                         .payload
                         .as_ref()
-                        .map(|payload| type_ref_from_core_type(payload, &scoped_types)),
+                        .map(|payload| type_ref_from_core_type(payload, &scoped_types))
+                        .transpose()
+                        .map_err(|error| error.at(&variant.origin))?,
                     origin: variant.origin,
-                }
+                })
             })
-            .collect(),
+            .collect::<Lowered<Vec<_>>>()?,
         origin: adt.origin,
-    }
+    })
 }
 
 #[cfg(test)]
@@ -97,7 +101,8 @@ mod tests {
         // value parameter. F<A> uses the ADT's exact checked constructor kind.
         let types =
             TypeScriptTypeContext::default().with_parameters(&[TypeParameter::constructor("A", 1)]);
-        let lowered = lower_core_adt_to_typescript(adt, &types, &mut vec![]);
+        let lowered = lower_core_adt_to_typescript(adt, &types, &mut vec![])
+            .expect("valid test lowering input");
         assert_eq!(
             lowered.variants[0].payload,
             Some(TypeScriptType::Tuple {

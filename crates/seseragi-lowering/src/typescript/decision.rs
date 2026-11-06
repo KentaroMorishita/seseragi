@@ -6,13 +6,13 @@ use crate::{
 use std::collections::BTreeMap;
 
 use super::expr::lower_core_expr_to_typescript;
-use super::failure::Lowered;
 use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
 use super::{
     TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
     TypeScriptDecisionTest, TypeScriptExpr,
 };
+use crate::failure::Lowered;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) struct TypeScriptPatternDecision {
@@ -25,28 +25,33 @@ pub(super) struct TypeScriptPatternDecision {
 pub(super) fn lower_core_pattern_decision(
     pattern: CorePattern,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptPatternDecision {
-    let scrutinee_type = type_ref_from_core_type(
-        &core_pattern_type(&pattern),
-        &imported_types.with_private_representation(),
-    );
-    let private_representation =
-        scrutinee_type != type_ref_from_core_type(&core_pattern_type(&pattern), imported_types);
-    let mut tests = Vec::new();
-    let mut bindings = Vec::new();
-    lower_pattern(
-        pattern,
-        &mut Vec::new(),
-        &mut tests,
-        &mut bindings,
-        imported_types,
-    );
-    TypeScriptPatternDecision {
-        private_representation,
-        scrutinee_type,
-        tests,
-        bindings,
-    }
+) -> Lowered<TypeScriptPatternDecision> {
+    let origin = core_pattern_origin(&pattern).clone();
+    let imported_types = &imported_types.with_origin(&origin);
+    (|| {
+        let scrutinee_type = type_ref_from_core_type(
+            &core_pattern_type(&pattern),
+            &imported_types.with_private_representation(),
+        )?;
+        let private_representation = scrutinee_type
+            != type_ref_from_core_type(&core_pattern_type(&pattern), imported_types)?;
+        let mut tests = Vec::new();
+        let mut bindings = Vec::new();
+        lower_pattern(
+            pattern,
+            &mut Vec::new(),
+            &mut tests,
+            &mut bindings,
+            imported_types,
+        )?;
+        Ok(TypeScriptPatternDecision {
+            private_representation,
+            scrutinee_type,
+            tests,
+            bindings,
+        })
+    })()
+    .map_err(|error: crate::LoweringInternalError| error.at(&origin))
 }
 
 pub(super) fn lower_core_decision(
@@ -58,11 +63,11 @@ pub(super) fn lower_core_decision(
     imported_types: &TypeScriptTypeContext,
 ) -> Lowered<TypeScriptExpr> {
     let erases_newtype = branches.iter().flat_map(|branch| &branch.tests).any(|test| matches!(test, CoreDecisionTest::Constructor { constructor, .. } if imported_types.is_erased_newtype(constructor)));
-    let public_type = type_ref_from_core_type(&scrutinee_type, imported_types);
+    let public_type = type_ref_from_core_type(&scrutinee_type, imported_types)?;
     let private_type = type_ref_from_core_type(
         &scrutinee_type,
         &imported_types.with_private_representation(),
-    );
+    )?;
     let scrutinee = lower_core_expr_to_typescript(scrutinee, imported_values, imported_types)?;
     let scrutinee = if public_type != private_type {
         super::types::assert_private_representation(scrutinee, private_type.clone())
@@ -101,7 +106,7 @@ pub(super) fn lower_core_decision(
                 substitute_bindings(&mut branch.value, &renames);
                 return Ok(TypeScriptExpr::CheckedResult {
                     value: Box::new(branch.value.clone()),
-                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types)?,
                 });
             }
         }
@@ -110,7 +115,7 @@ pub(super) fn lower_core_decision(
         scrutinee: Box::new(scrutinee),
         scrutinee_type: private_type,
         branches,
-        type_ref: type_ref_from_core_type(&type_ref, imported_types),
+        type_ref: type_ref_from_core_type(&type_ref, imported_types)?,
     })
 }
 
@@ -260,7 +265,7 @@ fn lower_branch(
             .bindings
             .into_iter()
             .map(|binding| lower_binding(binding, imported_types))
-            .collect(),
+            .collect::<Lowered<Vec<_>>>()?,
         guard: branch
             .guard
             .map(|guard| lower_core_expr_to_typescript(guard, imported_values, imported_types))
@@ -272,12 +277,13 @@ fn lower_branch(
 fn lower_binding(
     binding: CoreDecisionBinding,
     imported_types: &TypeScriptTypeContext,
-) -> TypeScriptDecisionBinding {
-    TypeScriptDecisionBinding {
+) -> Lowered<TypeScriptDecisionBinding> {
+    Ok(TypeScriptDecisionBinding {
         name: safe_identifier(&binding.name),
-        type_ref: type_ref_from_core_type(&binding.type_ref, imported_types),
+        type_ref: type_ref_from_core_type(&binding.type_ref, imported_types)
+            .map_err(|error| error.at(&binding.origin))?,
         path: binding.path.into_iter().map(lower_projection).collect(),
-    }
+    })
 }
 
 fn lower_test(test: CoreDecisionTest) -> TypeScriptDecisionTest {
@@ -351,6 +357,23 @@ fn lower_projection(projection: CoreDecisionProjection) -> TypeScriptDecisionPro
     }
 }
 
+fn core_pattern_origin(pattern: &CorePattern) -> &crate::SourceSpan {
+    match pattern {
+        CorePattern::Integer { origin, .. }
+        | CorePattern::String { origin, .. }
+        | CorePattern::Char { origin, .. }
+        | CorePattern::Boolean { origin, .. }
+        | CorePattern::Binding { origin, .. }
+        | CorePattern::Wildcard { origin, .. }
+        | CorePattern::Constructor { origin, .. }
+        | CorePattern::Tuple { origin, .. }
+        | CorePattern::Array { origin, .. }
+        | CorePattern::List { origin, .. }
+        | CorePattern::Record { origin, .. }
+        | CorePattern::Invalid { origin } => origin,
+    }
+}
+
 fn core_pattern_type(pattern: &CorePattern) -> CoreType {
     match pattern {
         CorePattern::Integer { type_ref, .. }
@@ -374,7 +397,7 @@ fn lower_pattern(
     tests: &mut Vec<TypeScriptDecisionTest>,
     bindings: &mut Vec<TypeScriptDecisionBinding>,
     imported_types: &TypeScriptTypeContext,
-) {
+) -> Lowered<()> {
     match pattern {
         CorePattern::Integer { value, .. } => tests.push(TypeScriptDecisionTest::NumberEquals {
             path: path.clone(),
@@ -392,9 +415,15 @@ fn lower_pattern(
                 value,
             });
         }
-        CorePattern::Binding { name, type_ref, .. } => bindings.push(TypeScriptDecisionBinding {
+        CorePattern::Binding {
+            name,
+            type_ref,
+            origin,
+            ..
+        } => bindings.push(TypeScriptDecisionBinding {
             name: safe_identifier(&name),
-            type_ref: type_ref_from_core_type(&type_ref, imported_types),
+            type_ref: type_ref_from_core_type(&type_ref, imported_types)
+                .map_err(|error| error.at(&origin))?,
             path: path.clone(),
         }),
         CorePattern::Wildcard { .. } => {}
@@ -403,9 +432,9 @@ fn lower_pattern(
         } => {
             if imported_types.is_erased_newtype(&symbol) {
                 if let Some(argument) = argument {
-                    lower_pattern(*argument, path, tests, bindings, imported_types);
+                    lower_pattern(*argument, path, tests, bindings, imported_types)?;
                 }
-                return;
+                return Ok(());
             }
             tests.push(TypeScriptDecisionTest::TagEquals {
                 path: path.clone(),
@@ -413,14 +442,14 @@ fn lower_pattern(
             });
             if let Some(argument) = argument {
                 path.push(TypeScriptDecisionProjection::AdtPayload);
-                lower_pattern(*argument, path, tests, bindings, imported_types);
+                lower_pattern(*argument, path, tests, bindings, imported_types)?;
                 path.pop();
             }
         }
         CorePattern::Tuple { elements, .. } => {
             for (index, element) in elements.into_iter().enumerate() {
                 path.push(TypeScriptDecisionProjection::TupleElement { index });
-                lower_pattern(element, path, tests, bindings, imported_types);
+                lower_pattern(element, path, tests, bindings, imported_types)?;
                 path.pop();
             }
         }
@@ -433,12 +462,12 @@ fn lower_pattern(
             });
             for (index, element) in elements.into_iter().enumerate() {
                 path.push(TypeScriptDecisionProjection::ArrayElement { index });
-                lower_pattern(element, path, tests, bindings, imported_types);
+                lower_pattern(element, path, tests, bindings, imported_types)?;
                 path.pop();
             }
             if let Some(rest) = rest {
                 path.push(TypeScriptDecisionProjection::ArrayRest { start: length });
-                lower_pattern(*rest, path, tests, bindings, imported_types);
+                lower_pattern(*rest, path, tests, bindings, imported_types)?;
                 path.pop();
             }
         }
@@ -451,12 +480,12 @@ fn lower_pattern(
             });
             for (index, element) in elements.into_iter().enumerate() {
                 path.push(TypeScriptDecisionProjection::ListElement { index });
-                lower_pattern(element, path, tests, bindings, imported_types);
+                lower_pattern(element, path, tests, bindings, imported_types)?;
                 path.pop();
             }
             if let Some(rest) = rest {
                 path.push(TypeScriptDecisionProjection::ListRest { start: length });
-                lower_pattern(*rest, path, tests, bindings, imported_types);
+                lower_pattern(*rest, path, tests, bindings, imported_types)?;
                 path.pop();
             }
         }
@@ -467,12 +496,13 @@ fn lower_pattern(
                 } else {
                     TypeScriptDecisionProjection::RecordField { name: field.name }
                 });
-                lower_pattern(field.pattern, path, tests, bindings, imported_types);
+                lower_pattern(field.pattern, path, tests, bindings, imported_types)?;
                 path.pop();
             }
         }
         CorePattern::Invalid { .. } => tests.push(TypeScriptDecisionTest::Invalid),
     }
+    Ok(())
 }
 
 // Substitution is restricted to scope-free expressions so a nested binder can

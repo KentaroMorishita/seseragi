@@ -13,9 +13,9 @@ where Ready<T> =
 pub fn label value: Badge -> String = describe value
 ";
     let typed = type_module("artifact/constrained-function/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(
@@ -53,9 +53,9 @@ pub fn answer value: Maybe<Int> -> Maybe<Int> =
   applyMapper (map increment) value
 ";
     let typed = type_module("artifact/partial-functor/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle
@@ -79,9 +79,9 @@ fn applyLabel labeler: (String -> String) -> String = labeler \"!\"
 pub fn label value: Badge -> String = applyLabel (describe value)
 ";
     let typed = type_module("artifact/partial-constrained-function/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(
@@ -108,9 +108,9 @@ where Ready<T> =
         "artifact/polymorphic-partial-constrained-function/main.ssrg",
         source,
     );
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(
@@ -139,9 +139,9 @@ where Functor<F> =
   applyMapper (transform f) value
 ";
     let typed = type_module("artifact/polymorphic-partial-functor/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(
@@ -197,9 +197,9 @@ pub fn answer unit: Unit -> Int =
   |> total
 ";
     let typed = type_module("artifact/generic-reducible/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(

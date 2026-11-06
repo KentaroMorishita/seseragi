@@ -13,8 +13,9 @@ pub type AppError deriving Show =
   | EndOfInput
 ";
     let typed = type_module("artifact/derived-show/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let mut typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let mut typescript =
+        lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     let show_import = typescript
         .type_imports
         .iter_mut()
@@ -29,7 +30,8 @@ pub type AppError deriving Show =
         &typescript.type_imports,
         &typescript.structs,
         &typescript.adts,
-    );
+    )
+    .expect("valid test lowering input");
 
     assert_eq!(output.lines().count(), typescript.instances.len());
     assert_eq!(
@@ -49,8 +51,8 @@ pub type Chain deriving Show =
   | Link Chain
 ";
     let typed = type_module("artifact/recursive-show/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     let mut output = String::new();
     render_typescript_instances(
@@ -59,7 +61,8 @@ pub type Chain deriving Show =
         &typescript.type_imports,
         &typescript.structs,
         &typescript.adts,
-    );
+    )
+    .expect("valid test lowering input");
 
     assert!(output.contains(
         "case \"Link\": return \"Link\" + \" \" + __ssrg$instance$Show$0.show(value.value);"
@@ -81,9 +84,9 @@ pub struct Profile<A> deriving Show, Debug {
 pub newtype UserId deriving Show, Debug = Int
 ";
     let typed = type_module("artifact/derived-display/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle
         .typescript
@@ -124,9 +127,9 @@ pub type Tree<A> deriving JsonEncode, JsonDecode =
   | Branch (Tree<A>, Tree<A>)
 ";
     let typed = type_module("artifact/derived-json/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle.typescript.contains(
         "_ssrg_json_derivedstruct_encode<Profile<A>>([\"name\", \"value\"], [() => (_ssrg_string_json_encode), () => ((__ssrg$evidence$0))])"
@@ -152,7 +155,8 @@ pub type Tree<A> deriving JsonEncode, JsonDecode =
 fn emits_nothing_without_selected_instances_or_show_import() {
     let mut output = String::new();
 
-    render_typescript_instances(&mut output, &[], &[], &[], &[]);
+    render_typescript_instances(&mut output, &[], &[], &[], &[])
+        .expect("valid test lowering input");
 
     assert!(output.is_empty());
 }
@@ -161,9 +165,9 @@ fn emits_nothing_without_selected_instances_or_show_import() {
 fn emits_runtime_imports_and_keeps_dictionary_exports_out_of_source_exports() {
     let source = "pub type AppError deriving Show =\n  | UnknownHand String\n";
     let typed = type_module("artifact/emitted-show/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle
         .typescript
@@ -191,15 +195,15 @@ pub trait Render<A> { fn render value: A -> String }
 instance Render<Badge> { fn render value: Badge -> String = \"active\" }
 ";
     let typed = type_module("artifact/user-instance/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
 
     assert!(!typescript
         .runtime_requirements
         .iter()
         .any(|requirement| requirement.starts_with("core.show")));
     assert!(typescript.type_imports.is_empty());
-    let bundle = emit_typescript_module(typescript, source);
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(bundle.typescript.contains(
         "export const __ssrg$instance$Render$0 = { \"render\": (value: Badge) => \"active\" } as const;"
     ));
@@ -213,9 +217,10 @@ instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = True }
 instance Ord<Key> { fn compare left: Key -> right: Key -> Ordering = Equal }
 pub fn same<A> left: A -> right: A -> Bool where Ord<A> = left == right
 "#;
-    let core = lower_typed_module(type_module("artifact/ord-parent/main.ssrg", source));
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(type_module("artifact/ord-parent/main.ssrg", source))
+        .expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(
         bundle.typescript.contains(
             "__ssrg$instance$Ord$1 = (__ssrg$evidence$0: import(\"@seseragi/runtime/equality\").Eq<Key>) => ({ ...__ssrg$evidence$0,"
@@ -242,9 +247,10 @@ instance Eq<Key> { fn eq left: Key -> right: Key -> Bool = True }
 instance Ord<Key> { fn compare left: Key -> right: Key -> Ordering = Equal }
 pub fn same<A> left: A -> right: A -> Bool where Ord<A> = eq left right
 "#;
-    let core = lower_typed_module(type_module("artifact/custom-ord/main.ssrg", source));
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(type_module("artifact/custom-ord/main.ssrg", source))
+        .expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(
         bundle.typescript.contains(
             "__ssrg$instance$Ord$1 = (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ ...__ssrg$evidence$0,"
@@ -269,9 +275,9 @@ instance Render<Badge> { fn render value: Badge -> String = \"active\" }
 pub fn label value: Badge -> String = render value
 ";
     let typed = type_module("artifact/trait-dispatch/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle.typescript.contains(
         "export const label = (value: Badge) => ((__ssrg$instance$Render$0[\"render\"](value)) as string)"
@@ -286,9 +292,9 @@ instance<T> Tag<Maybe<T>> { fn tag value: Maybe<T> -> String = \"maybe\" }
 pub fn label value: Maybe<Int> -> String = tag value
 ";
     let typed = type_module("artifact/generic-instance-dispatch/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(bundle.typescript.contains(
         "export const __ssrg$instance$Tag$0 = <T,>() => ({ \"tag\": (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }) => \"maybe\" }) as const;"
@@ -311,9 +317,9 @@ instance<T> Render<Maybe<T>> where Ready<T> {
 pub fn label value: Maybe<Badge> -> String = render value
 ";
     let typed = type_module("artifact/constrained-instance-dispatch/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(
@@ -344,9 +350,9 @@ instance Render<Badge> where Ready<Badge> {
 pub fn label value: Badge -> String = render value
 ";
     let typed = type_module("artifact/concrete-constrained-dispatch/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle
@@ -375,9 +381,9 @@ instance<T> Inspect<Maybe<T>> where Ready<T> {
 pub fn label value: Maybe<Badge> -> String = inspect value
 ";
     let typed = type_module("artifact/scoped-instance-evidence/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle
@@ -417,9 +423,9 @@ instance Render<Badge> {
 pub fn status value: Badge -> String = render value
 ";
     let typed = type_module("artifact/method-constraint-dispatch/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(
@@ -454,9 +460,9 @@ instance<T> Render<Maybe<T>> where Ready<T> {
 pub fn status value: Maybe<Badge> -> String = render value
 ";
     let typed = type_module("artifact/method-constraint-offset/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
     assert!(
         bundle.typescript.contains(
@@ -527,9 +533,9 @@ pub let answer: Maybe<Int> =
   |> ap (lifted increment)
 ";
     let typed = type_module("artifact/applicative-supertrait/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(
         bundle.typescript.contains(
             "(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ ...__ssrg$evidence$0, \"pure\""
@@ -565,9 +571,9 @@ fn emits_monad_dictionaries_with_transitive_supertrait_evidence() {
     let source =
         include_str!("../../../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg");
     let typed = type_module("artifact/monad-supertrait/main.ssrg", source);
-    let core = lower_typed_module(typed);
-    let typescript = lower_core_module_to_typescript_ir(core);
-    let bundle = emit_typescript_module(typescript, source);
+    let core = lower_typed_module(typed).expect("valid test lowering input");
+    let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+    let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert!(
         bundle.typescript.contains(
             "(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ ...__ssrg$evidence$0, \"flatMap\""

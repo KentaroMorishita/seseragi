@@ -68,7 +68,8 @@ fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
         } if callee == "next"
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.starts_with(&with_unicode_guard(
         "import { increment as next } from \"./domain.js\""
     )));
@@ -99,7 +100,8 @@ fn lowers_an_imported_top_level_value_to_a_runtime_binding() {
         typescript.source_imports[0].bindings[0].canonical,
         "fixture/game::domain::answer"
     );
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(
         generated.typescript.starts_with(&with_unicode_guard(
             "import { answer as importedAnswer } from \"./domain.js\""
@@ -145,7 +147,8 @@ fn lowers_an_imported_custom_operator_to_its_provider_abi_name() {
         } if callee == "__ssrg$operator$3c5e3e"
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.starts_with(&with_unicode_guard(
         "import { __ssrg$operator$3c5e3e } from \"./domain.js\""
     )));
@@ -186,7 +189,8 @@ pub fn run left: Int -> right: Int -> Int =
     assert_eq!(binding.imported, "__ssrg$operator$3c5e3e");
     assert_eq!(binding.local, "__ssrg$operator$3c5e3e");
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.starts_with(&with_unicode_guard(
         "import { __ssrg$operator$3c5e3e } from \"./domain.js\""
     )));
@@ -232,7 +236,8 @@ pub fn run left: Int -> right: Int -> Int =
     )]);
 
     let typescript = lower_core_module_to_typescript_ir_with_plan(core, &output_plan).unwrap();
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
 
     assert!(generated.typescript.contains("__ssrg$operator$3c5e3e"));
     assert!(generated
@@ -282,7 +287,8 @@ fn freshens_an_imported_custom_operator_around_a_local_operator_abi_name() {
         } if callee == "__ssrg$operator$3c5e3e_1"
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.starts_with(&with_unicode_guard(
         "import { __ssrg$operator$3c5e3e as __ssrg$operator$3c5e3e_1 } from \"./domain.js\""
     )));
@@ -318,7 +324,8 @@ pub fn status value: Badge -> String = describe value
         &plan([("fixture/game::domain", "./domain.js")]),
     )
     .unwrap();
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
 
     assert!(generated
         .typescript
@@ -374,7 +381,8 @@ pub fn status value: Unit -> String = describe Active
         provider.bindings[3].canonical,
         "fixture/game::domain::Badge"
     );
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
 
     assert!(
         generated.typescript.contains(
@@ -440,7 +448,8 @@ pub fn status value: Unit -> String = describe Active
         provider.bindings[1].canonical,
         "fixture/game::domain::Badge"
     );
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
 
     assert!(generated
         .typescript
@@ -499,7 +508,8 @@ fn lowers_a_namespace_member_call_to_a_selected_named_import() {
         } if callee == "domain$member$identity"
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.starts_with(&with_unicode_guard(
         "import { identity as domain$member$identity } from \"./domain.js\""
     )));
@@ -535,7 +545,8 @@ fn lowers_a_namespace_type_member_to_a_selected_type_import() {
             if parameters[0].type_name == "domain$member$Hand"
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.starts_with(&with_unicode_guard(
         "import { type Hand as domain$member$Hand } from \"./domain.js\"\nimport \"./domain.js\""
     )));
@@ -626,7 +637,8 @@ pub fn cycle hand: domain.Hand -> domain.Hand =
         TypeScriptExpr::Identifier { name } if name == "domain$member$Rock"
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(
         generated.typescript.contains(
             "import { type Hand as domain$member$Hand, Rock as domain$member$Rock, Paper as domain$member$Paper, Scissors as domain$member$Scissors } from \"./domain.js\""
@@ -687,7 +699,8 @@ fn imports_selected_derived_show_evidence_by_semantic_identity() {
             && local == "__ssrg$instance$Show$0_1"
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.contains(
         "import { type ImportedError, __ssrg$instance$Show$0 as __ssrg$instance$Show$0_1 } from \"./domain.js\""
     ));
@@ -737,7 +750,8 @@ fn keeps_a_namespace_only_edge_as_a_side_effect_import() {
     .unwrap();
     assert!(typescript.source_imports[0].bindings.is_empty());
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated
         .typescript
         .starts_with(&with_unicode_guard("import \"./domain.js\"")));
@@ -760,7 +774,8 @@ fn keeps_an_unknown_initialization_edge_for_an_unused_named_value_import() {
     assert!(typescript.source_imports[0].bindings.is_empty());
     assert!(typescript.source_imports[0].runtime_edge);
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.contains("import \"./domain.js\""));
 }
 
@@ -781,6 +796,7 @@ fn omits_an_unused_named_value_import_when_checked_initialization_is_inert() {
     assert!(typescript.source_imports[0].bindings.is_empty());
     assert!(!typescript.source_imports[0].runtime_edge);
     assert!(!emit_typescript_module(typescript, main_source)
+        .expect("valid test lowering input")
         .typescript
         .contains("./domain.js"));
 }
@@ -802,7 +818,8 @@ fn emits_a_type_binding_and_a_runtime_edge_for_an_imported_adt_alias() {
     assert_eq!(typescript.source_imports[0].bindings.len(), 1);
     assert!(typescript.source_imports[0].bindings[0].type_only);
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.starts_with(&with_unicode_guard(
         "import { type Hand as LocalHand } from \"./domain.js\"\nimport \"./domain.js\""
     )));
@@ -840,7 +857,8 @@ fn keeps_same_export_spelling_distinct_through_canonical_import_aliases() {
         typescript.source_imports[1].bindings[0].local,
         "renderSecond"
     );
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated
         .typescript
         .contains("import { render as renderFirst } from \"./first.js\""));
@@ -875,7 +893,8 @@ fn freshens_a_runtime_helper_around_a_source_module_import() {
         .imports
         .iter()
         .any(|import| import.feature == "core.int.add" && import.local == "_ssrg_int_add_1"));
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated
         .typescript
         .contains("import { identity as _ssrg_int_add } from \"./domain.js\""));
@@ -917,7 +936,7 @@ fn linked_core<const N: usize>(
         main_source,
     )
     .unwrap();
-    lower_typed_module(analyzed.typed_hir)
+    lower_typed_module(analyzed.typed_hir).expect("valid test lowering input")
 }
 
 fn plan<const N: usize>(entries: [(&str, &str); N]) -> TypeScriptOutputPlan {

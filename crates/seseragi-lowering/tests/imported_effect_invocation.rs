@@ -56,7 +56,8 @@ fn lowers_an_imported_effect_invoke_to_a_cold_source_call() {
         )
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated
         .typescript
         .contains("import { prompt } from \"./domain.js\""));
@@ -110,7 +111,8 @@ pub effect fn main =
         } if callee == "announce" && arguments.len() == 2
     ));
 
-    let generated = emit_typescript_module(typescript, main_source);
+    let generated =
+        emit_typescript_module(typescript, main_source).expect("valid test lowering input");
     assert!(generated.typescript.contains("announce<number>(42)"));
     assert!(generated.typescript.contains("_ssrg_show_intShow"));
 }
@@ -135,5 +137,5 @@ fn linked_core(main_source: &str, domain_source: &str) -> seseragi_lowering::Cor
         main_source,
     )
     .unwrap();
-    lower_typed_module(analyzed.typed_hir)
+    lower_typed_module(analyzed.typed_hir).expect("valid test lowering input")
 }

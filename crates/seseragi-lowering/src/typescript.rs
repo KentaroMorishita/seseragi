@@ -1,3 +1,4 @@
+use crate::failure::Lowered;
 use crate::typescript::types::TypeScriptTypeContext;
 use crate::{CoreForeignMember, CoreForeignModule, CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
@@ -9,7 +10,6 @@ mod closed_display;
 mod decision;
 mod dictionaries;
 mod expr;
-mod failure;
 mod imports;
 mod instances;
 pub(crate) mod kinds;
@@ -20,10 +20,10 @@ mod runtime;
 mod type_imports;
 pub(crate) mod types;
 
+use crate::LoweringInternalError;
 use adt::lower_core_adt_to_typescript;
 pub use closed_display::TypeScriptClosedDisplayDictionary;
 use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
-pub use failure::{TypeScriptInternalError, TypeScriptInternalErrorKind, TypeScriptLoweringStage};
 use imports::freshen_runtime_imports;
 pub(crate) use instances::evidence_parameter_name;
 use instances::{
@@ -85,6 +85,9 @@ pub struct TypeScriptModule {
 pub struct TypeScriptKinds {
     pub constructors: Vec<TypeScriptKindConstructor>,
     pub partials: Vec<Vec<bool>>,
+    /// Source owners in the same order as `partials`. Older IR may omit them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub partial_origins: Vec<Option<SourceSpan>>,
     pub application: bool,
 }
 
@@ -345,11 +348,11 @@ pub enum TypeScriptLoweringError {
     },
     /// Checked facts required by lowering were missing. This is a compiler
     /// defect, reported separately from source type errors.
-    Internal(TypeScriptInternalError),
+    Internal(LoweringInternalError),
 }
 
-impl From<TypeScriptInternalError> for TypeScriptLoweringError {
-    fn from(error: TypeScriptInternalError) -> Self {
+impl From<LoweringInternalError> for TypeScriptLoweringError {
+    fn from(error: LoweringInternalError) -> Self {
         Self::Internal(error)
     }
 }
@@ -755,12 +758,11 @@ pub enum TypeScriptStatement {
     },
 }
 
-/// Lowers an import-free module and panics on any lowering error. Compiler
-/// drivers use [`lower_core_module_to_typescript_ir_with_options`], which
-/// returns lowering failures as [`TypeScriptLoweringError`].
-pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModule {
+/// Lowers an import-free module, reporting missing compiler facts as errors.
+pub fn lower_core_module_to_typescript_ir(
+    module: CoreModule,
+) -> Result<TypeScriptModule, TypeScriptLoweringError> {
     lower_core_module_to_typescript_ir_with_plan(module, &TypeScriptOutputPlan::default())
-        .unwrap_or_else(|error| panic!("TypeScript lowering failed: {error:?}"))
 }
 
 pub fn lower_core_module_to_typescript_ir_with_plan(
@@ -839,113 +841,39 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     let foreign_modules = module
         .foreign_modules
         .iter()
-        .map(|foreign| TypeScriptForeignModule {
-            exported: foreign.visibility == Visibility::Public,
-            specifier: foreign.specifier.clone(),
-            pure_load: foreign.pure_load,
-            types: foreign
-                .members
-                .iter()
-                .filter_map(|member| lower_foreign_opaque_type(member, &module.module))
-                .collect(),
-            members: foreign
-                .members
-                .iter()
-                .filter_map(|member| {
-                    let CoreForeignMember::Function {
-                        type_parameters,
-                        mode,
-                        call_kind,
-                        symbol,
-                        name,
-                        host_name,
-                        parameters,
-                        return_type,
-                        origin,
-                        ..
-                    } = member
-                    else {
-                        return None;
-                    };
-                    let scoped_types = module_imports.type_names.with_parameters(type_parameters);
-                    Some(TypeScriptForeignMember {
-                        type_parameters: type_parameters.clone(),
-                        mode: *mode,
-                        call_kind: *call_kind,
-                        name: module_value_name(&module.module, symbol),
-                        field_name: name.clone(),
-                        host_name: host_name.clone(),
-                        parameters: parameters
-                            .iter()
-                            .cloned()
-                            .map(|parameter| {
-                                lower_core_parameter_to_typescript(parameter, &scoped_types, &[])
-                            })
-                            .collect(),
-                        parameter_codecs: parameters
-                            .iter()
-                            .map(|parameter| {
-                                foreign_codec_with_parameters(
-                                    &parameter.type_ref,
-                                    &foreign_opaque_names,
-                                    type_parameters,
-                                )
-                            })
-                            .collect(),
-                        return_type: types::type_ref_from_core_type(return_type, &scoped_types),
-                        return_codec: foreign_codec_with_parameters(
-                            return_type,
-                            &foreign_opaque_names,
-                            type_parameters,
-                        ),
-                        origin: origin.clone(),
-                    })
-                })
-                .collect(),
-            values: foreign
-                .members
-                .iter()
-                .filter_map(|member| {
-                    let CoreForeignMember::Value {
-                        symbol,
-                        name,
-                        host_name,
-                        type_ref,
-                        origin,
-                        ..
-                    } = member
-                    else {
-                        return None;
-                    };
-                    Some(TypeScriptForeignValue {
-                        name: module_value_name(&module.module, symbol),
-                        field_name: name.clone(),
-                        host_name: host_name.clone(),
-                        type_ref: types::type_ref_from_core_type(
-                            type_ref,
-                            &module_imports.type_names,
-                        ),
-                        codec: foreign_codec_from_core_type(type_ref, &foreign_opaque_names),
-                        origin: origin.clone(),
-                    })
-                })
-                .collect(),
-            namespaces: foreign
-                .members
-                .iter()
-                .filter_map(|member| {
-                    lower_foreign_namespace(
-                        member,
-                        &module.module,
-                        &module_imports.type_names,
-                        &foreign_opaque_names,
-                        true,
-                    )
-                })
-                .collect(),
-            origin: foreign.origin.clone(),
+        .map(|foreign| {
+            Ok(TypeScriptForeignModule {
+                exported: foreign.visibility == Visibility::Public,
+                specifier: foreign.specifier.clone(),
+                pure_load: foreign.pure_load,
+                types: foreign
+                    .members
+                    .iter()
+                    .filter_map(|member| lower_foreign_opaque_type(member, &module.module))
+                    .collect(),
+                members: lower_foreign_members(
+                    &foreign.members,
+                    &module.module,
+                    &module_imports.type_names,
+                    &foreign_opaque_names,
+                )?,
+                values: lower_foreign_values(
+                    &foreign.members,
+                    &module.module,
+                    &module_imports.type_names,
+                    &foreign_opaque_names,
+                )?,
+                namespaces: lower_foreign_namespaces(
+                    &foreign.members,
+                    &module.module,
+                    &module_imports.type_names,
+                    &foreign_opaque_names,
+                    true,
+                )?,
+                origin: foreign.origin.clone(),
+            })
         })
-        .collect();
+        .collect::<Lowered<Vec<_>>>()?;
     let adts = module
         .adts
         .iter()
@@ -953,7 +881,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         .map(|adt| {
             lower_core_adt_to_typescript(adt, &module_imports.type_names, &mut runtime_requirements)
         })
-        .collect();
+        .collect::<Lowered<Vec<_>>>()?;
     let aliases = module
         .aliases
         .iter()
@@ -961,6 +889,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             let type_names = module_imports
                 .type_names
                 .with_parameters(&alias.type_parameters)
+                .with_origin(&alias.origin)
                 .with_higher_kinds();
             let type_constructor_parameters = alias
                 .type_parameters
@@ -968,7 +897,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                 .filter(|parameter| parameter.is_constructor())
                 .map(|parameter| parameter.name.clone())
                 .collect::<Vec<_>>();
-            TypeScriptAlias {
+            Ok(TypeScriptAlias {
                 exported: alias.visibility == Visibility::Public,
                 name: local_name(&alias.symbol),
                 type_parameters: alias.type_parameters.clone(),
@@ -976,59 +905,74 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                     &alias.target,
                     &type_names,
                     &type_constructor_parameters,
-                ),
+                )
+                .map_err(|error| error.at(&alias.origin))?,
                 origin: alias.origin.clone(),
-            }
+            })
         })
-        .collect();
+        .collect::<Lowered<Vec<_>>>()?;
     let structs = module
         .structs
         .iter()
-        .map(|structure| TypeScriptStruct {
-            exported: structure.visibility == Visibility::Public,
-            name: local_name(&structure.symbol),
-            brand: format!("__ssrg$brand${}", local_name(&structure.symbol)),
-            opaque: structure.opaque,
-            private_fields: module_imports
-                .type_names
-                .has_private_representations()
-                .then(|| {
-                    structure
+        .map(|structure| {
+            (|| {
+                Ok(TypeScriptStruct {
+                    exported: structure.visibility == Visibility::Public,
+                    name: local_name(&structure.symbol),
+                    brand: format!("__ssrg$brand${}", local_name(&structure.symbol)),
+                    opaque: structure.opaque,
+                    private_fields: module_imports
+                        .type_names
+                        .has_private_representations()
+                        .then(|| {
+                            structure
+                                .fields
+                                .iter()
+                                .map(|field| {
+                                    Ok(TypeScriptRecordTypeField {
+                                        name: field.name.clone(),
+                                        optional: false,
+                                        type_ref: types::type_ref_from_core_type(
+                                            &field.type_ref,
+                                            &module_imports
+                                                .type_names
+                                                .with_parameters(&structure.type_parameters)
+                                                .with_origin(&field.origin)
+                                                .with_higher_kinds()
+                                                .with_private_representation(),
+                                        )
+                                        .map_err(|error| error.at(&field.origin))?,
+                                    })
+                                })
+                                .collect::<Lowered<Vec<_>>>()
+                        })
+                        .transpose()?,
+                    type_parameters: structure.type_parameters.clone(),
+                    fields: structure
                         .fields
                         .iter()
-                        .map(|field| TypeScriptRecordTypeField {
-                            name: field.name.clone(),
-                            optional: false,
-                            type_ref: types::type_ref_from_core_type(
-                                &field.type_ref,
-                                &module_imports
-                                    .type_names
-                                    .with_parameters(&structure.type_parameters)
-                                    .with_higher_kinds()
-                                    .with_private_representation(),
-                            ),
+                        .map(|field| {
+                            Ok(TypeScriptRecordTypeField {
+                                name: field.name.clone(),
+                                optional: false,
+                                type_ref: types::type_ref_from_core_type(
+                                    &field.type_ref,
+                                    &module_imports
+                                        .type_names
+                                        .with_parameters(&structure.type_parameters)
+                                        .with_origin(&field.origin)
+                                        .with_higher_kinds(),
+                                )
+                                .map_err(|error| error.at(&field.origin))?,
+                            })
                         })
-                        .collect()
-                }),
-            type_parameters: structure.type_parameters.clone(),
-            fields: structure
-                .fields
-                .iter()
-                .map(|field| TypeScriptRecordTypeField {
-                    name: field.name.clone(),
-                    optional: false,
-                    type_ref: types::type_ref_from_core_type(
-                        &field.type_ref,
-                        &module_imports
-                            .type_names
-                            .with_parameters(&structure.type_parameters)
-                            .with_higher_kinds(),
-                    ),
+                        .collect::<Lowered<Vec<_>>>()?,
+                    origin: structure.origin.clone(),
                 })
-                .collect(),
-            origin: structure.origin.clone(),
+            })()
+            .map_err(|error: LoweringInternalError| error.at(&structure.origin))
         })
-        .collect();
+        .collect::<Lowered<Vec<_>>>()?;
     module_imports.type_names = module_imports.type_names.with_polymorphic_bindings(
         module
             .bindings
@@ -1091,50 +1035,55 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                     &binding.value,
                     &module_imports
                         .type_names
-                        .with_parameters(&binding.type_parameters),
-                ),
+                        .with_parameters(&binding.type_parameters)
+                        .with_origin(&binding.origin),
+                )?,
                 initializer: lower_core_expr_to_typescript(
                     binding.value,
                     &binding_value_names,
                     &module_imports
                         .type_names
-                        .with_parameters(&binding.type_parameters),
+                        .with_parameters(&binding.type_parameters)
+                        .with_origin(&binding.origin),
                 )?,
                 origin: binding.origin,
             })
         })
-        .collect::<Result<_, TypeScriptInternalError>>()?;
+        .collect::<Result<_, LoweringInternalError>>()?;
     let functions = module
         .functions
         .into_iter()
         .map(|function| {
-            let scalar_tail_loop = crate::scalar_self_tail_loop_with_globals(
-                &function,
-                &module.module,
-                &scalar_globals,
-            )
-            .is_some();
-            let scoped_types = module_imports
-                .type_names
-                .with_parameters(&function.type_parameters);
-            let scoped_types = if function
-                .type_parameters
-                .iter()
-                .any(TypeParameter::is_constructor)
-            {
-                // A checked lexical constructor binder has the same witness in
-                // data annotations and its callable's input/result annotations.
-                // Unknown constructors and the separate dictionary ABI retain
-                // their existing erasure rules.
-                scoped_types.with_higher_kinds()
-            } else {
-                scoped_types
-            };
-            let value_type = recursive_effect_types
-                .get(&function.symbol)
-                .and_then(|checked| recursive::annotation(checked, &scoped_types))
-                .or_else(|| {
-                    (!function.is_effect
+            let origin = function.origin.clone();
+            (|| {
+                let scalar_tail_loop = crate::scalar_self_tail_loop_with_globals(
+                    &function,
+                    &module.module,
+                    &scalar_globals,
+                )
+                .is_some();
+                let scoped_types = module_imports
+                    .type_names
+                    .with_parameters(&function.type_parameters)
+                    .with_origin(&function.origin);
+                let scoped_types = if function
+                    .type_parameters
+                    .iter()
+                    .any(TypeParameter::is_constructor)
+                {
+                    // A checked lexical constructor binder has the same witness in
+                    // data annotations and its callable's input/result annotations.
+                    // Unknown constructors and the separate dictionary ABI retain
+                    // their existing erasure rules.
+                    scoped_types.with_higher_kinds()
+                } else {
+                    scoped_types
+                };
+                let mut value_type = recursive_effect_types
+                    .get(&function.symbol)
+                    .and_then(|checked| recursive::annotation(checked, &scoped_types));
+                if value_type.is_none() {
+                    value_type = (!function.is_effect
                         && function.type_parameters.is_empty()
                         && function.constraints.is_empty()
                         && crate::core_free_variables(&function.body)
@@ -1142,64 +1091,77 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                     .then(|| function.value_type.as_ref())
                     .flatten()
                     .map(|ty| types::type_ref_from_core_type(ty, &scoped_types))
-                    .filter(recursive_value_annotation)
-                });
-            let type_constructor_parameters = function
-                .type_parameters
-                .iter()
-                .filter(|parameter| parameter.is_constructor())
-                .map(|parameter| parameter.name.clone())
-                .collect::<Vec<_>>();
-            for parameter in &function.parameters {
-                collect_type_runtime_requirement(&parameter.type_ref, &mut runtime_requirements);
-            }
-            collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
-            collect_expr_runtime_imports(&function.body, &mut imports);
-            let mut function_value_names = expression_value_names.clone();
-            function_value_names.insert(
-                "__ssrg$foreign$function".to_owned(),
-                module_value_name(&module.module, &function.symbol),
-            );
-            let body =
-                lower_core_expr_to_typescript(function.body, &function_value_names, &scoped_types)?;
-            let is_async = typescript_expr_contains_await(&body);
-            Ok(TypeScriptFunction::ConstFunction {
-                exported: function.visibility == Visibility::Public,
-                is_async,
-                is_effect: function.is_effect,
-                scalar_tail_loop,
-                name: module_value_name(&module.module, &function.symbol),
-                value_type: if is_async { None } else { value_type },
-                type_parameters: function.type_parameters,
-                constraints: function
-                    .constraints
+                    .transpose()?
+                    .filter(recursive_value_annotation);
+                }
+                let type_constructor_parameters = function
+                    .type_parameters
                     .iter()
-                    .map(|constraint| TypeScriptInstanceConstraint {
-                        name: constraint.name.clone(),
-                        trait_identity: constraint.trait_identity.clone(),
-                        arguments: constraint
-                            .arguments
-                            .iter()
-                            .map(|argument| types::type_ref_from_core_type(argument, &scoped_types))
-                            .collect(),
-                    })
-                    .collect(),
-                parameters: function
-                    .parameters
-                    .into_iter()
-                    .map(|parameter| {
-                        lower_core_parameter_to_typescript(
-                            parameter,
-                            &scoped_types,
-                            &type_constructor_parameters,
-                        )
-                    })
-                    .collect(),
-                body,
-                origin: function.origin,
-            })
+                    .filter(|parameter| parameter.is_constructor())
+                    .map(|parameter| parameter.name.clone())
+                    .collect::<Vec<_>>();
+                for parameter in &function.parameters {
+                    collect_type_runtime_requirement(
+                        &parameter.type_ref,
+                        &mut runtime_requirements,
+                    );
+                }
+                collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
+                collect_expr_runtime_imports(&function.body, &mut imports);
+                let mut function_value_names = expression_value_names.clone();
+                function_value_names.insert(
+                    "__ssrg$foreign$function".to_owned(),
+                    module_value_name(&module.module, &function.symbol),
+                );
+                let body = lower_core_expr_to_typescript(
+                    function.body,
+                    &function_value_names,
+                    &scoped_types,
+                )?;
+                let is_async = typescript_expr_contains_await(&body);
+                Ok(TypeScriptFunction::ConstFunction {
+                    exported: function.visibility == Visibility::Public,
+                    is_async,
+                    is_effect: function.is_effect,
+                    scalar_tail_loop,
+                    name: module_value_name(&module.module, &function.symbol),
+                    value_type: if is_async { None } else { value_type },
+                    type_parameters: function.type_parameters,
+                    constraints: function
+                        .constraints
+                        .iter()
+                        .map(|constraint| {
+                            Ok(TypeScriptInstanceConstraint {
+                                name: constraint.name.clone(),
+                                trait_identity: constraint.trait_identity.clone(),
+                                arguments: constraint
+                                    .arguments
+                                    .iter()
+                                    .map(|argument| {
+                                        types::type_ref_from_core_type(argument, &scoped_types)
+                                    })
+                                    .collect::<Lowered<Vec<_>>>()?,
+                            })
+                        })
+                        .collect::<Lowered<Vec<_>>>()?,
+                    parameters: function
+                        .parameters
+                        .into_iter()
+                        .map(|parameter| {
+                            lower_core_parameter_to_typescript(
+                                parameter,
+                                &scoped_types,
+                                &type_constructor_parameters,
+                            )
+                        })
+                        .collect::<Lowered<Vec<_>>>()?,
+                    body,
+                    origin: function.origin,
+                })
+            })()
+            .map_err(|error: LoweringInternalError| error.at(&origin))
         })
-        .collect::<Result<_, TypeScriptInternalError>>()?;
+        .collect::<Result<_, LoweringInternalError>>()?;
 
     let mut typescript = TypeScriptModule {
         schema: module.schema,
@@ -1270,120 +1232,170 @@ fn recursive_value_annotation(ty: &TypeScriptType) -> bool {
     }
 }
 
-fn lower_foreign_namespace(
-    member: &CoreForeignMember,
+fn lower_foreign_members(
+    members: &[CoreForeignMember],
+    module: &str,
+    type_names: &TypeScriptTypeContext,
+    foreign_opaque_names: &std::collections::BTreeSet<String>,
+) -> Lowered<Vec<TypeScriptForeignMember>> {
+    members
+        .iter()
+        .filter_map(|member| {
+            let CoreForeignMember::Function {
+                type_parameters,
+                mode,
+                call_kind,
+                symbol,
+                name,
+                host_name,
+                parameters,
+                return_type,
+                origin,
+                ..
+            } = member
+            else {
+                return None;
+            };
+            let scoped_types = type_names
+                .with_parameters(type_parameters)
+                .with_origin(origin);
+            Some(
+                (|| {
+                    Ok(TypeScriptForeignMember {
+                        type_parameters: type_parameters.clone(),
+                        mode: *mode,
+                        call_kind: *call_kind,
+                        name: module_value_name(module, symbol),
+                        field_name: name.clone(),
+                        host_name: host_name.clone(),
+                        parameters: parameters
+                            .iter()
+                            .cloned()
+                            .map(|parameter| {
+                                lower_core_parameter_to_typescript(parameter, &scoped_types, &[])
+                            })
+                            .collect::<Lowered<Vec<_>>>()?,
+                        parameter_codecs: parameters
+                            .iter()
+                            .map(|parameter| {
+                                foreign_codec_with_parameters(
+                                    &parameter.type_ref,
+                                    foreign_opaque_names,
+                                    type_parameters,
+                                )
+                            })
+                            .collect(),
+                        return_type: types::type_ref_from_core_type(return_type, &scoped_types)?,
+                        return_codec: foreign_codec_with_parameters(
+                            return_type,
+                            foreign_opaque_names,
+                            type_parameters,
+                        ),
+                        origin: origin.clone(),
+                    })
+                })()
+                .map_err(|error: LoweringInternalError| error.at(origin)),
+            )
+        })
+        .collect()
+}
+
+fn lower_foreign_values(
+    members: &[CoreForeignMember],
+    module: &str,
+    type_names: &TypeScriptTypeContext,
+    foreign_opaque_names: &std::collections::BTreeSet<String>,
+) -> Lowered<Vec<TypeScriptForeignValue>> {
+    members
+        .iter()
+        .filter_map(|member| {
+            let CoreForeignMember::Value {
+                symbol,
+                name,
+                host_name,
+                type_ref,
+                origin,
+                ..
+            } = member
+            else {
+                return None;
+            };
+            let codec = foreign_codec_from_core_type(type_ref, foreign_opaque_names);
+            Some(
+                types::type_ref_from_core_type(type_ref, type_names)
+                    .map(|type_ref| TypeScriptForeignValue {
+                        name: module_value_name(module, symbol),
+                        field_name: name.clone(),
+                        host_name: host_name.clone(),
+                        type_ref,
+                        codec,
+                        origin: origin.clone(),
+                    })
+                    .map_err(|error| error.at(origin)),
+            )
+        })
+        .collect()
+}
+
+fn lower_foreign_namespaces(
+    members: &[CoreForeignMember],
     module: &str,
     type_names: &TypeScriptTypeContext,
     foreign_opaque_names: &std::collections::BTreeSet<String>,
     top_level: bool,
-) -> Option<TypeScriptForeignNamespace> {
-    let CoreForeignMember::Namespace {
-        symbol,
-        name,
-        host_name,
-        members,
-        origin,
-    } = member
-    else {
-        return None;
-    };
-    let local = if top_level {
-        module_value_name(module, symbol)
-    } else {
-        local_name(name)
-    };
-    Some(TypeScriptForeignNamespace {
-        name: local,
-        host_name: host_name.clone(),
-        types: members
-            .iter()
-            .filter_map(|member| lower_foreign_opaque_type(member, module))
-            .collect(),
-        members: members
-            .iter()
-            .filter_map(|member| {
-                let CoreForeignMember::Function {
-                    type_parameters,
-                    mode,
-                    call_kind,
-                    symbol,
-                    name,
-                    host_name,
-                    parameters,
-                    return_type,
-                    origin,
-                    ..
-                } = member
-                else {
-                    return None;
-                };
-                let scoped_types = type_names.with_parameters(type_parameters);
-                Some(TypeScriptForeignMember {
-                    type_parameters: type_parameters.clone(),
-                    mode: *mode,
-                    call_kind: *call_kind,
-                    name: module_value_name(module, symbol),
-                    field_name: name.clone(),
-                    host_name: host_name.clone(),
-                    parameters: parameters
-                        .iter()
-                        .cloned()
-                        .map(|parameter| {
-                            lower_core_parameter_to_typescript(parameter, &scoped_types, &[])
-                        })
-                        .collect(),
-                    parameter_codecs: parameters
-                        .iter()
-                        .map(|parameter| {
-                            foreign_codec_with_parameters(
-                                &parameter.type_ref,
-                                foreign_opaque_names,
-                                type_parameters,
-                            )
-                        })
-                        .collect(),
-                    return_type: types::type_ref_from_core_type(return_type, &scoped_types),
-                    return_codec: foreign_codec_with_parameters(
-                        return_type,
-                        foreign_opaque_names,
-                        type_parameters,
-                    ),
-                    origin: origin.clone(),
-                })
-            })
-            .collect(),
-        values: members
-            .iter()
-            .filter_map(|member| {
-                let CoreForeignMember::Value {
-                    symbol,
-                    name,
-                    host_name,
-                    type_ref,
-                    origin,
-                    ..
-                } = member
-                else {
-                    return None;
-                };
-                Some(TypeScriptForeignValue {
-                    name: module_value_name(module, symbol),
-                    field_name: name.clone(),
-                    host_name: host_name.clone(),
-                    type_ref: types::type_ref_from_core_type(type_ref, type_names),
-                    codec: foreign_codec_from_core_type(type_ref, foreign_opaque_names),
-                    origin: origin.clone(),
-                })
-            })
-            .collect(),
-        namespaces: members
-            .iter()
-            .filter_map(|member| {
-                lower_foreign_namespace(member, module, type_names, foreign_opaque_names, false)
-            })
-            .collect(),
-        origin: origin.clone(),
-    })
+) -> Lowered<Vec<TypeScriptForeignNamespace>> {
+    members
+        .iter()
+        .filter_map(|member| {
+            let CoreForeignMember::Namespace {
+                symbol,
+                name,
+                host_name,
+                members,
+                origin,
+            } = member
+            else {
+                return None;
+            };
+            Some(
+                (|| {
+                    Ok(TypeScriptForeignNamespace {
+                        name: if top_level {
+                            module_value_name(module, symbol)
+                        } else {
+                            local_name(name)
+                        },
+                        host_name: host_name.clone(),
+                        types: members
+                            .iter()
+                            .filter_map(|member| lower_foreign_opaque_type(member, module))
+                            .collect(),
+                        members: lower_foreign_members(
+                            members,
+                            module,
+                            type_names,
+                            foreign_opaque_names,
+                        )?,
+                        values: lower_foreign_values(
+                            members,
+                            module,
+                            type_names,
+                            foreign_opaque_names,
+                        )?,
+                        namespaces: lower_foreign_namespaces(
+                            members,
+                            module,
+                            type_names,
+                            foreign_opaque_names,
+                            false,
+                        )?,
+                        origin: origin.clone(),
+                    })
+                })()
+                .map_err(|error: LoweringInternalError| error.at(origin)),
+            )
+        })
+        .collect()
 }
 
 fn foreign_codec_from_core_type(
@@ -1446,6 +1458,7 @@ fn foreign_codec_with_parameters(
                 "Js.UndefinedOr" => "undefinedOr",
                 "Js.Promise" => "promise",
                 "Js.MutableArray" => "mutableArray",
+                // The enclosing guard accepts exactly the five unary host types.
                 _ => unreachable!(),
             };
             format!(
@@ -1509,6 +1522,7 @@ fn foreign_codec_with_parameters(
                 "std/prelude::Js.UndefinedOr" => "undefinedOr",
                 "std/prelude::Js.Promise" => "promise",
                 "std/prelude::Js.MutableArray" => "mutableArray",
+                // The enclosing guard accepts exactly the five unary host types.
                 _ => unreachable!(),
             };
             format!(

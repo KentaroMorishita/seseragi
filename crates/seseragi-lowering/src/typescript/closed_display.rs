@@ -1,6 +1,7 @@
 use super::dictionaries::local_dictionary_expression;
 use super::types::TypeScriptTypeContext;
 use super::TypeScriptExpr;
+use crate::failure::Lowered;
 use crate::CoreCallEvidence;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -18,19 +19,23 @@ pub(super) fn selected_dictionary_expression(
     selected: &CoreCallEvidence,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
-) -> Option<TypeScriptExpr> {
-    let factory = local_dictionary_expression(&selected.evidence, imported_values, imported_types)?;
+) -> Lowered<Option<TypeScriptExpr>> {
+    let Some(factory) =
+        local_dictionary_expression(&selected.evidence, imported_values, imported_types)?
+    else {
+        return Ok(None);
+    };
     let Some(key) = crate::closed_standard_display_key(selected, imported_types.bound_type_names())
     else {
-        return Some(factory);
+        return Ok(Some(factory));
     };
     let name = imported_types.closed_display_dictionary(key, factory);
-    Some(TypeScriptExpr::Call {
+    Ok(Some(TypeScriptExpr::Call {
         callee: name,
         arguments: Vec::new(),
         type_arguments: Vec::new(),
         checked_callee_type: None,
-    })
+    }))
 }
 
 #[cfg(test)]
@@ -38,9 +43,11 @@ mod tests {
     #[test]
     fn runtime_import_freshening_reaches_the_lazy_factory() {
         let source="fn _ssrg_tupleShow value: Int -> Int = value\nfn _ssrg_intShow value: Int -> Int = value\npub fn kernel value: Int -> String = show (value, value + 1, True)";
-        let module = crate::lower_core_module_to_typescript_ir(crate::lower_typed_module(
-            seseragi_semantics::type_module("display/main.ssrg", source),
-        ));
+        let module = crate::lower_core_module_to_typescript_ir(
+            crate::lower_typed_module(seseragi_semantics::type_module("display/main.ssrg", source))
+                .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         assert_eq!(module.closed_display_dictionaries.len(), 1);
         let import = module
             .imports

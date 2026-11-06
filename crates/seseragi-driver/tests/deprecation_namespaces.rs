@@ -103,7 +103,8 @@ fn public_namespace_metadata_preserves_generated_code_and_standard_source_maps()
         assert!(entries.iter().all(|entry| entry.namespace == "namespace"));
         assert_eq!(entries, &compiled.generated.source_map.deprecations);
         let raw =
-            seseragi_lowering::emit_typescript_module(compiled.typescript_ir.clone(), FOREIGN);
+            seseragi_lowering::emit_typescript_module(compiled.typescript_ir.clone(), FOREIGN)
+                .expect("valid test lowering input");
         let mut map = serde_json::to_value(compiled.generated.source_map).unwrap();
         map.as_object_mut()
             .unwrap()

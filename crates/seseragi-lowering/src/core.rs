@@ -1,3 +1,4 @@
+use crate::failure::core_error;
 use crate::{source_span, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{ExternalTypeBinding, TypedDecl, TypedForeignMember, TypedModule};
@@ -684,7 +685,7 @@ pub enum CoreMonadDoStatement {
     },
 }
 
-pub fn lower_typed_module(module: TypedModule) -> CoreModule {
+pub fn lower_typed_module(module: TypedModule) -> Result<CoreModule, crate::LoweringInternalError> {
     let mut foreign_origins = Vec::new();
     let mut foreign_symbols = BTreeSet::new();
     for member in module
@@ -732,7 +733,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 .collect(),
         })
         .collect();
-    let instances = lower_instances(&module.source, module.instances);
+    let instances = lower_instances(&module.source, module.instances)?;
     let trait_methods = module
         .trait_methods
         .into_iter()
@@ -860,7 +861,15 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
             } if !scheme.constraints.is_empty() => {
                 let (parameters, body) = expr::peel_lambdas(value);
                 functions.push(CoreFunction {
-                    symbol: pattern_bindings[0].symbol.clone(),
+                    symbol: match pattern_bindings.as_slice() {
+                        [binding] => binding.symbol.clone(),
+                        _ => {
+                            return Err(core_error(
+                                "generalized module lambda must have one binding",
+                            )
+                            .at(&source_span(&module.source, origin)))
+                        }
+                    },
                     visibility,
                     origin: source_span(&module.source, origin),
                     is_effect: false,
@@ -878,7 +887,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                         })
                         .collect(),
                     parameters: parameters.iter().map(lower_parameter).collect(),
-                    body: lower_expr(&module.source, body),
+                    body: lower_expr(&module.source, body)?,
                 });
             }
             TypedDecl::Let {
@@ -898,7 +907,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     value,
                     visibility,
                     origin,
-                )
+                )?
                 .into_iter()
                 .map(|mut binding| {
                     binding.type_parameters = scheme.type_parameters.clone();
@@ -946,7 +955,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                         .into_iter()
                         .map(|parameter| lower_parameter(&parameter))
                         .collect(),
-                    body: lower_expr(&module.source, body),
+                    body: lower_expr(&module.source, body)?,
                 })
             }
             TypedDecl::EffectFn {
@@ -1000,13 +1009,13 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                         .into_iter()
                         .map(|parameter| lower_parameter(&parameter))
                         .collect(),
-                    body: lower_effect_body(&module.source, body),
+                    body: lower_effect_body(&module.source, body)?,
                 });
             }
         }
     }
 
-    CoreModule {
+    Ok(CoreModule {
         schema: module.schema,
         stage: "core-ir".to_owned(),
         module: module.module,
@@ -1020,7 +1029,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         trait_methods,
         bindings,
         functions,
-    }
+    })
 }
 
 fn collect_foreign_declaration_identity(

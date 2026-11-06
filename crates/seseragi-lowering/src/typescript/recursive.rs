@@ -77,6 +77,7 @@ fn cyclic_members(edges: &BTreeMap<String, BTreeSet<String>>) -> BTreeSet<String
         .collect::<BTreeMap<_, _>>();
     for (symbol, references) in edges {
         for next in references {
+            // providerless_effect_types keeps only references that are keys.
             reverse
                 .get_mut(next)
                 .expect("only known top-level edges")

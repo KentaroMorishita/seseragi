@@ -21,7 +21,7 @@ use super::{
 
 mod evidence;
 
-use super::failure::{missing_derived_evidence, Lowered};
+use crate::failure::{missing_derived_evidence, Lowered};
 
 use evidence::resolve_show_dictionary;
 
@@ -322,7 +322,8 @@ fn lower_instance(
 ) -> Lowered<TypeScriptInstance> {
     let scoped_types = context
         .imported_type_names
-        .with_parameters(&instance.type_parameters);
+        .with_parameters(&instance.type_parameters)
+        .with_origin(&instance.origin);
     let context = &InstanceLoweringContext {
         imported_type_names: &scoped_types,
         ..*context
@@ -356,7 +357,7 @@ fn lower_instance(
                                         type_ref: type_ref_from_core_type(
                                             payload,
                                             context.imported_type_names,
-                                        ),
+                                        )?,
                                         dictionary: resolve_show_dictionary(
                                             &evidence.evidence,
                                             context.dictionary_exports,
@@ -403,7 +404,7 @@ fn lower_instance(
                             type_ref: type_ref_from_core_type(
                                 &field.type_ref,
                                 context.imported_type_names,
-                            ),
+                            )?,
                             dictionary: resolve_show_dictionary(
                                 &evidence.evidence,
                                 context.dictionary_exports,
@@ -466,21 +467,25 @@ fn lower_instance(
             .arguments
             .iter()
             .map(|argument| type_ref_from_core_type(argument, context.imported_type_names))
-            .collect(),
+            .collect::<Lowered<Vec<_>>>()?,
         type_identity: instance.type_identity.clone(),
         constraints: instance
             .constraints
             .iter()
-            .map(|constraint| TypeScriptInstanceConstraint {
-                name: constraint.name.clone(),
-                trait_identity: constraint.trait_identity.clone(),
-                arguments: constraint
-                    .arguments
-                    .iter()
-                    .map(|argument| type_ref_from_core_type(argument, context.imported_type_names))
-                    .collect(),
+            .map(|constraint| {
+                Ok(TypeScriptInstanceConstraint {
+                    name: constraint.name.clone(),
+                    trait_identity: constraint.trait_identity.clone(),
+                    arguments: constraint
+                        .arguments
+                        .iter()
+                        .map(|argument| {
+                            type_ref_from_core_type(argument, context.imported_type_names)
+                        })
+                        .collect::<Lowered<Vec<_>>>()?,
+                })
             })
-            .collect(),
+            .collect::<Lowered<Vec<_>>>()?,
         supertrait_count: instance.supertrait_count,
         origin: instance.origin.clone(),
         dictionary_export: dictionary_export_name(&instance.trait_name, index),
@@ -525,7 +530,7 @@ fn lower_derived_value_instance(
                                 type_ref: type_ref_from_core_type(
                                     payload,
                                     context.imported_type_names,
-                                ),
+                                )?,
                                 dictionary: resolve_show_dictionary(
                                     &evidence.evidence,
                                     context.dictionary_exports,
@@ -590,7 +595,10 @@ fn lower_derived_value_instance(
                     })?;
                 Ok(TypeScriptDerivedShowField {
                     name: field.name.clone(),
-                    type_ref: type_ref_from_core_type(&field.type_ref, context.imported_type_names),
+                    type_ref: type_ref_from_core_type(
+                        &field.type_ref,
+                        context.imported_type_names,
+                    )?,
                     dictionary: resolve_show_dictionary(
                         &evidence.evidence,
                         context.dictionary_exports,
@@ -655,7 +663,8 @@ fn lower_method(
 ) -> Lowered<TypeScriptInstanceMethod> {
     let scoped_types = context
         .imported_type_names
-        .with_parameters(&method.type_parameters);
+        .with_parameters(&method.type_parameters)
+        .with_origin(&method.origin);
     let type_constructor_parameters = method
         .type_parameters
         .iter()
@@ -678,16 +687,18 @@ fn lower_method(
         constraints: method
             .constraints
             .iter()
-            .map(|constraint| TypeScriptInstanceConstraint {
-                name: constraint.name.clone(),
-                trait_identity: constraint.trait_identity.clone(),
-                arguments: constraint
-                    .arguments
-                    .iter()
-                    .map(|argument| type_ref_from_core_type(argument, &scoped_types))
-                    .collect(),
+            .map(|constraint| {
+                Ok(TypeScriptInstanceConstraint {
+                    name: constraint.name.clone(),
+                    trait_identity: constraint.trait_identity.clone(),
+                    arguments: constraint
+                        .arguments
+                        .iter()
+                        .map(|argument| type_ref_from_core_type(argument, &scoped_types))
+                        .collect::<Lowered<Vec<_>>>()?,
+                })
             })
-            .collect(),
+            .collect::<Lowered<Vec<_>>>()?,
         is_async: typescript_expr_contains_await(&body),
         parameters: method
             .parameters
@@ -700,7 +711,7 @@ fn lower_method(
                     &type_constructor_parameters,
                 )
             })
-            .collect(),
+            .collect::<Lowered<Vec<_>>>()?,
         body,
         origin: method.origin.clone(),
     })

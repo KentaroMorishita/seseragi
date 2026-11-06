@@ -14,7 +14,8 @@ pub fn raw id: UserId -> Int =
 pub fn answer unit: Unit -> Int =
   raw (UserId 42)
 ";
-    let core = lower_typed_module(type_module("artifact/newtype/main.ssrg", source));
+    let core = lower_typed_module(type_module("artifact/newtype/main.ssrg", source))
+        .expect("valid test lowering input");
 
     assert_eq!(core.adts.len(), 1);
     assert_eq!(core.adts[0].name, "UserId");
@@ -22,9 +23,11 @@ pub fn answer unit: Unit -> Int =
     assert!(matches!(core.functions[0].body, CoreExpr::Decision { .. }));
 
     let bundle = emit_typescript_module(
-        seseragi_lowering::lower_core_module_to_typescript_ir(core),
+        seseragi_lowering::lower_core_module_to_typescript_ir(core)
+            .expect("valid test lowering input"),
         source,
-    );
+    )
+    .expect("valid test lowering input");
     assert!(bundle.typescript.contains("export type UserId ="));
     assert!(bundle
         .typescript
@@ -45,11 +48,14 @@ pub fn untag<T> value: Tagged<T> -> T =
 pub fn answer unit: Unit -> Int =
   untag (Tagged 42)
 ";
-    let core = lower_typed_module(type_module("artifact/generic-newtype/main.ssrg", source));
+    let core = lower_typed_module(type_module("artifact/generic-newtype/main.ssrg", source))
+        .expect("valid test lowering input");
     let bundle = emit_typescript_module(
-        seseragi_lowering::lower_core_module_to_typescript_ir(core),
+        seseragi_lowering::lower_core_module_to_typescript_ir(core)
+            .expect("valid test lowering input"),
         source,
-    );
+    )
+    .expect("valid test lowering input");
 
     assert!(bundle.typescript.contains("export type Tagged<A> ="));
     assert!(bundle

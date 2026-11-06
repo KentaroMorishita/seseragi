@@ -11,9 +11,9 @@ fn constrained_partials_stage_supplied_source_calls_before_remaining_lambdas() {
         "pub fn probe -> Unit = { fn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix; let partial = prefix [9007199254740991 + 1]; () }",
         "type Token = | Token\ntrait Render<T> { fn render<A> tag: T -> value: A -> suffix: String -> String where Show<A> }\ninstance Render<Token> { fn render<A> tag: Token -> value: A -> suffix: String -> String where Show<A> = show value + suffix }\npub fn probe -> Unit = { let partial = render Token [9007199254740991 + 1]; () }",
     ] {
-        let core = lower_typed_module(type_module("strict-partial.ssrg", declaration));
-        let ir = lower_core_module_to_typescript_ir(core);
-        let output = emit_typescript_module(ir, declaration).typescript;
+        let core = lower_typed_module(type_module("strict-partial.ssrg", declaration)).expect("valid test lowering input");
+        let ir = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let output = emit_typescript_module(ir, declaration).expect("valid test lowering input").typescript;
         // An eager binding must precede the deferred suffix parameter. The
         // executable fixture checks semantics; this guards the staging boundary.
         let stage = output.find("const __ssrg$partial$stage").expect(&output);
@@ -30,8 +30,9 @@ fn constrained_first_callback_and_saved_prefix_use_checked_type_arguments() {
                   fn choose value:Int -> Either<String,Int> = Right value\n\
                   pub fn complete -> Either<String,Int> = transform choose 7 42\n\
                   pub fn partial -> (Int -> Int -> Either<String,Int>) = transform choose\n";
-    let core = lower_typed_module(type_module("checked-callback.ssrg", source));
-    let ir = lower_core_module_to_typescript_ir(core);
+    let core = lower_typed_module(type_module("checked-callback.ssrg", source))
+        .expect("valid test lowering input");
+    let ir = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     let TypeScriptFunction::ConstFunction { body, .. } = &ir.functions[2];
     let TypeScriptExpr::CheckedResult { value, .. } = body else {
         panic!("{body:#?}");

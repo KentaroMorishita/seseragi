@@ -1,3 +1,4 @@
+use crate::failure::Lowered;
 use crate::json_ops::runtime_json_operation_for_feature;
 use crate::{
     bytes_ops::runtime_bytes_operation_for_feature,
@@ -46,10 +47,10 @@ pub(super) fn source_map_for_module(
     module: &TypeScriptModule,
     source_text: &str,
     generated_typescript_path: &str,
-) -> SourceMap {
+) -> Lowered<SourceMap> {
     let helper_names = runtime_helper_names(module);
-    let (names, mappings) = module_names_and_mappings(module, source_text, &helper_names);
-    SourceMap {
+    let (names, mappings) = module_names_and_mappings(module, source_text, &helper_names)?;
+    Ok(SourceMap {
         version: 3,
         file: generated_typescript_path.to_owned(),
         source_root: String::new(),
@@ -58,17 +59,17 @@ pub(super) fn source_map_for_module(
         names,
         mappings: encode_mappings(&mappings),
         deprecations: Vec::new(),
-    }
+    })
 }
 
 fn module_names_and_mappings(
     module: &TypeScriptModule,
     source_text: &str,
     helper_names: &BTreeMap<String, String>,
-) -> (Vec<String>, Vec<Mapping>) {
+) -> Lowered<(Vec<String>, Vec<Mapping>)> {
     let mut names = Vec::new();
     let mut mappings = Vec::new();
-    let mut generated_line = generated_declaration_start_line(module);
+    let mut generated_line = generated_declaration_start_line(module)?;
     for dictionary in &module.closed_display_dictionaries {
         collect_expr_names(&dictionary.factory, helper_names, &mut names);
     }
@@ -178,7 +179,7 @@ fn module_names_and_mappings(
             }
         }
     }
-    (names, mappings)
+    Ok((names, mappings))
 }
 
 fn push_declaration_mapping(
@@ -200,12 +201,12 @@ fn push_declaration_mapping(
     });
 }
 
-fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
+fn generated_declaration_start_line(module: &TypeScriptModule) -> Lowered<usize> {
     let import_lines = render_import_lines(module).len();
-    import_lines
+    Ok(import_lines
         + module.runtime_sources.len()
         + 1 // Unicode ABI guard precedes every source declaration.
-        + super::render_kind_declarations(module).lines().count()
+        + super::render_kind_declarations(module)?.lines().count()
         + module.closed_display_dictionaries.len()
         + usize::from(
             import_lines > 0
@@ -215,7 +216,7 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
                     || !module.instances.is_empty()
                     || !module.bindings.is_empty()
                     || !module.functions.is_empty()),
-        )
+        ))
 }
 
 fn runtime_helper_names(module: &TypeScriptModule) -> BTreeMap<String, String> {
@@ -565,12 +566,18 @@ mod tests {
     #[test]
     fn public_alias_projection_maps_alias_and_following_value_to_actual_lines() {
         let source = "pub alias Item = Int\npub fn value -> Int = 42\n";
-        let module = crate::lower_core_module_to_typescript_ir(crate::lower_typed_module(
-            seseragi_semantics::type_module("artifact/alias-map/main.ssrg", source),
-        ));
+        let module = crate::lower_core_module_to_typescript_ir(
+            crate::lower_typed_module(seseragi_semantics::type_module(
+                "artifact/alias-map/main.ssrg",
+                source,
+            ))
+            .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         let generated = super::super::render_typescript(&module);
         let (names, mappings) =
-            module_names_and_mappings(&module, source, &runtime_helper_names(&module));
+            module_names_and_mappings(&module, source, &runtime_helper_names(&module))
+                .expect("valid test lowering input");
         for (name, prefix, original_line) in [
             ("Item", "export type Item", 0),
             ("value", "export const value", 1),
@@ -591,13 +598,19 @@ mod tests {
     #[test]
     fn higher_kind_helpers_preserve_source_declaration_mappings() {
         let source = "pub type Box<F<_>, A> = | Box F<A>\npub alias Wrapped<F<_>, A> = Box<F, A>\npub fn value -> Int = 42\n";
-        let module = crate::lower_core_module_to_typescript_ir(crate::lower_typed_module(
-            seseragi_semantics::type_module("artifact/kind-map/main.ssrg", source),
-        ));
+        let module = crate::lower_core_module_to_typescript_ir(
+            crate::lower_typed_module(seseragi_semantics::type_module(
+                "artifact/kind-map/main.ssrg",
+                source,
+            ))
+            .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         assert!(module.higher_kinds.is_some());
         let generated = super::super::render_typescript(&module);
         let (names, mappings) =
-            module_names_and_mappings(&module, source, &runtime_helper_names(&module));
+            module_names_and_mappings(&module, source, &runtime_helper_names(&module))
+                .expect("valid test lowering input");
         for (name, prefix, original_line) in [
             ("Wrapped", "export type Wrapped", 1),
             ("value", "export const value", 2),
@@ -618,13 +631,16 @@ mod tests {
     #[test]
     fn lazy_display_helpers_preserve_source_declaration_mappings() {
         let source="pub fn kernel value: Int -> String = show (value, value + 1, True)\npub fn value -> Int = 42\n";
-        let module = crate::lower_core_module_to_typescript_ir(crate::lower_typed_module(
-            seseragi_semantics::type_module("display/main.ssrg", source),
-        ));
+        let module = crate::lower_core_module_to_typescript_ir(
+            crate::lower_typed_module(seseragi_semantics::type_module("display/main.ssrg", source))
+                .expect("valid test lowering input"),
+        )
+        .expect("valid test lowering input");
         assert_eq!(module.closed_display_dictionaries.len(), 1);
         let generated = super::super::render_typescript(&module);
         let (names, mappings) =
-            module_names_and_mappings(&module, source, &runtime_helper_names(&module));
+            module_names_and_mappings(&module, source, &runtime_helper_names(&module))
+                .expect("valid test lowering input");
         for (name, original_line) in [("kernel", 0), ("value", 1)] {
             let actual = generated
                 .lines()
@@ -698,7 +714,10 @@ mod tests {
 
         assert_eq!(render_import_lines(&module).len(), 3);
         // Two source import lines, the ABI import, the guard, then a blank line.
-        assert_eq!(generated_declaration_start_line(&module), 5);
+        assert_eq!(
+            generated_declaration_start_line(&module).expect("valid test lowering input"),
+            5
+        );
 
         let mut inferred_only = module;
         inferred_only.source_imports[0].runtime_edge = false;
@@ -709,6 +728,9 @@ mod tests {
                 "import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from \"@seseragi/runtime/unicode-version\"",
             ],
         );
-        assert_eq!(generated_declaration_start_line(&inferred_only), 4);
+        assert_eq!(
+            generated_declaration_start_line(&inferred_only).expect("valid test lowering input"),
+            4
+        );
     }
 }

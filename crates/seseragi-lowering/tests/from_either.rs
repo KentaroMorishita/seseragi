@@ -71,7 +71,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
         }],
     };
 
-    let typescript = lower_core_module_to_typescript_ir(module);
+    let typescript = lower_core_module_to_typescript_ir(module).expect("valid test lowering input");
 
     assert_eq!(
         typescript.runtime_requirements,
@@ -90,7 +90,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
             && matches!(arguments.as_slice(), [TypeScriptExpr::Identifier { name }] if name == "candidate")
     ));
 
-    let bundle = emit_typescript_module(typescript, "");
+    let bundle = emit_typescript_module(typescript, "").expect("valid test lowering input");
     assert!(bundle.typescript.contains(
         "import { fromEither as _ssrg_effect_fromEither } from \"@seseragi/runtime/effect\""
     ));

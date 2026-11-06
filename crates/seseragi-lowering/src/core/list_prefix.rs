@@ -74,7 +74,7 @@ mod tests {
         let module = crate::lower_typed_module(seseragi_semantics::type_module(
             "prefix/main.ssrg",
             "pub fn probe xs: List<Int> -> Int = match xs { `[a, b, ...tail] when a == 1 -> b\n _ -> 0 }",
-        ));
+        )).expect("valid test lowering input");
         let super::super::CoreExpr::Decision {
             scrutinee_type,
             branches,

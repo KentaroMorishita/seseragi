@@ -21,7 +21,7 @@ fn core(source: &str) -> CoreModule {
     .unwrap();
     let analyzed =
         analyze_linked_module(parse_diagnostics("recursive.ssrg", source), linked, source).unwrap();
-    lower_typed_module(analyzed.typed_hir)
+    lower_typed_module(analyzed.typed_hir).expect("valid test lowering input")
 }
 
 #[test]
@@ -29,7 +29,7 @@ fn checked_wait_defer_keeps_a_closed_annotation_and_effect_type_import() {
     let module = core(WAIT);
     assert!(!module.functions[0].is_effect);
     assert_eq!(module.functions[0].parameters.len(), 1);
-    let typescript = lower_core_module_to_typescript_ir(module);
+    let typescript = lower_core_module_to_typescript_ir(module).expect("valid test lowering input");
     assert!(matches!(
         &typescript.functions[0],
         TypeScriptFunction::ConstFunction {
@@ -55,7 +55,7 @@ fn checked_wait_defer_keeps_a_closed_annotation_and_effect_type_import() {
             .count(),
         1
     );
-    let generated = emit_typescript_module(typescript, WAIT);
+    let generated = emit_typescript_module(typescript, WAIT).expect("valid test lowering input");
     assert!(generated.typescript.contains("type Effect as Effect"));
     assert!(generated
         .typescript
@@ -66,7 +66,8 @@ fn checked_wait_defer_keeps_a_closed_annotation_and_effect_type_import() {
 #[test]
 fn nested_checked_effect_result_keeps_its_channels_and_one_import() {
     let source = "import * as effects from \"std/effect\"\nfn wait -> Effect<{}, Never, Effect<{}, Never, Unit>> = effects.defer (\\_ -> wait ())\n";
-    let typescript = lower_core_module_to_typescript_ir(core(source));
+    let typescript =
+        lower_core_module_to_typescript_ir(core(source)).expect("valid test lowering input");
     assert!(matches!(
         &typescript.functions[0],
         TypeScriptFunction::ConstFunction {
@@ -107,9 +108,10 @@ fn canonical_effect_annotation_freshens_only_its_runtime_import() {
     let nominal = lower_typed_module(seseragi_semantics::type_module(
         "nominal.ssrg",
         "type Effect = | LocalEffect\n",
-    ));
+    ))
+    .expect("valid test lowering input");
     module.adts.extend(nominal.adts);
-    let typescript = lower_core_module_to_typescript_ir(module);
+    let typescript = lower_core_module_to_typescript_ir(module).expect("valid test lowering input");
     let import = typescript
         .type_imports
         .iter()
@@ -125,7 +127,7 @@ fn canonical_effect_annotation_freshens_only_its_runtime_import() {
         } if matches!(result.as_ref(), TypeScriptType::Reference { name, .. }
             if name == &import.local)
     ));
-    let generated = emit_typescript_module(typescript, WAIT);
+    let generated = emit_typescript_module(typescript, WAIT).expect("valid test lowering input");
     assert!(generated
         .typescript
         .contains("type Effect as __ssrg$Effect"));

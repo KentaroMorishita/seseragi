@@ -4,7 +4,10 @@ const SUM: &str = "fn sum remaining: Int -> total: Int -> Int = if remaining == 
 
 fn function(source: &str) -> CoreFunction {
     let typed = seseragi_semantics::type_module("scalar/main.ssrg", source);
-    crate::lower_typed_module(typed).functions.remove(0)
+    crate::lower_typed_module(typed)
+        .expect("valid test lowering input")
+        .functions
+        .remove(0)
 }
 
 #[test]
@@ -127,6 +130,7 @@ fn global_module(path: &str) -> CoreModule {
             SUM.replace("total + remaining", "total + increment")
         ),
     ))
+    .expect("valid test lowering input")
 }
 
 fn global_operand(function: &mut CoreFunction) -> &mut CoreExpr {
@@ -180,7 +184,7 @@ fn canonical_global_owner_and_lexical_parameter_take_precedence_over_spelling() 
     )
     .is_none());
 
-    let shadow = crate::lower_typed_module(seseragi_semantics::type_module("scalar/shadow.ssrg", "let increment: Int = 3\nfn sum remaining: Int -> increment: Int -> Int = if remaining == 0 then increment else sum (remaining - 1) (increment + remaining)\n"));
+    let shadow = crate::lower_typed_module(seseragi_semantics::type_module("scalar/shadow.ssrg", "let increment: Int = 3\nfn sum remaining: Int -> increment: Int -> Int = if remaining == 0 then increment else sum (remaining - 1) (increment + remaining)\n")).expect("valid test lowering input");
     let plan = scalar_self_tail_loop_with_globals(
         &shadow.functions[0],
         &shadow.module,

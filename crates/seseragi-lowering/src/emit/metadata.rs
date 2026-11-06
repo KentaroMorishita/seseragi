@@ -163,9 +163,9 @@ mod tests {
     fn exposes_selected_dictionary_exports_separately_from_source_exports() {
         let source = "pub type AppError deriving Show =\n  | EndOfInput\n";
         let typed = type_module("artifact/generated-show/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let metadata = generated_module_for(
-            lower_core_module_to_typescript_ir(core),
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input"),
             GeneratedOutputPaths::default(),
         );
 
@@ -197,9 +197,9 @@ mod tests {
     fn omits_instance_metadata_when_no_dictionary_is_selected() {
         let source = "pub let answer: Int = 42\n";
         let typed = type_module("artifact/no-generated-show/main.ssrg", source);
-        let core = lower_typed_module(typed);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
         let metadata = generated_module_for(
-            lower_core_module_to_typescript_ir(core),
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input"),
             GeneratedOutputPaths::default(),
         );
         let json = serde_json::to_value(metadata).unwrap();

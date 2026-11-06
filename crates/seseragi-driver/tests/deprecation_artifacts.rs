@@ -53,7 +53,8 @@ fn public_notices_survive_both_artifacts_without_changing_standard_mappings() {
                     .starts_with("deprecated \"")
             );
         }
-        let raw = emit_typescript_module(compiled.typescript_ir.clone(), source);
+        let raw = emit_typescript_module(compiled.typescript_ir.clone(), source)
+            .expect("valid test lowering input");
         assert_eq!(compiled.generated.typescript, raw.typescript);
         let mut standard_map = serde_json::to_value(&compiled.generated.source_map).unwrap();
         assert!(standard_map

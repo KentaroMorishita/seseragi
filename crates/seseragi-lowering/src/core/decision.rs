@@ -1,3 +1,4 @@
+use crate::failure::Lowered;
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{TypedExpr, TypedMatchArm, TypedPattern, TypedType};
 use seseragi_syntax::ByteSpan;
@@ -156,21 +157,21 @@ pub(super) fn lower_match(
     exhaustive: bool,
     type_ref: TypedType,
     origin: ByteSpan,
-) -> CoreExpr {
+) -> Lowered<CoreExpr> {
     let scrutinee_type = lower_typed_type(typed_expr_type(&scrutinee));
     let mut branches = arms
         .into_iter()
         .map(|arm| lower_branch(source, arm))
-        .collect::<Vec<_>>();
+        .collect::<Lowered<Vec<_>>>()?;
     normalize_residual_branch(exhaustive, &mut branches);
-    CoreExpr::Decision {
-        scrutinee: Box::new(lower_expr(source, scrutinee)),
+    Ok(CoreExpr::Decision {
+        scrutinee: Box::new(lower_expr(source, scrutinee)?),
         scrutinee_type,
         branches,
         exhaustive,
         type_ref: lower_typed_type(type_ref),
         origin: source_span(source, origin),
-    }
+    })
 }
 
 fn normalize_residual_branch(exhaustive: bool, branches: &mut [CoreDecisionBranch]) {
@@ -197,7 +198,7 @@ fn normalize_residual_branch(exhaustive: bool, branches: &mut [CoreDecisionBranc
     }
 }
 
-fn lower_branch(source: &str, arm: TypedMatchArm) -> CoreDecisionBranch {
+fn lower_branch(source: &str, arm: TypedMatchArm) -> Lowered<CoreDecisionBranch> {
     let mut tests = Vec::new();
     let mut bindings = Vec::new();
     lower_pattern(
@@ -207,13 +208,16 @@ fn lower_branch(source: &str, arm: TypedMatchArm) -> CoreDecisionBranch {
         &mut tests,
         &mut bindings,
     );
-    CoreDecisionBranch {
+    Ok(CoreDecisionBranch {
         tests,
         bindings,
-        guard: arm.guard.map(|guard| lower_expr(source, guard)),
-        value: lower_expr(source, arm.body),
+        guard: arm
+            .guard
+            .map(|guard| lower_expr(source, guard))
+            .transpose()?,
+        value: lower_expr(source, arm.body)?,
         origin: source_span(source, arm.origin),
-    }
+    })
 }
 
 fn lower_pattern(
@@ -363,7 +367,7 @@ fn typed_pattern_type(pattern: &TypedPattern) -> TypedType {
     }
 }
 
-fn typed_pattern_origin(pattern: &TypedPattern) -> ByteSpan {
+pub(super) fn typed_pattern_origin(pattern: &TypedPattern) -> ByteSpan {
     match pattern {
         TypedPattern::Integer { origin, .. }
         | TypedPattern::String { origin, .. }
@@ -423,13 +427,13 @@ pub(super) fn lower_fallback(
     right: TypedExpr,
     result_type: TypedType,
     span: ByteSpan,
-) -> CoreExpr {
+) -> Lowered<CoreExpr> {
     let scrutinee_type = lower_typed_type(typed_expr_type(&left));
     let type_ref = lower_typed_type(result_type);
     let origin = source_span(source, span);
     let name = "$ssrg$fallbackValue".to_owned();
-    CoreExpr::Decision {
-        scrutinee: Box::new(lower_expr(source, left)),
+    Ok(CoreExpr::Decision {
+        scrutinee: Box::new(lower_expr(source, left)?),
         scrutinee_type,
         exhaustive: true,
         branches: vec![
@@ -459,11 +463,11 @@ pub(super) fn lower_fallback(
                 tests: vec![],
                 bindings: vec![],
                 guard: None,
-                value: lower_expr(source, right),
+                value: lower_expr(source, right)?,
                 origin: origin.clone(),
             },
         ],
         type_ref,
         origin,
-    }
+    })
 }

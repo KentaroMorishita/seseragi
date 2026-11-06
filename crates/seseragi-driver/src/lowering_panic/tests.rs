@@ -248,3 +248,210 @@ fn linked_module_reports_missing_lowering_facts_as_diagnostics() {
     };
     assert_located_lowering_error(&diagnostics, "linked.ssrg");
 }
+
+#[derive(Clone, Copy, Debug)]
+enum MissingFact {
+    GeneralizedBinding,
+    RecursiveTypeImport,
+    ComprehensionGenerator,
+    DisplayDictionaryImport,
+}
+
+impl MissingFact {
+    fn source(self) -> &'static str {
+        match self {
+            Self::GeneralizedBinding => "let render = \\value -> show value\n",
+            Self::RecursiveTypeImport => "pub fn recurse value: Int -> Int = if value == 0 then 0 else recurse (value - 1)\n",
+            Self::ComprehensionGenerator => "pub fn values items: Array<Int> -> Array<Int> = [item | item <- items]\n",
+            Self::DisplayDictionaryImport => "type Box deriving Show = | Box Int\npub fn label value: Box -> String = show value\n",
+        }
+    }
+
+    fn origin(self, compiled: &crate::CompiledModule) -> seseragi_lowering::SourceSpan {
+        match self {
+            Self::GeneralizedBinding | Self::RecursiveTypeImport => {
+                compiled.core_ir.functions[0].origin.clone()
+            }
+            Self::ComprehensionGenerator => {
+                seseragi_lowering::core_expr_origin(&compiled.core_ir.functions[0].body).clone()
+            }
+            Self::DisplayDictionaryImport => compiled.typescript_ir.instances[0].origin.clone(),
+        }
+    }
+
+    fn label(self) -> String {
+        use seseragi_lowering::{LoweringInternalErrorKind as Kind, LoweringStage as Stage};
+        let (kind, stage) = match self {
+            Self::GeneralizedBinding => (Kind::UnexpectedTypedHirShape, Stage::Core),
+            Self::RecursiveTypeImport => (Kind::MissingTypeInformation, Stage::Type),
+            Self::ComprehensionGenerator => (Kind::UnexpectedCoreShape, Stage::Expression),
+            Self::DisplayDictionaryImport => (Kind::MissingDerivedEvidence, Stage::Emission),
+        };
+        format!("{} during {}: ", kind.description(), stage.description())
+    }
+
+    fn with_missing_fact<T>(self, action: impl FnOnce() -> T) -> T {
+        match self {
+            Self::GeneralizedBinding => fault::with_typed_edit(
+                |module| {
+                    let seseragi_semantics::TypedDecl::Let { bindings, .. } =
+                        &mut module.declarations[0]
+                    else {
+                        panic!("generalized let");
+                    };
+                    bindings.clear();
+                },
+                action,
+            ),
+            Self::RecursiveTypeImport => fault::with_core_edit(
+                |module| {
+                    module.functions[0].value_type =
+                        Some(seseragi_lowering::CoreType::ExternalNamed {
+                            name: "Lost".into(),
+                            canonical: "lost/module::Lost".into(),
+                            arguments: vec![],
+                        });
+                },
+                action,
+            ),
+            Self::ComprehensionGenerator => fault::with_core_edit(
+                |module| {
+                    let seseragi_lowering::CoreExpr::ArrayComprehension { clauses, .. } =
+                        &mut module.functions[0].body
+                    else {
+                        panic!("comprehension");
+                    };
+                    clauses.clear();
+                },
+                action,
+            ),
+            Self::DisplayDictionaryImport => fault::with_typescript_edit(
+                |module| {
+                    module
+                        .type_imports
+                        .retain(|import| import.feature != "core.show.dictionary");
+                },
+                action,
+            ),
+        }
+    }
+}
+
+const MISSING_FACTS: [MissingFact; 4] = [
+    MissingFact::GeneralizedBinding,
+    MissingFact::RecursiveTypeImport,
+    MissingFact::ComprehensionGenerator,
+    MissingFact::DisplayDictionaryImport,
+];
+
+fn assert_missing_fact_diagnostic(
+    diagnostics: &DiagnosticArtifact,
+    fact: MissingFact,
+    origin: &seseragi_lowering::SourceSpan,
+) {
+    assert_eq!(diagnostics.source, origin.source);
+    let [diagnostic] = diagnostics.diagnostics.as_slice() else {
+        panic!("one internal error: {diagnostics:?}");
+    };
+    assert_eq!(diagnostic.code, "SES-I0001");
+    assert_eq!(diagnostic.severity, DiagnosticSeverity::Error);
+    assert_eq!(
+        (diagnostic.primary.start, diagnostic.primary.end),
+        (origin.start, origin.end)
+    );
+    let [label] = diagnostic.related.as_slice() else {
+        panic!("located invariant label");
+    };
+    assert_eq!(label.primary, diagnostic.primary);
+    assert_eq!(label.source, None);
+    // The unwind safety net has no invariant label; this proves Result handling.
+    assert!(
+        label.message.starts_with(&fact.label()),
+        "{}",
+        label.message
+    );
+}
+
+#[test]
+fn single_module_reports_core_type_comprehension_and_emission_errors() {
+    for fact in MISSING_FACTS {
+        for profile in [
+            crate::BuildProfile::Development,
+            crate::BuildProfile::Release,
+        ] {
+            let input =
+                CompileInput::new("fault.ssrg", "app/fault", fact.source()).with_profile(profile);
+            let expected = compile_module(input).unwrap();
+            let origin = fact.origin(&expected);
+            let diagnostics = fact
+                .with_missing_fact(|| compile_module(input))
+                .unwrap_err();
+            assert_missing_fact_diagnostic(&diagnostics, fact, &origin);
+            assert_eq!(compile_module(input).unwrap(), expected);
+        }
+    }
+}
+
+#[test]
+fn project_reports_core_type_comprehension_and_emission_errors() {
+    for fact in MISSING_FACTS {
+        let mut graph = ModuleGraph::new();
+        graph.add_module("app/fault".to_owned(), []).unwrap();
+        let inputs = vec![ProjectModuleInput::new(
+            "fault.ssrg",
+            "app/fault",
+            fact.source(),
+            "fault.js",
+        )];
+        let expected = compile_project(graph.clone(), inputs.clone()).unwrap();
+        let origin = fact.origin(&expected.modules["app/fault"]);
+        let error = fact
+            .with_missing_fact(|| compile_project(graph.clone(), inputs.clone()))
+            .unwrap_err();
+        let diagnostics = match error {
+            ProjectCompileError::Compile {
+                module,
+                error: LinkedCompileError::Diagnostics(diagnostics),
+            } => {
+                assert_eq!(module, "app/fault");
+                diagnostics
+            }
+            ProjectCompileError::Diagnostics { modules } => {
+                assert_eq!(modules.len(), 1);
+                assert_eq!(modules[0].module, "app/fault");
+                modules[0].diagnostics.clone()
+            }
+            other => panic!("expected internal diagnostics: {other:?}"),
+        };
+        assert_missing_fact_diagnostic(&diagnostics, fact, &origin);
+        assert_eq!(compile_project(graph, inputs).unwrap(), expected);
+    }
+}
+
+#[test]
+fn core_only_module_and_project_report_missing_typed_facts() {
+    let fact = MissingFact::GeneralizedBinding;
+    let input = CompileInput::new("fault.ssrg", "app/fault", fact.source());
+    let expected = compile_module(input).unwrap();
+    let origin = fact.origin(&expected);
+    let diagnostics = fact
+        .with_missing_fact(|| compile_core_module(input))
+        .unwrap_err();
+    assert_missing_fact_diagnostic(&diagnostics, fact, &origin);
+    let mut graph = ModuleGraph::new();
+    graph.add_module("app/fault".to_owned(), []).unwrap();
+    let inputs = vec![ProjectModuleInput::new(
+        "fault.ssrg",
+        "app/fault",
+        fact.source(),
+        "fault.js",
+    )];
+    let error = fact
+        .with_missing_fact(|| compile_core_project(graph, inputs))
+        .unwrap_err();
+    let ProjectCompileError::Diagnostics { modules } = error else {
+        panic!("Core project diagnostic");
+    };
+    assert_eq!(modules.len(), 1);
+    assert_missing_fact_diagnostic(&modules[0].diagnostics, fact, &origin);
+}
