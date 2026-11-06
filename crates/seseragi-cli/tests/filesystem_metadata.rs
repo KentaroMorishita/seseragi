@@ -294,6 +294,21 @@ fn filesystem_queries_match_ts_for_files_links_errors_and_lexical_boundaries() {
             } else {
                 file.clone()
             };
+            // A trailing slash after a symlink to a file is NotADirectory on
+            // Linux and macOS 26, but macOS 15 follows the link and reports
+            // the file. exists and canonicalize report what the host says.
+            let mut slashed = data.join("file-link").into_os_string();
+            slashed.push("/");
+            if path == "file-link/" && fs::metadata(&slashed).is_ok() {
+                cases.push(Case::new(
+                    path,
+                    "Right True",
+                    &file,
+                    &link,
+                    &canonical(&data.join("file.txt")),
+                ));
+                continue;
+            }
             cases.push(Case::new(
                 path,
                 &error("ReadMetadata", path, exists_kind),

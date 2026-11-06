@@ -241,6 +241,15 @@ impl Toolchain {
     pub fn cargo(&self) -> Result<Command, String> {
         self.command("cargo")
     }
+
+    pub fn rustc(&self) -> Result<Command, String> {
+        self.command("rustc")
+    }
+
+    /// The `CARGO_HOME` that managed cargo runs with.
+    pub fn cargo_home(&self) -> &Path {
+        &self.cargo_home
+    }
 }
 
 fn download(url: &str, destination: &Path) -> Result<(), String> {

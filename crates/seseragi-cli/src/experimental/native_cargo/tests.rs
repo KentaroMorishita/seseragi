@@ -81,35 +81,419 @@ fn cargo_targets_use_one_full_key_and_separate_inputs_and_entry_points() {
 }
 
 #[test]
-fn path_remapping_preserves_environment_flag_precedence_and_argument_boundaries() {
-    let remapping = "native cargo 雪 =.";
+fn rustflags_keep_the_selected_source_and_append_path_flags() {
+    let path_flags = [
+        "--remap-path-prefix".to_owned(),
+        "native cargo 雪 =.".to_owned(),
+    ];
+    let configured = ["-C".to_owned(), "opt-level=1".to_owned()];
     for (encoded, plain, prefix) in [
-        (None, None, None),
+        // Without environment flags, the flags Cargo selected from its
+        // config (for example target.<host>.rustflags) are kept.
+        (None, None, "-C\x1fopt-level=1"),
         (
             None,
-            Some("-C opt-level=1\t--cfg caller"),
-            Some("-C\x1fopt-level=1\x1f--cfg\x1fcaller"),
+            Some("-C opt-level=2\t--cfg caller"),
+            "-C\x1fopt-level=2\x1f--cfg\x1fcaller",
         ),
         (
             Some("--cfg\x1fencoded"),
             Some("ignored"),
-            Some("--cfg\x1fencoded"),
+            "--cfg\x1fencoded",
         ),
-        (Some(""), Some("ignored"), Some("")),
+        (Some(""), Some("ignored"), ""),
     ] {
-        let actual =
-            remapped_environment_flags(encoded.map(Into::into), plain.map(Into::into), remapping)
-                .unwrap();
-        let expected = prefix.map(|prefix| {
-            let prefix = if prefix.is_empty() {
-                String::new()
-            } else {
-                format!("{prefix}\x1f")
-            };
-            OsString::from(format!("{prefix}--remap-path-prefix\x1f{remapping}"))
-        });
-        assert_eq!(actual, expected);
+        let actual = rustflags_with_paths(
+            encoded.map(Into::into),
+            plain.map(Into::into),
+            &configured,
+            &path_flags,
+        )
+        .unwrap();
+        let prefix = if prefix.is_empty() {
+            String::new()
+        } else {
+            format!("{prefix}\x1f")
+        };
+        assert_eq!(
+            actual,
+            OsString::from(format!("{prefix}--remap-path-prefix\x1fnative cargo 雪 =."))
+        );
     }
+    assert_eq!(
+        rustflags_with_paths(None, None, &[], &path_flags).unwrap(),
+        OsString::from("--remap-path-prefix\x1fnative cargo 雪 =.")
+    );
+}
+
+#[test]
+fn apple_hosts_also_make_linker_object_paths_relative_to_the_target() {
+    let directory = Path::new("/work/a,b/.seseragi/native/id");
+    let target = Path::new("/work/a,b/.seseragi/native-target/key");
+    let remap = ["--remap-path-prefix", "/work/a,b/.seseragi/native/id=."];
+    for invocation in [LinkerInvocation::CompilerDriver, LinkerInvocation::Direct] {
+        assert_eq!(
+            path_flags(directory, target, "x86_64-unknown-linux-gnu", invocation),
+            remap
+        );
+    }
+    let link = |arguments: &[&str]| {
+        let mut flags = remap.map(String::from).to_vec();
+        flags.extend(
+            arguments
+                .iter()
+                .map(|argument| format!("-Clink-arg={argument}")),
+        );
+        flags
+    };
+    let prefix = "/work/a,b/.seseragi/native-target/key/";
+    assert_eq!(
+        path_flags(
+            directory,
+            target,
+            "aarch64-apple-darwin",
+            LinkerInvocation::CompilerDriver
+        ),
+        link(&["-Xlinker", "-oso_prefix", "-Xlinker", prefix])
+    );
+    // A linker started directly rejects the compiler driver's -Xlinker.
+    assert_eq!(
+        path_flags(
+            directory,
+            target,
+            "aarch64-apple-darwin",
+            LinkerInvocation::Direct
+        ),
+        link(&["-oso_prefix", prefix])
+    );
+}
+
+#[test]
+fn linker_invocation_follows_rustc_flavor_and_linker_name_rules() {
+    use LinkerInvocation::{CompilerDriver, Direct};
+    let flags = |text: &str| {
+        text.split_whitespace()
+            .map(String::from)
+            .collect::<Vec<_>>()
+    };
+    for (rustflags, environment, expected) in [
+        ("", None, CompilerDriver),
+        ("-C opt-level=1", None, CompilerDriver),
+        ("-C linker=rust-lld", None, Direct),
+        // rustc gives ld64.lld no hint, so the Apple default driver stays.
+        ("-Clinker=/opt/llvm/bin/ld64.lld", None, CompilerDriver),
+        // rustc removes a numeric suffix after the last `-`.
+        ("-C linker=/opt/bin/ld-21", None, Direct),
+        ("-C linker=rust-lld-19", None, Direct),
+        ("-C linker=ld.lld-18.exe", None, Direct),
+        ("-C linker=clang-18", None, CompilerDriver),
+        ("-C linker=gcc-", None, CompilerDriver),
+        ("-C linker=ld-x", None, CompilerDriver),
+        ("", Some("/opt/bin/ld-21"), Direct),
+        ("--codegen=linker=ld", None, Direct),
+        ("--codegen linker=x86_64-apple-darwin-ld", None, Direct),
+        ("-C linker=/usr/bin/clang", None, CompilerDriver),
+        ("-C linker=cc", None, CompilerDriver),
+        ("", Some("rust-lld"), Direct),
+        ("", Some("/usr/bin/clang"), CompilerDriver),
+        ("-C linker=clang", Some("rust-lld"), CompilerDriver),
+        ("-C linker=rust-lld -C linker=clang", None, CompilerDriver),
+        ("-C linker-flavor=darwin", None, Direct),
+        ("-C linker-flavor=darwin-lld", None, Direct),
+        ("-C linker-flavor=ld64.lld", None, Direct),
+        ("-C linker-flavor=darwin-lld-cc", None, CompilerDriver),
+        ("-C linker-flavor=gcc", None, CompilerDriver),
+        (
+            "-C linker=rust-lld -C linker-flavor=darwin-lld-cc",
+            None,
+            CompilerDriver,
+        ),
+        ("-C linker=clang -C linker-flavor=darwin-lld", None, Direct),
+    ] {
+        assert_eq!(
+            linker_invocation(&flags(rustflags), environment),
+            expected,
+            "{rustflags} / {environment:?}"
+        );
+    }
+}
+
+#[test]
+fn linker_settings_read_cargo_config_files_with_cargo_precedence() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let package = root.path().join("package");
+    let directory = package.join(".seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    for path in [&directory, &home] {
+        fs::create_dir_all(path).unwrap();
+    }
+    let write = |directory: &Path, name: &str, source: &str| {
+        fs::create_dir_all(directory).unwrap();
+        fs::write(directory.join(name), source).unwrap();
+    };
+    let none = |_: &str| None;
+    let resolve = |environment: &dyn Fn(&str) -> Option<OsString>| {
+        cargo_config::linker_settings(&directory, &home, host, &[], environment)
+    };
+    assert_eq!(resolve(&none), cargo_config::LinkerSettings::default());
+
+    // A linker set only in the package's Cargo config is the one Cargo uses.
+    write(
+        &package.join(".cargo"),
+        "config.toml",
+        "[target.aarch64-apple-darwin]\nlinker = \"/opt/llvm/bin/rust-lld\"\n[target.x86_64-apple-darwin]\nlinker = \"clang\"\n",
+    );
+    let settings = resolve(&none);
+    assert_eq!(settings.linker.as_deref(), Some("/opt/llvm/bin/rust-lld"));
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::Direct
+    );
+
+    // CARGO_HOME has the lowest precedence; a nearer `config` beats
+    // `config.toml` in the same directory and every farther file.
+    write(&home, "config.toml", "[target.aarch64-apple-darwin]\nlinker = \"home-ld\"\n[build]\nrustflags = \"-C opt-level=1\"\n");
+    write(
+        &directory.join(".cargo"),
+        "config",
+        "[target.aarch64-apple-darwin]\nlinker = \"clang\"\n",
+    );
+    write(
+        &directory.join(".cargo"),
+        "config.toml",
+        "[target.aarch64-apple-darwin]\nlinker = \"rust-lld\"\n",
+    );
+    let settings = resolve(&none);
+    assert_eq!(settings.linker.as_deref(), Some("clang"));
+    assert_eq!(settings.rustflags, ["-C", "opt-level=1"]);
+
+    // Target rustflags replace build rustflags; config arrays append in
+    // precedence order, so a nearer -C linker comes last and wins.
+    write(
+        &package.join(".cargo"),
+        "config.toml",
+        "[target.aarch64-apple-darwin]\nrustflags = [\"-C\", \"linker=rust-lld\"]\n",
+    );
+    write(
+        &directory.join(".cargo"),
+        "config",
+        "[target.aarch64-apple-darwin]\nrustflags = [\"-C\", \"linker=clang-18\"]\n",
+    );
+    let settings = resolve(&none);
+    assert_eq!(
+        settings.rustflags,
+        ["-C", "linker=rust-lld", "-C", "linker=clang-18"]
+    );
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::CompilerDriver
+    );
+
+    // Environment variables override config files, and RUSTFLAGS replaces
+    // every configured rustflags value.
+    let environment = |key: &str| match key {
+        "CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER" => Some(OsString::from("/opt/bin/ld-21")),
+        "RUSTFLAGS" => Some(OsString::from("-C opt-level=2")),
+        _ => None,
+    };
+    let settings = resolve(&environment);
+    assert_eq!(settings.linker.as_deref(), Some("/opt/bin/ld-21"));
+    assert_eq!(settings.rustflags, ["-C", "opt-level=2"]);
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::Direct
+    );
+
+    // A file Cargo cannot parse is left for Cargo to report.
+    write(&directory.join(".cargo"), "config", "[target");
+    assert_eq!(resolve(&none).rustflags, ["-C", "linker=rust-lld"]);
+}
+
+#[test]
+fn rustflags_strings_replace_arrays_join_and_empty_target_flags_use_build() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let package = root.path().join("package");
+    let directory = package.join(".seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    let write = |directory: &Path, source: &str| {
+        fs::create_dir_all(directory).unwrap();
+        fs::write(directory.join("config.toml"), source).unwrap();
+    };
+    let resolve = |far: &str, near: &str| {
+        write(&package.join(".cargo"), far);
+        write(&directory.join(".cargo"), near);
+        cargo_config::linker_settings(&directory, &home, host, &[], &|_: &str| None).rustflags
+    };
+    let target = |value: &str| format!("[target.aarch64-apple-darwin]\nrustflags = {value}\n");
+    let build = "[build]\nrustflags = [\"-Cdebuginfo=0\"]\n";
+
+    // A nearer string replaces a farther string.
+    assert_eq!(
+        resolve(
+            &target("\"-C linker=rust-lld\""),
+            &target("\"-C opt-level=1\"")
+        ),
+        ["-C", "opt-level=1"]
+    );
+    // Arrays join with the farther values first.
+    assert_eq!(
+        resolve(&target("[\"-Ca\"]"), &target("[\"-Cb\"]")),
+        ["-Ca", "-Cb"]
+    );
+    // A string and an array for the same key are a Cargo type error, so no
+    // flags come from that key; build.rustflags is the next source.
+    for (far, near) in [
+        ("\"-Ca\"", "[\"-Cb\"]"),
+        ("[\"-Ca\"]", "\"-Cb\""),
+        ("[1]", "[\"-Cb\"]"),
+    ] {
+        assert_eq!(
+            resolve(&format!("{build}{}", target(far)), &target(near)),
+            ["-Cdebuginfo=0"],
+            "{far} / {near}"
+        );
+    }
+    // Empty target flags fall back to build.rustflags, as Cargo does.
+    assert_eq!(resolve(build, &target("[]")), ["-Cdebuginfo=0"]);
+    assert_eq!(resolve(build, &target("\"\"")), ["-Cdebuginfo=0"]);
+}
+
+#[test]
+fn cfg_tables_see_cfg_values_from_the_selected_rustflags() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("package/.seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    fs::create_dir_all(directory.join(".cargo")).unwrap();
+    fs::write(
+        directory.join(".cargo/config.toml"),
+        "[target.'cfg(use_direct_linker)']\nlinker = \"rust-lld\"\n",
+    )
+    .unwrap();
+    let environment =
+        |key: &str| (key == "RUSTFLAGS").then(|| OsString::from("--cfg use_direct_linker"));
+    // Stands in for `rustc <rustflags> --print cfg`: a `--cfg` flag adds a
+    // name to the printed cfg.
+    let queries = std::cell::RefCell::new(Vec::new());
+    let query = |rustflags: &[String]| {
+        queries.borrow_mut().push(rustflags.to_vec());
+        let mut cfg = cargo_config::parse_cfg("target_os=\"macos\"\nunix\n");
+        cfg.extend(
+            rustflags
+                .windows(2)
+                .filter(|pair| pair[0] == "--cfg")
+                .map(|pair| (pair[1].clone(), None)),
+        );
+        cfg
+    };
+    let settings = cargo_config::settle_with_cfg(&query, &|cfg| {
+        cargo_config::linker_settings(&directory, &home, host, cfg, &environment)
+    });
+    assert_eq!(settings.linker.as_deref(), Some("rust-lld"));
+    assert_eq!(
+        linker_invocation(&settings.rustflags, settings.linker.as_deref()),
+        LinkerInvocation::Direct
+    );
+    assert!(queries
+        .borrow()
+        .iter()
+        .any(|flags| flags == &["--cfg", "use_direct_linker"]));
+}
+
+#[test]
+fn host_cfg_passes_the_selected_rustflags_to_rustc() {
+    let fixture = Fixture::new();
+    let cfg = host_cfg(
+        &fixture.toolchain,
+        &["--cfg".into(), "use_direct_linker".into()],
+    );
+    assert!(cfg.contains(&("use_direct_linker".into(), None)), "{cfg:?}");
+    assert!(
+        cfg.contains(&("unix".into(), None)) || cfg!(windows),
+        "{cfg:?}"
+    );
+    assert!(!host_cfg(&fixture.toolchain, &[]).contains(&("use_direct_linker".into(), None)));
+}
+
+#[test]
+fn linker_settings_apply_matching_cfg_tables_after_the_target_triple() {
+    let host = "aarch64-apple-darwin";
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("package/.seseragi/native/id");
+    let home = root.path().join("cargo-home");
+    fs::create_dir_all(directory.join(".cargo")).unwrap();
+    let cfg = cargo_config::parse_cfg(
+        "debug_assertions\npanic=\"unwind\"\ntarget_arch=\"aarch64\"\ntarget_os=\"macos\"\nunix\n",
+    );
+    let resolve = |source: &str| {
+        fs::write(directory.join(".cargo/config.toml"), source).unwrap();
+        let settings =
+            cargo_config::linker_settings(&directory, &home, host, &cfg, &|_: &str| None);
+        let invocation = linker_invocation(&settings.rustflags, settings.linker.as_deref());
+        (settings, invocation)
+    };
+
+    // A matching cfg table supplies the linker Cargo uses.
+    let (settings, invocation) =
+        resolve("[target.'cfg(target_os = \"macos\")']\nlinker = \"rust-lld\"\n");
+    assert_eq!(settings.linker.as_deref(), Some("rust-lld"));
+    assert_eq!(invocation, LinkerInvocation::Direct);
+
+    // The target triple wins over a matching cfg table, and a cfg table that
+    // does not match is ignored.
+    let (settings, invocation) = resolve(
+        "[target.aarch64-apple-darwin]\nlinker = \"clang\"\n[target.'cfg(unix)']\nlinker = \"rust-lld\"\n",
+    );
+    assert_eq!(settings.linker.as_deref(), Some("clang"));
+    assert_eq!(invocation, LinkerInvocation::CompilerDriver);
+    let (settings, _) = resolve(
+        "[target.'cfg(windows)']\nlinker = \"rust-lld\"\n[target.'cfg(not(unix))']\nlinker = \"ld\"\n",
+    );
+    assert_eq!(settings.linker, None);
+
+    // Rustflags join the triple and every matching cfg table, and replace
+    // build.rustflags.
+    let (settings, invocation) = resolve(
+        "[build]\nrustflags = [\"-Copt-level=3\"]\n\
+         [target.aarch64-apple-darwin]\nrustflags = [\"-Copt-level=1\"]\n\
+         [target.'cfg(all(unix, target_arch = \"aarch64\", not(target_os = \"linux\"),))']\n\
+         rustflags = \"-C linker=rust-lld\"\n\
+         [target.'cfg(any(windows, panic = \"abort\"))']\nrustflags = \"-C linker=clang\"\n",
+    );
+    assert_eq!(
+        settings.rustflags,
+        ["-Copt-level=1", "-C", "linker=rust-lld"]
+    );
+    assert_eq!(invocation, LinkerInvocation::Direct);
+
+    // Malformed cfg expressions never match.
+    for key in [
+        "cfg(unix",
+        "cfg(all(unix)",
+        "cfg(not(unix, unix))",
+        "cfg(target_os =)",
+        "cfg()",
+    ] {
+        let (settings, _) = resolve(&format!("[target.'{key}']\nlinker = \"rust-lld\"\n"));
+        assert_eq!(settings.linker, None, "{key}");
+    }
+}
+
+#[test]
+fn environment_flags_use_cargo_precedence() {
+    let encoded = OsString::from("-C\x1flinker=rust-lld\x1f");
+    let plain = OsString::from("-C  linker=clang");
+    assert_eq!(
+        cargo_config::environment_flags(Some(&encoded), Some(&plain)),
+        ["-C", "linker=rust-lld"]
+    );
+    assert_eq!(
+        cargo_config::environment_flags(None, Some(&plain)),
+        ["-C", "linker=clang"]
+    );
+    assert!(cargo_config::environment_flags(None, None).is_empty());
 }
 
 struct Fixture {

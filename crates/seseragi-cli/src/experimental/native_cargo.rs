@@ -143,19 +143,29 @@ impl Project {
         regular_file(&self.directory.join("Cargo.lock"))?;
         let target = self.target_for(profile, runtime)?;
         let mut command = toolchain.cargo()?;
-        let remapping = format!("{}=.", self.directory.display());
-        let flags =
-            toml::Value::Array(vec!["--remap-path-prefix".into(), remapping.clone().into()]);
-        command
-            .arg("--config")
-            .arg(format!("build.rustflags={flags}"));
-        if let Some(flags) = remapped_environment_flags(
-            std::env::var_os("CARGO_ENCODED_RUSTFLAGS"),
-            std::env::var_os("RUSTFLAGS"),
-            &remapping,
-        )? {
-            command.env("CARGO_ENCODED_RUSTFLAGS", flags);
-        }
+        let linker =
+            cargo_config::settle_with_cfg(&|rustflags| host_cfg(toolchain, rustflags), &|cfg| {
+                cargo_config::linker_settings(
+                    &self.directory,
+                    toolchain.cargo_home(),
+                    &toolchain.host,
+                    cfg,
+                    &|key| std::env::var_os(key),
+                )
+            });
+        let invocation = linker_invocation(&linker.rustflags, linker.linker.as_deref());
+        let path_flags = path_flags(&self.directory, &target, &toolchain.host, invocation);
+        // Cargo uses only one rustflags source, so pass the selected flags
+        // with the path flags appended instead of adding to build.rustflags.
+        command.env(
+            "CARGO_ENCODED_RUSTFLAGS",
+            rustflags_with_paths(
+                std::env::var_os("CARGO_ENCODED_RUSTFLAGS"),
+                std::env::var_os("RUSTFLAGS"),
+                &linker.rustflags,
+                &path_flags,
+            )?,
+        );
         let output = command
             .current_dir(&self.directory)
             .args([
@@ -253,11 +263,142 @@ fn target_root(directory: &Path, requested: Option<OsString>) -> Result<PathBuf,
     }
 }
 
-fn remapped_environment_flags(
+/// How rustc starts the linker on this build.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum LinkerInvocation {
+    /// Through a C compiler driver such as `cc` or `clang` (the Apple default).
+    CompilerDriver,
+    /// The linker itself, such as `ld`, `ld64.lld` or `rust-lld`.
+    Direct,
+}
+
+/// Classifies the linker the same way rustc 1.97 does. An explicit
+/// `-C linker-flavor` wins. Otherwise the last `-C linker` in rustflags, or
+/// the linker Cargo configures, gives a hint from its file stem; a stem
+/// without a hint keeps the Apple default, which uses a compiler driver.
+fn linker_invocation(flags: &[String], configured_linker: Option<&str>) -> LinkerInvocation {
+    let mut flavor = None;
+    let mut linker = None;
+    let mut arguments = flags.iter().map(String::as_str);
+    while let Some(argument) = arguments.next() {
+        let option = match argument {
+            "-C" | "--codegen" => arguments.next(),
+            _ => argument
+                .strip_prefix("--codegen=")
+                .or_else(|| argument.strip_prefix("-C")),
+        };
+        if let Some(value) = option.and_then(|option| option.strip_prefix("linker-flavor=")) {
+            flavor = Some(value);
+        } else if let Some(value) = option.and_then(|option| option.strip_prefix("linker=")) {
+            linker = Some(value);
+        }
+    }
+    if let Some(flavor) = flavor {
+        // rustc's `-C linker-flavor` names: the `-cc` forms and the legacy
+        // `gcc` and `em` use a compiler driver; MSVC names give no hint.
+        let driver = flavor.ends_with("-cc") || ["gcc", "em", "msvc", "msvc-lld"].contains(&flavor);
+        return if driver {
+            LinkerInvocation::CompilerDriver
+        } else {
+            LinkerInvocation::Direct
+        };
+    }
+    let Some(stem) = linker
+        .or(configured_linker)
+        .and_then(|linker| Path::new(linker).file_stem())
+        .and_then(|stem| stem.to_str())
+    else {
+        return LinkerInvocation::CompilerDriver;
+    };
+    // rustc removes a version suffix such as `-21` before matching.
+    let stem = stem
+        .rsplit_once('-')
+        .and_then(|(name, version)| version.chars().all(char::is_numeric).then_some(name))
+        .unwrap_or(stem);
+    let direct = [
+        "wasm-ld",
+        "ld.lld",
+        "lld",
+        "rust-lld",
+        "lld-link",
+        "ld",
+        "link",
+        "llvm-bitcode-linker",
+    ]
+    .contains(&stem)
+        || stem.ends_with("-wasm-ld")
+        || stem.ends_with("-ld");
+    if direct {
+        LinkerInvocation::Direct
+    } else {
+        LinkerInvocation::CompilerDriver
+    }
+}
+
+/// The host's `rustc --print cfg` with `rustflags`, as Cargo queries it, used
+/// to match `target.'cfg(..)'` tables. Without it no cfg table matches, and
+/// Cargo reports the rustc failure.
+fn host_cfg(toolchain: &Toolchain, rustflags: &[String]) -> Vec<cargo_config::CfgEntry> {
+    toolchain
+        .rustc()
+        .ok()
+        .and_then(|mut rustc| {
+            rustc
+                .args(rustflags)
+                .args(["--print", "cfg", "--target", &toolchain.host])
+                .output()
+                .ok()
+        })
+        .filter(|output| output.status.success())
+        .map(|output| cargo_config::parse_cfg(&String::from_utf8_lossy(&output.stdout)))
+        .unwrap_or_default()
+}
+
+/// Compiler flags that keep the package's absolute location out of the
+/// executable. `--remap-path-prefix` covers paths that rustc writes. On Apple
+/// hosts the linker also records each object file's absolute path (the debug
+/// map read by `dsymutil`); those objects live under the Cargo target
+/// directory, which can be inside the package, so `-oso_prefix` makes them
+/// relative to it. Both ld64 and ld64.lld accept `-oso_prefix`. A compiler
+/// driver needs `-Xlinker` before each linker argument, which also keeps a
+/// path containing commas as one argument; a direct linker takes them as is.
+fn path_flags(
+    directory: &Path,
+    target: &Path,
+    host: &str,
+    invocation: LinkerInvocation,
+) -> Vec<String> {
+    let mut flags = vec![
+        "--remap-path-prefix".to_owned(),
+        format!("{}=.", directory.display()),
+    ];
+    if host.ends_with("-apple-darwin") {
+        let mut prefix = target.as_os_str().to_owned();
+        prefix.push("/");
+        let prefix = prefix.to_string_lossy().into_owned();
+        let arguments = match invocation {
+            LinkerInvocation::CompilerDriver => {
+                vec!["-Xlinker", "-oso_prefix", "-Xlinker", &prefix]
+            }
+            LinkerInvocation::Direct => vec!["-oso_prefix", &prefix],
+        };
+        flags.extend(
+            arguments
+                .into_iter()
+                .map(|argument| format!("-Clink-arg={argument}")),
+        );
+    }
+    flags
+}
+
+/// The rustflags value for `CARGO_ENCODED_RUSTFLAGS`: the flags Cargo would
+/// select, then `path_flags`. Environment flags keep their exact bytes.
+fn rustflags_with_paths(
     encoded: Option<OsString>,
     plain: Option<OsString>,
-    remapping: &str,
-) -> Result<Option<OsString>, String> {
+    configured: &[String],
+    path_flags: &[String],
+) -> Result<OsString, String> {
     let mut flags = match (encoded, plain) {
         (Some(flags), _) => flags,
         (None, Some(flags)) => flags
@@ -267,15 +408,16 @@ fn remapped_environment_flags(
             .collect::<Vec<_>>()
             .join("\x1f")
             .into(),
-        (None, None) => return Ok(None),
+        (None, None) => configured.join("\x1f").into(),
     };
     if !flags.is_empty() {
         flags.push("\x1f");
     }
-    flags.push("--remap-path-prefix\x1f");
-    flags.push(remapping);
-    Ok(Some(flags))
+    flags.push(path_flags.join("\x1f"));
+    Ok(flags)
 }
+
+mod cargo_config;
 
 #[cfg(test)]
 mod tests;
