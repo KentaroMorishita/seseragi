@@ -55,13 +55,18 @@ impl Backend<'_> {
         result: &CoreType,
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
+        let (operation, arity) = operation(name).expect("known sequence operation");
+        // These operations are pure and match TS in program WASM. The size
+        // checks of chunksOf and windows return the standard SizeError, which
+        // needs its own proof.
+        if self.program_wasm_library
+            && matches!(operation, "chunksOf" | "windows" | "NonPositiveSize")
+        {
             return Err(
                 "program WASM: native sequence operation requires a target-specific ABI proof"
                     .into(),
             );
         }
-        let (operation, arity) = operation(name).expect("known sequence operation");
         if scope.has_unproven_type_scope() || arguments.len() > arity {
             return Err("Rust backend: unproven sequence source application".into());
         }

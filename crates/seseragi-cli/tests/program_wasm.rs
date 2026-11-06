@@ -2626,3 +2626,48 @@ console.log('same results');
     ));
     assert_eq!(output.stdout, b"same results\n");
 }
+
+#[test]
+fn sequence_operations_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "last",
+        "init",
+        "flat",
+        "position",
+        "small",
+        "large",
+        "pairs",
+        "split",
+        "sums",
+        "folded",
+        "listHalves",
+        "listTwice",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-sequences.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const list = (values) => values.reduceRight((tail, head) => ({tag: 'Cons', head, tail}), {tag: 'Empty'});
+for (const name of Object.keys(wasm)) {
+  for (const values of [[], [1], [1, 2, 3, 4, 5], [-4, 0, 9]]) {
+    const input = name.startsWith('list') ? list(values) : values;
+    assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(values)})`);
+  }
+}
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+}
