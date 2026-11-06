@@ -1,0 +1,23 @@
+// Program WASM runs the `std/maybe` and `std/either` operations that take no
+// dictionary, with the same results as the TS target.
+import * as maybe from "std/maybe"
+import * as either from "std/either"
+
+pub fn fallback value: Maybe<Int> -> Int = maybe.withDefault 0 value
+
+pub fn other value: Maybe<Int> -> Maybe<Int> = maybe.orElse (Just 7) value
+
+pub fn lefts value: Either<String, Int> -> Either<Int, Int> =
+  either.mapLeft (\text -> text + "!") value
+  |> either.mapLeft (\_ -> 1)
+
+pub fn rights value: Either<String, Int> -> Either<String, Int> =
+  either.mapRight (\number -> number * 2) value
+
+pub fn both value: Either<String, Int> -> Either<Bool, String> =
+  either.bimap (\text -> text == "") (\number -> show number) value
+
+pub fn folded value: Either<String, Int> -> String =
+  either.fold (\text -> "left " + text) (\number -> "right " + show number) value
+
+pub fn swapped value: Either<String, Int> -> Either<Int, String> = either.swap value

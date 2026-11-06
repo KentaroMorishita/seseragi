@@ -2671,3 +2671,37 @@ console.log('same results');
     ));
     assert_eq!(output.stdout, b"same results\n");
 }
+
+#[test]
+fn maybe_and_either_operations_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "fallback", "other", "lefts", "rights", "both", "folded", "swapped",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-options.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const maybes = [{tag: 'Nothing'}, {tag: 'Just', value: 3}];
+const eithers = [{tag: 'Left', value: ''}, {tag: 'Left', value: '雪'}, {tag: 'Right', value: -4}];
+for (const name of Object.keys(wasm)) {
+  for (const input of ['fallback', 'other'].includes(name) ? maybes : eithers) {
+    assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+  }
+}
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+}

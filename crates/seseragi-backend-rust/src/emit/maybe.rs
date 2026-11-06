@@ -227,7 +227,12 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
+        // withDefault and orElse are pure and match TS in program WASM.
+        // traverse and sequence take an Applicative dictionary, which needs
+        // its own proof.
+        if self.program_wasm_library
+            && matches!(name, "std/maybe::traverse" | "std/maybe::sequence")
+        {
             return Err(
                 "program WASM: native Maybe standard operation needs a target-specific ABI proof"
                     .into(),
