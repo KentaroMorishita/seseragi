@@ -79,12 +79,27 @@ fn program_u32(input: &mut &[u8]) -> ProgramResult<u32> {
 }
 // The fewest bytes one value of `codec` occupies on the wire.
 fn program_width(codec: usize, codes: &[ProgramCode]) -> usize {
+    program_width_at(codec, codes, 0)
+}
+// A struct can contain itself without indirection, such as
+// `struct Loop { next: Loop }`; no value of it exists, so stop at a depth no
+// acyclic codec reaches and count the rest as zero.
+fn program_width_at(codec: usize, codes: &[ProgramCode], depth: usize) -> usize {
+    if depth > codes.len() {
+        return 0;
+    }
     match &codes[codec] {
         ProgramCode::Unit => 0,
         ProgramCode::Bool | ProgramCode::Maybe(_) | ProgramCode::Either(_, _) => 1,
         ProgramCode::Int | ProgramCode::Float => 8,
-        ProgramCode::Tuple(elements) => elements.iter().map(|c| program_width(*c, codes)).sum(),
-        ProgramCode::Record(fields) => fields.iter().map(|(_, c)| program_width(*c, codes)).sum(),
+        ProgramCode::Tuple(elements) => elements
+            .iter()
+            .map(|c| program_width_at(*c, codes, depth + 1))
+            .sum(),
+        ProgramCode::Record(fields) => fields
+            .iter()
+            .map(|(_, c)| program_width_at(*c, codes, depth + 1))
+            .sum(),
         _ => 4,
     }
 }
@@ -94,6 +109,9 @@ fn program_decode_items(
     codes: &[ProgramCode],
 ) -> ProgramResult<Vec<V>> {
     let count = program_u32(input)? as usize;
+    if count == 0 {
+        return Ok(Vec::new());
+    }
     // Each element needs its fixed width, so a longer count is invalid.
     let width = program_width(element, codes);
     if count > PROGRAM_MAX_ITEMS || (width > 0 && count > input.len() / width) {

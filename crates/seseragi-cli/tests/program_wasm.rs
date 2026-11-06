@@ -3034,3 +3034,41 @@ console.log('located outcomes');
     ));
     assert_eq!(output.stdout, b"located outcomes\n");
 }
+
+#[test]
+fn empty_sequences_of_a_self_containing_struct_cross_the_boundary() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("loop.ssrg");
+    fs::write(
+        &source,
+        "struct Loop { next: Loop }\n\npub fn same values: Array<Loop> -> Array<Loop> = values\n\npub fn sameList values: List<Loop> -> List<Loop> = values\n",
+    )
+    .unwrap();
+    successful(bounded(
+        &mut build(&source, &scratch.0.join("wasm"), &["same", "sameList"]),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("loop.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+// No Loop value exists, but empty sequences of it are valid inputs.
+assert.deepStrictEqual([...program.exports.same([])], []);
+assert.deepStrictEqual({...program.exports.sameList({tag: 'Empty'})}, {tag: 'Empty'});
+assert.equal(program.ownership().alive, true);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('empty loops');
+"#,
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("loop.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"empty loops\n");
+}

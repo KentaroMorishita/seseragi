@@ -85,6 +85,10 @@ pub struct ProgramVariant {
     pub payload: Option<usize>,
 }
 
+/// How many times one named type may be nested in its own codec with other
+/// type arguments before the expansion counts as unbounded.
+const MAX_NESTED_TYPE_EXPANSION: usize = 16;
+
 /// The prefix of a type parameter's name in a checked public type.
 const TYPE_PARAMETER: &str = "\0type-parameter::";
 
@@ -99,6 +103,8 @@ struct Codecs<'a> {
     items: Vec<ProgramCodec>,
     modules: Option<&'a [&'a CoreModule]>,
     named: Vec<(CoreType, usize)>,
+    /// The named types whose codecs are being built, outermost first.
+    building: Vec<String>,
 }
 
 impl<'a> Codecs<'a> {
@@ -107,6 +113,7 @@ impl<'a> Codecs<'a> {
             items: Vec::new(),
             modules: Some(modules),
             named: Vec::new(),
+            building: Vec::new(),
         }
     }
 
@@ -117,6 +124,7 @@ impl<'a> Codecs<'a> {
             items: Vec::new(),
             modules: None,
             named: Vec::new(),
+            building: Vec::new(),
         }
     }
 
@@ -312,7 +320,7 @@ pub fn emit_program_wasm_with_sources(
         let codec = codec(&ty, true, &mut codecs)
             .or_else(|| effect_codec(&ty, &mut codecs))
             .or_else(|| host_codec(&ty, &mut codecs))
-            .ok_or_else(|| error("program WASM: unsupported public codec; expected closed Unit/Bool/Int/String, tuple, Maybe/Either, a returned function or providerless Effect"))?;
+            .ok_or_else(|| error("program WASM: unsupported public codec; expected a type built from Unit, Bool, Int, Float, Char, String, tuples, Array, List, closed records, structs, ADTs with a finite expansion, type parameters, functions or a providerless Effect"))?;
         let mut terminal = codec;
         while let ProgramCodec::Function { result, .. } = &codecs[terminal] {
             terminal = *result;
@@ -679,6 +687,18 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     if arguments.iter().any(mentions_type_parameter) {
         return None;
     }
+    // A type that refers to itself with other type arguments, such as
+    // `Nested<A> = | Next (Nested<Array<A>>)`, has no finite set of codecs.
+    // Each new argument nests the type once more, so stop at a fixed depth.
+    if codecs
+        .building
+        .iter()
+        .filter(|building| *building == name)
+        .count()
+        >= MAX_NESTED_TYPE_EXPANSION
+    {
+        return None;
+    }
     let (owner, adt, structure) = modules.iter().find_map(|module| {
         module
             .adts
@@ -710,6 +730,7 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let declared = |ty: &CoreType| emit::canonical_declared_type(owner, ty, &substitutions);
     let index = codecs.items.len();
     let named = codecs.named.len();
+    codecs.building.push(name.clone());
     codecs.items.push(ProgramCodec::Adt {
         name: "\0pending".into(),
         variants: Vec::new(),
@@ -751,6 +772,7 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
                 name: Some(structure.name.clone()),
             })
     };
+    codecs.building.pop();
     match item {
         Some(item) => {
             codecs.items[index] = item;

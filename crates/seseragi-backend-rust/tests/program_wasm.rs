@@ -222,3 +222,19 @@ fn main() {
     );
     assert_eq!(run.stdout, b"program roots released\n");
 }
+
+#[test]
+fn a_type_nested_in_itself_with_other_arguments_is_a_diagnostic() {
+    // Each level adds an Array, so the codecs would never end.
+    let module = checked("type Nested<A> =\n  | End\n  | Next (Nested<Array<A>>)\n\npub fn value input: Nested<Int> -> Nested<Int> = input\n");
+    let error = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap_err();
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert!(
+        error.message.contains("unsupported public codec"),
+        "{error}"
+    );
+    assert!(error.origin.is_some());
+    // A finite change of arguments still has codecs.
+    let module = checked("type Pair<A> =\n  | Pair (A, Maybe<Pair<Int>>)\n\npub fn value input: Pair<String> -> Pair<String> = input\n");
+    emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
+}
