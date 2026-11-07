@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.151] - 2026-11-07
+
+### Fixed
+
+- Concurrent native builds that share a runtime build no longer fail to link with a missing runtime library. Cargo rewrites its copy of the library on every build, so programs now link a copy that is replaced atomically and only when its content changes.
+
 ## [0.61.150] - 2026-11-07
 
 ### Added
