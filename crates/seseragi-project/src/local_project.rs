@@ -196,6 +196,16 @@ pub fn load_local_project_module(
     load_project_entry(root.as_ref(), std::iter::empty(), Some(module))
 }
 
+/// Like [`load_local_project_module`], with sources that shadow files on
+/// disk, such as a program entry extended with checked export bindings.
+pub fn load_local_project_module_with_overlays(
+    root: impl AsRef<Path>,
+    module: &crate::ModulePath,
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+) -> Result<LoadedLocalProject, LocalProjectLoadError> {
+    load_project_entry(root.as_ref(), overlays, Some(module))
+}
+
 /// Load the ordinary run entry and configured Web program roots for an editor.
 /// This does not widen the production build entry's import closure. Failed
 /// program discovery is isolated and retained without discarding other roots.

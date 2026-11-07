@@ -3212,6 +3212,151 @@ const wrong: OwnedEffect<never, string> = owner.exports.keep(1);
 }
 
 #[test]
+fn constrained_generic_exports_use_the_instances_the_checker_selects() {
+    let scratch = Scratch::new();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-constrained.ssrg");
+    let destination = scratch.0.join("wasm");
+    successful(bounded(
+        &mut build(
+            &fixture,
+            &destination,
+            &[
+                "label<Int>",
+                "labelColor=label<Color>",
+                "same<String>",
+                "larger<Int>",
+            ],
+        ),
+        &scratch.0,
+    ));
+    let probe = r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+const exports = program.exports;
+const lines = [exports.label(3), exports.labelColor({tag: 'Green'}), String(exports.same('a')('a')), String(exports.same('a')('b')), String(exports.larger(2)(5))];
+await program.dispose();
+if (program.ownership().managedLiveAtClose !== 0) throw new Error('live values');
+console.log(lines.join('\n'));
+"#;
+    fs::write(scratch.0.join("probe.mjs"), probe).unwrap();
+    let expected = "<3>\n<green>\ntrue\nfalse\n5\n";
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("probe.mjs"))
+                .arg(&destination)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout),
+            expected,
+            "{engine}"
+        );
+    }
+    // The same calls on the TS target print the same results.
+    let source = scratch.0.join("oracle.ssrg");
+    fs::write(&source, format!("{}\npub effect fn main = do {{\n  println (label 3)\n  println (label Green)\n  println (if same \"a\" \"a\" then \"true\" else \"false\")\n  println (if same \"a\" \"b\" then \"true\" else \"false\")\n  println (show (larger 2 5))\n}}\n", fs::read_to_string(&fixture).unwrap())).unwrap();
+    let ts = scratch.0.join("ts");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg(&source)
+            .args(["--target", "process", "--out-dir"])
+            .arg(&ts),
+        &scratch.0,
+    ));
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(ts.join("entry.js"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), expected);
+    // The declarations name each instantiation by its export name.
+    let declared = fs::read_to_string(destination.join("program.d.mts")).unwrap();
+    for line in [
+        "readonly \"label\": OwnedCallback<number, string>;",
+        "readonly \"labelColor\": OwnedCallback<Color, string>;",
+        "readonly \"same\": OwnedCallback<string, OwnedCallback<string, boolean>>;",
+    ] {
+        assert!(declared.contains(line), "{declared}");
+    }
+    // A type without the instance is the checker's diagnostic, and two
+    // instantiations need their own names.
+    for (exports, needle) in [
+        (&["label<Int -> Int>"][..], "no Show<Int -> Int> instance"),
+        (
+            &["label<Int>", "label<Color>"][..],
+            "name each instantiation as name=function<Type>",
+        ),
+        (
+            &["label<Int"][..],
+            "write type arguments as function<Type, ...>",
+        ),
+        (
+            &["labelInt=label"][..],
+            "a renamed export selects type arguments",
+        ),
+    ] {
+        let output = scratch.0.join("refused");
+        let result = bounded(
+            build(&fixture, &output, exports).env("PATH", ""),
+            &scratch.0,
+        );
+        assert_eq!(result.status.code(), Some(2), "{exports:?}: {result:?}");
+        let error = String::from_utf8_lossy(&result.stderr);
+        assert!(error.contains(needle), "{exports:?}: {error}");
+        assert!(!output.exists());
+    }
+    // A web package selects instantiations in its manifest.
+    let package = scratch.0.join("package");
+    copy_tree(
+        &root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &package,
+    );
+    fs::copy(&fixture, package.join("src/constrained.ssrg")).unwrap();
+    let manifest = package.join("seseragi.toml");
+    let original = fs::read_to_string(&manifest).unwrap();
+    fs::write(&manifest, format!("{original}\n[web.programs.constrained]\nmodule='constrained'\nexports=['labelInt=label<Int>', 'labelColor=label<Color>']\n")).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    let site = scratch.0.join("site");
+    successful(bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("package-probe.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+console.log(program.exports.labelInt(7) + program.exports.labelColor({tag: 'Red'}));
+await program.dispose();
+"#,
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("package-probe.mjs"))
+            .arg(site.join("programs/constrained"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"<7><red>\n");
+}
+
+#[test]
 fn generic_exports_return_host_values_unchanged_like_the_ts_target() {
     let scratch = Scratch::new();
     wasm_and_ts(

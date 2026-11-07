@@ -1,0 +1,19 @@
+// Program WASM exports constrained generic functions at fixed type
+// arguments, such as `--export label<Int>`. The type checker selects each
+// trait instance, as for a call in the source.
+pub type Color =
+  | Red
+  | Green
+
+instance Show<Color> {
+  fn show value: Color -> String = match value {
+    Red -> "red"
+    Green -> "green"
+  }
+}
+
+pub fn label<A> value: A -> String where Show<A> = "<" + show value + ">"
+
+pub fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right
+
+pub fn larger<A> left: A -> right: A -> A where Ord<A> = if left > right then left else right

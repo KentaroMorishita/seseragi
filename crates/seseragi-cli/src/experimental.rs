@@ -180,8 +180,9 @@ fn compile_project(
     command: seseragi_project::ProjectCommand,
     profile: seseragi_project::BuildProfile,
 ) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
-    let (project, checked) = load_checked_project_entry_with_profile(path, None, command, profile)?
-        .ok_or("project compiler did not produce a checked entry")?;
+    let (project, checked) =
+        load_checked_project_entry_with_profile(path, None, command, profile, "")?
+            .ok_or("project compiler did not produce a checked entry")?;
     let modules = checked
         .compiled
         .order
@@ -370,10 +371,13 @@ fn project_target_error(
     target_error(error, source.as_deref())
 }
 
+// `extension` is source text added after the entry module, such as the
+// checked bindings of instantiated program WASM exports.
 fn load_checked_project_entry_for_command(
     path: &str,
     module: Option<&seseragi_project::ModulePath>,
     command: seseragi_project::ProjectCommand,
+    extension: &str,
 ) -> Result<
     Option<(
         seseragi_project::LoadedLocalProject,
@@ -386,6 +390,7 @@ fn load_checked_project_entry_for_command(
         module,
         command,
         seseragi_project::BuildProfile::Development,
+        extension,
     )
 }
 
@@ -394,6 +399,7 @@ fn load_checked_project_entry_with_profile(
     module: Option<&seseragi_project::ModulePath>,
     command: seseragi_project::ProjectCommand,
     profile: seseragi_project::BuildProfile,
+    extension: &str,
 ) -> Result<
     Option<(
         seseragi_project::LoadedLocalProject,
@@ -412,6 +418,25 @@ fn load_checked_project_entry_with_profile(
         None => seseragi_project::load_local_project(path),
     }
     .map_err(|error| format!("{}: {error}", error.code()))?;
+    let project = if extension.is_empty() {
+        project
+    } else {
+        let (_, entry) = project
+            .modules()
+            .find(|(identity, _)| *identity == project.entry())
+            .expect("a loaded project contains its entry module");
+        let overlay = seseragi_project::SourceOverlay::new(
+            entry.source_path(),
+            format!("{}{extension}", entry.source()),
+        );
+        match module {
+            Some(module) => {
+                seseragi_project::load_local_project_module_with_overlays(path, module, [overlay])
+            }
+            None => seseragi_project::load_local_project_with_overlays(path, [overlay]),
+        }
+        .map_err(|error| format!("{}: {error}", error.code()))?
+    };
     let result = seseragi_driver::compile_core_local_project_with_profile(&project, profile);
     let checked = if command == seseragi_project::ProjectCommand::Dev {
         let Some(checked) = crate::local_project::render_compile_result(

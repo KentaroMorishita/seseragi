@@ -234,11 +234,28 @@ pub fn emit_program_wasm_with_sources(
 }
 
 /// Choices that follow the TS target the program is paired with.
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ProgramWasmOptions {
     /// Pass a newtype as its payload alone, as the TS target's release
     /// profile does. The development profile keeps `{tag, value}`.
     pub erase_newtypes: bool,
+    /// Exports of generic functions at fixed type arguments.
+    pub instantiations: Vec<ProgramWasmInstantiation>,
+}
+
+/// An export of a generic function at fixed type arguments, such as
+/// `--export label<Int>`. The caller adds a value binding of the explicit
+/// application (`let hidden = label<Int>`) to the entry module before
+/// checking, so the type checker selects the trait instances as it does for
+/// any other call. WASM then exports that binding.
+#[derive(Clone, Debug)]
+pub struct ProgramWasmInstantiation {
+    /// The name the host sees.
+    pub name: String,
+    /// The entry module binding that holds the application.
+    pub binding: String,
+    /// The generic source function, which gives the source arity.
+    pub function: String,
 }
 
 /// Like [`emit_program_wasm_with_sources`], for a chosen TS target profile.
@@ -263,6 +280,16 @@ pub fn emit_program_wasm_with_options(
     for name in exports {
         if !seen.insert(name) {
             return Err("program WASM: duplicate export selection".into());
+        }
+        if let Some(instance) = options.instantiations.iter().find(|i| &i.name == name) {
+            let export = instantiated_export(module, entry_module, instance, &mut codecs)?;
+            let mut terminal = export.codec;
+            while let ProgramCodec::Function { result, .. } = &codecs[terminal] {
+                terminal = *result;
+            }
+            effect_abi |= matches!(codecs[terminal], ProgramCodec::Effect { .. });
+            public.push(export);
+            continue;
         }
         let function = module
             .functions
@@ -401,6 +428,22 @@ pub fn emit_program_wasm_with_options(
     if effect_abi {
         // Both resumable ABIs use the same checked data-only cell proof. A
         // private cell never transports a host lease or another callable.
+        // Only the providerless ABI holds a type parameter's host value; a
+        // host Effect run has no proof for passing one through a callback.
+        if host_abi {
+            if let Some(function) = public.iter().find_map(|export| {
+                module
+                    .functions
+                    .iter()
+                    .find(|f| f.symbol == export.symbol && !f.type_parameters.is_empty())
+            }) {
+                return Err(project::at(
+                    "program WASM: generic functions need the providerless Effect ABI",
+                    &function.origin,
+                    entry_module,
+                ));
+            }
+        }
         crate::program_wasm_effect::validate(modules)?;
     } else if library.metadata.capabilities.iter().any(|c| {
         matches!(
@@ -478,10 +521,14 @@ pub fn emit_program_wasm_with_options(
             .bytes()
             .map(|b| format!("{b:02x}"))
             .collect::<String>();
-        library.source.push_str(&format!(
-            "{index} => Some((v_{symbol}(vec![]), {})),\n",
-            export.codec
-        ));
+        // An instantiated export is a checked value binding.
+        let value = match library.globals.get(&export.symbol) {
+            Some(slot) => format!("get_global({slot})"),
+            None => format!("v_{symbol}(vec![])"),
+        };
+        library
+            .source
+            .push_str(&format!("{index} => Some(({value}, {})),\n", export.codec));
     }
     library.source.push_str("_ => None } }\n");
     let schema = serde_json::to_string(&metadata).expect("serializable checked ABI");
@@ -819,6 +866,57 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
             None
         }
     }
+}
+
+fn instantiated_export(
+    module: &CoreModule,
+    entry_module: &str,
+    instance: &ProgramWasmInstantiation,
+    codecs: &mut Codecs,
+) -> Result<ProgramWasmExport, RustBackendError> {
+    let function = module
+        .functions
+        .iter()
+        .find(|f| f.symbol == format!("{entry_module}::{}", instance.function))
+        .ok_or("program WASM: the instantiated function is missing from the entry module")?;
+    let error = |message: &str| project::at(message, &function.origin, entry_module);
+    if function.visibility != seseragi_syntax::Visibility::Public {
+        return Err(error("program WASM: selected function must be public"));
+    }
+    if function.type_parameters.is_empty() {
+        return Err(error(
+            "program WASM: type arguments select an instance of a generic function only",
+        ));
+    }
+    let binding = module
+        .bindings
+        .iter()
+        .find(|b| b.symbol == format!("{entry_module}::{}", instance.binding))
+        .ok_or_else(|| error("program WASM: the checked instantiation is missing"))?;
+    let ty = emit::checked_boundary_body_type(module, &binding.value)
+        .ok_or_else(|| error("program WASM: checked instantiated type is unavailable"))?;
+    // Source arity is the generic declaration's; the type arguments fix the
+    // types and the instances, never the number of source stages.
+    let mut remainder = &ty;
+    for _ in &function.parameters {
+        let CoreType::Function { result, .. } = remainder else {
+            return Err(error(
+                "program WASM: source parameters exceed the checked function type",
+            ));
+        };
+        remainder = result;
+    }
+    let codec = codec(&ty, true, codecs)
+        .or_else(|| effect_codec(&ty, codecs))
+        .ok_or_else(|| error("program WASM: unsupported public codec for these type arguments"))?;
+    Ok(ProgramWasmExport {
+        name: instance.name.clone(),
+        symbol: binding.symbol.clone(),
+        source_arity: function.parameters.len(),
+        value_type: ty,
+        codec,
+        origin: function.origin.clone(),
+    })
 }
 
 fn rust_codec(codec: &ProgramCodec) -> String {

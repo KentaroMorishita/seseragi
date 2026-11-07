@@ -505,13 +505,26 @@ manifestを持たないsingle-file scratch workspaceは互換fallbackとしてto
 ### pure program WASM assets
 
 root Web packageは、optionalな`[web.programs.<name>]`でpure計算moduleと公開関数を選べます。
-`module`はsource root内のcanonical module path、`exports`は空でない重複のない公開関数名です。
+`module`はsource root内のcanonical module path、`exports`は空でない公開の選択の一覧です。
 program名は小文字英字から始まる48字以内の英小文字・数字・`-`で、Windowsの予約device名は使えません。
+
+`exports`の各要素は、次のどれかです。hostが見る名前は重複できません。
+
+| 書き方 | 公開するもの | hostが見る名前 |
+| --- | --- | --- |
+| `label` | 公開関数`label` | `label` |
+| `label<Int>` | generic関数`label`を型引数`Int`で | `label` |
+| `labelColor=label<Color>` | generic関数`label`を型引数`Color`で | `labelColor` |
+
+型引数は、選んだmoduleのsourceと同じ書き方で、そのmoduleのimportの範囲で解決します。
+型引数を付けた選択は、そのmoduleの末尾に`let <隠し名> = label<Int>`を足したのと同じ型検査を受けます。
+trait制約のinstanceは、sourceの呼出しと同じ規則で選ばれ、選べない場合はその行の診断になります。
+同じ関数を複数の型引数で公開するときは、`名前=関数<型>`で別の名前を付けます。
 
 ```toml
 [web.programs.calculation]
 module = "calculation"
-exports = ["label", "validate"]
+exports = ["label", "validate", "sameText=same<String>"]
 ```
 
 `seseragi build --target web`は、共有loaderによる選択moduleのimport closureを先に検査し、
