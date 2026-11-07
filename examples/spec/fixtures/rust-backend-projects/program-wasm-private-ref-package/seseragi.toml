@@ -9,7 +9,7 @@ target = "web"
 
 [web.programs.calculation]
 module = "calculation"
-exports = ["create", "reader", "unit", "failing", "snapshot", "session"]
+exports = ["create", "reader", "unit", "failing", "snapshot", "session", "journal"]
 
 [foreign.typescript]
 resolver = "node"

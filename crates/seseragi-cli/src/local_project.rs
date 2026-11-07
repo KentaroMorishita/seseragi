@@ -90,6 +90,7 @@ pub(crate) fn prepare_package_build(
             root_package.root(),
             &web.programs,
             command,
+            profile.unwrap_or_default(),
         )?
         else {
             return Ok(None);

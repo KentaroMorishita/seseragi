@@ -433,7 +433,7 @@ fn big_arithmetic_binary_operators_reject_forged_operands_results_and_provider_i
 }
 
 #[test]
-fn unused_big_arithmetic_operations_and_constants_remain_outside_program_wasm() {
+fn unused_big_arithmetic_operations_and_constants_build_as_program_wasm() {
     for (signature, operation) in [
         (
             "big.BigInt -> big.BigInt -> Either<big.BigIntDivisionError,big.BigInt>",
@@ -463,9 +463,7 @@ fn unused_big_arithmetic_operations_and_constants_remain_outside_program_wasm() 
         let source=format!("import * as big from \"std/big-int\"\npub fn probe value:Int -> Int = {{ let saved:{signature} = {operation}; value }}\npub fn main -> Int = 0\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/big-int-arithmetic", &["probe".into()])
-            .unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "big-arithmetic-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/big-int-arithmetic", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

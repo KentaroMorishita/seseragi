@@ -12,9 +12,10 @@ pub use clock_provider::{
     NATIVE_CLOCK_PROVIDER, NATIVE_CLOCK_SLEEP_PROVIDER,
 };
 pub use program_wasm::{
-    emit_program_wasm, emit_program_wasm_with_sources, ProgramCodec, ProgramField, ProgramVariant,
-    ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata, PROGRAM_WASM_ABI,
-    PROGRAM_WASM_EFFECT_ABI, PROGRAM_WASM_HOST_EFFECT_ABI,
+    emit_program_wasm, emit_program_wasm_with_options, emit_program_wasm_with_sources,
+    ProgramCodec, ProgramField, ProgramVariant, ProgramWasmArtifact, ProgramWasmExport,
+    ProgramWasmMetadata, ProgramWasmOptions, PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
+    PROGRAM_WASM_HOST_EFFECT_ABI,
 };
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::{CoreModule, SourceSpan};

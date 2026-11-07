@@ -980,10 +980,10 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
     let scratch = Scratch::new();
     for (index,source) in [
         "pub fn selected<A> value: A -> String where Show<A> = show value",
-        "import * as bigs from \"std/big-int\"\npub fn selected value: bigs.BigInt -> Int = 1",
+        "import * as decimal from \"std/decimal\"\npub fn selected value: decimal.DecimalContext -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
-        "pub opaque type Secret =\n  | Secret Int\npub fn selected value: Secret -> Int = 1",
+        "type Box<A> =\n  | Box A\npub fn selected<A> value: Box<A> -> Int = 1",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
@@ -2083,7 +2083,9 @@ fn private_ref_effect_callbacks_retain_state_and_release_the_instance() {
         &mut build(
             &source,
             &destination,
-            &["create", "reader", "unit", "failing", "snapshot", "session"],
+            &[
+                "create", "reader", "unit", "failing", "snapshot", "session", "journal",
+            ],
         ),
         &scratch.0,
     ));
@@ -2095,7 +2097,7 @@ fn private_ref_effect_callbacks_retain_state_and_release_the_instance() {
                 .env("PATH", ""),
             &scratch.0,
         ));
-        assert_eq!(result.stdout, b"private cells: cold independent state, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
+        assert_eq!(result.stdout, b"private cells: cold independent state, update/modify, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
         assert!(result.stderr.is_empty(), "{result:?}");
     }
     fs::write(scratch.0.join("types.mts"), r#"
@@ -2142,7 +2144,15 @@ effect fn oracle -> String fails String = do {
   read <- reader "雪🙂"
   text <- read ()
   unit ()
-  effects.succeed (one + "|" + two + "|" + other + "|" + initial + "|" + failed + "|" + after + "|" + text)
+  record <- journal "log:"
+  let entry = record "a"
+  logged <- entry
+  relogged <- entry
+  let journaled = match (logged, relogged) {
+    (Just left, Just right) -> left + "," + right
+    _ -> "missing"
+  }
+  effects.succeed (one + "|" + two + "|" + other + "|" + initial + "|" + failed + "|" + after + "|" + text + "|" + journaled)
 }
 effect fn unexpected message: String -> String = effects.die message
 pub effect fn main = do {
@@ -2162,7 +2172,7 @@ pub effect fn main = do { answer <- oracle () |> effects.recover unexpected; pri
 "#;
 
     for (label, main, code, expected) in [
-        ("normal", normal, 0, "seed:one|seed:onetwo|seed:one|state:ok|typed failure|state:ok:inner:outer:bad:inner:outer|雪🙂\n42\n"),
+        ("normal", normal, 0, "seed:one|seed:onetwo|seed:one|state:ok|typed failure|state:ok:inner:outer:bad:inner:outer|雪🙂|log:a,log:a;a\n42\n"),
         ("defect", defect, 70, ""),
     ] {
         let source = scratch.0.join(format!("{label}.ssrg"));
@@ -2255,7 +2265,7 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
                     .env("PATH", ""),
                 &scratch.0,
             ));
-            assert_eq!(result.stdout,b"private cells: cold independent state, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
+            assert_eq!(result.stdout,b"private cells: cold independent state, update/modify, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released\n");
             assert!(result.stderr.is_empty(), "{result:?}");
         }
         let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false,"paths":{"@seseragi/programs/calculation":[directory.join("index.d.mts")]}},"files":[package.join("host/bridge.ts")]});
@@ -2461,6 +2471,217 @@ const pairs: ReadonlyArray<readonly [string, Readonly<{tag: 'Nothing'}> | Readon
     successful(bounded(
         Command::new(&node)
             .arg(root.join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn newtypes_and_opaque_types_cross_the_boundary_in_the_ts_target_shape() {
+    let scratch = Scratch::new();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-opaque.ssrg");
+    let text = fs::read_to_string(&fixture).unwrap();
+    let exports = [
+        "score", "points", "door", "describe", "token", "use", "owner",
+    ];
+    // The release profile of the TS target erases newtype wrappers, so the
+    // program passes a newtype in the shape of the profile it is built for.
+    for (profile, value, score) in [
+        (
+            "development",
+            seseragi_driver::BuildProfile::Development,
+            "{tag: 'Score', value: 40}",
+        ),
+        ("release", seseragi_driver::BuildProfile::Release, "40"),
+    ] {
+        let wasm = scratch.0.join(format!("wasm-{profile}"));
+        let mut command = build(&fixture, &wasm, &exports);
+        command.args(["--profile", profile]);
+        successful(bounded(&mut command, &scratch.0));
+        let ts = scratch.0.join(format!("ts-{profile}"));
+        fs::create_dir(&ts).unwrap();
+        let module = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("program.ssrg", "fixture/opaque", &text)
+                .with_profile(value),
+        )
+        .unwrap();
+        fs::write(ts.join("main.ts"), &module.generated.typescript).unwrap();
+        seseragi_runtime::stage_typescript_package(&ts).unwrap();
+        fs::write(ts.join("compare.ts"), format!(r#"import {{readFile}} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {{loadProgram}} from '../wasm-{profile}/program.mjs';
+import * as ts from './main.ts';
+const program = await loadProgram(await readFile('{wasm}/program.wasm'));
+const wasm: any = program.exports;
+const plain = (value: unknown) => JSON.parse(JSON.stringify(value));
+assert.deepStrictEqual(plain(wasm.score(4)), {score});
+// Values from WASM have the TS target's shape.
+assert.deepStrictEqual(plain(wasm.score(4)), plain(ts.score(4)));
+for (const code of [0, 1, 2]) assert.deepStrictEqual(plain(wasm.door(code)), plain(ts.door(code)));
+assert.deepStrictEqual(plain(wasm.token('雪')), plain(ts.token('雪')));
+assert.deepStrictEqual(plain(wasm.use(wasm.use(wasm.token('雪')))), plain(ts.use(ts.use(ts.token('雪')))));
+// Values from the TS target are accepted by WASM, and the reverse.
+assert.equal(wasm.points(ts.score(4)), 40);
+assert.equal(ts.points(wasm.score(4)), 40);
+for (const code of [0, 1, 2]) assert.equal(wasm.describe(ts.door(code)), ts.describe(wasm.door(code)));
+assert.equal(wasm.owner(ts.use(ts.token('雪'))), '雪:1');
+assert.equal(ts.owner(wasm.use(wasm.token('雪'))), '雪:1');
+// Values outside the checked shape are rejected before they reach WASM.
+assert.throws(() => wasm.points('{profile}' === 'release' ? {{tag: 'Score', value: 4}} : 4), TypeError);
+assert.throws(() => wasm.describe({{tag: 'Locked'}}), TypeError);
+assert.throws(() => wasm.owner({{owner: '雪'}}), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same shapes');
+"#, wasm = wasm.display())).unwrap();
+        successful(bounded(
+            Command::new("bun").current_dir(&ts).args([
+                "build",
+                "compare.ts",
+                "--target=node",
+                "--outfile=compare.mjs",
+                "--external",
+                "*/program.mjs",
+            ]),
+            &scratch.0,
+        ));
+        let output = successful(bounded(
+            Command::new(runtime("node", &scratch.0))
+                .arg(ts.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same shapes\n", "{profile}");
+        let declared = fs::read_to_string(wasm.join("program.d.mts")).unwrap();
+        assert!(
+            declared.contains(if profile == "release" {
+                "export type Score = number;"
+            } else {
+                "export type Score = Readonly<{tag: \"Score\"; value: number}>;"
+            }),
+            "{declared}"
+        );
+    }
+    let node = runtime("node", &scratch.0);
+    fs::write(scratch.0.join("types.mts"), r#"import {loadProgram, type Score, type Door, type Token} from './wasm-development/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const score: Score = owner.exports.score(1);
+const points: number = owner.exports.points({tag: 'Score', value: 3});
+const door: Door = owner.exports.door(0);
+const text: string = owner.exports.describe({tag: 'Locked', value: 'key'});
+const token: Token = owner.exports.use(owner.exports.token('雪'));
+const name: string = owner.exports.owner(token);
+// @ts-expect-error an opaque struct does not show its fields
+const hidden: string = token.owner;
+// @ts-expect-error the host cannot build an opaque struct
+owner.exports.owner({owner: '雪', uses: 0});
+// @ts-expect-error a variant name outside the checked type
+owner.exports.describe({tag: 'Ajar'});
+"#).unwrap();
+    fs::write(
+        scratch.0.join("release.mts"),
+        r#"import {loadProgram, type Score} from './wasm-release/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const score: Score = owner.exports.score(1);
+const points: number = owner.exports.points(score + 1);
+// @ts-expect-error the release profile passes a newtype as its payload
+owner.exports.points({tag: 'Score', value: 3});
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts","release.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn big_int_and_decimal_values_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "big", "grow", "render", "smaller", "quotient", "amount", "invoice", "shown", "share",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-exact-numbers.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram, capabilities} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+assert.deepStrictEqual([...capabilities], ['big-int', 'decimal']);
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const texts = ['0', '-1', '9007199254740993', '-123456789012345678901234567890', '12x', ''];
+for (const text of texts) assert.deepStrictEqual(wasm.big(text), ts.big(text), text);
+const bigs = texts.slice(0, 4).map((text) => ts.big(text).value);
+for (const left of bigs) {
+  assert.equal(wasm.grow(left), ts.grow(left));
+  assert.equal(wasm.render(left), ts.render(left));
+  for (const right of bigs) {
+    assert.equal(wasm.smaller([left, right]), ts.smaller([left, right]));
+    assert.deepStrictEqual(wasm.quotient([left, right]), ts.quotient([left, right]));
+  }
+}
+const amounts = ['0', '12.50', '-0.75', '1e-30', '3', '123456789.123456789', 'x'];
+for (const text of amounts) assert.deepStrictEqual(wasm.amount(text), ts.amount(text), text);
+const decimals = amounts.slice(0, 6).map((text) => ts.amount(text).value);
+for (const left of decimals) {
+  assert.equal(wasm.shown(left), ts.shown(left));
+  for (const right of decimals) {
+    assert.deepStrictEqual(wasm.invoice([left, right]), ts.invoice([left, right]));
+    assert.deepStrictEqual(wasm.share([left, right]), ts.share([left, right]));
+  }
+}
+// Results are frozen like the TS target's, and both directions agree.
+assert.ok(Object.isFrozen(wasm.amount('1.5').value));
+assert.equal(ts.shown(wasm.invoice([decimals[1], decimals[2]])), wasm.shown(ts.invoice([decimals[1], decimals[2]])));
+assert.equal(ts.render(wasm.grow(bigs[3])), wasm.render(ts.grow(bigs[3])));
+// Values outside the checked shape are rejected before they reach WASM.
+assert.throws(() => wasm.render(1), TypeError);
+assert.throws(() => wasm.shown({coefficient: 10n, scale: 1n}), TypeError);
+assert.throws(() => wasm.shown({coefficient: 0n, scale: 2n}), TypeError);
+assert.throws(() => wasm.shown({coefficient: 1n, scale: 1}), TypeError);
+assert.throws(() => wasm.shown({coefficient: 1n, scale: 0n, extra: 1}), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+    fs::write(
+        scratch.0.join("types.mts"),
+        r#"import {loadProgram, type ProgramBigInt, type ProgramDecimal} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const parsed = owner.exports.big('1');
+if (parsed.tag === 'Just') {
+  const grown: ProgramBigInt = owner.exports.grow(parsed.value);
+  const native: bigint = grown;
+}
+const amount = owner.exports.amount('1.5');
+if (amount.tag === 'Just') {
+  const total: ProgramDecimal = owner.exports.invoice([amount.value, amount.value]);
+  const scale: bigint = total.scale;
+}
+// @ts-expect-error the host cannot pass a bigint it did not get from a program
+owner.exports.grow(1n);
+// @ts-expect-error the host cannot build a Decimal
+owner.exports.shown({coefficient: 1n, scale: 0n});
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
             .arg("--project")
             .arg(scratch.0.join("tsconfig.json")),
         &scratch.0,

@@ -96,9 +96,6 @@ impl Backend<'_> {
         expected: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
-        if self.program_wasm_library {
-            return Err("program WASM: native BigInt requires a target-specific ABI proof".into());
-        }
         if self.declared_method_type_kind(actual, scope) != Some(0)
             || self.local_canonical_type(actual, scope)? != *expected
         {
