@@ -6,7 +6,7 @@ use seseragi_lowering::{CoreModule, CoreType, SourceSpan};
 use std::collections::BTreeSet;
 
 pub const PROGRAM_WASM_ABI: &str = "seseragi-program-wasm-pure-v1";
-pub const PROGRAM_WASM_EFFECT_ABI: &str = "seseragi-program-wasm-effect-v2";
+pub const PROGRAM_WASM_EFFECT_ABI: &str = "seseragi-program-wasm-effect-v3";
 pub const PROGRAM_WASM_HOST_EFFECT_ABI: &str = "seseragi-program-wasm-host-effect-v2";
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -424,7 +424,13 @@ pub fn emit_program_wasm_with_options(
         ..crate::RustTargetOptions::default()
     };
     let mut library = project::emit_library(modules, entry_module, &options)?;
-    let tracks_private_refs = library.metadata.capabilities.iter().any(|c| c == "ref");
+    // Cells, Fibers and Deferreds can form cycles, so tracing starts before
+    // any of them exists.
+    let tracks_private_refs = library
+        .metadata
+        .capabilities
+        .iter()
+        .any(|c| matches!(c.as_str(), "ref" | "fiber" | "deferred"));
     if effect_abi {
         // Both resumable ABIs use the same checked data-only cell proof. A
         // private cell never transports a host lease or another callable.
@@ -444,7 +450,8 @@ pub fn emit_program_wasm_with_options(
                 ));
             }
         }
-        crate::program_wasm_effect::validate(modules)?;
+        // Fibers share one host-request slot only in the providerless ABI.
+        crate::program_wasm_effect::validate(modules, !host_abi)?;
     } else if library.metadata.capabilities.iter().any(|c| {
         matches!(
             c.as_str(),

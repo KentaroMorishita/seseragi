@@ -178,6 +178,24 @@ struct NativeScheduler {
     roots: BTreeMap<usize, Rc<RefCell<NativeProcess>>>,
     ready: std::collections::VecDeque<usize>,
     waiters: BTreeMap<WaitKey, Vec<usize>>,
+    // A program WASM run has no host: no clock, file, process, stdin or
+    // signal. Those turns end as Defects instead of starting a host task.
+    hostless: bool,
+}
+// The Defect for a turn a hostless run cannot perform, or the turn itself.
+fn native_hostless_turn(machine: &mut NativeMachine, turn: NativeTurn) -> NativeTurn {
+    let message = match &turn {
+        NativeTurn::ProcessSignalPull(_) => "program ABI: process signals are unavailable in WASM",
+        NativeTurn::ChildProcess(..) => "program ABI: child processes are unavailable in WASM",
+        NativeTurn::FileSystem(..)
+        | NativeTurn::Stdin(..)
+        | NativeTurn::Operation(ConcurrentOperation::ClockSleep, _) => {
+            "program ABI: unadmitted host operation"
+        }
+        _ => return turn,
+    };
+    machine.resume(Err(NativeExit::defects(vec![message.into()])));
+    NativeTurn::Runnable
 }
 thread_local! {
     // Handles retained across independent root executions cannot address a
@@ -288,6 +306,11 @@ impl NativeScheduler {
         let mut task = self.tasks.remove(&id).expect("runnable native task");
         let process = task.machine.context.process.clone();
         let turn = task.machine.turn();
+        let turn = if self.hostless {
+            native_hostless_turn(&mut task.machine, turn)
+        } else {
+            turn
+        };
         let yielded = matches!(&turn, NativeTurn::Operation(ConcurrentOperation::Yield, _));
         let asynchronous = matches!(
             &turn,

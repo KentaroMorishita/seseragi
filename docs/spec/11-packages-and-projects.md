@@ -558,13 +558,15 @@ WASM内の一般Effectのunwind／cancel時のfinalizer保証を、このpure pr
 ### Effect program WASM assets
 
 同じprogram設定で、providerlessな閉じたEffectと、型付きの一引数host Effect callbackを持つ関数も選べます。
-それぞれ`seseragi-program-wasm-effect-v2`、`seseragi-program-wasm-host-effect-v2`を生成します。
+それぞれ`seseragi-program-wasm-effect-v3`、`seseragi-program-wasm-host-effect-v2`を生成します。
 host callbackは`A -> Effect<{}, E, B>`で、閉じた値codecの引数・成功値・失敗値に限ります。
 source引数を適用する段階とcold Effectをrunする段階を保ち、hostのAbortSignalをsource arityへ加えません。
 取消とasync disposeは開始済みhost operationとmasked finalizerの応答を待ちます。
 両Effect ABIでは、既存の閉じたdataだけを保持する内部Refのmake／get／set／update／modifyを使い、
 状態をcaptureしたcallbackを返せます。Ref自体は公開境界へ渡せません。
-非協調的なPromiseの強制終了、一般provider ABI、
-Fiber／Deferredやopen rowは含めません。
+providerlessなEffect ABIでは、内部でFiber（fork・await・poll・join・interrupt・yieldNow）と
+Deferredも使えます。Deferredの中身は閉じたdataに限り、Fiber・Deferred自体は公開境界へ渡せません。
+どのFiberも進めないrunは、hostが取消すまで結果を保留します。host Effect ABIではFiber／Deferredを使えません。
+非協調的なPromiseの強制終了、一般provider ABI、open rowは含めません。
 型・結果・寿命の詳細は[Rust backendのEffect ABI](../architecture/rust-backend.md)に従い、
 pure ABIの制限やtrap後のunwind保証と混同しません。
