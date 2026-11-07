@@ -130,7 +130,7 @@ fn decimal_keys_reject_counterfeit_owner_kind_method_result_arguments_and_eviden
 }
 
 #[test]
-fn unused_saved_decimal_key_dictionaries_do_not_expand_program_wasm() {
+fn unused_saved_decimal_key_dictionaries_build_as_program_wasm() {
     for (method, signature) in [
         ("eq", "decimal.Decimal -> decimal.Decimal -> Bool"),
         ("hash", "decimal.Decimal -> Int"),
@@ -138,9 +138,7 @@ fn unused_saved_decimal_key_dictionaries_do_not_expand_program_wasm() {
         let source = format!("import * as decimal from \"std/decimal\"\npub fn probe value:Int -> Int = {{ let saved:{signature} = {method}; value }}\npub fn main -> Int = 0\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/decimal-keys", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "decimal-key-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/decimal-keys", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

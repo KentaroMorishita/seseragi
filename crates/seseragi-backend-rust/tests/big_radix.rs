@@ -153,7 +153,7 @@ fn big_radix_rejects_unproven_owners_kinds_arguments_evidence_and_stages() {
 }
 
 #[test]
-fn big_radix_does_not_admit_unused_operations_in_program_wasm() {
+fn big_radix_unused_operations_build_as_program_wasm() {
     for (signature, operation) in [
         (
             "Int -> String -> Either<big.BigIntParseError, big.BigInt>",
@@ -177,8 +177,7 @@ fn big_radix_does_not_admit_unused_operations_in_program_wasm() {
     ] {
         let core = checked(&format!("import * as big from \"std/big-int\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = big.{operation}; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/big-radix", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "big-radix-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/big-radix", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

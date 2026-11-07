@@ -8,6 +8,8 @@ enum ProgramCode {
     Text,
     Float,
     Char,
+    BigInt,
+    Decimal,
     Tuple(Vec<usize>),
     Maybe(usize),
     Either(usize, usize),
@@ -91,7 +93,7 @@ fn program_width_at(codec: usize, codes: &[ProgramCode], depth: usize) -> usize 
     match &codes[codec] {
         ProgramCode::Unit => 0,
         ProgramCode::Bool | ProgramCode::Maybe(_) | ProgramCode::Either(_, _) => 1,
-        ProgramCode::Int | ProgramCode::Float => 8,
+        ProgramCode::Int | ProgramCode::Float | ProgramCode::Decimal => 8,
         ProgramCode::Tuple(elements) => elements
             .iter()
             .map(|c| program_width_at(*c, codes, depth + 1))
@@ -155,6 +157,26 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
                 .map_err(|_| "program ABI: invalid UTF-8")?;
             V::text(value)
         }
+        ProgramCode::BigInt => {
+            let text = program_integer(input)?;
+            V::BigInt(Shared::new(NativeBigInt::from_digits(
+                text.starts_with('-'),
+                text.trim_start_matches('-').as_bytes(),
+                10,
+            )))
+        }
+        ProgramCode::Decimal => {
+            let coefficient = program_integer(input)?;
+            let scale = program_integer(input)?;
+            // Both targets keep one form per value: no trailing zero in the
+            // coefficient, and zero only as 0 at scale 0.
+            if (coefficient == "0" && scale != "0")
+                || (coefficient != "0" && coefficient.ends_with('0'))
+            {
+                return Err("program ABI: non-canonical Decimal");
+            }
+            V::Decimal(Shared::new(NativeDecimal { coefficient, scale }))
+        }
         ProgramCode::Tuple(elements) => V::Tuple(Shared::new(
             elements
                 .iter()
@@ -201,6 +223,27 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
         ProgramCode::Function(_, _) => return Err("program ABI: host callbacks are unsupported"),
     })
 }
+// A canonical decimal integer: no sign on zero, no leading zero.
+fn program_integer(input: &mut &[u8]) -> ProgramResult<String> {
+    let length = program_u32(input)? as usize;
+    let text = std::str::from_utf8(program_take(input, length)?)
+        .map_err(|_| "program ABI: invalid UTF-8")?;
+    let digits = text.strip_prefix('-').unwrap_or(text);
+    if digits.is_empty()
+        || !digits.bytes().all(|byte| byte.is_ascii_digit())
+        || (digits.len() > 1 && digits.starts_with('0'))
+        || text == "-0"
+    {
+        return Err("program ABI: invalid integer text");
+    }
+    Ok(text.to_owned())
+}
+fn program_text(out: &mut Vec<u8>, text: &str) -> ProgramResult<()> {
+    let len =
+        u32::try_from(text.len()).map_err(|_| "program ABI: text exceeds boundary limit")?;
+    program_bytes(out, &len.to_le_bytes())?;
+    program_bytes(out, text.as_bytes())
+}
 fn program_bytes(output: &mut Vec<u8>, bytes: &[u8]) -> ProgramResult<()> {
     if output
         .len()
@@ -228,6 +271,11 @@ fn program_encode(
         }
         (ProgramCode::Float, V::Float(value)) => program_bytes(out, &value.to_le_bytes()),
         (ProgramCode::Char, V::Char(value)) => program_bytes(out, &u32::from(value).to_le_bytes()),
+        (ProgramCode::BigInt, V::BigInt(value)) => program_text(out, value.get().decimal()),
+        (ProgramCode::Decimal, V::Decimal(value)) => {
+            program_text(out, &value.get().coefficient)?;
+            program_text(out, &value.get().scale)
+        }
         (ProgramCode::Text, V::Text(value)) => {
             let bytes = value.get().as_bytes();
             let len = u32::try_from(bytes.len())

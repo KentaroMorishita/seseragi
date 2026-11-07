@@ -28,6 +28,23 @@ function dataObject(value, keys) {
   return Object.fromEntries(keys.map((key) => [key, fields[key].value]))
 }
 
+// The canonical decimal text of an integer, as both targets print it.
+const integerText = /^(?:0|-?[1-9][0-9]*)$/
+
+function writeInteger(value, writer) {
+  const bytes = encoder.encode(value.toString())
+  if (bytes.length > schema.maxBoundaryBytes)
+    throw new TypeError("Expected a bounded integer")
+  writer.u32(bytes.length)
+  writer.add(bytes)
+}
+
+function readInteger(input) {
+  const text = decoder.decode(input.take(input.u32()))
+  if (!integerText.test(text)) throw new TypeError("Invalid integer result")
+  return BigInt(text)
+}
+
 function write(id, value, writer) {
   const code = schema.codecs[id]
   switch (code.kind) {
@@ -63,6 +80,24 @@ function write(id, value, writer) {
         throw new TypeError("Expected a Char (one Unicode scalar value)")
       }
       writer.u32(point)
+      break
+    }
+    case "big-int":
+      if (typeof value !== "bigint") throw new TypeError("Expected a BigInt")
+      writeInteger(value, writer)
+      break
+    case "decimal": {
+      // The TS target keeps one form per value; only that form crosses.
+      const { coefficient, scale } = dataObject(value, ["coefficient", "scale"])
+      if (
+        typeof coefficient !== "bigint" ||
+        typeof scale !== "bigint" ||
+        (coefficient === 0n ? scale !== 0n : coefficient % 10n === 0n)
+      ) {
+        throw new TypeError("Expected a canonical Decimal")
+      }
+      writeInteger(coefficient, writer)
+      writeInteger(scale, writer)
       break
     }
     case "string": {
@@ -317,6 +352,13 @@ function read(id, input, state, provenance) {
     }
     case "string":
       return decoder.decode(input.take(input.u32()))
+    case "big-int":
+      return readInteger(input)
+    case "decimal": {
+      const coefficient = readInteger(input)
+      const scale = readInteger(input)
+      return Object.freeze({ coefficient, scale })
+    }
     case "tuple":
       return Object.freeze(
         code.elements.map((element) => read(element, input, state, provenance))

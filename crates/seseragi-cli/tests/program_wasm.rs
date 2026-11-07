@@ -980,7 +980,7 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
     let scratch = Scratch::new();
     for (index,source) in [
         "pub fn selected<A> value: A -> String where Show<A> = show value",
-        "import * as bigs from \"std/big-int\"\npub fn selected value: bigs.BigInt -> Int = 1",
+        "import * as decimal from \"std/decimal\"\npub fn selected value: decimal.DecimalContext -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
         "type Box<A> =\n  | Box A\npub fn selected<A> value: Box<A> -> Int = 1",
@@ -2535,6 +2535,94 @@ const hidden: string = token.owner;
 owner.exports.owner({owner: '雪', uses: 0});
 // @ts-expect-error a variant name outside the checked type
 owner.exports.describe({tag: 'Ajar'});
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn big_int_and_decimal_values_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "big", "grow", "render", "smaller", "quotient", "amount", "invoice", "shown", "share",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-exact-numbers.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram, capabilities} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+assert.deepStrictEqual([...capabilities], ['big-int', 'decimal']);
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const texts = ['0', '-1', '9007199254740993', '-123456789012345678901234567890', '12x', ''];
+for (const text of texts) assert.deepStrictEqual(wasm.big(text), ts.big(text), text);
+const bigs = texts.slice(0, 4).map((text) => ts.big(text).value);
+for (const left of bigs) {
+  assert.equal(wasm.grow(left), ts.grow(left));
+  assert.equal(wasm.render(left), ts.render(left));
+  for (const right of bigs) {
+    assert.equal(wasm.smaller([left, right]), ts.smaller([left, right]));
+    assert.deepStrictEqual(wasm.quotient([left, right]), ts.quotient([left, right]));
+  }
+}
+const amounts = ['0', '12.50', '-0.75', '1e-30', '3', '123456789.123456789', 'x'];
+for (const text of amounts) assert.deepStrictEqual(wasm.amount(text), ts.amount(text), text);
+const decimals = amounts.slice(0, 6).map((text) => ts.amount(text).value);
+for (const left of decimals) {
+  assert.equal(wasm.shown(left), ts.shown(left));
+  for (const right of decimals) {
+    assert.deepStrictEqual(wasm.invoice([left, right]), ts.invoice([left, right]));
+    assert.deepStrictEqual(wasm.share([left, right]), ts.share([left, right]));
+  }
+}
+// Results are frozen like the TS target's, and both directions agree.
+assert.ok(Object.isFrozen(wasm.amount('1.5').value));
+assert.equal(ts.shown(wasm.invoice([decimals[1], decimals[2]])), wasm.shown(ts.invoice([decimals[1], decimals[2]])));
+assert.equal(ts.render(wasm.grow(bigs[3])), wasm.render(ts.grow(bigs[3])));
+// Values outside the checked shape are rejected before they reach WASM.
+assert.throws(() => wasm.render(1), TypeError);
+assert.throws(() => wasm.shown({coefficient: 10n, scale: 1n}), TypeError);
+assert.throws(() => wasm.shown({coefficient: 0n, scale: 2n}), TypeError);
+assert.throws(() => wasm.shown({coefficient: 1n, scale: 1}), TypeError);
+assert.throws(() => wasm.shown({coefficient: 1n, scale: 0n, extra: 1}), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+    fs::write(
+        scratch.0.join("types.mts"),
+        r#"import {loadProgram, type ProgramBigInt, type ProgramDecimal} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const parsed = owner.exports.big('1');
+if (parsed.tag === 'Just') {
+  const grown: ProgramBigInt = owner.exports.grow(parsed.value);
+  const native: bigint = grown;
+}
+const amount = owner.exports.amount('1.5');
+if (amount.tag === 'Just') {
+  const total: ProgramDecimal = owner.exports.invoice([amount.value, amount.value]);
+  const scale: bigint = total.scale;
+}
+// @ts-expect-error the host cannot pass a bigint it did not get from a program
+owner.exports.grow(1n);
+// @ts-expect-error the host cannot build a Decimal
+owner.exports.shown({coefficient: 1n, scale: 0n});
 "#,
     )
     .unwrap();

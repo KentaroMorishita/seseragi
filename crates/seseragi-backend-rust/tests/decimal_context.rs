@@ -122,7 +122,7 @@ fn decimal_context_rejects_unproven_owners_kinds_arguments_evidence_and_stages()
 }
 
 #[test]
-fn decimal_context_does_not_admit_unused_operations_in_program_wasm() {
+fn decimal_context_unused_operations_build_as_program_wasm() {
     for (signature, operation) in [
         ("Int -> numbers.RoundingMode -> Either<decimal.DecimalContextError,decimal.DecimalContext>", "context"),
         ("decimal.DecimalContext -> Int", "precision"),
@@ -131,9 +131,7 @@ fn decimal_context_does_not_admit_unused_operations_in_program_wasm() {
     ] {
         let core = checked(&format!("import * as decimal from \"std/decimal\"\nimport * as numbers from \"std/number\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = decimal.{operation}; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/decimal-context", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "decimal-context-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/decimal-context", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

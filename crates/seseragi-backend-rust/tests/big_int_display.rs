@@ -96,7 +96,7 @@ fn big_show_checks_selected_identity_children_argument_result_and_source_stages(
 }
 
 #[test]
-fn big_saved_show_has_its_exact_function_type_and_keeps_program_wasm_closed() {
+fn big_saved_show_has_its_exact_function_type_and_builds_as_program_wasm() {
     let saved = checked("import * as big from \"std/big-int\"\nfn formatter -> (big.BigInt -> String) = show\npub fn main -> Int = 0\n");
     emit_rust_module(&saved, "main").unwrap();
     let index = saved
@@ -126,10 +126,8 @@ fn big_saved_show_has_its_exact_function_type_and_keeps_program_wasm_closed() {
     }
     let core=checked("import * as big from \"std/big-int\"\npub fn probe value: Int -> Int = { let saved: big.BigInt -> String = show; value }\npub fn main -> Int = 0\n");
     emit_rust_module(&core, "main").unwrap();
-    let error = emit_program_wasm(&[&core], "native/big-int-keys", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert!(error.message.contains("requires a target-specific"));
-    assert_eq!(error.origin.unwrap().source, "big-key-雪🙂.ssrg");
+    emit_program_wasm(&[&core], "native/big-int-keys", &["probe".into()])
+        .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
 }
 #[test]
 fn big_debug_checks_selected_identity_children_argument_result_and_source_stages() {
@@ -215,7 +213,7 @@ fn big_debug_checks_selected_identity_children_argument_result_and_source_stages
 }
 
 #[test]
-fn big_saved_debug_has_its_exact_function_type_and_keeps_program_wasm_closed() {
+fn big_saved_debug_has_its_exact_function_type_and_builds_as_program_wasm() {
     let saved = checked("import * as big from \"std/big-int\"\nfn formatter -> (big.BigInt -> String) = debug\npub fn main -> Int = 0\n");
     emit_rust_module(&saved, "main").unwrap();
     let index = saved
@@ -245,8 +243,6 @@ fn big_saved_debug_has_its_exact_function_type_and_keeps_program_wasm_closed() {
     }
     let core=checked("import * as big from \"std/big-int\"\npub fn probe value: Int -> Int = { let saved: big.BigInt -> String = debug; value }\npub fn main -> Int = 0\n");
     emit_rust_module(&core, "main").unwrap();
-    let error = emit_program_wasm(&[&core], "native/big-int-keys", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert!(error.message.contains("requires a target-specific"));
-    assert_eq!(error.origin.unwrap().source, "big-key-雪🙂.ssrg");
+    emit_program_wasm(&[&core], "native/big-int-keys", &["probe".into()])
+        .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
 }

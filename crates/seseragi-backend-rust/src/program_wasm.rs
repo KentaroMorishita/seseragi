@@ -20,6 +20,11 @@ pub enum ProgramCodec {
     Float,
     /// A JS string holding exactly one Unicode scalar value.
     Char,
+    /// A JS `bigint`, as on the TS target. It crosses as decimal text.
+    BigInt,
+    /// The TS target's frozen `{coefficient, scale}` of `bigint`s, in the
+    /// canonical form both targets keep. It crosses as two decimal texts.
+    Decimal,
     Tuple {
         elements: Vec<usize>,
     },
@@ -563,6 +568,8 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
             ("std/prelude::String", []) => ProgramCodec::String,
             ("std/prelude::Float", []) if codecs.modules.is_some() => ProgramCodec::Float,
             ("std/prelude::Char", []) if codecs.modules.is_some() => ProgramCodec::Char,
+            ("std/big-int::BigInt", []) if codecs.modules.is_some() => ProgramCodec::BigInt,
+            ("std/decimal::Decimal", []) if codecs.modules.is_some() => ProgramCodec::Decimal,
             ("std/prelude::Maybe", [value]) => ProgramCodec::Maybe {
                 value: codec(value, false, codecs)?,
             },
@@ -798,6 +805,8 @@ fn rust_codec(codec: &ProgramCodec) -> String {
         ProgramCodec::String => "ProgramCode::Text".into(),
         ProgramCodec::Float => "ProgramCode::Float".into(),
         ProgramCodec::Char => "ProgramCode::Char".into(),
+        ProgramCodec::BigInt => "ProgramCode::BigInt".into(),
+        ProgramCodec::Decimal => "ProgramCode::Decimal".into(),
         ProgramCodec::Tuple { elements } => format!("ProgramCode::Tuple(vec!{:?})", elements),
         ProgramCodec::Maybe { value } => format!("ProgramCode::Maybe({value})"),
         ProgramCodec::Either { left, right } => format!("ProgramCode::Either({left}, {right})"),
@@ -920,6 +929,8 @@ fn declared_type(
         ProgramCodec::Bool => "boolean".into(),
         ProgramCodec::Int => "number".into(),
         ProgramCodec::String | ProgramCodec::Char => "string".into(),
+        ProgramCodec::BigInt => "ProgramBigInt".into(),
+        ProgramCodec::Decimal => "ProgramDecimal".into(),
         ProgramCodec::Float => "number".into(),
         ProgramCodec::Tuple { elements } => format!(
             "readonly [{}]",
@@ -1073,6 +1084,22 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
         .any(|codec| matches!(codec, ProgramCodec::List { .. }))
     {
         result.insert_str(0, "export type ProgramList<A> = Readonly<{tag: 'Empty'}> | Readonly<{tag: 'Cons'; head: A; tail: ProgramList<A>}>;\n");
+    }
+    // The TS target brands both types, so the host passes back only values
+    // that a program returned, as with the TS target's own functions.
+    if metadata
+        .codecs
+        .iter()
+        .any(|codec| matches!(codec, ProgramCodec::BigInt))
+    {
+        result.insert_str(0, "declare const ProgramBigIntBrand: unique symbol;\nexport type ProgramBigInt = bigint & { readonly [ProgramBigIntBrand]: true };\n");
+    }
+    if metadata
+        .codecs
+        .iter()
+        .any(|codec| matches!(codec, ProgramCodec::Decimal))
+    {
+        result.insert_str(0, "declare const ProgramDecimalBrand: unique symbol;\nexport type ProgramDecimal = Readonly<{coefficient: bigint; scale: bigint; readonly [ProgramDecimalBrand]: true}>;\n");
     }
     for (index, alias) in &aliases {
         let body = match &metadata.codecs[*index] {

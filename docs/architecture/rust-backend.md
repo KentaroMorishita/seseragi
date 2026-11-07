@@ -146,6 +146,8 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 | Unit / Bool / Int / String | `undefined` / `boolean` / 安全な整数の `number` / `string` |
 | Float | `number`（NaN・無限大・-0 を含む） |
 | Char | Unicode スカラー値を 1 つだけ持つ `string` |
+| BigInt | `bigint`。型宣言は TS と同じく brand 付きで、ホストはプログラムから受け取った値だけを渡せる |
+| Decimal | TS と同じ、凍結した `{coefficient, scale}`（どちらも `bigint`）。係数の末尾に 0 がない形（0 はスケール 0）だけを受け取る |
 | タプル・Array | 配列 |
 | List | `{tag: "Cons", head, tail}` と `{tag: "Empty"}` |
 | 閉じた record・struct | 普通のオブジェクト |
@@ -156,7 +158,7 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 
 trait 制約のない generic な関数も公開できる。型宣言では、型パラメータを最初に受け取る呼び出しで
 それを決めるので、TS が推論できる。trait 制約のある関数と、型パラメータを含む ADT・struct は
-まだ公開できない。BigInt、Decimal などは受け渡せない。形が合わない入力（循環した List を
+まだ公開できない。`DecimalContext` などは受け渡せない。形が合わない入力（循環した List を
 含む）は、WASM に入る前に `TypeError` で拒否する。manifest と loader の `capabilities` は、
 プログラムが使う標準ランタイムの領域（`text`、`list` など）を表す。証明のない標準 API は、
 ここに載らずにビルドが失敗する。Effect を返す公開関数の ABI は受け入れ判定が別で、
