@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.155] - 2026-11-07
+
+### Added
+
+- Program WASM passes ADTs and structs over type parameters, such as `Box<A>` or a recursive `Tree<A>`. Values of a type parameter inside them come back as the same host values, and the declarations declare these types generic over the same parameters (`export type Box<A> = ...`).
+- The providerless program WASM Effect ABI exports generic Effect functions. Their type parameters' values are held and returned as the same host values, as a success, a typed failure or through a returned callback. The host Effect ABI still refuses functions with type parameters.
+- Program WASM exports constrained generic functions at fixed type arguments: `--export label<Int>`, and `labelColor=label<Color>` to export one function at several types. `web.programs.<name>.exports` takes the same forms. The type checker selects each trait instance as for a call in the source, and a type without the instance is the checker's diagnostic.
+
 ## [0.61.154] - 2026-11-07
 
 ### Added

@@ -505,13 +505,26 @@ manifestを持たないsingle-file scratch workspaceは互換fallbackとしてto
 ### pure program WASM assets
 
 root Web packageは、optionalな`[web.programs.<name>]`でpure計算moduleと公開関数を選べます。
-`module`はsource root内のcanonical module path、`exports`は空でない重複のない公開関数名です。
+`module`はsource root内のcanonical module path、`exports`は空でない公開の選択の一覧です。
 program名は小文字英字から始まる48字以内の英小文字・数字・`-`で、Windowsの予約device名は使えません。
+
+`exports`の各要素は、次のどれかです。hostが見る名前は重複できません。
+
+| 書き方 | 公開するもの | hostが見る名前 |
+| --- | --- | --- |
+| `label` | 公開関数`label` | `label` |
+| `label<Int>` | generic関数`label`を型引数`Int`で | `label` |
+| `labelColor=label<Color>` | generic関数`label`を型引数`Color`で | `labelColor` |
+
+型引数は、選んだmoduleのsourceと同じ書き方で、そのmoduleのimportの範囲で解決します。
+型引数を付けた選択は、そのmoduleの末尾に`let <隠し名> = label<Int>`を足したのと同じ型検査を受けます。
+trait制約のinstanceは、sourceの呼出しと同じ規則で選ばれ、選べない場合はその行の診断になります。
+同じ関数を複数の型引数で公開するときは、`名前=関数<型>`で別の名前を付けます。
 
 ```toml
 [web.programs.calculation]
 module = "calculation"
-exports = ["label", "validate"]
+exports = ["label", "validate", "sameText=same<String>"]
 ```
 
 `seseragi build --target web`は、共有loaderによる選択moduleのimport closureを先に検査し、
@@ -528,8 +541,8 @@ Web artifactは`programs/<name>/`を含み、`artifact-manifest.json`の`program
 loader／宣言／WASM／receiptの相対pathを、`files`へその実fileのbytesとSHAを記録します。
 計算のbuild、UIのbundleとmanifestがすべて完了してから一括公開します。失敗時は前の完成artifactを保持します。
 
-対応する境界は閉じたpure値codecと返却callbackです。Effect／Ref／host入力callback・generic公開schemeは
-含めません。WASM source mapと一般Effect ABIは未対応です。
+対応する境界は閉じたpure値codecと返却callbackです。Effect／Ref／host入力callback・trait制約のあるgeneric公開schemeは
+含めません。trait制約のない型パラメータの値は、ホストの値をそのまま預かって返します。WASM source mapと一般Effect ABIは未対応です。
 
 `seseragi dev`も同じproducerとUI compile／一括公開を使い、計算module・外側のpath dependency・
 UI sourceの変更を監視します。development lockの既存のsource編集許可を使い、依存・provider・

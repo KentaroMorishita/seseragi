@@ -3,8 +3,8 @@
 //! supplied checked declaration, including unused bodies and returned callbacks.
 use crate::{emit, project, RustBackendError};
 use seseragi_lowering::{
-    core_expr_origin, CoreCallEvidence, CoreCallSignature, CoreExpr, CoreInstanceEvidence,
-    CoreModule, CoreParameter, CoreStatement, CoreType, SourceSpan,
+    core_expr_origin, CoreCallEvidence, CoreCallSignature, CoreExpr, CoreFunction,
+    CoreInstanceEvidence, CoreModule, CoreParameter, CoreStatement, CoreType, SourceSpan,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -71,6 +71,7 @@ fn closed_type(ty: &CoreType) -> bool {
             ) => true,
             ("std/prelude::Maybe", [value]) => closed_type(value),
             ("std/prelude::Either", [left, right]) => closed_type(left) && closed_type(right),
+            (name, []) if name.starts_with(crate::program_wasm::TYPE_PARAMETER) => true,
             ("std/ref::Ref", [value]) => crate::program_wasm::has_closed_data_codec(value),
             // A Fiber and its exit hold the checked channels of a closed
             // Effect. A Deferred, like a Ref, holds only closed data.
@@ -129,6 +130,31 @@ fn join(left: &CoreType, right: &CoreType) -> Option<CoreType> {
     } else {
         None
     }
+}
+// A function's own type parameters become opaque closed types: WASM only
+// holds such a value and returns it, and generic callees stay refused.
+type Substitutions = BTreeMap<String, CoreType>;
+fn type_parameters(function: &CoreFunction) -> Substitutions {
+    function
+        .type_parameters
+        .iter()
+        .map(|parameter| {
+            (
+                parameter.name.clone(),
+                CoreType::Named {
+                    name: format!("{}{}", crate::program_wasm::TYPE_PARAMETER, parameter.name),
+                    arguments: Vec::new(),
+                },
+            )
+        })
+        .collect()
+}
+fn canonical_with(
+    module: &CoreModule,
+    ty: &CoreType,
+    substitutions: &Substitutions,
+) -> Option<CoreType> {
+    emit::canonical_declared_type(module, ty, substitutions).filter(closed_type)
 }
 fn canonical(module: &CoreModule, ty: &CoreType) -> Option<CoreType> {
     emit::canonical_boundary_type(module, ty).filter(closed_type)
@@ -270,6 +296,7 @@ struct Global {
 }
 struct Admission<'a> {
     module: &'a CoreModule,
+    substitutions: Substitutions,
     concurrency: bool,
     globals: &'a BTreeMap<String, Global>,
     edges: &'a mut BTreeMap<String, BTreeSet<String>>,
@@ -284,7 +311,7 @@ impl Admission<'_> {
         )
     }
     fn ty(&self, ty: &CoreType, origin: &SourceSpan) -> Result<CoreType> {
-        canonical(self.module, ty)
+        canonical_with(self.module, ty, &self.substitutions)
             .ok_or_else(|| self.error("a closed providerless canonical type is required", origin))
     }
     fn accepts(&self, expected: &CoreType, actual: &CoreType, origin: &SourceSpan) -> Result<()> {
@@ -1076,16 +1103,21 @@ pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool) -> Result<()>
             ));
         }
         for function in &module.functions {
-            if !function.type_parameters.is_empty() || !function.constraints.is_empty() {
+            if !function.constraints.is_empty()
+                || function
+                    .type_parameters
+                    .iter()
+                    .any(|parameter| parameter.arity != 0)
+            {
                 return Err(at(
-                    "generic source functions are unsupported",
+                    "constrained or higher-kinded source functions are unsupported",
                     &function.origin,
                 ));
             }
             let ty = function
                 .value_type
                 .as_ref()
-                .and_then(|ty| canonical(module, ty))
+                .and_then(|ty| canonical_with(module, ty, &type_parameters(function)))
                 .ok_or_else(|| {
                     at(
                         "checked closed function type is unavailable",
@@ -1126,6 +1158,7 @@ pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool) -> Result<()>
         for function in &module.functions {
             let mut admission = Admission {
                 module,
+                substitutions: type_parameters(function),
                 concurrency,
                 globals: &globals,
                 edges: &mut edges,
@@ -1156,6 +1189,7 @@ pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool) -> Result<()>
         for binding in &module.bindings {
             let mut admission = Admission {
                 module,
+                substitutions: Substitutions::new(),
                 concurrency,
                 globals: &globals,
                 edges: &mut edges,
