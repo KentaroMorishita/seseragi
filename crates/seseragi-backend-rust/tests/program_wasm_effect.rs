@@ -14,7 +14,7 @@ fn checked_cold_effect_uses_a_distinct_resumable_program_contract() {
          pub effect fn value input: String -> String fails String = effects.succeed input\n",
     );
     let artifact = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
-    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v2");
+    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v3");
     assert_eq!(artifact.metadata.exports[0].source_arity, 1);
     assert!(artifact
         .declarations
@@ -71,7 +71,9 @@ fn text(value: &str) { let mut bytes=(value.len() as u32).to_le_bytes().to_vec()
 fn make(index: u32) -> (u32,u32) { assert_eq!(ssrg_export(index),0); let root=token(); text("雪"); assert_eq!(ssrg_call(root),0); (root,token()) }
 fn drain() -> Vec<u8> { for _ in 0..10000 { assert_eq!(ssrg_poll(1),0); let bytes=output(); if bytes[0]!=0 { assert_eq!(ssrg_runs(),0); return bytes; } } panic!("bounded test Effect failed to complete") }
 fn messages(bytes:&[u8]) -> Vec<String> { assert_eq!(bytes[0],3); let mut input=&bytes[1..]; let n=program_u32(&mut input).unwrap(); let mut out=Vec::new(); for _ in 0..n { let located=program_u32(&mut input).unwrap(); program_take(&mut input,located as usize).unwrap(); let n=program_u32(&mut input).unwrap(); out.push(std::str::from_utf8(program_take(&mut input,n as usize).unwrap()).unwrap().to_owned()); } assert!(input.is_empty()); out }
-fn acquired() { for _ in 0..100 { if PROGRAM_RUN.with(|r| r.borrow().as_ref().unwrap().machine.context.scopes.iter().any(|scope| !scope.finalizers.is_empty())) { return; } assert_eq!(ssrg_poll(1),0); } panic!("resource not acquired") }
+// The root Effect runs as the scheduler's root Fiber.
+fn root_context<T>(read: impl FnOnce(&NativeContext) -> T) -> T { PROGRAM_RUN.with(|r| { let r=r.borrow(); let run=r.as_ref().unwrap(); read(&run.scheduler.tasks[&run.root].machine.context) }) }
+fn acquired() { for _ in 0..100 { if root_context(|c| c.scopes.iter().any(|scope| !scope.finalizers.is_empty())) { return; } assert_eq!(ssrg_poll(1),0); } panic!("resource not acquired") }
 fn main() {
  assert_eq!(ssrg_init(),0);
  let (root,plan)=make(0);
@@ -84,7 +86,7 @@ fn main() {
  let (root,plan)=make(5); assert_eq!(ssrg_start(plan),0); assert_eq!(messages(&drain()),["inner released","outer released"]); ssrg_detach(root); ssrg_detach(plan);
  let (root,plan)=make(6); assert_eq!(ssrg_start(plan),0); acquired(); assert_eq!(ssrg_cancel(),0); assert_eq!(messages(&drain()),["cancel released"]); ssrg_detach(root); ssrg_detach(plan);
  let (root,plan)=make(10); assert_eq!(ssrg_start(plan),0);
- let mut committed=false; for _ in 0..100 { if PROGRAM_RUN.with(|r| { let r=r.borrow(); let c=&r.as_ref().unwrap().machine.context; c.masked && c.scopes.last().is_some_and(|s| s.root) }) { committed=true; break; } assert_eq!(ssrg_poll(1),0); }
+ let mut committed=false; for _ in 0..100 { if root_context(|c| c.masked && c.scopes.last().is_some_and(|s| s.root)) { committed=true; break; } assert_eq!(ssrg_poll(1),0); }
  assert!(committed); assert_eq!(ssrg_cancel(),0); let bytes=drain(); assert_eq!(bytes[0],1); assert_eq!(&bytes[5..],"雪".as_bytes()); ssrg_detach(root); ssrg_detach(plan);
  assert_eq!(ssrg_callbacks(),0); assert_eq!(ssrg_dispose(),0); assert_eq!(ssrg_dispose(),0); assert_eq!(ssrg_live(),0); println!("cold effects, cancellation and finalizers released");
 }

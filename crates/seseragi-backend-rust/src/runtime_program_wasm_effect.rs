@@ -447,8 +447,13 @@ pub extern "C" fn ssrg_dispose() -> usize {
     LIVE.with(Cell::get)
 }
 
+// The root Effect runs as the root Fiber of a native scheduler, so forked
+// Fibers and Deferred waits share one cooperative queue. Target admission
+// rejects timers, files, child processes, stdin and signals, so a scheduler
+// turn never reads a host clock or starts a host task here.
 struct ProgramRun {
-    machine: NativeMachine,
+    scheduler: NativeScheduler,
+    root: usize,
     failure: Option<usize>,
     success: Option<usize>,
 }
@@ -480,8 +485,14 @@ pub extern "C" fn ssrg_start(token: u32) -> u32 {
         if !matches!(plan, V::Effect(_)) {
             return Err("program ABI: invalid checked Effect plan");
         }
+        let mut scheduler = NativeScheduler {
+            hostless: true,
+            ..NativeScheduler::default()
+        };
+        let root = scheduler.spawn(NativeContext::default(), plan).fiber().task;
         let run = ProgramRun {
-            machine: NativeMachine::new(NativeContext::default(), plan),
+            scheduler,
+            root,
             failure,
             success,
         };
@@ -496,8 +507,10 @@ pub extern "C" fn ssrg_cancel() -> u32 {
     PROGRAM_RUN.with(|run| {
         if let Some(run) = run.borrow_mut().as_mut() {
             // Keep all continuation frames, captured values and registered
-            // finalizers. The machine observes cancellation at a checkpoint.
-            run.machine.context.cancelled = true;
+            // finalizers. A waiting root resumes as cancelled; a running one
+            // observes cancellation at a checkpoint. Closing the root scope
+            // cancels its children and runs their finalizers.
+            run.scheduler.cancel(run.root);
             0
         } else {
             1
@@ -571,37 +584,16 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
             .with(|slot| slot.borrow_mut().take())
             .ok_or("program ABI: no running Effect")?;
         for _ in 0..quantum {
-            match run.machine.turn() {
-                NativeTurn::Runnable => {}
-                NativeTurn::CloseScope(original, previous_mask) => {
-                    run.machine.state = Some(run.machine.context.cleanup(
-                        &mut run.machine.stack,
-                        original,
-                        Vec::new(),
-                        previous_mask,
-                    ));
-                }
-                NativeTurn::Complete(outcome) => {
-                    return program_outcome(outcome, run.failure, run.success)
-                }
-                NativeTurn::ProcessSignalPull(_) => {
-                    run.machine.resume(Err(NativeExit::defects(vec![
-                        "program ABI: process signals are unavailable in WASM".into(),
-                    ])));
-                }
-                NativeTurn::ChildProcess(_, _) => {
-                    run.machine.resume(Err(NativeExit::defects(vec![
-                        "program ABI: child processes are unavailable in WASM".into(),
-                    ])));
-                }
-                NativeTurn::Operation(_, _)
-                | NativeTurn::FileSystem(_, _)
-                | NativeTurn::Stdin(_, _) => {
-                    // Full target admission prevents these turns. Preserve the
-                    // scope stack even for a violated internal contract.
-                    run.machine.resume(Err(NativeExit::defects(vec![
-                        "program ABI: unadmitted host operation".into(),
-                    ])));
+            if run.scheduler.ready.is_empty() {
+                // Every Fiber waits on another Fiber or a Deferred, and this
+                // ABI has no timer or host operation to wake one. Report it,
+                // so the host stops polling until it cancels the Effect.
+                PROGRAM_RUN.with(|slot| *slot.borrow_mut() = Some(run));
+                return Ok(vec![5]);
+            }
+            if let Some((id, _, outcome)) = run.scheduler.tick(0) {
+                if id == run.root {
+                    return program_outcome(outcome, run.failure, run.success);
                 }
             }
         }

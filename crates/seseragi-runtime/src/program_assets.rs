@@ -79,7 +79,7 @@ pub(crate) fn stage(
                 metadata["abi"].as_str(),
                 Some(
                     "seseragi-program-wasm-pure-v1"
-                        | "seseragi-program-wasm-effect-v2"
+                        | "seseragi-program-wasm-effect-v3"
                         | "seseragi-program-wasm-host-effect-v2"
                 )
             )

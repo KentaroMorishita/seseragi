@@ -213,7 +213,7 @@ Defect後の再生成を確認できる。assetの配置はsample scriptで明�
 
 ## providerless Effectを実行・取消する
 
-閉じた公開Effectを選ぶと、`seseragi-program-wasm-effect-v2`を生成する。
+閉じた公開Effectを選ぶと、`seseragi-program-wasm-effect-v3`を生成する。
 pure ABIとは別のloaderとresumable runtimeを使い、従来のpure出力を保つ。
 source引数を適用するとcoldな`OwnedEffect<E, A>`を返し、`run()`で実行を開始する。
 辞書factory、source引数、返り値関数とEffectの実行を一段階へまとめない。
@@ -248,7 +248,7 @@ scopeの全finalizerをLIFO順で試み、cleanup Defectを失わず結果へ渡
 このABIはproviderを持たない閉じた型と、生成前に証明した式だけを扱う。Intはsafe範囲の
 値の受渡しに限り、演算は含めない。String連結、Bool分岐、Tuple／Maybe／Either、source関数の
 保存・部分適用・返却closureと、選択した標準Effect操作を扱う。標準Effect関数自体の保存・部分適用、
-公開Ref、Fiber／Deferred、host入力callback、open provider row、generic公開scheme、未証明の式や
+公開Ref、公開Fiber／Deferred、host入力callback、open provider row、generic公開scheme、未証明の式や
 同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
 host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
 
@@ -260,6 +260,17 @@ callbackをdetachした後もその状態を更新できる。tracingはglobal�
 受入例は`program-wasm-private-ref.ssrg`と標準Web packageの
 `program-wasm-private-ref-package`。文字列の蓄積とFailure・Defectは同じbodyのstrict TS／nativeと比較する。
 取消後のLIFO cleanupとinstance終了時のroot解放は実WASMでも確認する。
+
+providerlessなEffect ABIでは、rootのEffectをnativeのschedulerのroot Fiberとして動かす。
+`std/effect`のfork・await・poll・join・interrupt・yieldNowと、`std/deferred`の操作を内部で使える。
+Deferredの中身はRefと同じく閉じたdataに限り、Fiber・Deferredの型やhandleは公開codecへ加えない。
+このABIはtimer・file・子process・stdin・signalを受け入れないので、schedulerのturnはhostの時計を読まない。
+どのFiberも進めないとき、`ssrg_poll`は停止中（5）を返す。loaderはpollをやめて結果を保留にし、
+`cancel()`かdisposeで再開する。TSで誰も完了しないDeferredを待つのと同じく、結果は自然には決まらない。
+`ssrg_cancel`はroot Fiberを取消し、root scopeを閉じるときに子Fiberを取消してfinalizerを待つ。
+host Effect ABIは一つのrunで保留するhost要求を一つだけ持つので、Fiber／Deferredを拒否する。
+受入例は`program-wasm-fibers.ssrg`で、TS・native・Bun・NodeのWASMで同じ順序になることを比べる。
+`yieldNow`後に子Fiberが進む量はnativeとTSで異なり（#1264）、WASMはnativeと同じになる。
 `update`／`modify`、tuple pattern、fallibleなInt演算は含めない。
 
 Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。

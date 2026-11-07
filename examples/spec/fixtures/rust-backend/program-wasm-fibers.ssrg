@@ -1,0 +1,91 @@
+// Program WASM runs Fibers and Deferreds in the same order as the TS target.
+import * as effects from "std/effect"
+import * as deferreds from "std/deferred"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+import { Deferred } from "std/deferred"
+
+effect fn log cell: Ref<String> -> text: String -> Unit = do {
+  current <- refs.get cell
+  refs.set (current + text) cell
+}
+
+effect fn waiter cell: Ref<String>
+  -> ready: Deferred<Never, Unit>
+  -> gate: Deferred<Never, String>
+  -> String =
+  do {
+    log cell "child waits;"
+    deferreds.succeed () ready
+    value <- deferreds.await gate
+    log cell ("child got " + value + ";")
+    effects.succeed value
+  }
+
+// The parent forks a child, waits until it is ready, opens its gate and
+// joins it. Each step waits for the previous one, so the log has one order.
+pub effect fn order _trigger: Unit -> String = do {
+  cell <- refs.make ""
+  ready <- deferreds.make<Never, Unit> ()
+  gate <- deferreds.make<Never, String> ()
+  child <- effects.fork (waiter cell ready gate)
+  deferreds.await ready
+  log cell "parent opens;"
+  deferreds.succeed "go" gate
+  result <- effects.join child
+  text <- refs.get cell
+  effects.succeed (text + "result " + result)
+}
+
+effect fn release cell: Ref<String> -> marker: String -> _resource: Unit -> Unit = log cell marker
+
+effect fn guarded cell: Ref<String>
+  -> ready: Deferred<Never, Unit>
+  -> gate: Deferred<Never, Unit>
+  -> Unit =
+  effects.scoped $
+  do {
+    effects.acquireRelease (effects.succeed ()) (release cell "child released;")
+    log cell "child holds;"
+    deferreds.succeed () ready
+    deferreds.await gate
+  }
+
+// Interrupting a waiting child runs its finalizer before interrupt returns.
+pub effect fn cleanup _trigger: Unit -> String = do {
+  cell <- refs.make ""
+  ready <- deferreds.make<Never, Unit> ()
+  gate <- deferreds.make<Never, Unit> ()
+  child <- effects.fork (guarded cell ready gate)
+  deferreds.await ready
+  effects.interrupt child
+  log cell "interrupted;"
+  refs.get cell
+}
+
+effect fn broken -> Int fails String = effects.fail "child failed"
+
+// Joining a failed child fails with its typed error.
+pub effect fn failing _trigger: Unit -> Int fails String = do {
+  child <- effects.fork (broken ())
+  effects.join child
+}
+
+// A completed Deferred keeps its first value.
+pub effect fn first _trigger: Unit -> String = do {
+  gate <- deferreds.make<Never, String> ()
+  won <- deferreds.succeed "first" gate
+  lost <- deferreds.succeed "second" gate
+  value <- deferreds.await gate
+  effects.succeed (value + " " + (if won then "won" else "lost") + " " + (if lost then "won" else "lost"))
+}
+
+// Nothing completes this gate, so the run waits until the host cancels it.
+pub effect fn stuck _trigger: Unit -> String = do {
+  cell <- refs.make ""
+  ready <- deferreds.make<Never, Unit> ()
+  gate <- deferreds.make<Never, Unit> ()
+  effects.fork (guarded cell ready gate)
+  deferreds.await gate
+  refs.get cell
+}

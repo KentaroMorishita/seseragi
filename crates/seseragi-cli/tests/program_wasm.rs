@@ -1095,7 +1095,7 @@ fn providerless_program_effects_run_cancel_and_release_on_bun_and_node() {
             &scratch.0,
         ));
         let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
-        assert_eq!(report["abi"], "seseragi-program-wasm-effect-v2");
+        assert_eq!(report["abi"], "seseragi-program-wasm-effect-v3");
         assert_eq!(report["callbacks"], 3);
         assert_eq!(report["cancelled"], 2);
         assert_eq!(report["disposeDefectObservable"], true);
@@ -1739,7 +1739,7 @@ fn standard_web_effect_build_owns_async_program_types_and_lifetimes() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v2"
+            "seseragi-program-wasm-effect-v3"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2039,7 +2039,7 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v2"
+            "seseragi-program-wasm-effect-v3"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],
@@ -2072,6 +2072,83 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
             &scratch.0,
         ));
     }
+}
+
+#[test]
+fn fibers_and_deferreds_run_in_the_ts_target_order() {
+    let scratch = Scratch::new();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-fibers.ssrg");
+    let expected = "child waits;parent opens;child got go;result go\nchild holds;child released;interrupted;\n-1\nfirst won lost\n";
+    let destination = scratch.0.join("fibers");
+    successful(bounded(
+        &mut build(
+            &fixture,
+            &destination,
+            &["order", "cleanup", "failing", "first", "stuck"],
+        ),
+        &scratch.0,
+    ));
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(destination.join("program-wasm.json")).unwrap()).unwrap();
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-effect-v3");
+    for engine in ["bun", "node"] {
+        let result = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(root().join("scripts/probes/program-wasm-fibers-probe.mjs"))
+                .arg(&destination)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(
+            String::from_utf8_lossy(&result.stdout),
+            expected,
+            "{engine}"
+        );
+        assert!(result.stderr.is_empty(), "{result:?}");
+    }
+    // The same bodies on the TS target and native print the same order.
+    let main = "\npub effect fn main = do {\n  a <- order ()\n  println a\n  b <- cleanup ()\n  println b\n  c <- failing () |> effects.recover (\\message: String -> effects.succeed (-1))\n  println (show c)\n  d <- first ()\n  println d\n}\n";
+    let source = scratch.0.join("oracle.ssrg");
+    fs::write(
+        &source,
+        format!("{}{main}", fs::read_to_string(&fixture).unwrap()),
+    )
+    .unwrap();
+    let ts = scratch.0.join("ts");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg(&source)
+            .args(["--target", "process", "--out-dir"])
+            .arg(&ts),
+        &scratch.0,
+    ));
+    let result = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(ts.join("entry.js"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(String::from_utf8_lossy(&result.stdout), expected);
+    let native = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&source)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        &scratch.0,
+    ));
+    let result = successful(bounded(
+        Command::new(native.join(if cfg!(windows) {
+            "program.exe"
+        } else {
+            "program"
+        }))
+        .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(String::from_utf8_lossy(&result.stdout), expected);
 }
 
 #[test]
@@ -2239,7 +2316,7 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-effect-v2"
+            "seseragi-program-wasm-effect-v3"
         );
         assert_eq!(
             manifest["programs"][0]["hostImport"],

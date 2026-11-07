@@ -20,7 +20,7 @@ fn program(hidden: &str) -> CoreModule {
 fn accepts(module: &CoreModule) {
     let artifact = emit_program_wasm(&[module], MODULE, &["value".into()])
         .unwrap_or_else(|error| panic!("legal control failed admission: {error}"));
-    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v2");
+    assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-effect-v3");
     assert_eq!(artifact.metadata.exports[0].source_arity, 1);
 }
 fn refuses(module: &CoreModule) {
@@ -413,4 +413,60 @@ fn open_provider_rows_and_unknown_channel_types_never_produce_an_artifact() {
         }
         refuses(&module);
     }
+}
+
+const DEFERRED: &str = "import * as deferreds from \"std/deferred\"\n";
+
+#[test]
+fn fibers_and_deferreds_are_admitted_with_closed_data_channels() {
+    accepts(&program(&format!(
+        "{DEFERRED}effect fn child input: String -> String fails String = effects.fail input\neffect fn hidden input: String -> Bool fails String = do {{ gate <- deferreds.make<Never, String> (); fiber <- effects.fork (child input); effects.yieldNow (); effects.interrupt fiber; deferreds.succeed input gate }}"
+    )));
+    // A Deferred holds only closed data, like a private Ref.
+    refuses(&program(&format!(
+        "{DEFERRED}effect fn hidden input: String -> Bool = do {{ gate <- deferreds.make<Never, String -> String> (); deferreds.succeed (\\value: String -> value) gate }}"
+    )));
+}
+
+#[test]
+fn deferred_operations_prove_their_cell_and_payload() {
+    let original = program(&format!(
+        "{DEFERRED}import {{ Deferred }} from \"std/deferred\"\neffect fn hidden gate: Deferred<Never, String> -> Bool = deferreds.succeed \"value\" gate"
+    ));
+    accepts(&original);
+    for mutation in 0..3 {
+        let mut module = original.clone();
+        let body = &mut function(&mut module, "hidden").body;
+        let origin = seseragi_lowering::core_expr_origin(body).clone();
+        let values = arguments(body);
+        match mutation {
+            0 => {
+                values.pop();
+            }
+            1 => {
+                values[0] = CoreExpr::Integer {
+                    value: "42".into(),
+                    origin,
+                };
+            }
+            _ => values.swap(0, 1),
+        }
+        refuses(&module);
+    }
+}
+
+#[test]
+fn the_host_effect_abi_keeps_one_host_request_and_refuses_fibers() {
+    let module = checked(&format!(
+        "{IMPORT}pub effect fn value callback: (String -> Effect<{{}}, String, String>) -> String fails String = do {{ child <- effects.fork (callback \"x\"); effects.join child }}\n"
+    ));
+    let error = emit_program_wasm(&[&module], MODULE, &["value".into()])
+        .expect_err("a host Effect run admitted a Fiber");
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert!(
+        error.message.contains("need the providerless Effect ABI"),
+        "{}",
+        error.message
+    );
+    assert!(error.origin.is_some());
 }
