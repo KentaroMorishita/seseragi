@@ -549,7 +549,7 @@ WASM内の一般Effectのunwind／cancel時のfinalizer保証を、このpure pr
 host callbackは`A -> Effect<{}, E, B>`で、閉じた値codecの引数・成功値・失敗値に限ります。
 source引数を適用する段階とcold Effectをrunする段階を保ち、hostのAbortSignalをsource arityへ加えません。
 取消とasync disposeは開始済みhost operationとmasked finalizerの応答を待ちます。
-両Effect ABIでは、既存の閉じたdataだけを保持する内部Refのmake／get／setを使い、
+両Effect ABIでは、既存の閉じたdataだけを保持する内部Refのmake／get／set／update／modifyを使い、
 状態をcaptureしたcallbackを返せます。Ref自体は公開境界へ渡せません。
 providerlessなEffect ABIでは、内部でFiber（fork・await・poll・join・interrupt・yieldNow）と
 Deferredも使えます。Deferredの中身は閉じたdataに限り、Fiber・Deferred自体は公開境界へ渡せません。

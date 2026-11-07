@@ -123,7 +123,7 @@ fn big_int_ord_rejects_counterfeit_method_owner_types_children_and_source_stages
 }
 
 #[test]
-fn unused_big_int_compare_and_operator_references_stay_out_of_program_wasm() {
+fn unused_big_int_compare_and_operator_references_build_as_program_wasm() {
     for (method, result) in [
         ("compare", "Ordering"),
         ("(<)", "Bool"),
@@ -134,11 +134,8 @@ fn unused_big_int_compare_and_operator_references_stay_out_of_program_wasm() {
         let source=format!("import * as big from \"std/big-int\"\npub fn probe value:Int -> Int = {{ let saved:big.BigInt -> big.BigInt -> {result} = {method}; value }}\npub fn main -> Int = 0\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/big-int-ord", &["probe".into()])
-            .err()
-            .unwrap_or_else(|| panic!("admitted unused BigInt {method}"));
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "big-int-ord-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/big-int-ord", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }
 

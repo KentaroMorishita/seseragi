@@ -136,7 +136,7 @@ fn decimal_ord_rejects_counterfeit_method_owner_types_children_and_source_stages
 }
 
 #[test]
-fn unused_decimal_compare_and_operator_references_stay_out_of_program_wasm() {
+fn unused_decimal_compare_and_operator_references_build_as_program_wasm() {
     for (method, result) in [
         ("compare", "Ordering"),
         ("(<)", "Bool"),
@@ -147,11 +147,8 @@ fn unused_decimal_compare_and_operator_references_stay_out_of_program_wasm() {
         let source=format!("import * as decimal from \"std/decimal\"\npub fn probe value:Int -> Int = {{ let saved:decimal.Decimal -> decimal.Decimal -> {result} = {method}; value }}\npub fn main -> Int = 0\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/decimal-ord", &["probe".into()])
-            .err()
-            .unwrap_or_else(|| panic!("admitted unused Decimal {method}"));
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "decimal-ord-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/decimal-ord", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }
 

@@ -178,6 +178,8 @@ enum Operation {
     RefMake,
     RefGet,
     RefSet,
+    RefUpdate,
+    RefModify,
     Fork,
     AwaitFiber,
     PollFiber,
@@ -207,6 +209,8 @@ impl Operation {
             "std/ref::make" => Self::RefMake,
             "std/ref::get" => Self::RefGet,
             "std/ref::set" => Self::RefSet,
+            "std/ref::update" => Self::RefUpdate,
+            "std/ref::modify" => Self::RefModify,
             "std/effect::fork" => Self::Fork,
             "std/effect::await" => Self::AwaitFiber,
             "std/effect::poll" => Self::PollFiber,
@@ -251,6 +255,8 @@ impl Operation {
             | Self::MapError
             | Self::AcquireRelease
             | Self::RefSet
+            | Self::RefUpdate
+            | Self::RefModify
             | Self::CompleteDeferred
             | Self::SucceedDeferred
             | Self::FailDeferred => 2,
@@ -376,6 +382,18 @@ impl Admission<'_> {
             _ => Err(self.error("a canonical closed Fiber or Deferred is required", origin)),
         }
     }
+    fn cell<'a>(&self, ty: &'a CoreType, origin: &SourceSpan) -> Result<&'a CoreType> {
+        let CoreType::Named { name, arguments } = ty else {
+            return Err(self.error("private Ref requires its canonical cell owner", origin));
+        };
+        let [value] = arguments.as_slice() else {
+            return Err(self.error("private Ref requires one checked payload type", origin));
+        };
+        if name != "std/ref::Ref" || !crate::program_wasm::has_closed_data_codec(value) {
+            return Err(self.error("private Ref requires its canonical data cell", origin));
+        }
+        Ok(value)
+    }
     fn function<'a>(
         &self,
         ty: &'a CoreType,
@@ -486,26 +504,29 @@ impl Admission<'_> {
                     },
                 )
             }
-            Operation::RefGet | Operation::RefSet => {
-                let cell = if operation == Operation::RefGet {
-                    first
-                } else {
-                    &types[1]
-                };
-                let CoreType::Named { name, arguments } = cell else {
-                    return Err(self.error("private Ref requires its canonical cell owner", origin));
-                };
-                let [value] = arguments.as_slice() else {
-                    return Err(self.error("private Ref requires one checked payload type", origin));
-                };
-                if name != "std/ref::Ref" || !crate::program_wasm::has_closed_data_codec(value) {
-                    return Err(self.error("private Ref requires its canonical data cell", origin));
-                }
-                if operation == Operation::RefGet {
-                    effect(primitive("Never"), value.clone())
-                } else {
-                    self.accepts(value, first, origin)?;
+            Operation::RefGet => effect(primitive("Never"), self.cell(first, origin)?.clone()),
+            Operation::RefSet => {
+                self.accepts(self.cell(&types[1], origin)?, first, origin)?;
+                effect(primitive("Never"), primitive("Unit"))
+            }
+            Operation::RefUpdate | Operation::RefModify => {
+                // The transform is a checked pure stage; it runs once with
+                // the current payload and its result replaces the payload.
+                let value = self.cell(&types[1], origin)?;
+                let (parameter, result) = self.function(first, origin)?;
+                self.accepts(parameter, value, origin)?;
+                if operation == Operation::RefUpdate {
+                    self.accepts(value, result, origin)?;
                     effect(primitive("Never"), primitive("Unit"))
+                } else {
+                    let CoreType::Tuple { elements } = result else {
+                        return Err(self.error("modify requires a result and next payload", origin));
+                    };
+                    let [output, next] = elements.as_slice() else {
+                        return Err(self.error("modify requires a result and next payload", origin));
+                    };
+                    self.accepts(value, next, origin)?;
+                    effect(primitive("Never"), output.clone())
                 }
             }
             Operation::Fork => {

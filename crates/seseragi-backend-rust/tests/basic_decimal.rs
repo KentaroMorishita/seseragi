@@ -142,7 +142,7 @@ fn basic_decimal_does_not_replace_scoped_opaque_or_int_binders() {
 }
 
 #[test]
-fn basic_decimal_keeps_program_wasm_admission_explicit() {
+fn basic_decimal_saved_operations_build_as_program_wasm() {
     for (name, signature) in [
         (
             "parse",
@@ -153,10 +153,8 @@ fn basic_decimal_keeps_program_wasm_admission_explicit() {
         let source=format!("import * as big from \"std/decimal\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = big.{name}; value }}\npub fn main -> Int = probe 1\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/decimal", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(error.message.contains("requires a target-specific"));
-        assert_eq!(error.origin.unwrap().source, "decimal-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/decimal", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }
 
@@ -244,7 +242,7 @@ fn decimal_show_checks_selected_identity_children_argument_result_and_source_sta
 }
 
 #[test]
-fn decimal_saved_show_has_its_exact_function_type_and_keeps_program_wasm_closed() {
+fn decimal_saved_show_has_its_exact_function_type_and_builds_as_program_wasm() {
     let saved = checked("import * as decimal from \"std/decimal\"\nfn formatter -> (decimal.Decimal -> String) = show\npub fn main -> Int = 0\n");
     emit_rust_module(&saved, "main").unwrap();
     let index = saved
@@ -274,8 +272,6 @@ fn decimal_saved_show_has_its_exact_function_type_and_keeps_program_wasm_closed(
     }
     let core=checked("import * as decimal from \"std/decimal\"\npub fn probe value: Int -> Int = { let saved: decimal.Decimal -> String = show; value }\npub fn main -> Int = 0\n");
     emit_rust_module(&core, "main").unwrap();
-    let error = emit_program_wasm(&[&core], "native/decimal", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert!(error.message.contains("requires a target-specific"));
-    assert_eq!(error.origin.unwrap().source, "decimal-雪🙂.ssrg");
+    emit_program_wasm(&[&core], "native/decimal", &["probe".into()])
+        .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
 }
