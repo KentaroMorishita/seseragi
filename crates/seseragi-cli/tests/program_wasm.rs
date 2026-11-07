@@ -2855,6 +2855,56 @@ console.log('same results');
     }
 }
 
+#[test]
+fn exact_math_matches_the_ts_target_bit_for_bit() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-math.ssrg",
+        &["constants", "root", "diagonal"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram, capabilities} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+assert.deepStrictEqual([...capabilities], ['float', 'math']);
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const bits = (value) => { const view = new DataView(new ArrayBuffer(8)); view.setFloat64(0, value); return view.getBigUint64(0); };
+const same = (left, right, label) => assert.equal(bits(left), bits(right), label);
+wasm.constants(undefined).forEach((value, index) => same(value, ts.constants(undefined)[index], `constant ${index}`));
+for (const value of [0, -0, 1, 2, 0.5, 1e-310, 5e-324, 1.7976931348623157e308, -1, NaN, Infinity, -Infinity, 123456.789]) {
+  same(wasm.root(value), ts.root(value), `root ${value}`);
+  same(wasm.diagonal(value), ts.diagonal(value), `diagonal ${value}`);
+}
+program.dispose();
+console.log('same bits');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same bits\n", "{engine}");
+    }
+    // Other math functions round differently in each host's math library.
+    let source = scratch.0.join("wave.ssrg");
+    fs::write(
+        &source,
+        "import * as math from \"std/math\"\npub fn wave value: Float -> Float = math.sin value\n",
+    )
+    .unwrap();
+    let result = bounded(
+        build(&source, &scratch.0.join("wave"), &["wave"]).env("PATH", ""),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(2), "{result:?}");
+    assert!(String::from_utf8_lossy(&result.stderr)
+        .contains("rounds differently from the TS target's Math"));
+}
+
 /// Builds `fixture` as program WASM in `wasm/` and for the TS target in
 /// `ts/`. The TS target needs an entry, which program WASM rejects when it
 /// uses Console, so only the TS copy gets one.

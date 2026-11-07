@@ -19,6 +19,16 @@ fn float() -> CoreType {
     }
 }
 
+// The constants and sqrt are exact in IEEE arithmetic, so WASM and the TS
+// target's Math agree bit for bit. Other functions round differently in
+// each host's math library.
+fn exact_in_program_wasm(name: &str) -> bool {
+    matches!(
+        name,
+        "std/math::pi" | "std/math::e" | "std/math::tau" | "std/math::sqrt"
+    )
+}
+
 impl Backend<'_> {
     fn math_type(
         &self,
@@ -27,11 +37,6 @@ impl Backend<'_> {
         arity: usize,
         scope: &Scope,
     ) -> Result<()> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native math requires a target-specific arithmetic proof".into(),
-            );
-        }
         let expected = (supplied..arity).fold(float(), |result, _| CoreType::Function {
             parameter: Box::new(float()),
             result: Box::new(result),
@@ -77,6 +82,12 @@ impl Backend<'_> {
         if !evidence.is_empty() {
             return Err("Rust backend: math operation with unsupported evidence".into());
         }
+        if self.program_wasm_library && !exact_in_program_wasm(name) {
+            return Err(
+                "program WASM: this math function rounds differently from the TS target's Math"
+                    .into(),
+            );
+        }
         self.math_type(type_ref, 0, arity, scope)?;
         self.capabilities.insert("math".into());
         Ok(Some(Self::math_callable(name, arity)))
@@ -111,6 +122,12 @@ impl Backend<'_> {
             || evidence_argument_index.is_some()
         {
             return Err("Rust backend: unproven math source application".into());
+        }
+        if self.program_wasm_library && !exact_in_program_wasm(callee) {
+            return Err(
+                "program WASM: this math function rounds differently from the TS target's Math"
+                    .into(),
+            );
         }
         self.math_type(type_ref, arguments.len(), arity, scope)?;
         self.capabilities.insert("math".into());

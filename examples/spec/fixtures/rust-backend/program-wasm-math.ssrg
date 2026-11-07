@@ -1,0 +1,9 @@
+// Program WASM exposes the math constants and sqrt, which are exact in
+// IEEE arithmetic and so match the TS target's Math bit for bit.
+import * as math from "std/math"
+
+pub fn constants _trigger: Unit -> (Float, Float, Float) = (math.pi, math.e, math.tau)
+
+pub fn root value: Float -> Float = math.sqrt value
+
+pub fn diagonal side: Float -> Float = math.sqrt (side * side + side * side)
