@@ -139,7 +139,7 @@ fn basic_big_int_does_not_replace_scoped_opaque_or_int_binders() {
 }
 
 #[test]
-fn basic_big_int_keeps_program_wasm_admission_explicit() {
+fn basic_big_int_saved_operations_build_as_program_wasm() {
     for (name, signature) in [
         (
             "parse",
@@ -151,9 +151,7 @@ fn basic_big_int_keeps_program_wasm_admission_explicit() {
         let source=format!("import * as big from \"std/big-int\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = big.{name}; value }}\npub fn main -> Int = probe 1\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/big", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(error.message.contains("requires a target-specific"));
-        assert_eq!(error.origin.unwrap().source, "big-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/big", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

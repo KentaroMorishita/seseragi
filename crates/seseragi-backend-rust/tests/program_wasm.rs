@@ -103,11 +103,11 @@ fn refuses_unproved_public_types_and_staging_before_any_artifact() {
     }
     for source in [
         "pub fn value<A> input: A -> String where Show<A> = show input\n",
-        "type Box<A> = | Box A\npub fn value<A> input: A -> Box<A> = Box input\n",
+        "import * as effects from \"std/effect\"\npub effect fn value<A> input: A -> A = effects.succeed input\n",
         "pub fn value input: (Int -> Int) -> Int = input 1\n",
-        "import * as bigs from \"std/big-int\"\npub fn value input: bigs.BigInt -> Int = 1\n",
-        "import * as bigs from \"std/big-int\"\npub fn value input: {x: Int, y: bigs.BigInt} -> Int = input.x\n",
-        "import * as bigs from \"std/big-int\"\npub fn value input: Array<bigs.BigInt> -> Int = 1\n",
+        "import * as decimal from \"std/decimal\"\npub fn value input: decimal.DecimalContext -> Int = 1\n",
+        "import * as decimal from \"std/decimal\"\npub fn value input: {x: Int, y: decimal.DecimalContext} -> Int = input.x\n",
+        "import * as decimal from \"std/decimal\"\npub fn value input: Array<decimal.DecimalContext> -> Int = 1\n",
     ] {
         let module = checked(source);
         let error = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap_err();

@@ -151,8 +151,7 @@ impl Backend<'_> {
             "std/decimal::One" => "native_decimal_constant_dictionary(true)",
             _ => return Ok(None),
         };
-        if self.program_wasm_library || !type_arguments.is_empty() || !evidence_arguments.is_empty()
-        {
+        if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
             return Err(
                 "Rust backend: unproven native Decimal dictionary type, children or target".into(),
             );
@@ -493,9 +492,6 @@ impl Backend<'_> {
         expected: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
-        if self.program_wasm_library {
-            return Err("program WASM: native Decimal requires a target-specific ABI proof".into());
-        }
         if self.declared_method_type_kind(actual, scope) != Some(0)
             || self.local_canonical_type(actual, scope)? != *expected
         {

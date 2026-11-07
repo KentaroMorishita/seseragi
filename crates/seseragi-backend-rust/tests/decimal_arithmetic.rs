@@ -331,7 +331,7 @@ fn decimal_arithmetic_binary_operators_reject_forged_operands_results_and_provid
 }
 
 #[test]
-fn unused_decimal_arithmetic_operations_and_constants_remain_outside_program_wasm() {
+fn unused_decimal_arithmetic_operations_and_constants_build_as_program_wasm() {
     for (signature, operation) in [
         (
             "decimal.Decimal -> decimal.Decimal -> decimal.Decimal",
@@ -352,10 +352,8 @@ fn unused_decimal_arithmetic_operations_and_constants_remain_outside_program_was
         let source=format!("import * as decimal from \"std/decimal\"\npub fn probe value:Int -> Int = {{ let saved:{signature} = {operation}; value }}\npub fn main -> Int = 0\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/decimal-arithmetic", &["probe".into()])
-            .unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "decimal-arithmetic-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/decimal-arithmetic", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }
 
@@ -443,7 +441,7 @@ fn decimal_debug_checks_selected_identity_children_argument_result_and_source_st
 }
 
 #[test]
-fn decimal_saved_debug_has_its_exact_function_type_and_keeps_program_wasm_closed() {
+fn decimal_saved_debug_has_its_exact_function_type_and_builds_as_program_wasm() {
     let saved = checked("import * as decimal from \"std/decimal\"\nfn formatter -> (decimal.Decimal -> String) = debug\npub fn main -> Int = 0\n");
     emit_rust_module(&saved, "main").unwrap();
     let index = saved
@@ -473,11 +471,8 @@ fn decimal_saved_debug_has_its_exact_function_type_and_keeps_program_wasm_closed
     }
     let core=checked("import * as decimal from \"std/decimal\"\npub fn probe value: Int -> Int = { let saved: decimal.Decimal -> String = debug; value }\npub fn main -> Int = 0\n");
     emit_rust_module(&core, "main").unwrap();
-    let error =
-        emit_program_wasm(&[&core], "native/decimal-arithmetic", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert!(error.message.contains("requires a target-specific"));
-    assert_eq!(error.origin.unwrap().source, "decimal-arithmetic-雪🙂.ssrg");
+    emit_program_wasm(&[&core], "native/decimal-arithmetic", &["probe".into()])
+        .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
 }
 
 #[test]

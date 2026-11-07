@@ -79,3 +79,15 @@ pub effect fn session initial: String
     cell <- refs.make initial
     effects.succeed (step cell)
   }
+
+effect fn record cell: Ref<String> -> entry: String -> Maybe<String> = do {
+  refs.update (\current: String -> current + entry) cell
+  refs.modify (\current: String -> (Just current, current + ";")) cell
+}
+
+pub effect fn journal initial: String
+  -> (String -> Effect<{}, Never, Maybe<String>>) =
+  do {
+    cell <- refs.make initial
+    effects.succeed (record cell)
+  }

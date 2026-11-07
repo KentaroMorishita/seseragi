@@ -124,7 +124,7 @@ fn decimal_conversion_rejects_unproven_owners_kinds_arguments_evidence_and_stage
 }
 
 #[test]
-fn decimal_conversion_does_not_admit_unused_operations_in_program_wasm() {
+fn decimal_conversion_unused_operations_build_as_program_wasm() {
     for (signature, operation) in [
         ("decimal.Decimal -> Either<decimal.DecimalConversionError,Int>", "toIntExact"),
         ("decimal.Decimal -> Either<decimal.DecimalConversionError,Float>", "toFloat"),
@@ -136,10 +136,8 @@ fn decimal_conversion_does_not_admit_unused_operations_in_program_wasm() {
     ] {
         let core = checked(&format!("import * as decimal from \"std/decimal\"\nimport * as numbers from \"std/number\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = decimal.{operation}; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/decimal-conversion", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "decimal-conversion-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/decimal-conversion", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }
 

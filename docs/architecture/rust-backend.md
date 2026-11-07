@@ -139,22 +139,27 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 前の完成したartifactを保存し、利用者が編集した出力や無関係なdirectoryは置き換えない。
 
 公開関数で受け渡せる値と、JS側の形は次のとおり。TSターゲットで同じ関数を公開したときと
-同じ形で、両方向に受け渡す。
+同じ形で、両方向に受け渡す。TSターゲットの形はprofileで変わる（releaseはnewtypeの包みを消す）ので、
+`--profile development|release`（既定はdevelopment）で合わせる。Web packageは自分のprofileでprogramを作る。
 
 | Seseragi の型 | JS 側の形 |
 | --- | --- |
 | Unit / Bool / Int / String | `undefined` / `boolean` / 安全な整数の `number` / `string` |
 | Float | `number`（NaN・無限大・-0 を含む） |
 | Char | Unicode スカラー値を 1 つだけ持つ `string` |
+| BigInt | `bigint`。型宣言は TS と同じく brand 付きで、ホストはプログラムから受け取った値だけを渡せる |
+| Decimal | TS と同じ、凍結した `{coefficient, scale}`（どちらも `bigint`）。係数の末尾に 0 がない形（0 はスケール 0）だけを受け取る |
 | タプル・Array | 配列 |
 | List | `{tag: "Cons", head, tail}` と `{tag: "Empty"}` |
 | 閉じた record・struct | 普通のオブジェクト |
 | Maybe・Either・ADT | `{tag}` または `{tag, value}`。generic や再帰する ADT も使える |
+| newtype | development では `{tag, value}`（tag は型の名前）。release では TS と同じく中身の値だけ |
+| opaque な ADT・struct | 中身は ADT・struct と同じ形。opaque struct の型宣言は brand だけを持ち、ホストは中身を読めず、作れない |
 | 関数の型パラメータ | JS の値そのもの。WASM は預かって返すだけで、同じ値が返る |
 
 trait 制約のない generic な関数も公開できる。型宣言では、型パラメータを最初に受け取る呼び出しで
 それを決めるので、TS が推論できる。trait 制約のある関数と、型パラメータを含む ADT・struct は
-まだ公開できない。opaque 型、newtype、BigInt、Decimal などは受け渡せない。形が合わない入力（循環した List を
+まだ公開できない。`DecimalContext` などは受け渡せない。形が合わない入力（循環した List を
 含む）は、WASM に入る前に `TypeError` で拒否する。manifest と loader の `capabilities` は、
 プログラムが使う標準ランタイムの領域（`text`、`list` など）を表す。証明のない標準 API は、
 ここに載らずにビルドが失敗する。Effect を返す公開関数の ABI は受け入れ判定が別で、
@@ -252,15 +257,17 @@ scopeの全finalizerをLIFO順で試み、cleanup Defectを失わず結果へ渡
 同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
 host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
 
-内部ではcanonicalな`std/ref::Ref<A>`の`make`／`get`／`set`を使える。
+内部ではcanonicalな`std/ref::Ref<A>`の`make`／`get`／`set`／`update`／`modify`を使える。
+`update`と`modify`の変換関数は、ほかのbodyと同じ規則で検査する（Intの演算は含めない）。
+`modify`は変換関数が返すTupleの1つ目を結果に、2つ目を次の中身にする。
 payloadの`A`は既存の閉じたdata codecに限り、callback・Effect・別のRefを保持できない。
 Refの型やhandleを公開codecへ加えず、内部状態をcaptureした返却callbackとcold planが
 同じcellを保持する。factory planを再実行すると独立したcellを作り、保存済みplanは元の
 callbackをdetachした後もその状態を更新できる。tracingはglobal初期化前に有効にする。
 受入例は`program-wasm-private-ref.ssrg`と標準Web packageの
-`program-wasm-private-ref-package`。文字列の蓄積とFailure・Defectは同じbodyのstrict TS／nativeと比較する。
+`program-wasm-private-ref-package`。文字列の蓄積、update・modify、Failure・Defectは同じbodyのstrict TS／nativeと比較する。
 取消後のLIFO cleanupとinstance終了時のroot解放は実WASMでも確認する。
-`update`／`modify`、tuple pattern、fallibleなInt演算は含めない。
+tuple pattern、fallibleなInt演算は含めない。
 
 Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。
 同名のnominal Unitとはcanonicalな型identityを区別し、暗黙の変換を加えない。

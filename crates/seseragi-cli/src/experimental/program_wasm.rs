@@ -12,7 +12,7 @@ use std::{
 
 const FILES: [&str; 4] = ["program.rs", "program.wasm", "program.mjs", "program.d.mts"];
 static SERIAL: AtomicUsize = AtomicUsize::new(0);
-const USAGE: &str = "usage: seseragi experimental build-wasm source.ssrg|package-root --export public-function [--export other-function] --out-dir path";
+const USAGE: &str = "usage: seseragi experimental build-wasm source.ssrg|package-root --export public-function [--export other-function] [--profile development|release] --out-dir path";
 
 pub(crate) struct OwnedDirectory(pub(crate) PathBuf, bool);
 impl OwnedDirectory {
@@ -44,15 +44,30 @@ fn digest(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
 
+/// The program passes values in the shape of the TS target built with the
+/// same profile; the release profile erases newtype wrappers.
+fn options(profile: seseragi_project::BuildProfile) -> seseragi_backend_rust::ProgramWasmOptions {
+    seseragi_backend_rust::ProgramWasmOptions {
+        erase_newtypes: profile == seseragi_project::BuildProfile::Release,
+    }
+}
+
 fn compile(
     path: &str,
     exports: &[String],
+    options: seseragi_backend_rust::ProgramWasmOptions,
 ) -> Result<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>), String> {
     if Path::new(path).is_dir() {
-        compile_package(path, exports, None, seseragi_project::ProjectCommand::Build)?
-            .ok_or_else(|| "program WASM compiler did not produce a checked output".to_owned())
+        compile_package(
+            path,
+            exports,
+            None,
+            seseragi_project::ProjectCommand::Build,
+            options,
+        )?
+        .ok_or_else(|| "program WASM compiler did not produce a checked output".to_owned())
     } else {
-        compile_file(path, exports)
+        compile_file(path, exports, options)
     }
 }
 
@@ -61,6 +76,7 @@ fn compile_package(
     exports: &[String],
     module: Option<&seseragi_project::ModulePath>,
     command: seseragi_project::ProjectCommand,
+    options: seseragi_backend_rust::ProgramWasmOptions,
 ) -> Result<Option<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>)>, String> {
     let Some((project, checked)) =
         super::load_checked_project_entry_for_command(path, module, command)?
@@ -102,11 +118,12 @@ fn compile_package(
             )
         })
         .collect();
-    let artifact = seseragi_backend_rust::emit_program_wasm_with_sources(
+    let artifact = seseragi_backend_rust::emit_program_wasm_with_options(
         &modules,
         &checked.entry_module,
         exports,
         source_files,
+        options,
     )
     .map_err(|error| super::project_target_error(error, &project))?;
     let sources = project
@@ -128,6 +145,7 @@ fn compile_package(
 fn compile_file(
     path: &str,
     exports: &[String],
+    options: seseragi_backend_rust::ProgramWasmOptions,
 ) -> Result<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>), String> {
     if !path.ends_with(".ssrg") || !Path::new(path).is_file() {
         return Err("program WASM accepts a .ssrg source or package root".into());
@@ -143,7 +161,7 @@ fn compile_file(
             seseragi_driver::render_terminal_diagnostics(&checked.diagnostics, &source)
         );
     }
-    let artifact = seseragi_backend_rust::emit_program_wasm_with_sources(
+    let artifact = seseragi_backend_rust::emit_program_wasm_with_options(
         &[&checked.core_ir],
         "experimental/main",
         exports,
@@ -155,6 +173,7 @@ fn compile_file(
             },
         )]
         .into(),
+        options,
     )
     .map_err(|e| super::target_error(e, Some(path)))?;
     Ok((
@@ -308,6 +327,7 @@ pub(crate) fn package_assets(
     root: &Path,
     programs: &std::collections::BTreeMap<String, seseragi_project::ManifestProgramWasm>,
     command: seseragi_project::ProjectCommand,
+    profile: seseragi_project::BuildProfile,
 ) -> Result<Option<Vec<seseragi_runtime::ProgramWasmAssets>>, String> {
     // Check every selected import closure before starting rustc or producing files.
     let mut checked = Vec::new();
@@ -317,6 +337,7 @@ pub(crate) fn package_assets(
             &config.exports,
             Some(&config.module),
             command,
+            options(profile),
         )
         .map_err(|error| {
             format!(
@@ -357,6 +378,7 @@ pub(super) fn run(arguments: &[String]) -> Result<i32, String> {
     };
     let mut exports = Vec::new();
     let mut destination = None;
+    let mut profile = None;
     for pair in flags.chunks(2) {
         let [flag, value] = pair else {
             return Err(USAGE.into());
@@ -364,12 +386,15 @@ pub(super) fn run(arguments: &[String]) -> Result<i32, String> {
         match flag.as_str() {
             "--export" => exports.push(value.clone()),
             "--out-dir" if destination.is_none() => destination = Some(PathBuf::from(value)),
+            "--profile" if profile.is_none() => {
+                profile = Some(seseragi_project::BuildProfile::parse(value)?)
+            }
             _ => return Err(USAGE.into()),
         }
     }
     let destination = destination.ok_or(USAGE)?;
     // Entire checked target admission precedes any generated output or rustc.
-    let (artifact, sources) = compile(path, &exports)?;
+    let (artifact, sources) = compile(path, &exports, options(profile.unwrap_or_default()))?;
     owned_output(&destination)?;
     let parent = destination
         .parent()

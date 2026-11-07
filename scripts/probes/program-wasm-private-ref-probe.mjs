@@ -48,6 +48,15 @@ try {
   assert.equal(await success(snapshot), 42)
   snapshot.dispose()
 
+  const journalCreation = owner.exports.journal("log:")
+  const journal = await success(journalCreation)
+  journalCreation.dispose()
+  const entry = journal("a")
+  journal.dispose()
+  assert.deepEqual(await success(entry), { tag: "Just", value: "log:a" })
+  assert.deepEqual(await success(entry), { tag: "Just", value: "log:a;a" })
+  entry.dispose()
+
   const start = owner.exports.session("state")
   const session = await success(start)
   start.dispose()
@@ -142,5 +151,5 @@ try {
 }
 assert.equal(fresh.ownership().managedLiveAtClose, 0)
 console.log(
-  "private cells: cold independent state, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released"
+  "private cells: cold independent state, update/modify, retained plans, Failure/Defect/cancel, LIFO cleanup and roots released"
 )
