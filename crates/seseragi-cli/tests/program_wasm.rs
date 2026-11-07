@@ -2821,7 +2821,7 @@ fn ranges_sorting_iterators_and_non_empty_lists_match_the_ts_target() {
         "counted",
         "ends",
     ];
-    wasm_and_ts(&scratch.0, "program-wasm-sequences.ssrg", &exports);
+    wasm_and_ts(&scratch.0, "program-wasm-ordering.ssrg", &exports);
     fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {loadProgram} from './wasm/program.mjs';

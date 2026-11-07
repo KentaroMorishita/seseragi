@@ -61,12 +61,11 @@ fn existing_user_hash_program_wasm_remains_accepted() {
 }
 
 #[test]
-fn new_primitive_hash_is_refused_even_when_a_constrained_callee_ignores_it() {
+fn primitive_hash_builds_when_a_constrained_callee_ignores_it() {
     let core=checked("fn ignore<A> _value: A -> Int where Hash<A> = 1\npub fn probe value: Int -> Int = ignore value\npub fn main -> Int = 0\n");
     emit_rust_module(&core, "main").unwrap();
-    let error = emit_program_wasm(&[&core], "native/hash", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert!(error.message.contains("requires a target-specific"));
+    emit_program_wasm(&[&core], "native/hash", &["probe".into()])
+        .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
 }
 
 #[test]
@@ -150,13 +149,11 @@ fn native_hash_rejects_unproved_identity_owner_kind_source_stages_and_results() 
 }
 
 #[test]
-fn native_hash_keeps_saved_primitive_methods_out_of_program_wasm() {
+fn saved_primitive_hash_methods_build_as_program_wasm() {
     for ty in ["Int", "Bool", "Char", "String", "Unit"] {
         let core=checked(&format!("pub fn probe value: Int -> Int = {{ let saved: {ty} -> Int = hash; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/hash", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(error.message.contains("requires a target-specific"));
-        assert_eq!(error.origin.unwrap().source, "hash-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/hash", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

@@ -182,7 +182,7 @@ fn canonical_standard_arguments_do_not_substitute_lexical_float_or_string_binder
 }
 
 #[test]
-fn program_wasm_admits_text_and_keeps_math_explicit() {
+fn program_wasm_admits_text_and_exact_math_only() {
     for (module, expression) in [
         ("math", "sqrt 4.0"),
         ("math", "sin 0.5"),
@@ -199,17 +199,15 @@ fn program_wasm_admits_text_and_keeps_math_explicit() {
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
         let emitted = emit_program_wasm(&[&core], "native/standard", &["probe".into()]);
-        // String text operations are admitted; math still needs its proof.
-        if module == "text" {
+        // String text operations and the exact sqrt are admitted; other math
+        // functions round differently from the TS target's Math.
+        if module == "text" || expression.starts_with("sqrt") {
             emitted.unwrap_or_else(|error| panic!("{expression}: {error}"));
             continue;
         }
         let error = emitted.unwrap_err();
         assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{error}"
-        );
+        assert!(error.message.contains("rounds differently"), "{error}");
         assert_eq!(error.origin.unwrap().source, "standard-雪🙂.ssrg");
     }
 }

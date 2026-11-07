@@ -185,12 +185,7 @@ fn native_map_references_do_not_widen_program_wasm_admission() {
     ] {
         let core=checked(&format!("import * as maps from \"std/map\"\npub fn probe value: Int -> Int = {{ let saved: {ty} = maps.{name}; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap_or_else(|e| panic!("{name}:{e:?}"));
-        let error = emit_program_wasm(&[&core], "native/map", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{name}:{error:?}"
-        );
-        assert_eq!(error.origin.unwrap().source, "map-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/map", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

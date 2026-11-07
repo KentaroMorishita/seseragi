@@ -242,7 +242,7 @@ fn sequence_order_keeps_saved_references_and_rejects_counterfeit_function_suffix
 }
 
 #[test]
-fn sequence_order_does_not_admit_unused_program_wasm_operations() {
+fn sequence_order_admits_unused_program_wasm_operations() {
     for owner in ["array", "list"] {
         let collection = if owner == "array" { "Array" } else { "List" };
         for (name, _, _) in cases() {
@@ -255,10 +255,9 @@ fn sequence_order_does_not_admit_unused_program_wasm_operations() {
             };
             let core=checked(&format!("import * as sequence from \"std/{owner}\"\nimport * as maps from \"std/map\"\npub fn probe value:Int -> Int = {{let saved:{signature} = sequence.{name};value}}\npub fn main -> Int = 0\n"));
             emit_rust_module(&core, "main").unwrap();
-            let error = emit_program_wasm(&[&core], "native/sequence-order", &["probe".into()])
-                .unwrap_err();
-            assert_eq!(error.code, "SES-RUST-0001");
-            assert_eq!(error.origin.unwrap().source, "sequence-order-雪🙂.ssrg");
+            emit_program_wasm(&[&core], "native/sequence-order", &["probe".into()]).unwrap_or_else(
+                |error| panic!("program WASM refused a proven operation: {error:?}"),
+            );
         }
     }
 }

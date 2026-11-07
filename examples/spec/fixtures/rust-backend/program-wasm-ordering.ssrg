@@ -1,0 +1,35 @@
+// Program WASM runs ranges, comprehensions, sorting, grouping, iterators,
+// reduceUntil and NonEmptyList with the same results as the TS target.
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as maps from "std/map"
+import * as control from "std/collection"
+import * as iterator from "std/iterator"
+import * as nonEmpty from "std/non-empty-list"
+
+pub fn pairs limit: Int -> Array<(Int, Int)> =
+  [(left, right) | left <- 1 ..= limit, right <- 1 ..= limit, left < right, (left + right) % 2 != 0]
+
+pub fn sorted values: Array<Int> -> Array<Int> = arrays.sort values
+
+fn lastDigit value: Int -> Int = value % 10
+
+pub fn ranked values: List<Int> -> List<Int> = lists.sortBy lastDigit values
+
+pub fn grouped values: List<Int> -> Array<(Int, List<Int>)> = maps.entries (lists.groupBy lastDigit values)
+
+fn bounded total: Int -> value: Int -> control.ReduceStep<Int> =
+  if value > 3 then control.Done total else control.Next (total + value)
+
+pub fn prefixSum values: Array<Int> -> Int = control.reduceUntil 0 bounded values
+
+pub fn rangeSum limit: Int -> Int = control.reduceUntil 0 bounded (1 ..= limit)
+
+fn countdown state: Int -> Maybe<(Int, Int)> = if state == 0 then Nothing else Just (state, state - 1)
+
+pub fn counted start: Int -> Array<Int> = arrays.fromIterable (iterator.unfold countdown start)
+
+pub fn ends values: List<String> -> Maybe<(String, List<String>)> = match nonEmpty.fromList values {
+  Nothing -> Nothing
+  Just items -> Just (nonEmpty.head items, nonEmpty.toList (nonEmpty.cons "first" (nonEmpty.tail items)))
+}

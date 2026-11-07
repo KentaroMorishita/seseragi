@@ -174,8 +174,7 @@ fn iterator_does_not_expand_unused_program_wasm_references() {
     ] {
         let core=checked(&format!("import * as iterators from \"std/iterator\"\npub fn probe value:Int -> Int = {{let saved:{signature} = iterators.{name};value}}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/iterator", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "iterator-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/iterator", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

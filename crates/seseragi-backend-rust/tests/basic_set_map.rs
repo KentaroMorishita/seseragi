@@ -140,12 +140,11 @@ fn set_mapping_rejects_forged_input_output_callback_dictionaries_and_source_stag
 }
 
 #[test]
-fn unused_set_map_references_do_not_expand_program_wasm() {
+fn unused_set_map_references_build_as_program_wasm() {
     for source in [OPERATION.to_owned(), "import * as sets from \"std/set\"\nfn unused -> ((String -> Int) -> sets.Set<String> -> sets.Set<Int>) = sets.map\npub fn main -> Int = 0\n".into()] {
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], &core.module, &["main".to_owned()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(error.origin.is_some());
+        emit_program_wasm(&[&core], &core.module, &["main".to_owned()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }
