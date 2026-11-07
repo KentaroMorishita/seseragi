@@ -1,0 +1,98 @@
+// race, timeout, timeoutFail, retry and repeat give the same results on
+// native as on the TS target, including the loser's finalizer.
+import * as effects from "std/effect"
+import * as clock from "std/clock"
+import * as refs from "std/ref"
+import * as time from "std/time"
+
+effect fn say text: String -> Unit with Console, Clock fails String =
+  println text
+  |> effects.mapError show
+
+effect fn ignore _error: String -> Unit with Console, Clock = effects.succeed ()
+
+fn millis value: Int -> time.Duration = match time.milliseconds value {
+  Right duration -> duration
+  Left _ -> millis 0
+}
+
+effect fn now label: String -> String with Console, Clock fails String =
+  effects.succeed label
+
+effect fn boom label: String -> String with Console, Clock fails String =
+  effects.fail label
+
+effect fn later label: String -> String with Console, Clock fails String = do {
+  effects.yieldNow ()
+  effects.yieldNow ()
+  effects.succeed label
+}
+
+effect fn slowly label: String
+  -> milliseconds: Int
+  -> String
+with Console, Clock
+fails String =
+  do {
+    clock.sleep (millis milliseconds)
+    effects.succeed label
+  }
+
+effect fn acquire -> Unit with Console, Clock = effects.succeed ()
+
+effect fn release label: String -> _unit: Unit -> Unit with Console, Clock =
+  say ("release " + label)
+  |> effects.recover ignore
+
+effect fn guarded label: String -> String with Console, Clock fails String =
+  effects.scoped (do {
+    effects.acquireRelease (acquire ()) (release label)
+    slowly label 60000
+  }
+)
+
+effect fn flaky counter: refs.Ref<Int> -> Int with Console, Clock fails String = do {
+  attempt <- refs.modify (\count: Int -> (count + 1, count + 1)) counter
+  if attempt < 3 then
+    effects.fail ("not ready " + show attempt)
+  else
+    effects.succeed attempt
+}
+
+effect fn counted counter: refs.Ref<Int> -> Int with Console, Clock fails String =
+  refs.modify (\count: Int -> (
+    count + 1,
+    count + 1
+  )) counter
+
+pub effect fn main -> Unit with Console, Clock fails String = do {
+  tie <- effects.race (now "left") (now "right")
+  say ("tie " + tie)
+  fast <- effects.race (later "slow") (now "fast")
+  say ("fast " + fast)
+  failed <- effects.attempt (effects.race (boom "boom") (later "late"))
+  say ("failed " + show failed)
+  cleaned <- effects.race (guarded "loser") (now "winner")
+  say ("cleaned " + cleaned)
+  quick <- effects.timeout (millis 1000) (slowly "quick" 0)
+  say ("quick " + show quick)
+  late <- effects.timeout (millis 10) (guarded "late")
+  say ("late " + show late)
+  zero <- effects.timeout (millis 0) (now "zero")
+  say ("zero " + show zero)
+  inTime <- effects.timeoutFail "expired" (millis 1000) (now "in time")
+  say ("inTime " + inTime)
+  retries <- refs.make 0
+  retryPolicy <- effects.spaced<String> 3 (millis 0)
+    |> effects.fromEither
+    |> effects.mapError show
+  retried <- effects.retry retryPolicy (flaky retries)
+  say ("retried " + show retried)
+  repeats <- refs.make 0
+  repeatPolicy <- effects.recurs<Int> 2 |> effects.fromEither |> effects.mapError show
+  repeated <- effects.repeat repeatPolicy (counted repeats)
+  say ("repeated " + show repeated)
+  stopping <- refs.make 0
+  stopped <- effects.repeat (effects.whileInput (\value: Int -> value < 4)) (counted stopping)
+  say ("stopped " + show stopped)
+}

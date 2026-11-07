@@ -7,8 +7,8 @@ use seseragi_driver::{compile_core_module, compile_module, CompileInput};
 #[test]
 fn diagnostics_match_native_refusals_without_changing_checked_core_or_ts() {
     for source in [
-        "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n",
-        "import * as effects from \"std/effect\"\npub let saved: Task<Int> -> Task<Int> -> Task<Int> = effects.race\npub effect fn main -> Int = saved (effects.succeed 1) (effects.succeed 2)\n",
+        "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n",
+        "import * as effects from \"std/effect\"\npub let saved: ({} -> {}) -> Task<Int> -> Task<Int> = effects.provideSome\npub effect fn main -> Int = saved (\\env: {} -> env) (effects.succeed 1)\n",
     ] {
         let input = CompileInput::new("target-雪🙂.ssrg", "target/main", source);
         let core = compile_core_module(input).unwrap().core_ir;
@@ -32,11 +32,11 @@ fn diagnostics_match_native_refusals_without_changing_checked_core_or_ts() {
 #[test]
 fn diagnostics_collect_multiple_uses_in_bindings_and_functions_without_an_entry() {
     let source = concat!(
-        "import { race as compete, succeed } from \"std/effect\"\n",
-        "pub let first: Task<Int> = compete (succeed 1) (succeed 2)\n",
-        "pub fn pair -> (Task<Int>, Task<Int>) = { let _prefix = \"雪🙂\"; (compete (succeed 3) (succeed 4), compete (succeed 5) (succeed 6)) }\n",
-        "pub fn race value: Int -> Int = value\n",
-        "pub fn ordinary -> Int = race 42\n",
+        "import { provideSome as compete, succeed } from \"std/effect\"\n",
+        "pub let first: Task<Int> = compete (\\env: {} -> env) (succeed 1)\n",
+        "pub fn pair -> (Task<Int>, Task<Int>) = { let _prefix = \"雪🙂\"; (compete (\\env: {} -> env) (succeed 4), compete (\\env: {} -> env) (succeed 6)) }\n",
+        "pub fn provideSome value: Int -> Int = value\n",
+        "pub fn ordinary -> Int = provideSome 42\n",
     );
     let core = compile_core_module(CompileInput::new("uses.ssrg", "target/uses", source))
         .unwrap()
@@ -49,17 +49,17 @@ fn diagnostics_collect_multiple_uses_in_bindings_and_functions_without_an_entry(
     );
     assert_eq!(diagnostics.len(), 3, "{diagnostics:?}");
     let starts = source
-        .match_indices("compete (succeed")
+        .match_indices("compete (\\env")
         .map(|(start, _)| start)
         .collect::<Vec<_>>();
     for (diagnostic, start) in diagnostics.iter().zip(starts) {
         assert_eq!(diagnostic.code, "SES-RUST-0001");
-        assert!(diagnostic.message.contains("std/effect::race"));
+        assert!(diagnostic.message.contains("std/effect::provideSome"));
         assert_eq!(diagnostic.module.as_deref(), Some("target/uses"));
         let origin = diagnostic.origin.as_ref().unwrap();
         assert_eq!(origin.source, "uses.ssrg");
         assert_eq!(origin.start, start);
-        assert!(source[origin.start..origin.end].starts_with("compete (succeed"));
+        assert!(source[origin.start..origin.end].starts_with("compete (\\env"));
     }
 }
 
