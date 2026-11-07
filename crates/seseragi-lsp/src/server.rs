@@ -1600,7 +1600,7 @@ pub fn view -> html.Html<Never> =
             "seseragi.toml",
             &(manifest.to_owned() + "target = \"process\"\n"),
         );
-        let source = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
+        let source = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
         workspace.write("src/main.ssrg", source);
         let uri = file_uri(&workspace.path().join("src/main.ssrg"));
         let manifest_uri = file_uri(&workspace.path().join("seseragi.toml"));

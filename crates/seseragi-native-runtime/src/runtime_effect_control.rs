@@ -48,6 +48,99 @@ pub fn native_effect_control(name: &str, dictionaries: Vec<V>, arguments: Vec<V>
                 })],
             )
         }
+        "std/effect::ScheduleStop" => V::adt("std/effect::ScheduleStop", V::Unit),
+        "std/effect::ScheduleContinue" => {
+            V::adt("std/effect::ScheduleContinue", arguments[0].clone())
+        }
+        "std/effect::NegativeRecurrences" => {
+            V::adt("std/effect::NegativeRecurrences", arguments[0].clone())
+        }
+        "std/effect::schedule" => V::adt("std/effect::Schedule", arguments[0].clone()),
+        "std/effect::whileInput" => V::adt(
+            "std/effect::Schedule",
+            V::fun(vec![arguments[0].clone()], |c, _count| {
+                V::fun(vec![c[0].clone()], |c, input| {
+                    if c[0].apply(input).boolean() {
+                        V::adt("std/effect::ScheduleContinue", native_duration(0))
+                    } else {
+                        V::adt("std/effect::ScheduleStop", V::Unit)
+                    }
+                })
+            }),
+        ),
+        "std/effect::recurs" | "std/effect::spaced" => {
+            let additional = native_effect_int(&arguments[0]);
+            if additional < 0 {
+                return V::adt(
+                    "std/prelude::Left",
+                    V::adt("std/effect::NegativeRecurrences", V::Int(additional)),
+                );
+            }
+            let delay = arguments
+                .get(1)
+                .cloned()
+                .unwrap_or_else(|| native_duration(0));
+            V::adt(
+                "std/prelude::Right",
+                V::adt(
+                    "std/effect::Schedule",
+                    V::fun(vec![V::Int(additional), delay], |c, count| {
+                        V::fun(vec![c[0].clone(), c[1].clone(), count], |c, _input| {
+                            if native_effect_int(&c[2]) <= native_effect_int(&c[0]) {
+                                V::adt("std/effect::ScheduleContinue", c[1].clone())
+                            } else {
+                                V::adt("std/effect::ScheduleStop", V::Unit)
+                            }
+                        })
+                    }),
+                ),
+            )
+        }
+        "std/effect::retry" | "std/effect::repeat" => {
+            let [policy, effect]: [V; 2] = arguments
+                .try_into()
+                .unwrap_or_else(|_| panic!("Rust ABI: {name} source arity"));
+            native_scheduled(name == "std/effect::retry", policy.payload(), effect, 1)
+        }
+        "std/effect::timeout" => {
+            assert!(dictionaries.is_empty());
+            let [duration, effect]: [V; 2] = arguments
+                .try_into()
+                .unwrap_or_else(|_| panic!("Rust ABI: timeout source arity"));
+            // The source is the left side, so it wins a tie with the timer.
+            let source = V::bind(
+                effect,
+                V::fun(vec![], |_, value| {
+                    native_operation("effect.succeed", vec![V::adt("std/prelude::Just", value)])
+                }),
+            );
+            let expired = native_effect_then(
+                native_clock_operation("std/clock::sleep", vec![duration]),
+                native_operation(
+                    "effect.succeed",
+                    vec![V::adt("std/prelude::Nothing", V::Unit)],
+                ),
+            );
+            native_race(source, expired)
+        }
+        "std/effect::timeoutFail" => {
+            assert!(dictionaries.is_empty());
+            let [error, duration, effect]: [V; 3] = arguments
+                .try_into()
+                .unwrap_or_else(|_| panic!("Rust ABI: timeoutFail source arity"));
+            let expired = native_effect_then(
+                native_clock_operation("std/clock::sleep", vec![duration]),
+                native_operation("effect.fail", vec![error]),
+            );
+            native_race(effect, expired)
+        }
+        "std/effect::race" => {
+            assert!(dictionaries.is_empty());
+            let [left, right]: [V; 2] = arguments
+                .try_into()
+                .unwrap_or_else(|_| panic!("Rust ABI: race source arity"));
+            native_race(left, right)
+        }
         _ => panic!("Rust ABI: unsupported Effect control {name}"),
     }
 }
@@ -496,5 +589,145 @@ mod effect_control_tests {
             .unwrap()
             .join()
             .unwrap();
+    }
+
+    #[test]
+    fn repeated_races_leave_no_fibers_in_the_caller_scope() {
+        enable_cycle_collection();
+        let owned = V::reference(V::Int(-1));
+        let mut plan = V::leaf(vec![owned.clone()], |c, context| {
+            let scope = context.scopes.last().expect("caller scope");
+            let count = scope.children.len() + scope.finalizers.len();
+            c[0].write_reference(V::Int(count as i64));
+            Ok(V::Unit)
+        });
+        for index in 0..3 {
+            let race = operation(
+                "std/effect::race",
+                vec![succeed(V::Int(index)), succeed(V::Int(index + 10))],
+            );
+            plan = native_effect_then(race, plan);
+        }
+        let mut context = NativeContext::default();
+        assert!(matches!(context.root(plan), Ok(V::Unit)));
+        assert!(matches!(owned.read_reference(), V::Int(0)));
+        drop(owned);
+        finish();
+    }
+}
+
+fn native_effect_then(first: V, next: V) -> V {
+    V::bind(first, V::fun(vec![next], |c, _| c[0].clone()))
+}
+
+// `effect`, which records `side` in `finished` when it ends in any way. The
+// first record wins, so the side that ends first is the one recorded.
+fn native_race_side(effect: V, finished: V, side: i64) -> V {
+    let signal = V::fun(vec![finished, V::Int(side)], |c, _| {
+        native_effect_then(
+            native_operation("std/deferred::succeed", vec![c[1].clone(), c[0].clone()]),
+            native_operation("effect.succeed", vec![V::Unit]),
+        )
+    });
+    native_operation(
+        "std/effect::scoped",
+        vec![native_effect_then(
+            native_operation(
+                "std/effect::acquireRelease",
+                vec![native_operation("effect.succeed", vec![V::Unit]), signal],
+            ),
+            effect,
+        )],
+    )
+}
+
+// Runs both Effects as Fibers and returns the first that ends with a success
+// or failure. The loser is cancelled and its finalizers finish before the
+// result. Ending in the same scheduler turn records the left side first, as
+// it was forked first. Both Fibers have ended when the result is ready, so
+// the race closes its own scope and leaves no Fiber in the caller's scope.
+fn native_race(left: V, right: V) -> V {
+    native_operation("std/effect::scoped", vec![native_race_fibers(left, right)])
+}
+
+fn native_race_fibers(left: V, right: V) -> V {
+    V::bind(
+        native_operation("std/deferred::make", vec![V::Unit]),
+        V::fun(vec![left, right], |c, finished| {
+            let left = native_race_side(c[0].clone(), finished.clone(), 0);
+            let right = native_race_side(c[1].clone(), finished.clone(), 1);
+            V::bind(
+                native_operation("std/effect::fork", vec![left]),
+                V::fun(vec![right, finished], |c, left| {
+                    V::bind(
+                        native_operation("std/effect::fork", vec![c[0].clone()]),
+                        V::fun(vec![left, c[1].clone()], |c, right| {
+                            V::bind(
+                                native_operation("std/deferred::await", vec![c[1].clone()]),
+                                V::fun(vec![c[0].clone(), right], |c, side| {
+                                    let (winner, loser) = if matches!(side, V::Int(0)) {
+                                        (c[0].clone(), c[1].clone())
+                                    } else {
+                                        (c[1].clone(), c[0].clone())
+                                    };
+                                    native_effect_then(
+                                        native_operation("std/effect::interrupt", vec![loser]),
+                                        native_operation("std/effect::join", vec![winner]),
+                                    )
+                                }),
+                            )
+                        }),
+                    )
+                }),
+            )
+        }),
+    )
+}
+
+// Runs `effect`, then asks `decide` about each observed failure (`retry`) or
+// success (`repeat`), counting observations from 1. `ScheduleContinue delay`
+// waits and runs the Effect again from the start; `ScheduleStop` returns the
+// observed result. A retry ends at the first success and a repeat at the
+// first failure. A Defect is never observed, so it is never retried.
+fn native_scheduled(retry: bool, decide: V, effect: V, count: i64) -> V {
+    V::bind(
+        V::effect(Instruction::Attempt, vec![effect.clone()]),
+        V::fun(
+            vec![decide, effect, V::Int(count), V::Bool(retry)],
+            |c, observed| {
+                let retry = c[3].boolean();
+                let failed = observed.tagged("std/prelude::Left");
+                let value = observed.payload();
+                let done = if failed {
+                    native_operation("effect.fail", vec![value.clone()])
+                } else {
+                    native_operation("effect.succeed", vec![value.clone()])
+                };
+                if failed != retry {
+                    // A retry's success or a repeat's failure ends at once.
+                    return done;
+                }
+                let decision = c[0].apply(c[2].clone()).apply(value);
+                if decision.tagged("std/effect::ScheduleStop") {
+                    return done;
+                }
+                native_effect_then(
+                    native_clock_operation("std/clock::sleep", vec![decision.payload()]),
+                    native_scheduled(
+                        retry,
+                        c[0].clone(),
+                        c[1].clone(),
+                        native_effect_int(&c[2]) + 1,
+                    ),
+                )
+            },
+        ),
+    )
+}
+
+fn native_effect_int(value: &V) -> i64 {
+    match value {
+        V::Int(value) => *value,
+        _ => panic!("Rust ABI: expected Int"),
     }
 }

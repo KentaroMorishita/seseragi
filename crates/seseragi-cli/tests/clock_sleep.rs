@@ -456,6 +456,12 @@ fn compare_clock_fixture(name: &str, provider: &str, defect: bool) {
 }
 
 #[test]
+fn race_timeout_retry_and_repeat_match_the_ts_target() {
+    // Includes the loser's finalizer, a timer tie and Schedule decisions.
+    compare_clock_fixture("effect-race-timeout-schedule", CLOCK_PROVIDER, false);
+}
+
+#[test]
 fn clock_now_provider_preflight_preserves_outputs_without_an_admitted_selection() {
     let scratch = Scratch::new();
     let source = scratch.0.join("main.ssrg");

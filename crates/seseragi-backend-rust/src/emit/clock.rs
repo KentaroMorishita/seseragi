@@ -84,7 +84,11 @@ impl Backend<'_> {
         }
         Ok(())
     }
-    fn require_clock(&mut self, name: &str, origin: &seseragi_lowering::SourceSpan) -> Result<()> {
+    pub(super) fn require_clock(
+        &mut self,
+        name: &str,
+        origin: &seseragi_lowering::SourceSpan,
+    ) -> Result<()> {
         if self.program_wasm_library {
             return Err(
                 "Rust backend: native Clock/Duration is not admitted in program WASM".into(),
