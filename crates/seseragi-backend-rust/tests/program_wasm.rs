@@ -103,7 +103,7 @@ fn refuses_unproved_public_types_and_staging_before_any_artifact() {
     }
     for source in [
         "pub fn value<A> input: A -> String where Show<A> = show input\n",
-        "import * as effects from \"std/effect\"\npub effect fn value<A> input: A -> A = effects.succeed input\n",
+        "import * as refs from \"std/ref\"\npub effect fn value<A> input: A -> A = do { cell <- refs.make input; refs.get cell }\n",
         "pub fn value input: (Int -> Int) -> Int = input 1\n",
         "import * as decimal from \"std/decimal\"\npub fn value input: decimal.DecimalContext -> Int = 1\n",
         "import * as decimal from \"std/decimal\"\npub fn value input: {x: Int, y: decimal.DecimalContext} -> Int = input.x\n",

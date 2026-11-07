@@ -983,7 +983,7 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         "import * as decimal from \"std/decimal\"\npub fn selected value: decimal.DecimalContext -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
-        "import * as effects from \"std/effect\"\npub effect fn selected<A> value: A -> A = effects.succeed value",
+        "import * as refs from \"std/ref\"\npub effect fn selected<A> value: A -> A = do { cell <- refs.make value; refs.get cell }",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
@@ -3131,6 +3131,79 @@ const wrong: Readonly<{first: number; second: string}> = owner.exports.swap(pair
     fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
     successful(bounded(
         Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn generic_effect_exports_return_host_values_unchanged() {
+    let scratch = Scratch::new();
+    let destination = scratch.0.join("wasm");
+    successful(bounded(
+        &mut build(
+            &root().join("examples/spec/fixtures/rust-backend/program-wasm-generic-effect.ssrg"),
+            &destination,
+            &["keep", "reject", "later", "both"],
+        ),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("run.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const run = async (plan) => { try { return await plan.run().result } finally { plan.dispose() } };
+const object = {name: '雪'};
+const callback = () => 1;
+for (const value of [object, callback, undefined, null, NaN, -0]) {
+  const kept = await run(program.exports.keep(value));
+  assert.equal(kept.tag, 'Success');
+  assert.ok(Object.is(kept.value, value));
+}
+const failed = await run(program.exports.reject(object));
+assert.equal(failed.tag, 'Failure');
+assert.equal(failed.error, object);
+const factory = await run(program.exports.later(object));
+assert.equal(factory.tag, 'Success');
+const later = factory.value(undefined);
+factory.value.dispose();
+assert.equal((await run(later)).value, object);
+const stage = program.exports.both(object);
+const pair = await run(stage(callback));
+stage.dispose();
+assert.ok(pair.value[0] === callback && pair.value[1] === object);
+await program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same values');
+"#,
+    )
+    .unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("run.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same values\n", "{engine}");
+    }
+    // TS infers each type parameter from the call that first receives it.
+    fs::write(scratch.0.join("types.mts"), r#"import {loadProgram, type OwnedEffect, type OwnedCallback} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const kept: OwnedEffect<never, {name: string}> = owner.exports.keep({name: 'a'});
+const failed: OwnedEffect<boolean, number> = owner.exports.reject(true);
+const later: OwnedEffect<never, OwnedCallback<undefined, OwnedEffect<never, number>>> = owner.exports.later(1);
+const both: OwnedEffect<never, readonly [string, number]> = owner.exports.both(1)('a');
+// @ts-expect-error the success has the argument's type
+const wrong: OwnedEffect<never, string> = owner.exports.keep(1);
+"#).unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
             .arg(root().join("node_modules/typescript/bin/tsc"))
             .arg("--project")
             .arg(scratch.0.join("tsconfig.json")),

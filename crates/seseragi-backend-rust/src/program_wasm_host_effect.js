@@ -7,6 +7,7 @@ export class ProgramWasmClosed extends Error {
 }
 
 const encoder = new TextEncoder()
+const negativeZero = Symbol("negative zero")
 const decoder = new TextDecoder("utf-8", { fatal: true })
 
 function dataObject(value, keys) {
@@ -215,15 +216,34 @@ function write(id, value, writer, state) {
         write(variant.payload, data.value, writer, state)
       break
     }
+    case "parameter": {
+      // WASM only holds and returns a type parameter's value, so the host
+      // value itself stays here and crosses by token.
+      const owner = state ?? writer.state
+      if (!owner) throw new TypeError("A host value needs its program")
+      // A Map key treats -0 as +0, so negative zero has its own key.
+      const key = Object.is(value, -0) ? negativeZero : value
+      let token = owner.hostTokens.get(key)
+      if (token === undefined) {
+        if (owner.nextHostValue > 0xffffffff)
+          throw new TypeError("Host value token space exhausted")
+        token = owner.nextHostValue++
+        owner.hostValues.set(token, value)
+        owner.hostTokens.set(key, token)
+      }
+      writer.u32(token)
+      break
+    }
     default:
       throw new TypeError("Unsupported checked host argument")
   }
 }
 
-function writer() {
+function writer(state) {
   const chunks = []
   let size = 0
   return {
+    state,
     add(bytes) {
       size += bytes.length
       if (size > schema.maxBoundaryBytes)
@@ -398,6 +418,12 @@ function read(id, input, state, provenance) {
             }
       )
     }
+    case "parameter": {
+      const token = input.u32()
+      if (!state.hostValues.has(token))
+        throw new TypeError("Unknown host value result")
+      return state.hostValues.get(token)
+    }
     case "function":
       return callback(state, input.u32(), id, provenance)
     case "effect":
@@ -445,6 +471,8 @@ function requireActive(state, allowWaiting = false) {
 function releaseHostRoots(state, retired) {
   for (const entry of state.callbacks.values()) entry.closed = true
   state.callbacks.clear()
+  state.hostValues.clear()
+  state.hostTokens.clear()
   for (const entry of state.effects.values()) entry.closed = true
   state.effects.clear()
   state.hosts.clear()
@@ -479,7 +507,7 @@ function callback(state, token, codec, provenance) {
     state.preflight = []
     let phase = "input"
     try {
-      const encoded = writer()
+      const encoded = writer(state)
       write(schema.codecs[codec].parameter, argument, encoded, state)
       const bytes = encoded.bytes()
       const api = state.api
@@ -793,6 +821,9 @@ export async function loadProgram(bytes) {
     busy: false,
     retired: false,
     callbacks: new Map(),
+    hostValues: new Map(),
+    hostTokens: new Map(),
+    nextHostValue: 1,
     effects: new Map(),
     running: undefined,
     closing: false,
@@ -963,7 +994,7 @@ async function executeHost(state, input) {
         const terminal = tag === "Success" ? code.success : code.failure
         if (terminal === null)
           throw new TypeError("Host produced a value of Never")
-        const encoded = writer()
+        const encoded = writer(state)
         write(
           terminal,
           tag === "Success" ? fields.value : fields.error,

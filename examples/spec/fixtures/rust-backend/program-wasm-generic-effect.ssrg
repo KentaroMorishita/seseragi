@@ -1,0 +1,13 @@
+// Program WASM exports generic Effect functions. A value of a type
+// parameter is only held and returned, so it comes back as the same host
+// value, as a success, a typed failure or through a returned callback.
+import * as effects from "std/effect"
+
+pub effect fn keep<A> value: A -> A = effects.succeed value
+
+pub effect fn reject<E> error: E -> Int fails E = effects.fail error
+
+pub effect fn later<A> value: A -> (Unit -> Effect<{}, Never, A>) =
+  effects.succeed (\_trigger: Unit -> effects.succeed value)
+
+pub effect fn both<A, B> first: A -> second: B -> (B, A) = effects.succeed (second, first)

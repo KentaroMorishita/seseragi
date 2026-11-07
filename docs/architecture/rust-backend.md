@@ -158,8 +158,10 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 | 関数の型パラメータ | JS の値そのもの。WASM は預かって返すだけで、同じ値が返る |
 
 trait 制約のない generic な関数も公開できる。型宣言では、型パラメータを最初に受け取る呼び出しで
-それを決めるので、TS が推論できる。trait 制約のある関数と、型パラメータを含む ADT・struct は
-まだ公開できない。`DecimalContext` などは受け渡せない。形が合わない入力（循環した List を
+それを決めるので、TS が推論できる。型パラメータを含む ADT・struct（`Box<A>`、再帰する `Tree<A>`）も
+受け渡せ、型宣言はその型を同じ型パラメータで generic に宣言する（`export type Box<A> = ...`）。
+同じ宣言が違う型引数の並びで現れると、それぞれ `ProgramData<番号>` という名前の別名になる。
+trait 制約のある関数（#1255）と、高階の型パラメータはまだ公開できない。`DecimalContext` などは受け渡せない。形が合わない入力（循環した List を
 含む）は、WASM に入る前に `TypeError` で拒否する。manifest と loader の `capabilities` は、
 プログラムが使う標準ランタイムの領域（`text`、`list` など）を表す。証明のない標準 API は、
 ここに載らずにビルドが失敗する。Effect を返す公開関数の ABI は受け入れ判定が別で、
@@ -253,9 +255,13 @@ scopeの全finalizerをLIFO順で試み、cleanup Defectを失わず結果へ渡
 このABIはproviderを持たない閉じた型と、生成前に証明した式だけを扱う。Intはsafe範囲の
 値の受渡しに限り、演算は含めない。String連結、Bool分岐、Tuple／Maybe／Either、source関数の
 保存・部分適用・返却closureと、選択した標準Effect操作を扱う。標準Effect関数自体の保存・部分適用、
-公開Ref、Fiber／Deferred、host入力callback、open provider row、generic公開scheme、未証明の式や
+公開Ref、Fiber／Deferred、host入力callback、open provider row、未証明の式や
 同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
 host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
+
+公開するEffect関数は、trait制約のない型パラメータを持てる。その型パラメータの値は、pure ABIと同じく
+ホストの値を番号で預かって返すだけで、成功・型付きの失敗・返却callbackのどれでも同じ値が返る。
+型パラメータを持つ補助関数の呼び出し、型パラメータの値をRefに入れること、trait制約は拒否する。
 
 内部ではcanonicalな`std/ref::Ref<A>`の`make`／`get`／`set`／`update`／`modify`を使える。
 `update`と`modify`の変換関数は、ほかのbodyと同じ規則で検査する（Intの演算は含めない）。

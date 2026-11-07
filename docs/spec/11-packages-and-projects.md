@@ -528,8 +528,8 @@ Web artifactは`programs/<name>/`を含み、`artifact-manifest.json`の`program
 loader／宣言／WASM／receiptの相対pathを、`files`へその実fileのbytesとSHAを記録します。
 計算のbuild、UIのbundleとmanifestがすべて完了してから一括公開します。失敗時は前の完成artifactを保持します。
 
-対応する境界は閉じたpure値codecと返却callbackです。Effect／Ref／host入力callback・generic公開schemeは
-含めません。WASM source mapと一般Effect ABIは未対応です。
+対応する境界は閉じたpure値codecと返却callbackです。Effect／Ref／host入力callback・trait制約のあるgeneric公開schemeは
+含めません。trait制約のない型パラメータの値は、ホストの値をそのまま預かって返します。WASM source mapと一般Effect ABIは未対応です。
 
 `seseragi dev`も同じproducerとUI compile／一括公開を使い、計算module・外側のpath dependency・
 UI sourceの変更を監視します。development lockの既存のsource編集許可を使い、依存・provider・

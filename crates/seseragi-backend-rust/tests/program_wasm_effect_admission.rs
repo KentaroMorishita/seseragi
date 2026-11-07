@@ -414,3 +414,29 @@ fn open_provider_rows_and_unknown_channel_types_never_produce_an_artifact() {
         refuses(&module);
     }
 }
+
+#[test]
+fn an_exported_generic_effect_only_holds_its_type_parameters() {
+    let generic = |body: &str| {
+        checked(&format!(
+            "{IMPORT}import * as refs from \"std/ref\"\n{body}\n"
+        ))
+    };
+    let held = generic("pub effect fn value<A> input: A -> A = effects.succeed input");
+    emit_program_wasm(&[&held], MODULE, &["value".into()])
+        .unwrap_or_else(|error| panic!("a held type parameter was refused: {error}"));
+    for body in [
+        // A generic callee needs an instantiation proof.
+        "effect fn hold<A> input: A -> A = effects.succeed input\npub effect fn value<A> input: A -> A = hold input",
+        // A Ref holds only closed data.
+        "pub effect fn value<A> input: A -> A = do { cell <- refs.make input; refs.get cell }",
+        // A constraint needs an instance for a host value.
+        "pub effect fn value<A> input: A -> String where Show<A> = effects.succeed (show input)",
+    ] {
+        let module = generic(body);
+        let error = emit_program_wasm(&[&module], MODULE, &["value".into()])
+            .expect_err("an unproved generic Effect produced an artifact");
+        assert_eq!(error.code, "SES-RUST-0001", "{body}");
+        assert!(error.origin.is_some(), "{body}");
+    }
+}

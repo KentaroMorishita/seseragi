@@ -106,7 +106,7 @@ pub struct ProgramVariant {
 const MAX_NESTED_TYPE_EXPANSION: usize = 16;
 
 /// The prefix of a type parameter's name in a checked public type.
-const TYPE_PARAMETER: &str = "\0type-parameter::";
+pub(crate) const TYPE_PARAMETER: &str = "\0type-parameter::";
 
 fn max_sequence_items() -> usize {
     1 << 20
@@ -371,11 +371,6 @@ pub fn emit_program_wasm_with_options(
             terminal = *result;
         }
         let returns_effect = matches!(codecs[terminal], ProgramCodec::Effect { .. });
-        if returns_effect && !function.type_parameters.is_empty() {
-            return Err(error(
-                "program WASM: generic Effect functions need the Effect ABI's own proof",
-            ));
-        }
         if function.is_effect && !returns_effect {
             return Err(error(
                 "program WASM: checked Effect declaration contract is unavailable",
@@ -1089,6 +1084,17 @@ fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
             }
             ProgramCodec::Adt { variants, .. } => {
                 pending.extend(variants.iter().rev().filter_map(|variant| variant.payload))
+            }
+            ProgramCodec::Effect { failure, success } => {
+                pending.extend([*success, *failure].into_iter().flatten())
+            }
+            ProgramCodec::HostEffect {
+                parameter,
+                failure,
+                success,
+            } => {
+                pending.extend([*success, *failure].into_iter().flatten());
+                pending.push(*parameter);
             }
             ProgramCodec::Newtype { value, .. } => pending.push(*value),
             _ => {}
