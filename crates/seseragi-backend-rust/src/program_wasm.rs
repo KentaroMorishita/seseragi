@@ -655,22 +655,6 @@ fn records_in_name_order(ty: &CoreType) -> CoreType {
     }
 }
 
-fn mentions_type_parameter(ty: &CoreType) -> bool {
-    match ty {
-        CoreType::Named { name, arguments } => {
-            name.starts_with(TYPE_PARAMETER) || arguments.iter().any(mentions_type_parameter)
-        }
-        CoreType::Tuple { elements } => elements.iter().any(mentions_type_parameter),
-        CoreType::Function { parameter, result } => {
-            mentions_type_parameter(parameter) || mentions_type_parameter(result)
-        }
-        CoreType::Record { fields, .. } => fields
-            .iter()
-            .any(|field| mentions_type_parameter(&field.type_ref)),
-        _ => false,
-    }
-}
-
 /// The codec of an ADT or struct declared in the linked modules. Opaque types
 /// and newtypes keep their representation private, so they are not data
 /// codecs. The codec is registered before its fields so that a recursive
@@ -682,10 +666,6 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     };
     if let Some((_, index)) = codecs.named.iter().find(|(named, _)| named == ty) {
         return Some(*index);
-    }
-    // A named type over a type parameter would need a generic declaration.
-    if arguments.iter().any(mentions_type_parameter) {
-        return None;
     }
     // A type that refers to itself with other type arguments, such as
     // `Nested<A> = | Next (Nested<Array<A>>)`, has no finite set of codecs.
@@ -956,7 +936,9 @@ fn declared_type(
         ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
         ProgramCodec::Parameter { name } => type_parameter_name(name),
         ProgramCodec::Record { name: Some(_), .. } | ProgramCodec::Adt { .. } => {
-            aliases[&index].clone()
+            // A declaration over type parameters is applied to the same
+            // parameters, which the enclosing callback binds.
+            generic_alias(metadata, &aliases[&index], index)
         }
         ProgramCodec::Record { fields, .. } => record_type(metadata, aliases, fields),
     }
@@ -1032,13 +1014,27 @@ fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
             ProgramCodec::Array { element } | ProgramCodec::List { element } => {
                 pending.push(*element)
             }
-            ProgramCodec::Record { fields, name: None } => {
+            ProgramCodec::Record { fields, .. } => {
                 pending.extend(fields.iter().rev().map(|field| field.codec))
+            }
+            ProgramCodec::Adt { variants, .. } => {
+                pending.extend(variants.iter().rev().filter_map(|variant| variant.payload))
             }
             _ => {}
         }
     }
     found
+}
+
+/// An ADT or struct alias, applied to the type parameters its codec
+/// mentions in first-use order, such as `Box<A>`.
+fn generic_alias(metadata: &ProgramWasmMetadata, alias: &str, index: usize) -> String {
+    let parameters = type_parameters(metadata, index);
+    if parameters.is_empty() {
+        alias.to_owned()
+    } else {
+        format!("{alias}<{}>", parameters.join(", "))
+    }
 }
 
 fn record_type(
@@ -1090,7 +1086,13 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
             ProgramCodec::Record { fields, .. } => record_type(metadata, &aliases, fields),
             _ => unreachable!("aliases name ADT and struct codecs"),
         };
-        result.insert_str(0, &format!("export type {alias} = {body};\n"));
+        result.insert_str(
+            0,
+            &format!(
+                "export type {} = {body};\n",
+                generic_alias(metadata, alias, *index)
+            ),
+        );
     }
     for export in &metadata.exports {
         let ty = if type_parameters(metadata, export.codec).is_empty() {

@@ -1,0 +1,31 @@
+// Program WASM passes ADTs and structs over type parameters. Values of a
+// type parameter inside them cross back to the host unchanged, as in TS.
+type Box<A> =
+  | Empty
+  | Full A
+
+struct Pair<A, B> { first: A, second: B }
+
+type Tree<A> =
+  | Leaf
+  | Node (Tree<A>, A, Tree<A>)
+
+pub fn wrap<A> value: A -> Box<A> = Full value
+
+pub fn unwrap<A> fallback: A -> box: Box<A> -> A = match box {
+  Empty -> fallback
+  Full value -> value
+}
+
+pub fn pair<A, B> first: A -> second: B -> Pair<A, B> = Pair { first: first, second: second }
+
+pub fn swap<A, B> value: Pair<A, B> -> Pair<B, A> = match value {
+  Pair { first, second } -> Pair { first: second, second: first }
+}
+
+pub fn single<A> value: A -> Tree<A> = Node (Leaf, value, Leaf)
+
+pub fn size<A> tree: Tree<A> -> Int = match tree {
+  Leaf -> 0
+  Node (left, _, right) -> size left + 1 + size right
+}

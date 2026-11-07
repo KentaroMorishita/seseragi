@@ -2835,6 +2835,89 @@ const done: Promise<number> = Promise.resolve(owner.exports.done(1).tag === 'Don
 }
 
 #[test]
+fn generic_adts_and_structs_keep_host_values_like_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-generic-data.ssrg",
+        &["wrap", "unwrap", "pair", "swap", "single", "size"],
+    );
+    fs::write(
+        scratch.0.join("compare.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const object = {name: '雪'};
+const callback = () => 1;
+// A type parameter's value inside an ADT or struct is the same host value.
+assert.equal(wasm.wrap(object).value, object);
+assert.deepStrictEqual(plain(wasm.wrap(object)), plain(ts.wrap(object)));
+assert.equal(wasm.unwrap(callback)(ts.wrap(object)), object);
+assert.equal(wasm.unwrap(callback)({tag: 'Empty'}), callback);
+assert.equal(ts.unwrap(callback)(wasm.wrap(object)), object);
+const made = wasm.pair(object)(callback);
+assert.ok(made.first === object && made.second === callback);
+const swapped = wasm.swap(ts.pair(object)(callback));
+assert.ok(swapped.first === callback && swapped.second === object);
+assert.deepStrictEqual(plain(wasm.swap(made)), plain(ts.swap(ts.pair(object)(callback))));
+// A recursive ADT over a type parameter crosses in both directions.
+const tree = {tag: 'Node', value: [ts.single(object), callback, {tag: 'Leaf'}]};
+assert.equal(wasm.size(tree), ts.size(tree));
+assert.equal(wasm.single(object).value[1], object);
+assert.equal(ts.size(wasm.single(object)), 1);
+// Values outside the checked shape are rejected before they reach WASM.
+assert.throws(() => wasm.unwrap(1)({tag: 'Full'}), TypeError);
+assert.throws(() => wasm.size({tag: 'Node', value: [{tag: 'Leaf'}, 1]}), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#,
+    )
+    .unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+    // The declarations are generic over the same type parameters.
+    let declared = fs::read_to_string(scratch.0.join("wasm/program.d.mts")).unwrap();
+    assert!(declared.contains("export type Box<A> = "), "{declared}");
+    assert!(declared.contains("export type Tree<A> = "), "{declared}");
+    fs::write(
+        scratch.0.join("types.mts"),
+        r#"import {loadProgram, type Box, type Tree} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const box: Box<{name: string}> = owner.exports.wrap({name: 'a'});
+const value: number = owner.exports.unwrap(1)({tag: 'Full', value: 2});
+const pair: Readonly<{first: number; second: string}> = owner.exports.pair(1)('a');
+const swapped: Readonly<{first: string; second: number}> = owner.exports.swap(pair);
+const tree: Tree<boolean> = owner.exports.single(true);
+const size: number = owner.exports.size(tree);
+// @ts-expect-error the payload has the type parameter's type
+owner.exports.unwrap(1)({tag: 'Full', value: 'a'});
+// @ts-expect-error swap returns the fields in the other order
+const wrong: Readonly<{first: number; second: string}> = owner.exports.swap(pair);
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
 fn generic_exports_return_host_values_unchanged_like_the_ts_target() {
     let scratch = Scratch::new();
     wasm_and_ts(
