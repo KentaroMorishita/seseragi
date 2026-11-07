@@ -317,8 +317,10 @@ fn cargo_failure_preserves_all_previous_outputs_and_cleans_owned_staging() {
     fs::write(
         &compiler,
         r#"#!/bin/sh
-# The runtime library is built first; report a library so the program build runs.
+# The runtime library is built first; like Cargo, write the library it
+# reports, which the program build links through a stable copy.
 if [ "$1" = build ]; then
+  : > "$PWD/libseseragi_native_runtime.rlib"
   printf '{"reason":"compiler-artifact","target":{"name":"seseragi_native_runtime"},"filenames":["%s/libseseragi_native_runtime.rlib"]}\n' "$PWD"
   exit 0
 fi
@@ -335,6 +337,10 @@ exit 17
             "SESERAGI_NATIVE_TOOLCHAIN",
             native_cache::mock_toolchain(&compiler_directory),
         )
+        // The mock runtime library is empty; keep it out of the cache that
+        // real builds in this binary share.
+        .env("SESERAGI_NATIVE_CACHE", root.path().join("mock-cache"))
+        .env("CARGO_TARGET_DIR", root.path().join("mock-target"))
         .env("PATH", &compiler_directory)
         .env("SESERAGI_TEST_STAGE_LOG", &stage_log)
         .output()
@@ -406,8 +412,10 @@ fn publish_io_failure_rolls_back_and_removes_owned_staging() {
                 &compiler,
                 r#"#!/bin/sh
 set -eu
-# The runtime library is built first; report a library so the program build runs.
+# The runtime library is built first; like Cargo, write the library it
+# reports, which the program build links through a stable copy.
 if [ "$1" = build ]; then
+  : > "$PWD/libseseragi_native_runtime.rlib"
   printf '{"reason":"compiler-artifact","target":{"name":"seseragi_native_runtime"},"filenames":["%s/libseseragi_native_runtime.rlib"]}\n' "$PWD"
   exit 0
 fi
@@ -422,6 +430,10 @@ printf '{"reason":"compiler-artifact","target":{"name":"program"},"executable":"
                     "SESERAGI_NATIVE_TOOLCHAIN",
                     native_cache::mock_toolchain(&compiler_directory),
                 )
+                // The mock runtime library is empty; keep it out of the cache that
+                // real builds in this binary share.
+                .env("SESERAGI_NATIVE_CACHE", root.path().join("mock-cache"))
+                .env("CARGO_TARGET_DIR", root.path().join("mock-target"))
                 .env("PATH", &compiler_directory)
                 .env(
                     "SESERAGI_TEST_EXECUTABLE",
