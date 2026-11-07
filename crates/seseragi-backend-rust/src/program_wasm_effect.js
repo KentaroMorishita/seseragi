@@ -546,6 +546,7 @@ function effectPlan(state, token, codec, provenance) {
           } catch (error) {
             throw trapped(state, error, provenance)
           }
+          execution.wake?.()
         },
       })
     },
@@ -584,6 +585,18 @@ async function pumpEffect(state, execution, codec, provenance) {
       if (tag === 0) {
         input.end()
         phase = "wait"
+        continue
+      }
+      if (tag === 5) {
+        // Every Fiber waits and nothing in this ABI can wake one, as when a
+        // TS Effect awaits a Deferred nobody completes. Stop polling until
+        // a cancellation can move the root Fiber again.
+        input.end()
+        phase = "wait"
+        await new Promise((resolve) => {
+          execution.wake = resolve
+        })
+        execution.wake = undefined
         continue
       }
       const code = schema.codecs[codec]
@@ -648,6 +661,7 @@ function disposeProgram(state) {
       } catch (error) {
         throw trapped(state, error, { symbol: `${schema.module}::<cancel>` })
       }
+      running.wake?.()
       // Set below by the public execution owner. Both waiters observe the
       // committed terminal outcome only after all masked finalizers finish.
       try {

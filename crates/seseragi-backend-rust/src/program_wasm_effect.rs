@@ -36,6 +36,18 @@ fn effect(failure: CoreType, success: CoreType) -> CoreType {
         ],
     }
 }
+fn named(name: &str, failure: &CoreType, success: &CoreType) -> CoreType {
+    CoreType::Named {
+        name: name.into(),
+        arguments: vec![failure.clone(), success.clone()],
+    }
+}
+fn maybe(value: CoreType) -> CoreType {
+    CoreType::Named {
+        name: "std/prelude::Maybe".into(),
+        arguments: vec![value],
+    }
+}
 fn effect_parts(ty: &CoreType) -> Option<(&CoreType, &CoreType)> {
     let CoreType::Named { name, arguments } = ty else {
         return None;
@@ -60,6 +72,16 @@ fn closed_type(ty: &CoreType) -> bool {
             ("std/prelude::Maybe", [value]) => closed_type(value),
             ("std/prelude::Either", [left, right]) => closed_type(left) && closed_type(right),
             ("std/ref::Ref", [value]) => crate::program_wasm::has_closed_data_codec(value),
+            // A Fiber and its exit hold the checked channels of a closed
+            // Effect. A Deferred, like a Ref, holds only closed data.
+            ("std/effect::Fiber" | "std/effect::FiberExit", [failure, success]) => {
+                closed_type(failure) && closed_type(success)
+            }
+            ("std/deferred::Deferred", [failure, success]) => {
+                let data =
+                    |ty: &CoreType| is_never(ty) || crate::program_wasm::has_closed_data_codec(ty);
+                data(failure) && data(success)
+            }
             ("std/prelude::Effect", [requirements, failure, success]) => {
                 empty_requirements(requirements) && closed_type(failure) && closed_type(success)
             }
@@ -158,6 +180,18 @@ enum Operation {
     RefSet,
     RefUpdate,
     RefModify,
+    Fork,
+    AwaitFiber,
+    PollFiber,
+    Join,
+    Interrupt,
+    YieldNow,
+    MakeDeferred,
+    AwaitDeferred,
+    PollDeferred,
+    CompleteDeferred,
+    SucceedDeferred,
+    FailDeferred,
 }
 impl Operation {
     fn named(name: &str, normalized: bool) -> Option<Self> {
@@ -177,6 +211,18 @@ impl Operation {
             "std/ref::set" => Self::RefSet,
             "std/ref::update" => Self::RefUpdate,
             "std/ref::modify" => Self::RefModify,
+            "std/effect::fork" => Self::Fork,
+            "std/effect::await" => Self::AwaitFiber,
+            "std/effect::poll" => Self::PollFiber,
+            "std/effect::join" => Self::Join,
+            "std/effect::interrupt" => Self::Interrupt,
+            "std/effect::yieldNow" => Self::YieldNow,
+            "std/deferred::make" => Self::MakeDeferred,
+            "std/deferred::await" => Self::AwaitDeferred,
+            "std/deferred::poll" => Self::PollDeferred,
+            "std/deferred::complete" => Self::CompleteDeferred,
+            "std/deferred::succeed" => Self::SucceedDeferred,
+            "std/deferred::fail" => Self::FailDeferred,
             "effect.succeed" if normalized => Self::Succeed,
             "effect.fail" if normalized => Self::Fail,
             "effect.die" if normalized => Self::Die,
@@ -184,6 +230,23 @@ impl Operation {
             "effect.fromEither" if normalized => Self::FromEither,
             _ => return None,
         })
+    }
+    fn concurrent(self) -> bool {
+        matches!(
+            self,
+            Self::Fork
+                | Self::AwaitFiber
+                | Self::PollFiber
+                | Self::Join
+                | Self::Interrupt
+                | Self::YieldNow
+                | Self::MakeDeferred
+                | Self::AwaitDeferred
+                | Self::PollDeferred
+                | Self::CompleteDeferred
+                | Self::SucceedDeferred
+                | Self::FailDeferred
+        )
     }
     fn arity(self) -> usize {
         match self {
@@ -193,7 +256,10 @@ impl Operation {
             | Self::AcquireRelease
             | Self::RefSet
             | Self::RefUpdate
-            | Self::RefModify => 2,
+            | Self::RefModify
+            | Self::CompleteDeferred
+            | Self::SucceedDeferred
+            | Self::FailDeferred => 2,
             _ => 1,
         }
     }
@@ -204,6 +270,7 @@ struct Global {
 }
 struct Admission<'a> {
     module: &'a CoreModule,
+    concurrency: bool,
     globals: &'a BTreeMap<String, Global>,
     edges: &'a mut BTreeMap<String, BTreeSet<String>>,
     current: &'a str,
@@ -299,6 +366,22 @@ impl Admission<'_> {
         effect_parts(ty)
             .ok_or_else(|| self.error("a checked providerless Effect is required", origin))
     }
+    fn pair<'a>(
+        &self,
+        ty: &'a CoreType,
+        owner: &str,
+        origin: &SourceSpan,
+    ) -> Result<(&'a CoreType, &'a CoreType)> {
+        match ty {
+            CoreType::Named { name, arguments } if name == owner && closed_type(ty) => {
+                match arguments.as_slice() {
+                    [failure, success] => Ok((failure, success)),
+                    _ => Err(self.error("a Fiber or Deferred requires two channels", origin)),
+                }
+            }
+            _ => Err(self.error("a canonical closed Fiber or Deferred is required", origin)),
+        }
+    }
     fn cell<'a>(&self, ty: &'a CoreType, origin: &SourceSpan) -> Result<&'a CoreType> {
         let CoreType::Named { name, arguments } = ty else {
             return Err(self.error("private Ref requires its canonical cell owner", origin));
@@ -383,11 +466,18 @@ impl Admission<'_> {
         arguments: &[CoreExpr],
         scope: &Scope,
         deferred: bool,
+        annotation: &CoreType,
         origin: &SourceSpan,
     ) -> Result<(CoreType, Vec<CoreType>)> {
         if arguments.len() != operation.arity() {
             return Err(self.error(
                 "standard Effects require complete source application",
+                origin,
+            ));
+        }
+        if operation.concurrent() && !self.concurrency {
+            return Err(self.error(
+                "Fibers and Deferreds need the providerless Effect ABI; a host Effect run keeps one host request",
                 origin,
             ));
         }
@@ -438,6 +528,64 @@ impl Admission<'_> {
                     self.accepts(value, next, origin)?;
                     effect(primitive("Never"), output.clone())
                 }
+            }
+            Operation::Fork => {
+                let (failure, success) = self.effect(first, origin)?;
+                effect(
+                    primitive("Never"),
+                    named("std/effect::Fiber", failure, success),
+                )
+            }
+            Operation::AwaitFiber
+            | Operation::PollFiber
+            | Operation::Join
+            | Operation::Interrupt => {
+                let (failure, success) = self.pair(first, "std/effect::Fiber", origin)?;
+                let exit = named("std/effect::FiberExit", failure, success);
+                match operation {
+                    Operation::AwaitFiber => effect(primitive("Never"), exit),
+                    Operation::PollFiber => effect(primitive("Never"), maybe(exit)),
+                    Operation::Join => effect(failure.clone(), success.clone()),
+                    _ => effect(primitive("Never"), primitive("Unit")),
+                }
+            }
+            Operation::YieldNow | Operation::MakeDeferred => {
+                if first != &primitive("Unit") {
+                    return Err(self.error("this operation requires the canonical Unit", origin));
+                }
+                if operation == Operation::YieldNow {
+                    effect(primitive("Never"), primitive("Unit"))
+                } else {
+                    // No argument names the channels; the checked annotation
+                    // fixes them, and they must be closed data.
+                    let (failure, made) = self.effect(annotation, origin)?;
+                    if !is_never(failure) {
+                        return Err(self.error("Deferred make cannot fail", origin));
+                    }
+                    self.pair(made, "std/deferred::Deferred", origin)?;
+                    annotation.clone()
+                }
+            }
+            Operation::AwaitDeferred | Operation::PollDeferred => {
+                let (failure, success) = self.pair(first, "std/deferred::Deferred", origin)?;
+                if operation == Operation::AwaitDeferred {
+                    effect(failure.clone(), success.clone())
+                } else {
+                    effect(
+                        primitive("Never"),
+                        maybe(named("std/prelude::Either", failure, success)),
+                    )
+                }
+            }
+            Operation::CompleteDeferred | Operation::SucceedDeferred | Operation::FailDeferred => {
+                let (failure, success) = self.pair(&types[1], "std/deferred::Deferred", origin)?;
+                let expected = match operation {
+                    Operation::CompleteDeferred => named("std/prelude::Either", failure, success),
+                    Operation::SucceedDeferred => success.clone(),
+                    _ => failure.clone(),
+                };
+                self.accepts(&expected, first, origin)?;
+                effect(primitive("Never"), primitive("Bool"))
             }
             Operation::Die => {
                 if first != &primitive("String") {
@@ -638,7 +786,7 @@ impl Admission<'_> {
                     .flatten()
                 {
                     let (actual, argument_types) =
-                        self.operation(operation, arguments, scope, deferred, origin)?;
+                        self.operation(operation, arguments, scope, deferred, &annotation, origin)?;
                     if let Some(signature) = callee_signature {
                         if signature.parameters.len() != operation.arity() {
                             return Err(self
@@ -685,7 +833,8 @@ impl Admission<'_> {
                         origin,
                     )
                 })?;
-                let (actual, _) = self.operation(operation, arguments, scope, deferred, origin)?;
+                let (actual, _) =
+                    self.operation(operation, arguments, scope, deferred, &annotation, origin)?;
                 self.accepts(&annotation, &actual, origin)?;
                 Ok(annotation)
             }
@@ -704,7 +853,7 @@ impl Admission<'_> {
                     .then(|| Operation::named(callee, false))
                     .flatten()
                 {
-                    self.operation(operation, arguments, scope, deferred, origin)?
+                    self.operation(operation, arguments, scope, deferred, &annotation, origin)?
                         .0
                 } else {
                     let (callee_type, _) = self.source(callee, scope, deferred, origin)?;
@@ -907,7 +1056,9 @@ fn is_constructor(name: &str) -> bool {
     )
 }
 
-pub(crate) fn validate(modules: &[&CoreModule]) -> Result<()> {
+/// `concurrency` admits Fibers and Deferreds. The host Effect ABI keeps one
+/// suspended host request per run, so only the providerless ABI admits them.
+pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool) -> Result<()> {
     let mut globals = BTreeMap::new();
     let mut origins = BTreeMap::new();
     for module in modules {
@@ -975,6 +1126,7 @@ pub(crate) fn validate(modules: &[&CoreModule]) -> Result<()> {
         for function in &module.functions {
             let mut admission = Admission {
                 module,
+                concurrency,
                 globals: &globals,
                 edges: &mut edges,
                 current: &function.symbol,
@@ -1004,6 +1156,7 @@ pub(crate) fn validate(modules: &[&CoreModule]) -> Result<()> {
         for binding in &module.bindings {
             let mut admission = Admission {
                 module,
+                concurrency,
                 globals: &globals,
                 edges: &mut edges,
                 current: &binding.symbol,

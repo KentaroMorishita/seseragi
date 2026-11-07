@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.154] - 2026-11-07
+
+### Added
+
+- The providerless program WASM Effect ABI runs Fibers and Deferreds: `fork`, `await`, `poll`, `join`, `interrupt` and `yieldNow`, and the `std/deferred` operations. The root Effect runs as the root Fiber of the native scheduler, so cancelling it cancels its child Fibers and waits for their finalizers. A Deferred holds only closed data, and neither a Fiber nor a Deferred crosses the boundary.
+
+### Changed
+
+- The providerless program WASM Effect ABI is now `seseragi-program-wasm-effect-v3`. When every Fiber waits and nothing can wake one, a poll reports that the run is stalled; the loader stops polling and keeps the result pending until the host cancels the Effect or disposes the instance, as a TS Effect awaiting a Deferred nobody completes stays pending. A loader rejects a WASM built for the earlier ABI.
+- A program WASM run still turns process signals, child processes, files, stdin and Clock sleeps into Defects, so it never reads a host clock. The host Effect ABI keeps one pending host request per run and refuses Fibers and Deferreds.
+
 ## [0.61.153] - 2026-11-07
 
 ### Added
