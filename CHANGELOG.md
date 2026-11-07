@@ -8,6 +8,13 @@
 - Native runs `timeout` and `timeoutFail`, which race the source against a Clock sleep; the source wins a tie, including with a zero Duration.
 - Native runs `schedule`, `recurs`, `spaced`, `whileInput`, `retry` and `repeat`. A retry ends at the first success, a repeat at the first failure, and a Defect is never retried. These operations need the native Clock selection, like `clock.sleep`.
 
+## [0.61.151] - 2026-11-07
+
+### Fixed
+
+- Concurrent native builds that share a runtime build no longer fail to link with a missing runtime library. Cargo rewrites its copy of the library on every build, so programs now link a copy that is replaced atomically and only when its content changes.
+
+
 ## [0.61.150] - 2026-11-07
 
 ### Added

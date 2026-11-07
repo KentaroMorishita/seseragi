@@ -287,7 +287,7 @@ impl Project {
             .arg(directory.join("Cargo.toml"))
             .arg("--target-dir")
             .arg(directory.join("target"));
-        run_cargo(&mut command, &toolchain.host)?
+        let built = run_cargo(&mut command, &toolchain.host)?
             .into_iter()
             .filter(|message| {
                 message["reason"] == "compiler-artifact"
@@ -305,7 +305,18 @@ impl Project {
                 file.extension()
                     .is_some_and(|extension| extension == "rlib")
             })
-            .ok_or_else(|| "Cargo did not report the native runtime library".to_owned())
+            .ok_or_else(|| "Cargo did not report the native runtime library".to_owned())?;
+        // Cargo replaces its copy of the library on every build, even a fresh
+        // one, so a program linking it while another build of the same
+        // runtime runs could find no file. Programs link a copy that changes
+        // only with its content and is replaced atomically, under the lock.
+        let library = directory.join("libseseragi_native_runtime.rlib");
+        write_if_changed(
+            &library,
+            &fs::read(&built).map_err(|error| error.to_string())?,
+        )?;
+        drop(lock);
+        Ok(library)
     }
 
     /// The shared runtime build for these settings. The key also covers the
