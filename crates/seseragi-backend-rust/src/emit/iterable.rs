@@ -116,11 +116,6 @@ impl Backend<'_> {
         if selected.constraint.trait_identity.as_deref() != Some("std/prelude::Iterable") {
             return Ok(None);
         }
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native Iterable dictionary needs a target-specific ABI proof".into(),
-            );
-        }
         self.validate_iterable_evidence(selected, scope)?;
         self.capabilities.insert("iterable".into());
         Ok(Some(format!(
@@ -136,12 +131,6 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native Iterable constructor needs a target-specific ABI proof"
-                    .into(),
-            );
-        }
         if scope.has_unproven_type_scope() || arguments.len() > 1 {
             return Err("Rust backend: unproven Iterable constructor source application".into());
         }

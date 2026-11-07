@@ -1,0 +1,33 @@
+// Program WASM runs Map and Set operations with the same results and the
+// same insertion order as the TS target.
+import * as maps from "std/map"
+import * as sets from "std/set"
+
+fn tally words: List<String> -> counts: maps.Map<String, Int> -> maps.Map<String, Int> =
+  match words {
+    `[] -> counts
+    `[word, ...rest] -> tally rest (maps.upsert word (\current -> (current ?? 0) + 1) counts)
+  }
+
+pub fn histogram words: List<String> -> Array<(String, Int)> = maps.entries (tally words (maps.empty ()))
+
+pub fn lookup word: String -> Maybe<Int> =
+  maps.get word (maps.insert "b" 2 (maps.singleton "a" 1))
+
+pub fn pruned words: List<String> -> Array<String> =
+  maps.keys (maps.remove "red" (maps.filter (\_word count -> count > 1) (tally words (maps.empty ()))))
+
+fn collect values: List<Int> -> found: sets.Set<Int> -> sets.Set<Int> = match values {
+  `[] -> found
+  `[value, ...rest] -> collect rest (sets.insert value found)
+}
+
+pub fn unique values: List<Int> -> Array<Int> = sets.toArray (collect values (sets.empty ()))
+
+pub fn overlap pair: (List<Int>, List<Int>) -> (Array<Int>, Array<Int>, Array<Int>, Bool) = match pair {
+  (left, right) -> {
+    let a = collect left (sets.empty ())
+    let b = collect right (sets.empty ())
+    (sets.toArray (sets.union a b), sets.toArray (sets.intersection a b), sets.toArray (sets.difference a b), sets.isSubsetOf a b)
+  }
+}

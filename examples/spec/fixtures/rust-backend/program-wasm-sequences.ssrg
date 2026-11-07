@@ -1,48 +1,35 @@
-// Program WASM runs the remaining `std/array` and `std/list` sequence
-// operations with the same results as the TS target.
+// Program WASM runs ranges, comprehensions, sorting, grouping, iterators,
+// reduceUntil and NonEmptyList with the same results as the TS target.
 import * as arrays from "std/array"
 import * as lists from "std/list"
+import * as maps from "std/map"
+import * as control from "std/collection"
+import * as iterator from "std/iterator"
+import * as nonEmpty from "std/non-empty-list"
 
-pub fn last values: Array<Int> -> Maybe<Int> = arrays.last values
+pub fn pairs limit: Int -> Array<(Int, Int)> =
+  [(left, right) | left <- 1 ..= limit, right <- 1 ..= limit, left < right, (left + right) % 2 != 0]
 
-pub fn init values: Array<Int> -> Maybe<Array<Int>> = arrays.init values
+pub fn sorted values: Array<Int> -> Array<Int> = arrays.sort values
 
-pub fn flat values: Array<Int> -> Array<Int> = arrays.concat [values, [9], values]
+fn lastDigit value: Int -> Int = value % 10
 
-pub fn position values: Array<Int> -> Maybe<Int> =
-  arrays.findIndex (\value -> value > 2) values
+pub fn ranked values: List<Int> -> List<Int> = lists.sortBy lastDigit values
 
-pub fn small values: Array<Int> -> Array<Int> =
-  arrays.takeWhile (\value -> value < 3) values
+pub fn grouped values: List<Int> -> Array<(Int, List<Int>)> = maps.entries (lists.groupBy lastDigit values)
 
-pub fn large values: Array<Int> -> Array<Int> =
-  arrays.dropWhile (\value -> value < 3) values
+fn bounded total: Int -> value: Int -> control.ReduceStep<Int> =
+  if value > 3 then control.Done total else control.Next (total + value)
 
-pub fn pairs values: Array<Int> -> Array<(Int, String)> = arrays.zip [
-  "a",
-  "b",
-  "c"
-] values
+pub fn prefixSum values: Array<Int> -> Int = control.reduceUntil 0 bounded values
 
-pub fn split values: Array<Int> -> (Array<Int>, Array<Int>) =
-  arrays.unzip (arrays.zip values values)
+pub fn rangeSum limit: Int -> Int = control.reduceUntil 0 bounded (1 ..= limit)
 
-pub fn sums values: Array<Int> -> Array<Int> =
-  arrays.zipWith (\left -> \right -> left + right) [
-    10,
-    20
-  ] values
+fn countdown state: Int -> Maybe<(Int, Int)> = if state == 0 then Nothing else Just (state, state - 1)
 
-pub fn folded values: Array<Int> -> String =
-  arrays.reduceRight "" (\value -> \text -> text + show value) values
+pub fn counted start: Int -> Array<Int> = arrays.fromIterable (iterator.unfold countdown start)
 
-pub fn listHalves values: List<Int> -> List<Int> =
-  lists.filterMap (\value -> if value % 2 == 0 then
-    Just (value / 2)
-  else
-    Nothing) values
-
-pub fn listTwice values: List<Int> -> List<Int> = lists.flatMap (\value -> `[
-  value,
-  value
-]) values
+pub fn ends values: List<String> -> Maybe<(String, List<String>)> = match nonEmpty.fromList values {
+  Nothing -> Nothing
+  Just items -> Just (nonEmpty.head items, nonEmpty.toList (nonEmpty.cons "first" (nonEmpty.tail items)))
+}

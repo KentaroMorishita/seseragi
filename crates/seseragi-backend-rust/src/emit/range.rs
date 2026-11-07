@@ -9,9 +9,6 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<String> {
-        if self.program_wasm_library {
-            return Err("program WASM: native Range requires a target-specific ABI proof".into());
-        }
         let int = CoreType::Named {
             name: "std/prelude::Int".into(),
             arguments: vec![],

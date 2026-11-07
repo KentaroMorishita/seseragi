@@ -37,12 +37,6 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native NonEmptyList operation needs a target-specific ABI proof"
-                    .into(),
-            );
-        }
         if scope.has_unproven_type_scope() {
             return Err("Rust backend: unproven NonEmptyList source scope".into());
         }

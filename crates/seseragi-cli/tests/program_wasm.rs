@@ -2765,6 +2765,96 @@ owner.exports.shown({coefficient: 1n, scale: 0n});
     ));
 }
 
+#[test]
+fn maps_and_sets_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = ["histogram", "lookup", "pruned", "unique", "overlap"];
+    wasm_and_ts(&scratch.0, "program-wasm-collections.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram, capabilities} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+assert.deepStrictEqual([...capabilities], ['hash', 'map', 'set']);
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const list = (values) => values.reduceRight((tail, head) => ({tag: 'Cons', head, tail}), {tag: 'Empty'});
+const texts = [[], ['red'], ['red', 'blue', 'red', 'green', 'blue', 'red'], ['雪', '🙂', '雪', '', '']];
+for (const words of texts) {
+  for (const name of ['histogram', 'pruned']) {
+    assert.deepStrictEqual(plain(wasm[name](list(words))), plain(ts[name](list(words))), `${name} ${words}`);
+  }
+}
+for (const word of ['a', 'b', 'c']) assert.deepStrictEqual(plain(wasm.lookup(word)), plain(ts.lookup(word)));
+const numbers = [[], [3, 1, 3, 2, 1], [-0, 0, 9007199254740991, -9007199254740991, 5]];
+for (const left of numbers) {
+  assert.deepStrictEqual(plain(wasm.unique(list(left))), plain(ts.unique(list(left))));
+  for (const right of numbers) {
+    assert.deepStrictEqual(plain(wasm.overlap([list(left), list(right)])), plain(ts.overlap([list(left), list(right)])));
+  }
+}
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn ranges_sorting_iterators_and_non_empty_lists_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "pairs",
+        "sorted",
+        "ranked",
+        "grouped",
+        "prefixSum",
+        "rangeSum",
+        "counted",
+        "ends",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-sequences.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const list = (values) => values.reduceRight((tail, head) => ({tag: 'Cons', head, tail}), {tag: 'Empty'});
+const same = (name, input) => assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name} ${JSON.stringify(input)}`);
+for (const limit of [0, 1, 4, 7]) { same('pairs', limit); same('rangeSum', limit); same('counted', limit); }
+const arrays = [[], [5], [22, 11, 42, 31, -7, 0, -0, 11], [3, 3, 1, 2, 9007199254740991, -9007199254740991]];
+for (const values of arrays) {
+  same('sorted', values);
+  same('prefixSum', values);
+  same('ranked', list(values));
+  same('grouped', list(values));
+}
+for (const values of [[], ['only'], ['a', 'b', 'c'], ['雪', '🙂']]) same('ends', list(values));
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
 /// Builds `fixture` as program WASM in `wasm/` and for the TS target in
 /// `ts/`. The TS target needs an entry, which program WASM rejects when it
 /// uses Console, so only the TS copy gets one.

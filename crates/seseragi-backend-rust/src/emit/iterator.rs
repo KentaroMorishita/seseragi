@@ -26,12 +26,6 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native Iterator operation requires a target-specific ABI proof"
-                    .into(),
-            );
-        }
         let arity = arity(name).expect("known Iterator operation");
         if scope.has_unproven_type_scope() || arguments.len() > arity {
             return Err("Rust backend: unproven Iterator source application".into());

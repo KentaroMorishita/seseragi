@@ -29,11 +29,6 @@ impl Backend<'_> {
         list: bool,
         scope: &Scope,
     ) -> Result<String> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native comprehension needs a target-specific ABI proof".into(),
-            );
-        }
         if !matches!(
             clauses.first(),
             Some(CoreComprehensionClause::Generator { .. })

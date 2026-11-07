@@ -29,12 +29,6 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native sequence ordering requires a target-specific ABI proof"
-                    .into(),
-            );
-        }
         let arity = arity(name).expect("known sequence ordering operation");
         if scope.has_unproven_type_scope() || arguments.len() > arity {
             return Err("Rust backend: unproven sequence ordering source application".into());
