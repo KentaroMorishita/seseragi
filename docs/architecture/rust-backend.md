@@ -139,7 +139,8 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 前の完成したartifactを保存し、利用者が編集した出力や無関係なdirectoryは置き換えない。
 
 公開関数で受け渡せる値と、JS側の形は次のとおり。TSターゲットで同じ関数を公開したときと
-同じ形で、両方向に受け渡す。
+同じ形で、両方向に受け渡す。TSターゲットの形はprofileで変わる（releaseはnewtypeの包みを消す）ので、
+`--profile development|release`（既定はdevelopment）で合わせる。Web packageは自分のprofileでprogramを作る。
 
 | Seseragi の型 | JS 側の形 |
 | --- | --- |
@@ -152,7 +153,7 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 | List | `{tag: "Cons", head, tail}` と `{tag: "Empty"}` |
 | 閉じた record・struct | 普通のオブジェクト |
 | Maybe・Either・ADT | `{tag}` または `{tag, value}`。generic や再帰する ADT も使える |
-| newtype | `{tag, value}`（tag は型の名前） |
+| newtype | development では `{tag, value}`（tag は型の名前）。release では TS と同じく中身の値だけ |
 | opaque な ADT・struct | 中身は ADT・struct と同じ形。opaque struct の型宣言は brand だけを持ち、ホストは中身を読めず、作れない |
 | 関数の型パラメータ | JS の値そのもの。WASM は預かって返すだけで、同じ値が返る |
 
@@ -266,7 +267,7 @@ callbackをdetachした後もその状態を更新できる。tracingはglobal�
 受入例は`program-wasm-private-ref.ssrg`と標準Web packageの
 `program-wasm-private-ref-package`。文字列の蓄積、update・modify、Failure・Defectは同じbodyのstrict TS／nativeと比較する。
 取消後のLIFO cleanupとinstance終了時のroot解放は実WASMでも確認する。
-`update`／`modify`、tuple pattern、fallibleなInt演算は含めない。
+tuple pattern、fallibleなInt演算は含めない。
 
 Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。
 同名のnominal Unitとはcanonicalな型identityを区別し、暗黙の変換を加えない。

@@ -2480,17 +2480,42 @@ const pairs: ReadonlyArray<readonly [string, Readonly<{tag: 'Nothing'}> | Readon
 #[test]
 fn newtypes_and_opaque_types_cross_the_boundary_in_the_ts_target_shape() {
     let scratch = Scratch::new();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-opaque.ssrg");
+    let text = fs::read_to_string(&fixture).unwrap();
     let exports = [
         "score", "points", "door", "describe", "token", "use", "owner",
     ];
-    wasm_and_ts(&scratch.0, "program-wasm-opaque.ssrg", &exports);
-    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+    // The release profile of the TS target erases newtype wrappers, so the
+    // program passes a newtype in the shape of the profile it is built for.
+    for (profile, value, score) in [
+        (
+            "development",
+            seseragi_driver::BuildProfile::Development,
+            "{tag: 'Score', value: 40}",
+        ),
+        ("release", seseragi_driver::BuildProfile::Release, "40"),
+    ] {
+        let wasm = scratch.0.join(format!("wasm-{profile}"));
+        let mut command = build(&fixture, &wasm, &exports);
+        command.args(["--profile", profile]);
+        successful(bounded(&mut command, &scratch.0));
+        let ts = scratch.0.join(format!("ts-{profile}"));
+        fs::create_dir(&ts).unwrap();
+        let module = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("program.ssrg", "fixture/opaque", &text)
+                .with_profile(value),
+        )
+        .unwrap();
+        fs::write(ts.join("main.ts"), &module.generated.typescript).unwrap();
+        seseragi_runtime::stage_typescript_package(&ts).unwrap();
+        fs::write(ts.join("compare.ts"), format!(r#"import {{readFile}} from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import {loadProgram} from './wasm/program.mjs';
-import * as ts from './ts/main.js';
-const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
-const wasm = program.exports;
-const plain = (value) => JSON.parse(JSON.stringify(value));
+import {{loadProgram}} from '../wasm-{profile}/program.mjs';
+import * as ts from './main.ts';
+const program = await loadProgram(await readFile('{wasm}/program.wasm'));
+const wasm: any = program.exports;
+const plain = (value: unknown) => JSON.parse(JSON.stringify(value));
+assert.deepStrictEqual(plain(wasm.score(4)), {score});
 // Values from WASM have the TS target's shape.
 assert.deepStrictEqual(plain(wasm.score(4)), plain(ts.score(4)));
 for (const code of [0, 1, 2]) assert.deepStrictEqual(plain(wasm.door(code)), plain(ts.door(code)));
@@ -2503,25 +2528,43 @@ for (const code of [0, 1, 2]) assert.equal(wasm.describe(ts.door(code)), ts.desc
 assert.equal(wasm.owner(ts.use(ts.token('雪'))), '雪:1');
 assert.equal(ts.owner(wasm.use(wasm.token('雪'))), '雪:1');
 // Values outside the checked shape are rejected before they reach WASM.
-assert.throws(() => wasm.points(4), TypeError);
-assert.throws(() => wasm.points({tag: 'Other', value: 4}), TypeError);
-assert.throws(() => wasm.describe({tag: 'Locked'}), TypeError);
-assert.throws(() => wasm.owner({owner: '雪'}), TypeError);
+assert.throws(() => wasm.points('{profile}' === 'release' ? {{tag: 'Score', value: 4}} : 4), TypeError);
+assert.throws(() => wasm.describe({{tag: 'Locked'}}), TypeError);
+assert.throws(() => wasm.owner({{owner: '雪'}}), TypeError);
 program.dispose();
 assert.equal(program.ownership().managedLiveAtClose, 0);
 console.log('same shapes');
-"#).unwrap();
+"#, wasm = wasm.display())).unwrap();
+        successful(bounded(
+            Command::new("bun").current_dir(&ts).args([
+                "build",
+                "compare.ts",
+                "--target=node",
+                "--outfile=compare.mjs",
+                "--external",
+                "*/program.mjs",
+            ]),
+            &scratch.0,
+        ));
+        let output = successful(bounded(
+            Command::new(runtime("node", &scratch.0))
+                .arg(ts.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same shapes\n", "{profile}");
+        let declared = fs::read_to_string(wasm.join("program.d.mts")).unwrap();
+        assert!(
+            declared.contains(if profile == "release" {
+                "export type Score = number;"
+            } else {
+                "export type Score = Readonly<{tag: \"Score\"; value: number}>;"
+            }),
+            "{declared}"
+        );
+    }
     let node = runtime("node", &scratch.0);
-    let output = successful(bounded(
-        Command::new(&node)
-            .arg(scratch.0.join("compare.mjs"))
-            .env("PATH", ""),
-        &scratch.0,
-    ));
-    assert_eq!(output.stdout, b"same shapes\n");
-    fs::write(
-        scratch.0.join("types.mts"),
-        r#"import {loadProgram, type Score, type Door, type Token} from './wasm/program.mjs';
+    fs::write(scratch.0.join("types.mts"), r#"import {loadProgram, type Score, type Door, type Token} from './wasm-development/program.mjs';
 const owner = await loadProgram(new Uint8Array());
 const score: Score = owner.exports.score(1);
 const points: number = owner.exports.points({tag: 'Score', value: 3});
@@ -2535,10 +2578,19 @@ const hidden: string = token.owner;
 owner.exports.owner({owner: '雪', uses: 0});
 // @ts-expect-error a variant name outside the checked type
 owner.exports.describe({tag: 'Ajar'});
+"#).unwrap();
+    fs::write(
+        scratch.0.join("release.mts"),
+        r#"import {loadProgram, type Score} from './wasm-release/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const score: Score = owner.exports.score(1);
+const points: number = owner.exports.points(score + 1);
+// @ts-expect-error the release profile passes a newtype as its payload
+owner.exports.points({tag: 'Score', value: 3});
 "#,
     )
     .unwrap();
-    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts","release.mts"]}"#).unwrap();
     successful(bounded(
         Command::new(&node)
             .arg(root().join("node_modules/typescript/bin/tsc"))

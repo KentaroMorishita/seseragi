@@ -75,6 +75,13 @@ pub enum ProgramCodec {
         name: String,
         variants: Vec<ProgramVariant>,
     },
+    /// A newtype passed as its payload alone, as the TS target's release
+    /// profile passes it. WASM keeps the wrapper of `owner`.
+    Newtype {
+        name: String,
+        owner: String,
+        value: usize,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -114,15 +121,18 @@ struct Codecs<'a> {
     named: Vec<(CoreType, usize)>,
     /// The named types whose codecs are being built, outermost first.
     building: Vec<String>,
+    /// The TS target's release profile erases newtype wrappers.
+    erase_newtypes: bool,
 }
 
 impl<'a> Codecs<'a> {
-    fn new(modules: &'a [&'a CoreModule]) -> Self {
+    fn new(modules: &'a [&'a CoreModule], erase_newtypes: bool) -> Self {
         Self {
             items: Vec::new(),
             modules: Some(modules),
             named: Vec::new(),
             building: Vec::new(),
+            erase_newtypes,
         }
     }
 
@@ -134,6 +144,7 @@ impl<'a> Codecs<'a> {
             modules: None,
             named: Vec::new(),
             building: Vec::new(),
+            erase_newtypes: false,
         }
     }
 
@@ -213,6 +224,31 @@ pub fn emit_program_wasm_with_sources(
     exports: &[String],
     sources: std::collections::BTreeMap<String, crate::RustSourceFile>,
 ) -> Result<ProgramWasmArtifact, RustBackendError> {
+    emit_program_wasm_with_options(
+        modules,
+        entry_module,
+        exports,
+        sources,
+        ProgramWasmOptions::default(),
+    )
+}
+
+/// Choices that follow the TS target the program is paired with.
+#[derive(Clone, Copy, Debug, Default)]
+pub struct ProgramWasmOptions {
+    /// Pass a newtype as its payload alone, as the TS target's release
+    /// profile does. The development profile keeps `{tag, value}`.
+    pub erase_newtypes: bool,
+}
+
+/// Like [`emit_program_wasm_with_sources`], for a chosen TS target profile.
+pub fn emit_program_wasm_with_options(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    exports: &[String],
+    sources: std::collections::BTreeMap<String, crate::RustSourceFile>,
+    options: ProgramWasmOptions,
+) -> Result<ProgramWasmArtifact, RustBackendError> {
     let module = modules
         .iter()
         .find(|m| m.module == entry_module)
@@ -221,7 +257,7 @@ pub fn emit_program_wasm_with_sources(
         return Err("program WASM: select at least one public function".into());
     }
     let mut seen = BTreeSet::new();
-    let mut codecs = Codecs::new(modules);
+    let mut codecs = Codecs::new(modules, options.erase_newtypes);
     let mut public = Vec::new();
     let mut effect_abi = false;
     for name in exports {
@@ -746,7 +782,20 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
         variants: Vec::new(),
     });
     codecs.named.push((ty.clone(), index));
-    let item = if let Some(adt) = adt {
+    let item = if let Some(adt) = adt.filter(|adt| adt.newtype && codecs.erase_newtypes) {
+        match adt.variants.as_slice() {
+            [variant] => variant
+                .payload
+                .as_ref()
+                .and_then(|payload| codec(&declared(payload)?, false, codecs))
+                .map(|value| ProgramCodec::Newtype {
+                    name: adt.name.clone(),
+                    owner: variant.symbol.clone(),
+                    value,
+                }),
+            _ => None,
+        }
+    } else if let Some(adt) = adt {
         adt.variants
             .iter()
             .map(|variant| {
@@ -840,6 +889,9 @@ fn rust_codec(codec: &ProgramCodec) -> String {
                 .collect::<Vec<_>>()
                 .join(",")
         ),
+        ProgramCodec::Newtype { owner, value, .. } => {
+            format!("ProgramCode::Newtype({owner:?}, {value})")
+        }
     }
 }
 
@@ -887,6 +939,7 @@ fn type_aliases(metadata: &ProgramWasmMetadata) -> std::collections::BTreeMap<us
         .enumerate()
         .filter_map(|(index, codec)| match codec {
             ProgramCodec::Adt { name, .. }
+            | ProgramCodec::Newtype { name, .. }
             | ProgramCodec::Record {
                 name: Some(name), ..
             } => Some((index, name.as_str())),
@@ -970,9 +1023,9 @@ fn declared_type(
         ProgramCodec::Array { element } => format!("ReadonlyArray<{}>", ty(*element)),
         ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
         ProgramCodec::Parameter { name } => type_parameter_name(name),
-        ProgramCodec::Record { name: Some(_), .. } | ProgramCodec::Adt { .. } => {
-            aliases[&index].clone()
-        }
+        ProgramCodec::Record { name: Some(_), .. }
+        | ProgramCodec::Adt { .. }
+        | ProgramCodec::Newtype { .. } => aliases[&index].clone(),
         ProgramCodec::Record { fields, .. } => record_type(metadata, aliases, fields),
     }
 }
@@ -1118,6 +1171,7 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
                 })
                 .collect::<Vec<_>>()
                 .join(" | "),
+            ProgramCodec::Newtype { value, .. } => declared_type(metadata, &aliases, *value),
             ProgramCodec::Record { opaque: true, .. } => {
                 // The TS target brands an opaque struct the same way, so the
                 // host can hold and return it but cannot read or build it.

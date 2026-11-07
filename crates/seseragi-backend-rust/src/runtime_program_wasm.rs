@@ -18,6 +18,8 @@ enum ProgramCode {
     List(usize),
     Record(Vec<(&'static str, usize)>),
     Adt(Vec<(&'static str, Option<usize>)>),
+    // A newtype that crosses as its payload; WASM keeps the owner wrapper.
+    Newtype(&'static str, usize),
     Parameter,
 }
 struct ProgramRoot {
@@ -102,6 +104,7 @@ fn program_width_at(codec: usize, codes: &[ProgramCode], depth: usize) -> usize 
             .iter()
             .map(|(_, c)| program_width_at(*c, codes, depth + 1))
             .sum(),
+        ProgramCode::Newtype(_, value) => program_width_at(*value, codes, depth + 1),
         _ => 4,
     }
 }
@@ -206,6 +209,7 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
             }
             V::Record(Shared::new(values))
         }
+        ProgramCode::Newtype(owner, value) => V::adt(owner, program_decode(input, *value, codes)?),
         // WASM only holds a type parameter's host value, by its token.
         ProgramCode::Parameter => {
             V::adt(PROGRAM_HOST_VALUE, V::Int(i64::from(program_u32(input)?)))
@@ -239,8 +243,7 @@ fn program_integer(input: &mut &[u8]) -> ProgramResult<String> {
     Ok(text.to_owned())
 }
 fn program_text(out: &mut Vec<u8>, text: &str) -> ProgramResult<()> {
-    let len =
-        u32::try_from(text.len()).map_err(|_| "program ABI: text exceeds boundary limit")?;
+    let len = u32::try_from(text.len()).map_err(|_| "program ABI: text exceeds boundary limit")?;
     program_bytes(out, &len.to_le_bytes())?;
     program_bytes(out, text.as_bytes())
 }
@@ -354,6 +357,9 @@ fn program_encode(
                 ),
                 _ => Err("program ABI: invalid host value"),
             }
+        }
+        (ProgramCode::Newtype(owner, codec), V::Adt(value)) if value.get().0 == *owner => {
+            program_encode(value.get().1.clone(), *codec, codes, out)
         }
         (ProgramCode::Adt(variants), V::Adt(value)) => {
             let index = variants

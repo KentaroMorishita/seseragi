@@ -82,6 +82,9 @@ function write(id, value, writer) {
       writer.u32(point)
       break
     }
+    case "newtype":
+      write(code.value, value, writer)
+      break
     case "big-int":
       if (typeof value !== "bigint") throw new TypeError("Expected a BigInt")
       writeInteger(value, writer)
@@ -352,6 +355,8 @@ function read(id, input, state, provenance) {
     }
     case "string":
       return decoder.decode(input.take(input.u32()))
+    case "newtype":
+      return read(code.value, input, state, provenance)
     case "big-int":
       return readInteger(input)
     case "decimal": {

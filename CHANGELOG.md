@@ -4,7 +4,7 @@
 
 ### Added
 
-- Program WASM passes newtypes and opaque types in the TS target's shape: a newtype as its tagged variant, an opaque ADT as its variants, and an opaque struct as its fields. The declared type of an opaque struct is only a brand, so the host can keep and return it but cannot read or build it.
+- Program WASM passes newtypes and opaque types in the TS target's shape: a newtype as its tagged variant (its payload alone in the release profile, which erases the wrapper as the TS target does), an opaque ADT as its variants, and an opaque struct as its fields. `seseragi experimental build-wasm` takes `--profile`, and a web package builds its programs with its own profile. The declared type of an opaque struct is only a brand, so the host can keep and return it but cannot read or build it.
 - Program WASM passes BigInt as a JS `bigint` and Decimal as the TS target's frozen `{coefficient, scale}`, and runs BigInt and Decimal operations with the same results as the TS target. Only the canonical Decimal form crosses the boundary, and both declared types are branded.
 - The program WASM Effect ABIs run `Ref.update` and `Ref.modify` on private cells. The transform follows the same rules as other Effect bodies, so Int arithmetic in it is still refused.
 
