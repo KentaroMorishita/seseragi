@@ -662,20 +662,31 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
                 left: codec(left, false, codecs)?,
                 right: codec(right, false, codecs)?,
             },
-            // A Fiber's exit crosses in the TS target's tagged shape.
+            // A Fiber's exit crosses in the TS target's tagged shape. A side
+            // of type Never has no values, so its variant never crosses.
             ("std/effect::FiberExit", [failure, success]) if codecs.modules.is_some() => {
-                let variant = |tag: &str, payload| ProgramVariant {
-                    tag: tag.to_owned(),
-                    owner: format!("std/effect::{tag}"),
-                    payload,
+                let never = |ty: &CoreType| {
+                    matches!(ty, CoreType::Named { name, arguments }
+                        if name == "std/prelude::Never" && arguments.is_empty())
                 };
+                let mut variants = Vec::new();
+                for (tag, payload) in [("FiberSucceeded", success), ("FiberFailed", failure)] {
+                    if !never(payload) {
+                        variants.push(ProgramVariant {
+                            tag: tag.to_owned(),
+                            owner: format!("std/effect::{tag}"),
+                            payload: Some(codec(payload, false, codecs)?),
+                        });
+                    }
+                }
+                variants.push(ProgramVariant {
+                    tag: "FiberCancelled".to_owned(),
+                    owner: "std/effect::FiberCancelled".to_owned(),
+                    payload: None,
+                });
                 ProgramCodec::Adt {
                     name: "FiberExit".to_owned(),
-                    variants: vec![
-                        variant("FiberSucceeded", Some(codec(success, false, codecs)?)),
-                        variant("FiberFailed", Some(codec(failure, false, codecs)?)),
-                        variant("FiberCancelled", None),
-                    ],
+                    variants,
                 }
             }
             ("std/prelude::Array", [element]) if codecs.modules.is_some() => ProgramCodec::Array {

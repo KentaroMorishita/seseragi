@@ -130,3 +130,15 @@ pub effect fn outcomes _trigger: Unit
       (cancelled, neverPoll)
     )
   }
+
+// A Fiber that cannot fail, or cannot succeed, reports an exit with Never on
+// that side; that variant never crosses.
+pub effect fn oneSided _trigger: Unit
+  -> (effects.FiberExit<Never, String>, effects.FiberExit<String, Never>) =
+  do {
+    winner <- effects.fork (effects.succeed "done")
+    loser <- effects.fork (effects.fail "lost")
+    won <- effects.await winner
+    lost <- effects.await loser
+    effects.succeed (won, lost)
+  }

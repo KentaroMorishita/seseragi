@@ -48,6 +48,14 @@ const polledGate = (value) =>
       ? `failed ${value.value.value}`
       : `holds ${value.value.value}`
 const flag = (value) => (value ? "won" : "lost")
+const oneSided = await run("oneSided")
+assert.deepEqual(oneSided, {
+  tag: "Success",
+  value: [
+    { tag: "FiberSucceeded", value: "done" },
+    { tag: "FiberFailed", value: "lost" },
+  ],
+})
 const [
   [before, waiting, completed, late],
   [after, joined, finished],
