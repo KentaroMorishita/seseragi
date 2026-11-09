@@ -3703,6 +3703,12 @@ const wrong: OwnedEffect<never, string> = owner.exports.keep(1);
 fn constrained_generic_exports_use_the_instances_the_checker_selects() {
     let scratch = Scratch::new();
     let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-constrained.ssrg");
+    let label_line = fs::read_to_string(&fixture)
+        .unwrap()
+        .lines()
+        .position(|line| line.starts_with("pub fn label<"))
+        .unwrap()
+        + 1;
     let destination = scratch.0.join("wasm");
     successful(bounded(
         &mut build(
@@ -3800,6 +3806,19 @@ console.log(lines.join('\n'));
         assert!(error.contains(needle), "{exports:?}: {error}");
         assert!(!output.exists());
     }
+    // The checker's diagnostic points at the declaration in the source file
+    // and names the export, not at the binding the build adds.
+    let result = bounded(
+        build(&fixture, &scratch.0.join("refused"), &["label<Int -> Int>"]).env("PATH", ""),
+        &scratch.0,
+    );
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        error.contains(&format!("program-wasm-constrained.ssrg:{label_line}:"))
+            && error.contains("(selected for program WASM as `label<Int -> Int>`)")
+            && !error.contains("__seseragi_export"),
+        "{error}"
+    );
     // A web package selects instantiations in its manifest.
     let package = scratch.0.join("package");
     copy_tree(
@@ -3821,6 +3840,28 @@ console.log(lines.join('\n'));
         &mut standard_build(&package, &site, "development"),
         &scratch.0,
     ));
+    let built = fs::read_to_string(&manifest).unwrap();
+    let lock = fs::read(package.join("seseragi.lock")).unwrap();
+    // The package build reports the same place for its manifest's exports.
+    fs::write(&manifest, format!("{original}\n[web.programs.constrained]\nmodule='constrained'\nexports=['labelFn=label<Int -> Int>']\n")).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    let refused = bounded(
+        &mut standard_build(&package, &scratch.0.join("refused-site"), "development"),
+        &scratch.0,
+    );
+    let error = String::from_utf8_lossy(&refused.stderr);
+    assert!(
+        error.contains(&format!("constrained.ssrg:{label_line}:"))
+            && error.contains("(selected for program WASM as `labelFn=label<Int -> Int>`)"),
+        "{error}"
+    );
+    fs::write(&manifest, built).unwrap();
+    fs::write(package.join("seseragi.lock"), lock).unwrap();
     fs::write(
         scratch.0.join("package-probe.mjs"),
         r#"import {readFile} from 'node:fs/promises';

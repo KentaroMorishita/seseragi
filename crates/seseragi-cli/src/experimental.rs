@@ -180,9 +180,15 @@ fn compile_project(
     command: seseragi_project::ProjectCommand,
     profile: seseragi_project::BuildProfile,
 ) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
-    let (project, checked) =
-        load_checked_project_entry_with_profile(path, None, command, profile, &|_| String::new())?
-            .ok_or("project compiler did not produce a checked entry")?;
+    let (project, checked) = load_checked_project_entry_with_profile(
+        path,
+        None,
+        command,
+        profile,
+        &|_| String::new(),
+        &|_, _| {},
+    )?
+    .ok_or("project compiler did not produce a checked entry")?;
     let modules = checked
         .compiled
         .order
@@ -373,11 +379,16 @@ fn project_target_error(
 
 // `extension` gives, from the entry module's source, the source text added
 // after it, such as the checked bindings of instantiated program WASM exports.
+/// `relocate` receives the entry module's own source and each diagnostic
+/// artifact of the entry module, to move diagnostics off `extension`.
+type Relocate<'a> = &'a dyn Fn(&str, &mut seseragi_syntax::DiagnosticArtifact);
+
 fn load_checked_project_entry_for_command(
     path: &str,
     module: Option<&seseragi_project::ModulePath>,
     command: seseragi_project::ProjectCommand,
     extension: &dyn Fn(&str) -> String,
+    relocate: Relocate<'_>,
 ) -> Result<
     Option<(
         seseragi_project::LoadedLocalProject,
@@ -391,6 +402,7 @@ fn load_checked_project_entry_for_command(
         command,
         seseragi_project::BuildProfile::Development,
         extension,
+        relocate,
     )
 }
 
@@ -400,6 +412,7 @@ fn load_checked_project_entry_with_profile(
     command: seseragi_project::ProjectCommand,
     profile: seseragi_project::BuildProfile,
     extension: &dyn Fn(&str) -> String,
+    relocate: Relocate<'_>,
 ) -> Result<
     Option<(
         seseragi_project::LoadedLocalProject,
@@ -418,6 +431,14 @@ fn load_checked_project_entry_with_profile(
         None => seseragi_project::load_local_project(path),
     }
     .map_err(|error| format!("{}: {error}", error.code()))?;
+    let entry_id = seseragi_project::logical_module_id(project.entry());
+    let original = project
+        .modules()
+        .find(|(identity, _)| *identity == project.entry())
+        .expect("a loaded project contains its entry module")
+        .1
+        .source()
+        .to_owned();
     let overlay = {
         let (_, entry) = project
             .modules()
@@ -442,7 +463,29 @@ fn load_checked_project_entry_with_profile(
     } else {
         project
     };
-    let result = seseragi_driver::compile_core_local_project_with_profile(&project, profile);
+    let mut result = seseragi_driver::compile_core_local_project_with_profile(&project, profile);
+    match &mut result {
+        Err(error) => match error.error_mut() {
+            seseragi_driver::ProjectCompileError::Diagnostics { modules } => {
+                for module in modules
+                    .iter_mut()
+                    .filter(|module| module.module == entry_id)
+                {
+                    relocate(&original, &mut module.diagnostics);
+                }
+            }
+            seseragi_driver::ProjectCompileError::Compile {
+                module,
+                error: seseragi_driver::LinkedCompileError::Diagnostics(diagnostics),
+            } if *module == entry_id => relocate(&original, diagnostics),
+            _ => {}
+        },
+        Ok(checked) => {
+            if let Some(module) = checked.compiled.modules.get_mut(&entry_id) {
+                relocate(&original, &mut module.diagnostics);
+            }
+        }
+    }
     let checked = if command == seseragi_project::ProjectCommand::Dev {
         let Some(checked) = crate::local_project::render_compile_result(
             &project,
