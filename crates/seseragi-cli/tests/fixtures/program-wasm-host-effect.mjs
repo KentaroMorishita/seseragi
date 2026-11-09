@@ -517,10 +517,24 @@ function replacePoll(original, replacement) {
   const header = source.take(8)
   const sections = []
   let poll
+  // Function indices count imported functions before the code bodies.
+  let imported = 0
   let replaced = false
   while (source.offset < original.length) {
     const kind = source.take(1)[0]
     let payload = source.take(source.u32())
+    if (kind === 2) {
+      const imports = input(payload)
+      const count = imports.u32()
+      for (let index = 0; index < count; index++) {
+        imports.take(imports.u32())
+        imports.take(imports.u32())
+        const kind = imports.take(1)[0]
+        assert.equal(kind, 0, "the host bridge imports only functions")
+        imports.u32()
+        imported++
+      }
+    }
     if (kind === 7) {
       const exports = input(payload)
       const count = exports.u32()
@@ -538,11 +552,12 @@ function replacePoll(original, replacement) {
       assert.notEqual(poll, undefined)
       const code = input(payload)
       const count = code.u32()
-      assert(poll < count)
+      const pollBody = poll - imported
+      assert(pollBody >= 0 && pollBody < count)
       const bodies = [u32(count)]
       for (let index = 0; index < count; index++) {
         let body = code.take(code.u32())
-        if (index === poll) {
+        if (index === pollBody) {
           body = Buffer.from(replacement)
           replaced = true
         }

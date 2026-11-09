@@ -80,7 +80,7 @@ pub(crate) fn stage(
                 Some(
                     "seseragi-program-wasm-pure-v1"
                         | "seseragi-program-wasm-effect-v3"
-                        | "seseragi-program-wasm-host-effect-v2"
+                        | "seseragi-program-wasm-host-effect-v3"
                 )
             )
         {

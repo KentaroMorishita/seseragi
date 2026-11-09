@@ -59,6 +59,74 @@ struct Selection {
 struct Bindings {
     extension: String,
     instantiations: Vec<seseragi_backend_rust::ProgramWasmInstantiation>,
+    /// For each binding: its byte range in `extension`, the export as it was
+    /// written and the function it instantiates.
+    lines: Vec<(std::ops::Range<usize>, String, String)>,
+}
+
+impl Bindings {
+    /// Moves each diagnostic on an added binding to the declaration of the
+    /// function it instantiates in `entry`, the entry module's source, and
+    /// says which export selected it. The binding is not in any file, so a
+    /// diagnostic there would point at a line the user cannot open. A
+    /// function the module does not declare keeps the diagnostic at the
+    /// start of the module.
+    fn relocate(&self, entry: &str, artifact: &mut seseragi_syntax::DiagnosticArtifact) {
+        if self.lines.is_empty() {
+            return;
+        }
+        let module = seseragi_syntax::parse_surface_ast(&artifact.source, entry);
+        let declaration = |function: &str| {
+            module
+                .declarations
+                .iter()
+                .find_map(|declaration| match declaration {
+                    seseragi_syntax::SurfaceDecl::Fn {
+                        name, name_span, ..
+                    }
+                    | seseragi_syntax::SurfaceDecl::EffectFn {
+                        name, name_span, ..
+                    } if name == function => Some(seseragi_syntax::ByteRange {
+                        start: name_span.start,
+                        end: name_span.end,
+                    }),
+                    _ => None,
+                })
+        };
+        let added = |offset: usize| {
+            offset.checked_sub(entry.len()).and_then(|offset| {
+                self.lines
+                    .iter()
+                    .find(|(range, _, _)| range.contains(&offset) || range.end == offset)
+            })
+        };
+        for diagnostic in &mut artifact.diagnostics {
+            let Some((_, text, function)) = added(diagnostic.primary.start) else {
+                continue;
+            };
+            let place =
+                declaration(function).unwrap_or(seseragi_syntax::ByteRange { start: 0, end: 0 });
+            diagnostic.primary = place;
+            let selected = format!("selected for program WASM as `{text}`");
+            let mut moved = false;
+            for related in &mut diagnostic.related {
+                if related.source.is_none() && related.primary.start >= entry.len() {
+                    related.primary = place;
+                    if !moved {
+                        related.message = format!("{} ({selected})", related.message);
+                        moved = true;
+                    }
+                }
+            }
+            if !moved {
+                diagnostic.related.push(seseragi_syntax::RelatedDiagnostic {
+                    source: None,
+                    message: selected,
+                    primary: place,
+                });
+            }
+        }
+    }
 }
 
 impl Selection {
@@ -70,6 +138,7 @@ impl Selection {
         let mut bindings = Bindings {
             extension: String::new(),
             instantiations: Vec::new(),
+            lines: Vec::new(),
         };
         let mut next = 0usize;
         for (text, export) in &self.instantiated {
@@ -84,9 +153,15 @@ impl Selection {
                 .type_arguments
                 .as_deref()
                 .expect("an instantiated export has type arguments");
+            let start = bindings.extension.len();
             bindings.extension.push_str(&format!(
                 "\n// program WASM export `{text}`\nlet {binding} = {}<{arguments}>\n",
                 export.function
+            ));
+            bindings.lines.push((
+                start..bindings.extension.len(),
+                text.clone(),
+                export.function.clone(),
             ));
             bindings
                 .instantiations
@@ -161,20 +236,28 @@ fn compile_package(
     options: seseragi_backend_rust::ProgramWasmOptions,
 ) -> Result<Option<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>)>, String> {
     let selection = selection(exports)?;
-    let bound = std::cell::RefCell::new(None);
+    let bound = std::cell::RefCell::new(None::<Bindings>);
     let bind = |entry: &str| {
         let bindings = selection.bind(entry);
         let extension = bindings.extension.clone();
-        *bound.borrow_mut() = Some(bindings.instantiations);
+        *bound.borrow_mut() = Some(bindings);
         extension
     };
+    let relocate = |entry: &str, artifact: &mut seseragi_syntax::DiagnosticArtifact| {
+        if let Some(bindings) = bound.borrow().as_ref() {
+            bindings.relocate(entry, artifact);
+        }
+    };
     let Some((project, checked)) =
-        super::load_checked_project_entry_for_command(path, module, command, &bind)?
+        super::load_checked_project_entry_for_command(path, module, command, &bind, &relocate)?
     else {
         return Ok(None);
     };
     let options = seseragi_backend_rust::ProgramWasmOptions {
-        instantiations: bound.into_inner().unwrap_or_default(),
+        instantiations: bound
+            .into_inner()
+            .map(|bindings| bindings.instantiations)
+            .unwrap_or_default(),
         ..options
     };
     let exports = &selection.names;
@@ -251,19 +334,22 @@ fn compile_file(
     let selection = selection(exports)?;
     let bindings = selection.bind(&original);
     let options = seseragi_backend_rust::ProgramWasmOptions {
-        instantiations: bindings.instantiations,
+        instantiations: bindings.instantiations.clone(),
         ..options
     };
     let exports = &selection.names;
     let source = format!("{original}{}", bindings.extension);
     let checked = compile_core_module(CompileInput::new(path, "experimental/main", &source))
-        .map_err(|diagnostics| {
+        .map_err(|mut diagnostics| {
+            bindings.relocate(&original, &mut diagnostics);
             seseragi_driver::render_terminal_diagnostics(&diagnostics, &source)
         })?;
     if !checked.diagnostics.diagnostics.is_empty() {
+        let mut diagnostics = checked.diagnostics.clone();
+        bindings.relocate(&original, &mut diagnostics);
         eprint!(
             "{}",
-            seseragi_driver::render_terminal_diagnostics(&checked.diagnostics, &source)
+            seseragi_driver::render_terminal_diagnostics(&diagnostics, &source)
         );
     }
     let artifact = seseragi_backend_rust::emit_program_wasm_with_options(

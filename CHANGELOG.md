@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.159] - 2026-11-10
+
+### Added
+
+- Program WASM accepts host functions with several source arguments, such as `request: (String -> String -> Effect<{}, E, R>)`; the host receives the arguments and then the `{signal}` context. It also accepts synchronous host functions, such as `measure: (String -> Int)`, which WASM calls in place through the `seseragi` import of the host function ABI, now `seseragi-program-wasm-host-effect-v3`. A synchronous host function that throws, returns a Promise or calls back into its own instance retires the instance with a `ProgramWasmDefect` naming the reason; other instances are unaffected.
+
+### Fixed
+
+- A constructor application passed before the argument that fixes its type, as in `deferreds.complete (Right 7) gate` or `take (Right 7) gate`, now type-checks. It used to keep its open type argument and fail with SES-T0101 or a wrong missing-instance error.
+- A program WASM export at type arguments whose trait instance does not exist is reported at the exported function's declaration, naming the export, instead of at a binding that is in no file.
+
 ## [0.61.158] - 2026-11-10
 
 ### Added

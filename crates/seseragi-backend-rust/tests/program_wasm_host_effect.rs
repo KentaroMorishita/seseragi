@@ -39,10 +39,31 @@ fn checked_host_effect_callbacks_keep_one_source_argument_and_a_separate_transpo
 }
 
 #[test]
-fn synchronous_multi_argument_and_generic_host_functions_do_not_gain_a_codec() {
+fn synchronous_and_multi_argument_host_functions_gain_codecs_and_generic_ones_do_not() {
+    for (source, expected) in [
+        (
+            "import * as effects from \"std/effect\"\npub effect fn entry callback: (String -> String) -> input: String -> String = effects.succeed (callback input)\n",
+            "host-function",
+        ),
+        (
+            "import * as effects from \"std/effect\"\npub effect fn entry callback: (String -> String -> Effect<{}, Never, String>) -> input: String -> String = callback input input\n",
+            "host-effect",
+        ),
+    ] {
+        let module = checked(source);
+        let artifact = emit_program_wasm(&[&module], &module.module, &["entry".into()]).unwrap();
+        assert_eq!(artifact.metadata.abi, "seseragi-program-wasm-host-effect-v3");
+        let codecs = serde_json::to_value(&artifact.metadata.codecs).unwrap();
+        assert!(
+            codecs
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|codec| codec["kind"] == expected && codec["parameters"].as_array().is_some()),
+            "{codecs}"
+        );
+    }
     for source in [
-        "import * as effects from \"std/effect\"\npub effect fn entry callback: (String -> String) -> input: String -> String = effects.succeed (callback input)\n",
-        "import * as effects from \"std/effect\"\npub effect fn entry callback: (String -> String -> Effect<{}, Never, String>) -> input: String -> String = callback input input\n",
         "import * as effects from \"std/effect\"\npub effect fn entry<A> callback: (A -> Effect<{}, Never, A>) -> input: A -> A = callback input\n",
     ] {
         let module = checked(source);

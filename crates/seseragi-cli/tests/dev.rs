@@ -810,7 +810,7 @@ fn watches_host_effect_programs_and_drains_the_old_application_before_reload() {
         &fs::read(output.join("programs/calculation/program-wasm.json")).unwrap(),
     )
     .unwrap();
-    assert_eq!(receipt["abi"], "seseragi-program-wasm-host-effect-v2");
+    assert_eq!(receipt["abi"], "seseragi-program-wasm-host-effect-v3");
     let initial_version = request(port, RELOAD_ENDPOINT).unwrap().1;
     let initial = build_image(&output);
     let before = directory.join("before");

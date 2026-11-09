@@ -87,6 +87,12 @@ impl LocalProjectCompileError {
     pub fn error(&self) -> &ProjectCompileError {
         self.error.as_ref()
     }
+
+    /// Lets a caller that added source to a module move the diagnostics on
+    /// that source to the place the user wrote.
+    pub fn error_mut(&mut self) -> &mut ProjectCompileError {
+        self.error.as_mut()
+    }
 }
 
 /// Compiles an already-discovered multi-package local project through the

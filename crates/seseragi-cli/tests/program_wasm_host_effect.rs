@@ -168,7 +168,7 @@ fn typed_host_effect_callbacks_suspend_cleanup_and_release_their_last_host_refer
     ));
     let manifest: serde_json::Value =
         serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
-    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v2");
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v3");
     for engine in ["bun", "node"] {
         let result = successful(bounded(
             Command::new(runtime(engine, &scratch.0))
@@ -250,7 +250,7 @@ fn standard_web_host_effect_build_keeps_typed_assets_and_source_stages() {
         assert_eq!(manifest["profile"], profile);
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         let program = &manifest["programs"][0];
-        assert_eq!(program["abi"], "seseragi-program-wasm-host-effect-v2");
+        assert_eq!(program["abi"], "seseragi-program-wasm-host-effect-v3");
         assert_eq!(program["hostImport"], "@seseragi/programs/calculation");
         let directory = site.join("programs/calculation");
         let receipt: serde_json::Value =
@@ -390,7 +390,7 @@ fn private_data_host_effect_factory_retains_state_and_drains_cleanup() {
     ));
     let manifest: serde_json::Value =
         serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
-    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v2");
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v3");
     for engine in ["bun", "node"] {
         let result = successful(bounded(
             Command::new(runtime(engine, &scratch.0))
@@ -523,7 +523,7 @@ fn private_data_host_effect_standard_package_keeps_the_original_typed_bridge() {
         assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
         assert_eq!(
             manifest["programs"][0]["abi"],
-            "seseragi-program-wasm-host-effect-v2"
+            "seseragi-program-wasm-host-effect-v3"
         );
         assert_eq!(fs::read(site.join("input.txt")).unwrap(), "流れ".as_bytes());
         let directory = site.join("programs/calculation");
@@ -549,5 +549,129 @@ fn private_data_host_effect_standard_package_keeps_the_original_typed_bridge() {
                 .arg(&path),
             &scratch.0,
         ));
+    }
+}
+
+#[test]
+fn synchronous_and_multi_argument_host_functions_run_and_keep_ownership_rules() {
+    let scratch = Scratch::new();
+    let output = scratch.0.join("host-functions");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-wasm"])
+            .arg(
+                root().join("examples/spec/fixtures/rust-backend/program-wasm-host-functions.ssrg"),
+            )
+            .arg("--out-dir")
+            .arg(&output)
+            .args([
+                "--export", "measured", "--export", "joined", "--export", "fetched", "--export",
+                "labelled",
+            ]),
+        &scratch.0,
+    ));
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v3");
+    let declared = fs::read_to_string(output.join("program.d.mts")).unwrap();
+    for line in [
+        "readonly \"measured\": OwnedCallback<(argument0: string) => number, OwnedCallback<string, number>>;",
+        "readonly \"joined\": OwnedCallback<(argument0: string, argument1: string) => string, OwnedCallback<string, string>>;",
+        "(argument0: string, argument1: string, context: HostEffectContext) => HostResult<string, string> | PromiseLike<HostResult<string, string>>",
+    ] {
+        assert!(declared.contains(line), "{declared}");
+    }
+    fs::write(
+        scratch.0.join("run.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram, ProgramWasmClosed, ProgramWasmDefect} from './host-functions/program.mjs';
+const bytes = await readFile(new URL('./host-functions/program.wasm', import.meta.url));
+const owner = await loadProgram(bytes);
+const {measured, joined, fetched, labelled} = owner.exports;
+// A synchronous host function runs in place, with each source argument.
+const measure = measured((text) => text.length * 10);
+assert.equal(measure('雪🙂'), 30);
+assert.equal(joined((left, right) => `${left}+${right}`)('p'), 'p+a+b');
+// A host Effect function receives all its source arguments and the signal.
+const calls = [];
+const plan = fetched(async (key, step, {signal}) => {
+  calls.push([key, step, signal instanceof AbortSignal]);
+  return {tag: 'Success', value: key + step};
+})('k');
+assert.deepEqual(await plan.run().result, {tag: 'Success', value: 'k12!'});
+assert.deepEqual(calls, [['k', '1', true], ['k1', '2', true]]);
+plan.dispose();
+const mixed = labelled((text) => `<${text}>`)(async (text) => ({tag: 'Success', value: text.toUpperCase()}))('x');
+assert.deepEqual(await mixed.run().result, {tag: 'Success', value: '<<X>>'});
+mixed.dispose();
+// A callback keeps its host functions until it is disposed, and a disposed
+// callback cannot be called.
+const before = owner.ownership().hostCallbacks;
+measure.dispose();
+assert.equal(owner.ownership().hostCallbacks, before - 1);
+assert.throws(() => measure('x'), ProgramWasmClosed);
+// Disposing while a run waits for a host Effect cancels the run and waits
+// for it before the instance closes.
+const waiting = await loadProgram(bytes);
+let started;
+const pending = waiting.exports.fetched((key, step, {signal}) => new Promise((resolve, reject) => {
+  started();
+  signal.addEventListener('abort', () => reject(signal.reason));
+}))('k');
+const execution = pending.run();
+await new Promise((resolve) => { started = resolve; });
+await waiting.dispose();
+assert.deepEqual(await execution.result, {tag: 'Cancelled'});
+assert.equal(waiting.ownership().alive, false);
+// The instance is busy during a synchronous host function, so a call back
+// into it is a Defect that retires only that instance.
+const reentrant = await loadProgram(bytes);
+const inner = reentrant.exports.measured((text) => text.length);
+assert.throws(
+  () => reentrant.exports.measured(() => inner('again'))('x'),
+  (error) => error instanceof ProgramWasmDefect && /Reentrant/.test(error.message),
+);
+assert.equal(reentrant.ownership().retired, true);
+// A synchronous host function reached while an Effect runs cannot call
+// back into the instance either.
+const running = await loadProgram(bytes);
+const saved = running.exports.measured((text) => text.length);
+let labels = 0;
+const guarded = running.exports.labelled((text) => (labels++ === 0 ? text : String(saved(text))))(async (text) => ({tag: 'Success', value: text}))('x');
+await assert.rejects(
+  guarded.run().result,
+  (error) => error instanceof ProgramWasmDefect && /Reentrant/.test(error.message),
+);
+assert.equal(running.ownership().retired, true);
+// A synchronous host function must answer synchronously; a refused Promise
+// that later rejects is not left unhandled.
+const promised = await loadProgram(bytes);
+assert.throws(
+  () => promised.exports.measured(async () => 1)('x'),
+  (error) => error instanceof ProgramWasmDefect && /returned a Promise/.test(error.message),
+);
+const rejecting = await loadProgram(bytes);
+assert.throws(
+  () => rejecting.exports.measured(async () => { throw new Error('later'); })('x'),
+  (error) => error instanceof ProgramWasmDefect && /returned a Promise/.test(error.message),
+);
+await new Promise((resolve) => setTimeout(resolve, 10));
+// Other instances are not affected.
+assert.equal(owner.exports.measured((text) => text.length)('abc'), 3);
+await owner.dispose();
+assert.equal(owner.ownership().managedLiveAtClose, 0);
+console.log('host functions');
+"#,
+    )
+    .unwrap();
+    for engine in ["bun", "node"] {
+        let result = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("run.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(result.stdout, b"host functions\n", "{engine}");
     }
 }

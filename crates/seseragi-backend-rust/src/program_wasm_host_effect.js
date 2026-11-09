@@ -131,9 +131,14 @@ function write(id, value, writer, state) {
       )
       break
     }
-    case "host-effect": {
+    case "host-effect":
+    case "host-function": {
       if (!state || typeof value !== "function")
-        throw new TypeError("Expected a typed host Effect callback")
+        throw new TypeError(
+          code.kind === "host-effect"
+            ? "Expected a typed host Effect callback"
+            : "Expected a host function"
+        )
       if (state.nextHost > 0xffffffff)
         throw new TypeError("Host callback token space exhausted")
       const token = state.nextHost++
@@ -453,9 +458,15 @@ function releaseHostRoots(state, retired) {
   state.retired ||= retired
 }
 function trapped(state, error, provenance) {
+  // A synchronous host function that failed leaves its reason here before
+  // WASM stops with a Defect.
+  const hostDefect = state.hostDefect
+  state.hostDefect = undefined
   releaseHostRoots(state, true)
   const defect = new ProgramWasmDefect(
-    `Program WASM trapped at ${provenance.symbol}`,
+    hostDefect === undefined
+      ? `Program WASM trapped at ${provenance.symbol}`
+      : `Seseragi Defect: ${hostDefect}`,
     {
       cause: Object.freeze({
         name: error.name,
@@ -604,7 +615,15 @@ async function pumpEffect(state, execution, codec, provenance) {
       await new Promise((resolve) => setTimeout(resolve, 0))
       if (!state.api) throw new ProgramWasmClosed("WASM instance retired")
       phase = "wasm"
-      const status = state.api.ssrg_poll(64)
+      // A synchronous host function reached by this turn must not call
+      // back into the instance either.
+      state.busy = true
+      let status
+      try {
+        status = state.api.ssrg_poll(64)
+      } finally {
+        state.busy = false
+      }
       phase = "result"
       const bytes = output(state.api)
       if (status !== 0) throw new TypeError(decoder.decode(bytes))
@@ -741,15 +760,76 @@ function programOwner(state, exports) {
   })
 }
 
+// A synchronous host function runs in place while WASM waits. Its reply is
+// kept here until WASM copies it into its own memory, so the loader never
+// calls back into the instance during the call. The instance is busy for the
+// whole call, so the host function cannot call this instance again.
+function hostFunctionImports(owner) {
+  let reply
+  return {
+    ssrg_host_call(token, codec, start, length) {
+      const state = owner.state
+      try {
+        const entry = state?.hosts.get(token)
+        const code = schema.codecs[codec]
+        if (!entry || entry.codec !== codec || code?.kind !== "host-function")
+          throw new TypeError("Invalid checked host function call")
+        const memory = state.api.memory.buffer
+        if (start + length > memory.byteLength)
+          throw new TypeError("Invalid host function arguments")
+        const input = reader(new Uint8Array(memory, start, length).slice())
+        const values = code.parameters.map((parameter) =>
+          read(parameter, input, state, { symbol: "host function" })
+        )
+        input.end()
+        const value = Reflect.apply(entry.callback, undefined, values)
+        if (value !== null && typeof value?.then === "function") {
+          // The answer is refused, so its later rejection is not the host's
+          // unhandled error.
+          Promise.resolve(value).catch(() => {})
+          throw new TypeError(
+            "A synchronous host function returned a Promise; use a host Effect"
+          )
+        }
+        const encoded = writer()
+        write(code.result, value, encoded, state)
+        reply = { kind: 1, bytes: encoded.bytes() }
+      } catch (error) {
+        const message = hostError(error).replace("callback", "function")
+        if (state) state.hostDefect = message
+        reply = { kind: 3, bytes: encoder.encode(message) }
+      }
+      return reply.bytes.length
+    },
+    ssrg_host_take(start) {
+      const memory = owner.state.api.memory.buffer
+      const { kind, bytes } = reply ?? { kind: 0, bytes: new Uint8Array() }
+      reply = undefined
+      if (start + bytes.length > memory.byteLength) return 0
+      new Uint8Array(memory, start, bytes.length).set(bytes)
+      return kind
+    },
+  }
+}
+
 export async function loadProgram(bytes) {
   const module = await WebAssembly.compile(bytes)
-  if (WebAssembly.Module.imports(module).length !== 0)
-    throw new TypeError(
-      "This host Effect program ABI uses typed suspension, not WASM imports"
+  if (
+    WebAssembly.Module.imports(module).some(
+      (entry) =>
+        entry.module !== "seseragi" ||
+        !["ssrg_host_call", "ssrg_host_take"].includes(entry.name)
     )
+  )
+    throw new TypeError(
+      "This host Effect program ABI imports only its host function bridge"
+    )
+  const owner = { state: undefined }
   let instance
   try {
-    instance = await WebAssembly.instantiate(module, {})
+    instance = await WebAssembly.instantiate(module, {
+      seseragi: hostFunctionImports(owner),
+    })
   } catch (error) {
     if (error instanceof WebAssembly.RuntimeError) {
       throw new ProgramWasmDefect("Program WASM trapped during instantiation", {
@@ -803,7 +883,9 @@ export async function loadProgram(bytes) {
     nextHost: 1,
     preflight: undefined,
     hostActive: undefined,
+    hostDefect: undefined,
   }
+  owner.state = state
   let executing = false
   try {
     const start = pointer(api.ssrg_contract_ptr())
@@ -929,9 +1011,9 @@ async function executeHost(state, input) {
   const code = schema.codecs[codec]
   if (code.kind !== "host-effect")
     throw new TypeError("Invalid host request codec")
-  const argument = read(code.parameter, input, state, {
-    symbol: "host callback",
-  })
+  const values = code.parameters.map((parameter) =>
+    read(parameter, input, state, { symbol: "host callback" })
+  )
   input.end()
   const active = {
     controller: new AbortController(),
@@ -946,7 +1028,7 @@ async function executeHost(state, input) {
     let cancelled = false
     try {
       response = await Reflect.apply(entry.callback, undefined, [
-        argument,
+        ...values,
         Object.freeze({ signal: active.controller.signal }),
       ])
     } catch (error) {

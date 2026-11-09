@@ -20,7 +20,8 @@ enum ProgramCode {
     Adt(Vec<(&'static str, Option<usize>)>),
     Parameter,
     Effect(Option<usize>, Option<usize>),
-    HostEffect(usize, Option<usize>, Option<usize>),
+    HostEffect(Vec<usize>, Option<usize>, Option<usize>),
+    HostFunction(Vec<usize>, usize),
 }
 struct ProgramRoot {
     value: V,
@@ -175,7 +176,9 @@ fn program_decode(input: &mut &[u8], codec: usize, codes: &[ProgramCode]) -> Pro
             1 => V::adt("std/prelude::Right", program_decode(input, *right, codes)?),
             _ => return Err("program ABI: invalid Either variant"),
         },
-        ProgramCode::HostEffect(_, _, _) => program_host_decode(program_u32(input)?, codec)?,
+        ProgramCode::HostEffect(_, _, _) | ProgramCode::HostFunction(_, _) => {
+            program_host_decode(program_u32(input)?, codec)?
+        }
         ProgramCode::Array(element) => {
             V::Array(Shared::new(program_decode_items(input, *element, codes)?))
         }
@@ -662,7 +665,7 @@ type ProgramHostLease = Weak<Node<BTreeMap<String, V>>>;
 struct ProgramHostRequest {
     token: u32,
     codec: usize,
-    argument: V,
+    arguments: Vec<V>,
     _lease: V,
     masked: bool,
 }
@@ -673,6 +676,15 @@ thread_local! {
 fn program_host_decode(token: u32, codec: usize) -> ProgramResult<V> {
     if token == 0 || PROGRAM_HOSTS.with(|hosts| hosts.borrow().contains_key(&token)) {
         return Err("program ABI: invalid/reused host callback token");
+    }
+    let arity = match &program_codecs()[codec] {
+        ProgramCode::HostEffect(parameters, _, _) | ProgramCode::HostFunction(parameters, _) => {
+            parameters.len()
+        }
+        _ => return Err("program ABI: invalid host callback codec"),
+    };
+    if arity == 0 {
+        return Err("program ABI: a host function takes a source argument");
     }
     let marker = Shared::new(BTreeMap::from([
         ("token".into(), V::Int(i64::from(token))),
@@ -685,46 +697,127 @@ fn program_host_decode(token: u32, codec: usize) -> ProgramResult<V> {
             .ok_or("program ABI: missing callback lease")?,
     );
     PROGRAM_HOSTS.with(|hosts| hosts.borrow_mut().insert(token, weak));
-    Ok(V::fun(vec![V::Record(marker)], |captures, argument| {
-        V::leaf(vec![captures[0].clone(), argument], |captures, _| {
-            let V::Int(token) = captures[0].field("token") else {
-                return Err(NativeExit::defects(vec![
-                    "program ABI: invalid host token lease".into(),
-                ]));
-            };
-            let V::Int(codec) = captures[0].field("codec") else {
-                return Err(NativeExit::defects(vec![
-                    "program ABI: invalid host codec lease".into(),
-                ]));
-            };
-            PROGRAM_HOST_PENDING.with(|pending| {
-                *pending.borrow_mut() = Some(ProgramHostRequest {
-                    token: token as u32,
-                    codec: codec as usize,
-                    argument: captures[1].clone(),
-                    _lease: captures[0].clone(),
-                    masked: false,
-                })
-            });
-            Ok(V::Unit)
-        })
-    }))
+    // Captures: the lease, the arguments still to come, then those applied.
+    Ok(V::fun(
+        vec![V::Record(marker), V::Int(arity as i64)],
+        program_host_apply,
+    ))
+}
+fn program_host_apply(captures: &[V], argument: V) -> V {
+    let mut next = captures.to_vec();
+    next.push(argument);
+    let V::Int(remaining) = captures[1] else {
+        panic!("program ABI: invalid host arity lease");
+    };
+    if remaining > 1 {
+        next[1] = V::Int(remaining - 1);
+        return V::fun(next, program_host_apply);
+    }
+    let lease = next[0].clone();
+    let arguments = next.split_off(2);
+    let (V::Int(token), V::Int(codec)) = (lease.field("token"), lease.field("codec")) else {
+        panic!("program ABI: invalid host callback lease");
+    };
+    if matches!(
+        program_codecs()[codec as usize],
+        ProgramCode::HostFunction(_, _)
+    ) {
+        // Released only after the reply, so the lease outlives the call.
+        let value = program_host_function_call(token as u32, codec as usize, arguments);
+        drop(lease);
+        return value.unwrap_or_else(|message| panic!("{message}"));
+    }
+    let mut captures = vec![lease];
+    captures.extend(arguments);
+    V::leaf(captures, |captures, _| {
+        let V::Int(token) = captures[0].field("token") else {
+            return Err(NativeExit::defects(vec![
+                "program ABI: invalid host token lease".into(),
+            ]));
+        };
+        let V::Int(codec) = captures[0].field("codec") else {
+            return Err(NativeExit::defects(vec![
+                "program ABI: invalid host codec lease".into(),
+            ]));
+        };
+        PROGRAM_HOST_PENDING.with(|pending| {
+            *pending.borrow_mut() = Some(ProgramHostRequest {
+                token: token as u32,
+                codec: codec as usize,
+                arguments: captures[1..].to_vec(),
+                _lease: captures[0].clone(),
+                masked: false,
+            })
+        });
+        Ok(V::Unit)
+    })
+}
+#[cfg(target_arch = "wasm32")]
+#[link(wasm_import_module = "seseragi")]
+extern "C" {
+    // Runs the host function with the encoded arguments and keeps its reply
+    // in the loader; returns the reply's byte length.
+    fn ssrg_host_call(token: u32, codec: u32, pointer: *const u8, length: u32) -> u32;
+    // Copies the kept reply to `pointer`; 1 is a value and 3 a Defect text.
+    fn ssrg_host_take(pointer: *mut u8) -> u32;
+}
+// Only a WASM loader supplies host functions; a native build of the same
+// runtime (used to test it) answers every call with a Defect.
+#[cfg(not(target_arch = "wasm32"))]
+unsafe fn ssrg_host_call(_token: u32, _codec: u32, _pointer: *const u8, _length: u32) -> u32 {
+    "host functions need the WASM loader".len() as u32
+}
+#[cfg(not(target_arch = "wasm32"))]
+unsafe fn ssrg_host_take(pointer: *mut u8) -> u32 {
+    let message = b"host functions need the WASM loader";
+    std::ptr::copy_nonoverlapping(message.as_ptr(), pointer, message.len());
+    3
+}
+// A synchronous host function is called in place. No RefCell borrow of the
+// program state is held across the import, and the loader refuses calls
+// back into this instance until it returns.
+fn program_host_function_call(token: u32, codec: usize, arguments: Vec<V>) -> Result<V, String> {
+    let codes = program_codecs();
+    let ProgramCode::HostFunction(parameters, result) = &codes[codec] else {
+        return Err("program ABI: invalid host function codec".into());
+    };
+    let mut input = Vec::new();
+    for (argument, parameter) in arguments.into_iter().zip(parameters) {
+        program_encode(argument, *parameter, &codes, &mut input).map_err(str::to_owned)?;
+    }
+    let length = unsafe { ssrg_host_call(token, codec as u32, input.as_ptr(), input.len() as u32) };
+    let mut reply = vec![0u8; length as usize];
+    let kind = unsafe { ssrg_host_take(reply.as_mut_ptr()) };
+    match kind {
+        1 => {
+            let mut bytes = reply.as_slice();
+            let value = program_decode(&mut bytes, *result, &codes).map_err(str::to_owned)?;
+            if !bytes.is_empty() {
+                return Err("program ABI: trailing host reply bytes".into());
+            }
+            Ok(value)
+        }
+        3 => Err(String::from_utf8(reply).unwrap_or_else(|_| "Host function failed".into())),
+        _ => Err("program ABI: invalid host reply".into()),
+    }
 }
 fn program_host_request(request: &ProgramHostRequest) -> ProgramResult<Vec<u8>> {
     let codes = program_codecs();
-    let ProgramCode::HostEffect(parameter, _, _) = codes[request.codec] else {
+    let ProgramCode::HostEffect(parameters, _, _) = &codes[request.codec] else {
         return Err("program ABI: invalid host request codec");
     };
     let mut output = vec![5];
     program_bytes(&mut output, &request.token.to_le_bytes())?;
     program_bytes(&mut output, &(request.codec as u32).to_le_bytes())?;
     program_bytes(&mut output, &[u8::from(request.masked)])?;
-    program_encode(request.argument.clone(), parameter, &codes, &mut output)?;
+    for (argument, parameter) in request.arguments.iter().zip(parameters) {
+        program_encode(argument.clone(), *parameter, &codes, &mut output)?;
+    }
     Ok(output)
 }
 fn program_host_outcome(kind: u32, bytes: &[u8], codec: usize) -> ProgramResult<NativeOutcome> {
     let codes = program_codecs();
-    let ProgramCode::HostEffect(_, failure, success) = codes[codec] else {
+    let ProgramCode::HostEffect(_, failure, success) = codes[codec].clone() else {
         return Err("program ABI: invalid host response codec");
     };
     let mut input = bytes;
