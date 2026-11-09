@@ -238,3 +238,14 @@ fn a_type_nested_in_itself_with_other_arguments_is_a_diagnostic() {
     let module = checked("type Pair<A> =\n  | Pair (A, Maybe<Pair<Int>>)\n\npub fn value input: Pair<String> -> Pair<String> = input\n");
     emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
 }
+
+#[test]
+fn a_type_nested_in_itself_many_times_by_hand_has_codecs() {
+    // Each level is written in the source and is smaller than the one
+    // around it, so twenty levels of Box still have a finite set of codecs.
+    let deep = (0..20).fold("Int".to_string(), |inner, _| format!("Box<{inner}>"));
+    let module = checked(&format!(
+        "type Box<A> =\n  | Box A\n\nstruct Holder {{ value: {deep} }}\n\npub fn value input: {deep} -> {deep} = input\npub fn held input: Holder -> Holder = input\n"
+    ));
+    emit_program_wasm(&[&module], &module.module, &["value".into(), "held".into()]).unwrap();
+}

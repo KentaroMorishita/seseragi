@@ -87,6 +87,7 @@ assert.deepEqual(program.ownership(), {
   alive: false,
   retired: false,
   callbacks: 0,
+  hostValues: 0,
   managedLiveAtClose: 0,
 })
 assert.throws(() => exports.validate(2), ProgramWasmClosed)
@@ -120,6 +121,7 @@ assert.deepEqual(trapped.ownership(), {
   alive: false,
   retired: true,
   callbacks: 0,
+  hostValues: 0,
   managedLiveAtClose: null,
 })
 trapped.dispose()

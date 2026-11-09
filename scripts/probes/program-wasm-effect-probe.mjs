@@ -151,6 +151,7 @@ try {
     alive: false,
     retired: false,
     callbacks: 0,
+    hostValues: 0,
     plans: 0,
     running: false,
     closing: true,
