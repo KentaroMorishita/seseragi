@@ -990,20 +990,18 @@ pub(crate) fn type_known_application_with_explicit(
         expected_application,
         context,
     );
-    // Constructor applications such as `Right 7` take the type arguments
-    // their own arguments leave open from the expected parameter, so they
-    // wait for the arguments that can fix those type arguments.
-    let rank = |argument: &SurfaceExpr| {
-        if requires_callable_context(argument, context) {
-            2
-        } else if waits_for_expected_type(argument, context) {
-            1
-        } else {
-            0
-        }
-    };
-    let mut argument_order = (0..argument_nodes.len()).collect::<Vec<_>>();
-    argument_order.sort_by_key(|index| rank(argument_nodes[*index]));
+    let argument_order = argument_nodes
+        .iter()
+        .enumerate()
+        .filter(|(_, argument)| !requires_callable_context(argument, context))
+        .chain(
+            argument_nodes
+                .iter()
+                .enumerate()
+                .filter(|(_, argument)| requires_callable_context(argument, context)),
+        )
+        .map(|(index, _)| index)
+        .collect::<Vec<_>>();
     for index in argument_order {
         let argument = argument_nodes[index];
         let indexed_arguments = semantic_arguments
@@ -1069,6 +1067,75 @@ pub(crate) fn type_known_application_with_explicit(
     refine_collection_parameters(&mut application, &signature, context);
     for parameter in &mut application.parameters {
         *parameter = context.hydrate_callable_parameter(parameter.clone(), callee_span);
+    }
+    // A constructor application such as `Right 7` typed before a later
+    // argument fixed its other type arguments, as in
+    // `deferreds.complete (Right 7) gate`, keeps them open. When that is the
+    // only disagreement, type it again against the parameter the whole call
+    // now fixes.
+    for _ in 0..argument_nodes.len() {
+        let arguments = analyses
+            .iter()
+            .map(|analysis| analysis.as_ref().expect("typed argument").value.clone())
+            .collect::<Vec<_>>();
+        let semantic = semantic_arguments
+            .iter()
+            .map(|argument| argument.clone().expect("typed argument"))
+            .collect::<Vec<_>>();
+        let Some(PureCallIssue::ArgumentType { index, .. }) = call_issue(
+            callee_span,
+            application.parameters.len(),
+            &application.parameters,
+            argument_nodes,
+            &arguments,
+            &semantic,
+        ) else {
+            break;
+        };
+        let Some(expected) = application.parameters.get(index).cloned() else {
+            break;
+        };
+        if !waits_for_expected_type(argument_nodes[index], context)
+            || is_unresolved_parameter_expectation(
+                &expected.type_ref,
+                &signature.type_parameters,
+                &application.resolved_type_parameters,
+            )
+            || contains_type_parameter(&expected.type_ref, &signature.type_parameters)
+        {
+            break;
+        }
+        let analysis = type_argument(
+            argument_nodes[index],
+            &context.with_expected(Some(expected)),
+        );
+        let retyped = SemanticValueType {
+            type_ref: application_argument_type_from_expr(&analysis.value),
+            key: analysis.semantic_type.clone(),
+        };
+        if analysis.pure_call_issue.is_some()
+            || semantic_arguments[index].as_ref() == Some(&retyped)
+        {
+            break;
+        }
+        semantic_arguments[index] = Some(retyped);
+        analyses[index] = Some(analysis);
+        let indexed_arguments = semantic_arguments
+            .iter()
+            .enumerate()
+            .filter_map(|(index, argument)| argument.clone().map(|argument| (index, argument)))
+            .collect::<Vec<_>>();
+        application = instantiated_application_indexed(
+            &signature,
+            expected_application,
+            argument_nodes.len(),
+            &indexed_arguments,
+            &|value| context.evidence_type(value),
+        );
+        refine_collection_parameters(&mut application, &signature, context);
+        for parameter in &mut application.parameters {
+            *parameter = context.hydrate_callable_parameter(parameter.clone(), callee_span);
+        }
     }
     application.result = context.hydrate_semantic_value(application.result);
     let child_analyses = analyses
@@ -1722,6 +1789,34 @@ fn instantiate_explicit_signature(
 
 // Like lambdas, operator sections need operand types from the other arguments
 // before selecting their dictionary. This changes typing order, not execution order.
+fn contains_type_parameter(
+    type_ref: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+) -> bool {
+    match type_ref {
+        TypedType::Named { name, arguments } => {
+            parameters.iter().any(|parameter| parameter.name == *name)
+                || arguments
+                    .iter()
+                    .any(|argument| contains_type_parameter(argument, parameters))
+        }
+        TypedType::ExternalNamed { arguments, .. } => arguments
+            .iter()
+            .any(|argument| contains_type_parameter(argument, parameters)),
+        TypedType::Tuple { elements } => elements
+            .iter()
+            .any(|element| contains_type_parameter(element, parameters)),
+        TypedType::Function { parameter, result } => {
+            contains_type_parameter(parameter, parameters)
+                || contains_type_parameter(result, parameters)
+        }
+        TypedType::Hole => true,
+        _ => false,
+    }
+}
+
+/// A constructor application or a bare constructor, such as `Right 7` or
+/// `Nothing`, whose type arguments its own arguments may leave open.
 fn waits_for_expected_type(expression: &SurfaceExpr, context: &PureExpressionContext<'_>) -> bool {
     if let SurfaceExpr::Grouped { value, .. } = expression {
         return waits_for_expected_type(value, context);
