@@ -14,8 +14,8 @@ pub use clock_provider::{
 pub use program_wasm::{
     emit_program_wasm, emit_program_wasm_with_options, emit_program_wasm_with_sources,
     ProgramCodec, ProgramField, ProgramVariant, ProgramWasmArtifact, ProgramWasmExport,
-    ProgramWasmMetadata, ProgramWasmOptions, PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
-    PROGRAM_WASM_HOST_EFFECT_ABI,
+    ProgramWasmInstantiation, ProgramWasmMetadata, ProgramWasmOptions, PROGRAM_WASM_ABI,
+    PROGRAM_WASM_EFFECT_ABI, PROGRAM_WASM_HOST_EFFECT_ABI,
 };
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::{CoreModule, SourceSpan};
@@ -98,6 +98,8 @@ pub struct RustMetadata {
 pub struct RustArtifact {
     pub source: String,
     pub metadata: RustMetadata,
+    /// The global slot of each top-level value binding, by Core symbol.
+    pub(crate) globals: std::collections::BTreeMap<String, usize>,
 }
 
 /// Emits an executable source file using `seseragi-native-runtime`. The explicit entry must be

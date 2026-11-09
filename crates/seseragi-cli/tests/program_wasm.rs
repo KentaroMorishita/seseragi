@@ -983,7 +983,7 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         "import * as decimal from \"std/decimal\"\npub fn selected value: decimal.DecimalContext -> Int = 1",
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
-        "type Box<A> =\n  | Box A\npub fn selected<A> value: Box<A> -> Int = 1",
+        "import * as refs from \"std/ref\"\npub effect fn selected<A> value: A -> A = do { cell <- refs.make value; refs.get cell }",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
@@ -3130,6 +3130,396 @@ const done: Promise<number> = Promise.resolve(owner.exports.done(1).tag === 'Don
             .arg(scratch.0.join("tsconfig.json")),
         &scratch.0,
     ));
+}
+
+#[test]
+fn generic_adts_and_structs_keep_host_values_like_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-generic-data.ssrg",
+        &["wrap", "unwrap", "pair", "swap", "single", "size"],
+    );
+    fs::write(
+        scratch.0.join("compare.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const object = {name: '雪'};
+const callback = () => 1;
+// A type parameter's value inside an ADT or struct is the same host value.
+assert.equal(wasm.wrap(object).value, object);
+assert.deepStrictEqual(plain(wasm.wrap(object)), plain(ts.wrap(object)));
+assert.equal(wasm.unwrap(callback)(ts.wrap(object)), object);
+assert.equal(wasm.unwrap(callback)({tag: 'Empty'}), callback);
+assert.equal(ts.unwrap(callback)(wasm.wrap(object)), object);
+const made = wasm.pair(object)(callback);
+assert.ok(made.first === object && made.second === callback);
+const swapped = wasm.swap(ts.pair(object)(callback));
+assert.ok(swapped.first === callback && swapped.second === object);
+assert.deepStrictEqual(plain(wasm.swap(made)), plain(ts.swap(ts.pair(object)(callback))));
+// A recursive ADT over a type parameter crosses in both directions.
+const tree = {tag: 'Node', value: [ts.single(object), callback, {tag: 'Leaf'}]};
+assert.equal(wasm.size(tree), ts.size(tree));
+assert.equal(wasm.single(object).value[1], object);
+assert.equal(ts.size(wasm.single(object)), 1);
+// Values outside the checked shape are rejected before they reach WASM.
+assert.throws(() => wasm.unwrap(1)({tag: 'Full'}), TypeError);
+assert.throws(() => wasm.size({tag: 'Node', value: [{tag: 'Leaf'}, 1]}), TypeError);
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#,
+    )
+    .unwrap();
+    let node = runtime("node", &scratch.0);
+    let output = successful(bounded(
+        Command::new(&node)
+            .arg(scratch.0.join("compare.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"same results\n");
+    // The declarations are generic over the same type parameters.
+    let declared = fs::read_to_string(scratch.0.join("wasm/program.d.mts")).unwrap();
+    assert!(declared.contains("export type Box<A> = "), "{declared}");
+    assert!(declared.contains("export type Tree<A> = "), "{declared}");
+    fs::write(
+        scratch.0.join("types.mts"),
+        r#"import {loadProgram, type Box, type Tree} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const box: Box<{name: string}> = owner.exports.wrap({name: 'a'});
+const value: number = owner.exports.unwrap(1)({tag: 'Full', value: 2});
+const pair: Readonly<{first: number; second: string}> = owner.exports.pair(1)('a');
+const swapped: Readonly<{first: string; second: number}> = owner.exports.swap(pair);
+const tree: Tree<boolean> = owner.exports.single(true);
+const size: number = owner.exports.size(tree);
+// @ts-expect-error the payload has the type parameter's type
+owner.exports.unwrap(1)({tag: 'Full', value: 'a'});
+// @ts-expect-error swap returns the fields in the other order
+const wrong: Readonly<{first: number; second: string}> = owner.exports.swap(pair);
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(&node)
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn generic_effect_exports_return_host_values_unchanged() {
+    let scratch = Scratch::new();
+    let destination = scratch.0.join("wasm");
+    successful(bounded(
+        &mut build(
+            &root().join("examples/spec/fixtures/rust-backend/program-wasm-generic-effect.ssrg"),
+            &destination,
+            &["keep", "reject", "later", "both"],
+        ),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("run.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const run = async (plan) => { try { return await plan.run().result } finally { plan.dispose() } };
+const object = {name: '雪'};
+const callback = () => 1;
+for (const value of [object, callback, undefined, null, NaN, -0]) {
+  const kept = await run(program.exports.keep(value));
+  assert.equal(kept.tag, 'Success');
+  assert.ok(Object.is(kept.value, value));
+}
+const failed = await run(program.exports.reject(object));
+assert.equal(failed.tag, 'Failure');
+assert.equal(failed.error, object);
+const factory = await run(program.exports.later(object));
+assert.equal(factory.tag, 'Success');
+const later = factory.value(undefined);
+factory.value.dispose();
+assert.equal((await run(later)).value, object);
+const stage = program.exports.both(object);
+const pair = await run(stage(callback));
+stage.dispose();
+assert.ok(pair.value[0] === callback && pair.value[1] === object);
+await program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same values');
+"#,
+    )
+    .unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("run.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same values\n", "{engine}");
+    }
+    // TS infers each type parameter from the call that first receives it.
+    fs::write(scratch.0.join("types.mts"), r#"import {loadProgram, type OwnedEffect, type OwnedCallback} from './wasm/program.mjs';
+const owner = await loadProgram(new Uint8Array());
+const kept: OwnedEffect<never, {name: string}> = owner.exports.keep({name: 'a'});
+const failed: OwnedEffect<boolean, number> = owner.exports.reject(true);
+const later: OwnedEffect<never, OwnedCallback<undefined, OwnedEffect<never, number>>> = owner.exports.later(1);
+const both: OwnedEffect<never, readonly [string, number]> = owner.exports.both(1)('a');
+// @ts-expect-error the success has the argument's type
+const wrong: OwnedEffect<never, string> = owner.exports.keep(1);
+"#).unwrap();
+    fs::write(scratch.0.join("tsconfig.json"), r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn constrained_generic_exports_use_the_instances_the_checker_selects() {
+    let scratch = Scratch::new();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-constrained.ssrg");
+    let destination = scratch.0.join("wasm");
+    successful(bounded(
+        &mut build(
+            &fixture,
+            &destination,
+            &[
+                "label<Int>",
+                "labelColor=label<Color>",
+                "same<String>",
+                "larger<Int>",
+            ],
+        ),
+        &scratch.0,
+    ));
+    let probe = r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+const exports = program.exports;
+const lines = [exports.label(3), exports.labelColor({tag: 'Green'}), String(exports.same('a')('a')), String(exports.same('a')('b')), String(exports.larger(2)(5))];
+await program.dispose();
+if (program.ownership().managedLiveAtClose !== 0) throw new Error('live values');
+console.log(lines.join('\n'));
+"#;
+    fs::write(scratch.0.join("probe.mjs"), probe).unwrap();
+    let expected = "<3>\n<green>\ntrue\nfalse\n5\n";
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("probe.mjs"))
+                .arg(&destination)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout),
+            expected,
+            "{engine}"
+        );
+    }
+    // The same calls on the TS target print the same results.
+    let source = scratch.0.join("oracle.ssrg");
+    fs::write(&source, format!("{}\npub effect fn main = do {{\n  println (label 3)\n  println (label Green)\n  println (if same \"a\" \"a\" then \"true\" else \"false\")\n  println (if same \"a\" \"b\" then \"true\" else \"false\")\n  println (show (larger 2 5))\n}}\n", fs::read_to_string(&fixture).unwrap())).unwrap();
+    let ts = scratch.0.join("ts");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg(&source)
+            .args(["--target", "process", "--out-dir"])
+            .arg(&ts),
+        &scratch.0,
+    ));
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(ts.join("entry.js"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), expected);
+    // The declarations name each instantiation by its export name.
+    let declared = fs::read_to_string(destination.join("program.d.mts")).unwrap();
+    for line in [
+        "readonly \"label\": OwnedCallback<number, string>;",
+        "readonly \"labelColor\": OwnedCallback<Color, string>;",
+        "readonly \"same\": OwnedCallback<string, OwnedCallback<string, boolean>>;",
+    ] {
+        assert!(declared.contains(line), "{declared}");
+    }
+    // A type without the instance is the checker's diagnostic, and two
+    // instantiations need their own names.
+    for (exports, needle) in [
+        (&["label<Int -> Int>"][..], "no Show<Int -> Int> instance"),
+        (
+            &["label<Int>", "label<Color>"][..],
+            "name each instantiation as name=function<Type>",
+        ),
+        (
+            &["label<Int"][..],
+            "write type arguments as function<Type, ...>",
+        ),
+        (
+            &["labelInt=label"][..],
+            "a renamed export selects type arguments",
+        ),
+    ] {
+        let output = scratch.0.join("refused");
+        let result = bounded(
+            build(&fixture, &output, exports).env("PATH", ""),
+            &scratch.0,
+        );
+        assert_eq!(result.status.code(), Some(2), "{exports:?}: {result:?}");
+        let error = String::from_utf8_lossy(&result.stderr);
+        assert!(error.contains(needle), "{exports:?}: {error}");
+        assert!(!output.exists());
+    }
+    // A web package selects instantiations in its manifest.
+    let package = scratch.0.join("package");
+    copy_tree(
+        &root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &package,
+    );
+    fs::copy(&fixture, package.join("src/constrained.ssrg")).unwrap();
+    let manifest = package.join("seseragi.toml");
+    let original = fs::read_to_string(&manifest).unwrap();
+    fs::write(&manifest, format!("{original}\n[web.programs.constrained]\nmodule='constrained'\nexports=['labelInt=label<Int>', 'labelColor=label<Color>']\n")).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    let site = scratch.0.join("site");
+    successful(bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("package-probe.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+console.log(program.exports.labelInt(7) + program.exports.labelColor({tag: 'Red'}));
+await program.dispose();
+"#,
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("package-probe.mjs"))
+            .arg(site.join("programs/constrained"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, b"<7><red>\n");
+}
+
+#[test]
+fn exports_accept_language_identifiers_and_bindings_avoid_entry_names() {
+    let scratch = Scratch::new();
+    // The entry module already defines the first generated binding name,
+    // and two functions use a Unicode name and a trailing `'`.
+    let source = "let __seseragi_export_0 = 7\n\npub fn identity<A> value: A -> A = value\n\npub fn value' input: Int -> Int = input + __seseragi_export_0\n\npub fn 次の値 input: Int -> Int = input + 1\n";
+    let fixture = scratch.0.join("names.ssrg");
+    fs::write(&fixture, source).unwrap();
+    let destination = scratch.0.join("wasm");
+    successful(bounded(
+        &mut build(
+            &fixture,
+            &destination,
+            &["identity<Int>", "value'", "次の値", "整数'=identity<Int>"],
+        ),
+        &scratch.0,
+    ));
+    let probe = r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+const exports = program.exports;
+console.log([exports.identity(4), exports["value'"](1), exports["次の値"](1), exports["整数'"](5)].join(' '));
+await program.dispose();
+"#;
+    fs::write(scratch.0.join("probe.mjs"), probe).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("probe.mjs"))
+            .arg(&destination)
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, "4 8 2 5\n".as_bytes());
+    let declared = fs::read_to_string(destination.join("program.d.mts")).unwrap();
+    for line in [
+        "readonly \"value'\": OwnedCallback<number, number>;",
+        "readonly \"次の値\": OwnedCallback<number, number>;",
+        "readonly \"整数'\": OwnedCallback<number, number>;",
+    ] {
+        assert!(declared.contains(line), "{declared}");
+    }
+    // A web package binds its manifest instantiations the same way.
+    let package = scratch.0.join("package");
+    copy_tree(
+        &root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &package,
+    );
+    fs::write(package.join("src/names.ssrg"), source).unwrap();
+    let manifest = package.join("seseragi.toml");
+    let original = fs::read_to_string(&manifest).unwrap();
+    fs::write(&manifest, format!("{original}\n[web.programs.names]\nmodule='names'\nexports=['identity<Int>', \"value'\", '次の値']\n")).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    let site = scratch.0.join("site");
+    successful(bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("package-probe.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+const exports = program.exports;
+console.log([exports.identity(4), exports["value'"](1), exports["次の値"](1)].join(' '));
+await program.dispose();
+"#,
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("package-probe.mjs"))
+            .arg(site.join("programs/names"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, "4 8 2\n".as_bytes());
 }
 
 #[test]

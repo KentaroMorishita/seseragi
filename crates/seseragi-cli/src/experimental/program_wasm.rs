@@ -12,7 +12,7 @@ use std::{
 
 const FILES: [&str; 4] = ["program.rs", "program.wasm", "program.mjs", "program.d.mts"];
 static SERIAL: AtomicUsize = AtomicUsize::new(0);
-const USAGE: &str = "usage: seseragi experimental build-wasm source.ssrg|package-root --export public-function [--export other-function] [--profile development|release] --out-dir path";
+const USAGE: &str = "usage: seseragi experimental build-wasm source.ssrg|package-root --export function|function<Type>|name=function<Type> [--export other] [--profile development|release] --out-dir path";
 
 pub(crate) struct OwnedDirectory(pub(crate) PathBuf, bool);
 impl OwnedDirectory {
@@ -44,11 +44,93 @@ fn digest(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
 
+/// The selected exports. Each `function<Type>` export becomes a checked
+/// binding added after the entry module, `let __seseragi_export_N =
+/// function<Type>`, so the type checker selects its trait instances exactly
+/// as for a call in the source. An instance that does not exist is the
+/// checker's ordinary diagnostic on that line.
+struct Selection {
+    names: Vec<String>,
+    /// The `function<Type>` exports, with the text each was written as.
+    instantiated: Vec<(String, seseragi_project::ProgramExport)>,
+}
+
+/// The source added after the entry module and the bindings it defines.
+struct Bindings {
+    extension: String,
+    instantiations: Vec<seseragi_backend_rust::ProgramWasmInstantiation>,
+}
+
+impl Selection {
+    /// Binds each instantiated export after `entry`, the entry module's
+    /// source. A binding takes the next `__seseragi_export_N` that appears
+    /// nowhere in that source, so it cannot collide with a definition or an
+    /// import of the entry module.
+    fn bind(&self, entry: &str) -> Bindings {
+        let mut bindings = Bindings {
+            extension: String::new(),
+            instantiations: Vec::new(),
+        };
+        let mut next = 0usize;
+        for (text, export) in &self.instantiated {
+            let binding = loop {
+                let candidate = format!("__seseragi_export_{next}");
+                next += 1;
+                if !entry.contains(&candidate) && !bindings.extension.contains(&candidate) {
+                    break candidate;
+                }
+            };
+            let arguments = export
+                .type_arguments
+                .as_deref()
+                .expect("an instantiated export has type arguments");
+            bindings.extension.push_str(&format!(
+                "\n// program WASM export `{text}`\nlet {binding} = {}<{arguments}>\n",
+                export.function
+            ));
+            bindings
+                .instantiations
+                .push(seseragi_backend_rust::ProgramWasmInstantiation {
+                    name: export.name.clone(),
+                    binding,
+                    function: export.function.clone(),
+                });
+        }
+        bindings
+    }
+}
+
+fn selection(exports: &[String]) -> Result<Selection, String> {
+    let mut selection = Selection {
+        names: Vec::new(),
+        instantiated: Vec::new(),
+    };
+    for text in exports {
+        let export = seseragi_project::ProgramExport::parse(text)
+            .map_err(|reason| format!("SES-RUST-0001: --export {reason}"))?;
+        if selection.names.contains(&export.name) {
+            return Err(format!(
+                "SES-RUST-0001: --export `{}` repeats the export name `{}`; name each instantiation as name=function<Type>",
+                text.trim(),
+                export.name
+            ));
+        }
+        selection.names.push(export.name.clone());
+        if export.type_arguments.is_some() {
+            selection
+                .instantiated
+                .push((text.trim().to_owned(), export));
+        }
+    }
+    Ok(selection)
+}
+
 /// The program passes values in the shape of the TS target built with the
 /// same profile; the release profile erases newtype wrappers.
 fn options(profile: seseragi_project::BuildProfile) -> seseragi_backend_rust::ProgramWasmOptions {
     seseragi_backend_rust::ProgramWasmOptions {
         erase_newtypes: profile == seseragi_project::BuildProfile::Release,
+        instantiations: Vec::new(),
     }
 }
 
@@ -78,11 +160,24 @@ fn compile_package(
     command: seseragi_project::ProjectCommand,
     options: seseragi_backend_rust::ProgramWasmOptions,
 ) -> Result<Option<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>)>, String> {
+    let selection = selection(exports)?;
+    let bound = std::cell::RefCell::new(None);
+    let bind = |entry: &str| {
+        let bindings = selection.bind(entry);
+        let extension = bindings.extension.clone();
+        *bound.borrow_mut() = Some(bindings.instantiations);
+        extension
+    };
     let Some((project, checked)) =
-        super::load_checked_project_entry_for_command(path, module, command)?
+        super::load_checked_project_entry_for_command(path, module, command, &bind)?
     else {
         return Ok(None);
     };
+    let options = seseragi_backend_rust::ProgramWasmOptions {
+        instantiations: bound.into_inner().unwrap_or_default(),
+        ..options
+    };
+    let exports = &selection.names;
     for (_, package) in project.packages().packages() {
         if module.is_none()
             && (!package.manifest().providers.is_empty()
@@ -129,8 +224,10 @@ fn compile_package(
     let sources = project
         .modules()
         .map(|(_, module)| {
+            // The receipt records the files on disk, not the checked
+            // export bindings added after the entry module.
             fs::canonicalize(module.source_path())
-                .map(|path| (path, module.source().as_bytes().to_vec()))
+                .and_then(|path| fs::read(&path).map(|bytes| (path, bytes)))
                 .map_err(|e| e.to_string())
         })
         .collect::<Result<Vec<_>, _>>()?;
@@ -150,7 +247,15 @@ fn compile_file(
     if !path.ends_with(".ssrg") || !Path::new(path).is_file() {
         return Err("program WASM accepts a .ssrg source or package root".into());
     }
-    let source = fs::read_to_string(path).map_err(|e| e.to_string())?;
+    let original = fs::read_to_string(path).map_err(|e| e.to_string())?;
+    let selection = selection(exports)?;
+    let bindings = selection.bind(&original);
+    let options = seseragi_backend_rust::ProgramWasmOptions {
+        instantiations: bindings.instantiations,
+        ..options
+    };
+    let exports = &selection.names;
+    let source = format!("{original}{}", bindings.extension);
     let checked = compile_core_module(CompileInput::new(path, "experimental/main", &source))
         .map_err(|diagnostics| {
             seseragi_driver::render_terminal_diagnostics(&diagnostics, &source)
@@ -180,7 +285,7 @@ fn compile_file(
         artifact,
         vec![(
             fs::canonicalize(path).map_err(|e| e.to_string())?,
-            source.into_bytes(),
+            original.into_bytes(),
         )],
     ))
 }

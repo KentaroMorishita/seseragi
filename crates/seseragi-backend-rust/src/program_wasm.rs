@@ -106,7 +106,7 @@ pub struct ProgramVariant {
 const MAX_NESTED_TYPE_EXPANSION: usize = 16;
 
 /// The prefix of a type parameter's name in a checked public type.
-const TYPE_PARAMETER: &str = "\0type-parameter::";
+pub(crate) const TYPE_PARAMETER: &str = "\0type-parameter::";
 
 fn max_sequence_items() -> usize {
     1 << 20
@@ -234,11 +234,28 @@ pub fn emit_program_wasm_with_sources(
 }
 
 /// Choices that follow the TS target the program is paired with.
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ProgramWasmOptions {
     /// Pass a newtype as its payload alone, as the TS target's release
     /// profile does. The development profile keeps `{tag, value}`.
     pub erase_newtypes: bool,
+    /// Exports of generic functions at fixed type arguments.
+    pub instantiations: Vec<ProgramWasmInstantiation>,
+}
+
+/// An export of a generic function at fixed type arguments, such as
+/// `--export label<Int>`. The caller adds a value binding of the explicit
+/// application (`let hidden = label<Int>`) to the entry module before
+/// checking, so the type checker selects the trait instances as it does for
+/// any other call. WASM then exports that binding.
+#[derive(Clone, Debug)]
+pub struct ProgramWasmInstantiation {
+    /// The name the host sees.
+    pub name: String,
+    /// The entry module binding that holds the application.
+    pub binding: String,
+    /// The generic source function, which gives the source arity.
+    pub function: String,
 }
 
 /// Like [`emit_program_wasm_with_sources`], for a chosen TS target profile.
@@ -263,6 +280,16 @@ pub fn emit_program_wasm_with_options(
     for name in exports {
         if !seen.insert(name) {
             return Err("program WASM: duplicate export selection".into());
+        }
+        if let Some(instance) = options.instantiations.iter().find(|i| &i.name == name) {
+            let export = instantiated_export(module, entry_module, instance, &mut codecs)?;
+            let mut terminal = export.codec;
+            while let ProgramCodec::Function { result, .. } = &codecs[terminal] {
+                terminal = *result;
+            }
+            effect_abi |= matches!(codecs[terminal], ProgramCodec::Effect { .. });
+            public.push(export);
+            continue;
         }
         let function = module
             .functions
@@ -371,11 +398,6 @@ pub fn emit_program_wasm_with_options(
             terminal = *result;
         }
         let returns_effect = matches!(codecs[terminal], ProgramCodec::Effect { .. });
-        if returns_effect && !function.type_parameters.is_empty() {
-            return Err(error(
-                "program WASM: generic Effect functions need the Effect ABI's own proof",
-            ));
-        }
         if function.is_effect && !returns_effect {
             return Err(error(
                 "program WASM: checked Effect declaration contract is unavailable",
@@ -412,6 +434,22 @@ pub fn emit_program_wasm_with_options(
     if effect_abi {
         // Both resumable ABIs use the same checked data-only cell proof. A
         // private cell never transports a host lease or another callable.
+        // Only the providerless ABI holds a type parameter's host value; a
+        // host Effect run has no proof for passing one through a callback.
+        if host_abi {
+            if let Some(function) = public.iter().find_map(|export| {
+                module
+                    .functions
+                    .iter()
+                    .find(|f| f.symbol == export.symbol && !f.type_parameters.is_empty())
+            }) {
+                return Err(project::at(
+                    "program WASM: generic functions need the providerless Effect ABI",
+                    &function.origin,
+                    entry_module,
+                ));
+            }
+        }
         // Fibers share one host-request slot only in the providerless ABI.
         crate::program_wasm_effect::validate(modules, !host_abi)?;
     } else if library.metadata.capabilities.iter().any(|c| {
@@ -490,10 +528,14 @@ pub fn emit_program_wasm_with_options(
             .bytes()
             .map(|b| format!("{b:02x}"))
             .collect::<String>();
-        library.source.push_str(&format!(
-            "{index} => Some((v_{symbol}(vec![]), {})),\n",
-            export.codec
-        ));
+        // An instantiated export is a checked value binding.
+        let value = match library.globals.get(&export.symbol) {
+            Some(slot) => format!("get_global({slot})"),
+            None => format!("v_{symbol}(vec![])"),
+        };
+        library
+            .source
+            .push_str(&format!("{index} => Some(({value}, {})),\n", export.codec));
     }
     library.source.push_str("_ => None } }\n");
     let schema = serde_json::to_string(&metadata).expect("serializable checked ABI");
@@ -710,22 +752,6 @@ fn records_in_name_order(ty: &CoreType) -> CoreType {
     }
 }
 
-fn mentions_type_parameter(ty: &CoreType) -> bool {
-    match ty {
-        CoreType::Named { name, arguments } => {
-            name.starts_with(TYPE_PARAMETER) || arguments.iter().any(mentions_type_parameter)
-        }
-        CoreType::Tuple { elements } => elements.iter().any(mentions_type_parameter),
-        CoreType::Function { parameter, result } => {
-            mentions_type_parameter(parameter) || mentions_type_parameter(result)
-        }
-        CoreType::Record { fields, .. } => fields
-            .iter()
-            .any(|field| mentions_type_parameter(&field.type_ref)),
-        _ => false,
-    }
-}
-
 /// The codec of an ADT, newtype or struct declared in the linked modules.
 /// They cross in the TS target's shape: a newtype is its single tagged
 /// variant, and an opaque type keeps its representation, with only its
@@ -738,10 +764,6 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     };
     if let Some((_, index)) = codecs.named.iter().find(|(named, _)| named == ty) {
         return Some(*index);
-    }
-    // A named type over a type parameter would need a generic declaration.
-    if arguments.iter().any(mentions_type_parameter) {
-        return None;
     }
     // A type that refers to itself with other type arguments, such as
     // `Nested<A> = | Next (Nested<Array<A>>)`, has no finite set of codecs.
@@ -851,6 +873,57 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
             None
         }
     }
+}
+
+fn instantiated_export(
+    module: &CoreModule,
+    entry_module: &str,
+    instance: &ProgramWasmInstantiation,
+    codecs: &mut Codecs,
+) -> Result<ProgramWasmExport, RustBackendError> {
+    let function = module
+        .functions
+        .iter()
+        .find(|f| f.symbol == format!("{entry_module}::{}", instance.function))
+        .ok_or("program WASM: the instantiated function is missing from the entry module")?;
+    let error = |message: &str| project::at(message, &function.origin, entry_module);
+    if function.visibility != seseragi_syntax::Visibility::Public {
+        return Err(error("program WASM: selected function must be public"));
+    }
+    if function.type_parameters.is_empty() {
+        return Err(error(
+            "program WASM: type arguments select an instance of a generic function only",
+        ));
+    }
+    let binding = module
+        .bindings
+        .iter()
+        .find(|b| b.symbol == format!("{entry_module}::{}", instance.binding))
+        .ok_or_else(|| error("program WASM: the checked instantiation is missing"))?;
+    let ty = emit::checked_boundary_body_type(module, &binding.value)
+        .ok_or_else(|| error("program WASM: checked instantiated type is unavailable"))?;
+    // Source arity is the generic declaration's; the type arguments fix the
+    // types and the instances, never the number of source stages.
+    let mut remainder = &ty;
+    for _ in &function.parameters {
+        let CoreType::Function { result, .. } = remainder else {
+            return Err(error(
+                "program WASM: source parameters exceed the checked function type",
+            ));
+        };
+        remainder = result;
+    }
+    let codec = codec(&ty, true, codecs)
+        .or_else(|| effect_codec(&ty, codecs))
+        .ok_or_else(|| error("program WASM: unsupported public codec for these type arguments"))?;
+    Ok(ProgramWasmExport {
+        name: instance.name.clone(),
+        symbol: binding.symbol.clone(),
+        source_arity: function.parameters.len(),
+        value_type: ty,
+        codec,
+        origin: function.origin.clone(),
+    })
 }
 
 fn rust_codec(codec: &ProgramCodec) -> String {
@@ -1032,7 +1105,11 @@ fn declared_type(
         ProgramCodec::Parameter { name } => type_parameter_name(name),
         ProgramCodec::Record { name: Some(_), .. }
         | ProgramCodec::Adt { .. }
-        | ProgramCodec::Newtype { .. } => aliases[&index].clone(),
+        | ProgramCodec::Newtype { .. } => {
+            // A declaration over type parameters is applied to the same
+            // parameters, which the enclosing callback binds.
+            generic_alias(metadata, &aliases[&index], index)
+        }
         ProgramCodec::Record { fields, .. } => record_type(metadata, aliases, fields),
     }
 }
@@ -1107,13 +1184,39 @@ fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
             ProgramCodec::Array { element } | ProgramCodec::List { element } => {
                 pending.push(*element)
             }
-            ProgramCodec::Record {
-                fields, name: None, ..
-            } => pending.extend(fields.iter().rev().map(|field| field.codec)),
+            ProgramCodec::Record { fields, .. } => {
+                pending.extend(fields.iter().rev().map(|field| field.codec))
+            }
+            ProgramCodec::Adt { variants, .. } => {
+                pending.extend(variants.iter().rev().filter_map(|variant| variant.payload))
+            }
+            ProgramCodec::Effect { failure, success } => {
+                pending.extend([*success, *failure].into_iter().flatten())
+            }
+            ProgramCodec::HostEffect {
+                parameter,
+                failure,
+                success,
+            } => {
+                pending.extend([*success, *failure].into_iter().flatten());
+                pending.push(*parameter);
+            }
+            ProgramCodec::Newtype { value, .. } => pending.push(*value),
             _ => {}
         }
     }
     found
+}
+
+/// An ADT or struct alias, applied to the type parameters its codec
+/// mentions in first-use order, such as `Box<A>`.
+fn generic_alias(metadata: &ProgramWasmMetadata, alias: &str, index: usize) -> String {
+    let parameters = type_parameters(metadata, index);
+    if parameters.is_empty() {
+        alias.to_owned()
+    } else {
+        format!("{alias}<{}>", parameters.join(", "))
+    }
 }
 
 fn record_type(
@@ -1189,7 +1292,13 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
             ProgramCodec::Record { fields, .. } => record_type(metadata, &aliases, fields),
             _ => unreachable!("aliases name ADT and struct codecs"),
         };
-        result.insert_str(0, &format!("export type {alias} = {body};\n"));
+        result.insert_str(
+            0,
+            &format!(
+                "export type {} = {body};\n",
+                generic_alias(metadata, alias, *index)
+            ),
+        );
     }
     for export in &metadata.exports {
         let ty = if type_parameters(metadata, export.codec).is_empty() {
