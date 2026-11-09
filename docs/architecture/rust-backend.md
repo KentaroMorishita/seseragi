@@ -156,12 +156,20 @@ sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録�
 | newtype | development では `{tag, value}`（tag は型の名前）。release では TS と同じく中身の値だけ |
 | opaque な ADT・struct | 中身は ADT・struct と同じ形。opaque struct の型宣言は brand だけを持ち、ホストは中身を読めず、作れない |
 | 関数の型パラメータ | JS の値そのもの。WASM は預かって返すだけで、同じ値が返る |
+| FiberExit | TS と同じ `{tag: "FiberSucceeded", value}`、`{tag: "FiberFailed", value}`、`{tag: "FiberCancelled"}` |
 
 trait 制約のない generic な関数も公開できる。型宣言では、型パラメータを最初に受け取る呼び出しで
 それを決めるので、TS が推論できる。型パラメータを含む ADT・struct（`Box<A>`、再帰する `Tree<A>`）も
 受け渡せ、型宣言はその型を同じ型パラメータで generic に宣言する（`export type Box<A> = ...`）。
 同じ宣言が違う型引数の並びで現れると、それぞれ `ProgramData<番号>` という名前の別名になる。
-高階の型パラメータはまだ公開できない。
+高階の型パラメータはまだ公開できない。`Nested<A> = | Next (Nested<Array<A>>)` のように、自分自身を
+大きくなる型引数で使う型は codec が無限に増えるので拒否する。`Box<Box<Box<Int>>>` のように、
+外側の型の中に書かれた小さい型の入れ子は、何段でも受け渡せる。
+
+ホストの値は、loader の表に番号を付けて預ける。WASM が値を持ち続けられるのは、返したコールバックと
+Effect の計画、実行中の Effect だけなので、どれからも参照されなくなった値は、その呼び出しや実行が
+終わった時点で表から外す。同じインスタンスで何度呼んでも表は増えず、`ownership().hostValues` で
+預かっている数を確かめられる。
 
 trait 制約のある generic な関数は、型引数を決めて公開する（`--export label<Int>`、manifest では
 `exports = ["label<Int>"]`）。CLI は選択ごとに、入口の module の末尾へ
@@ -188,7 +196,12 @@ receipt と依存の hash には、足した行を含まないディスク上の
 | 文字列とバイト列 | `std/text`、Bytes、hex、base64、UTF-8 の変換、`sliceScalars` |
 | JSON | parse、stringify、`deriving JsonEncode, JsonDecode` の codec と decode のエラー |
 
-結果が TS ターゲットとずれうる API は、ビルド時に位置付きで拒否する。Regex、Float の `pow` と
+Float の `pow`（`**` と `std/float.power`）は、NaN・無限大・0・1 などの特殊値を ECMAScript の表どおりに
+扱い、ここは TS ターゲットとビット単位で一致する。それ以外の値は ECMAScript でも近似で、JS エンジンごとに
+最後の桁が違いうる（JavaScriptCore は `0.9 ** 1000` を正しい値から 100 ulp 以上ずらす）。WASM は native と
+同じ実装をプログラムに含めるので、どのホストでも同じ結果になり、正しく丸めた値との差は 1 ulp 以内に収まる。
+
+結果が TS ターゲットとずれうる API は、ビルド時に位置付きで拒否する。Regex、
 JS の `Math` と丸めが違う数学関数、Unicode と書記素の表（TS ターゲットは JS エンジンの Unicode
 版に従う）がこれに当たる。Effect、Stream、monad transformer、`forEach` も純粋な公開関数からは使えない。
 
@@ -303,6 +316,7 @@ callbackをdetachした後もその状態を更新できる。tracingはglobal�
 providerlessなEffect ABIでは、rootのEffectをnativeのschedulerのroot Fiberとして動かす。
 `std/effect`のfork・await・poll・join・interrupt・yieldNowと、`std/deferred`の操作を内部で使える。
 Deferredの中身はRefと同じく閉じたdataに限り、Fiber・Deferredの型やhandleは公開codecへ加えない。
+`await`・`poll`の結果の`FiberExit`と、Deferredの`poll`の結果は公開関数から返せる。
 このABIはtimer・file・子process・stdin・signalを受け入れないので、schedulerのturnはhostの時計を読まない。
 どのFiberも進めないとき、`ssrg_poll`は停止中（5）を返す。loaderはpollをやめて結果を保留にし、
 `cancel()`かdisposeで再開する。TSで誰も完了しないDeferredを待つのと同じく、結果は自然には決まらない。

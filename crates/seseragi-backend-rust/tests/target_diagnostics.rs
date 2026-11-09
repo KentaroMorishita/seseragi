@@ -81,10 +81,11 @@ fn native_support_is_not_confused_with_program_wasm_support() {
         )
         .is_empty());
     }
+    // Math functions that round differently from JS Math stay native-only.
     let core = compile_core_module(CompileInput::new(
-        "power.ssrg",
-        "target/power",
-        "pub fn main -> Int = { let power: Float = 2.0 ** 3.0; 8 }\n",
+        "sine.ssrg",
+        "target/sine",
+        "import * as math from \"std/math\"\npub fn main -> Int = { let sine: Float = math.sin 1.0; 8 }\n",
     ))
     .unwrap()
     .core_ir;

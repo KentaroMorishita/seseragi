@@ -2078,13 +2078,15 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
 fn fibers_and_deferreds_run_in_the_ts_target_order() {
     let scratch = Scratch::new();
     let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-fibers.ssrg");
-    let expected = "child waits;parent opens;child got go;result go\nchild holds;child released;interrupted;\n-1\nfirst won lost\n";
+    let expected = "child waits;parent opens;child got go;result go\nchild holds;child released;interrupted;\n-1\nfirst won lost\nopen;running;won lost;holds seven;succeeded seven;succeeded seven;won failed boom;failed boom;cancelled;open\n";
     let destination = scratch.0.join("fibers");
     successful(bounded(
         &mut build(
             &fixture,
             &destination,
-            &["order", "cleanup", "failing", "first", "stuck"],
+            &[
+                "order", "cleanup", "failing", "first", "outcomes", "oneSided", "stuck",
+            ],
         ),
         &scratch.0,
     ));
@@ -2107,7 +2109,7 @@ fn fibers_and_deferreds_run_in_the_ts_target_order() {
         assert!(result.stderr.is_empty(), "{result:?}");
     }
     // The same bodies on the TS target and native print the same order.
-    let main = "\npub effect fn main = do {\n  a <- order ()\n  println a\n  b <- cleanup ()\n  println b\n  c <- failing () |> effects.recover (\\message: String -> effects.succeed (-1))\n  println (show c)\n  d <- first ()\n  println d\n}\n";
+    let main = "\npub effect fn main = do {\n  a <- order ()\n  println a\n  b <- cleanup ()\n  println b\n  c <- failing () |> effects.recover (\\message: String -> effects.succeed (-1))\n  println (show c)\n  d <- first ()\n  println d\n  e <- outcomes ()\n  println (outcomeText e)\n}\nfn exitText exit: effects.FiberExit<String, String> -> String = match exit {\n  effects.FiberSucceeded value -> \"succeeded \" + value\n  effects.FiberFailed error -> \"failed \" + error\n  effects.FiberCancelled -> \"cancelled\"\n}\nfn polledExit polled: Maybe<effects.FiberExit<String, String>> -> String = match polled { Nothing -> \"running\"; Just exit -> exitText exit }\nfn polledGate polled: Maybe<Either<String, String>> -> String = match polled {\n  Nothing -> \"open\"\n  Just (Left error) -> \"failed \" + error\n  Just (Right value) -> \"holds \" + value\n}\nfn flag value: Bool -> String = if value then \"won\" else \"lost\"\nfn outcomeText value: ((Maybe<Either<String, String>>, Maybe<effects.FiberExit<String, String>>, Bool, Bool), (Maybe<Either<String, String>>, effects.FiberExit<String, String>, Maybe<effects.FiberExit<String, String>>), (Bool, effects.FiberExit<String, String>, Maybe<Either<String, String>>), (effects.FiberExit<String, String>, Maybe<Either<String, String>>)) -> String = match value {\n  ((before, waiting, completed, late), (after, joined, finished), (failed, failedExit, brokenPoll), (cancelled, neverPoll)) ->\n    polledGate before + \";\" + polledExit waiting + \";\" + flag completed + \" \" + flag late + \";\" + polledGate after + \";\" + exitText joined + \";\" + polledExit finished + \";\" + flag failed + \" \" + exitText failedExit + \";\" + polledGate brokenPoll + \";\" + exitText cancelled + \";\" + polledGate neverPoll\n}\n";
     let source = scratch.0.join("oracle.ssrg");
     fs::write(
         &source,
@@ -2355,6 +2357,67 @@ fn private_ref_standard_web_package_keeps_the_typed_ui_bridge() {
                 .arg(&path),
             &scratch.0,
         ));
+    }
+}
+
+#[test]
+fn float_power_matches_the_ts_special_values_and_stays_within_one_ulp() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-float-power.ssrg",
+        &["raised", "power", "squares"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const bits = (value) => { const view = new DataView(new ArrayBuffer(8)); view.setFloat64(0, value); return view.getBigInt64(0); };
+// NaN bit patterns depend on the CPU and the JS engine and no program can
+// observe them, so any NaN matches any NaN.
+const exact = (left, right, label) => Number.isNaN(left) && Number.isNaN(right) ? undefined : assert.equal(bits(left), bits(right), label);
+// ECMAScript leaves Math.pow of ordinary values implementation-approximated,
+// so results may differ in the last place.
+const near = (left, right, label) => { const distance = bits(left) - bits(right); assert.ok(Math.sign(left) === Math.sign(right) && distance >= -1n && distance <= 1n, `${label}: ${left} vs ${right}`); };
+const specials = [NaN, Infinity, -Infinity, 0, -0, 1, -1, 0.5, -0.5, 2, -2, 3, -3, 1.5, -1.5, 1e308, -1e308, 5e-324, -5e-324];
+for (const base of specials) for (const exponent of specials) {
+  const label = `${base} ** ${exponent}`;
+  const expected = ts.raised(base)(exponent);
+  for (const name of ['raised', 'power']) {
+    const actual = wasm[name](base)(exponent);
+    if (Number.isFinite(expected) && expected !== 0 && !Number.isInteger(expected) && !Number.isInteger(1 / expected)) near(actual, expected, `${name} ${label}`);
+    else exact(actual, expected, `${name} ${label}`);
+  }
+}
+for (const [base, exponent] of [[2, 52], [2, -1074], [3, 33], [-2, 63], [10, 22], [0.5, 1074], [-0.5, 3], [4, 0.5], [1.5, 2], [7, 18]]) {
+  for (const name of ['raised', 'power']) exact(wasm[name](base)(exponent), ts.raised(base)(exponent), `${name} ${base} ** ${exponent}`);
+}
+// Ordinary values are checked against the correctly rounded result rather
+// than the TS target: JavaScriptCore computes `0.9 ** 1000` by repeated
+// multiplication and lands about a hundred ulps away from it.
+const rounded = [
+  [2, 0.5, 1.4142135623730951], [10, -3, 0.001], [1.1, 2.5, 1.2690587062858836],
+  [1e10, 0.3, 999.9999999999998], [0.9, 1000, 1.7478712517226947e-46],
+  [1.0000001, 1e7, 2.7182816941320818], [123.456, -7.25, 6.863356189846384e-16],
+  [Math.PI, Math.E, 22.45915771836104], [1.5, -3, 0.2962962962962963], [0.7, -41, 2243780.448498348],
+];
+for (const [base, exponent, expected] of rounded) {
+  for (const name of ['raised', 'power']) near(wasm[name](base)(exponent), expected, `${name} ${base} ** ${exponent}`);
+}
+assert.deepStrictEqual(wasm.squares([0, -0, 3, -4, NaN, Infinity]).map(bits), ts.squares([0, -0, 3, -4, NaN, Infinity]).map((value) => Number.isNaN(value) ? bits(wasm.squares([NaN])[0]) : bits(value)));
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
     }
 }
 
@@ -3585,6 +3648,22 @@ const stage = program.exports.both(object);
 const pair = await run(stage(callback));
 stage.dispose();
 assert.ok(pair.value[0] === callback && pair.value[1] === object);
+// Plans, runs and returned callbacks keep host values only while they live.
+const hosted = () => program.ownership().hostValues;
+assert.equal(hosted(), 0);
+for (let index = 0; index < 200; index++) await run(program.exports.keep({index}));
+assert.equal(hosted(), 0);
+const plan = program.exports.later(object);
+assert.equal(hosted(), 1);
+const execution = plan.run();
+plan.dispose();
+const made = await execution.result;
+assert.equal(hosted(), 1);
+const inner = made.value(undefined);
+made.value.dispose();
+assert.equal(hosted(), 1);
+assert.equal((await run(inner)).value, object);
+assert.equal(hosted(), 0);
 await program.dispose();
 assert.equal(program.ownership().managedLiveAtClose, 0);
 console.log('same values');
@@ -3894,6 +3973,28 @@ assert.deepStrictEqual({...wasm.firsts([])}, ts.firsts([]));
 assert.equal(wasm.swapped({tag: 'Left', value: object}).value, object);
 assert.deepStrictEqual({...wasm.swapped({tag: 'Right', value: 1})}, ts.swapped({tag: 'Right', value: 1}));
 assert.deepStrictEqual([...wasm.repeated(object)], ts.repeated(object));
+// A host value no callback keeps is released when its call returns, so a
+// long-lived instance does not grow with every call.
+// The callback `wasm.pair(object)` above still keeps `object`.
+const hosted = () => program.ownership().hostValues;
+const baseline = hosted();
+for (let index = 0; index < 1000; index++) wasm.identity({index});
+assert.equal(hosted(), baseline);
+// A returned callback keeps its input's host values until it is disposed,
+// and a value it shares with another callback stays until both are gone.
+const shared = {name: 'shared'};
+const first = wasm.pair(shared);
+const second = wasm.pair(shared);
+assert.equal(hosted(), baseline + 1);
+assert.ok(first(callback)[1] === shared);
+assert.equal(hosted(), baseline + 1);
+first.dispose();
+assert.equal(hosted(), baseline + 1);
+assert.ok(second(1)[1] === shared);
+second.dispose();
+assert.equal(hosted(), baseline);
+// The same host value crosses again after its token was released.
+assert.ok(Object.is(wasm.identity(shared), shared));
 program.dispose();
 assert.equal(program.ownership().managedLiveAtClose, 0);
 console.log('same results');

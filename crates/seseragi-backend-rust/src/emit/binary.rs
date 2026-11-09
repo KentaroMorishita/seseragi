@@ -35,7 +35,7 @@ impl Backend<'_> {
                 && !matches!(evidence.as_slice(), [CoreCallEvidence {
                     evidence: CoreInstanceEvidence::Standard { identity, .. },
                     ..
-                }] if identity == "std/int::Pow")
+                }] if identity == "std/int::Pow" || identity == "std/float::Pow")
             {
                 return Err(
                     "program WASM: native power requires a target-specific arithmetic proof".into(),

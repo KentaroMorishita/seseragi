@@ -1,0 +1,9 @@
+// Program WASM computes Float power with the ECMAScript special-value table,
+// like the TS target, through both the operator and `std/float.power`.
+import * as floats from "std/float"
+
+pub fn raised base: Float -> exponent: Float -> Float = base ** exponent
+
+pub fn power base: Float -> exponent: Float -> Float = floats.power exponent base
+
+pub fn squares values: Array<Float> -> Array<Float> = map (floats.power 2.0) values

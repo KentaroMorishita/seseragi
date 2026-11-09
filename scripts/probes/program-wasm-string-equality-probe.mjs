@@ -50,6 +50,7 @@ assert.deepEqual(program.ownership(), {
   alive: false,
   retired: false,
   callbacks: 0,
+  hostValues: 0,
   managedLiveAtClose: 0,
 })
 assert.throws(() => program.exports.saved("closed"), ProgramWasmClosed)
@@ -60,6 +61,7 @@ console.log(
     invalidInputRecovery: true,
     independentCallbacks: true,
     callbacks: 0,
+    hostValues: 0,
     managedLiveAtClose: 0,
   })
 )

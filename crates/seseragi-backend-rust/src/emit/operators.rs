@@ -151,12 +151,8 @@ impl Backend<'_> {
         Some((|| {
             // Int division, remainder and power fail with a Defect, as in
             // TS; a program WASM Defect traps and retires the instance.
-            if self.program_wasm_library && identity == "std/float::Pow" {
-                return Err(format!(
-                    "program WASM: native {primitive} power requires a target-specific arithmetic proof"
-                )
-                .into());
-            }
+            // Float power follows the ECMAScript special-value table on
+            // every backend (runtime_float.rs).
             if selected.constraint.name != trait_name
                 || selected
                     .constraint

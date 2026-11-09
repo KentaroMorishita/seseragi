@@ -130,12 +130,6 @@ impl Backend<'_> {
         supplied: usize,
         scope: &Scope,
     ) -> Result<()> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native Float power requires a target-specific arithmetic proof"
-                    .into(),
-            );
-        }
         if supplied > 2 {
             return Err("Rust backend: Float power source arity mismatch".into());
         }
