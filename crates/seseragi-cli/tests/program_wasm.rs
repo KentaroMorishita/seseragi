@@ -2084,7 +2084,9 @@ fn fibers_and_deferreds_run_in_the_ts_target_order() {
         &mut build(
             &fixture,
             &destination,
-            &["order", "cleanup", "failing", "first", "outcomes", "oneSided", "stuck"],
+            &[
+                "order", "cleanup", "failing", "first", "outcomes", "oneSided", "stuck",
+            ],
         ),
         &scratch.0,
     ));
