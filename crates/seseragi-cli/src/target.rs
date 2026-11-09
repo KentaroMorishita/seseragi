@@ -10,11 +10,11 @@ impl Target {
     pub(crate) fn parse(value: &str) -> Result<Self, String> {
         match value {
             "native" => Ok(Self::Native),
-            "process" | "web" => ProjectTarget::parse(value)
+            "process" | "web" | "wasm" => ProjectTarget::parse(value)
                 .map(Self::Project)
                 .map_err(|error| error.to_string()),
             _ => Err(format!(
-                "unknown project target `{value}`; expected `process`, `web` or `native`"
+                "unknown project target `{value}`; expected `process`, `web`, `wasm` or `native`"
             )),
         }
     }

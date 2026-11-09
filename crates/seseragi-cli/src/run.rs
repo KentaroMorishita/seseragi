@@ -14,6 +14,22 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     if invocation.target == Some(Target::Native) {
         return run_native(&invocation);
     }
+    // A program WASM library has no `main` to run; say so before compiling.
+    if invocation.target == Some(Target::Project(ProjectTarget::Wasm))
+        || crate::build::wasm_package(
+            &invocation.path,
+            invocation.target.and_then(Target::project),
+        )?
+        .is_some()
+    {
+        return Err(
+            seseragi_project::TargetSelectionError::UnsupportedCommandTarget {
+                command: ProjectCommand::Run,
+                target: ProjectTarget::Wasm,
+            }
+            .to_string(),
+        );
+    }
     run_path(&invocation)
 }
 

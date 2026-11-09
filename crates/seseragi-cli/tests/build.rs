@@ -623,8 +623,9 @@ fn rejects_unknown_build_targets_without_creating_output() {
         .unwrap();
 
     assert_eq!(output.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&output.stderr)
-        .contains("unknown project target `browser`; expected `process`, `web` or `native`"));
+    assert!(String::from_utf8_lossy(&output.stderr).contains(
+        "unknown project target `browser`; expected `process`, `web`, `wasm` or `native`"
+    ));
     assert!(!output_directory.exists());
     fs::remove_dir_all(directory).unwrap();
 }

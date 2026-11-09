@@ -47,7 +47,11 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
                 index += 1;
                 target = Some(match arguments.get(index).map(String::as_str) {
                     Some(value) => Target::parse(value)?,
-                    None => return Err("--target requires `process`, `web` or `native`".to_owned()),
+                    None => {
+                        return Err(
+                            "--target requires `process`, `web`, `wasm` or `native`".to_owned()
+                        )
+                    }
                 });
             }
             argument if argument.starts_with('-') => {
@@ -72,6 +76,22 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
         println!("Built {} -> {}", path, output_directory);
         return Ok(0);
     }
+    if let Some(root) = wasm_package(Path::new(&path), target.and_then(Target::project))? {
+        if source_map.is_some() {
+            return Err("--source-map is not supported by the wasm target".into());
+        }
+        let Some(built) = crate::experimental::program_wasm::build_package_program(
+            &root,
+            ProjectCommand::Build,
+            profile.unwrap_or_default(),
+            Path::new(&output_directory),
+        )?
+        else {
+            return Ok(2);
+        };
+        println!("Built {} -> {}", path, built.display());
+        return Ok(0);
+    }
     build_path(
         Path::new(&path),
         Path::new(&output_directory),
@@ -79,6 +99,41 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
         profile,
         source_map,
     )
+}
+
+/// The package root when the wasm target is selected, by the invocation or
+/// by `run.target`. The wasm target builds a package's `run.entry` and
+/// `run.exports`, so a single source file cannot select it.
+pub(crate) fn wasm_package(
+    path: &Path,
+    invocation: Option<ProjectTarget>,
+) -> Result<Option<std::path::PathBuf>, String> {
+    let path = &std::fs::canonicalize(path).unwrap_or_else(|_| path.to_owned());
+    let root = crate::local_project::containing_package(path)
+        .or_else(|| path.is_dir().then(|| path.to_owned()));
+    let Some(root) = root else {
+        return if invocation == Some(ProjectTarget::Wasm) {
+            Err("the wasm target builds a package; set run.entry and run.exports in its seseragi.toml".into())
+        } else {
+            Ok(None)
+        };
+    };
+    let selected = match invocation {
+        Some(target) => target == ProjectTarget::Wasm,
+        None => {
+            let manifest = root.join("seseragi.toml");
+            let Ok(source) = std::fs::read_to_string(&manifest) else {
+                return Ok(None);
+            };
+            // Other manifest errors belong to the ordinary package build.
+            seseragi_project::parse_manifest(&source)
+                .ok()
+                .and_then(|manifest| manifest.run)
+                .and_then(|run| run.target)
+                .is_some_and(|target| target.as_str() == "wasm")
+        }
+    };
+    Ok(selected.then_some(root))
 }
 
 fn build_path(
@@ -187,5 +242,6 @@ fn build_target(target: ProjectTarget) -> BuildTarget {
     match target {
         ProjectTarget::Process => BuildTarget::Process,
         ProjectTarget::Web => BuildTarget::Web,
+        ProjectTarget::Wasm => unreachable!("the wasm target builds a program WASM library"),
     }
 }
