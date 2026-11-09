@@ -81,9 +81,6 @@ fn remaining_type(parameters: &[CoreType], result: &CoreType) -> CoreType {
 
 impl Backend<'_> {
     fn bytes_type(&self, actual: &CoreType, expected: &CoreType, scope: &Scope) -> Result<()> {
-        if self.program_wasm_library {
-            return Err("program WASM: native Bytes requires a target-specific ABI proof".into());
-        }
         if self.declared_method_type_kind(actual, scope) != Some(0)
             || self.local_canonical_type(actual, scope)? != *expected
         {

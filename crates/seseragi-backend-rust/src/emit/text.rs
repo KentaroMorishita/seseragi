@@ -151,19 +151,12 @@ fn remaining_type(parameters: &[CoreType], result: &CoreType) -> CoreType {
 
 impl Backend<'_> {
     fn text_target(&self, name: &str) -> Result<()> {
-        // `std/text` operations on String values are pure and match TS in
-        // program WASM. Bytes, the Unicode and grapheme tables and the
-        // standard error ADT of `sliceScalars` need their own proof.
+        // `std/text` operations, UTF-8 bytes and scalar slices are pure and
+        // match TS in program WASM. The Unicode and grapheme tables follow
+        // the Unicode version of the JS engine on the TS target, which the
+        // tables compiled into the program cannot promise to match.
         if self.program_wasm_library
-            && (name.starts_with("std/text/unicode::")
-                || name.starts_with("std/text/grapheme::")
-                || matches!(
-                    name,
-                    "std/text::encodeUtf8"
-                        | "std/text::decodeUtf8"
-                        | "std/text::decodeUtf8Lossy"
-                        | "std/text::sliceScalars"
-                ))
+            && (name.starts_with("std/text/unicode::") || name.starts_with("std/text/grapheme::"))
         {
             return Err(
                 "program WASM: native text extension requires a target-specific proof".into(),

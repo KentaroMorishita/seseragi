@@ -96,7 +96,7 @@ fn json_refuses_forged_owner_kind_argument_result_evidence_and_source_stages() {
     }
 }
 #[test]
-fn json_saved_references_do_not_expand_program_wasm() {
+fn json_saved_references_build_as_program_wasm() {
     for (name, ty) in [
         ("parse", "String -> Either<json.JsonParseError, json.Json>"),
         ("stringify", "json.Json -> String"),
@@ -119,13 +119,8 @@ fn json_saved_references_do_not_expand_program_wasm() {
     ] {
         let core=checked(&format!("import * as json from \"std/json\"\nimport * as decimal from \"std/decimal\"\nimport * as maps from \"std/map\"\npub fn probe value: Int -> Int = {{let saved: {ty} = json.{name}; value}}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap_or_else(|e| panic!("{name}:{e:?}"));
-        let error = emit_program_wasm(&[&core], "native/json", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{name}:{error:?}"
-        );
-        assert_eq!(error.origin.unwrap().source, "json-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/json", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }
 

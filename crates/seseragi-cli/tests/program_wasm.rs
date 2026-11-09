@@ -3025,6 +3025,110 @@ console.log('same results');
 }
 
 #[test]
+fn standard_dictionaries_and_derived_instances_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-dictionaries.ssrg",
+        &["shown", "compared", "ordered", "points", "validated"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const arrays = [[], [0], [1, 2], [3, -1, 0, 2], [-4, -4, 5, 0, 1], [7, 1, 4, 1, -9]];
+for (const input of arrays) for (const name of ['shown', 'compared', 'ordered', 'points', 'validated']) {
+  assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+}
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn bytes_utf8_slices_and_sized_windows_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-bytes.ssrg",
+        &["utf8", "decoded", "parsed", "sliced", "sized"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const same = (name, input) => assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+for (const input of ['', 'a', 'a雪🙂', '\0\n\u00e9']) same('utf8', input);
+for (const input of [[], [104, 105], [104, 255, 105], [0xe9, 0x9b], [0xf0, 0x9f, 0x99, 0x82], [300], [-1]]) same('decoded', input);
+for (const input of ['', 'zz', '6869', '686', 'aGk=', 'aGk', 'aG==', '+/8=']) same('parsed', input);
+for (const input of [[0, 0], [1, 3], [0, 4], [3, 1], [-1, 2], [2, 9]]) same('sliced', input);
+for (const input of [-2, 0, 1, 2, 5, 6, 9007199254740991]) same('sized', input);
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn json_parsing_and_derived_codecs_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-json.ssrg",
+        &["reformatted", "items", "statuses", "labels"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const same = (name, input) => assert.equal(wasm[name](input), ts[name](input), `${name}(${JSON.stringify(input)})`);
+const sources = [
+  '', 'null', ' [1, 2.5, -0, 1e21, 1.5e-7, true, "a\\u00e9\\n🙂"] ', '{"b": {"c": []}, "a": null}', '[1,', '"\\ud800"',
+  '[{"name": "x", "count": 2, "tags": ["a"]}]', '[{"name": "x", "count": 2.5, "tags": []}]', '[{"name": "x", "tags": []}]',
+  '[{"name": "x", "count": 1, "tags": [], "extra": 0}]', '[{"tag": "Open"}, {"tag": "Closed", "value": 3}, {"tag": "Moved", "to": "y"}]',
+  '[{"tag": "Gone"}]', '"label"', '9007199254740993', '{"name": "x"}',
+];
+for (const input of sources) for (const name of ['reformatted', 'items', 'statuses', 'labels']) same(name, input);
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
 fn text_operations_match_the_ts_target() {
     let scratch = Scratch::new();
     let exports = [

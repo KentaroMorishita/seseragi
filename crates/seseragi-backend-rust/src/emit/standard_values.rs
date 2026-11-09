@@ -35,11 +35,6 @@ impl Backend<'_> {
             ("std/product", "Semigroup" | "Monoid") => ("std/prelude::Product", 1),
             _ => return Ok(None),
         };
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native standard dictionary needs a target-specific ABI proof".into(),
-            );
-        }
         let [actual] = selected.constraint.arguments.as_slice() else {
             return Err("Rust backend: standard dictionary constraint arity mismatch".into());
         };

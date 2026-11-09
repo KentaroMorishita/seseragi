@@ -30,7 +30,7 @@ impl Backend<'_> {
             evidence,
             scope,
         )?;
-        if !self.program_wasm_library && self.validate_standard_error_evidence(selected, scope)? {
+        if self.validate_standard_error_evidence(selected, scope)? {
             return self.validate_derived_method(dispatch, selected, type_ref, scope);
         }
         self.validate_signal_method(dispatch, selected, type_ref, scope)?;
@@ -412,17 +412,6 @@ impl Backend<'_> {
         let CoreType::Named { name, .. } = self.local_canonical_type(head, scope).ok()? else {
             return None;
         };
-        // Native codec error types are new trusted nominal kinds. Do not let
-        // that trust widen program WASM through an ignored user dictionary
-        // whose body only constructs an Either and never calls a JSON API.
-        if self.program_wasm_library
-            && matches!(
-                name.as_str(),
-                "std/json::DecodeErrorKind" | "std/json::DecodeError" | "std/json::JsonReadError"
-            )
-        {
-            return None;
-        }
         if let Some(parameters) = self
             .module
             .adts
@@ -472,10 +461,7 @@ impl Backend<'_> {
                 | "std/time::ZonedDateTime"
                 | "std/time::LocalResolution"
                 | "std/stream::BufferCapacity" => return Some(vec![]),
-                "std/signal::Signal"
-                | "std/signal::MutableSignal"
-                | "std/prelude::Sum"
-                | "std/prelude::Product" => return Some(vec![0]),
+                "std/signal::Signal" | "std/signal::MutableSignal" => return Some(vec![0]),
                 "std/web/html::Html" | "std/web/html::EventAction" => return Some(vec![0]),
                 "std/web/html::Style"
                 | "std/web/html::WebUrl"
@@ -484,9 +470,10 @@ impl Backend<'_> {
                 "std/signal::SignalChange" | "std/signal::Subscription" => return Some(vec![]),
                 _ => {}
             }
-            if let Some(slots) = super::standard_errors::constructor_slots(&name) {
-                return Some(slots);
-            }
+        }
+        // Standard error ADTs are pure values in program WASM too.
+        if let Some(slots) = super::standard_errors::constructor_slots(&name) {
+            return Some(slots);
         }
         match name.as_str() {
             "std/path::Path"
@@ -545,6 +532,8 @@ impl Backend<'_> {
             | "std/stdin::ReadSize"
             | "std/stdin::LineLimit" => Some(vec![]),
             "std/prelude::Array"
+            | "std/prelude::Sum"
+            | "std/prelude::Product"
             | "std/prelude::List"
             | "std/prelude::Range"
             | "std/prelude::Maybe"

@@ -35,11 +35,7 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library
-            || scope.has_unproven_type_scope()
-            || !evidence.is_empty()
-            || arguments.len() > 1
-        {
+        if scope.has_unproven_type_scope() || !evidence.is_empty() || arguments.len() > 1 {
             return Err("Rust backend: unproven native Validation application".into());
         }
         let supplied = arguments

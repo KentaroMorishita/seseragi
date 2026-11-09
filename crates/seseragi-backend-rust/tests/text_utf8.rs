@@ -109,7 +109,7 @@ fn utf8_rejects_unproven_argument_result_evidence_and_source_stages() {
 }
 
 #[test]
-fn utf8_keeps_unused_program_wasm_references_rejected() {
+fn utf8_references_build_as_program_wasm() {
     for (operation, signature) in [
         ("encodeUtf8", "String -> bytes.Bytes"),
         (
@@ -122,12 +122,7 @@ fn utf8_keeps_unused_program_wasm_references_rejected() {
             "import * as bytes from \"std/bytes\"\nimport * as text from \"std/text\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = text.{operation}; value }}\npub fn main -> Int = probe 42\n"
         ));
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/utf8", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific proof"),
-            "{operation}: {error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "utf8-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/utf8", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }

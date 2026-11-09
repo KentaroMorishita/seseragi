@@ -93,17 +93,13 @@ fn newtype_dictionaries_reject_forged_heads_constructor_payload_and_children() {
     }
 }
 #[test]
-fn ignored_newtype_json_dictionaries_do_not_admit_program_wasm() {
+fn derived_newtype_json_dictionaries_build_as_program_wasm() {
     for method in ["JsonEncode", "JsonDecode"] {
         let core = checked(&format!(
             "newtype Id deriving {method} = Int\npub fn main -> Int = 0\n"
         ));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/json-newtypes", &["main".into()]).unwrap_err();
-        assert!(
-            error.message.contains("require a target-specific"),
-            "{error:?}"
-        );
+        emit_program_wasm(&[&core], "native/json-newtypes", &["main".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }

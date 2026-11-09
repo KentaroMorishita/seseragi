@@ -268,7 +268,7 @@ pub fn probe -> String = {
 }
 
 #[test]
-fn derived_factories_reject_forged_heads_members_children_and_wasm() {
+fn derived_factories_reject_forged_heads_members_and_children() {
     let compiled = compile_module(CompileInput::new(
         "derived.ssrg",
         "native/derived",
@@ -322,8 +322,8 @@ fn derived_factories_reject_forged_heads_members_children_and_wasm() {
             );
         }
     }
-    let error = emit_program_wasm(&[&core], "native/derived", &["probe".into()]).unwrap_err();
-    assert!(error.message.contains("target-specific"), "{error:?}");
+    emit_program_wasm(&[&core], "native/derived", &["probe".into()])
+        .unwrap_or_else(|error| panic!("{error:?}"));
 }
 
 #[test]
@@ -702,7 +702,8 @@ fn standard_error_dictionaries_reject_forged_types_children_dispatch_and_constru
         let core = compile_module(CompileInput::new("errors.ssrg", "native/derived", &source))
             .unwrap()
             .core_ir;
-        assert!(emit_program_wasm(&[&core], "native/derived", &["probe".into()]).is_err());
+        emit_program_wasm(&[&core], "native/derived", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }
 

@@ -24,11 +24,6 @@ fn function(parameter: CoreType, result: CoreType) -> CoreType {
 
 impl Backend<'_> {
     pub(super) fn json_codec_target(&self) -> Result<()> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native JSON codecs require a target-specific ABI proof".into(),
-            );
-        }
         Ok(())
     }
     pub(super) fn json_codec_dictionary(

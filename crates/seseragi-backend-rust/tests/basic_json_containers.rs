@@ -165,20 +165,15 @@ fn map_and_set_decoders_require_eq_hash_then_the_exact_child_codecs() {
 }
 
 #[test]
-fn container_dictionaries_stay_out_of_program_wasm_even_when_ignored() {
+fn container_json_dictionaries_build_as_program_wasm() {
     for value_type in CONTAINERS {
         for method in ["JsonEncode", "JsonDecode"] {
             let core = checked(&format!(
                 "import * as maps from \"std/map\"\nimport * as sets from \"std/set\"\nfn ignore<A> value: Int -> Int where {method}<A> = value\npub fn probe value: Int -> Int = ignore<{value_type}> value\npub fn main -> Int = 0\n"
             ));
             emit_rust_module(&core, "main").unwrap();
-            let error = emit_program_wasm(&[&core], "native/json-containers", &["probe".into()])
-                .unwrap_err();
-            assert_eq!(error.code, "SES-RUST-0001");
-            assert!(
-                error.message.contains("require a target-specific"),
-                "{error:?}"
-            );
+            emit_program_wasm(&[&core], "native/json-containers", &["probe".into()])
+                .unwrap_or_else(|error| panic!("{error:?}"));
         }
     }
 }

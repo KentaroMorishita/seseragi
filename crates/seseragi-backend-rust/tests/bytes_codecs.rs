@@ -162,18 +162,13 @@ fn bytes_codecs_validate_argument_result_evidence_and_source_stages() {
 }
 
 #[test]
-fn bytes_codecs_keep_unused_program_wasm_references_rejected() {
+fn bytes_codecs_build_as_program_wasm() {
     for &(operation, parameter, result) in OPERATIONS {
         let core = checked(&format!(
             "{IMPORTS}pub fn probe value: Int -> Int = {{ let saved: {parameter} -> {result} = {operation}; value }}\npub fn main -> Int = probe 42\n"
         ));
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/codecs", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{operation}: {error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "bytes-codecs-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/codecs", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }

@@ -1,0 +1,54 @@
+import * as arrays from "std/array"
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as text from "std/text"
+import * as validation from "std/validation"
+import { Validation } from "std/validation"
+import * as nonEmpty from "std/non-empty-list"
+
+type Shape deriving Eq, Ord, Hash, Show, Debug = | Dot | Circle Int | Rect (Int, Int)
+struct Point deriving Eq, Ord, Show, Debug { x: Int, y: Int }
+newtype Score deriving Eq, Ord, Show = Int
+
+fn shape value: Int -> Shape =
+  if value == 0 then Dot else if value > 0 then Circle value else Rect (value, -value)
+
+pub fn shown values: Array<Int> -> String = text.join "|" [
+  show values,
+  show (map shape values),
+  show (Just values),
+  show (arrays.head values),
+  show (Point { x: 1, y: -2 }),
+  show (Score 3),
+  debug (map shape values),
+  show (maps.insert "a" values (maps.singleton "b" [])),
+  show (sets.insert 3 (sets.singleton 1)),
+  show (1, "two", True)
+]
+
+pub fn compared values: Array<Int> -> Array<Bool> = {
+  let shapes = map shape values
+  [
+    shapes == map shape values,
+    Just values == Just [1, 2],
+    Circle 2 < Rect (1, 1),
+    Point { x: 1, y: 2 } < Point { x: 1, y: 3 },
+    Score 2 >= Score 3,
+    hash (Circle 4) == hash (Circle 4),
+    (1, "a") < (1, "b")
+  ]
+}
+
+pub fn ordered values: Array<Int> -> Array<Shape> = arrays.sort (map shape values)
+
+pub fn points values: Array<Int> -> Array<Point> =
+  arrays.sort (map (\value: Int -> Point { x: value % 3, y: value }) values)
+
+fn check value: Int -> Validation<String, Int> =
+  if value < 0 then validation.invalid ("negative:" + show value) else validation.valid value
+
+pub fn validated values: Array<Int> -> Either<List<String>, Array<Int>> =
+  match validation.toEither (traverse check values) {
+    Left errors -> Left (nonEmpty.toList errors)
+    Right good -> Right good
+  }
