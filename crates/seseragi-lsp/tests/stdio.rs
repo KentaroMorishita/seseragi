@@ -313,6 +313,30 @@ fn wasm_target_checks_selected_programs_without_warning_in_ts_ui_sources() {
 }
 
 #[test]
+fn wasm_run_target_checks_its_entry_exports() {
+    let workspace = TempWorkspace::new();
+    workspace.write(
+        "seseragi.toml",
+        &(target_manifest(Some("wasm")) + "exports = [\"amount\", \"same<Int>\"]\n"),
+    );
+    // A program library has no main; only the selected exports are checked.
+    let program = "import * as math from \"std/math\"\npub fn amount -> Float = math.sin 1.0\npub fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right\n";
+    workspace.write("src/main.ssrg", program);
+    let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let messages = open_package(&workspace, "src/main.ssrg", program, "utf-16");
+    let diagnostics = published(&messages, &uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert_eq!(diagnostics.len(), 1, "{diagnostics:?}");
+    assert_eq!(diagnostics[0]["severity"], 2);
+    assert_eq!(diagnostics[0]["range"]["start"]["line"], 1);
+    assert!(diagnostics[0]["message"]
+        .as_str()
+        .unwrap()
+        .starts_with("WASM target: "));
+}
+
+#[test]
 fn batch_apis_warn_only_for_wasm_at_their_source_ranges() {
     let source = concat!(
         "import * as c from \"std/child-process\"\n",

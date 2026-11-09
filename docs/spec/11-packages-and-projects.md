@@ -320,7 +320,8 @@ buildを拒否します。pure-load / task-loadの意味と同一identityを複�
 ## 11.10 executable entry
 
 `run.entry` はsource root内のmodule pathです。`run.target`はexecutable projectの既定logical targetです。
-現在のproduct commandは`process`または`web`を受理します。conformance toolが専用logical targetを持つことはできますが、
+現在のproduct commandは`process`、`web`、`wasm`を受理します。`wasm`はprogram WASMのlibraryを作るtargetで、
+下の「program WASM library」に従います。conformance toolが専用logical targetを持つことはできますが、
 Bun / Node / browser runtimeやprovider packageのidentityをここへ置きません。
 entry moduleは6.11の公開 `main` を一つ持たなければなりません。
 
@@ -347,7 +348,7 @@ required capabilityによるnarrowingは複数targetを実装済みのcommand（
 target selection errorです。明示targetは推論で置き換えず、非互換なら#207のrequired / selected / missing / compatible payloadを
 持つ事前diagnosticを返します。logical target選択後にだけ15章のprovider resolverが具体adapter/provider artifactを選びます。
 
-初期`run`は`process`だけ、初期`dev`は`web`だけを実行可能とします。未対応のcommand / target組み合わせは実行前に拒否し、
+初期`run`は`process`だけ、初期`dev`は`web`と`wasm`だけを実行可能とします。未対応のcommand / target組み合わせは実行前に拒否し、
 別targetへfallbackしません。`build`は両方を受理します。`web` buildはstatic browser application、`process` buildはCLIまたは
 HTTP serverを含むprocess applicationであり、HTTP service要求だけからstatic Web appへ分類しません。
 
@@ -372,6 +373,38 @@ cancellation、signal処理はrunnerとtarget adapterの責務であり、10.14�
 
 conformance runnerはsource path、absolute build path、host module cache pathを比較identityに含めません。
 entry、runtime ABI major、required runtime feature、host service trace、stdout / stderr、exit分類を比較します。
+
+### program WASM library
+
+`run.target = "wasm"`のpackageは、`main`を実行するappではなく、`run.entry`の公開関数を
+program WASMとして配るlibraryです。公開する関数は`run.exports`で選びます。書き方と型検査は
+`[web.programs.<name>]`の`exports`と同じです（11.13）。
+
+```toml
+[run]
+entry = "calculation"
+target = "wasm"
+exports = ["label", "validate", "sameText=same<String>"]
+```
+
+- `seseragi build`は、`--out-dir`（既定は`dist`）へ`program.wasm`、loaderの`program.mjs`、型宣言の
+  `program.d.mts`、生成Rustと`program-wasm.json`を出します。profileは`--profile`、manifestの既定値の順に選び、
+  値の形を同じprofileのTS targetに揃えます。
+  `--source-map`は受け付けません。
+- 出力先は、空か、前回の変更されていない出力だけを持つdirectoryでなければなりません。ほかのfileがあれば
+  置き換えずにerrorにします。失敗したbuildは前の完成した出力を保持します。
+- `seseragi dev`はdev serverを持たず、sourceとmanifestの変更を監視して`.seseragi/dev-wasm`へ作り直します。
+  Web devの出力`.seseragi/dev`とは別のdirectoryなので、互いに置き換えません。
+  `--host`、`--port`、`--open`は受け付けません。
+- `seseragi run`は実行する`main`がないので、targetの選択時に拒否します。
+- `run.target = "wasm"`では、`run.exports`が必須です。processの設定である`signal_mode`、
+  `shutdown_grace_ms`、`hash_seed`、`random_seed`は書けません。instanceのMap／Setのhash seedは、
+  loaderがhostの乱数から選びます。
+- 別のtargetのpackageでも、`run.exports`を書いておけば`--target wasm`で同じlibraryを作れます。
+- 同じinputからは同じbytesの`program.wasm`を作ります。
+
+`--target wasm`と`run.target = "wasm"`だけがこのtargetを選びます。`main`のcapabilityから推論はしません。
+複数のprogramをUIと一緒に配るWeb packageは、引き続き`[web.programs.<name>]`を使います。
 
 ### Web documentとpublic assets
 

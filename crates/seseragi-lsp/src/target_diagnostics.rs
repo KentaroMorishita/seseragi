@@ -36,19 +36,29 @@ pub(crate) fn append(
             Vec::new(),
         ));
     }
-    for program in manifest
+    // A wasm-target package builds `run.entry` with `run.exports`, as a
+    // `web.programs` entry builds its module with its exports.
+    let run_program = manifest
+        .run
+        .as_ref()
+        .filter(|run| {
+            run.target
+                .as_ref()
+                .is_some_and(|target| target.as_str() == "wasm")
+        })
+        .map(|run| (&run.entry, &run.exports));
+    let web_programs = manifest
         .web
         .as_ref()
         .into_iter()
         .flat_map(|web| web.programs.values())
-    {
-        let identity =
-            ModuleIdentity::new(root.clone(), ModuleRoot::Source, program.module.clone());
+        .map(|program| (&program.module, &program.exports));
+    for (module, selected) in run_program.into_iter().chain(web_programs) {
+        let identity = ModuleIdentity::new(root.clone(), ModuleRoot::Source, module.clone());
         if project.module(&identity).is_some() {
             // An export at type arguments (`label<Int>`) is checked by the
             // build, which adds its binding before type checking.
-            let exports = program
-                .exports
+            let exports = selected
                 .iter()
                 .filter_map(|text| seseragi_project::ProgramExport::parse(text).ok())
                 .filter(|export| export.type_arguments.is_none())

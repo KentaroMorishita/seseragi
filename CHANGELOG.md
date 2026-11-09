@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.158] - 2026-11-10
+
+### Added
+
+- `seseragi build` and `seseragi dev` build a package's program WASM library through the new `wasm` project target, without `experimental`. Set `run.target = "wasm"` (or pass `--target wasm`) and select the functions of `run.entry` with `run.exports`, written as in `web.programs.<name>.exports`. `build` writes the same files as `experimental build-wasm` to `--out-dir`, taking the profile from `--profile` and then the manifest; `dev` rebuilds into `.seseragi/dev-wasm` as sources change; `run` refuses the target before compiling, since a library has no `main`. The LSP checks the selected exports like a `web.programs` entry.
+
+### Changed
+
+- A program WASM build gives the same `program.wasm` bytes for the same inputs. The compiler no longer embeds the name of its temporary build directory.
+
 ## [0.61.157] - 2026-11-10
 
 ### Added

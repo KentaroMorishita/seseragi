@@ -467,8 +467,14 @@ fn write_artifact(
         "-C",
         "strip=symbols",
     ];
+    // The staging directory has a fresh name on every build; map it to a
+    // fixed one so that the same inputs give the same program.wasm bytes.
     let result = Command::new("rustc")
         .args(options)
+        .arg(format!(
+            "--remap-path-prefix={}=program",
+            directory.display()
+        ))
         .arg(directory.join("program.rs"))
         .arg("-o")
         .arg(directory.join("program.wasm"))
@@ -482,7 +488,9 @@ fn write_artifact(
     }
     let mut metadata = serde_json::to_value(&artifact.metadata).map_err(|e| e.to_string())?;
     metadata["compilerVersion"] = env!("CARGO_PKG_VERSION").into();
-    metadata["rustc"] = serde_json::json!({"version":String::from_utf8_lossy(&version.stdout).trim(),"target":"wasm32-unknown-unknown","flags":options});
+    let mut flags = options.map(str::to_owned).to_vec();
+    flags.push("--remap-path-prefix=<staging directory>=program".to_owned());
+    metadata["rustc"] = serde_json::json!({"version":String::from_utf8_lossy(&version.stdout).trim(),"target":"wasm32-unknown-unknown","flags":flags});
     metadata["files"] = serde_json::Value::Array(
         FILES
             .iter()
@@ -586,7 +594,60 @@ pub(super) fn run(arguments: &[String]) -> Result<i32, String> {
     let destination = destination.ok_or(USAGE)?;
     // Entire checked target admission precedes any generated output or rustc.
     let (artifact, sources) = compile(path, &exports, options(profile.unwrap_or_default()))?;
-    owned_output(&destination)?;
+    let published = publish(&artifact, &sources, &destination)?;
+    println!("{}", published.join("program.wasm").display());
+    Ok(0)
+}
+
+/// Builds the program WASM library of a package whose `run.target` is
+/// `wasm`: `run.entry` with the functions `run.exports` selects, into
+/// `destination`. `None` means the checker already reported diagnostics.
+pub(crate) fn build_package_program(
+    root: &Path,
+    command: seseragi_project::ProjectCommand,
+    profile: Option<seseragi_project::BuildProfile>,
+    destination: &Path,
+) -> Result<Option<PathBuf>, String> {
+    let manifest = root.join("seseragi.toml");
+    let source = fs::read_to_string(&manifest)
+        .map_err(|error| format!("failed to read {}: {error}", manifest.display()))?;
+    let parsed = seseragi_project::parse_manifest(&source)
+        .map_err(|error| format!("{}: {}: {error}", manifest.display(), error.code()))?;
+    let run = parsed
+        .run
+        .as_ref()
+        .filter(|run| !run.exports.is_empty())
+        .ok_or_else(|| {
+            format!(
+                "{}: the wasm target builds run.entry with the functions run.exports selects; add run.exports",
+                manifest.display()
+            )
+        })?;
+    // The invocation's profile, then the manifest's, as for other builds.
+    let profile = profile.or(parsed.build_profile).unwrap_or_default();
+    let Some((artifact, sources)) = compile_package(
+        &root.to_string_lossy(),
+        &run.exports,
+        Some(&run.entry),
+        command,
+        options(profile),
+    )
+    .map_err(|error| format!("{}: run: {error}", manifest.display()))?
+    else {
+        return Ok(None);
+    };
+    publish(&artifact, &sources, destination).map(Some)
+}
+
+/// Writes the artifact next to `destination` and then replaces it, so a
+/// failed build keeps the preceding complete artifact. A destination that
+/// holds anything but an unmodified program WASM artifact is refused.
+fn publish(
+    artifact: &ProgramWasmArtifact,
+    sources: &[(PathBuf, Vec<u8>)],
+    destination: &Path,
+) -> Result<PathBuf, String> {
+    owned_output(destination)?;
     let parent = destination
         .parent()
         .filter(|p| !p.as_os_str().is_empty())
@@ -598,7 +659,7 @@ pub(super) fn run(arguments: &[String]) -> Result<i32, String> {
     let parent = fs::canonicalize(parent).map_err(|e| e.to_string())?;
     let destination = parent.join(name);
     let stage = OwnedDirectory::create(&parent)?;
-    write_artifact(&artifact, &sources, &stage.0)?;
+    write_artifact(artifact, sources, &stage.0)?;
     // Stage compilation failures preserve the preceding complete artifact.
     owned_output(&destination)?;
     let mut backup = OwnedDirectory::create(&parent)?;
@@ -625,6 +686,5 @@ pub(super) fn run(arguments: &[String]) -> Result<i32, String> {
             ));
         }
     }
-    println!("{}", destination.join("program.wasm").display());
-    Ok(0)
+    Ok(destination)
 }

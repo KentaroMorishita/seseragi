@@ -306,6 +306,11 @@ fn compile_path_inner(
                 provider_target,
             )
         }
+        // `build` and `dev` build the wasm target's program before reaching
+        // the TS pipeline, and `run` rejects it during target selection.
+        ProjectTarget::Wasm => {
+            return Err("the wasm target builds a program WASM library, not a TS app".into())
+        }
     };
     Ok(
         match render_compile_result(&project, result, diagnostic_format)? {
@@ -374,6 +379,7 @@ pub(crate) fn compatible_targets(contract: &seseragi_runtime::MainContract) -> V
             let target = match target {
                 ProjectTarget::Process => ExecutionTarget::Process,
                 ProjectTarget::Web => ExecutionTarget::Browser,
+                ProjectTarget::Wasm => return false,
             };
             validate_target(contract, target).is_ok()
         })
