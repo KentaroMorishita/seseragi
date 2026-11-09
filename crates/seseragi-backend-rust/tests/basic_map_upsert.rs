@@ -170,16 +170,14 @@ fn map_update_functions_refuse_forged_shapes_stages_and_wrong_output_key_diction
 }
 
 #[test]
-fn unused_map_update_functions_stay_out_of_program_wasm() {
+fn unused_map_update_functions_build_as_program_wasm() {
     for (name, signature) in [
         ("upsert", "String -> (Maybe<Int> -> Int) -> maps.Map<String,Int> -> maps.Map<String,Int>"),
         ("mergeWith", "(Int -> Int -> Int) -> maps.Map<String,Int> -> maps.Map<String,Int> -> maps.Map<String,Int>"),
         ("mapKeysWith", "(Int -> Int -> Int) -> (String -> Int) -> maps.Map<String,Int> -> maps.Map<Int,Int>"),
     ] {
         let source = format!("import * as maps from \"std/map\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = maps.{name}; value }}\n");
-        let error = emit_program_wasm(&[&checked(&source)], "native/update", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(error.message.contains("native collection requires a target-specific ABI proof"), "{name}: {error}");
-        assert_eq!(error.origin.unwrap().source, "map-upsert-雪🙂.ssrg");
+        emit_program_wasm(&[&checked(&source)], "native/update", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

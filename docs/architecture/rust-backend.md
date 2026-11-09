@@ -78,7 +78,8 @@ decoder combinatorは含めない。
 非正sizeは`Left (NonPositiveSize size)`を返す。結果はstrictで、入力を変更せず、
 windowやprefixの結果に含まれない要素を保持しない。Arrayの`last`はO(1)、ListはO(n)。
 保存関数・genericな部分適用・通常path package、cold EffectとRef cycleを検査する。
-program WASM、残るcollection APIとSizeErrorの標準Eq/Show辞書はこの候補に含めない。
+残るcollection APIとSizeErrorの標準Eq/Show辞書はこの候補に含めない。program WASMでの扱いは
+[pure program WASM](#pure-program-wasmとtypedな返却関数)を参照。
 
 JSON基本とsequenceは未配布の118候補にまとめる。続くJSON候補ではBool/String/Int/
 Decimal/Unit/Jsonの標準JsonEncode/JsonDecodeとstring wrapper、DecodeErrorKindと
@@ -89,7 +90,7 @@ closedな標準methodは隠れたmanaged captureを持たず、user辞書とclos
 共有frontendでは仕様どおりDecodeErrorを公開structに登録し、generic JSON辞書にそのAを保った
 TS型を与える。source checkerが証明した通常型のinstantiationを最初のsource段階へ残し、
 後続の辞書から型を推測できずunknownになる問題を避ける。collection/record/derived codec、
-decoder combinator、暗黙Float/BigInt codecと新program WASMは後続範囲。
+decoder combinator、暗黙Float/BigInt codecは後続範囲。
 
 同じ119バッチでfield/optionalField/index/array/record/oneOf/map/flatMapも追加する。
 decoderは通常のtraced関数値で、source引数の一回評価と、返したdecoderを連続適用する段階を
@@ -98,7 +99,7 @@ recordはunknown fieldをcallbackより先に検査し、指定順と重複指�
 全失敗なら最後のerror、空なら標準messageを返す。flatMapは選択したdecoderへ元Jsonを渡す。
 nativeの動的なdecoder合成は同時128 frameでDefectにし、unwindでframeを戻す。
 128を超える合成の成功はこのnative sliceに含めず、finalizer/Ref cycle/root0を確認する。
-標準collection/record/derived codecと新program WASMは引き続き後続範囲。
+標準collection/record/derived codecは引き続き後続範囲。
 
 Bytesは0〜255のbyteを独立したstorageに保持し、最初の範囲外Intを`ByteOutOfRange`として返す。
 BigIntのdecimal parse／formatはFloatや固定幅整数を経由しない。Text replaceはliteralの置換で、
@@ -114,8 +115,7 @@ seseragi experimental build-native \
 ./target/basic-map/program
 ```
 
-これらの新APIとprimitive Hash辞書をprogram WASMへ受け入れる変更は含めない。既存の
-user Hash program WASMは保持する。MapとSetの残るAPI、JSONのcodec辞書／decoder、Regex、DecimalとBigIntの算術と
+MapとSetの残るAPI、JSONのcodec辞書／decoder、Regex、DecimalとBigIntの算術と
 全標準辞書、一般provider ABIは未完了で、[基本APIのIssue](https://github.com/KentaroMorishita/seseragi/issues/812)に残る。
 
 ## pure program WASMとtypedな返却関数
@@ -176,6 +176,21 @@ receipt と依存の hash には、足した行を含まないディスク上の
 プログラムが使う標準ランタイムの領域（`text`、`list` など）を表す。証明のない標準 API は、
 ここに載らずにビルドが失敗する。Effect を返す公開関数の ABI は受け入れ判定が別で、
 上の新しい型にはまだ対応しない。
+
+プログラムの中では、TS ターゲットと同じ結果になる標準 API を使える。
+
+| 分類 | 使える API |
+| --- | --- |
+| コレクション | Map、Set、範囲と内包表記、並べ替え、グループ化、iterator、`reduceUntil`、`chunksOf`、`windows` |
+| 数値 | Int の checked・saturating 演算、Int・Float と文字列の変換、Float から Int への丸め、`sqrt` と定数 |
+| 辞書 | 標準の Show・Debug・Eq・Ord・Hash と `deriving`、Monoid・Reducible の畳み込み（`sum`、`combine` など） |
+| 高階 | Array・List・Maybe・Either・NonEmptyList・Validation の Functor・Applicative・Monad・Traversable、利用者の instance と継承したスーパートレイト |
+| 文字列とバイト列 | `std/text`、Bytes、hex、base64、UTF-8 の変換、`sliceScalars` |
+| JSON | parse、stringify、`deriving JsonEncode, JsonDecode` の codec と decode のエラー |
+
+結果が TS ターゲットとずれうる API は、ビルド時に位置付きで拒否する。Regex、Float の `pow` と
+JS の `Math` と丸めが違う数学関数、Unicode と書記素の表（TS ターゲットは JS エンジンの Unicode
+版に従う）がこれに当たる。Effect、Stream、monad transformer、`forEach` も純粋な公開関数からは使えない。
 
 ```typescript
 import { loadProgram } from "./program/program.mjs"
@@ -491,7 +506,7 @@ canonicalなowner、閉じた型、kindとsourceの適用段階を確認し、�
 resource scopeを解放する。標準の`Show<std/int::IntParseError>`は4つのconstructorと
 payloadを表示し、同名のlocal型のinstanceとはcanonical ownerで区別する。保存したmethodでも
 sourceの引数を一度だけ評価し、型・kind・evidence・返り値を証明できないCoreIrは生成前に拒否する。
-radix指定や他の数値変換、IntParseErrorのEq/Debug、program WASMのparseはこの対応に含めない。
+radix指定や他の数値変換、IntParseErrorのEq/Debugはこの対応に含めない。
 `std/float.parse`はStringをFloatへ変換し、標準の`FloatParseError`を持つEitherを返す。
 Int parseと共通の境界でcanonical owner、kind、source arity、引数/返り型とevidenceを検査する。
 ASCIIのdecimal/exponent構文を先に検証し、不正文字のUTF-8 byte offsetを返す。
@@ -501,14 +516,14 @@ subnormal、underflowとsigned zero、明示したNaN／Infinity／-Infinityは�
 成功時だけ別fileへ書く。2.5と3.75は6.25、空入力は既存Float表示の0.0となる。
 読込・parse失敗では既存出力を保持し、cold計算のFailure/Defectでもresource scopeを解放する。
 Float演算の合計がInfinityやNaNとなる場合も既存TS契約に従う。標準FloatParseErrorの3つの
-constructorは明示matchで表示し、新しいShow/Debug/Eqやprogram WASMのparseは含めない。
+constructorは明示matchで表示し、新しいShow/Debug/Eqは含めない。
 `std/float.toInt`と`roundIntegral`は、共通numeric境界でcanonicalなRoundingModeと
 FloatConversionError、引数/返り型、kind、evidenceとsource arityを照合する。
 6種類の丸めをTSと揃え、roundIntegralはsigned zeroとNaN/Infinityを保つ。
 toIntは非finiteを型付き失敗にし、丸めた後のsafe Int範囲を検査してzeroを正規化する。
 `filesystem-float-round.ssrg`と`float-round-file` packageはHalfEvenで各行を整数化し、
 全行の成功後に別fileへ書く。入力と失敗時の既存出力を保ち、保存・返り値converterと
-cold Failure/Defectでも評価順、scope解放とroot0を保つ。program WASMの変換は位置付きで拒否し、
+cold Failure/Defectでも評価順、scope解放とroot0を保つ。
 Float Eq/Ord、power/stdmathと新しいnumeric errorのShow/Debugはこの範囲に含めない。
 nativeのInt除算と剰余はcanonicalな`std/int::Div`／`std/int::Rem`の型・evidence・source段階を照合する。
 商は0方向へ切り捨て、剰余の符号は被除数に従う。保存したmethodや再利用する部分適用でも

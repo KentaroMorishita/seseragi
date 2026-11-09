@@ -182,15 +182,14 @@ fn validation_operations_require_checked_argument_result_owners_kinds_and_source
 }
 
 #[test]
-fn saved_validation_functions_require_full_signatures_and_keep_unused_program_wasm_rejection() {
+fn saved_validation_functions_require_full_signatures() {
     for (name, _, _, signature) in cases() {
         let core = checked(&format!(
             "import * as v from \"std/validation\"\nimport {{ NonEmptyList }} from \"std/non-empty-list\"\nfn saved -> ({signature}) = v.{name}\npub fn probe -> Int = 0\n"
         ));
         emit_rust_module(&core, "probe").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/validation", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001", "{name}: {error:?}");
+        emit_program_wasm(&[&core], "native/validation", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
         let index = core
             .functions
             .iter()

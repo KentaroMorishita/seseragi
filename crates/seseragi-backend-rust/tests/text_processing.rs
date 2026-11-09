@@ -145,7 +145,7 @@ pub effect fn main = do {
 }
 
 #[test]
-fn program_wasm_admits_string_text_operations_and_rejects_bytes_and_unicode() {
+fn program_wasm_admits_text_operations_and_utf8_and_rejects_unicode_tables() {
     for (operation, signature) in [
         ("isEmpty", "String -> Bool"),
         ("concat", "Array<String> -> String"),
@@ -156,8 +156,13 @@ fn program_wasm_admits_string_text_operations_and_rejects_bytes_and_unicode() {
         ("trimStart", "String -> String"),
         ("trimEnd", "String -> String"),
         ("replaceAll", "String -> String -> String -> String"),
+        ("encodeUtf8", "String -> Bytes"),
+        (
+            "sliceScalars",
+            "Int -> Int -> String -> Either<text.TextSliceError, String>",
+        ),
     ] {
-        let source = format!("import * as text from \"std/text\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = text.{operation}; value }}\npub fn nativeProbe -> Int = probe 42\n");
+        let source = format!("import * as text from \"std/text\"\nimport {{ Bytes }} from \"std/bytes\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = text.{operation}; value }}\npub fn nativeProbe -> Int = probe 42\n");
         let core = compile_core_module(CompileInput::new("text-wasm.ssrg", "native/main", &source))
             .unwrap()
             .core_ir;
@@ -165,18 +170,12 @@ fn program_wasm_admits_string_text_operations_and_rejects_bytes_and_unicode() {
         emit_program_wasm(&[&core], "native/main", &["probe".into()])
             .unwrap_or_else(|error| panic!("{operation}: {error}"));
     }
-    // UTF-8 Bytes conversions and the Unicode tables need their own proof.
-    for (import, value) in [
-        ("std/text", "let saved = text.encodeUtf8"),
-        (
-            "std/text",
-            "let saved: Int -> Int -> String -> Either<text.TextSliceError, String> = text.sliceScalars",
-        ),
-        (
-            "std/text/unicode",
-            "let saved: String -> String = text.fullCaseFold",
-        ),
-    ] {
+    // The Unicode tables follow the JS engine's Unicode version on the TS
+    // target, which the tables compiled into the program cannot promise.
+    for (import, value) in [(
+        "std/text/unicode",
+        "let saved: String -> String = text.fullCaseFold",
+    )] {
         let source = format!("import * as text from \"{import}\"\npub fn probe value: Int -> Int = {{ {value}; value }}\npub fn nativeProbe -> Int = probe 42\n");
         let core = compile_core_module(CompileInput::new("text-wasm.ssrg", "native/main", &source))
             .unwrap()

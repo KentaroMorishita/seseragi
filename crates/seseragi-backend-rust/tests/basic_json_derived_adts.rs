@@ -83,16 +83,13 @@ fn adt_dictionaries_reject_forged_heads_variants_payloads_and_children_at_source
     }
 }
 #[test]
-fn ignored_derived_adt_dictionaries_do_not_admit_program_wasm() {
+fn derived_adt_json_dictionaries_build_as_program_wasm() {
     for method in ["JsonEncode", "JsonDecode"] {
         let core = checked(&format!(
             "type Choice deriving {method} = | Empty | Loaded Int\npub fn main -> Int = 0\n"
         ));
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/json-adts", &["main".into()]).unwrap_err();
-        assert!(
-            error.message.contains("require a target-specific"),
-            "{error:?}"
-        );
+        emit_program_wasm(&[&core], "native/json-adts", &["main".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }

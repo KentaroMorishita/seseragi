@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.156] - 2026-11-10
+
+### Added
+
+- Program WASM runs the pure standard APIs with the same results as the TS target: Map, Set, ranges, comprehensions, sorting, grouping, iterators and `reduceUntil`; Int checked and saturating arithmetic, Int and Float text conversion, and Float to Int rounding; the exact math functions (`sqrt` and the constants); the standard Show, Debug, Eq, Ord and Hash dictionaries and `deriving`; Functor, Applicative, Monad and Traversable for Array, List, Maybe, Either, NonEmptyList and Validation, including user instances and inherited supertraits; Monoid and Reducible folds such as `sum`, `combine` and `reduce`; Bytes, hex and base64, UTF-8 conversion and `sliceScalars`; `chunksOf`, `windows` and the standard error types; and JSON parsing, printing and derived codecs. The manifest and loader `capabilities` list each runtime area a program uses.
+- Program WASM still refuses, at build time and with a position, the APIs whose results could differ from the TS target: Regex, Float `pow` and the math functions that round differently from JS `Math`, the Unicode and grapheme tables (the TS target follows the JS engine's Unicode version), and Effect, Stream, monad transformers and `forEach`.
+
 ## [0.61.155] - 2026-11-07
 
 ### Added

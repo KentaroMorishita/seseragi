@@ -74,18 +74,13 @@ fn derived_struct_dictionaries_reject_unproven_heads_and_fields_at_the_declarati
 }
 
 #[test]
-fn unused_derived_json_structs_stay_out_of_program_wasm() {
+fn derived_struct_json_dictionaries_build_as_program_wasm() {
     for method in ["JsonEncode", "JsonDecode"] {
         let core = checked(&format!(
             "struct Row deriving {method} {{ value: Int }}\npub fn main -> Int = 0\n"
         ));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/json-derived", &["main".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("require a target-specific"),
-            "{error:?}"
-        );
+        emit_program_wasm(&[&core], "native/json-derived", &["main".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }

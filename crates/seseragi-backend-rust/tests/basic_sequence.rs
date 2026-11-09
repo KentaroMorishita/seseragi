@@ -295,14 +295,7 @@ fn sequence_size_error_constructor_rejects_wrong_owner_kind_arity_and_payload_at
 }
 
 #[test]
-fn program_wasm_admits_sequence_references_and_refuses_size_errors() {
-    // The size checks of chunksOf and windows return the standard SizeError,
-    // which needs its own proof; the other operations are admitted.
-    let refused = |expression: &str| {
-        ["chunksOf", "windows", "NonPositiveSize", "s.windows"]
-            .iter()
-            .any(|name| expression.starts_with(name))
-    };
+fn program_wasm_admits_sequence_references_and_size_errors() {
     for module in ["array", "list"] {
         for (expression, result) in expressions() {
             let original = source(module, expression, result);
@@ -311,18 +304,7 @@ fn program_wasm_admits_sequence_references_and_refuses_size_errors() {
             let wrapped = format!("{imports}pub fn probe value: Int -> Int = {{ let saved: Unit -> {result} = \\_: Unit -> {}; value }}\n", body.trim());
             let core = checked(&wrapped);
             let emitted = emit_program_wasm(&[&core], "native/sequence", &["probe".into()]);
-            if refused(expression) {
-                let error = emitted.unwrap_err();
-                assert!(
-                    error
-                        .message
-                        .contains("sequence operation requires a target-specific"),
-                    "{module}/{expression}: {error}"
-                );
-                assert_eq!(error.origin.unwrap().source, "sequence-雪🙂.ssrg");
-            } else {
-                emitted.unwrap_or_else(|error| panic!("{module}/{expression}: {error}"));
-            }
+            emitted.unwrap_or_else(|error| panic!("{module}/{expression}: {error}"));
         }
     }
     for (import, expression, signature) in [
@@ -354,16 +336,6 @@ fn program_wasm_admits_sequence_references_and_refuses_size_errors() {
     ] {
         let core = checked(&format!("{import}\npub fn probe value: Int -> Int = {{ let saved: {signature} = {expression}; value }}\n"));
         let emitted = emit_program_wasm(&[&core], "native/sequence", &["probe".into()]);
-        if refused(expression) {
-            let error = emitted.unwrap_err();
-            assert!(
-                error
-                    .message
-                    .contains("sequence operation requires a target-specific"),
-                "{expression}: {error}"
-            );
-        } else {
-            emitted.unwrap_or_else(|error| panic!("{expression}: {error}"));
-        }
+        emitted.unwrap_or_else(|error| panic!("{expression}: {error}"));
     }
 }

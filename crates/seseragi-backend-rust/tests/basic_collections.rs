@@ -266,7 +266,7 @@ fn map_contains_and_entries_refuse_forged_pairs_owner_evidence_and_source_stages
 }
 
 #[test]
-fn collection_references_do_not_expand_program_wasm() {
+fn collection_references_build_as_program_wasm() {
     for (module, name, ty) in [
         ("set", "empty", "Unit -> collection.Set<String>"),
         ("set", "singleton", "String -> collection.Set<String>"),
@@ -301,12 +301,7 @@ fn collection_references_do_not_expand_program_wasm() {
     ] {
         let core = checked(&format!("import * as collection from \"std/{module}\"\npub fn probe value: Int -> Int = {{ let saved: {ty} = collection.{name}; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap_or_else(|e| panic!("{name}: {e:?}"));
-        let e = emit_program_wasm(&[&core], "native/collections", &["probe".into()]).unwrap_err();
-        assert_eq!(e.code, "SES-RUST-0001");
-        assert!(
-            e.message.contains("requires a target-specific"),
-            "{name}: {e:?}"
-        );
-        assert_eq!(e.origin.unwrap().source, "collections-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/collections", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

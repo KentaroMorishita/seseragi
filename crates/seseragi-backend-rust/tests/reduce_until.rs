@@ -263,13 +263,11 @@ fn reduce_until_saved_references_validate_the_original_curried_source_signature(
     }
 }
 #[test]
-fn reduce_until_does_not_admit_unused_program_wasm_control_references() {
+fn reduce_until_admits_unused_program_wasm_control_references() {
     for (name, _, _, signature) in cases() {
         let core=checked(&format!("{}pub fn probe value:Int -> Int = {{let saved:{signature} = control.{name};value}}\npub fn main -> Int = 0\n",prefix()));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/reduce-until", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "reduce-until-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/reduce-until", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

@@ -2765,6 +2765,148 @@ owner.exports.shown({coefficient: 1n, scale: 0n});
     ));
 }
 
+#[test]
+fn maps_and_sets_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = ["histogram", "lookup", "pruned", "unique", "overlap"];
+    wasm_and_ts(&scratch.0, "program-wasm-collections.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram, capabilities} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+assert.deepStrictEqual([...capabilities], ['hash', 'map', 'set']);
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const list = (values) => values.reduceRight((tail, head) => ({tag: 'Cons', head, tail}), {tag: 'Empty'});
+const texts = [[], ['red'], ['red', 'blue', 'red', 'green', 'blue', 'red'], ['雪', '🙂', '雪', '', '']];
+for (const words of texts) {
+  for (const name of ['histogram', 'pruned']) {
+    assert.deepStrictEqual(plain(wasm[name](list(words))), plain(ts[name](list(words))), `${name} ${words}`);
+  }
+}
+for (const word of ['a', 'b', 'c']) assert.deepStrictEqual(plain(wasm.lookup(word)), plain(ts.lookup(word)));
+const numbers = [[], [3, 1, 3, 2, 1], [-0, 0, 9007199254740991, -9007199254740991, 5]];
+for (const left of numbers) {
+  assert.deepStrictEqual(plain(wasm.unique(list(left))), plain(ts.unique(list(left))));
+  for (const right of numbers) {
+    assert.deepStrictEqual(plain(wasm.overlap([list(left), list(right)])), plain(ts.overlap([list(left), list(right)])));
+  }
+}
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn ranges_sorting_iterators_and_non_empty_lists_match_the_ts_target() {
+    let scratch = Scratch::new();
+    let exports = [
+        "pairs",
+        "sorted",
+        "ranked",
+        "grouped",
+        "prefixSum",
+        "rangeSum",
+        "counted",
+        "ends",
+    ];
+    wasm_and_ts(&scratch.0, "program-wasm-ordering.ssrg", &exports);
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const list = (values) => values.reduceRight((tail, head) => ({tag: 'Cons', head, tail}), {tag: 'Empty'});
+const same = (name, input) => assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name} ${JSON.stringify(input)}`);
+for (const limit of [0, 1, 4, 7]) { same('pairs', limit); same('rangeSum', limit); same('counted', limit); }
+const arrays = [[], [5], [22, 11, 42, 31, -7, 0, -0, 11], [3, 3, 1, 2, 9007199254740991, -9007199254740991]];
+for (const values of arrays) {
+  same('sorted', values);
+  same('prefixSum', values);
+  same('ranked', list(values));
+  same('grouped', list(values));
+}
+for (const values of [[], ['only'], ['a', 'b', 'c'], ['雪', '🙂']]) same('ends', list(values));
+program.dispose();
+assert.equal(program.ownership().managedLiveAtClose, 0);
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn exact_math_matches_the_ts_target_bit_for_bit() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-math.ssrg",
+        &["constants", "root", "diagonal"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram, capabilities} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+assert.deepStrictEqual([...capabilities], ['float', 'math']);
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const bits = (value) => { const view = new DataView(new ArrayBuffer(8)); view.setFloat64(0, value); return view.getBigUint64(0); };
+// NaN bit patterns depend on the CPU and the JS engine and no program can
+// observe them, so any NaN matches any NaN; every other value matches bit for bit.
+const same = (left, right, label) => Number.isNaN(left) && Number.isNaN(right) ? undefined : assert.equal(bits(left), bits(right), label);
+wasm.constants(undefined).forEach((value, index) => same(value, ts.constants(undefined)[index], `constant ${index}`));
+for (const value of [0, -0, 1, 2, 0.5, 1e-310, 5e-324, 1.7976931348623157e308, -1, NaN, Infinity, -Infinity, 123456.789]) {
+  same(wasm.root(value), ts.root(value), `root ${value}`);
+  same(wasm.diagonal(value), ts.diagonal(value), `diagonal ${value}`);
+}
+program.dispose();
+console.log('same bits');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same bits\n", "{engine}");
+    }
+    // Other math functions round differently in each host's math library.
+    let source = scratch.0.join("wave.ssrg");
+    fs::write(
+        &source,
+        "import * as math from \"std/math\"\npub fn wave value: Float -> Float = math.sin value\n",
+    )
+    .unwrap();
+    let result = bounded(
+        build(&source, &scratch.0.join("wave"), &["wave"]).env("PATH", ""),
+        &scratch.0,
+    );
+    assert_eq!(result.status.code(), Some(2), "{result:?}");
+    assert!(String::from_utf8_lossy(&result.stderr)
+        .contains("rounds differently from the TS target's Math"));
+}
+
 /// Builds `fixture` as program WASM in `wasm/` and for the TS target in
 /// `ts/`. The TS target needs an entry, which program WASM rejects when it
 /// uses Console, so only the TS copy gets one.
@@ -2796,6 +2938,196 @@ fn wasm_and_ts(scratch: &Path, fixture: &str, exports: &[&str]) {
             .arg(scratch.join("ts")),
         scratch,
     ));
+}
+
+#[test]
+fn int_and_float_conversion_operations_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-numbers.ssrg",
+        &["checked", "limits", "text", "rounded"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const [min, max] = ts.limits(undefined);
+assert.deepStrictEqual(wasm.limits(undefined), [min, max]);
+for (const left of [0, 1, -1, 3, -7, 52, 53, 54, min, max])
+  for (const right of [0, 1, -1, 2, -2, 10, -10, 0x7fffffff, min, max])
+    assert.deepStrictEqual(wasm.checked([left, right]), ts.checked([left, right]), `checked ${left} ${right}`);
+for (const radix of [0, 1, 2, 8, 10, 16, 36, 37])
+  for (const source of ['', '0', '-0', '+7', '1010', 'ff', 'FF', 'zz', '-80', '9007199254740991', '9007199254740992', '-9007199254740992', '12x', ' 1'])
+    assert.deepStrictEqual(wasm.text([radix, source]), ts.text([radix, source]), `text ${radix} ${source}`);
+for (const value of [0, -0, 0.5, 1.5, 2.5, -0.5, -1.5, -2.5, 2.4999999999999996, 1e-310, 123.456, -123.456, 9007199254740991, 9007199254740992, -9007199254740993, 1e300, NaN, Infinity, -Infinity])
+  assert.deepStrictEqual(wasm.rounded(value), ts.rounded(value), `rounded ${value}`);
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn traversals_and_user_monoid_reducible_instances_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-instances.ssrg",
+        &[
+            "traverseMaybe",
+            "sequenceMaybe",
+            "traverseEither",
+            "sequenceEither",
+            "boxMaybe",
+            "boxEither",
+            "marks",
+            "reversed",
+            "totals",
+        ],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const same = (name, input) => assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+const arrays = [[], [1], [1, 2, 3], [1, 0, 3], [-1, -2], [4, 5, 6, 7]];
+for (const input of arrays) for (const name of ['traverseMaybe', 'traverseEither', 'marks', 'reversed', 'totals']) same(name, input);
+const just = (value) => ({tag: 'Just', value});
+for (const input of [[], [just(1)], [just(1), just(2)], [just(1), {tag: 'Nothing'}, just(3)]]) same('sequenceMaybe', input);
+const right = (value) => ({tag: 'Right', value});
+const left = (value) => ({tag: 'Left', value});
+for (const input of [[], [right(1)], [right(1), right(2)], [right(1), left('a'), left('b')]]) same('sequenceEither', input);
+for (const input of [{tag: 'Empty'}, {tag: 'Full', value: 3}, {tag: 'Full', value: 0}]) { same('boxMaybe', input); same('boxEither', input); }
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn standard_dictionaries_and_derived_instances_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-dictionaries.ssrg",
+        &["shown", "compared", "ordered", "points", "validated"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const arrays = [[], [0], [1, 2], [3, -1, 0, 2], [-4, -4, 5, 0, 1], [7, 1, 4, 1, -9]];
+for (const input of arrays) for (const name of ['shown', 'compared', 'ordered', 'points', 'validated']) {
+  assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+}
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn bytes_utf8_slices_and_sized_windows_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-bytes.ssrg",
+        &["utf8", "decoded", "parsed", "sliced", "sized"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const same = (name, input) => assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+for (const input of ['', 'a', 'a雪🙂', '\0\n\u00e9']) same('utf8', input);
+for (const input of [[], [104, 105], [104, 255, 105], [0xe9, 0x9b], [0xf0, 0x9f, 0x99, 0x82], [300], [-1]]) same('decoded', input);
+for (const input of ['', 'zz', '6869', '686', 'aGk=', 'aGk', 'aG==', '+/8=']) same('parsed', input);
+for (const input of [[0, 0], [1, 3], [0, 4], [3, 1], [-1, 2], [2, 9]]) same('sliced', input);
+for (const input of [-2, 0, 1, 2, 5, 6, 9007199254740991]) same('sized', input);
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn json_parsing_and_derived_codecs_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-json.ssrg",
+        &["reformatted", "items", "statuses", "labels"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const same = (name, input) => assert.equal(wasm[name](input), ts[name](input), `${name}(${JSON.stringify(input)})`);
+const sources = [
+  '', 'null', ' [1, 2.5, -0, 1e21, 1.5e-7, true, "a\\u00e9\\n🙂"] ', '{"b": {"c": []}, "a": null}', '[1,', '"\\ud800"',
+  '[{"name": "x", "count": 2, "tags": ["a"]}]', '[{"name": "x", "count": 2.5, "tags": []}]', '[{"name": "x", "tags": []}]',
+  '[{"name": "x", "count": 1, "tags": [], "extra": 0}]', '[{"tag": "Open"}, {"tag": "Closed", "value": 3}, {"tag": "Moved", "to": "y"}]',
+  '[{"tag": "Gone"}]', '"label"', '9007199254740993', '{"name": "x"}',
+];
+for (const input of sources) for (const name of ['reformatted', 'items', 'statuses', 'labels']) same(name, input);
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
 }
 
 #[test]

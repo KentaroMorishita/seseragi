@@ -658,6 +658,7 @@ export async function loadProgram(bytes) {
   for (const name of [
     "ssrg_contract_ptr",
     "ssrg_contract_len",
+    "ssrg_hash_seed",
     "ssrg_init",
     "ssrg_export",
     "ssrg_input",
@@ -699,6 +700,10 @@ export async function loadProgram(bytes) {
       )
     }
     executing = true
+    // Map and Set hash with a secret per-instance seed, as native does
+    // with process entropy; WASM has no entropy source of its own.
+    const seed = globalThis.crypto.getRandomValues(new Uint32Array(2))
+    api.ssrg_hash_seed(seed[0], seed[1])
     const initialized = api.ssrg_init()
     executing = false
     if (initialized !== 0) throw new TypeError(decoder.decode(output(api)))

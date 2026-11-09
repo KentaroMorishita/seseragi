@@ -1,0 +1,36 @@
+// Program WASM parses, prints and decodes JSON, including derived codecs
+// and decode errors, with the same results as the TS target.
+import * as json from "std/json"
+
+struct Item deriving JsonEncode, JsonDecode { name: String, count: Int, tags: Array<String> }
+type Status deriving JsonEncode, JsonDecode = | Open | Closed Int | Moved { to: String }
+newtype Label deriving JsonEncode, JsonDecode = Maybe<String>
+
+fn kind value: json.DecodeErrorKind -> String = match value {
+  json.ExpectedJsonType name -> "expected:" + name
+  json.MissingJsonField name -> "missing:" + name
+  json.UnknownJsonField name -> "unknown-field:" + name
+  json.UnknownJsonTag name -> "unknown-tag:" + name
+  json.InvalidJsonValue message -> "invalid:" + message
+}
+
+fn read<A> source: String -> String where JsonDecode<A>, JsonEncode<A> = {
+  let decode: String -> Either<json.JsonReadError, A> = json.decodeString
+  let encode: A -> String = json.encodeString
+  match decode source {
+    Left (json.JsonDecodeFailure error) -> "error:" + kind error.kind
+    Left _ -> "syntax"
+    Right value -> "ok:" + encode value
+  }
+}
+
+pub fn reformatted source: String -> String = match json.parse source {
+  Left _ -> "syntax"
+  Right value -> json.stringify value
+}
+
+pub fn items source: String -> String = read<Array<Item>> source
+
+pub fn statuses source: String -> String = read<Array<Status>> source
+
+pub fn labels source: String -> String = read<Label> source

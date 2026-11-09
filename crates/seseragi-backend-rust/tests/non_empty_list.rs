@@ -257,8 +257,8 @@ fn native_non_empty_list_calls_and_saved_references_do_not_widen_program_wasm() 
         ] {
             let core = checked(&format!("import * as n from \"std/non-empty-list\"\n{declaration}\npub fn probe -> Int = 0\n"));
             emit_rust_module(&core, "probe").unwrap();
-            let error = emit_program_wasm(&[&core], "native/non-empty", &["probe".into()]).unwrap_err();
-            assert_eq!(error.code, "SES-RUST-0001");
+            emit_program_wasm(&[&core], "native/non-empty", &["probe".into()])
+                .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
         }
     }
 }

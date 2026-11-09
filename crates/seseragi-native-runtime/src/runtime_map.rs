@@ -263,12 +263,20 @@ fn native_entropy_hash_seed() -> std::io::Result<u64> {
         Err(std::io::Error::other("secure hash entropy is unavailable"))
     }
 }
+// A host without operating-system entropy, such as a program WASM loader,
+// supplies the seed before any Map or Set exists.
+static NATIVE_HOST_HASH_SEED: std::sync::OnceLock<u64> = std::sync::OnceLock::new();
+pub fn native_set_host_hash_seed(seed: u64) {
+    let _ = NATIVE_HOST_HASH_SEED.set(seed);
+}
 #[cfg(not(any(unix, windows)))]
 fn native_entropy_hash_seed() -> std::io::Result<u64> {
-    Err(std::io::Error::new(
-        std::io::ErrorKind::Unsupported,
-        "secure hash entropy is unavailable",
-    ))
+    NATIVE_HOST_HASH_SEED.get().copied().ok_or_else(|| {
+        std::io::Error::new(
+            std::io::ErrorKind::Unsupported,
+            "secure hash entropy is unavailable",
+        )
+    })
 }
 pub fn native_process_hash_seed() -> u64 {
     static SEED: std::sync::OnceLock<u64> = std::sync::OnceLock::new();

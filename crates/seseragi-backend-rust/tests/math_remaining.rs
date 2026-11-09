@@ -173,7 +173,7 @@ fn math_constants_keep_value_types_and_reject_counterfeit_evidence() {
 }
 
 #[test]
-fn math_remaining_does_not_admit_unused_operations_in_program_wasm() {
+fn math_remaining_admits_only_exact_operations_in_program_wasm() {
     for (signature, operation) in [
         ("Float -> Float", "tan"),
         ("Float -> Float", "asin"),
@@ -188,15 +188,22 @@ fn math_remaining_does_not_admit_unused_operations_in_program_wasm() {
         ("Float -> Float", "tanh"),
         ("Float -> Float -> Float", "atan2"),
         ("Float -> Float -> Float", "hypot"),
-        ("Float", "pi"),
-        ("Float", "e"),
-        ("Float", "tau"),
     ] {
         let core = checked(&format!("import * as math from \"std/math\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = math.{operation}; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
         let error =
             emit_program_wasm(&[&core], "native/math-remaining", &["probe".into()]).unwrap_err();
         assert_eq!(error.code, "SES-RUST-0001");
+        assert!(
+            error.message.contains("rounds differently"),
+            "{operation}: {error}"
+        );
         assert_eq!(error.origin.unwrap().source, "math-remaining-雪🙂.ssrg");
+    }
+    // The constants are exact, so WASM matches the TS target's Math.
+    for operation in ["pi", "e", "tau"] {
+        let core = checked(&format!("import * as math from \"std/math\"\npub fn probe value: Int -> Int = {{ let saved: Float = math.{operation}; value }}\npub fn main -> Int = 0\n"));
+        emit_program_wasm(&[&core], "native/math-remaining", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{operation}: {error}"));
     }
 }

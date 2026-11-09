@@ -341,6 +341,12 @@ fn program_result(result: ProgramResult<Vec<u8>>) -> u32 {
     PROGRAM.with(|state| state.borrow_mut().output = bytes);
     status
 }
+// The loader supplies host entropy before initialization; a Map or Set
+// hashes with it instead of an operating-system seed.
+#[no_mangle]
+pub extern "C" fn ssrg_hash_seed(low: u32, high: u32) {
+    native_set_host_hash_seed(u64::from(low) | (u64::from(high) << 32));
+}
 #[no_mangle]
 pub extern "C" fn ssrg_init() -> u32 {
     let fresh = PROGRAM.with(|s| !s.borrow().initialized && !s.borrow().closed);

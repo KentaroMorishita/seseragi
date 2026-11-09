@@ -221,14 +221,8 @@ fn either_saved_references_keep_the_full_canonical_curried_signature_and_program
         let source=format!("import * as either from \"std/either\"\nfn saved -> ({signature}) = either.{name}\npub fn probe -> Int = 0\n");
         let core = checked(&source);
         emit_rust_module(&core, "probe").unwrap();
-        // Only traverse and sequence, which take an Applicative dictionary,
-        // still need a program WASM proof.
-        let emitted = emit_program_wasm(&[&core], "native/either", &["probe".into()]);
-        if matches!(name, "traverse" | "sequence") {
-            assert_eq!(emitted.unwrap_err().code, "SES-RUST-0001");
-        } else {
-            emitted.unwrap_or_else(|error| panic!("{name}: {error}"));
-        }
+        emit_program_wasm(&[&core], "native/either", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
         let index = core
             .functions
             .iter()

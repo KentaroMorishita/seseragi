@@ -351,15 +351,6 @@ impl Backend<'_> {
         if scope.contains(name) {
             return Ok(None);
         }
-        if self.program_wasm_library && parse_capability(name) == "float-conversion" {
-            return Err("Rust backend: Float conversion is not admitted in program WASM".into());
-        }
-        if self.program_wasm_library && matches!(parse_capability(name), "int-text" | "int-checked")
-        {
-            return Err(
-                "Rust backend: Int standard operations are not admitted in program WASM".into(),
-            );
-        }
         if !evidence.is_empty() {
             return Err("Rust backend: number parse operation with unsupported evidence".into());
         }
@@ -392,16 +383,6 @@ impl Backend<'_> {
         };
         if scope.contains(callee) {
             return Ok(None);
-        }
-        if self.program_wasm_library && parse_capability(callee) == "float-conversion" {
-            return Err("Rust backend: Float conversion is not admitted in program WASM".into());
-        }
-        if self.program_wasm_library
-            && matches!(parse_capability(callee), "int-text" | "int-checked")
-        {
-            return Err(
-                "Rust backend: Int standard operations are not admitted in program WASM".into(),
-            );
         }
         if arguments.len() > parameters.len()
             || !evidence.is_empty()

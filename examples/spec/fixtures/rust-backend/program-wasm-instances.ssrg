@@ -1,0 +1,84 @@
+// Program WASM runs Maybe and Either traverse and sequence over standard and
+// user Traversable instances, and user Monoid and Reducible instances, with
+// the TS target's results.
+import * as arrays from "std/array"
+import * as either from "std/either"
+import * as maybe from "std/maybe"
+
+pub type Box<A> =
+  | Empty
+  | Full A
+
+instance Functor<Box> {
+  fn map<A, B> callback: (A -> B) -> value: Box<A> -> Box<B> = match value {
+    Empty -> Empty
+    Full item -> Full (callback item)
+  }
+}
+
+instance Traversable<Box> {
+  fn traverse<G<_>, A, B> callback: (A -> G<B>) -> value: Box<A> -> G<Box<B>> where Applicative<G> = match value {
+    Empty -> pure Empty
+    Full item -> map Full (callback item)
+  }
+}
+
+newtype Mark = Int
+
+instance Semigroup<Mark> {
+  fn append left: Mark -> right: Mark -> Mark = match left {
+    Mark a -> match right {
+      Mark b -> Mark (a * 10 + b)
+    }
+  }
+}
+
+instance Monoid<Mark> {
+  fn empty _unit: Unit -> Mark = Mark 7
+}
+
+newtype Reverse<A> = Array<A>
+
+instance<A> Iterable<Reverse<A>, A> {
+  fn iterate values: Reverse<A> -> Iterator<A> = match values {
+    Reverse items -> unfold (\index: Int -> match arrays.get index items {
+      Nothing -> Nothing
+      Just value -> Just (value, index + 1)
+    }) 0
+  }
+}
+
+instance<A> Reducible<Reverse<A>, A> {
+  fn reduce<B> initial: B -> step: (B -> A -> B) -> values: Reverse<A> -> B = match values {
+    Reverse items -> arrays.reduceRight initial (\item: A -> \acc: B -> step acc item) items
+  }
+}
+
+fn positive value: Int -> Maybe<Int> = if value > 0 then Just (value * 2) else Nothing
+
+fn checked value: Int -> Either<String, Int> = if value > 0 then Right (value * 2) else Left ("bad:" + show value)
+
+pub fn traverseMaybe values: Array<Int> -> Maybe<Array<Int>> = maybe.traverse positive values
+
+pub fn sequenceMaybe values: Array<Maybe<Int>> -> Maybe<Array<Int>> = maybe.sequence values
+
+pub fn traverseEither values: Array<Int> -> Either<String, Array<Int>> = either.traverse checked values
+
+pub fn sequenceEither values: Array<Either<String, Int>> -> Either<String, Array<Int>> = either.sequence values
+
+pub fn boxMaybe value: Box<Int> -> Maybe<Box<Int>> = maybe.traverse positive value
+
+pub fn boxEither value: Box<Int> -> Either<String, Box<Int>> = either.traverse checked value
+
+pub fn marks values: Array<Int> -> Int = {
+  let items: Reverse<Mark> = Reverse (map (\value: Int -> Mark value) values)
+  let Mark total = combine items
+  total
+}
+
+pub fn reversed values: Array<Int> -> (Int, Bool) = {
+  let digits = reduce 0 (\acc: Int -> \value: Int -> acc * 10 + value) (Reverse values)
+  (digits, any (\value: Int -> value > 2) (Reverse values))
+}
+
+pub fn totals values: Array<Int> -> (Int, Int, Bool) = (sum values, product values, all (\value: Int -> value > 0) values)

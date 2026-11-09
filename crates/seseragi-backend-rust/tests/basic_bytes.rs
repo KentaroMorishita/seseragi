@@ -246,7 +246,7 @@ fn bytes_arguments_do_not_substitute_lexical_opaque_type_binders() {
 }
 
 #[test]
-fn basic_bytes_do_not_silently_expand_program_wasm_admission() {
+fn basic_bytes_build_as_program_wasm() {
     for expression in [
         "bytes.fromInts [0, 255]",
         "bytes.toInts",
@@ -267,12 +267,7 @@ fn basic_bytes_do_not_silently_expand_program_wasm_admission() {
         let source = format!("import * as bytes from \"std/bytes\"\npub fn probe value: Int -> Int = {{ let result = {expression}; value }}\npub fn main -> Int = probe 1\n");
         let core = checked(&source);
         emit_rust_module(&core, "main").unwrap();
-        let error = emit_program_wasm(&[&core], "native/bytes", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{expression}: {error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "bytes-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/bytes", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }

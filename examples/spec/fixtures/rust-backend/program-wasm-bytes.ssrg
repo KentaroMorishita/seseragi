@@ -1,0 +1,34 @@
+// Program WASM runs UTF-8 bytes, hex and base64, scalar slices and sized
+// sequence windows with the same results and error values as the TS target.
+import * as bytes from "std/bytes"
+import * as hex from "std/bytes/hex"
+import * as base64 from "std/bytes/base64"
+import * as text from "std/text"
+import * as arrays from "std/array"
+
+pub fn utf8 source: String -> (Int, String, String, String) = {
+  let encoded = text.encodeUtf8 source
+  (bytes.length encoded, hex.encode encoded, base64.encode encoded, show (text.decodeUtf8 encoded))
+}
+
+pub fn decoded values: Array<Int> -> String = match bytes.fromInts values {
+  Left error -> show error
+  Right raw -> show (text.decodeUtf8 raw) + "|" + text.decodeUtf8Lossy raw + "|" + match bytes.slice 1 3 raw { Left error -> show error; Right part -> show (bytes.toInts part) }
+}
+
+fn ints<E> value: Either<E, bytes.Bytes> -> Either<E, Array<Int>> = match value {
+  Left error -> Left error
+  Right raw -> Right (bytes.toInts raw)
+}
+
+pub fn parsed source: String -> String =
+  show (ints (hex.decode source)) + "|" + show (ints (base64.decode source))
+
+pub fn sliced range: (Int, Int) -> String = match range {
+  (start, end) -> show (text.sliceScalars start end "a雪🙂b")
+}
+
+pub fn sized size: Int -> String = {
+  let values = [1, 2, 3, 4, 5]
+  show (arrays.windows size values) + "|" + show (arrays.chunksOf size values)
+}

@@ -252,12 +252,6 @@ impl Backend<'_> {
         let Some((class, name)) = contract(identity) else {
             return Ok(false);
         };
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: standard error dictionaries require a target-specific ABI proof"
-                    .into(),
-            );
-        }
         let generic = name == "std/web/dom::DomRuntimeError";
         let expected = CoreType::Named {
             name: name.into(),
@@ -330,9 +324,6 @@ impl Backend<'_> {
             return Ok(None);
         };
         if scope.contains(name) {
-            return Ok(None);
-        }
-        if self.program_wasm_library {
             return Ok(None);
         }
         if !evidence.is_empty()

@@ -101,12 +101,6 @@ impl Backend<'_> {
                 _ => None,
             };
             if let Some(primitive) = primitive {
-                if self.program_wasm_library {
-                    return Err(
-                        "program WASM: native Ord dictionary needs a target-specific ABI proof"
-                            .into(),
-                    );
-                }
                 let [ty] = selected.constraint.arguments.as_slice() else {
                     return Err("Rust backend: primitive Ord constraint arity mismatch".into());
                 };
@@ -130,12 +124,6 @@ impl Backend<'_> {
         }
         if !self.validate_standard_composite(selected, scope)? {
             return Ok(None);
-        }
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native composite dictionary needs a target-specific ABI proof"
-                    .into(),
-            );
         }
         let CoreInstanceEvidence::Standard {
             identity,

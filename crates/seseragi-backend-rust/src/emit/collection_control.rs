@@ -30,12 +30,6 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native collection control requires a target-specific ABI proof"
-                    .into(),
-            );
-        }
         let arity = arity(name).expect("known collection control");
         if scope.has_unproven_type_scope() {
             return Err("Rust backend: unproven collection control source stage".into());

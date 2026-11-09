@@ -203,7 +203,7 @@ fn all_six_set_operations_refuse_forged_contracts_at_the_original_utf8_span() {
 }
 
 #[test]
-fn all_six_unused_set_operation_references_stay_out_of_program_wasm() {
+fn all_six_unused_set_operation_references_build_as_program_wasm() {
     for (name, first, output, _) in operations() {
         let parameter = if first.is_empty() {
             String::new()
@@ -211,15 +211,7 @@ fn all_six_unused_set_operation_references_stay_out_of_program_wasm() {
             format!("{first} -> ")
         };
         let source = format!("import * as sets from \"std/set\"\npub fn probe value: Int -> Int = {{ let saved: {parameter}sets.Set<String> -> {output} = sets.{name}; value }}\n");
-        let error =
-            emit_program_wasm(&[&checked(&source)], "native/set", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error
-                .message
-                .contains("native collection requires a target-specific ABI proof"),
-            "{name}: {error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "set-operations-雪🙂.ssrg");
+        emit_program_wasm(&[&checked(&source)], "native/set", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

@@ -75,9 +75,6 @@ impl Backend<'_> {
         ) {
             return Ok(None);
         }
-        if self.program_wasm_library {
-            return Err("program WASM: native Hash requires a target-specific ABI proof".into());
-        }
         self.validate_hash_evidence(selected, scope)?;
         Ok(Some(format!(
             "native_hash_dictionary({})",

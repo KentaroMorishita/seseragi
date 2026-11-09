@@ -151,7 +151,7 @@ fn map_callbacks_reject_forged_keys_values_callbacks_results_evidence_and_stages
 }
 
 #[test]
-fn unused_map_callback_functions_do_not_expand_program_wasm() {
+fn unused_map_callback_functions_build_as_program_wasm() {
     for (name, signature) in [
         (
             "filter",
@@ -163,15 +163,7 @@ fn unused_map_callback_functions_do_not_expand_program_wasm() {
         ),
     ] {
         let source = format!("import * as maps from \"std/map\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = maps.{name}; value }}\n");
-        let error =
-            emit_program_wasm(&[&checked(&source)], "native/map", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(
-            error
-                .message
-                .contains("native collection requires a target-specific ABI proof"),
-            "{name}: {error}"
-        );
-        assert_eq!(error.origin.unwrap().source, "map-operations-雪🙂.ssrg");
+        emit_program_wasm(&[&checked(&source)], "native/map", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

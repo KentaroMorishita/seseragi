@@ -12,9 +12,7 @@ fn canonical_native_hkt_supertraits_keep_the_same_scoped_constructor_frame() {
     .unwrap()
     .core_ir;
     emit_rust_module(&core, "probe").unwrap();
-    let error =
-        emit_program_wasm(&[&core], "native/hkt-projection", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
+    emit_program_wasm(&[&core], "native/hkt-projection", &["probe".into()]).unwrap();
 }
 
 #[test]

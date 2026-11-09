@@ -242,13 +242,11 @@ fn iterable_build_saved_references_preserve_and_validate_the_complete_source_sta
     }
 }
 #[test]
-fn iterable_build_does_not_admit_unused_program_wasm_references() {
+fn iterable_build_admits_unused_program_wasm_references() {
     for (owner, name, _, input, output) in cases() {
         let core=checked(&format!("import * as target from \"std/{owner}\"\nimport * as maps from \"std/map\"\nimport * as sets from \"std/set\"\npub fn probe value:Int -> Int = {{let saved:{input} -> {output} = target.{name};value}}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/iterable-build", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "iterable-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/iterable-build", &["probe".into()])
+            .unwrap_or_else(|error| panic!("program WASM refused a proven operation: {error:?}"));
     }
 }

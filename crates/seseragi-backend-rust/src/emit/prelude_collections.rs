@@ -33,9 +33,6 @@ impl Backend<'_> {
         if !instance.identity.starts_with("std/prelude::Monoid<") {
             return Ok(false);
         }
-        if self.program_wasm_library {
-            return Err("program WASM: native Monoid instance needs an ABI proof".into());
-        }
         let Some(parent) = instance.constraints.first() else {
             return Err("Rust backend: missing Monoid parent".into());
         };
@@ -93,9 +90,6 @@ impl Backend<'_> {
     ) -> Result<bool> {
         if !instance.identity.starts_with("std/prelude::Reducible<") {
             return Ok(false);
-        }
-        if self.program_wasm_library {
-            return Err("program WASM: native Reducible instance needs an ABI proof".into());
         }
         let Some(parent) = instance.constraints.first() else {
             return Err("Rust backend: missing Reducible parent".into());
@@ -256,11 +250,6 @@ impl Backend<'_> {
             return Ok(None);
         };
         if selected.constraint.trait_identity.as_deref() == Some("std/prelude::Reducible") {
-            if self.program_wasm_library {
-                return Err(
-                    "program WASM: native Reducible requires a target-specific ABI proof".into(),
-                );
-            }
             self.validate_prelude_reducible(selected, scope)?;
             return Ok(Some(format!(
                 "native_prelude_reducible_dictionary({})",
@@ -273,12 +262,6 @@ impl Backend<'_> {
             } else {
                 ("One", "one", 1)
             };
-            if self.program_wasm_library {
-                return Err(format!(
-                    "program WASM: native Int {trait_name} requires a target-specific ABI proof"
-                )
-                .into());
-            }
             self.validate_prelude_constraint(selected, trait_name, &[named("Int", vec![])], scope)?;
             if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
                 return Err(
@@ -300,7 +283,9 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        if self.program_wasm_library {
+        // The folds are pure and run the same code as the TS target;
+        // forEach runs an Effect per element and still needs its own proof.
+        if self.program_wasm_library && name == "std/prelude::forEach" {
             return Err(
                 "program WASM: native Prelude collection requires a target-specific ABI proof"
                     .into(),

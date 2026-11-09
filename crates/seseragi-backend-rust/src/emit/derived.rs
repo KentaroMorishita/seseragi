@@ -125,12 +125,6 @@ impl Backend<'_> {
         if !self.validate_derived_structural_evidence(selected, scope)? {
             return Ok(None);
         }
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native structural instances require a target-specific ABI proof"
-                    .into(),
-            );
-        }
         let CoreInstanceEvidence::Standard {
             type_arguments,
             evidence_arguments,
@@ -225,11 +219,6 @@ impl Backend<'_> {
             } => (adt_symbol, payload_evidence, Some(*transparent_newtype)),
             _ => return Ok(None),
         };
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native derived instances require a target-specific ABI proof".into(),
-            );
-        }
         let class = instance.trait_name.as_str();
         let operation = method(class).ok_or("Rust backend: unsupported derived trait")?;
         if !self.derived_identity(instance, &format!("std/prelude::{class}"))

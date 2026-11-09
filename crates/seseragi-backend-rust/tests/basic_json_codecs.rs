@@ -142,7 +142,7 @@ fn codec_calls_reject_forged_owner_kind_dispatch_evidence_and_source_stages_at_o
 }
 
 #[test]
-fn primitive_json_dictionaries_stay_out_of_program_wasm_even_if_ignored() {
+fn primitive_json_dictionaries_build_as_program_wasm() {
     for source in [
         "import * as json from \"std/json\"\npub fn probe value: Int -> Int = {let saved: Int -> String = json.encodeString; value}\npub fn main -> Int = 0\n",
         "fn ignore<A> _value: A -> Int where JsonEncode<A> = 1\npub fn probe value: Int -> Int = ignore value\npub fn main -> Int = 0\n",
@@ -150,9 +150,7 @@ fn primitive_json_dictionaries_stay_out_of_program_wasm_even_if_ignored() {
     ] {
         let core=checked(source);
         emit_rust_module(&core,"main").unwrap();
-        let error=emit_program_wasm(&[&core],"native/json-codecs",&["probe".into()]).unwrap_err();
-        assert_eq!(error.code,"SES-RUST-0001");
-        assert!(error.message.contains("require a target-specific"),"{error:?}");
+        emit_program_wasm(&[&core],"native/json-codecs",&["probe".into()]).unwrap_or_else(|error| panic!("{error:?}"));
     }
 }
 
@@ -340,12 +338,8 @@ fn public_decode_and_read_error_constructors_check_owner_type_and_source_stages(
             assert_eq!(error.origin.as_ref(), Some(&origin));
         }
         let saved=checked(&format!("import * as json from \"std/json\"\npub fn probe value: Int -> Int = {{let saved: {parameter} -> {result} = {};value}}\npub fn main -> Int = 0\n",expression.strip_suffix(" value").unwrap()));
-        let error =
-            emit_program_wasm(&[&saved], "native/json-codecs", &["probe".into()]).unwrap_err();
-        assert!(
-            error.message.contains("requires a target-specific"),
-            "{error:?}"
-        );
+        emit_program_wasm(&[&saved], "native/json-codecs", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{error:?}"));
     }
 }
 
@@ -424,13 +418,12 @@ fn selected_user_json_dictionaries_check_implementation_even_when_forwarded_unus
 }
 
 #[test]
-fn new_error_kind_trust_does_not_admit_ignored_user_dictionary_to_program_wasm() {
+fn ignored_user_dictionary_for_decode_errors_builds_as_program_wasm() {
     // This exact source is refused on official115 with an unproven kind.
     let core = checked(include_str!(
         "../../../examples/spec/fixtures/rust-backend/basic-json-ignored-user.ssrg"
     ));
     emit_rust_module(&core, "main").unwrap();
-    let error = emit_program_wasm(&[&core], "native/json-codecs", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert!(error.message.contains("unproven"), "{error:?}");
+    emit_program_wasm(&[&core], "native/json-codecs", &["probe".into()])
+        .unwrap_or_else(|error| panic!("{error:?}"));
 }

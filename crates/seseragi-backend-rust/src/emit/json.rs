@@ -90,9 +90,6 @@ fn compatible_input(actual: &CoreType, expected: &CoreType) -> bool {
 }
 impl Backend<'_> {
     fn json_type(&self, actual: &CoreType, expected: &CoreType, scope: &Scope) -> Result<()> {
-        if self.program_wasm_library {
-            return Err("program WASM: native JSON requires a target-specific ABI proof".into());
-        }
         if self.declared_method_type_kind(actual, scope) != Some(0)
             || !compatible_input(&self.local_canonical_type(actual, scope)?, expected)
         {

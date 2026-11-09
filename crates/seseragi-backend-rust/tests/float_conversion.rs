@@ -135,7 +135,7 @@ fn conversion_rejects_forged_mode_error_kind_evidence_and_source_stages() {
 }
 
 #[test]
-fn program_wasm_conversion_remains_an_explicit_positioned_refusal() {
+fn program_wasm_conversion_builds() {
     let source = r#"
 import * as floats from "std/float"
 import * as numbers from "std/number"
@@ -151,13 +151,10 @@ pub fn probe value: Int -> Int = match floats.toInt numbers.HalfEven (floats.fro
     ))
     .unwrap()
     .core_ir;
-    let error = emit_program_wasm(&[&core], "program/main", &["probe".into()]).unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert!(
-        error
-            .message
-            .contains("Float conversion is not admitted in program WASM"),
-        "{error}"
-    );
-    assert_eq!(error.origin.unwrap().source, "conversion-wasm.ssrg");
+    let artifact = emit_program_wasm(&[&core], "program/main", &["probe".into()]).unwrap();
+    assert!(artifact
+        .metadata
+        .capabilities
+        .iter()
+        .any(|capability| capability == "float-conversion"));
 }
