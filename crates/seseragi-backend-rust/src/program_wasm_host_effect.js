@@ -615,7 +615,15 @@ async function pumpEffect(state, execution, codec, provenance) {
       await new Promise((resolve) => setTimeout(resolve, 0))
       if (!state.api) throw new ProgramWasmClosed("WASM instance retired")
       phase = "wasm"
-      const status = state.api.ssrg_poll(64)
+      // A synchronous host function reached by this turn must not call
+      // back into the instance either.
+      state.busy = true
+      let status
+      try {
+        status = state.api.ssrg_poll(64)
+      } finally {
+        state.busy = false
+      }
       phase = "result"
       const bytes = output(state.api)
       if (status !== 0) throw new TypeError(decoder.decode(bytes))
@@ -775,10 +783,14 @@ function hostFunctionImports(owner) {
         )
         input.end()
         const value = Reflect.apply(entry.callback, undefined, values)
-        if (value !== null && typeof value?.then === "function")
+        if (value !== null && typeof value?.then === "function") {
+          // The answer is refused, so its later rejection is not the host's
+          // unhandled error.
+          Promise.resolve(value).catch(() => {})
           throw new TypeError(
             "A synchronous host function returned a Promise; use a host Effect"
           )
+        }
         const encoded = writer()
         write(code.result, value, encoded, state)
         reply = { kind: 1, bytes: encoded.bytes() }

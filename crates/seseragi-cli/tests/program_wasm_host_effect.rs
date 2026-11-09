@@ -633,12 +633,30 @@ assert.throws(
   (error) => error instanceof ProgramWasmDefect && /Reentrant/.test(error.message),
 );
 assert.equal(reentrant.ownership().retired, true);
-// A synchronous host function must answer synchronously.
+// A synchronous host function reached while an Effect runs cannot call
+// back into the instance either.
+const running = await loadProgram(bytes);
+const saved = running.exports.measured((text) => text.length);
+let labels = 0;
+const guarded = running.exports.labelled((text) => (labels++ === 0 ? text : String(saved(text))))(async (text) => ({tag: 'Success', value: text}))('x');
+await assert.rejects(
+  guarded.run().result,
+  (error) => error instanceof ProgramWasmDefect && /Reentrant/.test(error.message),
+);
+assert.equal(running.ownership().retired, true);
+// A synchronous host function must answer synchronously; a refused Promise
+// that later rejects is not left unhandled.
 const promised = await loadProgram(bytes);
 assert.throws(
   () => promised.exports.measured(async () => 1)('x'),
   (error) => error instanceof ProgramWasmDefect && /returned a Promise/.test(error.message),
 );
+const rejecting = await loadProgram(bytes);
+assert.throws(
+  () => rejecting.exports.measured(async () => { throw new Error('later'); })('x'),
+  (error) => error instanceof ProgramWasmDefect && /returned a Promise/.test(error.message),
+);
+await new Promise((resolve) => setTimeout(resolve, 10));
 // Other instances are not affected.
 assert.equal(owner.exports.measured((text) => text.length)('abc'), 3);
 await owner.dispose();
