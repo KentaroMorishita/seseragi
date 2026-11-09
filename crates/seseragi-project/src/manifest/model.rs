@@ -192,6 +192,9 @@ pub struct ManifestRun {
     pub shutdown_grace_ms: Option<u64>,
     pub hash_seed: RunSeed,
     pub random_seed: RunSeed,
+    /// The functions of `entry` the wasm target builds into a program WASM,
+    /// written as in `web.programs.<name>.exports`.
+    pub exports: Vec<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

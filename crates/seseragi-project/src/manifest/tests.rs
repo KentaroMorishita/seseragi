@@ -27,6 +27,60 @@ fn program_wasm_selection_is_explicit_canonical_and_portable() {
 }
 
 #[test]
+fn wasm_run_target_selects_entry_exports_without_process_policy() {
+    let header = "[package]\nname='fixture/library'\nversion='0.0.0'\nlanguage='^0.1.0'\n";
+    let run = parse_manifest(&format!(
+        "{header}[run]\nentry='calculation'\ntarget='wasm'\nexports=['label', 'sameText=same<String>']\n"
+    ))
+    .unwrap()
+    .run
+    .unwrap();
+    assert_eq!(run.entry.as_str(), "calculation");
+    assert_eq!(run.target.unwrap().as_str(), "wasm");
+    assert_eq!(run.exports, ["label", "sameText=same<String>"]);
+    // Other targets keep the selection for an invocation-level `--target wasm`.
+    let process =
+        parse_manifest(&format!("{header}[run]\nentry='main'\nexports=['label']\n")).unwrap();
+    assert_eq!(process.run.unwrap().exports, ["label"]);
+    for (run, expected) in [
+        (
+            "target='wasm'\n",
+            "the wasm target needs nonempty run.exports",
+        ),
+        (
+            "exports=[]\n",
+            "select nonempty, distinct public function names",
+        ),
+        (
+            "exports=['label', 'label']\n",
+            "select nonempty, distinct public function names",
+        ),
+        ("exports=['1label']\n", "run: exports:"),
+        (
+            "target='wasm'\nexports=['label']\nsignal_mode='cancel'\n",
+            "the wasm target has no signal_mode",
+        ),
+        (
+            "target='wasm'\nexports=['label']\nhash_seed=1\n",
+            "the wasm target has no signal_mode",
+        ),
+        (
+            "target='wasm'\nexports=['label']\nrandom_seed='entropy'\n",
+            "the wasm target has no signal_mode",
+        ),
+        (
+            "target='wasm'\nexports=['label']\nshutdown_grace_ms=0\n",
+            "the wasm target has no signal_mode",
+        ),
+    ] {
+        let error =
+            parse_manifest(&format!("{header}[run]\nentry='calculation'\n{run}")).unwrap_err();
+        assert_eq!(error.code(), "SES-K0101");
+        assert!(error.to_string().contains(expected), "{run}: {error}");
+    }
+}
+
+#[test]
 fn parses_executable_manifest_with_canonical_defaults() {
     let manifest = parse_manifest(include_str!(
         "../../../../examples/spec/fixtures/projects/modules-reexport-run/seseragi.toml"

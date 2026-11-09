@@ -99,19 +99,7 @@ fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
                 if program.exports.is_empty() {
                     return Err(error("select nonempty, distinct public function names"));
                 }
-                // Each entry is a function, `function<Type>` or
-                // `name=function<Type>`; the host names must be distinct.
-                let mut seen = std::collections::BTreeSet::new();
-                for value in &program.exports {
-                    let export = crate::ProgramExport::parse(value).map_err(|reason| {
-                        ManifestError::InvalidProgramWasm(format!(
-                            "web.programs.{name}: exports: {reason}"
-                        ))
-                    })?;
-                    if !seen.insert(export.name) {
-                        return Err(error("select nonempty, distinct public function names"));
-                    }
-                }
+                validate_program_exports(&format!("web.programs.{name}"), &program.exports)?;
                 Ok((
                     name,
                     super::model::ManifestProgramWasm {
@@ -130,6 +118,23 @@ fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
             .map(|value| path("web.public", value))
             .transpose()?,
     })
+}
+
+/// Each export is a function, `function<Type>` or `name=function<Type>`;
+/// the host names must be distinct.
+fn validate_program_exports(owner: &str, exports: &[String]) -> Result<(), ManifestError> {
+    let mut seen = std::collections::BTreeSet::new();
+    for value in exports {
+        let export = crate::ProgramExport::parse(value).map_err(|reason| {
+            ManifestError::InvalidProgramWasm(format!("{owner}: exports: {reason}"))
+        })?;
+        if !seen.insert(export.name) {
+            return Err(ManifestError::InvalidProgramWasm(format!(
+                "{owner}: select nonempty, distinct public function names"
+            )));
+        }
+    }
+    Ok(())
 }
 
 pub fn valid_program_name(name: &str) -> bool {
@@ -276,13 +281,15 @@ struct RawRun {
     #[serde(default)]
     target: Option<String>,
     #[serde(default)]
-    signal_mode: RawSignalMode,
+    signal_mode: Option<RawSignalMode>,
     #[serde(default)]
     shutdown_grace_ms: Option<u64>,
     #[serde(default)]
-    hash_seed: RawSeed,
+    hash_seed: Option<RawSeed>,
     #[serde(default)]
-    random_seed: RawSeed,
+    random_seed: Option<RawSeed>,
+    #[serde(default)]
+    exports: Option<Vec<String>>,
 }
 
 #[derive(Deserialize)]
@@ -411,7 +418,41 @@ fn parse_run(raw: RawRun) -> Result<ManifestRun, ManifestError> {
     let entry = ModulePath::parse(&raw.entry)
         .map_err(|error| ManifestError::InvalidRunEntry(raw.entry, error))?;
     let target = raw.target.map(parse_target).transpose()?;
-    let signal_mode = match raw.signal_mode {
+    let wasm = target
+        .as_ref()
+        .is_some_and(|target| target.as_str() == "wasm");
+    let exports = match raw.exports {
+        Some(exports) if exports.is_empty() => {
+            return Err(ManifestError::InvalidProgramWasm(
+                "run: select nonempty, distinct public function names".to_owned(),
+            ))
+        }
+        Some(exports) => {
+            validate_program_exports("run", &exports)?;
+            exports
+        }
+        None => Vec::new(),
+    };
+    if wasm {
+        // A program WASM library has no process to signal or shut down, and
+        // each instance seeds its own Map and Set hashing from the host.
+        if exports.is_empty() {
+            return Err(ManifestError::InvalidProgramWasm(
+                "run: the wasm target needs nonempty run.exports".to_owned(),
+            ));
+        }
+        if raw.signal_mode.is_some()
+            || raw.shutdown_grace_ms.is_some()
+            || raw.hash_seed.is_some()
+            || raw.random_seed.is_some()
+        {
+            return Err(ManifestError::InvalidProgramWasm(
+                "run: the wasm target has no signal_mode, shutdown_grace_ms, hash_seed or random_seed"
+                    .to_owned(),
+            ));
+        }
+    }
+    let signal_mode = match raw.signal_mode.unwrap_or_default() {
         RawSignalMode::Cancel => SignalMode::Cancel,
         RawSignalMode::Forward => SignalMode::Forward,
     };
@@ -426,8 +467,9 @@ fn parse_run(raw: RawRun) -> Result<ManifestRun, ManifestError> {
             (SignalMode::Cancel, value) => Some(value.unwrap_or(10_000)),
             (SignalMode::Forward, _) => None,
         },
-        hash_seed: parse_seed("run.hash_seed", raw.hash_seed)?,
-        random_seed: parse_seed("run.random_seed", raw.random_seed)?,
+        hash_seed: parse_seed("run.hash_seed", raw.hash_seed.unwrap_or_default())?,
+        random_seed: parse_seed("run.random_seed", raw.random_seed.unwrap_or_default())?,
+        exports,
     })
 }
 
