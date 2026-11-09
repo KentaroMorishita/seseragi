@@ -4,15 +4,21 @@ use crate::TargetId;
 pub enum ProjectTarget {
     Process,
     Web,
+    /// A program WASM library built from `run.entry` and `run.exports`.
+    Wasm,
 }
 
 impl ProjectTarget {
+    /// The targets that run a `main` Effect. The wasm target builds a
+    /// library of exported functions instead, so it is chosen only by an
+    /// invocation or the manifest, never from `main`'s capabilities.
     pub const ALL: [Self; 2] = [Self::Process, Self::Web];
 
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Process => "process",
             Self::Web => "web",
+            Self::Wasm => "wasm",
         }
     }
 
@@ -20,6 +26,7 @@ impl ProjectTarget {
         match value {
             "process" => Ok(Self::Process),
             "web" => Ok(Self::Web),
+            "wasm" => Ok(Self::Wasm),
             _ => Err(TargetSelectionError::UnknownTarget(value.to_owned())),
         }
     }
@@ -52,7 +59,7 @@ impl ProjectCommand {
         match self {
             Self::Run => matches!(target, ProjectTarget::Process),
             Self::Build => true,
-            Self::Dev => matches!(target, ProjectTarget::Web),
+            Self::Dev => matches!(target, ProjectTarget::Web | ProjectTarget::Wasm),
         }
     }
 }
@@ -87,7 +94,7 @@ impl std::fmt::Display for TargetSelectionError {
         match self {
             Self::UnknownTarget(target) => write!(
                 formatter,
-                "unknown project target `{target}`; expected `process` or `web`"
+                "unknown project target `{target}`; expected `process`, `web` or `wasm`"
             ),
             Self::UnsupportedCommandTarget { command, target } => write!(
                 formatter,
@@ -280,5 +287,27 @@ mod tests {
             ),
             Err(TargetSelectionError::UnsupportedCommandTarget { .. })
         ));
+    }
+
+    #[test]
+    fn wasm_is_chosen_only_by_name_and_has_no_run() {
+        for command in [ProjectCommand::Build, ProjectCommand::Dev] {
+            assert_eq!(
+                select_project_target(command, None, Some(&target("wasm")), None).unwrap(),
+                TargetSelection {
+                    target: ProjectTarget::Wasm,
+                    source: TargetSelectionSource::Manifest,
+                }
+            );
+        }
+        assert!(matches!(
+            select_project_target(ProjectCommand::Run, Some(ProjectTarget::Wasm), None, None),
+            Err(TargetSelectionError::UnsupportedCommandTarget {
+                command: ProjectCommand::Run,
+                target: ProjectTarget::Wasm,
+            })
+        ));
+        // A main Effect's capabilities never narrow to the library target.
+        assert!(!ProjectTarget::ALL.contains(&ProjectTarget::Wasm));
     }
 }

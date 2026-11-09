@@ -19,7 +19,22 @@ const WATCH_INTERVAL: Duration = Duration::from_millis(100);
 const CLIENT_IO_POLL_INTERVAL: Duration = Duration::from_millis(100);
 
 pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
-    let options = DevOptions::parse(arguments)?;
+    let mut options = DevOptions::parse(arguments)?;
+    // A package whose run.target is wasm rebuilds its program library like
+    // `--target wasm`, without a dev server.
+    if options.target != Some(Target::Native)
+        && crate::build::wasm_package(&options.path, options.target.and_then(Target::project))?
+            .is_some()
+    {
+        if options.web_options {
+            return Err("--host, --port and --open require --target web".into());
+        }
+        options.target = Some(Target::Project(seseragi_project::ProjectTarget::Wasm));
+    }
+    let serverless = matches!(
+        options.target,
+        Some(Target::Native | Target::Project(seseragi_project::ProjectTarget::Wasm))
+    );
     if options.target != Some(Target::Native) && !options.path.is_dir() {
         return Err("dev requires a package directory".to_owned());
     }
@@ -41,7 +56,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
         project.parent().unwrap()
     };
     let output = root.join(".seseragi/dev");
-    let listener = if options.target == Some(Target::Native) {
+    let listener = if serverless {
         None
     } else {
         let manifest_path = project.join("seseragi.toml");
@@ -87,7 +102,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
     let mut files = Some(watch_snapshot(&watch_roots)?);
     let version = AtomicU64::new(0);
     let rebuild = || rebuild_target(&project, &output, &version, options.target);
-    let mut build_available = if options.target == Some(Target::Native) {
+    let mut build_available = if serverless {
         rebuild().unwrap_or_else(|error| {
             eprintln!("seseragi dev: {error}\nBuild failed");
             false
@@ -130,7 +145,14 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
         }
         std::thread::sleep(WATCH_INTERVAL);
     }
-    println!("Stopped dev server");
+    println!(
+        "{}",
+        if serverless {
+            "Stopped watching"
+        } else {
+            "Stopped dev server"
+        }
+    );
     Ok(0)
 }
 
@@ -205,6 +227,7 @@ struct DevOptions {
     port: u16,
     open: bool,
     target: Option<Target>,
+    web_options: bool,
 }
 
 impl DevOptions {
@@ -225,7 +248,7 @@ impl DevOptions {
                     index += 1;
                     let value = arguments
                         .get(index)
-                        .ok_or("--target requires web or native")?;
+                        .ok_or("--target requires web, wasm or native")?;
                     let selected = Target::parse(value)?;
                     if selected == Target::Project(seseragi_project::ProjectTarget::Process) {
                         return Err("dev does not support the `process` target".into());
@@ -260,7 +283,12 @@ impl DevOptions {
             }
             index += 1;
         }
-        if target == Some(Target::Native) && (web_options || open) {
+        let web_options = web_options || open;
+        if matches!(
+            target,
+            Some(Target::Native | Target::Project(seseragi_project::ProjectTarget::Wasm))
+        ) && web_options
+        {
             return Err("--host, --port and --open require --target web".into());
         }
         Ok(Self {
@@ -269,6 +297,7 @@ impl DevOptions {
             host,
             port,
             open,
+            web_options,
         })
     }
 }
@@ -279,6 +308,23 @@ fn rebuild_target(
     version: &AtomicU64,
     target: Option<Target>,
 ) -> Result<bool, String> {
+    if target == Some(Target::Project(seseragi_project::ProjectTarget::Wasm)) {
+        let started = Instant::now();
+        // The program library is published beside the web dev output, which
+        // a web dev session of the same package replaces as a whole.
+        let Some(built) = crate::experimental::program_wasm::build_package_program(
+            project,
+            ProjectCommand::Dev,
+            None,
+            &output.with_file_name("dev-wasm"),
+        )?
+        else {
+            eprintln!("Build failed ({})", elapsed(started));
+            return Ok(false);
+        };
+        println!("Built {} ({})", built.display(), elapsed(started));
+        return Ok(true);
+    }
     if target != Some(Target::Native) {
         return rebuild(project, output, version, target.and_then(Target::project));
     }
