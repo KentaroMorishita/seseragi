@@ -101,8 +101,8 @@ pub struct ProgramVariant {
     pub payload: Option<usize>,
 }
 
-/// How many times one named type may be nested in its own codec with other
-/// type arguments before the expansion counts as unbounded.
+/// How many times one named type may be nested in its own codec with larger
+/// or unrelated type arguments before the expansion counts as unbounded.
 const MAX_NESTED_TYPE_EXPANSION: usize = 16;
 
 /// The prefix of a type parameter's name in a checked public type.
@@ -120,7 +120,7 @@ struct Codecs<'a> {
     modules: Option<&'a [&'a CoreModule]>,
     named: Vec<(CoreType, usize)>,
     /// The named types whose codecs are being built, outermost first.
-    building: Vec<String>,
+    building: Vec<CoreType>,
     /// The TS target's release profile erases newtype wrappers.
     erase_newtypes: bool,
 }
@@ -662,6 +662,22 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
                 left: codec(left, false, codecs)?,
                 right: codec(right, false, codecs)?,
             },
+            // A Fiber's exit crosses in the TS target's tagged shape.
+            ("std/effect::FiberExit", [failure, success]) if codecs.modules.is_some() => {
+                let variant = |tag: &str, payload| ProgramVariant {
+                    tag: tag.to_owned(),
+                    owner: format!("std/effect::{tag}"),
+                    payload,
+                };
+                ProgramCodec::Adt {
+                    name: "FiberExit".to_owned(),
+                    variants: vec![
+                        variant("FiberSucceeded", Some(codec(success, false, codecs)?)),
+                        variant("FiberFailed", Some(codec(failure, false, codecs)?)),
+                        variant("FiberCancelled", None),
+                    ],
+                }
+            }
             ("std/prelude::Array", [element]) if codecs.modules.is_some() => ProgramCodec::Array {
                 element: codec(element, false, codecs)?,
             },
@@ -718,6 +734,22 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
     Some(codecs.intern(item))
 }
 
+/// Whether `part` occurs in `whole` below its root.
+fn contains_strictly(whole: &CoreType, part: &CoreType) -> bool {
+    let children: Vec<&CoreType> = match whole {
+        CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
+            arguments.iter().collect()
+        }
+        CoreType::Tuple { elements } => elements.iter().collect(),
+        CoreType::Record { fields, .. } => fields.iter().map(|field| &field.type_ref).collect(),
+        CoreType::Function { parameter, result } => vec![parameter, result],
+        _ => Vec::new(),
+    };
+    children
+        .into_iter()
+        .any(|child| child == part || contains_strictly(child, part))
+}
+
 /// `ty` with every record's fields in name order. Records are structural,
 /// so a record literal and its declared type can list fields differently.
 fn records_in_name_order(ty: &CoreType) -> CoreType {
@@ -768,10 +800,16 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     // A type that refers to itself with other type arguments, such as
     // `Nested<A> = | Next (Nested<Array<A>>)`, has no finite set of codecs.
     // Each new argument nests the type once more, so stop at a fixed depth.
+    // A type written inside an outer use of the same name, such as each
+    // level of `Box<Box<Box<Int>>>`, is smaller than that outer type, and a
+    // chain of smaller types ends, so only the other expansions count.
     if codecs
         .building
         .iter()
-        .filter(|building| *building == name)
+        .filter(|building| {
+            matches!(building, CoreType::Named { name: outer, .. } if outer == name)
+                && !contains_strictly(building, ty)
+        })
         .count()
         >= MAX_NESTED_TYPE_EXPANSION
     {
@@ -805,7 +843,7 @@ fn named_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let declared = |ty: &CoreType| emit::canonical_declared_type(owner, ty, &substitutions);
     let index = codecs.items.len();
     let named = codecs.named.len();
-    codecs.building.push(name.clone());
+    codecs.building.push(ty.clone());
     codecs.items.push(ProgramCodec::Adt {
         name: "\0pending".into(),
         variants: Vec::new(),
@@ -1314,9 +1352,9 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
     if metadata.abi == PROGRAM_WASM_HOST_EFFECT_ABI {
         result.push_str("}\nexport type HostResult<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E}> | Readonly<{tag: 'Defect'; messages: readonly string[]}>;\nexport interface HostEffectContext { readonly signal: AbortSignal; }\nexport type HostEffect<A, E, B> = (argument: A, context: HostEffectContext) => HostResult<E, B> | PromiseLike<HostResult<E, B>>;\nexport type ProgramLocation = Readonly<{file: string; line: number; column: number}>;\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E; location?: ProgramLocation}> | Readonly<{tag: 'Defect'; messages: readonly string[]; locations?: readonly (ProgramLocation | null)[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; running: boolean; closing: boolean; hostCallbacks: number; waitingHost: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
     } else if metadata.abi == PROGRAM_WASM_EFFECT_ABI {
-        result.push_str("}\nexport type ProgramLocation = Readonly<{file: string; line: number; column: number}>;\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E; location?: ProgramLocation}> | Readonly<{tag: 'Defect'; messages: readonly string[]; locations?: readonly (ProgramLocation | null)[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; running: boolean; closing: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
+        result.push_str("}\nexport type ProgramLocation = Readonly<{file: string; line: number; column: number}>;\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E; location?: ProgramLocation}> | Readonly<{tag: 'Defect'; messages: readonly string[]; locations?: readonly (ProgramLocation | null)[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; hostValues: number; running: boolean; closing: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
     } else {
-        result.push_str("}\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): void; ownership(): Ownership; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
+        result.push_str("}\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): void; ownership(): Ownership & Readonly<{hostValues: number}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
     }
     result
 }
