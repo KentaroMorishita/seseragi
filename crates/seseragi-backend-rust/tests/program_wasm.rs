@@ -104,7 +104,6 @@ fn refuses_unproved_public_types_and_staging_before_any_artifact() {
     for source in [
         "pub fn value<A> input: A -> String where Show<A> = show input\n",
         "import * as refs from \"std/ref\"\npub effect fn value<A> input: A -> A = do { cell <- refs.make input; refs.get cell }\n",
-        "pub fn value input: (Int -> Int) -> Int = input 1\n",
         "import * as decimal from \"std/decimal\"\npub fn value input: decimal.DecimalContext -> Int = 1\n",
         "import * as decimal from \"std/decimal\"\npub fn value input: {x: Int, y: decimal.DecimalContext} -> Int = input.x\n",
         "import * as decimal from \"std/decimal\"\npub fn value input: Array<decimal.DecimalContext> -> Int = 1\n",
@@ -113,6 +112,14 @@ fn refuses_unproved_public_types_and_staging_before_any_artifact() {
         let error = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap_err();
         assert!(error.origin.is_some(), "{source}: {error}");
     }
+    // A function argument is a synchronous host function, so it needs the
+    // host function ABI.
+    let module = checked("pub fn value input: (Int -> Int) -> Int = input 1\n");
+    let artifact = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();
+    assert_eq!(
+        artifact.metadata.abi,
+        "seseragi-program-wasm-host-effect-v3"
+    );
     // A user type named `Int` is that ADT, never the prelude Int.
     let module = checked("type Int = | Number\npub fn value input: Int -> Int = input\n");
     let artifact = emit_program_wasm(&[&module], &module.module, &["value".into()]).unwrap();

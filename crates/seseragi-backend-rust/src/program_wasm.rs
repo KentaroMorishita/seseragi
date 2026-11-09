@@ -7,7 +7,7 @@ use std::collections::BTreeSet;
 
 pub const PROGRAM_WASM_ABI: &str = "seseragi-program-wasm-pure-v1";
 pub const PROGRAM_WASM_EFFECT_ABI: &str = "seseragi-program-wasm-effect-v3";
-pub const PROGRAM_WASM_HOST_EFFECT_ABI: &str = "seseragi-program-wasm-host-effect-v2";
+pub const PROGRAM_WASM_HOST_EFFECT_ABI: &str = "seseragi-program-wasm-host-effect-v3";
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
@@ -43,10 +43,18 @@ pub enum ProgramCodec {
         failure: Option<usize>,
         success: Option<usize>,
     },
+    /// A host function `A -> B -> ... -> Effect<{}, E, R>`, called once
+    /// all its source arguments are applied and run by the loader.
     HostEffect {
-        parameter: usize,
+        parameters: Vec<usize>,
         failure: Option<usize>,
         success: Option<usize>,
+    },
+    /// A synchronous host function `A -> B -> ... -> R` over closed values.
+    /// WASM calls it through an import once all its arguments are applied.
+    HostFunction {
+        parameters: Vec<usize>,
+        result: usize,
     },
     Array {
         element: usize,
@@ -413,9 +421,12 @@ pub fn emit_program_wasm_with_options(
             origin: function.origin.clone(),
         });
     }
-    let host_abi = codecs
-        .iter()
-        .any(|code| matches!(code, ProgramCodec::HostEffect { .. }));
+    let host_abi = codecs.iter().any(|code| {
+        matches!(
+            code,
+            ProgramCodec::HostEffect { .. } | ProgramCodec::HostFunction { .. }
+        )
+    });
     effect_abi |= host_abi;
     // Reuse the ordinary linker and every native evidence/admission check.
     // This explicit library mode changes no native executable entry contract.
@@ -563,14 +574,34 @@ fn host_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
 }
 
 fn host_parameter_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
-    // The transport's AbortSignal is out of band. This checked Function is
-    // exactly one Seseragi source argument followed by one cold Effect plan.
-    let CoreType::Function { parameter, result } = ty else {
+    // The transport's AbortSignal is out of band. A host function takes its
+    // Seseragi source arguments one by one and then gives either a cold
+    // Effect plan or, for a synchronous host function, a closed value.
+    let mut parameters = Vec::new();
+    let mut result = ty;
+    while let CoreType::Function {
+        parameter,
+        result: next,
+    } = result
+    {
+        parameters.push(parameter.as_ref());
+        result = next.as_ref();
+    }
+    if parameters.is_empty() {
         return None;
+    }
+    let parameters = parameters
+        .into_iter()
+        .map(|parameter| codec(parameter, false, codecs))
+        .collect::<Option<Vec<_>>>()?;
+    let CoreType::Named { name, arguments } = result else {
+        let result = codec(result, false, codecs)?;
+        return Some(codecs.intern(ProgramCodec::HostFunction { parameters, result }));
     };
-    let CoreType::Named { name, arguments } = result.as_ref() else {
-        return None;
-    };
+    if name != "std/prelude::Effect" {
+        let result = codec(result, false, codecs)?;
+        return Some(codecs.intern(ProgramCodec::HostFunction { parameters, result }));
+    }
     let [CoreType::Record {
         closed: true,
         fields,
@@ -578,10 +609,9 @@ fn host_parameter_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     else {
         return None;
     };
-    if name != "std/prelude::Effect" || !fields.is_empty() {
+    if !fields.is_empty() {
         return None;
     }
-    let parameter = codec(parameter, false, codecs)?;
     let mut terminal = |ty: &CoreType| {
         if matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Never" && arguments.is_empty())
         {
@@ -593,7 +623,7 @@ fn host_parameter_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let failure = terminal(failure)?;
     let success = terminal(success)?;
     let item = ProgramCodec::HostEffect {
-        parameter,
+        parameters,
         failure,
         success,
     };
@@ -995,10 +1025,13 @@ fn rust_codec(codec: &ProgramCodec) -> String {
             format!("ProgramCode::Effect({failure:?}, {success:?})")
         }
         ProgramCodec::HostEffect {
-            parameter,
+            parameters,
             failure,
             success,
-        } => format!("ProgramCode::HostEffect({parameter}, {failure:?}, {success:?})"),
+        } => format!("ProgramCode::HostEffect(vec!{parameters:?}, {failure:?}, {success:?})"),
+        ProgramCodec::HostFunction { parameters, result } => {
+            format!("ProgramCode::HostFunction(vec!{parameters:?}, {result})")
+        }
         ProgramCodec::Array { element } => format!("ProgramCode::Array({element})"),
         ProgramCodec::Parameter { .. } => "ProgramCode::Parameter".into(),
         ProgramCodec::List { element } => format!("ProgramCode::List({element})"),
@@ -1140,14 +1173,40 @@ fn declared_type(
             success.map(ty).unwrap_or_else(|| "never".into())
         ),
         ProgramCodec::HostEffect {
-            parameter,
+            parameters,
             failure,
             success,
-        } => format!(
-            "HostEffect<{}, {}, {}>",
-            ty(*parameter),
-            failure.map(ty).unwrap_or_else(|| "never".into()),
-            success.map(ty).unwrap_or_else(|| "never".into()),
+        } => match parameters.as_slice() {
+            [parameter] => format!(
+                "HostEffect<{}, {}, {}>",
+                ty(*parameter),
+                failure.map(ty).unwrap_or_else(|| "never".into()),
+                success.map(ty).unwrap_or_else(|| "never".into()),
+            ),
+            // The source arguments come first, then the transport context.
+            _ => format!(
+                "({}, context: HostEffectContext) => HostResult<{}, {}> | PromiseLike<HostResult<{}, {}>>",
+                parameters
+                    .iter()
+                    .enumerate()
+                    .map(|(index, parameter)| format!("argument{index}: {}", ty(*parameter)))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                failure.map(ty).unwrap_or_else(|| "never".into()),
+                success.map(ty).unwrap_or_else(|| "never".into()),
+                failure.map(ty).unwrap_or_else(|| "never".into()),
+                success.map(ty).unwrap_or_else(|| "never".into()),
+            ),
+        },
+        ProgramCodec::HostFunction { parameters, result } => format!(
+            "({}) => {}",
+            parameters
+                .iter()
+                .enumerate()
+                .map(|(index, parameter)| format!("argument{index}: {}", ty(*parameter)))
+                .collect::<Vec<_>>()
+                .join(", "),
+            ty(*result)
         ),
         ProgramCodec::Array { element } => format!("ReadonlyArray<{}>", ty(*element)),
         ProgramCodec::List { element } => format!("ProgramList<{}>", ty(*element)),
@@ -1243,12 +1302,16 @@ fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
                 pending.extend([*success, *failure].into_iter().flatten())
             }
             ProgramCodec::HostEffect {
-                parameter,
+                parameters,
                 failure,
                 success,
             } => {
                 pending.extend([*success, *failure].into_iter().flatten());
-                pending.push(*parameter);
+                pending.extend(parameters.iter().rev());
+            }
+            ProgramCodec::HostFunction { parameters, result } => {
+                pending.push(*result);
+                pending.extend(parameters.iter().rev());
             }
             ProgramCodec::Newtype { value, .. } => pending.push(*value),
             _ => {}

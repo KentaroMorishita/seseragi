@@ -331,11 +331,22 @@ Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿�
 
 ## 型付きhost Effect callbackを渡す
 
-公開関数の引数に、閉じた`A -> Effect<{}, E, B>`を持つ関数を渡せる。
-この場合は`seseragi-program-wasm-host-effect-v2`を生成し、pure／providerlessの出力を保つ。
+公開関数の引数に、閉じた`A -> Effect<{}, E, B>`を持つ関数を渡せる。source引数は複数でもよい
+（`A -> B -> Effect<{}, E, R>`）。Effectを返さない同期のhost関数（`A -> B -> R`）も渡せる。
+この場合は`seseragi-program-wasm-host-effect-v3`を生成し、pure／providerlessの出力を保つ。
 引数・成功値・失敗値には既存の閉じた値codecを使い、成功／失敗の`Never`は値を持たない。
-同期host関数、複数のsource引数を取るhost関数、open row、generic、公開Ref／Fiber／Deferred、
-foreign handleや一般provider ABIは生成前に拒否する。
+open row、generic、公開Ref／Fiber／Deferred、foreign handleや一般provider ABIは生成前に拒否する。
+
+| host関数 | WASMからの呼び方 | hostが受け取るもの |
+| --- | --- | --- |
+| `A -> B -> Effect<{}, E, R>` | すべてのsource引数がそろったcold planを`run()`が実行するときに一度呼ぶ | source引数と`{signal}` |
+| `A -> B -> R` | すべてのsource引数がそろった時点で、その場で同期的に呼ぶ | source引数だけ |
+
+同期のhost関数は、WASMのimport `seseragi.ssrg_host_call`／`seseragi.ssrg_host_take`で呼ぶ。
+loaderが結果を預かり、WASMが自分のmemoryへ写すので、呼出し中にloaderからinstanceへ入り直すことはない。
+host関数がthrowした場合、Promiseを返した場合、型の合わない値を返した場合は、pure関数のDefectと同じく
+instanceをretireし、`ProgramWasmDefect`にその理由を載せる。呼出し中のinstanceはbusyなので、
+host関数から同じinstanceの関数を呼ぶ再入もDefectになる。別instanceは独立して使える。
 
 ```seseragi
 pub effect fn transfer
@@ -348,7 +359,8 @@ pub effect fn transfer
   }
 ```
 
-生成TSの`HostEffect<A, E, B>`は`(argument, {signal})`を受け取り、
+生成TSの`HostEffect<A, E, B>`は`(argument, {signal})`を受け取り（source引数が複数なら
+`(argument0, argument1, ..., {signal})`）、
 `HostResult<E, B>`またはそのPromiseLikeを返す。結果は`Success`の`value`、`Failure`の`error`、
 `Defect`の`messages`で、hostから任意の`Cancelled`を返すことはできない。
 AbortSignalはtransportの情報であり、Seseragiのsource arityには加えない。

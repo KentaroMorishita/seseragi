@@ -559,9 +559,12 @@ WASM内の一般Effectのunwind／cancel時のfinalizer保証を、このpure pr
 
 ### Effect program WASM assets
 
-同じprogram設定で、providerlessな閉じたEffectと、型付きの一引数host Effect callbackを持つ関数も選べます。
-それぞれ`seseragi-program-wasm-effect-v3`、`seseragi-program-wasm-host-effect-v2`を生成します。
-host callbackは`A -> Effect<{}, E, B>`で、閉じた値codecの引数・成功値・失敗値に限ります。
+同じprogram設定で、providerlessな閉じたEffectと、型付きのhost関数を引数に取る関数も選べます。
+host関数は、source引数を一つ以上取り、`Effect<{}, E, B>`を返すhost Effect関数か、閉じた値を返す同期関数です。
+それぞれ`seseragi-program-wasm-effect-v3`、`seseragi-program-wasm-host-effect-v3`を生成します。
+host Effect関数は`A -> Effect<{}, E, B>`（引数は複数でも可）で、閉じた値codecの引数・成功値・失敗値に限ります。
+同期関数は`A -> B`（引数は複数でも可）で、WASMはその場で呼び、throwやPromiseはinstanceをretireするDefectです。
+同期関数の実行中にhostから同じinstanceを呼ぶことはできません。
 source引数を適用する段階とcold Effectをrunする段階を保ち、hostのAbortSignalをsource arityへ加えません。
 取消とasync disposeは開始済みhost operationとmasked finalizerの応答を待ちます。
 両Effect ABIでは、既存の閉じたdataだけを保持する内部Refのmake／get／set／update／modifyを使い、

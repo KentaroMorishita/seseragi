@@ -1,0 +1,24 @@
+// Program WASM calls synchronous host functions in place, and host Effect
+// functions with several source arguments once they are all applied.
+import * as effects from "std/effect"
+
+pub fn measured measure: (String -> Int) -> text: String -> Int = measure text
+
+pub fn joined join: (String -> String -> String) -> prefix: String -> String =
+  join (join prefix "a") "b"
+
+pub effect fn fetched
+  request: (String -> String -> Effect<{}, String, String>) ->
+  key: String -> String fails String = do {
+    first <- request key "1"
+    second <- request first "2"
+    effects.succeed (second + "!")
+  }
+
+pub effect fn labelled
+  label: (String -> String) ->
+  request: (String -> Effect<{}, String, String>) ->
+  key: String -> String fails String = do {
+    value <- request (label key)
+    effects.succeed (label value)
+  }

@@ -981,7 +981,6 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
     for (index,source) in [
         "pub fn selected<A> value: A -> String where Show<A> = show value",
         "import * as decimal from \"std/decimal\"\npub fn selected value: decimal.DecimalContext -> Int = 1",
-        "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
         "import * as refs from \"std/ref\"\npub effect fn selected<A> value: A -> A = do { cell <- refs.make value; refs.get cell }",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
@@ -1847,7 +1846,6 @@ await owner.dispose();
     for (index, source) in [
         "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nimport { Ref } from \"std/ref\"\npub effect fn selected value: Int -> Ref<Int> = refs.make value",
         "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nfn identity value: Int -> Int = value\npub effect fn selected value: Int -> Int = do { cell <- refs.make identity; saved <- refs.get cell; effects.succeed (saved value) }",
-        "import * as effects from \"std/effect\"\npub effect fn selected callback: (Int -> Int) -> Int = effects.succeed (callback 1)",
         "import * as effects from \"std/effect\"\neffect fn add initial: Int -> delta: Int -> Int = effects.succeed (initial + delta)\npub effect fn selected initial: Int -> (Int -> Effect<{}, Never, Int>) = effects.succeed (add initial)",
 
     ].iter().enumerate() {
@@ -1859,7 +1857,7 @@ await owner.dispose();
         let error = String::from_utf8_lossy(&result.stderr);
         assert!(error.contains("SES-RUST-0001"), "{error}");
         assert!(!error.contains("could not start rustc"), "{error}");
-        if index == 3 {
+        if index == 2 {
             assert!(error.contains("arithmetic requires fallible evaluation"), "{error}");
         }
         assert!(!destination.exists());
