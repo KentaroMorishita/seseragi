@@ -56,12 +56,14 @@ impl ProgramExport {
     }
 }
 
+/// The lexer's identifier rule: `_` or XID_Start, then XID_Continue or `'`.
 fn identifier(text: &str) -> bool {
+    use seseragi_syntax::unicode::{is_xid_continue, is_xid_start};
     let mut characters = text.chars();
     characters
         .next()
-        .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
-        && characters.all(|c| c.is_ascii_alphanumeric() || c == '_')
+        .is_some_and(|first| first == '_' || is_xid_start(first))
+        && characters.all(|c| c == '\'' || is_xid_continue(c))
 }
 
 fn balanced(text: &str) -> bool {
@@ -111,6 +113,12 @@ mod tests {
                 "apply<Int -> Array<Int>>",
                 export("apply", "apply", Some("Int -> Array<Int>")),
             ),
+            ("value'", export("value'", "value'", None)),
+            ("次の値", export("次の値", "次の値", None)),
+            (
+                "整数版'=label'<Int>",
+                export("整数版'", "label'", Some("Int")),
+            ),
         ] {
             assert_eq!(ProgramExport::parse(text).unwrap(), expected, "{text}");
         }
@@ -121,6 +129,9 @@ mod tests {
             "label<Int>>",
             "label<Int>x",
             "1label",
+            "'label",
+            "label-x",
+            "１label",
             "alias=label",
             "bad-name=label<Int>",
             "label<a=b>",

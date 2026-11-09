@@ -3434,6 +3434,95 @@ await program.dispose();
 }
 
 #[test]
+fn exports_accept_language_identifiers_and_bindings_avoid_entry_names() {
+    let scratch = Scratch::new();
+    // The entry module already defines the first generated binding name,
+    // and two functions use a Unicode name and a trailing `'`.
+    let source = "let __seseragi_export_0 = 7\n\npub fn identity<A> value: A -> A = value\n\npub fn value' input: Int -> Int = input + __seseragi_export_0\n\npub fn 次の値 input: Int -> Int = input + 1\n";
+    let fixture = scratch.0.join("names.ssrg");
+    fs::write(&fixture, source).unwrap();
+    let destination = scratch.0.join("wasm");
+    successful(bounded(
+        &mut build(
+            &fixture,
+            &destination,
+            &["identity<Int>", "value'", "次の値", "整数'=identity<Int>"],
+        ),
+        &scratch.0,
+    ));
+    let probe = r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+const exports = program.exports;
+console.log([exports.identity(4), exports["value'"](1), exports["次の値"](1), exports["整数'"](5)].join(' '));
+await program.dispose();
+"#;
+    fs::write(scratch.0.join("probe.mjs"), probe).unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("probe.mjs"))
+            .arg(&destination)
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, "4 8 2 5\n".as_bytes());
+    let declared = fs::read_to_string(destination.join("program.d.mts")).unwrap();
+    for line in [
+        "readonly \"value'\": OwnedCallback<number, number>;",
+        "readonly \"次の値\": OwnedCallback<number, number>;",
+        "readonly \"整数'\": OwnedCallback<number, number>;",
+    ] {
+        assert!(declared.contains(line), "{declared}");
+    }
+    // A web package binds its manifest instantiations the same way.
+    let package = scratch.0.join("package");
+    copy_tree(
+        &root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &package,
+    );
+    fs::write(package.join("src/names.ssrg"), source).unwrap();
+    let manifest = package.join("seseragi.toml");
+    let original = fs::read_to_string(&manifest).unwrap();
+    fs::write(&manifest, format!("{original}\n[web.programs.names]\nmodule='names'\nexports=['identity<Int>', \"value'\", '次の値']\n")).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    let site = scratch.0.join("site");
+    successful(bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    ));
+    fs::write(
+        scratch.0.join("package-probe.mjs"),
+        r#"import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const directory = process.argv[2];
+const {loadProgram} = await import(pathToFileURL(resolve(directory, 'program.mjs')).href);
+const program = await loadProgram(await readFile(resolve(directory, 'program.wasm')));
+const exports = program.exports;
+console.log([exports.identity(4), exports["value'"](1), exports["次の値"](1)].join(' '));
+await program.dispose();
+"#,
+    )
+    .unwrap();
+    let output = successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("package-probe.mjs"))
+            .arg(site.join("programs/names"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
+    assert_eq!(output.stdout, "4 8 2\n".as_bytes());
+}
+
+#[test]
 fn generic_exports_return_host_values_unchanged_like_the_ts_target() {
     let scratch = Scratch::new();
     wasm_and_ts(

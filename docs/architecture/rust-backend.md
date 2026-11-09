@@ -165,7 +165,8 @@ trait 制約のない generic な関数も公開できる。型宣言では、�
 
 trait 制約のある generic な関数は、型引数を決めて公開する（`--export label<Int>`、manifest では
 `exports = ["label<Int>"]`）。CLI は選択ごとに、入口の module の末尾へ
-`let __seseragi_export_<番号> = label<Int>` を足してから型検査する。instance は source の呼出しと同じく
+`let __seseragi_export_<番号> = label<Int>` を足してから型検査する。番号は、入口の module の source に
+その名前が現れないものを選ぶので、利用者の定義や import とは衝突しない。instance は source の呼出しと同じく
 型検査が選び、WASM はその束縛を、元の関数の source 引数の数で公開する。instance がない型は、
 足した行（直前に `// program WASM export ...` の注釈がある）での型検査の診断になる。
 同じ関数を複数の型引数で公開するときは `labelColor=label<Color>` のように名前を付ける。

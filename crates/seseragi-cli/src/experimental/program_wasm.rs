@@ -51,27 +51,44 @@ fn digest(bytes: &[u8]) -> String {
 /// checker's ordinary diagnostic on that line.
 struct Selection {
     names: Vec<String>,
-    instantiations: Vec<seseragi_backend_rust::ProgramWasmInstantiation>,
-    extension: String,
+    /// The `function<Type>` exports, with the text each was written as.
+    instantiated: Vec<(String, seseragi_project::ProgramExport)>,
 }
 
-fn selection(exports: &[String]) -> Result<Selection, String> {
-    let mut selection = Selection {
-        names: Vec::new(),
-        instantiations: Vec::new(),
-        extension: String::new(),
-    };
-    for (index, text) in exports.iter().enumerate() {
-        let export = seseragi_project::ProgramExport::parse(text)
-            .map_err(|reason| format!("SES-RUST-0001: --export {reason}"))?;
-        if let Some(arguments) = &export.type_arguments {
-            let binding = format!("__seseragi_export_{index}");
-            selection.extension.push_str(&format!(
-                "\n// program WASM export `{}`\nlet {binding} = {}<{arguments}>\n",
-                text.trim(),
+/// The source added after the entry module and the bindings it defines.
+struct Bindings {
+    extension: String,
+    instantiations: Vec<seseragi_backend_rust::ProgramWasmInstantiation>,
+}
+
+impl Selection {
+    /// Binds each instantiated export after `entry`, the entry module's
+    /// source. A binding takes the next `__seseragi_export_N` that appears
+    /// nowhere in that source, so it cannot collide with a definition or an
+    /// import of the entry module.
+    fn bind(&self, entry: &str) -> Bindings {
+        let mut bindings = Bindings {
+            extension: String::new(),
+            instantiations: Vec::new(),
+        };
+        let mut next = 0usize;
+        for (text, export) in &self.instantiated {
+            let binding = loop {
+                let candidate = format!("__seseragi_export_{next}");
+                next += 1;
+                if !entry.contains(&candidate) && !bindings.extension.contains(&candidate) {
+                    break candidate;
+                }
+            };
+            let arguments = export
+                .type_arguments
+                .as_deref()
+                .expect("an instantiated export has type arguments");
+            bindings.extension.push_str(&format!(
+                "\n// program WASM export `{text}`\nlet {binding} = {}<{arguments}>\n",
                 export.function
             ));
-            selection
+            bindings
                 .instantiations
                 .push(seseragi_backend_rust::ProgramWasmInstantiation {
                     name: export.name.clone(),
@@ -79,6 +96,18 @@ fn selection(exports: &[String]) -> Result<Selection, String> {
                     function: export.function.clone(),
                 });
         }
+        bindings
+    }
+}
+
+fn selection(exports: &[String]) -> Result<Selection, String> {
+    let mut selection = Selection {
+        names: Vec::new(),
+        instantiated: Vec::new(),
+    };
+    for text in exports {
+        let export = seseragi_project::ProgramExport::parse(text)
+            .map_err(|reason| format!("SES-RUST-0001: --export {reason}"))?;
         if selection.names.contains(&export.name) {
             return Err(format!(
                 "SES-RUST-0001: --export `{}` repeats the export name `{}`; name each instantiation as name=function<Type>",
@@ -86,7 +115,12 @@ fn selection(exports: &[String]) -> Result<Selection, String> {
                 export.name
             ));
         }
-        selection.names.push(export.name);
+        selection.names.push(export.name.clone());
+        if export.type_arguments.is_some() {
+            selection
+                .instantiated
+                .push((text.trim().to_owned(), export));
+        }
     }
     Ok(selection)
 }
@@ -127,16 +161,23 @@ fn compile_package(
     options: seseragi_backend_rust::ProgramWasmOptions,
 ) -> Result<Option<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>)>, String> {
     let selection = selection(exports)?;
-    let options = seseragi_backend_rust::ProgramWasmOptions {
-        instantiations: selection.instantiations.clone(),
-        ..options
+    let bound = std::cell::RefCell::new(None);
+    let bind = |entry: &str| {
+        let bindings = selection.bind(entry);
+        let extension = bindings.extension.clone();
+        *bound.borrow_mut() = Some(bindings.instantiations);
+        extension
     };
-    let exports = &selection.names;
     let Some((project, checked)) =
-        super::load_checked_project_entry_for_command(path, module, command, &selection.extension)?
+        super::load_checked_project_entry_for_command(path, module, command, &bind)?
     else {
         return Ok(None);
     };
+    let options = seseragi_backend_rust::ProgramWasmOptions {
+        instantiations: bound.into_inner().unwrap_or_default(),
+        ..options
+    };
+    let exports = &selection.names;
     for (_, package) in project.packages().packages() {
         if module.is_none()
             && (!package.manifest().providers.is_empty()
@@ -208,12 +249,13 @@ fn compile_file(
     }
     let original = fs::read_to_string(path).map_err(|e| e.to_string())?;
     let selection = selection(exports)?;
+    let bindings = selection.bind(&original);
     let options = seseragi_backend_rust::ProgramWasmOptions {
-        instantiations: selection.instantiations.clone(),
+        instantiations: bindings.instantiations,
         ..options
     };
     let exports = &selection.names;
-    let source = format!("{original}{}", selection.extension);
+    let source = format!("{original}{}", bindings.extension);
     let checked = compile_core_module(CompileInput::new(path, "experimental/main", &source))
         .map_err(|diagnostics| {
             seseragi_driver::render_terminal_diagnostics(&diagnostics, &source)

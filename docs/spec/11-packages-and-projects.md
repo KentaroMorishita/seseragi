@@ -509,6 +509,7 @@ root Web packageは、optionalな`[web.programs.<name>]`でpure計算moduleと�
 program名は小文字英字から始まる48字以内の英小文字・数字・`-`で、Windowsの予約device名は使えません。
 
 `exports`の各要素は、次のどれかです。hostが見る名前は重複できません。
+関数名と名前は、sourceの識別子と同じ規則で書きます（日本語の名前や末尾の`'`も使えます）。
 
 | 書き方 | 公開するもの | hostが見る名前 |
 | --- | --- | --- |
@@ -518,6 +519,7 @@ program名は小文字英字から始まる48字以内の英小文字・数字�
 
 型引数は、選んだmoduleのsourceと同じ書き方で、そのmoduleのimportの範囲で解決します。
 型引数を付けた選択は、そのmoduleの末尾に`let <隠し名> = label<Int>`を足したのと同じ型検査を受けます。
+隠し名には、そのmoduleのsourceに現れない名前が選ばれるので、moduleの定義やimportとは重なりません。
 trait制約のinstanceは、sourceの呼出しと同じ規則で選ばれ、選べない場合はその行の診断になります。
 同じ関数を複数の型引数で公開するときは、`名前=関数<型>`で別の名前を付けます。
 
