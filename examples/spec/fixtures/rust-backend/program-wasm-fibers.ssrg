@@ -89,3 +89,44 @@ pub effect fn stuck _trigger: Unit -> String = do {
   deferreds.await gate
   refs.get cell
 }
+
+// Fiber await and poll, and Deferred poll, complete and fail, report each
+// exit and completion in the same order as the TS target. The values cross
+// to the host as they are.
+pub effect fn outcomes _trigger: Unit
+  -> (
+    (Maybe<Either<String, String>>, Maybe<effects.FiberExit<String, String>>, Bool, Bool),
+    (Maybe<Either<String, String>>, effects.FiberExit<String, String>, Maybe<effects.FiberExit<String, String>>),
+    (Bool, effects.FiberExit<String, String>, Maybe<Either<String, String>>),
+    (effects.FiberExit<String, String>, Maybe<Either<String, String>>)
+  ) =
+  do {
+    gate <- deferreds.make<String, String> ()
+    before <- deferreds.poll gate
+    child <- effects.fork (deferreds.await gate)
+    effects.yieldNow ()
+    waiting <- effects.poll child
+    let seven: Either<String, String> = Right "seven"
+    completed <- deferreds.complete seven gate
+    late <- deferreds.fail "late" gate
+    after <- deferreds.poll gate
+    exit <- effects.await child
+    finished <- effects.poll child
+    broken <- deferreds.make<String, String> ()
+    failer <- effects.fork (deferreds.await broken)
+    failed <- deferreds.fail "boom" broken
+    failedExit <- effects.await failer
+    brokenPoll <- deferreds.poll broken
+    never <- deferreds.make<String, String> ()
+    sleeper <- effects.fork (deferreds.await never)
+    effects.yieldNow ()
+    effects.interrupt sleeper
+    cancelled <- effects.await sleeper
+    neverPoll <- deferreds.poll never
+    effects.succeed (
+      (before, waiting, completed, late),
+      (after, exit, finished),
+      (failed, failedExit, brokenPoll),
+      (cancelled, neverPoll)
+    )
+  }

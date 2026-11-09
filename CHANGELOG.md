@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.157] - 2026-11-10
+
+### Added
+
+- Program WASM runs Float power (`**` and `std/float.power`). The special values follow the ECMAScript table bit for bit, as on the TS target. Other results come from the same implementation as native on every host and stay within one ulp of the correctly rounded value; ECMAScript leaves them approximate, and JavaScriptCore can be far further off.
+- Program WASM passes `FiberExit` in the TS target's shape, so an Effect export can return what `await` and `poll` report for a Fiber.
+
+### Fixed
+
+- A program WASM instance no longer keeps every host value it was given until it is disposed. A host value stays only while a returned callback, an Effect plan or a running Effect can still use it, and `ownership().hostValues` reports how many it holds.
+- Program WASM accepts a data type nested in itself by hand any number of times, such as twenty levels of `Box<Box<...>>`. Only a type that uses itself with growing type arguments, which has no finite set of codecs, is refused.
+
 ## [0.61.156] - 2026-11-10
 
 ### Added
