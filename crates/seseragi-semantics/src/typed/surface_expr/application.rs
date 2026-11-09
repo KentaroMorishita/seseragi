@@ -990,18 +990,20 @@ pub(crate) fn type_known_application_with_explicit(
         expected_application,
         context,
     );
-    let argument_order = argument_nodes
-        .iter()
-        .enumerate()
-        .filter(|(_, argument)| !requires_callable_context(argument, context))
-        .chain(
-            argument_nodes
-                .iter()
-                .enumerate()
-                .filter(|(_, argument)| requires_callable_context(argument, context)),
-        )
-        .map(|(index, _)| index)
-        .collect::<Vec<_>>();
+    // Constructor applications such as `Right 7` take the type arguments
+    // their own arguments leave open from the expected parameter, so they
+    // wait for the arguments that can fix those type arguments.
+    let rank = |argument: &SurfaceExpr| {
+        if requires_callable_context(argument, context) {
+            2
+        } else if waits_for_expected_type(argument, context) {
+            1
+        } else {
+            0
+        }
+    };
+    let mut argument_order = (0..argument_nodes.len()).collect::<Vec<_>>();
+    argument_order.sort_by_key(|index| rank(argument_nodes[*index]));
     for index in argument_order {
         let argument = argument_nodes[index];
         let indexed_arguments = semantic_arguments
@@ -1720,6 +1722,17 @@ fn instantiate_explicit_signature(
 
 // Like lambdas, operator sections need operand types from the other arguments
 // before selecting their dictionary. This changes typing order, not execution order.
+fn waits_for_expected_type(expression: &SurfaceExpr, context: &PureExpressionContext<'_>) -> bool {
+    if let SurfaceExpr::Grouped { value, .. } = expression {
+        return waits_for_expected_type(value, context);
+    }
+    let (head, _) = flatten_application(expression);
+    matches!(head, SurfaceExpr::Name { .. })
+        && context
+            .target(head.span())
+            .is_some_and(|target| context.semantic_types().constructor(target).is_some())
+}
+
 fn requires_callable_context(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
