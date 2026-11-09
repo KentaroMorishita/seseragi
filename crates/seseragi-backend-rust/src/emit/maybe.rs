@@ -51,9 +51,6 @@ impl Backend<'_> {
         if !instance.identity.starts_with("std/prelude::Traversable<") {
             return Ok(false);
         }
-        if self.program_wasm_library {
-            return Err("program WASM: native Traversable instance needs an ABI proof".into());
-        }
         let [constructor] = instance.arguments.as_slice() else {
             return Err("Rust backend: Traversable instance constructor arity".into());
         };
@@ -203,12 +200,6 @@ impl Backend<'_> {
         if selected.constraint.trait_identity.as_deref() != Some("std/prelude::Traversable") {
             return Ok(None);
         }
-        if self.program_wasm_library {
-            return Err(
-                "program WASM: native Traversable dictionary needs a target-specific ABI proof"
-                    .into(),
-            );
-        }
         self.validate_traversable_evidence(selected, scope)?;
         self.capabilities.insert("traversable".into());
         if identity == "std/non-empty-list::Traversable" {
@@ -227,17 +218,6 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        // withDefault and orElse are pure and match TS in program WASM.
-        // traverse and sequence take an Applicative dictionary, which needs
-        // its own proof.
-        if self.program_wasm_library
-            && matches!(name, "std/maybe::traverse" | "std/maybe::sequence")
-        {
-            return Err(
-                "program WASM: native Maybe standard operation needs a target-specific ABI proof"
-                    .into(),
-            );
-        }
         if scope.has_unproven_type_scope() {
             return Err("Rust backend: unproven Maybe source scope".into());
         }

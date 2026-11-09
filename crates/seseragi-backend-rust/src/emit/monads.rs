@@ -255,7 +255,9 @@ impl Backend<'_> {
             "std/transformer/writer" => ("std/transformer/writer::WriterT", 3, 13),
             _ => return Ok(None),
         };
-        if self.program_wasm_library {
+        // The pure data dictionaries run the same code as the TS target.
+        // Effect, Stream and the transformers still need their own proof.
+        if self.program_wasm_library && (kind == 5 || kind >= 8) {
             return Err(
                 "program WASM: native monad dictionary needs a target-specific ABI proof".into(),
             );

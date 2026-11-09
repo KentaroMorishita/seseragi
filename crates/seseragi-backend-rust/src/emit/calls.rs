@@ -373,9 +373,8 @@ impl Backend<'_> {
                 self.validate_parameter_evidence(&evidence[0], scope)?;
                 if scope.dictionaries[index].trait_identity.as_deref()
                     != Some(dispatch.trait_identity.as_str())
-                    && !(!self.program_wasm_library
-                        && evidence[0].constraint.trait_identity.as_deref()
-                            == Some(dispatch.trait_identity.as_str())
+                    && !(evidence[0].constraint.trait_identity.as_deref()
+                        == Some(dispatch.trait_identity.as_str())
                         && self.inherited_parameter_constraint(
                             &scope.dictionaries[index],
                             &evidence[0].constraint,

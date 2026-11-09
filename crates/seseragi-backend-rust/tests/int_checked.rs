@@ -135,7 +135,7 @@ fn int_checked_rejects_unproven_owners_kinds_arguments_evidence_and_stages() {
 }
 
 #[test]
-fn int_checked_does_not_admit_unused_operations_in_program_wasm() {
+fn int_checked_operations_build_as_program_wasm() {
     for (signature, operation) in [
         ("Int -> Int -> Maybe<Int>", "checkedAdd"),
         ("Int -> Int -> Maybe<Int>", "checkedSubtract"),
@@ -167,9 +167,6 @@ fn int_checked_does_not_admit_unused_operations_in_program_wasm() {
     ] {
         let core = checked(&format!("import * as ints from \"std/int\"\npub fn probe value: Int -> Int = {{ let saved: {signature} = ints.{operation}; value }}\npub fn main -> Int = 0\n"));
         emit_rust_module(&core, "main").unwrap();
-        let error =
-            emit_program_wasm(&[&core], "native/int-checked", &["probe".into()]).unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert_eq!(error.origin.unwrap().source, "int-checked-雪🙂.ssrg");
+        emit_program_wasm(&[&core], "native/int-checked", &["probe".into()]).unwrap();
     }
 }

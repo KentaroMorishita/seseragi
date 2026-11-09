@@ -615,12 +615,6 @@ impl Backend<'_> {
             result: Box::new(result),
         };
         if dispatch.method == "pure" {
-            if self.program_wasm_library {
-                return Err(
-                    "program WASM: native Applicative pure requires a target-specific ABI proof"
-                        .into(),
-                );
-            }
             return self.match_local_type(
                 &arrow(a.clone(), applied(a)),
                 type_ref,

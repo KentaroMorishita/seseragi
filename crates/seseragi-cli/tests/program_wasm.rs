@@ -2939,6 +2939,92 @@ fn wasm_and_ts(scratch: &Path, fixture: &str, exports: &[&str]) {
 }
 
 #[test]
+fn int_and_float_conversion_operations_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-numbers.ssrg",
+        &["checked", "limits", "text", "rounded"],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const [min, max] = ts.limits(undefined);
+assert.deepStrictEqual(wasm.limits(undefined), [min, max]);
+for (const left of [0, 1, -1, 3, -7, 52, 53, 54, min, max])
+  for (const right of [0, 1, -1, 2, -2, 10, -10, 0x7fffffff, min, max])
+    assert.deepStrictEqual(wasm.checked([left, right]), ts.checked([left, right]), `checked ${left} ${right}`);
+for (const radix of [0, 1, 2, 8, 10, 16, 36, 37])
+  for (const source of ['', '0', '-0', '+7', '1010', 'ff', 'FF', 'zz', '-80', '9007199254740991', '9007199254740992', '-9007199254740992', '12x', ' 1'])
+    assert.deepStrictEqual(wasm.text([radix, source]), ts.text([radix, source]), `text ${radix} ${source}`);
+for (const value of [0, -0, 0.5, 1.5, 2.5, -0.5, -1.5, -2.5, 2.4999999999999996, 1e-310, 123.456, -123.456, 9007199254740991, 9007199254740992, -9007199254740993, 1e300, NaN, Infinity, -Infinity])
+  assert.deepStrictEqual(wasm.rounded(value), ts.rounded(value), `rounded ${value}`);
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
+fn traversals_and_user_monoid_reducible_instances_match_the_ts_target() {
+    let scratch = Scratch::new();
+    wasm_and_ts(
+        &scratch.0,
+        "program-wasm-instances.ssrg",
+        &[
+            "traverseMaybe",
+            "sequenceMaybe",
+            "traverseEither",
+            "sequenceEither",
+            "boxMaybe",
+            "boxEither",
+            "marks",
+            "reversed",
+            "totals",
+        ],
+    );
+    fs::write(scratch.0.join("compare.mjs"), r#"import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {loadProgram} from './wasm/program.mjs';
+import * as ts from './ts/main.js';
+const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
+const wasm = program.exports;
+const plain = (value) => JSON.parse(JSON.stringify(value));
+const same = (name, input) => assert.deepStrictEqual(plain(wasm[name](input)), plain(ts[name](input)), `${name}(${JSON.stringify(input)})`);
+const arrays = [[], [1], [1, 2, 3], [1, 0, 3], [-1, -2], [4, 5, 6, 7]];
+for (const input of arrays) for (const name of ['traverseMaybe', 'traverseEither', 'marks', 'reversed', 'totals']) same(name, input);
+const just = (value) => ({tag: 'Just', value});
+for (const input of [[], [just(1)], [just(1), just(2)], [just(1), {tag: 'Nothing'}, just(3)]]) same('sequenceMaybe', input);
+const right = (value) => ({tag: 'Right', value});
+const left = (value) => ({tag: 'Left', value});
+for (const input of [[], [right(1)], [right(1), right(2)], [right(1), left('a'), left('b')]]) same('sequenceEither', input);
+for (const input of [{tag: 'Empty'}, {tag: 'Full', value: 3}, {tag: 'Full', value: 0}]) { same('boxMaybe', input); same('boxEither', input); }
+program.dispose();
+console.log('same results');
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let output = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(scratch.0.join("compare.mjs"))
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(output.stdout, b"same results\n", "{engine}");
+    }
+}
+
+#[test]
 fn text_operations_match_the_ts_target() {
     let scratch = Scratch::new();
     let exports = [

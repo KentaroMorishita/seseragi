@@ -50,16 +50,6 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
-        // Mapping, folding and swapping are pure and match TS in program
-        // WASM. traverse and sequence take an Applicative dictionary, which
-        // needs its own proof.
-        if self.program_wasm_library
-            && matches!(name, "std/either::traverse" | "std/either::sequence")
-        {
-            return Err(
-                "program WASM: native Either operation needs a target-specific ABI proof".into(),
-            );
-        }
         if scope.has_unproven_type_scope() {
             return Err("Rust backend: unproven Either source scope".into());
         }

@@ -1,0 +1,84 @@
+// Program WASM runs the checked and saturating Int operations, Int text
+// conversion and Float to Int rounding with the TS target's results.
+import * as floats from "std/float"
+import * as ints from "std/int"
+import * as numbers from "std/number"
+
+fn optional value: Maybe<Int> -> String = match value {
+  Nothing -> "nothing"
+  Just n -> ints.format n
+}
+
+fn division result: Either<ints.IntDivisionError, Int> -> String = match result {
+  Left ints.IntDivisionByZero -> "zero"
+  Right value -> ints.format value
+}
+
+fn power result: Either<ints.IntPowerError, Int> -> String = match result {
+  Left error -> match error {
+    ints.NegativeIntExponent n -> "negative:" + ints.format n
+    ints.IntPowerOverflow -> "overflow"
+  }
+  Right value -> ints.format value
+}
+
+fn parsed result: Either<ints.IntParseError, Int> -> String = match result {
+  Left error -> match error {
+    ints.EmptyInt -> "empty"
+    ints.IntOutsideRange -> "range"
+    ints.InvalidIntRadix radix -> "radix:" + ints.format radix
+    ints.InvalidIntDigit detail -> "digit:" + ints.format detail.offset + "/" + ints.format detail.radix
+  }
+  Right value -> ints.format value
+}
+
+fn formatted result: Either<ints.IntParseError, String> -> String = match result {
+  Left ints.InvalidIntRadix radix -> "radix:" + ints.format radix
+  Left _ -> "error"
+  Right text -> text
+}
+
+fn converted result: Either<floats.FloatConversionError, Int> -> String = match result {
+  Left floats.FloatNotFinite -> "not-finite"
+  Left floats.FloatOutsideIntRange -> "outside"
+  Right value -> ints.format value
+}
+
+pub fn checked pair: (Int, Int) -> Array<String> = {
+  let (left, right) = pair
+  [
+    optional (ints.checkedAdd left right),
+    optional (ints.checkedSubtract left right),
+    optional (ints.checkedMultiply left right),
+    ints.format (ints.saturatingAdd left right),
+    ints.format (ints.saturatingSubtract left right),
+    ints.format (ints.saturatingMultiply left right),
+    ints.format (ints.minimum left right),
+    ints.format (ints.maximum left right),
+    division (ints.checkedDivide left right),
+    division (ints.checkedRemainder left right),
+    power (ints.checkedPower left right),
+    power (ints.saturatingPower left right),
+    ints.format (ints.abs left),
+    ints.format (ints.sign left),
+    ints.format (ints.clamp (-10) 10 left)
+  ]
+}
+
+pub fn limits _trigger: Unit -> (Int, Int) = (ints.minValue (), ints.maxValue ())
+
+pub fn text pair: (Int, String) -> Array<String> = {
+  let (radix, source) = pair
+  [parsed (ints.parseRadix radix source), formatted (ints.formatRadix radix (ints.maxValue ()))]
+}
+
+pub fn rounded value: Float -> Array<String> = [
+  converted (floats.toInt numbers.HalfEven value),
+  converted (floats.toInt numbers.HalfUp value),
+  converted (floats.toInt numbers.TowardZero value),
+  converted (floats.toInt numbers.AwayFromZero value),
+  converted (floats.toInt numbers.Floor value),
+  converted (floats.toInt numbers.Ceiling value),
+  show (floats.roundIntegral numbers.HalfEven value),
+  show (floats.roundIntegral numbers.HalfUp value)
+]

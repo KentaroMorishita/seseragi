@@ -329,16 +329,11 @@ fn prelude_collections_keep_reducible_parent_and_rank_polymorphic_method_proofs(
 }
 
 #[test]
-fn prelude_collections_do_not_expand_program_wasm_admission() {
+fn prelude_folds_build_as_program_wasm() {
     for (result, expression) in [("Int", "sum [1]"), ("String", "join \",\" [\"a\"]")] {
         let core = checked(&format!("pub fn probe -> {result} = {expression}\n"));
-        let error = emit_program_wasm(&[&core], "native/standard", &["probe".into()]).unwrap_err();
-        assert!(
-            error
-                .message
-                .contains("native Prelude collection requires a target-specific ABI proof"),
-            "{error}"
-        );
+        emit_program_wasm(&[&core], "native/standard", &["probe".into()])
+            .unwrap_or_else(|error| panic!("{expression}: {error}"));
     }
 }
 
