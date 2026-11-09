@@ -189,10 +189,19 @@ fn program_wasm_admits_int_power_and_keeps_rejecting_other_power() {
     emit_rust_module(&core, "probe").unwrap();
     seseragi_backend_rust::emit_program_wasm(&[&core], "native/power", &["square".into()])
         .expect("program WASM Int power");
-    // Power through a generic dictionary and Float power are not proven yet.
+    // Float power follows the ECMAScript special-value table on every target.
+    let core = compile_core_module(CompileInput::new(
+        "power-wasm-雪.ssrg",
+        "native/power",
+        "pub fn square value: Float -> Float = value ** 2.0\npub fn probe -> Int = 1\npub fn amount -> Int = 1\nfn used -> Float = square 3.0\n",
+    ))
+    .unwrap()
+    .core_ir;
+    seseragi_backend_rust::emit_program_wasm(&[&core], "native/power", &["amount".into()])
+        .expect("program WASM Float power");
+    // Power through a generic dictionary is not proven yet.
     for (source, selected) in [
         ("fn selected<A> base: A -> exponent: A -> A where Pow<A,A,A> = base ** exponent\npub fn square value: Int -> Int = selected value 2\npub fn probe -> Int = square 3\n", "square"),
-        ("pub fn square value: Float -> Float = value ** 2.0\npub fn probe -> Int = 1\npub fn amount -> Int = 1\nfn used -> Float = square 3.0\n", "amount"),
     ] {
         let core = compile_core_module(CompileInput::new(
             "power-wasm-雪.ssrg", "native/power", source,
