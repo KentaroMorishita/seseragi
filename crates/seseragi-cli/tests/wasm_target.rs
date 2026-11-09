@@ -218,7 +218,7 @@ fn dev_rebuilds_the_wasm_target_library_when_its_source_changes() {
     let served = output(seseragi(&root).args(["dev", ".", "--port", "0"]));
     assert!(String::from_utf8_lossy(&served.stderr).contains("require --target web"));
     let _dev = OwnedChild::start(seseragi(&root).args(["dev", "."]), &logs);
-    let output = root.join(".seseragi/dev/program");
+    let output = root.join(".seseragi/dev-wasm");
     let manifest = output.join("program-wasm.json");
     let wait = |done: &dyn Fn() -> bool| {
         let deadline = Instant::now() + Duration::from_secs(180);
@@ -244,4 +244,42 @@ fn dev_rebuilds_the_wasm_target_library_when_its_source_changes() {
     assert!(fs::read_to_string(logs.join("stdout"))
         .unwrap()
         .contains("Watching"));
+}
+
+#[test]
+fn wasm_target_takes_the_manifest_profile_unless_the_invocation_names_one() {
+    let scratch = Scratch::new();
+    let root = scratch.0.join("profiled");
+    fs::create_dir_all(root.join("src")).unwrap();
+    fs::write(
+        root.join("seseragi.toml"),
+        "[package]\nname = \"fixture/profiled\"\nversion = \"0.1.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[run]\nentry = \"score\"\ntarget = \"wasm\"\nexports = [\"score\"]\n\n[build]\nprofile = \"release\"\n",
+    )
+    .unwrap();
+    fs::write(
+        root.join("src/score.ssrg"),
+        "pub newtype Score = Int\npub fn score value: Int -> Score = Score value\n",
+    )
+    .unwrap();
+    successful(output(seseragi(&root).args(["lock", "update", "."])));
+    // The release profile erases the newtype wrapper, as the TS target does.
+    successful(output(seseragi(&root).args(["build", "."])));
+    let declared = fs::read_to_string(root.join("dist/program.d.mts")).unwrap();
+    assert!(
+        declared.contains("export type Score = number;"),
+        "{declared}"
+    );
+    successful(output(seseragi(&root).args([
+        "build",
+        ".",
+        "--profile",
+        "development",
+        "--out-dir",
+        "development",
+    ])));
+    let declared = fs::read_to_string(root.join("development/program.d.mts")).unwrap();
+    assert!(
+        declared.contains("export type Score = Readonly<{tag: \"Score\"; value: number}>;"),
+        "{declared}"
+    );
 }

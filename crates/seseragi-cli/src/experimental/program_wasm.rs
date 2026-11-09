@@ -519,7 +519,7 @@ pub(super) fn run(arguments: &[String]) -> Result<i32, String> {
 pub(crate) fn build_package_program(
     root: &Path,
     command: seseragi_project::ProjectCommand,
-    profile: seseragi_project::BuildProfile,
+    profile: Option<seseragi_project::BuildProfile>,
     destination: &Path,
 ) -> Result<Option<PathBuf>, String> {
     let manifest = root.join("seseragi.toml");
@@ -537,6 +537,8 @@ pub(crate) fn build_package_program(
                 manifest.display()
             )
         })?;
+    // The invocation's profile, then the manifest's, as for other builds.
+    let profile = profile.or(parsed.build_profile).unwrap_or_default();
     let Some((artifact, sources)) = compile_package(
         &root.to_string_lossy(),
         &run.exports,

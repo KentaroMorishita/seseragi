@@ -310,13 +310,13 @@ fn rebuild_target(
 ) -> Result<bool, String> {
     if target == Some(Target::Project(seseragi_project::ProjectTarget::Wasm)) {
         let started = Instant::now();
-        // The program library is published beside the web dev output, so a
-        // web dev session of the same package does not replace it.
+        // The program library is published beside the web dev output, which
+        // a web dev session of the same package replaces as a whole.
         let Some(built) = crate::experimental::program_wasm::build_package_program(
             project,
             ProjectCommand::Dev,
-            Default::default(),
-            &output.join("program"),
+            None,
+            &output.with_file_name("dev-wasm"),
         )?
         else {
             eprintln!("Build failed ({})", elapsed(started));

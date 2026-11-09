@@ -388,11 +388,13 @@ exports = ["label", "validate", "sameText=same<String>"]
 ```
 
 - `seseragi build`は、`--out-dir`（既定は`dist`）へ`program.wasm`、loaderの`program.mjs`、型宣言の
-  `program.d.mts`、生成Rustと`program-wasm.json`を出します。`--profile`は値の形を同じprofileのTS targetに揃えます。
+  `program.d.mts`、生成Rustと`program-wasm.json`を出します。profileは`--profile`、manifestの既定値の順に選び、
+  値の形を同じprofileのTS targetに揃えます。
   `--source-map`は受け付けません。
 - 出力先は、空か、前回の変更されていない出力だけを持つdirectoryでなければなりません。ほかのfileがあれば
   置き換えずにerrorにします。失敗したbuildは前の完成した出力を保持します。
-- `seseragi dev`はdev serverを持たず、sourceとmanifestの変更を監視して`.seseragi/dev/program`へ作り直します。
+- `seseragi dev`はdev serverを持たず、sourceとmanifestの変更を監視して`.seseragi/dev-wasm`へ作り直します。
+  Web devの出力`.seseragi/dev`とは別のdirectoryなので、互いに置き換えません。
   `--host`、`--port`、`--open`は受け付けません。
 - `seseragi run`は実行する`main`がないので、targetの選択時に拒否します。
 - `run.target = "wasm"`では、`run.exports`が必須です。processの設定である`signal_mode`、

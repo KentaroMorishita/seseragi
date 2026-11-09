@@ -83,7 +83,7 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
         let Some(built) = crate::experimental::program_wasm::build_package_program(
             &root,
             ProjectCommand::Build,
-            profile.unwrap_or_default(),
+            profile,
             Path::new(&output_directory),
         )?
         else {
