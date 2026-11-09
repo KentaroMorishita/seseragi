@@ -2871,7 +2871,9 @@ assert.deepStrictEqual([...capabilities], ['float', 'math']);
 const program = await loadProgram(await readFile(new URL('./wasm/program.wasm', import.meta.url)));
 const wasm = program.exports;
 const bits = (value) => { const view = new DataView(new ArrayBuffer(8)); view.setFloat64(0, value); return view.getBigUint64(0); };
-const same = (left, right, label) => assert.equal(bits(left), bits(right), label);
+// NaN bit patterns depend on the CPU and the JS engine and no program can
+// observe them, so any NaN matches any NaN; every other value matches bit for bit.
+const same = (left, right, label) => Number.isNaN(left) && Number.isNaN(right) ? undefined : assert.equal(bits(left), bits(right), label);
 wasm.constants(undefined).forEach((value, index) => same(value, ts.constants(undefined)[index], `constant ${index}`));
 for (const value of [0, -0, 1, 2, 0.5, 1e-310, 5e-324, 1.7976931348623157e308, -1, NaN, Infinity, -Infinity, 123456.789]) {
   same(wasm.root(value), ts.root(value), `root ${value}`);
