@@ -29,6 +29,8 @@ mod module_path;
 mod package_name;
 mod profile;
 pub use profile::BuildProfile;
+mod program_export;
+pub use program_export::ProgramExport;
 mod runtime_source;
 mod source_import;
 pub use runtime_source::{runtime_source_path, standalone_runtime_source_path};
@@ -75,9 +77,10 @@ pub use local_graph::{
 };
 pub use local_project::{
     load_local_benchmarks, load_local_documents, load_local_project,
-    load_local_project_for_analysis, load_local_project_module, load_local_project_with_overlays,
-    load_local_tests, LoadedLocalAnalysis, LoadedLocalDocuments, LoadedLocalProject,
-    LoadedLocalTests, LocalProjectLoadError,
+    load_local_project_for_analysis, load_local_project_module,
+    load_local_project_module_with_overlays, load_local_project_with_overlays, load_local_tests,
+    LoadedLocalAnalysis, LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests,
+    LocalProjectLoadError,
 };
 pub use lockfile::{
     generate_lockfile, parse_lockfile, read_and_validate_development_lockfile,

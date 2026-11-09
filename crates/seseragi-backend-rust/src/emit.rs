@@ -356,6 +356,11 @@ fn emit_body(
         }
     }
     Ok(RustArtifact {
+        globals: backend
+            .globals
+            .iter()
+            .map(|(symbol, index)| (symbol.clone(), *index))
+            .collect(),
         source: output,
         metadata: RustMetadata {
             schema: 1,

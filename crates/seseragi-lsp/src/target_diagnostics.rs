@@ -45,10 +45,19 @@ pub(crate) fn append(
         let identity =
             ModuleIdentity::new(root.clone(), ModuleRoot::Source, program.module.clone());
         if project.module(&identity).is_some() {
+            // An export at type arguments (`label<Int>`) is checked by the
+            // build, which adds its binding before type checking.
+            let exports = program
+                .exports
+                .iter()
+                .filter_map(|text| seseragi_project::ProgramExport::parse(text).ok())
+                .filter(|export| export.type_arguments.is_none())
+                .map(|export| export.name)
+                .collect();
             targets.push((
                 logical_module_id(&identity),
                 RustDiagnosticTarget::ProgramWasm,
-                program.exports.clone(),
+                exports,
             ));
         }
     }
@@ -66,7 +75,7 @@ pub(crate) fn append(
             .collect::<Vec<_>>();
         let mut errors =
             diagnose_rust_project(&modules, &entry, target, &RustTargetOptions::default());
-        if target == RustDiagnosticTarget::ProgramWasm {
+        if target == RustDiagnosticTarget::ProgramWasm && !exports.is_empty() {
             if let Err(error) = emit_program_wasm(&modules, &entry, &exports) {
                 if !errors.contains(&error) {
                     errors.push(error);

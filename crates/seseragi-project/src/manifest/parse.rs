@@ -96,14 +96,21 @@ fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
                 }
                 let module = ModulePath::parse(&program.module)
                     .map_err(|_| error("expected a canonical source module path"))?;
-                let mut seen = std::collections::BTreeSet::new();
-                if program.exports.is_empty()
-                    || program
-                        .exports
-                        .iter()
-                        .any(|value| value.is_empty() || !seen.insert(value))
-                {
+                if program.exports.is_empty() {
                     return Err(error("select nonempty, distinct public function names"));
+                }
+                // Each entry is a function, `function<Type>` or
+                // `name=function<Type>`; the host names must be distinct.
+                let mut seen = std::collections::BTreeSet::new();
+                for value in &program.exports {
+                    let export = crate::ProgramExport::parse(value).map_err(|reason| {
+                        ManifestError::InvalidProgramWasm(format!(
+                            "web.programs.{name}: exports: {reason}"
+                        ))
+                    })?;
+                    if !seen.insert(export.name) {
+                        return Err(error("select nonempty, distinct public function names"));
+                    }
                 }
                 Ok((
                     name,
