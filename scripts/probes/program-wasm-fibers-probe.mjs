@@ -31,6 +31,43 @@ lines.push("-1")
 const first = await run("first")
 assert.equal(first.tag, "Success")
 lines.push(first.value)
+const outcomes = await run("outcomes")
+assert.equal(outcomes.tag, "Success")
+const exit = (value) =>
+  value.tag === "FiberSucceeded"
+    ? `succeeded ${value.value}`
+    : value.tag === "FiberFailed"
+      ? `failed ${value.value}`
+      : "cancelled"
+const polledExit = (value) =>
+  value.tag === "Nothing" ? "running" : exit(value.value)
+const polledGate = (value) =>
+  value.tag === "Nothing"
+    ? "open"
+    : value.value.tag === "Left"
+      ? `failed ${value.value.value}`
+      : `holds ${value.value.value}`
+const flag = (value) => (value ? "won" : "lost")
+const [
+  [before, waiting, completed, late],
+  [after, joined, finished],
+  [brokenWon, failedExit, brokenPoll],
+  [cancelled, neverPoll],
+] = outcomes.value
+lines.push(
+  [
+    polledGate(before),
+    polledExit(waiting),
+    `${flag(completed)} ${flag(late)}`,
+    polledGate(after),
+    exit(joined),
+    polledExit(finished),
+    `${flag(brokenWon)} ${exit(failedExit)}`,
+    polledGate(brokenPoll),
+    exit(cancelled),
+    polledGate(neverPoll),
+  ].join(";")
+)
 
 // Every Fiber waits and nothing can wake one, so the run stays pending
 // without polling until the host cancels it.

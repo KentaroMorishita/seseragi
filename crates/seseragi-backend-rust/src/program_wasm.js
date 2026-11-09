@@ -251,6 +251,7 @@ function write(id, value, writer) {
         state.hostValues.set(token, value)
         state.hostTokens.set(key, token)
       }
+      writer.tokens.add(token)
       writer.u32(token)
       break
     }
@@ -266,6 +267,8 @@ function writer(state) {
   let size = 0
   return {
     state,
+    // The host value tokens this input carries into WASM.
+    tokens: new Set(),
     add(bytes) {
       size += bytes.length
       if (size > schema.maxBoundaryBytes)
@@ -472,11 +475,36 @@ function requireActive(state) {
       "Reentrant program WASM calls require another ABI"
     )
 }
+// WASM keeps a host value only inside a callback it returned, so each
+// callback holds the tokens of the call that made it and of its parent
+// callback. A token nothing holds is dropped once its call returns.
+function hold(state, tokens) {
+  for (const token of tokens)
+    state.holders.set(token, (state.holders.get(token) ?? 0) + 1)
+}
+function release(state, tokens) {
+  for (const token of tokens) {
+    const count = (state.holders.get(token) ?? 0) - 1
+    if (count > 0) state.holders.set(token, count)
+    else state.holders.delete(token)
+  }
+  sweep(state, tokens)
+}
+function sweep(state, tokens) {
+  for (const token of tokens) {
+    if (state.holders.has(token) || !state.hostValues.has(token)) continue
+    const value = state.hostValues.get(token)
+    const key = Object.is(value, -0) ? negativeZero : value
+    state.hostValues.delete(token)
+    if (state.hostTokens.get(key) === token) state.hostTokens.delete(key)
+  }
+}
 function releaseHostRoots(state, retired) {
   for (const entry of state.callbacks.values()) entry.closed = true
   state.callbacks.clear()
   state.hostValues.clear()
   state.hostTokens.clear()
+  state.holders.clear()
   state.api = undefined
   state.retired ||= retired
 }
@@ -541,14 +569,16 @@ function trapped(state, error, provenance) {
 function callback(state, token, codec, provenance) {
   if (token === 0 || state.callbacks.has(token))
     throw new TypeError("Invalid/reused callback token")
-  const entry = { closed: false }
+  const entry = { closed: false, held: state.carried ?? new Set() }
+  hold(state, entry.held)
   const invoke = (argument) => {
     requireActive(state)
     if (entry.closed) throw new ProgramWasmClosed("WASM callback detached")
     state.busy = true
     let phase = "input"
+    let encoded
     try {
-      const encoded = writer(state)
+      encoded = writer(state)
       write(schema.codecs[codec].parameter, argument, encoded)
       const bytes = encoded.bytes()
       const api = state.api
@@ -564,6 +594,8 @@ function callback(state, token, codec, provenance) {
       const bytesOut = output(api)
       if (status !== 0) throw new TypeError(decoder.decode(bytesOut))
       const decoded = reader(bytesOut)
+      // Callbacks in the result may keep this input's host values.
+      state.carried = new Set([...entry.held, ...encoded.tokens])
       const result = read(
         schema.codecs[codec].result,
         decoded,
@@ -581,6 +613,8 @@ function callback(state, token, codec, provenance) {
       throw error
     } finally {
       state.busy = false
+      state.carried = undefined
+      if (encoded && state.api) sweep(state, encoded.tokens)
     }
   }
   Object.defineProperties(invoke, {
@@ -596,6 +630,7 @@ function callback(state, token, codec, provenance) {
         }
         entry.closed = true
         state.callbacks.delete(token)
+        release(state, entry.held)
       },
     },
   })
@@ -628,6 +663,7 @@ function programOwner(state, exports) {
         alive: Boolean(state.api),
         retired: state.retired,
         callbacks: state.callbacks.size,
+        hostValues: state.hostValues.size,
         managedLiveAtClose: state.managedLiveAtClose,
       }),
   })
@@ -682,6 +718,8 @@ export async function loadProgram(bytes) {
     callbacks: new Map(),
     hostValues: new Map(),
     hostTokens: new Map(),
+    holders: new Map(),
+    carried: undefined,
     nextHostValue: 1,
     managedLiveAtClose: null,
   }
