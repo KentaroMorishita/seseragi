@@ -9,7 +9,11 @@ export interface BrowserProgram<
 }
 
 /** How `seseragi dev` rebuilds one generated program in place. */
-export interface ProgramSwap<Exports, Ownership, Disposal> {
+export interface ProgramSwap<
+  Exports,
+  Ownership,
+  Disposal extends void | Promise<void>,
+> {
   readonly name: string
   readonly path: string
   instantiate(

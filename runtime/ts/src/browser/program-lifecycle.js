@@ -58,6 +58,8 @@ export function createProgramLifetime() {
   const failures = []
   // Owners that `seseragi dev` may swap to a rebuilt module.
   const swappable = new Set()
+  // Loads of swappable programs still running their factory.
+  const swapLoads = new Set()
   let closing = false
   let closed
 
@@ -96,12 +98,14 @@ export function createProgramLifetime() {
   // bytes. Nothing is swapped unless every new instance is ready.
   function swap(names, version, fetchBytes = fetchProgram) {
     if (closing) return Promise.reject(new Error("Program lifetime closed"))
-    const targets = [...swappable].filter((owned) =>
-      names.includes(owned.swap.name)
-    )
     // Close waits for a swap in flight. Its failure belongs to the caller,
     // which reloads instead, not to the instances' own disposal.
     const task = (async () => {
+      // A load that began before this update joins it once it completes.
+      await Promise.allSettled([...swapLoads])
+      const targets = [...swappable].filter((owned) =>
+        names.includes(owned.swap.name)
+      )
       const bytes = new Map()
       for (const owned of targets) {
         if (!bytes.has(owned.swap.name))
@@ -152,6 +156,7 @@ export function createProgramLifetime() {
       complete = resolve
     })
     pending.add(completion)
+    if (swapInfo) swapLoads.add(completion)
     return (async () => {
       try {
         const program = await create()
@@ -178,18 +183,20 @@ export function createProgramLifetime() {
           swappable.delete(owned)
           const retired = [...owned.retiring]
           owned.retiring.clear()
+          // The owner's disposal also waits for instances it retired.
+          const draining = []
           for (const previous of retired) {
             try {
               const result = previous.dispose()
-              if (result !== undefined) void track(Promise.resolve(result))
+              if (result !== undefined) draining.push(Promise.resolve(result))
             } catch (error) {
               failures.push(error)
             }
           }
           try {
             const result = owned.current.dispose()
-            if (result !== undefined) {
-              disposal = Promise.resolve(result)
+            if (result !== undefined || draining.length !== 0) {
+              disposal = Promise.all([result, ...draining]).then(() => {})
               pending.add(disposal)
               const settle = () => {
                 pending.delete(disposal)
@@ -218,6 +225,7 @@ export function createProgramLifetime() {
         })
       } finally {
         pending.delete(completion)
+        swapLoads.delete(completion)
         complete()
       }
     })()

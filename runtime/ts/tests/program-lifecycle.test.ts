@@ -389,3 +389,41 @@ test("a failed swap keeps the current instance, and close releases retiring ones
   expect(first.state.closes).toBe(1)
   expect(replacement.state.closes).toBe(1)
 })
+
+test("an owner's disposal waits for its retired instance, and a swap waits for a load in flight", async () => {
+  const lifetime = createProgramLifetime()
+  const first = swappable("old")
+  const second = swappable("new")
+  const finished = Promise.withResolvers<void>()
+  const trace: string[] = []
+  first.program.dispose = async () => {
+    trace.push("old:cancel")
+    await finished.promise
+    first.state.alive = false
+    trace.push("old:released")
+  }
+  first.state.running = true
+  const loaded = Promise.withResolvers<typeof first.program>()
+  const loading = lifetime.load(() => loaded.promise, closedError, {
+    name: "calc",
+    path: "./calc.wasm",
+    instantiate: () => Promise.resolve(second.program),
+  })
+  const swapping = lifetime.swap(["calc"], "2", async () => new Uint8Array())
+  loaded.resolve(first.program)
+  const owner = await loading
+  await swapping
+  expect(owner.exports.call(1)).toBe("new:1")
+  let disposed = false
+  const disposal = owner.dispose().then(() => {
+    disposed = true
+  })
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  expect(trace).toEqual(["old:cancel"])
+  expect(disposed).toBe(false)
+  finished.resolve()
+  await disposal
+  expect(trace).toEqual(["old:cancel", "old:released"])
+  expect(second.state.closes).toBe(1)
+  await lifetime.close()
+})
