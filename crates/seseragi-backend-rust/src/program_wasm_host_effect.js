@@ -559,18 +559,22 @@ function effectPlan(state, token, codec, provenance) {
     get disposed() {
       return entry.closed
     },
-    run() {
+    run(environment) {
       requireActive(state)
       if (entry.closed) throw new ProgramWasmClosed("WASM Effect detached")
       if (state.running)
         throw new ProgramWasmClosed("Only one root Effect may run per instance")
+      const providers = providerEnvironment(
+        schema.codecs[codec].services ?? [],
+        environment
+      )
       try {
         if (state.api.ssrg_start(token) !== 0)
           throw new TypeError(decoder.decode(output(state.api)))
       } catch (error) {
         throw trapped(state, error, provenance)
       }
-      const execution = { done: false }
+      const execution = { done: false, providers }
       state.running = execution
       const result = pumpEffect(state, execution, codec, provenance)
       execution.result = result
@@ -637,6 +641,11 @@ async function pumpEffect(state, execution, codec, provenance) {
       }
       if (tag === 5) {
         await executeHost(state, input)
+        phase = "wait"
+        continue
+      }
+      if (tag === 6) {
+        await executeProvider(state, execution, input)
         phase = "wait"
         continue
       }
@@ -890,12 +899,14 @@ export async function loadProgram(bytes) {
   try {
     const start = pointer(api.ssrg_contract_ptr())
     const length = pointer(api.ssrg_contract_len())
-    if (
+    const origins =
       length > schema.maxBoundaryBytes ||
-      start + length > api.memory.buffer.byteLength ||
-      decoder.decode(new Uint8Array(api.memory.buffer, start, length)) !==
-        contract
-    ) {
+      start + length > api.memory.buffer.byteLength
+        ? undefined
+        : contractOrigins(
+            decoder.decode(new Uint8Array(api.memory.buffer, start, length))
+          )
+    if (!origins) {
       throw new TypeError(
         "Program WASM checked contract does not match this loader"
       )
@@ -910,7 +921,10 @@ export async function loadProgram(bytes) {
     if (initialized !== 0) throw new TypeError(decoder.decode(output(api)))
     const exports = Object.create(null)
     for (let index = 0; index < schema.exports.length; index++) {
-      const item = schema.exports[index]
+      const item = Object.freeze({
+        ...schema.exports[index],
+        origin: origins[index],
+      })
       executing = true
       const selected = api.ssrg_export(index)
       executing = false
@@ -1069,6 +1083,115 @@ async function executeHost(state, input) {
   } finally {
     state.hostActive = undefined
   }
+  replyHost(state, kind, bytes)
+}
+// The Console methods of the TypeScript runtime's Console service, by the
+// wire code of the operation WASM requests.
+const consoleMethods = ["print", "println", "error", "errorLine", "flush"]
+// A run's environment holds exactly the providers its Effect requires, as
+// the TypeScript target passes them. Other fields stay with the caller.
+function providerEnvironment(services, environment) {
+  if (services.length === 0) {
+    if (environment !== undefined)
+      throw new TypeError("This Effect requires no providers")
+    return undefined
+  }
+  if (environment === null || typeof environment !== "object")
+    throw new TypeError(
+      `This Effect requires providers: ${services.join(", ")}`
+    )
+  const providers = {}
+  for (const service of services) {
+    const provider = environment[service]
+    if (
+      service !== "console" ||
+      provider === null ||
+      typeof provider !== "object" ||
+      consoleMethods.some((method) => typeof provider[method] !== "function")
+    )
+      throw new TypeError(`Invalid ${service} provider`)
+    providers[service] = provider
+  }
+  return Object.freeze(providers)
+}
+function providerError(error) {
+  try {
+    return error instanceof Error && typeof error.message === "string"
+      ? `Console provider threw: ${error.message}`
+      : "Console provider threw a non-Error value"
+  } catch {
+    return "Console provider threw an unreadable error"
+  }
+}
+async function executeProvider(state, execution, input) {
+  const method = consoleMethods[input.take(1)[0]]
+  const masked = input.take(1)[0]
+  if (method === undefined || masked > 1)
+    throw new TypeError("Invalid provider request")
+  const values =
+    method === "flush" ? [] : [decoder.decode(input.take(input.u32()))]
+  input.end()
+  // Console takes no signal. Cancellation waits for the operation, and WASM
+  // turns an unmasked success after a cancel request into Cancelled.
+  const active = {
+    controller: new AbortController(),
+    reason: new Error("Seseragi provider cancellation requested"),
+    masked: Boolean(masked),
+  }
+  state.hostActive = active
+  let kind = 3
+  let bytes
+  try {
+    const provider = execution.providers?.console
+    let response
+    if (!provider)
+      bytes = defectBytes(["This run's environment has no Console provider"])
+    else {
+      try {
+        response = await Reflect.apply(provider[method], provider, values)
+      } catch (error) {
+        bytes = defectBytes([providerError(error)])
+      }
+    }
+    if (!bytes) {
+      const result = dataObject(response, [
+        "kind",
+        Object.getOwnPropertyDescriptor(response, "kind")?.value === "failure"
+          ? "error"
+          : "value",
+      ])
+      if (result.kind === "success") {
+        kind = 1
+        bytes = new Uint8Array()
+      } else if (result.kind === "failure") {
+        const error = result.error
+        const fields = Object.getOwnPropertyDescriptors(error ?? {})
+        const encoded = writer()
+        for (const key of ["kind", "message"]) {
+          const text = fields[key]?.value
+          if (
+            typeof text !== "string" ||
+            text.length > schema.maxBoundaryBytes ||
+            !text.isWellFormed()
+          )
+            throw new TypeError("Invalid ConsoleError")
+          const utf8 = encoder.encode(text)
+          encoded.u32(utf8.length)
+          encoded.add(utf8)
+        }
+        kind = 2
+        bytes = encoded.bytes()
+      } else throw new TypeError("Invalid provider result kind")
+    }
+  } catch {
+    kind = 3
+    bytes = defectBytes(["Console provider returned an invalid result"])
+  } finally {
+    state.hostActive = undefined
+  }
+  replyHost(state, kind, bytes)
+}
+function replyHost(state, kind, bytes) {
   if (!state.api)
     throw new ProgramWasmClosed("WASM instance retired during host callback")
   const start = pointer(state.api.ssrg_input(bytes.length))

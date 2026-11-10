@@ -1,0 +1,38 @@
+// Program WASM runs Console operations through the provider that the host
+// passes to each run, including the release of an acquired resource.
+import * as console from "std/console"
+import * as effects from "std/effect"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+effect fn say message: String -> Unit with Console =
+  println message |> effects.recover ignore
+
+effect fn release resource: String -> Unit with Console = say ("release:" + resource)
+
+effect fn open
+  request: (String -> Effect<{}, ConsoleError, String>) ->
+  input: String -> String with Console fails ConsoleError = do {
+  say ("acquire:" + input)
+  request ("open:" + input)
+}
+
+pub effect fn greet name: String -> Unit with Console fails ConsoleError = do {
+  print "hello "
+  console.println name
+  console.error "to "
+  console.errorLine "stderr"
+  console.flush ()
+}
+
+pub effect fn guarded
+  request: (String -> Effect<{}, ConsoleError, String>) ->
+  input: String -> String with Console fails ConsoleError =
+  effects.scoped $ do {
+    resource <- effects.acquireRelease (open request input) release
+    say ("using:" + resource)
+    result <- request ("read:" + resource)
+    effects.succeed result
+  }
+
+pub effect fn quiet value: String -> String fails Never = effects.succeed value

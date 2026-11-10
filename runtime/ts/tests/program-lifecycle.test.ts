@@ -299,3 +299,93 @@ test("the dev event waits for UI finalizers and late programs before one navigat
   await Promise.resolve()
   expect(created.ownership().closes).toBe(1)
 })
+
+function swappable(label: string) {
+  const state = { alive: true, closes: 0, callbacks: 1, running: false }
+  const call = Object.assign((value: number) => `${label}:${value}`, {
+    dispose() {
+      state.callbacks--
+    },
+  })
+  return {
+    state,
+    program: {
+      exports: { call },
+      dispose() {
+        state.alive = false
+        state.closes++
+        return Promise.resolve()
+      },
+      ownership: () => ({ ...state }),
+    },
+  }
+}
+
+test("a swap forwards exports and retires the old instance after its last callback", async () => {
+  const lifetime = createProgramLifetime()
+  const first = swappable("old")
+  const second = swappable("new")
+  const owner = await lifetime.load(
+    () => Promise.resolve(first.program),
+    closedError,
+    {
+      name: "calc",
+      path: "./programs/calc/program.wasm",
+      instantiate: () => Promise.resolve(second.program),
+    }
+  )
+  const call = owner.exports.call
+  expect(call(1)).toBe("old:1")
+  // A callback the UI still holds keeps the old instance running.
+  first.state.callbacks = 2
+  first.state.running = true
+  const fetched: string[] = []
+  await lifetime.swap(["calc", "other"], "4", async (path, version) => {
+    fetched.push(`${path}?v=${version}`)
+    return new Uint8Array()
+  })
+  expect(fetched).toEqual(["./programs/calc/program.wasm?v=4"])
+  expect(call(2)).toBe("new:2")
+  expect(owner.ownership()).toMatchObject({ alive: true, callbacks: 1 })
+  await new Promise((resolve) => setTimeout(resolve, 80))
+  expect(first.state).toMatchObject({ alive: true, callbacks: 1 })
+  first.state.running = false
+  first.state.callbacks = 0
+  await new Promise((resolve) => setTimeout(resolve, 80))
+  expect(first.state.closes).toBe(1)
+  await owner.dispose()
+  expect(second.state.closes).toBe(1)
+  await lifetime.close()
+})
+
+test("a failed swap keeps the current instance, and close releases retiring ones", async () => {
+  const lifetime = createProgramLifetime()
+  const first = swappable("old")
+  const replacement = swappable("new")
+  let fail = true
+  const owner = await lifetime.load(
+    () => Promise.resolve(first.program),
+    closedError,
+    {
+      name: "calc",
+      path: "./calc.wasm",
+      instantiate: () =>
+        fail
+          ? Promise.reject(new Error("bad module"))
+          : Promise.resolve(replacement.program),
+    }
+  )
+  const bytes = async () => new Uint8Array()
+  await expect(lifetime.swap(["calc"], "2", bytes)).rejects.toThrow(
+    "bad module"
+  )
+  expect(owner.exports.call(1)).toBe("old:1")
+  fail = false
+  first.state.callbacks = 5
+  await lifetime.swap(["calc"], "3", bytes)
+  expect(owner.exports.call(1)).toBe("new:1")
+  expect(first.state.alive).toBe(true)
+  await lifetime.close()
+  expect(first.state.closes).toBe(1)
+  expect(replacement.state.closes).toBe(1)
+})

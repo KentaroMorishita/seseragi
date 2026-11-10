@@ -121,8 +121,9 @@ pub(crate) fn stage(
         }
         let wasm_path = format!("./{base}/program.wasm");
         let value = serde_json::to_string(&wasm_path).map_err(|e| e.to_string())?;
+        let name = serde_json::to_string(&program.name).map_err(|e| e.to_string())?;
         let javascript = format!(
-            "export * from \"./program.mjs\";\nimport {{ loadProgram as instantiate, ProgramWasmClosed }} from \"./program.mjs\";\nimport {{ loadOwnedProgram }} from \"../__lifecycle.mjs\";\nexport function loadProgram(bytes) {{ return loadOwnedProgram(() => instantiate(bytes), () => new ProgramWasmClosed(\"Browser program lifetime closed\")); }}\nexport const programWasmPath = {value};\n"
+            "export * from \"./program.mjs\";\nimport {{ loadProgram as instantiate, ProgramWasmClosed }} from \"./program.mjs\";\nimport {{ loadOwnedProgram }} from \"../__lifecycle.mjs\";\nexport const programWasmPath = {value};\nexport function loadProgram(bytes) {{ return loadOwnedProgram(() => instantiate(bytes), () => new ProgramWasmClosed(\"Browser program lifetime closed\"), {{ name: {name}, path: programWasmPath, instantiate }}); }}\n"
         );
         let types = format!(
             "export * from \"./program.mjs\";\nexport declare const programWasmPath: {value};\n"

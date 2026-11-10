@@ -8,12 +8,27 @@ export interface BrowserProgram<
   ownership(): Ownership
 }
 
+/** How `seseragi dev` rebuilds one generated program in place. */
+export interface ProgramSwap<Exports, Ownership, Disposal> {
+  readonly name: string
+  readonly path: string
+  instantiate(
+    bytes: BufferSource
+  ): Promise<BrowserProgram<Exports, Ownership, Disposal>>
+}
+
 export interface ProgramLifetime {
   load<Exports, Ownership, Disposal extends void | Promise<void>>(
     create: () => Promise<BrowserProgram<Exports, Ownership, Disposal>>,
-    closedError: () => Error
+    closedError: () => Error,
+    swap?: ProgramSwap<Exports, Ownership, Disposal>
   ): Promise<BrowserProgram<Exports, Ownership, Disposal>>
   close(): Promise<void>
+  swap(
+    names: readonly string[],
+    version: string,
+    fetchBytes?: (path: string, version: string) => Promise<BufferSource>
+  ): Promise<void>
 }
 
 export interface ProgramReloadHost {
@@ -40,6 +55,7 @@ export function createProgramApplication(
 ): ProgramApplication
 export const loadOwnedProgram: ProgramLifetime["load"]
 export const closePrograms: ProgramLifetime["close"]
+export const swapPrograms: ProgramLifetime["swap"]
 export const runProgramApplication: ProgramApplication["run"]
 export const closeProgramApplication: ProgramApplication["close"]
 export function installProgramReload(

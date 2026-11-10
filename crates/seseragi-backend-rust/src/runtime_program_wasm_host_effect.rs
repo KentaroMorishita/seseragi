@@ -361,6 +361,8 @@ pub extern "C" fn ssrg_init() -> u32 {
         // can allocate values. Admission limits cells to the closed data codec.
         enable_cycle_collection();
     }
+    // Console operations suspend for the provider the loader was given.
+    install_native_console_provider(program_console_provider);
     initialize_globals();
     PROGRAM.with(|state| state.borrow_mut().initialized = true);
     0
@@ -668,6 +670,8 @@ struct ProgramHostRequest {
     arguments: Vec<V>,
     _lease: V,
     masked: bool,
+    // A provider operation names no host callback and no codec.
+    console: Option<NativeConsoleOperation>,
 }
 thread_local! {
     static PROGRAM_HOSTS: RefCell<BTreeMap<u32, ProgramHostLease>> = const { RefCell::new(BTreeMap::new()) };
@@ -747,6 +751,7 @@ fn program_host_apply(captures: &[V], argument: V) -> V {
                 arguments: captures[1..].to_vec(),
                 _lease: captures[0].clone(),
                 masked: false,
+                console: None,
             })
         });
         Ok(V::Unit)
@@ -801,7 +806,84 @@ fn program_host_function_call(token: u32, codec: usize, arguments: Vec<V>) -> Re
         _ => Err("program ABI: invalid host reply".into()),
     }
 }
+// A Console operation becomes a provider request at the same checkpoint as a
+// host Effect, so acquisition and masked cleanup treat both alike.
+fn program_console_provider(operation: NativeConsoleOperation, captures: &[V]) -> NativeOutcome {
+    let arguments = match (operation, captures) {
+        (NativeConsoleOperation::Flush, [V::Unit]) => Vec::new(),
+        (NativeConsoleOperation::Flush, _) => {
+            return Err(NativeExit::defects(vec![
+                "program ABI: Console flush takes Unit".into(),
+            ]))
+        }
+        (_, [V::Text(text)]) => vec![V::Text(text.clone())],
+        _ => {
+            return Err(NativeExit::defects(vec![
+                "Console requires String; render values with Show first".into(),
+            ]))
+        }
+    };
+    PROGRAM_HOST_PENDING.with(|pending| {
+        *pending.borrow_mut() = Some(ProgramHostRequest {
+            token: 0,
+            codec: 0,
+            arguments,
+            _lease: V::Unit,
+            masked: false,
+            console: Some(operation),
+        })
+    });
+    Ok(V::Unit)
+}
+fn program_text(output: &mut Vec<u8>, text: &str) -> ProgramResult<()> {
+    let length = u32::try_from(text.len()).map_err(|_| "program ABI: String exceeds boundary")?;
+    program_bytes(output, &length.to_le_bytes())?;
+    program_bytes(output, text.as_bytes())
+}
+fn program_console_request(
+    operation: NativeConsoleOperation,
+    request: &ProgramHostRequest,
+) -> ProgramResult<Vec<u8>> {
+    let mut output = vec![6, operation as u8, u8::from(request.masked)];
+    for argument in &request.arguments {
+        let V::Text(text) = argument else {
+            return Err("program ABI: invalid Console argument");
+        };
+        program_text(&mut output, text.get())?;
+    }
+    Ok(output)
+}
+// ConsoleError crosses as `{kind, message}`, the shape both targets use.
+fn program_console_outcome(kind: u32, bytes: &[u8]) -> ProgramResult<NativeOutcome> {
+    let mut input = bytes;
+    let mut text = |input: &mut &[u8]| -> ProgramResult<V> {
+        let size = program_u32(input)? as usize;
+        let text = std::str::from_utf8(program_take(input, size)?)
+            .map_err(|_| "invalid Console provider UTF-8")?;
+        Ok(V::text(text))
+    };
+    let outcome = match kind {
+        1 => Ok(V::Unit),
+        2 => {
+            let kind = text(&mut input)?;
+            let message = text(&mut input)?;
+            Err(NativeExit::failure(V::Record(Shared::new(BTreeMap::from([
+                ("kind".into(), kind),
+                ("message".into(), message),
+            ])))))
+        }
+        3 | 4 => return program_host_outcome(kind, bytes, None),
+        _ => return Err("invalid Console provider response tag"),
+    };
+    if !input.is_empty() {
+        return Err("trailing Console provider response bytes");
+    }
+    Ok(outcome)
+}
 fn program_host_request(request: &ProgramHostRequest) -> ProgramResult<Vec<u8>> {
+    if let Some(operation) = request.console {
+        return program_console_request(operation, request);
+    }
     let codes = program_codecs();
     let ProgramCode::HostEffect(parameters, _, _) = &codes[request.codec] else {
         return Err("program ABI: invalid host request codec");
@@ -815,10 +897,17 @@ fn program_host_request(request: &ProgramHostRequest) -> ProgramResult<Vec<u8>> 
     }
     Ok(output)
 }
-fn program_host_outcome(kind: u32, bytes: &[u8], codec: usize) -> ProgramResult<NativeOutcome> {
+fn program_host_outcome(
+    kind: u32,
+    bytes: &[u8],
+    codec: Option<usize>,
+) -> ProgramResult<NativeOutcome> {
     let codes = program_codecs();
-    let ProgramCode::HostEffect(_, failure, success) = codes[codec].clone() else {
-        return Err("program ABI: invalid host response codec");
+    // Only a Defect or a cancellation answers a provider operation here.
+    let (failure, success) = match codec.map(|codec| codes[codec].clone()) {
+        Some(ProgramCode::HostEffect(_, failure, success)) => (failure, success),
+        None if matches!(kind, 3 | 4) => (None, None),
+        _ => return Err("program ABI: invalid host response codec"),
     };
     let mut input = bytes;
     let outcome = match kind {
@@ -867,8 +956,10 @@ pub extern "C" fn ssrg_host_reply(kind: u32) -> u32 {
         };
         let mut outcome = if kind == 4 && (request.masked || !run.machine.context.cancelled) {
             Err("host callback cancelled outside an unmasked cancellation request")
+        } else if request.console.is_some() {
+            program_console_outcome(kind, &bytes)
         } else {
-            program_host_outcome(kind, &bytes, request.codec)
+            program_host_outcome(kind, &bytes, Some(request.codec))
         }
         .unwrap_or_else(|message| Err(NativeExit::defects(vec![message.into()])));
         // Acquisition succeeds into Register BEFORE observing cancellation.

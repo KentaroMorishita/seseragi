@@ -586,9 +586,19 @@ host入力のlockを迂回しません。失敗した更新は、そのsession�
 生成UIのloaderが作ったpure instanceは、手動disposeに加えてbrowser applicationの終了処理で閉じます。
 watchの更新はfull-page reloadであり、TS UIのcancelとfinalizer・DOM・providerの終了を待ち、
 残るinstanceと開始済みのloadを回収してからnavigateします。UI finalizerが旧callbackを使える順序を保ちます。
-閉じたinstanceの保存callbackは拒否し、trap済みinstanceはretireとして扱います。UI状態を保持するHMR、
+閉じたinstanceの保存callbackは拒否し、trap済みinstanceはretireとして扱います。
 WASM内の一般Effectのunwind／cancel時のfinalizer保証を、このpure programのlifetimeへ含めません。
 通常のtab終了でbrowserが非同期終了処理を待つ保証はなく、watch reloadと同じ完了保証はありません。
+
+計算moduleの`program.wasm`だけが変わった更新では、pageを再読み込みせず、UIの状態を保ったまま
+instanceを差し替えます。差し替えるのは、生成UI・loader・型宣言など`program.wasm`以外の配信fileが
+前のbuildと同じときだけです。loaderは公開関数の型と名前を照合し、source上の位置は照合しないので、
+関数の本体だけを直した更新はこの条件を満たします。
+
+- 生成loaderで読み込んだinstanceの`exports`は、差し替え後は新しいinstanceを呼びます。
+- 旧instanceが返したcallbackとEffect planは、旧instanceの上で動き続けます。
+- 旧instanceは、それが返したcallback・Effect plan・実行中のrun・host要求がすべて終わってから閉じます。
+- 新しいinstanceを作れなかった場合や、他のfileも変わった場合は、上のfull-page reloadを行います。
 
 ### Effect program WASM assets
 
@@ -605,6 +615,15 @@ source引数を適用する段階とcold Effectをrunする段階を保ち、hos
 providerlessなEffect ABIでは、内部でFiber（fork・await・poll・join・interrupt・yieldNow）と
 Deferredも使えます。Deferredの中身は閉じたdataに限り、Fiber・Deferred自体は公開境界へ渡せません。
 どのFiberも進めないrunは、hostが取消すまで結果を保留します。host Effect ABIではFiber／Deferredを使えません。
-非協調的なPromiseの強制終了、一般provider ABI、open rowは含めません。
+
+Console（`with Console`）を要求するEffectも選べます。この場合はhost Effect ABIを生成し、
+hostは`run(environment)`へTS targetと同じ形の`{ console }`を渡します。
+
+- WASMはConsoleの操作ごとにrunを止め、loaderが渡されたConsoleを呼んで結果を戻します。
+- `ConsoleError`は`{kind, message}`として受け渡します。
+- acquireの途中とreleaseの中のConsole呼び出しは、取消で中断しません。
+- 選んだ公開Effectが要求しないproviderを、内部の関数だけで使うことはできません。
+
+Console以外のproviderを要求するEffect、非協調的なPromiseの強制終了、open rowは含めません。
 型・結果・寿命の詳細は[Rust backendのEffect ABI](../architecture/rust-backend.md)に従い、
 pure ABIの制限やtrap後のunwind保証と混同しません。

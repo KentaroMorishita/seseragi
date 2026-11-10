@@ -1,13 +1,149 @@
 // A standard Web build owns program instances for one browser application.
 // The raw program ABI remains usable independently of this page lifetime.
+// How often a retired instance is checked for its last callback and run.
+const RETIRE_POLL_MS = 50
+
+// An instance is idle once no run, Effect plan, callback or host request of
+// its own remains. Exports themselves are disposed when it is retired.
+function idle(ownership) {
+  return (
+    ownership.alive === false ||
+    (!ownership.running &&
+      !(ownership.plans > 0) &&
+      ownership.callbacks === 0 &&
+      !ownership.waitingHost)
+  )
+}
+
+// The host calls the current instance through these stable functions, so a
+// swapped instance takes over without the UI holding a new object.
+function forwardingExports(owned) {
+  const view = Object.create(null)
+  for (const key of Object.keys(owned.current.exports)) {
+    const initial = owned.current.exports[key]
+    if (typeof initial !== "function") {
+      Object.defineProperty(view, key, {
+        enumerable: true,
+        get: () => owned.current.exports[key],
+      })
+      continue
+    }
+    const forward = (...values) => owned.current.exports[key](...values)
+    Object.defineProperties(forward, {
+      dispose: {
+        value() {
+          owned.disposedKeys.add(key)
+          owned.current.exports[key].dispose?.()
+        },
+      },
+      disposed: { get: () => Boolean(owned.current.exports[key].disposed) },
+    })
+    view[key] = forward
+  }
+  return Object.freeze(view)
+}
+
+function sameKeys(left, right) {
+  const leftKeys = Object.keys(left).sort()
+  const rightKeys = Object.keys(right).sort()
+  return (
+    leftKeys.length === rightKeys.length &&
+    leftKeys.every((key, index) => key === rightKeys[index])
+  )
+}
+
 export function createProgramLifetime() {
   const owners = new Set()
   const pending = new Set()
   const failures = []
+  // Owners that `seseragi dev` may swap to a rebuilt module.
+  const swappable = new Set()
   let closing = false
   let closed
 
-  function load(create, closedError) {
+  function track(task) {
+    pending.add(task)
+    const settle = () => pending.delete(task)
+    task.then(settle, (error) => {
+      failures.push(error)
+      settle()
+    })
+    return task
+  }
+
+  // A retired instance keeps serving the callbacks, runs and finalizers it
+  // already started. It is disposed once none remains, or with its owner.
+  function retire(owned, previous) {
+    owned.retiring.add(previous)
+    for (const value of Object.values(previous.exports)) {
+      try {
+        value?.dispose?.()
+      } catch (error) {
+        failures.push(error)
+      }
+    }
+    void track(
+      (async () => {
+        while (owned.retiring.has(previous) && !idle(previous.ownership()))
+          await new Promise((resolve) => setTimeout(resolve, RETIRE_POLL_MS))
+        if (!owned.retiring.delete(previous)) return
+        await previous.dispose()
+      })()
+    )
+  }
+
+  // Replaces each named program's instances with ones built from its new
+  // bytes. Nothing is swapped unless every new instance is ready.
+  function swap(names, version, fetchBytes = fetchProgram) {
+    if (closing) return Promise.reject(new Error("Program lifetime closed"))
+    const targets = [...swappable].filter((owned) =>
+      names.includes(owned.swap.name)
+    )
+    // Close waits for a swap in flight. Its failure belongs to the caller,
+    // which reloads instead, not to the instances' own disposal.
+    const task = (async () => {
+      const bytes = new Map()
+      for (const owned of targets) {
+        if (!bytes.has(owned.swap.name))
+          bytes.set(owned.swap.name, await fetchBytes(owned.swap.path, version))
+      }
+      const prepared = []
+      try {
+        for (const owned of targets) {
+          const next = await owned.swap.instantiate(bytes.get(owned.swap.name))
+          prepared.push([owned, next])
+          if (!sameKeys(owned.current.exports, next.exports))
+            throw new Error("Program exports changed; reload required")
+        }
+        if (closing) throw new Error("Program lifetime closed")
+      } catch (error) {
+        for (const [, next] of prepared) {
+          try {
+            await next.dispose()
+          } catch (cleanup) {
+            failures.push(cleanup)
+          }
+        }
+        throw error
+      }
+      for (const [owned, next] of prepared) {
+        if (!swappable.has(owned)) {
+          await next.dispose()
+          continue
+        }
+        const previous = owned.current
+        owned.current = next
+        for (const key of owned.disposedKeys) next.exports[key].dispose?.()
+        retire(owned, previous)
+      }
+    })()
+    pending.add(task)
+    const settle = () => pending.delete(task)
+    task.then(settle, settle)
+    return task
+  }
+
+  function load(create, closedError, swapInfo) {
     if (closing) return Promise.reject(closedError())
     // Reserve completion before invoking the factory. Keep the original
     // loader's immediate start, and observe a close during that invocation.
@@ -30,11 +166,28 @@ export function createProgramLifetime() {
         }
         let released = false
         let disposal
+        const owned = {
+          current: program,
+          retiring: new Set(),
+          disposedKeys: new Set(),
+          swap: swapInfo,
+        }
         const dispose = () => {
           if (released) return disposal
           released = true
+          swappable.delete(owned)
+          const retired = [...owned.retiring]
+          owned.retiring.clear()
+          for (const previous of retired) {
+            try {
+              const result = previous.dispose()
+              if (result !== undefined) void track(Promise.resolve(result))
+            } catch (error) {
+              failures.push(error)
+            }
+          }
           try {
-            const result = program.dispose()
+            const result = owned.current.dispose()
             if (result !== undefined) {
               disposal = Promise.resolve(result)
               pending.add(disposal)
@@ -57,10 +210,11 @@ export function createProgramLifetime() {
           }
         }
         owners.add(dispose)
+        if (swapInfo) swappable.add(owned)
         return Object.freeze({
-          exports: program.exports,
+          exports: swapInfo ? forwardingExports(owned) : program.exports,
           dispose,
-          ownership: () => program.ownership(),
+          ownership: () => owned.current.ownership(),
         })
       } finally {
         pending.delete(completion)
@@ -97,7 +251,15 @@ export function createProgramLifetime() {
     return closed
   }
 
-  return Object.freeze({ load, close })
+  return Object.freeze({ load, close, swap })
+}
+
+async function fetchProgram(path, version) {
+  const url = `${path}?v=${encodeURIComponent(version)}`
+  const response = await fetch(url, { cache: "no-store" })
+  if (!response.ok)
+    throw new Error(`Failed to fetch ${url}: ${response.status}`)
+  return new Uint8Array(await response.arrayBuffer())
 }
 
 // One generated browser application owns its Effect execution and initialized
@@ -230,6 +392,7 @@ const lifetime = createProgramLifetime()
 const application = createProgramApplication(lifetime)
 export const loadOwnedProgram = lifetime.load
 export const closePrograms = lifetime.close
+export const swapPrograms = lifetime.swap
 export const runProgramApplication = application.run
 export const closeProgramApplication = application.close
 let installed = false
@@ -251,6 +414,15 @@ export function installProgramReload(
         // A failed close is observable; do not hide it by navigating away.
         console.error("seseragi: program cleanup failed before reload", error)
       })
+  })
+  // `seseragi dev` asks to swap rebuilt program modules in place. A listener
+  // that takes the update hands back its completion; a failed swap reloads.
+  host.addEventListener("seseragi:program-update", (event) => {
+    if (reloading) return
+    event.preventDefault()
+    event.detail.respond(
+      swapPrograms(event.detail.programs, event.detail.version)
+    )
   })
   host.addEventListener(
     "pagehide",

@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.160] - 2026-11-11
+
+### Added
+
+- Program WASM runs Effects that require Console (`with Console`). Such an export uses the host Effect ABI, and its plan takes the environment in `run({ console })`, in the same shape as on the TS target, so the runtime's `liveConsole` can be passed as is. WASM stops at each Console operation and the loader calls the given Console; `ConsoleError` crosses as `{kind, message}`. A Console call while acquiring a resource or inside its release is not interrupted by cancellation. Effects that require any other provider are refused before the build, as is Console used only by functions that no selected export's Effect requires.
+- `seseragi dev` swaps a rebuilt program module in place when only its `program.wasm` changed, keeping the page and its UI state. The generated loader's `exports` then call the new instance. The old instance keeps running the callbacks and Effect plans it returned, and is disposed once none of them, no run and no host request remain. Any other change, or a failed swap, reloads the page as before.
+
+### Changed
+
+- A program WASM loader checks the module's embedded contract without the exports' source spans, which it now reads from the module. Editing only a function body no longer changes the generated loader or the Web bundle that includes it.
+
 ## [0.61.159] - 2026-11-10
 
 ### Added

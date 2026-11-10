@@ -1,4 +1,5 @@
-//! Admission for a resumable, providerless Effect target. WASM panics abort;
+//! Admission for a resumable Effect target. Bridged providers (Console) are
+//! admitted only for the host Effect ABI, whose loader runs them. WASM panics abort;
 //! native catch_unwind cannot establish a finalizer guarantee. Validate every
 //! supplied checked declaration, including unused bodies and returned callbacks.
 use crate::{emit, project, RustBackendError};
@@ -20,8 +21,9 @@ fn primitive(name: &str) -> CoreType {
 fn is_never(ty: &CoreType) -> bool {
     ty == &primitive("Never")
 }
-fn empty_requirements(ty: &CoreType) -> bool {
-    matches!(ty, CoreType::Record { closed: true, fields } if fields.is_empty())
+// Requirements cross as erased rows: the loader, not WASM, holds providers.
+fn bridged_requirements(ty: &CoreType) -> bool {
+    crate::program_wasm::provider_services(ty).is_some()
 }
 fn effect(failure: CoreType, success: CoreType) -> CoreType {
     CoreType::Named {
@@ -55,7 +57,7 @@ fn effect_parts(ty: &CoreType) -> Option<(&CoreType, &CoreType)> {
     let [requirements, failure, success] = arguments.as_slice() else {
         return None;
     };
-    (name == "std/prelude::Effect" && empty_requirements(requirements))
+    (name == "std/prelude::Effect" && bridged_requirements(requirements))
         .then_some((failure, success))
 }
 fn closed_type(ty: &CoreType) -> bool {
@@ -66,7 +68,8 @@ fn closed_type(ty: &CoreType) -> bool {
                 | "std/prelude::Never"
                 | "std/prelude::Bool"
                 | "std/prelude::Int"
-                | "std/prelude::String",
+                | "std/prelude::String"
+                | "std/prelude::ConsoleError",
                 [],
             ) => true,
             ("std/prelude::Maybe", [value]) => closed_type(value),
@@ -84,7 +87,7 @@ fn closed_type(ty: &CoreType) -> bool {
                 data(failure) && data(success)
             }
             ("std/prelude::Effect", [requirements, failure, success]) => {
-                empty_requirements(requirements) && closed_type(failure) && closed_type(success)
+                bridged_requirements(requirements) && closed_type(failure) && closed_type(success)
             }
             _ => false,
         },
@@ -218,6 +221,11 @@ enum Operation {
     CompleteDeferred,
     SucceedDeferred,
     FailDeferred,
+    Print,
+    PrintLine,
+    ErrorText,
+    ErrorLine,
+    Flush,
 }
 impl Operation {
     fn named(name: &str, normalized: bool) -> Option<Self> {
@@ -249,6 +257,13 @@ impl Operation {
             "std/deferred::complete" => Self::CompleteDeferred,
             "std/deferred::succeed" => Self::SucceedDeferred,
             "std/deferred::fail" => Self::FailDeferred,
+            "std/prelude::print" | "std/console::print" => Self::Print,
+            "std/prelude::println" | "std/console::println" => Self::PrintLine,
+            "std/console::error" => Self::ErrorText,
+            "std/console::errorLine" => Self::ErrorLine,
+            "std/console::flush" => Self::Flush,
+            "console.print" if normalized => Self::Print,
+            "console.println" if normalized => Self::PrintLine,
             "effect.succeed" if normalized => Self::Succeed,
             "effect.fail" if normalized => Self::Fail,
             "effect.die" if normalized => Self::Die,
@@ -272,6 +287,12 @@ impl Operation {
                 | Self::CompleteDeferred
                 | Self::SucceedDeferred
                 | Self::FailDeferred
+        )
+    }
+    fn console(self) -> bool {
+        matches!(
+            self,
+            Self::Print | Self::PrintLine | Self::ErrorText | Self::ErrorLine | Self::Flush
         )
     }
     fn arity(self) -> usize {
@@ -298,6 +319,7 @@ struct Admission<'a> {
     module: &'a CoreModule,
     substitutions: Substitutions,
     concurrency: bool,
+    providers: bool,
     globals: &'a BTreeMap<String, Global>,
     edges: &'a mut BTreeMap<String, BTreeSet<String>>,
     current: &'a str,
@@ -377,11 +399,18 @@ impl Admission<'_> {
         success: &CoreType,
         origin: &SourceSpan,
     ) -> Result<CoreType> {
-        if !emit::canonical_boundary_type(self.module, requirements)
+        let services = emit::canonical_boundary_type(self.module, requirements)
             .as_ref()
-            .is_some_and(empty_requirements)
-        {
-            return Err(self.error("providers require another host ABI", origin));
+            .and_then(crate::program_wasm::provider_services);
+        match services {
+            None => return Err(self.error("only the Console provider is bridged", origin)),
+            Some(services) if !services.is_empty() && !self.providers => {
+                return Err(self.error(
+                    "a provider needs a selected export whose Effect requires it",
+                    origin,
+                ))
+            }
+            Some(_) => {}
         }
         Ok(effect(self.ty(failure, origin)?, self.ty(success, origin)?))
     }
@@ -508,6 +537,12 @@ impl Admission<'_> {
                 origin,
             ));
         }
+        if operation.console() && !self.providers {
+            return Err(self.error(
+                "a provider needs a selected export whose Effect requires it",
+                origin,
+            ));
+        }
         let mut types = Vec::new();
         for argument in arguments {
             // Only a direct checked thunk proves a checkpoint before its body.
@@ -517,6 +552,21 @@ impl Admission<'_> {
         }
         let first = &types[0];
         let result = match operation {
+            Operation::Flush => {
+                self.accepts(&primitive("Unit"), first, origin)?;
+                effect(primitive("ConsoleError"), primitive("Unit"))
+            }
+            Operation::Print
+            | Operation::PrintLine
+            | Operation::ErrorText
+            | Operation::ErrorLine => {
+                if first != &primitive("String") {
+                    return Err(
+                        self.error("Console requires the canonical String identity", origin)
+                    );
+                }
+                effect(primitive("ConsoleError"), primitive("Unit"))
+            }
             Operation::Succeed => effect(primitive("Never"), first.clone()),
             Operation::Fail => effect(first.clone(), primitive("Never")),
             Operation::RefMake => {
@@ -1085,7 +1135,8 @@ fn is_constructor(name: &str) -> bool {
 
 /// `concurrency` admits Fibers and Deferreds. The host Effect ABI keeps one
 /// suspended host request per run, so only the providerless ABI admits them.
-pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool) -> Result<()> {
+/// `providers` admits the bridged provider operations a host loader runs.
+pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool, providers: bool) -> Result<()> {
     let mut globals = BTreeMap::new();
     let mut origins = BTreeMap::new();
     for module in modules {
@@ -1160,6 +1211,7 @@ pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool) -> Result<()>
                 module,
                 substitutions: type_parameters(function),
                 concurrency,
+                providers,
                 globals: &globals,
                 edges: &mut edges,
                 current: &function.symbol,
@@ -1191,6 +1243,7 @@ pub(crate) fn validate(modules: &[&CoreModule], concurrency: bool) -> Result<()>
                 module,
                 substitutions: Substitutions::new(),
                 concurrency,
+                providers,
                 globals: &globals,
                 edges: &mut edges,
                 current: &binding.symbol,
