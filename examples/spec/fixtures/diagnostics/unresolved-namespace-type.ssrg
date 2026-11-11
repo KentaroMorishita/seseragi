@@ -1,0 +1,9 @@
+// A type that an imported namespace exports, written without the namespace,
+// is reported once, with how to reach it. The call that uses the parameter
+// is not reported as a mismatch between two MutableSignal<Int> types.
+import * as signals from "std/signal"
+
+fn bump count: MutableSignal<Int> -> Effect<{}, Never, Unit> =
+  signals.update (\value -> value + 1) count
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

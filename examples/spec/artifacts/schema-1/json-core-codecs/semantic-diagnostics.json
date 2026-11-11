@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 143,
-            "end": 278
+            "start": 188,
+            "end": 206
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 143,
-            "end": 278
+            "start": 188,
+            "end": 206
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 280,
-            "end": 456
+            "start": 320,
+            "end": 338
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 280,
-            "end": 456
+            "start": 320,
+            "end": 338
           }
         }
       ],

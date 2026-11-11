@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": ["6.5", "6.8", "12.13"],
+  "diagnostics": [
+    {
+      "code": "SES-N0001",
+      "severity": "Error",
+      "primary": { "start": 278, "end": 296, "text": "MutableSignal<Int>" },
+      "labels": ["write `signals.MutableSignal`, or add `import { MutableSignal } from \"std/signal\"`"]
+    }
+  ]
+}

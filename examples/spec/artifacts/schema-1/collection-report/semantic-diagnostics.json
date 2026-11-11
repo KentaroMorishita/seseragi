@@ -5,6 +5,42 @@
   "diagnostics": [
     {
       "id": "d1",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 545,
+        "end": 558
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 478,
+            "end": 739
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 478,
+            "end": 739
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
       "code": "SES-T0201",
       "severity": "Error",
       "messageKey": "instance.missing",
@@ -36,42 +72,6 @@
       ],
       "helps": [
         "Define or import a matching instance, or use a type with an available instance."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d2",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 545,
-        "end": 558
-      },
-      "related": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 478,
-            "end": 739
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 478,
-            "end": 739
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
       ],
       "fixes": [],
       "expectedType": null,

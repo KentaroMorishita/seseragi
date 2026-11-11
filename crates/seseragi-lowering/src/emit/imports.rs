@@ -26,6 +26,28 @@ pub(super) fn render_import_lines(module: &TypeScriptModule) -> Vec<String> {
             "import { atSource as $ssrg$atSource } from \"@seseragi/runtime/effect\"".to_owned(),
         );
     }
+    if module.functions.iter().any(|function| {
+        let crate::TypeScriptFunction::ConstFunction {
+            is_effect: true,
+            name,
+            constraints,
+            parameters,
+            body,
+            ..
+        } = function
+        else {
+            return false;
+        };
+        super::defers_effect_self_tail_calls(
+            name,
+            &super::evidence_parameters(parameters, 0, constraints),
+            body,
+        )
+    }) {
+        lines.push(
+            "import { defer as $ssrg$deferTail } from \"@seseragi/runtime/effect\"".to_owned(),
+        );
+    }
     lines.extend(render_runtime_imports(module));
     lines
 }

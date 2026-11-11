@@ -1,4 +1,4 @@
-use crate::ResolvedModule;
+use crate::{ResolveIssue, ResolvedModule, SymbolNamespace};
 use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl,
 };
@@ -22,18 +22,81 @@ pub(super) fn collect_resolution_diagnostics(
             severity: DiagnosticSeverity::Error,
             message_key: issue.message_key.clone(),
             primary,
-            related: containing_declaration(&resolved.declarations, issue.primary)
-                .map(|declaration| {
-                    vec![RelatedDiagnostic {
-                        source: None,
-                        message: declaration_context(declaration).to_owned(),
-                        primary: byte_range(declaration.span()),
-                    }]
-                })
-                .unwrap_or_default(),
+            related: issue_context(resolved, issue),
             fixes: Vec::new(),
         });
     }
+}
+
+/// A name that an imported namespace exports says how to reach it. Another
+/// unresolved type name points at itself, not at the declaration around it.
+fn issue_context(resolved: &ResolvedModule, issue: &ResolveIssue) -> Vec<RelatedDiagnostic> {
+    let at_issue = |message: &str| {
+        vec![RelatedDiagnostic {
+            source: None,
+            message: message.to_owned(),
+            primary: byte_range(issue.primary),
+        }]
+    };
+    if let Some(hint) = &issue.hint {
+        return at_issue(hint);
+    }
+    if unresolved_type_reference(resolved, issue.primary).is_some() {
+        return at_issue("type name");
+    }
+    containing_declaration(&resolved.declarations, issue.primary)
+        .map(|declaration| {
+            vec![RelatedDiagnostic {
+                source: None,
+                message: declaration_context(declaration).to_owned(),
+                primary: byte_range(declaration.span()),
+            }]
+        })
+        .unwrap_or_default()
+}
+
+fn unresolved_type_reference(resolved: &ResolvedModule, primary: ByteSpan) -> Option<&str> {
+    resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.origin == primary
+                && reference.namespace == SymbolNamespace::Type
+                && reference.target.is_none()
+        })
+        .map(|reference| reference.spelling.as_str())
+}
+
+/// The spellings of the type names that did not resolve.
+pub(super) fn unresolved_type_names(resolved: &ResolvedModule) -> Vec<&str> {
+    resolved
+        .issues
+        .iter()
+        .filter(|issue| issue.code == "SES-N0001")
+        .filter_map(|issue| unresolved_type_reference(resolved, issue.primary))
+        .collect()
+}
+
+/// A type mismatch that involves an unresolved type name follows from that
+/// name; the unresolved name is the error to fix.
+pub(super) fn follows_from_unresolved_type(diagnostic: &Diagnostic, names: &[&str]) -> bool {
+    let (expected, actual) = diagnostic.expected_actual_types();
+    [expected, actual]
+        .iter()
+        .flatten()
+        .any(|text| names.iter().any(|name| mentions_type_name(text, name)))
+}
+
+fn mentions_type_name(text: &str, name: &str) -> bool {
+    let is_name = |character: char| character.is_alphanumeric() || character == '_';
+    text.match_indices(name).any(|(start, _)| {
+        let end = start + name.len();
+        !text[..start]
+            .chars()
+            .next_back()
+            .is_some_and(|before| is_name(before) || before == '.')
+            && !text[end..].chars().next().is_some_and(is_name)
+    })
 }
 
 fn containing_declaration(declarations: &[SurfaceDecl], primary: ByteSpan) -> Option<&SurfaceDecl> {
@@ -84,10 +147,7 @@ mod tests {
         assert_eq!(artifact.diagnostics.len(), 1);
         assert_eq!(artifact.diagnostics[0].code, "SES-N0001");
         assert_eq!(artifact.diagnostics[0].message_key, "name.unresolved");
-        assert_eq!(
-            artifact.diagnostics[0].related[0].message,
-            "type declaration"
-        );
+        assert_eq!(artifact.diagnostics[0].related[0].message, "type name");
     }
 
     #[test]

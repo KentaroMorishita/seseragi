@@ -35,6 +35,7 @@ pub(super) fn register_type_parameters(
                 code: "SES-N0002".into(),
                 message_key: "name.duplicate-definition".into(),
                 primary: origin,
+                hint: None,
             });
         }
         resolver.register(

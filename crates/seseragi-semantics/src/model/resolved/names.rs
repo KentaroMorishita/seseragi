@@ -91,4 +91,7 @@ pub struct ResolveIssue {
     #[serde(rename = "messageKey")]
     pub message_key: String,
     pub primary: ByteSpan,
+    /// How to reach a name that an imported namespace exports.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hint: Option<String>,
 }

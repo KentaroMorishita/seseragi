@@ -1006,6 +1006,34 @@ effect fn count remaining: Int -> Unit =
     }
 
     #[test]
+    fn defers_effect_self_tail_calls_without_a_bind() {
+        let source = "\
+effect fn count remaining: Int -> Unit =
+  if remaining == 0 then succeed () else count (remaining - 1)
+";
+        let typed = type_module("artifact/effect-tail-defer/main.ssrg", source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript =
+            lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
+        assert!(
+            bundle
+                .typescript
+                .contains("import { defer as $ssrg$deferTail } from \"@seseragi/runtime/effect\""),
+            "{}",
+            bundle.typescript
+        );
+        assert!(
+            bundle.typescript.contains(
+                "(($ssrg$tailArgument0: number) => $ssrg$deferTail(() => count($ssrg$tailArgument0)))(_ssrg_int_subtract(remaining, 1))"
+            ),
+            "{}",
+            bundle.typescript
+        );
+        assert!(!bundle.typescript.contains("while (true)"));
+    }
+
+    #[test]
     fn lowers_local_match_tail_calls_but_leaves_non_tail_calls_recursive() {
         let source = "\
 fn fibonacci current: Int -> Int =

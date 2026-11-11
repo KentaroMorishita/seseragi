@@ -114,10 +114,12 @@ pub(super) fn call_diagnostic(
             "SES-T0201",
             "instance.missing",
             callee,
-            format!(
-                "no {} instance matches the inferred call arguments",
-                constraint_label(&constraint)
-            ),
+            float_comparison_label(&constraint).unwrap_or_else(|| {
+                format!(
+                    "no {} instance matches the inferred call arguments",
+                    constraint_label(&constraint)
+                )
+            }),
             None,
         ),
         PureCallIssue::TraitMethodAmbiguous { callee } => (
@@ -291,6 +293,21 @@ fn mismatch(
         message,
         type_difference(expected, actual),
     )
+}
+
+/// Float has no Eq or Ord, since NaN is not equal to itself (spec 9). Point
+/// at the named comparisons that say which meaning they use.
+fn float_comparison_label(constraint: &crate::TypedConstraint) -> Option<String> {
+    let [crate::TypedType::Named { name, arguments }] = constraint.arguments.as_slice() else {
+        return None;
+    };
+    (matches!(constraint.name.as_str(), "Eq" | "Ord") && name == "Float" && arguments.is_empty())
+        .then(|| {
+            format!(
+                "Float has no {} instance; compare with `ieeeEq` or `totalCompare` from \"std/float\"",
+                constraint.name
+            )
+        })
 }
 
 fn constraint_label(constraint: &crate::TypedConstraint) -> String {

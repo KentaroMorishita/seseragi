@@ -1,0 +1,4 @@
+// An unresolved name inside the argument of `show` and `println` is the only
+// error.
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $ show $ (1, true)

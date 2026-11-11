@@ -1,0 +1,31 @@
+// An `effect fn` calling itself from an `if` branch or a `match` arm, with no
+// bind before the call, runs in constant host stack (spec 14.8). Arguments are
+// evaluated before each call, and a typed failure still stops the recursion.
+import * as effects from "std/effect"
+
+effect fn countdown n: Int -> Unit with Console fails ConsoleError =
+  if n == 0 then println "done" else countdown (n - 1)
+
+effect fn sum n: Int -> total: Int -> Int fails Never =
+  match n {
+    0 -> succeed total
+    _ -> {
+      let next = total + n
+      sum (n - 1) next
+    }
+  }
+
+effect fn repeat<A> value: A -> n: Int -> Unit with Console fails ConsoleError where Show<A> =
+  if n == 0 then println (show value) else repeat value (n - 1)
+
+effect fn stopAt n: Int -> String fails String =
+  if n == 3 then fail "stopped at 3" else stopAt (n - 1)
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  countdown 1000000
+  total <- sum 1000000 0
+  println (show total)
+  repeat (Just 7) 1000000
+  result <- stopAt 1000000 |> effects.recover (\message -> succeed message)
+  println result
+}

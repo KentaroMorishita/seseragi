@@ -58,6 +58,44 @@
       "id": "d2",
       "code": "SES-T0101",
       "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 82,
+        "end": 86
+      },
+      "related": [
+        {
+          "message": "argument 2 expected List<Bool>, received List<unknown>",
+          "primary": {
+            "start": 39,
+            "end": 86
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 2 expected List<Bool>, received List<unknown>",
+          "primary": {
+            "start": 39,
+            "end": 86
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "List<Bool>",
+      "actualType": "List<unknown>"
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
       "messageKey": "list.element-type-mismatch",
       "message": "List element type mismatch",
       "primary": {
@@ -100,44 +138,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "d3",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "call.argument-type-mismatch",
-      "message": "Argument type does not match the parameter type",
-      "primary": {
-        "start": 82,
-        "end": 86
-      },
-      "related": [
-        {
-          "message": "argument 2 expected List<Bool>, received List<unknown>",
-          "primary": {
-            "start": 39,
-            "end": 86
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "argument 2 expected List<Bool>, received List<unknown>",
-          "primary": {
-            "start": 39,
-            "end": 86
-          }
-        }
-      ],
-      "notes": [
-        "Seseragi does not insert an implicit conversion between these types."
-      ],
-      "helps": [
-        "Change the expression or its annotation so the two types agree."
-      ],
-      "fixes": [],
-      "expectedType": "List<Bool>",
-      "actualType": "List<unknown>"
     }
   ]
 }

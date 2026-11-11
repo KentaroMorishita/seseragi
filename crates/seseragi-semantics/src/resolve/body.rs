@@ -310,6 +310,7 @@ impl Resolver {
                 code: "SES-N0002".to_owned(),
                 message_key: "name.duplicate-definition".to_owned(),
                 primary: origin,
+                hint: None,
             });
             return existing;
         }
@@ -378,6 +379,7 @@ impl Resolver {
                 code: "SES-N0002".to_owned(),
                 message_key: "name.duplicate-definition".to_owned(),
                 primary: origin,
+                hint: None,
             });
             return existing;
         }
@@ -486,10 +488,19 @@ impl Resolver {
             } else {
                 ("SES-N0001", "name.unresolved")
             };
+            let hint = (!spelling.contains('.'))
+                .then(|| self.namespace_imports.exporters(namespace, spelling))
+                .and_then(|exporters| {
+                    let (alias, specifier) = exporters.first()?;
+                    Some(format!(
+                        "write `{alias}.{spelling}`, or add `import {{ {spelling} }} from {specifier:?}`"
+                    ))
+                });
             self.issues.push(ResolveIssue {
                 code: code.to_owned(),
                 message_key: message_key.to_owned(),
                 primary: origin,
+                hint,
             });
         }
         target

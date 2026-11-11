@@ -126,6 +126,19 @@ impl NamespaceImports {
         Some(NamespaceMemberLookup::Missing)
     }
 
+    /// The namespace imports that export `name`, as `(alias, specifier)`.
+    pub(super) fn exporters(&self, namespace: SymbolNamespace, name: &str) -> Vec<(&str, &str)> {
+        let Some(namespace) = namespace_name(namespace) else {
+            return Vec::new();
+        };
+        let key = (namespace.to_owned(), name.to_owned());
+        self.bindings
+            .iter()
+            .filter(|(_, binding)| binding.exports.contains_key(&key))
+            .map(|(alias, binding)| (alias.as_str(), binding.specifier.as_str()))
+            .collect()
+    }
+
     fn select(&mut self, import: ResolvedImport) {
         self.selected.push(import);
     }
@@ -185,6 +198,7 @@ impl Resolver {
                     code: "SES-N0102".to_owned(),
                     message_key: "module.private-symbol".to_owned(),
                     primary: reference_origin,
+                    hint: None,
                 });
             }
             NamespaceMemberLookup::Missing => {
@@ -192,6 +206,7 @@ impl Resolver {
                     code: "SES-N0104".to_owned(),
                     message_key: "module.export-unresolved".to_owned(),
                     primary: reference_origin,
+                    hint: None,
                 });
             }
         };

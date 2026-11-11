@@ -1,0 +1,5 @@
+// A misspelled parameter type is the only error: neither the argument passed
+// to it nor `show` of the call's result is reported.
+fn size value: Strng -> Int = 3
+
+pub effect fn main -> Unit with Console fails ConsoleError = println (show (size "x"))
