@@ -99573,6 +99573,98 @@
             }
           },
           {
+            "symbol": "std/stream::chunk",
+            "namespace": "value",
+            "name": "chunk",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "SizeError",
+                        "canonical": "std/collection::SizeError",
+                        "providerModule": "std/collection",
+                        "providerExport": "SizeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Stream",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
             "symbol": "std/stream::concat",
             "namespace": "value",
             "name": "concat",

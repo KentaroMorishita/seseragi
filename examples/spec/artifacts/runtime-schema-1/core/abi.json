@@ -5640,6 +5640,16 @@
       }
     },
     {
+      "id": "stream.chunk",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "demand-driven fixed-size grouping with a short final chunk",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "chunk"
+      }
+    },
+    {
       "id": "stream.concat",
       "kind": "runtime-helper",
       "typescript": "function",

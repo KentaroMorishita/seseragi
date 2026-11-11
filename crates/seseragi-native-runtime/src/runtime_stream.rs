@@ -246,6 +246,64 @@ fn stream_count_cursor(take: bool, count: V, source: V) -> V {
     });
     stream_forward_close(pull, upstream)
 }
+// `chunk` pulls until it holds `size` values or the source ends; a failure
+// while filling propagates and the partial chunk is never emitted.
+fn stream_chunk_cursor(size: V, finished: V, source: V) -> V {
+    let upstream = source.clone();
+    let pull = V::fun(vec![size, finished, source], |captures, _| {
+        stream_chunk_fill(
+            captures[0].clone(),
+            captures[1].clone(),
+            captures[2].clone(),
+            stream_cell(V::ListEmpty),
+            stream_cell(V::Int(0)),
+        )
+    });
+    stream_forward_close(pull, upstream)
+}
+fn stream_chunk_fill(size: V, finished: V, source: V, values: V, count: V) -> V {
+    native_stream_defer(
+        vec![size, finished, source, values, count],
+        |captures, _| {
+            let (V::Int(size), V::Int(count)) = (&captures[0], captures[4].read_reference())
+            else {
+                unreachable!()
+            };
+            if captures[1].read_reference().boolean() || count >= *size {
+                let mut values = captures[3].read_reference().list_values();
+                if values.is_empty() {
+                    return stream_pure(stream_done());
+                }
+                values.reverse();
+                return stream_pure(stream_item(V::Array(Shared::new(values))));
+            }
+            V::bind(
+                stream_pull(&captures[2]),
+                V::fun(captures.to_vec(), |captures, value| {
+                    if value.tagged("std/prelude::Nothing") {
+                        captures[1].write_reference(V::Bool(true));
+                    } else {
+                        captures[3].write_reference(V::list_cons(
+                            value.payload(),
+                            captures[3].read_reference(),
+                        ));
+                        let V::Int(count) = captures[4].read_reference() else {
+                            unreachable!()
+                        };
+                        captures[4].write_reference(V::Int(count + 1));
+                    }
+                    stream_chunk_fill(
+                        captures[0].clone(),
+                        captures[1].clone(),
+                        captures[2].clone(),
+                        captures[3].clone(),
+                        captures[4].clone(),
+                    )
+                }),
+            )
+        },
+    )
+}
 fn stream_concat_cursor(suffix: V, current: V) -> V {
     let current_close = current.clone();
     let pull = V::fun(vec![suffix, current], |captures, _| {
@@ -431,6 +489,26 @@ pub fn native_stream_operation(name: &'static str, arguments: Vec<V>) -> V {
                 )
             },
         ),
+        ("std/stream::chunk", [V::Int(size), source]) => {
+            if *size <= 0 {
+                return native_left(V::adt("std/collection::NonPositiveSize", V::Int(*size)));
+            }
+            native_right(V::fun(
+                vec![V::Int(*size), source.clone()],
+                |captures, _| {
+                    V::bind(
+                        stream_open(&captures[1]),
+                        V::fun(vec![captures[0].clone()], |captures, source| {
+                            stream_pure(stream_chunk_cursor(
+                                captures[0].clone(),
+                                stream_cell(V::Bool(false)),
+                                source,
+                            ))
+                        }),
+                    )
+                },
+            ))
+        }
         ("std/stream::concat", [suffix, prefix]) => {
             V::fun(vec![suffix.clone(), prefix.clone()], |captures, _| {
                 V::bind(

@@ -876,7 +876,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:9b29d73685fe87b0",
+      "interfaceFingerprint": "fnv1a64:88424e345a3ec254",
       "implementation": "lowering-runtime",
       "route": "stream-core-project"
     },

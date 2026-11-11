@@ -2089,7 +2089,8 @@ fn chunk<R, E, A>
 flat-mapを暗黙に選びません。Streamは `Stream<R, E, _>` ごとにFunctorとMonad instanceを持ち、generic
 `map` と `flatMap` は上の意味を使います。`take` と `drop` のcount規則はArray/Listと同じです。
 `chunk` は隣接要素を最大size件のArrayにし、最後の短いchunkも残します。sizeが正でなければStreamを
-開始せず `Left (NonPositiveSize size)` を返します。
+開始せず `Left (NonPositiveSize size)` を返します。chunkを満たす途中でupstreamが失敗した場合は、
+集めかけの要素を出さずにそのfailureで終了します。
 
 複数sourceの合成は順序をAPIごとに固定します。
 

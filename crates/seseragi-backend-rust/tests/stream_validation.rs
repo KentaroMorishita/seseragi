@@ -104,6 +104,13 @@ fn stream_operations_match_typescript() {
     );
 }
 #[test]
+fn stream_chunks_pull_only_what_each_chunk_needs() {
+    compare(
+        include_str!("../../../examples/spec/fixtures/rust-backend/stream-chunk.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/stream-chunk.stdout"),
+    );
+}
+#[test]
 fn stream_effects_are_cold_repeated_scoped_and_ordered() {
     compare(
         include_str!("../../../examples/spec/fixtures/rust-backend/stream-effects.ssrg"),

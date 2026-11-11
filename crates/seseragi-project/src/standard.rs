@@ -2593,6 +2593,7 @@ mod tests {
             "flatMap",
             "take",
             "drop",
+            "chunk",
             "concat",
             "zip",
             "merge",
