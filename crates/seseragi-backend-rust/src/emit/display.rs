@@ -227,13 +227,20 @@ pub(super) fn canonical_type(
     type_names: &BTreeMap<(String, String), String>,
     declaration_scope: bool,
 ) -> Option<CoreType> {
-    let recur = |ty| canonical_type(ty, owner, substitutions, type_names, declaration_scope);
+    let recur =
+        |ty: &CoreType| canonical_type(ty, owner, substitutions, type_names, declaration_scope);
+    let applied = |arguments: &[CoreType]| {
+        arguments
+            .iter()
+            .map(|argument| recur(&super::local::partly_applied(argument)))
+            .collect::<Option<Vec<_>>>()
+    };
     Some(match ty {
         CoreType::TypeFunction { .. } => ty.normalized_type_function()?,
         CoreType::TypeFunctionParameter { .. } => return None,
         CoreType::Hole => return None,
         CoreType::Named { name, arguments } => {
-            let arguments = arguments.iter().map(recur).collect::<Option<Vec<_>>>()?;
+            let arguments = applied(arguments)?;
             if let Some(bound) = substitutions.get(name) {
                 if matches!(bound, CoreType::TypeFunction { .. }) {
                     let applied =
@@ -318,7 +325,7 @@ pub(super) fn canonical_type(
             ..
         } => CoreType::Named {
             name: canonical.clone(),
-            arguments: arguments.iter().map(recur).collect::<Option<Vec<_>>>()?,
+            arguments: applied(arguments)?,
         },
         CoreType::Tuple { elements } => CoreType::Tuple {
             elements: elements.iter().map(recur).collect::<Option<Vec<_>>>()?,

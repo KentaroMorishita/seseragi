@@ -111,6 +111,8 @@ fn a_do_still_refuses_a_different_failure_or_monad() {
     );
 }
 
+/// `Effect<R, E, _>` and `Effect<R, E>` name the same partly applied
+/// constructor, so either spelling is the base of `MaybeT` on both targets.
 #[test]
 fn a_transformer_do_over_an_effect_type_checks_and_runs() {
     let lesson = fs::read_to_string(
@@ -118,16 +120,16 @@ fn a_transformer_do_over_an_effect_type_checks_and_runs() {
             .join("../../examples/spec/lessons/20-maybe-transformer.ssrg"),
     )
     .unwrap();
-    let scratch = Scratch::new();
-    let file = scratch.0.join("main.ssrg");
-    fs::write(&file, lesson).unwrap();
-    let ts = successful(bounded(
-        Command::new(env!("CARGO_BIN_EXE_seseragi"))
-            .arg("run")
-            .arg(&file),
-        &scratch.0,
-    ));
-    assert_eq!(String::from_utf8_lossy(&ts.stdout), "Hello, Aki!\n");
+    let written = "MaybeT<Effect<{ console: Console }, ConsoleError, _>, A>";
+    assert!(lesson.contains(written));
+    runs_on_both_targets(&lesson, "Hello, Aki!\n");
+    runs_on_both_targets(
+        &lesson.replace(
+            written,
+            "MaybeT<Effect<{ console: Console }, ConsoleError>, A>",
+        ),
+        "Hello, Aki!\n",
+    );
 }
 
 #[test]

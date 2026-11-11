@@ -1,5 +1,42 @@
 use super::*;
 
+/// A type argument with a written `_` in its last slots, after at least one
+/// written argument, is a partly applied constructor: `Effect<R, E, _>` in
+/// `MaybeT<Effect<R, E, _>, A>` is `Effect<R, E>`. Only argument positions
+/// are read this way, and a type with only holes, such as `Array<_>`, keeps
+/// them.
+pub(in crate::emit) fn partly_applied(argument: &CoreType) -> CoreType {
+    let strip = |arguments: &[CoreType]| {
+        let holes = arguments
+            .iter()
+            .rev()
+            .take_while(|argument| matches!(argument, CoreType::Hole))
+            .count();
+        let written = if holes == arguments.len() {
+            arguments.len()
+        } else {
+            arguments.len() - holes
+        };
+        arguments[..written].to_vec()
+    };
+    match argument {
+        CoreType::Named { name, arguments } => CoreType::Named {
+            name: name.clone(),
+            arguments: strip(arguments),
+        },
+        CoreType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => CoreType::ExternalNamed {
+            name: name.clone(),
+            canonical: canonical.clone(),
+            arguments: strip(arguments),
+        },
+        other => other.clone(),
+    }
+}
+
 fn nominal_parts(ty: &CoreType) -> Option<(CoreType, Vec<CoreType>)> {
     match ty {
         CoreType::Named { name, arguments } => Some((
@@ -7,7 +44,7 @@ fn nominal_parts(ty: &CoreType) -> Option<(CoreType, Vec<CoreType>)> {
                 name: name.clone(),
                 arguments: vec![],
             },
-            arguments.clone(),
+            arguments.iter().map(partly_applied).collect(),
         )),
         CoreType::ExternalNamed {
             name,
@@ -19,7 +56,7 @@ fn nominal_parts(ty: &CoreType) -> Option<(CoreType, Vec<CoreType>)> {
                 canonical: canonical.clone(),
                 arguments: vec![],
             },
-            arguments.clone(),
+            arguments.iter().map(partly_applied).collect(),
         )),
         _ => None,
     }

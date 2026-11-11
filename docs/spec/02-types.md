@@ -198,7 +198,9 @@ subtypingだけです。EffectとSignalが持つcapability固有のcoercionは2.
 ## 2.9 再帰
 
 moduleまたはblockの名前付き関数とtype宣言は再帰できます。再帰する関数は戻り型を必ず注釈します。
-通常の `let` は自身を参照できません。相互再帰関数は同じ `rec` group に置きます。
+通常の `let` は自身を参照できません。moduleのtop-levelの関数は互いにscopeに入っているため、
+`rec` groupなしで相互再帰できます。`rec` groupはtop-levelにも書けて、関連する関数をまとめるだけです。
+top-levelのgroupには `pub` などの修飾子を付けられず、memberはmodule内からだけ参照できます。
 直接のself tail callは14.8に従い一定のhost call stackで実行します。相互再帰とnon-tail callには
 同じ保証を適用しません。
 

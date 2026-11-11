@@ -3376,3 +3376,46 @@ fn an_unresolved_name_offers_the_close_name_as_a_quick_fix() {
         json!({"range": {"start": position(2, 61), "end": position(2, 67)}, "newText": "println"})
     );
 }
+
+#[test]
+fn a_module_level_rec_group_is_checked_navigated_and_formatted() {
+    let uri = "file:///rec-group.ssrg";
+    let source = "rec {\n  fn even n: Int -> Bool = if n == 0 then True else odd (n - 1)\n  fn odd n: Int -> Bool = if n == 0 then False else even (n - 1)\n}\n";
+    let index = LineIndex::new(source);
+    let use_position = index
+        .try_locate_encoded(source.find("odd (n").unwrap(), PositionEncoding::Utf16)
+        .unwrap();
+    let definition = index
+        .try_locate_encoded(source.find("fn odd").unwrap() + 3, PositionEncoding::Utf16)
+        .unwrap();
+    let input = [
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{}}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/documentSymbol","params":{"textDocument":{"uri":uri}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":{"line":use_position.line,"character":use_position.character}}}),
+        json!({"jsonrpc":"2.0","id":4,"method":"textDocument/formatting","params":{"textDocument":{"uri":uri},"options":{"tabSize":2,"insertSpaces":true}}}),
+        json!({"jsonrpc":"2.0","id":5,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ];
+    let messages = run_server(&input);
+    assert_eq!(
+        published(&messages, uri)["params"]["diagnostics"],
+        json!([])
+    );
+    let names = response(&messages, 2)["result"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|symbol| symbol["name"].as_str().unwrap().to_owned())
+        .collect::<Vec<_>>();
+    assert!(names.contains(&"even".to_owned()), "{names:?}");
+    assert!(names.contains(&"odd".to_owned()), "{names:?}");
+    let target = &response(&messages, 3)["result"];
+    let target = if target.is_array() {
+        &target[0]
+    } else {
+        target
+    };
+    assert_eq!(target["range"]["start"]["line"], definition.line);
+    assert_eq!(response(&messages, 4)["result"], json!([]));
+}

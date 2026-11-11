@@ -7,6 +7,7 @@ mod recursion;
 mod types;
 use types::argument_type;
 pub(super) use types::argument_type as method_argument_type;
+pub(super) use types::partly_applied;
 
 #[derive(Clone, Default)]
 pub(super) struct Scope {

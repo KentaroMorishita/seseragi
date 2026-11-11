@@ -163,6 +163,7 @@ pub(crate) fn top_level_declaration_starts(tokens: &[Token], end: usize) -> Vec<
                         | TokenKind::KeywordLet
                         | TokenKind::KeywordFn
                         | TokenKind::KeywordEffect
+                        | TokenKind::KeywordRec
                 ) || matches!(
                     tokens[i].kind,
                     TokenKind::IdentifierLower | TokenKind::IdentifierUpper

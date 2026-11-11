@@ -1152,7 +1152,7 @@ describe("Playground project compiler boundary", () => {
           related: expect.arrayContaining([
             expect.objectContaining({
               message: expect.stringContaining(
-                "no Eq instance matches the inferred call arguments"
+                "Float has no Eq instance; compare with `ieeeEq`"
               ),
             }),
           ]),

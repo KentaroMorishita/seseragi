@@ -148,12 +148,48 @@ impl SurfaceParser<'_> {
         declaration_starts
             .iter()
             .enumerate()
-            .filter_map(|(position, start)| {
+            .flat_map(|(position, start)| {
                 let end = declaration_starts
                     .get(position + 1)
                     .copied()
                     .unwrap_or(self.non_eof_token_count);
-                self.parse_top_level_declaration(*start, end)
+                if self.kind_at(*start) == Some(TokenKind::KeywordRec) {
+                    self.parse_rec_group(*start, end)
+                } else {
+                    self.parse_top_level_declaration(*start, end)
+                        .into_iter()
+                        .collect()
+                }
+            })
+            .collect()
+    }
+
+    /// A module-level `rec { ... }` groups mutually recursive functions. Every
+    /// module function is already in scope for the others, so each member is
+    /// an ordinary private function declaration.
+    fn parse_rec_group(&self, start: usize, end: usize) -> Vec<SurfaceDecl> {
+        let Some(open) = self
+            .next_significant_token(start + 1, end)
+            .filter(|open| self.kind_at(*open) == Some(TokenKind::PunctuationBraceLeft))
+        else {
+            return Vec::new();
+        };
+        let Some(close) = self.find_matching_brace(open, end) else {
+            return Vec::new();
+        };
+        expression::split_segments(self.tokens, open + 1, close)
+            .into_iter()
+            .filter_map(|(member_start, member_end)| {
+                let first = self.next_significant_token(member_start, member_end)?;
+                match self.kind_at(first)? {
+                    TokenKind::KeywordFn => {
+                        self.parse_fn_decl(Visibility::Private, first, first, member_end)
+                    }
+                    TokenKind::KeywordEffect => {
+                        self.parse_effect_fn_decl(Visibility::Private, first, first, member_end)
+                    }
+                    _ => None,
+                }
             })
             .collect()
     }
