@@ -356,6 +356,10 @@ impl Backend<'_> {
                 .and_then(|function| function.get(*index as usize))
                 .map(|arity| *arity as usize),
             CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
+                let arguments = arguments
+                    .iter()
+                    .map(super::local::partly_applied)
+                    .collect::<Vec<_>>();
                 if let CoreType::Named { name, .. } = ty {
                     if let Some(arity) = scope.type_parameter_arity(name) {
                         if arguments.iter().any(|a| {

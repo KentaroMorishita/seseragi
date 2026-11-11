@@ -42,6 +42,10 @@ impl SurfaceParser<'_> {
             }
         };
         let keyword = prefix.keyword;
+        if self.kind_at(keyword) == Some(TokenKind::KeywordRec) {
+            self.validate_rec_group(start, keyword, end, module, diagnostics);
+            return;
+        }
         let declaration = module
             .declarations
             .iter()
@@ -404,6 +408,49 @@ impl SurfaceParser<'_> {
                 }
             }
         }
+    }
+
+    /// `rec { fn ...; effect fn ... }` takes no modifiers and holds only
+    /// function declarations, each checked as a module function.
+    fn validate_rec_group(
+        &self,
+        start: usize,
+        keyword: usize,
+        end: usize,
+        module: &SurfaceModule,
+        diagnostics: &mut Vec<Diagnostic>,
+    ) {
+        if keyword != start {
+            if let Some(span) = self.declaration_span(start, keyword) {
+                diagnostics.push(error("parser.invalid-declaration-modifiers", span));
+            }
+        }
+        let group = self
+            .next_significant_token(keyword + 1, end)
+            .filter(|open| self.kind_at(*open) == Some(TokenKind::PunctuationBraceLeft))
+            .and_then(|open| Some((open, self.find_matching_brace(open, end)?)));
+        let Some((open, close)) = group else {
+            self.unexpected_statement(keyword, end, diagnostics);
+            return;
+        };
+        let members = split_segments(self.tokens, open + 1, close);
+        if members.is_empty() {
+            self.unexpected_statement(keyword, close + 1, diagnostics);
+        }
+        for (member_start, member_end) in members {
+            let Some(first) = self.next_significant_token(member_start, member_end) else {
+                continue;
+            };
+            if matches!(
+                self.kind_at(first),
+                Some(TokenKind::KeywordFn | TokenKind::KeywordEffect)
+            ) {
+                self.validate_declaration(first, member_end, module, diagnostics);
+            } else {
+                self.unexpected_statement(first, member_end, diagnostics);
+            }
+        }
+        self.unexpected_statements(close + 1, end, diagnostics);
     }
 
     fn unexpected_statements(&self, start: usize, end: usize, diagnostics: &mut Vec<Diagnostic>) {

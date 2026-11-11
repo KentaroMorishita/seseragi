@@ -1,0 +1,17 @@
+// A lambda inside a constructor or array on the left of `<*>` takes its
+// parameter type from the right argument, so it needs no annotation.
+let doubled = Just (\x -> x * 2) <*> Just 4
+
+let applied = [\x -> x * 2, \x -> x + 1] <*> [4, 10]
+
+let mapped = (\x -> x * 2) <$> Just 4
+
+let bound = Just 4 >>= (\x -> Just (x * 2))
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println $ show doubled
+  println $ show $ Just (\x -> x * 2) <*> Just 4
+  println $ show applied
+  println $ show mapped
+  println $ show bound
+}
