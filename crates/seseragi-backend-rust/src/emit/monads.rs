@@ -385,21 +385,20 @@ impl Backend<'_> {
             else {
                 return Ok(actual.clone());
             };
-            let (
-                CoreType::Record { fields, .. },
-                CoreType::Record {
-                    fields: actual_fields,
-                    ..
-                },
-            ) = (environment, actual_environment)
-            else {
-                return Ok(actual.clone());
-            };
+            // The same environment, or a record of fewer services.
+            let services = actual_environment == environment
+                || matches!(
+                    (environment, actual_environment),
+                    (
+                        CoreType::Record { fields, .. },
+                        CoreType::Record { fields: actual_fields, .. },
+                    ) if actual_fields.iter().all(|field| fields.contains(field))
+                );
             let never = matches!(actual_failure, CoreType::Named { name, arguments }
                 if name == "std/prelude::Never" && arguments.is_empty());
-            if name != "std/prelude::Effect"
+            if !matches!(name.as_str(), "std/prelude::Effect" | "std/stream::Stream")
                 || actual_name != name
-                || !actual_fields.iter().all(|field| fields.contains(field))
+                || !services
                 || !(never || actual_failure == failure)
             {
                 return Ok(actual.clone());

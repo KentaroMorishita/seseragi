@@ -24,7 +24,7 @@ pub(super) fn type_monad_do(
             },
         );
     };
-    let Some((constructor, _)) = monad_parts(&expected.type_ref) else {
+    let Some((written, _)) = monad_parts(&expected.type_ref) else {
         return invalid_monad_do(
             origin,
             MonadDoIssue::ResultTypeNotMonadic {
@@ -33,6 +33,9 @@ pub(super) fn type_monad_do(
             },
         );
     };
+    // `MaybeT<Effect<R, E, _>, A>` names the monad `MaybeT<Effect<R, E>>`;
+    // later stages see the one partly applied spelling.
+    let constructor = partial(&written);
     let constraint = TypedConstraint {
         name: "Monad".to_owned(),
         arguments: vec![constructor.clone()],

@@ -88,6 +88,18 @@ fn a_narrower_effect_runs_in_an_effect_returning_function_do() {
 }
 
 #[test]
+fn a_never_failure_or_narrower_stream_widens_on_both_targets() {
+    runs_on_both_targets(
+        "import * as effects from \"std/effect\"\n\nfn widen<R> action: Effect<R, Never, Int> -> Effect<R, ConsoleError, Int> = do { action }\n\npub effect fn main -> Unit with Console fails ConsoleError = do {\n  n <- widen (effects.succeed 5)\n  println (show n)\n}\n",
+        "5\n",
+    );
+    runs_on_both_targets(
+        "import { Stream } from \"std/stream\"\nimport * as streams from \"std/stream\"\n\nfn source -> Stream<{ console: Console }, ConsoleError, Int> = do {\n  let narrow: Stream<{}, Never, Int> = streams.fromArray [1, 2, 3]\n  narrow\n}\n\npub effect fn main -> Unit with Console fails ConsoleError = do {\n  items <- streams.runCollect (source ())\n  println (show items)\n}\n",
+        "[1, 2, 3]\n",
+    );
+}
+
+#[test]
 fn a_do_still_refuses_a_different_failure_or_monad() {
     refused(
         "import * as effects from \"std/effect\"\n\nfn load n: Int -> Effect<{ console: Console }, ConsoleError, Int> =\n  do {\n    println \"loading\"\n    effects.fail \"other\"\n  }\n\npub effect fn main -> Unit with Console fails ConsoleError = do {\n  n <- load 1\n  println (show n)\n}\n",
