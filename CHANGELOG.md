@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.162] - 2026-11-11
+
+### Fixed
+
+- A self tail call in an `effect fn`, through `if`, `match` or a `let` block, no longer overflows the stack on deep recursion on the TS and native targets. The call is deferred to the Effect runtime instead of growing the stack.
+- An unresolved type name is reported once, without the type errors that follow from it. When the name is exported by a module imported under a namespace, the label shows how to reach it, such as ``write `ui.MutableSignal` ``. Diagnostics are listed in source order.
+- An argument that fails to resolve or check no longer also reports a missing `Show` or `Eq` instance for the call that takes it, as in `println`, `show` or a template string. Comparing `Float` with `==` or `<` says to use `ieeeEq` or `totalCompare` from `std/float`.
+
 ## [0.61.161] - 2026-11-11
 
 ### Fixed

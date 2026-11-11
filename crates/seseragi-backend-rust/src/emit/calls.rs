@@ -18,6 +18,29 @@ impl Backend<'_> {
         else {
             unreachable!("call dispatch");
         };
+        if self
+            .effect_tail_calls
+            .contains(&(expr as *const CoreExpr as usize))
+        {
+            // Evaluate the callee's evidence and every argument now, in
+            // source order, and leave only the application to the Effect.
+            let function = self.fresh();
+            let mut value = format!(
+                "{{ let {function} = {};",
+                self.reference(callee, evidence, scope)?
+            );
+            let mut names = Vec::new();
+            for argument in arguments {
+                let name = self.fresh();
+                value.push_str(&format!("let {name} = {};", self.expr(argument, scope)?));
+                names.push(name);
+            }
+            value.push_str(&format!(
+                "native_defer_apply({function}, vec![{}]) }}",
+                names.join(", ")
+            ));
+            return Ok(value);
+        }
         if let Some(value) =
             self.standard_error_constructor(callee, arguments, evidence, type_ref, scope)?
         {

@@ -443,6 +443,9 @@ struct Backend<'a> {
     serial: usize,
     direct_calls: usize,
     self_tail_calls: usize,
+    /// Addresses of the saturated self calls in the tail positions of the
+    /// `effect fn` being emitted. Each is applied when its Effect runs.
+    effect_tail_calls: BTreeSet<usize>,
     closed_dictionary_sites: usize,
     capabilities: BTreeSet<String>,
     options: &'a crate::RustTargetOptions,
@@ -493,6 +496,7 @@ impl<'a> Backend<'a> {
             serial: 0,
             direct_calls: 0,
             self_tail_calls: 0,
+            effect_tail_calls: BTreeSet::new(),
             closed_dictionary_sites: 0,
             capabilities: BTreeSet::new(),
         }
@@ -639,6 +643,20 @@ impl<'a> Backend<'a> {
     }
 
     fn function_definition(
+        &mut self,
+        function: &seseragi_lowering::CoreFunction,
+    ) -> Result<String> {
+        self.effect_tail_calls = if function.is_effect {
+            tail::effect_self_tail_calls(function)
+        } else {
+            BTreeSet::new()
+        };
+        let output = self.function_definition_body(function);
+        self.effect_tail_calls.clear();
+        output
+    }
+
+    fn function_definition_body(
         &mut self,
         function: &seseragi_lowering::CoreFunction,
     ) -> Result<String> {

@@ -134,6 +134,7 @@ pub(super) fn resolve_local_function(
                 code: "SES-N0002".to_owned(),
                 message_key: "name.duplicate-definition".to_owned(),
                 primary: *span,
+                hint: None,
             });
         }
     }

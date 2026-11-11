@@ -1038,20 +1038,23 @@ fn render_function_body_with_return(
     return_type: Option<&crate::TypeScriptType>,
     scalar_tail_loop: bool,
 ) -> String {
-    let rendered_body = self_name
-        .filter(|_| !is_effect)
-        .filter(|name| !parameters.iter().any(|parameter| parameter.name == *name))
-        .filter(|name| contains_direct_self_tail_call(body, name, parameters.len()))
-        .map_or_else(
-            || render_typescript_expr(body),
-            |name| {
-                if scalar_tail_loop {
-                    scalar_tail::render(body, name, parameters)
-                } else {
-                    render_tail_recursive_body(body, name, parameters)
-                }
-            },
-        );
+    let rendered_body = match self_name {
+        Some(name) if is_effect && defers_effect_self_tail_calls(name, parameters, body) => {
+            render_effect_tail_position_expr(body, name, parameters)
+        }
+        Some(name)
+            if !is_effect
+                && !parameters.iter().any(|parameter| parameter.name == name)
+                && contains_direct_self_tail_call(body, name, parameters.len(), false) =>
+        {
+            if scalar_tail_loop {
+                scalar_tail::render(body, name, parameters)
+            } else {
+                render_tail_recursive_body(body, name, parameters)
+            }
+        }
+        _ => render_typescript_expr(body),
+    };
     let Some((last, leading)) = parameters.split_last() else {
         return rendered_body;
     };
@@ -1089,13 +1092,30 @@ fn statements_bind_name(statements: &[TypeScriptStatement], name: &str) -> bool 
     })
 }
 
-fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> bool {
+/// An `effect fn` defers its saturated self calls in tail position to the
+/// Effect machine. Calls after a bind already run from its continuation.
+fn defers_effect_self_tail_calls(
+    name: &str,
+    parameters: &[crate::TypeScriptParameter],
+    body: &TypeScriptExpr,
+) -> bool {
+    !parameters.is_empty()
+        && !parameters.iter().any(|parameter| parameter.name == name)
+        && contains_direct_self_tail_call(body, name, parameters.len(), true)
+}
+
+fn contains_direct_self_tail_call(
+    expr: &TypeScriptExpr,
+    self_name: &str,
+    arity: usize,
+    effect: bool,
+) -> bool {
     if let Some((_, _, value, _)) = source_action(expr) {
-        return contains_direct_self_tail_call(value, self_name, arity);
+        return contains_direct_self_tail_call(value, self_name, arity, effect);
     }
     match expr {
         TypeScriptExpr::CheckedResult { value, .. } => {
-            contains_direct_self_tail_call(value, self_name, arity)
+            contains_direct_self_tail_call(value, self_name, arity, effect)
         }
         TypeScriptExpr::Call {
             callee, arguments, ..
@@ -1105,19 +1125,20 @@ fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity:
             else_branch,
             ..
         } => {
-            contains_direct_self_tail_call(then_branch, self_name, arity)
-                || contains_direct_self_tail_call(else_branch, self_name, arity)
+            contains_direct_self_tail_call(then_branch, self_name, arity, effect)
+                || contains_direct_self_tail_call(else_branch, self_name, arity, effect)
         }
         TypeScriptExpr::Decision { branches, .. } => branches.iter().any(|branch| {
             !branch
                 .bindings
                 .iter()
                 .any(|binding| binding.name == self_name)
-                && contains_direct_self_tail_call(&branch.value, self_name, arity)
+                && contains_direct_self_tail_call(&branch.value, self_name, arity, effect)
         }),
         TypeScriptExpr::Sequence { statements, result } => {
             !statements_bind_name(statements, self_name)
-                && contains_direct_self_tail_call(result, self_name, arity)
+                && !(effect && statements_run_effects(statements))
+                && contains_direct_self_tail_call(result, self_name, arity, effect)
         }
         _ => false,
     }
@@ -1159,32 +1180,94 @@ fn render_tail_recursive_body(
 }
 
 fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> String {
+    render_tail_positions(expr, self_name, arity, false, &|call| {
+        let TypeScriptExpr::Call { arguments, .. } = call else {
+            unreachable!("tail call");
+        };
+        format!(
+            "({{ [$ssrg$tail]: [{}] }} as never)",
+            arguments
+                .iter()
+                .map(render_typescript_expr)
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    })
+}
+
+/// Evaluate every argument now, in source order, and leave only the call to
+/// the Effect, so that building the Effect never recurses on the host stack.
+/// Each temporary takes the type of its argument, so a recursive call that
+/// instantiates the function differently keeps its own type arguments.
+fn render_effect_tail_position_expr(
+    body: &TypeScriptExpr,
+    self_name: &str,
+    parameters: &[crate::TypeScriptParameter],
+) -> String {
+    render_tail_positions(body, self_name, parameters.len(), true, &|call| {
+        let TypeScriptExpr::Call {
+            callee,
+            arguments,
+            type_arguments,
+            checked_callee_type,
+        } = call
+        else {
+            unreachable!("tail call");
+        };
+        let names = (0..arguments.len())
+            .map(|index| format!("$ssrg$tailArgument{index}"))
+            .collect::<Vec<_>>();
+        let deferred = TypeScriptExpr::Call {
+            callee: callee.clone(),
+            arguments: names
+                .iter()
+                .map(|name| TypeScriptExpr::Identifier { name: name.clone() })
+                .collect(),
+            type_arguments: type_arguments.clone(),
+            checked_callee_type: checked_callee_type.clone(),
+        };
+        let bindings = names
+            .iter()
+            .zip(arguments)
+            .map(|(name, argument)| {
+                format!("const {name} = {}; ", render_typescript_expr(argument))
+            })
+            .collect::<String>();
+        format!(
+            "(() => {{ {bindings}return $ssrg$deferTail(() => {}); }})()",
+            render_typescript_expr(&deferred)
+        )
+    })
+}
+
+/// `effect` keeps a block that runs Effects out of tail position: its result
+/// already runs from the Effect machine's continuation.
+fn render_tail_positions(
+    expr: &TypeScriptExpr,
+    self_name: &str,
+    arity: usize,
+    effect: bool,
+    tail_call: &dyn Fn(&TypeScriptExpr) -> String,
+) -> String {
+    let inner =
+        |value: &TypeScriptExpr| render_tail_positions(value, self_name, arity, effect, tail_call);
     if let Some((callee, source, value, frame)) = source_action(expr) {
         return format!(
             "{callee}({}, () => {}, {})",
             render_typescript_expr(source),
-            render_tail_position_expr(value, self_name, arity),
+            inner(value),
             render_typescript_expr(frame),
         );
     }
     match expr {
         TypeScriptExpr::CheckedResult { value, type_ref } => format!(
             "(({}) as {})",
-            render_tail_position_expr(value, self_name, arity),
+            inner(value),
             render_typescript_type(type_ref)
         ),
         TypeScriptExpr::Call {
             callee, arguments, ..
-        } if callee == self_name && arguments.len() == arity => {
-            format!(
-                "({{ [$ssrg$tail]: [{}] }} as never)",
-                arguments
-                    .iter()
-                    .map(render_typescript_expr)
-                    .collect::<Vec<_>>()
-                    .join(", ")
-            )
-        }
+        } if callee == self_name && arguments.len() == arity => tail_call(expr),
         TypeScriptExpr::Conditional {
             condition,
             then_branch,
@@ -1192,8 +1275,8 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
         } => format!(
             "{} ? {} : {}",
             render_conditional_condition(condition),
-            render_tail_position_expr(then_branch, self_name, arity),
-            render_tail_position_expr(else_branch, self_name, arity)
+            inner(then_branch),
+            inner(else_branch)
         ),
         TypeScriptExpr::Decision {
             scrutinee,
@@ -1213,21 +1296,34 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
                 {
                     render_typescript_expr(&branch.value)
                 } else {
-                    render_tail_position_expr(&branch.value, self_name, arity)
+                    inner(&branch.value)
                 }
             },
         ),
         TypeScriptExpr::Sequence { statements, result } => {
-            if statements_bind_name(statements, self_name) {
+            if statements_bind_name(statements, self_name)
+                || (effect && statements_run_effects(statements))
+            {
                 render_typescript_expr(expr)
             } else {
                 render_effect_sequence_with_result_renderer(statements, result, &|value| {
-                    render_tail_position_expr(value, self_name, arity)
+                    inner(value)
                 })
             }
         }
         _ => render_typescript_expr(expr),
     }
+}
+
+/// `Effect` runs a statement and `Const` binds its result; either puts the
+/// block's result in a continuation.
+fn statements_run_effects(statements: &[TypeScriptStatement]) -> bool {
+    statements.iter().any(|statement| {
+        matches!(
+            statement,
+            TypeScriptStatement::Effect { .. } | TypeScriptStatement::Const { .. }
+        )
+    })
 }
 
 fn source_action(

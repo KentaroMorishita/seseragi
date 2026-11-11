@@ -103,6 +103,7 @@ fn register_custom_fixity(
             code: "SES-P0001".to_owned(),
             message_key: "operator.invalid-spelling".to_owned(),
             primary: origin,
+            hint: None,
         });
         return;
     }
@@ -111,6 +112,7 @@ fn register_custom_fixity(
             code: "SES-P0001".to_owned(),
             message_key: "operator.reserved-spelling".to_owned(),
             primary: origin,
+            hint: None,
         });
         return;
     }
@@ -119,6 +121,7 @@ fn register_custom_fixity(
             code: "SES-P0001".to_owned(),
             message_key: "operator.invalid-arity".to_owned(),
             primary: origin,
+            hint: None,
         });
         return;
     }
@@ -127,6 +130,7 @@ fn register_custom_fixity(
             code: "SES-P0102".to_owned(),
             message_key: "operator.invalid-fixity".to_owned(),
             primary: origin,
+            hint: None,
         });
         return;
     };
@@ -363,6 +367,7 @@ fn associate_chain(
                 code: "SES-P0101".to_owned(),
                 message_key: "operator.unknown".to_owned(),
                 primary: step.operator_span,
+                hint: None,
             });
             return SurfaceExpr::Error { span };
         };
@@ -375,6 +380,7 @@ fn associate_chain(
                         code: "SES-P0102".to_owned(),
                         message_key: "operator.fixity-conflict".to_owned(),
                         primary: step.operator_span,
+                        hint: None,
                     });
                     return SurfaceExpr::Error { span };
                 }

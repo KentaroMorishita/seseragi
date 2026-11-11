@@ -616,7 +616,17 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     if let Some(span) = crate::resource::exceeded() {
         return resource_diagnostics(source_name, span);
     }
+    order_by_source_position(&mut artifact.diagnostics);
     artifact
+}
+
+/// Report diagnostics in source order, whichever check found them first, and
+/// number them in that order.
+pub fn order_by_source_position(diagnostics: &mut [Diagnostic]) {
+    diagnostics.sort_by_key(|diagnostic| diagnostic.primary.start);
+    for (index, diagnostic) in diagnostics.iter_mut().enumerate() {
+        diagnostic.id = format!("d{}", index + 1);
+    }
 }
 
 fn resource_diagnostics(source: String, span: crate::ByteSpan) -> DiagnosticArtifact {

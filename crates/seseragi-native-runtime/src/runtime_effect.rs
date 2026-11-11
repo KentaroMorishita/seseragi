@@ -576,6 +576,25 @@ thread_local! {
 }
 /// Routes every later Console operation of this thread to `provider`. A
 /// program WASM library installs it once; native executables never do.
+/// An `effect fn` calling itself in tail position applies its already
+/// evaluated arguments once the Effect machine reaches this step, so building
+/// the Effect never recurses on the host stack.
+pub fn native_defer_apply(function: V, arguments: Vec<V>) -> V {
+    let mut captures = Vec::with_capacity(arguments.len() + 1);
+    captures.push(function);
+    captures.extend(arguments);
+    V::effect(
+        Instruction::Defer,
+        vec![V::fun(captures, |captures, _| {
+            captures[1..]
+                .iter()
+                .fold(captures[0].clone(), |function, argument| {
+                    function.apply(argument.clone())
+                })
+        })],
+    )
+}
+
 pub fn install_native_console_provider(provider: NativeConsoleProvider) {
     NATIVE_CONSOLE_PROVIDER.with(|slot| slot.set(Some(provider)));
 }

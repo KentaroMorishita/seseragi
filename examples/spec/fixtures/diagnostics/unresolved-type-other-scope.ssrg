@@ -1,0 +1,7 @@
+// An unresolved type name hides only the errors that follow from it. `A` in
+// `broken` is its own type parameter, so its mismatch is still reported.
+fn missing value: A -> Int = 3
+
+fn broken<A> value: A -> Int = value
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

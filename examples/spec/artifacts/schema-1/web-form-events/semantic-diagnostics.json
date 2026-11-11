@@ -5,6 +5,42 @@
   "diagnostics": [
     {
       "id": "d1",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 151,
+        "end": 166
+      },
+      "related": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 151,
+            "end": 166
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 151,
+            "end": 166
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "record.access-on-non-record",
@@ -38,7 +74,43 @@
       "actualType": null
     },
     {
-      "id": "d2",
+      "id": "d3",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 229,
+        "end": 245
+      },
+      "related": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 229,
+            "end": 245
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 229,
+            "end": 245
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "record.access-on-non-record",
@@ -72,100 +144,30 @@
       "actualType": null
     },
     {
-      "id": "d3",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "record.access-on-non-record",
-      "message": "Record access on non record",
-      "primary": {
-        "start": 761,
-        "end": 766
-      },
-      "related": [
-        {
-          "message": "field access requires a record, received html.ChangeEvent",
-          "primary": {
-            "start": 347,
-            "end": 1267
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "field access requires a record, received html.ChangeEvent",
-          "primary": {
-            "start": 347,
-            "end": 1267
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d4",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 151,
-        "end": 166
-      },
-      "related": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 129,
-            "end": 203
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 129,
-            "end": 203
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
       "id": "d5",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 229,
-        "end": 245
+        "start": 393,
+        "end": 410
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 205,
-            "end": 345
+            "start": 393,
+            "end": 410
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 205,
-            "end": 345
+            "start": 393,
+            "end": 410
           }
         }
       ],
@@ -179,42 +181,6 @@
     },
     {
       "id": "d6",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 393,
-        "end": 410
-      },
-      "related": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 347,
-            "end": 1267
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 347,
-            "end": 1267
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d7",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -250,7 +216,7 @@
       "actualType": null
     },
     {
-      "id": "d8",
+      "id": "d7",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -286,7 +252,7 @@
       "actualType": null
     },
     {
-      "id": "d9",
+      "id": "d8",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -322,7 +288,7 @@
       "actualType": null
     },
     {
-      "id": "d10",
+      "id": "d9",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -333,7 +299,43 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
+          "primary": {
+            "start": 728,
+            "end": 744
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 728,
+            "end": 744
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d10",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "record.access-on-non-record",
+      "message": "Record access on non record",
+      "primary": {
+        "start": 761,
+        "end": 766
+      },
+      "related": [
+        {
+          "message": "field access requires a record, received html.ChangeEvent",
           "primary": {
             "start": 347,
             "end": 1267
@@ -342,7 +344,7 @@
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "field access requires a record, received html.ChangeEvent",
           "primary": {
             "start": 347,
             "end": 1267
@@ -350,9 +352,7 @@
         }
       ],
       "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
+      "helps": [],
       "fixes": [],
       "expectedType": null,
       "actualType": null
@@ -405,19 +405,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 890,
+            "end": 906
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 890,
+            "end": 906
           }
         }
       ],
@@ -477,19 +477,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 984,
+            "end": 1000
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 984,
+            "end": 1000
           }
         }
       ],

@@ -1,0 +1,4 @@
+// The error inside the argument of `show` is reported, not a missing Show
+// instance. Float has no Eq, so the label points at std/float's comparisons.
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $ show $ 1.0 == 1.0

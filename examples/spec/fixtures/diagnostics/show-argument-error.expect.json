@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": ["4.4", "4.7", "9.4", "12.13"],
+  "diagnostics": [
+    {
+      "code": "SES-T0201",
+      "severity": "Error",
+      "primary": { "start": 237, "end": 239, "text": "==" },
+      "labels": ["Float has no Eq instance; compare with `ieeeEq` or `totalCompare` from \"std/float\""]
+    }
+  ]
+}

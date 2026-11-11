@@ -1,0 +1,4 @@
+// An error inside a template interpolation is reported without a missing
+// Show instance for the interpolation.
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println `pair: ${(1, true)}`

@@ -41,78 +41,6 @@
     },
     {
       "id": "d2",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
-      "primary": {
-        "start": 151,
-        "end": 165
-      },
-      "related": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 141,
-            "end": 165
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 141,
-            "end": 165
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d3",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
-      "primary": {
-        "start": 277,
-        "end": 336
-      },
-      "related": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 261,
-            "end": 336
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 261,
-            "end": 336
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -148,7 +76,43 @@
       "actualType": null
     },
     {
-      "id": "d5",
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
+      "primary": {
+        "start": 151,
+        "end": 165
+      },
+      "related": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 141,
+            "end": 165
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 141,
+            "end": 165
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Use an Effect-producing operation here, or bind a pure value with let."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -184,7 +148,7 @@
       "actualType": null
     },
     {
-      "id": "d6",
+      "id": "d5",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -220,7 +184,7 @@
       "actualType": null
     },
     {
-      "id": "d7",
+      "id": "d6",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -250,6 +214,42 @@
       "notes": [],
       "helps": [
         "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d7",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
+      "primary": {
+        "start": 277,
+        "end": 336
+      },
+      "related": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 261,
+            "end": 336
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 261,
+            "end": 336
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Use an Effect-producing operation here, or bind a pure value with let."
       ],
       "fixes": [],
       "expectedType": null,

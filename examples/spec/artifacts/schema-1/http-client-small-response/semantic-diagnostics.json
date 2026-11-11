@@ -5,6 +5,148 @@
   "diagnostics": [
     {
       "id": "d1",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "trait.instance-missing",
+      "message": "Trait instance missing",
+      "primary": {
+        "start": 187,
+        "end": 206
+      },
+      "related": [
+        {
+          "message": "required Show<http.HttpBuildError> instance is not available",
+          "primary": {
+            "start": 140,
+            "end": 307
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "required Show<http.HttpBuildError> instance is not available",
+          "primary": {
+            "start": 140,
+            "end": 307
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 224,
+        "end": 239
+      },
+      "related": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 224,
+            "end": 239
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 224,
+            "end": 239
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 256,
+        "end": 270
+      },
+      "related": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 256,
+            "end": 270
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 256,
+            "end": 270
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 287,
+        "end": 307
+      },
+      "related": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 287,
+            "end": 307
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 287,
+            "end": 307
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d5",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "effect.bind-value-not-effect",
@@ -40,329 +182,7 @@
       "actualType": null
     },
     {
-      "id": "d2",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
-      "primary": {
-        "start": 526,
-        "end": 699
-      },
-      "related": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 509,
-            "end": 699
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 509,
-            "end": 699
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d3",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
-      "primary": {
-        "start": 718,
-        "end": 843
-      },
-      "related": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 704,
-            "end": 843
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 704,
-            "end": 843
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d4",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
-      "primary": {
-        "start": 866,
-        "end": 960
-      },
-      "related": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 848,
-            "end": 960
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 848,
-            "end": 960
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d5",
-      "code": "SES-T0201",
-      "severity": "Error",
-      "messageKey": "trait.instance-missing",
-      "message": "Trait instance missing",
-      "primary": {
-        "start": 187,
-        "end": 206
-      },
-      "related": [
-        {
-          "message": "required Show<http.HttpBuildError> instance is not available",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "required Show<http.HttpBuildError> instance is not available",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
       "id": "d6",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 224,
-        "end": 239
-      },
-      "related": [
-        {
-          "message": "type declaration",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "type declaration",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d7",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 256,
-        "end": 270
-      },
-      "related": [
-        {
-          "message": "type declaration",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "type declaration",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d8",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 287,
-        "end": 307
-      },
-      "related": [
-        {
-          "message": "type declaration",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "type declaration",
-          "primary": {
-            "start": 140,
-            "end": 307
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d9",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 475,
-        "end": 491
-      },
-      "related": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d10",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 445,
-        "end": 463
-      },
-      "related": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d11",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -398,14 +218,194 @@
       "actualType": null
     },
     {
+      "id": "d7",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 445,
+        "end": 463
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d8",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 475,
+        "end": 491
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d9",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
+      "primary": {
+        "start": 526,
+        "end": 699
+      },
+      "related": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 509,
+            "end": 699
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 509,
+            "end": 699
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Use an Effect-producing operation here, or bind a pure value with let."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d10",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 526,
+        "end": 538
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d11",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 539,
+        "end": 548
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
       "id": "d12",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 670,
-        "end": 686
+        "start": 564,
+        "end": 586
       },
       "related": [
         {
@@ -476,8 +476,8 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 564,
-        "end": 586
+        "start": 670,
+        "end": 686
       },
       "related": [
         {
@@ -507,35 +507,35 @@
     },
     {
       "id": "d15",
-      "code": "SES-N0001",
+      "code": "SES-T0101",
       "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
       "primary": {
-        "start": 526,
-        "end": 538
+        "start": 718,
+        "end": 843
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "do bind statement",
           "primary": {
-            "start": 309,
-            "end": 1086
+            "start": 704,
+            "end": 843
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "do bind statement",
           "primary": {
-            "start": 309,
-            "end": 1086
+            "start": 704,
+            "end": 843
           }
         }
       ],
       "notes": [],
       "helps": [
-        "Check the spelling, or define or import the name before using it."
+        "Use an Effect-producing operation here, or bind a pure value with let."
       ],
       "fixes": [],
       "expectedType": null,
@@ -543,114 +543,6 @@
     },
     {
       "id": "d16",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 539,
-        "end": 548
-      },
-      "related": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d17",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 814,
-        "end": 830
-      },
-      "related": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d18",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 784,
-        "end": 802
-      },
-      "related": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d19",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -686,14 +578,14 @@
       "actualType": null
     },
     {
-      "id": "d20",
+      "id": "d17",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 932,
-        "end": 948
+        "start": 784,
+        "end": 802
       },
       "related": [
         {
@@ -722,7 +614,79 @@
       "actualType": null
     },
     {
-      "id": "d21",
+      "id": "d18",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 814,
+        "end": 830
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d19",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
+      "primary": {
+        "start": 866,
+        "end": 960
+      },
+      "related": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 848,
+            "end": 960
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 848,
+            "end": 960
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Use an Effect-producing operation here, or bind a pure value with let."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d20",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -758,7 +722,7 @@
       "actualType": null
     },
     {
-      "id": "d22",
+      "id": "d21",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -794,14 +758,50 @@
       "actualType": null
     },
     {
+      "id": "d22",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 932,
+        "end": 948
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
       "id": "d23",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 1054,
-        "end": 1070
+        "start": 965,
+        "end": 982
       },
       "related": [
         {
@@ -831,42 +831,6 @@
     },
     {
       "id": "d24",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 1026,
-        "end": 1044
-      },
-      "related": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "effect function body",
-          "primary": {
-            "start": 309,
-            "end": 1086
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d25",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -902,14 +866,50 @@
       "actualType": null
     },
     {
+      "id": "d25",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1026,
+        "end": 1044
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 309,
+            "end": 1086
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
       "id": "d26",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 965,
-        "end": 982
+        "start": 1054,
+        "end": 1070
       },
       "related": [
         {

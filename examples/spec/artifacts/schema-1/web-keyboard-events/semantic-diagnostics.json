@@ -5,34 +5,36 @@
   "diagnostics": [
     {
       "id": "d1",
-      "code": "SES-T0101",
+      "code": "SES-N0001",
       "severity": "Error",
-      "messageKey": "record.access-on-non-record",
-      "message": "Record access on non record",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
       "primary": {
-        "start": 203,
-        "end": 208
+        "start": 134,
+        "end": 152
       },
       "related": [
         {
-          "message": "field access requires a record, received html.KeyboardEvent",
+          "message": "type name",
           "primary": {
-            "start": 114,
-            "end": 262
+            "start": 134,
+            "end": 152
           }
         }
       ],
       "labels": [
         {
-          "message": "field access requires a record, received html.KeyboardEvent",
+          "message": "type name",
           "primary": {
-            "start": 114,
-            "end": 262
+            "start": 134,
+            "end": 152
           }
         }
       ],
       "notes": [],
-      "helps": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
       "fixes": [],
       "expectedType": null,
       "actualType": null
@@ -44,24 +46,24 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 134,
-        "end": 152
+        "start": 156,
+        "end": 180
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 114,
-            "end": 262
+            "start": 156,
+            "end": 180
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 114,
-            "end": 262
+            "start": 156,
+            "end": 180
           }
         }
       ],
@@ -75,42 +77,6 @@
     },
     {
       "id": "d3",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 156,
-        "end": 180
-      },
-      "related": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 114,
-            "end": 262
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 114,
-            "end": 262
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -146,6 +112,40 @@
       "actualType": null
     },
     {
+      "id": "d4",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "record.access-on-non-record",
+      "message": "Record access on non record",
+      "primary": {
+        "start": 203,
+        "end": 208
+      },
+      "related": [
+        {
+          "message": "field access requires a record, received html.KeyboardEvent",
+          "primary": {
+            "start": 114,
+            "end": 262
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "field access requires a record, received html.KeyboardEvent",
+          "primary": {
+            "start": 114,
+            "end": 262
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
       "id": "d5",
       "code": "SES-N0001",
       "severity": "Error",
@@ -157,19 +157,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 264,
-            "end": 379
+            "start": 304,
+            "end": 322
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 264,
-            "end": 379
+            "start": 304,
+            "end": 322
           }
         }
       ],
@@ -193,19 +193,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 264,
-            "end": 379
+            "start": 326,
+            "end": 354
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 264,
-            "end": 379
+            "start": 326,
+            "end": 354
           }
         }
       ],
@@ -265,19 +265,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 381,
-            "end": 468
+            "start": 401,
+            "end": 419
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 381,
-            "end": 468
+            "start": 401,
+            "end": 419
           }
         }
       ],
@@ -301,19 +301,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 381,
-            "end": 468
+            "start": 423,
+            "end": 447
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 381,
-            "end": 468
+            "start": 423,
+            "end": 447
           }
         }
       ],
@@ -373,19 +373,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 470,
-            "end": 676
+            "start": 485,
+            "end": 502
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 470,
-            "end": 676
+            "start": 485,
+            "end": 502
           }
         }
       ],
@@ -445,19 +445,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 678,
-            "end": 841
+            "start": 716,
+            "end": 737
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 678,
-            "end": 841
+            "start": 716,
+            "end": 737
           }
         }
       ],

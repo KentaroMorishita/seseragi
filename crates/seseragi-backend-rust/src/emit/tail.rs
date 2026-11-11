@@ -334,3 +334,65 @@ impl Backend<'_> {
         ))
     }
 }
+
+/// Saturated calls of an `effect fn` to itself in the tail positions of its
+/// body: the body, `if` branches, `match` arms and the result of a pure block.
+/// Calls after a bind already run from the Effect machine's continuation.
+pub(super) fn effect_self_tail_calls(function: &CoreFunction) -> BTreeSet<usize> {
+    fn collect(expr: &CoreExpr, symbol: &str, arity: usize, calls: &mut BTreeSet<usize>) {
+        match expr {
+            CoreExpr::Call {
+                callee,
+                arguments,
+                trait_dispatch,
+                deferred_evidence_parameters,
+                deferred_evidence_type_constructor_parameters,
+                evidence_argument_index,
+                ..
+            } if callee == symbol
+                && arguments.len() == arity
+                && trait_dispatch.is_none()
+                && deferred_evidence_parameters.is_empty()
+                && deferred_evidence_type_constructor_parameters.is_empty()
+                && evidence_argument_index.is_none() =>
+            {
+                calls.insert(expr as *const CoreExpr as usize);
+            }
+            CoreExpr::If {
+                then_branch,
+                else_branch,
+                ..
+            } => {
+                collect(then_branch, symbol, arity, calls);
+                collect(else_branch, symbol, arity, calls);
+            }
+            CoreExpr::Decision { branches, .. } => {
+                for branch in branches {
+                    collect(&branch.value, symbol, arity, calls);
+                }
+            }
+            CoreExpr::Sequence {
+                statements, result, ..
+            } if statements.iter().all(|statement| {
+                matches!(
+                    statement,
+                    CoreStatement::PureLet { .. } | CoreStatement::LocalFunction { .. }
+                )
+            }) =>
+            {
+                collect(result, symbol, arity, calls)
+            }
+            _ => {}
+        }
+    }
+    let mut calls = BTreeSet::new();
+    if !function.parameters.is_empty() {
+        collect(
+            &function.body,
+            &function.symbol,
+            function.parameters.len(),
+            &mut calls,
+        );
+    }
+    calls
+}

@@ -1282,6 +1282,12 @@ pub(crate) fn type_known_application_with_explicit(
                 })
         })
         .flatten();
+    let invalid_argument = child_analyses.iter().any(|child| child.has_issues())
+        || context.resolution.resolved().issues.iter().any(|issue| {
+            issue.code == "SES-N0001"
+                && expression_span.start <= issue.primary.start
+                && issue.primary.end <= expression_span.end
+        });
     let requires_evidence = saturated
         || signature.trait_identity.is_some()
         || concrete_partial_constraints
@@ -1301,6 +1307,9 @@ pub(crate) fn type_known_application_with_explicit(
             }
         }) {
             Ok(evidence) => evidence,
+            // An argument that failed to type-check cannot select an
+            // instance. Its own error is the one to fix, so keep it instead.
+            Err(_) if invalid_argument => Vec::new(),
             Err(constraint) => {
                 issue = Some(PureCallIssue::MissingInstance {
                     callee: callee_span,

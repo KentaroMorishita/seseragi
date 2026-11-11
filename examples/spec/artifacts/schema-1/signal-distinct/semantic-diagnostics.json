@@ -41,78 +41,6 @@
     },
     {
       "id": "d2",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
-      "primary": {
-        "start": 326,
-        "end": 340
-      },
-      "related": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 309,
-            "end": 340
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 309,
-            "end": 340
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d3",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
-      "primary": {
-        "start": 404,
-        "end": 516
-      },
-      "related": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 388,
-            "end": 516
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "do bind statement",
-          "primary": {
-            "start": 388,
-            "end": 516
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -148,7 +76,43 @@
       "actualType": null
     },
     {
-      "id": "d5",
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
+      "primary": {
+        "start": 326,
+        "end": 340
+      },
+      "related": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 309,
+            "end": 340
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 309,
+            "end": 340
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Use an Effect-producing operation here, or bind a pure value with let."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -184,7 +148,7 @@
       "actualType": null
     },
     {
-      "id": "d6",
+      "id": "d5",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -214,6 +178,42 @@
       "notes": [],
       "helps": [
         "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d6",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
+      "primary": {
+        "start": 404,
+        "end": 516
+      },
+      "related": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 388,
+            "end": 516
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 388,
+            "end": 516
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Use an Effect-producing operation here, or bind a pure value with let."
       ],
       "fixes": [],
       "expectedType": null,

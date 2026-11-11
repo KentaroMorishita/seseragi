@@ -5,35 +5,35 @@
   "diagnostics": [
     {
       "id": "d1",
-      "code": "SES-T0101",
+      "code": "SES-N0001",
       "severity": "Error",
-      "messageKey": "effect.bind-value-not-effect",
-      "message": "This position requires an Effect value",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
       "primary": {
-        "start": 1280,
-        "end": 1295
+        "start": 404,
+        "end": 420
       },
       "related": [
         {
-          "message": "do bind statement",
+          "message": "type name",
           "primary": {
-            "start": 1271,
-            "end": 1295
+            "start": 404,
+            "end": 420
           }
         }
       ],
       "labels": [
         {
-          "message": "do bind statement",
+          "message": "type name",
           "primary": {
-            "start": 1271,
-            "end": 1295
+            "start": 404,
+            "end": 420
           }
         }
       ],
       "notes": [],
       "helps": [
-        "Use an Effect-producing operation here, or bind a pure value with let."
+        "Check the spelling, or define or import the name before using it."
       ],
       "fixes": [],
       "expectedType": null,
@@ -46,24 +46,24 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 404,
-        "end": 420
+        "start": 437,
+        "end": 446
       },
       "related": [
         {
-          "message": "alias declaration",
+          "message": "type name",
           "primary": {
-            "start": 388,
-            "end": 420
+            "start": 437,
+            "end": 446
           }
         }
       ],
       "labels": [
         {
-          "message": "alias declaration",
+          "message": "type name",
           "primary": {
-            "start": 388,
-            "end": 420
+            "start": 437,
+            "end": 446
           }
         }
       ],
@@ -77,42 +77,6 @@
     },
     {
       "id": "d3",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 437,
-        "end": 446
-      },
-      "related": [
-        {
-          "message": "alias declaration",
-          "primary": {
-            "start": 421,
-            "end": 446
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "alias declaration",
-          "primary": {
-            "start": 421,
-            "end": 446
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -148,7 +112,7 @@
       "actualType": null
     },
     {
-      "id": "d5",
+      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -159,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 922,
-            "end": 1070
+            "start": 970,
+            "end": 991
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 922,
-            "end": 1070
+            "start": 970,
+            "end": 991
           }
         }
       ],
@@ -184,7 +148,7 @@
       "actualType": null
     },
     {
-      "id": "d6",
+      "id": "d5",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -220,7 +184,7 @@
       "actualType": null
     },
     {
-      "id": "d7",
+      "id": "d6",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -231,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1072,
-            "end": 1165
+            "start": 1108,
+            "end": 1129
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1072,
-            "end": 1165
+            "start": 1108,
+            "end": 1129
           }
         }
       ],
@@ -256,7 +220,7 @@
       "actualType": null
     },
     {
-      "id": "d8",
+      "id": "d7",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -286,6 +250,42 @@
       "notes": [],
       "helps": [
         "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d8",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "effect.bind-value-not-effect",
+      "message": "This position requires an Effect value",
+      "primary": {
+        "start": 1280,
+        "end": 1295
+      },
+      "related": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 1271,
+            "end": 1295
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "do bind statement",
+          "primary": {
+            "start": 1271,
+            "end": 1295
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Use an Effect-producing operation here, or bind a pure value with let."
       ],
       "fixes": [],
       "expectedType": null,

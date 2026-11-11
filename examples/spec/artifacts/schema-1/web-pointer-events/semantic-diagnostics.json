@@ -5,74 +5,6 @@
   "diagnostics": [
     {
       "id": "d1",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "record.access-on-non-record",
-      "message": "Record access on non record",
-      "primary": {
-        "start": 232,
-        "end": 237
-      },
-      "related": [
-        {
-          "message": "field access requires a record, received html.MouseEvent",
-          "primary": {
-            "start": 121,
-            "end": 245
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "field access requires a record, received html.MouseEvent",
-          "primary": {
-            "start": 121,
-            "end": 245
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d2",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "record.access-on-non-record",
-      "message": "Record access on non record",
-      "primary": {
-        "start": 363,
-        "end": 368
-      },
-      "related": [
-        {
-          "message": "field access requires a record, received html.PointerEvent",
-          "primary": {
-            "start": 247,
-            "end": 381
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "field access requires a record, received html.PointerEvent",
-          "primary": {
-            "start": 247,
-            "end": 381
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d3",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -83,19 +15,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 121,
-            "end": 245
+            "start": 143,
+            "end": 158
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 121,
-            "end": 245
+            "start": 143,
+            "end": 158
           }
         }
       ],
@@ -108,7 +40,7 @@
       "actualType": null
     },
     {
-      "id": "d4",
+      "id": "d2",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -119,19 +51,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 121,
-            "end": 245
+            "start": 162,
+            "end": 186
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 121,
-            "end": 245
+            "start": 162,
+            "end": 186
           }
         }
       ],
@@ -144,7 +76,7 @@
       "actualType": null
     },
     {
-      "id": "d5",
+      "id": "d3",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -180,7 +112,41 @@
       "actualType": null
     },
     {
-      "id": "d6",
+      "id": "d4",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "record.access-on-non-record",
+      "message": "Record access on non record",
+      "primary": {
+        "start": 232,
+        "end": 237
+      },
+      "related": [
+        {
+          "message": "field access requires a record, received html.MouseEvent",
+          "primary": {
+            "start": 121,
+            "end": 245
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "field access requires a record, received html.MouseEvent",
+          "primary": {
+            "start": 121,
+            "end": 245
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d5",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -191,19 +157,55 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 247,
-            "end": 381
+            "start": 271,
+            "end": 288
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 247,
-            "end": 381
+            "start": 271,
+            "end": 288
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d6",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 292,
+        "end": 316
+      },
+      "related": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 292,
+            "end": 316
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "type name",
+          "primary": {
+            "start": 292,
+            "end": 316
           }
         }
       ],
@@ -217,42 +219,6 @@
     },
     {
       "id": "d7",
-      "code": "SES-N0001",
-      "severity": "Error",
-      "messageKey": "name.unresolved",
-      "message": "Name could not be resolved",
-      "primary": {
-        "start": 292,
-        "end": 316
-      },
-      "related": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 247,
-            "end": 381
-          }
-        }
-      ],
-      "labels": [
-        {
-          "message": "pure function body",
-          "primary": {
-            "start": 247,
-            "end": 381
-          }
-        }
-      ],
-      "notes": [],
-      "helps": [
-        "Check the spelling, or define or import the name before using it."
-      ],
-      "fixes": [],
-      "expectedType": null,
-      "actualType": null
-    },
-    {
-      "id": "d8",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -288,6 +254,40 @@
       "actualType": null
     },
     {
+      "id": "d8",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "record.access-on-non-record",
+      "message": "Record access on non record",
+      "primary": {
+        "start": 363,
+        "end": 368
+      },
+      "related": [
+        {
+          "message": "field access requires a record, received html.PointerEvent",
+          "primary": {
+            "start": 247,
+            "end": 381
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "field access requires a record, received html.PointerEvent",
+          "primary": {
+            "start": 247,
+            "end": 381
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
       "id": "d9",
       "code": "SES-N0001",
       "severity": "Error",
@@ -299,19 +299,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 383,
-            "end": 498
+            "start": 406,
+            "end": 422
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 383,
-            "end": 498
+            "start": 406,
+            "end": 422
           }
         }
       ],
@@ -335,19 +335,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 383,
-            "end": 498
+            "start": 426,
+            "end": 450
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 383,
-            "end": 498
+            "start": 426,
+            "end": 450
           }
         }
       ],
@@ -407,19 +407,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 500,
-            "end": 883
+            "start": 515,
+            "end": 532
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 500,
-            "end": 883
+            "start": 515,
+            "end": 532
           }
         }
       ],

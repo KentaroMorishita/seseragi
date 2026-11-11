@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1529,
-            "end": 1731
+            "start": 1560,
+            "end": 1570
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1529,
-            "end": 1731
+            "start": 1560,
+            "end": 1570
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1733,
-            "end": 1973
+            "start": 1761,
+            "end": 1771
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1733,
-            "end": 1973
+            "start": 1761,
+            "end": 1771
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2008,
+            "end": 2018
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2008,
+            "end": 2018
           }
         }
       ],
@@ -411,19 +411,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 2289,
-            "end": 2569
+            "start": 2359,
+            "end": 2376
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 2289,
-            "end": 2569
+            "start": 2359,
+            "end": 2376
           }
         }
       ],
@@ -483,19 +483,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2593,
+            "end": 2610
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "type name",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2593,
+            "end": 2610
           }
         }
       ],

@@ -1247,7 +1247,7 @@ fn diagnoses_intentionally_unavailable_float_eq_evidence() {
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains("error[SES-T0201]"), "{stderr}");
     assert!(
-        stderr.contains("no Eq instance matches the inferred call arguments"),
+        stderr.contains("Float has no Eq instance; compare with `ieeeEq`"),
         "{stderr}"
     );
     assert!(!stderr.contains("runtime defect"), "{stderr}");
