@@ -286,14 +286,36 @@ impl SurfaceParser<'_> {
                         }
                     } else if self.raw_at(keyword) == Some("impl") {
                         for (member, member_end) in self.method_ranges(open, close + 1) {
-                            if let Err(span) = crate::declaration::declaration_prefix_in(
+                            match crate::declaration::declaration_prefix_in(
                                 self.tokens,
                                 member,
                                 member_end,
                                 crate::declaration::DeclarationContext::Member,
                             ) {
-                                diagnostics
-                                    .push(error("parser.invalid-declaration-modifiers", span));
+                                Err(span) => diagnostics
+                                    .push(error("parser.invalid-declaration-modifiers", span)),
+                                // A method whose signature does not parse, such
+                                // as one with an unannotated self, is reported
+                                // here rather than dropped from the impl.
+                                Ok(prefix)
+                                    if self.kind_at(prefix.keyword)
+                                        == Some(TokenKind::KeywordFn)
+                                        && self.parse_impl_member(member, member_end).is_none() =>
+                                {
+                                    let header_end = self
+                                        .find_top_level_token(
+                                            member,
+                                            member_end,
+                                            TokenKind::OperatorEquals,
+                                        )
+                                        .unwrap_or(member_end);
+                                    diagnostics.push(error(
+                                        "parser.function-annotations-required",
+                                        self.declaration_span(member, header_end)
+                                            .expect("method header"),
+                                    ));
+                                }
+                                Ok(_) => {}
                             }
                         }
                     }
