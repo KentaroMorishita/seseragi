@@ -2650,7 +2650,7 @@ fn newtypes_and_opaque_types_cross_the_boundary_in_the_ts_target_shape() {
 import assert from 'node:assert/strict';
 import {{loadProgram}} from '../wasm-{profile}/program.mjs';
 import * as ts from './main.ts';
-const program = await loadProgram(await readFile('{wasm}/program.wasm'));
+const program = await loadProgram(await readFile({wasm}));
 const wasm: any = program.exports;
 const plain = (value: unknown) => JSON.parse(JSON.stringify(value));
 assert.deepStrictEqual(plain(wasm.score(4)), {score});
@@ -2672,7 +2672,7 @@ assert.throws(() => wasm.owner({{owner: '雪'}}), TypeError);
 program.dispose();
 assert.equal(program.ownership().managedLiveAtClose, 0);
 console.log('same shapes');
-"#, wasm = wasm.display())).unwrap();
+"#, wasm = serde_json::to_string(&wasm.join("program.wasm").to_string_lossy()).unwrap())).unwrap();
         successful(bounded(
             Command::new("bun").current_dir(&ts).args([
                 "build",
