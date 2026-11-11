@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.61.161] - 2026-11-11
+
+### Fixed
+
+- An impl method whose `self` or other parameter has no type annotation is reported at its declaration with `parser.function-annotations-required`. It used to be dropped silently, so callers failed with "no such field".
+- `pure` in an `effect fn` body with no other expected type is the Effect, as in `do { x <- pure 1; ... }`.
+- A `do` block over `Effect` or `Stream` takes statements that need fewer services or fail with `Never`, such as `effects.succeed` inside a `fn` that returns `Effect<{console: Console}, E, A>`, on the TS and native targets.
+- A `do` block over a transformer of a partly applied Effect, such as `MaybeT<Effect<R, E, _>, A>` in Lesson 20, accepts the constructor written either way and no longer fails with "Do monad constructor mismatch" on the TS target. Native support is tracked separately.
+
 ## [0.61.160] - 2026-11-11
 
 ### Added
