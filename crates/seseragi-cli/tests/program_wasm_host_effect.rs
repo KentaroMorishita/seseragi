@@ -675,3 +675,115 @@ console.log('host functions');
         assert_eq!(result.stdout, b"host functions\n", "{engine}");
     }
 }
+
+#[test]
+fn console_provider_effects_run_through_the_run_environment_and_release_masked() {
+    let scratch = Scratch::new();
+    let output = scratch.0.join("console");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-wasm"])
+            .arg(
+                root()
+                    .join("examples/spec/fixtures/rust-backend/program-wasm-console-provider.ssrg"),
+            )
+            .arg("--out-dir")
+            .arg(&output)
+            .args([
+                "--export", "greet", "--export", "guarded", "--export", "quiet",
+            ]),
+        &scratch.0,
+    ));
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
+    assert_eq!(manifest["abi"], "seseragi-program-wasm-host-effect-v3");
+    let declared = fs::read_to_string(output.join("program.d.mts")).unwrap();
+    assert!(
+        declared.contains("readonly \"greet\": OwnedCallback<string, ProviderEffect<Readonly<{\"kind\": string; \"message\": string}>, undefined, { readonly console: ProgramConsole }>>;"),
+        "{declared}"
+    );
+    let script = scratch.0.join("run.mjs");
+    fs::copy(
+        root().join("crates/seseragi-cli/tests/fixtures/program-wasm-console-provider.mjs"),
+        &script,
+    )
+    .unwrap();
+    for engine in ["bun", "node"] {
+        let result = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(&script)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        assert_eq!(result.stdout, b"console provider\n", "{engine}");
+    }
+    // The TypeScript runtime's own Console service is a valid provider.
+    fs::write(
+        scratch.0.join("types.mts"),
+        r#"
+import {loadProgram, type ProgramConsole, type ProviderEffect} from "./console/program.mjs";
+import {liveConsole} from "@seseragi/runtime/console";
+const provider: ProgramConsole = liveConsole;
+const owner = await loadProgram(new Uint8Array());
+const plan: ProviderEffect<Readonly<{kind: string; message: string}>, undefined, {readonly console: ProgramConsole}> = owner.exports.greet("x");
+const execution = plan.run({console: provider});
+// @ts-expect-error a provider Effect needs its environment
+plan.run();
+// @ts-expect-error a providerless Effect takes none
+owner.exports.quiet("x").run({console: provider});
+await execution.result;
+"#,
+    )
+    .unwrap();
+    let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true,"skipLibCheck":true},"files":["types.mts"]});
+    fs::write(
+        scratch.0.join("tsconfig.json"),
+        serde_json::to_vec(&config).unwrap(),
+    )
+    .unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn providers_without_a_bridge_or_an_owning_export_are_refused() {
+    let scratch = Scratch::new();
+    for (source, export, message) in [
+        (
+            "pub effect fn read _unit: Unit -> Maybe<String> with Stdin fails StdinError = readLine ()\n",
+            "read",
+            "an Effect that needs no provider other than Console",
+        ),
+        (
+            "effect fn read _unit: Unit -> Maybe<String> with Stdin fails StdinError = readLine ()\npub effect fn say text: String -> Unit with Console fails ConsoleError = println text\n",
+            "say",
+            "native Stdin requires a target-specific ABI proof",
+        ),
+        (
+            "import * as effects from \"std/effect\"\neffect fn say text: String -> Unit with Console fails ConsoleError = println text\npub effect fn quiet value: String -> String fails Never = effects.succeed value\n",
+            "quiet",
+            "a provider needs a selected export whose Effect requires it",
+        ),
+    ] {
+        let path = scratch.0.join(format!("{export}.ssrg"));
+        fs::write(&path, source).unwrap();
+        let output = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "build-wasm"])
+                .arg(&path)
+                .arg("--out-dir")
+                .arg(scratch.0.join(export))
+                .args(["--export", export]),
+            &scratch.0,
+        );
+        assert!(!output.status.success());
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(stderr.contains(message), "{stderr}");
+        assert!(!scratch.0.join(export).exists());
+    }
+}

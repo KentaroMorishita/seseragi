@@ -253,7 +253,7 @@ python3 -m http.server 8080 --directory target/program-demo/site
 
 このsampleは、別のSeseragi sourceを既存web targetでTSへ生成し、task foreign bridgeから
 program WASMを呼ぶ。画面で成功値・Eitherのdomain failure・callback detach・instance dispose・
-Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMRと一般の同期host callbackは残る。providerless Effectと型付きのhost Effect callbackは次の別ABIで扱う。
+Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。一般の同期host callbackは残る。UIの状態を保ったままの差し替えは[Console providerと開発中の差し替え](#console-providerと開発中の差し替え)を参照。providerless Effectと型付きのhost Effect callbackは次の別ABIで扱う。
 これだけで#814／#815や実用化全体を完了扱いにしない。
 
 ## providerless Effectを実行・取消する
@@ -335,7 +335,7 @@ Preludeの`succeed ()`と標準moduleを明示した`effects.succeed ()`は匿�
 （`A -> B -> Effect<{}, E, R>`）。Effectを返さない同期のhost関数（`A -> B -> R`）も渡せる。
 この場合は`seseragi-program-wasm-host-effect-v3`を生成し、pure／providerlessの出力を保つ。
 引数・成功値・失敗値には既存の閉じた値codecを使い、成功／失敗の`Never`は値を持たない。
-open row、generic、公開Ref／Fiber／Deferred、foreign handleや一般provider ABIは生成前に拒否する。
+open row、generic、公開Ref／Fiber／Deferred、foreign handleやConsole以外のproviderは生成前に拒否する。
 
 | host関数 | WASMからの呼び方 | hostが受け取るもの |
 | --- | --- | --- |
@@ -385,6 +385,47 @@ managed root0を主張しない。一般interopや#814／#815全体の完了と�
 terminal outcomeとdisposeを完了する。Refへの既存の書込を一般にrollbackする契約ではない。
 host leaseをRefのpayloadに入れず、callbackと保持planのcaptureとして追跡し、最後に両方を解放する。
 標準Web packageの`program-wasm-host-ref-package`は、同じpackageのinput.txtをfetchして蓄積する。
+
+## Console providerと開発中の差し替え
+
+### Console providerを使うEffect
+
+`with Console`を要求するEffectを公開すると、host Effect ABIを生成する。requirement rowは
+WASMの中では使わず、providerはloaderが持つ。
+
+| 場所 | 役割 |
+| --- | --- |
+| WASM | Consoleの各操作（print・println・error・errorLine・flush）でrunを止め、操作とStringを要求として出す |
+| loader | `run(environment)`で受け取った`environment.console`の同名methodを呼び、成功・`ConsoleError`・Defectを戻す |
+| 宣言 | `ProviderEffect<E, A, { readonly console: ProgramConsole }>`。TS runtimeの`liveConsole`をそのまま渡せる |
+
+止まる位置はhost Effect callbackと同じなので、acquireの途中とmaskされたreleaseの中のConsole呼び出しは
+取消で中断しない。maskされていない呼び出しは、応答が成功でも取消の要求があればCancelledになる。
+Consoleのmethodは取消を受け取らないので、loaderは応答を待ってから戻す。
+
+`std/prelude::Console`以外のproviderを要求する公開Effectは生成前に拒否する。公開Effectが
+Consoleを要求しないのに内部の関数だけがConsoleを使う場合も拒否する。test fixtureは
+`program-wasm-console-provider.ssrg`。
+
+### 開発中にUIの状態を保ったまま差し替える
+
+`seseragi dev`はbuildごとに、`program.wasm`以外の配信fileと、各`program.wasm`の要約値を記録する。
+`program.rs`・`program-wasm.json`・`artifact-manifest.json`はWASMの要約値を含むので、前者から除く。
+pageは`/__seseragi_dev/swap?from=<自分のversion>`で、差し替えでよいかを尋ねる。
+
+- `program.wasm`だけが変わった場合、pageは`seseragi:program-update`を出し、
+  `installProgramReload`がbrowserのprogram lifetimeで差し替える。
+- それ以外の場合と差し替えに失敗した場合は、従来の`seseragi:before-reload`からfull-page reloadする。
+
+loaderは、WASMに埋め込まれた型の情報からsource上の位置を除いて照合し、位置はWASM側から読む。
+このため、関数の本体だけを直したbuildではloaderと生成UIが変わらず、差し替えの条件を満たす。
+
+差し替えでは、新しいinstanceをすべて作れた場合だけ切り替える。生成loaderの`exports`は
+現在のinstanceを呼ぶ固定の関数なので、UIは同じ参照を使い続けられる。旧instanceは公開関数を
+閉じたうえで「退役中」として残し、それが返したcallback・Effect plan・実行中のrun・host要求が
+すべてなくなってから`dispose`する。page全体を閉じるときは退役中のinstanceも閉じる。
+`dev.rs`の`watches_host_effect_programs_and_drains_the_old_application_before_reload`が、
+実際のWASMでこの流れを確認する。
 
 ## 同じpackageのWASM計算とTS UIをbuildする
 

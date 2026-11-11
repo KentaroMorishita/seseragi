@@ -15,6 +15,9 @@ use std::time::{Duration, Instant, SystemTime};
 const DEFAULT_HOST: &str = "127.0.0.1";
 const DEFAULT_PORT: u16 = 3000;
 const RELOAD_PATH: &str = "/__seseragi_dev/version";
+const SWAP_PATH: &str = "/__seseragi_dev/swap";
+// Builds kept for deciding whether a page can swap programs in place.
+const KEPT_BUILDS: usize = 32;
 const WATCH_INTERVAL: Duration = Duration::from_millis(100);
 const CLIENT_IO_POLL_INTERVAL: Duration = Duration::from_millis(100);
 
@@ -100,8 +103,8 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
 
     let mut watch_roots = watched_package_roots(&project).unwrap_or_else(|_| vec![root.to_owned()]);
     let mut files = Some(watch_snapshot(&watch_roots)?);
-    let version = AtomicU64::new(0);
-    let rebuild = || rebuild_target(&project, &output, &version, options.target);
+    let builds = DevBuilds::default();
+    let rebuild = || rebuild_target(&project, &output, &builds, options.target);
     let mut build_available = if serverless {
         rebuild().unwrap_or_else(|error| {
             eprintln!("seseragi dev: {error}\nBuild failed");
@@ -124,7 +127,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
                 if let Err(error) = serve(
                     stream,
                     &output,
-                    &version,
+                    &builds,
                     build_available,
                     &options.host,
                     &stopping,
@@ -302,10 +305,114 @@ impl DevOptions {
     }
 }
 
+/// What a page compares to decide between a reload and a program swap.
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+struct BuildPrint {
+    /// Every served file except the program modules and the manifests that
+    /// record their digests.
+    shell: u64,
+    /// Each program module's digest, by program name.
+    programs: BTreeMap<String, u64>,
+}
+
+#[derive(Default)]
+struct DevBuilds {
+    version: AtomicU64,
+    prints: std::sync::Mutex<BTreeMap<u64, BuildPrint>>,
+}
+
+impl DevBuilds {
+    fn record(&self, version: u64, print: BuildPrint) {
+        let mut prints = self.prints.lock().unwrap_or_else(|e| e.into_inner());
+        prints.insert(version, print);
+        while prints.len() > KEPT_BUILDS {
+            prints.pop_first();
+        }
+    }
+
+    /// The JSON plan for a page built at `from`: the programs to swap, or a
+    /// reload when anything else changed or `from` is unknown.
+    fn swap_plan(&self, from: Option<u64>) -> String {
+        let current = self.version.load(Ordering::SeqCst);
+        let prints = self.prints.lock().unwrap_or_else(|e| e.into_inner());
+        let programs = from
+            .and_then(|from| Some((prints.get(&from)?, prints.get(&current)?)))
+            .filter(|(before, after)| {
+                before.shell == after.shell && before.programs.keys().eq(after.programs.keys())
+            })
+            .map(|(before, after)| {
+                after
+                    .programs
+                    .iter()
+                    .filter(|(name, digest)| before.programs.get(*name) != Some(digest))
+                    .map(|(name, _)| name.clone())
+                    .collect::<Vec<_>>()
+            });
+        match programs {
+            Some(programs) => {
+                serde_json::json!({"version": current, "programs": programs}).to_string()
+            }
+            None => serde_json::json!({"version": current, "reload": true}).to_string(),
+        }
+    }
+}
+
+fn build_print(output: &Path) -> Result<BuildPrint, String> {
+    use std::hash::{Hash, Hasher};
+    fn visit(
+        root: &Path,
+        directory: &Path,
+        shell: &mut std::collections::hash_map::DefaultHasher,
+        programs: &mut BTreeMap<String, u64>,
+    ) -> Result<(), String> {
+        let mut entries = fs::read_dir(directory)
+            .map_err(|error| format!("failed to read {}: {error}", directory.display()))?
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|error| format!("failed to read {}: {error}", directory.display()))?;
+        entries.sort_by_key(|entry| entry.file_name());
+        for entry in entries {
+            let path = entry.path();
+            if path.is_dir() {
+                visit(root, &path, shell, programs)?;
+                continue;
+            }
+            let relative = path
+                .strip_prefix(root)
+                .map_err(|error| error.to_string())?
+                .to_string_lossy()
+                .replace('\\', "/");
+            let parts = relative.split('/').collect::<Vec<_>>();
+            let bytes = fs::read(&path)
+                .map_err(|error| format!("failed to read {}: {error}", path.display()))?;
+            match parts.as_slice() {
+                ["artifact-manifest.json"]
+                | ["programs", _, "program.rs" | "program-wasm.json"] => {}
+                ["programs", name, "program.wasm"] => {
+                    let mut digest = std::collections::hash_map::DefaultHasher::new();
+                    bytes.hash(&mut digest);
+                    programs.insert((*name).to_owned(), digest.finish());
+                }
+                _ => {
+                    relative.hash(shell);
+                    bytes.hash(shell);
+                }
+            }
+        }
+        Ok(())
+    }
+    let mut shell = std::collections::hash_map::DefaultHasher::new();
+    let mut programs = BTreeMap::new();
+    visit(output, output, &mut shell, &mut programs)?;
+    Ok(BuildPrint {
+        shell: shell.finish(),
+        programs,
+    })
+}
+
 fn rebuild_target(
     project: &Path,
     output: &Path,
-    version: &AtomicU64,
+    builds: &DevBuilds,
     target: Option<Target>,
 ) -> Result<bool, String> {
     if target == Some(Target::Project(seseragi_project::ProjectTarget::Wasm)) {
@@ -326,7 +433,7 @@ fn rebuild_target(
         return Ok(true);
     }
     if target != Some(Target::Native) {
-        return rebuild(project, output, version, target.and_then(Target::project));
+        return rebuild(project, output, builds, target.and_then(Target::project));
     }
     let started = Instant::now();
     crate::experimental::build_native(project, output, ProjectCommand::Dev, Default::default())?;
@@ -337,7 +444,7 @@ fn rebuild_target(
 fn rebuild(
     project: &Path,
     output: &Path,
-    version: &AtomicU64,
+    builds: &DevBuilds,
     target: Option<seseragi_project::ProjectTarget>,
 ) -> Result<bool, String> {
     let started = Instant::now();
@@ -354,7 +461,11 @@ fn rebuild(
         &prepared.programs,
     )
     .map_err(|error| error.to_string())?;
-    let next = version.fetch_add(1, Ordering::SeqCst) + 1;
+    // Record the print before a page can observe the new version.
+    let print = build_print(output)?;
+    let next = builds.version.load(Ordering::SeqCst) + 1;
+    builds.record(next, print);
+    builds.version.store(next, Ordering::SeqCst);
     println!("Built web app ({}; reload {next})", elapsed(started));
     Ok(true)
 }
@@ -525,7 +636,7 @@ fn watched(path: &Path) -> bool {
 fn serve(
     stream: TcpStream,
     output: &Path,
-    version: &AtomicU64,
+    builds: &DevBuilds,
     build_available: bool,
     configured_host: &str,
     stopping: &AtomicBool,
@@ -586,7 +697,22 @@ fn serve(
             method,
         );
     }
-    let request_path = request_path.split('?').next().unwrap_or(request_path);
+    let version = &builds.version;
+    let (request_path, query) = request_path.split_once('?').unwrap_or((request_path, ""));
+    if request_path == SWAP_PATH {
+        let from = query
+            .split('&')
+            .find_map(|pair| pair.strip_prefix("from="))
+            .and_then(|value| value.parse().ok());
+        let body = builds.swap_plan(from);
+        return response(
+            &mut stream,
+            200,
+            "application/json; charset=utf-8",
+            body.as_bytes(),
+            method,
+        );
+    }
     if request_path == RELOAD_PATH {
         let body = format!("{}\n", version.load(Ordering::SeqCst));
         return response(
@@ -840,20 +966,49 @@ fn decode_url_path(value: &str) -> Option<String> {
 }
 
 fn inject_reload(index: &[u8], build_version: u64) -> Vec<u8> {
+    // A build that changed only program modules is offered to the page as
+    // a swap. A page whose program lifetime takes it keeps its UI state;
+    // any other change, or a failed swap, reloads the page.
     const SCRIPT: &str = concat!(
         "<script type=\"module\">\n",
         "const endpoint = '/__seseragi_dev/version';\n",
-        "const version = __SESERAGI_BUILD_VERSION__;\n",
+        "const swapEndpoint = '/__seseragi_dev/swap';\n",
+        "let version = __SESERAGI_BUILD_VERSION__;\n",
         "let reloading = false;\n",
+        "let checking = false;\n",
+        "function reload() {\n",
+        "  reloading = true;\n",
+        "  const closing = new Event('seseragi:before-reload', { cancelable: true });\n",
+        "  if (globalThis.dispatchEvent(closing)) location.reload();\n",
+        "}\n",
+        "async function update() {\n",
+        "  const from = encodeURIComponent(version.trim());\n",
+        "  const plan = await (await fetch(`${swapEndpoint}?from=${from}`, { cache: 'no-store' })).json();\n",
+        "  if (plan.reload) return reload();\n",
+        "  if (plan.programs.length !== 0) {\n",
+        "    let swapped;\n",
+        "    const detail = { version: String(plan.version), programs: plan.programs, respond(done) { swapped = done; } };\n",
+        "    const swap = new CustomEvent('seseragi:program-update', { cancelable: true, detail });\n",
+        "    if (globalThis.dispatchEvent(swap) || !swapped) return reload();\n",
+        "    try {\n",
+        "      await swapped;\n",
+        "    } catch (error) {\n",
+        "      console.error('seseragi: program swap failed; reloading', error);\n",
+        "      return reload();\n",
+        "    }\n",
+        "    console.info(`seseragi: swapped ${plan.programs.join(', ')}`);\n",
+        "  }\n",
+        "  version = `${plan.version}\\n`;\n",
+        "}\n",
         "setInterval(async () => {\n",
+        "  if (reloading || checking) return;\n",
+        "  checking = true;\n",
         "  try {\n",
         "    const next = await (await fetch(endpoint, { cache: 'no-store' })).text();\n",
-        "    if (next !== version && !reloading) {\n",
-        "      reloading = true;\n",
-        "      const closing = new Event('seseragi:before-reload', { cancelable: true });\n",
-        "      if (globalThis.dispatchEvent(closing)) location.reload();\n",
-        "    }\n",
-        "  } catch {}\n",
+        "    if (next !== version) await update();\n",
+        "  } catch {} finally {\n",
+        "    checking = false;\n",
+        "  }\n",
         "}, 250);\n",
         "</script>\n",
     );
@@ -1413,7 +1568,10 @@ mod tests {
             serve(
                 stream,
                 Path::new("missing-dev-test-output"),
-                &AtomicU64::new(7),
+                &DevBuilds {
+                    version: AtomicU64::new(7),
+                    ..DevBuilds::default()
+                },
                 build_available,
                 "127.0.0.1",
                 &AtomicBool::new(false),
@@ -1499,6 +1657,51 @@ mod tests {
     }
 
     #[test]
+    fn only_a_program_module_change_is_offered_as_a_swap() {
+        let output =
+            std::env::temp_dir().join(format!("seseragi-dev-print-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&output);
+        let program = output.join("programs/calc");
+        fs::create_dir_all(&program).unwrap();
+        let write = |path: &str, text: &str| fs::write(output.join(path), text).unwrap();
+        write("index.html", "<body></body>");
+        write("app.js", "app");
+        write("artifact-manifest.json", "{\"wasm\":1}");
+        write("programs/calc/program.wasm", "one");
+        write("programs/calc/program.rs", "source one");
+        write("programs/calc/program-wasm.json", "{\"sha\":1}");
+        write("programs/calc/program.mjs", "loader");
+        let builds = DevBuilds::default();
+        let mut record = |version: u64| {
+            builds.record(version, build_print(&output).unwrap());
+            builds.version.store(version, Ordering::SeqCst);
+        };
+        record(1);
+        // Only the module and the files recording its digest changed.
+        write("programs/calc/program.wasm", "two");
+        write("programs/calc/program.rs", "source two");
+        write("programs/calc/program-wasm.json", "{\"sha\":2}");
+        write("artifact-manifest.json", "{\"wasm\":2}");
+        record(2);
+        assert_eq!(
+            builds.swap_plan(Some(1)),
+            r#"{"programs":["calc"],"version":2}"#
+        );
+        assert_eq!(builds.swap_plan(Some(2)), r#"{"programs":[],"version":2}"#);
+        // The loader or the UI changing needs a reload, as does an unknown page.
+        write("programs/calc/program.mjs", "loader two");
+        record(3);
+        assert_eq!(builds.swap_plan(Some(2)), r#"{"reload":true,"version":3}"#);
+        assert_eq!(builds.swap_plan(Some(9)), r#"{"reload":true,"version":3}"#);
+        assert_eq!(builds.swap_plan(None), r#"{"reload":true,"version":3}"#);
+        for version in 4..40 {
+            record(version);
+        }
+        assert_eq!(builds.prints.lock().unwrap().len(), KEPT_BUILDS);
+        fs::remove_dir_all(&output).unwrap();
+    }
+
+    #[test]
     fn confines_static_paths_and_injects_reload_client() {
         assert_eq!(
             safe_path("/assets/app.js"),
@@ -1510,7 +1713,8 @@ mod tests {
         let index = String::from_utf8(index).unwrap();
         assert!(index.contains(RELOAD_PATH));
         assert!(index.ends_with("</body>"));
-        assert!(index.contains("const version = \"7\\n\";"));
+        assert!(index.contains("let version = \"7\\n\";"));
+        assert!(index.contains("seseragi:program-update"));
         assert!(!index.contains("let version = await"));
         assert!(index.contains("dispatchEvent(closing)"));
         let failed = inject_reload(b"<body>Build failed</body>", 0);

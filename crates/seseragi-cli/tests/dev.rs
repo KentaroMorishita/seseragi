@@ -878,9 +878,44 @@ fn watches_host_effect_programs_and_drains_the_old_application_before_reload() {
         assert_eq!(bytes, fs::read(output.join(&path[1..])).unwrap());
     }
     assert!(index.contains("dispatchEvent(closing)"));
+    assert!(index.contains("seseragi:program-update"));
+    // Only the program module changed, so a page built before may swap it.
+    let (status, plan) = request(
+        port,
+        &format!("/__seseragi_dev/swap?from={}", initial_version.trim()),
+    )
+    .unwrap();
+    assert_eq!(status, 200);
+    let plan: serde_json::Value = serde_json::from_str(&plan).unwrap();
+    assert_eq!(
+        plan["programs"],
+        serde_json::json!(["calculation"]),
+        "{plan}"
+    );
+    assert_eq!(
+        plan["version"].to_string(),
+        request(port, RELOAD_ENDPOINT).unwrap().1.trim()
+    );
     let after = directory.join("after");
     copy_directory(&output.join("programs"), &after.join("programs"));
     stop(&mut child);
+
+    let swap = directory.join("swap");
+    fs::create_dir(&swap).unwrap();
+    copy_directory(&before, &swap.join("before"));
+    copy_directory(&after, &swap.join("after"));
+    let script = swap.join("swap.mjs");
+    fs::copy(
+        repository_root().join("crates/seseragi-cli/tests/fixtures/program-wasm-host-swap.mjs"),
+        &script,
+    )
+    .unwrap();
+    for engine in ["bun", "node"] {
+        run_program_probe(engine, &script, &swap);
+        assert!(fs::read_to_string(swap.join(format!("{engine}-probe.log")))
+            .unwrap()
+            .contains("host swap: new module serves, old module drained and released"));
+    }
 
     for (name, cleanup_defect) in [("success", false), ("defect", true)] {
         let case = directory.join(name);

@@ -42,6 +42,10 @@ pub enum ProgramCodec {
     Effect {
         failure: Option<usize>,
         success: Option<usize>,
+        /// The environment fields a run must be given, such as `console`.
+        /// Only the host Effect ABI carries provider requests.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        services: Vec<String>,
     },
     /// A host function `A -> B -> ... -> Effect<{}, E, R>`, called once
     /// all its source arguments are applied and run by the loader.
@@ -400,7 +404,7 @@ pub fn emit_program_wasm_with_options(
         let codec = codec(&ty, true, &mut codecs)
             .or_else(|| effect_codec(&ty, &mut codecs))
             .or_else(|| host_codec(&ty, &mut codecs))
-            .ok_or_else(|| error("program WASM: unsupported public codec; expected a type built from Unit, Bool, Int, Float, Char, String, tuples, Array, List, closed records, structs, ADTs and newtypes with a finite expansion, type parameters, functions or a providerless Effect"))?;
+            .ok_or_else(|| error("program WASM: unsupported public codec; expected a type built from Unit, Bool, Int, Float, Char, String, tuples, Array, List, closed records, structs, ADTs and newtypes with a finite expansion, type parameters, functions or an Effect that needs no provider other than Console"))?;
         let mut terminal = codec;
         while let ProgramCodec::Function { result, .. } = &codecs[terminal] {
             terminal = *result;
@@ -421,11 +425,11 @@ pub fn emit_program_wasm_with_options(
             origin: function.origin.clone(),
         });
     }
-    let host_abi = codecs.iter().any(|code| {
-        matches!(
-            code,
-            ProgramCodec::HostEffect { .. } | ProgramCodec::HostFunction { .. }
-        )
+    // A provider request suspends a run as a host Effect does.
+    let host_abi = codecs.iter().any(|code| match code {
+        ProgramCodec::HostEffect { .. } | ProgramCodec::HostFunction { .. } => true,
+        ProgramCodec::Effect { services, .. } => !services.is_empty(),
+        _ => false,
     });
     effect_abi |= host_abi;
     // Reuse the ordinary linker and every native evidence/admission check.
@@ -462,7 +466,7 @@ pub fn emit_program_wasm_with_options(
             }
         }
         // Fibers share one host-request slot only in the providerless ABI.
-        crate::program_wasm_effect::validate(modules, !host_abi)?;
+        crate::program_wasm_effect::validate(modules, !host_abi, host_abi)?;
     } else if library.metadata.capabilities.iter().any(|c| {
         matches!(
             c.as_str(),
@@ -551,8 +555,16 @@ pub fn emit_program_wasm_with_options(
     library.source.push_str("_ => None } }\n");
     let schema = serde_json::to_string(&metadata).expect("serializable checked ABI");
     library.source.push_str(&format!("\nconst PROGRAM_CONTRACT: &str = {schema:?};\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_ptr() -> usize {{ PROGRAM_CONTRACT.as_ptr() as usize }}\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_len() -> usize {{ PROGRAM_CONTRACT.len() }}\n"));
-    let quoted_schema = serde_json::to_string(&schema).expect("serializable checked ABI text");
-    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n// The standard runtime areas this program uses.\nexport const capabilities = Object.freeze(schema.capabilities.slice());\n{}", if host_abi { include_str!("program_wasm_host_effect.js") } else if effect_abi { include_str!("program_wasm_effect.js") } else { include_str!("program_wasm.js") });
+    // The loader holds the contract without source spans and reads them from
+    // the module, so a rebuilt module whose declarations only moved keeps the
+    // same loader and `seseragi dev` can swap it in place.
+    let mut identity = serde_json::to_value(&metadata).expect("serializable checked ABI");
+    for export in identity["exports"].as_array_mut().into_iter().flatten() {
+        export.as_object_mut().map(|fields| fields.remove("origin"));
+    }
+    let identity = serde_json::to_string(&identity).expect("serializable checked ABI");
+    let quoted_schema = serde_json::to_string(&identity).expect("serializable checked ABI text");
+    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n// The standard runtime areas this program uses.\nexport const capabilities = Object.freeze(schema.capabilities.slice());\n{CONTRACT_ORIGINS}{}", if host_abi { include_str!("program_wasm_host_effect.js") } else if effect_abi { include_str!("program_wasm_effect.js") } else { include_str!("program_wasm.js") });
     let declarations = declarations(&metadata);
     Ok(ProgramWasmArtifact {
         source: library.source,
@@ -561,6 +573,36 @@ pub fn emit_program_wasm_with_options(
         declarations,
     })
 }
+
+/// Checks the module's embedded contract against the loader's and returns
+/// each export's source span from it.
+const CONTRACT_ORIGINS: &str = r#"function canonical(value) {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`
+  if (value !== null && typeof value === "object")
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`)
+      .join(",")}}`
+  return JSON.stringify(value)
+}
+const identity = canonical(schema)
+function contractOrigins(text) {
+  let embedded
+  try {
+    embedded = JSON.parse(text)
+  } catch {
+    return undefined
+  }
+  if (!Array.isArray(embedded?.exports)) return undefined
+  const origins = []
+  for (const item of embedded.exports) {
+    if (item === null || typeof item !== "object") return undefined
+    origins.push(Object.freeze(item.origin))
+    delete item.origin
+  }
+  return canonical(embedded) === identity ? Object.freeze(origins) : undefined
+}
+"#;
 
 fn host_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
     let CoreType::Function { parameter, result } = ty else {
@@ -640,10 +682,7 @@ fn effect_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
             let [requirements, failure, success] = arguments.as_slice() else {
                 return None;
             };
-            if !matches!(requirements, CoreType::Record { closed: true, fields } if fields.is_empty())
-            {
-                return None;
-            }
+            let services = provider_services(requirements)?;
             let terminal = |ty: &CoreType, callable, codecs: &mut Codecs| {
                 if matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Never" && arguments.is_empty())
                 {
@@ -661,11 +700,49 @@ fn effect_codec(ty: &CoreType, codecs: &mut Codecs) -> Option<usize> {
             ProgramCodec::Effect {
                 failure: terminal(failure, false, codecs)?,
                 success: terminal(success, true, codecs)?,
+                services,
             }
         }
         _ => return None,
     };
     Some(codecs.intern(item))
+}
+
+/// The providers program WASM can bridge, by environment field and service.
+pub(crate) const PROVIDERS: &[(&str, &str)] = &[("console", "std/prelude::Console")];
+
+/// The environment fields of a requirement record that every bridged
+/// provider covers, in name order; `None` for any other requirement.
+pub(crate) fn provider_services(requirements: &CoreType) -> Option<Vec<String>> {
+    let CoreType::Record {
+        closed: true,
+        fields,
+    } = requirements
+    else {
+        return None;
+    };
+    let mut services = fields
+        .iter()
+        .map(|field| {
+            let CoreType::Named { name, arguments } = &field.type_ref else {
+                return None;
+            };
+            (!field.optional
+                && arguments.is_empty()
+                && PROVIDERS.contains(&(field.name.as_str(), name.as_str())))
+            .then(|| field.name.clone())
+        })
+        .collect::<Option<Vec<_>>>()?;
+    services.sort();
+    services.dedup();
+    (services.len() == fields.len()).then_some(services)
+}
+
+fn provider_type(service: &str) -> &'static str {
+    match service {
+        "console" => "ProgramConsole",
+        _ => unreachable!("only bridged providers have services"),
+    }
 }
 
 pub(crate) fn has_closed_data_codec(ty: &CoreType) -> bool {
@@ -688,6 +765,22 @@ fn codec(ty: &CoreType, callable: bool, codecs: &mut Codecs) -> Option<usize> {
             ("std/prelude::Maybe", [value]) => ProgramCodec::Maybe {
                 value: codec(value, false, codecs)?,
             },
+            // The Console provider's failure, as `{kind, message}` on both
+            // targets.
+            ("std/prelude::ConsoleError", []) if codecs.modules.is_some() => {
+                let text = codecs.intern(ProgramCodec::String);
+                ProgramCodec::Record {
+                    name: None,
+                    opaque: false,
+                    fields: ["kind", "message"]
+                        .into_iter()
+                        .map(|name| ProgramField {
+                            name: name.into(),
+                            codec: text,
+                        })
+                        .collect(),
+                }
+            }
             ("std/prelude::Either", [left, right]) => ProgramCodec::Either {
                 left: codec(left, false, codecs)?,
                 right: codec(right, false, codecs)?,
@@ -1021,7 +1114,9 @@ fn rust_codec(codec: &ProgramCodec) -> String {
         ProgramCodec::Function { parameter, result } => {
             format!("ProgramCode::Function({parameter}, {result})")
         }
-        ProgramCodec::Effect { failure, success } => {
+        ProgramCodec::Effect {
+            failure, success, ..
+        } => {
             format!("ProgramCode::Effect({failure:?}, {success:?})")
         }
         ProgramCodec::HostEffect {
@@ -1075,6 +1170,9 @@ const RESERVED: &[&str] = &[
     "HostResult",
     "HostEffect",
     "HostEffectContext",
+    "ProviderResult",
+    "ProviderOperation",
+    "ProviderEffect",
 ];
 
 /// The TS name of a type parameter. A name the declarations already use, or
@@ -1167,10 +1265,28 @@ fn declared_type(
         ProgramCodec::Function { parameter, result } => {
             format!("OwnedCallback<{}, {}>", ty(*parameter), ty(*result))
         }
-        ProgramCodec::Effect { failure, success } => format!(
+        ProgramCodec::Effect {
+            failure,
+            success,
+            services,
+        } if services.is_empty() => format!(
             "OwnedEffect<{}, {}>",
             failure.map(ty).unwrap_or_else(|| "never".into()),
             success.map(ty).unwrap_or_else(|| "never".into())
+        ),
+        ProgramCodec::Effect {
+            failure,
+            success,
+            services,
+        } => format!(
+            "ProviderEffect<{}, {}, {{ {} }}>",
+            failure.map(ty).unwrap_or_else(|| "never".into()),
+            success.map(ty).unwrap_or_else(|| "never".into()),
+            services
+                .iter()
+                .map(|service| format!("readonly {service}: {}", provider_type(service)))
+                .collect::<Vec<_>>()
+                .join("; ")
         ),
         ProgramCodec::HostEffect {
             parameters,
@@ -1298,9 +1414,9 @@ fn type_parameters(metadata: &ProgramWasmMetadata, root: usize) -> Vec<String> {
             ProgramCodec::Adt { variants, .. } => {
                 pending.extend(variants.iter().rev().filter_map(|variant| variant.payload))
             }
-            ProgramCodec::Effect { failure, success } => {
-                pending.extend([*success, *failure].into_iter().flatten())
-            }
+            ProgramCodec::Effect {
+                failure, success, ..
+            } => pending.extend([*success, *failure].into_iter().flatten()),
             ProgramCodec::HostEffect {
                 parameters,
                 failure,
@@ -1424,7 +1540,7 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
         ));
     }
     if metadata.abi == PROGRAM_WASM_HOST_EFFECT_ABI {
-        result.push_str("}\nexport type HostResult<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E}> | Readonly<{tag: 'Defect'; messages: readonly string[]}>;\nexport interface HostEffectContext { readonly signal: AbortSignal; }\nexport type HostEffect<A, E, B> = (argument: A, context: HostEffectContext) => HostResult<E, B> | PromiseLike<HostResult<E, B>>;\nexport type ProgramLocation = Readonly<{file: string; line: number; column: number}>;\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E; location?: ProgramLocation}> | Readonly<{tag: 'Defect'; messages: readonly string[]; locations?: readonly (ProgramLocation | null)[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; running: boolean; closing: boolean; hostCallbacks: number; waitingHost: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
+        result.push_str("}\nexport type HostResult<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E}> | Readonly<{tag: 'Defect'; messages: readonly string[]}>;\nexport interface HostEffectContext { readonly signal: AbortSignal; }\nexport type HostEffect<A, E, B> = (argument: A, context: HostEffectContext) => HostResult<E, B> | PromiseLike<HostResult<E, B>>;\nexport type ProgramLocation = Readonly<{file: string; line: number; column: number}>;\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E; location?: ProgramLocation}> | Readonly<{tag: 'Defect'; messages: readonly string[]; locations?: readonly (ProgramLocation | null)[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport type ProviderResult<E, A> = Readonly<{kind: 'success'; value: A}> | Readonly<{kind: 'failure'; error: E}>;\nexport type ProviderOperation<E> = ProviderResult<E, unknown> | PromiseLike<ProviderResult<E, unknown>>;\nexport type ProgramConsoleError = Readonly<{kind: string; message: string}>;\nexport interface ProgramConsole { print(text: string): ProviderOperation<ProgramConsoleError>; println(text: string): ProviderOperation<ProgramConsoleError>; error(text: string): ProviderOperation<ProgramConsoleError>; errorLine(text: string): ProviderOperation<ProgramConsoleError>; flush(): ProviderOperation<ProgramConsoleError>; }\nexport interface ProviderEffect<E, A, R> { run(environment: R): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; running: boolean; closing: boolean; hostCallbacks: number; waitingHost: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
     } else if metadata.abi == PROGRAM_WASM_EFFECT_ABI {
         result.push_str("}\nexport type ProgramLocation = Readonly<{file: string; line: number; column: number}>;\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E; location?: ProgramLocation}> | Readonly<{tag: 'Defect'; messages: readonly string[]; locations?: readonly (ProgramLocation | null)[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; hostValues: number; running: boolean; closing: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
     } else {

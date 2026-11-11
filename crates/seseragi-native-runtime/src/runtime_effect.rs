@@ -522,26 +522,65 @@ pub fn native_operation(name: &str, args: Vec<V>) -> V {
         }),
         "std/prelude::println" | "console.println" | "std/console::println" => {
             V::leaf(args, |c, context| {
+                if let Some(provider) = native_console_provider() {
+                    return provider(NativeConsoleOperation::PrintLine, c);
+                }
                 native_context_console(context, false, &format!("{}\n", console_text(&c[0])))
             })
         }
         "std/prelude::print" | "console.print" | "std/console::print" => {
             V::leaf(args, |c, context| {
+                if let Some(provider) = native_console_provider() {
+                    return provider(NativeConsoleOperation::Print, c);
+                }
                 native_context_console(context, false, console_text(&c[0]))
             })
         }
         "std/console::error" => V::leaf(args, |c, context| {
+            if let Some(provider) = native_console_provider() {
+                return provider(NativeConsoleOperation::Error, c);
+            }
             native_context_console(context, true, console_text(&c[0]))
         }),
         "std/console::errorLine" => V::leaf(args, |c, context| {
+            if let Some(provider) = native_console_provider() {
+                return provider(NativeConsoleOperation::ErrorLine, c);
+            }
             native_context_console(context, true, &format!("{}\n", console_text(&c[0])))
         }),
-        "std/console::flush" => V::leaf(args, |_, context| {
+        "std/console::flush" => V::leaf(args, |c, context| {
+            if let Some(provider) = native_console_provider() {
+                return provider(NativeConsoleOperation::Flush, c);
+            }
             native_context_console(context, false, "")?;
             native_context_console(context, true, "")
         }),
         _ => panic!("Rust ABI: unsupported native operation {name}"),
     }
+}
+
+/// A Console operation that an embedding host performs instead of the
+/// process streams. Its discriminant is the program WASM wire code.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum NativeConsoleOperation {
+    Print = 0,
+    PrintLine = 1,
+    Error = 2,
+    ErrorLine = 3,
+    Flush = 4,
+}
+pub type NativeConsoleProvider = fn(NativeConsoleOperation, &[V]) -> NativeOutcome;
+thread_local! {
+    static NATIVE_CONSOLE_PROVIDER: std::cell::Cell<Option<NativeConsoleProvider>> =
+        const { std::cell::Cell::new(None) };
+}
+/// Routes every later Console operation of this thread to `provider`. A
+/// program WASM library installs it once; native executables never do.
+pub fn install_native_console_provider(provider: NativeConsoleProvider) {
+    NATIVE_CONSOLE_PROVIDER.with(|slot| slot.set(Some(provider)));
+}
+fn native_console_provider() -> Option<NativeConsoleProvider> {
+    NATIVE_CONSOLE_PROVIDER.with(std::cell::Cell::get)
 }
 
 fn native_context_console(context: &NativeContext, stderr: bool, text: &str) -> NativeOutcome {

@@ -855,12 +855,14 @@ export async function loadProgram(bytes) {
   try {
     const start = pointer(api.ssrg_contract_ptr())
     const length = pointer(api.ssrg_contract_len())
-    if (
+    const origins =
       length > schema.maxBoundaryBytes ||
-      start + length > api.memory.buffer.byteLength ||
-      decoder.decode(new Uint8Array(api.memory.buffer, start, length)) !==
-        contract
-    ) {
+      start + length > api.memory.buffer.byteLength
+        ? undefined
+        : contractOrigins(
+            decoder.decode(new Uint8Array(api.memory.buffer, start, length))
+          )
+    if (!origins) {
       throw new TypeError(
         "Program WASM checked contract does not match this loader"
       )
@@ -875,7 +877,10 @@ export async function loadProgram(bytes) {
     if (initialized !== 0) throw new TypeError(decoder.decode(output(api)))
     const exports = Object.create(null)
     for (let index = 0; index < schema.exports.length; index++) {
-      const item = schema.exports[index]
+      const item = Object.freeze({
+        ...schema.exports[index],
+        origin: origins[index],
+      })
       executing = true
       const selected = api.ssrg_export(index)
       executing = false
