@@ -133,6 +133,28 @@ fn type_effect_expression_analysis(
         return type_effect_expression_analysis(value, context, resolution, issues);
     }
 
+    // In an Effect body, `pure x` with no other expected type is the Effect
+    // that succeeds with x, as `effects.succeed x` is.
+    if context.expected().is_none() && is_prelude_pure(expression, context, resolution) {
+        let effect = context.semantic_value_from_typed_type(&crate::TypedType::Named {
+            name: "Effect".to_owned(),
+            arguments: vec![
+                crate::TypedType::Record {
+                    closed: true,
+                    fields: Vec::new(),
+                },
+                named_type("Never"),
+                crate::TypedType::Hole,
+            ],
+        });
+        return type_effect_expression_analysis(
+            expression,
+            &context.with_expected(Some(effect)),
+            resolution,
+            issues,
+        );
+    }
+
     if let SurfaceExpr::Lambda {
         parameter,
         body,
@@ -619,6 +641,25 @@ fn finish_effect_expression_analysis(
     let semantic_type = analysis.semantic_type.clone();
     let value = finish_expression_analysis(analysis, issues);
     SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+}
+
+fn is_prelude_pure(
+    expression: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+    resolution: &TypedResolution<'_>,
+) -> bool {
+    let (callee, arguments) = flatten_application(expression);
+    let SurfaceExpr::Name { span, .. } = callee else {
+        return false;
+    };
+    arguments.len() == 1
+        && resolution
+            .target(*span, SymbolNamespace::Value)
+            .and_then(|target| context.callable(target))
+            .is_some_and(|callable| {
+                callable.trait_identity.as_deref() == Some("std/prelude::Applicative")
+                    && callable.trait_method.as_deref() == Some("pure")
+            })
 }
 
 fn flatten_application(expression: &SurfaceExpr) -> (&SurfaceExpr, Vec<&SurfaceExpr>) {

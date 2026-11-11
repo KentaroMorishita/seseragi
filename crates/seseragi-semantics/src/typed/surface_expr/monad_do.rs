@@ -229,11 +229,71 @@ fn monad_payload(
     context: &PureExpressionContext<'_>,
 ) -> Option<TypedType> {
     let (actual_constructor, payload) = monad_parts(applied)?;
-    crate::typed::semantic_types::semantic_values_have_same_identity(
-        &context.semantic_value_from_typed_type(constructor),
-        &context.semantic_value_from_typed_type(&actual_constructor),
-    )
+    // The same written constructor is the same monad, including one with a
+    // `_` slot such as the `Effect<R, E, _>` inside `MaybeT`.
+    if partial(constructor) == partial(&actual_constructor) {
+        return Some(payload);
+    }
+    // An Effect or Stream that needs fewer services, or fails with Never,
+    // runs in the do block's wider Effect; its success type is unchanged.
+    let widened = widens(constructor)
+        && crate::typed::semantic_types::semantic_values_are_compatible(
+            &context
+                .semantic_value_from_typed_type(&apply_constructor(constructor, payload.clone())),
+            &context.semantic_value_from_typed_type(applied),
+        );
+    (widened
+        || crate::typed::semantic_types::semantic_values_have_same_identity(
+            &context.semantic_value_from_typed_type(constructor),
+            &context.semantic_value_from_typed_type(&actual_constructor),
+        ))
     .then_some(payload)
+}
+
+// A written `_` slot and an omitted last argument both leave a type
+// constructor partly applied, as `Effect<R, E, _>` and `Effect<R, E>` do.
+fn partial(type_ref: &TypedType) -> TypedType {
+    let strip = |arguments: &[TypedType]| {
+        let mut arguments = arguments.iter().map(partial).collect::<Vec<_>>();
+        while matches!(arguments.last(), Some(TypedType::Hole)) {
+            arguments.pop();
+        }
+        arguments
+    };
+    match type_ref {
+        TypedType::Named { name, arguments } => TypedType::Named {
+            name: name.clone(),
+            arguments: strip(arguments),
+        },
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => TypedType::ExternalNamed {
+            name: name.clone(),
+            canonical: canonical.clone(),
+            arguments: strip(arguments),
+        },
+        other => other.clone(),
+    }
+}
+
+// Only Effect and Stream widen their services and a Never failure.
+fn widens(constructor: &TypedType) -> bool {
+    match constructor {
+        TypedType::Named { name, arguments } => name == "Effect" && arguments.len() == 2,
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } => {
+            matches!(
+                canonical.as_str(),
+                "std/prelude::Effect" | "std/stream::Stream"
+            ) && arguments.len() == 2
+        }
+        _ => false,
+    }
 }
 
 fn monad_parts(type_ref: &TypedType) -> Option<(TypedType, TypedType)> {

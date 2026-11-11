@@ -34,7 +34,7 @@ impl SurfaceParser<'_> {
         })
     }
 
-    fn parse_impl_member(&self, start: usize, end: usize) -> Option<SurfaceImplMember> {
+    pub(super) fn parse_impl_member(&self, start: usize, end: usize) -> Option<SurfaceImplMember> {
         let prefix = crate::declaration::declaration_prefix_in(
             self.tokens,
             start,

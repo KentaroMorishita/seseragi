@@ -362,7 +362,55 @@ impl Backend<'_> {
         if self.declared_method_type_kind(constructor, scope) != Some(1) {
             return Err("Rust backend: do dictionary requires a unary constructor".into());
         }
+        // An Effect that needs fewer services, or fails with Never, runs in
+        // the do block's wider Effect; the plan itself is unchanged.
+        let widen = |actual: &CoreType| -> Result<CoreType> {
+            let wider = self.local_canonical_type(constructor, scope)?;
+            let narrower = self.local_canonical_type(actual, scope)?;
+            let (
+                CoreType::Named {
+                    name,
+                    arguments: wider,
+                },
+                CoreType::Named {
+                    name: actual_name,
+                    arguments: narrower,
+                },
+            ) = (&wider, &narrower)
+            else {
+                return Ok(actual.clone());
+            };
+            let ([environment, failure], [actual_environment, actual_failure, success]) =
+                (wider.as_slice(), narrower.as_slice())
+            else {
+                return Ok(actual.clone());
+            };
+            let (
+                CoreType::Record { fields, .. },
+                CoreType::Record {
+                    fields: actual_fields,
+                    ..
+                },
+            ) = (environment, actual_environment)
+            else {
+                return Ok(actual.clone());
+            };
+            let never = matches!(actual_failure, CoreType::Named { name, arguments }
+                if name == "std/prelude::Never" && arguments.is_empty());
+            if name != "std/prelude::Effect"
+                || actual_name != name
+                || !actual_fields.iter().all(|field| fields.contains(field))
+                || !(never || actual_failure == failure)
+            {
+                return Ok(actual.clone());
+            }
+            Ok(CoreType::Named {
+                name: name.clone(),
+                arguments: vec![environment.clone(), failure.clone(), success.clone()],
+            })
+        };
         let check = |actual: &CoreType, payload: Option<&CoreType>| -> Result<()> {
+            let actual = &widen(actual)?;
             let item = "\0monad_do_item".to_owned();
             let argument = CoreType::Named {
                 name: item.clone(),
@@ -403,7 +451,7 @@ impl Backend<'_> {
             local::method_argument_type(result).ok_or("Rust backend: missing do result type")?;
         check(&result_type, None)?;
         if self.local_canonical_type(type_ref, scope)?
-            != self.local_canonical_type(&result_type, scope)?
+            != self.local_canonical_type(&widen(&result_type)?, scope)?
         {
             return Err("Rust backend: do result type mismatch".into());
         }
