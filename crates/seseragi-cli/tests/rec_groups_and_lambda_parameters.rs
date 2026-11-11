@@ -90,6 +90,11 @@ fn a_module_level_rec_group_takes_no_modifiers_and_only_functions() {
         "Module top level only permits declarations",
     );
     refused(
+        &format!("rec {{\n  effect nonsense\n}}{main}"),
+        "Module top level only permits declarations",
+    );
+    refused(&format!("rec {{\n  fn\n}}{main}"), "");
+    refused(
         &format!("rec {{}}{main}"),
         "Module top level only permits declarations",
     );

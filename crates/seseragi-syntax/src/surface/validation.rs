@@ -441,10 +441,14 @@ impl SurfaceParser<'_> {
             let Some(first) = self.next_significant_token(member_start, member_end) else {
                 continue;
             };
-            if matches!(
-                self.kind_at(first),
-                Some(TokenKind::KeywordFn | TokenKind::KeywordEffect)
-            ) {
+            let function = match self.kind_at(first) {
+                Some(TokenKind::KeywordFn) => true,
+                Some(TokenKind::KeywordEffect) => self
+                    .next_significant_token(first + 1, member_end)
+                    .is_some_and(|next| self.kind_at(next) == Some(TokenKind::KeywordFn)),
+                _ => false,
+            };
+            if function {
                 self.validate_declaration(first, member_end, module, diagnostics);
             } else {
                 self.unexpected_statement(first, member_end, diagnostics);
