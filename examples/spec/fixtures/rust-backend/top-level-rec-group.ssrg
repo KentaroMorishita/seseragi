@@ -1,0 +1,22 @@
+// A module-level `rec` group holds mutually recursive functions; its members
+// are ordinary private functions of the module (spec 2.9).
+rec {
+  fn even n: Int -> Bool = if n == 0 then True else odd (n - 1)
+  fn odd n: Int -> Bool = if n == 0 then False else even (n - 1)
+}
+
+rec {
+  effect fn countDown n: Int -> Unit with Console fails ConsoleError =
+    if n == 0 then println "lift off" else tick n
+
+  effect fn tick n: Int -> Unit with Console fails ConsoleError = do {
+    println (show n)
+    countDown (n - 1)
+  }
+}
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println $ show $ even 10
+  println $ show $ odd 7
+  countDown 2
+}

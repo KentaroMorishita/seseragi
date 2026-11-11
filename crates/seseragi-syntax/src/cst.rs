@@ -141,7 +141,9 @@ impl CstParser<'_> {
             children.push(CstNode::new("decl-modifiers", opaque, opaque + 1, vec![]));
         }
 
-        if self.kind_at(decl_start) == Some(TokenKind::KeywordLet) {
+        if self.kind_at(decl_start) == Some(TokenKind::KeywordRec) {
+            children.push(self.parse_rec_group(decl_start, end));
+        } else if self.kind_at(decl_start) == Some(TokenKind::KeywordLet) {
             children.push(self.parse_let_decl(decl_start, end));
         } else if self.kind_at(decl_start) == Some(TokenKind::KeywordFn) {
             children.push(self.parse_fn_decl(decl_start, end));
@@ -152,6 +154,45 @@ impl CstParser<'_> {
         }
 
         CstNode::new("top-decl", start, end, children)
+    }
+
+    fn parse_rec_group(&mut self, start: usize, end: usize) -> CstNode {
+        let mut children = Vec::new();
+        let mut member_start = None;
+        let mut depth = 0usize;
+        for index in start + 1..end {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationBraceLeft) => depth += 1,
+                Some(TokenKind::PunctuationBraceRight) => {
+                    depth = depth.saturating_sub(1);
+                    if depth == 0 {
+                        if let Some(member) = member_start.take() {
+                            children.push(self.parse_rec_member(member, index));
+                        }
+                        break;
+                    }
+                }
+                Some(TokenKind::KeywordFn | TokenKind::KeywordEffect)
+                    if depth == 1
+                        && (member_start.is_none()
+                            || crate::declaration::declaration_boundary(self.tokens, index)) =>
+                {
+                    if let Some(member) = member_start.replace(index) {
+                        children.push(self.parse_rec_member(member, index));
+                    }
+                }
+                _ => {}
+            }
+        }
+        CstNode::new("rec-group", start, end, children)
+    }
+
+    fn parse_rec_member(&mut self, start: usize, end: usize) -> CstNode {
+        if self.kind_at(start) == Some(TokenKind::KeywordFn) {
+            self.parse_fn_decl(start, end)
+        } else {
+            self.parse_effect_fn_decl(start, end)
+        }
     }
 
     fn parse_let_decl(&mut self, start: usize, end: usize) -> CstNode {

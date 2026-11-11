@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.163] - 2026-11-12
+
+0.61.162 was not released on its own; its changes ship in this version.
+
+### Fixed
+
+- A module-level `rec { fn ...; effect fn ... }` group parses, checks, runs and formats. Top-level functions were already mutually recursive without it, so the group only groups them: it takes no modifiers and its members are module-private. Spec §2.9 is reworded to say so; the rule is unchanged.
+- An unannotated lambda wrapped in a constructor or a collection, as in `Just (\x -> x * 2) <*> Just 4`, takes its parameter type from the other side of the call instead of failing to infer.
+- A `do` block over a transformer of a partly applied Effect, such as `MaybeT<Effect<R, E, _>, A>` in Lesson 20, now builds and runs on the native target too.
+
 ## [0.61.162] - 2026-11-11
 
 ### Fixed

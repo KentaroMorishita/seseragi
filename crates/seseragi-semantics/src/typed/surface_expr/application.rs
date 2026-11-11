@@ -1043,7 +1043,17 @@ pub(crate) fn type_known_application_with_explicit(
             .as_ref()
             .and_then(|arguments| arguments.get(index))
             .and_then(|argument| argument.clone())
-            .or(expected);
+            .or(expected)
+            .or_else(|| {
+                lambda_expectation_with_holes(
+                    &signature,
+                    index,
+                    argument,
+                    argument_nodes.len(),
+                    expected_application,
+                    context,
+                )
+            });
         let argument_context = context.with_expected(expected);
         let analysis = type_argument(argument, &argument_context);
         semantic_arguments[index] = Some(SemanticValueType {
@@ -1848,6 +1858,9 @@ fn requires_callable_context(
     {
         return true;
     }
+    if wraps_unannotated_lambda(expression, context) {
+        return true;
+    }
     match expression {
         SurfaceExpr::Lambda { .. } => true,
         SurfaceExpr::Name { name, .. } => {
@@ -1857,6 +1870,147 @@ fn requires_callable_context(
                 || seseragi_syntax::standard_trait_operator(name).is_some()
         }
         SurfaceExpr::Grouped { value, .. } => requires_callable_context(value, context),
+        _ => false,
+    }
+}
+
+/// An unannotated lambda whose parameter type the expected result fixes,
+/// even when the result leaves other slots open: in `Just (\x -> x * 2)`
+/// expected as `Maybe<(Int -> _)>`, `x` is an `Int`.
+fn lambda_expectation_with_holes(
+    signature: &TopLevelPureFunction,
+    index: usize,
+    argument: &SurfaceExpr,
+    argument_count: usize,
+    expected_application: Option<&crate::typed::semantic_types::SemanticValueType>,
+    context: &PureExpressionContext<'_>,
+) -> Option<crate::typed::semantic_types::SemanticValueType> {
+    fn bind(
+        template: &TypedType,
+        actual: &TypedType,
+        parameters: &[seseragi_syntax::TypeParameter],
+        bindings: &mut BTreeMap<String, TypedType>,
+    ) {
+        match (template, actual) {
+            (_, TypedType::Hole) => {}
+            (TypedType::Named { name, arguments }, _)
+                if arguments.is_empty()
+                    && parameters
+                        .iter()
+                        .any(|parameter| parameter.arity == 0 && parameter.name == *name) =>
+            {
+                bindings
+                    .entry(name.clone())
+                    .or_insert_with(|| actual.clone());
+            }
+            (
+                TypedType::Named { name, arguments },
+                TypedType::Named {
+                    name: actual_name,
+                    arguments: actual_arguments,
+                },
+            ) if name == actual_name && arguments.len() == actual_arguments.len() => {
+                for (template, actual) in arguments.iter().zip(actual_arguments) {
+                    bind(template, actual, parameters, bindings);
+                }
+            }
+            (
+                TypedType::ExternalNamed {
+                    canonical,
+                    arguments,
+                    ..
+                },
+                TypedType::ExternalNamed {
+                    canonical: actual_canonical,
+                    arguments: actual_arguments,
+                    ..
+                },
+            ) if canonical == actual_canonical && arguments.len() == actual_arguments.len() => {
+                for (template, actual) in arguments.iter().zip(actual_arguments) {
+                    bind(template, actual, parameters, bindings);
+                }
+            }
+            (
+                TypedType::Function { parameter, result },
+                TypedType::Function {
+                    parameter: actual_parameter,
+                    result: actual_result,
+                },
+            ) => {
+                bind(parameter, actual_parameter, parameters, bindings);
+                bind(result, actual_result, parameters, bindings);
+            }
+            (TypedType::Tuple { elements }, TypedType::Tuple { elements: actual })
+                if elements.len() == actual.len() =>
+            {
+                for (template, actual) in elements.iter().zip(actual) {
+                    bind(template, actual, parameters, bindings);
+                }
+            }
+            _ => {}
+        }
+    }
+    let mut lambda = argument;
+    while let SurfaceExpr::Grouped { value, .. } = lambda {
+        lambda = value;
+    }
+    if !matches!(lambda, SurfaceExpr::Lambda { parameter, .. } if parameter.type_ref.is_none())
+        || argument_count > signature.parameters.len()
+    {
+        return None;
+    }
+    let expected = expected_application?;
+    let remaining = crate::typed::functions::application_result_type_from(
+        &signature.parameters,
+        signature.result.clone(),
+        argument_count,
+    );
+    let mut bindings = BTreeMap::new();
+    bind(
+        &remaining,
+        &expected.type_ref,
+        &signature.type_parameters,
+        &mut bindings,
+    );
+    let resolved = bindings.keys().cloned().collect();
+    let parameter = mask_unresolved_type_parameters(
+        &substitute_type_parameters(signature.parameters.get(index)?, &bindings),
+        &signature.type_parameters,
+        &resolved,
+    );
+    let TypedType::Function {
+        parameter: lambda_parameter,
+        ..
+    } = &parameter
+    else {
+        return None;
+    };
+    (!typed_type_contains_hole(lambda_parameter))
+        .then(|| context.semantic_value_from_typed_type(&parameter))
+}
+
+/// A constructor application or an array that holds a lambda without a
+/// parameter annotation, such as `Just (\x -> x * 2)` on the left of `<*>`,
+/// takes its parameter type from the other arguments, so it is typed after them.
+fn wraps_unannotated_lambda(expression: &SurfaceExpr, context: &PureExpressionContext<'_>) -> bool {
+    fn unannotated_lambda(expression: &SurfaceExpr) -> bool {
+        match expression {
+            SurfaceExpr::Grouped { value, .. } => unannotated_lambda(value),
+            SurfaceExpr::Lambda { parameter, .. } => parameter.type_ref.is_none(),
+            _ => false,
+        }
+    }
+    match expression {
+        SurfaceExpr::Grouped { value, .. } => wraps_unannotated_lambda(value, context),
+        SurfaceExpr::Array { elements, .. } | SurfaceExpr::List { elements, .. } => {
+            elements.iter().any(unannotated_lambda)
+        }
+        SurfaceExpr::Application { .. } if waits_for_expected_type(expression, context) => {
+            flatten_application(expression)
+                .1
+                .into_iter()
+                .any(unannotated_lambda)
+        }
         _ => false,
     }
 }
