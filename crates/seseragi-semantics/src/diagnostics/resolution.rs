@@ -78,13 +78,38 @@ pub(super) fn unresolved_type_names(resolved: &ResolvedModule) -> Vec<&str> {
 }
 
 /// A type mismatch that involves an unresolved type name follows from that
-/// name; the unresolved name is the error to fix.
-pub(super) fn follows_from_unresolved_type(diagnostic: &Diagnostic, names: &[&str]) -> bool {
+/// name; the unresolved name is the error to fix. A declaration where the same
+/// spelling resolves, such as its own type parameter `A`, keeps its errors.
+pub(super) fn follows_from_unresolved_type(
+    resolved: &ResolvedModule,
+    diagnostic: &Diagnostic,
+    names: &[&str],
+) -> bool {
     let (expected, actual) = diagnostic.expected_actual_types();
-    [expected, actual]
-        .iter()
-        .flatten()
-        .any(|text| names.iter().any(|name| mentions_type_name(text, name)))
+    let scope = containing_declaration(
+        &resolved.declarations,
+        ByteSpan {
+            start: diagnostic.primary.start,
+            end: diagnostic.primary.end,
+        },
+    )
+    .map(SurfaceDecl::span);
+    let resolves_here = |name: &str| {
+        scope.is_some_and(|scope| {
+            resolved.references.iter().any(|reference| {
+                reference.namespace == SymbolNamespace::Type
+                    && reference.spelling == name
+                    && reference.target.is_some()
+                    && scope.start <= reference.origin.start
+                    && reference.origin.end <= scope.end
+            })
+        })
+    };
+    [expected, actual].iter().flatten().any(|text| {
+        names
+            .iter()
+            .any(|name| mentions_type_name(text, name) && !resolves_here(name))
+    })
 }
 
 fn mentions_type_name(text: &str, name: &str) -> bool {

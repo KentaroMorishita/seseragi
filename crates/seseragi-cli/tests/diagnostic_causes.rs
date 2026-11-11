@@ -67,6 +67,7 @@ fn reports_only_the_expected_diagnostics(name: &str) {
 fn an_unresolved_type_name_is_reported_alone_with_how_to_reach_it() {
     reports_only_the_expected_diagnostics("unresolved-namespace-type");
     reports_only_the_expected_diagnostics("unresolved-parameter-type");
+    reports_only_the_expected_diagnostics("unresolved-type-other-scope");
 }
 
 #[test]

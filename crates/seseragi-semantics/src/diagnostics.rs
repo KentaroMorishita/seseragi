@@ -66,7 +66,7 @@ pub(crate) fn semantic_diagnostics_from_resolved(
     let unresolved_types = resolution::unresolved_type_names(resolved);
     if !unresolved_types.is_empty() {
         diagnostics.retain(|diagnostic| {
-            !resolution::follows_from_unresolved_type(diagnostic, &unresolved_types)
+            !resolution::follows_from_unresolved_type(resolved, diagnostic, &unresolved_types)
         });
     }
     resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);

@@ -1195,50 +1195,17 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
     })
 }
 
-/// Evaluate every argument now, in source order, and leave only the call to
-/// the Effect, so that building the Effect never recurses on the host stack.
+/// Leave the call to the Effect, so that building the Effect never recurses
+/// on the host stack. The arguments are pure, so evaluating them inside the
+/// deferred thunk keeps their meaning, and the call keeps its own type
+/// arguments when a recursive call instantiates the function differently.
 fn render_effect_tail_position_expr(
     body: &TypeScriptExpr,
     self_name: &str,
     parameters: &[crate::TypeScriptParameter],
 ) -> String {
     render_tail_positions(body, self_name, parameters.len(), true, &|call| {
-        let TypeScriptExpr::Call {
-            callee,
-            arguments,
-            type_arguments,
-            checked_callee_type,
-        } = call
-        else {
-            unreachable!("tail call");
-        };
-        let names = (0..arguments.len())
-            .map(|index| format!("$ssrg$tailArgument{index}"))
-            .collect::<Vec<_>>();
-        let deferred = TypeScriptExpr::Call {
-            callee: callee.clone(),
-            arguments: names
-                .iter()
-                .map(|name| TypeScriptExpr::Identifier { name: name.clone() })
-                .collect(),
-            type_arguments: type_arguments.clone(),
-            checked_callee_type: checked_callee_type.clone(),
-        };
-        let typed_names = names
-            .iter()
-            .zip(parameters)
-            .map(|(name, parameter)| format!("{name}: {}", parameter.type_name))
-            .collect::<Vec<_>>();
-        format!(
-            "(({}) => $ssrg$deferTail(() => {}))({})",
-            typed_names.join(", "),
-            render_typescript_expr(&deferred),
-            arguments
-                .iter()
-                .map(render_typescript_expr)
-                .collect::<Vec<_>>()
-                .join(", ")
-        )
+        format!("$ssrg$deferTail(() => {})", render_typescript_expr(call))
     })
 }
 

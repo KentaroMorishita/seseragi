@@ -18,6 +18,9 @@ effect fn sum n: Int -> total: Int -> Int fails Never =
 effect fn repeat<A> value: A -> n: Int -> Unit with Console fails ConsoleError where Show<A> =
   if n == 0 then println (show value) else repeat value (n - 1)
 
+effect fn nest<A> value: A -> n: Int -> String fails Never =
+  if n == 0 then succeed "nested" else nest (Just value) (n - 1)
+
 effect fn stopAt n: Int -> String fails String =
   if n == 3 then fail "stopped at 3" else stopAt (n - 1)
 
@@ -26,6 +29,8 @@ pub effect fn main -> Unit with Console fails ConsoleError = do {
   total <- sum 1000000 0
   println (show total)
   repeat (Just 7) 1000000
+  nested <- nest 1 1000000
+  println nested
   result <- stopAt 1000000 |> effects.recover (\message -> succeed message)
   println result
 }
