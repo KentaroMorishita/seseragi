@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 216,
+            "end": 228
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 216,
+            "end": 228
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 245,
+            "end": 257
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 245,
+            "end": 257
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.map` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 278,
+            "end": 289
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.map` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 278,
+            "end": 289
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.combine` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 317,
+            "end": 332
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.combine` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 317,
+            "end": 332
           }
         }
       ],
@@ -231,19 +231,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.planSet` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 369,
+            "end": 384
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.planSet` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 369,
+            "end": 384
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.planUpdate` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 410,
+            "end": 428
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.planUpdate` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 410,
+            "end": 428
           }
         }
       ],
@@ -303,19 +303,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.transaction` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 477,
+            "end": 496
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.transaction` is not defined or imported here",
           "primary": {
-            "start": 136,
-            "end": 611
+            "start": 477,
+            "end": 496
           }
         }
       ],

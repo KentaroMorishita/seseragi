@@ -7,7 +7,8 @@
       "code": "SES-N0001",
       "severity": "Error",
       "primary": { "start": 172, "end": 176, "text": "true" },
-      "labels": ["effect function body"]
+      "labels": ["`true` is not defined or imported here"],
+      "helps": ["Did you mean `True`?"]
     }
   ]
 }

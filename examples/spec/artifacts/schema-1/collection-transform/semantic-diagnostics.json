@@ -15,19 +15,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.filter` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 595,
+            "end": 608
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.filter` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 595,
+            "end": 608
           }
         }
       ],
@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.filter` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 643,
+            "end": 655
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.filter` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 643,
+            "end": 655
           }
         }
       ],
@@ -87,19 +87,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.filterMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 691,
+            "end": 707
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.filterMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 691,
+            "end": 707
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.filterMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 747,
+            "end": 762
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.filterMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 747,
+            "end": 762
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.flatMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 804,
+            "end": 818
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.flatMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 804,
+            "end": 818
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.flatMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 854,
+            "end": 867
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.flatMap` is not defined or imported here",
           "primary": {
-            "start": 512,
-            "end": 891
+            "start": 854,
+            "end": 867
           }
         }
       ],

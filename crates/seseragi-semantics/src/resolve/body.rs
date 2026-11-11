@@ -18,6 +18,7 @@ mod namespace_deprecations;
 mod operator_chains;
 mod pattern;
 mod scheme_types;
+mod suggestion;
 #[cfg(test)]
 mod tests;
 
@@ -311,6 +312,7 @@ impl Resolver {
                 message_key: "name.duplicate-definition".to_owned(),
                 primary: origin,
                 hint: None,
+                suggestion: None,
             });
             return existing;
         }
@@ -380,6 +382,7 @@ impl Resolver {
                 message_key: "name.duplicate-definition".to_owned(),
                 primary: origin,
                 hint: None,
+                suggestion: None,
             });
             return existing;
         }
@@ -496,11 +499,15 @@ impl Resolver {
                         "write `{alias}.{spelling}`, or add `import {{ {spelling} }} from {specifier:?}`"
                     ))
                 });
+            let suggestion = (hint.is_none() && code == "SES-N0001")
+                .then(|| self.closest_visible_name(scope, namespace, spelling))
+                .flatten();
             self.issues.push(ResolveIssue {
                 code: code.to_owned(),
                 message_key: message_key.to_owned(),
                 primary: origin,
                 hint,
+                suggestion,
             });
         }
         target

@@ -87,19 +87,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.DispatchPreventDefault` is not defined or imported here",
           "primary": {
-            "start": 121,
-            "end": 245
+            "start": 191,
+            "end": 218
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.DispatchPreventDefault` is not defined or imported here",
           "primary": {
-            "start": 121,
-            "end": 245
+            "start": 191,
+            "end": 218
           }
         }
       ],
@@ -229,19 +229,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.DispatchStopPropagation` is not defined or imported here",
           "primary": {
-            "start": 247,
-            "end": 381
+            "start": 321,
+            "end": 349
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.DispatchStopPropagation` is not defined or imported here",
           "primary": {
-            "start": 247,
-            "end": 381
+            "start": 321,
+            "end": 349
           }
         }
       ],
@@ -371,19 +371,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.DispatchPreventDefaultAndStop` is not defined or imported here",
           "primary": {
-            "start": 383,
-            "end": 498
+            "start": 455,
+            "end": 489
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.DispatchPreventDefaultAndStop` is not defined or imported here",
           "primary": {
-            "start": 383,
-            "end": 498
+            "start": 455,
+            "end": 489
           }
         }
       ],
@@ -443,19 +443,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 500,
-            "end": 883
+            "start": 537,
+            "end": 545
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 500,
-            "end": 883
+            "start": 537,
+            "end": 545
           }
         }
       ],

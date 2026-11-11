@@ -3325,3 +3325,54 @@ fn imported_hover_survives_an_incomplete_tail_in_the_open_workspace() {
         .unwrap()
         .is_empty());
 }
+
+#[test]
+fn an_unresolved_name_offers_the_close_name_as_a_quick_fix() {
+    let uri = "file:///misspelled.ssrg";
+    let source = concat!(
+        "let ready = true\n",
+        "\n",
+        "pub effect fn main -> Unit with Console fails ConsoleError = prinln \"x\"\n",
+    );
+    let position = |line, character| json!({"line": line, "character": character});
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {"general": {"positionEncodings": ["utf-16"]}}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/codeAction",
+            "params": {
+                "textDocument": {"uri": uri},
+                "range": {"start": position(0, 0), "end": position(3, 0)},
+                "context": {"diagnostics": []}
+            }
+        }),
+        json!({"jsonrpc": "2.0", "id": 3, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let actions = response(&messages, 2)["result"].as_array().unwrap();
+    let replacement = |title: &str| {
+        actions
+            .iter()
+            .find(|action| action["title"] == title)
+            .map(|action| action["edit"]["changes"][uri][0].clone())
+            .unwrap_or_else(|| panic!("{title}: {actions:?}"))
+    };
+    assert_eq!(
+        replacement("Replace with `True`"),
+        json!({"range": {"start": position(0, 12), "end": position(0, 16)}, "newText": "True"})
+    );
+    assert_eq!(
+        replacement("Replace with `println`"),
+        json!({"range": {"start": position(2, 61), "end": position(2, 67)}, "newText": "println"})
+    );
+}

@@ -191,19 +191,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.form` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 413,
+            "end": 422
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.form` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 413,
+            "end": 422
           }
         }
       ],
@@ -227,19 +227,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.label` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 466,
+            "end": 476
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.label` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 466,
+            "end": 476
           }
         }
       ],
@@ -263,19 +263,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.input` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 522,
+            "end": 532
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.input` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 522,
+            "end": 532
           }
         }
       ],
@@ -369,19 +369,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.textarea` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 784,
+            "end": 797
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.textarea` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 784,
+            "end": 797
           }
         }
       ],
@@ -441,19 +441,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.select` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 946,
+            "end": 957
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.select` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 946,
+            "end": 957
           }
         }
       ],
@@ -513,19 +513,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.option` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 1046,
+            "end": 1057
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.option` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 1046,
+            "end": 1057
           }
         }
       ],
@@ -549,19 +549,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.input` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 1109,
+            "end": 1119
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.input` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 1109,
+            "end": 1119
           }
         }
       ],
@@ -585,19 +585,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 1185,
+            "end": 1196
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 347,
-            "end": 1267
+            "start": 1185,
+            "end": 1196
           }
         }
       ],

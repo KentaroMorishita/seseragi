@@ -282,7 +282,18 @@ impl Diagnostic {
     }
 
     pub fn helps(&self) -> Vec<String> {
+        if matches!(
+            self.message_key.as_str(),
+            "name.unresolved" | "module.export-unresolved"
+        ) {
+            if let Some(edit) = self.fixes.first().and_then(|fix| fix.edits.first()) {
+                return vec![format!("Did you mean `{}`?", edit.replacement)];
+            }
+        }
         let help = match self.message_key.as_str() {
+            "module.export-unresolved" => {
+                "Check the spelling against the names the module exports."
+            }
             "name.unresolved" => {
                 "Check the spelling, or define or import the name before using it."
             }

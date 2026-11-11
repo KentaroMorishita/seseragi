@@ -15,19 +15,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 188,
-            "end": 516
+            "start": 494,
+            "end": 504
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 188,
-            "end": 516
+            "start": 494,
+            "end": 504
           }
         }
       ],

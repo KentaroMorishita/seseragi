@@ -40,6 +40,20 @@ fn reports_only_the_expected_diagnostics(name: &str) {
             if !labels.is_empty() {
                 entry["labels"] = Value::Array(labels);
             }
+            entry["helps"] = diagnostic["helps"].clone();
+            entry["fixes"] = Value::Array(
+                diagnostic["fixes"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|fix| {
+                        serde_json::json!({
+                            "title": fix["title"],
+                            "replacement": fix["edits"][0]["replacement"],
+                        })
+                    })
+                    .collect(),
+            );
             entry
         })
         .collect::<Vec<_>>();
@@ -57,7 +71,28 @@ fn reports_only_the_expected_diagnostics(name: &str) {
             if let Some(labels) = diagnostic.get("labels") {
                 entry["labels"] = labels.clone();
             }
+            for key in ["helps", "fixes"] {
+                if let Some(value) = diagnostic.get(key) {
+                    entry[key] = value.clone();
+                }
+            }
             entry
+        })
+        .collect::<Vec<_>>();
+    // Helps and fixes are compared only where the sidecar lists them.
+    let actual = actual
+        .into_iter()
+        .enumerate()
+        .map(|(index, mut actual)| {
+            for key in ["helps", "fixes"] {
+                if expected
+                    .get(index)
+                    .is_none_or(|expected| expected.get(key).is_none())
+                {
+                    actual.as_object_mut().unwrap().remove(key);
+                }
+            }
+            actual
         })
         .collect::<Vec<_>>();
     assert_eq!(actual, expected, "{name}");
@@ -68,6 +103,12 @@ fn an_unresolved_type_name_is_reported_alone_with_how_to_reach_it() {
     reports_only_the_expected_diagnostics("unresolved-namespace-type");
     reports_only_the_expected_diagnostics("unresolved-parameter-type");
     reports_only_the_expected_diagnostics("unresolved-type-other-scope");
+}
+
+#[test]
+fn an_unresolved_name_offers_a_close_name_only_when_one_exists() {
+    reports_only_the_expected_diagnostics("unresolved-name-suggestion");
+    reports_only_the_expected_diagnostics("unresolved-name-without-suggestion");
 }
 
 #[test]

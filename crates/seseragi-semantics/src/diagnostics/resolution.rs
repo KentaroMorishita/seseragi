@@ -1,6 +1,7 @@
 use crate::{ResolveIssue, ResolvedModule, SymbolNamespace};
 use seseragi_syntax::{
-    ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl,
+    ByteRange, ByteSpan, Diagnostic, DiagnosticEdit, DiagnosticFix, DiagnosticSeverity,
+    RelatedDiagnostic, SurfaceDecl,
 };
 
 pub(super) fn collect_resolution_diagnostics(
@@ -23,7 +24,17 @@ pub(super) fn collect_resolution_diagnostics(
             message_key: issue.message_key.clone(),
             primary,
             related: issue_context(resolved, issue),
-            fixes: Vec::new(),
+            fixes: issue
+                .suggestion
+                .iter()
+                .map(|suggestion| DiagnosticFix {
+                    title: format!("Replace with `{suggestion}`"),
+                    edits: vec![DiagnosticEdit {
+                        range: primary,
+                        replacement: suggestion.clone(),
+                    }],
+                })
+                .collect(),
         });
     }
 }
@@ -43,6 +54,9 @@ fn issue_context(resolved: &ResolvedModule, issue: &ResolveIssue) -> Vec<Related
     }
     if unresolved_type_reference(resolved, issue.primary).is_some() {
         return at_issue("type name");
+    }
+    if let Some(name) = unresolved_value_reference(resolved, issue) {
+        return at_issue(&format!("`{name}` is not defined or imported here"));
     }
     containing_declaration(&resolved.declarations, issue.primary)
         .map(|declaration| {
@@ -64,6 +78,22 @@ fn unresolved_type_reference(resolved: &ResolvedModule, primary: ByteSpan) -> Op
                 && reference.namespace == SymbolNamespace::Type
                 && reference.target.is_none()
         })
+        .map(|reference| reference.spelling.as_str())
+}
+
+fn unresolved_value_reference<'a>(
+    resolved: &'a ResolvedModule,
+    issue: &ResolveIssue,
+) -> Option<&'a str> {
+    (issue.message_key == "name.unresolved")
+        .then(|| {
+            resolved.references.iter().find(|reference| {
+                reference.origin == issue.primary
+                    && reference.namespace == SymbolNamespace::Value
+                    && reference.target.is_none()
+            })
+        })
+        .flatten()
         .map(|reference| reference.spelling.as_str())
 }
 
