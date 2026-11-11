@@ -427,3 +427,35 @@ test("an owner's disposal waits for its retired instance, and a swap waits for a
   expect(second.state.closes).toBe(1)
   await lifetime.close()
 })
+
+test("a load that starts while a swap fetches is swapped before the swap settles", async () => {
+  const lifetime = createProgramLifetime()
+  const made: ReturnType<typeof swappable>[] = []
+  const info = {
+    name: "calc",
+    path: "./calc.wasm",
+    instantiate: () => {
+      const next = swappable(`new${made.length}`)
+      made.push(next)
+      return Promise.resolve(next.program)
+    },
+  }
+  const first = await lifetime.load(
+    () => Promise.resolve(swappable("old").program),
+    closedError,
+    info
+  )
+  const fetching = Promise.withResolvers<Uint8Array>()
+  const swapping = lifetime.swap(["calc"], "2", () => fetching.promise)
+  await Promise.resolve()
+  const second = await lifetime.load(
+    () => Promise.resolve(swappable("late").program),
+    closedError,
+    info
+  )
+  fetching.resolve(new Uint8Array())
+  await swapping
+  expect(first.exports.call(1)).toMatch(/^new/)
+  expect(second.exports.call(1)).toMatch(/^new/)
+  await lifetime.close()
+})

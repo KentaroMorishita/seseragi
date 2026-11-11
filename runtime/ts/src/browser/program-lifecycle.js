@@ -101,44 +101,55 @@ export function createProgramLifetime() {
     // Close waits for a swap in flight. Its failure belongs to the caller,
     // which reloads instead, not to the instances' own disposal.
     const task = (async () => {
-      // A load that began before this update joins it once it completes.
-      await Promise.allSettled([...swapLoads])
-      const targets = [...swappable].filter((owned) =>
-        names.includes(owned.swap.name)
-      )
       const bytes = new Map()
-      for (const owned of targets) {
-        if (!bytes.has(owned.swap.name))
-          bytes.set(owned.swap.name, await fetchBytes(owned.swap.path, version))
-      }
-      const prepared = []
-      try {
+      const updated = new Set()
+      // A load that began before or during this update joins it once it
+      // completes; the update is done only when no such load remains.
+      while (true) {
+        await Promise.allSettled([...swapLoads])
+        const targets = [...swappable].filter(
+          (owned) => names.includes(owned.swap.name) && !updated.has(owned)
+        )
+        if (targets.length === 0) return
         for (const owned of targets) {
-          const next = await owned.swap.instantiate(bytes.get(owned.swap.name))
-          prepared.push([owned, next])
-          if (!sameKeys(owned.current.exports, next.exports))
-            throw new Error("Program exports changed; reload required")
+          if (!bytes.has(owned.swap.name))
+            bytes.set(
+              owned.swap.name,
+              await fetchBytes(owned.swap.path, version)
+            )
         }
-        if (closing) throw new Error("Program lifetime closed")
-      } catch (error) {
-        for (const [, next] of prepared) {
-          try {
-            await next.dispose()
-          } catch (cleanup) {
-            failures.push(cleanup)
+        const prepared = []
+        try {
+          for (const owned of targets) {
+            const next = await owned.swap.instantiate(
+              bytes.get(owned.swap.name)
+            )
+            prepared.push([owned, next])
+            if (!sameKeys(owned.current.exports, next.exports))
+              throw new Error("Program exports changed; reload required")
           }
+          if (closing) throw new Error("Program lifetime closed")
+        } catch (error) {
+          for (const [, next] of prepared) {
+            try {
+              await next.dispose()
+            } catch (cleanup) {
+              failures.push(cleanup)
+            }
+          }
+          throw error
         }
-        throw error
-      }
-      for (const [owned, next] of prepared) {
-        if (!swappable.has(owned)) {
-          await next.dispose()
-          continue
+        for (const [owned, next] of prepared) {
+          updated.add(owned)
+          if (!swappable.has(owned)) {
+            await next.dispose()
+            continue
+          }
+          const previous = owned.current
+          owned.current = next
+          for (const key of owned.disposedKeys) next.exports[key].dispose?.()
+          retire(owned, previous)
         }
-        const previous = owned.current
-        owned.current = next
-        for (const key of owned.disposedKeys) next.exports[key].dispose?.()
-        retire(owned, previous)
       }
     })()
     pending.add(task)
