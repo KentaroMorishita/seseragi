@@ -19,6 +19,8 @@
       "fixes": [
         {
           "title": "Write the body as `do { ... }`",
+          "start": 61,
+          "end": 61,
           "replacement": "do "
         }
       ]

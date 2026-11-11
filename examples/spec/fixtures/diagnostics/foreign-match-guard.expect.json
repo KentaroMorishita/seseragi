@@ -19,6 +19,8 @@
       "fixes": [
         {
           "title": "Replace `if` with `when`",
+          "start": 65,
+          "end": 67,
           "replacement": "when"
         }
       ]

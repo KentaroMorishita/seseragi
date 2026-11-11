@@ -40,12 +40,9 @@ pub(super) fn guide_expression_annotations(
         if !attached || !after.trim_start().starts_with(')') {
             continue;
         }
-        let head = written
-            .split(|character: char| {
-                !(character.is_alphanumeric() || character == '.' || character == '_')
-            })
-            .next()
-            .unwrap_or_default();
+        let Some(head) = type_notation_head(written) else {
+            continue;
+        };
         if !names_a_type(resolved, head) {
             continue;
         }
@@ -57,6 +54,27 @@ pub(super) fn guide_expression_annotations(
     }
 }
 
+/// The head name of `written` when all of it is type notation, such as
+/// `Maybe<Int>` or `Js.Promise<Array<A>>`; a value such as `Point { x: 2 }`
+/// or `Just 1` is not.
+fn type_notation_head(written: &str) -> Option<&str> {
+    let is_name = |character: char| character.is_alphanumeric() || character == '_';
+    let head_end = written
+        .find(|character: char| !(is_name(character) || character == '.'))
+        .unwrap_or(written.len());
+    let (head, rest) = written.split_at(head_end);
+    let arguments = match rest {
+        "" => "",
+        rest => rest.strip_prefix('<')?.strip_suffix('>')?,
+    };
+    arguments
+        .chars()
+        .all(|character| {
+            is_name(character) || matches!(character, '.' | ',' | ' ' | '<' | '>' | '(' | ')')
+        })
+        .then_some(head)
+}
+
 fn names_a_type(resolved: &ResolvedModule, name: &str) -> bool {
     name.chars().next().is_some_and(char::is_uppercase)
         && (STANDALONE_TYPE_NAMES.contains(&name)
@@ -65,4 +83,22 @@ fn names_a_type(resolved: &ResolvedModule, name: &str) -> bool {
                 .symbols
                 .iter()
                 .any(|symbol| symbol.namespace == SymbolNamespace::Type && symbol.spelling == name))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::type_notation_head;
+
+    #[test]
+    fn reads_only_type_notation_as_a_type() {
+        assert_eq!(type_notation_head("Maybe<Int>"), Some("Maybe"));
+        assert_eq!(
+            type_notation_head("Js.Promise<Array<A>>"),
+            Some("Js.Promise")
+        );
+        assert_eq!(type_notation_head("Int"), Some("Int"));
+        assert_eq!(type_notation_head("Point { x: 2 }"), None);
+        assert_eq!(type_notation_head("Just 1"), None);
+        assert_eq!(type_notation_head("Pair<Int>(1)"), None);
+    }
 }

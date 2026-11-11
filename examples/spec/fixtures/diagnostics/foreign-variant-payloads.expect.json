@@ -19,6 +19,8 @@
       "fixes": [
         {
           "title": "Wrap the payloads in a tuple",
+          "start": 39,
+          "end": 50,
           "replacement": "(Float, Float)"
         }
       ]

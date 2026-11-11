@@ -22,6 +22,8 @@
       "fixes": [
         {
           "title": "Replace with `True`",
+          "start": 12,
+          "end": 16,
           "replacement": "True"
         }
       ]

@@ -51,6 +51,8 @@ fn reports_only_the_expected_diagnostics(name: &str) {
                     .map(|fix| {
                         serde_json::json!({
                             "title": fix["title"],
+                            "start": fix["edits"][0]["range"]["start"],
+                            "end": fix["edits"][0]["range"]["end"],
                             "replacement": fix["edits"][0]["replacement"],
                         })
                     })
@@ -111,6 +113,7 @@ fn an_unresolved_type_name_is_reported_alone_with_how_to_reach_it() {
 fn an_unresolved_name_offers_a_close_name_only_when_one_exists() {
     reports_only_the_expected_diagnostics("unresolved-name-suggestion");
     reports_only_the_expected_diagnostics("unresolved-name-without-suggestion");
+    reports_only_the_expected_diagnostics("unresolved-type-argument-suggestion");
 }
 
 #[test]

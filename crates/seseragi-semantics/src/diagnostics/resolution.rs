@@ -30,13 +30,28 @@ pub(super) fn collect_resolution_diagnostics(
                 .map(|suggestion| DiagnosticFix {
                     title: format!("Replace with `{suggestion}`"),
                     edits: vec![DiagnosticEdit {
-                        range: primary,
+                        range: name_range(resolved, issue),
                         replacement: suggestion.clone(),
                     }],
                 })
                 .collect(),
         });
     }
+}
+
+/// The written name an issue reports, without the type arguments that may
+/// follow it, so that a replacement keeps them.
+fn name_range(resolved: &ResolvedModule, issue: &ResolveIssue) -> ByteRange {
+    let primary = byte_range(issue.primary);
+    resolved
+        .references
+        .iter()
+        .find(|reference| reference.origin == issue.primary)
+        .map(|reference| ByteRange {
+            start: primary.start,
+            end: (primary.start + reference.spelling.len()).min(primary.end),
+        })
+        .unwrap_or(primary)
 }
 
 /// A name that an imported namespace exports says how to reach it. Another

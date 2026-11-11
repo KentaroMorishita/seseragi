@@ -1,23 +1,56 @@
 {
   "schema": 1,
   "kind": "diagnostic",
-  "spec": ["6.5", "12.13"],
+  "spec": [
+    "6.5",
+    "12.13"
+  ],
   "diagnostics": [
     {
       "code": "SES-N0104",
       "severity": "Error",
-      "primary": { "start": 45, "end": 61, "text": "text.lenghtBytes" },
-      "labels": ["`std/text` has no export `lenghtBytes`"],
-      "helps": ["Did you mean `text.lengthBytes`?"],
-      "fixes": [{ "title": "Replace with `text.lengthBytes`", "replacement": "text.lengthBytes" }]
+      "primary": {
+        "start": 45,
+        "end": 61,
+        "text": "text.lenghtBytes"
+      },
+      "labels": [
+        "`std/text` has no export `lenghtBytes`"
+      ],
+      "helps": [
+        "Did you mean `text.lengthBytes`?"
+      ],
+      "fixes": [
+        {
+          "title": "Replace with `text.lengthBytes`",
+          "start": 45,
+          "end": 61,
+          "replacement": "text.lengthBytes"
+        }
+      ]
     },
     {
       "code": "SES-N0001",
       "severity": "Error",
-      "primary": { "start": 130, "end": 136, "text": "prinln" },
-      "labels": ["`prinln` is not defined or imported here"],
-      "helps": ["Did you mean `println`?"],
-      "fixes": [{ "title": "Replace with `println`", "replacement": "println" }]
+      "primary": {
+        "start": 130,
+        "end": 136,
+        "text": "prinln"
+      },
+      "labels": [
+        "`prinln` is not defined or imported here"
+      ],
+      "helps": [
+        "Did you mean `println`?"
+      ],
+      "fixes": [
+        {
+          "title": "Replace with `println`",
+          "start": 130,
+          "end": 136,
+          "replacement": "println"
+        }
+      ]
     }
   ]
 }
