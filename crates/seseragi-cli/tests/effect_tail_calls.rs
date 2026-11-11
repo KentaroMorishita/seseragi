@@ -58,3 +58,31 @@ fn effect_self_tail_calls_from_if_and_match_run_a_million_times() {
         include_str!("../../../examples/spec/fixtures/rust-backend/effect-tail-recursion.stdout"),
     );
 }
+
+/// Arguments are evaluated when the call is made (spec 3.1), so a defect in
+/// one stops the program even when the Effect the call builds never runs.
+#[test]
+fn effect_tail_call_arguments_are_evaluated_before_the_call() {
+    let scratch = Scratch::new();
+    let file = scratch.0.join("main.ssrg");
+    fs::write(
+        &file,
+        "effect fn spin n: Int -> Unit fails Never =\n  if n == 0 then succeed () else spin (n / 0)\n\npub effect fn main -> Unit with Console fails ConsoleError = do {\n  let unused = spin 1\n  println \"after\"\n}\n",
+    )
+    .unwrap();
+    for target in ["process", "native"] {
+        let output = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["run", "--target", target])
+                .arg(&file),
+            &scratch.0,
+        );
+        assert_eq!(output.status.code(), Some(70), "{target}");
+        assert_eq!(String::from_utf8_lossy(&output.stdout), "", "{target}");
+        assert!(
+            String::from_utf8_lossy(&output.stderr).contains("Int division by zero"),
+            "{target}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+}

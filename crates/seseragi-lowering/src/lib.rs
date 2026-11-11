@@ -1026,7 +1026,7 @@ effect fn count remaining: Int -> Unit =
         assert!(
             bundle
                 .typescript
-                .contains("$ssrg$deferTail(() => count(_ssrg_int_subtract(remaining, 1)))"),
+                .contains("(() => { const $ssrg$tailArgument0 = _ssrg_int_subtract(remaining, 1); return $ssrg$deferTail(() => count($ssrg$tailArgument0)); })()"),
             "{}",
             bundle.typescript
         );

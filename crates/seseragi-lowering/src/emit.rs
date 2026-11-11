@@ -1195,17 +1195,48 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
     })
 }
 
-/// Leave the call to the Effect, so that building the Effect never recurses
-/// on the host stack. The arguments are pure, so evaluating them inside the
-/// deferred thunk keeps their meaning, and the call keeps its own type
-/// arguments when a recursive call instantiates the function differently.
+/// Evaluate every argument now, in source order, and leave only the call to
+/// the Effect, so that building the Effect never recurses on the host stack.
+/// Each temporary takes the type of its argument, so a recursive call that
+/// instantiates the function differently keeps its own type arguments.
 fn render_effect_tail_position_expr(
     body: &TypeScriptExpr,
     self_name: &str,
     parameters: &[crate::TypeScriptParameter],
 ) -> String {
     render_tail_positions(body, self_name, parameters.len(), true, &|call| {
-        format!("$ssrg$deferTail(() => {})", render_typescript_expr(call))
+        let TypeScriptExpr::Call {
+            callee,
+            arguments,
+            type_arguments,
+            checked_callee_type,
+        } = call
+        else {
+            unreachable!("tail call");
+        };
+        let names = (0..arguments.len())
+            .map(|index| format!("$ssrg$tailArgument{index}"))
+            .collect::<Vec<_>>();
+        let deferred = TypeScriptExpr::Call {
+            callee: callee.clone(),
+            arguments: names
+                .iter()
+                .map(|name| TypeScriptExpr::Identifier { name: name.clone() })
+                .collect(),
+            type_arguments: type_arguments.clone(),
+            checked_callee_type: checked_callee_type.clone(),
+        };
+        let bindings = names
+            .iter()
+            .zip(arguments)
+            .map(|(name, argument)| {
+                format!("const {name} = {}; ", render_typescript_expr(argument))
+            })
+            .collect::<String>();
+        format!(
+            "(() => {{ {bindings}return $ssrg$deferTail(() => {}); }})()",
+            render_typescript_expr(&deferred)
+        )
     })
 }
 
