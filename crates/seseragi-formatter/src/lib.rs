@@ -85,6 +85,8 @@ mod tests {
             "let f = api.apply<deep.api.Query<Int>, api.Row<Bool>> value\n",
             "let less = left < api.limit\n",
             "let less = left < api.Type > right\n",
+            "let f = effects.defer<{}, Error, Int> value\n",
+            "let f = defer<{ name: String }, Int> value\n",
         ] {
             assert_safe_and_converged_fixture(source, source);
         }
