@@ -1,6 +1,7 @@
-examples/tour/lessons/signals-combine/diagnostic.ssrg:3:56: error[SES-P0101]: Operator unknown
+examples/tour/lessons/signals-combine/diagnostic.ssrg:3:56: error[SES-P0101]: `++` is not an operator
   | fn join left: String -> right: String -> String = left ++ right
   |                                                        ^^ pure function body
+  = help: Join two values with `append a b`; for strings, a template such as `${a}${b}` also works.
 examples/tour/lessons/signals-combine/diagnostic.ssrg:8:38: error[SES-T0101]: Argument type does not match the parameter type
   |   let invalid = signals.combine join left right
   |                                      ^^^^ argument 2 expected Signal<String>, received MutableSignal<Int>
