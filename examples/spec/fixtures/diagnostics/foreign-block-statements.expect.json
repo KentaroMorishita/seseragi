@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-P0001",
+      "severity": "Error",
+      "primary": {
+        "start": 65,
+        "end": 72,
+        "text": "println"
+      },
+      "helps": [
+        "Run several statements in order with `do { ... }`."
+      ],
+      "fixes": [
+        {
+          "title": "Write the body as `do { ... }`",
+          "replacement": "do "
+        }
+      ]
+    }
+  ]
+}

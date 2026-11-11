@@ -486,7 +486,10 @@ impl Resolver {
                 .is_some_and(|reference| reference.candidates.is_empty())
             && report_unresolved
         {
-            let (code, message_key) = if namespace == SymbolNamespace::Operator {
+            let (code, message_key) = if namespace == SymbolNamespace::Operator && spelling == "++"
+            {
+                ("SES-P0101", "operator.concatenation-unknown")
+            } else if namespace == SymbolNamespace::Operator {
                 ("SES-P0101", "operator.unknown")
             } else {
                 ("SES-N0001", "name.unresolved")

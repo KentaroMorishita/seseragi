@@ -1,6 +1,8 @@
 //! A diagnostic names the error to fix, not the errors that follow from it:
 //! an unresolved type name or an argument that fails to check is reported
-//! alone. Each fixture's sidecar lists every diagnostic `seseragi run` reports.
+//! alone, and a misspelling or a form from another language says what to
+//! write instead. Each fixture's sidecar lists every diagnostic `seseragi run`
+//! reports.
 use serde_json::Value;
 use std::{path::Path, process::Command};
 
@@ -116,4 +118,19 @@ fn an_argument_error_is_reported_instead_of_a_missing_show_instance() {
     reports_only_the_expected_diagnostics("show-argument-error");
     reports_only_the_expected_diagnostics("println-argument-error");
     reports_only_the_expected_diagnostics("template-argument-error");
+}
+
+#[test]
+fn a_spelling_from_another_language_is_pointed_to_its_seseragi_form() {
+    for name in [
+        "foreign-boolean-literal",
+        "foreign-match-guard",
+        "foreign-or-pattern",
+        "foreign-variant-payloads",
+        "foreign-block-statements",
+        "foreign-expression-annotation",
+        "foreign-string-concatenation",
+    ] {
+        reports_only_the_expected_diagnostics(name);
+    }
 }

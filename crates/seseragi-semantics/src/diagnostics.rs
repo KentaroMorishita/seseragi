@@ -7,6 +7,7 @@ mod aliases;
 mod array;
 mod conditional;
 mod effect;
+mod expression_annotation;
 mod function_body;
 mod impl_blocks;
 #[cfg(test)]
@@ -70,6 +71,7 @@ pub(crate) fn semantic_diagnostics_from_resolved(
         });
     }
     resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
+    expression_annotation::guide_expression_annotations(&mut diagnostics, resolved, source);
     let html_missing_prop_ranges = diagnostics
         .iter()
         .filter(|diagnostic| diagnostic.message_key == "web.html.missing-required-prop")

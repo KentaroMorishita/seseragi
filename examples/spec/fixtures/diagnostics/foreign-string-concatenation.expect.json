@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-P0101",
+      "severity": "Error",
+      "primary": {
+        "start": 25,
+        "end": 27,
+        "text": "++"
+      },
+      "labels": [
+        "let declaration"
+      ],
+      "helps": [
+        "Join two values with `append a b`; for strings, a template such as `${a}${b}` also works."
+      ],
+      "fixes": []
+    }
+  ]
+}

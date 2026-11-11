@@ -369,7 +369,12 @@ fn associate_chain(
         let Some(spec) = spec else {
             issues.push(ResolveIssue {
                 code: "SES-P0101".to_owned(),
-                message_key: "operator.unknown".to_owned(),
+                message_key: if step.operator == "++" {
+                    "operator.concatenation-unknown"
+                } else {
+                    "operator.unknown"
+                }
+                .to_owned(),
                 primary: step.operator_span,
                 hint: None,
                 suggestion: None,

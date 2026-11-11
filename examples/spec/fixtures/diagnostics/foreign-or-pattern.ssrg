@@ -1,0 +1,7 @@
+fn classify n: Int -> String =
+  match n {
+    1 | 2 -> "small"
+    _ -> "other"
+  }
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

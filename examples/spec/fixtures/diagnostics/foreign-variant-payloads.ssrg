@@ -1,0 +1,5 @@
+type Shape =
+  | Circle Float
+  | Rect Float Float
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

@@ -8,6 +8,7 @@ use crate::template::{scan_template, TemplateChunk};
 use crate::{CstArtifact, CstError, CstMissing, CstNode, Token, TokenKind};
 use serde::Serialize;
 
+mod guidance;
 mod surface_errors;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -116,6 +117,10 @@ impl Diagnostic {
         match self.message_key.as_str() {
             "internal.compiler-error" => "Internal compiler error".to_owned(),
             "name.unresolved" => "Name could not be resolved".to_owned(),
+            "operator.concatenation-unknown" => "`++` is not an operator".to_owned(),
+            "expression.type-annotation" => {
+                "An expression cannot carry a type annotation".to_owned()
+            }
             "call.arity-mismatch" => {
                 "Function was called with the wrong number of arguments".to_owned()
             }
@@ -174,6 +179,10 @@ impl Diagnostic {
             }
             "parser.expected-expression" => "Expected an expression here".to_owned(),
             "parser.expected-pattern" => "Expected a pattern here".to_owned(),
+            "parser.match-guard-if" => "A match guard is written with `when`".to_owned(),
+            "parser.match-or-pattern" => "A match arm takes one pattern".to_owned(),
+            "parser.variant-payloads" => "A variant takes one payload type".to_owned(),
+            "parser.block-sequence" => "A `{ }` block ends with one expression".to_owned(),
             "parser.module-expression-statement" => {
                 "Module top level only permits declarations".to_owned()
             }
@@ -391,6 +400,20 @@ impl Diagnostic {
             "match.coverage-limit" => "Simplify the patterns or split this match into smaller matches.",
             "parser.resource-limit" => "Reduce nesting or split the expression into smaller bindings.",
             "parser.expected-pattern" => "Complete the pattern at the highlighted location.",
+            "parser.match-guard-if" => "Write the arm as `pattern when condition -> ...`.",
+            "expression.type-annotation" => {
+                "Write the type on a `let`, as in `let value: Maybe<Int> = Nothing`; `:` in an expression adds an element to a List."
+            }
+            "operator.concatenation-unknown" => {
+                "Join two values with `append a b`; for strings, a template such as `${a}${b}` also works."
+            }
+            "parser.match-or-pattern" => {
+                "Write one arm for each pattern, or bind the value and test it with `when`."
+            }
+            "parser.variant-payloads" => {
+                "Wrap the payloads in a tuple, as in `Rect (Float, Float)`, or give the variant a record."
+            }
+            "parser.block-sequence" => "Run several statements in order with `do { ... }`.",
             "parser.expected-expression" | "parser.error" => {
                 "Complete the expression at the highlighted location."
             }
@@ -627,6 +650,11 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     if let Some(span) = crate::resource::exceeded() {
         return resource_diagnostics(source_name, span);
     }
+    guidance::guide(
+        &mut artifact.diagnostics,
+        &source_tokens,
+        &surface.declarations,
+    );
     order_by_source_position(&mut artifact.diagnostics);
     artifact
 }
