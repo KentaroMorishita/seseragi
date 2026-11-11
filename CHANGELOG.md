@@ -1,6 +1,8 @@
 # Change Log
 
-## [0.61.163] - 2026-11-11
+## [0.61.163] - 2026-11-12
+
+0.61.162 was not released on its own; its changes ship in this version.
 
 ### Fixed
 
