@@ -867,10 +867,9 @@ fn program_console_outcome(kind: u32, bytes: &[u8]) -> ProgramResult<NativeOutco
         2 => {
             let kind = text(&mut input)?;
             let message = text(&mut input)?;
-            Err(NativeExit::failure(V::Record(Shared::new(BTreeMap::from([
-                ("kind".into(), kind),
-                ("message".into(), message),
-            ])))))
+            Err(NativeExit::failure(V::Record(Shared::new(BTreeMap::from(
+                [("kind".into(), kind), ("message".into(), message)],
+            )))))
         }
         3 | 4 => return program_host_outcome(kind, bytes, None),
         _ => return Err("invalid Console provider response tag"),
