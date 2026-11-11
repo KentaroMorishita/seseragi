@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-T0101",
+      "severity": "Error",
+      "primary": {
+        "start": 38,
+        "end": 42,
+        "text": "Flag"
+      },
+      "labels": [
+        "argument 2 expected List<Flag>, received Flag"
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": []
+    }
+  ]
+}

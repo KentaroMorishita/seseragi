@@ -43,7 +43,9 @@ pub(super) fn guide_expression_annotations(
         let Some(head) = type_notation_head(written) else {
             continue;
         };
-        if !names_a_type(resolved, head) {
+        // `(Flag:Flag)` conses onto a constructor that shares its type's
+        // name; that is a value, so the type mismatch stays as reported.
+        if !names_a_type(resolved, head) || (head == written && names_a_value(resolved, head)) {
             continue;
         }
         diagnostic.message_key = "expression.type-annotation".to_owned();
@@ -83,6 +85,16 @@ fn names_a_type(resolved: &ResolvedModule, name: &str) -> bool {
                 .symbols
                 .iter()
                 .any(|symbol| symbol.namespace == SymbolNamespace::Type && symbol.spelling == name))
+}
+
+fn names_a_value(resolved: &ResolvedModule, name: &str) -> bool {
+    SUM_TYPES
+        .iter()
+        .any(|sum_type| sum_type.variants.iter().any(|variant| variant.name == name))
+        || resolved
+            .symbols
+            .iter()
+            .any(|symbol| symbol.namespace == SymbolNamespace::Value && symbol.spelling == name)
 }
 
 #[cfg(test)]

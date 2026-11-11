@@ -70,7 +70,7 @@ pub(crate) fn semantic_diagnostics_from_resolved(
             !resolution::follows_from_unresolved_type(resolved, diagnostic, &unresolved_types)
         });
     }
-    resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
+    resolution::collect_resolution_diagnostics(resolved, source, &mut diagnostics);
     expression_annotation::guide_expression_annotations(&mut diagnostics, resolved, source);
     let html_missing_prop_ranges = diagnostics
         .iter()

@@ -136,4 +136,7 @@ fn a_spelling_from_another_language_is_pointed_to_its_seseragi_form() {
     ] {
         reports_only_the_expected_diagnostics(name);
     }
+    // A constructor that shares its type's name is a value, so consing onto
+    // it is an ordinary type mismatch, not an annotation.
+    reports_only_the_expected_diagnostics("cons-onto-same-named-constructor");
 }

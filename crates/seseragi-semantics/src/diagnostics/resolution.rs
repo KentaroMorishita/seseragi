@@ -6,6 +6,7 @@ use seseragi_syntax::{
 
 pub(super) fn collect_resolution_diagnostics(
     resolved: &ResolvedModule,
+    source: &str,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     for issue in &resolved.issues {
@@ -27,12 +28,14 @@ pub(super) fn collect_resolution_diagnostics(
             fixes: issue
                 .suggestion
                 .iter()
-                .map(|suggestion| DiagnosticFix {
-                    title: format!("Replace with `{suggestion}`"),
-                    edits: vec![DiagnosticEdit {
-                        range: name_range(resolved, issue),
-                        replacement: suggestion.clone(),
-                    }],
+                .filter_map(|suggestion| {
+                    Some(DiagnosticFix {
+                        title: format!("Replace with `{suggestion}`"),
+                        edits: vec![DiagnosticEdit {
+                            range: name_range(resolved, issue, source)?,
+                            replacement: suggestion.clone(),
+                        }],
+                    })
                 })
                 .collect(),
         });
@@ -40,18 +43,55 @@ pub(super) fn collect_resolution_diagnostics(
 }
 
 /// The written name an issue reports, without the type arguments that may
-/// follow it, so that a replacement keeps them.
-fn name_range(resolved: &ResolvedModule, issue: &ResolveIssue) -> ByteRange {
+/// follow it, so that a replacement keeps them. A qualified name may have
+/// spaces or comments around its dots, so the range follows the source.
+fn name_range(resolved: &ResolvedModule, issue: &ResolveIssue, source: &str) -> Option<ByteRange> {
     let primary = byte_range(issue.primary);
-    resolved
+    let Some(reference) = resolved
         .references
         .iter()
         .find(|reference| reference.origin == issue.primary)
-        .map(|reference| ByteRange {
-            start: primary.start,
-            end: (primary.start + reference.spelling.len()).min(primary.end),
-        })
-        .unwrap_or(primary)
+    else {
+        return Some(primary);
+    };
+    let written = source.get(primary.start..primary.end)?;
+    let end = written_name_end(written, &reference.spelling)?;
+    Some(ByteRange {
+        start: primary.start,
+        end: primary.start + end,
+    })
+}
+
+/// The byte length of the prefix of `written` that spells `spelling`,
+/// skipping spaces and comments between its characters.
+fn written_name_end(written: &str, spelling: &str) -> Option<usize> {
+    let mut rest = written;
+    let mut consumed = 0;
+    for (index, expected) in spelling.chars().enumerate() {
+        if index > 0 {
+            let skipped = skip_trivia(rest);
+            consumed += rest.len() - skipped.len();
+            rest = skipped;
+        }
+        let actual = rest.chars().next()?;
+        if actual != expected {
+            return None;
+        }
+        consumed += actual.len_utf8();
+        rest = &rest[actual.len_utf8()..];
+    }
+    Some(consumed)
+}
+
+fn skip_trivia(mut text: &str) -> &str {
+    loop {
+        let trimmed = text.trim_start();
+        if let Some(comment) = trimmed.strip_prefix("//") {
+            text = comment.find('\n').map_or("", |end| &comment[end..]);
+        } else {
+            return trimmed;
+        }
+    }
 }
 
 /// A name that an imported namespace exports says how to reach it. Another
@@ -207,6 +247,22 @@ fn byte_range(span: ByteSpan) -> ByteRange {
 
 #[cfg(test)]
 mod tests {
+    use super::written_name_end;
+
+    #[test]
+    fn a_written_name_ends_where_its_spelling_does() {
+        assert_eq!(written_name_end("Lsit<Int>", "Lsit"), Some(4));
+        assert_eq!(
+            written_name_end("text . lenghtBytes \"abc\"", "text.lenghtBytes"),
+            Some(18)
+        );
+        assert_eq!(
+            written_name_end("text // c\n  .lenghtBytes", "text.lenghtBytes"),
+            Some(24)
+        );
+        assert_eq!(written_name_end("other", "text.x"), None);
+    }
+
     #[test]
     fn reports_unresolved_adt_payload_from_resolver_issues() {
         let artifact = crate::semantic_diagnostics(
