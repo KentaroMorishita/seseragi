@@ -22,31 +22,27 @@ pub type AppError deriving Show =
   | UnknownDelivery String
   | ConsoleFailure ConsoleError
 
-fn parseCustomer input: String -> Either<AppError, Customer> =
-  match input {
-    "member" -> Right Member
-    "guest" -> Right Guest
-    other -> Left (UnknownCustomer other)
-  }
+fn parseCustomer input: String -> Either<AppError, Customer> = match input {
+  "member" -> Right Member
+  "guest" -> Right Guest
+  other -> Left (UnknownCustomer other)
+}
 
-fn parseDelivery input: String -> Either<AppError, Delivery> =
-  match input {
-    "standard" -> Right Standard
-    "express" -> Right Express
-    other -> Left (UnknownDelivery other)
-  }
+fn parseDelivery input: String -> Either<AppError, Delivery> = match input {
+  "standard" -> Right Standard
+  "express" -> Right Express
+  other -> Left (UnknownDelivery other)
+}
 
-fn parseCustomerInput input: Maybe<String> -> Either<AppError, Customer> =
-  match input {
-    Nothing -> Left EndOfInput
-    Just line -> parseCustomer line
-  }
+fn parseCustomerInput input: Maybe<String> -> Either<AppError, Customer> = match input {
+  Nothing -> Left EndOfInput
+  Just line -> parseCustomer line
+}
 
-fn parseDeliveryInput input: Maybe<String> -> Either<AppError, Delivery> =
-  match input {
-    Nothing -> Left EndOfInput
-    Just line -> parseDelivery line
-  }
+fn parseDeliveryInput input: Maybe<String> -> Either<AppError, Delivery> = match input {
+  Nothing -> Left EndOfInput
+  Just line -> parseDelivery line
+}
 
 fn choosePlan customer: Customer -> delivery: Delivery -> ShippingPlan =
   match (customer, delivery) {
@@ -56,35 +52,18 @@ fn choosePlan customer: Customer -> delivery: Delivery -> ShippingPlan =
     _ -> GuestExpress
   }
 
-fn renderPlan plan: ShippingPlan -> String =
-  match plan {
-    FreeShipping -> "Member standard shipping: free"
-    MemberExpress -> "Member express shipping: 500 yen"
-    RegularShipping -> "Guest standard shipping: 800 yen"
-    GuestExpress -> "Guest express shipping: 1200 yen"
-  }
+fn renderPlan plan: ShippingPlan -> String = match plan {
+  FreeShipping -> "Member standard shipping: free"
+  MemberExpress -> "Member express shipping: 500 yen"
+  RegularShipping -> "Guest standard shipping: 800 yen"
+  GuestExpress -> "Guest express shipping: 1200 yen"
+}
 
-pub effect fn main =
-  do {
-    customerInput <-
-      readLine ()
-      |> mapError StdinFailure
-    customer <-
-      customerInput
-      |> parseCustomerInput
-      |> fromEither
-    deliveryInput <-
-      readLine ()
-      |> mapError StdinFailure
-    delivery <-
-      deliveryInput
-      |> parseDeliveryInput
-      |> fromEither
-    let plan =
-      delivery
-      |> choosePlan customer
-    plan
-    |> renderPlan
-    |> println
-    |> mapError ConsoleFailure
-  }
+pub effect fn main = do {
+  customerInput <- readLine () |> mapError StdinFailure
+  customer <- customerInput |> parseCustomerInput |> fromEither
+  deliveryInput <- readLine () |> mapError StdinFailure
+  delivery <- deliveryInput |> parseDeliveryInput |> fromEither
+  let plan = delivery |> choosePlan customer
+  plan |> renderPlan |> println |> mapError ConsoleFailure
+}

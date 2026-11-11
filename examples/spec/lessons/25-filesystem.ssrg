@@ -35,5 +35,5 @@ fails Either<fs.FileSystemError, AppError> =
   // callbackのsuccess・failure・cancellationに関係なく、directory全体が後で削除されます。
   fs.withTemporaryDirectory "seseragi-lesson-" useTemporary
 
-  // Expected stdout:
-  // hello from Seseragi
+// Expected stdout:
+// hello from Seseragi

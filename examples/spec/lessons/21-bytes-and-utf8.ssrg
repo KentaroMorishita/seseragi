@@ -6,24 +6,21 @@ import * as text from "std/text"
 
 let encoded = text.encodeUtf8 "せせらぎ"
 
-  // sliceのindexは文字数ではなくbyte offsetで、endを含みません。
-  // UTF-8の文字境界に合わせた0..6は、3 bytesの「せ」を二文字取り出します。
-fn prefix -> Either<bytes.BytesSliceError, bytes.Bytes> =
-  bytes.slice 0 6 encoded
+// sliceのindexは文字数ではなくbyte offsetで、endを含みません。
+// UTF-8の文字境界に合わせた0..6は、3 bytesの「せ」を二文字取り出します。
+fn prefix -> Either<bytes.BytesSliceError, bytes.Bytes> = bytes.slice 0 6 encoded
 
-fn output -> String =
-  match prefix () {
-    Left error -> `slice error: ${error}`
-    Right value ->
-    // decodeUtf8は不正byte列を隠さず、Eitherでoffsetを返します。
-    match text.decodeUtf8 value {
-      Left error -> `UTF-8 error: ${error}`
-      Right decoded -> `${decoded} (${bytes.length value} bytes)`
-    }
+fn output -> String = match prefix () {
+  Left error -> `slice error: ${error}`
+  Right value ->
+  // decodeUtf8は不正byte列を隠さず、Eitherでoffsetを返します。
+  match text.decodeUtf8 value {
+    Left error -> `UTF-8 error: ${error}`
+    Right decoded -> `${decoded} (${bytes.length value} bytes)`
   }
+}
 
-pub effect fn main -> Unit with Console fails ConsoleError =
-  println (output ())
+pub effect fn main -> Unit with Console fails ConsoleError = println (output ())
 
-  // Expected stdout:
-  // せせ (6 bytes)
+// Expected stdout:
+// せせ (6 bytes)

@@ -3,28 +3,25 @@
 
 import * as json from "std/json"
 
-struct User deriving Eq, Show, JsonEncode, JsonDecode {
-  id: Int,
-  name: String,
-}
+struct User deriving Eq, Show, JsonEncode, JsonDecode { id: Int, name: String, }
 
 let user = User { id: 7, name: "Aki" }
 let encoded = json.encodeString user
 
-fn decodeUser text: String -> Either<json.JsonReadError, User> =
-  json.decodeString text
+fn decodeUser text: String -> Either<json.JsonReadError, User> = json.decodeString text
 
 fn report result: Either<json.JsonReadError, User> -> String =
   // decodeString<User>はJSON syntaxとUserのfield検査を両方行います。
   match result {
     Left _ -> "decode error"
     Right decoded ->
-      // derived encoderはfield declaration順の安定したwire表現を作ります。
-      `${json.encodeString decoded} / ${decoded.name}`
+    // derived encoderはfield declaration順の安定したwire表現を作ります。
+    `${json.encodeString decoded} / ${decoded.name}`
   }
 
 pub effect fn main -> Unit with Console fails ConsoleError =
-  println $ report (decodeUser encoded)
+  println $
+  report (decodeUser encoded)
 
-  // Expected stdout:
-  // {"id":7,"name":"Aki"} / Aki
+// Expected stdout:
+// {"id":7,"name":"Aki"} / Aki

@@ -17,5 +17,5 @@ pub effect fn main -> Unit with Console fails ConsoleError =
     Right value -> println $ bigints.format value
   }
 
-  // Expected stdout:
-  // 2999999999999999999999999999998
+// Expected stdout:
+// 2999999999999999999999999999998

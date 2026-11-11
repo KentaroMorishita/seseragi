@@ -6,20 +6,18 @@ import * as decimal from "std/decimal"
 
 // Decimalの加算と乗算は丸めを発生させません。
 // parse failureは例外ではなくEitherの失敗として合成します。
-fn invoiceTotal -> Either<decimal.DecimalParseError, Decimal> =
-  do {
-    coffee <- decimal.parse "12.50"
-    cake <- decimal.parse "3.25"
-    pure (coffee + cake * decimal.fromInt 2)
-  }
+fn invoiceTotal -> Either<decimal.DecimalParseError, Decimal> = do {
+  coffee <- decimal.parse "12.50"
+  cake <- decimal.parse "3.25"
+  pure (coffee + cake * decimal.fromInt 2)
+}
 
-pub effect fn main -> Unit with Console fails ConsoleError =
-  match invoiceTotal () {
-    Left error -> println $ `decimal error: ${error}`
-    Right total ->
-    // Showは不要な末尾の0を除いたcanonical表記を生成します。
-    println $ `total: ${show total}`
-  }
+pub effect fn main -> Unit with Console fails ConsoleError = match invoiceTotal () {
+  Left error -> println $ `decimal error: ${error}`
+  Right total ->
+  // Showは不要な末尾の0を除いたcanonical表記を生成します。
+  println $ `total: ${show total}`
+}
 
-  // Expected stdout:
-  // total: 19
+// Expected stdout:
+// total: 19

@@ -14,21 +14,16 @@ instance Ready<Badge> {
   fn ready value: Badge -> String = "Badge is ready"
 }
 
-instance<T> Inspect<Maybe<T>>
-where Ready<T> {
-  fn inspect value: Maybe<T> -> String =
-    match value {
-      Nothing -> "Constrained Maybe: empty"
-      Just item -> ready item
-    }
+instance<T> Inspect<Maybe<T>> where Ready<T> {
+  fn inspect value: Maybe<T> -> String = match value {
+    Nothing -> "Constrained Maybe: empty"
+    Just item -> ready item
+  }
 }
 
 pub fn report value: Maybe<Badge> -> String = inspect value
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  do {
-    println $ report Nothing
-    println $ report $ Just Active
-  }
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println $ report Nothing
+  println $ report $ Just Active
+}

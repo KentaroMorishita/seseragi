@@ -19,5 +19,5 @@ pub effect fn main -> Unit with Console fails ConsoleError = do {
   println $ `released: ${wasReleased}`
 }
 
-  // Expected stdout:
-  // released: True
+// Expected stdout:
+// released: True

@@ -1,8 +1,7 @@
 // Arrayの点数を、標準Reducible instanceとcurriedな(+)で畳み込みます。
 // 合計値を判定し、結果をEffect経由でConsoleへ出力するサンプルです。
 
-fn total scores: Array<Int> -> Int =
-  reduce 0 (+) scores
+fn total scores: Array<Int> -> Int = reduce 0 (+) scores
 
 fn renderScore totalScore: Int -> String =
   if totalScore == 108 then
@@ -10,10 +9,14 @@ fn renderScore totalScore: Int -> String =
   else
     "The score checksum did not match."
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  [4, 8, 15, 16, 23, 42]
+pub effect fn main -> Unit with Console fails ConsoleError = [
+  4,
+  8,
+  15,
+  16,
+  23,
+  42
+]
   |> total
   |> renderScore
   |> println
