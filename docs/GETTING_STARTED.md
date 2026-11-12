@@ -7,9 +7,29 @@ Seseragi で Web アプリのプロジェクトを作り、VS Code で編集し�
 
 必要なのは Seseragi の CLI と [Bun](https://bun.sh/) の2つです。
 
-- **CLI**: [GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から OS と CPU に合ったアーカイブをダウンロードし、
-  中の `seseragi` を PATH の通った場所に置きます。
+- **CLI**: 下のコマンドでインストールします。
 - **Bun**: [公式のインストール手順](https://bun.sh/docs/installation)に従ってインストールします。
+
+macOS と Linux では、次のコマンドを実行します。
+
+```sh
+curl -fsSL https://github.com/KentaroMorishita/seseragi/releases/latest/download/install.sh | sh
+```
+
+Windows では、PowerShell で次のコマンドを実行します。
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/KentaroMorishita/seseragi/releases/latest/download/install.ps1 | iex"
+```
+
+CLI と LSP は `~/.seseragi/bin` に入ります。
+スクリプトはダウンロードしたファイルのチェックサムを確かめ、合わないときはインストールしません。
+macOS と Linux では、`~/.seseragi/bin` が PATH に入っていなければ、追加する方法を表示します。
+Windows では、利用者の PATH に自動で追加します。新しいターミナルを開いてから使ってください。
+
+新しい版に更新するときも、同じコマンドを実行します。
+特定の版を入れたいときは、`SESERAGI_VERSION=0.61.165` のように環境変数で指定します。
+入れる場所を変えたいときは、`SESERAGI_INSTALL` にディレクトリを指定します。
 
 Rust は要りません（CLI をソースからビルドする場合だけ必要です）。
 インストールできたら、バージョンが表示されることを確認します。
