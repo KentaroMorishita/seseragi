@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-P0001",
+      "severity": "Error",
+      "primary": {
+        "start": 49,
+        "end": 50,
+        "text": "|"
+      },
+      "helps": [
+        "Write one arm for each pattern, or bind the value and test it with `when`."
+      ],
+      "fixes": []
+    }
+  ]
+}

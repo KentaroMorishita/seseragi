@@ -15,19 +15,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.length` is not defined or imported here",
           "primary": {
-            "start": 399,
-            "end": 542
+            "start": 518,
+            "end": 531
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.length` is not defined or imported here",
           "primary": {
-            "start": 399,
-            "end": 542
+            "start": 518,
+            "end": 531
           }
         }
       ],
@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.length` is not defined or imported here",
           "primary": {
-            "start": 544,
-            "end": 684
+            "start": 661,
+            "end": 673
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.length` is not defined or imported here",
           "primary": {
-            "start": 544,
-            "end": 684
+            "start": 661,
+            "end": 673
           }
         }
       ],
@@ -87,19 +87,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.length` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 763,
+            "end": 776
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.length` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 763,
+            "end": 776
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.isEmpty` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 799,
+            "end": 813
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.isEmpty` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 799,
+            "end": 813
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 850,
+            "end": 860
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 850,
+            "end": 860
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 892,
+            "end": 902
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 892,
+            "end": 902
           }
         }
       ],
@@ -231,19 +231,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 940,
+            "end": 950
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 940,
+            "end": 950
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 982,
+            "end": 993
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 982,
+            "end": 993
           }
         }
       ],
@@ -303,19 +303,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1023,
+            "end": 1034
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1023,
+            "end": 1034
           }
         }
       ],
@@ -339,19 +339,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1073,
+            "end": 1084
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1073,
+            "end": 1084
           }
         }
       ],
@@ -375,19 +375,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1112,
+            "end": 1123
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1112,
+            "end": 1123
           }
         }
       ],
@@ -411,19 +411,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.length` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1154,
+            "end": 1166
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.length` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1154,
+            "end": 1166
           }
         }
       ],
@@ -447,19 +447,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.isEmpty` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1190,
+            "end": 1203
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.isEmpty` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1190,
+            "end": 1203
           }
         }
       ],
@@ -483,19 +483,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1239,
+            "end": 1248
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1239,
+            "end": 1248
           }
         }
       ],
@@ -519,19 +519,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1281,
+            "end": 1290
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1281,
+            "end": 1290
           }
         }
       ],
@@ -555,19 +555,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1329,
+            "end": 1338
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.get` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1329,
+            "end": 1338
           }
         }
       ],
@@ -591,19 +591,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1371,
+            "end": 1381
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1371,
+            "end": 1381
           }
         }
       ],
@@ -627,19 +627,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1412,
+            "end": 1422
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.head` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1412,
+            "end": 1422
           }
         }
       ],
@@ -663,19 +663,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1459,
+            "end": 1469
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1459,
+            "end": 1469
           }
         }
       ],
@@ -699,19 +699,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1497,
+            "end": 1507
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.tail` is not defined or imported here",
           "primary": {
-            "start": 686,
-            "end": 1527
+            "start": 1497,
+            "end": 1507
           }
         }
       ],

@@ -459,19 +459,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`html.InvalidTagName` is not defined or imported here",
           "primary": {
-            "start": 545,
-            "end": 673
+            "start": 592,
+            "end": 611
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`html.InvalidTagName` is not defined or imported here",
           "primary": {
-            "start": 545,
-            "end": 673
+            "start": 592,
+            "end": 611
           }
         }
       ],
@@ -495,19 +495,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`html.InvalidTagName` is not defined or imported here",
           "primary": {
-            "start": 545,
-            "end": 673
+            "start": 641,
+            "end": 660
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`html.InvalidTagName` is not defined or imported here",
           "primary": {
-            "start": 545,
-            "end": 673
+            "start": 641,
+            "end": 660
           }
         }
       ],

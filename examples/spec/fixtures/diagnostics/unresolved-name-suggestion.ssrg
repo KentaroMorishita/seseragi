@@ -1,0 +1,5 @@
+import * as text from "std/text"
+
+let size = text.lenghtBytes "abc"
+
+pub effect fn main -> Unit with Console fails ConsoleError = prinln "x"

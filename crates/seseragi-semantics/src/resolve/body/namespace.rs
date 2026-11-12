@@ -139,6 +139,22 @@ impl NamespaceImports {
             .collect()
     }
 
+    /// The specifier an alias names and the public names it exports in
+    /// `namespace`.
+    fn exported_names(&self, alias: &str, namespace: SymbolNamespace) -> Option<(&str, Vec<&str>)> {
+        let binding = self.bindings.get(alias)?;
+        let namespace = namespace_name(namespace)?;
+        let names = binding
+            .exports
+            .iter()
+            .filter(|((export_namespace, _), export)| {
+                export_namespace == namespace && export.visibility == Visibility::Public
+            })
+            .map(|((_, name), _)| name.as_str())
+            .collect();
+        Some((binding.specifier.as_str(), names))
+    }
+
     fn select(&mut self, import: ResolvedImport) {
         self.selected.push(import);
     }
@@ -188,6 +204,7 @@ impl Resolver {
         if self.lookup(scope, SymbolNamespace::Module, alias).is_none() {
             return Ok(None);
         }
+        let member_name = member;
         let Some(member) = self.namespace_imports.member(alias, namespace, member) else {
             return Ok(None);
         };
@@ -199,15 +216,16 @@ impl Resolver {
                     message_key: "module.private-symbol".to_owned(),
                     primary: reference_origin,
                     hint: None,
+                    suggestion: None,
                 });
             }
             NamespaceMemberLookup::Missing => {
-                return Err(ResolveIssue {
-                    code: "SES-N0104".to_owned(),
-                    message_key: "module.export-unresolved".to_owned(),
-                    primary: reference_origin,
-                    hint: None,
-                });
+                return Err(self.missing_namespace_member(
+                    alias,
+                    namespace,
+                    member_name,
+                    reference_origin,
+                ));
             }
         };
         let symbol = self.dependency_symbol(
@@ -254,5 +272,74 @@ fn symbol_kind(namespace: SymbolNamespace, declaration_kind: Option<&str>) -> Sy
         (SymbolNamespace::Type, _) => SymbolKind::Type,
         (SymbolNamespace::Value, Some("constructor")) => SymbolKind::Constructor,
         _ => SymbolKind::Imported,
+    }
+}
+
+impl Resolver {
+    /// A missing export names the module it is missing from. A close export
+    /// of that module is offered as the replacement; otherwise another module
+    /// that exports the same name is pointed out.
+    fn missing_namespace_member(
+        &self,
+        alias: &str,
+        namespace: SymbolNamespace,
+        member: &str,
+        origin: ByteSpan,
+    ) -> ResolveIssue {
+        let (specifier, names) = self
+            .namespace_imports
+            .exported_names(alias, namespace)
+            .unwrap_or_default();
+        let suggestion =
+            super::suggestion::closest_name(member, names).map(|name| format!("{alias}.{name}"));
+        let mut hint = format!("`{specifier}` has no export `{member}`");
+        if suggestion.is_none() {
+            if let Some(elsewhere) = self.other_exporter(namespace, member, specifier) {
+                hint.push_str(&format!("; {elsewhere}"));
+            }
+        }
+        ResolveIssue {
+            code: "SES-N0104".to_owned(),
+            message_key: "module.export-unresolved".to_owned(),
+            primary: origin,
+            hint: Some(hint),
+            suggestion,
+        }
+    }
+
+    /// Where else `member` is exported: an imported namespace first, then an
+    /// available standard module.
+    fn other_exporter(
+        &self,
+        namespace: SymbolNamespace,
+        member: &str,
+        specifier: &str,
+    ) -> Option<String> {
+        if let Some((alias, _)) = self
+            .namespace_imports
+            .exporters(namespace, member)
+            .into_iter()
+            .find(|(_, other)| *other != specifier)
+        {
+            return Some(format!("write `{alias}.{member}`"));
+        }
+        let namespace = namespace_name(namespace)?;
+        seseragi_project::standard_module_registry_surface()
+            .modules
+            .into_iter()
+            .filter(|module| {
+                module.specifier != specifier
+                    && module.status == seseragi_project::StandardModuleStatus::Available
+            })
+            .find(|module| {
+                module.public_interface.as_ref().is_some_and(|interface| {
+                    interface.exports.iter().any(|export| {
+                        export.namespace == namespace
+                            && export.name == member
+                            && export.visibility == Visibility::Public
+                    })
+                })
+            })
+            .map(|module| format!("`{}` exports it", module.specifier))
     }
 }

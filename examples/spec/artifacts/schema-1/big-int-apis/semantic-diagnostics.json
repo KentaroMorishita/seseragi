@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 77,
-            "end": 237
+            "start": 191,
+            "end": 206
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 77,
-            "end": 237
+            "start": 191,
+            "end": 206
           }
         }
       ],
@@ -343,19 +343,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 392,
-            "end": 563
+            "start": 539,
+            "end": 553
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 392,
-            "end": 563
+            "start": 539,
+            "end": 553
           }
         }
       ],
@@ -489,19 +489,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 565,
-            "end": 730
+            "start": 706,
+            "end": 720
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 565,
-            "end": 730
+            "start": 706,
+            "end": 720
           }
         }
       ],
@@ -709,19 +709,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1104,
+            "end": 1117
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1104,
+            "end": 1117
           }
         }
       ],
@@ -745,19 +745,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parseRadix` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1190,
+            "end": 1208
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parseRadix` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1190,
+            "end": 1208
           }
         }
       ],
@@ -781,19 +781,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1265,
+            "end": 1280
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1265,
+            "end": 1280
           }
         }
       ],
@@ -817,19 +817,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1296,
+            "end": 1311
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1296,
+            "end": 1311
           }
         }
       ],
@@ -853,19 +853,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1331,
+            "end": 1346
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1331,
+            "end": 1346
           }
         }
       ],
@@ -889,19 +889,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1374,
+            "end": 1389
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1374,
+            "end": 1389
           }
         }
       ],
@@ -925,19 +925,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1394,
+            "end": 1409
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1394,
+            "end": 1409
           }
         }
       ],
@@ -961,19 +961,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1430,
+            "end": 1444
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1430,
+            "end": 1444
           }
         }
       ],
@@ -997,19 +997,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1471,
+            "end": 1485
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1471,
+            "end": 1485
           }
         }
       ],
@@ -1033,19 +1033,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.formatRadix` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1532,
+            "end": 1551
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.formatRadix` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1532,
+            "end": 1551
           }
         }
       ],
@@ -1069,19 +1069,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1581,
+            "end": 1595
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1581,
+            "end": 1595
           }
         }
       ],
@@ -1105,19 +1105,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1619,
+            "end": 1633
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1619,
+            "end": 1633
           }
         }
       ],
@@ -1141,19 +1141,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedDivide` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1673,
+            "end": 1694
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedDivide` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1673,
+            "end": 1694
           }
         }
       ],
@@ -1177,19 +1177,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedRemainder` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1731,
+            "end": 1755
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedRemainder` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1731,
+            "end": 1755
           }
         }
       ],
@@ -1213,19 +1213,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedDivide` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1792,
+            "end": 1813
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedDivide` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1792,
+            "end": 1813
           }
         }
       ],
@@ -1249,19 +1249,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1815,
+            "end": 1830
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1815,
+            "end": 1830
           }
         }
       ],
@@ -1285,19 +1285,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1861,
+            "end": 1875
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1861,
+            "end": 1875
           }
         }
       ],
@@ -1321,19 +1321,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedPower` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1907,
+            "end": 1927
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.checkedPower` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1907,
+            "end": 1927
           }
         }
       ],
@@ -1357,19 +1357,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.toInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1978,
+            "end": 1991
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.toInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1978,
+            "end": 1991
           }
         }
       ],
@@ -1393,19 +1393,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1993,
+            "end": 2008
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 1993,
+            "end": 2008
           }
         }
       ],
@@ -1429,19 +1429,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.toInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2037,
+            "end": 2050
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.toInt` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2037,
+            "end": 2050
           }
         }
       ],
@@ -1465,19 +1465,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2087,
+            "end": 2100
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2087,
+            "end": 2100
           }
         }
       ],
@@ -1501,19 +1501,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2116,
+            "end": 2129
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2116,
+            "end": 2129
           }
         }
       ],
@@ -1537,19 +1537,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2147,
+            "end": 2160
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.parse` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2147,
+            "end": 2160
           }
         }
       ],
@@ -1573,19 +1573,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2190,
+            "end": 2204
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2190,
+            "end": 2204
           }
         }
       ],
@@ -1609,19 +1609,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.abs` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2206,
+            "end": 2217
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.abs` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2206,
+            "end": 2217
           }
         }
       ],
@@ -1645,19 +1645,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.sign` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2233,
+            "end": 2245
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.sign` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2233,
+            "end": 2245
           }
         }
       ],
@@ -1681,19 +1681,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2392,
+            "end": 2406
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2392,
+            "end": 2406
           }
         }
       ],
@@ -1717,19 +1717,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2422,
+            "end": 2436
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.format` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2422,
+            "end": 2436
           }
         }
       ],
@@ -1753,19 +1753,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.BigIntDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2470,
+            "end": 2498
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.BigIntDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2470,
+            "end": 2498
           }
         }
       ],
@@ -1789,19 +1789,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.BigIntDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2502,
+            "end": 2530
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.BigIntDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2502,
+            "end": 2530
           }
         }
       ],
@@ -1825,19 +1825,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.NegativeBigIntExponent` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2536,
+            "end": 2566
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.NegativeBigIntExponent` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2536,
+            "end": 2566
           }
         }
       ],
@@ -1861,19 +1861,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`bigints.NegativeBigIntExponent` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2575,
+            "end": 2605
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`bigints.NegativeBigIntExponent` is not defined or imported here",
           "primary": {
-            "start": 1039,
-            "end": 2619
+            "start": 2575,
+            "end": 2605
           }
         }
       ],

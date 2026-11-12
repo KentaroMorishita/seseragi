@@ -1,0 +1,3 @@
+let ready = true
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

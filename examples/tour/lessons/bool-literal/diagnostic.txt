@@ -1,4 +1,4 @@
 examples/tour/lessons/bool-literal/diagnostic.ssrg:1:39: error[SES-N0001]: Name could not be resolved
   | pub effect fn main = println `Bool: ${true}`
-  |                                       ^^^^ effect function body
-  = help: Check the spelling, or define or import the name before using it.
+  |                                       ^^^^ `true` is not defined or imported here
+  = help: Did you mean `True`?

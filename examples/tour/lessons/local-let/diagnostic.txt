@@ -1,4 +1,4 @@
 examples/tour/lessons/local-let/diagnostic.ssrg:6:14: error[SES-N0001]: Name could not be resolved
   | let leaked = adjective
-  |              ^^^^^^^^^ let declaration
+  |              ^^^^^^^^^ `adjective` is not defined or imported here
   = help: Check the spelling, or define or import the name before using it.

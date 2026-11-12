@@ -15,19 +15,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 528,
+            "end": 539
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 528,
+            "end": 539
           }
         }
       ],
@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 572,
+            "end": 583
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 572,
+            "end": 583
           }
         }
       ],
@@ -87,19 +87,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 620,
+            "end": 631
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 620,
+            "end": 631
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 667,
+            "end": 678
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 667,
+            "end": 678
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 708,
+            "end": 719
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 708,
+            "end": 719
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 750,
+            "end": 761
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 750,
+            "end": 761
           }
         }
       ],
@@ -231,19 +231,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 797,
+            "end": 808
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 797,
+            "end": 808
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 838,
+            "end": 849
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 838,
+            "end": 849
           }
         }
       ],
@@ -303,19 +303,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 880,
+            "end": 890
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 880,
+            "end": 890
           }
         }
       ],
@@ -339,19 +339,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 924,
+            "end": 934
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.find` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 924,
+            "end": 934
           }
         }
       ],
@@ -375,19 +375,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 971,
+            "end": 981
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 971,
+            "end": 981
           }
         }
       ],
@@ -411,19 +411,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1017,
+            "end": 1027
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1017,
+            "end": 1027
           }
         }
       ],
@@ -447,19 +447,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1057,
+            "end": 1067
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.take` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1057,
+            "end": 1067
           }
         }
       ],
@@ -483,19 +483,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1098,
+            "end": 1108
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1098,
+            "end": 1108
           }
         }
       ],
@@ -519,19 +519,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1144,
+            "end": 1154
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1144,
+            "end": 1154
           }
         }
       ],
@@ -555,19 +555,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1184,
+            "end": 1194
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.drop` is not defined or imported here",
           "primary": {
-            "start": 449,
-            "end": 1213
+            "start": 1184,
+            "end": 1194
           }
         }
       ],

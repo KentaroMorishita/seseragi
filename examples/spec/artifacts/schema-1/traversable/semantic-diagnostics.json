@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 155,
-            "end": 641
+            "start": 502,
+            "end": 515
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 155,
-            "end": 641
+            "start": 502,
+            "end": 515
           }
         }
       ],

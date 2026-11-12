@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 464,
-            "end": 543
+            "start": 520,
+            "end": 533
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 464,
-            "end": 543
+            "start": 520,
+            "end": 533
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 545,
-            "end": 633
+            "start": 600,
+            "end": 613
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 545,
-            "end": 633
+            "start": 600,
+            "end": 613
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 635,
-            "end": 773
+            "start": 702,
+            "end": 715
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 635,
-            "end": 773
+            "start": 702,
+            "end": 715
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 775,
-            "end": 850
+            "start": 830,
+            "end": 843
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 775,
-            "end": 850
+            "start": 830,
+            "end": 843
           }
         }
       ],
@@ -413,19 +413,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 942,
-            "end": 1040
+            "start": 1017,
+            "end": 1030
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 942,
-            "end": 1040
+            "start": 1017,
+            "end": 1030
           }
         }
       ],
@@ -487,19 +487,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.fromList` is not defined or imported here",
           "primary": {
-            "start": 1188,
-            "end": 1331
+            "start": 1243,
+            "end": 1260
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`nonEmpty.fromList` is not defined or imported here",
           "primary": {
-            "start": 1188,
-            "end": 1331
+            "start": 1243,
+            "end": 1260
           }
         }
       ],
@@ -675,19 +675,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1520,
+            "end": 1533
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1520,
+            "end": 1533
           }
         }
       ],
@@ -711,19 +711,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.toList` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1661,
+            "end": 1676
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.toList` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1661,
+            "end": 1676
           }
         }
       ],
@@ -747,19 +747,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.head` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1711,
+            "end": 1724
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.head` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1711,
+            "end": 1724
           }
         }
       ],
@@ -783,19 +783,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.tail` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1759,
+            "end": 1772
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.tail` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1759,
+            "end": 1772
           }
         }
       ],
@@ -819,19 +819,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.reduce1` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1807,
+            "end": 1823
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.reduce1` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1807,
+            "end": 1823
           }
         }
       ],
@@ -855,19 +855,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.singleton` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1904,
+            "end": 1922
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.singleton` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 1904,
+            "end": 1922
           }
         }
       ],
@@ -967,19 +967,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 2093,
+            "end": 2106
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`nonEmpty.cons` is not defined or imported here",
           "primary": {
-            "start": 1333,
-            "end": 2315
+            "start": 2093,
+            "end": 2106
           }
         }
       ],

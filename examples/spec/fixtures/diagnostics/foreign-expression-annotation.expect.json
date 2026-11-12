@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-T0101",
+      "severity": "Error",
+      "primary": {
+        "start": 24,
+        "end": 34,
+        "text": "Maybe<Int>"
+      },
+      "labels": [
+        "`Maybe<Int>` is a type, not a List to cons onto"
+      ],
+      "helps": [
+        "Write the type on a `let`, as in `let value: Maybe<Int> = Nothing`; `:` in an expression adds an element to a List."
+      ],
+      "fixes": []
+    }
+  ]
+}

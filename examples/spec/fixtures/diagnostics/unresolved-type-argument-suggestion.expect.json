@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "6.5",
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-N0001",
+      "severity": "Error",
+      "primary": {
+        "start": 38,
+        "end": 47,
+        "text": "Mayb<Int>"
+      },
+      "labels": [
+        "type name"
+      ],
+      "helps": [
+        "Did you mean `Maybe`?"
+      ],
+      "fixes": [
+        {
+          "title": "Replace with `Maybe`",
+          "start": 38,
+          "end": 42,
+          "replacement": "Maybe"
+        }
+      ]
+    },
+    {
+      "code": "SES-T0101",
+      "severity": "Error",
+      "primary": {
+        "start": 74,
+        "end": 88,
+        "text": "Point { x: 2 }"
+      },
+      "labels": [
+        "argument 2 expected List<Int>, received Point"
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": []
+    }
+  ]
+}
