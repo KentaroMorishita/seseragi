@@ -1,21 +1,21 @@
-// Lesson 02: 値・型・curried functionを学ぶ
+// Lesson 02: 値、型、カリー化した関数を学ぶ
 // 前提: Lesson 01
 
-// parameterと戻り値へ型を書きます。複数parameterは->でつないだcurried functionです。
+// 引数と戻り値に型を書きます。引数が複数あるときは -> でつなぎ、1つずつ受け取る関数（カリー化した関数）になります。
 fn add left: Int -> right: Int -> Int = left + right
 
-// letは不変の値を束縛します。ここではIntを右辺から推論します。
+// let は変わらない値に名前を付けます。ここでは右辺から Int と推論します。
 let base = 20
 
-// 通常の関数適用は空白で書き、add base 22は(add base) 22として左結合します。
+// 関数を呼ぶときは、関数と引数を空白で区切ります。add base 22 は (add base) 22 のように左から順に適用します。
 let answer = add base 22
 
-// CharはUnicode scalar一個です。数値の_は読みやすさだけを変え、値には影響しません。
+// Char は Unicode の文字（スカラー値）1つです。数値の _ は読みやすくするためだけのもので、値は変わりません。
 let initial: Char = '瀬'
 let million: Int = 1_000_000
 
 pub effect fn main -> Unit with Console fails ConsoleError =
-  // templateの${...}はShow instanceで値をString化します。$は低優先順位の関数適用です。
+  // 文字列の中の ${...} は、Show を使って値を文字列にします。$ は優先順位の低い関数適用で、右側を先にまとめます。
   println $ `answer: ${answer}, initial: ${initial}, million: ${million}`
 
 // Expected stdout:

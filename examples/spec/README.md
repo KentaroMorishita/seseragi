@@ -1,37 +1,46 @@
-# Seseragi specification examples
+# 仕様の例
 
-このdirectoryは完成仕様に対するdesign curriculumとconformance targetです。現行compilerとの互換exampleでは
-ありません。今すぐ実行して学ぶcatalogは [`../samples/`](../samples/README.md) を正本とし、
-Playgroundとnative CLIが同じsourceを検証します。
+仕様（`docs/spec/`）を学ぶ人と、仕様どおりに動くかを確かめる人に向けた例を集めたフォルダーです。
+仕様が決めた言語全体を対象にしています。今のコンパイラーで動くことを約束する例ではありません。
+今すぐ動かして学ぶなら [`../samples/`](../samples/README.md) を使ってください。そこにある例は、Playground と CLI の両方で動くことを確かめています。
 
-仕様、fixture、実装の現在の境界は [`docs/STATUS.md`](../../docs/STATUS.md) を参照してください。
+仕様、fixture、実装がそれぞれどこまで進んでいるかは、[`docs/STATUS.md`](../../docs/STATUS.md) にあります。
 
-- [`lessons/`](./lessons/README.md): 人が順番に学ぶ実行可能program。
-- [`fixtures/`](./fixtures/README.md): compiler / formatter / LSP向けの最小caseと失敗case。
-- [`COVERAGE.md`](./COVERAGE.md): 仕様機能からlesson / fixtureへの対応表。
-- [`grammar-coverage.json`](./grammar-coverage.json): Appendix productionから代表sourceへの機械検査可能な対応。
-- [`artifacts/`](./artifacts/README.md): token / CST / diagnostic / module interfaceのversioned contract fixture。
+| 場所 | 中身 |
+| --- | --- |
+| [`lessons/`](./lessons/README.md) | 順に学ぶための、実行できるプログラム |
+| [`fixtures/`](./fixtures/README.md) | コンパイラー、フォーマッター、LSP を確かめる、最小の例と失敗する例 |
+| [`COVERAGE.md`](./COVERAGE.md) | 仕様の機能と、それを扱う教材と fixture の対応表 |
+| [`grammar-coverage.json`](./grammar-coverage.json) | 付録の文法の規則と、それを使う代表のソースの対応。機械で確かめる |
+| [`artifacts/`](./artifacts/README.md) | トークン、CST、診断、モジュールの公開情報など、コンパイラーの中間の成果物の形を確かめる fixture |
 
-`grammar-coverage.json`のtargetはconformance入力の所在を宣言するもので、現行compilerがparseまたはformat
-できるという主張ではありません。各productionは一groupだけに属し、parse targetとformatter targetを
-最低一件持ちます。diagnostic targetは契約を追加した時点で埋め、空配列は未検証を明示します。
+## `grammar-coverage.json`
 
-各sourceは次を満たします。
+- 各規則が、どのソースで確かめられるかを宣言します。今のコンパイラーがそのソースを読めたり整形できたりするという主張ではありません。
+- 各規則は1つのまとまりだけに属し、構文解析とフォーマッターで確かめるソースを、それぞれ1つ以上持ちます。
+- 診断で確かめるソースは、約束を加えたときに書きます。空の配列は、まだ確かめていないことを表します。
 
-- `docs/spec/` の正本に定義された構文とAPIだけを使う。
-- host service requirementとfailure型をmainの型へ明示する。
-- 期待する出力または値をfile内に記録する。
-- 実装sliceが到達した時点でparse、type check、format、実行、LSP、highlightへ同じsourceを接続する。
-- 現行Playgroundへ載せる実行可能exampleは`examples/samples/`へ独立したsample資産として置く。
+## 例のソースの決まり
 
-lessonを追加するときは、一般的なcodeを書くために毎回自前実装が必要になった処理を記録します。
-複数のexampleで繰り返す純粋操作、Effect operation、decoder、resource処理は標準ライブラリ候補です。
-一例だけに固有なdomain helperはstdlibへ昇格させません。
+- `docs/spec/` に定義された構文と API だけを使う。
+- ホストのサービスへの要求と失敗の型を、`main` の型に明示する。
+- 期待する出力や値を、ファイルの中に書く。
+- 実装が追いついたら、同じソースを構文解析、型検査、整形、実行、LSP、色分けにつなぐ。
+- 今の Playground に載せる例は、`examples/samples/` に独立したサンプルとして置く。
 
-`// Expected stdout: ./name.stdout` を持つexampleは、隣接するsnapshot fileとstdoutをbyte単位で
-比較します。snapshotはUTF-8・LFで、末尾newlineも期待値に含みます。inlineの `// Expected stdout:`
-以降へ出力を書く短いexampleも、各comment行から先頭の `// ` だけを除いたUTF-8・LF文字列として
-同じように比較します。
+## 標準ライブラリの候補を見つける
 
-学習順と各lessonの目的は [`lessons/README.md`](./lessons/README.md) を正本にします。番号は難易度順で、
-新しいlessonを途中へ挿入する場合は参照とcoverage表を同時に更新します。
+教材を加えるときは、ふつうのコードを書くのに毎回自分で書かなければならなかった処理を記録します。
+
+- 複数の例で繰り返す純粋な処理、Effect の操作、デコーダー、資源の処理は、標準ライブラリの候補です。
+- 1つの例だけで使う、その分野に固有の補助関数は、標準ライブラリに入れません。
+
+## 期待する出力
+
+- `// Expected stdout: ./name.stdout` を持つ例は、隣のファイルと標準出力をバイト単位で比べます。このファイルは UTF-8、改行は LF で、最後の改行も期待値に含めます。
+- 短い例は、`// Expected stdout:` の後のコメントに出力を書けます。各行から先頭の `// ` だけを除いた、UTF-8、LF の文字列として、同じように比べます。
+
+## 学ぶ順
+
+学ぶ順と各教材の目的は、[`lessons/README.md`](./lessons/README.md) に従います。
+番号は難しさの順です。途中に新しい教材を入れるときは、参照と対応表も一緒に直します。

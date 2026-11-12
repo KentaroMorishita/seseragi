@@ -1,5 +1,5 @@
-// Lesson 25: portable Pathとcleanupされるtemporary resourceを学ぶ
-// 前提: Lessons 18, 21, and 24
+// Lesson 25: どの環境でも同じに扱える Path と、後で消える一時的な資源を学ぶ
+// 前提: Lessons 18, 21, 24
 
 import * as effects from "std/effect"
 import * as fs from "std/fs"
@@ -32,7 +32,7 @@ pub effect fn main
   -> Unit
 with Console, FileSystem
 fails Either<fs.FileSystemError, AppError> =
-  // callbackのsuccess・failure・cancellationに関係なく、directory全体が後で削除されます。
+  // コールバックが成功しても、失敗しても、取り消されても、後でフォルダー全体が消えます。
   fs.withTemporaryDirectory "seseragi-lesson-" useTemporary
 
 // Expected stdout:

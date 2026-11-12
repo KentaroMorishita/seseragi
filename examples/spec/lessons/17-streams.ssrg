@@ -1,5 +1,5 @@
-// Lesson 17: cold Stream・backpressure・terminal operationを学ぶ
-// 前提: Lessons 10 and 16
+// Lesson 17: 実行するまで動かない Stream、流量の調整、最後の処理を学ぶ
+// 前提: Lessons 10, 16
 
 import * as effects from "std/effect"
 import * as streams from "std/stream"
@@ -11,18 +11,18 @@ type AppError deriving Show =
 let numbers = [1, 2, 3, 4, 5, 6]
 
 pub effect fn main -> Unit with Console fails AppError = do {
-  // capacityをvalidated valueにすることで、実行中に不正なbuffer sizeを抱えません。
+  // 容量を検査済みの値にしておくので、実行中に正しくないバッファーの大きさを持つことはありません。
   capacity <- streams.bufferCapacity 2
     |> effects.fromEither
     |> effects.mapError InvalidBuffer
 
-  // Streamはcoldな処理記述です。runCollectを呼ぶまでsourceは実行されません。
-  // pure sourceのenvironment / failureをterminal contractへ具体化します。
+  // Stream は処理の手順を表すだけです。runCollect を呼ぶまで、元の処理は動きません。
+  // 純粋な元の Stream の環境と失敗の型を、最後の処理の型に合わせて決めます。
   let source: streams.Stream<{}, AppError, Int> = streams.fromArray numbers
   values <- source
     |> streams.map (\value -> value * value)
     |> streams.filter (\value -> value % 2 == 0)
-    // bufferは満杯時にproducerを止めるlossless backpressureです。
+    // buffer は、いっぱいになると値を作る側を止めます。値を捨てずに流量を調整します。
     |> streams.buffer capacity |> streams.runCollect
 
   for value <- values {

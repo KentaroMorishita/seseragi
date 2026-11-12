@@ -1,5 +1,5 @@
-// Lesson 30: Signalからinteractive DOMを安全に動かす
-// 前提: Lessons 15, 18, and 27
+// Lesson 30: Signal から、操作できる DOM を安全に動かす
+// 前提: Lessons 15, 18, 27
 // Test target: test-web
 // Test services: ./30-interactive-dom.services.json
 
@@ -19,7 +19,7 @@ type AppError deriving Show =
   | DomFailure dom.DomError
   | ConsoleFailure ConsoleError
 
-// viewは現在値からHtmlを作るだけのpure関数です。DOM nodeやlistenerを保持しません。
+// view は今の値から Html を作るだけの純粋な関数です。DOM の要素やイベントの受け取りを持ちません。
 fn view count: Int -> html.Html<Msg> = html.div {
   children: [
     html.span { id: "count", children: show count },
@@ -28,7 +28,7 @@ fn view count: Int -> html.Html<Msg> = html.div {
   ]
 }
 
-// eventはMsgとしてFIFOで渡されます。IncrementはSignalを更新し、Stopはmountを終了させます。
+// イベントは Msg として、来た順に渡されます。Increment は Signal を更新し、Stop は mount を終わらせます。
 fn dispatch count: MutableSignal<Int>
   -> message: Msg
   -> Effect<{}, DispatchError, Unit> =
@@ -43,8 +43,8 @@ pub effect fn main -> Unit with Console, Dom fails AppError = do {
 
   target <- dom.query "#app" |> effects.mapError DomFailure
 
-  // runはmount・待機・unmountを一つのscopeにします。
-  // Stopのdispatch failureだけを正常終了として回収し、listenerとsubscriptionのcleanupを待ちます。
+  // run は、取り付け、待つこと、取り外しを1つの範囲（scope）にまとめます。
+  // Stop を配送したときの失敗だけを正常な終わりとして受け取り、イベントの受け取りと購読の後片付けを待ちます。
   dom.run (dom.defaultOptions ()) target (dispatch count) content
     |> effects.recover (\failure -> match failure {
       dom.DispatchFailure StopRequested -> effects.succeed ()

@@ -1,10 +1,10 @@
-// Lesson 31: BigIntで64 bitを超える整数をexactに扱う
-// 前提: Lessons 08 and 22
+// Lesson 31: BigInt で、64ビットを超える整数を誤差なく扱う
+// 前提: Lessons 08, 22
 
 import { BigInt } from "std/big-int"
 import * as bigints from "std/big-int"
 
-// BigInt専用literalはありません。外部入力はtyped failureを返すparseで受け取ります。
+// BigInt 専用のリテラルはありません。外からの入力は、型のついた失敗を返す parse で受け取ります。
 fn grow text: String -> Either<bigints.BigIntParseError, BigInt> =
   text
   |> bigints.parse
@@ -13,7 +13,7 @@ fn grow text: String -> Either<bigints.BigIntParseError, BigInt> =
 pub effect fn main -> Unit with Console fails ConsoleError =
   match grow "999999999999999999999999999999" {
     Left error -> println $ `parse error: ${error}`
-    // Intへ戻さず、BigIntのcanonical decimal表記を出力します。
+    // Int に戻さず、BigInt を決まった形の十進数で出力します。
     Right value -> println $ bigints.format value
   }
 

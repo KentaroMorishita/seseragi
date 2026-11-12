@@ -1,57 +1,57 @@
 # Seseragi 学習コース
 
-このdirectoryは、完成仕様を人が順番に学ぶためのdesign lessonです。現行compilerで今すぐ
-実行できることを保証するcatalogではありません。実装済みsurfaceを動かす教材は
-[`../../samples/`](../../samples/README.md)、小さなcompiler fixtureは `../fixtures/` に分離します。
+Seseragi を、はじめて学ぶ人のための教材です。
+仕様が決めた言語を、順に学べるように並べています。
+今のコンパイラーですぐに動くことを約束するものではありません。今の実装で動く教材は [`../../samples/`](../../samples/README.md) に、コンパイラーを確かめる小さな例は `../fixtures/` にあります。
 
-各lessonは次を守ります。
+## 教材の決まり
 
-- 冒頭に学習目標と前提lessonを書く。
-- 新しい概念の直前に、目的と意味を日本語commentで説明する。
-- 新しく導入する中心概念を1〜2個に絞る。
-- 既出構文は説明なしで再利用してよいが、未習概念を主題より先に要求しない。
-- 同じ処理を複数の抽象で書く場合、意味の違いまたは等価性をcommentで説明する。
-- 実行可能で、exact stdoutを持つ。
+- 先頭に、学ぶことと、先に読んでおく教材を書く。
+- 新しい考え方を使う直前に、目的と意味を日本語のコメントで説明する。
+- 1つの教材で新しく教える中心の考え方は、1つか2つにする。
+- 前の教材で出た書き方は、説明なしで使ってよい。まだ教えていない考え方を、主題より先に使わない。
+- 同じ処理を別の書き方で書くときは、意味の違いか、同じであることをコメントで説明する。
+- 実行でき、標準出力を正確に決めておく。
 
-通常のlessonはrunnerの既定test targetで実行します。特定capabilityとdeterministic scenarioが必要なlessonは、
-冒頭commentに`// Test target: target-id`と`// Test services: ./file.services.json`を置きます。services fileは
-project fixtureと同じschema 1で、real browser、network、filesystemへfallbackしません。
+ふつうの教材は、実行器の既定の環境で実行します。
+特定の機能と、毎回同じ結果になる場面が必要な教材は、先頭のコメントに `// Test target: target-id` と `// Test services: ./file.services.json` を書きます。
+services のファイルは、プロジェクトの fixture と同じ形式（schema 1）です。本物のブラウザー、ネットワーク、ファイルを代わりに使うことはありません。
 
 ## 順序
 
-| Lesson | 学ぶこと                     | 主な記法                                    |
-| -----: | ---------------------------- | ------------------------------------------- |
-|     01 | 最小programと副作用の型      | `effect fn`, `with`, `fails`                |
-|     02 | 値・型・literal・curried関数 | `let`, `fn`, Char, 数値, 空白適用, `$`      |
-|     03 | 条件分岐とpattern matching   | `if`, `match`, tuple pattern                |
-|     04 | Arrayとdata pipeline         | lambda, <code>&#124;&gt;</code>, `map`      |
-|     05 | 基礎構文の統合               | range, effectful `for`, FizzBuzz            |
-|     06 | collectionの畳み込み         | `reduce`, Map, nullish fallback             |
-|     07 | domain data                  | `struct`, ADT, `newtype`, `deriving`        |
-|     08 | 型付き失敗を含むpipeline     | `Either`, nested `map`                      |
-|     09 | 独立した計算の合成           | `pure`, `<*>`, `Validation`                 |
-|     10 | 依存する計算とdoの位置づけ   | `>>=`, `map`, `do`                          |
-|     11 | parametric polymorphism      | generic struct / method / alias             |
-|     12 | 宣言的なcollection構築と分解 | comprehension, nested pattern               |
-|     13 | user-defined abstraction     | trait, `instance`, custom infix operator    |
-|     14 | 意味を持つ集約               | `Semigroup`, `Monoid`, nominal wrapper      |
-|     15 | reactive state               | `Signal`, `*`, transaction                  |
-|     16 | structured concurrency       | Fiber, Deferred, `join`                     |
-|     17 | asynchronous sequence        | Stream, backpressure                        |
-|     18 | resource lifetime            | scope, acquire/release                      |
-|     19 | recursive generic data       | generic ADT, local function, record spread  |
-|     20 | monad transformer            | `MaybeT`, qualified `lift` / `run`          |
-|     21 | immutable binary data        | `Byte`, `Bytes`, slice, UTF-8 decode        |
-|     22 | exact decimal arithmetic     | `Decimal`, explicit rounding                |
-|     23 | safe text pattern matching   | Regex compile, typed failure, replacement   |
-|     24 | timezone and local ambiguity | IANA zone, DST gap / overlap                |
-|     25 | safe filesystem access       | Path, temporary resource, typed I/O error   |
-|     26 | derived JSON codecs          | `JsonEncode`, `JsonDecode`, strict fields   |
-|     27 | pure HTML components         | props record, children, event Msg, SSR      |
-|     28 | Unicode text boundary        | grapheme cluster, normalization             |
-|     29 | 時間を伴うEffectの制御       | retry, repeat, timeout, Schedule            |
-|     30 | Signalからinteractive DOMへ  | mount, event dispatch, reconcile, cleanup   |
-|     31 | 任意精度の整数               | `BigInt`, exact arithmetic, checked failure |
+| 教材 | 学ぶこと | 主な書き方 |
+| ---: | --- | --- |
+| 01 | いちばん小さいプログラムと、副作用の型 | `effect fn`, `with`, `fails` |
+| 02 | 値、型、リテラル、カリー化した関数 | `let`, `fn`, Char, 数値, 空白での関数適用, `$` |
+| 03 | 条件分岐とパターンマッチ | `if`, `match`, タプルのパターン |
+| 04 | Array とデータの流れ | ラムダ, <code>&#124;&gt;</code>, `map` |
+| 05 | 基本の書き方のまとめ | 範囲, Effect の中の `for`, FizzBuzz |
+| 06 | コレクションの畳み込み | `reduce`, Map, 値がないときの代わり |
+| 07 | 分野のデータを型で表す | `struct`, 代数的データ型, `newtype`, `deriving` |
+| 08 | 失敗するかもしれない処理の連なり | `Either`, 入れ子の `map` |
+| 09 | 互いに依存しない計算の組み合わせ | `pure`, `<*>`, `Validation` |
+| 10 | 前の結果に依存する計算と、do の位置づけ | `>>=`, `map`, `do` |
+| 11 | 型を引数に取る（ジェネリクス） | ジェネリクスの struct、メソッド、型の別名 |
+| 12 | コレクションの宣言的な組み立てと分解 | 内包表記, 入れ子のパターン |
+| 13 | 自分で作る抽象 | trait, `instance`, 自作の中置演算子 |
+| 14 | 意味を持った集約 | `Semigroup`, `Monoid`, 名前で区別する包み |
+| 15 | 変わる状態に反応する | `Signal`, `*`, まとめた更新 |
+| 16 | 親子で管理する並行処理 | Fiber, Deferred, `join` |
+| 17 | 非同期に流れてくる値の列 | Stream, 流量の調整 |
+| 18 | 資源の寿命 | scope, 取得と解放 |
+| 19 | 再帰するジェネリクスのデータ | ジェネリクスの代数的データ型, ブロックの中の関数, レコードの展開 |
+| 20 | モナド変換子 | `MaybeT`, モジュール名つきの `lift` と `run` |
+| 21 | 変更できないバイト列 | `Byte`, `Bytes`, 部分の取り出し, UTF-8 への変換 |
+| 22 | 誤差のない十進数の計算 | `Decimal`, 明示的な丸め |
+| 23 | 安全な文字列のパターン | 正規表現のコンパイル, 型のついた失敗, 置き換え |
+| 24 | タイムゾーンと、現地時刻のあいまいさ | IANA のタイムゾーン, 夏時間の欠落と重複 |
+| 25 | 安全なファイル操作 | Path, 一時的な資源, 型のついた入出力のエラー |
+| 26 | 自動導出する JSON の変換 | `JsonEncode`, `JsonDecode`, フィールドを厳密に扱う |
+| 27 | 純粋な HTML の部品 | props のレコード, 子要素, イベントの Msg, サーバーでの描画 |
+| 28 | Unicode の文字の区切り | 見た目の1文字（書記素クラスター）, 正規化 |
+| 29 | 時間を伴う Effect の制御 | 再試行, 繰り返し, 時間切れ, Schedule |
+| 30 | Signal から操作できる DOM へ | 取り付け, イベントの配送, 差分の反映, 後片付け |
+| 31 | 桁数に上限のない整数 | `BigInt`, 誤差のない計算, 失敗を返す計算 |
 
-ApplicativeをMonad/doより先に置きます。前の結果へ依存しない処理を最初からbind列へしないためです。
-`do` はEffect専用構文ではなく、Lesson 10で `>>=` と対応づけてからadvanced lessonで使います。
+Applicative を Monad と do より先に教えます。前の結果に依存しない処理を、最初から順につなぐ書き方（bind）で書かないようにするためです。
+`do` は Effect 専用の構文ではありません。教材10で `>>=` と対応づけてから、後の教材で使います。

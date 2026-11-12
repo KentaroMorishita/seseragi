@@ -1,7 +1,7 @@
-// Lesson 14: Semigroup・Monoid・nominal wrapperを学ぶ
-// 前提: Lessons 07, 08, and 13
+// Lesson 14: Semigroup、Monoid、意味を表す包みの型を学ぶ
+// 前提: Lessons 07, 08, 13
 
-// Intは加算と乗算のどちらをMonoidにするか一意でないため、Sumで意味を選びます。
+// Int は、足し算と掛け算のどちらでまとめるかが1つに決まらないので、Sum で足し算を選びます。
 newtype Sum deriving Eq, Show = Int
 
 instance Semigroup<Sum> {
@@ -10,12 +10,12 @@ instance Semigroup<Sum> {
   }
 }
 
-// empty ()は加算の単位元です。combineは空Arrayならこの値を返します。
+// empty () は足し算で何も変えない値（0）です。combine は空の Array ならこの値を返します。
 instance Monoid<Sum> {
   fn empty -> Sum = Sum 0
 }
 
-// generic combineはMonoid instanceを通して型ごとの集約規則を使います。
+// combine は、Monoid のインスタンスを通して、型ごとのまとめ方を使います。
 fn total values: Array<Int> -> Sum = values |> map Sum |> combine
 
 let totals = [total [1, 2, 3, 4], total []]

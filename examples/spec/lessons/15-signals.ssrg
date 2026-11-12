@@ -1,4 +1,4 @@
-// Lesson 15: Signal・derived graph・transactionを学ぶ
+// Lesson 15: Signal、Signal から作る Signal、まとめた更新を学ぶ
 // 前提: Lessons 09-10
 
 import * as signals from "std/signal"
@@ -6,16 +6,16 @@ import * as signals from "std/signal"
 pub effect fn main -> Unit with Console fails ConsoleError = do {
   width <- signals.make 3
   height <- signals.make 4
-  // combineは二つのSignalからglitch-freeなderived Signalを作ります。
+  // combine は2つの Signal から新しい Signal を作ります。途中の食い違った値は見えません。
   let area = signals.combine (*) width height
 
-  // transaction内の複数更新はatomicに公開され、途中のareaは観測されません。
+  // transaction の中の複数の更新は、まとめて1度に反映されます。途中の area は見えません。
   signals.transaction [
     signals.planSet 5 width,
     signals.planUpdate (\value -> value + 2) height,
   ]
 
-  // * は現在値をEffectとしてsnapshot readするprefix operatorです。
+  // * は、今の値を読む Effect を作る前置の演算子です。
   current <- *area
   println $ `area: ${current}`
 }

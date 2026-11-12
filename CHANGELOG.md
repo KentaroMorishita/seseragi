@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.166] - 2026-11-12
+
+### Changed
+
+- The spec examples are easier to read in Japanese. The lesson comments under `examples/spec/lessons`, the `examples/spec` READMEs and the coverage table explain each idea in plain words instead of untranslated terms. The coverage table now names each feature in Japanese and states what each status means; its fixture lists are unchanged.
+- Spec §12.13 states the proven lint rules (`SES-L0301` to `SES-L0307`) and the advisory review policy in Japanese, like the rest of the chapter. The rules are unchanged.
+
 ## [0.61.165] - 2026-11-12
 
 ### Added

@@ -1,18 +1,18 @@
-// Lesson 04: Array・lambda・pipelineを学ぶ
+// Lesson 04: Array、ラムダ、パイプラインを学ぶ
 // 前提: Lessons 02-03
 
 import * as arrays from "std/array"
 
 let numbers = [1, 2, 3, 4, 5]
 
-// |> は左のdataを次の関数の最後の引数へ渡し、処理順を上から下へ見せます。
+// |> は左の値を次の関数の最後の引数に渡します。処理の順が上から下へ読めます。
 let total = numbers
-  // lambdaは\parameter -> expressionで書きます。generic mapはArrayの各要素を変換します。
+  // ラムダ（名前のない関数）は \引数 -> 式 と書きます。map は Array の各要素を変換します。
   |> map (\value -> value * value) |> arrays.filter (\value -> value % 2 == 0)
-  // sumは数値collectionを加算し、空ならzero ()を使います。
+  // sum は数値の並びを足し合わせます。空なら zero () を返します。
   |> sum
 
-// findは最初の一致で走査を止めます。pureな検索ではbreak構文の代わりに目的を名前で表します。
+// find は最初に見つかったところで探すのをやめます。break の代わりに、目的を表す名前の関数を使います。
 let firstLarge = arrays.find (\value -> value > 3) numbers
 let firstLargeText = match firstLarge {
   Just value -> show value
