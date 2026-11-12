@@ -116,6 +116,7 @@ impl Diagnostic {
     pub fn message(&self) -> String {
         match self.message_key.as_str() {
             "internal.compiler-error" => "Internal compiler error".to_owned(),
+            "target.unsupported-feature" => "The target cannot compile this code".to_owned(),
             "name.unresolved" => "Name could not be resolved".to_owned(),
             "operator.concatenation-unknown" => "`++` is not an operator".to_owned(),
             "expression.type-annotation" => {

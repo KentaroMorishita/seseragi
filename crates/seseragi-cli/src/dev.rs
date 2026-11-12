@@ -173,7 +173,9 @@ fn rebuild_if_changed(
     let mut attempt = || match rebuild() {
         Ok(rebuilt) => rebuilt,
         Err(error) => {
-            eprintln!("seseragi dev: {error}");
+            if error != crate::REPORTED {
+                eprintln!("seseragi dev: {error}");
+            }
             eprintln!("Build failed");
             false
         }

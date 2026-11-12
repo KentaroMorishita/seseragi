@@ -60,9 +60,11 @@ cd hello-web
 hello-web/
 ├── seseragi.toml   # プロジェクトの設定
 ├── seseragi.lock   # 依存関係を固定するファイル
-└── src/
-    ├── app.ssrg    # アプリ本体（状態・更新・画面）
-    └── main.ssrg   # ブラウザの DOM につなぐ入口
+├── src/
+│   ├── app.ssrg    # アプリ本体（状態・更新・画面）
+│   └── main.ssrg   # ブラウザの DOM につなぐ入口
+└── tests/
+    └── app.ssrg    # 状態の更新を確かめるテスト
 ```
 
 中身は Playground のサンプル `web-starter` と同じです。
@@ -127,7 +129,22 @@ seseragi dev --open
 
 VS Code のコマンド **Seseragi: Start Development Server** からも起動できます。
 
-## 5. 本番用にビルドする
+## 5. テストを実行する
+
+```sh
+seseragi test .
+```
+
+`tests/` の中の、`pub let tests: test.Test` を持つファイルがテストとして実行されます。
+最初から入っているテストは、ボタンを押したときの状態の更新（`update`）を確かめます。
+画面を使わない処理なので、ブラウザなしで動きます。テストは `seseragi.toml` の `[test]` で選んだ環境（`node`）で実行します。
+
+```text
+PASS app::counter::Increment adds one
+1 passed; 0 failed; 0 skipped
+```
+
+## 6. 本番用にビルドする
 
 開発サーバーを `Ctrl-C` で止めてから、ビルドします。
 
@@ -137,6 +154,7 @@ seseragi build .
 
 `dist/` に、そのまま公開できる静的サイトが出力されます。
 `index.html`、JavaScript、CSS、ソースマップが入っています。
+ビルドすると `dist/` は作り直されます。`seseragi doc .` で作った API ドキュメント（`dist/doc/`）も消えるので、ビルドの後に作り直してください。
 VS Code のコマンド **Seseragi: Build Web App** でも同じことができます。
 
 ## 次のステップ

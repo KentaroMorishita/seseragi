@@ -14,9 +14,14 @@ mod run;
 mod target;
 mod test;
 
+/// The error of a command that already wrote its diagnostics to stderr.
+/// `main` exits with status 2 without adding a `seseragi:` line.
+pub(crate) const REPORTED: &str = "";
+
 fn main() {
     let exit = match run(std::env::args().skip(1)) {
         Ok(code) => code,
+        Err(error) if error == REPORTED => 2,
         Err(error) => {
             eprintln!("seseragi: {error}");
             2

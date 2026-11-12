@@ -35,7 +35,7 @@ pub use process::{
     run_main_with_source_context, validate_main_process_entry, BenchmarkConfig,
     BenchmarkRunOptions, BuildError, BuildTarget, CapturedRunOutcome, DiagnosticFormat,
     ProcessRunOptions, ProcessSignalMode, RandomSeed, RunError, RunOutcome, SourceFileContext,
-    TestRunOptions,
+    TestRunOptions, API_DOCUMENT_DIRECTORY, API_DOCUMENT_MARKER, API_DOCUMENT_OWNER,
 };
 pub use provider_catalog::{
     browser_provider_configuration, browser_provider_selections,

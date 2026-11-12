@@ -56,6 +56,11 @@ fn creates_the_canonical_web_starter_and_builds_it() {
             "{source} must have one canonical source"
         );
     }
+    assert_eq!(
+        fs::read(project.join("tests/app.ssrg")).unwrap(),
+        fs::read(canonical.join("tests/app.ssrg")).unwrap(),
+        "the starter test must have one canonical source"
+    );
     let manifest = fs::read_to_string(project.join("seseragi.toml")).unwrap();
     assert!(manifest.contains("name = \"hello-web\""));
     assert!(manifest.contains("target = \"web\""));
@@ -74,6 +79,63 @@ fn creates_the_canonical_web_starter_and_builds_it() {
     );
     assert!(project.join("dist/index.html").is_file());
     assert!(project.join("dist/assets/app.js").is_file());
+
+    // The starter test runs without picking a target, although the app targets the web.
+    let tested = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["test", "."])
+        .current_dir(&project)
+        .output()
+        .unwrap();
+    assert_eq!(
+        tested.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&tested.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&tested.stdout),
+        "PASS app::counter::Increment adds one\n1 passed; 0 failed; 0 skipped\n"
+    );
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn builds_and_documents_the_web_starter_in_any_order() {
+    let directory = test_directory("doc-build");
+    let project = directory.join("hello-web");
+    let seseragi = |arguments: &[&str]| {
+        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(arguments)
+            .current_dir(&project)
+            .output()
+            .unwrap();
+        assert_eq!(
+            output.status.code(),
+            Some(0),
+            "seseragi {}: {}",
+            arguments.join(" "),
+            String::from_utf8_lossy(&output.stderr)
+        );
+    };
+    let created = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["new", "web"])
+        .arg(&project)
+        .output()
+        .unwrap();
+    assert_eq!(created.status.code(), Some(0));
+
+    // `doc` first leaves only `dist/doc`, which the build may replace.
+    seseragi(&["doc", "."]);
+    seseragi(&["build", "."]);
+    assert!(project.join("dist/index.html").is_file());
+    assert!(!project.join("dist/doc").exists());
+    seseragi(&["doc", "."]);
+    assert!(project.join("dist/doc/search-index.json").is_file());
+    seseragi(&["build", "."]);
+    seseragi(&["build", "."]);
+    seseragi(&["doc", "."]);
+    assert!(project.join("dist/assets/app.js").is_file());
+    assert!(project.join("dist/doc/index.html").is_file());
     fs::remove_dir_all(directory).unwrap();
 }
 

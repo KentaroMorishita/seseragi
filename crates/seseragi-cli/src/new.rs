@@ -7,6 +7,7 @@ const MANIFEST: &str = include_str!("../../../examples/samples/web-starter/seser
 const APP_SOURCE: &str = include_str!("../../../examples/samples/web-starter/src/app.ssrg");
 const MAIN_SOURCE: &str = include_str!("../../../examples/samples/web-starter/src/main.ssrg");
 const GITIGNORE: &str = include_str!("../../../examples/samples/web-starter/.gitignore");
+const TEST_SOURCE: &str = include_str!("../../../examples/samples/web-starter/tests/app.ssrg");
 
 pub(crate) fn new(arguments: &[String]) -> Result<i32, String> {
     let [template, destination] = arguments else {
@@ -17,7 +18,7 @@ pub(crate) fn new(arguments: &[String]) -> Result<i32, String> {
     }
     create_web_project(Path::new(destination))?;
     println!("Created Seseragi Web project at {destination}");
-    println!("Next:\n  cd {destination}\n  seseragi dev --open");
+    println!("Next:\n  cd {destination}\n  seseragi dev --open\n  seseragi test");
     Ok(0)
 }
 
@@ -62,14 +63,18 @@ fn create_web_project(destination: &Path) -> Result<(), String> {
 
 fn write_web_project(destination: &Path, package_name: &str) -> Result<(), String> {
     let source = destination.join("src");
-    fs::create_dir(&source)
-        .map_err(|error| format!("failed to create {}: {error}", source.display()))?;
+    let tests = destination.join("tests");
+    for directory in [&source, &tests] {
+        fs::create_dir(directory)
+            .map_err(|error| format!("failed to create {}: {error}", directory.display()))?;
+    }
     let manifest = MANIFEST.replacen(CANONICAL_PACKAGE_NAME, package_name, 1);
     for (path, contents) in [
         (destination.join("seseragi.toml"), manifest.as_str()),
         (destination.join(".gitignore"), GITIGNORE),
         (source.join("app.ssrg"), APP_SOURCE),
         (source.join("main.ssrg"), MAIN_SOURCE),
+        (tests.join("app.ssrg"), TEST_SOURCE),
     ] {
         fs::write(&path, contents)
             .map_err(|error| format!("failed to write {}: {error}", path.display()))?;

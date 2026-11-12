@@ -2,9 +2,9 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
 
-struct StarterState { count: Int, }
+pub struct StarterState { pub count: Int, }
 
-type StarterAction =
+pub type StarterAction =
   | Increment
 
 let pageStyle = html.style {
@@ -38,9 +38,10 @@ let imageStyle = html.style {
   width: "100%"
 }
 
-fn update action: StarterAction -> state: StarterState -> StarterState = match action {
-  Increment -> StarterState { count: state.count + 1 }
-}
+pub fn update action: StarterAction -> state: StarterState -> StarterState =
+  match action {
+    Increment -> StarterState { count: state.count + 1 }
+  }
 
 fn dispatch state: MutableSignal<StarterState> -> action: StarterAction -> Task<Unit> =
   signals.update (update action) state

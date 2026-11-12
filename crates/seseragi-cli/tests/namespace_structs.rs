@@ -241,11 +241,7 @@ fn assert_rejected_construction(input: &Path, directory: &Path, code: &str, key:
                 "{result:?}"
             );
         }
-        assert_eq!(
-            native.stderr,
-            [b"seseragi: ".as_slice(), ts.stderr.as_slice(), b"\n"].concat(),
-            "{profile}"
-        );
+        assert_eq!(native.stderr, ts.stderr, "{profile}");
         for name in previous {
             assert_eq!(fs::read(output.join(name)).unwrap(), b"previous output");
         }
