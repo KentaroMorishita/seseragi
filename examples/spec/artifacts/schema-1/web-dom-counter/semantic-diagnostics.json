@@ -15,19 +15,19 @@
       },
       "related": [
         {
-          "message": "let declaration",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 206,
-            "end": 366
+            "start": 224,
+            "end": 234
           }
         }
       ],
       "labels": [
         {
-          "message": "let declaration",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 206,
-            "end": 366
+            "start": 224,
+            "end": 234
           }
         }
       ],
@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "let declaration",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 368,
-            "end": 608
+            "start": 386,
+            "end": 396
           }
         }
       ],
       "labels": [
         {
-          "message": "let declaration",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 368,
-            "end": 608
+            "start": 386,
+            "end": 396
           }
         }
       ],
@@ -87,19 +87,19 @@
       },
       "related": [
         {
-          "message": "let declaration",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 610,
-            "end": 747
+            "start": 629,
+            "end": 639
           }
         }
       ],
       "labels": [
         {
-          "message": "let declaration",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 610,
-            "end": 747
+            "start": 629,
+            "end": 639
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1529,
-            "end": 1731
+            "start": 1575,
+            "end": 1585
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1529,
-            "end": 1731
+            "start": 1575,
+            "end": 1585
           }
         }
       ],
@@ -231,19 +231,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1733,
-            "end": 1973
+            "start": 1776,
+            "end": 1786
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1733,
-            "end": 1973
+            "start": 1776,
+            "end": 1786
           }
         }
       ],
@@ -303,19 +303,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2062,
+            "end": 2072
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2062,
+            "end": 2072
           }
         }
       ],
@@ -339,19 +339,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2145,
+            "end": 2155
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2145,
+            "end": 2155
           }
         }
       ],
@@ -375,19 +375,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2224,
+            "end": 2234
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.style` is not defined or imported here",
           "primary": {
-            "start": 1975,
-            "end": 2287
+            "start": 2224,
+            "end": 2234
           }
         }
       ],
@@ -447,19 +447,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 2289,
-            "end": 2569
+            "start": 2381,
+            "end": 2392
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 2289,
-            "end": 2569
+            "start": 2381,
+            "end": 2392
           }
         }
       ],
@@ -519,19 +519,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.main` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2615,
+            "end": 2624
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.main` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2615,
+            "end": 2624
           }
         }
       ],
@@ -555,19 +555,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.section` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2671,
+            "end": 2683
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.section` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2671,
+            "end": 2683
           }
         }
       ],
@@ -591,19 +591,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2777,
+            "end": 2785
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2777,
+            "end": 2785
           }
         }
       ],
@@ -627,19 +627,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.span` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2887,
+            "end": 2896
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.span` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 2887,
+            "end": 2896
           }
         }
       ],
@@ -663,19 +663,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.span` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3007,
+            "end": 3016
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.span` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3007,
+            "end": 3016
           }
         }
       ],
@@ -699,19 +699,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.h1` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3177,
+            "end": 3184
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.h1` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3177,
+            "end": 3184
           }
         }
       ],
@@ -735,19 +735,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.p` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3315,
+            "end": 3321
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.p` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3315,
+            "end": 3321
           }
         }
       ],
@@ -771,19 +771,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3438,
+            "end": 3446
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3438,
+            "end": 3446
           }
         }
       ],
@@ -807,19 +807,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3502,
+            "end": 3510
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3502,
+            "end": 3510
           }
         }
       ],
@@ -843,19 +843,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3618,
+            "end": 3626
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 2571,
-            "end": 3951
+            "start": 3618,
+            "end": 3626
           }
         }
       ],
@@ -879,19 +879,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`dom.app` is not defined or imported here",
           "primary": {
-            "start": 4095,
-            "end": 4198
+            "start": 4118,
+            "end": 4125
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`dom.app` is not defined or imported here",
           "primary": {
-            "start": 4095,
-            "end": 4198
+            "start": 4118,
+            "end": 4125
           }
         }
       ],

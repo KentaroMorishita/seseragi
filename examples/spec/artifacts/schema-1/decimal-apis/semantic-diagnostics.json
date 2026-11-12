@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 245,
-            "end": 411
+            "start": 364,
+            "end": 380
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 245,
-            "end": 411
+            "start": 364,
+            "end": 380
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 413,
-            "end": 623
+            "start": 566,
+            "end": 582
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 413,
-            "end": 623
+            "start": 566,
+            "end": 582
           }
         }
       ],
@@ -763,19 +763,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.precision` is not defined or imported here",
           "primary": {
-            "start": 983,
-            "end": 1175
+            "start": 1146,
+            "end": 1164
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.precision` is not defined or imported here",
           "primary": {
-            "start": 983,
-            "end": 1175
+            "start": 1146,
+            "end": 1164
           }
         }
       ],
@@ -1019,19 +1019,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`json.decodeString` is not defined or imported here",
           "primary": {
-            "start": 1249,
-            "end": 1344
+            "start": 1322,
+            "end": 1339
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`json.decodeString` is not defined or imported here",
           "primary": {
-            "start": 1249,
-            "end": 1344
+            "start": 1322,
+            "end": 1339
           }
         }
       ],
@@ -1165,19 +1165,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1566,
+            "end": 1580
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1566,
+            "end": 1580
           }
         }
       ],
@@ -1201,19 +1201,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1653,
+            "end": 1667
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1653,
+            "end": 1667
           }
         }
       ],
@@ -1237,19 +1237,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1742,
+            "end": 1756
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1742,
+            "end": 1756
           }
         }
       ],
@@ -1273,19 +1273,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1794,
+            "end": 1808
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1794,
+            "end": 1808
           }
         }
       ],
@@ -1309,19 +1309,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1830,
+            "end": 1846
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1830,
+            "end": 1846
           }
         }
       ],
@@ -1345,19 +1345,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1869,
+            "end": 1885
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1869,
+            "end": 1885
           }
         }
       ],
@@ -1381,19 +1381,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1902,
+            "end": 1918
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1902,
+            "end": 1918
           }
         }
       ],
@@ -1417,19 +1417,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1954,
+            "end": 1970
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 1954,
+            "end": 1970
           }
         }
       ],
@@ -1453,19 +1453,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2014,
+            "end": 2030
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2014,
+            "end": 2030
           }
         }
       ],
@@ -1489,19 +1489,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2070,
+            "end": 2086
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2070,
+            "end": 2086
           }
         }
       ],
@@ -1525,19 +1525,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2129,
+            "end": 2145
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2129,
+            "end": 2145
           }
         }
       ],
@@ -1561,19 +1561,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2187,
+            "end": 2201
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2187,
+            "end": 2201
           }
         }
       ],
@@ -1597,19 +1597,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2223,
+            "end": 2237
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2223,
+            "end": 2237
           }
         }
       ],
@@ -1633,19 +1633,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2261,
+            "end": 2275
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2261,
+            "end": 2275
           }
         }
       ],
@@ -1669,19 +1669,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2352,
+            "end": 2366
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2352,
+            "end": 2366
           }
         }
       ],
@@ -1705,19 +1705,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2395,
+            "end": 2409
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2395,
+            "end": 2409
           }
         }
       ],
@@ -1741,19 +1741,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2432,
+            "end": 2448
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2432,
+            "end": 2448
           }
         }
       ],
@@ -1777,19 +1777,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2474,
+            "end": 2488
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2474,
+            "end": 2488
           }
         }
       ],
@@ -1813,19 +1813,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divideExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2526,
+            "end": 2546
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divideExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2526,
+            "end": 2546
           }
         }
       ],
@@ -1849,19 +1849,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divideExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2577,
+            "end": 2597
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divideExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2577,
+            "end": 2597
           }
         }
       ],
@@ -1885,19 +1885,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divideExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2628,
+            "end": 2648
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divideExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2628,
+            "end": 2648
           }
         }
       ],
@@ -1921,19 +1921,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2650,
+            "end": 2666
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2650,
+            "end": 2666
           }
         }
       ],
@@ -1957,19 +1957,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divide` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2708,
+            "end": 2723
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divide` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2708,
+            "end": 2723
           }
         }
       ],
@@ -1993,19 +1993,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divide` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2763,
+            "end": 2778
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divide` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2763,
+            "end": 2778
           }
         }
       ],
@@ -2029,19 +2029,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divide` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2816,
+            "end": 2831
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.divide` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2816,
+            "end": 2831
           }
         }
       ],
@@ -2065,19 +2065,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2844,
+            "end": 2860
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2844,
+            "end": 2860
           }
         }
       ],
@@ -2101,19 +2101,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2891,
+            "end": 2908
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2891,
+            "end": 2908
           }
         }
       ],
@@ -2137,19 +2137,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2924,
+            "end": 2940
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2924,
+            "end": 2940
           }
         }
       ],
@@ -2173,19 +2173,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2959,
+            "end": 2976
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2959,
+            "end": 2976
           }
         }
       ],
@@ -2209,19 +2209,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2990,
+            "end": 3006
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 2990,
+            "end": 3006
           }
         }
       ],
@@ -2245,19 +2245,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3025,
+            "end": 3042
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3025,
+            "end": 3042
           }
         }
       ],
@@ -2281,19 +2281,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3075,
+            "end": 3089
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3075,
+            "end": 3089
           }
         }
       ],
@@ -2317,19 +2317,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3111,
+            "end": 3128
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.quantize` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3111,
+            "end": 3128
           }
         }
       ],
@@ -2353,19 +2353,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3156,
+            "end": 3170
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3156,
+            "end": 3170
           }
         }
       ],
@@ -2389,19 +2389,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toIntExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3209,
+            "end": 3228
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toIntExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3209,
+            "end": 3228
           }
         }
       ],
@@ -2425,19 +2425,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3230,
+            "end": 3246
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromInt` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3230,
+            "end": 3246
           }
         }
       ],
@@ -2461,19 +2461,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toIntExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3263,
+            "end": 3282
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toIntExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3263,
+            "end": 3282
           }
         }
       ],
@@ -2497,19 +2497,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toIntExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3301,
+            "end": 3320
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toIntExact` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3301,
+            "end": 3320
           }
         }
       ],
@@ -2533,19 +2533,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3338,
+            "end": 3352
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3338,
+            "end": 3352
           }
         }
       ],
@@ -2569,19 +2569,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromFloat` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3386,
+            "end": 3404
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.fromFloat` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3386,
+            "end": 3404
           }
         }
       ],
@@ -2605,19 +2605,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toFloat` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3427,
+            "end": 3443
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.toFloat` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3427,
+            "end": 3443
           }
         }
       ],
@@ -2641,19 +2641,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3481,
+            "end": 3495
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3481,
+            "end": 3495
           }
         }
       ],
@@ -2677,19 +2677,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3511,
+            "end": 3525
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3511,
+            "end": 3525
           }
         }
       ],
@@ -2713,19 +2713,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3543,
+            "end": 3557
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.parse` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3543,
+            "end": 3557
           }
         }
       ],
@@ -2749,19 +2749,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.precision` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3587,
+            "end": 3605
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.precision` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3587,
+            "end": 3605
           }
         }
       ],
@@ -2785,19 +2785,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.rounding` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3630,
+            "end": 3647
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.rounding` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3630,
+            "end": 3647
           }
         }
       ],
@@ -2821,19 +2821,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3674,
+            "end": 3690
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.context` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3674,
+            "end": 3690
           }
         }
       ],
@@ -2857,19 +2857,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`json.encodeString` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3905,
+            "end": 3922
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`json.encodeString` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 3905,
+            "end": 3922
           }
         }
       ],
@@ -2893,19 +2893,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.DecimalDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4029,
+            "end": 4059
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.DecimalDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4029,
+            "end": 4059
           }
         }
       ],
@@ -2929,19 +2929,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.DecimalDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4063,
+            "end": 4093
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.DecimalDivisionByZero` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4063,
+            "end": 4093
           }
         }
       ],
@@ -2965,19 +2965,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.InvalidDecimal` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4099,
+            "end": 4122
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.InvalidDecimal` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4099,
+            "end": 4122
           }
         }
       ],
@@ -3001,19 +3001,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`decimals.InvalidDecimal` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4140,
+            "end": 4163
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`decimals.InvalidDecimal` is not defined or imported here",
           "primary": {
-            "start": 1500,
-            "end": 4186
+            "start": 4140,
+            "end": 4163
           }
         }
       ],

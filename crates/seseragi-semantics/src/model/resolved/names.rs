@@ -94,4 +94,7 @@ pub struct ResolveIssue {
     /// How to reach a name that an imported namespace exports.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hint: Option<String>,
+    /// A close name usable at the reference, written as its replacement.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suggestion: Option<String>,
 }

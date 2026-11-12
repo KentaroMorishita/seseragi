@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "6.5",
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-N0104",
+      "severity": "Error",
+      "primary": {
+        "start": 45,
+        "end": 56,
+        "text": "text.lenght"
+      },
+      "labels": [
+        "`std/text` has no export `lenght`"
+      ],
+      "helps": [
+        "Check the spelling against the names the module exports."
+      ],
+      "fixes": []
+    },
+    {
+      "code": "SES-N0104",
+      "severity": "Error",
+      "primary": {
+        "start": 75,
+        "end": 88,
+        "text": "text.chunksOf"
+      },
+      "labels": [
+        "`std/text` has no export `chunksOf`; `std/array` exports it"
+      ],
+      "helps": [
+        "Check the spelling against the names the module exports."
+      ],
+      "fixes": []
+    },
+    {
+      "code": "SES-N0001",
+      "severity": "Error",
+      "primary": {
+        "start": 160,
+        "end": 170,
+        "text": "frobnicate"
+      },
+      "labels": [
+        "`frobnicate` is not defined or imported here"
+      ],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": []
+    }
+  ]
+}

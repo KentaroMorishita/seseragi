@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 147,
+            "end": 155
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.div` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 147,
+            "end": 155
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.p` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 217,
+            "end": 223
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.p` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 217,
+            "end": 223
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 262,
+            "end": 273
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 262,
+            "end": 273
           }
         }
       ],
@@ -231,19 +231,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.a` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 332,
+            "end": 338
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.a` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 332,
+            "end": 338
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.img` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 378,
+            "end": 386
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.img` is not defined or imported here",
           "primary": {
-            "start": 65,
-            "end": 472
+            "start": 378,
+            "end": 386
           }
         }
       ],
@@ -449,19 +449,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.renderToString` is not defined or imported here",
           "primary": {
-            "start": 474,
-            "end": 700
+            "start": 654,
+            "end": 673
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.renderToString` is not defined or imported here",
           "primary": {
-            "start": 474,
-            "end": 700
+            "start": 654,
+            "end": 673
           }
         }
       ],
@@ -595,19 +595,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.parseWebUrl` is not defined or imported here",
           "primary": {
-            "start": 702,
-            "end": 951
+            "start": 860,
+            "end": 876
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.parseWebUrl` is not defined or imported here",
           "primary": {
-            "start": 702,
-            "end": 951
+            "start": 860,
+            "end": 876
           }
         }
       ],
@@ -631,19 +631,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.parseWebUrl` is not defined or imported here",
           "primary": {
-            "start": 953,
-            "end": 1047
+            "start": 1005,
+            "end": 1021
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.parseWebUrl` is not defined or imported here",
           "primary": {
-            "start": 953,
-            "end": 1047
+            "start": 1005,
+            "end": 1021
           }
         }
       ],
@@ -777,19 +777,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.parseWebUrl` is not defined or imported here",
           "primary": {
-            "start": 1218,
-            "end": 1305
+            "start": 1266,
+            "end": 1282
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.parseWebUrl` is not defined or imported here",
           "primary": {
-            "start": 1218,
-            "end": 1305
+            "start": 1266,
+            "end": 1282
           }
         }
       ],

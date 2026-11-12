@@ -4,7 +4,7 @@
 言語の使い方は[ドキュメントサイト](https://seseragi-docs.vercel.app/)、言語の決まりは[言語仕様](./spec/README.md)、
 これからの予定は[ROADMAP](./ROADMAP.md)を見てください。
 
-最終更新: 2026-10-31
+最終更新: 2026-11-12
 
 ## ひと目で
 
@@ -12,7 +12,7 @@
 | --- | --- |
 | 言語仕様 | 全章の初稿があります。実装しながら直しています |
 | TypeScript ターゲット | 日常的に使える状態です。README とドキュメントサイトに載せた機能はすべて動きます |
-| ネイティブターゲット（Rust） | 開発中です。Web UI 以外の公式サンプル23本のうち16本が動きます |
+| ネイティブターゲット（Rust） | 開発中です。公式サンプル31本のうち、画面を持たない24本すべてが動きます。サーバーと並行処理はこれからです |
 | CLI | `run`・`build`・`dev`・`test`・`format`・`lint` などが使えます |
 | エディター | VS Code 拡張と LSP があります |
 | Playground | ブラウザで書いて実行できます。Tour もあります |
@@ -30,9 +30,7 @@
 - モジュール、パッケージ、ロックファイル
 - TypeScript の関数を呼ぶ `foreign` と、`.d.ts` からの binding 生成
 
-まだ足りないものは次のとおりです。
-
-- 標準ライブラリのうち、ファイル・HTTP・Stream などは一部だけです
+仕様10章の標準モジュールは、TypeScript ターゲットで使えます。仕様と実装の細かなずれは、[#1274](https://github.com/KentaroMorishita/seseragi/issues/1274) の子 Issue で追っています。
 
 ## ネイティブターゲット
 
@@ -41,9 +39,21 @@ TypeScript ターゲットと同じプログラムを、Bun や Node.js なし�
 
 `seseragi run`・`build`・`dev` に `--target native` を付けると、ネイティブでビルドして実行できます。
 
+ネイティブで使えるもの:
+
+- 言語機能（M1）: 公式サンプルが使う機能すべて
+- CLI ツールに要るもの（M2）: ファイル・プロセス・テキスト・正規表現・日時・テストなど
+
+まだ足りないもの:
+
+- サーバーと並行処理（M3）: Effect の service と provide、race・parallel、`std/queue`、`std/semaphore`、Stream の一部、HTTP、Server-Sent Events、WebSocket
+- 外部との連携（M4）: `foreign` 宣言、provider のネイティブ実装、SQLite と Postgres の adapter
+
+それぞれの Issue は、[ROADMAP](./ROADMAP.md) のマイルストーンから探せます。
+
 ### 公式サンプルの状況
 
-`examples/samples` の31本を、ネイティブでビルドして TypeScript ターゲットと出力を比べた結果です。
+`examples/samples` の31本を、ネイティブでビルドして、期待する出力と比べた結果です。
 
 | 状況 | 本数 | 内容 |
 | --- | --- | --- |
@@ -71,3 +81,7 @@ TypeScript ターゲットと同じプログラムを、Bun や Node.js なし�
 - [Scoped checks](./SCOPED_CHECKS.md): 変更に応じてどのチェックを実行するか
 - [RELEASE](./RELEASE.md): リリースの手順
 - [SPEC_COVERAGE](./SPEC_COVERAGE.md): 仕様と fixture の対応表
+
+## このページの直し方
+
+マイルストーンを閉じたとき、または公式サンプルの数や動く本数が変わったときに直します。サンプルの本数は、`seseragi run --target native` で実際に実行した結果から書きます。

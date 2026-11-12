@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-P0001",
+      "severity": "Error",
+      "primary": {
+        "start": 45,
+        "end": 50,
+        "text": "Float"
+      },
+      "helps": [
+        "Wrap the payloads in a tuple, as in `Rect (Float, Float)`, or give the variant a record."
+      ],
+      "fixes": [
+        {
+          "title": "Wrap the payloads in a tuple",
+          "start": 39,
+          "end": 50,
+          "replacement": "(Float, Float)"
+        }
+      ]
+    }
+  ]
+}

@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 121,
+            "end": 133
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 121,
+            "end": 133
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 151,
+            "end": 163
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.make` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 151,
+            "end": 163
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.map` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 183,
+            "end": 194
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.map` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 183,
+            "end": 194
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.constant` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 301,
+            "end": 317
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.constant` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 301,
+            "end": 317
           }
         }
       ],
@@ -267,19 +267,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.subscribe` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 405,
+            "end": 422
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.subscribe` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 405,
+            "end": 422
           }
         }
       ],
@@ -303,19 +303,19 @@
       },
       "related": [
         {
-          "message": "effect function body",
+          "message": "`signals.unsubscribe` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 484,
+            "end": 503
           }
         }
       ],
       "labels": [
         {
-          "message": "effect function body",
+          "message": "`signals.unsubscribe` is not defined or imported here",
           "primary": {
-            "start": 39,
-            "end": 601
+            "start": 484,
+            "end": 503
           }
         }
       ],

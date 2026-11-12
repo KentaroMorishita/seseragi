@@ -15,19 +15,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.append` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 411,
+            "end": 424
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.append` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 411,
+            "end": 424
           }
         }
       ],
@@ -51,19 +51,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.append` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 459,
+            "end": 471
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.append` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 459,
+            "end": 471
           }
         }
       ],
@@ -87,19 +87,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 497,
+            "end": 510
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 497,
+            "end": 510
           }
         }
       ],
@@ -123,19 +123,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 548,
+            "end": 560
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 548,
+            "end": 560
           }
         }
       ],
@@ -159,19 +159,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.reverse` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 595,
+            "end": 609
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.reverse` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 595,
+            "end": 609
           }
         }
       ],
@@ -195,19 +195,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.reverse` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 636,
+            "end": 649
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.reverse` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 636,
+            "end": 649
           }
         }
       ],
@@ -231,19 +231,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`arrays.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 678,
+            "end": 691
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`arrays.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 678,
+            "end": 691
           }
         }
       ],
@@ -301,19 +301,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`lists.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 711,
+            "end": 723
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`lists.concat` is not defined or imported here",
           "primary": {
-            "start": 320,
-            "end": 732
+            "start": 711,
+            "end": 723
           }
         }
       ],

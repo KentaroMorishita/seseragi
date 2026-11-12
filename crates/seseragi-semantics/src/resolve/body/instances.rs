@@ -99,6 +99,7 @@ pub(super) fn resolve_dependency_instances(
             .to_owned(),
             primary: seseragi_syntax::ByteSpan { start, end },
             hint: None,
+            suggestion: None,
         })
         .collect();
     (resolved.into_values().flatten().collect(), issues)

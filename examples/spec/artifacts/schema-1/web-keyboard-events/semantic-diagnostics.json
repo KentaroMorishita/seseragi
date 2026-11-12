@@ -87,19 +87,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.Dispatch` is not defined or imported here",
           "primary": {
-            "start": 114,
-            "end": 262
+            "start": 185,
+            "end": 198
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.Dispatch` is not defined or imported here",
           "primary": {
-            "start": 114,
-            "end": 262
+            "start": 185,
+            "end": 198
           }
         }
       ],
@@ -229,19 +229,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.Dispatch` is not defined or imported here",
           "primary": {
-            "start": 264,
-            "end": 379
+            "start": 359,
+            "end": 372
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.Dispatch` is not defined or imported here",
           "primary": {
-            "start": 264,
-            "end": 379
+            "start": 359,
+            "end": 372
           }
         }
       ],
@@ -337,18 +337,18 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.IgnoreEvent` is not defined or imported here",
           "primary": {
-            "start": 381,
+            "start": 452,
             "end": 468
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.IgnoreEvent` is not defined or imported here",
           "primary": {
-            "start": 381,
+            "start": 452,
             "end": 468
           }
         }
@@ -409,19 +409,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 470,
-            "end": 676
+            "start": 507,
+            "end": 518
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 470,
-            "end": 676
+            "start": 507,
+            "end": 518
           }
         }
       ],
@@ -481,19 +481,19 @@
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 678,
-            "end": 841
+            "start": 742,
+            "end": 753
           }
         }
       ],
       "labels": [
         {
-          "message": "pure function body",
+          "message": "`html.button` is not defined or imported here",
           "primary": {
-            "start": 678,
-            "end": 841
+            "start": 742,
+            "end": 753
           }
         }
       ],

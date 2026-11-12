@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-P0001",
+      "severity": "Error",
+      "primary": {
+        "start": 65,
+        "end": 67,
+        "text": "if"
+      },
+      "helps": [
+        "Write the arm as `pattern when condition -> ...`."
+      ],
+      "fixes": [
+        {
+          "title": "Replace `if` with `when`",
+          "start": 65,
+          "end": 67,
+          "replacement": "when"
+        }
+      ]
+    }
+  ]
+}

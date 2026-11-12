@@ -1,0 +1,6 @@
+struct Point { x: Int }
+
+let missing: Mayb<Int> = Nothing
+let point = (1: Point { x: 2 })
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

@@ -1,0 +1,5 @@
+type Flag = | Flag
+
+let flags = (Flag:Flag)
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

@@ -36,6 +36,7 @@ pub(super) fn register_type_parameters(
                 message_key: "name.duplicate-definition".into(),
                 primary: origin,
                 hint: None,
+                suggestion: None,
             });
         }
         resolver.register(

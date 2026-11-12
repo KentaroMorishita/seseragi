@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.164] - 2026-11-12
+
+### Added
+
+- An unresolved name or module export suggests the closest name usable at that spot, such as ``Did you mean `println`?`` for `prinln` or `True` for `true`. The suggestion is also a fix, which the LSP offers as a quick fix. A missing export names its module, and when no export is close, another module that exports the name. The label now names the unresolved name instead of the declaration around it.
+- A form written the way another language spells it says what to write in Seseragi, at the token that gives it away: a match guard with `if` (`when`), an or-pattern `1 | 2`, a variant with several payload types (a tuple), statements in an `effect fn` body `{ }` (`do { }`), an annotated expression `(value: Type)` (a `let` annotation) and `++` (`append` or a template). `if`, the variant payloads and the `{ }` body also carry a fix.
+
 ## [0.61.163] - 2026-11-12
 
 0.61.162 was not released on its own; its changes ship in this version.

@@ -1,0 +1,3 @@
+let missing = (Nothing: Maybe<Int>)
+
+pub effect fn main -> Unit with Console fails ConsoleError = println "x"

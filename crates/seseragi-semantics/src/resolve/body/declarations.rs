@@ -135,6 +135,7 @@ pub(super) fn resolve_local_function(
                 message_key: "name.duplicate-definition".to_owned(),
                 primary: *span,
                 hint: None,
+                suggestion: None,
             });
         }
     }

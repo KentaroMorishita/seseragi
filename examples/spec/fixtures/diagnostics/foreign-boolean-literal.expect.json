@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": [
+    "12.13"
+  ],
+  "diagnostics": [
+    {
+      "code": "SES-N0001",
+      "severity": "Error",
+      "primary": {
+        "start": 12,
+        "end": 16,
+        "text": "true"
+      },
+      "labels": [
+        "`true` is not defined or imported here"
+      ],
+      "helps": [
+        "Did you mean `True`?"
+      ],
+      "fixes": [
+        {
+          "title": "Replace with `True`",
+          "start": 12,
+          "end": 16,
+          "replacement": "True"
+        }
+      ]
+    }
+  ]
+}

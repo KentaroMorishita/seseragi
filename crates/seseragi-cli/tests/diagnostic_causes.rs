@@ -1,6 +1,8 @@
 //! A diagnostic names the error to fix, not the errors that follow from it:
 //! an unresolved type name or an argument that fails to check is reported
-//! alone. Each fixture's sidecar lists every diagnostic `seseragi run` reports.
+//! alone, and a misspelling or a form from another language says what to
+//! write instead. Each fixture's sidecar lists every diagnostic `seseragi run`
+//! reports.
 use serde_json::Value;
 use std::{path::Path, process::Command};
 
@@ -40,6 +42,22 @@ fn reports_only_the_expected_diagnostics(name: &str) {
             if !labels.is_empty() {
                 entry["labels"] = Value::Array(labels);
             }
+            entry["helps"] = diagnostic["helps"].clone();
+            entry["fixes"] = Value::Array(
+                diagnostic["fixes"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|fix| {
+                        serde_json::json!({
+                            "title": fix["title"],
+                            "start": fix["edits"][0]["range"]["start"],
+                            "end": fix["edits"][0]["range"]["end"],
+                            "replacement": fix["edits"][0]["replacement"],
+                        })
+                    })
+                    .collect(),
+            );
             entry
         })
         .collect::<Vec<_>>();
@@ -57,7 +75,28 @@ fn reports_only_the_expected_diagnostics(name: &str) {
             if let Some(labels) = diagnostic.get("labels") {
                 entry["labels"] = labels.clone();
             }
+            for key in ["helps", "fixes"] {
+                if let Some(value) = diagnostic.get(key) {
+                    entry[key] = value.clone();
+                }
+            }
             entry
+        })
+        .collect::<Vec<_>>();
+    // Helps and fixes are compared only where the sidecar lists them.
+    let actual = actual
+        .into_iter()
+        .enumerate()
+        .map(|(index, mut actual)| {
+            for key in ["helps", "fixes"] {
+                if expected
+                    .get(index)
+                    .is_none_or(|expected| expected.get(key).is_none())
+                {
+                    actual.as_object_mut().unwrap().remove(key);
+                }
+            }
+            actual
         })
         .collect::<Vec<_>>();
     assert_eq!(actual, expected, "{name}");
@@ -71,8 +110,33 @@ fn an_unresolved_type_name_is_reported_alone_with_how_to_reach_it() {
 }
 
 #[test]
+fn an_unresolved_name_offers_a_close_name_only_when_one_exists() {
+    reports_only_the_expected_diagnostics("unresolved-name-suggestion");
+    reports_only_the_expected_diagnostics("unresolved-name-without-suggestion");
+    reports_only_the_expected_diagnostics("unresolved-type-argument-suggestion");
+}
+
+#[test]
 fn an_argument_error_is_reported_instead_of_a_missing_show_instance() {
     reports_only_the_expected_diagnostics("show-argument-error");
     reports_only_the_expected_diagnostics("println-argument-error");
     reports_only_the_expected_diagnostics("template-argument-error");
+}
+
+#[test]
+fn a_spelling_from_another_language_is_pointed_to_its_seseragi_form() {
+    for name in [
+        "foreign-boolean-literal",
+        "foreign-match-guard",
+        "foreign-or-pattern",
+        "foreign-variant-payloads",
+        "foreign-block-statements",
+        "foreign-expression-annotation",
+        "foreign-string-concatenation",
+    ] {
+        reports_only_the_expected_diagnostics(name);
+    }
+    // A constructor that shares its type's name is a value, so consing onto
+    // it is an ordinary type mismatch, not an annotation.
+    reports_only_the_expected_diagnostics("cons-onto-same-named-constructor");
 }

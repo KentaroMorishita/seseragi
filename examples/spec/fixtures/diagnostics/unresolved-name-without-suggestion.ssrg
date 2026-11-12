@@ -1,0 +1,6 @@
+import * as text from "std/text"
+
+let size = text.lenght "abc"
+let parts = text.chunksOf 2 "abcd"
+
+pub effect fn main -> Unit with Console fails ConsoleError = frobnicate "x"

@@ -3090,42 +3090,44 @@ pub(crate) fn sum_type_for_symbol(
     })
 }
 
+/// The Prelude types that are not sum types, such as `Int` or `Effect`.
+pub(crate) const STANDALONE_TYPE_NAMES: &[&str] = &[
+    "Unit",
+    "Never",
+    "Bool",
+    "Int",
+    "Float",
+    "Char",
+    "String",
+    "Array",
+    "List",
+    "Range",
+    "Iterator",
+    "Effect",
+    "Task",
+    "Console",
+    "ConsoleError",
+    "Stdin",
+    "StdinError",
+    "FileSystem",
+    "Js.Error",
+    "Js.Unknown",
+    "Js.NullOr",
+    "Js.Nullable",
+    "Js.UndefinedOr",
+    "Js.Promise",
+    "Js.Object",
+    "Js.Number",
+    "Js.String",
+    "Js.Null",
+    "Js.Undefined",
+    "Js.MutableArray",
+    "Js.Callback",
+];
+
 pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -> bool {
     match namespace {
-        SymbolNamespace::Type => matches!(
-            spelling,
-            "Unit"
-                | "Never"
-                | "Bool"
-                | "Int"
-                | "Float"
-                | "Char"
-                | "String"
-                | "Array"
-                | "List"
-                | "Range"
-                | "Iterator"
-                | "Effect"
-                | "Task"
-                | "Console"
-                | "ConsoleError"
-                | "Stdin"
-                | "StdinError"
-                | "FileSystem"
-                | "Js.Error"
-                | "Js.Unknown"
-                | "Js.NullOr"
-                | "Js.Nullable"
-                | "Js.UndefinedOr"
-                | "Js.Promise"
-                | "Js.Object"
-                | "Js.Number"
-                | "Js.String"
-                | "Js.Null"
-                | "Js.Undefined"
-                | "Js.MutableArray"
-                | "Js.Callback"
-        ),
+        SymbolNamespace::Type => STANDALONE_TYPE_NAMES.contains(&spelling),
         SymbolNamespace::Value => {
             crate::effect_ops::known_effect_operation_by_surface(spelling).is_some()
                 || PURE_FUNCTION_NAMES.contains(&spelling)

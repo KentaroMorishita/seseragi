@@ -1,10 +1,12 @@
 use crate::{ResolveIssue, ResolvedModule, SymbolNamespace};
 use seseragi_syntax::{
-    ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl,
+    ByteRange, ByteSpan, Diagnostic, DiagnosticEdit, DiagnosticFix, DiagnosticSeverity,
+    RelatedDiagnostic, SurfaceDecl,
 };
 
 pub(super) fn collect_resolution_diagnostics(
     resolved: &ResolvedModule,
+    source: &str,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     for issue in &resolved.issues {
@@ -23,8 +25,72 @@ pub(super) fn collect_resolution_diagnostics(
             message_key: issue.message_key.clone(),
             primary,
             related: issue_context(resolved, issue),
-            fixes: Vec::new(),
+            fixes: issue
+                .suggestion
+                .iter()
+                .filter_map(|suggestion| {
+                    Some(DiagnosticFix {
+                        title: format!("Replace with `{suggestion}`"),
+                        edits: vec![DiagnosticEdit {
+                            range: name_range(resolved, issue, source)?,
+                            replacement: suggestion.clone(),
+                        }],
+                    })
+                })
+                .collect(),
         });
+    }
+}
+
+/// The written name an issue reports, without the type arguments that may
+/// follow it, so that a replacement keeps them. A qualified name may have
+/// spaces or comments around its dots, so the range follows the source.
+fn name_range(resolved: &ResolvedModule, issue: &ResolveIssue, source: &str) -> Option<ByteRange> {
+    let primary = byte_range(issue.primary);
+    let Some(reference) = resolved
+        .references
+        .iter()
+        .find(|reference| reference.origin == issue.primary)
+    else {
+        return Some(primary);
+    };
+    let written = source.get(primary.start..primary.end)?;
+    let end = written_name_end(written, &reference.spelling)?;
+    Some(ByteRange {
+        start: primary.start,
+        end: primary.start + end,
+    })
+}
+
+/// The byte length of the prefix of `written` that spells `spelling`,
+/// skipping spaces and comments between its characters.
+fn written_name_end(written: &str, spelling: &str) -> Option<usize> {
+    let mut rest = written;
+    let mut consumed = 0;
+    for (index, expected) in spelling.chars().enumerate() {
+        if index > 0 {
+            let skipped = skip_trivia(rest);
+            consumed += rest.len() - skipped.len();
+            rest = skipped;
+        }
+        let actual = rest.chars().next()?;
+        if actual != expected {
+            return None;
+        }
+        consumed += actual.len_utf8();
+        rest = &rest[actual.len_utf8()..];
+    }
+    Some(consumed)
+}
+
+fn skip_trivia(mut text: &str) -> &str {
+    loop {
+        let trimmed = text.trim_start();
+        if let Some(comment) = trimmed.strip_prefix("//") {
+            text = comment.find('\n').map_or("", |end| &comment[end..]);
+        } else {
+            return trimmed;
+        }
     }
 }
 
@@ -43,6 +109,9 @@ fn issue_context(resolved: &ResolvedModule, issue: &ResolveIssue) -> Vec<Related
     }
     if unresolved_type_reference(resolved, issue.primary).is_some() {
         return at_issue("type name");
+    }
+    if let Some(name) = unresolved_value_reference(resolved, issue) {
+        return at_issue(&format!("`{name}` is not defined or imported here"));
     }
     containing_declaration(&resolved.declarations, issue.primary)
         .map(|declaration| {
@@ -64,6 +133,22 @@ fn unresolved_type_reference(resolved: &ResolvedModule, primary: ByteSpan) -> Op
                 && reference.namespace == SymbolNamespace::Type
                 && reference.target.is_none()
         })
+        .map(|reference| reference.spelling.as_str())
+}
+
+fn unresolved_value_reference<'a>(
+    resolved: &'a ResolvedModule,
+    issue: &ResolveIssue,
+) -> Option<&'a str> {
+    (issue.message_key == "name.unresolved")
+        .then(|| {
+            resolved.references.iter().find(|reference| {
+                reference.origin == issue.primary
+                    && reference.namespace == SymbolNamespace::Value
+                    && reference.target.is_none()
+            })
+        })
+        .flatten()
         .map(|reference| reference.spelling.as_str())
 }
 
@@ -162,6 +247,22 @@ fn byte_range(span: ByteSpan) -> ByteRange {
 
 #[cfg(test)]
 mod tests {
+    use super::written_name_end;
+
+    #[test]
+    fn a_written_name_ends_where_its_spelling_does() {
+        assert_eq!(written_name_end("Lsit<Int>", "Lsit"), Some(4));
+        assert_eq!(
+            written_name_end("text . lenghtBytes \"abc\"", "text.lenghtBytes"),
+            Some(18)
+        );
+        assert_eq!(
+            written_name_end("text // c\n  .lenghtBytes", "text.lenghtBytes"),
+            Some(24)
+        );
+        assert_eq!(written_name_end("other", "text.x"), None);
+    }
+
     #[test]
     fn reports_unresolved_adt_payload_from_resolver_issues() {
         let artifact = crate::semantic_diagnostics(
