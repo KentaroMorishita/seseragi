@@ -268,6 +268,7 @@ jobs:
           sh scripts/install.sh
           "$SESERAGI_INSTALL/bin/seseragi" --version | grep -F "seseragi $SESERAGI_VERSION "
           test -x "$SESERAGI_INSTALL/bin/seseragi-lsp"
+          test -f "$SESERAGI_INSTALL/UNICODE-LICENSE"
       - name: Install and update with install.ps1
         if: runner.os == 'Windows'
         shell: pwsh
@@ -284,6 +285,9 @@ jobs:
           }
           if (-not (Test-Path (Join-Path $env:SESERAGI_INSTALL 'bin\seseragi-lsp.exe'))) {
             throw 'seseragi-lsp.exe is missing'
+          }
+          if (-not (Test-Path (Join-Path $env:SESERAGI_INSTALL 'UNICODE-LICENSE'))) {
+            throw 'UNICODE-LICENSE is missing'
           }
 
   vscode:

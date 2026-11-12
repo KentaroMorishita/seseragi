@@ -90,14 +90,25 @@ try {
   }
 
   New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+  # Files set aside by earlier updates; ones still in use stay until next time.
+  Get-ChildItem -Path $binDir -Filter '*.old' -ErrorAction SilentlyContinue |
+    Remove-Item -Force -ErrorAction SilentlyContinue
   foreach ($binary in 'seseragi.exe', 'seseragi-lsp.exe') {
     $destination = Join-Path $binDir $binary
-    # A running .exe cannot be overwritten but can be renamed.
+    # A running .exe cannot be overwritten but can be renamed. Use a fresh
+    # name so a still-running copy from an earlier update does not block it.
     if (Test-Path $destination) {
-      Move-Item -Force $destination "$destination.old"
+      Move-Item -Force $destination "$destination.$([System.Guid]::NewGuid().ToString('N')).old"
     }
     Copy-Item (Join-Path $extract $binary) $destination
-    Remove-Item -Force -ErrorAction SilentlyContinue "$destination.old"
+  }
+  Get-ChildItem -Path $binDir -Filter '*.old' -ErrorAction SilentlyContinue |
+    Remove-Item -Force -ErrorAction SilentlyContinue
+
+  # The archive's license notice covers Unicode data inside the binaries.
+  $license = Join-Path $extract 'UNICODE-LICENSE'
+  if (Test-Path $license) {
+    Copy-Item -Force $license (Join-Path $installRoot 'UNICODE-LICENSE')
   }
 } finally {
   Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $work

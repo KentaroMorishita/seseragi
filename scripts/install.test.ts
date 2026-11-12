@@ -47,6 +47,7 @@ function publishFakeRelease(
     writeFileSync(path, `#!/bin/sh\necho "${binary} ${version}"\n`)
     chmodSync(path, 0o755)
   }
+  writeFileSync(join(contents, "UNICODE-LICENSE"), `license ${version}\n`)
   const releaseDirectory = join(root, `release-${version}`)
   mkdirSync(releaseDirectory, { recursive: true })
   const archive = `seseragi-v${version}-${archiveTarget}.tar.gz`
@@ -58,6 +59,7 @@ function publishFakeRelease(
     contents,
     "seseragi",
     "seseragi-lsp",
+    "UNICODE-LICENSE",
   ])
   const digest =
     checksum ??
@@ -101,6 +103,9 @@ describe.skipIf(target === undefined)("install.sh", () => {
     const second = install(root, "v1.3.0", publishFakeRelease(root, "1.3.0"))
     expect(second.exitCode).toBe(0)
     expect(run([binary])).toBe("seseragi 1.3.0\n")
+    expect(
+      readFileSync(join(root, "seseragi", "UNICODE-LICENSE"), "utf8")
+    ).toBe("license 1.3.0\n")
   })
 
   test("refuses an archive whose checksum does not match", () => {

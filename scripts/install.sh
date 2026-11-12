@@ -100,6 +100,11 @@ for binary in seseragi seseragi-lsp; do
   mv -f "$bin_dir/.$binary.new" "$bin_dir/$binary"
 done
 
+# The archive's license notice covers Unicode data inside the binaries.
+if [ -f "$work/extract/UNICODE-LICENSE" ]; then
+  cp "$work/extract/UNICODE-LICENSE" "$install_root/UNICODE-LICENSE"
+fi
+
 installed="$("$bin_dir/seseragi" --version)" || fail "the installed CLI does not run"
 printf 'Installed %s to %s\n' "$installed" "$bin_dir"
 
