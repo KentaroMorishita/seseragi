@@ -36,6 +36,23 @@
 - [Runtime Provider authoring guide](./PROVIDER_AUTHORING.md)
 - [Appendix A: 文法要約](./spec/grammar.md)
 
+## 開発に参加する人向けの文書
+
+- [リリースの手順](./RELEASE.md)
+- [変更に合わせて実行するチェック](./SCOPED_CHECKS.md)
+- [Issue の書き方](./ISSUE_GUIDE.md)
+- [Showcase の品質の基準](./SHOWCASE_QUALITY.md)
+- [実行環境の脅威モデル](./threat-model.md)
+- [Rust バックエンドの設計と対応範囲](./architecture/rust-backend.md)
+- [API ドキュメントの出力](./architecture/api-document.md)
+- [見送った案と、その理由](./architecture/decisions.md)
+
+`reviews/` には、Playground の Showcase を承認したときの記録と画面の画像だけを置いています。
+各サンプルの `showcase-review.json` がこれを参照し、Playground のテストが中身を確かめます。
+
+過去の作業の記録（Issue ごとのレビューや実験のメモ）は、ここに置きません。
+以前に置いていた記録は、Git の履歴から読めます。
+
 ## 規範性
 
 本文中の「〜である」「〜しなければならない」は規範です。「例」は規範を

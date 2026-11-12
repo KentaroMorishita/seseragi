@@ -1,9 +1,7 @@
 # Rustバックエンドの設計と対応範囲
 
-[寿命管理とEffectの研究](../experiments/native-lifetimes.md)から、同期Effect / Ref / scopeと
-循環回収をexperimental CLIへ統合する実装を進めている。現在の範囲と検証は
-[native runtime統合](../experiments/native-runtime-integration.md)、全体の進捗は
-[実用化Issue](https://github.com/KentaroMorishita/seseragi/issues/809)で追跡する。
+ネイティブ実行ファイルを作るRustバックエンドの設計と、いま対応している範囲をまとめる。
+全体の進捗は[実用化Issue](https://github.com/KentaroMorishita/seseragi/issues/809)で追う。
 
 ## 判断と実装境界
 
@@ -21,6 +19,18 @@ Source → shared frontend → TypedHir → CoreCompilation / CoreIr
                                         └→ seseragi-backend-rust → Rust source + metadata
                                                                          → rustc → native
 ```
+
+## メモリと資源の扱い
+
+ソースに所有権の注釈を書かせずに、値・返す関数・Ref・scopeをRustで扱う。役割は次のように分ける。
+
+- メモリの回収は、参照カウントと循環の検出で行う。参照カウントだけでは、互いを参照し合う値を回収できない。
+- ファイルや接続などの外部資源は、Effectのscopeが解放する（仕様5.11と14.9）。
+- 回収のときに利用者の関数やRustのデストラクタを呼ばない。回収はSeseragiのプログラムから観測できない。
+
+循環の検出は単一スレッドで、値を動かさず、実行を止めて行う。調べる値に利用者のコードを使わない。
+深くつながった値を最後に手放すときは、再帰ではなく繰り返しで破棄する。再帰で破棄すると、深いADTで
+スタックが溢れるためである。`unsafe`は使わない。関数が捕捉した値を弱参照に変えて寿命を変える方法は取らない。
 
 ## nativeで使える標準moduleの基本操作
 
@@ -539,7 +549,7 @@ parameter-dependent factoryは共有しない。cache keyはinstance identity、
 含めた選択済みCore evidenceに基づく。factory evaluation中はcacheをborrowしない。harness終了時に
 明示的にcacheを空にする。TLS破棄時のcache teardownも検証する。
 
-[TS実測](../experiments/core-ir-performance.md)で改善が見えた二つの処理をこの分析へ戻した。
+TypeScriptの出力を実測して改善が見えた二つの処理を、この分析へ戻した（#816）。
 TS backendはfree-variable分析を非再帰letのinitializer scope判定へ使う。同名の外側の値を
 参照するinitializerは新しいbindingのscope外で評価し、JSのTDZに捕捉される不具合を防ぐ（#820）。
 direct helperとdictionary factoryの共有はRust backendの実装であり、TSへ同じ変換を導入したとは扱わない。
