@@ -17,6 +17,11 @@ use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 const BUILD_MARKER_NAME: &str = ".seseragi-build.json";
+/// `seseragi doc` writes the API document to `<package>/dist/doc` and marks it
+/// with this file. An output that holds only that directory is replaceable.
+pub const API_DOCUMENT_DIRECTORY: &str = "doc";
+pub const API_DOCUMENT_MARKER: &str = ".seseragi-api-document";
+pub const API_DOCUMENT_OWNER: &str = "seseragi-api-document:1\n";
 const BUILD_MARKER: &str = concat!(
     "{\n",
     "  \"schema\": 1,\n",
@@ -776,12 +781,14 @@ fn replace_output_directory(output_directory: &Path, staging: &Path) -> Result<(
                 .next()
                 .is_none();
             let is_managed = is_managed_build(output_directory);
-            if !is_empty && !is_managed {
+            if !is_empty && !is_managed && !holds_only_api_document(output_directory)? {
                 return Err(format!(
                     "refusing to clean unmanaged build output {}; choose an empty directory or a previous Seseragi build",
                     output_directory.display()
                 ));
             }
+            // The artifact manifest lists every published file, so a build
+            // never carries an earlier API document into its own output.
             fs::remove_dir_all(output_directory).map_err(|error| {
                 format!(
                     "failed to clean build output {}: {error}",
@@ -803,6 +810,34 @@ fn replace_output_directory(output_directory: &Path, staging: &Path) -> Result<(
             output_directory.display()
         )
     })
+}
+
+fn is_api_document(directory: &Path) -> bool {
+    fs::symlink_metadata(directory).is_ok_and(|metadata| metadata.is_dir())
+        && fs::symlink_metadata(directory.join(API_DOCUMENT_MARKER))
+            .is_ok_and(|metadata| metadata.is_file())
+        && fs::read_to_string(directory.join(API_DOCUMENT_MARKER))
+            .is_ok_and(|owner| owner == API_DOCUMENT_OWNER)
+}
+
+/// Whether the output is what `seseragi doc` alone leaves: one `doc`
+/// directory with the API document marker.
+fn holds_only_api_document(output_directory: &Path) -> Result<bool, String> {
+    if !is_api_document(&output_directory.join(API_DOCUMENT_DIRECTORY)) {
+        return Ok(false);
+    }
+    let inspect = |error: std::io::Error| {
+        format!(
+            "failed to inspect build output {}: {error}",
+            output_directory.display()
+        )
+    };
+    for entry in fs::read_dir(output_directory).map_err(inspect)? {
+        if entry.map_err(inspect)?.file_name() != API_DOCUMENT_DIRECTORY {
+            return Ok(false);
+        }
+    }
+    Ok(true)
 }
 
 fn is_managed_build(output_directory: &Path) -> bool {
@@ -831,7 +866,10 @@ fn is_managed_build(output_directory: &Path) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{is_managed_build, replace_output_directory, BUILD_MARKER, BUILD_MARKER_NAME};
+    use super::{
+        is_managed_build, replace_output_directory, API_DOCUMENT_DIRECTORY, API_DOCUMENT_MARKER,
+        API_DOCUMENT_OWNER, BUILD_MARKER, BUILD_MARKER_NAME,
+    };
     use std::fs;
     use std::path::Path;
 
@@ -886,6 +924,53 @@ mod tests {
         );
         assert!(!output.join("stale.txt").exists());
         fs::remove_dir_all(root).unwrap();
+    }
+
+    fn write_api_document(output: &Path, owner: &str) {
+        let document = output.join(API_DOCUMENT_DIRECTORY);
+        fs::create_dir_all(&document).unwrap();
+        fs::write(document.join(API_DOCUMENT_MARKER), owner).unwrap();
+        fs::write(document.join("index.html"), "docs").unwrap();
+    }
+
+    #[test]
+    fn replaces_an_output_that_holds_only_the_api_document() {
+        let root = test_directory("api-document-only");
+        let output = root.join("dist");
+        let staging = root.join("staging");
+        write_api_document(&output, API_DOCUMENT_OWNER);
+        fs::create_dir(&staging).unwrap();
+        fs::write(staging.join(BUILD_MARKER_NAME), BUILD_MARKER).unwrap();
+
+        replace_output_directory(&output, &staging).unwrap();
+
+        assert!(output.join(BUILD_MARKER_NAME).is_file());
+        assert!(!output.join(API_DOCUMENT_DIRECTORY).exists());
+        assert!(!staging.exists());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn refuses_an_unmarked_doc_directory_or_other_files_beside_it() {
+        for (name, owner, extra) in [
+            ("api-document-wrong-owner", "someone else\n", false),
+            ("api-document-with-user-file", API_DOCUMENT_OWNER, true),
+        ] {
+            let root = test_directory(name);
+            let output = root.join("dist");
+            let staging = root.join("staging");
+            write_api_document(&output, owner);
+            if extra {
+                fs::write(output.join("keep.txt"), "keep").unwrap();
+            }
+            fs::create_dir(&staging).unwrap();
+
+            let error = replace_output_directory(&output, &staging).unwrap_err();
+
+            assert!(error.contains("refusing to clean unmanaged build output"));
+            assert!(output.join("doc/index.html").is_file());
+            fs::remove_dir_all(root).unwrap();
+        }
     }
 
     fn test_directory(name: &str) -> std::path::PathBuf {

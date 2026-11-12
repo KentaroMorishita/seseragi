@@ -3,8 +3,9 @@ use std::fs;
 use std::io::{ErrorKind, Write};
 use std::path::Path;
 
-const MARKER: &str = ".seseragi-api-document";
-const OWNER: &str = "seseragi-api-document:1\n";
+use seseragi_runtime::{
+    API_DOCUMENT_DIRECTORY, API_DOCUMENT_MARKER as MARKER, API_DOCUMENT_OWNER as OWNER,
+};
 
 pub(super) fn publish(root: &Path, artifacts: BTreeMap<String, String>) -> Result<(), String> {
     let dist = root.join("dist");
@@ -42,7 +43,7 @@ pub(super) fn publish(root: &Path, artifacts: BTreeMap<String, String>) -> Resul
 }
 
 fn publish_locked(dist: &Path, artifacts: BTreeMap<String, String>) -> Result<(), String> {
-    let output = dist.join("doc");
+    let output = dist.join(API_DOCUMENT_DIRECTORY);
     check_output(&output)?;
     let stage = tempfile::Builder::new()
         .prefix(".seseragi-doc-stage-")

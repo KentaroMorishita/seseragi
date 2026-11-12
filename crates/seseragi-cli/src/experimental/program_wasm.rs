@@ -366,7 +366,7 @@ fn compile_file(
         .into(),
         options,
     )
-    .map_err(|e| super::target_error(e, Some(path)))?;
+    .map_err(|e| super::target_error(e, Some(path), Some(&source)))?;
     Ok((
         artifact,
         vec![(

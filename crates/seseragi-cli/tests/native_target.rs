@@ -411,12 +411,68 @@ fn missing_native_entry_has_source_location_and_does_not_select_a_method_or_reex
     assert_missing(&error, &root.join("src/main.ssrg"));
 }
 
+#[test]
+fn native_reports_type_and_backend_errors_like_the_ts_target() {
+    let scratch = tempfile::tempdir().unwrap();
+    let root = scratch.path();
+    let run = |name: &str, native: bool| {
+        let mut command = cli();
+        command.arg("run").arg(name);
+        if native {
+            command.args(["--target", "native"]);
+        }
+        bounded(command.current_dir(root), root)
+    };
+
+    // The same type error prints the same text on both targets.
+    fs::write(
+        root.join("typed.ssrg"),
+        "struct Box { value: Int }\npub fn main -> Unit = println (show (Box { value: 1 }))\n",
+    )
+    .unwrap();
+    let ts = run("typed.ssrg", false);
+    let native = run("typed.ssrg", true);
+    assert_eq!(ts.status.code(), Some(2), "{ts:?}");
+    assert_eq!(native.status.code(), Some(2), "{native:?}");
+    assert_eq!(
+        String::from_utf8_lossy(&native.stderr),
+        String::from_utf8_lossy(&ts.stderr)
+    );
+    assert!(
+        String::from_utf8_lossy(&native.stderr).starts_with("typed.ssrg:2:32: error[SES-T0201]: ")
+    );
+
+    // A backend error has a line, a column and the source line.
+    fs::write(
+        root.join("backend.ssrg"),
+        concat!(
+            "import * as effects from \"std/effect\"\n",
+            "pub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n",
+        ),
+    )
+    .unwrap();
+    let native = run("backend.ssrg", true);
+    assert_eq!(native.status.code(), Some(2), "{native:?}");
+    let text = String::from_utf8_lossy(&native.stderr);
+    assert!(
+        text.starts_with(
+            "backend.ssrg:2:29: error[SES-RUST-0001]: The target cannot compile this code\n  | pub effect fn main"
+        ),
+        "{text}"
+    );
+    assert!(
+        text.contains("\n  |                             ^"),
+        "{text}"
+    );
+    assert!(!text.contains("seseragi:"), "{text}");
+}
+
 fn assert_missing(error: &Output, source: &Path) {
     assert_eq!(error.status.code(), Some(2), "{error:?}");
     assert!(error.stdout.is_empty(), "{error:?}");
     let text = String::from_utf8_lossy(&error.stderr);
     assert!(
-        text.contains(&format!("{}:0..0: SES-RUST-0001", source.display())),
+        text.contains(&format!("{}:1:1: error[SES-RUST-0001]", source.display())),
         "{text}"
     );
     assert!(

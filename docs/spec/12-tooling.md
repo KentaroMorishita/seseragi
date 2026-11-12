@@ -593,7 +593,9 @@ filesystem、real clock、global randomを既定で持たず、必要serviceをf
 元comment rangeをprimaryとするdiagnosticになり、generated wrapper pathをuserへ要求しません。
 
 `seseragi doc` はpackageの公開API documentを生成し、既定ではpackage rootの`dist/doc`へHTMLとJSON search indexを
-directory単位でatomic replaceします。`--include-private`は同じpackage内のprivate APIも別scopeで含めます。
+directory単位でatomic replaceします。`seseragi build`は、出力directoryに`seseragi doc`が作った`doc` directoryだけが
+あるとき、その出力directoryを置き換えてよいものとして扱います。buildは出力directory全体を置き換え、`doc`を
+新しい出力へ引き継ぎません。artifact manifest（14.13）は公開するfileをすべて列挙するためです。`--include-private`は同じpackage内のprivate APIも別scopeで含めます。
 `--test`は全testable fenced blockを生成前に実行し、一件でも失敗すれば既存outputを更新しません。
 run blockのtargetはCLIの`--target`、`test.target`、`run.target`の順で選び、run blockが存在するのにすべて
 省略されていれば実行前にtarget selection errorです。checkとcompile_fail blockだけならtargetを要求しません。

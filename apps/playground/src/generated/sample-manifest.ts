@@ -1566,10 +1566,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/web-starter/src/main.ssrg",
       "manifestPath": "examples/samples/web-starter/seseragi.toml",
-      "manifestHash": "sha256:7151e9603f08861acb90f0ca3c097c3eeafe9c01f23e73e2bb32301ecbcbbdb9",
+      "manifestHash": "sha256:819372a6322dc873a827e4e3199da2da28f11f0af9a8083f38e4f285d00a3c75",
       "guidePath": "examples/samples/web-starter/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:5583f9e9107a79c662fb7d259509d3ca7dea5ebbab4f8c5056545b500196a196",
+      "workspaceHash": "sha256:c43b7129981a0e5a23193d54834d7b82c7e31bf5bc3193f79620595e6b1dd279",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1587,7 +1587,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/web-starter/src/app.ssrg",
-            "sourceHash": "sha256:3f4d9a697bc6b761677336ec4859ddc202cf8ba8d26b00a906b91cb020bbb5a3"
+            "sourceHash": "sha256:43fe910b9cc3f1c6c509011cea97b784257d693592bd50277e2212e7a35ac6ac"
           }
         ]
       }
