@@ -232,10 +232,7 @@ fn alias_fields_reject_missing_fields_wrong_results_and_different_owners() {
                 "{diagnostic}"
             );
         }
-        assert_eq!(
-            String::from_utf8(native.stderr).unwrap(),
-            format!("seseragi: {diagnostic}\n")
-        );
+        assert_eq!(String::from_utf8(native.stderr).unwrap(), diagnostic);
         assert!(!ts_output.exists());
         assert!(!native_output
             .join(format!("program{}", std::env::consts::EXE_SUFFIX))

@@ -105,7 +105,10 @@ fn compile_native(
             CompileInput::new(path, "experimental/main", &source).with_profile(profile),
         )
         .map_err(|diagnostics| {
-            seseragi_driver::render_terminal_diagnostics(&diagnostics, &source)
+            report(seseragi_driver::render_terminal_diagnostics(
+                &diagnostics,
+                &source,
+            ))
         })?;
         if !checked.diagnostics.diagnostics.is_empty() {
             eprint!(
@@ -123,7 +126,16 @@ fn compile_native(
         );
         Ok((
             seseragi_backend_rust::emit_rust_module_with_options(&checked.core_ir, entry, &options)
-                .map_err(|e| target_error(e, Some(path)))?,
+                .map_err(|error| {
+                    target_error(
+                        error,
+                        Some(path),
+                        options
+                            .sources
+                            .get(&checked.core_ir.module)
+                            .map(|file| file.text.as_str()),
+                    )
+                })?,
             vec![fs::canonicalize(path).map_err(|e| e.to_string())?],
         ))
     }
@@ -158,19 +170,52 @@ fn publish_artifact(
     Ok(())
 }
 
-fn target_error(
+/// Writes rendered diagnostics to stderr and returns the reported error.
+pub(crate) fn report(rendered: String) -> String {
+    eprint!("{rendered}");
+    crate::REPORTED.to_owned()
+}
+
+/// Reports a backend error like any other diagnostic: `file:line:column`,
+/// the code and the source line. An error without a source position stays a
+/// one-line message.
+pub(crate) fn target_error(
     error: seseragi_backend_rust::RustBackendError,
     source_path: Option<&str>,
+    source: Option<&str>,
 ) -> String {
-    match &error.origin {
-        Some(origin) => format!(
-            "{}:{}..{}: {error}",
-            source_path.unwrap_or(&origin.source),
-            origin.start,
-            origin.end
-        ),
-        None => error.to_string(),
-    }
+    let (Some(origin), Some(source)) = (&error.origin, source) else {
+        return match &error.origin {
+            Some(origin) => format!("{}: {error}", source_path.unwrap_or(&origin.source)),
+            None => error.to_string(),
+        };
+    };
+    let primary = seseragi_syntax::ByteRange {
+        start: origin.start,
+        end: origin.end,
+    };
+    let artifact = seseragi_syntax::DiagnosticArtifact {
+        schema: 1,
+        source: source_path.unwrap_or(&origin.source).to_owned(),
+        position_encoding: "utf-8".to_owned(),
+        diagnostics: vec![seseragi_syntax::Diagnostic {
+            id: "target:0".to_owned(),
+            code: error.code.clone(),
+            severity: seseragi_syntax::DiagnosticSeverity::Error,
+            message_key: "target.unsupported-feature".to_owned(),
+            primary,
+            related: vec![seseragi_syntax::RelatedDiagnostic {
+                source: None,
+                message: error.message.clone(),
+                primary,
+            }],
+            fixes: Vec::new(),
+            type_difference: None,
+        }],
+    };
+    report(seseragi_driver::render_terminal_diagnostics(
+        &artifact, source,
+    ))
 }
 
 fn compile_project(
@@ -368,13 +413,14 @@ fn project_target_error(
     error: seseragi_backend_rust::RustBackendError,
     project: &seseragi_project::LoadedLocalProject,
 ) -> String {
-    let source = error.module.as_deref().and_then(|id| {
+    let module = error.module.as_deref().and_then(|id| {
         project
             .modules()
             .find(|(identity, _)| seseragi_project::logical_module_id(identity) == id)
-            .map(|(_, module)| module.source_path().to_string_lossy())
+            .map(|(_, module)| module)
     });
-    target_error(error, source.as_deref())
+    let path = module.map(|module| module.source_path().to_string_lossy());
+    target_error(error, path.as_deref(), module.map(|module| module.source()))
 }
 
 // `extension` gives, from the entry module's source, the source text added
@@ -499,23 +545,26 @@ fn load_checked_project_entry_with_profile(
     } else {
         result.map_err(|error| {
             if let seseragi_driver::ProjectCompileError::Diagnostics { modules } = error.error() {
-                modules
-                    .iter()
-                    .map(|diagnostics| {
-                        let source = project
-                            .modules()
-                            .find(|(identity, _)| {
-                                seseragi_project::logical_module_id(identity) == diagnostics.module
-                            })
-                            .expect("diagnostics belong to a loaded module")
-                            .1
-                            .source();
-                        seseragi_driver::render_terminal_diagnostics(
-                            &diagnostics.diagnostics,
-                            source,
-                        )
-                    })
-                    .collect::<String>()
+                report(
+                    modules
+                        .iter()
+                        .map(|diagnostics| {
+                            let source = project
+                                .modules()
+                                .find(|(identity, _)| {
+                                    seseragi_project::logical_module_id(identity)
+                                        == diagnostics.module
+                                })
+                                .expect("diagnostics belong to a loaded module")
+                                .1
+                                .source();
+                            seseragi_driver::render_terminal_diagnostics(
+                                &diagnostics.diagnostics,
+                                source,
+                            )
+                        })
+                        .collect::<String>(),
+                )
             } else {
                 format!("project compiler rejected package: {:?}", error.error())
             }

@@ -1012,20 +1012,23 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 "{kind}: {diagnostics}"
             );
             if kind == "unsupported" {
-                let prefix = format!("{}:", source.display());
-                let range = diagnostics
-                    .split(&prefix)
-                    .nth(1)
-                    .unwrap()
-                    .split(':')
-                    .next()
-                    .unwrap();
-                let (start, end) = range.split_once("..").unwrap();
-                let bytes = fs::read(&source).unwrap();
-                assert_eq!(
-                    &bytes[start.parse::<usize>().unwrap()..end.parse::<usize>().unwrap()],
-                    needle.as_bytes()
+                // The backend error points at the expression by line and column.
+                let text = fs::read_to_string(&source).unwrap();
+                let start = text.find(needle).unwrap();
+                let line = text[..start].matches('\n').count() + 1;
+                let column = start - text[..start].rfind('\n').map_or(0, |at| at + 1) + 1;
+                assert!(
+                    diagnostics.contains(&format!(
+                        "{}:{line}:{column}: error[SES-RUST-0001]",
+                        source.display()
+                    )),
+                    "{kind}: {diagnostics}"
                 );
+                assert!(
+                    diagnostics.contains(&format!("^{}", "^".repeat(needle.len() - 1))),
+                    "{kind}: {diagnostics}"
+                );
+                assert!(!diagnostics.contains("seseragi:"), "{kind}: {diagnostics}");
             }
         }
         assert!(

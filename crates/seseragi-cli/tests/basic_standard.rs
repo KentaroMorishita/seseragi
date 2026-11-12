@@ -878,7 +878,7 @@ fn basic_non_empty_list_invalid_saved_partials_and_returned_arguments_match_diag
         );
         assert_eq!(
             String::from_utf8(native.stderr).unwrap(),
-            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            String::from_utf8(ts.stderr).unwrap(),
             "{expression}"
         );
     }
@@ -1075,7 +1075,7 @@ fn basic_reader_transformer_invalid_inputs_have_identical_ts_and_native_diagnost
         );
         assert_eq!(
             String::from_utf8(native.stderr).unwrap(),
-            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            String::from_utf8(ts.stderr).unwrap(),
             "{declaration}"
         );
     }
@@ -1280,7 +1280,7 @@ fn basic_writer_transformer_invalid_inputs_have_identical_ts_and_native_diagnost
         );
         assert_eq!(
             String::from_utf8(native.stderr).unwrap(),
-            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            String::from_utf8(ts.stderr).unwrap(),
             "{declaration}"
         );
     }
@@ -1536,7 +1536,7 @@ fn basic_state_transformer_invalid_inputs_have_identical_ts_and_native_diagnosti
         );
         assert_eq!(
             String::from_utf8(native.stderr).unwrap(),
-            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            String::from_utf8(ts.stderr).unwrap(),
             "{declaration}"
         );
     }
@@ -1705,7 +1705,7 @@ fn basic_maybe_transformer_invalid_inputs_have_identical_ts_and_native_diagnosti
         );
         assert_eq!(
             String::from_utf8(native.stderr).unwrap(),
-            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()),
+            String::from_utf8(ts.stderr).unwrap(),
             "{declaration}"
         );
     }

@@ -110,7 +110,7 @@ fn implicit_parameters_do_not_introduce_source_bindings_or_change_argument_types
         assert_eq!(native.stdout, ts.stdout);
         assert_eq!(
             native.stderr,
-            format!("seseragi: {}\n", String::from_utf8(ts.stderr).unwrap()).as_bytes(),
+            ts.stderr,
         );
         assert!(!root.join("process").exists());
         assert!(!root.join("native").exists());

@@ -73,7 +73,7 @@ pub(crate) fn test(arguments: &[String]) -> Result<i32, String> {
             .unwrap_or(0),
     };
     if target == "native" {
-        return run_native_tests(&compiled, &root, &options);
+        return run_native_tests(&project, &compiled, &root, &options);
     }
     run_local_tests_in_directory(&compiled, &root, &options)
         .map(|outcome| outcome.exit_code)
@@ -81,6 +81,7 @@ pub(crate) fn test(arguments: &[String]) -> Result<i32, String> {
 }
 
 fn run_native_tests(
+    project: &seseragi_project::LoadedLocalTests,
     compiled: &seseragi_driver::CompiledLocalTests,
     root: &Path,
     options: &TestRunOptions,
@@ -105,13 +106,18 @@ fn run_native_tests(
         })
         .collect::<Vec<_>>();
     let artifact = seseragi_backend_rust::emit_rust_tests(&modules, &tests).map_err(|error| {
-        match &error.origin {
-            Some(origin) => format!(
-                "{}:{}..{}: {error}",
-                origin.source, origin.start, origin.end
-            ),
-            None => error.to_string(),
-        }
+        let module = error.module.as_deref().and_then(|id| {
+            project
+                .modules()
+                .find(|(identity, _)| seseragi_project::logical_module_id(identity) == id)
+                .map(|(_, module)| module)
+        });
+        let path = module.map(|module| module.source_path().to_string_lossy());
+        crate::experimental::target_error(
+            error,
+            path.as_deref(),
+            module.map(|module| module.source()),
+        )
     })?;
     let scratch = tempfile::tempdir().map_err(|error| error.to_string())?;
     let executable = scratch.path().join(crate::experimental::output::EXECUTABLE);

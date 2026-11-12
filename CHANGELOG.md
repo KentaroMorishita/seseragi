@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.61.167] - 2026-11-13
+
+### Added
+
+- `seseragi new` creates `tests/app.ssrg`, a test that checks the starter's `update` without a screen, and its `seseragi.toml` sets `[test] target = "node"`, so `seseragi test` runs in a new project right away. The "Next:" hint lists `seseragi test`.
+
+### Fixed
+
+- `seseragi build` no longer refuses an output directory that holds only the API document from `seseragi doc`. It replaces the whole directory, so the document is gone after a build; run `seseragi doc` again. Spec §12 states this rule.
+- The native target (`seseragi run|build|test --target native`) reports a type error the same way as the TS target, as `path:line:column: error[CODE]` with the source line, and reports code the target cannot compile (`SES-RUST-*`) at the declaration that needs it instead of as a bare `seseragi:` line.
+
 ## [0.61.166] - 2026-11-12
 
 ### Changed
