@@ -1,8 +1,8 @@
 # ロードマップ
 
-このページは、Seseragi のこれからの予定をまとめたものです。いまの状況は [STATUS](./STATUS.md) を見てください。
+このページは、Seseragi のこれからの予定を、コンパイラーの開発に参加する人向けにまとめたものです。いまの状況は [STATUS](./STATUS.md) を見てください。
 
-最終更新: 2026-10-31
+残っている作業の一覧は、ここには書きません。GitHub のマイルストーンと tracking の Issue が、いつも最新の一覧です。
 
 ## いまの目標
 
@@ -15,41 +15,44 @@ TypeScript ターゲットで使える言語機能と標準ライブラリを、
 
 ## マイルストーン
 
-| マイルストーン | ゴール |
+| マイルストーン | ゴール | 状況 |
+| --- | --- | --- |
+| [M1 言語機能と公式サンプル](https://github.com/KentaroMorishita/seseragi/milestone/1) | Web UI 以外の公式サンプルがすべてネイティブで動き、`seseragi run --target native` が使える | 個別の Issue は完了。tracking の Issue（#811、#817）が残っています |
+| [M2 CLI ツールが書ける](https://github.com/KentaroMorishita/seseragi/milestone/2) | ファイル・プロセス・テキスト・正規表現・日時・テストなどがネイティブで使える | 完了 |
+| [M3 サーバーと並行処理](https://github.com/KentaroMorishita/seseragi/milestone/3) | HTTP・WebSocket・Effect の並行処理・Stream がネイティブで使える | **いま進めているマイルストーン** |
+| [M4 WASM と外部連携](https://github.com/KentaroMorishita/seseragi/milestone/4) | program WASM の対応を広げ、`foreign`・Provider・データベースの adapter を使えるようにする | M3 のあとに進めます |
+
+次に着手できる Issue は、M3 のマイルストーンの一覧から選びます。M3 には、次の分野の Issue があります。
+
+- Effect の service と provide、race・parallel・並行 traverse
+- `std/queue`、`std/semaphore`
+- Stream の作成・変換・終端操作と、zip・merge・buffer
+- HTTP のクライアントとサーバー、multipart、Server-Sent Events、WebSocket
+
+分野ごとの tracking の Issue:
+
+| Issue | 分野 |
 | --- | --- |
-| M1 言語機能と公式サンプル | Web UI 以外の公式サンプルがすべてネイティブで動き、`seseragi run --target native` が使える |
-| M2 CLI ツールが書ける | ファイル・プロセス・テキスト・正規表現・日時・テストなどがネイティブで使える |
-| M3 サーバーと並行処理 | HTTP・WebSocket・Effect の並行処理・Stream がネイティブで使える |
-| M4 WASM と外部連携 | program WASM の対応を広げ、`foreign`・Provider・データベースの adapter を使えるようにする |
-
-マイルストーンごとの Issue は、GitHub の [Milestones](https://github.com/KentaroMorishita/seseragi/milestones) にあります。
-
-### M1 の残り
-
-公式サンプルを動かすために残っているもの:
-
-- `std/signal`（#1076）
-- Array と List の内包表記（#1096、#1097）
-- Effect 以外の Monad での `do` 記法（#1103）
-- Array の固定長パターンと rest パターン（#1093）
-
-そのほかの M1 の作業:
-
-- `seseragi run` / `build` / `dev` でネイティブターゲットを選べるようにする（#1122、#1125）
-- 実行時エラーを元のソースの位置で表示する（#1124）
-- 標準の instance と、辞書を後から渡す関数をそろえる（#1101、#1102、#1104）
+| [#811](https://github.com/KentaroMorishita/seseragi/issues/811) | 言語機能 |
+| [#812](https://github.com/KentaroMorishita/seseragi/issues/812) | 標準モジュール |
+| [#813](https://github.com/KentaroMorishita/seseragi/issues/813) | I/O・時刻・並行処理・provider |
+| [#814](https://github.com/KentaroMorishita/seseragi/issues/814) | 外部ホストとの境目（`foreign`、callback、ハンドル） |
+| [#815](https://github.com/KentaroMorishita/seseragi/issues/815) | program WASM と TypeScript の UI |
+| [#817](https://github.com/KentaroMorishita/seseragi/issues/817) | CLI・LSP・開発の流れ |
 
 ## TypeScript ターゲットで続けること
 
 ネイティブの作業と並行して、TypeScript ターゲットでも次を進めます。
 
-- 省略可能なフィールドのパターン（#1174）
-- 多相なトップレベル値の生成コードの修正（#1173）
-- ファイル・HTTP・Stream など、標準ライブラリの残り
+- 点検で見つかった、診断・標準ライブラリ・文書の改善（[#1274](https://github.com/KentaroMorishita/seseragi/issues/1274)）
 - TypeScript の既存コードや npm パッケージとの連携の拡充
 
 ## 進め方
 
 - 機能ごとに、TypeScript とネイティブで同じ出力になることを fixture で確かめます
-- 型の付いたプログラムをランダムに作って両方で実行する差分テストで、書いていない組み合わせのずれも探します（#1170）
+- 型の付いたプログラムをランダムに作って両方で実行する差分テスト（`crates/seseragi-cli/tests/differential.rs`）で、fixture に書いていない組み合わせのずれも探します
 - CLI・LSP・Playground は同じコンパイラー本体を使います。言語の機能を足したら、これらからも同じように使えるようにします
+
+## このページの直し方
+
+マイルストーンを閉じたとき、または新しいマイルストーンを作ったときに、上の表を直します。Issue の番号を一覧として書き足すことはしません。

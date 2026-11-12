@@ -68,6 +68,9 @@ Docs are read by people who did not see your work. Write for that reader.
   parallel items. Put details behind links instead of inlining everything.
 - Keep `docs/spec/` normative: change wording without changing a rule unless
   the change is intended, and say so in the PR when a rule changes.
+- Update `docs/ROADMAP.md` and `docs/STATUS.md` when a milestone opens or
+  closes, or when the number of official samples that run natively changes;
+  link to milestones and tracking issues instead of listing issue numbers.
 
 ## Writing issues
 
