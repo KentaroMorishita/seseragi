@@ -1,9 +1,9 @@
-// Lesson 12: comprehension・Array rest pattern・record patternを学ぶ
-// 前提: Lessons 04 and 11
+// Lesson 12: 内包表記、Array の残りのパターン、レコードのパターンを学ぶ
+// 前提: Lessons 04, 11
 
 import * as arrays from "std/array"
 
-// comprehensionはgeneratorとguardを左から右に処理してArrayを構築します。
+// 内包表記は、要素を取り出す部分と条件を左から右に処理して、Array を作ります。
 fn oddPairs limit: Int -> Array<(Int, Int)> = [
   (left, right) | left <- 1 ..= limit,
   right <- 1 ..= limit,
@@ -12,11 +12,11 @@ fn oddPairs limit: Int -> Array<(Int, Int)> = [
 ]
 
 fn describe pairs: Array<(Int, Int)> -> String = match pairs {
-  // ...restは先頭以外を同じArray型で受け取ります。
+  // ...rest は、先頭以外の要素を同じ型の Array として受け取ります。
   [(left, right), ...rest] -> {
     let summary = { first: `${left} + ${right}`, remaining: arrays.length rest, }
 
-    // record patternは必要なfieldだけをstructuralに取り出します。
+    // レコードのパターンは、必要なフィールドだけを形で取り出します。
     match summary {
       { first, remaining } -> `${first}; remaining: ${remaining}`
     }

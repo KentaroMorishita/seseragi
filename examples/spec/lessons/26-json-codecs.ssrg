@@ -1,5 +1,5 @@
-// Lesson 26: structのJSON codecを安全に導出する
-// 前提: Lessons 07, 08, and 25
+// Lesson 26: struct の JSON の変換を、安全に自動で作る
+// 前提: Lessons 07, 08, 25
 
 import * as json from "std/json"
 
@@ -11,11 +11,11 @@ let encoded = json.encodeString user
 fn decodeUser text: String -> Either<json.JsonReadError, User> = json.decodeString text
 
 fn report result: Either<json.JsonReadError, User> -> String =
-  // decodeString<User>はJSON syntaxとUserのfield検査を両方行います。
+  // decodeString<User> は、JSON の文法と、User のフィールドの両方を確かめます。
   match result {
     Left _ -> "decode error"
     Right decoded ->
-    // derived encoderはfield declaration順の安定したwire表現を作ります。
+    // 自動で作った変換は、フィールドを宣言した順に、いつも同じ形の JSON を作ります。
     `${json.encodeString decoded} / ${decoded.name}`
   }
 

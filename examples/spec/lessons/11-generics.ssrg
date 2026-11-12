@@ -1,16 +1,16 @@
-// Lesson 11: generic struct・method・aliasを学ぶ
-// 前提: Lessons 07 and 10
+// Lesson 11: 型を引数に取る struct、メソッド、型の別名を学ぶ
+// 前提: Lessons 07, 10
 
-// aliasは新しいnominal型を作らず、型へ再利用可能な名前を付けます。
+// 型の別名（alias）は新しい型を作らず、型に使い回せる名前を付けます。
 alias Named<A> = { name: String, value: A }
 
-// Box<A>はAを保持し、生成時にはfieldからAを推論できます。
+// Box<A> は A の値を持ちます。作るときは、フィールドの値から A を推論します。
 struct Box<A> deriving Eq, Show { value: A, }
 
 impl<A> Box<A> {
   fn get self: Box<A> -> A = self.value
 
-  // method独自のBを導入し、Box<A>をBox<B>へ変換します。
+  // メソッドで新しい型引数 B を使い、Box<A> を Box<B> に変換します。
 
   fn map<B> self: Box<A> -> f: (A -> B) -> Box<B> = Box { value: f self.value }
 }

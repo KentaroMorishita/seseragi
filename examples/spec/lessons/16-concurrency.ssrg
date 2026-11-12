@@ -1,21 +1,21 @@
-// Lesson 16: structured Fiber・Deferred・joinを学ぶ
+// Lesson 16: 親子で管理する Fiber、Deferred、join を学ぶ
 // 前提: Lesson 10
 
 import * as deferred from "std/deferred"
 import * as effects from "std/effect"
 
 pub effect fn main -> Unit with Console fails ConsoleError = do {
-  // Deferredは一度だけ完了する値です。ここではworker開始の合図に使います。
+  // Deferred は1度だけ値が決まる入れ物です。ここでは、作業が始まった合図に使います。
   gate <- deferred.make<Never, Int> ()
 
-  // forkしたFiberは現在scopeのchildになり、scope外へ勝手に生存しません。
+  // fork した Fiber は今の範囲（scope）の子になり、範囲が終わった後まで勝手に動き続けません。
   worker <- effects.fork $ do {
     value <- deferred.await gate
     println $ `worker: ${value}`
   }
 
   deferred.succeed 42 gate
-  // joinはworkerの完了を待ち、typed failureがあれば呼び出し側へ伝播します。
+  // join は作業が終わるのを待ちます。型のついた失敗があれば、呼び出した側に伝えます。
   effects.join worker
 }
 

@@ -1,7 +1,7 @@
-// Lesson 13: custom trait・constraint・custom operatorを学ぶ
-// 前提: Lessons 07 and 11
+// Lesson 13: 自分で作る trait、型の制約、中置演算子を学ぶ
+// 前提: Lessons 07, 11
 
-// traitは継承用objectではなく、型ごとに一意な操作の辞書を定義します。
+// trait は継承のためのものではありません。型ごとに1つに決まる操作の組を定義します。
 trait Render<A> {
   fn render value: A -> String
 }
@@ -12,10 +12,10 @@ instance Render<Badge> {
   fn render value: Badge -> String = value.label
 }
 
-// custom operatorはfixityとprecedenceを宣言し、通常関数と同じ型を持ちます。
+// 自分で作る演算子は、結合の向きと優先順位を宣言します。型は普通の関数と同じです。
 operator infixr 4 <+> left: String -> right: String -> String = append left right
 
-// constraintがあるgeneric関数は、Render<A> instanceを型検査時に選びます。
+// 型の制約を持つ関数は、型検査のときに Render<A> のインスタンスを選びます。
 fn framed<A> value: A -> String where Render<A> = "[" <+> render value <+> "]"
 
 pub effect fn main -> Unit with Console fails ConsoleError =

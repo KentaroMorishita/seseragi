@@ -1,19 +1,19 @@
-// Lesson 21: immutableなBytesとUTF-8境界を学ぶ
-// 前提: Lessons 08 and 19
+// Lesson 21: 変更できない Bytes と、UTF-8 の文字の区切りを学ぶ
+// 前提: Lessons 08, 19
 
 import * as bytes from "std/bytes"
 import * as text from "std/text"
 
 let encoded = text.encodeUtf8 "せせらぎ"
 
-// sliceのindexは文字数ではなくbyte offsetで、endを含みません。
-// UTF-8の文字境界に合わせた0..6は、3 bytesの「せ」を二文字取り出します。
+// slice の位置は、文字の数ではなくバイトの位置です。終わりの位置は含みません。
+// UTF-8 の文字の区切りに合わせた 0..6 は、3バイトの「せ」を2文字取り出します。
 fn prefix -> Either<bytes.BytesSliceError, bytes.Bytes> = bytes.slice 0 6 encoded
 
 fn output -> String = match prefix () {
   Left error -> `slice error: ${error}`
   Right value ->
-  // decodeUtf8は不正byte列を隠さず、Eitherでoffsetを返します。
+  // decodeUtf8 は、正しくないバイト列を隠さず、Either でその位置を返します。
   match text.decodeUtf8 value {
     Left error -> `UTF-8 error: ${error}`
     Right decoded -> `${decoded} (${bytes.length value} bytes)`

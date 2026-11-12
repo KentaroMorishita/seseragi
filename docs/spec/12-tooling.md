@@ -459,72 +459,64 @@ versionに合わせて更新・消去します。local packageではroot package
 dependency moduleに新たなlint warningを出しません。CLI JSONとLSPのcode、severity、source range、
 message keyは同じ診断事実から投影し、editor専用ruleを別実装しません。
 
-### Proven lint rules and advisory policy
+### 根拠を示せるlint ruleと、助言の扱い
 
-The shared `AnalysisDocument` caches authoring facts from resolved symbol identity
-and typed HIR. CLI and LSP consume this same analysis after every document version;
-there is no independent editor rule implementation or generated-TypeScript scan.
-An Error suppresses all lint facts in that module. Compiler warnings retain their
-own codes and priority. Lint is never an implicit formatter action.
+共有の`AnalysisDocument`は、解決済みのsymbol identityと型つきHIRから、書き方についての事実をcacheします。
+CLIとLSPは、documentの版が変わるたびに同じanalysisを使います。editor専用のrule実装や、生成したTypeScriptを
+調べる処理はありません。moduleにErrorが一つでもあれば、そのmoduleのlintはすべて出しません。compilerの
+Warningは自分のcodeと優先度を保ちます。lintがformatterの処理として暗黙に動くことはありません。
 
-| Stable rule | Proven trigger | Evidence |
+| rule | 出す条件（根拠を示せるもの） | 根拠 |
 | --- | --- | --- |
-| SES-L0301 | Unused block/do pattern binding, excluding underscore names | Resolved binding identity and absence of references |
-| SES-L0302 | Explicit value/type/module import without resolved references | Import identity; excludes reexports and retained inherent members |
-| SES-L0303 | Private declaration with no references outside its own declaration | Visibility, identity, source range; self-recursion is not an external use |
-| SES-L0304 | Unused or wildcard binding containing a cold Effect | Typed Effect result and resolved binding uses |
-| SES-L0305 | An executed Effect discards a canonical std/signal::Subscription | Canonical nominal resource identity, not its display name |
-| SES-L0306 | Typed Bool literal condition in if | Literal value and the branch that cannot be selected |
-| SES-L0307 | A public canonical MutableSignal<A> parameter is consumed only by direct canonical read calls | Unique resolved parameter identity; all reference spans equal the proved read argument spans; same complete payload A |
+| SES-L0301 | block / do内のpattern bindingが使われていない。名前が `_` で始まるものを除く | 解決済みbindingのidentityと、参照がないこと |
+| SES-L0302 | 明示的に書いた値・型・moduleのimportに、解決済みの参照がない | importのidentity。再exportと、残している型固有のmemberは除く |
+| SES-L0303 | privateな宣言が、自分の宣言の外から参照されていない | visibility、identity、source range。自分自身の再帰呼び出しは外からの使用に数えない |
+| SES-L0304 | 実行するまで動かないEffectを持つbindingが、使われていないかwildcardである | 型つきのEffectの結果と、解決済みbindingの使用 |
+| SES-L0305 | 実行したEffectが、正規の `std/signal::Subscription` を捨てている | 表示名ではなく、正規のnominalな資源のidentity |
+| SES-L0306 | ifの条件が、型つきのBoolリテラルである | リテラルの値と、選ばれることのない分岐 |
+| SES-L0307 | publicな関数の正規の `MutableSignal<A>` parameterが、正規のreadの直接の呼び出しだけで使われている | 一意に解決したparameterのidentity。すべての参照の範囲が、証明したreadの引数の範囲と一致する。payload `A` が完全に同じ |
 
-Every rule is a Warning. All are non-fixable: deletion can affect initialization,
-module loading, instance availability, type checking evidence or comments; choosing
-Effect execution or a resource lifetime requires author intent. The JSON diagnostic
-has an additive `lint` object with `ruleId`, `category: deterministic`,
-`confidence: proven`, `fixSafety: non-fixable`, and `nonFixableReason`.
-`related` carries the concrete reason and UTF-8 byte range. LSP preserves the same
-object under `data.lint` and converts only ranges to the negotiated position encoding.
-A discarded Effect or resource takes priority over unused-local for the same binding.
-`main` is an entrypoint root; public and underscore declarations are excluded from
-unused-private. Unused import diagnostics never claim safe deletion or DCE.
+どのruleもWarningです。どれも自動fixを持ちません。削除すると、初期化、moduleの読み込み、instanceの有無、
+型検査の根拠、commentに影響することがあるからです。また、Effectを実行するかどうかや、資源の寿命を選ぶには、
+書いた人の意図が必要です。JSONのdiagnosticは、追加の `lint` objectを持ちます。中身は `ruleId`、
+`category: deterministic`、`confidence: proven`、`fixSafety: non-fixable`、`nonFixableReason` です。
+`related` は、具体的な理由とUTF-8のbyte rangeを持ちます。LSPは同じobjectを `data.lint` に保ち、rangeだけを
+取り決めたposition encodingへ変換します。同じbindingについては、捨てたEffectや資源の警告を、未使用のlocalの
+警告より優先します。`main` は入口のrootです。publicな宣言と `_` で始まる宣言は、未使用のprivateの対象から
+除きます。未使用のimportの診断は、削除しても安全だとも、不要なコードとして消せるとも主張しません。
 
-`SES-L0307` proves only the input capability consumed by this public function's
-implementation. Every reference to the parameter must be the direct variable
-argument of canonical `std/signal::read` outside a lambda or local function. The
-prefix `*source` has the same typed canonical call. Canonically resolved import
-renames and type aliases qualify; user types or functions with similar names do
-not. At least one read and a complete matching payload are required; underscore
-parameters are intentionally excluded. Aliasing, forwarding to any other callable,
-storing or returning the signal, writes, change planning, closure captures and
-unmapped/ambiguous references reject this initial proof. A mixed read and captured
-read also rejects it. Compiler errors retain the module-wide lint suppression.
+`SES-L0307` が証明するのは、このpublicな関数の実装が使う入力の能力だけです。parameterへの参照はすべて、
+lambdaやlocal functionの外で、正規の `std/signal::read` に直接渡す変数でなければなりません。前置の
+`*source` も、同じ型つきの正規の呼び出しです。正規に解決したimportの別名と型の別名は対象に含みます。
+似た名前の利用者の型や関数は含みません。readが一つ以上あり、payloadが完全に一致することが必要です。
+`_` で始まるparameterは、わざと対象から外します。別名を付ける、ほかのcallableへ渡す、signalを保存したり
+返したりする、書き込む、変更を計画する、closureに取り込む、対応の取れない参照やあいまいな参照がある、の
+どれかがあれば、この最初の証明は成り立ちません。readとclosureへの取り込みが混ざっている場合も成り立ちません。
+compiler errorがあれば、module全体のlintを出さない規則はそのまま保ちます。
 
-The evidence carries the parameter's precise name range, public declaration range,
-read call ranges and complete resolved use count. The canonical read consumes
-`Signal<A>` through the one-way, same-payload `MutableSignal<A>` coercion; other
-owners may still mutate it. This is not a deep immutability or lifecycle claim.
-The guidance is to consider `Signal<A>` after reviewing the exported callable
-contract. Changing a public function type requires consumer/compatibility intent,
-so no automatic annotation edit or global API compatibility promise is offered.
+根拠には、parameterの名前の正確なrange、publicな宣言のrange、readの呼び出しのrange、解決した使用の完全な
+件数を含めます。正規のreadは、一方向で同じpayloadの `MutableSignal<A>` から `Signal<A>` への変換を通して
+値を受け取ります。ほかの持ち主は、まだそのsignalを変更できます。これは深い不変性や寿命についての主張では
+ありません。助言の内容は、公開したcallableの約束を確かめたうえで `Signal<A>` を検討することです。publicな
+関数の型を変えるには、使う側と互換性についての意図が必要です。そのため、型注釈を自動で書き換える編集も、
+API全体の互換性の約束も提供しません。
 
-Architecture advice is a separate review policy, not a build-breaking rule. Its
-candidate corpus and rejection criteria are:
+設計についての助言は、buildを失敗させるruleではなく、別のreview方針です。候補の例と、退ける条件は
+次のとおりです。
 
-| Candidate | Review evidence needed | False positive / rejection case |
+| 候補 | reviewに必要な根拠 | 誤検出として退ける例 |
 | --- | --- | --- |
-| Bool/String/sentinel domain alternatives | Repeated domain state transitions and explicit distinct cases | Ordinary predicate, free-form text or externally fixed protocol |
-| Long same-shaped positional contract | At least four same-domain arguments and observed call-site swaps | Mathematical vectors, FFI contracts and named wrappers |
-| Broad Effect requirement / mixed host boundary | Resolved operations and a caller-visible narrower capability contract | Capability deliberately reserved for compatibility or indirect operations |
-| Public MutableSignal beyond the proved direct-read input rule | Complete consumer/alias/host mutation and ownership evidence | Public consumer may mutate, unknown host code or callback escape |
-| Legacy selector binding | Proven same logical target, identity and lifecycle across renders | Dynamic selectors, multiple matching nodes or intentional external DOM ownership |
+| Bool / String / 番兵の値の代わりに、分野の型を使う | 分野の状態の移り変わりが繰り返され、場合がはっきり分かれている | 普通の述語、自由な文章、外部で決まったprotocol |
+| 同じ形の位置引数が長く並ぶ約束 | 同じ分野の引数が4つ以上あり、呼び出し側で入れ違いが実際に起きている | 数学のvector、FFIの約束、名前つきのwrapper |
+| 広すぎるEffectのrequirement、hostの境界が混ざっている | 解決済みのoperationと、呼び出し側から見える、より狭い能力の約束 | 互換性や間接的なoperationのために、わざと残している能力 |
+| 上の直接readの規則を超える、publicな `MutableSignal` | 使う側、別名、hostによる変更、持ち主についての完全な根拠 | 使う側が変更しうる、未知のhostのcode、callbackへの漏れ |
+| 古いselectorによるbinding | 描画をまたいで、同じ論理的な対象、identity、寿命であることの証明 | 動的なselector、複数の一致する要素、わざと外部が持つDOM |
 
-These candidates have confidence `review-required` and no automatic fix; they
-cannot become canonical deterministic warnings on naming, argument count, or the
-absence of a local write alone. A corpus case must provide source, resolved/typed
-evidence, proposed guidance and a counterexample before promotion. The current
-canonical corpus intentionally emits no architecture warning for the rejection
-cases above. This separates proven semantic facts from taste and avoids a compiler
-or CI dependency on probabilistic external review.
+これらの候補のconfidenceは `review-required` で、自動fixはありません。名前、引数の数、localな書き込みが
+ないことだけを根拠に、正規のdeterministic warningにしてはいけません。候補をruleへ上げるには、source、
+解決済み・型つきの根拠、助言の文案、反例を一つの例として示す必要があります。今の正規の例の集まりは、上の
+退ける例に対して、設計の警告をわざと一つも出しません。これにより、証明できる意味の事実と好みの問題を分け、
+compilerやCIが、確率的な外部のreviewに依存しないようにします。
 
 
 ## 12.14 type inference explanation

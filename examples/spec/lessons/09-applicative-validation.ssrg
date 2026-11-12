@@ -1,4 +1,4 @@
-// Lesson 09: Applicativeによる独立validationの合成を学ぶ
+// Lesson 09: 互いに依存しない検査を Applicative で組み合わせる
 // 前提: Lessons 07-08
 
 import { Invalid, Valid, Validation } from "std/validation"
@@ -13,7 +13,7 @@ struct User deriving Eq, Show { name: String, age: Int, }
 
 fn makeUser name: String -> age: Int -> User = User { name, age }
 
-// 各validatorは互いの結果へ依存せず、成功値または一件のerrorを返します。
+// それぞれの検査は互いの結果に依存せず、成功の値か、1件のエラーを返します。
 fn validateName name: String -> Validation<FormError, String> =
   if name
     |> text.trim
@@ -25,8 +25,8 @@ fn validateName name: String -> Validation<FormError, String> =
 fn validateAge age: Int -> Validation<FormError, Int> =
   if age > 0 then validation.valid age else validation.invalid AgeMustBePositive
 
-// pureで通常関数をValidationへ持ち上げ、<*>で独立した入力を与えます。
-// ValidationのApplicativeは途中で止まらず、両方のerrorを入力順に蓄積します。
+// pure で普通の関数を Validation の中に入れ、<*> でそれぞれの入力を渡します。
+// Validation は途中で止まらず、両方のエラーを入力の順にためます。
 fn validateUser name: String -> age: Int -> Validation<FormError, User> =
   pure makeUser
   <*> validateName name
