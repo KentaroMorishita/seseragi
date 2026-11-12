@@ -1,7 +1,7 @@
 // Lesson 05: 基礎構文を組み合わせてFizzBuzzを書く
 // 前提: Lessons 01-04
 
-// matchは値をpatternで分類します。tupleにすると複数条件を一度に照合できます。
+// match は値をパターンで分けます。タプルにすると、いくつかの条件を一度に調べられます。
 fn fizzBuzz number: Int -> String = match (number % 3, number % 5) {
   (0, 0) -> "FizzBuzz"
   (0, _) -> "Fizz"
@@ -9,7 +9,7 @@ fn fizzBuzz number: Int -> String = match (number % 3, number % 5) {
   _ -> `${number}`
 }
 
-// effect fnは副作用を型へ明示します。forはRangeを順番に処理し、各Effectを逐次実行します。
+// effect fn は副作用を型に書きます。for は範囲を順に回り、それぞれの Effect を1つずつ実行します。
 pub effect fn main -> Unit with Console fails ConsoleError = for number <- 1 ..= 100 {
   println $ fizzBuzz number
 }

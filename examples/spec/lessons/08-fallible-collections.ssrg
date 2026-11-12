@@ -1,18 +1,18 @@
-// Lesson 08: Eitherを含むcollection pipelineを学ぶ
-// 前提: Lessons 04, 06, and 07
+// Lesson 08: 失敗するかもしれない処理を、Either でつなぐ
+// 前提: Lessons 04, 06, 07
 
 import * as arrays from "std/array"
 import { SizeError } from "std/collection"
 
 fn renderChunk values: Array<Int> -> String = values |> map show |> join ", "
 
-// chunksOfはsizeが不正なら失敗するため、結果をEitherで型へ残します。
+// chunksOf は大きさが正しくないと失敗するので、結果を Either で返します。
 fn chunkedOdds values: Array<Int> -> Either<SizeError, Array<String>> =
   values
   |> arrays.filter (\value -> value % 2 != 0)
   |> arrays.sort
   |> arrays.chunksOf 2
-  // 外側のmapはEitherのsuccess値、内側のmapはArrayの各要素を変換します。
+  // 外側の map は Either の成功の値を、内側の map は Array の各要素を変換します。
   |> map (\chunks -> map renderChunk chunks)
 
 let numbers = [5, 3, 1, 7, 2]
