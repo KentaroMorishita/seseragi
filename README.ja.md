@@ -287,7 +287,20 @@ pub effect fn main = for number <- 1 ..= 30 {
 
 ## インストール
 
-[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) から、OS と CPU に合ったアーカイブをダウンロードしてください。CLI と LSP が入っています。生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です。
+macOS と Linux では、次のコマンドで CLI と LSP をインストールします。
+
+```sh
+curl -fsSL https://github.com/KentaroMorishita/seseragi/releases/latest/download/install.sh | sh
+```
+
+Windows では PowerShell で次のコマンドを実行します。
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/KentaroMorishita/seseragi/releases/latest/download/install.ps1 | iex"
+```
+
+`~/.seseragi/bin` に入ります。同じコマンドをもう一度実行すると、最新版に更新されます。
+[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) からアーカイブを直接ダウンロードしても構いません。生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です。
 
 ```sh
 seseragi run hello.ssrg          # ファイルを実行する

@@ -179,6 +179,24 @@ publish job自体が失敗して不完全なGitHub Releaseが作られた場合�
 確認し、不完全なreleaseを削除してから同一SHAのpublish jobをretryします。公開済みreleaseの
 tagを別SHAへ付け替えません。
 
+## インストール用スクリプト
+
+`scripts/install.sh`（macOS と Linux）と `scripts/install.ps1`（Windows）は、
+リリースのたびに `install.sh` と `install.ps1` という名前で GitHub Release に添付されます。
+利用者は `releases/latest/download/install.sh` を取得して実行するので、手作業で更新する必要はありません。
+
+スクリプトは次の順に動きます。
+
+1. OS と CPU から対象のアーカイブを決める
+2. `SESERAGI_VERSION` がなければ、最新のリリースの版を調べる
+3. アーカイブと `.sha256` を取得し、チェックサムが合わなければ止まる
+4. `~/.seseragi/bin`（`SESERAGI_INSTALL` で変更できる）に `seseragi` と `seseragi-lsp` を置く
+
+公開の前に、release workflow の `install-verify` が各環境でスクリプトを実行します。
+ビルドしたアーカイブを `SESERAGI_DOWNLOAD_URL` で指定してインストールし、もう一度実行して
+更新できることと、`seseragi --version` が新しい版を表示することを確かめます。
+チェックサムが合わないときに止まることは、`scripts/install.test.ts` で確かめています。
+
 ## Native archiveからinstall
 
 macOS / Linuxでは、GitHub ReleaseからOS / CPUに合うarchiveとchecksumを取得します。
