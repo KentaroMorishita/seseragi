@@ -27,7 +27,7 @@
 - [標準ライブラリsurface](./spec/10-library-surface.md)
 - [packageとproject layout](./spec/11-packages-and-projects.md)
 - [Parser・formatter・language server契約](./spec/12-tooling.md)
-- [Formatter canonical layout](./FORMATTER_LAYOUT.md)
+- [フォーマッターの整形規則](./FORMATTER_LAYOUT.md)
 - [pure HTML treeとDOM renderer](./spec/13-web-ui.md)
 - [性能モデルと最適化境界](./spec/14-performance.md)
 - [Runtime Provider Contract](./spec/15-runtime-providers.md)
