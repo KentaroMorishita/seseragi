@@ -18,14 +18,9 @@ instance Ready<Device> {
 
 // describe自身はTの正体を知りません。
 // Ready<T>のdictionaryを受け取るので、同じ関数を別の型へ使えます。
-pub fn describe<T> value: T -> String
-where Ready<T> =
-  ready value
+pub fn describe<T> value: T -> String where Ready<T> = ready value
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  do {
-    println (describe Active)
-    println (describe Online)
-  }
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println (describe Active)
+  println (describe Online)
+}

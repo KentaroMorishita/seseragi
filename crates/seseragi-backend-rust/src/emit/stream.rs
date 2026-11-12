@@ -14,6 +14,7 @@ fn arity(name: &str) -> Option<usize> {
         | "std/stream::flatMap"
         | "std/stream::take"
         | "std/stream::drop"
+        | "std/stream::chunk"
         | "std/stream::concat"
         | "std/stream::runForEach" => 2,
         "std/stream::runFold" => 3,
@@ -126,6 +127,16 @@ impl Backend<'_> {
             "std/stream::take" | "std/stream::drop" => (
                 vec![named("std/prelude::Int", vec![]), stream(a.clone())],
                 stream(a.clone()),
+            ),
+            "std/stream::chunk" => (
+                vec![named("std/prelude::Int", vec![]), stream(a.clone())],
+                named(
+                    "std/prelude::Either",
+                    vec![
+                        named("std/collection::SizeError", vec![]),
+                        stream(array(a.clone())),
+                    ],
+                ),
             ),
             "std/stream::concat" => (
                 vec![stream(a.clone()), stream(a.clone())],

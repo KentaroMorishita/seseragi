@@ -264,6 +264,8 @@ export async function releaseInfo(root = repositoryRoot): Promise<object> {
       `seseragi-legacy-migration-v${version}.vsix`,
       `seseragi-runtime-v${version}.tar.gz`,
       `seseragi-wasm-v${version}.tar.gz`,
+      "install.sh",
+      "install.ps1",
     ],
   }
 }

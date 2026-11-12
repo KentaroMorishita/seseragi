@@ -1057,6 +1057,7 @@ export type {
 export {
   buffer as bufferStream,
   bufferCapacity,
+  chunk as chunkStream,
   concat as concatStream,
   drop as dropStream,
   empty as emptyStream,

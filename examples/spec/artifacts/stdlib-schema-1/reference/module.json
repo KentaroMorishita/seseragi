@@ -18179,6 +18179,22 @@
           "namespace": "value"
         },
         {
+          "identity": "std/stream::chunk",
+          "name": "chunk",
+          "module": "std/stream",
+          "category": "Prelude",
+          "kind": "function",
+          "signature": "chunk<R, E, A> arg1: Int -> arg2: Stream<R, E, A> -> Either<SizeError, Stream<R, E, Array<A>>>",
+          "description": "Compiler-owned standard library symbol.",
+          "typeParameters": [
+            "R",
+            "E",
+            "A"
+          ],
+          "constraints": [],
+          "namespace": "value"
+        },
+        {
           "identity": "std/stream::concat",
           "name": "concat",
           "module": "std/stream",

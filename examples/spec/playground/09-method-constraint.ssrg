@@ -10,8 +10,7 @@ pub trait Labeled<A> {
 
 // Renderの実装には、対象型のLabeled instanceも必要です。
 pub trait Render<A> {
-  fn render value: A -> String
-  where Labeled<A>
+  fn render value: A -> String where Labeled<A>
 }
 
 instance Labeled<Badge> {
@@ -24,21 +23,14 @@ instance Labeled<Device> {
 
 // renderのbodyは、call siteから渡されたLabeled dictionaryを使います。
 instance Render<Badge> {
-  fn render value: Badge -> String
-  where Labeled<Badge> =
-    label value
+  fn render value: Badge -> String where Labeled<Badge> = label value
 }
 
 instance Render<Device> {
-  fn render value: Device -> String
-  where Labeled<Device> =
-    label value
+  fn render value: Device -> String where Labeled<Device> = label value
 }
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  do {
-    println (render Active)
-    println (render Online)
-  }
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println (render Active)
+  println (render Online)
+}

@@ -1365,11 +1365,17 @@ fn angle_tokens(tokens: &[Token]) -> HashSet<usize> {
                 .and_then(|position| significant.get(position))
                 .map(|index| &tokens[*index]);
             let next = significant.get(position + 1).map(|index| &tokens[*index]);
-            let qualified_argument = previous.is_some_and(|previous| previous.end == token.start)
-                && qualified_type_argument(tokens, &significant, position + 1);
+            let tight = previous.is_some_and(|previous| previous.end == token.start);
+            let qualified_argument =
+                tight && qualified_type_argument(tokens, &significant, position + 1);
+            // `defer<{}, E, A>`: a record type argument; a tight `<` before a
+            // brace never compares, since records have no ordering.
+            let record_argument =
+                tight && next.is_some_and(|token| token.kind == TokenKind::PunctuationBraceLeft);
             let type_like = previous
                 .is_some_and(|token| token.kind == TokenKind::IdentifierUpper || token.raw == ">")
                 || qualified_argument
+                || record_argument
                 || next.is_some_and(|token| {
                     matches!(
                         token.kind,

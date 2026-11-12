@@ -7,5 +7,5 @@ pub effect fn main -> Unit with Console fails ConsoleError =
   // printlnはConsole serviceを使い、Stringの末尾へ改行を加えます。
   println "Hello, Seseragi!"
 
-  // Expected stdout:
-  // Hello, Seseragi!
+// Expected stdout:
+// Hello, Seseragi!

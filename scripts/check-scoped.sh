@@ -264,7 +264,8 @@ run_release_contract_metadata_check() {
     scripts/local-dogfood.test.ts \
     scripts/local-web-product-e2e.ts \
     scripts/local-web-product-e2e-extension.cjs \
-    scripts/local-web-product-e2e.test.ts
+    scripts/local-web-product-e2e.test.ts \
+    scripts/install.test.ts
   check_step bun test \
     scripts/release-contract.test.ts \
     scripts/release-gate.test.ts \
@@ -273,7 +274,8 @@ run_release_contract_metadata_check() {
     scripts/linux-native-abi.test.ts \
     scripts/release-promotion.test.ts \
     scripts/local-dogfood.test.ts \
-    scripts/local-web-product-e2e.test.ts
+    scripts/local-web-product-e2e.test.ts \
+    scripts/install.test.ts
 }
 
 run_release_contract_check() {

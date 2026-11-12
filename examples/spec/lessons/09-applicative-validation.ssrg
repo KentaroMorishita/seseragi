@@ -9,19 +9,15 @@ type FormError deriving Eq, Show =
   | NameRequired
   | AgeMustBePositive
 
-struct User deriving Eq, Show {
-  name: String,
-  age: Int,
-}
+struct User deriving Eq, Show { name: String, age: Int, }
 
 fn makeUser name: String -> age: Int -> User = User { name, age }
 
-  // 各validatorは互いの結果へ依存せず、成功値または一件のerrorを返します。
+// 各validatorは互いの結果へ依存せず、成功値または一件のerrorを返します。
 fn validateName name: String -> Validation<FormError, String> =
   if name
     |> text.trim
-    |> text.isEmpty
-  then
+    |> text.isEmpty then
     validation.invalid NameRequired
   else
     validation.valid name
@@ -29,21 +25,20 @@ fn validateName name: String -> Validation<FormError, String> =
 fn validateAge age: Int -> Validation<FormError, Int> =
   if age > 0 then validation.valid age else validation.invalid AgeMustBePositive
 
-  // pureで通常関数をValidationへ持ち上げ、<*>で独立した入力を与えます。
-  // ValidationのApplicativeは途中で止まらず、両方のerrorを入力順に蓄積します。
+// pureで通常関数をValidationへ持ち上げ、<*>で独立した入力を与えます。
+// ValidationのApplicativeは途中で止まらず、両方のerrorを入力順に蓄積します。
 fn validateUser name: String -> age: Int -> Validation<FormError, User> =
   pure makeUser
   <*> validateName name
   <*> validateAge age
 
-pub effect fn main -> Unit with Console fails ConsoleError =
-  match validateUser "" 0 {
-    Valid user -> println $ show user
-    Invalid errors -> for error <- errors {
-      println $ show error
-    }
+pub effect fn main -> Unit with Console fails ConsoleError = match validateUser "" 0 {
+  Valid user -> println $ show user
+  Invalid errors -> for error <- errors {
+    println $ show error
   }
+}
 
-  // Expected stdout:
-  // NameRequired
-  // AgeMustBePositive
+// Expected stdout:
+// NameRequired
+// AgeMustBePositive

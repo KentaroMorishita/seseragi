@@ -1,0 +1,47 @@
+import * as streams from "std/stream"
+import * as effects from "std/effect"
+
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+fn advance state:Int -> Maybe<(Int,Int)> = Just (state,state + 1)
+effect fn pulled value:Int -> Int with Console = do {
+  say (`pull:${value}`)
+  effects.succeed value
+}
+effect fn broken -> Int with Console fails String = effects.fail "upstream"
+effect fn report values:Array<Int> -> Unit with Console fails String = say (show values)
+effect fn reported message:String -> Unit with Console = say (`failed:${message}`)
+
+effect fn chunked size:Int -> source:streams.Stream<{},Never,Int> -> Unit with Console =
+  match streams.chunk size source {
+    Left error -> say (`error:${error}`)
+    Right chunks -> do {
+      values <- streams.runCollect chunks
+      say (show values)
+    }
+  }
+
+pub effect fn main = do {
+  chunked 0 (streams.fromArray [1,2,3])
+  chunked (-1) (streams.fromArray [1,2,3])
+  chunked 2 (streams.fromArray [1,2,3,4])
+  chunked 2 (streams.fromArray [1,2,3,4,5])
+  chunked 2 (streams.fromArray [])
+  chunked 3 (streams.unfold advance 0 |> streams.take 7)
+  let lazy = streams.flatMap (\n:Int -> streams.fromEffect (pulled n)) (streams.unfold advance 1)
+  match streams.chunk 2 lazy {
+    Left error -> say (`error:${error}`)
+    Right chunks -> do {
+      first <- streams.take 1 chunks |> streams.runCollect
+      say (show first)
+    }
+  }
+  let failing = streams.concat (streams.fromEffect (broken ())) (streams.fromArray [1,2,3])
+  match streams.chunk 2 failing {
+    Left error -> say (`error:${error}`)
+    Right chunks -> do {
+      streams.runForEach report chunks |> effects.recover reported
+      say "done"
+    }
+  }
+}

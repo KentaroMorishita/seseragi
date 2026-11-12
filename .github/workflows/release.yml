@@ -230,6 +230,66 @@ jobs:
             --archive "target/release/seseragi-v${release_version}-${{ matrix.target }}.${{ matrix.archive }}" \
             --release
 
+  install-verify:
+    needs: [gate, native, linux-native]
+    name: install script (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            platform: darwin-arm64
+          - runner: macos-15-intel
+            platform: darwin-x64
+          - runner: ubuntu-latest
+            platform: linux-x64
+          - runner: windows-latest
+            platform: win32-x64
+    runs-on: ${{ matrix.runner }}
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.release_sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-native-${{ matrix.platform }}
+          path: dist
+      - name: Install and update with install.sh
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          export SESERAGI_VERSION="${RELEASE_TAG#v}"
+          export SESERAGI_DOWNLOAD_URL="file://$PWD/dist"
+          export SESERAGI_INSTALL="$RUNNER_TEMP/seseragi"
+          sh scripts/install.sh
+          sh scripts/install.sh
+          "$SESERAGI_INSTALL/bin/seseragi" --version | grep -F "seseragi $SESERAGI_VERSION "
+          test -x "$SESERAGI_INSTALL/bin/seseragi-lsp"
+          test -f "$SESERAGI_INSTALL/UNICODE-LICENSE"
+      - name: Install and update with install.ps1
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:SESERAGI_VERSION = $env:RELEASE_TAG.TrimStart('v')
+          $env:SESERAGI_DOWNLOAD_URL = Join-Path $PWD 'dist'
+          $env:SESERAGI_INSTALL = Join-Path $env:RUNNER_TEMP 'seseragi'
+          $env:SESERAGI_NO_PATH = '1'
+          ./scripts/install.ps1
+          ./scripts/install.ps1
+          $version = & (Join-Path $env:SESERAGI_INSTALL 'bin\seseragi.exe') --version
+          if ($LASTEXITCODE -ne 0 -or -not $version.StartsWith("seseragi $($env:SESERAGI_VERSION) ")) {
+            throw "unexpected version: $version"
+          }
+          if (-not (Test-Path (Join-Path $env:SESERAGI_INSTALL 'bin\seseragi-lsp.exe'))) {
+            throw 'seseragi-lsp.exe is missing'
+          }
+          if (-not (Test-Path (Join-Path $env:SESERAGI_INSTALL 'UNICODE-LICENSE'))) {
+            throw 'UNICODE-LICENSE is missing'
+          }
+
   vscode:
     needs: gate
     name: vscode (${{ matrix.target }})
@@ -406,7 +466,7 @@ jobs:
           overwrite: true
 
   publish:
-    needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e, linux-native]
+    needs: [gate, install-verify, native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e, linux-native]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -446,3 +506,5 @@ jobs:
             target/release/seseragi-runtime-v*.tar.gz
             target/release/seseragi-wasm-v*.tar.gz
             target/release/seseragi-legacy-migration-v*.vsix
+            scripts/install.sh
+            scripts/install.ps1

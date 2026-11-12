@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.165] - 2026-11-12
+
+### Added
+
+- `std/stream` exports `chunk size stream`, as spec §10.12 defines it, on the TS and native targets. It groups adjacent values into Arrays of `size`, keeps a shorter final group, and pulls only the values each group needs. A size that is not positive returns `Left (NonPositiveSize size)` before the stream starts. An upstream failure ends the stream without emitting the partial group; spec §10.12 now says so.
+- The CLI and the LSP install with one command: `curl -fsSL https://github.com/KentaroMorishita/seseragi/releases/latest/download/install.sh | sh` on macOS and Linux, or `install.ps1` from the same place in PowerShell on Windows. The script checks the archive's checksum, refuses to install on a mismatch, and places both tools in `~/.seseragi/bin`. Running it again updates to the latest release; `SESERAGI_VERSION` picks a version. Every GitHub Release now carries both scripts, and the release workflow runs them on each platform before publishing.
+
+### Fixed
+
+- The formatter keeps explicit type arguments that start with a record type, such as `effects.defer<{}, E, Int>`, as an application. It used to space `<` and `>` as comparisons and break the source.
+- The spec lessons and Playground examples under `examples/spec` are in the current formatter's layout, and `check:sample` checks that they stay so.
+
 ## [0.61.164] - 2026-11-12
 
 ### Added

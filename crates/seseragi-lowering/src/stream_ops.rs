@@ -70,6 +70,10 @@ const OPERATIONS: &[(&str, RuntimeStreamOperation)] = &[
         operation!("drop", "stream.drop", "drop"),
     ),
     (
+        "std/stream::chunk",
+        operation!("chunk", "stream.chunk", "chunk"),
+    ),
+    (
         "std/stream::concat",
         operation!("concat", "stream.concat", "concat"),
     ),

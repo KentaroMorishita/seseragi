@@ -156,6 +156,26 @@ pub(super) fn stream_interface() -> ModuleInterface {
             ),
             function_export(
                 module,
+                "chunk",
+                ["R", "E", "A"],
+                Vec::new(),
+                vec![named("Int"), source(named("A"))],
+                named_with(
+                    "Either",
+                    vec![
+                        external_type(
+                            "SizeError",
+                            "std/collection::SizeError",
+                            "std/collection",
+                            "SizeError",
+                            Vec::new(),
+                        ),
+                        source(named_with("Array", vec![named("A")])),
+                    ],
+                ),
+            ),
+            function_export(
+                module,
                 "concat",
                 ["R", "E", "A"],
                 Vec::new(),

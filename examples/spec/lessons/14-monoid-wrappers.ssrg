@@ -5,8 +5,7 @@
 newtype Sum deriving Eq, Show = Int
 
 instance Semigroup<Sum> {
-  fn append left: Sum -> right: Sum -> Sum =
-    match (left, right) {
+  fn append left: Sum -> right: Sum -> Sum = match (left, right) {
     (Sum leftValue, Sum rightValue) -> Sum (leftValue + rightValue)
   }
 }
@@ -22,9 +21,9 @@ fn total values: Array<Int> -> Sum = values |> map Sum |> combine
 let totals = [total [1, 2, 3, 4], total []]
 
 pub effect fn main -> Unit with Console fails ConsoleError = for result <- totals {
-    println $ show result
-  }
+  println $ show result
+}
 
-  // Expected stdout:
-  // Sum 10
-  // Sum 0
+// Expected stdout:
+// Sum 10
+// Sum 0

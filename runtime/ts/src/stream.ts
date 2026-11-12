@@ -1,5 +1,5 @@
 import { defectWithSuppressed } from "./cleanup-defect"
-import type { Iterable } from "./collection"
+import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import {
   awaitEffectValue,
   createEffectExecution,
@@ -277,6 +277,33 @@ export function drop<Environment, Failure, Value>(
       return sourceCursor.next()
     }, sourceCursor.close)
   })
+}
+
+/**
+ * Groups adjacent values into Arrays of `size`, keeping a shorter final group.
+ * Each group pulls only the values it needs; an upstream failure propagates
+ * without emitting the partial group.
+ */
+export function chunk<Environment, Failure, Value>(
+  size: number,
+  source: Stream<Environment, Failure, Value>
+): Either<SizeError, Stream<Environment, Failure, ReadonlyArray<Value>>> {
+  if (size <= 0) return Left(NonPositiveSize(size))
+  return Right(
+    makeStream(async (environment, context) => {
+      const sourceCursor = await source.open(environment, context)
+      let finished = false
+      return cursor(async () => {
+        const values: Value[] = []
+        while (!finished && values.length < size) {
+          const result = await sourceCursor.next()
+          if (result.done) finished = true
+          else values.push(result.value)
+        }
+        return values.length === 0 ? done() : item(values)
+      }, sourceCursor.close)
+    })
+  )
 }
 
 export function concat<Environment, Failure, Value>(

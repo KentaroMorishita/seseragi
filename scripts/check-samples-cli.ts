@@ -238,8 +238,35 @@ for (const lesson of tourLessons) {
   checkedTourDiagnostics += 1
 }
 
+// The spec lessons and Playground examples are read as model code, so they
+// stay in the current formatter's layout. Diagnostic fixtures under
+// examples/spec/fixtures are written broken on purpose and are not checked.
+const formattedSpecDirectories = [
+  "examples/spec/lessons",
+  "examples/spec/playground",
+]
+let checkedSpecFormatting = 0
+for (const directory of formattedSpecDirectories) {
+  const sources = (await readdir(resolve(repositoryRoot, directory)))
+    .filter((name) => name.endsWith(".ssrg"))
+    .sort()
+  for (const name of sources) {
+    const sourcePath = resolve(repositoryRoot, directory, name)
+    const formatCheck = await runSampleCommand(
+      [executable, "format", "--check", sourcePath],
+      { cwd: repositoryRoot, label: `${directory}/${name} format` }
+    )
+    if (formatCheck.status !== 0) {
+      throw new Error(
+        `${directory}/${name} is not formatted; run \`seseragi format\` on it:\n${formatCheck.stdout}${formatCheck.stderr}`
+      )
+    }
+    checkedSpecFormatting += 1
+  }
+}
+
 console.log(
-  `Validated ${checked} executable samples, ${checkedWebPackages} Web sample packages, ${checkedTourLessons} Tour lessons, ${checkedTourExercises} exercises and ${checkedTourDiagnostics} Tour diagnostics with the native Seseragi CLI (${samples.length - checked - checkedWebPackages + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
+  `Validated ${checked} executable samples, ${checkedWebPackages} Web sample packages, ${checkedTourLessons} Tour lessons, ${checkedTourExercises} exercises, ${checkedTourDiagnostics} Tour diagnostics and the formatting of ${checkedSpecFormatting} spec sources with the native Seseragi CLI (${samples.length - checked - checkedWebPackages + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
 )
 
 function missingSampleSource(id: string): never {
