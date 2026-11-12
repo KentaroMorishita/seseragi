@@ -1,57 +1,95 @@
-# Formatter canonical layout
+# フォーマッターの整形規則
 
-Seseragi formatterは、入力時の任意改行を保存するpretty printerではありません。同じtoken列・構文構造・
-`FormatOptions`を、CLI、LSP、WASM、Playgroundのどこから呼んでも同じbytesへ収束させます。固定値はindent 2 spaces、
-LF、file末尾newline一つで、default line widthは88 source columnsです。explicit line widthを指定した場合は同じ
-構造break ruleをそのwidthへ適用します。長いString、URL、単一token、
-改行が別expressionになるdelimiterなしapplicationは分割しません。
+フォーマッター（`seseragi format`）の出力を変える開発者に向けた文書です。
+どの書き方をどう整形するか、その規則と、規則を確かめるテストの場所をまとめます。
 
-## 構文surface監査
+## 基本の考え方
 
-| surface | canonical layout |
+フォーマッターは、入力に書かれた改行をそのまま残す道具ではありません。
+同じトークンの並び、同じ構文、同じ設定からは、必ず同じ出力を作ります。
+CLI、エディター（LSP）、WASM、Playground のどこから呼んでも、出力は1バイトも違いません。
+
+決まっている値:
+
+- 字下げは空白2つ
+- 改行は LF。ファイルの最後に改行を1つ置く
+- 1行の幅は、既定で88文字。幅を指定したときは、同じ規則をその幅で使う
+
+次のものは、幅を超えても分割しません。
+
+- 長い文字列、URL、1つのトークン
+- 括弧の外で改行すると別の式になってしまう関数適用
+
+## 書き方ごとの整形
+
+| 書き方 | 整形 |
 | --- | --- |
-| import | namespaceとnamed itemを分けて扱い、alias / operator / long item groupをsource順のまま整形する |
-| function / effect signature | 短ければ一行。長ければparameterの`->`、`with`、`fails`、`where`で改行 |
-| lambda | parameterとbodyを同じexpressionとして空白を正規化し、長いbodyはoperator境界で改行 |
-| application | 短ければ一行。長ければ既存delimiter内またはoperatorの意味境界で継続indent |
-| pipeline / operator | 一行へ収まればcompact化。長ければleading operatorを揃える。spellingと順序は保持 |
-| let | binding headと短いRHSを一行へ収め、長いRHSは一段継続indent |
-| record / struct / array / list / tuple | 空・短いgroupはcompact。宣言を含めて指定widthを超えるgroupだけitemごとに展開 |
-| ADT | variantごとに一行とし、leading `|`を揃える |
-| match | armごとの改行を保持し、arm bodyとnested delimiterを構造に従ってindent |
-| pure block / do | `= {` / `= do {`が収まれば同じ行。body ownershipを一段のindentとして表す |
-| impl / instance / trait / foreign | bodyを必ず展開し、implementation member間は空行一つ、bodyless memberは一行ずつ配置 |
-| nested Html | element bodyと長いprops / children groupをdelimiter depthに従って展開 |
-| generic / HKT | type applicationの`<...>`をtightに保ち、型parameter順を変えない |
-| comments | comment textを変更せず、attached commentを次の対象から切り離さない |
+| import | 名前空間の import と名前を並べる import を分けて扱う。別名、演算子、長い名前の並びは、書いた順のまま整える |
+| 関数・Effect のシグネチャ | 短ければ1行。長ければ引数の `->`、`with`、`fails`、`where` で改行する |
+| ラムダ | 引数と本体の空白を整える。長い本体は演算子の位置で改行する |
+| 関数適用 | 短ければ1行。長ければ、すでにある括弧の中か、演算子の位置で改行し、字下げを1段深くする |
+| パイプライン・演算子 | 1行に収まれば1行にまとめる。長ければ行頭の演算子をそろえる。演算子の綴りと順は変えない |
+| let | 名前と短い右辺を1行に収める。長い右辺は1段深く字下げする |
+| レコード・struct・Array・List・タプル | 空のものや短いものは1行にまとめる。宣言を含めて幅を超えるものだけ、要素ごとに改行する |
+| 代数的データ型 | バリアントを1行に1つ置き、行頭の `|` をそろえる |
+| match | 分岐ごとの改行を残す。分岐の本体と、その中の括弧は、構文に合わせて字下げする |
+| ブロック・do | `= {` や `= do {` が収まれば同じ行に置く。本体は1段深く字下げする |
+| impl・instance・trait・foreign | 本体を必ず複数行に広げる。実装を持つメンバーの間には空行を1つ置き、本体のないメンバーは1行に1つ置く |
+| 入れ子の Html | 要素の本体と、長い props や子要素の並びを、括弧の深さに合わせて広げる |
+| ジェネリクス・高カインド型 | 型の適用 `<...>` の内側に空白を入れない。型引数の順は変えない |
+| コメント | コメントの文面は変えない。直後の宣言や式とのつながりを切らない |
 
-## Layout規則
+## 整形の規則
 
-- lexer / lossless CSTが返したtokenだけを描画する。formatter独自のparserやoperator precedenceは持たない。
-- punctuation、型適用、optional marker、prefix operatorの周囲はtoken kindから決め、通常のtoken間は空白一つにする。
-- sourceの任意の改行や複数空白は出力を決めない。block item、match arm、ADT variant、commentは構造境界として残す。
-- signatureは`->`の手前、constraint / effect clauseはkeywordの手前で折り返す。
-- wrapの要否はwidth、break位置は構文、継続indentはowner nestingから決める。親がmultilineでも短い子groupはcompactのままにする。
-- `=`とRHS openerは収まる限り同じ行へ置く。長いsignatureでは`->` / `with` / `fails` / `where`を先に使い、それでも収まらない場合だけRHSを一段下げる。
-- comma groupは収まれば一行へ戻し、長い場合はitemごとに改行する。delimiterは対応するopen位置へ戻す。
-- operator chainは収まれば一行へ戻し、長い場合はoperatorを一段継続indentへ置く。
-- 通常applicationは、既存delimiter内またはleading operatorで意味を保持できる位置だけで折る。delimiter外で改行が別expressionになるapplicationは、tokenを追加せず意味を守るため指定width超過を許す。
-- import、field、variant、armをsortingしない。literal、identifier、custom operatorのspellingを変更しない。
-- named importはcompact時に`{ item }`、long時にitemごとの行へ展開して`} from "..."`を同じ行へ保つ。現行grammarのoperator importはaliasを持たない。
-- parse recovery nodeを含むsourceは書き換えず、共有parser diagnosticを呼び出し側へ返す。
+**材料**
 
-## 回帰契約
+- 字句解析と、空白やコメントも失わない構文木（CST）が返したトークンだけを書き出す。フォーマッター専用の構文解析や、演算子の優先順位は持たない。
+- 構文エラーから回復した部分を含むソースは書き換えない。構文解析と同じ診断を、呼び出し元へ返す。
 
-入力と期待値の代表corpusは
-[`canonical-layout.input.ssrg`](../crates/seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg) と
-[`canonical-layout.expected.ssrg`](../crates/seseragi-formatter/tests/fixtures/canonical-layout.expected.ssrg)、全surface監査は
-[`style-contract.input.ssrg`](../crates/seseragi-formatter/tests/fixtures/style-contract.input.ssrg) と
-[`style-contract.expected.ssrg`](../crates/seseragi-formatter/tests/fixtures/style-contract.expected.ssrg) です。
-corpusは上のsurfaceを横断し、default optionが従来の88-column expectedとbyte-identicalであること、width 88 / 72 /
-48で同じsyntaxと同じoptionが収束すること、任意改行を変えたinputが同じoptionのexpectedへ収束することを固定します。
-長いsignature、nested Html、pipeline、collection、分割不能なString / URLをwidth別fixtureで監査します。
+**空白**
 
-共有入口はdefault 88の`seseragi_driver::format_module`と、explicit optionを受ける
-`seseragi_driver::format_module_with_options`です。native CLIの`seseragi format`とLSPの
-`textDocument/formatting`はproject configを持たずdefault 88を使います。WASM APIとPlayground / TourのFormatは
-同じoption経路を使い、product adapter内へ別のformatter heuristicを実装しません。
+- 句読点、型の適用、省略できることを表す記号、前置の演算子の周りの空白は、トークンの種類から決める。それ以外のトークンの間は空白1つにする。
+- 入力にあった改行や連続した空白は、出力に影響しない。ブロックの要素、match の分岐、バリアント、コメントは、構文の区切りとして残す。
+
+**改行**
+
+- 改行するかどうかは幅で、どこで改行するかは構文で、字下げの深さは入れ子の深さで決める。親が複数行になっても、短い子は1行のままにする。
+- シグネチャは `->` の前で、制約と Effect の節はキーワードの前で改行する。
+- `=` と右辺の開き括弧は、収まる限り同じ行に置く。長いシグネチャでは、まず `->`、`with`、`fails`、`where` で改行し、それでも収まらないときだけ右辺を1段下げる。
+- カンマで区切った並びは、収まれば1行に戻す。長ければ要素ごとに改行し、閉じ括弧を開き括弧の行の字下げに戻す。
+- 演算子の連なりは、収まれば1行に戻す。長ければ演算子を行頭に置き、1段深く字下げする。
+- 関数適用は、すでにある括弧の中か、行頭の演算子で意味が変わらない位置でだけ改行する。括弧の外で改行すると別の式になる場合は、トークンを足さずに意味を守るため、幅を超えてもそのままにする。
+
+**変えないもの**
+
+- import、フィールド、バリアント、match の分岐を並べ替えない。
+- リテラル、識別子、独自の演算子の綴りを変えない。
+- 名前を並べる import は、短ければ `{ item }`、長ければ1行に1つずつ広げ、`} from "..."` を同じ行に保つ。演算子の import は、今の文法では別名を持てない。
+
+## 規則を確かめるテスト
+
+入力と期待する出力の組は、`crates/seseragi-formatter/tests/fixtures/` にあります。
+
+| ファイル | 確かめること |
+| --- | --- |
+| [`canonical-layout.input.ssrg`](../crates/seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg) と [`canonical-layout.expected.ssrg`](../crates/seseragi-formatter/tests/fixtures/canonical-layout.expected.ssrg) | 代表的な書き方の整形 |
+| [`style-contract.input.ssrg`](../crates/seseragi-formatter/tests/fixtures/style-contract.input.ssrg) と [`style-contract.expected.ssrg`](../crates/seseragi-formatter/tests/fixtures/style-contract.expected.ssrg) | 上の表のすべての書き方 |
+
+これらのテストは、次のことを確かめます。
+
+- 既定の設定の出力が、88文字幅の期待する出力と1バイトも違わない
+- 幅88、72、48のそれぞれで、同じ構文と同じ設定から同じ出力になる
+- 入力の改行の位置を変えても、同じ設定なら同じ出力になる
+- 長いシグネチャ、入れ子の Html、パイプライン、コレクション、分割できない文字列や URL を、幅ごとに正しく整形する
+
+同じフォルダーには、ほかにも宣言の区切りや入れ子の do など、過去に崩れた書き方を確かめる組があります。
+
+## 呼び出し口
+
+整形はすべて `seseragi-driver` の関数を通ります。呼び出し側で独自の整形の工夫を足してはいけません。
+
+| 関数 | 使う場所 |
+| --- | --- |
+| `format_module` | 既定の幅88で整形する。CLI の `seseragi format` と、LSP の文書全体の整形（`textDocument/formatting`）。どちらもプロジェクトの設定を読まない |
+| `format_module_with_options` | 幅などを指定して整形する。WASM の API と、Playground・Tour の Format ボタン |
+| `format_module_range` | 指定した範囲にかかる構文のまとまりだけを整形する。LSP の範囲の整形（`textDocument/rangeFormatting`） |
