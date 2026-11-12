@@ -127,7 +127,7 @@ instance Show<User> {
   - 読み取りと書き出し、Int との明示的な変換、失敗を返す除算・余り・累乗
   - 足し算、引き算、掛け算は誤差のない任意精度
   - 割り算は0の方向へ丸める。余りの符号は割られる数と同じ。指数は0以上の Int
-- TypeScript では、ホストの `bigint` に対応させる。`.d.ts` の変換は、明示的に指定したときだけ BigInt を選ぶ。
+- TypeScript では、ホストの `bigint` に対応させる。`.d.ts` の変換も、ホストの `bigint` を BigInt にする。
 - ビット数と桁数に基づく、記憶域と費用の上限を決めた。
 
 **Int の TypeScript と JSON での形**
@@ -166,7 +166,7 @@ instance Show<User> {
 **Maybe、Either、Validation**
 
 - `std/maybe` と `std/either` の固有の操作（9.2、10.4）と、Maybe の条件つきの Semigroup・Monoid（9.5）を実装した。
-- traverse と sequence は、既存の Traversable と Applicative を使う。最初の Left で止まり、コールバックはソースの順に評価する。
+- traverse と sequence は、既存の Traversable と Applicative を使う。結果には最初の Left を残すが、後ろのコールバックの評価は止めない。コールバックはソースの順にすべて評価する。途中で止めたいときは `reduceUntil` を使う。
 - `std/validation` の `Invalid` は NonEmptyList を持ち、複数のエラーを左から順に保つ。Monad は持たない。
 
 ### モジュールと TypeScript
