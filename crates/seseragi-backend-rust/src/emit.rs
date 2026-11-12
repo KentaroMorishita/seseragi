@@ -322,7 +322,7 @@ fn emit_body(
                 backend.globals[symbol]
             ));
         }
-        output.push_str(&format!("\nfn main() {{ std::process::exit({runner}(|| {{ initialize_globals(); vec![{}] }})); }}\n", values.join(",")));
+        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_main(|| {runner}(|| {{ initialize_globals(); vec![{}] }}))); }}\n", values.join(",")));
     }
     if let Some(entry) = entry {
         backend.owner = &owners[&entry.symbol];
@@ -350,9 +350,9 @@ fn emit_body(
             } else {
                 "run_native_entry_with_show"
             };
-            output.push_str(&format!("\nfn main() {{ {process_startup}std::process::exit({runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}, entry_failure_show)); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_main(|| {{ {process_startup}{runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}, entry_failure_show) }})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         } else {
-            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_main(|| run_native_pure_entry(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}))); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         }
     }
     Ok(RustArtifact {
@@ -686,7 +686,8 @@ impl<'a> Backend<'a> {
             ));
             return Ok(output);
         }
-        let body = self.function(&function.parameters, &function.body, &scope)?;
+        let guard = self.stack_guard(&function.origin);
+        let body = self.function(&function.parameters, &function.body, &scope, &guard)?;
         output.push_str(&format!(
             "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
             id(&function.symbol)
@@ -703,13 +704,24 @@ impl<'a> Backend<'a> {
         format!("temporary_{}", self.serial)
     }
 
+    /// A function's curried stages; the last one checks the stack first.
     fn function(
         &mut self,
         parameters: &[CoreParameter],
         body: &CoreExpr,
         scope: &Scope,
+        guard: &str,
     ) -> Result<String> {
-        self.function_inner(parameters, body, scope, None)
+        self.function_inner(parameters, body, scope, None, guard)
+    }
+
+    /// The code that checks the remaining stack on entry to a function, so
+    /// deep recursion reports a Defect at `origin` (spec 14.8).
+    fn stack_guard(&self, origin: &seseragi_lowering::SourceSpan) -> String {
+        match self.source_location(origin) {
+            Some(source) => format!("native_stack_guard(Some({source}));"),
+            None => "native_stack_guard(None);".into(),
+        }
     }
 
     fn function_inner(
@@ -718,6 +730,7 @@ impl<'a> Backend<'a> {
         body: &CoreExpr,
         scope: &Scope,
         local: Option<&LocalCallable>,
+        guard: &str,
     ) -> Result<String> {
         if let Some((parameter, rest)) = parameters.split_first() {
             let mut inner = scope.clone();
@@ -732,12 +745,12 @@ impl<'a> Backend<'a> {
                 }
                 captures.retain_free(&free.names);
             }
-            let body = self.function_inner(rest, body, &inner, local)?;
+            let body = self.function_inner(rest, body, &inner, local, guard)?;
             Ok(Self::closure(&parameter.id, &body, &captures))
         } else if let Some(callable) = local {
             self.local_tail_body(callable, body, scope)
         } else {
-            self.expr(body, scope)
+            Ok(format!("{{ {guard} {} }}", self.expr(body, scope)?))
         }
     }
 
@@ -1316,7 +1329,7 @@ impl<'a> Backend<'a> {
             CoreExpr::Call { .. } => self.call(expr, scope)?,
             CoreExpr::Lambda {
                 parameter, body, ..
-            } => self.function(std::slice::from_ref(parameter), body, scope)?,
+            } => self.function(std::slice::from_ref(parameter), body, scope, "")?,
             CoreExpr::Tuple { elements, .. } => format!(
                 "V::Tuple(Shared::new(vec![{}]))",
                 self.expressions(elements, scope)?

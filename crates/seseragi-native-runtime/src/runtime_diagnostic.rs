@@ -277,3 +277,48 @@ mod diagnostic_tests {
         assert_eq!(LIVE.with(Cell::get), 0);
     }
 }
+
+// Seseragi code runs on one thread whose stack size the runtime chooses. Each
+// function checks the remaining stack on entry, so deep recursion reports a
+// Defect at its source instead of aborting the process (spec 14.8). The
+// reserve leaves room for runtime code, unwinding and the report itself.
+const NATIVE_STACK_SIZE: usize = 256 * 1024 * 1024;
+const NATIVE_STACK_RESERVE: usize = 1024 * 1024;
+thread_local! {
+    static NATIVE_STACK_LIMIT: Cell<usize> = const { Cell::new(0) };
+}
+
+#[inline(always)]
+fn native_stack_address() -> usize {
+    let marker = 0u8;
+    std::hint::black_box(&marker) as *const u8 as usize
+}
+
+/// Run a program on a thread with a known stack and return its exit code.
+pub fn run_native_main(program: impl FnOnce() -> i32 + Send + 'static) -> i32 {
+    std::thread::Builder::new()
+        .name("main".into())
+        .stack_size(NATIVE_STACK_SIZE)
+        .spawn(move || {
+            let limit = native_stack_address()
+                .saturating_sub(NATIVE_STACK_SIZE - NATIVE_STACK_RESERVE);
+            NATIVE_STACK_LIMIT.with(|cell| cell.set(limit));
+            program()
+        })
+        .expect("Rust ABI: cannot start the program thread")
+        .join()
+        .unwrap_or_else(|error| std::panic::resume_unwind(error))
+}
+
+#[inline(always)]
+pub fn native_stack_guard(source: Option<&'static NativeSource>) {
+    if native_stack_address() < NATIVE_STACK_LIMIT.with(Cell::get) {
+        native_stack_exhausted(source);
+    }
+}
+
+#[cold]
+#[inline(never)]
+fn native_stack_exhausted(source: Option<&'static NativeSource>) -> ! {
+    native_defect_at("Maximum call stack size exceeded.", source)
+}

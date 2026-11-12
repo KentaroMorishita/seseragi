@@ -42,6 +42,7 @@ impl Backend<'_> {
             body,
             scope,
             recursive.then_some(callable),
+            "",
         )
     }
 

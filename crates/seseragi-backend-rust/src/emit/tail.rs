@@ -65,9 +65,10 @@ impl Backend<'_> {
             format!("{setup} {body}")
         };
         Ok(format!(
-            "\nfn {}_direct({}dicts: Vec<V>{parameters}) -> V {{ {body} }}\n",
+            "\nfn {}_direct({}dicts: Vec<V>{parameters}) -> V {{ {} {body} }}\n",
             id(&function.symbol),
             if looping { "mut " } else { "" },
+            self.stack_guard(&function.origin),
         ))
     }
 
@@ -85,9 +86,10 @@ impl Backend<'_> {
             local: Some((callable.clone(), scope.recursive[name].factory.clone())),
         };
         let before = self.self_tail_calls;
+        let guard = self.stack_guard(core_expr_origin(body));
         let value = self.tail_body(body, scope, &target)?;
         if self.self_tail_calls == before {
-            return Ok(format!("{{ {value} }}"));
+            return Ok(format!("{{ {guard} {value} }}"));
         }
         let mut setup = String::new();
         let mut restore = String::new();
@@ -103,7 +105,7 @@ impl Backend<'_> {
             })
             .collect::<Vec<_>>()
             .join(",");
-        Ok(format!("{{ {setup} let mut dicts: Vec<V> = vec![{dictionaries}]; '{}: loop {{ {restore} {value} }} }}", target.label))
+        Ok(format!("{{ {guard} {setup} let mut dicts: Vec<V> = vec![{dictionaries}]; '{}: loop {{ {restore} {value} }} }}", target.label))
     }
 
     fn tail_body(&mut self, expr: &CoreExpr, scope: &Scope, target: &TailTarget) -> Result<String> {

@@ -676,7 +676,8 @@ impl Backend<'_> {
         if dictionaries_first {
             parameters.rotate_right(method.constraints.len());
         }
-        self.function(&parameters, &method.body, &inner)
+        let guard = self.stack_guard(core_expr_origin(&method.body));
+        self.function(&parameters, &method.body, &inner, &guard)
     }
 
     pub(super) fn reject_missing_method_contract(

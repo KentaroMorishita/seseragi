@@ -589,3 +589,52 @@ mod watch {
         watcher.stop();
     }
 }
+
+#[test]
+fn native_deep_recursion_reports_a_defect_like_the_ts_target() {
+    let scratch = tempfile::tempdir().unwrap();
+    let root = scratch.path();
+    let recursion = "fn deep n: Int -> Int = if n == 0 then 0 else 1 + deep (n - 1)\n\nfn count n: Int -> acc: Int -> Int = if n == 0 then acc else count (n - 1) (acc + 1)\n";
+    for (name, main) in [
+        (
+            "direct.ssrg",
+            "pub effect fn main -> Unit with Console fails ConsoleError = do {\n  println $ show $ count 10000000 0\n  println $ show $ deep 1000000\n}\n",
+        ),
+        (
+            "fiber.ssrg",
+            "pub effect fn main -> Unit with Console fails ConsoleError = do {\n  println $ show $ count 10000000 0\n  worker <- effects.fork $ println (show (deep 1000000))\n  effects.join worker\n}\n",
+        ),
+    ] {
+        let source = root.join(name);
+        fs::write(
+            &source,
+            format!("import * as effects from \"std/effect\"\n\n{recursion}\n{main}"),
+        )
+        .unwrap();
+        let run = |target: &str| {
+            bounded(
+                cli()
+                    .arg("run")
+                    .arg(&source)
+                    .args(["--target", target]),
+                root,
+            )
+        };
+        let ts = run("process");
+        let native = run("native");
+        for output in [&ts, &native] {
+            assert_eq!(output.status.code(), Some(70), "{name}: {output:?}");
+            assert_eq!(output.stdout, b"10000000\n", "{name}: {output:?}");
+        }
+        let ts = String::from_utf8(ts.stderr).unwrap();
+        assert!(
+            ts.ends_with(": Seseragi Defect: Maximum call stack size exceeded.\n"),
+            "{name}: {ts}"
+        );
+        // Native reports the declaration of the function that ran out of stack.
+        assert_eq!(
+            String::from_utf8(native.stderr).unwrap(),
+            format!("{name}:3:1: Seseragi Defect: Maximum call stack size exceeded.\n"),
+        );
+    }
+}
