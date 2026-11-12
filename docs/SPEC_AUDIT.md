@@ -1,76 +1,37 @@
-# Seseragi 仕様横断監査
+# 仕様の章をまたぐ確認
 
-この文書は、章単位では見つけにくい矛盾を追跡する非規範な監査記録です。言語の意味は
-[`spec/`](./spec/README.md)、機能の網羅状況は[`SPEC_COVERAGE.md`](./SPEC_COVERAGE.md)を正とします。
+仕様（`docs/spec/`）を書き足す人に向けた文書です。
+章ごとに読むと気づきにくい矛盾を見つける観点と、これまでに見つけた矛盾をどう決めたかをまとめます。
 
-## 監査の観点
+- 規則そのものは、[仕様](./spec/README.md)の本文にあります。この文書と本文が食い違うときは、本文に従います。
+- 決まっている機能の一覧は、[`SPEC_COVERAGE.md`](./SPEC_COVERAGE.md) にあります。
+- いつ、どの順で確かめたかの記録は、Git の履歴に任せます。ここには、いまも有効な決定だけを残します。
 
-各passでは、少なくとも次を本文、Appendix grammar、diagnostic、exampleの間で突き合わせます。
+## 確かめる観点
 
-- 採用しないと宣言した構文や型が、別章の公開signatureへ混入していないか。
-- 同じ型、operation、糖衣のsignatureと展開規則が章ごとに一致するか。
-- pure / Effect、typed failure / defect / cancellationの境界が変わっていないか。
-- resource、Stream、Signal、DOMのorderingとlifetimeが最適化規則を含めて一致するか。
-- sourceとして書ける構文がAppendix grammarにあり、失敗にはstable diagnosticがあるか。
-- lessonとfixtureが、本文にない意味を独自に作っていないか。
+本文、付録の文法、診断、例を突き合わせて、次を確かめます。
 
-## 完了したpass
+- 採用しないと決めた構文や型が、別の章の公開する型に紛れ込んでいないか
+- 同じ型、操作、省略記法の型と展開の規則が、章ごとに一致しているか
+- 純粋な処理と Effect、型のついた失敗・Defect（想定していない失敗）・取消の境目が、章ごとに変わっていないか
+- 資源、Stream、Signal、DOM の順序と寿命が、最適化の規則も含めて一致しているか
+- ソースに書ける構文がすべて付録の文法にあり、失敗には決まった診断コードがあるか
+- 教材と fixture が、本文にない意味を勝手に作っていないか
 
-### 2026-08-23: HTTP server application縦slice
+## 見つけた矛盾と、決めたこと
 
-#296のEffectful handler contractをstandard interface、compiler lowering、shared TypeScript runtime bridge、
-Bun / Node providerへ接続しました。requestはmethod、absolute URL、path、raw query、headers、Bytes bodyの
-snapshotとして公開し、UTF-8とJSON decodeはそれぞれ`std/text`と`std/json`へ明示的に残しています。
-responseはstatus / headers / empty / Bytes / text / JSON textを明示構築し、JSONの暗黙encodeを導入していません。
+### 型と構文
 
-handlerごとにlisten時のenvironmentを渡した独立Effect executionを作り、同時requestを並行実行します。
-application typed failureは`recoverHandler`でresponseへ明示変換し、listener bind失敗だけを
-`HttpServerError`として返します。server close / root cancellationはrequest childをcancelし、resourceを一度だけ
-finalizeしてlate application responseを破棄します。Bun / Node actual provider probeと、通常Seseragi sourceの
-`POST /users`でBytes → UTF-8 → deriving JsonDecode → Effect → deriving JsonEncode → JSON responseを検証しました。
+**型の積 `&`**
 
-### 2026-08-13: runtime capability application surface再基準化
+- 矛盾: 任意の型の和と積は採用しないのに、Effect の API に `R & { service: Service }` が残っていた。
+- 決定: `&` は、Effect と Stream の最初の型引数（要求する環境）のフィールドを、コンパイル時にまとめる書き方に限る。値の積、実行時の合成、残りのフィールドを表す変数（row）は加えない。
+- 確かめる方法: ジェネリクスを代入した後のフィールドの和、空のレコード、同じ名前のフィールドの重複と型の衝突、使えない位置での診断 `SES-T0501` を fixture で確かめる。
 
-Provider System確立後の15章を基準に、Effect、time / random、process I/O、filesystem、HTTP、DOM、
-TypeScript interop、database境界を横断再監査しました。std / package application API、Provider Contract、
-backend Runtime ABI / bridge、runtime providerの4層を別identityとして扱う共通規則とcanonical service /
-requirement表を10.2へ集約しました。
+**`impl` と `instance`**
 
-監査で見つかった実ドリフトは、HTTP clientの`http` / `httpClient` requirement不一致、Clock `now`の
-`ClockError` / `Never`不一致、最終監査artifactがapplication wrapperではなくProvider operationを
-`applicationApi`と呼んでいた点です。HTTPは`httpClient`、Clockは`std/clock`の`Never` failureへ統一し、
-artifact checkerがapplication APIとContract operationの対応をexactに検査するようにしました。
-
-Stream、callback、resource、browser-only capability、external database package、TypeScript foreign bindingも
-既存のEffect / target / interop境界と矛盾しないことを確認しました。未実装operationを先にContractへ予約せず、
-module availabilityのSSOT、fixture status、project target selectionはそれぞれ後続の専用Issueへ残しています。
-
-### 2026-07-05: 型構文と性能境界
-
-| 確認項目                           | 結果                                                                                         |
-| ---------------------------------- | -------------------------------------------------------------------------------------------- |
-| arbitrary union / intersection禁止 | generic Effect APIに未定義の`R & { service: Service }`が残っていた                           |
-| requirement合成                    | 一般intersectionではない第一型引数限定のrequirement mergeとして定義した                      |
-| grammar / diagnostic               | `&`のparse骨格、`SES-T0501`、positive / negative fixtureを追加した                           |
-| syntax preview                     | 単独`&`をlogical `&&`やcustom operatorと別tokenへ分類した                                    |
-| fixture checker                    | diagnostic codeとseverityが12.13 registryに存在・一致することを検査するようにした            |
-| Signal abstraction                 | Functor / Applicativeのみで、Monadを持たない正本は一致していた                               |
-| performance optimization           | 評価順、Effect、cancellation、finalizer、Stream demand、DOM event順をas-if境界として確認した |
-| recursion                          | direct self tail callのstack safetyを型章と性能章で一致させた                                |
-
-requirement mergeの解決では、既存の公開APIを一般intersection型へ拡張していません。`R & S`は
-Effect / Streamのrequirement field集合をcompile時に正規化する型表現だけです。値のintersection、
-runtime merge、row remainderを導入しません。
-
-2026-08-23の#418で、当時のparse骨格をsurface AST、module interface、semantic type、Core IR、
-TypeScript type loweringまで接続しました。generic substitution後のfield和、空record identity、
-同名fieldのdeduplicateと型衝突、許可位置診断をcompiler behaviorとして検証しています。
-
-### 2026-07-05: inherent methodとtrait instance
-
-同じ`impl` keywordがnominal型固有methodと型クラスinstanceの二つを表し、headの形だけで意味を
-切り替えていました。両者は名前解決、visibility、coherence、orphan rule、backend loweringが異なるため、
-次のsurfaceへ分離しました。
+- 矛盾: 同じ `impl` が、型そのもののメソッドと型クラスのインスタンスの両方を表し、頭の形だけで意味が変わっていた。2つは名前の解決、公開範囲、一貫性、孤児インスタンスの規則、出力のどれもが違う。
+- 決定: `impl` は型そのもののメソッドと標準の演算子の省略記法に、`instance` は trait の実装だけに使う。古い形 `impl Trait<Type>` は `SES-T0502` にする。
 
 ```seseragi
 impl User {
@@ -82,357 +43,226 @@ instance Show<User> {
 }
 ```
 
-`impl`はinherent methodと標準operator糖衣、`instance`はtrait dictionaryだけに使います。旧形の
-`impl Trait<Type>`は`SES-T0502`とし、grammar、reserved word、syntax preview、lesson、positive / negative
-fixtureを同期しました。
+**`Char` とリテラル**
 
-### 2026-07-05: 標準ライブラリsignature
+- 矛盾: 標準のインスタンス（9.4）と Regex のエラー（10.7）が `Char` を使うのに、組み込みの型（2.2）、リテラル（1.2）、付録の文法に `Char` がなかった。String と template のエスケープの文法も決まっていなかった。
+- 決定: `Char` を Unicode のスカラー値1つの組み込みの型にした。文字のリテラル、String と template のエスケープ、整数と Float のリテラル（基数、区切り、指数、範囲、binary64 への丸め、最長一致）を決めた。
+- TypeScript では、スカラー値1つの string として受け渡すときに確かめる。`.d.ts` の string から `Char` を推論しない。
+- フォーマッターは、正しいエスケープと数値の綴りをそのまま残す。
 
-`std/array`、`std/list`、`std/map`、`std/set`だけが`empty`をpolymorphic valueとして公開し、Monoid、Bytes、
-Streamはparameterなし関数でした。userlandの公開`let`には明示的なpolymorphic scheme構文がなく、標準moduleだけの
-特権的な値になるため、すべて`fn empty<...> -> T`と`empty ()`へ統一しました。
+**入れ子のジェネリクス**
 
-module sectionごとの関数名重複はありませんでした。transform / lookup / aggregateはdata-lastで一致しています。
-複数入力を持つhost APIは最後のpath、command、requestをprimary subjectと明記しました。
+- 字句解析は、`>>` や `>>>` を演算子として失わずに持つ。型の中では、構文解析がそれを複数の閉じ括弧として読む。
+- 確かめる方法: `examples/spec/fixtures/compile/nested-generic-types.ssrg`
 
-合成failureは次の二形に固定しました。
+**途中で止める繰り返し**
 
-- upstreamを駆動するadapter: `Either<UpstreamError, LocalError>`
-- resourceをcallbackへ渡すbracket API: `Either<ResourceError, UseError>`
+- 決定: `break` と `continue` を加えない。途中で止める処理は、関数の普通の戻り値で表す。
+  - 純粋な処理: `std/collection.reduceUntil` と `ReduceStep<A>`（`Next` / `Done`）
+  - Effect: `forEachUntil` と `LoopControl`（`Continue` / `Break`）
+- 正常に止めることを、型のついた失敗、Defect、取消に流用しない。
+- `Done` の後は、コールバックも Iterator の次の取り出しも呼ばない。配列に変換もしない。
+- `Iterable<Iterator<A>, A>` は有限とは限らないので、`Reducible` を持たない。
+- Effect の中で使う普通の `for` は、全部を順に回す省略記法のままにする。
+- Array と List の `find`、`findIndex`、`takeWhile`、`dropWhile` は、それぞれの目的どおりに途中で止まる。
 
-これによりfilesystem、buffer、child process、HTTPとtemporary resource APIでEitherの左右が異なる理由を
-operation phaseから説明でき、任意union errorを導入せずに済みます。
+**ブロックの中の関数と再帰**
 
-### 2026-07-05: module、package、TypeScript load境界
+- ブロックの中に `fn`、`effect fn`、`rec` のまとまりを書ける。
+- ブロックの中の関数の名前は、自分の本体と、宣言より後で使える。`rec` のまとまりの名前は、まとまり全体と、その後で使える。
+- 後の関数を先に参照すること（暗黙の巻き上げ）は認めない。互いに呼び合う関数は、`rec` のまとまりで書く。
+- クロージャーは、宣言より前の変数だけを取り込む。
+- ブロックの中の関数も、自分自身を末尾で直接呼ぶときにスタックを増やさない。
 
-Seseragi module importはI/Oを起こさない一方、JavaScript moduleは評価時に任意のcodeを実行できます。以前は
-「side effectがある場合はlazy loader」とだけあり、同じhost moduleを複数foreign blockからpure / task混在で
-参照した場合のload時点、並行初回call、失敗後の扱いが未定義でした。
+### Effect と並行処理
 
-resolved host module identity単位で次へ固定しました。
+**同時に起きた失敗と、兄弟の後片付け**
 
-- pure memberが一件でもあればpure-loadとし、transitive host評価全体のpure保証を要求する。
-- opaque typeとtask memberだけならtask-loadとし、最初のforeign Taskまで評価しない。
-- 並行した初回task callはsingle-flight loadを共有する。
-- loadのsuccess / failureをruntime中memoizeし、initializerを暗黙retryしない。
-- cancelされたwaiterはload自体をcancelせず、共有結果をcacheできる。
-- specifier spellingではなくlockfileへ記録したexact identityをcache keyにする。
+- `Effect.parallel` は、同じ回（scheduler turn）に複数が失敗したら、入力の番号が最も小さい失敗を選ぶ。
+- `Stream.merge` は、同じ回なら左の失敗を選ぶ。
+- どちらも負けた側を取り消し、勝った側と負けた側の後片付けが両方終わってから結果を返す。
+- 1つの範囲（scope）の中の後片付けは、後に開いたものから行う。独立した兄弟の範囲どうしは、外から見える後片付けの順を約束せず、並べて行ってよい。
+- DOM のイベントは、上限のある列から1件ずつ処理を終えるので、同じ回に複数の失敗が起きない。最初の失敗で受け付けを止め、列を捨て、イベントの受け取り・購読・処理中の Fiber を片付ける。
+- 確かめる方法: `examples/spec/fixtures/projects/effect-stream-simultaneous-failure`
 
-`.d.ts` converterの既定module evaluationはtaskです。symbolをpureへ承認するにはmodule評価もpureへ明示承認し、
-task-load moduleのvalue、enum member、getterをpure valueとして自動生成しません。generated metadataと現在設定の
-evaluation modeが違う場合はstale bindingとしてbuildを拒否します。
+**入口の Effect の実行**
 
-instanceだけを到達可能にするimportはsemantic useとして扱い、unused warningやorganize-importsで削除しないことも
-module規則へ追加しました。
+- 実行する側は、生成したモジュールの `main ()` を1度呼び、実行するまで動かない Effect を受け取る。
+- 実行する側は、最上位の資源の範囲と Console を渡す。
+- 要求する環境は閉じたレコードとして照合する。実際の環境に余分なサービスがあってもよい。
+- TypeScript への出力で、Effect を Promise、throw、直接のコンソール出力に置き換えない。
 
-project fixtureには`project.expect.json`を必須とし、`lock: "generate"`ならrunnerがtemporary copyへoffline lockfileを
-生成する規則を定めました。これによりtool-owned lockfileのwire formatをexampleから捏造せず検証できます。
-最初の`foreign-task-load` fixtureは、mainの最初のEffectより後にhost moduleを一度だけloadし、二回のtask callで
-initializerを繰り返さないstdout traceを固定します。現在のcheckerはproject schema、spec参照、snapshotだけを検査し、
-実runは新仕様runner実装後のconformance targetです。
+**`std/effect` の型**
 
-### 2026-07-05: 一般言語の生活必需品
+- `attempt`、`fromEither`、`fromMaybe`、`service`、`provideSome` は、名前だけで型が書かれていなかった。
+- 決定: 型のついた失敗だけを Either に移す。同じ型のサービスが複数あるとき、あいまいなまま探さない。
 
-意図的不採用一覧を除外し、literal、local declaration、process I/O、text / number / bytes、random、test runnerを
-一般的なprogramの観点で照合しました。高度な抽象の代替では埋まらない未定義項目を
-`SPEC_COVERAGE.md`の「未定義・要設計」へ優先度付きで分離しました。
+### 標準ライブラリ
 
-明確な内部矛盾は`Char`です。9.4のstandard instanceと10.7のRegex error payloadが`Char`を要求していますが、2.2の
-組み込み型、1.2のliteral、Appendix grammarに存在しません。String / templateのescapeもexact grammarがなく、frontend
-実装前に同時に閉じる必要があります。
+**空の値 `empty`**
 
-実用上の大きな穴はtest discovery、standard input、Random / secure entropy、numeric APIの完全signatureです。
-`Process.arguments`とenvironmentは既にあります。mutable variable、exception、null、early return、arbitrary union、
-break / continue keywordは正本で意図的に不採用ですが、traversalの短絡combinatorは代替として未完です。
+- 矛盾: `std/array`、`std/list`、`std/map`、`std/set` だけが `empty` を多相の値として公開していた。利用者は公開する `let` に多相の型を書けないので、標準モジュールだけの特別扱いになっていた。
+- 決定: すべて `fn empty<...> -> T` にし、`empty ()` と呼ぶ。
 
-### 2026-07-06: literal frontend契約
+**引数の順と、合わさった失敗の形**
 
-CharをUnicode scalar一個の組み込み型として追加し、character literal、String、templateのescapeを閉じました。
-integer / Float literalは基数、separator、exponent、範囲、binary64丸め、最長一致を定義しました。`Char`の
-TypeScript ABIはscalar一個のstringとして境界検査し、`.d.ts`のstringからは自動推論しません。
+- 変換、検索、集計の関数は、対象のデータを最後の引数にする。
+- 複数の入力を取るホストの API は、最後のパス、コマンド、リクエストを主な対象とする。
+- 2つの失敗が合わさる API は、次の2つの形に決めた。任意の型の和を使わずに、Either の左右の意味を処理の段階から説明できる。
+  - 上流を動かす変換: `Either<UpstreamError, LocalError>`
+  - 資源をコールバックに渡す API: `Either<ResourceError, UseError>`
 
-Appendix grammar、diagnostic registry、syntax previewを同期し、positive fixture一件とinvalid escape、invalid Char、
-invalid numericのnegative fixture三件を追加しました。formatterは有効なescapeとnumber spellingを保持します。
+**計算量と、入力の保持**
 
-### 2026-07-06: traversalの短絡
+- 10.2 に、最悪・期待値・償却の計算量、コールバックの費用、結果を先に全部作るかどうかの共通の書き方を加えた。
+- Array と List の結果は、結果に含まれない要素を隠れて保持しない。
+- Map と Set は、期待値の計算量、ハッシュが衝突したときの最悪の計算量、更新での構造の共有、消したキーと値を保持しないことを決めた。
+- String は、バイトの位置とスカラー値の位置で費用を分けた。小さい部分文字列が、大きな元の文字列を保持し続けない。書記素の API も同じ規則に合わせた。
+- メモリーの確保の回数やホストのオブジェクトの形は約束しない。約束するのは、生きている結果が使う記憶域の増え方と、利用者の値に届くかどうかだけ。古い値を利用者が持っている場合、その値が持つ要素の回収までは求めない。
 
-`break` / `continue`を非局所control transferとして追加せず、pure側は`reduceUntil`と`Next / Done`、Effect側は
-`forEachUntil`と`Continue / Break`を標準化しました。通常のeffectful `for`は全件逐次走査の糖衣のままです。
-正常な短絡をtyped failure、defect、cancellationへ流用せず、callbackの通常の戻り値として区別します。
+**BigInt**
 
-Array / Listの`find`、`findIndex`、`takeWhile`、`dropWhile`は既に目的別に短絡します。genericな
-`reduceUntil`はIterableだけを要求するため、有限性を仮定せずDoneへ到達した時点で終了します。
+- 矛盾: 10.8 が `BigInt` を標準で持つと書き、9.4 が `Zero` と `One` のインスタンスまで求めているのに、公開するモジュールも計算の意味もなかった。
+- 決定: `std/big-int` の中身を隠した型にした。専用のリテラルと、Int との暗黙の変換は加えない。
+  - 読み取りと書き出し、Int との明示的な変換、失敗を返す除算・余り・累乗
+  - 足し算、引き算、掛け算は誤差のない任意精度
+  - 割り算は0の方向へ丸める。余りの符号は割られる数と同じ。指数は0以上の Int
+- TypeScript では、ホストの `bigint` に対応させる。`.d.ts` の変換も、ホストの `bigint` を BigInt にする。
+- ビット数と桁数に基づく、記憶域と費用の上限を決めた。
 
-2026-09-03 (#348): pure側の規範型名 `ReduceStep<A>`、`Next` / `Done` と
-`std/collection.reduceUntil` をcanonical standard interface / runtime / CLI / WASMへ接続。
-prelude所有のmap/reduce/aggregate/traverseは複製しません。既存 `SizeError` は維持します。
-`Done`後はcallbackだけでなくiteratorの次のpullも行わず、配列へのmaterializeも行いません。
-`Iterable<Iterator<A>, A>` は有限性を仮定しないため、`Reducible` は提供しません。
-Effect側 `forEachUntil` / `LoopControl` は #502、`std/iterator` module公開は #330 に残ります。
+**Int の TypeScript と JSON での形**
 
-### 2026-07-06: local named functionと再帰
+- Int は TypeScript の `number` で、安全に扱える整数の範囲に限る。公開する TypeScript の型も `number`。
+- 外部の関数と JavaScript の JSON の値から受け取るときは、有限、整数、安全な範囲であることを確かめる。ホストの `-0` は `0` にする。
+- `.d.ts` の変換では、ホストの `number` を既定で Float、明示的に指定すれば Int にする。ホストの `bigint` は BigInt にする。
+- Int と BigInt は、変換の処理、実行時の機能、暗黙の変換を共有しない。
 
-block itemへ`fn`、`effect fn`、local `rec` groupを追加しました。local function名は自身のbodyと宣言後、
-rec groupのmember名はgroup全体とgroup後でscopeに入ります。後続local functionへのforward referenceを
-暗黙hoistせず、相互再帰はrec groupだけで表します。closureは宣言より前のlexical bindingだけをcaptureします。
+**標準入力**
 
-self recursion、local mutual recursion、forward-reference rejectionをcompile / diagnostic fixtureへ固定しました。
-local functionも直接self tail callの一定host stack保証を持ちます。
+- 出力の Console とは別の Stdin サービスにした。`readChunk`、`readLine`、行の Stream を持つ。
+- 入力の終わり（EOF）と空行、厳密な UTF-8、1行の上限、入力全体でのバイト位置、同時の読み取り、取消とホストの読み取りの競合、一度 EOF になったら EOF のままであることを区別する。
+- 正常な EOF は `Nothing`。入力の失敗や不正な UTF-8 のふりをしない。
+- Stdin は共有の読み取り位置を持つ。Stream をもう1度実行しても入力を繰り返さず、その時点の残りから続ける。
+- 取消しても Stdin を閉じない。取消と競合して読み終えたバイトは、内部のバッファーに戻して失わない。
+- 確かめる方法: `examples/spec/fixtures/projects/stdin-lines`
 
-### 2026-07-06: test discoveryとrunner
+**Random と Entropy**
 
-testを新構文にせず、`std/test`のimmutableなTest treeと固定export `pub let tests: test.Test`で定義しました。
-test rootはmodule path順にcompile / discoveryし、suite treeのsource順を合わせたfull nameでcaseを識別します。
-filter、exact selection、jobs、timeout、seed、case isolation、report順、exit codeをtool contractとして固定しました。
+- 再現できる疑似乱数の Random と、秘密に使う Entropy を別のサービスにした。
+- Random は `seseragi-xoshiro256ss-v1` の種の展開、状態の更新、53ビットの符号つき Int・Float・Bytes への変換を決めた。範囲の値は棄却法で、並べ替えは Fisher-Yates で作る。
+- Entropy は、ホストの暗号用の乱数から Bytes だけを返す。種、再現、Float、範囲の関数は持たない。
+- テストの実行環境は、既定で Entropy を渡さない。偽物を使うテストだけが明示的に渡す。
+- Map と Set のハッシュの種の指定は `"entropy"` と書く。
+- 確かめる方法: `examples/spec/fixtures/projects/random-seed`
 
-runnerはcaseごとにClock、Random、Console、Loggerとroot resource scopeを分離し、timeout、leak、defectをcase
-failureとして扱います。`projects/test-discovery`はparallel jobsでもreportをdiscovery順に固定します。
+**テストの発見と実行**
 
-nested genericはgrammar上すでに再帰的なtype argumentとして定義済みでした。現行実装で壊れやすかった連続する
-`>>` / `>>>`を型parserが複数のclose delimiterとして扱うことを`nested-generic-types` fixtureへ固定しました。
+- テストに新しい構文を加えない。`std/test` の変更できない Test の木と、決まった名前の `pub let tests: test.Test` で書く。
+- テストのフォルダーのモジュールを、パスの順にコンパイルして見つける。名前は、モジュールと木のソースの順を合わせて決める。
+- 絞り込み、完全一致の選択、並列数、時間切れ、種、テストごとの分離、報告の順、終了コードを決めた。
+- テストごとに Clock、Random、Console、Logger と最上位の資源の範囲を分ける。時間切れ、資源の取り残し、Defect は、そのテストの失敗にする。
+- 並べて実行しても、報告は見つけた順に並べる。
 
-### 2026-07-06: standard input
+**Maybe、Either、Validation**
 
-出力用Consoleと分離したStdin serviceを追加し、readChunk、readLine、line Streamを定義しました。EOFと空行、
-strict UTF-8、line limit、absolute byte offset、concurrent read、cancellationとhost readの競合、sticky EOFを
-区別しています。正常なEOFはNothingで、input failureやinvalid UTF-8へ偽装しません。
+- `std/maybe` と `std/either` の固有の操作（9.2、10.4）と、Maybe の条件つきの Semigroup・Monoid（9.5）を実装した。
+- traverse と sequence は、既存の Traversable と Applicative を使う。結果には最初の Left を残すが、後ろのコールバックの評価は止めない。コールバックはソースの順にすべて評価する。途中で止めたいときは `reduceUntil` を使う。
+- `std/validation` の `Invalid` は NonEmptyList を持ち、複数のエラーを左から順に保つ。Monad は持たない。
 
-Stdinは共有cursorなのでStreamを再実行してもinputをreplayせず、その時点の残りから続けます。cancellationは
-stdinをcloseせず、競合して読み終えたbytesを内部bufferへ戻して欠落を防ぎます。`projects/stdin-lines`で空行と
-EOFを含むhost input / stdout traceを固定しました。
+### モジュールと TypeScript
 
-### 2026-07-06: Randomとsecure Entropy
+**ホストのモジュールの読み込み**
 
-再現可能な疑似乱数Randomと秘密用途のEntropyを別serviceへ分離しました。Randomは
-`seseragi-xoshiro256ss-v1`のseed展開・state transition・signed 53-bit Int / Float / Bytes変換を固定し、range samplingは
-rejection方式、shuffleはFisher-Yatesです。`projects/random-seed`でseed 42の先頭outputをsnapshot化しました。
+- 矛盾: Seseragi のモジュールの import は I/O を起こさないが、JavaScript のモジュールは評価するときに任意のコードを動かせる。同じホストのモジュールを、純粋な宣言と Task の宣言から参照したとき、いつ読み込むか、最初の呼び出しが同時に来たとき、失敗した後どうするかが決まっていなかった。
+- 決定: 解決したホストのモジュールごとに、次のように扱う。
+  - 純粋な宣言が1つでもあれば、純粋に読み込む。ホストのモジュールが読み込む先も含めて、評価が純粋であることを求める。
+  - 中身を隠した型と Task の宣言だけなら、最初の Task を実行するまで読み込まない。
+  - 最初の呼び出しが同時に来たら、1回の読み込みを共有する。
+  - 読み込みの成功と失敗は実行中ずっと覚え、初期化を勝手にやり直さない。
+  - 待っている側が取り消されても、読み込み自体は取り消さない。
+  - 覚えておくときのキーは、書いた綴りではなく、ロックファイルに記録した正確な同一性にする。
+- `.d.ts` の変換は、既定でモジュールを Task として読み込む。宣言を純粋として認めるには、モジュールの評価も純粋と明示的に認める。生成した情報と今の設定が違うときは、古い宣言としてビルドを止める。
+- 確かめる方法: `examples/spec/fixtures/projects/foreign-task-load`、`foreign-pure-load`、`foreign-task-single-flight`
 
-Entropyはhost CSPRNGからBytesだけを返し、seed、replay、Float、range helperを持ちません。test runnerは既定で
-Entropyを提供せず、fakeを使うtestだけが明示provideします。Random bytesをtokenやnonceへ使わない境界を
-compile fixtureへ固定しました。Map / Set hash seedのmanifest spellingも`"entropy"`へ明確化しました。
+**インスタンスのための import**
 
-### 2026-07-06: release性能、tooling、runtime lifecycle fixture
+- インスタンスを使えるようにするだけの import も、使っている import として扱う。未使用の警告を出さず、import の整理でも消さない。
 
-性能検証を内部IR textの固定ではなく、意味付きshape predicate、development / release differential、runtime
-stack safetyへ分離しました。`newtype-erased`、`surface-sugar-erased`、`self-tail-loop`はrelease outputの性質を
-検査し、pass名やIR node名を公開ABIにしません。100,000段のEffect bindと直接self tail callを両profileで実行する
-projectも追加し、「最適化した記録」ではなく結果とstack safetyを合格条件にしました。
+**TypeScript の名前空間**
 
-toolingでは`seseragi doc --test`のblock ID、実行順、report、exit code、atomic outputを固定し、check / run /
-compile_failを一つのdocument commentで検証するprojectを追加しました。HTML / JSON document artifactのwire snapshotは
-引き続き未作成なので、coverageはpartialです。
+- 矛盾: foreign の対象の文字列は最上位の export の名前そのものなのに、入れ子の実行時のメンバーを自動で作れるとも読めた。
+- 決定: foreign のブロックの中だけで使う `namespace local = "HostKey" { ... }` にした。
+  - 各段は、そのオブジェクト自身のプロパティの名前と完全に一致させる。`.` を含む名前は、1つの名前のまま扱う。
+  - Task で探して見つからない失敗は、`BindingLookup` の段階の失敗にする。
 
-runtime lifecycleは次をproject fixtureへ固定しました。
+**プロジェクトの fixture**
 
-- Signal: subscribe時のcurrent値、multi-source transactionのglitch-freeな一回通知、unsubscribe後の無通知。
-- Stream: terminalごとのcold再実行、bufferのFIFO、terminal scope終了時のresource release。
-- DOM: synthetic eventの逐次dispatch、Signal transaction後の一回reconcile、dispatch failure後のlistener /
-  subscription cleanup、HydrateStrict mismatch時の既存DOM不変更。
+- プロジェクトの fixture には、`project.expect.json` を必ず置く。
+- `lock: "generate"` なら、実行する側が一時的なコピーにロックファイルをオフラインで作る。ツールが作るロックファイルの形を、例の中で手書きしない。
 
-この作業中、`std/effect`が名前だけ列挙していた`attempt`、`fromEither`、`fromMaybe`、`service`、`provideSome`の
-signature欠落を発見しました。typed failureだけをEitherへ移す境界と、同型serviceを曖昧lookupしないenvironment
-selectorを定義し、compile fixtureへ固定しました。
+### 実行環境の機能
 
-TypeScript namespace変換には、foreign target stringがexact top-level export keyなのにnested runtime memberを
-自動生成できると読める矛盾がありました。一度未定義項目へ戻した後、foreign block内だけのcontextual
-`namespace local = "HostKey" { ... }`として閉じました。各segmentはexact own property、`.`入りkeyは一つのkeyのまま、
-task lookup failureはBindingLookup phaseです。module aliasのlower-name規則を保ち、runtime namespace `.d.ts` snapshotと
-hand-written compile fixtureへ固定しました。
+**4つの層**
 
-### 2026-07-06: simultaneous failureとsibling cleanup
+- 15章の Provider の仕組みに合わせて、Effect、時刻と乱数、プロセスの入出力、ファイル、HTTP、DOM、TypeScript との連携、データベースを見直した。
+- 標準ライブラリやパッケージの API、Provider Contract、実行環境ごとの Runtime ABI と橋渡しのコード、実行時の provider を、別々のものとして扱う。共通の規則と、サービスと要求の表は 10.2 にまとめた。
+- 見つけた食い違いは、次のように直した。
+  - HTTP クライアントの要求の名前が `http` と `httpClient` で食い違っていた → `httpClient` にした
+  - Clock の `now` の失敗が `ClockError` と `Never` で食い違っていた → `std/clock` の `Never` にした
+  - 確認用の出力が、Provider の操作を「アプリの API」と呼んでいた → チェッカーが、アプリの API と Contract の操作の対応を正確に確かめるようにした
+- まだ実装していない操作を、先に Contract に予約しない。
 
-parallel Effect、Stream merge、DOM event queueを同じscheduler turnのfailure選択とcleanup境界で照合しました。
+**HTTP サーバー**
 
-- Effect.parallelは同じturnなら入力index最小のfailureを選ぶ。
-- Stream.mergeは同じturnならleft failureを選ぶ。
-- どちらもloserをcancelし、winner / loser双方のscope finalizer完了後に結果を公開する。
-- 一つのscope内はLIFOだが、独立sibling scopeのfinalizer外部操作順は保証せず、並行実行を許す。
-- DOM dispatchはbounded FIFOを一件ずつ完了させるため、複数dispatch failureのsame-turn winner自体が存在しない。
-  最初のdispatch failureで受付を止め、queueを破棄してlistener / subscription / dispatch Fiberをcleanupする。
+- リクエストは、メソッド、絶対 URL、パス、加工していないクエリ、ヘッダー、Bytes の本文を固定した値として渡す。UTF-8 と JSON への変換は、`std/text` と `std/json` で明示的に行う。
+- レスポンスは、ステータス、ヘッダー、空・Bytes・テキスト・JSON テキストの本文を明示的に作る。JSON への暗黙の変換は加えない。
+- ハンドラーは、リクエストごとに独立した Effect として実行し、同時に来たリクエストを並べて処理する。listen のときに渡した環境を使う。
+- アプリの型のついた失敗は、`recoverHandler` でレスポンスに変える。`HttpServerError` として返すのは、待ち受けの開始に失敗したときだけ。
+- サーバーを閉じたときや最上位の取消のときは、リクエストの子の処理を取り消し、資源を1度だけ片付け、遅れて返ってきたレスポンスを捨てる。
 
-EffectとStreamが同時にleft / rightで失敗し、両finalizer flagがTrueになってからleft failureを観測するproject fixtureを
-追加しました。これによりthread数を変えてもwinnerは固定しつつ、sibling finalizerを不必要に直列化しません。
+### 文法とツール
 
-### 2026-07-06: Appendix grammar terminal coverage
+**付録の文法の確認**
 
-Appendix EBNFのquoted terminalを`examples/spec`以下の全Seseragi sourceと機械照合しました。未登場だった
-Bool短絡演算子、累乗、Functor map演算子、List literal、match guard、foreign propertyを一つのpositive
-fixtureへ固定しました。構造checkerは今後、grammarへ追加されたterminalがlesson / fixtureのいずれにも
-現れなければ失敗します。
+- 付録の文法に出てくる記号（終端記号）が、`examples/spec` の教材か fixture のどれかに出てくることを、構造のチェッカーで確かめる。
+- 文法の規則（production）の重複、終わりの `;` の抜け、定義されていない規則の参照、入口の `module` から届かない規則も拒否する。
+- `examples/spec/grammar-coverage.json` で、規則を役割ごとのまとまりに分け、それぞれに成功する例を1つ以上対応づける。フォーマッターの入力はすべてのまとまりで必須。診断の例は、意味の上の失敗の例がまだ決まっていないまとまりでは空でもよい。
+- これらは文法が閉じていることを確かめるもので、構文解析が各規則を受け付けることや、フォーマッターの往復までは確かめない。
 
-これは各productionの意味検証やformatter round-tripを証明するものではありません。まず字句上の孤立を
-なくすpassであり、production単位のpositive / negative検証はcoverage表に従って引き続き追加します。
+**色分け**
 
-### 2026-07-06: standard API costとstorage retention
+- 付録の決まった演算子と区切り記号を、色分けの定義と照らし合わせた。ラムダの `\`、バリアントと内包表記の `|`、フィールドの `.`、終わりの `;` に専用の分類を加えた。
+- 利用者定義の演算子に使える文字から、バックスラッシュを外した（1.8 に合わせた）。
+- チェッカーは、主な決まった演算子、区切り記号、利用者定義の演算子の例が、それぞれ決まった TextMate の分類になることを確かめる。利用者定義の演算子の汎用の規則が、決まった記号の抜けを隠すことを許さない。
 
-14.4が要求する計算量、allocation、sharing、入力保持をstandard APIと照合しました。Regexのlinear-time、
-Bytesのslice / copy、Streamのbounded bufferは既に明文化されていました。一方、Array / Listの部分結果、
-Map / Setのhash operation、String substringには保持境界がありませんでした。
+**ドキュメントコメントのテスト**
 
-10.2へworst-case / expected / amortized、callback cost、strict resultの共通表記を追加しました。Array / Listは
-結果外の要素を隠れて保持せず、Map / Setはexpected cost、collision worst-case、persistent updateのsharing、
-削除済みkey / valueの非保持を定義しました。Stringはbyte / scalar indexのcostを分け、小さいsubstringが
-巨大な入力storageを保持しないことを保証します。grapheme APIも同じstorage規則へ揃えました。
+- `seseragi doc --test` の、コード例の ID、実行の順、報告、終了コード、出力を途中で壊さないことを決めた。
+- 確かめる方法: `examples/spec/fixtures/projects/doc-tests`
 
-allocation個数やhost object shapeは観測保証にせず、live resultの漸近storageとuser valueの到達性だけを
-公開契約にしています。古いpersistent valueを利用側が保持している場合、その値が所有するentryの回収までは
-要求しません。
+**性能の確かめ方**
 
-この照合で、10.8が`BigInt`を標準提供すると宣言し、9.4がZero / One instanceまで要求している一方、公開module
-surfaceと算術意味が存在しないことも発見しました。性能規則からAPIを推測せず、P1未定義項目として
-`SPEC_COVERAGE.md`へ戻しました。
+- 内部の中間表現の文字列を固定しない。意味のある形の条件、開発用とリリース用の出力の比較、実行時にスタックがあふれないことに分けて確かめる。
+- 最適化の段階の名前や中間表現の要素の名前を、公開の約束にしない。
+- 確かめる方法: `performance-release-shapes`、`performance-profile-equivalence`、`performance-stack-safety`（`examples/spec/fixtures/projects/`）
 
-### 2026-07-06: BigInt surface
+**実行時の寿命**
 
-再登録したBigIntを`std/big-int`のstandard opaque typeとして閉じました。専用literalやIntとのimplicit
-conversionは追加せず、parse / format、明示Int変換、checked division / remainder / powerを提供します。
-operatorは任意精度のexact加減乗算、0方向の除算、被除数と同符号の余り、非負Int指数として定義しました。
+- Signal: 購読したときの今の値、複数の元を持つまとめた更新で途中の値を見せず1回だけ通知、購読を解いた後は通知しない。
+- Stream: 最後の処理ごとにもう1度最初から実行する、バッファーは先に入れたものから出す、最後の処理の範囲が終わったら資源を返す。
+- DOM: 作ったイベントを順に処理する、Signal のまとめた更新の後に1回だけ差分を反映する、処理が失敗した後にイベントの受け取りと購読を片付ける、`HydrateStrict` で食い違ったら既存の DOM を変えない。
 
-TypeScriptではIntと同じhost `bigint`へ写像しますが、`.d.ts` converterの既定は引き続き64-bit検査付きIntです。
-BigIntは明示overrideだけで選びます。bit lengthとdigit数に基づくstorage / cost上限、Lesson 31、positive fixtureを
-追加し、P1登録を解消しました。
+## まだ確かめていないこと
 
-### 2026-07-06: Appendix grammar production graph
+この文書は、仕様全体に矛盾がないことを証明するものではありません。次はまだ機械で確かめていません。
 
-terminalの出現検査に加え、構造checkerがAppendix EBNFをproduction単位で読み取るようにしました。重複定義、
-終端`;`の欠落、未定義production参照、start production `module`から到達不能なproductionを拒否します。
-現在の109 productionはすべて定義済みかつ到達可能です。
+- 文法の規則ごとに、成功する例、失敗する例、フォーマッターの往復を対応づけること
+- 計算量と保持の約束を、ベンチマークと計測つきの実行に対応づけること
 
-この検査はgrammar自体の閉包を保証しますが、各productionをparserが受理することやformatter round-tripは
-まだ保証しません。次のpassではproductionとconformance source / diagnostic / formatter snapshotの対応を
-明示metadataへ移します。
+## 新しい矛盾を見つけたら
 
-### 2026-07-06: fixed token highlight parity
+1. 仕様の本文を直す。
+2. 直した内容を fixture で確かめる。
+3. この文書の該当する節に、矛盾と決定を1項目足す。
 
-Appendixの固定operator / separatorをsyntax previewと照合し、専用scopeがなかったlambda `\\`、ADT variantと
-comprehensionの`|`、field accessの`.`、terminatorの`;`を追加しました。custom operator文字集合へ誤って
-入っていたbackslashも1.8に合わせて除外しました。
-
-構造checkerは主要な固定operator、separator、custom operator sampleが対応するTextMate scopeへexact matchする
-ことを検査します。genericなcustom operator ruleが`<`だけを拾って固定tokenの欠落を隠すことは許しません。
-
-### 2026-07-06: grammar production target map
-
-109 productionを12の責務groupへ分け、各groupを最低一件のpositive sourceへ対応づけた
-`examples/spec/grammar-coverage.json`を追加しました。checkerはAppendix productionの過不足・重複、group ID、
-target pathを検査します。当初はdiagnostic / formatter targetの空を許し、未検証をcoveredと偽装しない
-方針にしました。
-
-2026-07-07にformatter targetを全groupで必須化しました。これは新formatterが存在するという意味ではなく、
-各production groupに将来のround-trip入力を最低一件割り当てる契約です。diagnostic targetは、意味的な
-negative caseをまだ決めていないgroupでは空を許します。
-
-実装を並列化する前提も`docs/IMPLEMENTATION.md`へ分離しました。共有frontendをartifact pipelineとして定義し、
-初期のhorizontal laneからcontract安定後のvertical feature sliceへ移る条件、ownership、merge順、最小end-to-end
-milestoneを固定しています。
-
-### 2026-07-06: compiler stage artifact schema
-
-Wave 0の最小contractとして、`pub let answer: Int = 42`をtoken、CST、diagnostic、module interfaceへ写した
-schema 1 fixtureを追加しました。tokenはtriviaとEOFを含み、raw連結がsource bytesと一致します。CSTは
-half-open token range、interfaceはbodyを含まないpublic schemeだけを持ちます。
-
-checkerはUTF-8 byte range、tokenの連続性とlossless再構築、EOF、CST containment、diagnostic envelope、
-interface symbolとsource rangeを検査します。これはhand-written expected artifactのcontract検証であり、
-新compilerが生成できるという主張ではありません。次にrecoveryと非empty diagnosticを別fixtureで固定します。
-
-recovery fixtureでは式が欠けた公開letを、lossless token列、zero-width `error-expr`、missing expression、
-`SES-P0001`へ写しました。diagnostic ID、registry code / severity、message key、UTF-8 primary rangeもcheckerで
-検査します。compile errorを持つmodule interfaceは不完全なexportを公開しません。
-
-module interfaceはfrontend artifactと別bundleにし、relative dependencyのcanonical module / imported symbol、
-public newtype、custom operatorのsymbol / fixity / precedence / scheme、coherenceに必要なinstance headを固定しました。
-checkerはsource range、UTF-8 boundary、symbol namespace、dependency source、operator規則を検査します。module graph
-consumerはCSTやfunction bodyへ依存せず、このinterfaceだけをcache入力にできます。
-
-最小のstage chainとしてpublic Int定数をSurfaceAst、ResolvedAst、TypedHir、CoreIr、TypeScriptIrへ順に写し、
-`export const answer: bigint = 42n;`まで固定しました。checkerはmodule / symbol / valueのstage間一致、runtime
-feature参照、generated metadata、最小emitter結果を検査します。
-
-runtime ABI schema 1はpackage identityとABI major、feature IDを持ち、`core.int64`をsigned 64-bit境界付きの
-TypeScript bigint表現として登録します。Int表現にhelper importが不要でもfeature negotiationへ含めます。
-source mapはECMAScript v3、portable Seseragi URI、sourcesContent、answer symbolとliteralのmappingを固定しました。
-absolute pathを含めず、generated metadataからmap artifactを参照します。
-
-Effectの最小stage chainでは、parameterなし関数のimplicit Unit規則、closed Console environment、
-ConsoleError failure、Unit success、`console.println` operationを各段で固定しました。runtime ABIのhelper importは
-opaqueな文字列ではなくmodule / exportのstructured pairです。checkerはTypeScriptIrのfeature参照からimportを解決し、
-生成TypeScriptとsource mapまで照合します。Promise化やthrow化はこの内部module境界では行いません。
-
-### 2026-07-07: Effect entry execution
-
-`execution-schema-1/effect-main`で、generated moduleが返すEffect valueをhost runnerが実行する境界を固定しました。
-runnerは`main ()`を一度呼んでcold Effectを得て、root resource scopeとConsole serviceを提供します。
-required environmentはclosed structural recordとして照合しますが、actual host environmentに追加serviceが
-存在しても構いません。成功時はUnit、exit code 0、Console trace、stdout / stderr snapshotを比較します。
-
-このfixtureにより、TypeScript backendがEffectをPromise / throw / direct console writeへ潰さないことと、
-process的な観測結果をrunner側の契約として扱うことを分離しました。
-
-### 2026-07-07: TokenStream producer skeleton
-
-Rust workspaceを開始し、`seseragi-syntax`が最小TokenStream producer、`seseragi-conformance`が
-TokenStream artifact consumerを持つようにしました。最初の`schema-1/basic` / `recovery`に加えて、
-lexer lane専用の`token-schema-1/lexical-operators`を追加し、CSTやinterfaceを要求せずに`fn`、`->`、
-`|>`、lambda、comment、trivia、EOF、lossless reconstructionを検査します。
-
-このpassはparserや型検査の完成を意味しません。token-only schemaを分けたことで、lexerのcoverageを
-parser laneの未実装状態から独立して増やせるようにしました。
-
-`token-schema-1/literals-and-nested-types`では、文字列、template literal、boolean、wildcard、array literal、
-および`Array<Maybe<Int>>`のようなnested type argument表面構文をTokenStream contractへ追加しました。
-lexerは`>>`をoperator runとしてlosslessに保持します。型構文内でこれを2つの閉じ山括弧として読むかどうかは
-parserのcontextual responsibilityであり、custom operator tokenizationだけでnested type parsingを解決済みとは
-扱いません。
-
-`token-schema-1/effect-do-block`では、`effect fn`、environment / failure header、`do` block、monadic bind
-`<-`、function application `$`、brace、Unit call `()`をTokenStream contractへ追加しました。Effectの意味論や
-do desugaringではなく、次のparser sliceへ渡す表面tokenを固定するためのfixtureです。
-
-`token-schema-1/ranges-and-members`では、inclusive / exclusive range operator `..=` / `..` とmember access `.`
-をTokenStream contractへ追加しました。`.`をgeneric custom operatorとして扱わず専用punctuationへ分けたため、
-既存のEffect sample内の`console.readLine` tokenも同じkindへ更新しました。
-
-`schema-1/effect-do`では、最小の`effect fn main`と空の`do {}` blockをfrontend artifactとして追加しました。
-このfixtureはTokenStreamとLosslessCstのproducer比較対象であり、Effectの型検査、do desugaring、TypeScript
-emissionはまだ`stage-schema-1/effect-main`側の手書きcontractに留めています。
-
-`schema-1/multiple-lets`では、module内の複数top-level declarationをLosslessCstで分離するcontractを追加しました。
-private `let`はmodule interfaceへ出さず、public `let`だけをexportへ載せます。
-
-Rust producerはSurfaceAstから浅いModuleInterfaceを生成し、`schema-1/basic`、`effect-do`、`multiple-lets`の
-`interface.json`と比較するようになりました。現段階ではrelative import、operator export、instance headは
-`interface-schema-1/rich`の手書きcontractに留め、shallow frontend producerの対象外です。
-
-### 2026-07-29: Int safe integer TypeScript / JSON境界
-
-以前のWave 0記録にある`core.int64` / TypeScript `bigint`表現は、その時点のartifact contractを説明する履歴です。
-現行契約ではIntを`core.int`のTypeScript `number`へ移行し、public TypeScript ABIも`number`に統一しました。
-foreign入力とJavaScript JSON value入力はfinite、integral、safe integerを検査し、host `-0`をSeseragi `0`へ
-正規化します。`.d.ts` converterはhost `number`を既定でFloat、明示overrideでIntとし、host `bigint`は
-任意精度BigIntへ対応させます。IntとBigIntのadapter、runtime feature、暗黙変換は共有しません。
-
-### 2026-09-03: #303 Maybe / Either固有operation
-
-`std/maybe` / `std/either`をcanonical interface・runtime・Referenceへ接続し、9.2/10.4の固有operationと
-9.5のMaybe条件付きSemigroup/Monoidを実装しました。traverse/sequenceは既存TraversableとApplicativeを再利用し、
-first Leftとstrictなsource順callback評価を区別します。callable値・部分適用・custom/imported evidenceは専用fixtureで
-検証します。generic inferenceの既存漏れは#503へ具体例を追記し、本sliceで修正済みとは扱いません。
-
-### 2026-09-03: #304 Validation error accumulation
-
-`std/validation` の型・constructor・5 helper と Functor / Applicative / Eq / Show / Debug を
-canonical module interface と runtime へ接続しました。Invalid の payload は NonEmptyList であり、
-複数エラーを左から右へ保持し、Monad は追加しません。native / imported generic project / WASM の
-実行 fixture と Monad 不在の negative Analysis を追加しています。Lesson 09 相当の pure validation
-合成を検証し、元 lesson の text 操作は #306、Eq deriving は #332、既存 Effect match payload の
-不具合は #510 の後続候補として分離します。
-
-## 次のpass
-
-1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
-2. cost / retention契約をbenchmarkとinstrumented runtime profileへ対応づける。
-3. Wave 0のconformance runner skeletonを実装計画へ落とす。
-
-未完了passがあるため、この文書は仕様全体に矛盾がないことを証明しません。passごとに発見事項を本文へ
-反映し、解決をfixtureへ固定してから完了として追記します。
+規則が変わるときは、PR にそのことを書きます。
