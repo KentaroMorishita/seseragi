@@ -70,7 +70,7 @@ impl Backend<'_> {
                     .ok_or_else(|| "Rust backend: missing collection source argument type".into())
             })
             .collect::<Result<Vec<_>>>()?;
-        let full = function(&supplied, type_ref.clone());
+        let full = self.ground_unconstrained(&function(&supplied, type_ref.clone()), scope);
         if self.declared_method_type_kind(&full, scope) != Some(0) {
             return Err("Rust backend: unproven collection argument/result kind".into());
         }

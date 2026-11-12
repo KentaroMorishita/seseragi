@@ -1,0 +1,25 @@
+// Nothing decides the element type of these empty collections. The results
+// do not depend on it, so the native target builds them like the TS target.
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as maps from "std/map"
+import * as sets from "std/set"
+
+fn count<A> items: Array<A> -> Int =
+  arrays.length items + arrays.length (arrays.empty ())
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println (show $ arrays.length [])
+  println (show $ lists.length (lists.empty ()))
+  println (show $ maps.size (maps.empty ()))
+  println (show $ sets.size (sets.empty ()))
+  println (show $ arrays.length (arrays.empty ()))
+  println (show $ arrays.isEmpty (arrays.reverse []))
+  println (show $ arrays.length (arrays.append [] []))
+  println (show $ lists.isEmpty (lists.empty ()))
+  println (show $ maps.isEmpty (maps.empty ()))
+  println (show $ sets.isEmpty (sets.empty ()))
+  println (show $ sets.size (sets.insert 1 (sets.empty ())))
+  println (show $ maps.size (maps.insert "a" 1 (maps.empty ())))
+  println (show $ count [1, 2])
+}

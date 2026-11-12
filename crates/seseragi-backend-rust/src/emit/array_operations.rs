@@ -55,7 +55,7 @@ impl Backend<'_> {
                     .ok_or_else(|| "Rust backend: missing Array argument type".into())
             })
             .collect::<Result<Vec<_>>>()?;
-        let full = function(&parameters, type_ref.clone());
+        let full = self.ground_unconstrained(&function(&parameters, type_ref.clone()), scope);
         if self.declared_method_type_kind(&full, scope) != Some(0) {
             return Err("Rust backend: unproven Array argument/result kind".into());
         }

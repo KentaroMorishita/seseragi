@@ -66,7 +66,7 @@ impl Backend<'_> {
                     .ok_or_else(|| "Rust backend: missing sequence argument type".into())
             })
             .collect::<Result<Vec<_>>>()?;
-        let full = function(&actual, result.clone());
+        let full = self.ground_unconstrained(&function(&actual, result.clone()), scope);
         if self.declared_method_type_kind(&full, scope) != Some(0) {
             return Err("Rust backend: unproven sequence argument/result kind".into());
         }
