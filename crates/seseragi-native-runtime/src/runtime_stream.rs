@@ -265,8 +265,7 @@ fn stream_chunk_fill(size: V, finished: V, source: V, values: V, count: V) -> V 
     native_stream_defer(
         vec![size, finished, source, values, count],
         |captures, _| {
-            let (V::Int(size), V::Int(count)) = (&captures[0], captures[4].read_reference())
-            else {
+            let (V::Int(size), V::Int(count)) = (&captures[0], captures[4].read_reference()) else {
                 unreachable!()
             };
             if captures[1].read_reference().boolean() || count >= *size {
