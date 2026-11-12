@@ -1,207 +1,212 @@
-# Seseragi仕様カバレッジ
+# 仕様で決まっていること
 
-この文書は仕様整理用の非規範チェックリストです。言語の意味は `docs/spec/` を正とします。
-実装計画や特定backendの移行計画は扱いません。
+仕様を書き足す人と、言語に機能を加えたい人に向けた一覧です。
+仕様（`docs/spec/`）で意味が決まっている機能と、採用しないと決めた機能を並べます。
+この一覧は規則そのものではありません。言語の意味は、仕様の本文に従います。
+コンパイラーの実装の計画は扱いません。
 
-## 現行機能を扱う基準
+## 機能を仕様に加えるときの基準
 
-現行compilerの挙動は設計資料であり、互換性の正本ではありません。独自記法を見つけた場合は、
-次のいずれかに分類してから正本へ反映します。
+今のコンパイラーの動きは、設計の参考です。互換性を約束するものではありません。
+仕様にない独自の書き方を見つけたら、次のどれかに分けてから仕様に書きます。
 
-- 維持: Seseragiの読み味を作り、型と評価規則も一貫している。
-- 再設計: 表面構文は有用だが、現行の型・失敗・副作用の意味に問題がある。
-- 廃止: 通常関数より理解しにくい、別概念を同じ記号へ混在させる、または安全性を隠す。
-- 保留: 言語全体との関係を決めるまで意味を確定できない。
+| 分類 | 当てはまるもの |
+| --- | --- |
+| 残す | Seseragi らしい読みやすさを作り、型と評価の規則も一貫している |
+| 作り直す | 書き方は便利だが、型、失敗、副作用の意味に問題がある |
+| やめる | 普通の関数より分かりにくい。別の考え方を同じ記号に混ぜる。安全でないことを隠す |
+| 保留 | 言語全体との関係が決まるまで、意味を決められない |
 
-採用する機能は、少なくとも構文、型、評価順序、展開先、失敗条件、module境界を定義します。
-現行testが通ることやTypeScriptへ生成できることだけを、仕様採用の根拠にはしません。
+採用する機能には、少なくとも次を決めます。
 
-## 定義済み
+- 構文
+- 型
+- 評価の順
+- 何に展開されるか
+- 失敗する条件
+- モジュールをまたぐときの扱い
 
-### 言語の核
+今のテストが通ることや、TypeScript へ出力できることだけでは、仕様に採用する理由になりません。
 
-- 式中心、strict evaluation、左から右の評価順序
-- 不変bindingと不変data
-- curry、部分適用、rank-1 let-polymorphism
-- generic function / ADT / struct / newtype / alias / impl
-- Eq / Ord / Show / Debug / Hashの限定的なderiving
-- Showで型検査されるtemplate interpolation
-- Array / Listのliteral、pattern、comprehension、明示変換
-- Maybe専用の短絡fallback `??`
-- kind、arity、型構築子parameter
-- nominal型とstructural record
-- optional record fieldのpresence、width subtyping、query pattern、JSON / TypeScript境界
-- entry pointでfield集合を確定するclosed structural record
-- Effect / Stream第一型引数だけのrestricted requirement merge
-- ADT、網羅的match、pattern guard
-- 単一値のnominal wrapperを表すnewtypeとopaque境界
+## 決まっている機能
+
+### 言語の中心
+
+- 式を中心にした言語。引数を先に評価し、左から右の順に評価する
+- 変更できない変数と、変更できないデータ
+- カリー化、部分適用、let で束ねた値の多相（rank-1）
+- ジェネリクスを使える関数、代数的データ型、struct、newtype、型の別名、impl
+- Eq、Ord、Show、Debug、Hash の自動導出（範囲は限定）
+- Show で型を調べる、文字列への値の埋め込み
+- Array と List のリテラル、パターン、内包表記、明示的な変換
+- Maybe 専用の、`Nothing` のときだけ右辺を評価する `??`
+- 種（kind）、引数の数、型構築子の引数
+- 名前で区別する型（nominal）と、形で区別するレコード（structural）
+- 省略できるレコードのフィールド。値があるかどうか、フィールドの多いレコードを少ないレコードとして使えること、それを調べるパターン、JSON と TypeScript との受け渡し
+- 入口の関数でフィールドの集合が確定する、閉じたレコード
+- Effect と Stream の最初の型引数（要求する環境）だけに限った、要求の合成
+- 代数的データ型、すべての場合を扱う match、パターンの条件（guard）
+- 1つの値を名前で区別して包む newtype と、中身を隠す境界
 
 ### 抽象化
 
-- coherent type classとorphan rule
-- inherent `impl`とtrait `instance`の構文上の分離
-- Functor / Applicative / Monad
-- collection / Effect / Stream instance semanticsとValidation error accumulation
-- Semigroup / Monoid
-- standard operator overloadとfunctional dependency
-- userland custom infix operator
-- generic do notation
-- monad transformerの標準形とmodule-qualifiedなrun / lift API
+- 一貫した型クラスと、孤児インスタンスの規則（orphan rule）
+- 型そのものに付ける `impl` と、trait の `instance` を、構文で分けること
+- Functor、Applicative、Monad
+- コレクション、Effect、Stream のインスタンスの意味と、Validation でエラーを集めること
+- Semigroup、Monoid
+- 標準の演算子の多重定義と、関数従属（functional dependency）
+- 利用者が定義する中置演算子
+- 汎用の do 記法
+- モナド変換子の標準の形と、モジュール名で修飾した run と lift の API
 
-### Effectと状態
+### Effect と状態
 
-- Effectのenvironment / error / success channel
-- Effect / Streamのrequirement wideningとNever failure widening
-- 正規Effect型へ展開される `effect fn` とeffectful `for`
-- compact inferred `effect fn` のbody由来contract推論とartifact固定
-- Task alias
-- 順次・並列、resource、cancellation、defect
-- Signal / MutableSignal
-- Signal snapshot read `*signal` と更新 `:=`
-- transaction、glitch-free更新、subscription lifetime
-- SignalChangeによるmulti-signal transactionとswitchMap lifetime
-- cooperative schedulerのweak fairnessとstructured Fiber supervision
-- Queue / Ref / Deferred / Semaphoreの型・順序・cancellation semantics
-- Effect timeout、Schedule retry / repeat、resource scopeとfinalizer semantics
-- process signal mode、root cancellation、grace period、exit status
-- Streamのdemand、merge ordering、buffer overflow、resource lifetime
-- Signal / Stream変換の初期値、backpressure、loss policy
-- Console / LoggerとShowの分離
-- immutable Bytes、opaque Byte、slice sharing / copy、UTF-8変換
-- canonical hex / Base64 / Base64url codecとtyped decode offset
-- Unicode normalization / property APIとextended grapheme cluster境界
+- Effect の3つの型引数（環境、エラー、成功の値）
+- Effect と Stream の要求を広げること、失敗しない型 `Never` を別の失敗型に広げること
+- 通常の Effect 型に展開される `effect fn` と、Effect の中で使う `for`
+- 型を省いた `effect fn` について、本体から型を推論し、その結果をコンパイル結果に固定すること
+- Task という型の別名
+- 順に実行することと並べて実行すること、資源、取消、Defect（想定していない失敗）
+- Signal と MutableSignal
+- Signal の今の値を読む `*signal` と、更新する `:=`
+- まとめて更新する仕組み（transaction）、途中の不整合な値を見せない更新、購読の寿命
+- SignalChange による複数の Signal の同時更新と、switchMap の寿命
+- 協調的なスケジューラーの弱い公平さ（ほかの Fiber が中断できる位置へ達し続ける限り、実行できる Fiber はいつか進む）と、Fiber を親子で管理すること
+- Queue、Ref、Deferred、Semaphore の型、順序、取消の意味
+- Effect の時間切れ、Schedule による再試行と繰り返し、資源の範囲と後片付けの意味
+- プロセスへのシグナルの扱い、最上位の取消、猶予時間、終了コード
+- Stream の要求量、合流の順序、バッファーがあふれたとき、資源の寿命
+- Signal と Stream の変換での初期値、流量の調整、値を捨てる方針
+- Console と Logger を、Show から分けること
+- 変更できない Bytes、中身を隠した Byte、部分の共有とコピー、UTF-8 との変換
+- 決まった形の16進数、Base64、Base64url の変換と、型のついたデコード位置
+- Unicode の正規化と文字の性質を調べる API、見た目の1文字（拡張書記素クラスター）の区切り
 
-### moduleと外部境界
+### モジュールと外部とのやりとり
 
-- Seseragi module identity、visibility、import、re-export
-- namespace aliasによる値・型・constructor・traitのqualified参照
-- package dependency、循環禁止、初期化順序、entry point
-- `seseragi.toml`、export map、標準layout、generated root、lockfile
-- canonical TOML lockfile schema、content digest、dependency edge、stale detection
-- TypeScript foreign binding、call mode、class / callback / Promise
-- TypeScript向け公開ABI
-- `.d.ts` subset変換、unsupported診断、更新差分
-- unconstrained generic TypeScript ABIと明示trait dictionary mapping
-- callback lifetime設定、stable generated naming、declaration merge / runtime namespace変換
-- resolved host module単位のpure-load / task-load、single-flight、failure memoization
-- source map chainとcross-language machine-readable stack frame
-- backend非依存Provider Contractのservice / requirement / operation / logical type schema
-- Provider Contract、backend Runtime ABI、runtime provider、std / package APIの4層分離
-- provider manifest、direct candidate visibility、explicit / toolchain default / unique selection
-- missing / ambiguous / target / Contract / ABI / runtime feature / requirement conflictの事前diagnostic
-- TypeScript Provider Runtime ABI v1のvalue / call / result / defect / opaque handle境界
-- provider、generated / shared bridge、std wrapperの変換責任とnull / undefined / missing分離
-- provider operationのcold Effect、terminal outcome、cancel race、uncancellable host workのsupervision
-- atomic resource handoff、idempotent close、LIFO cleanup、parent / child shutdown、cleanup defect保持
-- provider callbackのone-shot / multi-shot、atomic registration / unsubscribe、late event処理
-- pull demand、bounded push buffer、overflow分類とStream / Signal bridge ownership
-- portable / target-extension identity検査、package portability導出、version handshake
-- additive / breaking分類とprovider conformance case profile
-- Clock / HTTP client-server / filesystem / PostgreSQLの4層対応と実装handoff
-- HTTP server Effectful handlerのR / E合成、request child scope、明示failure recovery、並行shutdown境界
+- Seseragi のモジュールの同一性、公開範囲、import、再公開
+- 名前空間の別名による、値、型、コンストラクター、trait の修飾した参照
+- パッケージの依存、循環の禁止、初期化の順、入口
+- `seseragi.toml`、`exports` の対応表、標準のフォルダー構成、生成物を置く場所、ロックファイル
+- TOML のロックファイルの形式、内容のハッシュ、依存の辺、古くなったことの検出
+- TypeScript の関数を呼ぶ宣言（foreign）、呼び方の種類、クラス、コールバック、Promise
+- TypeScript から呼ぶための公開の形
+- `.d.ts` の一部の変換、変換できないものの診断、更新したときの差分
+- 型の制約がないジェネリクスの TypeScript での形と、trait の辞書の明示的な対応
+- コールバックの寿命の設定、安定した生成名、宣言の結合と実行時の名前空間の変換
+- 解決したホストのモジュールごとに、読み込みを純粋なものと Effect を伴うものに分けること、読み込みを1度だけにすること、失敗を覚えておくこと
+- ソースマップの連鎖と、言語をまたいで機械が読めるスタックの情報
+- 実行環境（backend）に依存しない Provider Contract の、サービス、要求、操作、論理的な型の形式
+- Provider Contract、実行環境ごとの Runtime ABI、実行時の provider、標準ライブラリやパッケージの API という4つの層を分けること
+- provider の宣言ファイル、直接見える候補、明示的な指定・ツールの既定・候補が1つだけの場合の選び方
+- provider が見つからない、複数ある、対象の環境・Contract・ABI・実行時の機能・要求が合わない、という問題を、実行前に診断すること
+- TypeScript Provider Runtime ABI v1 の、値、呼び出し、結果、Defect、中身を隠したハンドルの扱い
+- provider、生成した橋渡しのコードと共有の橋渡しのコード、標準ライブラリの包みのそれぞれが受け持つ変換と、null・undefined・値がないことの区別
+- provider の操作が実行するまで動かない Effect であること、最後の結果、取消との競合、取消できないホストの処理の管理
+- 資源の受け渡しを途中で失わないこと、何度閉じても同じ結果になる close、後に開いたものから閉じる後片付け、親子の終了処理、後片付け中の Defect を失わないこと
+- provider のコールバックが1度だけか何度も呼ばれるか、登録と解除を途中で失わないこと、解除した後に届いたイベントの扱い
+- 読む側が求めた分だけ取ること、上限のある書き込み側のバッファー、あふれたときの分類と、Stream と Signal への橋渡しの持ち主
+- どの環境でも動くものと特定の環境だけのものの区別、パッケージがどの環境で動くかの導出、版の照合
+- 互換を保つ変更と壊す変更の分類と、provider の適合を確かめるテストの組
+- Clock、HTTP のクライアントとサーバー、ファイル、PostgreSQL の、4つの層での対応と実装の引き継ぎ
+- HTTP サーバーの Effect を返すハンドラーの、環境とエラーの合成、リクエストごとの子の範囲、明示的な失敗からの回復、並行して動くときの終了処理
 
-### parserとtooling
+### 構文解析とツール
 
-- raw operator scanとheader scanの分離
-- reserved wordとAppendix grammarの機械的整合
-- record/struct value・pattern・shorthand・spreadの完全なgrammar
-- module interfaceによるcustom operator fixity解決
-- lossless CSTとflat operator chain
-- incomplete source、unknown operator、missing tokenのrecovery contract
-- compiler / formatter / language server間の構文一致
-- fixity変更によるdependent documentのinvalidation
-- lexical / semantic syntax highlightのtoken契約
-- playgroundとCLIのfrontend・example source共有
-- example単位のcompiler / formatter / LSP / highlight / playground conformance
-- `.stdout` snapshotを含むbyte単位のexample出力検証
-- stable diagnostic code / span / fix schemaとtype inference explanation
-- canonical idempotent formatterとrange-format recovery
-- `///` / `//!` document comment、deterministic API docs、doctest
-- closed deprecation metadata、LSP tag、API docs / generated binding伝播
-- stable CLI option schemaとbuild-time target capability query
-- non-exhaustive matchのconstructor-aware code action
+- 演算子だけを先に読む処理と、宣言の頭だけを読む処理を分けること
+- 予約語と、付録の文法表が機械的に一致すること
+- レコードと struct の値、パターン、省略記法、展開の完全な文法
+- モジュールの公開情報を使った、利用者定義の演算子の優先順位と結合の向きの解決
+- 空白やコメントも失わない構文木（CST）と、演算子の連なりを平らに持つこと
+- 書きかけのソース、知らない演算子、足りないトークンからの回復の約束
+- コンパイラー、フォーマッター、言語サーバーの間で構文が一致すること
+- 演算子の優先順位が変わったとき、それに依存する文書を調べ直すこと
+- 字句と意味に基づく色分けのトークンの約束
+- Playground と CLI が、構文解析の処理と例のソースを共有すること
+- 例ごとに、コンパイラー、フォーマッター、LSP、色分け、Playground の一致を確かめること
+- `.stdout` の記録を含め、例の出力を1バイト単位で確かめること
+- 変わらない診断コード、位置、修正案の形式と、型推論の説明
+- 何度かけても同じ結果になるフォーマッターと、範囲の整形での回復
+- `///` と `//!` のドキュメントコメント、毎回同じ出力になる API ドキュメント、コメント内のコード例のテスト
+- 項目の決まった非推奨の情報と、それを LSP の表示、API ドキュメント、生成した呼び出し用の宣言へ伝えること
+- 変わらない CLI のオプションの形式と、ビルド時に対象の環境の機能を調べる方法
+- すべての場合を扱っていない match に、足りないコンストラクターを補う修正案
 
 ### 標準ライブラリ
 
-- preludeの境界
-- collection / text / number / JSON / time / random
-- Int / Floatのcanonical parse / format、丸め、checked / saturating arithmeticとsafe integer境界
-- Decimalのcanonical value、exact arithmetic、明示的なprecision / rounding context
-- Map / Setのprocess-local hash seed、ordered / canonical serialization contract
-- linear-time Regex subset、UTF-8 span、toolchain共通のUnicode data version
-- timezoneの明示的なlocal resolution、IANA database version locking
-- portable Path、filesystem error、stream / atomic / temporary resource ownership
-- process current directoryとfilesystem相対Pathの共通portable Path基準
-- child processのcold event Stream、capture limit、termination / reap ownership
-- HTTPのcold exchange Stream、body backpressure、connection ownership
-- JsonEncode / JsonDecodeの限定deriving、strict field / tagged ADT wire contract
-- persistent IteratorとIterable/Reducibleの要素型dependency
-- Array / List / NonEmptyListの公開signature、境界値、反復順、計算量
-- Effect / Stream / Signal / concurrency
-- Console / Logger / filesystem / process / HTTP
-- test runtimeとlaw test
+- prelude に入れるものの範囲
+- コレクション、テキスト、数値、JSON、時刻、乱数
+- Int と Float の決まった形の読み取りと書き出し、丸め、あふれを調べる計算と上限で止める計算、安全に扱える整数の範囲
+- Decimal の決まった形の値、誤差のない計算、精度と丸め方を明示する仕組み
+- Map と Set のプロセスごとのハッシュの種、順序つきの書き出しと決まった形の書き出し
+- 入力の長さに比例する時間で動く正規表現の一部、UTF-8 での位置、ツール全体で共通の Unicode データの版
+- 現地時刻とタイムゾーンから時点を求めるときの、夏時間による重複と欠落の明示的な扱い、IANA のタイムゾーンデータの版の固定
+- どの環境でも同じに扱えるパス、ファイル操作のエラー、ストリーム・途中で失わない書き込み・一時ファイルの資源の持ち主
+- プロセスの今のディレクトリと、ファイル操作の相対パスの共通の基準
+- 子プロセスの、実行するまで動かないイベントの Stream、取り込む量の上限、終了と後始末の持ち主
+- HTTP の、実行するまで動かないやりとりの Stream、本文の流量の調整、接続の持ち主
+- JsonEncode と JsonDecode の自動導出（範囲は限定）、フィールドを厳密に扱うこと、タグつきの代数的データ型の形式
+- 何度でも使える Iterator と、Iterable・Reducible の要素の型の決まり方
+- Array、List、NonEmptyList の公開する型、境界の値、反復の順、計算量
+- Effect、Stream、Signal、並行処理
+- Console、Logger、ファイル、プロセス、HTTP
+- テストの実行環境と、型クラスの法則のテスト
 
-### executable design example
+### 実行できる例
 
-- `examples/spec/lessons/` を完成仕様のdesign curriculumとして管理
-- `examples/samples/` を現行compilerで実行可能な学習・発見catalogとして管理
-- `examples/spec/fixtures/` をpositive / diagnostic / multi-file conformance targetとして管理
-- `examples/spec/COVERAGE.md` で全仕様機能をlessonまたはfixtureへ対応づける
-- 一般的なprogramからstdlib不足とhost requirement矛盾を発見する
-- Playgroundとnative CLIが`examples/samples/`の同じsourceを自動発見して実行する
-- token / lossless CST / diagnostic / module interfaceのversioned artifact contract
+- `examples/spec/lessons/` を、仕様全体を学ぶ教材として管理する
+- `examples/samples/` を、今のコンパイラーで実行できる学習と発見のための例として管理する
+- `examples/spec/fixtures/` を、成功する例・診断を出す例・複数ファイルの例の、適合を確かめる対象として管理する
+- `examples/spec/COVERAGE.md` で、仕様のすべての機能を教材か fixture に対応づける
+- ふつうのプログラムを書いてみて、標準ライブラリの足りないところや、ホストへの要求の矛盾を見つける
+- Playground と CLI が、`examples/samples/` の同じソースを自動で見つけて実行する
+- トークン、CST、診断、モジュールの公開情報を、版つきの形式で出力すること
 
 ### Web UI
 
-- optional props recordとIntoChildrenによるpure Html tree
-- Msgを生成するevent snapshotとbounded sequential dispatch
-- Signal transaction単位のkeyed DOM reconciliation
-- DOM mount / listener / subscriptionのresource ownership
-- deterministic SSR、strict / replace hydration、raw HTML禁止
+- 省略できる props のレコードと IntoChildren による、純粋な Html の木
+- Msg を作るイベントの値の固定と、上限のある順番どおりの配送
+- Signal のまとめた更新ごとの、key を使った DOM の差分の反映
+- DOM への取り付け、イベントの受け取り、購読の資源の持ち主
+- 毎回同じ結果になるサーバーでの描画（SSR）、厳密に引き継ぐ方法と置き換える方法の2つの hydration、生の HTML の禁止
 
-### 性能モデル
+### 性能
 
-- 意味論上の性能保証、消去可能性、quality of implementationの分離
-- type alias、型引数、newtype、surface sugarのerasure contract
-- curry direct call、trait specialization、collection / Stream fusionの許可条件
-- direct self tail callとEffect / Stream chainのstack safety
-- Effect、Signal、DOM、foreign境界で残るruntime cost
-- development / release profileの意味的一致
-- semantic differential、IR shape、benchmarkの三層検証
-- benchmark value discovery、measurement metadata、portable baseline / regression gate
+- 意味として約束する性能、消せることの約束、実装の質に任せる部分を分けること
+- 型の別名、型引数、newtype、書き方の省略記法を、実行時に残さない約束
+- カリー化した関数の直接の呼び出し、trait の特殊化、コレクションと Stream の処理の融合を許す条件
+- 自分自身を末尾で呼ぶ関数と、Effect と Stream の連鎖で、スタックがあふれないこと
+- Effect、Signal、DOM、外部の呼び出しで残る実行時の費用
+- 開発用とリリース用のビルドで、意味が同じであること
+- 意味を比べるテスト、中間表現の形、ベンチマークの3つで確かめること
+- ベンチマークの定義（`pub let benchmarks`）の見つけ方、測った条件の記録、環境によらない基準と性能の低下の検出
 
-## 今回の基礎監査で残した未定義項目
+## まだ決まっていないこと
 
-一般application、product運用、toolingの基礎surfaceとして洗い出した項目は正本へ移し終えました。
-今後新しい未定義点が見つかった場合は、exampleや現行compilerから意味を推測せず、ここへ再登録してから
-設計します。現在登録中の未定義項目はありません。standard API監査で再登録したBigInt surfaceは、
-`std/big-int`のAPI、算術、failure、変換、cost contractとして正本へ移しました。
+今は、まだ決まっていない項目はありません。
+アプリの作成、運用、ツールの基本の機能として洗い出した項目は、すべて仕様に移しました。
+標準 API を見直したときに見つかった BigInt も、`std/big-int` の API、計算、失敗、変換、費用として仕様に移しました。
 
-## 意図的に採用しない
+新しく決まっていない点が見つかったら、例や今のコンパイラーから意味を推し量らず、まずここに書いてから設計します。
 
-- mutable variable / mutable field
-- nullとundefinedの通常値化
-- implicit numeric conversionとtruthiness
-- arbitrary union / intersection type
-- exceptionによる通常error handling
-- overlapping / orphan instance
-- implicit transformer lift
-- algebraic `perform` / `handle`
-- user-definedな汎用構文マクロと手続きマクロ
-- user-defined prefix / postfix operator
-- `return` / `break` / `continue`による非局所control transfer。短絡は目的別combinatorと通常値で表す
-- Listのhead `^`、tail `>>` と連結記法
-- reverse pipeline `~`
+## 採用しないと決めたもの
+
+- 変更できる変数、変更できるフィールド
+- null と undefined を普通の値として扱うこと
+- 数値の暗黙の変換と、値を真偽として扱うこと
+- 任意の型の和（union）と積（intersection）
+- 例外による普通のエラー処理
+- 重なるインスタンスと、孤児インスタンス
+- モナド変換子の暗黙の持ち上げ（lift）
+- 代数的エフェクトの `perform` と `handle`
+- 利用者が定義する汎用の構文マクロと、手続きマクロ
+- 利用者が定義する前置と後置の演算子
+- `return`、`break`、`continue` による、その場を飛び越える制御。途中で止める処理は、目的ごとの関数と普通の値で表す
+- List の先頭 `^`、残り `>>` と、それらをつなぐ記法
+- 逆向きのパイプライン `~`
 - 三項演算子
-- 空白だけによるmethod call
-- `monoid` 特別宣言とfold operator `>>>`
-- SignalのMonad instance。動的dependency切替は名前付き `switchMap` を使う
-- TypeScript checkerへの型意味論の委譲
-
-## 次に詰める順序
-
-1. 章をまたぐ意味論と性能境界を横断監査する。
-2. 確定した契約へpositive / diagnostic / project / IR shape fixtureを追加する。
-3. fixture runnerをformatter、LSP、highlight、playgroundと共有する。
-
-この順序は実装順ではなく、仕様の依存順です。
+- 空白だけで区切るメソッド呼び出し
+- `monoid` の特別な宣言と、畳み込みの演算子 `>>>`
+- Signal の Monad インスタンス。依存する Signal を途中で切り替えるときは、名前のある `switchMap` を使う
+- 型の意味を TypeScript の型検査に任せること
