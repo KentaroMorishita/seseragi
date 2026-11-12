@@ -11,7 +11,7 @@
 - [ロードマップ――これからの予定](./ROADMAP.md)
 - [仕様横断監査――章をまたぐ矛盾の確認記録](./SPEC_AUDIT.md)
 - [仕様索引・feature map・cross-cutting invariants](./spec/README.md)
-- [仕様カバレッジと未定義項目](./SPEC_COVERAGE.md)
+- [仕様で決まっていること](./SPEC_COVERAGE.md)
 - [実装計画――artifact境界と並列開発lane](./IMPLEMENTATION.md)
 - [Local Web Getting Started](./GETTING_STARTED.md)
 - [言語の定義と設計原則](./spec/00-language.md)
