@@ -1,677 +1,52 @@
-# Scoped checks
-
-native MaybeのwithDefault/orElse/sequence/traverseはbackendの
-`--test maybe_operations --test hkt_projections --test reduce_until`、runtimeの
-`maybe_operation_tests`、CLIの`basic_maybe_operations_`で確認します。
-標準Array/Listと独自・輸入・parameter Traversable、canonicalなFunctor継承と
-rank2 Applicative method、Nothing後も残るcallback評価、空入力、保存・partial・
-関数返り値、opaqueな2module/HKT alias、cold/Failure/Defect/finalizer/root0を保ちます。
-元raw TS両profile strict/skipLibCheck:falseとfresh Bun/Node/nativeを比較します。
-NonEmptyList providerは#1048/#1101でABIを確認するまで拒否を保ちます。
-共有compilerの返る関数への適用とif分岐推論はdriverの
-`standard_returned_application`/`conditional_branch_inference`、CLIの
-`basic_standard_returned_application_`/`basic_standard_conditional_maybe_callback_`で
-配布118でも失敗した元の最小sourceを保持して確認します。
-共有compiler基盤を変更するため最終SDK・repository-wide gate・配布は#1148へ集約します。
-
-native collection.reduceUntilとNext/Doneはbackendの`--test reduce_until
---test iterable_build`、runtimeの`collection_control_tests`、CLIの
-`basic_reduce_until_`で確認します。Done後のnext省略、空入力のcallback省略と
-同じinitial返却、curried callback各段階の一回評価、未使用tailを保持しない結果、
-選択した一般Iterableを保ちます。54件の偽造とunused program WASM3件を拒否し、
-function accumulator・保存/generic/partial・opaque2module/公開ReduceStep alias、
-元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
-3 source段階/iterate/next/両callback段階の7種Defect・finalizer/root0を検証します。
-最終SDKとrepository-wide gate・配布はcollection batchへ集約します。
-
-native Array/List/Set.fromIterableとMap.fromEntriesはbackendの
-`--test iterable_build --test iterator`、runtimeの`iterable_tests`、CLIの
-`basic_iterable_build_`で確認します。選択した一般Iterableの辞書を一度呼び、
-Iteratorの終端まで読みます。標準Array/List/Iterator/Map/Setと独自/輸入/parameter辞書、
-空入力、順序、重複keyの値更新と最初のkey保持、選択済みEq/Hashを扱います。
-標準辞書のinstantiationはchecked constraintから照合し、未証明providerは拒否します。
-88件の偽造とunused program WASM4件、opaque2module/alias/generic/保存、元raw TS
-両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
-iterate/step/Hash/Eq/最終sourceのDefect・finalizer/root0、10万要素List生成を検証します。
-最終SDKとrepository-wide gate・配布はcollection batchへ集約します。
-
-native Iteratorのunfold/nextはbackendの`--test iterator`、runtimeの
-`iterator_tests`、CLIの`basic_iterator_`で確認します。生成時のstep省略、
-同じcursorの再観測、返されたtailだけの前進、終端の再観測と10万stepの状態解放、
-保存/generic/partial・関数をyieldするケース・opaque2module/aliasを扱います。
-29件の偽造とunused program WASM2件を拒否し、元raw TS両profile strictとfresh
-Bun/Node/native、cold/Failure/4種Defect/finalizer/Ref cycle/root0を比較します。
-共有TSの保存参照/currying修復はdriverの`--test iterator_saved_functions`で
-同名user関数との区別を保ち、配布118でも再現した元の最小sourceもCLI比較します。
-source arityで既存のchecked runtime-call helperを使い、元SSRG/stdoutは変えません。
-共有loweringを変更したため最終SDKとrepository-wide gate・配布はbatchへ集約します。
-
-native Array/Listのsort/sortBy/groupByはbackendの`--test sequence_order`、
-runtimeの`sequence_order_tests`、CLIの`basic_sequence_order_`で確認します。
-TSと同じbottom-up stable mergeとキーの入力順一回評価、selected Ord/Eq/Hash、
-同値要素と最初のgroup keyの順序、collisionと独自の比較/等価性を保ちます。
-124件の偽造とunused program WASM6件、opaque2module/alias/generic/保存/partial、
-元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/native、cold/Failureと
-キー/比較/Hash/Eq/最終引数のDefect・finalizer/root0、10万要素groupを検証します。
-実装済みList sortの元拒否入力はそのままempty-PATHのemit成功側で確認します。
-最終SDKと全体gate・配布はArray/List batchへ集約します。
-
-native ListのfilterMap/flatMapはbackendの`--test list_transform
---test basic_sequence`、runtimeの`list_transform_tests`、CLIの
-`basic_list_transform_`と元`basic_sequence_list_`で確認します。
-異なる出力型、空入力のcallback省略、保存/generic/partial・opaque2module、
-source順とimmutable入力、最初のDefect後の停止を保ちます。元raw TS両profileの
-strict/skipLibCheck:falseとfresh Bun/Node/native、cold/Failure/3種Defect/finalizer/root0、
-included edgeだけの保持と10万nodeの反復破棄、36件の偽造とunused program WASM2件を
-検証します。SDKと全体gate・配布はArray/List batchの最終integration pointで行います。
-
-
-native Arrayのempty/singleton/append/reverse/isEmpty/head/tail/filterMap/flatMapは、
-backendの`--test array_rest --test basic_array`、runtimeの`array_`、CLIの
-`basic_array_rest_`と元`basic_array_matches_original_raw_strict_ts_and_native`で確認します。
-appendのsuffix-first順、Nothingとsingleton tailのJust-empty、異なる出力型のcallback、
-空入力のcallback省略、immutable入力、再入、最初のDefect後の停止とRef cycle/root0を検証します。
-129件の偽造とunused program WASM9件を拒否し、元raw TS両profile strict/skipLibCheck:false・
-fresh Bun/Node/nativeとopaque2module・保存/generic/partial・cold/Failure/finalizerを比較します。
-共有修復はdriverの`--test array_alias_elements --test alias_type_functions
---test inferred_collection_owner`で、qualifiedなopaque要素と異なる同名ownerの区別を保ちます。
-empty/appendの生成callにはchecked Array要素型を保持し、alias展開後も選択済みimport symbolを使います。
-SDKと全体gate・配布は次のbatchのintegration pointへ集約します。
-
-
-実ファイル/実FIFOの非同期I/Oだけをhost間で切り分ける場合は、
-`rust-backend.yml`のmanual input `async_io_only=true`を使います。
-Linux/macOS/Windowsで元の`cargo test --locked -p seseragi-cli --test async_filesystem`
-を実行し、既存の15秒deadlineとhandle close/worker join/finalizer/出力保護を保ちます。
-`integration=true`はこのinputより優先し、従来どおり全体gateを実行します。
-
-
-native DecimalのdivideExact/divide/quantizeと算術error constructorはbackendの
-`--test decimal_division --test decimal_context --test decimal_conversion`、runtimeの
-`decimal_division_tests`、CLIの`basic_decimal_division_`で確認します。
-約分後の有限小数判定、8080個の小さい有理数、6modeのtie/sign/carry、
-任意桁scaleの相殺・展開しないquantize、135個の独立Python Fraction/Decimal期待値を使います。
-元raw TS両profile strict/skipLibCheck:false・fresh Bun/Node/nativeで、opaque2moduleと
-保存した各partial stage・cold再実行・typed Failure・source各段階とmaterializationのDefect・
-finalizer/Ref cycle/root0を比較します。78件の偽造とunused program WASM5件も拒否します。
-長いdoのnative生成は`basic_long_effect_sequence_`で元140行と全出力を確認し、
-生成crateのcompile-time recursion headroomを検証します。workspaceのRust設定は変更しません。
-SDK/全体gate/配布は最終batchのintegration pointで行います。
-
-
-native DecimalのexactなAdd/Sub/Mul・Zero/One・Debugは、backendの
-`--test decimal_arithmetic`、runtimeの`decimal_arithmetic_tests`、CLIの
-`basic_decimal_arithmetic_`で確認します。任意桁scaleと符号付き係数を保ち、
-185件の偽造したowner/kind・辞書・引数/結果・source stageを拒否します。
-元raw TS両profileをstrict・skipLibCheck:falseで検査し、fresh Bun/Node/nativeで
-独立したPython Decimal期待値、opaqueな2module package、保存/generic/部分適用、
-cold再実行・typed Failure・最終引数とmaterializationのDefect・finalizer/Ref cycle/root0を比較します。
-共有演算子のBigInt/Int/Float・既存Decimal辞書も回帰検査し、program WASMへは広げません。
-SDKと全体gate・配布は最終batchのintegration pointで行います。
-
-Seseragiの検証は、変更範囲に対応するscoped laneを先に実行します。`bun run check`
-は、各laneを日常作業で無条件に繰り返すためのコマンドではなく、repository-wideな
-最終統合gateです。
-
-## Lane matrix
-
-native DecimalのtoIntExact/fromFloat/toFloatとconversion error constructorはbackendの
-`--test decimal_conversion`、runtimeの`decimal_conversion_tests`、CLIの
-`basic_decimal_conversion_`で確認します。Float bitからexactな係数/scaleを作ってから
-6種の丸めを適用し、巨大指数の整数化はrange確認後に限定して展開します。exactなFloat最大値の
-直上拒否、signed underflow、256有限Floatの17桁往復と独立Python Decimal期待値も確認します。
-保存/partial/generic・opaque2module/error alias、元raw TS両profile strict・fresh Bun/Node/native、
-cold/Failure/Defect/finalizer/root0と元入力を保持し、新program WASMは受け入れません。
-最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
-
-native DecimalContextのcontext/precision/roundingとprecision error constructorは
-backendの`--test decimal_context`、runtimeの`decimal_context_tests`、CLIの
-`basic_decimal_context_`で確認します。既存のstd/number RoundingMode 6種を共有し、
-safe Int precision・nonpositive error・保存/partial/generic・opaque2moduleと標準aliasを保持します。
-最後のrounding引数を評価してから結果を作り、cold/Failure/Defect/finalizer/Ref cycle/root0を
-元raw TS両profile strict・fresh Bun/Node/nativeで比較します。元Decimalのparse/fromInt/Eq/Ord/Hash/
-表示も確認し、新program WASMは受け入れません。最終SDKと全体gateはRelease batchへ集約します。
-
-native BigInt算術/Zero/Oneとchecked APIはbackendの`--test big_arithmetic`、runtimeの
-`big_int_arithmetic_tests`、CLIの`basic_big_arithmetic_`で確認します。binary32のexactな
-加減乗除・剰余・Int指数、0方向の商と被除数と同符号の剰余、typed zero/negative error、
-保存/generic/opaque2module、元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/
-Defect/finalizer/Ref cycle/root0を保持します。signed i128と独立Python多word期待値も比較し、
-新program WASMは受け入れません。共有operator validatorの変更では元scalar/partial checksを使います。
-canonical ownerのalias照合と算術sectionの最初の引数型もdriverで確認し、previewしたanalysisは
-再利用します。最終sourceの正規SDKと共有frontend/runtimeのrepository-wide gateはRelease batchへ集約します。
-
-native BigIntのEq/Ord/Hash/Show/Debugはbackendの
-`--test big_int_keys --test big_int_ord --test big_int_display`、
-runtimeの`big_int_dictionary_tests`と`big_int_tests`、CLIの`basic_big_keys_`で確認します。
-binary32 limbと必要時のdecimal cacheでEq/Ord/HashをO(n)にし、parse/formatはspecのO(d²)内で
-元10万桁入力と正確なradix/Int変換を保持します。TSと同じsigned FNV hash・実衝突、OrdのEq継承、
-保存/generic・opaque2module・元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/Defect/
-finalizer/Ref cycle/root0、位置付き偽造拒否と未使用program WASM拒否を確認します。
-算術/Zero/Oneは別leafで続け、最終SDKと全体gateはRelease batchへ集約します。
-
-native BigIntのradix変換/toIntはbackendの`--test big_radix --test basic_big_int`、runtimeの
-`big_int_tests`、CLIの`basic_big_radix_`で確認します。binary32 limbで2〜36進を正確に変換し、
-safe Int外をtyped errorにします。元10万桁decimal入力、canonical spellingとradix版の
-leading zero、UTF-8位置、保存/部分適用・opaque2module・元raw TS両profile strict・fresh
-Bun/Node/native・cold/Failure/Defect/finalizer/root0を保持します。元位置の偽造拒否と未使用
-program WASM拒否も確認し、最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
-
-native Mathの定数・残りの単項関数・atan2/hypotはbackendの`--test math_remaining`、runtimeの
-`math_tests`、CLIの`basic_math_remaining_`で確認します。定数はvalue、atan2はyが先で、
-hypotは中間二乗のoverflow/underflowを避けます。NaN/Infinity/±0とspecの有限代表点の許容誤差、
-保存/部分適用・opaque2module・元raw TS両profile strict・fresh Bun/Node/native、cold/Failure/
-Defect/finalizer/root0と位置付き偽造拒否を確認します。元の4 Math操作も実行比較し、
-新しいprogram WASM受入は追加しません。最終SDKと全体gateはRelease batchへ集約します。
-
-native Intのchecked/saturating演算とhelperはbackendの`--test int_checked --test int_text
---test int_parse`、runtimeの`int_checked_tests`、CLIの`basic_int_checked_`で確認します。
-safe Int範囲の正確な演算、右引数先行の順序、巨大指数でも有界なpower、typedな除算/
-power errorとclampのDefectを保ちます。保存/部分適用・opaque 2module・元raw TS両profile
-strict・fresh Bun/Node/native・cold/Failure/finalizer/root0、位置付き偽造拒否と未使用program
-WASM拒否を確認します。最終SDKと共有runtimeの全体gateはRelease batchへ集約します。
-
-native Intの基数変換・format・上下限はbackendの`--test int_text --test int_parse`、
-runtimeの`int_parse_tests`、CLIの`--test basic_standard basic_int_radix_`で確認します。
-radix 2〜36、safe Int範囲、符号・leading zero・大小文字、UTF-8 byte位置と最初の失敗を
-TSに揃え、既存十進parseのcanonical spellingを保ちます。保存/部分適用・generic関数・
-opaque 2module package、元raw TS両profile strict/skipLibCheck:false、fresh Bun/Node/native、
-cold/Failure/Defect/finalizer/root0、偽造owner/kind/型/辞書/段階の位置付き拒否を確認します。
-新program WASMは未使用の保存関数でも拒否し、最終SDK/gateはRelease batchへ集約します。
-標準curried関数を返す元Int入力のTS7006回帰は両profileの元raw TS strictでも確認し、
-driverの`--test strict_partials --test generic_call_instantiation --test hkt_erasure`で
-checkedな型とsource段階を保持します。共有lowering修復の正規WASMも最終batchで更新します。
-
-native Decimal Ordと比較演算はbackendの`--test decimal_ord --test decimal_keys
---test basic_decimal --test method_references`、runtimeの`decimal_tests`、CLIの
-`basic_decimal_ord_`で確認します。符号/zero/任意精度の桁指数/仮想末尾zeroを比較し、
-1000桁のscaleを展開せず、OrdのEq継承・保存/部分適用・opaque2module packageを保ちます。
-元zero回帰入力はbyte不変で、raw TS両profile strictとfresh Bun/Node/native、cold/Failure/
-引数・戻りcallback Defect/finalizer/Ref cycle/root0、method22とbinary32通りの偽造拒否、
-未使用compare/4比較演算のprogram WASM拒否を確認します。最終SDK/gateはRelease batchです。
-
-TS Decimal zero比較の修復はruntimeの`decimal.test.ts`と`decimal-zero-order.test.ts`、CLIの
-`--test decimal_zero_order`で確認します。元SSRG入力を保ち、development/release両profileの
-fresh Bun/Nodeでzero/負zero・巨大正負scale・正負/同値/非zero順序を比較します。
-native Ordの追加は別leafとし、runtimeの最終integrationはRelease batchへ集約します。
-
-native Decimal Eq/Hashはbackendの`--test decimal_keys --test basic_decimal`、runtimeの
-`decimal_tests`、CLIの`basic_decimal_keys_`で確認します。正規化した任意精度coefficient/scale、
-TSと同じsigned little-endian 32-bit limb hash、等値spellingと実hash衝突を持つMap/Set、
-同名nominalとimported opaque key、保存generic methodとsource段階を保ちます。元raw TS両profile
-strictとfresh Bun/Node/native、cold/typed Failure/Defect/finalizer/Ref cycle/root0、偽造owner/
-kind/引数/結果/辞書/dispatch42通りと未使用program WASM拒否を確認します。Ord/算術は別leafです。
-
-native Set.mapはbackendの`--test basic_set_map`、runtimeの`set_tests`、CLIの
-`--test basic_standard basic_set_map_`で確認します。Map.mapKeysWithと実装を共有し、
-出力BのEq/Hash、mapper→Hash→必要なEq、最初の出力代表/順・seed・snapshotを保持します。
-入力keyと元containerの非保持、通常2module opaque packageと保存imported generic partial、
-元raw TS両profile strictとfresh Bun/Node/native、cold/typed Failure/mapperと戻りcallback内
-Defect/finalizer/Ref cycle/root0、Hash/Eq Defectと循環辞書のunwind、偽造contract22通りと
-未使用program WASM拒否を確認します。Map runtime/対象backendも回帰確認し、最終SDK/gateはbatchです。
-
-制約付きglobal partial/戻り関数とTSのcallback型はbackendの`--test returned_evidence_stages
---test strict_partials`、driverの`--test strict_partials --test generic_call_instantiation
---test hkt_erasure`、CLIの元`basic_map_upsert_`入力で確認します。元入力の両profile raw TS strictと
-Bun/Node/nativeを比較し、確定済みcallback型・宣言のsource境界・辞書位置を保ちます。
-残り引数/結果/owner/kind/辞書の偽造を拒否し、共有loweringのSDK/全体gateは最終batchで確認します。
-
-native Map.upsert/mergeWith/mapKeysWithはbackendの`--test basic_map_upsert`、runtimeの`map_tests`、
-CLIの`--test basic_standard basic_map_upsert_`で確認します。Hash一度→Eq検索→update一度の順、
-mergeのleft代表/順とright-only末尾、key変換と衝突resolveのsource順・最初の出力代表を保ちます。
-mapKeysWithの辞書はinput K1ではなくoutput K2を検証し、seedとV型を保持します。
-元raw TS両profile strictとfresh Bun/Node/native、通常2 module packageのopaque input/output keyと
-保存generic partial、cold/Failure/update・merge・key・collision callback内Defect/finalizer/Ref cycle/
-root0、owner/kind/型/辞書/段階の元位置付き拒否と未使用program WASM拒否を確認します。
-insertの置換/lookupを共有するため既存Map/Set runtimeと対象CLIも回帰確認します。SDK/全体gateは最終batchです。
-
-native Map.filter/mapValuesはbackendの`--test basic_map_operations --test basic_map`、runtimeの
-`map_tests`、CLIの`--test basic_standard basic_map_operations_`で確認します。filterのcached hash/
-seedとbulk再構築はSetと共有するため`set_tests`とCLIの`basic_set_operations_`も回帰確認します。
-挿入順のcallback、元key代表・snapshot・空入力、mapValuesのvalue型変更とbucket共有、
-除外key/value・置換前value・元containerの非保持を保ちます。通常2 module packageのopaque値・
-imported generic partialと保存callback、元raw TS両profile strictとfresh Bun/Node/native、
-cold/Failure/predicate・mapper内Defect/finalizer/Ref cycle/root0を比較します。
-callback/結果/owner/kind/型/辞書/段階と未使用保存関数のprogram WASMを拒否します。
-公開面はstandard.rsとspecに従い、reduceはstd/map関数として追加しません。SDK/全体gateは最終batchです。
-
-native Setのfilter/union/intersection/difference/isSubsetOf/toListはbackendの
-`--test basic_set_operations --test basic_collections`、runtimeの`set_tests`、CLIの
-`--test basic_standard basic_set_operations_`で確認します。選択済みEq/Hash、挿入順と元key代表、
-snapshot、predicate順とsubsetのshort-circuit、filter系のcached hashとseedを保持します。
-collision bucketを一度ずつ構築し、除外要素と元containerを隠れて保持しません。
-通常2 module packageのopaque key/imported辞書と保存generic partial、元raw TS両profile strictと
-fresh Bun/Node/native、cold/Failure/predicate内Defect/finalizer/Ref cycle/root0を比較します。
-Hash/Eq内Defectと循環辞書のunwindはruntimeで各binary演算を確認し、owner/kind/要素/結果/
-辞書/段階と未使用保存関数のprogram WASMを拒否します。SDK/全体gateは最終batchです。
-
-native text.startsWith/endsWithはbackendの`--test basic_standard`、runtimeの`text_tests`、
-CLIの`--test basic_standard basic_text_boundaries_`で確認します。prefix/suffix先・本文後の
-signature、保存/部分適用・generic caller、空文字・Unicode・結合文字・NULと非正規化を保ちます。
-通常2 module packageのopaque値、元raw TS両profile strict/skipLibCheck:falseとfresh
-Bun/Node/native、cold/Failure/引数内Defect/finalizer/Ref cycle/root0を比較します。
-不正な引数/結果/kind/段階/辞書と未使用保存関数のprogram WASMを拒否し、SDK/全体gateは
-共有runtimeへの変更をまとめた最終batchで確認します。
-
-generic callに渡す先頭空の入れ子Array/Listはdriverの`--test nested_empty_call_inference`、
-既存の`generic_call_instantiation`/`hkt_erasure`/`strict_partials`、semanticsのlib、CLIの
-`inferred_nested_empty_collection_`で確認します。元入力をbyte不変で保持し、raw TS両profile
-strict/skipLibCheck:falseとfresh Bun/Node/nativeで比較します。既存rank-1 solverへcollection
-literalも渡し、後続siblingの型を通常checkerより先に共有します。nominal/collectionの不一致と
-UTF-8範囲、全要素が空でcontextもない場合の拒否、明示型引数対照を保ちます。
-shared frontendの変更なので正規compiler WASMと全体gateは最終batchで更新・確認します。
-
-native Array/Listのconcatはbackendの`--test basic_sequence`、runtimeの`sequence_tests`、
-CLIの`--test basic_standard basic_concat_`で確認します。内外両方のcanonical collectionと
-要素型・kind・保存generic関数を照合し、順序・空入力・一段だけの連結を保ちます。
-通常2 module packageのopaque要素とcapture、元raw TS両profile strictとfresh Bun/Node/native、
-cold replay・返されたcallback内Defect・Failure・finalizer/Ref cycle/root0を確認します。
-結果は元の外側/内側containerを隠れて保持せず、新program WASMは未使用の保存関数でも
-拒否します。正規SDKと全体gateは最終batchへ集約します。
-
-tagged ADTの派生JSON codecはbackendの`--test basic_json_derived_adts`、runtimeの
-`json_derived_adt_tests`、CLIの`--test basic_standard basic_json_derived_adts_`で確認します。
-payloadなしとUnit payload、generic/recursive、opaque/importedと保存methodを区別します。
-tag→unknown field→payloadの検査順・path、選択branchだけの遅延辞書構築、canonicalな
-variant owner/kind/子evidence、元UTF-8位置の拒否、新program WASM拒否を保ちます。
-元31ケースと既存canonical spec、通常2 module packageをraw TS両profile strictとfresh
-Bun/Node/nativeで比較し、cold/Failure/Defect/finalizer/Ref cycle/root0、encode/decode両方の
-128 frame host limitを確認します。正規WASMとrepository-wide gateは最終batchで行います。
-
-transparent newtypeの派生JSON codecはbackendの`--test basic_json_derived_newtypes`とCLIの
-`--test basic_standard basic_json_derived_newtypes_`で確認します。generic/recursive・保存method・
-opaque/importedの通常2 module packageと、tagを加えないwireと失敗path、cold/Failure/Defect/
-finalizer/Ref cycle/root0、encode/decode両方の128 frame host limitを比較します。
-releaseのchecked newtype constructorは既存のprivate representation変換を使います。
-driverの`--test newtype_literal_profiles`、CLIの`newtype_literal_representations_`で元の
-record/array/tuple literalをraw TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeで
-通し、別nominalや誤ったrepresentationのsource拒否を保ちます。正規WASMと全体gateは最終batchです。
-
-named structの派生JSON codecはbackendの`--test basic_json_derived_structs`、CLIの
-`--test basic_standard basic_json_derived_structs_`で確認します。declaration順・generic/recursive
-struct・保存method・opaque/importedの通常2 module package、unknown先行拒否とnested path、
-cold/Failure/Defect/finalizer/Ref cycle/root0、128 frameのhost limitを元raw TS strictと
-fresh Bun/Node/nativeで比較します。短いderived identityはcanonicalなnominal headから
-検証し、一般のuser辞書や同名traitへの信頼を広げません。新program WASMは拒否します。
-struct内のrecord型と後続fieldはsyntaxの`nested_record_types_keep_their_struct_fields`、
-driverの`--test struct_construction_kind`、CLIの`nested_record_struct_fields_`で確認します。
-#1012の元sourceとUTF-8範囲・型errorを保ち、shared parser修復の正規WASMと全体gateは
-最終batchで行います。
-
-JSON recordのprototype名のfieldはPlaygroundの`json-record-runtime.test.ts`とCLIの
-`--test basic_standard json_record_prototype_field_`で確認します。structural/derived decoderが
-own data propertyを作り、通常objectのprototype、optional不在、unknown先行拒否を保持します。
-#1010の元sourceはbyte不変で保存し、両profileのraw TS strict・fresh Bun/Node/nativeで比較します。
-
-native JSONのArray/List/Maybe/Either/Tuple/Map/Set/closed record codecはbackendの
-`--test basic_json_containers`、runtimeの`json_container_codec_tests`、CLIの
-`--test basic_standard basic_json_containers_`で確認します。optional fieldの不在とnull、
-tuple長の先行検査、recordのunknown先行拒否、全要素decode後のEq/Hash、重複keyの
-最初の代表と最後の値を保持します。保存generic method・入れ子・opaque要素とimported
-user辞書を通常2 module package、元raw TS両profile strict/skipLibCheck:false、fresh
-Bun/Node/nativeで比較します。cold再実行・Failure/encoder内Defectのfinalizer/Ref cycle/root0、
-128 codec frameのhost limitと復元、owner/kind/子辞書と元UTF-8位置の拒否も確認します。
-新program WASMは未使用の辞書でも拒否します。共有native runtimeへの追加なので、
-最終batch候補で正規compiler WASMの更新とrepository-wide統合gateを行います。
-
-importしたcallable alias内のPrelude sumから推論した型引数は、driverの
-`--test generic_call_instantiation --test hkt_erasure --test strict_partials`と、
-CLIの`--test basic_standard inferred_json_decoder_package`で確認します。#1003の元入力と
-opaque module境界を保持し、元生成TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeを
-通します。Preludeのcanonical owner・arityを登録から選び、明示source binding・同名nominal・
-量化したconstructor slotを優先します。登録のない同名typeをPreludeと推測しません。
-shared frontendの変更なのでsemantics/loweringの対象確認後、canonical compiler WASMを更新し、
-最終候補でrepository-wide gateを通します。
-
-native JSON decoderのfield/optionalField/index/array/record/oneOf/map/flatMapはbackendの
-`--test basic_json_decoders`、runtimeの`json_decoder_tests`、CLIの
-`--test basic_standard basic_json_decoders_`で確認します。保存/部分適用と戻りdecoderの
-連続適用、canonical owner/kind/引数/結果と無辞書のsource段階を検証します。missingとchild
-failureのpath、recordのunknown先行拒否/指定順/重複指定、oneOfの最後の失敗と空入力、
-short-circuitとflatMapの元Jsonを保ちます。元raw TS両profile strict、fresh Bun/Node/native、
-通常2 module package、cold/Failure/mapper内Defect/finalizer/Ref cycle/root0を比較します。
-nativeの動的合成は同時128 decoder frameをhost limitとし、stack abortにせずDefectにします。
-このnative固有境界は元入力のstrict比較とは別に、finalizer/root0とframe復元を確認します。
-新program WASMは拒否します。compiler WASMの依存を変えない追加でも、最終候補で正規Linux
-freshnessと全体統合gateを通す必要があります。
-
-native JSONのBool/String/Int/Decimal/Unit/Jsonの12標準codec辞書とstring wrapperは
-backendの`--test basic_json_codecs`、runtimeの`json_codec_tests`、CLIの
-`--test basic_standard basic_json_codecs_`で確認します。exact Decimalから整数性とsafe Int
-範囲を判定し、巨大指数をFloatや巨大Stringへ展開しません。wrong-type message、root pathと
-syntax/domain error、公開error constructor、generic/保存methodと明示user辞書、通常2 module
-packageを元raw TS両profile strict/skipLibCheck:false、fresh Bun/Node/nativeで比較します。
-cold/Failure/encoder内Defectとfinalizer/Ref cycle/root0、不正owner/kind/child/段階の位置付き
-拒否を保ちます。新しいprogram WASM受入は行いません。
-DecodeErrorの公開struct登録とgeneric JSON辞書のTS型・確認済み型引数の保持はshared frontendの
-修正です。driverの`--test json_decode_error --test struct_construction_kind`を通し、元fixtureと
-assertionを維持します。統合時は正規compiler WASMを更新し、全体gateを実行します。
-
-native Array/Listのsequence基本22操作はbackendの`--test basic_sequence`、runtimeの
-`sequence_tests`、CLIの`--test basic_standard basic_sequence_`で確認します。
-findIndex/takeWhile/dropWhileのcallback順とshort-circuit、zipの左右型と短い入力、
-reduceRightの右からの評価、空入力・singleton・非正/巨大sizeとSizeError constructorを
-検査します。windowやprefixの結果に除外した要素を保持せず、Array lastのO(1)と
-Listの含まれるsuffix共有を保ちます。元raw TS両profile strict、fresh Bun/Node/native、
-通常2 module path package、保存関数・generic partial・cold replay・Failure/Defect後の
-finalizer/Ref cycle/root0と、canonical owner/kind/要素/段階/辞書の位置付き拒否を確認します。
-新しいprogram WASMとSizeError標準Eq/Show、sort/groupBy等は追加しません。
-共有runtimeの統合には全体gateと正規compiler WASMの更新も必要です。
-
-native JSON parse/stringifyとJson/JsonPathSegment/JsonParseErrorの公開constructorは、
-backendの`--test basic_json`、runtimeの`json_tests`、CLIの
-`--test basic_standard basic_json_`で確認します。Decimalの正確な係数・scaleを保ち、
-objectは標準の挿入順Mapを使います。UTF-8 byte位置とsyntax message、decoded field名の
-重複とrootからのpath、Unicode escape、通常2 module path packageと実ファイル変換を
-元raw TS両profile strict・fresh Bun/Node/nativeで比較します。構文/重複/UTF-8の失敗時は
-既存出力を保持します。cold再実行・Failure/Defectのfinalizerとroot0、Jsonを捕捉する
-Ref cycle、host limitを確認します。parser/stringifierはheap frameで深さ20,000を検査します。
-nativeの内部Map seedはobject構築時に解決します。TS process entryは起動時にseedを選び
-環境overrideを消すため、不正環境seedのfinalizer検査はnative固有です。
-JsonEncode/JsonDecode辞書やdecoder combinator、新program WASMは追加しません。
-共有native runtimeの統合時は全体gateも通します。
-
-native Decimal parse/fromInt/Showはbackendの`--test basic_decimal`、runtimeの
-`decimal_tests`、CLIの`--test basic_standard basic_decimal_`で確認します。
-係数とscaleを任意精度の符号付き十進列として保ち、指数をFloatや固定幅整数へ丸めません。
-厳密なsyntax・最初の不正UTF-8位置・負zero/末尾zeroの正規化・canonical表記、
-opaque値と保存formatterを渡す通常2 module path package、raw TS両profile strictと
-fresh Bun/Node/nativeを比較します。巨大指数はparseでき、host limitを超える表記だけを
-Defectにします。cold再実行・Failure/Defect後のfinalizer/root0、Ref cycleと
-owner/kind/source段階の拒否も確認します。算術・丸め・全標準辞書や新program WASMは
-追加しません。共有native runtimeの統合時は全体gateも通します。
-
-native Set empty/singleton/contains/insert/remove/toArray/size/isEmptyと、Mapの
-containsKey/entriesはbackendの`--test basic_collections`、runtimeの`set_tests`と
-`map_tests`、CLIの`--test basic_standard basic_collections_`で確認します。
-Setは専用tagでMapのpersistent storageを共有し、canonicalな型owner・kind・要素型と
-選択済みEq/Hash、genericな部分適用のsource段階を検査します。順序・元key代表・snapshot、
-Unicode/Unit、Mapのkey/value対応、通常2 module path package、raw TS両profile strict、
-fresh Bun/Node/nativeを比較します。Set経由のRef cycle、列挙から取得するcallback、
-cold再実行・Failure/Defect後のfinalizerとroot0、削除済みkeyの非保持を確認します。
-Setを使うprogramも不正seedをアプリ開始前に拒否します。新10 APIのprogram WASM受入や
-Map/Set全APIは追加しません。共有native runtimeの統合時は全体gateも通します。
-
-native Map empty/singleton/get/insert/remove/keys/values/size/isEmptyはbackendの
-`--test basic_map`、runtimeの`map_tests`、CLIの`--test basic_standard basic_map_`で確認します。
-canonical owner/key/value・Eq/Hash・caller scopeと部分適用の残りsource段階を検査し、
-元raw TS両profile strict、fresh Bun/Node/native、通常2 module path packageを比較します。
-basic APIのpackageは`.gitattributes`でmanifest/sourceをLFに固定します。
-Windowsの`core.autocrlf=true`相当のfilterでも元Git bytesとlock digestを保ち、
-checkout差を隠すためのlock再生成やdigest除外は行いません。
-挿入順・置換前keyの保持・collision callback・古いsnapshot・全signed 64-bit seed、
-boundedなpath共有、削除済みkey/valueの非保持、cold再実行・Failure/Defect・Ref cycleの
-回収を保ちます。OS entropyが取得できない場合は代替seedを作らず、固定seedの不正値も
-アプリ開始前に拒否します。新9 APIのprogram WASM受入とMap全APIは追加しません。
-
-ADT/newtype・primitive・opaque aliasをstruct構築構文でcastしてしまう既存不具合はdriverの
-`--test struct_construction_kind`とsemanticsで確認します。元のMap入力を変更せず
-拒否対照に保存し、両profileのcompile/analysisで同じSES-T0101とUTF-8位置を確認します。
-通常struct・struct alias・括弧付きrecord payloadのconstructor適用は保持します。
-aliasの固定・並替・重複した型引数、必須fieldと型、opaqueな表現の非公開境界も検査します。
-共有frontendの修復のためcanonical WASMを再生成し、統合時に全体gateを通します。
-
-recordのvarianceはdriverの`--test variance`でも確認します。ADTへのrecord payloadは
-`Box ({ ... })`として実際にconstructorへ渡し、field順の同一性と型引数内のwidth拒否を保ちます。
-旧`Box { ... }`の元入力はbyte不変のfixtureに残し、structを不正castできないことと
-compile/analysisの同じ位置付き診断を両profileで確認します。通常native CIにもこの二つの
-driver suiteを含め、統合時は全体gateの成功を確認します。
-
-native Hashの標準Int/Bool/Char/String/Unit辞書はbackendの`--test basic_hash`、
-runtimeの`hashing_tests`、CLIの`--test basic_standard basic_hash_`で確認します。
-public hashにseedを混ぜず、safe Int・Unicode scalar FNV・選択済みの辞書・
-generic/保存methodのA -> Int契約を保持します。偽のowner/kind/child/段階/結果を
-元のUTF-8位置で拒否します。正式112で既に通るuser Hashのprogram WASMは元入力を
-保持してBun/Nodeで実行し、新しいprimitive辞書は未使用の制約でも受け入れません。
-共有runtimeの変更では既存basic APIと実program WASMも確認し、統合時に全体gateを通します。
-
-native BigInt parse/format/fromIntはbackendの`--test basic_big_int`、runtimeの
-`big_int_tests`、CLIの`--test basic_standard basic_big_int_`で確認します。
-任意桁数をFloatや固定幅整数へ丸めず、符号・zeroの正規化、strict decimal構文と
-最初の不正UTF-8 byte位置、canonical owner/kind/source stageを保ちます。
-元raw TS両profileのstrictとfresh Bun/Node/native、通常path packageのopaque値・
-保存formatter、Ref/cold再実行・Failure/Defect後のfinalizer/root0を比較します。
-radix指定・BigInt算術と全辞書、Decimal、program WASMの新しい受入は含めません。
-
-nativeのText split/trim/contains/replaceとMath sqrt/sin/cos/logは、backendとCLIの
-`--test basic_standard`、runtimeの`math_tests`/`text_tests`で確認します。
-Unicode scalar・White_Space・literal replacement、canonical owner/kind/source stageの拒否、
-数学関数の特殊値と仕様の許容誤差、元のraw TS両profileのstrict、fresh Bun/Node/native、
-saved functionのcold再実行とFailure/Defect後のfinalizer/root0、通常path packageの
-CSV変換・不正入力時の旧出力保持を確認します。旧sqrt拒否sourceは成功対照へ保持し、
-未対応cbrtとList comprehensionの位置付き拒否を残します。新8 APIのprogram WASM受入は
-追加せず、target-specific proofを欠く入力を位置付きで拒否します。
-
-native Bytes fromInts/toInts/get/toIntはbackendの`--test basic_bytes`、runtimeの
-`bytes_tests`、CLIの`--test basic_standard basic_bytes_`で確認します。
-全unsigned byte・空入力・最初の範囲外Int・負/大index・入力不変・独立storage、
-canonical owner/kind/source stageと正確な位置、元raw TS両profileのstrict、
-fresh Bun/Node/native、Refに保存したbufferと関数のcold再実行・Failure/Defect後の
-finalizer/root0を保ちます。新しいprogram WASM ABIやByte/Bytesの全標準辞書、
-残るBytes APIを受け入れたことにはしません。
-
-native Array filter/find/get/length/take/dropはbackendの`--test basic_array`、runtimeの
-`array_operation_tests`、CLIの`--test basic_standard basic_array_`で確認します。
-genericな要素型・canonical owner/kind・保存/部分適用とsource stageを検証し、
-元のraw TS両profileのstrict、fresh Bun/Node/nativeと通常path packageを比較します。
-filterの順序、findの途中停止、空入力、負/大indexとcount、入力不変と独立storage、
-関数要素のcapture・Ref cycle、cold再実行・Failure/Defect後のfinalizer/root0を保ちます。
-receiver-firstな既存Array index ABIを変えず、新6 APIのprogram WASMは位置付きで拒否します。
-
-native Int infix `>` / `>=`の修復はbackendの`--test comparison_partials`とCLIの
-`--test basic_standard basic_array_infix_descending_`で確認します。
-正式112で拒否された元のArray filterのsource、整数境界と真偽、canonical Ordと
-同名binder・不正Coreの位置、既存の保存比較・user methodのstageを保ちます。
-新しいinfix経路のprogram WASM受入は追加しません。
-
-List prefixの共有はloweringの`--test match_decision`、backendの
-`--test native_list list_prefix`、CLIの`--test rust_backend
-list_prefix_decisions_and_effects_match_raw_strict_ts_and_native`で確認します。
-元の生成TS両profileのstrictとfresh Bun/Node/nativeを比較し、guard失敗・長さ・
-nested payload・alias・tail捕捉・Ref cycle・Failure解放を保ちます。lexicalな
-`List` binderと未証明rootは認定しません。幅1/4/16/32はtrackedな
-`measure_list_prefix.py`で測り、targetごとに改善と速度回帰を区別します。
-
-閉じた標準tuple Show/Debug辞書のlazy reuseは、backendの`--test closed_display`と
-CLIの`--test rust_backend closed_display_`で確認します。canonical owner/type/child/
-arityとfactoryの純粋性を共有CoreIrで認定し、Parameter/user/generic/HKT/未証明factoryは
-元の経路を保ちます。raw TS両profileのstrict、fresh Bun/Node/native、first read・
-zero-step・別module・changing input・cache解放、helper名shadow・source map・reachability、
-Ref/cold/Failure/Defect/finalizerを確認します。`measure_display_runtime.py`の通常bodyを
-使うtimingと、別runのcold/warm allocator計数を分けます。両最適化の最終統合では、
-全体gateとcanonical compiler WASMの再生成も必要です。
-
-| 変更範囲 | コマンド | 含まれる検証 |
-| --- | --- | --- |
-| sample metadata / source | `bun run check:sample` | native CLI sample実行、全sampleのWASM compile / format、Playground sample manifestのfreshness |
-| sample / Playground UI | `bun run check:playground` | sample基盤、Playground / catalog lint、Tour manifest、Playground test、TypeScript typecheck、Vite build |
-| Web UI browser review | `cd apps/playground && bun run test:visual` | Chromiumで全HTML sampleのviewport / interaction / image fallback / Code / Explorerを確認し、review PNGとHTML reportを出力 |
-| Rust / compiler / LSP workspace | `bun run check:rust` | Rust format、workspace test（対象crateだけなら `bun run check:rust -- -p <crate>`） |
-| production browser dogfood | `bun run check:production:browser` | canonical CLIでWeb starter / Flowをdevelopment/release buildし、Chromium操作・text/input値の一致、source-map defaults、JS例外を検証。Playground依存とChromiumの事前installが必要。full/release source gateにも含む |
-| production artifacts | `bun run check:production` | first-party 6 fixtureのrelease build、manifest shape、必要runtime、size budget、digest / identity / 再build、process実行。full / release source gateにも含む |
-| conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
-| compiler の成果物（PR CI） | `cargo run -p seseragi-conformance -- . --only=tokenStream,losslessCst,surfaceAst,diagnostics,semanticDiagnostics,analysis,moduleInterface,resolvedAst,typedHir,typedInterface,coreIr,typescriptIr` | `examples/spec/artifacts` のトークン・構文木・診断・interface・typed HIR・Core IR・TS IR を今のコンパイラの出力と比べる。tsc・Node・provider の道具は使わない。出力を変えたのに成果物を作り直していないと、release gate より前に `conformance-artifacts.yml` で失敗する。作り直しは `cargo run -p seseragi-conformance --bin write_schema1_artifact -- <case>` |
-| Portable .d.ts converter | `bun run check:dts:wasm` | filesystem featureを無効にしたconverterをwasm32-unknown-unknownへbuildし、host importなしで変換・metadata・再生成report・診断を実行。WASI SDK 25.0とRust WASM targetが必要 |
-| compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認。portable declaration parser用のWASI SDK 25.0が必要 |
-| pure program WASM / typed callback | `cargo test -p seseragi-cli --test program_wasm` | 実program WASMをBun／Nodeで実行し、TS両profile／native対照、generated型宣言のstrict、標準package module/asset buildと失敗時の保持、生成virtual packageのowner、path依存・初期化、callback／instance寿命とtrap後のretireを検証。`rustup target add wasm32-unknown-unknown`が必要。workspace full gateでも省略しない |
-| providerless Effect program WASM | `cargo test -p seseragi-backend-rust --test program_wasm_effect --test program_wasm_effect_admission --test program_wasm_private_ref` と上記CLI lane | checked型・source stage・式のadmissionを確認し、実WASMのcold実行・内部data Ref・型付き失敗・明示Defect・取消・masked finalizer・非同期dispose・返却callbackをfresh Bun／Nodeで実行する。pure-v1と別ABIで、host providerやtrap後unwindの保証を加えない |
-| typed host Effect program WASM | `cargo test -p seseragi-backend-rust --test program_wasm_host_effect --test program_wasm_host_ref` と `cargo test -p seseragi-cli --test program_wasm_host_effect` | closed unary host callback、内部data Refのcapture、通常TS／nativeとのbody比較、実WASMのFailure／Defect・遅い応答後の取消・masked LIFO release・disposeとhost lease解放、標準packageの元のtyped bridge、Console providerを使うEffectを確認。Console以外のproviderやtrap後unwindは含めない |
-| pure program WASM package watch | `cargo test -p seseragi-cli --test dev` と `bun test ./runtime/ts/tests/program-lifecycle.test.ts` | 計算moduleの外側path依存とUIの再build、失敗時の完成site／version保持、元のdev lifecycle／authority検査を確認。実WASMの保存callback拒否・旧root0・遅いloadの回収をfresh Bun／Nodeでも実行。既存のTSのみのdev期限を延ばさない |
-| VS Code extension | `bun run check:extension` | official ID / legacy migration boundary、extension lint・test、host向け正式VSIXのarchive mode・展開・`--version-json` smoke、非LSP migration VSIXのpackage / verify |
-| Local Web product E2E | native archiveとVSIXをpackage後に`bun run test:local-web-e2e` | 展開したCLIとinstall済みVSIXだけを使い、canonical multi-module Web projectのLSP / Dev / browser / edit / diagnostic / recovery / production buildを同一sourceで確認し、reportとPNGを`target/local-web-product-e2e`へ保存 |
-| release metadata / native artifact | `bun run check:release` | canonical version source、Cargo/JS/WASM version同期、CHANGELOG、host向けCLI / LSP archive・checksum・再展開実行smoke |
-| tag release source gate | `bun run check:release-gate` | repository-wide full gate相当。ただしnative / VSIXのpackage smokeは同一SHAを使うrelease matrix jobへ委譲し、成果物を二重生成しない |
-| repository-wide | `bun run check` または `bun run check:full` | format、lint、Rust workspace、全conformance、native samples、WASM、Playground、extension |
-
-devの停止要求とHTTP request待ち行列はCLIの`--bin seseragi dev::tests::`で、
-実際の待受socketへ複数requestをqueueして確認します。停止前・handler中の停止では
-次のrequest処理とwatch/buildへ進まず、通常時はchange pollを続けます。
-`--test dev`の元13入力・recovery assertion・5秒のgraceful shutdown制限も保持します。
-CLIだけの修復なのでcompiler WASMは変更せず、配布時のcanonical source gateで全体を確認します。
-
-相互再帰するclosed EffectのTS注釈は、`cargo test -p seseragi-driver --test mutual_effect_returns`
-と`cargo test -p seseragi-cli --test mutual_effect_returns`で確認します。元の生成TSを両profileでstrict検査し、
-cold再実行・typed Failure・Defect後のscope解放をBun／Nodeとnativeで比較します。
-共有Core解析を変える場合はlowering／driver crateの検証と、統合前の全体gateも必要です。
-
-ConsoleのString契約はdriver／backendの`--test console_string_contract`とCLIの同名test、
-`bun test runtime/ts/tests/console-string-contract.test.ts`で確認します。prelude／import／
-保存したcallableの引数型、canonical ownerとscoped binder、raw生成TS両profileのstrict、
-fresh Bun／Nodeとnativeの出力、cold再実行、引数評価時のDefectとscope解放を保ちます。
-共有型互換性を変える場合はsemantics／driverの既存検証と最終統合gateも必要です。
-
-HKTのADT payload・struct field・public aliasはdriverとCLIの
-`--test hkt_data_projection`で確認します。元Issueの単独source、opaque aliasのfactory実値、
-facadeと保存関数、元の生成TS両profileのstrict、fresh Bun／Nodeとnativeを比較します。
-constructor binderを宣言する通常functionは同じchecked witnessを引数と返り値へ渡し、
-制約付きfunctionの辞書段階と、別scopeの同名value binderを維持します。
-外側のtype parameter名を内側で再使用する、仕様で禁止された宣言は位置付きで拒否します。
-private fieldと偽造、別ownerやpayload違いの拒否を保ち、不正kindの位置付き診断は
-driverの`--test hkt_annotation_kinds`でも確認します。一般のUnknown targetやHKT逆推論は
-このlaneの受入へ追加しません。
-
-標準primitive EqのTS投影は、`cargo test -p seseragi-cli --test string_equality`
-と`--test inherited_equality`で確認します。異なるliteral・保存したmethod・部分適用を
-元の生成TS両profileでstrict検査し、fresh Bun／Nodeで実行します。Int／String／Charの
-native対照と、直接method・部分適用のsource一回評価・順序も保ちます。
-Bool／UnitのEqと前置`!`のnative契約は、backend／CLIの`--test basic_scalars`と
-上記の元literal fixtureで確認します。Unitも二つのsource引数を評価し、保存した部分適用、
-別nominal ownerとscoped binderの拒否、Ref・cold再実行・Failure／Defect後の解放を保ちます。
-前置operatorは関数値として参照できません。標準Float Eqは提供しません。
-共有lowering／driverの検証に加え、統合前は全体gateとcanonical compiler WASMの検証が必要です。
-
-native Clock sleepの有限契約は、backend／CLIの`--test clock_sleep`とbackend runtimeの
-`clock_tests`で確認します。明示native CLI provider選択、canonical DurationとClockの
-owner／kind／source引数、target receipt、通常path packageのTS用lock保持、元のTS両profileの
-raw strict、fresh Bun／Nodeとnativeの結果を比較します。pending sibling、cold再実行、
-typed Failure／Defect／取消、acquisitionのatomic登録とsleepを使うmasked finalizer、旧outputと入力保持、
-timer／managed root解放を検証します。Clock now、WASMのClock row、一般provider ABIと
-target別manifest／native provider lockはこのsliceに含めません。共通native schedulerを
-変えるため、既存filesystem／Fiberとprogram WASMの回帰も確認し、統合時は全体gateを行います。
-
-importしたADTのpayload identityと注釈付きEq部分適用は、driverの
-`--test frontend_payload_identity --test frontend_inference --test imported_returns`で確認します。
-constructorを公開するopaque ADT、local alias、同canonicalのdirect／facade／namespace import、
-別ownerと不正な残り関数型の拒否を確認し、表示名でownerを推測しません。
-CLIの`--test string_equality`と`--test nominal_lambda_identity`では、元の生成TS両profileの
-strict、fresh Bun／Node、native、source引数の一回評価、cold再実行、Failure／Defect後の
-finalizerとroot解放を比較します。FloatConversionErrorを含むnative fixtureには、
-同errorのcanonical変換ABIが必要です。無注釈の演算子部分適用全般はこの修復に含めません。
-
-generic implの演算子は、driverとCLIの`--test generic_impl_operators`で確認します。
-生成instanceが元implのscoped binderを引き継ぎ、明示instance、別owner、importとreexport、
-制約、overlapとfunctional dependencyの位置付き拒否を保つことを検証します。
-元のTS両profileのstrict、fresh Bun／Nodeとnativeの結果、保存した演算子のsource一回評価、
-Ref cycleとcold Effectの再実行、Failure／Defect後のfinalizerとroot解放も比較します。
-一般aliasのhead mappingや、返却関数を続けて適用する未対応全般は含めません。
-
-`do`末尾の分岐を含むcold Effectは、driverとCLIの
-`--test deferred_effect_environment`で確認します。先に実行するstatementの環境・失敗型、
-最終実行が返すEffect値の型、未実行のcold値を区別し、環境・成功型・失敗型の不正な
-注釈を位置付きで拒否します。元のTS両profileのstrict、fresh Bun／Nodeとnativeで
-再実行、先行処理の一回実行、Failure／Defect後のfinalizerとRef root解放を比較します。
-共有frontendの修復なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
-
-固定済みalias引数のconstructor sectionは、driverとCLIの
-`--test alias_constructor_sections`で確認します。canonical ownerと宣言kindを根拠に、
-残るslotが順序どおり一度だけ現れる場合に限って、並替・重複・消失済みprefixを投影します。
-opaque providerのfacade、別owner・不正kind・未証明headの位置付き拒否、元のTS両profileの
-strict、fresh Bun／Node、native、選択済みevidenceとsource一回評価、cold Effectと
-Failure／Defect後の解放を比較します。未束縛の一般type lambdaやHKT逆推論は含めません。
-共有frontendの変更なので、統合時は全体gateとcanonical compiler WASMの検証も必要です。
-
-transparent aliasの残るvalue-kind parameterを並替・重複・破棄するconstructorは、
-semanticsの`type_functions::tests`、loweringの`core::types::tests`、driverとbackendの
-`--test alias_type_functions`、driver／CLIの`--test alias_constructor_sections`で確認します。
-`Flip<A,B> = Pair<B,A>`、`Repeat<A> = Pair<A,A>`、`Erase<A> = Int`の明示type引数を使い、
-scoped slotのcaptureを避けた適用、canonical owner／provider、alpha同値の重複診断、
-renamed facade packageと保存methodのsource arityを保ちます。元のTS両profileのstrict、
-fresh Bun／Nodeとnativeの出力・source一回評価、Ref・cold再実行・Failure／Defect後の
-finalizerとroot解放を比較します。使わない束縛parameterもconstructorのarityに数え、
-失われるfree instance parameter、不正owner／kind、未証明の選択は位置付きで拒否します。
-このproducerはcanonical nominal application、scoped value slotと、各要素がvalue kindを
-持つfunction・closed record・tupleを扱います。構造型aliasはdriverの
-`--test structural_aliases --test structural_alias_facades`とCLIの
-`--test alias_constructor_sections`で、renamed／namespace facade、返却method、元のTSの
-strictと公開型consumerの負例、callbackのRef保存・cold再実行・Failure／Defect後の
-finalizerとroot解放を確認します。共有semantics／lowering／driver全体の回帰も確認します。
-CLIの`--test rust_backend alias_head`で元のfunction／record拒否入力がsourceを変えずに
-emit／buildできることと、不正method型・失われるinstance parameterの位置付き拒否を確認します。
-非対応という旧期待値を残さず、非実行・出力なし・source保持の既存assertionを保ちます。
-row／requirement merge constructor、一般HKT逆推論、完全なtype-function同値判定と
-program WASMの受入拡張は含めません。共有型表現・投影の変更なので、統合前は必要な
-全体gateとcanonical compiler WASMの再生成・公開consumer検証も必要です。
-
-制約付き関数やprimary辞書のmethodが返す関数の連続適用は、backendの
-`--test returned_evidence_stages`とCLIの`--test alias_constructor_sections`で確認します。
-宣言のsource境界・完全な返却型・owner／kind・辞書を検証し、各本体を次のsource引数より先に
-実行します。保存・未使用部分適用、同名Unit／Int binder、Show aliasとUnit callback、
-最初の段階のDefect、構造型alias経由のRef・cold再実行・Failure／Defect後の解放を比較します。
-不正Core入力は位置付きで拒否し、program WASMの受入範囲は広げません。
-
-各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
-typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
-`package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。
-
-`check:sample`はCLI実行対象だけでなくbrowser-interactive sampleもcommitted WASMで
-project compileし、全sourceがformatterのcanonical outputと一致することを確認します。
-manifest/hashだけが更新され、壊れたinteractive sourceが通過する状態にはしません。
-
-sample・Tourのコマンド検証は、processの終了とstdout・stderrのEOFを両方確認します。
-期限切れは独立した失敗として返し、後始末で再びstdioを無期限に待ちません。
-POSIXでは親が先に終了しても所有process groupを停止します。親終了後の出力、
-非zero終了、Unicode、期限と後始末は`scripts/sample-cli-process.test.ts`で確認します。
-
-配布archiveの検証は、展開したCLI/LSPとarchive commandのprocess終了・stdioのcloseを
-確認してから一時directoryを削除します。一時的な`EBUSY`等で失敗した場合も、削除を試みるのは
-最初の試行を含めて最大6回です。再試行の待機は合計1500msまでです。
-検証とcleanupが両方失敗した場合は両方のエラーを保持し、
-検証が成功してもcleanupが失敗すれば失敗です。`bun test scripts/native-release.test.ts`で
-正常・非zero・検証拒否・cleanup失敗と子process終了後の実ファイル削除を確認します。
-cleanup失敗時は、実行したcommandのPID・終了code・exit/closeの観測も残します。
-Windows固有のhandle競合の確認は、Windows CIと正式Releaseの実archive検証も必要です。
-
-PostgreSQL Provider bundleの鮮度確認は、実際に解決された`node_modules`のsection comment
-だけを正規化します。`bun test scripts/postgres-provider-bundle.test.ts`で通常installと
-深いworktreeのsymlink installの生成bytes一致、実行コード変更時の拒否を確認します。
-
-Playgroundのruntime resolverは`runtime/ts/package.json`のexportsと
-`runtime/providers/package.json`の`runtime-browser/*` exportsから生成します。
-`bun run --cwd apps/playground runtime:generate`で更新し、`runtime:check`と
-Playground testsが生成物・compiler Runtime ABIのmodule/export・browser provider
-manifestとのparityを検証します。host adapterはruntime packageの`browser` condition、
-native専用moduleは`browser: null`で宣言し、Playgroundへ別のmodule一覧を足しません。
-providerの`browser/` sourceから`runtime-browser/` packageへのprojectionはRustの
-package staging testでも同一内容を検証します。
-
-## Standard instance audit
-
-Prelude auditの`specified-but-implementation-missing`行は、canonical registryの
-`tracking_issue`に正のIssue番号を必ず持ちます。surface生成時に検証するため、
-unit testだけでなくconformanceのartifact照合も未追跡行を拒否します。
-GitHubへの問い合わせは不要です。実装完了時はmissing行を削除し、implemented /
-structural / intentionally unavailable行に古いtracking metadataを残しません。
-
-`prelude::surface`のsynthetic missing testは、現在のmissing一覧が空でもこの契約と
-JSONの`trackingIssue`投影を検証します。auditだけの変更はこのsemantics testと
-conformanceの`stdlib_surface` testを先に実行できます。
-
-## Dependency installation
-
-検証用のBunはCIとlocalで **1.4.4** に揃える。versionの基準はrootの
-`.bun-version`で、GitHub Actionsも同じfileを読む。localでは`bun --version`と
-`cat .bun-version`が一致することを確認してから検証する。
-
-以前の1.3.9ではLinux x64 WASMのIPIntクラッシュと同じstackを全体gateで観測し、
-[WebKit更新 #26922](https://github.com/oven-sh/bun/pull/26922)を含む1.3.11へ
-揃えていた。1.4.4でBrotli decoderのCVE-2026-111497が修正されたため更新し、
-この境界の実行も省略しない。
-WASMの実行・assertionを省略したり、JSCの実行tierを無効化したりはしない。
-既存Docsの過去の実測version表記は、その検証時点の記録として残す。
-
-通常のscoped checkは依存installを行わず、lockfileで管理されたlocal binaryだけを使います。
-必要なdependencyが無い場合は暗黙downloadへ進まず、bootstrap commandを表示して失敗します。
-新しいworktreeやCI runnerでは、検証前に対象workspaceを一度bootstrapしてください。
+# 変更に合わせて実行するチェック
+
+コンパイラーやツールを変更して、push する前にどのチェックを実行すればよいかを決めるための文書です。
+変更した範囲に合うチェックだけを先に実行します。
+リポジトリ全体のチェック（`bun run check`）は、毎回の安全策として実行するものではありません。統合の前など、決まった場面でだけ実行します。
+
+## 変更の種類 → 実行するチェック
+
+| 変えたもの | 実行するチェック |
+| --- | --- |
+| `docs/` の文書だけ（`docs/spec/` を除く） | `git diff --check`。リンク先があることを確かめる |
+| `README.md`、`README.ja.md` | `bun run check:readme` |
+| サンプルのソースや情報（`examples/samples/`） | `bun run check:sample` |
+| Playground の画面や Tour | `bun run check:playground` |
+| Web UI の見た目 | `cd apps/playground && bun run test:visual`（[Web UI の見た目の確認](#web-ui-の見た目の確認)） |
+| Rust のコード（コンパイラー、CLI、LSP） | `bun run check:rust`。1つのクレートだけなら `bun run check:rust -- -p <crate>` |
+| コンパイラーの中間成果物の形 | 下の[各チェックの中身](#各チェックの中身)の「コンパイラーの成果物」 |
+| fixture（`examples/spec/fixtures/`） | `bun run check:conformance`。対象のフォルダーを引数で絞れる |
+| コンパイラー、実行時の約束、WASM のアダプター | `bun run build:playground:wasm` で WASM を作り直し、`bun run check:wasm` |
+| `.d.ts` の変換 | `bun run check:dts:wasm` |
+| native の標準 API | [native の標準 API のテスト](#native-の標準-api-のテスト)の該当する行 |
+| プログラムの WASM | `cargo test -p seseragi-cli --test program_wasm` |
+| VS Code の拡張機能 | `bun run check:extension` |
+| 本番用のビルドの成果物 | `bun run check:production`。ブラウザーで動かすなら `bun run check:production:browser` |
+| 版、配布物の名前、リリースの手順 | `bun run check:release` |
+| 利用者に見える変更（`crates/`、`runtime/ts/`、`apps/playground/`、`examples/spec/`、`docs/spec/`、拡張機能） | 版を上げて CHANGELOG を書き、`bun run release:check`（[RELEASE.md](./RELEASE.md)） |
+
+チェックが足りない変更は、必要なコマンドを個別に実行し、結果を PR に書きます。足りないチェックを加える作業は、別の Issue にします。
+
+## リポジトリ全体のチェックを実行する場面
+
+次のどれかに当てはまるときだけ、上のチェックに加えて `bun run check` を実行します。
+
+- コンパイラー、実行時のライブラリ、WASM の土台を変更した
+- 複数の領域にまたがる変更をした
+- リリースの前に、全体がそろって動くかを確かめる
+- #201 の作業の列を `main` へまとめて取り込む
+- Issue の本文が、全体のチェックを求めている
+
+実行したときは、必要だった理由と結果を PR に書きます。
+長い間なにも出力しないときは、どの段階で止まっているか、プロセスが動いているかを確かめ、放っておきません。
+
+## 準備
+
+### 依存パッケージ
+
+チェックは依存パッケージを自動でインストールしません。ロックファイルで決まった手元のプログラムだけを使います。
+足りないときは、インストールのコマンドを表示して失敗します。
+新しい worktree や CI のマシンでは、チェックの前に一度インストールします。
 
 ```sh
 bun install --frozen-lockfile
@@ -679,32 +54,92 @@ cd apps/playground && bun install --frozen-lockfile
 cd ../../extensions/seseragi && bun install --frozen-lockfile
 ```
 
-`check:sample`と`check:playground`はcommitted WASMまたは固定されたPlayground
-TypeScript toolchainを使うため、Playground dependencyのbootstrapが必要です。
-`check:conformance`はそれらに加えてruntime package probeがroot側のNode型を使うため、
-rootとPlaygroundの両方をbootstrapしてください。lockfileまたは依存関係を変更した場合も、
-該当workspaceでfrozen installを明示的に行います。full gateはrootとPlaygroundを先に
-bootstrapし、extension packaging時にもfrozen installを行います。
+- `check:sample` と `check:playground` は、コミットした WASM と Playground の TypeScript のツールを使うので、Playground のインストールが必要です。
+- `check:conformance` は、実行時のパッケージを試す処理がルートの Node の型を使うので、ルートと Playground の両方が必要です。
+- ロックファイルや依存を変えたときも、そのフォルダーで `--frozen-lockfile` のインストールを明示的に行います。
+- 全体のチェックは、ルートと Playground を先にインストールし、拡張機能のパッケージを作るときにもインストールします。
 
-## Browser executable for Playground Bun tests
+### Bun の版
 
-PlaygroundのBun browser testsは、既定でlockfileのPlaywrightに対応するChromiumを使います。
-Cloudなどでインストール済みGoogle Chromeを使う場合は、その実行ファイルの絶対pathを
-`SESERAGI_TEST_BROWSER_PATH`へ設定します。起動したbrowserのpathとversionをログへ残し、
-指定pathで起動できない場合はそのまま失敗します。この設定はBun tests用で、
-`test:visual`やproduction browser scriptsのbrowser選択は変更しません。
+CI と手元で、Bun を **1.4.4** にそろえます。基準はルートの `.bun-version` で、GitHub Actions も同じファイルを読みます。
+手元では、`bun --version` と `cat .bun-version` が同じことを確かめてから実行します。
+
+- 1.3.9 では、Linux x64 の WASM で JavaScriptCore のクラッシュ（IPInt）が起きたため、[WebKit の更新 #26922](https://github.com/oven-sh/bun/pull/26922) を含む 1.3.11 にそろえていました。
+- 1.4.4 で Brotli の展開の脆弱性（CVE-2026-111497）が直ったので、1.4.4 に上げました。
+- WASM の実行やテストの確認を省いたり、JavaScriptCore の実行の段階を止めたりしません。
+- 過去の文書にある古い版の表記は、そのときの記録として残します。
+
+### Playground のテストで使うブラウザー
+
+Playground の Bun のテストは、既定でロックファイルの Playwright に合う Chromium を使います。
+インストール済みの Google Chrome を使うときは、その実行ファイルの絶対パスを `SESERAGI_TEST_BROWSER_PATH` に設定します。
 
 ```sh
 cd apps/playground
 SESERAGI_TEST_BROWSER_PATH=/path/to/google/chrome bun test tests
 ```
 
-## Web UI browser review
+- 起動したブラウザーのパスと版をログに残します。指定したパスで起動できなければ失敗します。
+- この設定は Bun のテストだけのものです。`test:visual` や本番用のブラウザーのチェックには効きません。
 
-`apps/playground/tests/fixtures/web-ui-regression.json`が、全HTML sample、320px /
-iPhone / Android / landscape / desktop、必要surface、interaction stateを定義します。
-通常の`check:playground`はこのmatrixとsource readabilityをBun testで固定し、Chromiumを
-暗黙downloadしません。実ブラウザを使うreview時だけ次を実行します。
+## 各チェックの中身
+
+すべてのチェックは `scripts/check-scoped.sh` を共通の入口として使います。
+
+| チェック | コマンド | 確かめること |
+| --- | --- | --- |
+| サンプル | `bun run check:sample` | native の CLI でサンプルを実行する。すべてのサンプルを WASM でコンパイルし、整形する。Playground のサンプル一覧が最新か |
+| Playground | `bun run check:playground` | サンプルのチェック、Playground とカタログの lint、Tour の一覧、Playground のテスト、TypeScript の型検査、Vite のビルド |
+| Web UI の見た目 | `cd apps/playground && bun run test:visual` | Chromium で、すべての HTML サンプルの画面の大きさごとの表示、操作、画像が読めないときの代わりの表示、Code と Explorer を確かめる。確認用の PNG と HTML の報告を出す |
+| Rust | `bun run check:rust` | Rust の整形と、ワークスペースのテスト |
+| 本番用ビルドをブラウザーで | `bun run check:production:browser` | CLI で Web のひな形と Flow を開発用とリリース用にビルドし、Chromium で操作して、表示と入力の値、ソースマップの既定、JavaScript の例外を確かめる。Playground の依存と Chromium が必要。全体のチェックとリリースのチェックにも含まれる |
+| 本番用の成果物 | `bun run check:production` | 6つの fixture のリリース用ビルド、成果物の情報の形、必要な実行時のライブラリ、大きさの上限、ハッシュと同一性、ビルドし直したときの一致、プロセスとしての実行。全体のチェックとリリースのチェックにも含まれる |
+| fixture | `bun run check:conformance` | 適合を確かめる fixture を実行する。対象のフォルダーを引数で絞れる |
+| コンパイラーの成果物（PR の CI） | `cargo run -p seseragi-conformance -- . --only=tokenStream,losslessCst,surfaceAst,diagnostics,semanticDiagnostics,analysis,moduleInterface,resolvedAst,typedHir,typedInterface,coreIr,typescriptIr` | `examples/spec/artifacts` のトークン、構文木、診断、モジュールの公開情報、型つきの中間表現、Core IR、TypeScript IR を、今のコンパイラーの出力と比べる。tsc、Node、provider は使わない。出力を変えたのに成果物を作り直していないと、`conformance-artifacts.yml` で失敗する。作り直しは `cargo run -p seseragi-conformance --bin write_schema1_artifact -- <case>` |
+| `.d.ts` の変換（WASM） | `bun run check:dts:wasm` | ファイル操作を外した変換器を `wasm32-unknown-unknown` 向けにビルドし、ホストの機能を使わずに変換、情報、作り直しの報告、診断を実行する。WASI SDK 25.0 と Rust の WASM のターゲットが必要 |
+| コミットした WASM | `bun run check:wasm` | Playground の WASM を作り直し、差分がないことを確かめる。WASI SDK 25.0 が必要 |
+| 純粋なプログラムの WASM | `cargo test -p seseragi-cli --test program_wasm` | プログラムの WASM を Bun と Node で実行し、TypeScript（両方のビルド）と native の結果と比べる。生成した型宣言の strict な型検査、標準パッケージのモジュールと素材のビルドと失敗したときに前の出力を残すこと、生成した仮のパッケージの持ち主、パスの依存と初期化、コールバックとインスタンスの寿命、trap の後に使えなくすること。`rustup target add wasm32-unknown-unknown` が必要。全体のチェックでも省かない |
+| provider を使わない Effect の WASM | `cargo test -p seseragi-backend-rust --test program_wasm_effect --test program_wasm_effect_admission --test program_wasm_private_ref` と上の CLI のテスト | 型、ソースの段階、受け付ける式を確かめる。WASM で、実行するまで動かない Effect、内部の Ref、型のついた失敗、明示的な Defect、取消、取消を止めた後片付け、非同期の破棄、返したコールバックを、新しく起動した Bun と Node で実行する。純粋なプログラムとは別の ABI で、ホストの provider や trap の後の巻き戻しは保証しない |
+| ホストの Effect を使う WASM | `cargo test -p seseragi-backend-rust --test program_wasm_host_effect --test program_wasm_host_ref` と `cargo test -p seseragi-cli --test program_wasm_host_effect` | 引数1つのホストのコールバック、内部の Ref の取り込み、通常の TypeScript と native との本体の比較、WASM の Failure と Defect、遅い応答の後の取消、取消を止めて後に開いたものから返すこと、破棄とホストの貸し出しの解放、標準パッケージの型つきの橋渡し、Console の provider を使う Effect。Console 以外の provider や trap の後の巻き戻しは含めない |
+| WASM のパッケージの監視 | `cargo test -p seseragi-cli --test dev` と `bun test ./runtime/ts/tests/program-lifecycle.test.ts` | 計算のモジュールの外側のパスの依存と、UI のビルドし直し、失敗したときに完成したサイトと版を残すこと、開発サーバーの寿命と権限の確認。保存したコールバックの拒否、古い root がゼロになること、遅い読み込みの回収を、新しく起動した Bun と Node でも実行する |
+| VS Code の拡張機能 | `bun run check:extension` | 正式な ID と古い ID の移行用の拡張機能の区別、lint とテスト、手元の環境向けの VSIX のアーカイブの形式、展開、`--version-json` の確認。LSP を起動しない移行用の VSIX のパッケージと検証 |
+| 手元の Web 製品の E2E | native のアーカイブと VSIX を作った後に `bun run test:local-web-e2e` | 展開した CLI とインストールした VSIX だけを使い、複数モジュールの Web プロジェクトで、LSP、開発サーバー、ブラウザー、編集、診断、回復、本番用ビルドを同じソースで確かめる。報告と PNG を `target/local-web-product-e2e` に残す |
+| 版と native の配布物 | `bun run check:release` | 版の元の値、Cargo・JS・WASM の版がそろっていること、CHANGELOG、手元の環境向けの CLI と LSP のアーカイブとチェックサム、展開し直して実行できること |
+| タグのリリースの前のチェック | `bun run check:release-gate` | 全体のチェックと同じ内容。ただし native と VSIX のパッケージの確認は、同じコミットを使うリリースの各ジョブに任せ、成果物を二重に作らない |
+| リポジトリ全体 | `bun run check` または `bun run check:full` | 整形、lint、Rust のワークスペース、すべての fixture、native のサンプル、WASM、Playground、拡張機能 |
+
+### チェックの決まり
+
+- Playground のテスト、型検査、ビルドは、カタログと Tour の一覧の確認を1度だけ済ませてから実行します。同じ確認を3回繰り返しません。
+- `check:sample` は、CLI で実行するサンプルだけでなく、ブラウザーで操作するサンプルも、コミットした WASM でコンパイルします。すべてのソースがフォーマッターの出力と一致することも確かめます。一覧やハッシュだけを更新して、壊れたソースが通ることはありません。
+- サンプルと Tour のコマンドは、プロセスの終了と、標準出力・標準エラーの終わりの両方を確かめます。
+  - 時間切れは、それだけで失敗として返します。後片付けで標準入出力を無期限に待ちません。
+  - POSIX では、親が先に終わっても、持っているプロセスのグループを止めます。
+  - 確かめる方法: `scripts/sample-cli-process.test.ts`（親が終わった後の出力、0でない終了、Unicode、時間切れと後片付け）
+- 配布するアーカイブを確かめるときは、展開した CLI と LSP とアーカイブのコマンドについて、プロセスの終了と標準入出力が閉じたことを確かめてから、一時フォルダーを消します。
+  - 一時的な `EBUSY` などで消せないときは、最初を含めて最大6回まで、待ち時間は合わせて 1500ms まで試します。
+  - 確認と後片付けの両方が失敗したら、両方のエラーを残します。確認が成功しても、後片付けが失敗したら失敗にします。後片付けが失敗したときは、実行したコマンドの PID、終了コード、exit と close を観測したかを残します。
+  - 確かめる方法: `bun test scripts/native-release.test.ts`
+  - Windows に固有のハンドルの競合は、Windows の CI と正式なリリースのアーカイブの確認でも確かめる必要があります。
+- PostgreSQL の provider をまとめたファイルが最新かを確かめるときは、実際に解決した `node_modules` の節のコメントだけを正規化します。`bun test scripts/postgres-provider-bundle.test.ts` で、通常のインストールと、深い worktree のシンボリックリンクのインストールで同じバイトになること、実行するコードが変わったら拒否することを確かめます。
+- Playground が実行時のライブラリを探す表は、`runtime/ts/package.json` の `exports` と、`runtime/providers/package.json` の `runtime-browser/*` から作ります。
+  - 作り直しは `bun run --cwd apps/playground runtime:generate`。`runtime:check` と Playground のテストが、生成物、コンパイラーの Runtime ABI のモジュールと export、ブラウザーの provider の宣言がそろっていることを確かめます。
+  - ホストのアダプターは実行時のパッケージの `browser` 条件で、native 専用のモジュールは `browser: null` で宣言します。Playground に別のモジュールの一覧を足しません。
+  - provider の `browser/` のソースから `runtime-browser/` のパッケージへの写しは、Rust のパッケージの準備のテストでも同じ中身かを確かめます。
+
+### 標準インスタンスの確認表
+
+- prelude の確認表で「仕様にあるが実装がない」（`specified-but-implementation-missing`）行は、登録表の `tracking_issue` に正の Issue 番号を必ず持ちます。
+- 一覧を作るときに確かめるので、単体テストだけでなく、fixture の成果物の照合も、追跡していない行を拒否します。GitHub への問い合わせはしません。
+- 実装が終わったら、その行を消します。実装済み、構造から決まるもの、わざと提供しないもの、の行に古い追跡の情報を残しません。
+- `prelude::surface` の仮の「実装がない」テストは、今の一覧が空でも、この約束と JSON の `trackingIssue` を確かめます。
+- 確認表だけを変えたときは、この意味のテストと、fixture の `stdlib_surface` のテストを先に実行できます。
+
+## Web UI の見た目の確認
+
+`apps/playground/tests/fixtures/web-ui-regression.json` が、すべての HTML サンプル、画面の大きさ（320px、iPhone、Android、横向き、デスクトップ）、確かめる部分、操作の状態を決めています。
+ふだんの `check:playground` は、この表とソースの読みやすさを Bun のテストで確かめ、Chromium を勝手にダウンロードしません。
+実際のブラウザーで見るときだけ、次を実行します。
 
 ```sh
 cd apps/playground
@@ -712,96 +147,55 @@ bun run test:visual:install
 bun run test:visual
 ```
 
-Playwrightはfixed Unsplash URLをdeterministicなlocal SVGへrouteし、layout、overflow、
-contrast、keyboard reachable control、image failure fallbackを確認します。代表stateは
-review済みscreenshot baselineとも比較し、失敗時は`test-results/web-ui-review/`へ
-expected / actual / diff、trace、HTML reportを残します。OS固有のfont rasterizationを
-layout差分と誤認しないようbaselineはplatform別に保持し、localとGitHub Actionsはともに
-`bun run test:visual`をverify commandとして使います。
+- Playwright は、決まった Unsplash の URL を手元の SVG に置き換え、配置、はみ出し、コントラスト、キーボードで届く操作、画像が読めないときの代わりの表示を確かめます。
+- 代表の状態は、確認済みの画面の画像（基準の画像）とも比べます。失敗したら、`test-results/web-ui-review/` に期待した画像、実際の画像、差分、trace、HTML の報告を残します。
+- OS ごとの文字の描き方の違いを配置の違いと取り違えないように、基準の画像は OS ごとに持ちます。手元でも GitHub Actions でも、確かめるコマンドは `bun run test:visual` です。
 
-full-page baselineはPlayground chromeとPreview / Editor / Explorerの位置関係を確認するため
-維持します。ただし許容差分は画像全体の比率ではなく、各baselineが監視するPreview body、
-Editor panel、Workspace shellの面積の1%をpixel数へ変換して判定します。色差threshold 0.25は
-platform別font rasterizationを吸収し、局所surfaceのspacing / typography / alignment差分が
-大きな余白へ薄まらないようにします。感度testは三種類の意図的な局所差分がこのbudgetを
-超えて比較失敗になることを固定します。
+**許す差分**
 
-意図したUI変更でbaselineを更新するときは、先に
-[`SHOWCASE_QUALITY.md`](./SHOWCASE_QUALITY.md)のhuman reviewを完了し、review理由を必須にした
-次のコマンドを使います。PNGと承認済み`showcase-review.json`のSHA-256、理由は
-`e2e/visual-baselines.review.json`へ記録され、PNGだけまたはapproval artifactだけの変更は
-verify前に失敗します。
+- 画面全体の基準の画像は、Playground の枠と Preview、Editor、Explorer の位置の関係を確かめるために残します。
+- 許す差分は、画像全体の割合ではなく、それぞれの基準の画像が見ている部分（Preview の本文、Editor の枠、Workspace の枠）の面積の1%を画素の数に直して決めます。
+- 色の差のしきい値 0.25 で、OS ごとの文字の描き方の違いを吸収します。部分の余白、文字、そろえ方の違いが、大きな余白に薄まって見逃されないようにするためです。
+- 感度のテストで、3種類の意図した部分の差分が、この上限を超えて失敗になることを確かめます。
+
+**基準の画像を更新する**
+
+意図して UI を変えたときは、先に [`SHOWCASE_QUALITY.md`](./SHOWCASE_QUALITY.md) の人による確認を済ませてから、理由を必ず書いて次を実行します。
 
 ```sh
 bun run test:visual:update -- "変更理由"
 ```
 
-update commandはreview対象のbaselineを持つWeb UI regression specだけを再実行してPNGと
-review hashを更新します。通常の`bun run test:visual`はguideを含む全Playwright specを
-引き続き実行するため、baseline更新のたびに無関係なbrowser testを重ねず、最終verifyの
-coverageは狭めません。
+- PNG と、承認済みの `showcase-review.json` の SHA-256 と理由が、`e2e/visual-baselines.review.json` に記録されます。PNG だけ、または承認の記録だけを変えると、確認の前に失敗します。
+- 更新のコマンドは、基準の画像を持つ Web UI のテストだけを実行し直します。ふだんの `bun run test:visual` は、ガイドを含むすべての Playwright のテストを実行します。
+- Linux の基準の画像も同じコマンドで作ります。`Web UI visual regression` のワークフローを手動で実行し、`update_reason` を渡します。
 
-Linux baselineも同じupdate commandを使い、`Web UI visual regression`の
-workflow_dispatchへ`update_reason`を渡して生成します。
+## CI と手元の分担
 
-## Full gateを実行する条件
+- 手元では、変えた範囲に合うチェックを実行します。
+- `.github/workflows/vscode-extension.yml` は、拡張機能のパスが変わったときに、OS ごとの VSIX のパッケージ、アーカイブの形式、展開した native の LSP の `--version-json` の確認を受け持ちます。手元の `check:extension` は、手元の環境だけの短い確認です。タグのリリースでも、アップロードする前の VSIX に同じ確認をもう1度実行します。
+- `.github/workflows/release-contract.yml` は、版の元の値や配布物の名前が変わったときに、`check:release` と、版と配布の約束の cargo のテストだけを実行します。
+  - 対象は `seseragi-release` 全体、`seseragi-cli --test build reports_version_commit_and_channel`、`seseragi-lsp --test stdio binary_reports_its_distribution_contract`、`seseragi-cli --test run single_file_and_package_compile_diagnostics_share_the_json_envelope`。どれも `--locked` を付け、個別のテストは `-- --exact` を付けます。
+  - CLI と LSP のテスト全体は、それぞれのワークフローが受け持ちます。Linux の native のアーカイブを実際に動かす確認は、`linux-native.yml` とタグのリリースが受け持ちます。
+  - タグのリリースは `v<version>` だけを受け付けます。タグのコミットが `main` に含まれ、`check:release-gate` が成功したときだけ、同じコミットからすべての環境の成果物を作り、アップロードの前と、ダウンロードし直した後に確かめます。
+- リポジトリ全体のチェックは、コンパイラー・実行時のライブラリ・WASM の変更、リリース、作業の列の統合など、決まった場面で明示的に実行します。CI で、サンプルを変えるたびに同じ長いチェックを重ねません。
 
-次のいずれかに該当するときだけ、scoped laneに加えて `bun run check` を実行します。
+### CI で使う OS
 
-- compiler / runtime / WASM基盤を変更した
-- 複数の領域を横断した
-- release前の統合確認を行う
-- #201のqueueをmainへ統合する
-- Issue本文がfull checkを明示的に要求する
+- `pull_request` では Linux だけを実行します。
+  - 対象: `rust-backend.yml` の `file-transform`、`dts-portable.yml` の `convert`（PR では `cross-host-results` も省く）、`vscode-extension.yml` の `package`（macOS と Windows だけなので、PR ではジョブごと省く。Linux の VSIX は `linux-native` が受け持つ）
+  - matrix の要素には `if` を書けないので、OS の並びを `fromJSON(github.event_name == 'pull_request' && '[...Linux]' || '[...全OS]')` で切り替えます。
+- macOS と Windows は、`main` への push と手動の実行（`workflow_dispatch`）で実行します。そのため `dts-portable.yml` にも `main` への push を加えています。毎晩の定期実行は置きません。`release.yml` の macOS と Windows の確認は変えません。
+- macOS と Windows だけの失敗は、マージした後に初めて分かります。OS によって変わる変更（パス、プロセス、ファイルのハンドル、改行、WASM の作り直しなど）は、PR の前に手元の Mac で下の手順を実行します。
+- PR から動くワークフローは `concurrency`（ワークフロー、イベント、PR 番号ごと。PR だけ前の実行を取り消す）を持ちます。
+- Ubuntu の Rust のジョブは `Swatinem/rust-cache@v2` をジョブごとのキーで使い、保存は `main` への push のときだけにします（PR は読み出すだけ）。`CARGO_INCREMENTAL=0` は保ちます。
 
-full gateを実行した場合は、作業ログまたはPR本文へ「必要理由」と「結果」を記録します。
-長時間無出力になった場合は、該当phaseとprocess activityを確認し、放置しません。
+### 手元の Mac で macOS の CI を再現する
 
-## CIとlocalの責務
+固定したツール（`rust-toolchain.toml` の 1.97.1 と `wasm32-unknown-unknown`）、`.bun-version` の Bun、Node 24.22.1 を用意し、リポジトリのルートで実行します。CI と同じ環境変数を使います。
 
-- localの末端Issue作業は、変更範囲に対応するscoped laneを担当する。
-- `.github/workflows/vscode-extension.yml` はextension path変更時のOS別VSIX package、
-  archive mode、展開後native LSPの`--version-json` smokeを担当する。local
-  `check:extension`はhost platformの短い再現確認であり、tag releaseでも同じ検証器を
-  upload前のrelease VSIXへ再実行する。
-- `.github/workflows/release-contract.yml` はversion sourceやartifact namingの変更で
-  `check:release`と、version/distribution契約のcargo testだけを実行する
-  （`seseragi-release`全体、`seseragi-cli --test build reports_version_commit_and_channel`、
-  `seseragi-lsp --test stdio binary_reports_its_distribution_contract`、
-  `seseragi-cli --test run single_file_and_package_compile_diagnostics_share_the_json_envelope`。
-  いずれも`--locked`、個別testは`-- --exact`）。CLI/LSPの全suiteは各scoped workflowが担当し、
-  Linux native archiveの実binary検証は`linux-native.yml`とtag releaseが担当する。tag releaseは
-  `v<version>`だけを受け付け、tag commitのmain包含と`check:release-gate`成功後にだけ
-  同一SHAの全platform artifactを生成し、upload前と再download後に検証する。
-- repository-wideのfull gateは、compiler/runtime/WASM変更、release、queue統合などの
-  integration pointで明示的に実行する。CIに同じ長時間検査を各sample変更へ無条件に重ねない。
-- scoped laneが不足している場合は、対象コマンドを個別に実行して結果を記録し、lane追加を
-  次の基盤Issueとして扱う。
-
-### CIのOS方針（イベント別）
-
-- `pull_request`ではLinuxだけを実行する。対象は`rust-backend.yml`の`file-transform`、
-  `dts-portable.yml`の`convert`（PRでは`cross-host-results`も省略）、
-  `vscode-extension.yml`の`package`（macOS/Windows targetのみのためPRではjobごと省略。
-  Linux VSIXは`linux-native`が担当）。matrix要素には`if`を書けないため、OS配列は
-  `fromJSON(github.event_name == 'pull_request' && '[...Linux]' || '[...全OS]')`で切り替える。
-- macOS/Windowsは`main`へのpushと`workflow_dispatch`で従来どおり実行する
-  （`dts-portable.yml`にはそのため`main` pushを追加）。nightly scheduleは置かない。
-  `release.yml`のmacOS/Windows gateは変更しない。
-- macOS/Windows固有の失敗はmerge後に初めて見えるため、OS依存の変更（path、process、
-  file handle、改行、WASM再生成など）はPR前にlocal Macで下記を実行する。
-- PR起点のworkflowは`concurrency`（workflow + event + PR番号、PRだけcancel）を持つ。
-- UbuntuのRust jobは`Swatinem/rust-cache@v2`をjob別keyで使い、保存は`main`へのpushだけ
-  （PRは復元のみ）。`CARGO_INCREMENTAL=0`は維持する。
-
-### local MacでmacOS CIを再現する手順
-
-固定toolchain（`rust-toolchain.toml`の1.97.1、`wasm32-unknown-unknown`）、`.bun-version`のBun、
-Node 24.22.1を用意し、repository rootで実行する。CIと同じ環境変数を使う。
-
-CIは`file-transform`のCLI suiteを複数のjobに分けて実行する（`scripts/cargo-test-shard.ts`）。
-手元では分けずに下の`cargo test`をまとめて実行してよい。`CARGO_TARGET_DIR`を設定すると、
-同じsuiteのテストがnative runtimeのビルドを共有するので速くなる（CIも設定している）。
+CI は `file-transform` の CLI のテストを複数のジョブに分けて実行します（`scripts/cargo-test-shard.ts`）。手元では分けずに、下の `cargo test` をまとめて実行してかまいません。
+`CARGO_TARGET_DIR` を設定すると、同じテストどうしが native の実行時のライブラリのビルドを共有するので速くなります（CI も設定しています）。
 
 ```sh
 export CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0
@@ -833,8 +227,8 @@ bun test ./runtime/ts/tests/program-lifecycle.test.ts ./runtime/ts/tests/program
 bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext \
   --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts
 
-# dts-portable.yml convert (macos-15)。WASI SDK 25.0を展開しWASI_SDK_PATHを設定、
-# wasm-pack v0.15.0と`cargo install wasm-bindgen-cli --version 0.2.126 --locked`を用意する。
+# dts-portable.yml convert (macos-15)。WASI SDK 25.0 を展開して WASI_SDK_PATH を設定し、
+# wasm-pack v0.15.0 と `cargo install wasm-bindgen-cli --version 0.2.126 --locked` を用意する。
 cargo fmt --all -- --check
 cargo test --locked -p seseragi-dts
 cargo test --locked -p seseragi-dts --no-default-features
@@ -851,111 +245,168 @@ diff -r "$builds/pkg-first" apps/playground/src/wasm/pkg
 (cd apps/playground && bun install --frozen-lockfile \
   && bun test tests/binding-wasm.test.ts tests/workspace-*.test.ts && bunx tsc --noEmit \
   && bunx playwright install chromium && bunx playwright test e2e/workspace-bindings.spec.ts)
-git checkout -- apps/playground/src/wasm/pkg  # macOS生成物はcommitしない
+git checkout -- apps/playground/src/wasm/pkg  # macOS で作ったものはコミットしない
 
-# vscode-extension.yml package (macos-15 / darwin-arm64。Intel Macはdarwin-x64)
+# vscode-extension.yml package (macos-15 / darwin-arm64。Intel Mac は darwin-x64)
 (cd extensions/seseragi && bun install --frozen-lockfile \
   && SESERAGI_EXTENSION_TARGET=darwin-arm64 bun scripts/package-extension.ts)
 ```
 
-Windows固有の確認（`bun test scripts/native-release.test.ts`など）はlocalで代替できないため、
-必要な場合は`workflow_dispatch`でrust-backend/vscode-extensionを手動実行する。
+Windows に固有の確認（`bun test scripts/native-release.test.ts` など）は手元で代わりに確かめられません。必要なときは、rust-backend と vscode-extension のワークフローを手動で実行します。
 
-### Release profile implementation checks
+ファイルや FIFO の非同期の入出力だけを OS ごとに切り分けたいときは、`rust-backend.yml` を手動で実行し、`async_io_only=true` を渡します。
+Linux、macOS、Windows で `cargo test --locked -p seseragi-cli --test async_filesystem` を実行し、15秒の期限、ハンドルを閉じること、ワーカーの終了待ち、後片付け、出力を守ることを確かめます。
+`integration=true` はこの指定より優先し、全体のチェックを実行します。
 
-`cargo test -p seseragi-cli --test profiles` compiles the canonical performance
-fixtures in both profiles and executes each in a fresh process. It also runs
-`scripts/release-shapes.ts` against the emitted release module and fixture
-predicates. Install root dependencies with `bun install --frozen-lockfile` first.
-The checker resolves canonical module symbols through generated inspection roots;
-metadata does not report optimization success. Its AST proof is conservative:
-unsupported wrapper/projection shapes fail instead of being guessed. Inspection
-roots are retained in release output; bundling/DCE is a separate boundary.
+## WASM を作り直すとき
 
-`bun test scripts/release-shapes.test.ts runtime/ts/tests/effect-stack.test.ts`
-checks shape rejection cases and 100,000 Effect binds independently of pure TCO.
-The conformance lane includes these checks. Profile/compiler/runtime integration
-still requires the full gate and regenerated WASM during Promotion.
+- [WASI SDK 25.0](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-25) の、手元の OS と CPU 向けのアーカイブを展開し、`WASI_SDK_PATH` にそのフォルダーを設定します。C で書いた構文解析器のコンパイラーも固定し、Rust と wasm-pack だけをそろえても生じる差分を防ぎます。
+- WASM のつなぎのコードには、`cargo install wasm-bindgen-cli --version 0.2.126 --locked` で `Cargo.lock` と同じ CLI を用意します。`wasm-pack` の自動インストールは CLI の中の依存の版を変えるので、ビルドは `--mode no-install` で既存の CLI を使います。
+- 配布する WASM を作る正式な環境は Linux x64 です。`check:wasm` は生成物全体がバイト単位で一致することを確かめ、PR とリリースの Linux の確認で必須にしています。
+- Cargo は、ホストで動くビルドスクリプトや proc macro の情報を依存先に伝えるので、macOS で作ったものはコードやデータに差分が出ることがあります。
+  - macOS の CI では、同じ固定のツールと、2つの独立した新しい Cargo のターゲットで作り直します。1回目の新しい出力と、2回目のリポジトリへの出力で、すべてのファイルの集合とバイトが一致することを確かめ、変換、ワークスペース、ブラウザーの回帰を確かめます。
+  - さらに、両方の OS の変換の JSON の出力を CI で完全に比べます。macOS で作ったもので配布物を置き換えません。
 
-WASM再生成時は[WASI SDK 25.0](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-25)のホストOS/CPU用archiveを展開し、`WASI_SDK_PATH`をそのdirectoryへ設定する。C parserのcompilerも固定し、Rust/wasm-packだけが同じでも発生する生成物差分を防ぐ。
+## リリース用ビルドの最適化の確認
 
-WASM glueには`cargo install wasm-bindgen-cli --version 0.2.126 --locked`でCargo.lockと同じCLIを用意する。`wasm-pack`の自動install fallbackはCLI内部の依存versionを変えるため、buildは`--mode no-install`で既存のCLIを使う。
+`cargo test -p seseragi-cli --test profiles` は、性能の fixture を開発用とリリース用の両方でコンパイルし、それぞれを新しいプロセスで実行します。
+さらに、出力したリリース用のモジュールに対して `scripts/release-shapes.ts` を実行し、fixture の条件を確かめます。先に `bun install --frozen-lockfile` でルートの依存を入れます。
 
-配布用WASMの正規生成hostはLinux x64。`check:wasm`は生成物全体のbyte一致を検証し、PRとrelease promotionのLinux gateで必須とする。Cargoはhostで実行するbuild script/proc macroのmetadataを依存先へ伝播するため、macOS生成物とはcode/dataを含む差分が生じ得る。macOS CIでは同じ固定toolchainと2つの独立したfresh Cargo targetで再構築する。1回目のfresh outputと2回目のrepo/pkg stagingで全packageのfile集合とbyte一致を確認し、変換・workspace・browser回帰を検証する。さらに両hostの変換JSON出力をCIで完全一致比較し、macOS生成物で配布artifactを置き換えない。
+- チェッカーは、生成した確認用の入口からモジュールの宣言を探します。最適化が成功したかどうかを、成果物の情報で報告することはありません。
+- 構文木による確認は控えめです。対応していない包みや取り出しの形は、推測せずに失敗にします。
+- 確認用の入口は、リリース用の出力に残します。まとめて不要なコードを消す処理は、別の境目です。
 
-captureしたprimitiveの推論identityは、`cargo test -p seseragi-semantics --lib`、
-`cargo test -p seseragi-driver --lib --test compile_module --test captured_primitive_identity`、
-`cargo test -p seseragi-cli --test captured_primitive_identity`で確認する。
-同名nominalの拒否とscoped evidenceを保ち、元のsourceとcold Effectの正常・Failure・Defectを
-raw TS両profileのstrict、fresh Bun/Node、nativeとfinalizer・managed rootで比較する。
-標準moduleを使うfixtureはstandaloneのsemantics helperへ渡さず、共有driver経由で検証する。
-共有推論の変更には、統合前のfull gateと正規WASMの更新も必要となる。
+`bun test scripts/release-shapes.test.ts runtime/ts/tests/effect-stack.test.ts` は、形の拒否と、純粋な末尾呼び出しの最適化とは別に、10万段の Effect の連鎖を確かめます。
+fixture のチェック（`check:conformance`）にも含まれます。ビルドの種類、コンパイラー、実行時のライブラリを合わせて変えたときは、全体のチェックと WASM の作り直しも必要です。
 
-nativeのString Eqは、`cargo test --locked -p seseragi-backend-rust --test string_equality --test equality_partials`と
-`cargo test --locked -p seseragi-cli --test string_equality`で確認する。canonicalなEqのowner・型・evidenceを
-変えた負例を拒否し、Unicode/NUL・保存method・部分適用・cold再実行・Failure/Defect・finalizer/root0を
-raw strict TS両profile、fresh Bun/Nodeとnativeで比較する。file条件分岐では入力と失敗時の既存出力も保つ。
-共有runtimeを使うため、通常Web buildのprogram WASMと元のtyped bridge、callback/instanceの解放も検証する。
-左右のsource helperだけを計測するtraceで、一回評価と順序を比較し、生成Eq式は変更しない。
-共有runtimeの統合にはfull gateと正規compiler WASMの更新も必要となる。
+## native の標準 API のテスト
 
-nativeのtext.lines/joinは、`cargo test --locked -p seseragi-backend-rust --lib text_tests`、
-`cargo test --locked -p seseragi-backend-rust --test text_processing`と
-`cargo test --locked -p seseragi-cli --test text_processing`で確認する。Unicode改行・CRLF・空入力と
-残る文字列のbytes、保存joinの一回評価・順序、cold再実行・Failure/Defect・finalizer/root0を
-raw strict TS両profile・fresh Bun/Node・nativeで比較する。fileの入力と読込失敗時の出力を保護し、
-通常Web buildのprogram WASM、元typed bridgeのstrict・skipLibCheck:false、callback/instance解放も
-確認する。公開Array codecや一般provider ABIはこの受入に含めない。共有runtimeの統合には
-full gateと正規compiler WASMの更新が必要となる。
+native（Rust）で実行できる標準 API を加えたり直したりしたときに、実行するテストの一覧です。
 
-nativeの十進Int parseは、`cargo test --locked -p seseragi-backend-rust --lib int_parse_tests`、
-`cargo test --locked -p seseragi-backend-rust --test int_parse`と
-`cargo test --locked -p seseragi-cli --test int_parse`で確認する。標準のIntParseErrorのowner・kind・
-source arity・evidenceを検証し、fileとpath packageの集計、入力と失敗時の既存出力の保持、
-保存parseの一回評価、cold再実行・Failure/Defect・finalizer/root0をraw strict TS両profile・
-fresh Bun/Node・nativeで比較する。標準IntParseErrorのShowはdriver/backendの
-`--test int_parse_error_show`とCLIの`--test int_parse standard_parse_error_show`で確認する。
-4つのconstructor、同名local型とpath package、元のraw strict TS両profile、cold失敗と
-Defect/finalizer、fileの既存出力保持を比較する。radix指定、他の数値変換API、一般program WASM、
-IntParseErrorのEq/Debugはこの受入に含めない。共有runtimeの統合にはfull gateと
-正規compiler WASMの更新が必要となる。
+### 共通で確かめること
 
-nativeのFloat parseは、`cargo test --locked -p seseragi-backend-rust --lib parse_tests`、
-`cargo test --locked -p seseragi-backend-rust --test float_parse --test int_parse --test int_parse_error_show`と
-`cargo test --locked -p seseragi-cli --test float_parse --test int_parse`で確認する。
-共通number parse ABIのowner・kind・source arity・evidence検査と既存Int/Showの拒否条件を保持し、
-decimal/exponent構文、UTF-8 byte offset、構文失敗とoverflowの順序、subnormal・underflow・
-signed zero・明示NaN/Infinityを確認する。sourceとpath packageで小数の各行を集計し、
-元のraw strict TS両profile・fresh Bun/Node・nativeで比較する。入力と失敗時の既存出力、
-保存parseの一回評価、cold再実行・Failure/Defect・finalizer/root0を検証する。
-FloatParseErrorの新しいShow/Debug/Eq、他の数値変換API、一般program WASMはこの受入に含めない。
-共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。
+どの API も、次をテストで確かめます。
 
-nativeのFloat丸め・Int変換は、backendの`--lib float_conversion_tests`と
-`--test float_conversion`、CLIの`--test float_conversion`で確認する。
-canonicalなRoundingModeとFloatConversionErrorのowner/kind・source arity・evidenceを保ち、
-6modeの中間値と隣接値、signed zero、safe Int境界と非finite失敗を比較する。
-source/path packageの元生成TS両profileをstrict検査し、fresh Bun/Node/nativeで
-入力と失敗時の旧出力、一回評価と保存・返り値converter、cold Failure/Defect・finalizer/root0を確認する。
-program WASMは位置付き拒否を保ち、Float Eq/Ord・Pow/stdmathや新しいerror Showを含めない。
-共有numeric ABIの変更には元Int/Float parseとShowの回帰確認、統合前の全体gateと正規compiler WASMも必要となる。
+- 元の生成した TypeScript を、開発用とリリース用の両方で strict（`skipLibCheck: false`）に型検査する
+- 新しく起動した Bun、Node、native で、同じ結果になる
+- 保存した関数、部分適用、ジェネリクスの呼び出し、中身を隠した型を持つ2つのモジュールのパッケージでも動く
+- 実行するまで動かない Effect をもう1度実行できる。型のついた Failure と Defect の後に、後片付けが動き、管理している root がゼロに戻る。Ref の循環も回収する
+- 偽の Core の入力（型の持ち主、種、引数、結果、辞書、ソースの段階）を、元の UTF-8 の位置を示して拒否する
+- 新しい API を、プログラムの WASM では受け付けない。使っていない保存した関数でも、位置を示して拒否する
+- 入力と、失敗したときの前の出力を変えない
 
-nativeのInt剰余は、`cargo test --locked -p seseragi-backend-rust --test int_remainder --test int_division --test operator_partials`と
-`cargo test --locked -p seseragi-cli --test int_remainder`で確認する。標準Remのowner・kind・source arity・
-選択済みevidenceを検証し、既存Divとprogram WASMの拒否条件を保持する。正負の値とsafe integer境界、
-直接呼出し・保存method・generic/返り値関数の一回評価と順序、cold再実行、zero divisorのDefectと
-finalizer/root0を、元のraw strict TS両profile・fresh Bun/Node・nativeで比較する。
-sourceと凍結したpath packageで各行の整数の剰余を別fileへ書き、入力と失敗時の既存出力を保持する。
-Pow、新しいchecked remainder API、一般program WASMへの剰余の追加は受入に含めない。
-共有backend/runtimeの統合にはfull gateと正規compiler WASMの更新が必要となる。
+共有のコンパイラーや実行時のライブラリを変えたときは、統合の前に全体のチェックと、コンパイラーの WASM の作り直しも必要です。
 
-nativeのInt/Float累乗は、backendの`--lib power`と`--test native_power`、CLIの
-`--test native_power`で確認する。標準Powと`std/float.power`のcanonical owner/kind、
-辞書、source arity、保存methodと返り値関数、同名のlexical binderを区別する。
-Intのsafe integer境界・負指数とoverflowのDefect、FloatのNaN/Infinity/signed zeroと
-指数の偶奇を、元生成TS両profileのstrict検査とfresh Bun/Node/nativeで比較する。
-直接・保存した演算子のsource一回評価と順序、Refとcold再実行、型付きFailure/Defect後の
-finalizer/root0、sourceと凍結したpath packageでの入力・失敗時の旧出力保持も検証する。
-一般program WASMへの累乗の追加、残るstdmath API、Float Eq/Ordは含めない。
-既存Div/Rem・Float parse/conversion・operator partialの回帰を確認し、共有backend/runtimeの
-統合前は全体gateと正規compiler WASMの検証も必要となる。
+### テストの書き方
+
+| 表の書き方 | 実行するコマンド |
+| --- | --- |
+| backend `--test x` | `cargo test -p seseragi-backend-rust --test x` |
+| runtime `x` | `cargo test -p seseragi-backend-rust --lib x` |
+| CLI `--test x` | `cargo test -p seseragi-cli --test x` |
+| CLI `x_` | `cargo test -p seseragi-cli x_`（名前で絞り込む。分かるときは `--test basic_standard` などを付ける） |
+| driver `--test x` | `cargo test -p seseragi-driver --test x` |
+| backend `--lib x` | `cargo test -p seseragi-backend-rust --lib x` |
+| semantics、lowering、syntax | `cargo test -p seseragi-semantics`、`seseragi-lowering`、`seseragi-syntax` に同じ引数を付ける |
+
+### 数値
+
+| 対象 | テスト | 補足 |
+| --- | --- | --- |
+| Int の十進の読み取り | backend `--test int_parse`、runtime `int_parse_tests`、CLI `--test int_parse` | 標準の `IntParseError` の持ち主、種、引数の数を確かめる。`IntParseError` の Show は backend と driver の `--test int_parse_error_show` と CLI `--test int_parse standard_parse_error_show` |
+| Int の基数の変換、書き出し、上限と下限 | backend `--test int_text --test int_parse`、runtime `int_parse_tests`、CLI `basic_int_radix_` | 2〜36進、符号、先頭の0、大文字と小文字、UTF-8 のバイト位置と最初の失敗を TypeScript に合わせる。返す関数の型は driver `--test strict_partials --test generic_call_instantiation --test hkt_erasure` |
+| Int のあふれを調べる計算と上限で止める計算 | backend `--test int_checked --test int_text --test int_parse`、runtime `int_checked_tests`、CLI `basic_int_checked_` | 右の引数を先に評価する。大きな指数でも計算が終わる累乗 |
+| Int の `>` と `>=` | backend `--test comparison_partials`、CLI `basic_array_infix_descending_` | |
+| Int の余り | backend `--test int_remainder --test int_division --test operator_partials`、CLI `--test int_remainder` | 0で割ると Defect |
+| Int と Float の累乗 | backend `--lib power`、`--test native_power`、CLI `--test native_power` | Int の安全な範囲、負の指数、あふれの Defect。Float の NaN、無限大、符号つきの0、指数の偶奇 |
+| Float の読み取り | backend `--lib parse_tests`、`--test float_parse --test int_parse --test int_parse_error_show`、CLI `--test float_parse --test int_parse` | 十進と指数の構文、UTF-8 のバイト位置、構文の失敗とあふれの順、非正規化数、アンダーフロー、符号つきの0、明示的な NaN と無限大 |
+| Float の丸めと Int への変換 | backend `--lib float_conversion_tests`、`--test float_conversion`、CLI `--test float_conversion` | 6つの丸め方の中間の値と隣の値、符号つきの0、安全な Int の境、有限でない値の失敗 |
+| Math の定数、単項の関数、`atan2`、`hypot` | backend `--test math_remaining`、runtime `math_tests`、CLI `basic_math_remaining_` | `atan2` は y が先。`hypot` は途中の2乗であふれない |
+| Math の `sqrt`、`sin`、`cos`、`log` | backend と CLI `--test basic_standard`、runtime `math_tests` | 特別な値と、仕様の許容誤差 |
+| Decimal の読み取り、`fromInt`、Show | backend `--test basic_decimal`、runtime `decimal_tests`、CLI `basic_decimal_` | 係数と小数点の位置を任意精度で持ち、指数を Float や固定幅の整数に丸めない。負の0と末尾の0を正規化する |
+| Decimal の Eq と Hash | backend `--test decimal_keys --test basic_decimal`、runtime `decimal_tests`、CLI `basic_decimal_keys_` | TypeScript と同じ、符号つきの32ビットの区切りのハッシュ |
+| Decimal の Ord と比較 | backend `--test decimal_ord --test decimal_keys --test basic_decimal --test method_references`、runtime `decimal_tests`、CLI `basic_decimal_ord_` | 1000桁の小数点の位置を展開しない |
+| TypeScript の Decimal の0の比較 | runtime/ts の `decimal.test.ts`、`decimal-zero-order.test.ts`、CLI `--test decimal_zero_order` | |
+| Decimal の足し算、引き算、掛け算、Zero、One、Debug | backend `--test decimal_arithmetic`、runtime `decimal_arithmetic_tests`、CLI `basic_decimal_arithmetic_` | 独立した Python の Decimal の期待値と比べる |
+| Decimal の割り算と `quantize` | backend `--test decimal_division --test decimal_context --test decimal_conversion`、runtime `decimal_division_tests`、CLI `basic_decimal_division_` | Python の Fraction と Decimal の期待値と比べる。長い do の native の生成は CLI `basic_long_effect_sequence_` |
+| Decimal の変換（`toIntExact`、`fromFloat`、`toFloat`） | backend `--test decimal_conversion`、runtime `decimal_conversion_tests`、CLI `basic_decimal_conversion_` | Float のビットから正確な係数を作ってから丸める |
+| DecimalContext | backend `--test decimal_context`、runtime `decimal_context_tests`、CLI `basic_decimal_context_` | `std/number` の RoundingMode を共有する |
+| BigInt の読み取り、書き出し、`fromInt` | backend `--test basic_big_int`、runtime `big_int_tests`、CLI `basic_big_int_` | 任意の桁数を丸めない |
+| BigInt の基数の変換と `toInt` | backend `--test big_radix --test basic_big_int`、runtime `big_int_tests`、CLI `basic_big_radix_` | 10万桁の十進の入力 |
+| BigInt の Eq、Ord、Hash、Show、Debug | backend `--test big_int_keys --test big_int_ord --test big_int_display`、runtime `big_int_dictionary_tests`、`big_int_tests`、CLI `basic_big_keys_` | Eq、Ord、Hash は O(n)。読み取りと書き出しは仕様の O(d²) 以内 |
+| BigInt の計算、Zero、One、失敗を返す API | backend `--test big_arithmetic`、runtime `big_int_arithmetic_tests`、CLI `basic_big_arithmetic_` | 0の方向への割り算、割られる数と同じ符号の余り |
+| Hash の標準の辞書（Int、Bool、Char、String、Unit） | backend `--test basic_hash`、runtime `hashing_tests`、CLI `basic_hash_` | 公開のハッシュに種を混ぜない |
+
+### コレクション
+
+| 対象 | テスト | 補足 |
+| --- | --- | --- |
+| Array の基本（`filter`、`find`、`get`、`length`、`take`、`drop`） | backend `--test basic_array`、runtime `array_operation_tests`、CLI `basic_array_` | 既存の Array の添字の ABI を変えない |
+| Array の残り（`empty`、`append`、`reverse`、`head`、`tail`、`filterMap`、`flatMap` など） | backend `--test array_rest --test basic_array`、runtime `array_`、CLI `basic_array_rest_` | 共有の修正は driver `--test array_alias_elements --test alias_type_functions --test inferred_collection_owner` |
+| Array と List の基本の22の操作 | backend `--test basic_sequence`、runtime `sequence_tests`、CLI `basic_sequence_` | Array の `last` は O(1)。List は含まれる後ろの部分を共有する |
+| Array と List の `concat` | backend `--test basic_sequence`、runtime `sequence_tests`、CLI `basic_concat_` | |
+| Array と List の `sort`、`sortBy`、`groupBy` | backend `--test sequence_order`、runtime `sequence_order_tests`、CLI `basic_sequence_order_` | 安定した下からのマージ。キーは入力の順に1回だけ評価する |
+| List の `filterMap`、`flatMap` | backend `--test list_transform --test basic_sequence`、runtime `list_transform_tests`、CLI `basic_list_transform_` | |
+| List の先頭の共有 | lowering `--test match_decision`、backend `--test native_list list_prefix`、CLI `--test rust_backend list_prefix_decisions_and_effects_match_raw_strict_ts_and_native` | 速さは `measure_list_prefix.py` で測る |
+| `fromIterable` と `Map.fromEntries` | backend `--test iterable_build --test iterator`、runtime `iterable_tests`、CLI `basic_iterable_build_` | 重複したキーは値を更新し、最初のキーを残す |
+| Iterator の `unfold`、`next` | backend `--test iterator`、runtime `iterator_tests`、CLI `basic_iterator_` | 保存した参照は driver `--test iterator_saved_functions` |
+| `collection.reduceUntil` | backend `--test reduce_until --test iterable_build`、runtime `collection_control_tests`、CLI `basic_reduce_until_` | `Done` の後に `next` を呼ばない |
+| Maybe の `withDefault`、`orElse`、`sequence`、`traverse` | backend `--test maybe_operations --test hkt_projections --test reduce_until`、runtime `maybe_operation_tests`、CLI `basic_maybe_operations_` | NonEmptyList の provider は、#1048 と #1101 で ABI を確かめるまで拒否する |
+| Map の基本 | backend `--test basic_map`、runtime `map_tests`、CLI `basic_map_` | パッケージは `.gitattributes` で LF に固定する |
+| Set の基本と Map の `containsKey`、`entries` | backend `--test basic_collections`、runtime `set_tests`、`map_tests`、CLI `basic_collections_` | Set は Map の記憶域を共有する |
+| Map の `upsert`、`mergeWith`、`mapKeysWith` | backend `--test basic_map_upsert`、runtime `map_tests`、CLI `basic_map_upsert_` | Hash を1回、Eq で探し、更新を1回 |
+| Map の `filter`、`mapValues` | backend `--test basic_map_operations --test basic_map`、runtime `map_tests`、`set_tests`、CLI `basic_map_operations_`、`basic_set_operations_` | |
+| Set の `filter`、`union`、`intersection`、`difference`、`isSubsetOf`、`toList` | backend `--test basic_set_operations --test basic_collections`、runtime `set_tests`、CLI `basic_set_operations_` | |
+| `Set.map` | backend `--test basic_set_map`、runtime `set_tests`、CLI `basic_set_map_` | `Map.mapKeysWith` と実装を共有する |
+
+### テキストとバイト
+
+| 対象 | テスト | 補足 |
+| --- | --- | --- |
+| `split`、`trim`、`contains`、`replace` | backend と CLI `--test basic_standard`、runtime `text_tests` | |
+| `startsWith`、`endsWith` | backend `--test basic_standard`、runtime `text_tests`、CLI `basic_text_boundaries_` | |
+| `lines`、`join` | backend `--lib text_tests`、`--test text_processing`、CLI `--test text_processing` | |
+| String の Eq | backend `--test string_equality --test equality_partials`、CLI `--test string_equality` | |
+| Bytes の `fromInts`、`toInts`、`get`、`toInt` | backend `--test basic_bytes`、runtime `bytes_tests`、CLI `basic_bytes_` | |
+
+### JSON
+
+| 対象 | テスト | 補足 |
+| --- | --- | --- |
+| 読み取りと書き出し | backend `--test basic_json`、runtime `json_tests`、CLI `basic_json_` | 深さ20,000をヒープで確かめる |
+| 標準の12の変換の辞書 | backend `--test basic_json_codecs`、runtime `json_codec_tests`、CLI `basic_json_codecs_` | DecodeError の型は driver `--test json_decode_error --test struct_construction_kind` |
+| Array、List、Maybe、Either、タプル、Map、Set、閉じたレコード | backend `--test basic_json_containers`、runtime `json_container_codec_tests`、CLI `basic_json_containers_` | 変換の深さの上限は128 |
+| デコーダーの組み合わせ（`field`、`oneOf`、`flatMap` など） | backend `--test basic_json_decoders`、runtime `json_decoder_tests`、CLI `basic_json_decoders_` | 同時に128を超えると、スタックを壊さずに Defect にする |
+| 自動導出（代数的データ型） | backend `--test basic_json_derived_adts`、runtime `json_derived_adt_tests`、CLI `basic_json_derived_adts_` | |
+| 自動導出（newtype） | backend `--test basic_json_derived_newtypes`、CLI `basic_json_derived_newtypes_` | リテラルの表現は driver `--test newtype_literal_profiles`、CLI `newtype_literal_representations_` |
+| 自動導出（struct） | backend `--test basic_json_derived_structs`、CLI `basic_json_derived_structs_` | struct の中のレコードの型は syntax の `nested_record_types_keep_their_struct_fields`、driver `--test struct_construction_kind`、CLI `nested_record_struct_fields_` |
+| プロトタイプと同じ名前のフィールド | Playground の `json-record-runtime.test.ts`、CLI `json_record_prototype_field_` | |
+
+### 型と共有のコンパイラー
+
+| 対象 | テスト |
+| --- | --- |
+| 制約つきの関数や辞書のメソッドが返す関数を続けて呼ぶ | backend `--test returned_evidence_stages --test strict_partials`、driver `--test strict_partials --test generic_call_instantiation --test hkt_erasure`、CLI `--test alias_constructor_sections` |
+| 標準の関数が返す関数の呼び出しと、if の分岐の推論 | driver `--test standard_returned_application --test conditional_branch_inference`、CLI `basic_standard_returned_application_`、`basic_standard_conditional_maybe_callback_` |
+| ジェネリクスの呼び出しに渡す、先頭が空の入れ子の Array と List | driver `--test nested_empty_call_inference`、CLI `inferred_nested_empty_collection_` |
+| import した呼び出せる別名の中の Prelude の型からの推論 | driver `--test generic_call_instantiation --test hkt_erasure --test strict_partials`、CLI `inferred_json_decoder_package` |
+| 取り込んだ基本型の推論 | semantics の `--lib`、driver `--lib --test compile_module --test captured_primitive_identity`、CLI `--test captured_primitive_identity` |
+| 基本型の Eq の TypeScript での形 | CLI `--test string_equality --test inherited_equality`。Bool と Unit の Eq と前置の `!` は backend と CLI `--test basic_scalars` |
+| import した代数的データ型の同一性 | driver `--test frontend_payload_identity --test frontend_inference --test imported_returns`、CLI `--test string_equality --test nominal_lambda_identity` |
+| struct の構築の書き方で別の型に変えてしまう不具合 | driver `--test struct_construction_kind` と semantics |
+| レコードの変性 | driver `--test variance` |
+| ジェネリクスの impl の演算子 | driver と CLI `--test generic_impl_operators` |
+| 高カインド型のデータ、フィールド、公開の別名 | driver と CLI `--test hkt_data_projection`、driver `--test hkt_annotation_kinds` |
+| 別名の引数を固定したコンストラクター | driver と CLI `--test alias_constructor_sections` |
+| 別名の引数の並べ替え、重複、破棄 | semantics `type_functions::tests`、lowering `core::types::tests`、driver と backend `--test alias_type_functions`、driver と CLI `--test alias_constructor_sections`。形の別名は driver `--test structural_aliases --test structural_alias_facades`、CLI `--test rust_backend alias_head` |
+| 互いに呼び合う閉じた Effect の TypeScript の型 | driver と CLI `--test mutual_effect_returns` |
+| `do` の最後に分岐がある Effect | driver と CLI `--test deferred_effect_environment` |
+| 閉じたタプルの Show と Debug の辞書の使い回し | backend `--test closed_display`、CLI `--test rust_backend closed_display_`。速さは `measure_display_runtime.py` |
+
+### Effect と実行時
+
+| 対象 | テスト | 補足 |
+| --- | --- | --- |
+| Console の String の約束 | driver と backend と CLI `--test console_string_contract`、`bun test runtime/ts/tests/console-string-contract.test.ts` | |
+| Clock の `sleep` | backend と CLI `--test clock_sleep`、runtime `clock_tests` | native の CLI の provider を明示的に選ぶ。共通のスケジューラーを変えるので、ファイル操作、Fiber、プログラムの WASM の回帰も確かめる |
+| 開発サーバーの停止とリクエストの待ち行列 | CLI `--bin seseragi dev::tests::`、`--test dev` | 実際に待ち受けるソケットに複数のリクエストを並べる。止めるときの猶予は5秒 |

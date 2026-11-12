@@ -78,7 +78,7 @@ TypeScript ターゲットと同じプログラムを、Bun や Node.js なし�
 ## 関連する文書
 
 - [IMPLEMENTATION](./IMPLEMENTATION.md): コンパイラーの内部構成
-- [Scoped checks](./SCOPED_CHECKS.md): 変更に応じてどのチェックを実行するか
+- [変更に合わせて実行するチェック](./SCOPED_CHECKS.md): 変更に応じてどのチェックを実行するか
 - [RELEASE](./RELEASE.md): リリースの手順
 - [SPEC_COVERAGE](./SPEC_COVERAGE.md): 仕様で決まっている機能と、採用しないと決めた機能の一覧
 

@@ -162,7 +162,7 @@ Cargo targetで再構築します。1回目はfresh output、2回目はrepo/pkg�
 全packageのfile集合とbyte一致・実行回帰を検証し、Linuxとの変換結果も比較します。
 macOSの生成packageは検証用で、commitやrelease archiveへ採用しません。
 Cargoのhost build metadataによりhost間のbinaryが異なり得るため、再生成環境の詳細は
-[scoped checks](SCOPED_CHECKS.md)の固定toolchainを参照してください。
+[変更に合わせて実行するチェック](SCOPED_CHECKS.md#wasm-を作り直すとき)の固定したツールを参照してください。
 
 ## Release failureからの復旧
 
