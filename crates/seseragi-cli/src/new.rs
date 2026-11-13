@@ -39,7 +39,7 @@ const TEMPLATES: &[Template] = &[
             ),
         ],
         next_steps: &[
-            "seseragi run .",
+            "seseragi run . -- Alice",
             "seseragi test",
             "seseragi build . --target native",
         ],

@@ -77,6 +77,7 @@ fn run_native(invocation: &Invocation) -> Result<i32, String> {
         RandomSeed::Fixed(seed) => command.env("SESERAGI_RANDOM_SEED", seed.to_string()),
         RandomSeed::Entropy => command.env_remove("SESERAGI_RANDOM_SEED"),
     };
+    command.args(&invocation.program_arguments);
     let status = command
         .status()
         .map_err(|error| format!("could not run native program: {error}"))?;
@@ -196,6 +197,8 @@ pub(super) struct Invocation {
     shutdown_grace_ms: Option<u64>,
     hash_seed: Option<RandomSeed>,
     random_seed: Option<RandomSeed>,
+    /// Everything after `--`, passed to the program unread.
+    program_arguments: Vec<String>,
 }
 
 impl Invocation {
@@ -209,6 +212,7 @@ impl Invocation {
             shutdown_grace_ms: None,
             hash_seed: None,
             random_seed: None,
+            program_arguments: Vec::new(),
         };
         let mut saw_path = false;
         let mut index = 0;
@@ -221,6 +225,10 @@ impl Invocation {
                     .ok_or_else(|| format!("{flag} requires a value"))
             };
             let consumed = match argument.as_str() {
+                "--" => {
+                    invocation.program_arguments = arguments[index + 1..].to_vec();
+                    break;
+                }
                 "--profile" => {
                     set_once(
                         &mut invocation.profile,
@@ -334,6 +342,7 @@ impl Invocation {
             options.random_seed = seed;
         }
         options.diagnostic_format = self.diagnostic_format();
+        options.arguments = self.program_arguments.clone();
         Ok(options)
     }
 }
@@ -387,6 +396,22 @@ mod tests {
         assert_eq!(options.shutdown_grace_ms, 0);
         assert_eq!(options.hash_seed, RandomSeed::Fixed(-7));
         assert_eq!(options.random_seed, RandomSeed::Entropy);
+    }
+
+    #[test]
+    fn passes_arguments_after_the_separator_to_the_program_unread() {
+        let invocation = Invocation::parse(
+            &[
+                ".", "--target", "native", "--", "Alice", "--help", "--target", "--",
+            ]
+            .map(str::to_owned),
+        )
+        .unwrap();
+        let options = invocation.apply(ProcessRunOptions::default()).unwrap();
+
+        assert_eq!(invocation.target, Some(Target::Native));
+        assert_eq!(options.arguments, ["Alice", "--help", "--target", "--"]);
+        assert!(Invocation::parse(&["--".to_owned(), "app.ssrg".to_owned()]).is_err());
     }
 
     #[test]

@@ -98,7 +98,9 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
 
 /// `--help` or `-h` among a command's arguments asks for its help page.
 fn wants_help(arguments: &[String]) -> bool {
+    // Arguments after `--` belong to the program that `run` starts.
     arguments
         .iter()
+        .take_while(|argument| *argument != "--")
         .any(|argument| argument == "--help" || argument == "-h")
 }

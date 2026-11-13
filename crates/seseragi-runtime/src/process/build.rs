@@ -177,7 +177,7 @@ fn build_main_with_optional_source(
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     let process_entry = if target == BuildTarget::Process {
         Some(
-            entry_source(&contract, "./main.ts", None, options)
+            entry_source(&contract, "./main.ts", None, options.clone())
                 .map_err(BuildError::InvalidEntry)?,
         )
     } else {
@@ -379,7 +379,7 @@ pub fn build_local_project_with_programs(
                 &contract,
                 &format!("./{}", path_string(&entry_path)),
                 project.compiled.provider_resolution.as_ref(),
-                options,
+                options.clone(),
             )
             .map_err(BuildError::InvalidEntry)?,
         )

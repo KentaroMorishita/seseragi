@@ -44,6 +44,17 @@ seseragi run .
 Hello, World!
 ```
 
+プログラムに引数を渡すときは、`--` の後ろに書きます。
+`--` より後ろは、`--help` のような書き方も含めて、すべてプログラムが受け取ります。
+
+```sh
+seseragi run . -- Alice
+```
+
+```text
+Hello, Alice!
+```
+
 ## 3. テストを実行する
 
 ```sh

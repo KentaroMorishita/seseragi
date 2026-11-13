@@ -49,13 +49,15 @@ pub enum DiagnosticFormat {
     Json,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProcessRunOptions {
     pub signal_mode: ProcessSignalMode,
     pub shutdown_grace_ms: u64,
     pub hash_seed: RandomSeed,
     pub random_seed: RandomSeed,
     pub diagnostic_format: DiagnosticFormat,
+    /// Command-line arguments the program reads with `process.arguments ()`.
+    pub arguments: Vec<String>,
 }
 
 impl Default for ProcessRunOptions {
@@ -66,6 +68,7 @@ impl Default for ProcessRunOptions {
             hash_seed: RandomSeed::Entropy,
             random_seed: RandomSeed::Entropy,
             diagnostic_format: DiagnosticFormat::Text,
+            arguments: Vec::new(),
         }
     }
 }
@@ -144,6 +147,7 @@ fn run_main_with_optional_source(
     options: ProcessRunOptions,
     source: Option<&SourceFileContext>,
 ) -> Result<RunOutcome, RunError> {
+    let arguments = options.arguments.clone();
     let entry = main_entry_source(compiled, options)?;
     let owned_directory = prepare_directory().map_err(RunError::Host)?;
     let directory = owned_directory.path();
@@ -158,7 +162,7 @@ fn run_main_with_optional_source(
         let compiled = prepared
             .as_ref()
             .map_or(compiled, |prepared| &prepared.compiled);
-        run_in_directory(compiled, &entry, directory)
+        run_in_directory(compiled, &entry, directory, &arguments)
     })();
     finish_run(result, owned_directory)
 }
@@ -181,10 +185,11 @@ fn run_in_directory(
     compiled: &CompiledModule,
     entry: &str,
     directory: &Path,
+    arguments: &[String],
 ) -> Result<RunOutcome, RunError> {
     stage_main_program(compiled, directory, entry).map_err(RunError::Host)?;
 
-    run_target(directory, None)
+    run_target(directory, None, arguments)
 }
 
 fn stage_main_program(
@@ -206,11 +211,17 @@ fn stage_main_module(compiled: &CompiledModule, directory: &Path) -> Result<(), 
 pub(super) fn run_target(
     directory: &Path,
     application_directory: Option<&Path>,
+    arguments: &[String],
 ) -> Result<RunOutcome, RunError> {
     let entry = directory.join("entry.ts");
     let working_directory = application_directory.unwrap_or(directory);
     let mut command = Command::new("bun");
-    command.arg("run").arg(entry).current_dir(working_directory);
+    // Bun passes everything after the entry file to the program unread.
+    command
+        .arg("run")
+        .arg(entry)
+        .args(arguments)
+        .current_dir(working_directory);
     if let Some(application_directory) = application_directory {
         command.env("SESERAGI_APPLICATION_ROOT", application_directory);
     }

@@ -811,6 +811,7 @@ mod tests {
                 hash_seed: RandomSeed::Entropy,
                 random_seed: RandomSeed::Entropy,
                 diagnostic_format: DiagnosticFormat::Text,
+                arguments: Vec::new(),
             },
         )
         .unwrap();

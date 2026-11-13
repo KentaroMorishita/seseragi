@@ -369,6 +369,7 @@ fn project_run_options(project: &seseragi_project::LoadedLocalProject) -> Proces
             seseragi_project::RunSeed::Fixed(value) => RandomSeed::Fixed(value),
         },
         diagnostic_format: seseragi_runtime::DiagnosticFormat::Text,
+        arguments: Vec::new(),
     }
 }
 
