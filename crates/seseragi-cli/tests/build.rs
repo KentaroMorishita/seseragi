@@ -898,7 +898,7 @@ fn reports_package_compile_diagnostics_without_creating_output() {
 #[test]
 fn documents_build_in_cli_help() {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("--help")
+        .args(["build", "--help"])
         .output()
         .unwrap();
 

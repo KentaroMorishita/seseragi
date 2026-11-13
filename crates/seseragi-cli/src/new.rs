@@ -2,27 +2,114 @@ use seseragi_project::PackageName;
 use std::fs;
 use std::path::Path;
 
-const CANONICAL_PACKAGE_NAME: &str = "samples/web-starter";
-const MANIFEST: &str = include_str!("../../../examples/samples/web-starter/seseragi.toml");
-const APP_SOURCE: &str = include_str!("../../../examples/samples/web-starter/src/app.ssrg");
-const MAIN_SOURCE: &str = include_str!("../../../examples/samples/web-starter/src/main.ssrg");
-const GITIGNORE: &str = include_str!("../../../examples/samples/web-starter/.gitignore");
-const TEST_SOURCE: &str = include_str!("../../../examples/samples/web-starter/tests/app.ssrg");
+/// A project template. Its files are the same files as a checked-in package,
+/// so CI builds and tests exactly what `seseragi new` writes.
+struct Template {
+    id: &'static str,
+    summary: &'static str,
+    /// The package name in the checked-in manifest, replaced by the new name.
+    canonical_name: &'static str,
+    kind: &'static str,
+    files: &'static [(&'static str, &'static str)],
+    next_steps: &'static [&'static str],
+}
+
+const TEMPLATES: &[Template] = &[
+    Template {
+        id: "cli",
+        summary: "a command-line tool for the process and native targets",
+        canonical_name: "templates/cli",
+        kind: "CLI",
+        files: &[
+            (
+                "seseragi.toml",
+                include_str!("../../../examples/templates/cli/seseragi.toml"),
+            ),
+            (
+                ".gitignore",
+                include_str!("../../../examples/templates/cli/.gitignore"),
+            ),
+            (
+                "src/main.ssrg",
+                include_str!("../../../examples/templates/cli/src/main.ssrg"),
+            ),
+            (
+                "tests/main.ssrg",
+                include_str!("../../../examples/templates/cli/tests/main.ssrg"),
+            ),
+        ],
+        next_steps: &[
+            "seseragi run .",
+            "seseragi test",
+            "seseragi build . --target native",
+        ],
+    },
+    Template {
+        id: "web",
+        summary: "a browser app built with Signal",
+        canonical_name: "samples/web-starter",
+        kind: "Web",
+        files: &[
+            (
+                "seseragi.toml",
+                include_str!("../../../examples/samples/web-starter/seseragi.toml"),
+            ),
+            (
+                ".gitignore",
+                include_str!("../../../examples/samples/web-starter/.gitignore"),
+            ),
+            (
+                "src/app.ssrg",
+                include_str!("../../../examples/samples/web-starter/src/app.ssrg"),
+            ),
+            (
+                "src/main.ssrg",
+                include_str!("../../../examples/samples/web-starter/src/main.ssrg"),
+            ),
+            (
+                "tests/app.ssrg",
+                include_str!("../../../examples/samples/web-starter/tests/app.ssrg"),
+            ),
+        ],
+        next_steps: &["seseragi dev --open", "seseragi test"],
+    },
+];
+
+pub(crate) fn template_list() -> String {
+    TEMPLATES
+        .iter()
+        .map(|template| format!("  {:<5} {}\n", template.id, template.summary))
+        .collect()
+}
 
 pub(crate) fn new(arguments: &[String]) -> Result<i32, String> {
     let [template, destination] = arguments else {
-        return Err("new requires `web` and a destination path".to_owned());
+        return Err(format!(
+            "new requires a template and a destination path, for example `seseragi new cli my-tool`\n\nTemplates:\n{}",
+            template_list().trim_end()
+        ));
     };
-    if template != "web" {
-        return Err(format!("unknown project template `{template}`"));
+    let Some(template) = TEMPLATES.iter().find(|candidate| candidate.id == template) else {
+        return Err(format!(
+            "unknown project template `{template}`\n\nTemplates:\n{}",
+            template_list().trim_end()
+        ));
+    };
+    create_project(template, Path::new(destination))?;
+    println!(
+        "Created Seseragi {} project at {destination}",
+        template.kind
+    );
+    let mut next = format!("Next:\n  cd {destination}");
+    for step in template.next_steps {
+        next.push_str("\n  ");
+        next.push_str(step);
     }
-    create_web_project(Path::new(destination))?;
-    println!("Created Seseragi Web project at {destination}");
-    println!("Next:\n  cd {destination}\n  seseragi dev --open\n  seseragi test");
+    println!("{next}");
     Ok(0)
 }
 
-fn create_web_project(destination: &Path) -> Result<(), String> {
+fn create_project(template: &Template, destination: &Path) -> Result<(), String> {
     if destination.try_exists().map_err(|error| {
         format!(
             "failed to inspect destination {}: {error}",
@@ -54,28 +141,29 @@ fn create_web_project(destination: &Path) -> Result<(), String> {
             destination.display()
         )
     })?;
-    if let Err(error) = write_web_project(destination, package_name) {
+    if let Err(error) = write_project(template, destination, package_name) {
         let _ = fs::remove_dir_all(destination);
         return Err(error);
     }
     Ok(())
 }
 
-fn write_web_project(destination: &Path, package_name: &str) -> Result<(), String> {
-    let source = destination.join("src");
-    let tests = destination.join("tests");
-    for directory in [&source, &tests] {
-        fs::create_dir(directory)
-            .map_err(|error| format!("failed to create {}: {error}", directory.display()))?;
-    }
-    let manifest = MANIFEST.replacen(CANONICAL_PACKAGE_NAME, package_name, 1);
-    for (path, contents) in [
-        (destination.join("seseragi.toml"), manifest.as_str()),
-        (destination.join(".gitignore"), GITIGNORE),
-        (source.join("app.ssrg"), APP_SOURCE),
-        (source.join("main.ssrg"), MAIN_SOURCE),
-        (tests.join("app.ssrg"), TEST_SOURCE),
-    ] {
+fn write_project(
+    template: &Template,
+    destination: &Path,
+    package_name: &str,
+) -> Result<(), String> {
+    for (relative, contents) in template.files {
+        let path = destination.join(relative);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("failed to create {}: {error}", parent.display()))?;
+        }
+        let contents = if *relative == "seseragi.toml" {
+            contents.replacen(template.canonical_name, package_name, 1)
+        } else {
+            (*contents).to_owned()
+        };
         fs::write(&path, contents)
             .map_err(|error| format!("failed to write {}: {error}", path.display()))?;
     }

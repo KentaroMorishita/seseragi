@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.169] - 2026-11-13
+
+### Added
+
+- `seseragi help`, `seseragi help <command>` and `--help` / `-h` on every command. `seseragi --help` lists the commands with a one-line summary; each command's page lists its arguments, options with their defaults, and examples. A mistyped command names the closest one, such as "did you mean `format`?".
+- `seseragi format` takes several files, directories and packages, and with no path formats the package that contains the current directory. Directories skip `dist`, `node_modules`, `.seseragi`, `.git`, `.gitignore` entries and links. A file with a syntax error is reported and the others are still formatted. `--check` lists every file that needs formatting. `seseragi format -` reads standard input and writes the result to standard output.
+- `seseragi new cli <path>` creates a command-line tool that reads its arguments, prints a greeting, and exits with status 1 on an empty name. It runs, tests and builds with `--target native` as created. Its files are `examples/templates/cli`. `seseragi new` without arguments lists the templates. `docs/GETTING_STARTED_CLI.md` walks through it.
+
 ## [0.61.168] - 2026-11-13
 
 ### Fixed

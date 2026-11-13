@@ -1,0 +1,13 @@
+// `seseragi test` で実行するテストです。
+import * as test from "std/test"
+import { greeting } from "self/main"
+
+let hello: Either<String, String> = Right "Hello, World!"
+let empty: Either<String, String> = Left "name must not be empty"
+
+let cases = [
+  test.test "greets by name" (test.equal hello (greeting "World")),
+  test.test "rejects an empty name" (test.equal empty (greeting ""))
+]
+
+pub let tests: test.Test = test.suite "greeting" cases

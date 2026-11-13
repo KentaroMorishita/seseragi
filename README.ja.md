@@ -305,9 +305,11 @@ powershell -ExecutionPolicy Bypass -c "irm https://github.com/KentaroMorishita/s
 ```sh
 seseragi run hello.ssrg          # ファイルを実行する
 seseragi new web my-app          # Web アプリのプロジェクトを作る
+seseragi new cli my-tool         # CLI ツールのプロジェクトを作る
 seseragi dev my-app              # 開発サーバーを起動する
 seseragi build hello.ssrg        # ビルドする
-seseragi format hello.ssrg       # 整形する
+seseragi format                  # いまいるパッケージを整形する
+seseragi help run                # コマンドの使い方を表示する
 ```
 
 詳しい手順はドキュメントの [ローカルで使う](https://seseragi-docs.vercel.app/docs/learn/local-development)、Web アプリを作るなら [Web アプリを作る](https://seseragi-docs.vercel.app/docs/guides/web-app) を参照してください。VS Code 拡張（ID: `seseragi-dev.seseragi`）は、同じ GitHub Releases にある VSIX からインストールできます。詳しくは [Seseragi for VS Code](./extensions/seseragi/README.md) を参照してください。

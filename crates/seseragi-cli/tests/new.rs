@@ -100,6 +100,106 @@ fn creates_the_canonical_web_starter_and_builds_it() {
 }
 
 #[test]
+fn creates_the_cli_template_and_runs_it_on_both_targets() {
+    let directory = test_directory("cli");
+    let project = directory.join("hello-cli");
+    let seseragi = |arguments: &[&str]| {
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(arguments)
+            .current_dir(&project)
+            .output()
+            .unwrap()
+    };
+    let created = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["new", "cli"])
+        .arg(&project)
+        .output()
+        .unwrap();
+    assert_eq!(
+        created.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&created.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&created.stdout),
+        format!(
+            "Created Seseragi CLI project at {}\nNext:\n  cd {}\n  seseragi run .\n  seseragi test\n  seseragi build . --target native\n",
+            project.display(),
+            project.display()
+        )
+    );
+
+    let canonical = repository_root().join("examples/templates/cli");
+    for file in [".gitignore", "src/main.ssrg", "tests/main.ssrg"] {
+        assert_eq!(
+            fs::read(project.join(file)).unwrap(),
+            fs::read(canonical.join(file)).unwrap(),
+            "{file} must have one canonical source"
+        );
+    }
+    let manifest = fs::read_to_string(project.join("seseragi.toml")).unwrap();
+    assert!(manifest.contains("name = \"hello-cli\""));
+    assert!(manifest.contains("target = \"process\""));
+    assert!(project.join("seseragi.lock").is_file());
+
+    let run = seseragi(&["run", "."]);
+    assert_eq!(
+        run.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&run.stdout), "Hello, World!\n");
+
+    for target in ["node", "native"] {
+        let tested = seseragi(&["test", "--target", target]);
+        assert_eq!(
+            tested.status.code(),
+            Some(0),
+            "{target}: {}",
+            String::from_utf8_lossy(&tested.stderr)
+        );
+        assert!(
+            String::from_utf8_lossy(&tested.stdout).ends_with("2 passed; 0 failed; 0 skipped\n")
+        );
+    }
+
+    let built = seseragi(&["build", ".", "--target", "native"]);
+    assert_eq!(
+        built.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&built.stderr)
+    );
+    let program = project.join("dist").join(if cfg!(windows) {
+        "program.exe"
+    } else {
+        "program"
+    });
+    let greeted = Command::new(&program).arg("Alice").output().unwrap();
+    assert_eq!(greeted.status.code(), Some(0));
+    assert_eq!(String::from_utf8_lossy(&greeted.stdout), "Hello, Alice!\n");
+    let failed = Command::new(&program).arg("").output().unwrap();
+    assert_eq!(failed.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&failed.stderr).contains("name must not be empty"));
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn lists_templates_when_new_has_no_arguments() {
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("new")
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("Templates:"), "{stderr}");
+    assert!(stderr.contains("  cli "), "{stderr}");
+    assert!(stderr.contains("  web "), "{stderr}");
+}
+
+#[test]
 fn builds_and_documents_the_web_starter_in_any_order() {
     let directory = test_directory("doc-build");
     let project = directory.join("hello-web");
@@ -170,7 +270,7 @@ fn rejects_invalid_templates_names_and_existing_destinations() {
 #[test]
 fn documents_the_web_scaffold_in_cli_help() {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("--help")
+        .args(["new", "--help"])
         .output()
         .unwrap();
     assert!(output.status.success());

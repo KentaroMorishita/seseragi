@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "templates/cli@0.0.0#workspace:."
+
+[[packages]]
+id = "templates/cli@0.0.0#workspace:."
+name = "templates/cli"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:3d497d8b32e7613d8a3895082e7fa56affd03a00b36c4b1c7ea6a3e42a0eb908"
+content_digest = "sha256:f445c0ea16bd9bf5ea2c47d0ba263e8042ccaf0843308ee5ad7fb1c601842594"
+dependencies = []

@@ -325,9 +325,11 @@ Running generated programs requires [Bun](https://bun.sh/) 1.4.4 or later.
 ```sh
 seseragi run hello.ssrg          # run a file
 seseragi new web my-app          # create a web app project
+seseragi new cli my-tool         # create a command-line tool project
 seseragi dev my-app              # start the dev server
 seseragi build hello.ssrg        # build
-seseragi format hello.ssrg       # format
+seseragi format                  # format the current package
+seseragi help run                # show how to use a command
 ```
 
 For step-by-step instructions, see [Local development](https://seseragi-docs.vercel.app/en/docs/learn/local-development) in the docs; to build a web app, see [Build a Web application](https://seseragi-docs.vercel.app/en/docs/guides/web-app).
