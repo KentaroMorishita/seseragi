@@ -19,6 +19,10 @@ fn millis value: Int -> time.Duration = match time.milliseconds value {
 effect fn now label: String -> String with Console, Clock fails String =
   effects.succeed label
 
+// Needs only Console; timeout adds Clock to what it requires.
+effect fn quiet label: String -> String with Console fails String =
+  effects.succeed label
+
 effect fn boom label: String -> String with Console, Clock fails String =
   effects.fail label
 
@@ -82,6 +86,8 @@ pub effect fn main -> Unit with Console, Clock fails String = do {
   say ("zero " + show zero)
   inTime <- effects.timeoutFail "expired" (millis 1000) (now "in time")
   say ("inTime " + inTime)
+  attempted <- effects.attempt (effects.timeout (millis 1000) (quiet "attempted"))
+  say ("attempted " + show attempted)
   retries <- refs.make 0
   retryPolicy <- effects.spaced<String> 3 (millis 0)
     |> effects.fromEither

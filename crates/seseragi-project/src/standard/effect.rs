@@ -17,9 +17,10 @@ pub(super) fn effect_interface() -> ModuleInterface {
         Vec::new(),
     );
     let source = |success: InterfaceType| effect(named("R"), named("E"), success);
+    // A temporal control keeps the source's requirements and adds `clock`.
     let temporal = |success: InterfaceType| {
         effect(
-            record([required("clock", clock.clone())]),
+            requirement_merge(vec![named("R"), record([required("clock", clock.clone())])]),
             named("E"),
             success,
         )

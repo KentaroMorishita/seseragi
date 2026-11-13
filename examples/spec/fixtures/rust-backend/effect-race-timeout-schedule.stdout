@@ -8,6 +8,7 @@ release late
 late Nothing
 zero Just zero
 inTime in time
+attempted Right Just attempted
 retried 3
 repeated 3
 stopped 4
