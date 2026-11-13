@@ -43,6 +43,9 @@ fn formats_files_directories_and_the_current_package() {
         write(&root.join(file), UNFORMATTED);
     }
     write(&root.join("pkg/src/broken.ssrg"), "let = \n");
+    write(&root.join("outside/elsewhere.ssrg"), UNFORMATTED);
+    #[cfg(unix)]
+    std::os::unix::fs::symlink(root.join("outside"), root.join("pkg/src/linked")).unwrap();
 
     // --check lists every file that needs formatting, keeps going past a
     // syntax error, and changes nothing.
@@ -100,6 +103,11 @@ fn formats_files_directories_and_the_current_package() {
     assert_eq!(
         fs::read_to_string(root.join("pkg/src/broken.ssrg")).unwrap(),
         "let = \n"
+    );
+    assert_eq!(
+        fs::read_to_string(root.join("outside/elsewhere.ssrg")).unwrap(),
+        UNFORMATTED,
+        "links out of the package are not followed"
     );
 
     // Several explicit files.

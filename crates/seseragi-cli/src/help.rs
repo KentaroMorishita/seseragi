@@ -175,11 +175,6 @@ const COMMANDS: &[CommandHelp] = &[
                 "Time limit for each case.",
                 "the manifest's [test].timeout_ms, else 30000",
             ),
-            option_default(
-                "--cleanup-grace-ms ms",
-                "Time allowed for cleanup after a case ends.",
-                "the manifest's [test].cleanup_grace_ms, else 5000",
-            ),
             option_default("--seed int", "Seed for randomized tests.", "the manifest's [test].seed, else 0"),
             option_default(
                 "--target node|native",

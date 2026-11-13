@@ -36,9 +36,15 @@ fn visit(directory: &Path, rules: &mut Vec<Rule>, files: &mut Vec<PathBuf>) -> R
         .map_err(|error| format!("failed to read {}: {error}", directory.display()))?;
     entries.sort();
     for path in entries {
-        let Ok(file_type) = std::fs::metadata(&path).map(|metadata| metadata.file_type()) else {
+        // Links are not followed: they can point outside the package, and
+        // format must only rewrite files that the paths given name.
+        let Ok(file_type) = std::fs::symlink_metadata(&path).map(|metadata| metadata.file_type())
+        else {
             continue;
         };
+        if file_type.is_symlink() {
+            continue;
+        }
         let is_directory = file_type.is_dir();
         let name = path
             .file_name()
@@ -156,6 +162,9 @@ fn ignored(rules: &[Rule], path: &Path, is_directory: bool) -> bool {
 fn match_segments(pattern: &[String], path: &[&str]) -> bool {
     match pattern.split_first() {
         None => path.is_empty(),
+        // A trailing `**` matches what is inside a directory, not the
+        // directory itself; an inner `**` may match no segments.
+        Some((first, rest)) if first == "**" && rest.is_empty() => !path.is_empty(),
         Some((first, rest)) if first == "**" => {
             (0..=path.len()).any(|skip| match_segments(rest, &path[skip..]))
         }
@@ -220,6 +229,14 @@ mod tests {
         assert!(check("keep-out.ssrg", false));
         assert!(!check("keep-me.ssrg", false));
         assert!(!check("src/main.ssrg", false));
+
+        let rules = vec![rule("generated/**"), rule("!generated/keep.ssrg")];
+        let check = |path: &str, directory: bool| {
+            ignored(&rules, &Path::new("/repo").join(path), directory)
+        };
+        assert!(!check("generated", true));
+        assert!(check("generated/out.ssrg", false));
+        assert!(!check("generated/keep.ssrg", false));
     }
 
     #[test]
