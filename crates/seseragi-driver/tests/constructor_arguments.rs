@@ -45,3 +45,15 @@ fn a_constructor_argument_that_conflicts_with_a_later_argument_is_still_refused(
     let source = "import * as deferreds from \"std/deferred\"\n\npub effect fn main = do {\n  gate <- deferreds.make<String, Int> ()\n  completed <- deferreds.complete (Right \"text\") gate\n  println (show completed)\n}\n";
     assert!(!diagnostics(source).is_empty());
 }
+
+#[test]
+fn an_earlier_constructor_argument_takes_its_open_type_from_a_later_argument() {
+    let source = "fn same<A> expected: A -> actual: A -> Bool where Eq<A> = expected == actual\nfn pick<T> first: T -> second: T -> T = first\nfn parse text: String -> Either<String, Int> = if text == \"\" then Left \"empty\" else Right 1\nfn flip text: String -> Either<Int, String> = Right text\n\npub effect fn main = do {\n  println (show (same (Right 1) (parse \"x\")))\n  println (show (same (Left \"empty\") (parse \"\")))\n  println (show (pick (Left 1) (flip \"x\")))\n}\n";
+    assert_eq!(diagnostics(source), Vec::<String>::new());
+}
+
+#[test]
+fn an_earlier_constructor_argument_that_conflicts_with_a_later_argument_is_still_refused() {
+    let source = "fn same<A> expected: A -> actual: A -> Bool where Eq<A> = expected == actual\nfn parse text: String -> Either<String, Int> = Right 1\n\npub effect fn main = do {\n  println (show (same (Right \"text\") (parse \"x\")))\n}\n";
+    assert!(!diagnostics(source).is_empty());
+}
