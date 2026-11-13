@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.168] - 2026-11-13
+
+### Fixed
+
+- The native target builds an empty collection whose element type nothing decides, such as `arrays.length []`, `lists.length (lists.empty ())`, `maps.size (maps.empty ())` or `sets.size (sets.empty ())`, and prints what the TS target prints. It used to stop with `SES-RUST-0001` ("unproven ... kind").
+- On the native target, recursion that runs out of stack reports `Seseragi Defect: Maximum call stack size exceeded.` with a source position and exits with status 70, like the TS target, also inside a Fiber. It used to abort the process with status 134. The position is the declaration of the function that ran out of stack. Programs now run on a larger stack, so recursion about 10000 calls deep that used to abort finishes. Direct self tail calls still run in constant stack.
+
 ## [0.61.167] - 2026-11-13
 
 ### Added

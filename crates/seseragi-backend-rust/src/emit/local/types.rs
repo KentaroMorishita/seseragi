@@ -114,6 +114,115 @@ pub(in crate::emit) fn argument_type(expr: &CoreExpr) -> Option<CoreType> {
 }
 
 impl Backend<'_> {
+    /// The type checker leaves a type that nothing constrains, such as the
+    /// element of `[]` or of `maps.empty ()`, as a hole or as the callee's own
+    /// type parameter name, which names no type here. No value of that type
+    /// exists, so an operation whose result does not depend on it may use any
+    /// type; it uses `Unit`. Only type arguments are grounded, such as the
+    /// element of `Array<_>`: a hole in place of a whole parameter or result
+    /// stays and is rejected. Trailing holes after a written argument also
+    /// stay: they mark a partly applied constructor, as `partly_applied` reads
+    /// them.
+    pub(in crate::emit) fn ground_unconstrained(&self, ty: &CoreType, scope: &Scope) -> CoreType {
+        self.ground_unconstrained_in(ty, scope, false)
+    }
+
+    fn ground_unconstrained_in(&self, ty: &CoreType, scope: &Scope, argument: bool) -> CoreType {
+        let unit = || CoreType::Named {
+            name: "std/prelude::Unit".into(),
+            arguments: vec![],
+        };
+        let ground = |arguments: &[CoreType]| {
+            let holes = arguments
+                .iter()
+                .rev()
+                .take_while(|argument| matches!(argument, CoreType::Hole))
+                .count();
+            let written = if holes == arguments.len() {
+                arguments.len()
+            } else {
+                arguments.len() - holes
+            };
+            arguments
+                .iter()
+                .enumerate()
+                .map(|(index, argument)| {
+                    if index < written {
+                        self.ground_unconstrained_in(argument, scope, true)
+                    } else {
+                        argument.clone()
+                    }
+                })
+                .collect()
+        };
+        let recur = |ty: &CoreType| self.ground_unconstrained_in(ty, scope, argument);
+        match ty {
+            CoreType::Hole if argument => unit(),
+            CoreType::Named { name, arguments }
+                if argument && arguments.is_empty() && self.names_no_type(name, scope) =>
+            {
+                unit()
+            }
+            CoreType::Named { name, arguments } => CoreType::Named {
+                name: name.clone(),
+                arguments: ground(arguments),
+            },
+            CoreType::ExternalNamed {
+                name,
+                canonical,
+                arguments,
+            } => CoreType::ExternalNamed {
+                name: name.clone(),
+                canonical: canonical.clone(),
+                arguments: ground(arguments),
+            },
+            CoreType::Function { parameter, result } => CoreType::Function {
+                parameter: Box::new(recur(parameter)),
+                result: Box::new(recur(result)),
+            },
+            CoreType::Tuple { elements } => CoreType::Tuple {
+                elements: elements.iter().map(recur).collect(),
+            },
+            CoreType::Record { closed, fields } => CoreType::Record {
+                closed: *closed,
+                fields: fields
+                    .iter()
+                    .map(|field| seseragi_lowering::CoreRecordField {
+                        type_ref: recur(&field.type_ref),
+                        ..field.clone()
+                    })
+                    .collect(),
+            },
+            other => other.clone(),
+        }
+    }
+
+    /// Whether an unqualified type name resolves to nothing: not a type
+    /// parameter in scope, a prelude or imported type, nor a type this module
+    /// declares.
+    fn names_no_type(&self, name: &str, scope: &Scope) -> bool {
+        if scope.type_parameter_arity(name).is_some() {
+            return false;
+        }
+        let ty = CoreType::Named {
+            name: name.into(),
+            arguments: vec![],
+        };
+        let Ok(CoreType::Named {
+            name: canonical, ..
+        }) = self.local_canonical_type(&ty, scope)
+        else {
+            return false;
+        };
+        canonical == format!("{}::{name}", self.owner)
+            && !self
+                .type_names
+                .contains_key(&(self.owner.to_owned(), name.to_owned()))
+            && !self.module.adts.iter().any(|ty| ty.symbol == canonical)
+            && !self.module.structs.iter().any(|ty| ty.symbol == canonical)
+            && !self.module.aliases.iter().any(|ty| ty.symbol == canonical)
+    }
+
     pub(in crate::emit) fn local_canonical_type(
         &self,
         ty: &CoreType,

@@ -33,7 +33,7 @@ impl Backend<'_> {
         self.self_tail_calls += plan.self_tail_calls;
         // V parameters/return and the generated curried wrappers keep their
         // ABI. Only the private saturated body uses immediate Rust scalars.
-        Ok(format!("\nfn {}_direct(dicts: Vec<V>{parameters}) -> V {{ {setup} loop {{ {snapshots} {body} }} }}\n", id(&function.symbol)))
+        Ok(format!("\nfn {}_direct(dicts: Vec<V>{parameters}) -> V {{ {} {setup} loop {{ {snapshots} {body} }} }}\n", id(&function.symbol), self.stack_guard(&function.origin)))
     }
 
     fn scalar_tail(

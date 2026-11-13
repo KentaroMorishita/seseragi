@@ -157,3 +157,14 @@ fn rest_before_fixed_elements_remains_invalid() {
         }
     }
 }
+
+#[test]
+fn empty_collections_whose_element_type_nothing_decides_match_ts() {
+    compare(
+        include_str!("../../../examples/spec/fixtures/rust-backend/empty-collection-element.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/empty-collection-element.stdout"
+        ),
+        false,
+    );
+}
