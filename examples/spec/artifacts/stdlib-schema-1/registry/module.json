@@ -82278,19 +82278,29 @@
                     "name": "Effect",
                     "arguments": [
                       {
-                        "kind": "record",
-                        "closed": true,
-                        "fields": [
+                        "kind": "requirement-merge",
+                        "operands": [
                           {
-                            "name": "clock",
-                            "type": {
-                              "kind": "external-named",
-                              "name": "Clock",
-                              "canonical": "std/clock::Clock",
-                              "providerModule": "std/clock",
-                              "providerExport": "Clock",
-                              "arguments": []
-                            }
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "clock",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Clock",
+                                  "canonical": "std/clock::Clock",
+                                  "providerModule": "std/clock",
+                                  "providerExport": "Clock",
+                                  "arguments": []
+                                }
+                              }
+                            ]
                           }
                         ]
                       },
@@ -82378,19 +82388,29 @@
                       "name": "Effect",
                       "arguments": [
                         {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": [
+                          "kind": "requirement-merge",
+                          "operands": [
                             {
-                              "name": "clock",
-                              "type": {
-                                "kind": "external-named",
-                                "name": "Clock",
-                                "canonical": "std/clock::Clock",
-                                "providerModule": "std/clock",
-                                "providerExport": "Clock",
-                                "arguments": []
-                              }
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": [
+                                {
+                                  "name": "clock",
+                                  "type": {
+                                    "kind": "external-named",
+                                    "name": "Clock",
+                                    "canonical": "std/clock::Clock",
+                                    "providerModule": "std/clock",
+                                    "providerExport": "Clock",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
                             }
                           ]
                         },
@@ -82676,19 +82696,29 @@
                     "name": "Effect",
                     "arguments": [
                       {
-                        "kind": "record",
-                        "closed": true,
-                        "fields": [
+                        "kind": "requirement-merge",
+                        "operands": [
                           {
-                            "name": "clock",
-                            "type": {
-                              "kind": "external-named",
-                              "name": "Clock",
-                              "canonical": "std/clock::Clock",
-                              "providerModule": "std/clock",
-                              "providerExport": "Clock",
-                              "arguments": []
-                            }
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "clock",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Clock",
+                                  "canonical": "std/clock::Clock",
+                                  "providerModule": "std/clock",
+                                  "providerExport": "Clock",
+                                  "arguments": []
+                                }
+                              }
+                            ]
                           }
                         ]
                       },
@@ -82766,19 +82796,29 @@
                     "name": "Effect",
                     "arguments": [
                       {
-                        "kind": "record",
-                        "closed": true,
-                        "fields": [
+                        "kind": "requirement-merge",
+                        "operands": [
                           {
-                            "name": "clock",
-                            "type": {
-                              "kind": "external-named",
-                              "name": "Clock",
-                              "canonical": "std/clock::Clock",
-                              "providerModule": "std/clock",
-                              "providerExport": "Clock",
-                              "arguments": []
-                            }
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "clock",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Clock",
+                                  "canonical": "std/clock::Clock",
+                                  "providerModule": "std/clock",
+                                  "providerExport": "Clock",
+                                  "arguments": []
+                                }
+                              }
+                            ]
                           }
                         ]
                       },

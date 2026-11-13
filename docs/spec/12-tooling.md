@@ -713,6 +713,9 @@ commands: command name順のarray
 `dev --target native`はファイルまたはパッケージを監視し、変更時に`.seseragi/dev`へ再ビルドします。
 ビルドに失敗しても直前の出力を保持し、修正後に再試行します。`--host`、`--port`、`--open`はweb専用です。
 nativeでは`run`のプロセス実行設定とJSON診断、`build`の`--source-map`を受け付けません。
+`run`は`--`より後ろの引数をすべて、そのままの順でプログラムへ渡します。プログラムは`std/process`の
+`arguments ()`で受け取ります。`--`より後ろは`--help`や`--target`も含めてseseragiのoptionとして読みません。
+`process`と`native`は同じ値を渡します。
 
 schema 1でstableなcompiler共通optionは `target`、`profile` (`development | release`)、
 `diagnostic-format` (`text | json`)、`deny-warnings`、`locked` です。buildはさらに `emit`

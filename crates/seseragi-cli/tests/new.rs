@@ -124,7 +124,7 @@ fn creates_the_cli_template_and_runs_it_on_both_targets() {
     assert_eq!(
         String::from_utf8_lossy(&created.stdout),
         format!(
-            "Created Seseragi CLI project at {}\nNext:\n  cd {}\n  seseragi run .\n  seseragi test\n  seseragi build . --target native\n",
+            "Created Seseragi CLI project at {}\nNext:\n  cd {}\n  seseragi run . -- Alice\n  seseragi test\n  seseragi build . --target native\n",
             project.display(),
             project.display()
         )

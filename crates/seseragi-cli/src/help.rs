@@ -75,8 +75,8 @@ const COMMANDS: &[CommandHelp] = &[
         name: "run",
         summary: "Compile and run a program",
         usage: &[
-            "seseragi run path/to/app.ssrg [--target process|web|native] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]",
-            "seseragi run path/to/package [--target process|web|native] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]",
+            "seseragi run path/to/app.ssrg [--target process|web|native] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int] [-- arguments...]",
+            "seseragi run path/to/package [--target process|web|native] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int] [-- arguments...]",
         ],
         arguments: &[PATH_OR_PACKAGE],
         options: &[
@@ -111,10 +111,15 @@ const COMMANDS: &[CommandHelp] = &[
                 "Seed for std/random.",
                 "the manifest's [run].random_seed, else entropy",
             ),
+            option(
+                "-- arguments...",
+                "Pass every following argument to the program, read by std/process.arguments. Nothing after -- is read as a seseragi option.",
+            ),
         ],
         examples: &[
             "seseragi run hello.ssrg",
             "seseragi run . --target native",
+            "seseragi run . -- Alice",
         ],
     },
     CommandHelp {

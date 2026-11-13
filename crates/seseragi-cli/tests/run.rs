@@ -2151,3 +2151,41 @@ fn runs_combined_named_namespace_and_aliased_re_exports() {
         fs::read_to_string(package.join("expected.stdout")).unwrap()
     );
 }
+
+#[test]
+fn passes_everything_after_the_separator_to_the_program_on_both_targets() {
+    let directory = tempfile::tempdir().unwrap();
+    let program = directory.path().join("arguments.ssrg");
+    fs::write(
+        &program,
+        "import * as effects from \"std/effect\"\nimport * as process from \"std/process\"\n\npub effect fn main -> Unit with process: process.Process, Console fails String = do {\n  args <- process.arguments () |> effects.mapError show\n  println (show args) |> effects.mapError show\n}\n",
+    )
+    .unwrap();
+    for target in ["process", "native"] {
+        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(&program)
+            .args([
+                "--target",
+                target,
+                "--",
+                "Alice",
+                "--help",
+                "two words",
+                "--target",
+            ])
+            .output()
+            .unwrap();
+        assert_eq!(
+            String::from_utf8_lossy(&output.stderr),
+            "",
+            "{target} stderr"
+        );
+        assert_eq!(output.status.code(), Some(0), "{target}");
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout),
+            "[Alice, --help, two words, --target]\n",
+            "{target}"
+        );
+    }
+}

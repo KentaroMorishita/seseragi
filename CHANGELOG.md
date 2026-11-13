@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.170] - 2026-11-14
+
+### Added
+
+- `seseragi run <path> -- <arguments...>` passes every argument after `--` to the program, which reads them with `process.arguments ()`. This works for the process and native targets, and nothing after `--` is read as a seseragi option, not even `--help`. Spec §12.19 states this rule. `seseragi new cli` suggests `seseragi run . -- Alice`.
+
+### Fixed
+
+- A constructor argument whose other type argument only a later argument decides now type-checks, as in `test.equal (Right "ok") (parse input)` or `same (Left 1) (flip text)`. It used to report `SES-T0101` against the later argument, such as "expected Either<E, Int>, received Either<String, Int>". The `seseragi new cli` test now writes its expected values directly.
+
+- `effects.timeout`, `effects.timeoutFail`, `effects.retry` and `effects.repeat` keep the requirements of the Effect they wrap and add `clock`, as spec §10 states. They used to keep only `clock`, so `effects.attempt (effects.timeout …)` around an Effect that needs `Console` reported a requirement mismatch, and the native target stopped with a canonical result mismatch.
+
 ## [0.61.169] - 2026-11-13
 
 ### Added

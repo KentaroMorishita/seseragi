@@ -1102,19 +1102,59 @@ pub(crate) fn type_known_application_with_explicit(
         ) else {
             break;
         };
-        let Some(expected) = application.parameters.get(index).cloned() else {
+        let retype_mismatched = application
+            .parameters
+            .get(index)
+            .cloned()
+            .filter(|expected| {
+                waits_for_expected_type(argument_nodes[index], context)
+                    && !is_unresolved_parameter_expectation(
+                        &expected.type_ref,
+                        &signature.type_parameters,
+                        &application.resolved_type_parameters,
+                    )
+                    && !contains_type_parameter(&expected.type_ref, &signature.type_parameters)
+            })
+            .map(|expected| (index, expected));
+        // The constructor may instead be an earlier argument whose open type
+        // argument the mismatched later argument fixes, as in
+        // `same (Right 1) (parse text)`. Retype it against what the other
+        // arguments alone decide.
+        let Some((index, expected)) = retype_mismatched.or_else(|| {
+            (0..argument_nodes.len())
+                .filter(|other| *other != index)
+                .filter(|other| waits_for_expected_type(argument_nodes[*other], context))
+                .find_map(|other| {
+                    let others = semantic_arguments
+                        .iter()
+                        .enumerate()
+                        .filter(|(position, _)| *position != other)
+                        .filter_map(|(position, argument)| {
+                            argument.clone().map(|argument| (position, argument))
+                        })
+                        .collect::<Vec<_>>();
+                    let mut without = instantiated_application_indexed(
+                        &signature,
+                        expected_application,
+                        argument_nodes.len(),
+                        &others,
+                        &|value| context.evidence_type(value),
+                    );
+                    refine_collection_parameters(&mut without, &signature, context);
+                    let expected = context.hydrate_callable_parameter(
+                        without.parameters.get(other)?.clone(),
+                        callee_span,
+                    );
+                    (!is_unresolved_parameter_expectation(
+                        &expected.type_ref,
+                        &signature.type_parameters,
+                        &without.resolved_type_parameters,
+                    ) && !contains_type_parameter(&expected.type_ref, &signature.type_parameters))
+                    .then_some((other, expected))
+                })
+        }) else {
             break;
         };
-        if !waits_for_expected_type(argument_nodes[index], context)
-            || is_unresolved_parameter_expectation(
-                &expected.type_ref,
-                &signature.type_parameters,
-                &application.resolved_type_parameters,
-            )
-            || contains_type_parameter(&expected.type_ref, &signature.type_parameters)
-        {
-            break;
-        }
         let analysis = type_argument(
             argument_nodes[index],
             &context.with_expected(Some(expected)),
