@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.170] - 2026-11-14
+
+### Fixed
+
+- `effects.timeout`, `effects.timeoutFail`, `effects.retry` and `effects.repeat` keep the requirements of the Effect they wrap and add `clock`, as spec §10 states. They used to keep only `clock`, so `effects.attempt (effects.timeout …)` around an Effect that needs `Console` reported a requirement mismatch, and the native target stopped with a canonical result mismatch.
+
 ## [0.61.169] - 2026-11-13
 
 ### Added
