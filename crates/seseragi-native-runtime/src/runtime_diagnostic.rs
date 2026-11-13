@@ -300,8 +300,8 @@ pub fn run_native_main(program: impl FnOnce() -> i32 + Send + 'static) -> i32 {
         .name("main".into())
         .stack_size(NATIVE_STACK_SIZE)
         .spawn(move || {
-            let limit = native_stack_address()
-                .saturating_sub(NATIVE_STACK_SIZE - NATIVE_STACK_RESERVE);
+            let limit =
+                native_stack_address().saturating_sub(NATIVE_STACK_SIZE - NATIVE_STACK_RESERVE);
             NATIVE_STACK_LIMIT.with(|cell| cell.set(limit));
             program()
         })
