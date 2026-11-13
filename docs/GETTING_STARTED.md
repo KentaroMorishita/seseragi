@@ -159,5 +159,6 @@ VS Code のコマンド **Seseragi: Build Web App** でも同じことができ�
 
 ## 次のステップ
 
+- [はじめての CLI ツール](./GETTING_STARTED_CLI.md) — `seseragi new cli` でコマンドラインツールを作ります
 - [サンプル集](../examples/samples/README.md) — もっと大きな Signal アプリの例があります
 - [A Tour of Seseragi](https://seseragi.vercel.app/tour/) — 言語の機能を順番に学べます

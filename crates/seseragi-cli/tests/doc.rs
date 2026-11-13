@@ -569,7 +569,7 @@ fn rejects_run_blocks_without_a_selected_target_before_reporting_blocks() {
 #[test]
 fn help_exposes_the_document_test_command() {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("--help")
+        .args(["doc", "--help"])
         .output()
         .unwrap();
     assert!(output.status.success());

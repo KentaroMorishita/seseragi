@@ -6,6 +6,7 @@ mod doc;
 mod dts;
 mod experimental;
 mod format;
+mod help;
 mod lint;
 mod local_project;
 mod lock;
@@ -32,7 +33,33 @@ fn main() {
 
 fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
     let arguments = arguments.into_iter().collect::<Vec<_>>();
+    if let [command, rest @ ..] = arguments.as_slice() {
+        if help::is_command(command) && command != "help" && wants_help(rest) {
+            print!(
+                "{}",
+                help::command(std::slice::from_ref(command)).unwrap_or_default()
+            );
+            return Ok(0);
+        }
+    }
     match arguments.as_slice() {
+        [] => {
+            eprint!("{}", help::overview());
+            Ok(2)
+        }
+        [command] if command == "help" => {
+            print!("{}", help::overview());
+            Ok(0)
+        }
+        [command, topic, ..] if command == "help" => {
+            match help::command(std::slice::from_ref(topic)) {
+                Some(page) => {
+                    print!("{page}");
+                    Ok(0)
+                }
+                None => Err(help::unknown_command(topic)),
+            }
+        }
         [command, arguments @ ..] if command == "experimental" => experimental::run(arguments),
         [command, arguments @ ..] if command == "benchmark" => benchmark::benchmark(arguments),
         [command, arguments @ ..] if command == "run" => run::run(arguments),
@@ -44,12 +71,7 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
         [command, arguments @ ..] if command == "new" => new::new(arguments),
         [command, arguments @ ..] if command == "lock" => lock::lock(arguments),
         [command, arguments @ ..] if command == "lint" => lint::lint(arguments),
-        [command, path] if command == "format" => {
-            format::format_file(path.as_ref(), format::FormatMode::Write)
-        }
-        [command, flag, path] if command == "format" && flag == "--check" => {
-            format::format_file(path.as_ref(), format::FormatMode::Check)
-        }
+        [command, arguments @ ..] if command == "format" => format::format(arguments),
         [flag] if flag == "--version" || flag == "-V" => {
             println!("{}", seseragi_release::format_human_version("seseragi"));
             Ok(0)
@@ -63,15 +85,20 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
             Ok(0)
         }
         [flag] if flag == "--help" || flag == "-h" => {
-            print_usage();
+            print!("{}", help::overview());
             Ok(0)
         }
+        [flag, ..] if flag.starts_with('-') => Err(format!(
+            "unknown option `{flag}`; run `seseragi --help` for usage"
+        )),
+        [command, ..] if !help::is_command(command) => Err(help::unknown_command(command)),
         _ => Err("invalid arguments; run `seseragi --help` for usage".to_owned()),
     }
 }
 
-fn print_usage() {
-    println!(
-        "Usage:\n  seseragi --version\n  seseragi --version-json\n  seseragi experimental emit-rust source.ssrg|package-root --entry function --output program.rs [--provider std/clock::Clock=seseragi/runtime-native#clock]\n  seseragi experimental build-native source.ssrg|package-root --entry function --out-dir path [--provider std/clock::Clock=seseragi/runtime-native#clock]\n  seseragi experimental build-wasm source.ssrg|package-root --export function|function<Type>|name=function<Type> [--export other] [--profile development|release] --out-dir path\n  seseragi new web path/to/my-app\n  seseragi lock update [path/to/package]\n  seseragi dts convert [path/to/package] [--entry id]\n  seseragi run path/to/app.ssrg [--target process|web|native] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]\n  seseragi run path/to/package [--target process|web|native] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]\n  seseragi lint path/to/app.ssrg|path/to/package [--diagnostic-format text|json] [--deny-warnings]\n  seseragi test [path/to/package] [--filter text | --exact module::suite::case] [--jobs n] [--timeout ms] [--seed int] [--target node|native]\n  seseragi benchmark [path/to/package] [--target node|native] [--filter text | --exact module::suite::case] [--warmup n] [--samples n] [--minimum-sample-ms ms] [--timeout-ms ms] [--cleanup-grace-ms ms] [--seed int] [--json] [--baseline path] [--save-baseline path] [--regression-threshold-percent n]\n  seseragi doc [path/to/package] [--include-private]\n  seseragi doc [path/to/package] --test [--target node] [--include-private]\n  seseragi build path/to/app.ssrg [--target process|web|native] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web|native] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--target web] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi dev [path/to/app.ssrg|path/to/package] --target native\n  seseragi format [--check] path/to/app.ssrg"
-    );
+/// `--help` or `-h` among a command's arguments asks for its help page.
+fn wants_help(arguments: &[String]) -> bool {
+    arguments
+        .iter()
+        .any(|argument| argument == "--help" || argument == "-h")
 }

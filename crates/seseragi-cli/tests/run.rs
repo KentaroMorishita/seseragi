@@ -1778,7 +1778,7 @@ fn rejects_invalid_run_options_before_execution_and_documents_the_contract() {
     }
 
     let help = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("--help")
+        .args(["run", "--help"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&help.stdout);

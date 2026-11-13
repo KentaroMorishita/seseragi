@@ -1383,7 +1383,7 @@ fn rejects_process_target_packages_before_entering_the_watch_loop() {
 #[test]
 fn documents_dev_in_cli_help() {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("--help")
+        .args(["dev", "--help"])
         .output()
         .unwrap();
     let stdout = String::from_utf8_lossy(&output.stdout);
