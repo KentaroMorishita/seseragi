@@ -2176,11 +2176,14 @@ fn passes_everything_after_the_separator_to_the_program_on_both_targets() {
             ])
             .output()
             .unwrap();
-        assert_eq!(
-            String::from_utf8_lossy(&output.stderr),
-            "",
-            "{target} stderr"
-        );
+        // The first native run on a machine announces the Rust toolchain it
+        // downloads; that note is not program output.
+        let stderr = String::from_utf8_lossy(&output.stderr)
+            .lines()
+            .filter(|line| !line.starts_with("Preparing Rust "))
+            .collect::<Vec<_>>()
+            .join("\n");
+        assert_eq!(stderr, "", "{target} stderr");
         assert_eq!(output.status.code(), Some(0), "{target}");
         assert_eq!(
             String::from_utf8_lossy(&output.stdout),
