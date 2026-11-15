@@ -1,11 +1,20 @@
 import * as text from "std/text"
+import * as time from "std/time"
 
 type Nat deriving Show, Debug = | Zero | Succ Nat
 type Chain deriving Show = | End | Link (Maybe<Chain>)
 type Box deriving Show, Debug = | Box Unit | Bare
 struct Point deriving Show { x: Int }
+type Deep deriving Show, Debug =
+  | Leaf (Either<time.DurationError, Int>)
+  | Nest Deep
 
 fn nat n: Int -> Nat = if n == 0 then Zero else Succ (nat (n - 1))
+fn deep n: Int -> Deep =
+  if n == 0 then
+    Leaf (map time.toNanoseconds (time.seconds (-1)))
+  else
+    Nest (deep (n - 1))
 fn chain n: Int -> Chain = if n == 0 then End else Link (Just (chain (n - 1)))
 
 pub fn probe -> String = text.join "\n" [
@@ -20,4 +29,9 @@ pub fn probe -> String = text.join "\n" [
   show (nat 130),
   debug (nat 130),
   show (chain 70),
+  show (deep 124),
+  show (deep 125),
+  show (deep 126),
+  debug (deep 125),
+  debug (deep 126),
 ]

@@ -34,8 +34,9 @@ fn native_error_scalar(value: V, debug: bool) -> String {
 }
 
 // A scalar payload of a standard error, parenthesized when it is negative.
+// At the depth bound the scalar is elided to a bare "…", as on TS.
 fn native_error_payload(value: V, debug: bool) -> String {
-    let negative = native_is_negative(&value);
+    let negative = native_display_within_bound() && native_is_negative(&value);
     native_parenthesized(&native_error_scalar(value, debug), negative)
 }
 

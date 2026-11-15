@@ -85,6 +85,6 @@ fn payload_parentheses_match_typescript_for_unit_payloads_and_the_depth_bound() 
     assert_eq!(String::from_utf8_lossy(&output.stdout), EXPECTED);
     assert_eq!(String::from_utf8_lossy(&native.stdout), EXPECTED);
     let elided = EXPECTED.matches('…').count();
-    assert_eq!(elided, 3, "each deep value is elided once");
+    assert_eq!(elided, 7, "each deep value is elided once");
     assert!(!EXPECTED.contains("(…)"));
 }
