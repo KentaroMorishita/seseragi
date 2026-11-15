@@ -177,8 +177,13 @@ fn build_main_with_optional_source(
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     let process_entry = if target == BuildTarget::Process {
         Some(
-            entry_source(&contract, "./main.ts", None, options.clone())
-                .map_err(BuildError::InvalidEntry)?,
+            entry_source(
+                &contract,
+                "./main.ts",
+                super::standalone_process_providers(compiled).as_ref(),
+                options.clone(),
+            )
+            .map_err(BuildError::InvalidEntry)?,
         )
     } else {
         None

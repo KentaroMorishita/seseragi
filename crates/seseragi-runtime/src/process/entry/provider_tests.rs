@@ -96,7 +96,8 @@ fn every_provider_required_service_rejects_missing_selection_without_panicking()
             .unwrap_err();
             assert!(error.contains("`missing`"), "{error}");
             assert!(error.contains(service), "{error}");
-            assert!(error.contains("use a package"), "{error}");
+            assert!(error.contains("seseragi.toml"), "{error}");
+            assert!(error.contains("[providers]"), "{error}");
         }
     }
 }
@@ -185,8 +186,19 @@ fn existing_optional_native_adapters_keep_their_standalone_fallbacks() {
 }
 
 #[test]
-fn standalone_public_runner_and_builder_return_invalid_entry_before_publication() {
+fn standalone_entries_select_the_toolchain_default_provider() {
     let source = "import * as http from \"std/http\"\n\npub effect fn main -> Unit\nwith httpClient: http.HttpClient =\n  succeed ()\n";
+    let compiled = compile_module(CompileInput::new("main.ssrg", "fixture/main", source)).unwrap();
+    validate_main_process_entry(&compiled).unwrap();
+    let providers = super::super::standalone_process_providers(&compiled).unwrap();
+    assert_eq!(providers.selected.len(), 1);
+    assert_eq!(providers.selected[0].provider, "seseragi/runtime-bun#http-client");
+}
+
+#[test]
+fn standalone_public_runner_and_builder_return_invalid_entry_before_publication() {
+    // No host adapter supplies an Int field, so the entry is rejected.
+    let source = "pub effect fn main -> Unit\nwith count: Int =\n  succeed ()\n";
     let compiled = compile_module(CompileInput::new("main.ssrg", "fixture/main", source)).unwrap();
     let error = validate_main_process_entry(&compiled).unwrap_err();
     assert!(matches!(error, RunError::InvalidEntry(_)), "{error}");

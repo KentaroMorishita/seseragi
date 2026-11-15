@@ -12,6 +12,9 @@ const WARNING_DECLARATION: &str =
     "\npub fn typo -> html.Html<Never> =\n  html.div { clas: \"hero\", children: \"Typo\" }\n";
 
 const REQUIRES_PROVIDER: &str = "import * as http from \"std/http\"\n\npub effect fn main -> Unit\nwith httpClient: http.HttpClient =\n  succeed ()\n";
+// A standalone file selects toolchain default providers, so the entry
+// rejection is reached through a field no host can supply.
+const NO_HOST_ADAPTER: &str = "pub effect fn main -> Unit\nwith count: Int =\n  succeed ()\n";
 
 struct OwnedChild(Option<Child>);
 
@@ -70,15 +73,15 @@ fn snapshot(root: &Path) -> BTreeMap<PathBuf, Vec<u8>> {
 }
 
 #[test]
-fn standalone_provider_requirement_is_a_text_or_json_diagnostic_without_a_host() {
+fn standalone_entry_rejection_is_a_text_or_json_diagnostic_without_a_host() {
     let fixture = tempfile::tempdir().unwrap();
     let root = fixture.path();
     fs::create_dir(root.join("runtime")).unwrap();
     for with_warning in [false, true] {
         let source = if with_warning {
-            format!("{WARNING_IMPORT}{REQUIRES_PROVIDER}{WARNING_DECLARATION}")
+            format!("{WARNING_IMPORT}{NO_HOST_ADAPTER}{WARNING_DECLARATION}")
         } else {
-            REQUIRES_PROVIDER.to_owned()
+            NO_HOST_ADAPTER.to_owned()
         };
         fs::write(root.join("main.ssrg"), source).unwrap();
         for format in ["text", "json"] {
@@ -90,8 +93,7 @@ fn standalone_provider_requirement_is_a_text_or_json_diagnostic_without_a_host()
             assert_eq!(output.status.code(), Some(2));
             assert!(output.stdout.is_empty());
             let stderr = String::from_utf8(output.stderr).unwrap();
-            assert!(stderr.contains("requires a resolved provider"), "{stderr}");
-            assert!(stderr.contains("std/http::HttpClient"), "{stderr}");
+            assert!(stderr.contains("no command-line host adapter"), "{stderr}");
             assert!(!stderr.contains("panicked"), "{stderr}");
             if format == "json" {
                 // from_str rejects a second concatenated JSON document.
@@ -107,7 +109,7 @@ fn standalone_provider_requirement_is_a_text_or_json_diagnostic_without_a_host()
                 assert!(diagnostic["labels"][0]["message"]
                     .as_str()
                     .unwrap()
-                    .contains("httpClient"));
+                    .contains("count"));
                 assert_eq!(
                     diagnostics
                         .iter()
@@ -133,7 +135,7 @@ fn standalone_provider_requirement_is_a_text_or_json_diagnostic_without_a_host()
         true,
     );
     assert_eq!(output.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&output.stderr).contains("requires a resolved provider"));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("no command-line host adapter"));
     assert!(!root.join("out").exists());
     assert_eq!(fs::read_dir(root.join("runtime")).unwrap().count(), 0);
 }
@@ -171,13 +173,45 @@ fn console_standalone_still_runs_and_provider_rejection_preserves_completed_buil
     assert!(output.status.success(), "{:?}", output);
     let previous = snapshot(&root.join("out"));
     assert!(!previous.is_empty());
-    fs::write(root.join("main.ssrg"), REQUIRES_PROVIDER).unwrap();
+    fs::write(root.join("main.ssrg"), NO_HOST_ADAPTER).unwrap();
     let output = cli(root, &arguments, true);
     assert_eq!(output.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&output.stderr).contains("requires a resolved provider"));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("no command-line host adapter"));
     assert_eq!(snapshot(&root.join("out")), previous);
     assert_eq!(fs::read_dir(root.join("runtime")).unwrap().count(), 0);
     assert_eq!(fs::read_dir(root).unwrap().count(), 3);
+}
+
+#[test]
+fn standalone_build_selects_the_toolchain_default_provider() {
+    let fixture = tempfile::tempdir().unwrap();
+    let root = fixture.path();
+    fs::create_dir(root.join("runtime")).unwrap();
+    fs::write(root.join("main.ssrg"), REQUIRES_PROVIDER).unwrap();
+    // Selection is fixed in the built entry, so the build output shows it.
+    let output = cli(
+        root,
+        &[
+            "build",
+            "main.ssrg",
+            "--target",
+            "process",
+            "--out-dir",
+            "out",
+        ],
+        false,
+    );
+    assert!(output.status.success(), "{:?}", output);
+    let entry = fs::read_to_string(root.join("out/entry.ts")).unwrap();
+    assert!(
+        entry.contains("seseragi/runtime-bun#http-client"),
+        "{entry}"
+    );
+    assert!(
+        entry.contains("seseragi/runtime-bun/http-client"),
+        "{entry}"
+    );
+    assert_eq!(fs::read_dir(root.join("runtime")).unwrap().count(), 0);
 }
 
 #[test]
