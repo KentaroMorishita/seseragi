@@ -197,6 +197,13 @@ tagを別SHAへ付け替えません。
 更新できることと、`seseragi --version` が新しい版を表示することを確かめます。
 チェックサムが合わないときに止まることは、`scripts/install.test.ts` で確かめています。
 
+`seseragi upgrade` は、最新のリリースの版を同じ方法で調べます。新しい版があれば、その版の
+`install.sh` を取得し、`SESERAGI_VERSION` と、自分が置かれている場所を `SESERAGI_INSTALL` に
+指定して実行します。更新の手順はスクリプトと同じなので、リリースの手順に作業は増えません。
+スクリプトで入れた場所（`<root>/bin` に `seseragi` と `seseragi-lsp` がある）でなければ、
+置き換えずにインストールのコマンドを表示します。Windows では実行中の `seseragi.exe` を
+置き換えられないため、コマンドの表示だけにします。
+
 ## Native archiveからinstall
 
 macOS / Linuxでは、GitHub ReleaseからOS / CPUに合うarchiveとchecksumを取得します。
