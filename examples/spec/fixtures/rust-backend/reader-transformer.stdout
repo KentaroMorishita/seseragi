@@ -20,10 +20,10 @@ Just 9
 Left base failure
 7
 Just 12
-Just Just 8
+Just (Just 8)
 10
 Just ()
 Just 雪🙂
 Just 🙂
-Just -9007199254740991
+Just (-9007199254740991)
 Just 9007199254740991

@@ -4,7 +4,7 @@ scalar: Just 👍 / Nothing
 clusters: [A, 👍🏽, é] / [0, 1, 9, 12]
 at: Just 👍🏽 / Nothing
 slice: Right 👍🏽 / Right 👍🏽é
-ranges: Left InvalidScalarRange { start: -1, end: 2, length: 5 } / Left InvalidGraphemeRange { start: 2, end: 1, length: 3 }
+ranges: Left (InvalidScalarRange { start: -1, end: 2, length: 5 }) / Left (InvalidGraphemeRange { start: 2, end: 1, length: 3 })
 empty: True / [0] / Right 
 normalize: A👍🏽é / é / ffi1 / 1
 normalized: False / True

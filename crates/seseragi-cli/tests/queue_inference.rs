@@ -265,7 +265,7 @@ pub effect fn main = do {
 }
 "#,
         );
-        fixture.typescript(b"Right [Right True, Right False, Right Just 7, Right Nothing, Left QueueClosed]\nNonPositiveCapacity 0\nNonPositiveCapacity -1\n");
+        fixture.typescript(b"Right [Right True, Right False, Right (Just 7), Right Nothing, Left QueueClosed]\nNonPositiveCapacity 0\nNonPositiveCapacity (-1)\n");
     }
 }
 

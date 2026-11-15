@@ -13,7 +13,7 @@ Left `[`["first", "", "雪🙂", "first"]]
 Invalid `[`["first", "", "雪🙂", "first"]]
 Valid []
 Valid ()
-Valid -9007199254740991
+Valid (-9007199254740991)
 Valid 9007199254740991
 Valid 42
 Invalid `["first", "", "雪🙂", "first"]

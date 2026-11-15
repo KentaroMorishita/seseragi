@@ -9,5 +9,5 @@ $ssrg$assertUnicodeVersion("17.0.0")
 export type InputError =
   | { readonly tag: "InvalidInput"; readonly value: string };
 export const InvalidInput = (value: string): InputError => ({ tag: "InvalidInput", value } as const);
-export const __ssrg$instance$Show$0: _ssrg_show_Show<InputError> = _ssrg_show_boundedShow((value: InputError): string => { switch (value.tag) { case "InvalidInput": return "InvalidInput" + " " + _ssrg_show_stringShow.show(value.value); } });
+export const __ssrg$instance$Show$0: _ssrg_show_Show<InputError> = _ssrg_show_boundedShow((value: InputError, payload): string => { switch (value.tag) { case "InvalidInput": return "InvalidInput" + " " + payload(_ssrg_show_stringShow, value.value); } }, (value: InputError): boolean => value.tag === "InvalidInput");
 export const reject = (input: string) => $ssrg$atSource($ssrg$source100, () => _ssrg_effect_fail($ssrg$atSource($ssrg$source106, () => InvalidInput(input), false)), true)

@@ -1,1 +1,1 @@
-InputFailure InvalidInput lizard
+InputFailure (InvalidInput lizard)

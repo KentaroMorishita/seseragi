@@ -11,5 +11,5 @@ $ssrg$assertUnicodeVersion("17.0.0")
 export type AppError =
   | { readonly tag: "InputFailure"; readonly value: InputError };
 export const InputFailure = (value: InputError): AppError => ({ tag: "InputFailure", value } as const);
-export const __ssrg$instance$Show$0: _ssrg_show_Show<AppError> = _ssrg_show_boundedShow((value: AppError): string => { switch (value.tag) { case "InputFailure": return "InputFailure" + " " + __ssrg$instance$Show$0_1.show(value.value); } });
+export const __ssrg$instance$Show$0: _ssrg_show_Show<AppError> = _ssrg_show_boundedShow((value: AppError, payload): string => { switch (value.tag) { case "InputFailure": return "InputFailure" + " " + payload(__ssrg$instance$Show$0_1, value.value); } }, (value: AppError): boolean => value.tag === "InputFailure");
 export const main = (_unit: undefined) => _ssrg_effect_flatMap($ssrg$atSource($ssrg$source141, () => _ssrg_effect_mapError(InputFailure, $ssrg$atSource($ssrg$source164, () => reject("lizard"), true)), true), () => $ssrg$atSource($ssrg$source185, () => _ssrg_effect_succeed(undefined), true))

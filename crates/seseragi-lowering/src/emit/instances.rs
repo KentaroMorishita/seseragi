@@ -584,7 +584,7 @@ fn render_derived_adt_body(
             .as_ref()
             .ok_or_else(|| emission_evidence_error("erased newtype must retain its payload"))?;
         return Ok(format!(
-            r#"(value: {head}): string => {:?} + " " + {}.{method}(value)"#,
+            r#"(value: {head}, payload): string => {:?} + " " + payload({}, value), (): boolean => true"#,
             variant.tag,
             render_dictionary_reference(&payload.dictionary)
         ));
@@ -594,20 +594,36 @@ fn render_derived_adt_body(
     }
     let cases = variants
         .iter()
-        .map(|variant| render_derived_adt_variant(variant, method))
+        .map(render_derived_adt_variant)
         .collect::<Vec<_>>()
         .join(" ");
+    let _ = method;
+    // A variant with a payload is an application, so it needs parentheses
+    // when it is itself another constructor's payload.
+    let applications = variants
+        .iter()
+        .filter(|variant| variant.payload.is_some())
+        .map(|variant| format!("value.tag === {:?}", variant.tag))
+        .collect::<Vec<_>>();
+    let grouped = if applications.is_empty() {
+        String::new()
+    } else {
+        format!(
+            ", (value: {head}): boolean => {}",
+            applications.join(" || ")
+        )
+    };
     Ok(format!(
-        "(value: {head}): string => {{ switch (value.tag) {{ {cases} }} }}"
+        "(value: {head}, payload): string => {{ switch (value.tag) {{ {cases} }} }}{grouped}"
     ))
 }
 
-fn render_derived_adt_variant(variant: &TypeScriptDerivedShowVariant, method: &str) -> String {
+fn render_derived_adt_variant(variant: &TypeScriptDerivedShowVariant) -> String {
     let tag = format!("{:?}", variant.tag);
     let result = match &variant.payload {
         None => tag.clone(),
         Some(payload) => format!(
-            "{tag} + \" \" + {}.{method}(value.value)",
+            "{tag} + \" \" + payload({}, value.value)",
             render_dictionary_reference(&payload.dictionary),
         ),
     };

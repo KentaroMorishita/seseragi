@@ -46,28 +46,31 @@ fn native_range_iterator(range: V) -> V {
 
 pub fn native_range_display_dictionary(bound: V, debug: bool) -> V {
     let method = if debug { "debug" } else { "show" };
-    V::dict(vec![(
-        method,
-        V::fun(vec![bound.field(method)], |c, range| {
-            native_display(|| {
-                let start = c[0].apply(range.field("start"));
-                let end = c[0].apply(range.field("end"));
-                let (V::Text(start), V::Text(end)) = (start, end) else {
-                    panic!("Rust ABI: display method must return String")
-                };
-                V::text(&format!(
-                    "{}{}{}",
-                    start.get(),
-                    if range.field("inclusive").boolean() {
-                        "..="
-                    } else {
-                        ".."
-                    },
-                    end.get()
-                ))
-            })
-        }),
-    )])
+    V::dict(vec![
+        (
+            method,
+            V::fun(vec![bound.field(method)], |c, range| {
+                native_display(|| {
+                    let start = c[0].apply(range.field("start"));
+                    let end = c[0].apply(range.field("end"));
+                    let (V::Text(start), V::Text(end)) = (start, end) else {
+                        panic!("Rust ABI: display method must return String")
+                    };
+                    V::text(&format!(
+                        "{}{}{}",
+                        start.get(),
+                        if range.field("inclusive").boolean() {
+                            "..="
+                        } else {
+                            ".."
+                        },
+                        end.get()
+                    ))
+                })
+            }),
+        ),
+        ("grouped", native_grouped_always()),
+    ])
 }
 
 #[cfg(test)]

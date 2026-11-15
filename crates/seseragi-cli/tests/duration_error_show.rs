@@ -92,7 +92,7 @@ pub effect fn main = do {
   println (show time.DurationOutsideRange)
 }
 "#,
-        "NegativeDuration -9007199254740991\nNegativeDuration -1\nNegativeDuration 0\nNegativeDuration 9007199254740991\nDurationOutsideRange\n",
+        "NegativeDuration (-9007199254740991)\nNegativeDuration (-1)\nNegativeDuration 0\nNegativeDuration 9007199254740991\nDurationOutsideRange\n",
         "",
         0,
         scratch.path(),
@@ -104,10 +104,10 @@ fn duration_error_main_failures_match_ts_and_native_at_int_boundaries() {
     let scratch = tempfile::tempdir().unwrap();
     for (expression, expected) in [
         ("time.DurationOutsideRange", "DurationOutsideRange\n"),
-        ("(time.NegativeDuration (-1))", "NegativeDuration -1\n"),
+        ("(time.NegativeDuration (-1))", "NegativeDuration (-1)\n"),
         (
             "(time.NegativeDuration (-9007199254740991))",
-            "NegativeDuration -9007199254740991\n",
+            "NegativeDuration (-9007199254740991)\n",
         ),
         ("(time.NegativeDuration 0)", "NegativeDuration 0\n"),
         (

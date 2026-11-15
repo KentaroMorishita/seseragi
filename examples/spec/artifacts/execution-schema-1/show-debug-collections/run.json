@@ -79,17 +79,17 @@
         "service": "console",
         "operation": "println",
         "arguments": [
-          "[Just Right `[1, 2], Nothing, Just Left oops]"
+          "[Just (Right `[1, 2]), Nothing, Just (Left oops)]"
         ],
-        "stdout": "[Just Right `[1, 2], Nothing, Just Left oops]\n"
+        "stdout": "[Just (Right `[1, 2]), Nothing, Just (Left oops)]\n"
       },
       {
         "service": "console",
         "operation": "println",
         "arguments": [
-          "[Just Right `[True, False], Nothing, Just Left \"oops\"]"
+          "[Just (Right `[True, False]), Nothing, Just (Left \"oops\")]"
         ],
-        "stdout": "[Just Right `[True, False], Nothing, Just Left \"oops\"]\n"
+        "stdout": "[Just (Right `[True, False]), Nothing, Just (Left \"oops\")]\n"
       },
       {
         "service": "console",

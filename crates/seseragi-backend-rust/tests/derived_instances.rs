@@ -357,7 +357,7 @@ pub fn probe -> String = "unused"
         "console.log(describe({{kind: \"console-error\", message: {}}}));",
         serde_json::to_string(message).unwrap()
     );
-    let expected = format!("Input StdinUnavailable/Input StdinUnavailable|Input StdinReadFailure/Input StdinReadFailure|Input ConcurrentStdinRead/Input ConcurrentStdinRead|Input InvalidStdinUtf8 {{ offset: 42 }}/Input InvalidStdinUtf8 {{ offset: 42 }}|Input StdinLineTooLong {{ limitBytes: 1024 }}/Input StdinLineTooLong {{ limitBytes: 1024 }}|Input StdinPositionOverflow/Input StdinPositionOverflow|Output ConsoleError: {message}/Output ConsoleError {{ message: \"<redacted>\" }}|Envelope {{ error: ConsoleError: {message} }}/Envelope {{ error: ConsoleError {{ message: \"<redacted>\" }} }}|Wrapped ConsoleError: {message}/Wrapped ConsoleError {{ message: \"<redacted>\" }}\n");
+    let expected = format!("Input StdinUnavailable/Input StdinUnavailable|Input StdinReadFailure/Input StdinReadFailure|Input ConcurrentStdinRead/Input ConcurrentStdinRead|Input (InvalidStdinUtf8 {{ offset: 42 }})/Input (InvalidStdinUtf8 {{ offset: 42 }})|Input (StdinLineTooLong {{ limitBytes: 1024 }})/Input (StdinLineTooLong {{ limitBytes: 1024 }})|Input StdinPositionOverflow/Input StdinPositionOverflow|Output ConsoleError: {message}/Output ConsoleError {{ message: \"<redacted>\" }}|Envelope {{ error: ConsoleError: {message} }}/Envelope {{ error: ConsoleError {{ message: \"<redacted>\" }} }}|Wrapped ConsoleError: {message}/Wrapped ConsoleError {{ message: \"<redacted>\" }}\n");
     compare_outputs(source, Some(&expected), Some(&native), Some(&ts));
 }
 
@@ -583,7 +583,7 @@ pub fn probe -> String = show (
   show (Dispatch (dom.DispatchFailure "雪🙂")), debug (Dispatch (dom.DispatchFailure "\n")),
   show<Dispatch<String>> (Dispatch (dom.DomFailure dom.DomTargetRemoved))
 )
-"#, "(True, False, True, True, Dispatch DispatchFailure 雪🙂, Dispatch DispatchFailure \"\\n\", Dispatch DomFailure DomTargetRemoved)\n");
+"#, "(True, False, True, True, Dispatch (DispatchFailure 雪🙂), Dispatch (DispatchFailure \"\\n\"), Dispatch (DomFailure DomTargetRemoved))\n");
 }
 
 #[test]

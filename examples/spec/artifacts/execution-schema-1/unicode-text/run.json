@@ -190,9 +190,9 @@
         "service": "console",
         "operation": "println",
         "arguments": [
-          "ranges: Left InvalidScalarRange { start: -1, end: 2, length: 5 } / Left InvalidGraphemeRange { start: 2, end: 1, length: 3 }"
+          "ranges: Left (InvalidScalarRange { start: -1, end: 2, length: 5 }) / Left (InvalidGraphemeRange { start: 2, end: 1, length: 3 })"
         ],
-        "stdout": "ranges: Left InvalidScalarRange { start: -1, end: 2, length: 5 } / Left InvalidGraphemeRange { start: 2, end: 1, length: 3 }\n"
+        "stdout": "ranges: Left (InvalidScalarRange { start: -1, end: 2, length: 5 }) / Left (InvalidGraphemeRange { start: 2, end: 1, length: 3 })\n"
       },
       {
         "service": "console",

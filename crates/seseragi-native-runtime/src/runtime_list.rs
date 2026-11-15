@@ -182,6 +182,76 @@ pub fn native_display(render: impl FnOnce() -> V) -> V {
     render()
 }
 
+// A constructor payload is parenthesized when its display dictionary says
+// the value renders as a constructor application, a negative number, or a
+// Range. User instances carry no "grouped" method, so their text is placed as
+// is, matching the TS runtime.
+pub fn native_display_grouping(dictionary: &V) -> V {
+    match dictionary {
+        V::Dict(methods) => methods.get().get("grouped").cloned().unwrap_or(V::Unit),
+        _ => V::Unit,
+    }
+}
+
+pub fn native_payload_text(render: &V, grouping: &V, value: V) -> String {
+    let grouped = matches!(grouping, V::Fun(_)) && grouping.apply(value.clone()).boolean();
+    let V::Text(text) = render.apply(value) else {
+        panic!("Rust ABI: display method must return String")
+    };
+    native_parenthesized(text.get(), grouped)
+}
+
+pub fn native_parenthesized(text: &str, grouped: bool) -> String {
+    if grouped {
+        format!("({text})")
+    } else {
+        text.to_owned()
+    }
+}
+
+// A standard variant with a payload renders as an application.
+pub fn native_grouped_variant() -> V {
+    V::fun(vec![], |_, value| V::Bool(native_is_application(&value)))
+}
+
+pub fn native_is_application(value: &V) -> bool {
+    matches!(value, V::Adt(adt) if !matches!(adt.get().1, V::Unit))
+}
+
+pub fn native_grouped_always() -> V {
+    V::fun(vec![], |_, _| V::Bool(true))
+}
+
+// Int and Float payloads need parentheses when negative, including -0.0 and
+// -Infinity.
+pub fn native_grouped_negative() -> V {
+    V::fun(vec![], |_, value| V::Bool(native_is_negative(&value)))
+}
+
+pub fn native_is_negative(value: &V) -> bool {
+    match value {
+        V::Int(value) => *value < 0,
+        V::Float(value) => value.is_sign_negative() && !value.is_nan(),
+        _ => false,
+    }
+}
+
+// The payload text of a standard scalar, parenthesized when negative.
+pub fn native_scalar_payload(value: &V, text: String) -> String {
+    native_parenthesized(&text, native_is_negative(value))
+}
+
+// Derived ADTs list the tags of their variants that carry a payload.
+pub fn native_grouped_tags(tags: Vec<&'static str>) -> V {
+    let tags = V::Array(Shared::new(tags.into_iter().map(V::text).collect()));
+    V::fun(vec![tags], |c, value| {
+        let V::Array(tags) = &c[0] else {
+            unreachable!()
+        };
+        V::Bool(tags.get().iter().any(|tag| value.tagged(native_text(tag))))
+    })
+}
+
 pub fn native_list_display_dictionary(element: V, debug: bool) -> V {
     let method = if debug { "debug" } else { "show" };
     let child = element.field(method);
@@ -222,46 +292,54 @@ pub fn native_primitive_display_dictionary(identity: &'static str) -> V {
     let method = if debug { "debug" } else { "show" };
     let string = identity.ends_with("::String>");
     let integer = identity.ends_with("::Int>");
-    V::dict(vec![(
-        method,
-        V::fun(
-            vec![V::Bool(debug && string), V::Bool(integer)],
-            |capture, value| {
-                native_display(|| {
-                    if capture[1].boolean() {
-                        if let V::Float(number) = &value {
-                            return V::text(&native_number_text(*number));
-                        }
-                    }
-                    if !capture[0].boolean() {
-                        return V::text(&value.render());
-                    }
-                    let V::Text(text) = value else {
-                        panic!("Rust ABI: expected String")
-                    };
-                    let mut output = String::from("\"");
-                    for c in text.get().chars() {
-                        match c {
-                            '\\' => output.push_str("\\\\"),
-                            '"' => output.push_str("\\\""),
-                            '\0' => output.push_str("\\0"),
-                            '\u{8}' => output.push_str("\\b"),
-                            '\t' => output.push_str("\\t"),
-                            '\n' => output.push_str("\\n"),
-                            '\u{c}' => output.push_str("\\f"),
-                            '\r' => output.push_str("\\r"),
-                            c if u32::from(c) < 0x20 || (0x7f..=0x9f).contains(&u32::from(c)) => {
-                                output.push_str(&format!("\\u{{{:X}}}", u32::from(c)));
+    let number = integer || identity.ends_with("::Float>");
+    let grouping = number.then(|| ("grouped", native_grouped_negative()));
+    V::dict(Vec::from_iter(
+        [(
+            method,
+            V::fun(
+                vec![V::Bool(debug && string), V::Bool(integer)],
+                |capture, value| {
+                    native_display(|| {
+                        if capture[1].boolean() {
+                            if let V::Float(number) = &value {
+                                return V::text(&native_number_text(*number));
                             }
-                            c => output.push(c),
                         }
-                    }
-                    output.push('"');
-                    V::text(&output)
-                })
-            },
-        ),
-    )])
+                        if !capture[0].boolean() {
+                            return V::text(&value.render());
+                        }
+                        let V::Text(text) = value else {
+                            panic!("Rust ABI: expected String")
+                        };
+                        let mut output = String::from("\"");
+                        for c in text.get().chars() {
+                            match c {
+                                '\\' => output.push_str("\\\\"),
+                                '"' => output.push_str("\\\""),
+                                '\0' => output.push_str("\\0"),
+                                '\u{8}' => output.push_str("\\b"),
+                                '\t' => output.push_str("\\t"),
+                                '\n' => output.push_str("\\n"),
+                                '\u{c}' => output.push_str("\\f"),
+                                '\r' => output.push_str("\\r"),
+                                c if u32::from(c) < 0x20
+                                    || (0x7f..=0x9f).contains(&u32::from(c)) =>
+                                {
+                                    output.push_str(&format!("\\u{{{:X}}}", u32::from(c)));
+                                }
+                                c => output.push(c),
+                            }
+                        }
+                        output.push('"');
+                        V::text(&output)
+                    })
+                },
+            ),
+        )]
+        .into_iter()
+        .chain(grouping),
+    ))
 }
 
 #[cfg(test)]

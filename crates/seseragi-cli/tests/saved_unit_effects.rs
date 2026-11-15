@@ -199,10 +199,10 @@ fn saved_functions_and_reused_effects_preserve_stdin_results_and_errors() {
     let directory = scratch.path();
     let programs = programs(SAVED, directory);
     for (input, expected) in [
-        (b"first\nsecond\nthird\nfourth".as_slice(), "saved\nRight Just first\nRight Just second\nRight Just third\nRight Just fourth\n"),
+        (b"first\nsecond\nthird\nfourth".as_slice(), "saved\nRight (Just first)\nRight (Just second)\nRight (Just third)\nRight (Just fourth)\n"),
         (b"", "saved\nRight Nothing\nRight Nothing\nRight Nothing\nRight Nothing\n"),
-        ("\r\n雪🙂\n\u{feff}last\r".as_bytes(), "saved\nRight Just \nRight Just 雪🙂\nRight Just last\r\nRight Nothing\n"),
-        (b"\xff\nok\n\xc3\x28\nlast\n", "saved\nLeft InvalidStdinUtf8 { offset: 0 }\nRight Just ok\nLeft InvalidStdinUtf8 { offset: 5 }\nRight Just last\n"),
+        ("\r\n雪🙂\n\u{feff}last\r".as_bytes(), "saved\nRight (Just )\nRight (Just 雪🙂)\nRight (Just last\r)\nRight Nothing\n"),
+        (b"\xff\nok\n\xc3\x28\nlast\n", "saved\nLeft (InvalidStdinUtf8 { offset: 0 })\nRight (Just ok)\nLeft (InvalidStdinUtf8 { offset: 5 })\nRight (Just last)\n"),
     ] {
         for program in &programs {
             assert_eq!(program.run(input, directory).stdout, expected.as_bytes(), "{}", program.name);
@@ -211,11 +211,11 @@ fn saved_functions_and_reused_effects_preserve_stdin_results_and_errors() {
     for length in [1_048_576, 1_048_577] {
         let input = [vec![b'x'; length], b"\nnext\n".to_vec()].concat();
         let first = if length == 1_048_576 {
-            format!("Right Just {}", "x".repeat(length))
+            format!("Right (Just {})", "x".repeat(length))
         } else {
-            "Left StdinLineTooLong { limitBytes: 1048576 }".into()
+            "Left (StdinLineTooLong { limitBytes: 1048576 })".into()
         };
-        let expected = format!("saved\n{first}\nRight Just next\nRight Nothing\nRight Nothing\n");
+        let expected = format!("saved\n{first}\nRight (Just next)\nRight Nothing\nRight Nothing\n");
         for program in &programs {
             assert_eq!(
                 program.run(&input, directory).stdout,
@@ -258,7 +258,7 @@ pub effect fn main -> Unit with Stdin, Console fails ConsoleError = do {
     for program in programs(text, directory) {
         assert_eq!(
             program.run(b"first\nsecond\nthird\n", directory).stdout,
-            b"Right ()\nRight ()\nRight ()\nRight Just first\nRight Just second\nRight Just third\n",
+            b"Right ()\nRight ()\nRight ()\nRight (Just first)\nRight (Just second)\nRight (Just third)\n",
             "{}",
             program.name
         );
@@ -307,7 +307,7 @@ assert.equal(flushes, 3);
 assert.equal(reads, 3);
 assert.deepEqual(lines, [
   "Right ()", "Left ConsoleError: flush failed", "Right ()",
-  "Right Just line1", "Left StdinReadFailure", "Right Just line3",
+  "Right (Just line1)", "Left StdinReadFailure", "Right (Just line3)",
 ]);
 "#);
         fs::write(&probe, &script).unwrap();

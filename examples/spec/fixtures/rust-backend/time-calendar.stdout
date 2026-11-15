@@ -75,7 +75,7 @@ InvalidDateTimeText { offset: 11 }
 2024-01-01T00:00:00+18:00
 2024-01-01T00:00:00-18:00
 InvalidUtcOffsetSeconds 64860
-InvalidUtcOffsetSeconds -64860
+InvalidUtcOffsetSeconds (-64860)
 InvalidDateTimeText { offset: 23 }
 InvalidUtcOffsetSeconds 68400
 InvalidDateTimeText { offset: 28 }
@@ -99,7 +99,7 @@ InvalidDateTimeText { offset: 4 }
 +9007199254740991-12-31T23:59:59.999999999Z
 -9007199254740991-01-01T00:00:00Z
 InvalidUtcOffsetSeconds 64801
-InvalidUtcOffsetSeconds -64801
+InvalidUtcOffsetSeconds (-64801)
 InvalidUtcOffsetSeconds 9007199254740991
 2024-02-29
 12:34:56.123456789

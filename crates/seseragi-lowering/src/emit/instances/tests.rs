@@ -37,8 +37,8 @@ pub type AppError deriving Show =
     assert_eq!(
         output,
         "\
-export const __ssrg$instance$Show$0: ResolvedShow<Detail> = _ssrg_show_boundedShow((value: Detail): string => { switch (value.tag) { case \"Detail\": return \"Detail\" + \" \" + _ssrg_show_stringShow.show(value.value); } });
-export const __ssrg$instance$Show$1: ResolvedShow<AppError> = _ssrg_show_boundedShow((value: AppError): string => { switch (value.tag) { case \"Wrapped\": return \"Wrapped\" + \" \" + __ssrg$instance$Show$0.show(value.value); case \"EndOfInput\": return \"EndOfInput\"; } });
+export const __ssrg$instance$Show$0: ResolvedShow<Detail> = _ssrg_show_boundedShow((value: Detail, payload): string => { switch (value.tag) { case \"Detail\": return \"Detail\" + \" \" + payload(_ssrg_show_stringShow, value.value); } }, (value: Detail): boolean => value.tag === \"Detail\");
+export const __ssrg$instance$Show$1: ResolvedShow<AppError> = _ssrg_show_boundedShow((value: AppError, payload): string => { switch (value.tag) { case \"Wrapped\": return \"Wrapped\" + \" \" + payload(__ssrg$instance$Show$0, value.value); case \"EndOfInput\": return \"EndOfInput\"; } }, (value: AppError): boolean => value.tag === \"Wrapped\");
 "
     );
 }
@@ -65,7 +65,7 @@ pub type Chain deriving Show =
     .expect("valid test lowering input");
 
     assert!(output.contains(
-        "case \"Link\": return \"Link\" + \" \" + __ssrg$instance$Show$0.show(value.value);"
+        "case \"Link\": return \"Link\" + \" \" + payload(__ssrg$instance$Show$0, value.value);"
     ));
     assert_eq!(output.lines().count(), 1);
 }
@@ -94,18 +94,18 @@ pub newtype UserId deriving Show, Debug = Int
     assert!(
         bundle
             .typescript
-            .contains("(_ssrg_show_arrayShow<A>(__ssrg$evidence$0)).show(value.value)"),
+            .contains("payload((_ssrg_show_arrayShow<A>(__ssrg$evidence$0)), value.value)"),
         "{}",
         bundle.typescript
     );
     assert!(bundle
         .typescript
-        .contains("(_ssrg_debug_arrayDebug<A>(__ssrg$evidence$0)).debug(value.value)"));
+        .contains("payload((_ssrg_debug_arrayDebug<A>(__ssrg$evidence$0)), value.value)"));
     assert!(bundle
         .typescript
         .contains("\"Profile { \" + \"name: \" + _ssrg_show_stringShow.show(value[\"name\"])"));
     assert!(bundle.typescript.contains(
-        "case \"UserId\": return \"UserId\" + \" \" + _ssrg_show_intShow.show(value.value);"
+        "case \"UserId\": return \"UserId\" + \" \" + payload(_ssrg_show_intShow, value.value);"
     ));
     assert!(bundle
         .typescript

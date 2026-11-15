@@ -632,9 +632,13 @@ fn native_filesystem_display(name: &str, value: &V) -> String {
                 "FileUtf8Failure" => "std/text::Utf8DecodeError",
                 _ => panic!("Rust ABI: FileTextError variant"),
             };
+            // InvalidUtf8 is a variant application; FileSystemError is a
+            // struct and stays bare.
+            let payload = value.payload();
+            let text = native_filesystem_display(child, &payload);
             format!(
                 "{tag} {}",
-                native_filesystem_display(child, &value.payload())
+                native_parenthesized(&text, native_is_application(&payload))
             )
         }
         "std/fs::FileMetadata" => format!(
@@ -686,12 +690,18 @@ fn native_filesystem_display(name: &str, value: &V) -> String {
 }
 pub fn native_filesystem_display_dictionary(name: &'static str, debug: bool) -> V {
     let method = if debug { "debug" } else { "show" };
-    V::dict(vec![(
+    let display = (
         method,
         V::fun(vec![V::text(name)], |c, value| {
             native_display(|| V::text(&native_filesystem_display(native_text(&c[0]), &value)))
         }),
-    )])
+    );
+    // A Path renders as a quoted string, not as an application.
+    if name == "std/path::Path" {
+        V::dict(vec![display])
+    } else {
+        V::dict(vec![display, ("grouped", native_grouped_variant())])
+    }
 }
 
 #[cfg(test)]

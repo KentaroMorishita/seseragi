@@ -1,15 +1,15 @@
-Just Right 0
-Just Left ""
-Just Left "雪🙂"
+Just (Right 0)
+Just (Left "")
+Just (Left "雪🙂")
 []
-[Right -9007199254740991, Right 9007199254740991]
+[Right (-9007199254740991), Right 9007199254740991]
 Nothing
-Just Right ""
+Just (Right "")
 `[Right 1, Right 2]
 `[]
 Left 7
-Right Left "inner"
-Just Right 41
+Right (Left "inner")
+Just (Right 41)
 [Right 2, Right 3]
 [Left "value"]
 [Right 2, Right 3]
@@ -20,8 +20,8 @@ Just Right 41
 [Right "1", Right "2"]
 [Left "value"]
 [Right 11, Right 21, Left "stop", Right 12, Right 22]
-Just Left "stopped"
-Just Right Left "nested"
+Just (Left "stopped")
+Just (Right (Left "nested"))
 42
 42
 source;map;

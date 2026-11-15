@@ -33,7 +33,7 @@ fn optional_field_access_after_spread_preserves_missing_present_and_overridden_f
 fn optional_field_access_wraps_present_maybe_values_without_flattening() {
     run(
         include_str!("../../../examples/spec/fixtures/rust-backend/optional-field-nested-maybe.ssrg"),
-        "([Nothing, Just Nothing, Just Just value, Just Nothing, Just Just value, Nothing, Just Nothing, Just Just value], [absent, present Nothing, present Just value])",
+        "([Nothing, Just Nothing, Just (Just value), Just Nothing, Just (Just value), Nothing, Just Nothing, Just (Just value)], [absent, present Nothing, present Just value])",
     );
 }
 

@@ -33,7 +33,18 @@ fn native_error_scalar(value: V, debug: bool) -> String {
     }
 }
 
-fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<&V>) -> String {
+// A scalar payload of a standard error, parenthesized when it is negative.
+fn native_error_payload(value: V, debug: bool) -> String {
+    let negative = native_is_negative(&value);
+    native_parenthesized(&native_error_scalar(value, debug), negative)
+}
+
+fn native_standard_error_text(
+    name: &str,
+    value: &V,
+    debug: bool,
+    child: Option<(&V, &V)>,
+) -> String {
     if matches!(name, "std/prelude::ConsoleError" | "std/log::LogError") {
         let name = if name == "std/log::LogError" {
             "LogError"
@@ -93,7 +104,7 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
             "InvalidIntDigit" | "InvalidBigIntDigit" => {
                 native_error_record(tag, &payload, &[("offset", false), ("radix", false)])
             }
-            _ => format!("{tag} {}", native_error_scalar(payload, false)),
+            _ => format!("{tag} {}", native_error_payload(payload, false)),
         },
         "std/decimal::DecimalParseError" => {
             native_error_record(tag, &payload, &[("offset", false)])
@@ -117,21 +128,24 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
         | "std/stream::BufferCapacityError"
         | "std/queue::QueueCreateError"
         | "std/semaphore::SemaphoreCreateError" => {
-            format!("{tag} {}", native_error_scalar(payload, false))
+            format!("{tag} {}", native_error_payload(payload, false))
         }
         "std/stdin::StdinConfigError" | "std/bytes::ByteError" => {
-            format!("{tag} {}", payload.render())
+            format!(
+                "{tag} {}",
+                native_scalar_payload(&payload, payload.render())
+            )
         }
         "std/time::DurationError" => {
             if tag == "NegativeDuration" {
-                format!("{tag} {}", native_error_scalar(payload, false))
+                format!("{tag} {}", native_error_payload(payload, false))
             } else {
                 tag.into()
             }
         }
         "std/random::RandomRangeError" => {
             if tag == "InvalidProbability" {
-                format!("{tag} {}", native_error_scalar(payload, false))
+                format!("{tag} {}", native_error_payload(payload, false))
             } else {
                 native_error_record(
                     tag,
@@ -149,7 +163,10 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
         ),
         "std/bytes/hex::HexDecodeError" | "std/bytes/base64::Base64DecodeError" => {
             if matches!(tag, "OddHexLength" | "InvalidBase64Length") {
-                format!("{tag} {}", payload.render())
+                format!(
+                    "{tag} {}",
+                    native_scalar_payload(&payload, payload.render())
+                )
             } else {
                 native_error_record(tag, &payload, &[("offset", false)])
             }
@@ -161,9 +178,9 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
                     native_display(|| V::text(native_error_tag(&payload))).render()
                 )
             }
-            "InvalidArgumentEncoding" => format!("{tag} {}", native_error_scalar(payload, debug)),
+            "InvalidArgumentEncoding" => format!("{tag} {}", native_error_payload(payload, debug)),
             "InvalidEnvironmentName" | "InvalidEnvironmentEncoding" => {
-                format!("{tag} {}", native_error_scalar(payload, debug))
+                format!("{tag} {}", native_error_payload(payload, debug))
             }
             _ => tag.into(),
         },
@@ -177,14 +194,17 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
                 if matches!(payload, V::Text(_)) {
                     native_json_string(native_text(&payload))
                 } else {
-                    payload.render()
+                    native_scalar_payload(&payload, payload.render())
                 }
             ),
         },
         "std/child-process::ChildExitStatus" => match tag {
             "ChildSignaled" => format!("{tag} {}", native_error_tag(&payload)),
             "ChildHostTerminated" => format!("{tag} {}", native_json_string(native_text(&payload))),
-            _ => format!("{tag} {}", payload.render()),
+            _ => format!(
+                "{tag} {}",
+                native_scalar_payload(&payload, payload.render())
+            ),
         },
         "std/child-process::ChildProcessError" => match tag {
             "ChildInputAfterClose" => tag.into(),
@@ -235,7 +255,10 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
                     ("nanosecond", false),
                 ],
             ),
-            "InvalidUtcOffsetSeconds" => format!("{tag} {}", payload.render()),
+            "InvalidUtcOffsetSeconds" => format!(
+                "{tag} {}",
+                native_scalar_payload(&payload, payload.render())
+            ),
             "InvalidDateTimeText" => native_error_record(tag, &payload, &[("offset", false)]),
             _ => panic!("Rust ABI: DateTimeError variant"),
         },
@@ -252,7 +275,10 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
             "InvalidHeaderValue" => {
                 native_error_record(tag, &payload, &[("name", true), ("offset", false)])
             }
-            "InvalidHttpStatus" | "InvalidHttpBodyLimit" => format!("{tag} {}", payload.render()),
+            "InvalidHttpStatus" | "InvalidHttpBodyLimit" => format!(
+                "{tag} {}",
+                native_scalar_payload(&payload, payload.render())
+            ),
             _ => format!("{tag} {}", native_json_string(native_text(&payload))),
         },
         "std/http::HttpError" => match tag {
@@ -294,11 +320,11 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
         }
         "std/regex::RegexCompileErrorKind" => match tag {
             "UnexpectedRegexToken" | "DuplicateCaptureName" | "UnsupportedRegexFeature" => {
-                format!("{tag} {}", native_error_scalar(payload, debug))
+                format!("{tag} {}", native_error_payload(payload, debug))
             }
             _ => tag.into(),
         },
-        "std/web/html::HtmlBuildError" => format!("{tag} {}", native_error_scalar(payload, debug)),
+        "std/web/html::HtmlBuildError" => format!("{tag} {}", native_error_payload(payload, debug)),
         "std/web/dom::DomError" => match tag {
             "DomTargetAlreadyMounted" | "DomTargetRemoved" => tag.into(),
             "HydrationMismatch" => {
@@ -317,11 +343,12 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
                     native_error_scalar(payload.field("actual"), debug)
                 )
             }
-            _ => format!("{tag} {}", native_error_scalar(payload, debug)),
+            _ => format!("{tag} {}", native_error_payload(payload, debug)),
         },
         "std/web/dom::DomRuntimeError" => {
             let text = if tag == "DomFailure" {
-                native_display(|| {
+                let grouped = native_is_application(&payload);
+                let text = native_display(|| {
                     V::text(&native_standard_error_text(
                         "std/web/dom::DomError",
                         &payload,
@@ -329,12 +356,11 @@ fn native_standard_error_text(name: &str, value: &V, debug: bool, child: Option<
                         None,
                     ))
                 })
-                .render()
+                .render();
+                native_parenthesized(&text, grouped)
             } else {
-                child
-                    .expect("Rust ABI: dispatch failure dictionary")
-                    .apply(payload)
-                    .render()
+                let (render, grouping) = child.expect("Rust ABI: dispatch failure dictionary");
+                native_payload_text(render, grouping, payload)
             };
             format!("{tag} {text}")
         }
@@ -380,26 +406,34 @@ pub fn native_standard_error_dictionary(
         )]);
     }
     let mut captures = vec![V::text(name), V::Bool(method == "debug")];
-    captures.extend(children.into_iter().map(|child| child.field(method)));
-    V::dict(vec![(
-        method,
-        V::fun(captures, |c, value| {
-            let render = || {
-                V::text(&native_standard_error_text(
-                    native_text(&c[0]),
-                    &value,
-                    c[1].boolean(),
-                    c.get(2),
-                ))
-            };
-            // BenchmarkFailure's TS Show builds an unbounded document.
-            if native_text(&c[0]) == "std/benchmark::BenchmarkFailure" {
-                render()
-            } else {
-                native_display(render)
-            }
-        }),
-    )])
+    for child in children {
+        captures.push(child.field(method));
+        captures.push(native_display_grouping(&child));
+    }
+    // Records such as ConsoleError are not applications; every variant
+    // with a payload is.
+    V::dict(vec![
+        (
+            method,
+            V::fun(captures, |c, value| {
+                let render = || {
+                    V::text(&native_standard_error_text(
+                        native_text(&c[0]),
+                        &value,
+                        c[1].boolean(),
+                        c.get(2).zip(c.get(3)),
+                    ))
+                };
+                // BenchmarkFailure's TS Show builds an unbounded document.
+                if native_text(&c[0]) == "std/benchmark::BenchmarkFailure" {
+                    render()
+                } else {
+                    native_display(render)
+                }
+            }),
+        ),
+        ("grouped", native_grouped_variant()),
+    ])
 }
 
 #[cfg(test)]

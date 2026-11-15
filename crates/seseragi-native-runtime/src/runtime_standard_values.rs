@@ -4,90 +4,106 @@ pub fn native_standard_display_dictionary(
     debug: bool,
 ) -> V {
     let method = if debug { "debug" } else { "show" };
-    let mut captures = vec![V::text(provider)];
-    captures.extend(children.iter().map(|child| child.field(method)));
+    let mut children = children;
     if provider == "std/validation" {
-        captures[1] = native_standard_display_dictionary(
+        children[0] = native_standard_display_dictionary(
             "std/non-empty-list",
             vec![children[0].clone()],
             debug,
-        )
-        .field(method);
+        );
     }
-    V::dict(vec![(
-        method,
-        V::fun(captures, |captures, value| {
-            native_display(|| {
-                let render = |index: usize, value: V| {
-                    let V::Text(text) = captures[index + 1].apply(value) else {
-                        panic!("Rust ABI: display method must return String")
+    // Captures are the provider, then each child's method and grouping.
+    let mut captures = vec![V::text(provider)];
+    for child in &children {
+        captures.push(child.field(method));
+        captures.push(native_display_grouping(child));
+    }
+    let grouped = !matches!(provider, "std/non-empty-list");
+    V::dict(Vec::from_iter(
+        [(
+            method,
+            V::fun(captures, |captures, value| {
+                native_display(|| {
+                    let render = |index: usize, value: V| {
+                        let V::Text(text) = captures[2 * index + 1].apply(value) else {
+                            panic!("Rust ABI: display method must return String")
+                        };
+                        text.get().clone()
                     };
-                    text.get().clone()
-                };
-                let output = match native_text(&captures[0]) {
-                    "std/either" | "std/validation" => {
-                        let V::Adt(adt) = &value else {
-                            panic!("Rust ABI: expected sum value")
-                        };
-                        let (tag, index) = match adt.get().0 {
-                            "std/prelude::Left" => ("Left", 0),
-                            "std/prelude::Right" => ("Right", 1),
-                            "std/validation::Invalid" => ("Invalid", 0),
-                            "std/validation::Valid" => ("Valid", 1),
-                            _ => panic!("Rust ABI: expected canonical sum constructor"),
-                        };
-                        format!("{tag} {}", render(index, value.payload()))
-                    }
-                    "std/non-empty-list" => format!(
-                        "`[{}]",
-                        native_non_empty_values(&value)
-                            .into_iter()
-                            .map(|value| render(0, value))
-                            .collect::<Vec<_>>()
-                            .join(", ")
-                    ),
-                    "std/map" => {
-                        let V::Array(entries) =
-                            native_map_operation("std/map::entries", vec![], vec![value])
-                        else {
-                            unreachable!()
-                        };
-                        format!(
-                            "Map [{}]",
-                            entries
-                                .get()
-                                .iter()
-                                .map(|entry| {
-                                    let key = render(0, entry.index(0));
-                                    let value = render(1, entry.index(1));
-                                    format!("({key}, {value})")
-                                })
+                    let payload = |index: usize, value: V| {
+                        native_payload_text(
+                            &captures[2 * index + 1],
+                            &captures[2 * index + 2],
+                            value,
+                        )
+                    };
+                    let output = match native_text(&captures[0]) {
+                        "std/either" | "std/validation" => {
+                            let V::Adt(adt) = &value else {
+                                panic!("Rust ABI: expected sum value")
+                            };
+                            let (tag, index) = match adt.get().0 {
+                                "std/prelude::Left" => ("Left", 0),
+                                "std/prelude::Right" => ("Right", 1),
+                                "std/validation::Invalid" => ("Invalid", 0),
+                                "std/validation::Valid" => ("Valid", 1),
+                                _ => panic!("Rust ABI: expected canonical sum constructor"),
+                            };
+                            format!("{tag} {}", payload(index, value.payload()))
+                        }
+                        "std/non-empty-list" => format!(
+                            "`[{}]",
+                            native_non_empty_values(&value)
+                                .into_iter()
+                                .map(|value| render(0, value))
                                 .collect::<Vec<_>>()
                                 .join(", ")
-                        )
-                    }
-                    "std/set" => {
-                        let V::Array(values) =
-                            native_set_operation("std/set::toArray", vec![], vec![value])
-                        else {
-                            unreachable!()
-                        };
-                        format!(
-                            "Set [{}]",
-                            values
-                                .get()
-                                .iter()
-                                .map(|value| render(0, value.clone()))
-                                .collect::<Vec<_>>()
-                                .join(", ")
-                        )
-                    }
-                    _ => panic!("Rust ABI: unsupported standard display provider"),
-                };
-                V::text(&output)
-            })
-        }),
-    )])
+                        ),
+                        "std/map" => {
+                            let V::Array(entries) =
+                                native_map_operation("std/map::entries", vec![], vec![value])
+                            else {
+                                unreachable!()
+                            };
+                            format!(
+                                "Map [{}]",
+                                entries
+                                    .get()
+                                    .iter()
+                                    .map(|entry| {
+                                        let key = render(0, entry.index(0));
+                                        let value = render(1, entry.index(1));
+                                        format!("({key}, {value})")
+                                    })
+                                    .collect::<Vec<_>>()
+                                    .join(", ")
+                            )
+                        }
+                        "std/set" => {
+                            let V::Array(values) =
+                                native_set_operation("std/set::toArray", vec![], vec![value])
+                            else {
+                                unreachable!()
+                            };
+                            format!(
+                                "Set [{}]",
+                                values
+                                    .get()
+                                    .iter()
+                                    .map(|value| render(0, value.clone()))
+                                    .collect::<Vec<_>>()
+                                    .join(", ")
+                            )
+                        }
+                        _ => panic!("Rust ABI: unsupported standard display provider"),
+                    };
+                    V::text(&output)
+                })
+            }),
+        )]
+        .into_iter()
+        .chain(grouped.then(|| ("grouped", native_grouped_always()))),
+    ))
 }
 
 fn native_standard_append(provider: &str, children: &[V], left: V, right: V) -> V {

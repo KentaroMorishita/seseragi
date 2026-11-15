@@ -17,7 +17,8 @@ pub fn native_array_index(values: V, offset: V) -> V {
 // methods. Nothing skips the child; Just invokes it once at the shared depth.
 pub fn native_maybe_display_dictionary(element: V, debug: bool) -> V {
     let method = if debug { "debug" } else { "show" };
-    let render = V::fun(vec![element.field(method)], |capture, value| {
+    let captures = vec![element.field(method), native_display_grouping(&element)];
+    let render = V::fun(captures, |capture, value| {
         native_display(|| {
             let V::Adt(value) = value else {
                 panic!("Rust ABI: expected Maybe")
@@ -25,17 +26,17 @@ pub fn native_maybe_display_dictionary(element: V, debug: bool) -> V {
             match value.get().0 {
                 "std/prelude::Nothing" => V::text("Nothing"),
                 "std/prelude::Just" => {
-                    let rendered = capture[0].apply(value.get().1.clone());
-                    let V::Text(text) = rendered else {
-                        panic!("Rust ABI: display method must return String")
-                    };
-                    V::text(&format!("Just {}", text.get()))
+                    let text = native_payload_text(&capture[0], &capture[1], value.get().1.clone());
+                    V::text(&format!("Just {text}"))
                 }
                 _ => panic!("Rust ABI: expected canonical Maybe constructor"),
             }
         })
     });
-    V::dict(vec![(method, render)])
+    V::dict(vec![
+        (method, render),
+        ("grouped", native_grouped_variant()),
+    ])
 }
 
 // The selected element method is an explicit managed capture. Traversing an

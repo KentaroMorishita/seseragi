@@ -1,5 +1,5 @@
-NonPositiveRandomSize -9007199254740991
-NonPositiveRandomSize -1
+NonPositiveRandomSize (-9007199254740991)
+NonPositiveRandomSize (-1)
 NonPositiveRandomSize 0
 Right
 Right
@@ -17,11 +17,11 @@ Right -9007199254740991
 Right 9007199254740990
 Left EmptyRandomIntRange { lower: 3, upperExclusive: 3 }
 Left EmptyRandomIntRange { lower: 4, upperExclusive: -2 }
-Left InvalidProbability -0.1
+Left InvalidProbability (-0.1)
 Left InvalidProbability 1.1
 Left InvalidProbability NaN
 Left InvalidProbability Infinity
-Left InvalidProbability -Infinity
+Left InvalidProbability (-Infinity)
 Right False
 Right True
 Right False

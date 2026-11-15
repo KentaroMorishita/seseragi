@@ -155,7 +155,7 @@ const CONFIG_EXPECTED: &str = concat!(
         "EmptyExecutableName\nExecutableNameContainsSeparator \"a/b\"\nExecutableNameContainsSeparator \"a\\\\b\"\nok\n",
         "ArgumentContainsNul { index: 1, offset: 3 }\nArgumentContainsNul { index: 2, offset: 2 }\nok\n",
         "EnvironmentNameContainsNul \"name\\u0000\"\nEnvironmentValueContainsNul \"value\\u0000\"\nEnvironmentNameContainsNul \"name\\u0000\"\n",
-        "ok\nok\nInvalidCaptureLimit 0\nInvalidCaptureLimit -1\nok\nok\nok\n"
+        "ok\nok\nInvalidCaptureLimit 0\nInvalidCaptureLimit (-1)\nok\nok\nok\n"
     );
 
 #[test]
