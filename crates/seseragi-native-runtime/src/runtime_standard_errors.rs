@@ -347,7 +347,7 @@ fn native_standard_error_text(
         },
         "std/web/dom::DomRuntimeError" => {
             let text = if tag == "DomFailure" {
-                let grouped = native_is_application(&payload);
+                let grouped = native_display_within_bound() && native_is_application(&payload);
                 let text = native_display(|| {
                     V::text(&native_standard_error_text(
                         "std/web/dom::DomError",

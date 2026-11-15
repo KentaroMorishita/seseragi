@@ -1824,7 +1824,7 @@ function showDocument<Value>(
   const instance = evidence as Show<Value>
   return (
     instance.document?.(value) ??
-    textDocument(instance.show(value), instance.grouped?.(value))
+    textDocument(instance.show(value), groupedText(instance, value))
   )
 }
 
@@ -1847,8 +1847,17 @@ function debugDocument<Value>(
   const instance = evidence as Debug<Value>
   return (
     instance.document?.(value) ??
-    textDocument(instance.debug(value), instance.grouped?.(value))
+    textDocument(instance.debug(value), groupedText(instance, value))
   )
+}
+
+// A derived payload elided at the depth limit renders as a bare "…", like
+// the standard documents, so it is not parenthesized.
+function groupedText<Value>(
+  instance: { grouped?: (value: Value) => boolean },
+  value: Value
+): boolean {
+  return displayDepth < displayDepthLimit && instance.grouped?.(value) === true
 }
 
 function textDocument(

@@ -165,6 +165,10 @@ pub fn native_list_operation(name: &str, arguments: Vec<V>) -> V {
 thread_local! {
     static DISPLAY_DEPTH: Cell<usize> = const { Cell::new(0) };
 }
+pub fn native_display_within_bound() -> bool {
+    DISPLAY_DEPTH.with(Cell::get) < 128
+}
+
 // Standard display dictionaries share TS's 128-level document construction
 // bound. User methods keep their own recursion policy, as on the TS target.
 pub fn native_display(render: impl FnOnce() -> V) -> V {
@@ -194,7 +198,10 @@ pub fn native_display_grouping(dictionary: &V) -> V {
 }
 
 pub fn native_payload_text(render: &V, grouping: &V, value: V) -> String {
-    let grouped = matches!(grouping, V::Fun(_)) && grouping.apply(value.clone()).boolean();
+    // A payload elided at the depth limit renders as a bare "…", as on TS.
+    let grouped = native_display_within_bound()
+        && matches!(grouping, V::Fun(_))
+        && grouping.apply(value.clone()).boolean();
     let V::Text(text) = render.apply(value) else {
         panic!("Rust ABI: display method must return String")
     };
@@ -214,8 +221,15 @@ pub fn native_grouped_variant() -> V {
     V::fun(vec![], |_, value| V::Bool(native_is_application(&value)))
 }
 
+// Nullary variants and a Unit payload share the V::Unit representation, so
+// variants whose payload type is a type parameter are recognized by tag.
 pub fn native_is_application(value: &V) -> bool {
-    matches!(value, V::Adt(adt) if !matches!(adt.get().1, V::Unit))
+    let V::Adt(adt) = value else {
+        return false;
+    };
+    let (tag, payload) = adt.get();
+    !matches!(payload, V::Unit)
+        || matches!(tag.rsplit("::").next(), Some("Just" | "DispatchFailure"))
 }
 
 pub fn native_grouped_always() -> V {
