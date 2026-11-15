@@ -290,6 +290,26 @@ impl Backend<'_> {
         }
         let l = id(left);
         let r = id(right);
+        // A derived ADT value with a payload is an application, which another
+        // constructor's payload must parenthesize.
+        let grouping = adt
+            .as_ref()
+            .filter(|_| matches!(class, "Show" | "Debug"))
+            .map(|adt| {
+                adt.variants
+                    .iter()
+                    .filter(|variant| variant.payload.is_some())
+                    .map(|variant| quoted(&variant.symbol))
+                    .collect::<Vec<_>>()
+            })
+            .filter(|tags| !tags.is_empty())
+            .map(|tags| {
+                format!(
+                    ",(\"grouped\", native_grouped_tags(vec![{}]))",
+                    tags.join(",")
+                )
+            })
+            .unwrap_or_default();
         let body = if let Some(adt) = adt {
             if adt.variants.is_empty()
                 || (adt.newtype && (adt.variants.len() != 1 || adt.variants[0].payload.is_none()))
@@ -396,7 +416,7 @@ impl Backend<'_> {
             Self::closure(left, &body, scope)
         };
         Ok(Some(format!(
-            "V::dict(vec![{inherited}({}, {value})])",
+            "V::dict(vec![{inherited}({}, {value}){grouping}])",
             quoted(operation)
         )))
     }
@@ -468,6 +488,10 @@ impl Backend<'_> {
                 "compare" => body.push_str(&format!("let order = {call}.apply({right}); if !order.tagged(\"std/prelude::Equal\") {{ return order; }}")),
                 "hash" if seed.is_none() => body.push_str(&format!("return {call};")),
                 "hash" => body.push_str(&format!("let V::Int(hash) = {call} else {{ panic!(\"Rust ABI: Hash result\") }}; state = (state ^ hash as u32).wrapping_mul(16777619);")),
+                // An ADT payload has no label. It is parenthesized when its
+                // dictionary renders an application, a negative number, or a
+                // Range.
+                _ if label.is_empty() => body.push_str(&format!("let dictionary = {dictionary}; text.push_str(&native_payload_text(&dictionary.field({}), &native_display_grouping(&dictionary), {left}));", quoted(operation))),
                 _ => {
                     if index > 0 { body.push_str("text.push_str(\", \");"); }
                     body.push_str(&format!("text.push_str({}); let V::Text(child) = {call} else {{ panic!(\"Rust ABI: display result\") }}; text.push_str(child.get());", quoted(label)));

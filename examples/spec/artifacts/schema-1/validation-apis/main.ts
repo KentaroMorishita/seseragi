@@ -100,8 +100,8 @@ type User = {
   readonly "age": number;
   readonly [__ssrg$brand$User]: true;
 };
-export const __ssrg$instance$Show$0: _ssrg_show_Show<FormError> = _ssrg_show_boundedShow((value: FormError): string => { switch (value.tag) { case "NameRequired": return "NameRequired"; case "AgeMustBePositive": return "AgeMustBePositive"; } });
-export const __ssrg$instance$Debug$1: _ssrg_debug_Debug<FormError> = _ssrg_debug_boundedDebug((value: FormError): string => { switch (value.tag) { case "NameRequired": return "NameRequired"; case "AgeMustBePositive": return "AgeMustBePositive"; } });
+export const __ssrg$instance$Show$0: _ssrg_show_Show<FormError> = _ssrg_show_boundedShow((value: FormError, payload): string => { switch (value.tag) { case "NameRequired": return "NameRequired"; case "AgeMustBePositive": return "AgeMustBePositive"; } });
+export const __ssrg$instance$Debug$1: _ssrg_debug_Debug<FormError> = _ssrg_debug_boundedDebug((value: FormError, payload): string => { switch (value.tag) { case "NameRequired": return "NameRequired"; case "AgeMustBePositive": return "AgeMustBePositive"; } });
 export const __ssrg$instance$Show$2: _ssrg_show_Show<User> = _ssrg_show_boundedShow((value: User): string => "User { " + "name: " + _ssrg_show_stringShow.show(value["name"]) + ", " + "age: " + _ssrg_show_intShow.show(value["age"]) + " }");
 export const __ssrg$instance$Debug$3: _ssrg_debug_Debug<User> = _ssrg_debug_boundedDebug((value: User): string => "User { " + "name: " + _ssrg_debug_stringDebug.debug(value["name"]) + ", " + "age: " + _ssrg_debug_intDebug.debug(value["age"]) + " }");
 export const __ssrg$instance$Eq$4 = { "eq": (left: FormError) => (right: FormError) => (($ssrg_match: readonly [FormError, FormError]): boolean => $ssrg_match[0].tag === "NameRequired" && $ssrg_match[1].tag === "NameRequired" ? true : $ssrg_match[0].tag === "AgeMustBePositive" && $ssrg_match[1].tag === "AgeMustBePositive" ? true : false)([left, right] as const) } as const;

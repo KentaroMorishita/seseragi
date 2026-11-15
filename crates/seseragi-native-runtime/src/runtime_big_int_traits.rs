@@ -55,12 +55,23 @@ pub fn native_big_int_hash_dictionary() -> V {
 }
 
 pub fn native_big_int_display_dictionary(debug: bool) -> V {
-    V::dict(vec![(
-        if debug { "debug" } else { "show" },
-        V::fun(vec![], |_, value| {
-            native_display(|| native_big_int_operation("std/big-int::format", value))
-        }),
-    )])
+    V::dict(vec![
+        (
+            if debug { "debug" } else { "show" },
+            V::fun(vec![], |_, value| {
+                native_display(|| native_big_int_operation("std/big-int::format", value))
+            }),
+        ),
+        (
+            "grouped",
+            V::fun(vec![], |_, value| {
+                V::Bool(
+                    native_text(&native_big_int_operation("std/big-int::format", value))
+                        .starts_with('-'),
+                )
+            }),
+        ),
+    ])
 }
 
 #[cfg(test)]

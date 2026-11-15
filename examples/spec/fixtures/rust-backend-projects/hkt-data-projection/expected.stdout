@@ -1,5 +1,5 @@
 Just 42
-Just Just 7
+Just (Just 7)
 Just stored
 Right 9
 Just 11

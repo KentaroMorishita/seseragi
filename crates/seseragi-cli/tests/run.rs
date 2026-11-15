@@ -385,7 +385,7 @@ fn renders_a_split_package_typed_failure() {
     assert_eq!(String::from_utf8_lossy(&output.stdout), "");
     assert_eq!(
         String::from_utf8_lossy(&output.stderr),
-        "InputFailure UnknownHand lizard\n"
+        "InputFailure (UnknownHand lizard)\n"
     );
 }
 

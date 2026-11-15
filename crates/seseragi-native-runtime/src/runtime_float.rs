@@ -95,18 +95,24 @@ pub fn native_float_dictionary(identity: &'static str) -> V {
             "std/float::Div" => arithmetic!("div", "/"),
             "std/float::Rem" => arithmetic!("rem", "%"),
             "std/float::Pow" => arithmetic!("pow", "**"),
-            "Show<std/prelude::Float>" => V::dict(vec![(
-                "show",
-                V::fun(vec![], |_, v| {
-                    native_display(|| V::text(&native_float_format(native_float(&v))))
-                }),
-            )]),
-            "Debug<std/prelude::Float>" => V::dict(vec![(
-                "debug",
-                V::fun(vec![], |_, v| {
-                    native_display(|| V::text(&native_float_format(native_float(&v))))
-                }),
-            )]),
+            "Show<std/prelude::Float>" => V::dict(vec![
+                (
+                    "show",
+                    V::fun(vec![], |_, v| {
+                        native_display(|| V::text(&native_float_format(native_float(&v))))
+                    }),
+                ),
+                ("grouped", native_grouped_negative()),
+            ]),
+            "Debug<std/prelude::Float>" => V::dict(vec![
+                (
+                    "debug",
+                    V::fun(vec![], |_, v| {
+                        native_display(|| V::text(&native_float_format(native_float(&v))))
+                    }),
+                ),
+                ("grouped", native_grouped_negative()),
+            ]),
             "std/float::Zero" => V::dict(vec![("zero", V::fun(vec![], |_, _| V::Float(0.0)))]),
             "std/float::One" => V::dict(vec![("one", V::fun(vec![], |_, _| V::Float(1.0)))]),
             _ => panic!("Rust ABI: unknown Float dictionary"),

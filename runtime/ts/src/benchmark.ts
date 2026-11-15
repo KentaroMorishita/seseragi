@@ -2,7 +2,7 @@ import type { Console } from "./console-service"
 import { type Effect, fail as effectFail, type Unit } from "./effect"
 import type { Logger } from "./logger-service"
 import type { Random } from "./random"
-import { concat, indent, line, renderDocument, text } from "./show"
+import { concat, grouped, indent, line, renderDocument, text } from "./show"
 
 export type BenchmarkEnvironment = Readonly<{
   random: Random
@@ -54,10 +54,12 @@ export const benchmarkFailureEq = /* @__PURE__ */ Object.freeze({
     left.value === right.value,
 })
 const failureDocument = (value: BenchmarkFailure) =>
-  concat([
-    text("ExplicitBenchmarkFailure"),
-    indent(concat([line, text(value.value)])),
-  ])
+  grouped(
+    concat([
+      text("ExplicitBenchmarkFailure"),
+      indent(concat([line, text(value.value)])),
+    ])
+  )
 export const benchmarkFailureShow = /* @__PURE__ */ Object.freeze({
   show: (value: BenchmarkFailure) => renderDocument(failureDocument(value)),
   document: failureDocument,

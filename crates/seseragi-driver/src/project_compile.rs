@@ -1452,7 +1452,7 @@ mod tests {
         assert!(main
             .generated
             .typescript
-            .contains("__ssrg$instance$Show$1.show(value.value)"));
+            .contains("payload(__ssrg$instance$Show$1, value.value)"));
     }
 
     #[test]

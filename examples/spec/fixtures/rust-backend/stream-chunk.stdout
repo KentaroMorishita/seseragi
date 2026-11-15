@@ -1,5 +1,5 @@
 error:NonPositiveSize 0
-error:NonPositiveSize -1
+error:NonPositiveSize (-1)
 [[1, 2], [3, 4]]
 [[1, 2], [3, 4], [5]]
 []

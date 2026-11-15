@@ -101,10 +101,31 @@ export type RenderDocument =
       readonly compactPadding: boolean
       readonly items: readonly RenderDocument[]
     }
+  | {
+      /**
+       * Marks a value that needs parentheses in a constructor payload, such
+       * as `Just 1` or `-5`. It renders as its document everywhere else.
+       * `atomic` values stay on one line inside their parentheses.
+       */
+      readonly kind: "grouped"
+      readonly atomic: boolean
+      readonly document: RenderDocument
+    }
 
 type DocumentBacked<Value> = {
   readonly document?: (value: Value) => RenderDocument
+  /**
+   * Whether a dictionary without a document renders `value` as a constructor
+   * application that needs parentheses in a constructor payload.
+   */
+  readonly grouped?: (value: Value) => boolean
 }
+
+/** Renders a constructor payload, adding parentheses when it needs them. */
+export type PayloadRenderer = <Payload>(
+  evidence: ShowEvidence<Payload> | DebugEvidence<Payload>,
+  value: Payload
+) => string
 
 /**
  * The runtime dictionary representation of Seseragi's pure `Show<A>` trait.
@@ -152,6 +173,14 @@ export function concat(documents: readonly RenderDocument[]): RenderDocument {
 
 export function indent(document: RenderDocument): RenderDocument {
   return Object.freeze({ kind: "indent", document })
+}
+
+/** Marks a document that needs parentheses in a constructor payload. */
+export function grouped(
+  document: RenderDocument,
+  atomic = false
+): RenderDocument {
+  return Object.freeze({ kind: "grouped", atomic, document })
 }
 
 export function delimited(
@@ -240,23 +269,27 @@ function defineDebug<Value>(
  * User-defined instances remain responsible for their own recursion policy.
  */
 export function boundedShow<Value>(
-  show: (value: Value) => string
+  show: (value: Value, payload: PayloadRenderer) => string,
+  grouped?: (value: Value) => boolean
 ): Show<Value> {
   return Object.freeze({
     show(value: Value): string {
-      return withDisplayDepth(() => show(value), "…")
+      return withDisplayDepth(() => show(value, showPayload), "…")
     },
+    ...(grouped === undefined ? {} : { grouped }),
   })
 }
 
 /** Wraps compiler-derived Debug implementations with the shared depth bound. */
 export function boundedDebug<Value>(
-  debug: (value: Value) => string
+  debug: (value: Value, payload: PayloadRenderer) => string,
+  grouped?: (value: Value) => boolean
 ): Debug<Value> {
   return Object.freeze({
     debug(value: Value): string {
-      return withDisplayDepth(() => debug(value), "…")
+      return withDisplayDepth(() => debug(value, debugPayload), "…")
     },
+    ...(grouped === undefined ? {} : { grouped }),
   })
 }
 
@@ -267,12 +300,12 @@ export const stringShow = /* @__PURE__ */ defineShow((value: string) =>
 
 /** Int Show uses the canonical signed base-10 spelling without separators. */
 export const intShow = /* @__PURE__ */ defineShow((value: number) =>
-  text(value.toString(10))
+  numberDocument(value.toString(10))
 )
 
 /** Int Debug uses the same canonical spelling as Show. */
 export const intDebug = /* @__PURE__ */ defineDebug((value: number) =>
-  text(value.toString(10))
+  numberDocument(value.toString(10))
 )
 
 /** The standard Int parse error keeps its constructor and field order. */
@@ -298,12 +331,12 @@ export const intParseErrorShow = /* @__PURE__ */ defineShow(
 
 /** BigInt Show uses the canonical signed base-10 spelling. */
 export const bigIntShow = /* @__PURE__ */ defineShow((value: SeseragiBigInt) =>
-  text(value.toString(10))
+  numberDocument(value.toString(10))
 )
 
 /** BigInt Debug deliberately matches its canonical Show spelling. */
 export const bigIntDebug = /* @__PURE__ */ defineDebug(
-  (value: SeseragiBigInt) => text(value.toString(10))
+  (value: SeseragiBigInt) => numberDocument(value.toString(10))
 )
 
 function bigIntParseErrorDocument(error: BigIntParseError): RenderDocument {
@@ -353,12 +386,12 @@ export const bigIntConversionErrorDebug = /* @__PURE__ */ defineDebug(
 
 /** Decimal Show uses the canonical exact non-exponent spelling. */
 export const decimalShow: Show<Decimal> = /* @__PURE__ */ defineShow(
-  (value: Decimal) => text(formatDecimal(value))
+  (value: Decimal) => numberDocument(formatDecimal(value))
 )
 
 /** Decimal Debug deliberately matches its canonical Show spelling. */
 export const decimalDebug: Debug<Decimal> = /* @__PURE__ */ defineDebug(
-  (value: Decimal) => text(formatDecimal(value))
+  (value: Decimal) => numberDocument(formatDecimal(value))
 )
 
 const decimalParseErrorDocument = (error: DecimalParseError): RenderDocument =>
@@ -402,11 +435,11 @@ export const decimalConversionErrorDebug = /* @__PURE__ */ defineDebug(
  * binary64 value while retaining an unambiguous Float spelling.
  */
 export const floatShow = /* @__PURE__ */ defineShow((value: number) =>
-  text(canonicalFloat(value))
+  numberDocument(canonicalFloat(value))
 )
 
 export const floatDebug = /* @__PURE__ */ defineDebug((value: number) =>
-  text(canonicalFloat(value))
+  numberDocument(canonicalFloat(value))
 )
 
 /**
@@ -662,11 +695,14 @@ export function rangeShow<Value>(
   bound: ShowEvidence<Value>
 ): Show<DisplayRange<Value>> {
   return defineShow((range) =>
-    concat([
-      showDocument(bound, range.start),
-      text(range.inclusive ? "..=" : ".."),
-      showDocument(bound, range.end),
-    ])
+    grouped(
+      concat([
+        showDocument(bound, range.start),
+        text(range.inclusive ? "..=" : ".."),
+        showDocument(bound, range.end),
+      ]),
+      true
+    )
   )
 }
 
@@ -674,11 +710,14 @@ export function rangeDebug<Value>(
   bound: DebugEvidence<Value>
 ): Debug<DisplayRange<Value>> {
   return defineDebug((range) =>
-    concat([
-      debugDocument(bound, range.start),
-      text(range.inclusive ? "..=" : ".."),
-      debugDocument(bound, range.end),
-    ])
+    grouped(
+      concat([
+        debugDocument(bound, range.start),
+        text(range.inclusive ? "..=" : ".."),
+        debugDocument(bound, range.end),
+      ]),
+      true
+    )
   )
 }
 
@@ -807,12 +846,12 @@ export const stdinErrorDebug = /* @__PURE__ */ defineDebug(
 
 export const stdinConfigErrorShow = /* @__PURE__ */ defineShow(
   (error: StdinConfigError) =>
-    constructorDocument(error.tag, text(String(error.value)))
+    constructorDocument(error.tag, numberDocument(String(error.value)))
 )
 
 export const stdinConfigErrorDebug = /* @__PURE__ */ defineDebug(
   (error: StdinConfigError) =>
-    constructorDocument(error.tag, text(String(error.value)))
+    constructorDocument(error.tag, numberDocument(String(error.value)))
 )
 
 export const logErrorShow = /* @__PURE__ */ defineShow((error: LogError) =>
@@ -940,11 +979,9 @@ function childProcessConfigErrorDocument(
     default:
       return constructorDocument(
         error.tag,
-        text(
-          typeof error.value === "string"
-            ? JSON.stringify(error.value)
-            : String(error.value)
-        )
+        typeof error.value === "string"
+          ? text(JSON.stringify(error.value))
+          : numberDocument(String(error.value))
       )
   }
 }
@@ -987,7 +1024,10 @@ function childProcessErrorDocument(error: ChildProcessError): RenderDocument {
 function childExitStatusDocument(status: ChildExitStatus): RenderDocument {
   switch (status.tag) {
     case "ChildExited":
-      return constructorDocument(status.tag, text(String(status.value)))
+      return constructorDocument(
+        status.tag,
+        numberDocument(String(status.value))
+      )
     case "ChildSignaled":
       return constructorDocument(status.tag, text(status.value.tag))
     case "ChildHostTerminated":
@@ -996,11 +1036,11 @@ function childExitStatusDocument(status: ChildExitStatus): RenderDocument {
 }
 
 export const byteErrorShow = /* @__PURE__ */ defineShow((error: ByteError) =>
-  constructorDocument("ByteOutOfRange", text(String(error.value)))
+  constructorDocument("ByteOutOfRange", numberDocument(String(error.value)))
 )
 
 export const byteErrorDebug = /* @__PURE__ */ defineDebug((error: ByteError) =>
-  constructorDocument("ByteOutOfRange", text(String(error.value)))
+  constructorDocument("ByteOutOfRange", numberDocument(String(error.value)))
 )
 
 export const bytesSliceErrorShow = /* @__PURE__ */ defineShow(
@@ -1012,26 +1052,20 @@ export const bytesSliceErrorDebug = /* @__PURE__ */ defineDebug(
 )
 
 function bytesSliceErrorDocument(error: BytesSliceError): RenderDocument {
-  return delimited(
-    "InvalidByteRange {",
-    [
-      text(`start: ${error.value.start}`),
-      text(`end: ${error.value.end}`),
-      text(`length: ${error.value.length}`),
-    ],
-    "}",
-    ",",
-    true
-  )
+  return recordConstructorDocument("InvalidByteRange", [
+    ["start", String(error.value.start)],
+    ["end", String(error.value.end)],
+    ["length", String(error.value.length)],
+  ])
 }
 
 function offsetErrorDocument(tag: string, offset: number): RenderDocument {
-  return delimited(`${tag} {`, [text(`offset: ${offset}`)], "}", ",", true)
+  return recordConstructorDocument(tag, [["offset", String(offset)]])
 }
 
 function hexDecodeErrorDocument(error: HexDecodeError): RenderDocument {
   return error.tag === "OddHexLength"
-    ? constructorDocument(error.tag, text(String(error.value)))
+    ? constructorDocument(error.tag, numberDocument(String(error.value)))
     : offsetErrorDocument(error.tag, error.value.offset)
 }
 
@@ -1045,7 +1079,7 @@ export const hexDecodeErrorDebug = /* @__PURE__ */ defineDebug(
 
 function base64DecodeErrorDocument(error: Base64DecodeError): RenderDocument {
   return error.tag === "InvalidBase64Length"
-    ? constructorDocument(error.tag, text(String(error.value)))
+    ? constructorDocument(error.tag, numberDocument(String(error.value)))
     : offsetErrorDocument(error.tag, error.value.offset)
 }
 
@@ -1148,29 +1182,42 @@ export const durationErrorDebug = /* @__PURE__ */ defineDebug(
 function dateTimeErrorDocument(error: DateTimeError): RenderDocument {
   switch (error.tag) {
     case "InvalidDate":
-      return text(
-        `InvalidDate { year: ${error.value.year}, month: ${error.value.month}, day: ${error.value.day} }`
+      return grouped(
+        text(
+          `InvalidDate { year: ${error.value.year}, month: ${error.value.month}, day: ${error.value.day} }`
+        )
       )
     case "InvalidTime":
-      return text(
-        `InvalidTime { hour: ${error.value.hour}, minute: ${error.value.minute}, second: ${error.value.second}, nanosecond: ${error.value.nanosecond} }`
+      return grouped(
+        text(
+          `InvalidTime { hour: ${error.value.hour}, minute: ${error.value.minute}, second: ${error.value.second}, nanosecond: ${error.value.nanosecond} }`
+        )
       )
     case "InvalidUtcOffsetSeconds":
-      return text(`InvalidUtcOffsetSeconds ${error.value}`)
+      return constructorDocument(
+        "InvalidUtcOffsetSeconds",
+        numberDocument(String(error.value))
+      )
     case "InvalidDateTimeText":
-      return text(`InvalidDateTimeText { offset: ${error.value.offset} }`)
+      return grouped(
+        text(`InvalidDateTimeText { offset: ${error.value.offset} }`)
+      )
   }
 }
 
 function timeZoneErrorDocument(error: TimeZoneError): RenderDocument {
   switch (error.tag) {
     case "UnknownTimeZone":
-      return text(`UnknownTimeZone ${JSON.stringify(error.value)}`)
+      return grouped(text(`UnknownTimeZone ${JSON.stringify(error.value)}`))
     case "TimeZoneDatabaseUnavailable":
-      return text(`TimeZoneDatabaseUnavailable ${JSON.stringify(error.value)}`)
+      return grouped(
+        text(`TimeZoneDatabaseUnavailable ${JSON.stringify(error.value)}`)
+      )
     case "TimeZoneDatabaseVersionMismatch":
-      return text(
-        `TimeZoneDatabaseVersionMismatch { required: ${JSON.stringify(error.value.required)}, actual: ${JSON.stringify(error.value.actual)} }`
+      return grouped(
+        text(
+          `TimeZoneDatabaseVersionMismatch { required: ${JSON.stringify(error.value.required)}, actual: ${JSON.stringify(error.value.actual)} }`
+        )
       )
   }
 }
@@ -1259,7 +1306,7 @@ function fileSystemErrorKindDocument(
 }
 
 function fileSystemErrorDocument(value: FileSystemError): RenderDocument {
-  return recordConstructorDocument("FileSystemError", [
+  return structDocument("FileSystemError", [
     ["operation", value.operation.tag],
     ["path", JSON.stringify(renderPath(value.path))],
     [
@@ -1278,7 +1325,7 @@ function fileSystemErrorDocument(value: FileSystemError): RenderDocument {
 }
 
 function fileMetadataDocument(value: FileMetadata): RenderDocument {
-  return recordConstructorDocument("FileMetadata", [
+  return structDocument("FileMetadata", [
     ["fileType", value.fileType.tag],
     ["sizeBytes", String(value.sizeBytes)],
     ["modified", value.modified.tag],
@@ -1287,7 +1334,7 @@ function fileMetadataDocument(value: FileMetadata): RenderDocument {
 }
 
 function directoryEntryDocument(value: DirectoryEntry): RenderDocument {
-  return recordConstructorDocument("DirectoryEntry", [
+  return structDocument("DirectoryEntry", [
     ["name", JSON.stringify(value.name)],
     ["path", JSON.stringify(renderPath(value.path))],
     [
@@ -1414,7 +1461,7 @@ function httpBuildErrorDocument(error: HttpBuildError): RenderDocument {
       ])
     case "InvalidHttpStatus":
     case "InvalidHttpBodyLimit":
-      return constructorDocument(error.tag, text(String(error.value)))
+      return constructorDocument(error.tag, numberDocument(String(error.value)))
     case "UnsupportedHttpScheme":
     case "InvalidHttpMethod":
     case "InvalidHeaderName":
@@ -1445,7 +1492,16 @@ function httpErrorDocument(error: HttpError): RenderDocument {
   }
 }
 
+/** A variant whose payload is a record, such as `InvalidUrl { offset: 3 }`. */
 function recordConstructorDocument(
+  name: string,
+  fields: ReadonlyArray<readonly [string, string]>
+): RenderDocument {
+  return grouped(structDocument(name, fields))
+}
+
+/** A struct value, such as `FileMetadata { ... }`. */
+function structDocument(
   name: string,
   fields: ReadonlyArray<readonly [string, string]>
 ): RenderDocument {
@@ -1650,12 +1706,14 @@ export const regexMatchDebug = /* @__PURE__ */ defineDebug(
 )
 
 function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {
-  return delimited(
-    "InvalidUtf8 {",
-    [text(`offset: ${error.value.offset}`)],
-    "}",
-    ",",
-    true
+  return grouped(
+    delimited(
+      "InvalidUtf8 {",
+      [text(`offset: ${error.value.offset}`)],
+      "}",
+      ",",
+      true
+    )
   )
 }
 
@@ -1667,21 +1725,13 @@ function stdinErrorDocument(error: StdinError): RenderDocument {
     case "StdinPositionOverflow":
       return text(error.tag)
     case "InvalidStdinUtf8":
-      return delimited(
-        "InvalidStdinUtf8 {",
-        [text(`offset: ${error.value.offset}`)],
-        "}",
-        ",",
-        true
-      )
+      return recordConstructorDocument(error.tag, [
+        ["offset", String(error.value.offset)],
+      ])
     case "StdinLineTooLong":
-      return delimited(
-        "StdinLineTooLong {",
-        [text(`limitBytes: ${error.value.limitBytes}`)],
-        "}",
-        ",",
-        true
-      )
+      return recordConstructorDocument(error.tag, [
+        ["limitBytes", String(error.value.limitBytes)],
+      ])
   }
 }
 
@@ -1772,7 +1822,10 @@ function showDocument<Value>(
   value: Value
 ): RenderDocument {
   const instance = evidence as Show<Value>
-  return instance.document?.(value) ?? text(instance.show(value))
+  return (
+    instance.document?.(value) ??
+    textDocument(instance.show(value), groupedText(instance, value))
+  )
 }
 
 function withDisplayDepth<Value>(render: () => Value, fallback: Value): Value {
@@ -1792,7 +1845,50 @@ function debugDocument<Value>(
   value: Value
 ): RenderDocument {
   const instance = evidence as Debug<Value>
-  return instance.document?.(value) ?? text(instance.debug(value))
+  return (
+    instance.document?.(value) ??
+    textDocument(instance.debug(value), groupedText(instance, value))
+  )
+}
+
+// A derived payload elided at the depth limit renders as a bare "…", like
+// the standard documents, so it is not parenthesized.
+function groupedText<Value>(
+  instance: { grouped?: (value: Value) => boolean },
+  value: Value
+): boolean {
+  return displayDepth < displayDepthLimit && instance.grouped?.(value) === true
+}
+
+function textDocument(
+  value: string,
+  isGrouped: boolean | undefined
+): RenderDocument {
+  return isGrouped === true ? grouped(text(value)) : text(value)
+}
+
+/** Negative numbers need parentheses in a constructor payload. */
+function numberDocument(value: string): RenderDocument {
+  return value.startsWith("-") ? grouped(text(value), true) : text(value)
+}
+
+function showPayload<Value>(
+  evidence: ShowEvidence<Value> | DebugEvidence<Value>,
+  value: Value
+): string {
+  return renderPayload(showDocument(evidence as ShowEvidence<Value>, value))
+}
+
+function debugPayload<Value>(
+  evidence: ShowEvidence<Value> | DebugEvidence<Value>,
+  value: Value
+): string {
+  return renderPayload(debugDocument(evidence as DebugEvidence<Value>, value))
+}
+
+function renderPayload(document: RenderDocument): string {
+  const rendered = renderDocument(document)
+  return document.kind === "grouped" ? `(${rendered})` : rendered
 }
 
 function requireRecordDescriptor(
@@ -1857,11 +1953,29 @@ function listDocuments<
   return documents
 }
 
+/**
+ * A constructor applied to its payload. The application itself needs
+ * parentheses when it is another constructor's payload, and so does a
+ * payload that is an application, a negative number, or a Range.
+ */
 function constructorDocument(
   name: string,
   payload: RenderDocument
 ): RenderDocument {
-  return concat([text(name), indent(concat([line, payload]))])
+  if (payload.kind !== "grouped") {
+    return grouped(concat([text(name), indent(concat([line, payload]))]))
+  }
+  if (payload.atomic) {
+    return grouped(
+      concat([
+        text(name),
+        indent(concat([line, text("("), payload.document, text(")")])),
+      ])
+    )
+  }
+  return grouped(
+    concat([text(`${name} `), delimited("(", [payload.document], ")")])
+  )
 }
 
 function renderWithLayout(
@@ -1887,6 +2001,9 @@ function renderWithLayout(
         break
       case "indent":
         append(current.document, depth + 1)
+        break
+      case "grouped":
+        append(current.document, depth)
         break
       case "delimited":
         output += current.open

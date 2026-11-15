@@ -541,7 +541,11 @@ mod time_calendar_tests {
         ] {
             assert_eq!(
                 error_text(&native_time_offset(seconds)),
-                format!("InvalidUtcOffsetSeconds {seconds}")
+                if seconds < 0 {
+                    format!("InvalidUtcOffsetSeconds ({seconds})")
+                } else {
+                    format!("InvalidUtcOffsetSeconds {seconds}")
+                }
             );
         }
         assert_eq!(LIVE.with(Cell::get), 0);

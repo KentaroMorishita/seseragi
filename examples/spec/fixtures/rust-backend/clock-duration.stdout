@@ -5,11 +5,11 @@
 60000000000
 3600000000000
 9007199254740991
-NegativeDuration -1
-NegativeDuration -1
-NegativeDuration -1
-NegativeDuration -1
-NegativeDuration -9007199254740991
+NegativeDuration (-1)
+NegativeDuration (-1)
+NegativeDuration (-1)
+NegativeDuration (-1)
+NegativeDuration (-9007199254740991)
 duration
 DurationOutsideRange
 duration

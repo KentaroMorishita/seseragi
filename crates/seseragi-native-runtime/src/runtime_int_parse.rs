@@ -124,7 +124,13 @@ fn native_int_parse_error_show(value: &V) -> String {
     let tag = native_standard_tag(value, "std/int::");
     match tag.as_str() {
         "EmptyInt" | "IntOutsideRange" => tag,
-        "InvalidIntRadix" => format!("{tag} {}", value.payload().render()),
+        "InvalidIntRadix" => {
+            let payload = value.payload();
+            format!(
+                "{tag} {}",
+                native_scalar_payload(&payload, payload.render())
+            )
+        }
         "InvalidIntDigit" => format!(
             "{tag} {{ offset: {}, radix: {} }}",
             value.payload().field("offset").render(),
@@ -135,12 +141,15 @@ fn native_int_parse_error_show(value: &V) -> String {
 }
 
 pub fn native_int_parse_error_show_dictionary() -> V {
-    V::dict(vec![(
-        "show",
-        V::fun(vec![], |_, value| {
-            native_display(|| V::text(&native_int_parse_error_show(&value)))
-        }),
-    )])
+    V::dict(vec![
+        (
+            "show",
+            V::fun(vec![], |_, value| {
+                native_display(|| V::text(&native_int_parse_error_show(&value)))
+            }),
+        ),
+        ("grouped", native_grouped_variant()),
+    ])
 }
 
 #[cfg(test)]

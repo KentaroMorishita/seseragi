@@ -366,7 +366,7 @@ fn stdin_configuration_chunks_lines_and_streams_match_typescript_at_boundaries()
     let scratch = tempfile::tempdir().unwrap();
     let scratch = scratch.path();
     let programs = programs(scratch);
-    compare(&programs, scratch, b"config\n", "NonPositiveReadSize -1\nNonPositiveReadSize 0\nRight\nRight\nReadSizeTooLarge 1048577\nReadSizeTooLarge 9007199254740991\nNonPositiveLineLimit -1\nNonPositiveLineLimit 0\nRight\nRight\nLineLimitTooLarge 67108865\nLineLimitTooLarge 9007199254740991\n");
+    compare(&programs, scratch, b"config\n", "NonPositiveReadSize (-1)\nNonPositiveReadSize 0\nRight\nRight\nReadSizeTooLarge 1048577\nReadSizeTooLarge 9007199254740991\nNonPositiveLineLimit (-1)\nNonPositiveLineLimit 0\nRight\nRight\nLineLimitTooLarge 67108865\nLineLimitTooLarge 9007199254740991\n");
     compare(&programs, scratch, b"chunks\n\x00\x80\xff\r\n\xc3\x28", "created\nRight Just [0, 128, 255]\nRight Just [13, 10, 195]\nRight Just [40]\nRight Nothing\nRight Nothing\nRight Nothing\n");
     compare(&programs, scratch, b"chunks\n", "created\nRight Nothing\nRight Nothing\nRight Nothing\nRight Nothing\nRight Nothing\nRight Nothing\n");
     compare(&programs, scratch, b"mixed\n\xff\0abcd\r\nxyremaining\nlast\r", "Right Just [255, 0]\nRight Just abcd\nRight Just [120, 121]\nRight Just remaining\nRight Just last\r\nRight Nothing\n");

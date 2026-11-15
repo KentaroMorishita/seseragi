@@ -14,7 +14,7 @@ export const Source: SourceError = { tag: "Source" } as const;
 export type AppError =
   | { readonly tag: "Wrapped"; readonly value: SourceError };
 export const Wrapped = (value: SourceError): AppError => ({ tag: "Wrapped", value } as const);
-export const __ssrg$instance$Show$0: _ssrg_show_Show<SourceError> = _ssrg_show_boundedShow((value: SourceError): string => { switch (value.tag) { case "Source": return "Source"; } });
-export const __ssrg$instance$Show$1: _ssrg_show_Show<AppError> = _ssrg_show_boundedShow((value: AppError): string => { switch (value.tag) { case "Wrapped": return "Wrapped" + " " + __ssrg$instance$Show$0.show(value.value); } });
+export const __ssrg$instance$Show$0: _ssrg_show_Show<SourceError> = _ssrg_show_boundedShow((value: SourceError, payload): string => { switch (value.tag) { case "Source": return "Source"; } });
+export const __ssrg$instance$Show$1: _ssrg_show_Show<AppError> = _ssrg_show_boundedShow((value: AppError, payload): string => { switch (value.tag) { case "Wrapped": return "Wrapped" + " " + payload(__ssrg$instance$Show$0, value.value); } }, (value: AppError): boolean => value.tag === "Wrapped");
 export const infallible = (_unit: undefined) => $ssrg$atSource($ssrg$source160, () => _ssrg_effect_succeed(undefined), true)
 export const main = (_unit: undefined) => _ssrg_effect_flatMap($ssrg$atSource($ssrg$source227, () => _ssrg_effect_mapError(Wrapped, $ssrg$atSource($ssrg$source245, () => _ssrg_effect_fail(Source), true)), true), () => $ssrg$atSource($ssrg$source262, () => _ssrg_effect_succeed(undefined), true))

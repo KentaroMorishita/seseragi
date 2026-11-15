@@ -531,6 +531,38 @@ constructor payloadはconstructor名の次行へ一段indentします。composit
 子dictionaryのrender documentをそのまま合成し、hostの配列文字列化やobject inspectionへ
 委譲しません。
 
+constructorのpayloadの位置に次の値が来るときは、payloadを`( )`で囲みます。表示を
+sourceとして読んだときに、値と同じ構造になるようにするためです。
+
+| payloadの値 | 表示の例 |
+| --- | --- |
+| payloadを持つconstructorの適用（newtype、recordをpayloadに持つvariantを含む） | `Just (Just 1)`、`Just (UserId 42)`、`Left (InvalidIntDigit { offset: 1, radix: 10 })` |
+| 負の数（`Int`、`Float`、`BigInt`、`Decimal`。`-0.0`と`-Infinity`を含む） | `Just (-5)`、`Circle (-1.0)` |
+| Range | `Just (1..5)` |
+
+次の値は囲みません。
+
+- payloadのないconstructor（`Nothing`）、literal、`NaN`、`Infinity`
+- Array、List、tuple、record、structの値（`Right P { x: 1 }`）
+- 一番外側の値。`show (Just 1)`は`Just 1`、`show (-5)`は`-5`です。
+- collection・tupleの要素とrecord・structのfield。`[Just 1, -5]`は囲みません。
+
+括弧が要るかどうかは、payloadを描画するinstanceが決めます。standard instanceとderived
+instanceはこの規則に従います。user定義のinstanceが返す文字列は、括弧を付けずにそのまま
+payloadへ置きます。DebugもShowと同じ規則で括弧を付けます。Debugは同じ外形で各payloadを
+Debugで描画するものであり、外形を変えないためです。
+
+multilineでは、constructorの適用を囲む開き括弧をconstructor名と同じ行に置き、payloadを
+次行へ一段indentし、閉じ括弧をconstructorのindentへ戻します。負の数とRangeは`(-1.0)`の
+ように一行のまま、constructor名の次行へ置きます。
+
+```text
+Just (
+  Right
+    (-1.0)
+)
+```
+
 `Range<Int>`は`Show<Range<Int>> where Show<Int>`と
 `Debug<Range<Int>> where Debug<Int>`を持ちます。終端を含まない値は`start..end`、含む値は
 `start..=end`としてbound自体を描画します。`5..5`のempty、`5..=5`のsingleton、

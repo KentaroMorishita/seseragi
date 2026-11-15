@@ -37,7 +37,7 @@ abc
 Just [1, 2, 3]
 Just [1, 2, 3]
 Just [1, 2, 3]
-Just Just ab
+Just (Just ab)
 Just ab
 Nothing
 Just mark:5

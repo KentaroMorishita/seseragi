@@ -8,6 +8,6 @@ $ssrg$assertUnicodeVersion("17.0.0")
 export type Badge =
   | { readonly tag: "Active" };
 export const Active: Badge = { tag: "Active" } as const;
-export const __ssrg$instance$Show$0: _ssrg_show_Show<Badge> = _ssrg_show_boundedShow((value: Badge): string => { switch (value.tag) { case "Active": return "Active"; } });
+export const __ssrg$instance$Show$0: _ssrg_show_Show<Badge> = _ssrg_show_boundedShow((value: Badge, payload): string => { switch (value.tag) { case "Active": return "Active"; } });
 export const render = (名前$prime: string) => (badge: Badge) => "Hello, " + _ssrg_show_stringShow["show"](名前$prime) + ": " + __ssrg$instance$Show$0["show"](badge)
 export const main = (_unit: undefined) => $ssrg$atSource($ssrg$source157, () => _ssrg_console_println($ssrg$atSource($ssrg$source157, () => render("Seseragi")(Active), false)), true)

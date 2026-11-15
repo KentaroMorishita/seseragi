@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.171] - 2026-11-15
+
+### Changed
+
+- `Show` and `Debug` put parentheses around a constructor payload that is itself a constructor application, a negative number or a Range, so the output reads back as the same value: `Just (Just Nothing)`, `Just (-5)`, `Circle (-1.0)`, `Left (InvalidIntDigit { offset: 1, radix: 10 })`, `Just (1..5)`. They used to print `Just Just Nothing` and `Just -5`, which read as a different expression. The outermost value, collection and tuple elements, record and struct fields, and struct values stay bare, so `show (Just 1)` is still `Just 1` and `show [Just 1, -5]` is unchanged. The TS and native targets print the same text. Text from a user-written instance is placed as it is. Programs that compare or parse this output need updating. Spec §4.9 and §9.11 state the rule.
+
 ## [0.61.170] - 2026-11-14
 
 ### Added

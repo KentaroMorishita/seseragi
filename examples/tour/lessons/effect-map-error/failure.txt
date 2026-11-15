@@ -1,1 +1,1 @@
-InvalidInputFailure InvalidInput bad
+InvalidInputFailure (InvalidInput bad)

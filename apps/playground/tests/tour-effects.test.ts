@@ -67,7 +67,9 @@ describe("Tour Effect curriculum", () => {
     const mapped = lessonById("effect-map-error")
     expect(mapped.source).toContain("|> mapError InvalidInputFailure")
     expect(mapped.expectedOutput).toBe("")
-    expect(mapped.expectedFailure).toBe("InvalidInputFailure InvalidInput bad")
+    expect(mapped.expectedFailure).toBe(
+      "InvalidInputFailure (InvalidInput bad)"
+    )
   })
 
   test("shows inferred and explicit contracts as separate forms", () => {

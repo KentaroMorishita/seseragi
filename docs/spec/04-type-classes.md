@@ -246,6 +246,11 @@ source-likeな表現を返します。`Debug`は同じ構造をdeveloper向け�
 newtypeのderived ShowとDebugはwrapperを透明化せず、`UserId 42` のようにconstructor名を
 含めます。型の意味を表示から失わないためです。
 
+ADT payloadがconstructorの適用、負の数、Rangeのときは、`Circle (-1.0)`や
+`Wrapped (UserId 42)`のようにpayloadを`( )`で囲みます。payloadを持つvariantとnewtypeの値は、
+別のconstructorのpayloadに置かれたときに囲まれます（`Just (Circle 1.0)`）。structの値と
+structのfieldは囲みません。規則の詳細は9.11に従います。
+
 derivingは構文木を受け取る汎用マクロではありません。生成可能な宣言、導出条件、名前解決は
 この節で閉じており、user codeを任意に生成・実行する能力を持ちません。
 

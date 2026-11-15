@@ -144,10 +144,18 @@ pub fn native_decimal_constant_dictionary(one: bool) -> V {
 }
 
 pub fn native_decimal_display_dictionary(debug: bool) -> V {
-    V::dict(vec![(
-        if debug { "debug" } else { "show" },
-        V::fun(vec![], |_, value| native_decimal_display(value)),
-    )])
+    V::dict(vec![
+        (
+            if debug { "debug" } else { "show" },
+            V::fun(vec![], |_, value| native_decimal_display(value)),
+        ),
+        (
+            "grouped",
+            V::fun(vec![], |_, value| {
+                V::Bool(native_text(&native_decimal_display(value)).starts_with('-'))
+            }),
+        ),
+    ])
 }
 
 #[cfg(test)]

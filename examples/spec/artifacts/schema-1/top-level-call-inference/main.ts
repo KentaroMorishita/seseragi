@@ -45,7 +45,7 @@ export type Box<A> = {
   readonly "value": A;
   readonly [__ssrg$brand$Box]: true;
 };
-export const __ssrg$instance$Debug$0 = <A,>(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>): _ssrg_debug_Debug<Packet<A>> => (_ssrg_debug_boundedDebug((value: Packet<A>): string => { switch (value.tag) { case "Packet": return "Packet" + " " + (__ssrg$evidence$0).debug(value.value); } }));
+export const __ssrg$instance$Debug$0 = <A,>(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>): _ssrg_debug_Debug<Packet<A>> => (_ssrg_debug_boundedDebug((value: Packet<A>, payload): string => { switch (value.tag) { case "Packet": return "Packet" + " " + payload((__ssrg$evidence$0), value.value); } }, (value: Packet<A>): boolean => value.tag === "Packet"));
 export const __ssrg$instance$Debug$1 = <A,>(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>): _ssrg_debug_Debug<Box<A>> => (_ssrg_debug_boundedDebug((value: Box<A>): string => "Box { " + "value: " + (__ssrg$evidence$0).debug(value["value"]) + " }"));
 const addMaybe = (left: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }) => (right: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }) => _ssrg_maybe_monad["flatMap"]((a: number) => _ssrg_maybe_monad["flatMap"]((b: number) => $ssrg$atSource($ssrg$source306, () => ((_ssrg_maybe_applicative["pure"](_ssrg_int_add(a, b, $ssrg$source312))) as { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }), false))(right))(left)
 const wrapMaybe = <A,>(value: A) => $ssrg$atSource($ssrg$source365, () => _ssrg_maybe_Just(value), false)

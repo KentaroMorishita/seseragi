@@ -705,7 +705,7 @@ fn imports_selected_derived_show_evidence_by_semantic_identity() {
         "import { type ImportedError, __ssrg$instance$Show$0 as __ssrg$instance$Show$0_1 } from \"./domain.js\""
     ));
     assert!(generated.typescript.contains(
-        "case \"Invalid\": return \"Invalid\" + \" \" + __ssrg$instance$Show$0_1.show(value.value);"
+        "case \"Invalid\": return \"Invalid\" + \" \" + payload(__ssrg$instance$Show$0_1, value.value);"
     ));
 }
 
