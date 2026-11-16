@@ -53,17 +53,6 @@ fn branch_on_error(effect: V, cleanup: V) -> V {
         ],
     )
 }
-// Runs `first`, then `second` even when `first` fails.
-fn branch_both(first: V, second: V) -> V {
-    V::effect(
-        Instruction::Bracket,
-        vec![
-            branch_succeed(V::Unit),
-            V::fun(vec![first], |c, _| c[0].clone()),
-            V::fun(vec![second], |c, _| c[0].clone()),
-        ],
-    )
-}
 // The branch Fiber. `demand` is the Effect that waits for the next pull; its
 // result travels with an item as the token. `buffered` branches stop after
 // the source ends or fails; other branches stay open until their consumer
@@ -334,14 +323,28 @@ fn branch_open_pair(kind: i64, left: V, right: V) -> V {
 }
 // Both branches start closing before either cleanup is awaited, as
 // TypeScript closes them concurrently, so one side's finalizer may wait for
-// the other's.
+// the other's. Both closes are finalizers of one scope, so a Defect from
+// each side is kept.
 fn branch_close_pair(left: &V, right: &V) -> V {
     V::bind(
         native_operation("std/effect::fork", vec![branch_close(left)]),
         V::fun(vec![right.clone()], |c, closing| {
-            branch_both(
-                branch_close(&c[0]),
-                native_operation("std/effect::join", vec![closing]),
+            let join = V::fun(vec![], |_, closing| {
+                native_operation("std/effect::join", vec![closing])
+            });
+            let close_right = V::fun(vec![c[0].clone()], |c, _| branch_close(&c[0]));
+            V::effect(
+                Instruction::Scoped,
+                vec![branch_then(
+                    V::effect(
+                        Instruction::AcquireRelease,
+                        vec![branch_succeed(closing), join],
+                    ),
+                    V::effect(
+                        Instruction::AcquireRelease,
+                        vec![branch_succeed(V::Unit), close_right],
+                    ),
+                )],
             )
         }),
     )
@@ -724,6 +727,39 @@ mod stream_branch_tests {
         match collect(first) {
             Ok(value) => assert_eq!(value.render(), "[(1, 2)]"),
             _ => panic!("zip should succeed"),
+        }
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn zip_keeps_the_cleanup_defects_of_both_sides() {
+        enable_cycle_collection();
+        let die = |message: &'static str| {
+            V::fun(vec![V::text(message)], |c, _| {
+                native_effect_die(c[0].clone())
+            })
+        };
+        let left = native_stream_operation(
+            "std/stream::fromEffect",
+            vec![acquired(V::Int(1), die("left cleanup"))],
+        );
+        let right = native_stream_operation(
+            "std/stream::fromEffect",
+            vec![acquired(V::Int(2), die("right cleanup"))],
+        );
+        let zipped = native_stream_operation("std/stream::zip", vec![right, left]);
+        let first = native_stream_operation("std/stream::take", vec![V::Int(1), zipped]);
+        match collect(first) {
+            Err(NativeExit::Defect(errors)) => {
+                for side in ["left cleanup", "right cleanup"] {
+                    assert!(
+                        errors.iter().any(|error| error.value.contains(side)),
+                        "{side}"
+                    );
+                }
+            }
+            _ => panic!("zip should report both cleanup defects"),
         }
         collect_cycles().unwrap();
         assert_eq!(LIVE.with(Cell::get), 0);
