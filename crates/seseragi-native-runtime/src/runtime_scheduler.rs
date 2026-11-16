@@ -219,7 +219,10 @@ struct NativeScheduler {
     yield_wait: usize,
     waiters: BTreeMap<WaitKey, Vec<usize>>,
     // Tasks waiting until every other runnable Fiber has blocked or yielded.
+    // The yield budget also bounds this wait, so a Fiber that never waits
+    // cannot keep them suspended.
     settling: Vec<usize>,
+    settle_wait: usize,
     // A program WASM run has no host: no clock, file, process, stdin or
     // signal. Those turns end as Defects instead of starting a host task.
     hostless: bool,
@@ -622,9 +625,14 @@ impl NativeScheduler {
     // Settled tasks resume ahead of every Fiber that only yielded, as a
     // TypeScript continuation runs before a `yieldNow` timer.
     fn resume_settled(&mut self) {
-        if self.settling.is_empty() || !self.ready.is_empty() {
+        if self.settling.is_empty() {
             return;
         }
+        if !self.ready.is_empty() && self.settle_wait < NATIVE_YIELD_BUDGET {
+            self.settle_wait += 1;
+            return;
+        }
+        self.settle_wait = 0;
         for id in std::mem::take(&mut self.settling).into_iter().rev() {
             if let Some(task) = self.tasks.get_mut(&id) {
                 if matches!(task.waiting, Some(NativeWait::Settle)) {
@@ -1247,6 +1255,29 @@ mod scheduler_tests {
             Ok(V::Unit)
         });
         V::bind(step, V::fun(vec![count], |c, _| spin(c[0].clone())))
+    }
+    #[test]
+    fn a_fiber_that_never_waits_does_not_starve_a_settling_fiber() {
+        enable_cycle_collection();
+        let count = V::reference(V::Int(0));
+        let settle = V::effect(Instruction::Concurrent(ConcurrentOperation::Settle), vec![]);
+        let plan = V::bind(
+            op("std/effect::fork", vec![spin(count.clone())]),
+            V::fun(vec![settle], |c, fiber| {
+                then(c[0].clone(), op("std/effect::interrupt", vec![fiber]))
+            }),
+        );
+        run(plan).ok().unwrap();
+        let V::Int(steps) = count.read_reference() else {
+            unreachable!()
+        };
+        assert!(
+            steps > 0 && (steps as usize) <= NATIVE_YIELD_BUDGET + 1,
+            "{steps}"
+        );
+        drop(count);
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
     }
     #[test]
     fn a_fiber_that_never_waits_does_not_starve_a_yielded_fiber() {

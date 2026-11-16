@@ -153,8 +153,15 @@ fn branch_loop(cursor: V, side: V, demand: V, results: V, outcome: V, buffered: 
         V::fun(
             vec![cursor, side, demand, results, outcome, buffered],
             |c, token| {
+                // A buffered failure or Defect discards the waiting values as
+                // soon as the pull ends, before the branch's cleanup runs.
+                let pull = if c[5].boolean() {
+                    branch_on_error(stream_pull(&c[0]), branch_drain(c[3].clone()))
+                } else {
+                    stream_pull(&c[0])
+                };
                 V::bind(
-                    V::effect(Instruction::Attempt, vec![stream_pull(&c[0])]),
+                    V::effect(Instruction::Attempt, vec![pull]),
                     V::fun(
                         vec![
                             c[0].clone(),
@@ -649,6 +656,79 @@ mod stream_branch_tests {
             ),
             Err(NativeExit::Failure(_)) => panic!("failure"),
         }
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    // The failing source's cleanup waits for the consumer, which looks for a
+    // second value only after that cleanup has started.
+    #[test]
+    fn buffer_failure_discards_waiting_values_before_cleanup() {
+        enable_cycle_collection();
+        let log = stream_cell(V::text(""));
+        let started = V::Deferred(Shared::new(NativeDeferred::default()));
+        let gate = V::Deferred(Shared::new(NativeDeferred::default()));
+        let release = V::fun(vec![started.clone(), gate.clone()], |c, _| {
+            branch_then(
+                native_operation("std/deferred::succeed", vec![V::Unit, c[0].clone()]),
+                branch_then(
+                    native_operation("std/deferred::await", vec![c[1].clone()]),
+                    branch_succeed(V::Unit),
+                ),
+            )
+        });
+        let failing = branch_then(
+            V::effect(
+                Instruction::AcquireRelease,
+                vec![branch_succeed(V::Unit), release],
+            ),
+            native_operation("effect.fail", vec![V::text("boom")]),
+        );
+        let source = native_stream_operation(
+            "std/stream::concat",
+            vec![
+                native_stream_operation("std/stream::fromEffect", vec![failing]),
+                array(&[1, 2]),
+            ],
+        );
+        let capacity =
+            native_stream_operation("std/stream::bufferCapacity", vec![V::Int(2)]).payload();
+        let buffered = native_stream_operation("std/stream::buffer", vec![capacity, source]);
+        let step = V::fun(vec![log.clone(), started, gate], |c, value| {
+            let record = V::leaf(vec![c[0].clone(), value.clone()], |c, _| {
+                let text = c[0].read_reference().render() + &c[1].render() + ";";
+                c[0].write_reference(V::text(&text));
+                Ok(V::Unit)
+            });
+            if !matches!(value, V::Int(1)) {
+                return record;
+            }
+            // The gate opens only after the consumer has pulled again.
+            let finish = branch_then(
+                native_operation("std/effect::yieldNow", vec![V::Unit]),
+                native_operation("std/deferred::succeed", vec![V::Unit, c[2].clone()]),
+            );
+            branch_then(
+                record,
+                branch_then(
+                    native_operation("std/deferred::await", vec![c[1].clone()]),
+                    branch_then(
+                        native_operation("std/effect::fork", vec![finish]),
+                        branch_succeed(V::Unit),
+                    ),
+                ),
+            )
+        });
+        let result = NativeContext::default().root(native_stream_operation(
+            "std/stream::runForEach",
+            vec![step, buffered],
+        ));
+        match result {
+            Err(NativeExit::Failure(failure)) => assert_eq!(failure.value.render(), "boom"),
+            _ => panic!("buffer should fail"),
+        }
+        assert_eq!(log.read_reference().render(), "1;");
+        drop(log);
         collect_cycles().unwrap();
         assert_eq!(LIVE.with(Cell::get), 0);
     }
