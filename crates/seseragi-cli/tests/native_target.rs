@@ -447,7 +447,7 @@ fn native_reports_type_and_backend_errors_like_the_ts_target() {
         root.join("backend.ssrg"),
         concat!(
             "import * as effects from \"std/effect\"\n",
-            "pub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n",
+            "pub effect fn main -> Array<Int> = effects.parallel [effects.succeed 1]\n",
         ),
     )
     .unwrap();
@@ -456,12 +456,12 @@ fn native_reports_type_and_backend_errors_like_the_ts_target() {
     let text = String::from_utf8_lossy(&native.stderr);
     assert!(
         text.starts_with(
-            "backend.ssrg:2:29: error[SES-RUST-0001]: The target cannot compile this code\n  | pub effect fn main"
+            "backend.ssrg:2:36: error[SES-RUST-0001]: The target cannot compile this code\n  | pub effect fn main"
         ),
         "{text}"
     );
     assert!(
-        text.contains("\n  |                             ^"),
+        text.contains("\n  |                                    ^"),
         "{text}"
     );
     assert!(!text.contains("seseragi:"), "{text}");

@@ -117,8 +117,8 @@ fn target_manifest(target: Option<&str>) -> String {
 #[test]
 fn native_target_reports_multiple_uses_at_the_backend_ranges_in_both_encodings() {
     let source = concat!(
-        "import { provideSome as compete, succeed } from \"std/effect\"\n",
-        "pub fn main -> (Task<Int>, Task<Int>) = { let _prefix = \"雪🙂\"; (compete (\\env: {} -> env) (succeed 1), compete (\\env: {} -> env) (succeed 3)) }\n",
+        "import { parallel as compete, succeed } from \"std/effect\"\n",
+        "pub fn main -> (Task<Array<Int>>, Task<Array<Int>>) = { let _prefix = \"雪🙂\"; (compete [succeed 1], compete [succeed 3]) }\n",
     );
     let core = seseragi_driver::compile_core_module(seseragi_driver::CompileInput::new(
         "main.ssrg",
@@ -175,7 +175,7 @@ fn native_target_reports_multiple_uses_at_the_backend_ranges_in_both_encodings()
 
 #[test]
 fn ts_targets_keep_native_limitations_out_of_editor_diagnostics() {
-    let source = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+    let source = "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed 1]\n";
     seseragi_driver::compile_module(seseragi_driver::CompileInput::new(
         "main.ssrg",
         "target/main",
@@ -209,7 +209,7 @@ fn native_support_does_not_hide_type_errors_or_warn_for_supported_file_operation
         published(&messages, &uri)["params"]["diagnostics"],
         json!([])
     );
-    let broken = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed \"wrong\")\n";
+    let broken = "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed \"wrong\"]\n";
     let mut expected = None;
     for target in ["native", "process"] {
         workspace.write("seseragi.toml", &target_manifest(Some(target)));
@@ -240,9 +240,9 @@ fn native_target_reports_dependency_features_in_the_defining_document() {
     let workspace = TempWorkspace::new();
     workspace.write("seseragi.toml", &(target_manifest(Some("native")) + "[dependencies]\nremote = { package = \"fixture/remote\", path = \"vendor/remote\" }\n"));
     workspace.write("vendor/remote/seseragi.toml", "[package]\nname = \"fixture/remote\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n[exports]\n\".\" = \"lib\"\n");
-    let dependency = "import * as effects from \"std/effect\"\npub effect fn task -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+    let dependency = "import * as effects from \"std/effect\"\npub effect fn task -> Array<Int> = effects.parallel [effects.succeed 1]\n";
     workspace.write("vendor/remote/src/lib.ssrg", dependency);
-    let source = "import { task } from \"remote\"\nimport { value } from \"./lib\"\npub effect fn main -> Int = task ()\npub fn local -> Int = value\n";
+    let source = "import { task } from \"remote\"\nimport { value } from \"./lib\"\npub effect fn main -> Array<Int> = task ()\npub fn local -> Int = value\n";
     workspace.write("src/main.ssrg", source);
     workspace.write("src/lib.ssrg", "pub let value: Int = 42\n");
     let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
@@ -263,12 +263,12 @@ fn native_target_reports_dependency_features_in_the_defining_document() {
     assert_eq!(diagnostics.len(), 1, "{diagnostics:?}");
     assert_eq!(
         diagnostics[0]["range"]["start"],
-        json!({"line": 1, "character": 28})
+        json!({"line": 1, "character": 35})
     );
     assert!(diagnostics[0]["message"]
         .as_str()
         .unwrap()
-        .contains("std/effect::provideSome"));
+        .contains("std/effect::parallel"));
 }
 
 #[test]
@@ -279,7 +279,7 @@ fn wasm_target_checks_selected_programs_without_warning_in_ts_ui_sources() {
         &(target_manifest(Some("web"))
             + "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n"),
     );
-    let ui = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+    let ui = "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed 1]\n";
     let program = "import * as math from \"std/math\"\npub fn unused -> Float = math.sin 1.0\npub fn amount -> Int = 42\n";
     workspace.write("src/main.ssrg", ui);
     workspace.write("src/calculation.ssrg", program);
