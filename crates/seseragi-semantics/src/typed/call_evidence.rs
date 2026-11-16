@@ -222,7 +222,21 @@ pub(crate) fn inherited_call_evidence(
             continue;
         }
         kept.push(evidence.index);
-        added.push((evidence.constraint.clone(), evidence.trait_identity.clone()));
+        // The enclosing dictionary parameter was declared with aliases
+        // expanded, so the added constraint must name the same types.
+        let constraint = TypedConstraint {
+            name: evidence.constraint.name.clone(),
+            arguments: evidence.source_arguments.as_ref().map_or_else(
+                || evidence.constraint.arguments.clone(),
+                |arguments| {
+                    arguments
+                        .iter()
+                        .map(|argument| argument.type_ref.clone())
+                        .collect()
+                },
+            ),
+        };
+        added.push((constraint, evidence.trait_identity.clone()));
     }
     let renumbered = enclosing
         .iter()

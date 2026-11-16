@@ -50,6 +50,14 @@ fn supertrait<A> left: A -> right: A -> String where Ord<A>, Show<A> = {
   compare 1
 }
 
+alias Items<A> = Array<A>
+
+fn aliased<A> items: Items<A> -> String where Show<Items<A>> = {
+  fn used<B> value: B -> String where Show<B> = show items + show value
+  fn quiet<B> value: B -> String where Show<B> = show value
+  used 1 + quiet True
+}
+
 pub fn probe -> Array<String> = [
   both "s",
   monomorphic 1.5,
@@ -58,5 +66,6 @@ pub fn probe -> Array<String> = [
   grouped "g",
   unused 0,
   supertrait 1 1,
-  supertrait "a" "b"
+  supertrait "a" "b",
+  aliased [1, 2]
 ]
