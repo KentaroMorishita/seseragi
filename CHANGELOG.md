@@ -11,6 +11,7 @@
 - A Schedule made with `effects.schedule` runs. Its decide used to be called with both arguments at once on the TS target, so every retry or repeat with a user-made Schedule stopped with a Defect, and the native target refused to compile one.
 - `ScheduleDecision` has no type parameter, as spec §10.11 states. Code that wrote `ScheduleDecision<A>` needs to drop the type argument.
 - On the native target, `effects.attempt` around `effects.timeout` or `effects.timeoutFail` compiles when the source Effect already needs `Clock`.
+- `seseragi test --target native` no longer times out a test before its body has started. On a busy machine, a test with a zero or very short timeout could fail even though its body finishes at once; on the TS target such a body always runs first.
 
 ## [0.61.172] - 2026-11-16
 
