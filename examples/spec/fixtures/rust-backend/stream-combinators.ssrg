@@ -25,10 +25,12 @@ fn failing label: String -> streams.Stream<{ console: Console }, String, Int> =
 
 effect fn yieldedFailure label: String -> Int with Console fails String = do {
   effects.yieldNow ()
+  say `resumed:${label}`
   effects.fail `failed:${label}`
 }
 
-// Fails only after a yieldNow, so in a later scheduler turn.
+// Fails only after a yieldNow, so in a later scheduler turn. A zip that stops
+// in an earlier turn cancels it before it resumes.
 fn failingLater label: String -> streams.Stream<{ console: Console }, String, Int> =
   streams.fromEffect (yieldedFailure label)
 

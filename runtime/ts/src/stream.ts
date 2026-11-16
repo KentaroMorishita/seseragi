@@ -2,8 +2,8 @@ import { defectWithSuppressed } from "./cleanup-defect"
 import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import {
   awaitEffectValue,
+  awaitTurnEnd,
   createEffectExecution,
-  currentYieldTurn,
   type Effect,
   type EffectContext,
   type EffectExecution,
@@ -355,35 +355,22 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
           leftBranch,
           rightBranch,
         ]
-        // The scheduler turn in which each side's outcome arrived.
-        const turns: [number, number] = [0, 0]
-        branches.forEach((branch, side) => {
-          startMergeDemand(branch)
-          void branch.pending?.then(() => {
-            turns[side] = currentYieldTurn()
-          })
-        })
-        let stopTurn: number | undefined
+        for (const branch of branches) startMergeDemand(branch)
+        let turnEnded = false
         while (true) {
-          // Once a stop is seen, an outcome from a later turn no longer
-          // counts; that side is cancelled instead.
-          const settled = branches.map((branch, side) =>
-            stopTurn === undefined || (turns[side] ?? 0) <= stopTurn
-              ? branch.settled
-              : undefined
-          )
+          const settled = branches.map((branch) => branch.settled)
           const stops = settled.some(
             (outcome) =>
               outcome?.kind === "failure" ||
               (outcome?.kind === "result" && outcome.value.done)
           )
-          if (stops && stopTurn === undefined && settled.includes(undefined)) {
+          if (stops && !turnEnded && settled.includes(undefined)) {
             // Before stopping the other side, let it finish what it can in
             // this turn, as native code waits until every other Fiber has
-            // reached a wait. A Fiber resumed by `yieldNow` meanwhile is in
-            // a later turn.
-            stopTurn = currentYieldTurn()
-            await new Promise<void>((resolve) => setTimeout(resolve, 0))
+            // reached a wait. A Fiber that yielded resumes only afterwards,
+            // so the stop cancels it first.
+            turnEnded = true
+            await awaitTurnEnd()
             continue
           }
           // A failure wins over an end, and the left failure over the right
