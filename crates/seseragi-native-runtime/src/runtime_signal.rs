@@ -204,9 +204,12 @@ fn signal_subscribe(source: V, observer: V, context: &mut NativeContext) -> V {
             ],
         );
     }
+    // Notifications run in the environment of the subscription, not of the
+    // publisher, as on the TS target.
     let subscription = V::reference(signal_record(vec![
         ("source", source),
         ("observer", observer),
+        ("environment", context.environment.clone()),
     ]));
     let V::Reference(handle) = &subscription else {
         unreachable!()
@@ -331,10 +334,15 @@ impl SignalPublication {
                 let plan = catch_native(|| {
                     Ok(signal_field(&subscriber, "observer").apply(notification.index(1)))
                 });
+                let environment = signal_field(&subscriber, "environment");
                 self.current = Some(subscriber);
                 stack.push(NativeFrame::SignalPublication(self));
                 return match plan {
-                    Ok(plan) => NativeState::Evaluate(plan),
+                    Ok(plan) => {
+                        let previous = std::mem::replace(&mut context.environment, environment);
+                        stack.push(NativeFrame::Environment(previous));
+                        NativeState::Evaluate(plan)
+                    }
                     Err(error) => NativeState::Return(Err(error)),
                 };
             }

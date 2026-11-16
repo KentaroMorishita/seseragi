@@ -11,4 +11,6 @@ child: parent
 acquire: acquired
 scope body: outer scope
 released: acquired
+signal 0: subscriber
+signal 1: subscriber
 done

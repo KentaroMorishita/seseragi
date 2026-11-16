@@ -1,4 +1,5 @@
 import * as effects from "std/effect"
+import * as signals from "std/signal"
 
 struct Settings { label: String, }
 
@@ -69,5 +70,11 @@ pub effect fn main = do {
     using "acquired" (effects.acquireRelease (showLabel "acquire") released)
     showLabel "scope body"
   }))
+  // A Signal observer runs in the environment of its subscription, even
+  // when the Signal is set outside it.
+  source <- signals.make 0
+  subscription <- using "subscriber" (signals.subscribe (\value: Int -> showLabel ("signal " + show value)) source)
+  source := 1
+  signals.unsubscribe subscription
   say "done"
 }
