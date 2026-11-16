@@ -1187,7 +1187,10 @@ mod scheduler_tests {
         let V::Int(steps) = count.read_reference() else {
             unreachable!()
         };
-        assert!(steps > 0 && (steps as usize) <= NATIVE_YIELD_BUDGET, "{steps}");
+        assert!(
+            steps > 0 && (steps as usize) <= NATIVE_YIELD_BUDGET,
+            "{steps}"
+        );
         drop(count);
         collect_cycles().unwrap();
         assert_eq!(LIVE.with(Cell::get), 0);
