@@ -343,11 +343,12 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
       context
     ).catch((error) => cleanupThenThrow(error, [() => closeBranch(leftBranch)]))
     let closed = false
-    const close = async (): Promise<void> => {
-      if (closed) return
+    // Both sides are pulled at once, so a close can start while another is
+    // still running; the second one waits for the first to finish.
+    const close = onceAsync(async (): Promise<void> => {
       closed = true
       await closeBranches([leftBranch, rightBranch])
-    }
+    })
     return Object.freeze({
       async next() {
         if (closed) return done()
@@ -428,11 +429,12 @@ export function merge<Environment, Failure, Value>(
     ).catch((error) => cleanupThenThrow(error, [() => closeBranch(leftBranch)]))
     const branches = [leftBranch, rightBranch] as const
     let closed = false
-    const close = async (): Promise<void> => {
-      if (closed) return
+    // Both sides are pulled at once, so a close can start while another is
+    // still running; the second one waits for the first to finish.
+    const close = onceAsync(async (): Promise<void> => {
       closed = true
       await closeBranches(branches)
-    }
+    })
     return Object.freeze({
       async next() {
         if (closed) return done()

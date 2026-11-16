@@ -26,6 +26,9 @@ Left failed:left
 open:right
 close:right
 Left failed:right
+open:inner
+close:inner
+[]
 [1, 2, 3, 4]
 []
 [7]

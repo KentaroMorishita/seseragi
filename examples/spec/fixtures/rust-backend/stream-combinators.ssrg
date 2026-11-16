@@ -87,6 +87,9 @@ pub effect fn main -> Unit with Console fails String = do {
   // wins over it.
   laterLeft <- streams.zip (failing "right") (failingLater "left") |> streams.runCollect |> effects.attempt
   say (show laterLeft)
+  // The outer zip finishes only after the inner zip has closed its source.
+  nested <- streams.zip nothing (streams.zip nothing (tracked "inner" [1])) |> streams.runCollect
+  say (show nested)
 
   // merge emits every value of both sources and closes both on an early stop.
   merged <- streams.merge (ints [3, 4]) (ints [1, 2]) |> streams.runCollect
