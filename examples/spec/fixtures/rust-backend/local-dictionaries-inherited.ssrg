@@ -1,0 +1,62 @@
+// A local function with its own `where` still uses the enclosing
+// function's dictionaries.
+
+fn both<A> seed: A -> String where Show<A> = {
+  fn pair<B> value: B -> String where Show<B> = show seed + ":" + show value
+  pair 1 + "," + pair True
+}
+
+fn monomorphic<A> seed: A -> String where Show<A> = {
+  fn render value: Int -> String where Show<Int> = show seed + "=" + show value
+  render 2
+}
+
+fn restated<A> seed: A -> String where Show<A> = {
+  fn pair<B> value: B -> String where Show<B>, Show<A> = show seed + "~" + show value
+  pair 'λ'
+}
+
+fn nested<A> seed: A -> String where Show<A> = {
+  fn middle<B> left: B -> String where Show<B> = {
+    fn inner<C> right: C -> String where Show<C> = show seed + show left + show right
+    inner 3
+  }
+  middle False
+}
+
+fn grouped<A> seed: A -> String where Show<A> = {
+  rec {
+    fn ping<B> count: Int -> value: B -> String where Show<B> =
+      if count == 0 then show seed + show value else pong (count - 1) value
+    fn pong<B> count: Int -> value: B -> String where Show<B> =
+      if count == 0 then show value + show seed else ping (count - 1) value
+  }
+  ping 3 True + "|" + ping 2 1
+}
+
+fn unused<A> seed: A -> String where Show<A> = {
+  rec {
+    fn ping<B> count: Int -> value: B -> String where Show<B> =
+      if count == 0 then show value else pong (count - 1) value
+    fn pong<B> count: Int -> value: B -> String where Show<B> =
+      if count == 0 then show value else ping (count - 1) value
+  }
+  show seed + ping 3 'x'
+}
+
+fn supertrait<A> left: A -> right: A -> String where Ord<A>, Show<A> = {
+  fn compare<B> value: B -> String where Show<B> =
+    (if left == right then "eq" else "ne") + show value
+  compare 1
+}
+
+pub fn probe -> Array<String> = [
+  both "s",
+  monomorphic 1.5,
+  restated 7,
+  nested "n",
+  grouped "g",
+  unused 0,
+  supertrait 1 1,
+  supertrait "a" "b"
+]

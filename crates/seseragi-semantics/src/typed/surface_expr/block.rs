@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use crate::{
     SymbolId, SymbolKind, SymbolNamespace, TypedBlockStatement, TypedConstraint, TypedExpr,
@@ -35,6 +35,7 @@ pub(crate) fn type_block_with(
 ) -> SurfaceExpressionAnalysis {
     let mut locals = BTreeMap::<SymbolId, SemanticValueType>::new();
     let mut inferred_callables = BTreeMap::new();
+    let mut extended_callables = BTreeSet::new();
     let mut statements = Vec::new();
     let mut merged = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Unit {
@@ -87,6 +88,28 @@ pub(crate) fn type_block_with(
                         }
                     }
                 }
+                // Every member's signature must already list the constraints
+                // it inherits, since members call each other before their
+                // own declaration is checked.
+                for member in items {
+                    if let SurfaceBlockItem::Function {
+                        name_span,
+                        rec_group: Some(member_group),
+                        constraints,
+                        ..
+                    } = member
+                    {
+                        if member_group == group {
+                            inherit_enclosing_constraints(
+                                base_context,
+                                &mut inferred_callables,
+                                &mut extended_callables,
+                                *name_span,
+                                constraints,
+                            );
+                        }
+                    }
+                }
                 let members: BTreeMap<_, _> = items
                     .iter()
                     .filter_map(|member| {
@@ -107,6 +130,7 @@ pub(crate) fn type_block_with(
                             symbol,
                             base_context
                                 .with_locals(locals.clone())
+                                .with_inferred_callables(inferred_callables.clone())
                                 .callable_value(symbol)?,
                         ))
                     })
@@ -235,8 +259,13 @@ pub(crate) fn type_block_with(
                     locals.insert(symbol, local_function_type);
                 }
                 function_locals.extend(base_context.parameter_locals(&typed_parameters));
-                let scoped_evidence =
-                    crate::typed::scoped_call_evidence(constraints, base_context.resolution);
+                let (scoped_evidence, inherited) = inherit_enclosing_constraints(
+                    base_context,
+                    &mut inferred_callables,
+                    &mut extended_callables,
+                    *name_span,
+                    constraints,
+                );
                 let mut context = base_context
                     .with_locals(function_locals)
                     .with_inferred_callables(inferred_callables.clone())
@@ -334,6 +363,7 @@ pub(crate) fn type_block_with(
                                 })
                                 .collect(),
                         })
+                        .chain(inherited.iter().map(|(constraint, _)| constraint.clone()))
                         .collect(),
                     constraint_identities: constraints
                         .iter()
@@ -344,6 +374,7 @@ pub(crate) fn type_block_with(
                                 .and_then(|target| base_context.resolution.symbol(target))
                                 .and_then(|symbol| symbol.canonical.clone())
                         })
+                        .chain(inherited.iter().map(|(_, identity)| Some(identity.clone())))
                         .collect(),
                     parameters: typed_parameters,
                     body: analysis.value.clone(),
@@ -439,4 +470,55 @@ fn named_type(name: &str) -> TypedType {
         name: name.to_owned(),
         arguments: Vec::new(),
     }
+}
+
+/// The evidence a local function's body sees, and the enclosing constraints
+/// it inherits.
+///
+/// A local function without its own `where` sees the enclosing evidence
+/// unchanged. One with its own `where` gets its own dictionary parameters, so
+/// the enclosing constraints it does not restate are added after its own (see
+/// `inherited_call_evidence`). The first call for a function also records the
+/// extended signature, so that callers, including the other members of a
+/// `rec` group, pass the enclosing dictionaries.
+fn inherit_enclosing_constraints(
+    base_context: &PureExpressionContext<'_>,
+    inferred_callables: &mut BTreeMap<SymbolId, crate::typed::functions::TopLevelPureFunction>,
+    extended_callables: &mut BTreeSet<SymbolId>,
+    name_span: ByteSpan,
+    constraints: &[seseragi_syntax::SurfaceConstraint],
+) -> (
+    Vec<crate::typed::ScopedCallEvidence>,
+    Vec<(TypedConstraint, String)>,
+) {
+    let mut scoped_evidence =
+        crate::typed::scoped_call_evidence(constraints, base_context.resolution);
+    if constraints.is_empty() {
+        return (scoped_evidence, Vec::new());
+    }
+    let (evidence, inherited) = crate::typed::inherited_call_evidence(
+        &base_context.evidence_parameters,
+        &scoped_evidence,
+        constraints.len(),
+    );
+    scoped_evidence.extend(evidence);
+    if inherited.is_empty() {
+        return (scoped_evidence, inherited);
+    }
+    if let Some(symbol) = base_context.declaration_symbol(name_span, SymbolKind::Function) {
+        if extended_callables.insert(symbol) {
+            if let Some(mut callable) = inferred_callables
+                .get(&symbol)
+                .or_else(|| base_context.callable(symbol))
+                .cloned()
+            {
+                for (constraint, identity) in &inherited {
+                    callable.constraints.push(constraint.clone());
+                    callable.constraint_identities.push(Some(identity.clone()));
+                }
+                inferred_callables.insert(symbol, callable);
+            }
+        }
+    }
+    (scoped_evidence, inherited)
 }

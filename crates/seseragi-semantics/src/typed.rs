@@ -43,8 +43,9 @@ mod type_ref;
 
 pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};
 pub(crate) use call_evidence::{
-    direct_supertrait_constraints, scoped_call_evidence, scoped_call_evidence_from,
-    scoped_resolved_call_evidence, select_function_call_evidence, ScopedCallEvidence,
+    direct_supertrait_constraints, inherited_call_evidence, scoped_call_evidence,
+    scoped_call_evidence_from, scoped_resolved_call_evidence, select_function_call_evidence,
+    ScopedCallEvidence,
 };
 pub(crate) use effect_analysis::{analyze_effect_function, EffectFunctionIssue};
 pub(crate) use function_body::FunctionBodyIssue;
