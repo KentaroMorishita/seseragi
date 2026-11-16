@@ -25,8 +25,6 @@ TypeScript ターゲットで使える言語機能と標準ライブラリを、
 次に着手できる Issue は、M3 のマイルストーンの一覧から選びます。M3 には、次の分野の Issue があります。
 
 - Effect の service と provide、race・parallel・並行 traverse
-- `std/queue`、`std/semaphore`
-- Stream の作成・変換・終端操作と、zip・merge・buffer
 - HTTP のクライアントとサーバー、multipart、Server-Sent Events、WebSocket
 
 分野ごとの tracking の Issue:

@@ -197,6 +197,40 @@ fn fiber_results_and_generic_join_preserve_all_exit_channels() {
     );
 }
 #[test]
+fn queue_and_semaphore_keep_fifo_waiters_close_and_cancellation_on_native_bun_and_node() {
+    compare(
+        include_str!("../../../examples/spec/fixtures/rust-backend/queue-semaphore.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/queue-semaphore.stdout"),
+        None,
+        0,
+        None,
+    );
+}
+#[test]
+fn stream_zip_merge_and_buffer_release_sources_on_native_bun_and_node() {
+    compare(
+        include_str!("../../../examples/spec/fixtures/rust-backend/stream-combinators.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/stream-combinators.stdout"),
+        None,
+        0,
+        None,
+    );
+}
+#[test]
+fn saved_and_partial_concurrency_operations_match_on_native_bun_and_node() {
+    compare(
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/concurrency-saved-functions.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend-regressions/concurrency-saved-functions.stdout"
+        ),
+        None,
+        0,
+        None,
+    );
+}
+#[test]
 fn parent_scope_closes_children_on_success_failure_and_defect() {
     let source = include_str!("../../../examples/spec/fixtures/rust-backend/fiber-finalizer.ssrg");
     let prefix = &source[..source.find("  effects.interrupt worker").unwrap()];
@@ -235,6 +269,10 @@ fn fiber_generated_typescript_is_strict_in_both_profiles() {
         "fiber-results",
         "deferred-order",
         "fiber-cleanup-outcome",
+        "queue-semaphore",
+        "stream-combinators",
+        "../rust-backend-regressions/concurrency-saved-functions",
+        "../rust-backend-regressions/stream-saved-functions",
     ] {
         let source = fs::read_to_string(
             root.join(format!("examples/spec/fixtures/rust-backend/{name}.ssrg")),
@@ -248,7 +286,10 @@ fn fiber_generated_typescript_is_strict_in_both_profiles() {
                 CompileInput::new("main.ssrg", "single-file/main", &source).with_profile(profile),
             )
             .unwrap();
-            let path = scratch.0.join(format!("{name}-{label}.ts"));
+            let path = scratch.0.join(format!(
+                "{}-{label}.ts",
+                name.replace("../", "").replace('/', "-")
+            ));
             fs::write(&path, compiled.generated.typescript).unwrap();
             files.push(path);
         }

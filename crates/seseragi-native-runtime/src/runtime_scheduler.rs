@@ -17,6 +17,20 @@ enum ConcurrentOperation {
     FailDeferred,
     // Emitted only after the explicit finite native Clock binding is proved.
     ClockSleep,
+    QueueBounded,
+    QueueUnbounded,
+    QueueOffer,
+    QueueTake,
+    QueueTryOffer,
+    QueueTryTake,
+    QueueSize,
+    QueueClose,
+    SemaphoreMake,
+    SemaphoreAcquire,
+    SemaphoreRelease,
+    SemaphoreAvailable,
+    // Waits until every other runnable Fiber has blocked or yielded.
+    Settle,
 }
 impl ConcurrentOperation {
     fn named(name: &str) -> Option<Self> {
@@ -33,6 +47,18 @@ impl ConcurrentOperation {
             "std/deferred::complete" => Self::CompleteDeferred,
             "std/deferred::succeed" => Self::SucceedDeferred,
             "std/deferred::fail" => Self::FailDeferred,
+            "std/queue::bounded" => Self::QueueBounded,
+            "std/queue::unbounded" => Self::QueueUnbounded,
+            "std/queue::offer" => Self::QueueOffer,
+            "std/queue::take" => Self::QueueTake,
+            "std/queue::tryOffer" => Self::QueueTryOffer,
+            "std/queue::tryTake" => Self::QueueTryTake,
+            "std/queue::size" => Self::QueueSize,
+            "std/queue::close" => Self::QueueClose,
+            "std/semaphore::make" => Self::SemaphoreMake,
+            "std/semaphore::acquire" => Self::SemaphoreAcquire,
+            "std/semaphore::release" => Self::SemaphoreRelease,
+            "std/semaphore::available" => Self::SemaphoreAvailable,
             _ => return None,
         })
     }
@@ -132,17 +158,24 @@ impl FiberWait {
 enum NativeWait {
     Fiber(V, FiberWait),
     Deferred(V),
+    // A Queue or Semaphore keeps its own FIFO of waiting tasks.
+    Sync(V),
+    Settle,
 }
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum WaitKey {
     Fiber(usize),
     Deferred(usize),
+    Sync(usize),
+    Settle,
 }
 impl NativeWait {
     fn key(&self) -> WaitKey {
         match self {
             Self::Fiber(value, _) => WaitKey::Fiber(value.fiber().task),
             Self::Deferred(value) => WaitKey::Deferred(value.node_id().expect("Deferred node")),
+            Self::Sync(value) => WaitKey::Sync(value.node_id().expect("synchronization node")),
+            Self::Settle => WaitKey::Settle,
         }
     }
     fn ready(&self) -> Option<NativeOutcome> {
@@ -159,6 +192,7 @@ impl NativeWait {
                 .borrow()
                 .clone()
                 .map(|v| v.map_err(NativeExit::failure)),
+            Self::Sync(_) | Self::Settle => None,
         }
     }
 }
@@ -184,6 +218,8 @@ struct NativeScheduler {
     yielded: std::collections::VecDeque<usize>,
     yield_wait: usize,
     waiters: BTreeMap<WaitKey, Vec<usize>>,
+    // Tasks waiting until every other runnable Fiber has blocked or yielded.
+    settling: Vec<usize>,
     // A program WASM run has no host: no clock, file, process, stdin or
     // signal. Those turns end as Defects instead of starting a host task.
     hostless: bool,
@@ -264,7 +300,7 @@ impl NativeScheduler {
     }
     // No Fiber can take a turn until a wait, timer or host task completes.
     fn idle(&self) -> bool {
-        self.ready.is_empty() && self.yielded.is_empty()
+        self.ready.is_empty() && self.yielded.is_empty() && self.settling.is_empty()
     }
     fn next_runnable(&mut self) -> Option<usize> {
         if !self.yielded.is_empty() {
@@ -319,6 +355,7 @@ impl NativeScheduler {
         self.poll_stdin();
         self.poll_children();
         self.poll_timers();
+        self.resume_settled();
         let Some(id) = self.next_runnable() else {
             for process in self.roots.values() {
                 process.borrow().force_if_expired(true);
@@ -345,6 +382,10 @@ impl NativeScheduler {
         );
         match turn {
             NativeTurn::Runnable => self.ready.push_back(id),
+            NativeTurn::Operation(ConcurrentOperation::Settle, _) => {
+                task.waiting = Some(NativeWait::Settle);
+                self.settling.push(id);
+            }
             NativeTurn::Operation(operation, captures) => {
                 self.operation(id, &mut task, operation, captures)
             }
@@ -525,6 +566,11 @@ impl NativeScheduler {
             }
             task.machine.resume(Err(NativeExit::Cancelled));
             self.ready.push_back(id);
+            if let NativeWait::Sync(value) = wait {
+                self.detach_sync(id, &value);
+            } else if matches!(wait, NativeWait::Settle) {
+                self.settling.retain(|other| *other != id);
+            }
         }
     }
     fn poll_files(&mut self) {
@@ -573,6 +619,22 @@ impl NativeScheduler {
             }
         }
     }
+    // Settled tasks resume ahead of every Fiber that only yielded, as a
+    // TypeScript continuation runs before a `yieldNow` timer.
+    fn resume_settled(&mut self) {
+        if self.settling.is_empty() || !self.ready.is_empty() {
+            return;
+        }
+        for id in std::mem::take(&mut self.settling).into_iter().rev() {
+            if let Some(task) = self.tasks.get_mut(&id) {
+                if matches!(task.waiting, Some(NativeWait::Settle)) {
+                    task.waiting = None;
+                    task.machine.resume(Ok(V::Unit));
+                    self.ready.push_front(id);
+                }
+            }
+        }
+    }
     fn wait(&mut self, id: usize, task: &mut NativeTask, wait: NativeWait) {
         if let Some(result) = wait.ready() {
             task.machine.resume(result);
@@ -599,6 +661,24 @@ impl NativeScheduler {
         c: Vec<V>,
     ) {
         let result = match operation {
+            ConcurrentOperation::QueueBounded
+            | ConcurrentOperation::QueueUnbounded
+            | ConcurrentOperation::QueueOffer
+            | ConcurrentOperation::QueueTake
+            | ConcurrentOperation::QueueTryOffer
+            | ConcurrentOperation::QueueTryTake
+            | ConcurrentOperation::QueueSize
+            | ConcurrentOperation::QueueClose
+            | ConcurrentOperation::SemaphoreMake
+            | ConcurrentOperation::SemaphoreAcquire
+            | ConcurrentOperation::SemaphoreRelease
+            | ConcurrentOperation::SemaphoreAvailable
+            | ConcurrentOperation::Settle => {
+                match self.sync_operation(id, task, operation, &c) {
+                    Some(result) => result,
+                    None => return,
+                }
+            }
             ConcurrentOperation::ClockSleep => {
                 if let Some(environment) = &task.machine.context.test {
                     environment.borrow_mut().instant += native_duration_nanoseconds(&c[0])

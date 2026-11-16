@@ -154,7 +154,9 @@ pub(super) fn imported_callable(
         .iter()
         .map(|parameter| parameter.type_ref.clone())
         .collect::<Vec<_>>();
-    if parameter_types.is_empty() {
+    // A zero-parameter function export, such as `std/stream::empty`, is a
+    // generic value: keep it so a reference resolves to its canonical symbol.
+    if parameter_types.is_empty() && export.declaration_kind.as_deref() != Some("function") {
         return None;
     }
     Some(TopLevelPureFunction {

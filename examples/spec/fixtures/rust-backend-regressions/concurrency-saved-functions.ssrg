@@ -1,0 +1,72 @@
+import * as effects from "std/effect"
+import * as queues from "std/queue"
+import * as semaphores from "std/semaphore"
+import * as streams from "std/stream"
+
+type Failure deriving Show =
+  | Closed queues.QueueClosed
+  | Create queues.QueueCreateError
+  | Permits semaphores.SemaphoreCreateError
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say text: String -> Unit with Console = println text |> effects.recover ignore
+
+fn materialize<C> values: C -> Effect<{}, Never, Array<Int>> where Iterable<C, Int> = {
+  let fromIterable: C -> streams.Stream<{}, Never, Int> = streams.fromIterable
+  streams.runCollect (fromIterable values)
+}
+
+// Generic wrappers keep the element type abstract until the call site.
+effect fn roundTrip<A> value: A -> queue: queues.Queue<A> -> A fails queues.QueueClosed = do {
+  queues.offer value queue
+  queues.take queue
+}
+
+fn paired<R, E, A, B> right: streams.Stream<R, E, B> -> (streams.Stream<R, E, A> -> streams.Stream<R, E, (A, B)>) =
+  streams.zip right
+
+pub effect fn main -> Unit with Console fails Failure = do {
+  let fromArray: Array<Int> -> streams.Stream<{}, Never, Int> = streams.fromArray
+  let fromList: List<Int> -> streams.Stream<{}, Never, Int> = streams.fromIterable
+  array <- streams.runCollect (fromArray [1, 2, 3])
+  list <- streams.runCollect (fromList `[4, 5])
+  genericArray <- materialize [6, 7]
+  genericList <- materialize `[8, 9]
+  say `iterable ${show array} ${show list} ${show genericArray} ${show genericList}`
+
+  let makeQueue: Int -> Effect<{}, queues.QueueCreateError, queues.Queue<String>> = queues.bounded
+  let offer: String -> queues.Queue<String> -> Effect<{}, queues.QueueClosed, Unit> = queues.offer
+  let offerHello: queues.Queue<String> -> Effect<{}, queues.QueueClosed, Unit> = offer "hello"
+  let take: queues.Queue<String> -> Effect<{}, queues.QueueClosed, String> = queues.take
+  queue <- makeQueue 2 |> effects.mapError Create
+  let pending = offerHello queue
+  pending |> effects.mapError Closed
+  pending |> effects.mapError Closed
+  first <- take queue |> effects.mapError Closed
+  second <- take queue |> effects.mapError Closed
+  echoed <- roundTrip "again" queue |> effects.mapError Closed
+  numbers <- queues.unbounded<Int> ()
+  number <- roundTrip 42 numbers |> effects.mapError Closed
+  say `queue ${first} ${second} ${echoed} ${show number}`
+
+  let makeSemaphore: Int -> Effect<{}, semaphores.SemaphoreCreateError, semaphores.Semaphore> = semaphores.make
+  semaphore <- makeSemaphore 2 |> effects.mapError Permits
+  let guarded: Effect<{}, Never, Int> -> Effect<{}, Never, Int> = semaphores.withPermit semaphore
+  inside <- guarded (semaphores.available semaphore)
+  outside <- semaphores.available semaphore
+  say `semaphore ${show inside} ${show outside}`
+
+  let letters: streams.Stream<{}, Never, String> = streams.fromArray ["a", "b"]
+  let zipLetters: streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, (Int, String)> = paired letters
+  let mergeWith: streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int> = streams.merge (fromArray [9])
+  zipped <- streams.runCollect (zipLetters (fromArray [1, 2, 3]))
+  merged <- streams.runCollect (mergeWith (fromArray [1]))
+  match streams.bufferCapacity 1 {
+    Left error -> say (show error)
+    Right capacity -> do {
+      let buffered: streams.Stream<{}, Never, Int> -> streams.Stream<{}, Never, Int> = streams.buffer capacity
+      values <- streams.runCollect (buffered (fromArray [5, 6, 7]))
+      say `stream ${show zipped} ${show merged} ${show values}`
+    }
+  }
+}

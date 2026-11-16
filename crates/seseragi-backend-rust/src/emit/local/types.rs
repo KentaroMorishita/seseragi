@@ -279,7 +279,8 @@ impl Backend<'_> {
                     Some(1)
                 }
                 "std/prelude::Array" | "std/prelude::List" | "std/prelude::Range"
-                | "std/prelude::Maybe" | "std/ref::Ref" => Some(1),
+                | "std/prelude::Maybe" | "std/ref::Ref" | "std/queue::Queue" => Some(1),
+                "std/semaphore::Semaphore" | "std/semaphore::Permit" => Some(0),
                 "std/prelude::Either"
                 | "std/effect::Fiber"
                 | "std/effect::FiberExit"
@@ -349,10 +350,17 @@ impl Backend<'_> {
                     }
                     self.local_canonical_type(&constructor, scope)?
                 };
-                if bindings.get(name).is_some_and(|bound| bound != &actual) {
-                    return Err("Rust backend: local callable type parameter mismatch".into());
+                // `Never` has no values, so an argument that never fails (or
+                // never returns) widens to the type the other uses selected.
+                match bindings.get(name) {
+                    Some(bound) if bound == &actual || is_never(&actual) => {}
+                    Some(bound) if !is_never(bound) => {
+                        return Err("Rust backend: local callable type parameter mismatch".into());
+                    }
+                    _ => {
+                        bindings.insert(name.clone(), actual);
+                    }
                 }
-                bindings.insert(name.clone(), actual);
                 return Ok(());
             }
         }
@@ -434,4 +442,8 @@ impl Backend<'_> {
         }
         Err("Rust backend: local callable constraint type mismatch".into())
     }
+}
+
+fn is_never(ty: &CoreType) -> bool {
+    matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Never" && arguments.is_empty())
 }

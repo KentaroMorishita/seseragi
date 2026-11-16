@@ -118,6 +118,13 @@ fn stream_effects_are_cold_repeated_scoped_and_ordered() {
     );
 }
 #[test]
+fn stream_zip_merge_and_buffer_match_typescript() {
+    compare(
+        include_str!("../../../examples/spec/fixtures/rust-backend/stream-combinators.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/stream-combinators.stdout"),
+    );
+}
+#[test]
 fn validation_constructors_patterns_and_instances_match_typescript() {
     compare(
         include_str!("../../../examples/spec/fixtures/rust-backend/validation-operations.ssrg"),
