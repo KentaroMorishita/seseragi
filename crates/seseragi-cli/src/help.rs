@@ -282,6 +282,17 @@ const COMMANDS: &[CommandHelp] = &[
         examples: &["seseragi dts convert"],
     },
     CommandHelp {
+        name: "upgrade",
+        summary: "Check for a newer release and install it",
+        usage: &["seseragi upgrade [--check]"],
+        arguments: &[],
+        options: &[option(
+            "--check",
+            "Only report whether a newer release exists; install nothing.",
+        )],
+        examples: &["seseragi upgrade --check", "seseragi upgrade"],
+    },
+    CommandHelp {
         name: "experimental",
         summary: "Unstable native and WASM build commands",
         usage: &[

@@ -659,7 +659,7 @@ fn required_provider<'a>(
         .filter(|selection| selection.field == field && selection.service == service);
     let Some(selection) = selections.next() else {
         return Err(format!(
-            "environment field `{field}` requires a resolved provider for `{service}`; use a package with provider configuration"
+            "environment field `{field}` requires a resolved provider for `{service}`; no toolchain default applies here, so select one in a package manifest (seseragi.toml) under [providers], for example \"{service}\" = \"<provider identity>\" (see docs/spec/15-runtime-providers.md, 15.13)"
         ));
     };
     if selections.next().is_some() {

@@ -47,7 +47,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     let (artifact, source_paths) = compile_native(
         path,
         entry,
-        provider,
+        ClockSelection::CommandLine(provider),
         seseragi_project::ProjectCommand::Build,
         profile.unwrap_or_default(),
     )?;
@@ -78,7 +78,13 @@ pub(crate) fn build_native(
     let package = crate::local_project::containing_package(path);
     let path = package.as_deref().unwrap_or(path);
     let path = path.to_str().ok_or("native source path must be UTF-8")?;
-    let (artifact, source_paths) = compile_native(path, "main", None, command, profile)?;
+    let (artifact, source_paths) = compile_native(
+        path,
+        "main",
+        ClockSelection::ToolchainDefault,
+        command,
+        profile,
+    )?;
     publish_artifact(
         &artifact,
         &source_paths,
@@ -87,10 +93,19 @@ pub(crate) fn build_native(
     )
 }
 
+/// How a native build picks the Clock provider.
+#[derive(Clone, Copy)]
+enum ClockSelection<'a> {
+    /// `experimental` commands: only an explicit `--provider` selects one.
+    CommandLine(Option<&'a str>),
+    /// `run` / `build --target native`: the toolchain default applies.
+    ToolchainDefault,
+}
+
 fn compile_native(
     path: &str,
     entry: &str,
-    provider: Option<&str>,
+    provider: ClockSelection<'_>,
     command: seseragi_project::ProjectCommand,
     profile: seseragi_project::BuildProfile,
 ) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
@@ -221,7 +236,7 @@ pub(crate) fn target_error(
 fn compile_project(
     path: &str,
     entry: &str,
-    provider: Option<&str>,
+    provider: ClockSelection<'_>,
     command: seseragi_project::ProjectCommand,
     profile: seseragi_project::BuildProfile,
 ) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
@@ -376,10 +391,20 @@ fn compile_project(
 }
 
 fn native_clock_options(
-    command_line: Option<&str>,
+    selection: ClockSelection<'_>,
 ) -> Result<seseragi_backend_rust::RustTargetOptions, String> {
     use seseragi_backend_rust::{
         NativeClockProvider, NativeProviderSelectionOrigin, RustTargetOptions,
+    };
+    let command_line = match selection {
+        ClockSelection::CommandLine(command_line) => command_line,
+        ClockSelection::ToolchainDefault => {
+            return Ok(RustTargetOptions {
+                clock_provider: Some(NativeClockProvider::BuiltinClock),
+                clock_selection_origin: NativeProviderSelectionOrigin::ToolchainDefault,
+                ..RustTargetOptions::default()
+            })
+        }
     };
     let selected = command_line.map(|value| {
         let Some((service, provider)) = value.split_once('=') else {

@@ -37,6 +37,9 @@ pub enum NativeProviderSelectionOrigin {
     #[default]
     ExplicitApi,
     CommandLine,
+    /// `run` / `build --target native` chose the toolchain default because
+    /// nothing selected a Clock provider (spec 15.13, rule 2).
+    ToolchainDefault,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

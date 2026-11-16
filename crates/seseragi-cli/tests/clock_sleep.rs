@@ -1039,3 +1039,38 @@ fn unused_clock_pin_keeps_existing_non_clock_entry_while_used_clock_pin_is_rejec
         }
     }
 }
+
+#[test]
+fn standalone_clock_uses_the_toolchain_default_on_ts_and_native() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("standalone.ssrg");
+    fs::write(
+        &source,
+        "import * as clock from \"std/clock\"\n\npub effect fn main -> Unit with Console, Clock fails ConsoleError =\n  do {\n    now <- clock.now ()\n    println \"ok\"\n  }\n",
+    )
+    .unwrap();
+    for target in [None, Some("native")] {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+        command.arg("run").arg(&source);
+        if let Some(target) = target {
+            command.args(["--target", target]);
+        }
+        let output = successful(bounded(&mut command, &scratch.0));
+        assert_eq!(output.stdout, b"ok\n", "{target:?}");
+    }
+    let out = scratch.0.join("native-out");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg(&source)
+            .args(["--target", "native", "--out-dir"])
+            .arg(&out),
+        &scratch.0,
+    ));
+    let metadata: serde_json::Value =
+        serde_json::from_slice(&fs::read(out.join("rust-backend.json")).unwrap()).unwrap();
+    let providers = metadata["providers"].as_array().unwrap();
+    assert_eq!(providers.len(), 1);
+    assert_eq!(providers[0]["provider"], "seseragi/runtime-native#clock");
+    assert_eq!(providers[0]["selection"], "toolchain-default");
+}

@@ -14,6 +14,7 @@ mod new;
 mod run;
 mod target;
 mod test;
+mod upgrade;
 
 /// The error of a command that already wrote its diagnostics to stderr.
 /// `main` exits with status 2 without adding a `seseragi:` line.
@@ -72,6 +73,7 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
         [command, arguments @ ..] if command == "lock" => lock::lock(arguments),
         [command, arguments @ ..] if command == "lint" => lint::lint(arguments),
         [command, arguments @ ..] if command == "format" => format::format(arguments),
+        [command, arguments @ ..] if command == "upgrade" => upgrade::upgrade(arguments),
         [flag] if flag == "--version" || flag == "-V" => {
             println!("{}", seseragi_release::format_human_version("seseragi"));
             Ok(0)

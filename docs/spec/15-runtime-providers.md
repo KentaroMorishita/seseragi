@@ -328,6 +328,8 @@ root manifestはservice identityごとにprovider identityを指定できます�
 
 これはapplication sourceへ実装identityを露出させる仕組みではなく、deployment / toolchain configurationです。
 library packageは`[providers]`を書いてconsumerの選択を固定できません。
+単体の`.ssrg`ファイルにはmanifestがないため、選択は2と3だけで決まります。`seseragi run`と`seseragi build`は、
+単体のファイルでもtoolchainのdefault providerを使います。
 
 explicit selectionまたはtoolchain defaultがある場合、resolverはそのidentityだけを検査します。見つからない、
 target / Contract / ABI / runtime featureが不適合であっても、別候補へfallbackしません。指定なしでcompatible候補が
