@@ -290,6 +290,50 @@ pub let tests:t.Test = t.suite "cleanup" [
 }
 
 #[test]
+fn a_test_times_out_only_while_nothing_can_run_like_ts() {
+    let scratch = tempfile::tempdir().unwrap();
+    let directory = scratch.path();
+    let package = package(directory);
+    fs::remove_file(package.join("tests/second.ssrg")).unwrap();
+    // On TS a test's timer fires only after every runnable step has run, so a
+    // body that never waits finishes even with a zero timeout. A body that
+    // waits still times out.
+    fs::write(package.join("tests/basic.ssrg"), r#"
+import * as t from "std/test"
+import * as e from "std/effect"
+import * as d from "std/deferred"
+import * as refs from "std/ref"
+import * as time from "std/time"
+effect fn wait -> Unit = do { gate <- d.make<Never,Unit> (); d.await gate }
+effect fn spin counter:refs.Ref<Int> -> steps:Int -> Unit =
+  if steps == 0 then e.succeed () else do {
+    refs.update (\count:Int -> count + 1) counter
+    spin counter (steps - 1)
+  }
+effect fn busy -> Unit = do { counter <- refs.make 0; spin counter 20000 }
+pub let tests:t.Test = t.suite "steps" [
+  t.timeout (time.zeroDuration ()) (t.test "first" (busy ())),
+  t.timeout (time.zeroDuration ()) (t.test "second" (busy ())),
+  t.timeout (time.zeroDuration ()) (t.test "waits" (wait ())),
+  t.timeout (time.zeroDuration ()) (t.test "third" (busy ()))
+]
+"#).unwrap();
+    for jobs in ["1", "4"] {
+        let output = compare(&package, directory, &["--jobs", jobs], 1);
+        assert_eq!(
+            output.stdout,
+            b"PASS basic::steps::first\nPASS basic::steps::second\nFAIL basic::steps::waits\nPASS basic::steps::third\n3 passed; 1 failed; 0 skipped\n",
+            "{jobs}"
+        );
+        assert_eq!(
+            output.stderr,
+            b"basic::steps::waits: timed out after 0 ms\n",
+            "{jobs}"
+        );
+    }
+}
+
+#[test]
 fn native_test_cases_read_and_provide_services_like_ts() {
     let scratch = tempfile::tempdir().unwrap();
     let directory = scratch.path();

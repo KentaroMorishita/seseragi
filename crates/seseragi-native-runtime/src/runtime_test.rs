@@ -451,7 +451,7 @@ fn native_test_run(modules: Vec<(String, V)>, options: &NativeTestOptions) -> i3
                 environment: native_service_environment(&["clock", "console", "logger", "random"]),
                 ..NativeContext::default()
             };
-            let root = scheduler.spawn_test(context, case.body.clone());
+            let root = scheduler.spawn(context, case.body.clone()).fiber().task;
             environment.borrow_mut().root = root;
             let timeout = case.timeout.unwrap_or(options.timeout);
             active.insert(
@@ -466,13 +466,13 @@ fn native_test_run(modules: Vec<(String, V)>, options: &NativeTestOptions) -> i3
             );
         }
         let now = std::time::Instant::now();
+        // As on the TS target, a test's timer fires only when no Fiber can
+        // take a turn, so a body that never waits is never cut off midway.
+        let timers = !scheduler.runnable();
         let mut expired = Vec::new();
         for (root, execution) in &mut active {
             let mut environment = execution.environment.borrow_mut();
-            if environment.cleanup.is_none()
-                && now >= execution.deadline
-                && scheduler.started(*root)
-            {
+            if timers && environment.cleanup.is_none() && now >= execution.deadline {
                 execution.timed_out = true;
                 environment.cleanup = Some((
                     now + native_test_cleanup_delay(options.cleanup, true),

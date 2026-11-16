@@ -226,10 +226,6 @@ struct NativeScheduler {
     // A program WASM run has no host: no clock, file, process, stdin or
     // signal. Those turns end as Defects instead of starting a host task.
     hostless: bool,
-    // Test roots that have not had a turn yet. As in the TS runtime, where a
-    // test body starts before any timer can fire, a test cannot time out
-    // before its first turn.
-    unstarted: std::collections::BTreeSet<usize>,
 }
 // The Defect for a turn a hostless run cannot perform, or the turn itself.
 fn native_hostless_turn(machine: &mut NativeMachine, turn: NativeTurn) -> NativeTurn {
@@ -370,9 +366,6 @@ impl NativeScheduler {
             return None;
         };
         let mut task = self.tasks.remove(&id).expect("runnable native task");
-        if !self.unstarted.is_empty() {
-            self.unstarted.remove(&id);
-        }
         let process = task.machine.context.process.clone();
         let turn = task.machine.turn();
         let turn = if self.hostless {
@@ -510,13 +503,10 @@ impl NativeScheduler {
         }
         None
     }
-    fn spawn_test(&mut self, context: NativeContext, plan: V) -> usize {
-        let root = self.spawn(context, plan).fiber().task;
-        self.unstarted.insert(root);
-        root
-    }
-    fn started(&self, root: usize) -> bool {
-        !self.unstarted.contains(&root)
+    // Some Fiber can take a turn now. On the TS target such a turn is a
+    // microtask, and no timer fires before every microtask has run.
+    fn runnable(&self) -> bool {
+        !self.ready.is_empty()
     }
     fn discard_test(&mut self, environment: &Rc<RefCell<NativeTestEnvironment>>) {
         let removed = self
@@ -830,24 +820,6 @@ impl NativeScheduler {
 #[cfg(test)]
 mod scheduler_tests {
     use super::*;
-    #[test]
-    fn a_test_root_counts_as_started_only_after_its_first_turn() {
-        enable_cycle_collection();
-        let mut scheduler = NativeScheduler::default();
-        let root = scheduler.spawn_test(
-            NativeContext::default(),
-            native_operation("effect.succeed", vec![V::Unit]),
-        );
-        assert!(!scheduler.started(root));
-        let finished = scheduler.tick(0);
-        assert!(scheduler.started(root));
-        let finished = finished
-            .or_else(|| (0..8).find_map(|_| scheduler.tick(0)))
-            .expect("finished test root");
-        assert_eq!(finished.0, root);
-        assert!(finished.2.is_ok());
-        assert!(scheduler.started(root));
-    }
     #[test]
     fn tick_resumes_signal_waiters_in_their_own_root_process() {
         let _access = native_process_signal_host::TEST_ACCESS.lock().unwrap();
