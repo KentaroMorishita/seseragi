@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.172] - 2026-11-16
+
+### Fixed
+
+- The native target accepts a generalized `let` whose type-parameter names match an enclosing function, such as `let p = tag` inside `fn outer<A>` when `tag` is declared as `fn tag<A> ... where Show<A>`. It prints the same text as the TS target. It used to stop with `SES-RUST-0001` ("unproven overlapping local type parameter scope"). A type parameter written by the programmer that shadows an enclosing one is still rejected as `SES-N0002`.
+
 ## [0.61.171] - 2026-11-15
 
 ### Changed
