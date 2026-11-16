@@ -138,6 +138,16 @@
           "type": "string",
           "default": "",
           "markdownDescription": "Optional path to the `seseragi` CLI. Leave empty to discover `seseragi` on PATH. The extension validates the CLI version before running project commands."
+        },
+        "seseragi.inlayHints.bindingTypes": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show the inferred type after a `let`, a lambda parameter or a `do` bind that has no type annotation."
+        },
+        "seseragi.inlayHints.effectRows": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Show the inferred `with` requirements and `fails` type of an `effect fn` that does not write them."
         }
       }
     },

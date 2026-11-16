@@ -13,6 +13,9 @@ untitled documentへ次を提供します。
 - CLIと同じformatterを使うFormat Document
 - CLIを直接使うproject Run / Web Build / Dev / Stop / Open Browser
 - semantic tokensによる型・symbol情報を使ったhighlightの補完
+- 推論した型のインレイヒント、同じ名前のハイライト、折りたたみ、選択範囲の拡大
+- 型の定義へのジャンプ（Go to Type Definition）と、trait から instance へのジャンプ
+  （Go to Implementations）
 
 TextMate grammarはserver起動前も使える字句highlightを担当し、semantic tokensは
 その色付けを型情報で上書き・補完します。compilerロジックはextensionへ複製しません。
@@ -52,6 +55,21 @@ resolverで追跡します。`seseragi.toml`があるfolderではそのmanifest�
 package importを使い、保存前のopen bufferも解析に反映します。source fileまたは
 `seseragi.toml`の作成・削除・rename時には、影響するmodule graphのdiagnosticを更新します。
 workspace外とuntitled documentはsingle-file解析へ安全にfallbackします。
+
+### インレイヒント
+
+型注釈のない `let`、ラムダの引数、`do` の bind の後ろに、推論した型を表示します。
+`with` や `fails` を書いていない `effect fn` には、推論した要求と失敗の型を表示します。
+型はホバーと同じ書き方で表示し、推論できなかった場所には表示しません。
+
+種類ごとに設定で消せます。
+
+| 設定 | 既定 | 表示するもの |
+| --- | --- | --- |
+| `seseragi.inlayHints.bindingTypes` | `true` | 束縛の推論した型 |
+| `seseragi.inlayHints.effectRows` | `true` | `effect fn` の推論した `with` と `fails` |
+
+すべてのインレイヒントを消すには、VS Code の `editor.inlayHints.enabled` を使います。
 
 ## Project commands
 

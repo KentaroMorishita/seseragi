@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.61.173] - 2026-11-16
+## [0.61.174] - 2026-11-17
 
 ### Added
 
@@ -12,6 +12,17 @@
 - `ScheduleDecision` has no type parameter, as spec §10.11 states. Code that wrote `ScheduleDecision<A>` needs to drop the type argument.
 - On the native target, `effects.attempt` around `effects.timeout` or `effects.timeoutFail` compiles when the source Effect already needs `Clock`.
 - `seseragi test --target native` no longer times out a test before its body has started. On a busy machine, a test with a zero or very short timeout could fail even though its body finishes at once; on the TS target such a body always runs first.
+
+## [0.61.173] - 2026-11-16
+
+### Added
+
+- `seseragi upgrade --check` says whether a newer release exists, and `seseragi upgrade` installs it with the same install script as a first install, checking checksums. A CLI that the install script did not place, or one on Windows, is not replaced; the install command to run is printed instead.
+- The language server answers inlay hints, document highlights, folding ranges, selection ranges, Go to Type Definition and Go to Implementations. Inlay hints show the inferred type of an unannotated `let`, lambda parameter or `do` bind, and the inferred `with` and `fails` of an `effect fn`, in the same text as hover. `seseragi.inlayHints.bindingTypes` and `seseragi.inlayHints.effectRows` turn each kind off. Folding and selection keep working while the file has errors. Go to Implementations jumps from a trait to its instances, and from a trait method call to the method of the instance its argument selects.
+
+### Changed
+
+- A standalone `.ssrg` file that uses `Clock`, `Random`, `HttpClient` or another service with a toolchain default provider now runs and builds without a package, on the TS and native targets. `examples/spec/lessons/29-temporal-effects.ssrg` runs as a single file. It used to stop with "requires a resolved provider ... use a package with provider configuration", or `SES-RUST-0001` asking for `--provider` on the native target. A service with no default provider now reports the `[providers]` setting to write in `seseragi.toml`. Spec §15.13 states this rule.
 
 ## [0.61.172] - 2026-11-16
 

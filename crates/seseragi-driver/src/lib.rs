@@ -54,7 +54,8 @@ pub use project_compile::{
     ProjectCompileError, ProjectModuleDiagnostics, ProjectModuleInput,
 };
 pub use provider_plan::{
-    ProjectProviderConfiguration, ProjectProviderDiagnostic, ProviderDiagnosticDetails,
+    resolve_main_providers, ProjectProviderConfiguration, ProjectProviderDiagnostic,
+    ProviderDiagnosticDetails,
 };
 pub use provider_requirements::{
     main_provider_requirements, stable_external_service_identity, ProviderRequirementError,

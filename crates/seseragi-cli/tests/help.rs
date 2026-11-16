@@ -44,6 +44,7 @@ fn every_command_explains_its_arguments_and_options() {
         &["format"],
         &["lock", "update"],
         &["dts", "convert"],
+        &["upgrade"],
         &["experimental", "build-native"],
     ] {
         for flag in ["--help", "-h"] {

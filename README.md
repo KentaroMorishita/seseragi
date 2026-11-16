@@ -318,7 +318,7 @@ On Windows, run this in PowerShell:
 powershell -ExecutionPolicy Bypass -c "irm https://github.com/KentaroMorishita/seseragi/releases/latest/download/install.ps1 | iex"
 ```
 
-The tools go to `~/.seseragi/bin`. Run the same command again to update to the latest release.
+The tools go to `~/.seseragi/bin`. `seseragi upgrade --check` tells you whether a newer release exists, and `seseragi upgrade` installs it with the same script (running the install command again also updates).
 You can also download the archive directly from [GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases).
 Running generated programs requires [Bun](https://bun.sh/) 1.4.4 or later.
 
