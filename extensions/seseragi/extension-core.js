@@ -82,6 +82,15 @@ async function offerLegacyFormatterMigration(vscode, log) {
   log(`migrated ${updated} legacy formatter setting${updated === 1 ? "" : "s"}`)
 }
 
+/** Reads the inlay hint kinds the user enabled, for the language server. */
+function inlayHintSettings(vscode) {
+  const configuration = vscode.workspace.getConfiguration("seseragi")
+  return {
+    bindingTypes: configuration.get("inlayHints.bindingTypes", true) !== false,
+    effectRows: configuration.get("inlayHints.effectRows", true) !== false,
+  }
+}
+
 function platformTarget(platform = process.platform, arch = process.arch) {
   const targets = {
     "darwin:arm64": "darwin-arm64",
@@ -341,7 +350,11 @@ function createExtensionController({
         { scheme: "file", language: "seseragi" },
         { scheme: "untitled", language: "seseragi" },
       ],
+      initializationOptions: {
+        inlayHints: inlayHintSettings(vscode),
+      },
       synchronize: {
+        configurationSection: "seseragi",
         fileEvents: [
           vscode.workspace.createFileSystemWatcher("**/*.ssrg"),
           vscode.workspace.createFileSystemWatcher("**/seseragi.toml"),
@@ -498,6 +511,7 @@ module.exports = {
   allowOfficialServer,
   assertServerExecutable,
   createExtensionController,
+  inlayHintSettings,
   legacyFormatterTargets,
   migrateLegacyFormatterSettings,
   offerLegacyFormatterMigration,

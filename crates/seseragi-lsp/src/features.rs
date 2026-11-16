@@ -2,7 +2,7 @@ use crate::model::{CodeActionParams, MarkupKind, Position, TextDocumentPositionP
 use serde_json::{json, Value};
 use seseragi_driver::{
     analyze_module, format_module, AnalysisCompletionContext, AnalysisDocument,
-    AnalysisReferenceItem, AnalysisSymbol, CompileInput,
+    AnalysisReferenceItem, AnalysisSymbol, CompileInput, TypeDocument,
 };
 use seseragi_source::{EncodedPosition, LineIndex, PositionEncoding};
 use seseragi_syntax::{is_custom_operator_candidate, lex, parse_surface_ast, ByteSpan, TokenKind};
@@ -93,6 +93,30 @@ impl DocumentState {
                 encoding,
             )
             .ok()
+    }
+
+    /// Like [`Self::byte_position`], but a position past the end of its line
+    /// or of the document is clamped instead of rejected. Clients send range
+    /// bounds such as "line 40" for a whole-document request (LSP 3.17 lets
+    /// a range end past the content).
+    pub(crate) fn clamped_byte_position(
+        &self,
+        position: Position,
+        encoding: PositionEncoding,
+    ) -> usize {
+        if let Some(offset) = self.byte_position(position, encoding) {
+            return offset;
+        }
+        let index = LineIndex::new(&self.source);
+        let line = usize::try_from(position.line).unwrap_or(usize::MAX);
+        match index.line_starts().get(line.saturating_add(1)) {
+            // Past the end of a line: stop before that line's terminator.
+            Some(&next) => {
+                let line_text = &self.source[index.line_starts()[line]..next];
+                next - (line_text.len() - line_text.trim_end_matches(['\n', '\r']).len())
+            }
+            None => self.source.len(),
+        }
     }
 
     pub(crate) fn query_position(
@@ -1072,4 +1096,499 @@ pub(crate) fn range_formatting(
             })
             .collect(),
     )
+}
+
+/// Highlights every occurrence, in this document, of the name under the
+/// cursor: its definition as a write, its uses as reads, and the name in an
+/// import list as text.
+pub(crate) fn document_highlights(
+    document: &DocumentState,
+    params: &TextDocumentPositionParams,
+    encoding: PositionEncoding,
+) -> Value {
+    const TEXT: u8 = 1;
+    const READ: u8 = 2;
+    const WRITE: u8 = 3;
+    let Some(symbol) = symbol_at_position(document, params, encoding) else {
+        return json!([]);
+    };
+    let key = symbol_key(symbol);
+    let local_prefix = format!("{}::", document.analysis.module);
+    let mut highlights = BTreeMap::new();
+    for occurrence in &document.analysis.symbol_occurrences {
+        let Some(candidate) = document.analysis.symbols.get(occurrence.symbol as usize) else {
+            continue;
+        };
+        if symbol_key(candidate) != key {
+            continue;
+        }
+        let range = precise_symbol_range(document, occurrence.range, candidate);
+        let kind = if candidate.identity.starts_with(&local_prefix)
+            && candidate.definition == occurrence.range
+        {
+            WRITE
+        } else {
+            READ
+        };
+        highlights.entry((range.start, range.end)).or_insert(kind);
+    }
+    for range in imported_name_ranges(document, &key) {
+        highlights.entry((range.start, range.end)).or_insert(TEXT);
+    }
+    Value::Array(
+        highlights
+            .into_iter()
+            .filter_map(|((start, end), kind)| {
+                let range = range_json(&document.source, start, end, encoding)?;
+                Some(json!({"range": range, "kind": kind}))
+            })
+            .collect(),
+    )
+}
+
+/// A nominal type in a value's type. `canonical` is absent for a type
+/// declared in the same module, which is then found by `name`.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct NominalType {
+    pub(crate) canonical: Option<String>,
+    pub(crate) name: String,
+}
+
+/// The nominal types in the type of the value under the cursor, outermost
+/// first, for `textDocument/typeDefinition`.
+pub(crate) fn nominal_types_at(
+    document: &DocumentState,
+    params: &TextDocumentPositionParams,
+    encoding: PositionEncoding,
+) -> Vec<NominalType> {
+    let Some(position) = document.query_position(params.position, encoding) else {
+        return Vec::new();
+    };
+    let symbol = document.analysis.symbol_at(position);
+    if symbol.is_some_and(|symbol| symbol.namespace == "type") {
+        // A type name is its own definition; typeDefinition adds nothing.
+        return Vec::new();
+    }
+    let type_document = symbol
+        .and_then(|symbol| symbol.type_document.as_ref())
+        .or_else(|| {
+            document
+                .analysis
+                .type_at(position)
+                .map(|occurrence| &occurrence.type_document)
+        });
+    let mut identities = Vec::new();
+    if let Some(type_document) = type_document {
+        collect_nominal_types(type_document, &mut identities);
+    }
+    identities
+}
+
+fn collect_nominal_types(document: &TypeDocument, identities: &mut Vec<NominalType>) {
+    use TypeDocument::*;
+    match document {
+        Named {
+            name,
+            canonical,
+            arguments,
+        } => {
+            let nominal = NominalType {
+                canonical: canonical.clone(),
+                name: name.clone(),
+            };
+            if !identities.contains(&nominal) {
+                identities.push(nominal);
+            }
+            for argument in arguments {
+                collect_nominal_types(argument, identities);
+            }
+        }
+        TypeFunction { body, .. } => collect_nominal_types(body, identities),
+        Variable { arguments, .. } => {
+            for argument in arguments {
+                collect_nominal_types(argument, identities);
+            }
+        }
+        Function { parameters, result } => {
+            collect_nominal_types(result, identities);
+            for parameter in parameters {
+                collect_nominal_types(parameter, identities);
+            }
+        }
+        Tuple { elements: operands } | RequirementMerge { operands } => {
+            for operand in operands {
+                collect_nominal_types(operand, identities);
+            }
+        }
+        Record { fields, .. } => {
+            for field in fields {
+                collect_nominal_types(&field.type_ref, identities);
+            }
+        }
+        TypeFunctionParameter { .. } | TypeConstructor { .. } | Unknown => {}
+    }
+}
+
+/// Which inlay hint kinds the editor asked for. Both are on by default.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct InlayHintSettings {
+    pub(crate) binding_types: bool,
+    pub(crate) effect_rows: bool,
+}
+
+impl Default for InlayHintSettings {
+    fn default() -> Self {
+        Self {
+            binding_types: true,
+            effect_rows: true,
+        }
+    }
+}
+
+impl InlayHintSettings {
+    /// Reads `{ "bindingTypes": bool, "effectRows": bool }`; a missing key
+    /// keeps its default.
+    pub(crate) fn from_json(value: &Value) -> Option<Self> {
+        let object = value.as_object()?;
+        let flag = |name: &str| object.get(name).and_then(Value::as_bool).unwrap_or(true);
+        Some(Self {
+            binding_types: flag("bindingTypes"),
+            effect_rows: flag("effectRows"),
+        })
+    }
+}
+
+pub(crate) fn inlay_hints(
+    document: &DocumentState,
+    start: usize,
+    end: usize,
+    settings: InlayHintSettings,
+    encoding: PositionEncoding,
+) -> Value {
+    let mut hints = Vec::new();
+    if settings.binding_types {
+        binding_type_hints(document, start, end, &mut hints);
+    }
+    if settings.effect_rows {
+        effect_row_hints(document, start, end, &mut hints);
+    }
+    hints.sort_by_key(|hint| hint.0);
+    Value::Array(
+        hints
+            .into_iter()
+            .filter_map(|(offset, label, padding_left)| {
+                let position = encoded_range(&document.source, offset, offset, encoding)?.start;
+                Some(json!({
+                    "position": {"line": position.line, "character": position.character},
+                    "label": label,
+                    "kind": 1,
+                    "paddingLeft": padding_left,
+                }))
+            })
+            .collect(),
+    )
+}
+
+/// `: Type` after a `let`, lambda parameter, `do` bind or pattern binding
+/// that has no annotation. A binding whose type was not inferred gets none.
+fn binding_type_hints(
+    document: &DocumentState,
+    start: usize,
+    end: usize,
+    hints: &mut Vec<(usize, String, bool)>,
+) {
+    let source = &document.source;
+    for symbol in &document.analysis.symbols {
+        if !matches!(
+            symbol.kind.as_str(),
+            "let" | "parameter" | "pattern-binding"
+        ) || symbol.name.starts_with('_')
+        {
+            continue;
+        }
+        let definition = symbol.definition;
+        if definition.end < start
+            || definition.end > end
+            || source.get(definition.start..definition.end) != Some(symbol.name.as_str())
+        {
+            continue;
+        }
+        let (Some(type_name), Some(type_document)) = (&symbol.type_name, &symbol.type_document)
+        else {
+            continue;
+        };
+        if contains_unknown(type_document) {
+            continue;
+        }
+        let annotated = source[definition.end..]
+            .trim_start_matches([' ', '\t'])
+            .starts_with(':');
+        if !annotated {
+            hints.push((definition.end, format!(": {type_name}"), false));
+        }
+    }
+}
+
+/// ` with … fails …` after the header of an `effect fn` that leaves its
+/// requirements or failure type to inference.
+fn effect_row_hints(
+    document: &DocumentState,
+    start: usize,
+    end: usize,
+    hints: &mut Vec<(usize, String, bool)>,
+) {
+    let source = &document.source;
+    let tokens = lex("", source).tokens;
+    for declaration in parse_surface_ast(&document.analysis.module, source).declarations {
+        let seseragi_syntax::SurfaceDecl::EffectFn {
+            name_span,
+            requirements,
+            failure,
+            ..
+        } = declaration
+        else {
+            continue;
+        };
+        if !requirements.is_empty() && failure.is_some() {
+            continue;
+        }
+        let Some(equals) = tokens
+            .iter()
+            .find(|token| token.start >= name_span.end && token.kind == TokenKind::OperatorEquals)
+        else {
+            continue;
+        };
+        let header_end = source[..equals.start].trim_end().len();
+        if header_end < start || header_end > end {
+            continue;
+        }
+        let Some(symbol) = document
+            .analysis
+            .symbols
+            .iter()
+            .find(|symbol| symbol.definition == name_span)
+        else {
+            continue;
+        };
+        let Some((row, error)) = symbol.type_document.as_ref().and_then(effect_row) else {
+            continue;
+        };
+        let mut label = String::new();
+        if requirements.is_empty() {
+            if let TypeDocument::Record { fields, .. } = row {
+                if !fields.is_empty() {
+                    let items = fields
+                        .iter()
+                        .map(|field| {
+                            let rendered = field.type_ref.render(Default::default());
+                            let shorthand = matches!(&field.type_ref, TypeDocument::Named { name, arguments, .. }
+                                if arguments.is_empty()
+                                    && seseragi_syntax::unicode::lowercase_first(name) == field.name);
+                            if shorthand {
+                                rendered
+                            } else {
+                                format!("{}: {rendered}", field.name)
+                            }
+                        })
+                        .collect::<Vec<_>>();
+                    label.push_str(&format!("with {}", items.join(", ")));
+                }
+            }
+        }
+        if failure.is_none()
+            && !matches!(error, TypeDocument::Named { name, .. } if name == "Never")
+        {
+            if !label.is_empty() {
+                label.push(' ');
+            }
+            label.push_str(&format!("fails {}", error.render(Default::default())));
+        }
+        if !label.is_empty() {
+            hints.push((header_end, label, true));
+        }
+    }
+}
+
+/// The requirement row and failure type of `Effect<R, E, A>`, after any
+/// parameters.
+fn effect_row(document: &TypeDocument) -> Option<(&TypeDocument, &TypeDocument)> {
+    match document {
+        TypeDocument::Function { result, .. } => effect_row(result),
+        TypeDocument::TypeFunction { body, .. } => effect_row(body),
+        TypeDocument::Named {
+            name, arguments, ..
+        } if name == "Effect" && arguments.len() == 3 => (!contains_unknown(&arguments[0])
+            && !contains_unknown(&arguments[1]))
+        .then(|| (&arguments[0], &arguments[1])),
+        _ => None,
+    }
+}
+
+fn contains_unknown(document: &TypeDocument) -> bool {
+    use TypeDocument::*;
+    match document {
+        Unknown => true,
+        Named { arguments, .. } | Variable { arguments, .. } => {
+            arguments.iter().any(contains_unknown)
+        }
+        TypeFunction { body, .. } => contains_unknown(body),
+        Function { parameters, result } => {
+            contains_unknown(result) || parameters.iter().any(contains_unknown)
+        }
+        Tuple { elements: operands } | RequirementMerge { operands } => {
+            operands.iter().any(contains_unknown)
+        }
+        Record { fields, .. } => fields.iter().any(|field| contains_unknown(&field.type_ref)),
+        TypeFunctionParameter { .. } | TypeConstructor { .. } => false,
+    }
+}
+
+/// What `textDocument/implementation` looks for.
+pub(crate) enum ImplementationTarget {
+    /// Every instance of this trait.
+    Trait(SymbolKey),
+    /// The instance methods for a trait method. `argument` is the head name
+    /// of the first argument's type at a call, used to pick its instance.
+    Method {
+        method: SymbolKey,
+        name: String,
+        argument: Option<String>,
+    },
+}
+
+pub(crate) fn implementation_target(
+    document: &DocumentState,
+    params: &TextDocumentPositionParams,
+    encoding: PositionEncoding,
+) -> Option<ImplementationTarget> {
+    let symbol = symbol_at_position(document, params, encoding)?;
+    match symbol.kind.as_str() {
+        "trait" => Some(ImplementationTarget::Trait(symbol_key(symbol))),
+        "trait-method" => {
+            let byte = document.byte_position(params.position, encoding)?;
+            let occurrence = document
+                .analysis
+                .symbol_occurrences
+                .iter()
+                .filter(|occurrence| {
+                    occurrence.range.start <= byte + 1 && byte <= occurrence.range.end
+                })
+                .min_by_key(|occurrence| occurrence.range.end - occurrence.range.start)?;
+            Some(ImplementationTarget::Method {
+                method: symbol_key(symbol),
+                name: symbol.name.clone(),
+                argument: call_argument_type(document, occurrence.range.end),
+            })
+        }
+        _ => None,
+    }
+}
+
+/// The head name of the type of the argument that follows a callee ending
+/// at `callee_end`, as in `describe (Team { size: 2 })`.
+fn call_argument_type(document: &DocumentState, callee_end: usize) -> Option<String> {
+    let rest = document.source.get(callee_end..)?;
+    let trimmed = rest.trim_start_matches([' ', '\t']);
+    let mut start = callee_end + (rest.len() - trimmed.len());
+    if trimmed.starts_with('(') {
+        let inner = &trimmed[1..];
+        start += 1 + (inner.len() - inner.trim_start().len());
+    }
+    let occurrence = document
+        .analysis
+        .type_occurrences
+        .iter()
+        .filter(|occurrence| occurrence.range.start == start)
+        .max_by_key(|occurrence| occurrence.range.end)?;
+    match &occurrence.type_document {
+        TypeDocument::Named { name, .. } => Some(name.clone()),
+        _ => None,
+    }
+}
+
+/// The trait whose declaration in `document` contains the method defined at
+/// `method_start`.
+pub(crate) fn trait_declaring(document: &DocumentState, method_start: usize) -> Option<SymbolKey> {
+    parse_surface_ast(&document.analysis.module, &document.source)
+        .declarations
+        .into_iter()
+        .find_map(|declaration| match declaration {
+            seseragi_syntax::SurfaceDecl::Trait {
+                name_span, span, ..
+            } if span.start <= method_start && method_start < span.end => {
+                trait_key_at(document, name_span)
+            }
+            _ => None,
+        })
+}
+
+fn trait_key_at(document: &DocumentState, name_span: ByteSpan) -> Option<SymbolKey> {
+    document
+        .analysis
+        .symbol_occurrences
+        .iter()
+        .find(|occurrence| occurrence.range == name_span)
+        .and_then(|occurrence| document.analysis.symbols.get(occurrence.symbol as usize))
+        .filter(|symbol| symbol.kind == "trait")
+        .map(symbol_key)
+}
+
+/// Instances of `trait_key` in this document, or their `method` when one is
+/// named, with whether the instance's first type argument has the head
+/// name `argument`.
+pub(crate) fn implementations_in(
+    document: &DocumentState,
+    trait_key: &SymbolKey,
+    method: Option<&str>,
+    argument: Option<&str>,
+) -> Vec<(ByteSpan, bool)> {
+    let mut found = Vec::new();
+    for declaration in parse_surface_ast(&document.analysis.module, &document.source).declarations {
+        let seseragi_syntax::SurfaceDecl::Instance {
+            trait_name_span,
+            arguments,
+            methods,
+            span,
+            ..
+        } = declaration
+        else {
+            continue;
+        };
+        if trait_key_at(document, trait_name_span).as_ref() != Some(trait_key) {
+            continue;
+        }
+        let matches = match (argument, arguments.first()) {
+            (Some(argument), Some(seseragi_syntax::TypeRef::Named { name, .. })) => {
+                name.rsplit('.').next() == Some(argument)
+            }
+            _ => false,
+        };
+        match method {
+            None => found.push((span, matches)),
+            Some(method) => {
+                if let Some(definition) = methods.iter().find(|candidate| candidate.name == method)
+                {
+                    found.push((definition.name_span, matches));
+                }
+            }
+        }
+    }
+    found
+}
+
+/// The definition of a type declared in this document under `name`.
+pub(crate) fn local_type_definition(document: &DocumentState, name: &str) -> Option<ByteSpan> {
+    let prefix = format!("{}::", document.analysis.module);
+    document
+        .analysis
+        .symbols
+        .iter()
+        .find(|symbol| {
+            symbol.namespace == "type"
+                && symbol.kind == "type"
+                && symbol.name == name
+                && symbol.identity.starts_with(&prefix)
+                && symbol.definition.end > symbol.definition.start
+        })
+        .map(|symbol| symbol.definition)
 }

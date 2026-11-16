@@ -3419,3 +3419,247 @@ fn a_module_level_rec_group_is_checked_navigated_and_formatted() {
     assert_eq!(target["range"]["start"]["line"], definition.line);
     assert_eq!(response(&messages, 4)["result"], json!([]));
 }
+
+const EDITOR_FEATURES: &str = "import * as clock from \"std/clock\"
+
+struct User { name: String }
+
+trait Describe<A> {
+  fn describe self: A -> String
+}
+
+instance Describe<User> {
+  fn describe self: User -> String = self.name
+}
+
+struct Team { size: Int }
+
+instance Describe<Team> {
+  fn describe self: Team -> String = \"team\"
+}
+
+pub fn make name: String -> User = {
+  let user = User { name }
+  user
+}
+
+pub fn twice -> (Int -> Int) = \\x -> x * 2
+
+pub effect fn tick =
+  do {
+    now <- clock.now ()
+    println \"tick\"
+  }
+
+pub fn label -> String = describe (Team { size: 2 })
+";
+
+fn position_of(source: &str, needle: &str, offset: usize) -> Value {
+    let byte = source.find(needle).unwrap() + offset;
+    let position = LineIndex::new(source)
+        .try_locate_encoded(byte, PositionEncoding::Utf16)
+        .unwrap();
+    json!({"line": position.line, "character": position.character})
+}
+
+fn line_of(source: &str, needle: &str) -> u64 {
+    position_of(source, needle, 0)["line"].as_u64().unwrap()
+}
+
+fn editor_session(settings: Option<Value>, requests: Vec<Value>) -> (String, Vec<Value>) {
+    let workspace = TempWorkspace::new();
+    workspace.write("main.ssrg", EDITOR_FEATURES);
+    let uri = file_uri(&workspace.path().join("main.ssrg"));
+    let mut params = json!({"capabilities": {}, "workspaceFolders": [{"uri": file_uri(workspace.path()), "name": "fixture"}]});
+    if let Some(settings) = settings {
+        params["initializationOptions"] = json!({"inlayHints": settings});
+    }
+    let mut input = vec![
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": params}),
+        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {"textDocument": {"uri": uri, "languageId": "seseragi", "version": 1, "text": EDITOR_FEATURES}}}),
+    ];
+    for mut request in requests {
+        if request["params"]["textDocument"].is_object() {
+            request["params"]["textDocument"]["uri"] = json!(uri);
+        }
+        input.push(request);
+    }
+    input.push(json!({"jsonrpc": "2.0", "id": 99, "method": "shutdown"}));
+    input.push(json!({"jsonrpc": "2.0", "method": "exit"}));
+    let messages = run_server(&input);
+    // The unused `now` is only a lint warning.
+    assert!(!published(&messages, &uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|diagnostic| diagnostic["severity"] == 1));
+    (uri, messages)
+}
+
+#[test]
+fn binary_advertises_the_editor_navigation_and_structure_methods() {
+    let messages = run_server(&[
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"capabilities": {}}}),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ]);
+    let capabilities = &response(&messages, 1)["result"]["capabilities"];
+    for provider in [
+        "inlayHintProvider",
+        "documentHighlightProvider",
+        "foldingRangeProvider",
+        "selectionRangeProvider",
+        "typeDefinitionProvider",
+        "implementationProvider",
+    ] {
+        assert_eq!(capabilities[provider], true, "{provider}");
+    }
+}
+
+#[test]
+fn binary_shows_inferred_binding_and_effect_row_inlay_hints() {
+    let whole = json!({"start": {"line": 0, "character": 0}, "end": {"line": 40, "character": 0}});
+    let request = |id: i64| json!({"jsonrpc": "2.0", "id": id, "method": "textDocument/inlayHint", "params": {"textDocument": {}, "range": whole}});
+    let (_, messages) = editor_session(None, vec![request(2)]);
+    let hints = response(&messages, 2)["result"].as_array().unwrap().clone();
+    let labels = hints
+        .iter()
+        .map(|hint| {
+            (
+                hint["position"].clone(),
+                hint["label"].as_str().unwrap().to_owned(),
+            )
+        })
+        .collect::<Vec<_>>();
+    let source = EDITOR_FEATURES;
+    for (needle, offset, label) in [
+        ("user = User", 4, ": User"),
+        ("\\x ->", 2, ": Int"),
+        ("now <-", 3, ": Instant"),
+        ("tick =", 4, "with Clock, Console fails ConsoleError"),
+    ] {
+        assert!(
+            labels.contains(&(position_of(source, needle, offset), label.to_owned())),
+            "{label} at {needle}: {labels:#?}"
+        );
+    }
+    // Annotated parameters and `self` get no hint.
+    assert!(
+        !labels.iter().any(|(_, label)| label == ": String"),
+        "{labels:#?}"
+    );
+
+    let (_, messages) = editor_session(
+        Some(json!({"bindingTypes": false, "effectRows": true})),
+        vec![request(2)],
+    );
+    let hints = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(hints.len(), 1, "{hints:#?}");
+    assert_eq!(hints[0]["label"], "with Clock, Console fails ConsoleError");
+
+    let (_, messages) = editor_session(
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "method": "workspace/didChangeConfiguration", "params": {"settings": {"seseragi": {"inlayHints": {"bindingTypes": true, "effectRows": false}}}}}),
+            request(2),
+        ],
+    );
+    let hints = response(&messages, 2)["result"].as_array().unwrap();
+    assert!(hints
+        .iter()
+        .all(|hint| hint["label"].as_str().unwrap().starts_with(": ")));
+    assert!(!hints.is_empty());
+}
+
+#[test]
+fn binary_highlights_folds_and_selects_within_a_document() {
+    let source = EDITOR_FEATURES;
+    let (_, messages) = editor_session(
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "id": 2, "method": "textDocument/documentHighlight", "params": {"textDocument": {}, "position": position_of(source, "user\n", 1)}}),
+            json!({"jsonrpc": "2.0", "id": 3, "method": "textDocument/foldingRange", "params": {"textDocument": {}}}),
+            json!({"jsonrpc": "2.0", "id": 4, "method": "textDocument/selectionRange", "params": {"textDocument": {}, "positions": [position_of(source, "x * 2", 0)]}}),
+        ],
+    );
+    let highlights = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(highlights.len(), 2, "{highlights:#?}");
+    assert_eq!(
+        highlights[0]["range"]["start"],
+        position_of(source, "user = User", 0)
+    );
+    assert_eq!(highlights[0]["kind"], 3);
+    assert_eq!(
+        highlights[1]["range"]["start"],
+        position_of(source, "user\n", 0)
+    );
+    assert_eq!(highlights[1]["kind"], 2);
+
+    let folds = response(&messages, 3)["result"].as_array().unwrap();
+    let make = line_of(source, "pub fn make");
+    let tick = line_of(source, "pub effect fn tick");
+    assert!(
+        folds
+            .iter()
+            .any(|fold| fold["startLine"] == make && fold["endLine"] == make + 3),
+        "{folds:#?}"
+    );
+    assert!(
+        folds
+            .iter()
+            .any(|fold| fold["startLine"] == tick + 1 && fold["endLine"] == tick + 3),
+        "{folds:#?}"
+    );
+
+    let mut selection = &response(&messages, 4)["result"][0];
+    let mut widths = Vec::new();
+    while !selection.is_null() {
+        let range = &selection["range"];
+        widths.push((range["start"].clone(), range["end"].clone()));
+        selection = &selection["parent"];
+    }
+    assert_eq!(widths[0].0, position_of(source, "x * 2", 0));
+    assert_eq!(widths[0].1, position_of(source, "x * 2", 1));
+    assert!(widths.len() >= 3, "{widths:#?}");
+}
+
+#[test]
+fn binary_jumps_from_values_to_types_and_from_traits_to_instances() {
+    let source = EDITOR_FEATURES;
+    let (uri, messages) = editor_session(
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "id": 2, "method": "textDocument/typeDefinition", "params": {"textDocument": {}, "position": position_of(source, "user\n", 1)}}),
+            json!({"jsonrpc": "2.0", "id": 3, "method": "textDocument/implementation", "params": {"textDocument": {}, "position": position_of(source, "Describe<A>", 1)}}),
+            json!({"jsonrpc": "2.0", "id": 4, "method": "textDocument/implementation", "params": {"textDocument": {}, "position": position_of(source, "describe (Team", 1)}}),
+        ],
+    );
+    let types = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(types.len(), 1, "{types:#?}");
+    assert_eq!(types[0]["uri"], uri);
+    assert_eq!(
+        types[0]["range"]["start"],
+        position_of(source, "User { name: String }", 0)
+    );
+
+    let instances = response(&messages, 3)["result"].as_array().unwrap();
+    let starts = instances
+        .iter()
+        .map(|location| location["range"]["start"].clone())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        starts,
+        vec![
+            position_of(source, "instance Describe<User>", 0),
+            position_of(source, "instance Describe<Team>", 0),
+        ]
+    );
+
+    // The argument is a Team, so only that instance's method is offered.
+    let methods = response(&messages, 4)["result"].as_array().unwrap();
+    assert_eq!(methods.len(), 1, "{methods:#?}");
+    assert_eq!(
+        methods[0]["range"]["start"],
+        position_of(source, "describe self: Team", 0)
+    );
+}

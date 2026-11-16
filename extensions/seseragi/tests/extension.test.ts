@@ -465,6 +465,16 @@ describe("official VS Code extension contract", () => {
         }
       ).synchronize.fileEvents.map((watcher) => watcher.pattern)
     ).toEqual(["**/*.ssrg", "**/seseragi.toml"])
+    expect(instance.clientOptions).toEqual(
+      expect.objectContaining({
+        initializationOptions: {
+          inlayHints: { bindingTypes: true, effectRows: true },
+        },
+        synchronize: expect.objectContaining({
+          configurationSection: "seseragi",
+        }),
+      })
+    )
     expect(harness.lines.join("\n")).toContain(
       "initialized; position encoding utf-8"
     )

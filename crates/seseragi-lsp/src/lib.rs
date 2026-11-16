@@ -4,6 +4,7 @@ mod features;
 mod model;
 mod protocol;
 mod server;
+mod structure;
 mod target_diagnostics;
 mod workspace;
 
