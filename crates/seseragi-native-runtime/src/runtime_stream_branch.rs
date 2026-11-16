@@ -96,7 +96,7 @@ fn branch_body(source: V, side: V, demand: V, results: V, buffered: bool) -> V {
     let body = V::bind(
         V::effect(Instruction::Attempt, vec![stream_open(&source)]),
         V::fun(
-            vec![side, demand, results, outcome, V::Bool(buffered)],
+            vec![side, demand, results.clone(), outcome, V::Bool(buffered)],
             |c, opened| {
                 if opened.tagged("std/prelude::Left") {
                     c[3].write_reference(V::adt(BRANCH_FAIL, opened.payload()));
@@ -124,6 +124,18 @@ fn branch_body(source: V, side: V, demand: V, results: V, buffered: bool) -> V {
             },
         ),
     );
+    // A buffered branch closes its source in an inner scope. When that scope
+    // ends with a failure, a Defect or cancellation, including a Defect from
+    // the source's cleanup after a normal end, the waiting values are
+    // discarded, as TypeScript clears them when closing the source throws.
+    let body = if buffered {
+        branch_on_error(
+            V::effect(Instruction::Scoped, vec![body]),
+            branch_drain(results),
+        )
+    } else {
+        body
+    };
     V::effect(
         Instruction::Scoped,
         vec![branch_then(
@@ -735,6 +747,58 @@ mod stream_branch_tests {
                 .any(|error| error.value.contains("cleanup defect"))),
             _ => panic!("buffer should report the cleanup defect"),
         }
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    // The source ends normally, then its cleanup dies while the consumer
+    // still has a value to take.
+    #[test]
+    fn buffer_discards_waiting_values_when_cleanup_dies_after_the_end() {
+        enable_cycle_collection();
+        let log = stream_cell(V::text(""));
+        let note = |log: &V, text: &str| {
+            V::leaf(vec![log.clone(), V::text(text)], |c, _| {
+                let text = c[0].read_reference().render() + &c[1].render();
+                c[0].write_reference(V::text(&text));
+                Ok(V::Unit)
+            })
+        };
+        let release = V::fun(vec![note(&log, "cleanup;")], |c, _| {
+            branch_then(c[0].clone(), native_effect_die(V::text("cleanup defect")))
+        });
+        let values = V::fun(vec![], |_, _| array(&[1, 2]));
+        let source = native_stream_operation(
+            "std/stream::flatMap",
+            vec![
+                values,
+                native_stream_operation("std/stream::fromEffect", vec![acquired(V::Unit, release)]),
+            ],
+        );
+        let capacity =
+            native_stream_operation("std/stream::bufferCapacity", vec![V::Int(3)]).payload();
+        let buffered = native_stream_operation("std/stream::buffer", vec![capacity, source]);
+        let step = V::fun(vec![log.clone()], |c, value| {
+            let record = V::leaf(vec![c[0].clone(), value.clone()], |c, _| {
+                let text = c[0].read_reference().render() + &c[1].render() + ";";
+                c[0].write_reference(V::text(&text));
+                Ok(V::Unit)
+            });
+            if !matches!(value, V::Int(1)) {
+                return record;
+            }
+            branch_then(
+                record,
+                native_operation("std/effect::yieldNow", vec![V::Unit]),
+            )
+        });
+        let result = NativeContext::default().root(native_stream_operation(
+            "std/stream::runForEach",
+            vec![step, buffered],
+        ));
+        assert!(matches!(result, Err(NativeExit::Defect(_))));
+        assert_eq!(log.read_reference().render(), "1;cleanup;");
+        drop((result, log));
         collect_cycles().unwrap();
         assert_eq!(LIVE.with(Cell::get), 0);
     }
