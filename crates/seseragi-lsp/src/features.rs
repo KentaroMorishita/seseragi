@@ -1522,6 +1522,47 @@ pub(crate) fn trait_declaring(document: &DocumentState, method_start: usize) -> 
         })
 }
 
+/// Which type parameter of the trait declared around `method_start` the
+/// first parameter of `method` is typed by, as in `B` (index 1) for
+/// `trait Convert<A, B> { fn convert value: B -> A }`. `None` when that
+/// parameter's type is not one bare trait type parameter, such as `List<A>`.
+pub(crate) fn dispatch_parameter(
+    document: &DocumentState,
+    method_start: usize,
+    method: &str,
+) -> Option<usize> {
+    parse_surface_ast(&document.analysis.module, &document.source)
+        .declarations
+        .into_iter()
+        .find_map(|declaration| match declaration {
+            seseragi_syntax::SurfaceDecl::Trait {
+                type_parameters,
+                methods,
+                span,
+                ..
+            } if span.start <= method_start && method_start < span.end => {
+                let first = methods
+                    .iter()
+                    .find(|candidate| candidate.name == method)?
+                    .parameters
+                    .first()?;
+                let seseragi_syntax::TypeRef::Named {
+                    name, arguments, ..
+                } = &first.type_ref
+                else {
+                    return None;
+                };
+                if !arguments.is_empty() {
+                    return None;
+                }
+                type_parameters
+                    .iter()
+                    .position(|parameter| &parameter.name == name)
+            }
+            _ => None,
+        })
+}
+
 fn trait_key_at(document: &DocumentState, name_span: ByteSpan) -> Option<SymbolKey> {
     document
         .analysis
@@ -1534,13 +1575,13 @@ fn trait_key_at(document: &DocumentState, name_span: ByteSpan) -> Option<SymbolK
 }
 
 /// Instances of `trait_key` in this document, or their `method` when one is
-/// named, with whether the instance's first type argument has the head
-/// name `argument`.
+/// named, with whether the instance's type argument at the given position
+/// has the head name of the call's argument type.
 pub(crate) fn implementations_in(
     document: &DocumentState,
     trait_key: &SymbolKey,
     method: Option<&str>,
-    argument: Option<&str>,
+    argument: Option<(usize, &str)>,
 ) -> Vec<(ByteSpan, bool)> {
     let mut found = Vec::new();
     for declaration in parse_surface_ast(&document.analysis.module, &document.source).declarations {
@@ -1557,12 +1598,11 @@ pub(crate) fn implementations_in(
         if trait_key_at(document, trait_name_span).as_ref() != Some(trait_key) {
             continue;
         }
-        let matches = match (argument, arguments.first()) {
-            (Some(argument), Some(seseragi_syntax::TypeRef::Named { name, .. })) => {
-                name.rsplit('.').next() == Some(argument)
-            }
-            _ => false,
-        };
+        let matches = argument.is_some_and(|(position, argument)| {
+            matches!(arguments.get(position),
+                Some(seseragi_syntax::TypeRef::Named { name, .. })
+                    if name.rsplit('.').next() == Some(argument))
+        });
         match method {
             None => found.push((span, matches)),
             Some(method) => {

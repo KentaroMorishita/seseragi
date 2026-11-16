@@ -795,6 +795,10 @@ impl State {
                         } => {
                             let (_, defining, start, _) = self.definition_location(&method)?;
                             let trait_key = features::trait_declaring(defining, start)?;
+                            // Narrow by the argument only when the method's
+                            // first parameter is typed by one trait parameter.
+                            let argument =
+                                features::dispatch_parameter(defining, start, &name).zip(argument);
                             (trait_key, Some(name), argument)
                         }
                     };
@@ -804,7 +808,9 @@ impl State {
                         document,
                         &trait_key,
                         method.as_deref(),
-                        argument.as_deref(),
+                        argument
+                            .as_ref()
+                            .map(|(position, name)| (*position, name.as_str())),
                     ) {
                         found.push((uri, document, span, matches));
                     }

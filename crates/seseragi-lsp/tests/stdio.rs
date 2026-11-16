@@ -3467,8 +3467,16 @@ fn line_of(source: &str, needle: &str) -> u64 {
 }
 
 fn editor_session(settings: Option<Value>, requests: Vec<Value>) -> (String, Vec<Value>) {
+    editor_session_with(EDITOR_FEATURES, settings, requests)
+}
+
+fn editor_session_with(
+    source: &str,
+    settings: Option<Value>,
+    requests: Vec<Value>,
+) -> (String, Vec<Value>) {
     let workspace = TempWorkspace::new();
-    workspace.write("main.ssrg", EDITOR_FEATURES);
+    workspace.write("main.ssrg", source);
     let uri = file_uri(&workspace.path().join("main.ssrg"));
     let mut params = json!({"capabilities": {}, "workspaceFolders": [{"uri": file_uri(workspace.path()), "name": "fixture"}]});
     if let Some(settings) = settings {
@@ -3476,7 +3484,7 @@ fn editor_session(settings: Option<Value>, requests: Vec<Value>) -> (String, Vec
     }
     let mut input = vec![
         json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": params}),
-        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {"textDocument": {"uri": uri, "languageId": "seseragi", "version": 1, "text": EDITOR_FEATURES}}}),
+        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {"textDocument": {"uri": uri, "languageId": "seseragi", "version": 1, "text": source}}}),
     ];
     for mut request in requests {
         if request["params"]["textDocument"].is_object() {
@@ -3661,5 +3669,40 @@ fn binary_jumps_from_values_to_types_and_from_traits_to_instances() {
     assert_eq!(
         methods[0]["range"]["start"],
         position_of(source, "describe self: Team", 0)
+    );
+}
+
+const SECOND_PARAMETER_DISPATCH: &str = "trait Convert<A, B> {
+  fn convert value: B -> A
+}
+
+instance Convert<Int, String> {
+  fn convert value: String -> Int = 1
+}
+
+instance Convert<String, Int> {
+  fn convert value: Int -> String = \"one\"
+}
+
+pub fn number -> Int = convert \"x\"
+";
+
+#[test]
+fn binary_selects_the_instance_by_the_trait_parameter_the_argument_fills() {
+    let source = SECOND_PARAMETER_DISPATCH;
+    let (_, messages) = editor_session_with(
+        source,
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "id": 2, "method": "textDocument/implementation", "params": {"textDocument": {}, "position": position_of(source, "convert \"x\"", 1)}}),
+        ],
+    );
+    // A String argument fills `B`, the second trait parameter, so the
+    // `Convert<Int, String>` instance is the one that applies.
+    let methods = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(methods.len(), 1, "{methods:#?}");
+    assert_eq!(
+        methods[0]["range"]["start"],
+        position_of(source, "convert value: String", 0)
     );
 }

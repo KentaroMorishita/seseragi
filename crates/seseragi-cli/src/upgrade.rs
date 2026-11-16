@@ -119,7 +119,10 @@ fn install(version: &str) -> Result<i32, String> {
     if cfg!(windows) {
         // Windows locks a running executable, so the script must run after
         // this process exits.
-        println!("Close this terminal's seseragi processes, then run:\n  {command}");
+        println!(
+            "Close this terminal's seseragi processes, then run in PowerShell:\n{}",
+            windows_upgrade_command(&root, version)
+        );
         return Ok(0);
     }
     let directory = tempfile::Builder::new()
@@ -147,6 +150,17 @@ fn install(version: &str) -> Result<i32, String> {
     Ok(status.code().unwrap_or(1))
 }
 
+/// PowerShell lines that reinstall `version` into `root`. The install root
+/// is passed explicitly, so a custom `SESERAGI_INSTALL` that is no longer set
+/// in this shell still updates the same installation.
+fn windows_upgrade_command(root: &Path, version: &str) -> String {
+    // A single-quoted PowerShell string escapes `'` by doubling it.
+    let root = root.display().to_string().replace('\'', "''");
+    format!(
+        "  $env:SESERAGI_INSTALL = '{root}'\n  $env:SESERAGI_VERSION = '{version}'\n  irm {REPOSITORY}/releases/download/v{version}/install.ps1 | iex"
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -167,6 +181,24 @@ mod tests {
         assert_eq!(normalize("0.61.172").unwrap(), "0.61.172");
         assert!(normalize("releases").is_err());
         assert!(normalize("").is_err());
+    }
+
+    #[test]
+    fn windows_command_keeps_the_detected_install_root() {
+        let command =
+            windows_upgrade_command(Path::new(r"C:\Users\O'Neil\tools\seseragi"), "0.61.173");
+        assert!(
+            command.contains(r"$env:SESERAGI_INSTALL = 'C:\Users\O''Neil\tools\seseragi'"),
+            "{command}"
+        );
+        assert!(
+            command.contains("$env:SESERAGI_VERSION = '0.61.173'"),
+            "{command}"
+        );
+        assert!(
+            command.contains("/releases/download/v0.61.173/install.ps1 | iex"),
+            "{command}"
+        );
     }
 
     #[test]
