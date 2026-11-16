@@ -231,6 +231,9 @@ pub enum V {
     Effect(Shared<EffectPlan>),
     Fiber(Shared<NativeFiber>),
     Deferred(Shared<NativeDeferred>),
+    Queue(Shared<NativeQueue>),
+    Semaphore(Shared<NativeSemaphore>),
+    Permit(Shared<NativePermit>),
 }
 
 pub struct Function {
@@ -413,6 +416,9 @@ impl V {
                 V::Reference(_) => output.push_str("<ref>"),
                 V::Fiber(_) => output.push_str("<Fiber>"),
                 V::Deferred(_) => output.push_str("<Deferred>"),
+                V::Queue(_) => output.push_str("<Queue>"),
+                V::Semaphore(_) => output.push_str("<Semaphore>"),
+                V::Permit(_) => output.push_str("<Permit>"),
                 V::Effect(_) => output.push_str("<effect>"),
             }
         }

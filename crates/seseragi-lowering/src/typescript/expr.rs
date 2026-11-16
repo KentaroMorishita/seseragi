@@ -817,8 +817,21 @@ fn lower_variable(
             })
         })
         .or_else(|| {
-            runtime_stream_operation(&name).map(|operation| TypeScriptExpr::RuntimeReference {
-                name: operation.local_name.to_owned(),
+            runtime_stream_operation(&name).map(|operation| {
+                let reference = TypeScriptExpr::RuntimeReference {
+                    name: operation.local_name.to_owned(),
+                };
+                // `empty` is a `Stream<unknown, never, never>` value; give it
+                // the checked Stream type, as calls do.
+                match type_ref_from_core_type(&type_ref, imported_types) {
+                    Ok(checked) if !matches!(type_ref, CoreType::Function { .. }) => {
+                        TypeScriptExpr::CheckedResult {
+                            value: Box::new(reference),
+                            type_ref: checked,
+                        }
+                    }
+                    _ => reference,
+                }
             })
         })
         .or_else(|| {
@@ -2071,6 +2084,17 @@ fn lower_uncurried_runtime_call(
             type_arguments,
             arguments,
         }
+    };
+    // A Stream source such as `fromArray` returns `Stream<unknown, never, A>`,
+    // and the runtime Stream type is invariant in its environment. State the
+    // checked Stream type so the value fits its Seseragi type.
+    let call = if parameter_scope == "stream" {
+        TypeScriptExpr::CheckedResult {
+            value: Box::new(call),
+            type_ref: type_ref_from_core_type(remaining, imported_types)?,
+        }
+    } else {
+        call
     };
     let result = parameters
         .into_iter()

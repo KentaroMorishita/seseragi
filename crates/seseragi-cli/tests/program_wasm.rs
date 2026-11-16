@@ -984,6 +984,10 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         "fn selected value: Int -> Int = value",
         "import * as refs from \"std/ref\"\npub effect fn selected<A> value: A -> A = do { cell <- refs.make value; refs.get cell }",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
+        "import * as queues from \"std/queue\"\npub effect fn selected value: Int -> Int = do { queue <- queues.unbounded<Int> (); queues.size queue }",
+        "import * as semaphores from \"std/semaphore\"\npub effect fn selected value: Int -> Int fails semaphores.SemaphoreCreateError = do { semaphore <- semaphores.make value; semaphores.available semaphore }",
+        "import * as queues from \"std/queue\"\nfn unused -> (Int -> Effect<{}, queues.QueueCreateError, queues.Queue<Int>>) = queues.bounded\npub fn selected value: Int -> Int = value",
+        "import * as streams from \"std/stream\"\nfn ints value: Int -> streams.Stream<{}, Never, Int> = streams.fromArray [value]\npub effect fn selected value: Int -> Array<(Int, Int)> = streams.zip (ints value) (ints value) |> streams.runCollect",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
         fs::write(&path,source).unwrap();

@@ -35,6 +35,11 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     let deferred = || named("std/deferred::Deferred", vec![e.clone(), a.clone()]);
     let either = || named("std/prelude::Either", vec![e.clone(), a.clone()]);
     let maybe = |a| named("std/prelude::Maybe", vec![a]);
+    let queue = || named("std/queue::Queue", vec![a.clone()]);
+    let queue_closed = || named("std/queue::QueueClosed", vec![]);
+    let queue_create_error = || named("std/queue::QueueCreateError", vec![]);
+    let semaphore = || named("std/semaphore::Semaphore", vec![]);
+    let permit = || named("std/semaphore::Permit", vec![]);
     Some(match name {
         "std/prelude::Right" => (vec![a.clone()], either()),
         "std/prelude::Left" => (vec![e.clone()], either()),
@@ -56,6 +61,47 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
         "std/deferred::complete" => (vec![either(), deferred()], task(primitive("Bool"))),
         "std/deferred::succeed" => (vec![a.clone(), deferred()], task(primitive("Bool"))),
         "std/deferred::fail" => (vec![e.clone(), deferred()], task(primitive("Bool"))),
+        "std/queue::bounded" => (
+            vec![primitive("Int")],
+            effect(row.clone(), queue_create_error(), queue()),
+        ),
+        "std/queue::unbounded" => (vec![primitive("Unit")], task(queue())),
+        "std/queue::offer" => (
+            vec![a.clone(), queue()],
+            effect(row.clone(), queue_closed(), primitive("Unit")),
+        ),
+        "std/queue::take" => (vec![queue()], effect(row, queue_closed(), a.clone())),
+        "std/queue::tryOffer" => (
+            vec![a.clone(), queue()],
+            task(named(
+                "std/prelude::Either",
+                vec![queue_closed(), primitive("Bool")],
+            )),
+        ),
+        "std/queue::tryTake" => (
+            vec![queue()],
+            task(named(
+                "std/prelude::Either",
+                vec![queue_closed(), maybe(a.clone())],
+            )),
+        ),
+        "std/queue::size" => (vec![queue()], task(primitive("Int"))),
+        "std/queue::close" => (vec![queue()], task(primitive("Unit"))),
+        "std/semaphore::make" => (
+            vec![primitive("Int")],
+            effect(
+                row,
+                named("std/semaphore::SemaphoreCreateError", vec![]),
+                semaphore(),
+            ),
+        ),
+        "std/semaphore::acquire" => (vec![semaphore()], task(permit())),
+        "std/semaphore::release" => (vec![permit()], task(primitive("Unit"))),
+        "std/semaphore::available" => (vec![semaphore()], task(primitive("Int"))),
+        "std/semaphore::withPermit" => (
+            vec![semaphore(), effect(variable("R"), e.clone(), a.clone())],
+            effect(variable("R"), e.clone(), a.clone()),
+        ),
         _ => return None,
     })
 }
@@ -121,6 +167,11 @@ impl Backend<'_> {
         if scope.contains(name) {
             return Ok(None);
         }
+        let synchronization =
+            name.starts_with("std/queue::") || name.starts_with("std/semaphore::");
+        if synchronization && self.program_wasm_library {
+            return Err("Rust backend: Queue and Semaphore are unavailable in program WASM".into());
+        }
         if !evidence.is_empty() || self.declared_method_type_kind(type_ref, scope) != Some(0) {
             return Err("Rust backend: unproven concurrent callable evidence or kinds".into());
         }
@@ -142,7 +193,7 @@ impl Backend<'_> {
         self.capabilities.insert(
             if name.starts_with("std/prelude::") {
                 "either"
-            } else if name.starts_with("std/deferred::") {
+            } else if name.starts_with("std/deferred::") || synchronization {
                 "deferred"
             } else {
                 "fiber"

@@ -409,4 +409,7 @@ native（Rust）で実行できる標準 API を加えたり直したりした�
 | --- | --- | --- |
 | Console の String の約束 | driver と backend と CLI `--test console_string_contract`、`bun test runtime/ts/tests/console-string-contract.test.ts` | |
 | Clock の `sleep` | backend と CLI `--test clock_sleep`、runtime `clock_tests` | native の CLI の provider を明示的に選ぶ。共通のスケジューラーを変えるので、ファイル操作、Fiber、プログラムの WASM の回帰も確かめる |
+| Queue と Semaphore | CLI `--test fibers queue_and_semaphore_`、`saved_and_partial_concurrency_` | 待っている側の順序、close の後の offer と take、取消、`withPermit` の失敗と取消での返却。プログラムの WASM での拒否は CLI `--test program_wasm rejects_unproven_boundaries_` |
+| Stream の作成・変換・終端操作 | backend `--test stream_validation`、CLI `--test stream_saved_functions --test fibers saved_and_partial_concurrency_` | 実行のたびに最初から流れること、途中で止めたときの後片付け |
+| Stream の zip、merge、buffer | backend `--test stream_validation stream_zip_`、CLI `--test fibers stream_zip_` | 片方が終わったとき、失敗したとき、途中で止めたときに、もう片方を閉じる。2つの source の後片付けの順は仕様で決めていないので、テストでは片方だけを観測する |
 | 開発サーバーの停止とリクエストの待ち行列 | CLI `--bin seseragi dev::tests::`、`--test dev` | 実際に待ち受けるソケットに複数のリクエストを並べる。止めるときの猶予は5秒 |

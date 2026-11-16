@@ -1,0 +1,33 @@
+[]
+[1, 2, 3]
+[4, 5]
+[(1, a), (2, b)]
+open:right
+close:right
+[(1, 10)]
+open:left
+close:left
+[(1, 10)]
+open:right
+close:right
+Left failed:right
+[1, 2, 3, 4]
+[]
+[7]
+open:left
+close:left
+[1]
+open:right
+close:right
+Left failed:right
+NonPositiveBufferCapacity 0
+NonPositiveBufferCapacity (-1)
+capacity
+[1, 2, 3, 4, 5]
+open:buffered
+close:buffered
+[1, 2]
+open:buffered
+close:buffered
+Left failed:buffered
+[8, 9] [8, 9]
