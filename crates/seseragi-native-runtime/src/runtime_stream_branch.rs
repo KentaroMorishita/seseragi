@@ -320,8 +320,19 @@ fn branch_open_pair(kind: i64, left: V, right: V) -> V {
         }),
     )
 }
+// Both branches start closing before either cleanup is awaited, as
+// TypeScript closes them concurrently, so one side's finalizer may wait for
+// the other's.
 fn branch_close_pair(left: &V, right: &V) -> V {
-    branch_both(branch_close(left), branch_close(right))
+    V::bind(
+        native_operation("std/effect::fork", vec![branch_close(left)]),
+        V::fun(vec![right.clone()], |c, closing| {
+            branch_both(
+                branch_close(&c[0]),
+                native_operation("std/effect::join", vec![closing]),
+            )
+        }),
+    )
 }
 fn native_stream_zip_cursor(left: V, right: V, results: V) -> V {
     let closed = stream_cell(V::Bool(false));
@@ -591,6 +602,21 @@ fn native_stream_buffer_cursor(branch: V, results: V) -> V {
     let pull = V::fun(vec![state], |c, _| native_stream_buffer_pull(c[0].clone()));
     stream_cursor(pull, close)
 }
+// A buffered branch reports its end or failure from its last finalizer, so
+// its Fiber is about to finish. Joining it first lets a Defect from the
+// source's cleanup take precedence over the reported outcome.
+fn branch_finished(branch: &V, outcome: V) -> V {
+    if outcome.tagged(BRANCH_ENDED) {
+        return branch_result(branch, outcome);
+    }
+    branch.index(2).write_reference(V::Int(1));
+    V::bind(
+        native_operation("std/effect::join", vec![branch.index(0)]),
+        V::fun(vec![branch.clone(), outcome], |c, _| {
+            branch_result(&c[0], c[1].clone())
+        }),
+    )
+}
 fn native_stream_buffer_pull(state: V) -> V {
     V::effect(
         Instruction::Defer,
@@ -601,7 +627,7 @@ fn native_stream_buffer_pull(state: V) -> V {
             }
             let ended = state.index(3).read_reference();
             if !matches!(ended, V::Unit) {
-                return branch_result(&state.index(0), ended);
+                return branch_finished(&state.index(0), ended);
             }
             V::bind(
                 native_operation("std/queue::take", vec![state.index(1)]),
@@ -616,7 +642,7 @@ fn native_stream_buffer_pull(state: V) -> V {
                     // The end, a failure or a Defect is final; later pulls
                     // report it again without waiting.
                     c[0].index(3).write_reference(outcome.clone());
-                    branch_result(&c[0].index(0), outcome)
+                    branch_finished(&c[0].index(0), outcome)
                 }),
             )
         })],
@@ -655,6 +681,59 @@ mod stream_branch_tests {
                 errors.iter().map(|e| e.value.clone()).collect::<Vec<_>>()
             ),
             Err(NativeExit::Failure(_)) => panic!("failure"),
+        }
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    fn acquired(value: V, release: V) -> V {
+        V::effect(
+            Instruction::AcquireRelease,
+            vec![branch_succeed(value), release],
+        )
+    }
+
+    #[test]
+    fn zip_closes_both_sides_before_awaiting_either_cleanup() {
+        enable_cycle_collection();
+        let gate = V::Deferred(Shared::new(NativeDeferred::default()));
+        let wait = V::fun(vec![gate.clone()], |c, _| {
+            native_operation("std/deferred::await", vec![c[0].clone()])
+        });
+        let open = V::fun(vec![gate], |c, _| {
+            native_operation("std/deferred::succeed", vec![V::Unit, c[0].clone()])
+        });
+        let left =
+            native_stream_operation("std/stream::fromEffect", vec![acquired(V::Int(1), wait)]);
+        let right =
+            native_stream_operation("std/stream::fromEffect", vec![acquired(V::Int(2), open)]);
+        let zipped = native_stream_operation("std/stream::zip", vec![right, left]);
+        let first = native_stream_operation("std/stream::take", vec![V::Int(1), zipped]);
+        match collect(first) {
+            Ok(value) => assert_eq!(value.render(), "[(1, 2)]"),
+            _ => panic!("zip should succeed"),
+        }
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    #[test]
+    fn buffer_reports_a_cleanup_defect_over_the_source_failure() {
+        enable_cycle_collection();
+        let release = V::fun(vec![], |_, _| native_effect_die(V::text("cleanup defect")));
+        let failing = branch_then(
+            acquired(V::Unit, release),
+            native_operation("effect.fail", vec![V::text("source failure")]),
+        );
+        let source = native_stream_operation("std/stream::fromEffect", vec![failing]);
+        let capacity =
+            native_stream_operation("std/stream::bufferCapacity", vec![V::Int(2)]).payload();
+        let buffered = native_stream_operation("std/stream::buffer", vec![capacity, source]);
+        match collect(buffered) {
+            Err(NativeExit::Defect(errors)) => assert!(errors
+                .iter()
+                .any(|error| error.value.contains("cleanup defect"))),
+            _ => panic!("buffer should report the cleanup defect"),
         }
         collect_cycles().unwrap();
         assert_eq!(LIVE.with(Cell::get), 0);
