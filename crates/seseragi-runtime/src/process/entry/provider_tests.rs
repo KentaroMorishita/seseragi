@@ -192,7 +192,10 @@ fn standalone_entries_select_the_toolchain_default_provider() {
     validate_main_process_entry(&compiled).unwrap();
     let providers = super::super::standalone_process_providers(&compiled).unwrap();
     assert_eq!(providers.selected.len(), 1);
-    assert_eq!(providers.selected[0].provider, "seseragi/runtime-bun#http-client");
+    assert_eq!(
+        providers.selected[0].provider,
+        "seseragi/runtime-bun#http-client"
+    );
 }
 
 #[test]
