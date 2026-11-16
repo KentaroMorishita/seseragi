@@ -80308,14 +80308,12 @@
               "end": 0
             },
             "scheme": {
-              "typeParameters": [
-                "A"
-              ],
+              "typeParameters": [],
               "constraints": [],
               "type": {
                 "kind": "type-constructor",
                 "name": "ScheduleDecision",
-                "arity": 1
+                "arity": 0
               }
             }
           },
@@ -80331,9 +80329,7 @@
               "end": 0
             },
             "scheme": {
-              "typeParameters": [
-                "A"
-              ],
+              "typeParameters": [],
               "constraints": [],
               "type": {
                 "kind": "external-named",
@@ -80341,13 +80337,7 @@
                 "canonical": "std/effect::ScheduleDecision",
                 "providerModule": "std/effect",
                 "providerExport": "ScheduleDecision",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "A",
-                    "arguments": []
-                  }
-                ]
+                "arguments": []
               }
             }
           },
@@ -80363,9 +80353,7 @@
               "end": 0
             },
             "scheme": {
-              "typeParameters": [
-                "A"
-              ],
+              "typeParameters": [],
               "constraints": [],
               "type": {
                 "kind": "function",
@@ -80383,13 +80371,7 @@
                   "canonical": "std/effect::ScheduleDecision",
                   "providerModule": "std/effect",
                   "providerExport": "ScheduleDecision",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "A",
-                      "arguments": []
-                    }
-                  ]
+                  "arguments": []
                 }
               }
             }
@@ -82465,13 +82447,7 @@
                     "result": {
                       "kind": "named",
                       "name": "ScheduleDecision",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        }
-                      ]
+                      "arguments": []
                     }
                   }
                 },

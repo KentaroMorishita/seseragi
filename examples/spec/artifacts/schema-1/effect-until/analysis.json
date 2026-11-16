@@ -482,18 +482,6 @@
     },
     {
       "id": 28,
-      "identity": "std/effect::ScheduleDecision::A",
-      "name": "A",
-      "module": "std/effect",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 29,
       "identity": "std/effect::ScheduleDecision",
       "name": "ScheduleDecision",
       "module": "std/effect",
@@ -505,7 +493,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 29,
       "identity": "std/effect::ScheduleStop",
       "name": "ScheduleStop",
       "module": "std/effect",
@@ -517,7 +505,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 30,
       "identity": "std/effect::ScheduleContinue",
       "name": "ScheduleContinue",
       "module": "std/effect",
@@ -527,28 +515,26 @@
         "start": 0,
         "end": 0
       },
-      "typeName": "Duration -> ScheduleDecision<A>",
+      "typeName": "Duration -> ScheduleDecision",
       "callable": {
         "identity": "std/effect::ScheduleContinue",
         "name": "ScheduleContinue",
         "module": "std/effect",
-        "typeParameters": [
-          "A"
-        ],
+        "typeParameters": [],
         "parameters": [
           {
             "name": "arg1",
             "type": "Duration"
           }
         ],
-        "result": "ScheduleDecision<A>",
+        "result": "ScheduleDecision",
         "constraints": [],
-        "signature": "ScheduleContinue<A> arg1: Duration -> ScheduleDecision<A>",
+        "signature": "ScheduleContinue arg1: Duration -> ScheduleDecision",
         "remainingParameters": []
       }
     },
     {
-      "id": 32,
+      "id": 31,
       "identity": "std/effect::ScheduleError",
       "name": "ScheduleError",
       "module": "std/effect",
@@ -560,7 +546,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 32,
       "identity": "std/effect::NegativeRecurrences",
       "name": "NegativeRecurrences",
       "module": "std/effect",
@@ -589,7 +575,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 33,
       "identity": "std/collection::reduceUntil",
       "name": "reduceUntil",
       "module": "std/collection",
@@ -633,8 +619,8 @@
       "description": "Folds an Iterable in source order until Done; does not pull the remaining elements."
     },
     {
-      "id": 35,
-      "identity": "artifact/effect-until::local(35)",
+      "id": 34,
+      "identity": "artifact/effect-until::local(34)",
       "name": "total",
       "module": "artifact/effect-until",
       "namespace": "value",
@@ -645,8 +631,8 @@
       }
     },
     {
-      "id": 36,
-      "identity": "artifact/effect-until::local(36)",
+      "id": 35,
+      "identity": "artifact/effect-until::local(35)",
       "name": "value",
       "module": "artifact/effect-until",
       "namespace": "value",
@@ -657,7 +643,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 36,
       "identity": "std/prelude::<",
       "name": "<",
       "module": "std/prelude",
@@ -669,7 +655,7 @@
       }
     },
     {
-      "id": 38,
+      "id": 37,
       "identity": "std/prelude::+",
       "name": "+",
       "module": "std/prelude",
@@ -681,7 +667,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 38,
       "identity": "std/prelude::Int",
       "name": "Int",
       "module": "std/prelude",
@@ -693,8 +679,8 @@
       }
     },
     {
-      "id": 40,
-      "identity": "artifact/effect-until::local(40)",
+      "id": 39,
+      "identity": "artifact/effect-until::local(39)",
       "name": "value",
       "module": "artifact/effect-until",
       "namespace": "value",
@@ -706,7 +692,7 @@
       "typeName": "Int"
     },
     {
-      "id": 41,
+      "id": 40,
       "identity": "std/prelude::Effect",
       "name": "Effect",
       "module": "std/prelude",
@@ -718,7 +704,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 41,
       "identity": "std/prelude::Never",
       "name": "Never",
       "module": "std/prelude",
@@ -730,7 +716,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 42,
       "identity": "std/effect::succeed",
       "name": "succeed",
       "module": "std/effect",
@@ -762,7 +748,7 @@
       "description": "Creates an Effect that succeeds with a value."
     },
     {
-      "id": 44,
+      "id": 43,
       "identity": "std/prelude::==",
       "name": "==",
       "module": "std/prelude",
@@ -774,7 +760,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 44,
       "identity": "std/effect::forEachUntil",
       "name": "forEachUntil",
       "module": "std/effect",
@@ -856,42 +842,42 @@
         "start": 175,
         "end": 180
       },
-      "symbol": 35
+      "symbol": 34
     },
     {
       "range": {
         "start": 181,
         "end": 186
       },
-      "symbol": 36
+      "symbol": 35
     },
     {
       "range": {
         "start": 305,
         "end": 310
       },
-      "symbol": 40
+      "symbol": 39
     },
     {
       "range": {
         "start": 142,
         "end": 165
       },
-      "symbol": 34
+      "symbol": 33
     },
     {
       "range": {
         "start": 193,
         "end": 198
       },
-      "symbol": 36
+      "symbol": 35
     },
     {
       "range": {
         "start": 199,
         "end": 200
       },
-      "symbol": 37
+      "symbol": 36
     },
     {
       "range": {
@@ -905,7 +891,7 @@
         "start": 231,
         "end": 236
       },
-      "symbol": 35
+      "symbol": 34
     },
     {
       "range": {
@@ -919,42 +905,42 @@
         "start": 270,
         "end": 275
       },
-      "symbol": 35
+      "symbol": 34
     },
     {
       "range": {
         "start": 276,
         "end": 277
       },
-      "symbol": 38
+      "symbol": 37
     },
     {
       "range": {
         "start": 278,
         "end": 283
       },
-      "symbol": 36
+      "symbol": 35
     },
     {
       "range": {
         "start": 312,
         "end": 315
       },
-      "symbol": 39
+      "symbol": 38
     },
     {
       "range": {
         "start": 319,
         "end": 357
       },
-      "symbol": 41
+      "symbol": 40
     },
     {
       "range": {
         "start": 330,
         "end": 335
       },
-      "symbol": 42
+      "symbol": 41
     },
     {
       "range": {
@@ -968,21 +954,21 @@
         "start": 362,
         "end": 377
       },
-      "symbol": 43
+      "symbol": 42
     },
     {
       "range": {
         "start": 385,
         "end": 390
       },
-      "symbol": 40
+      "symbol": 39
     },
     {
       "range": {
         "start": 391,
         "end": 393
       },
-      "symbol": 44
+      "symbol": 43
     },
     {
       "range": {
@@ -1003,7 +989,7 @@
         "start": 462,
         "end": 482
       },
-      "symbol": 45
+      "symbol": 44
     },
     {
       "range": {
@@ -1682,15 +1668,15 @@
       "owner": "std/effect::ParallelismError"
     },
     {
+      "binding": 29,
+      "owner": "std/effect::ScheduleDecision"
+    },
+    {
       "binding": 30,
       "owner": "std/effect::ScheduleDecision"
     },
     {
-      "binding": 31,
-      "owner": "std/effect::ScheduleDecision"
-    },
-    {
-      "binding": 33,
+      "binding": 32,
       "owner": "std/effect::ScheduleError"
     }
   ],
@@ -4217,11 +4203,9 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "constructor",
-      "signature": "ScheduleContinue<A> arg1: Duration -> ScheduleDecision<A>",
+      "signature": "ScheduleContinue arg1: Duration -> ScheduleDecision",
       "description": "Builds or transforms a cold standard Effect value.",
-      "typeParameters": [
-        "A"
-      ],
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -4230,11 +4214,9 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "opaque-type",
-      "signature": "ScheduleDecision<_>",
+      "signature": "ScheduleDecision",
       "description": "Type from the standard Effect control surface.",
-      "typeParameters": [
-        "A"
-      ],
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -4254,11 +4236,9 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "constructor",
-      "signature": "ScheduleDecision<A>",
+      "signature": "ScheduleDecision",
       "description": "Builds or transforms a cold standard Effect value.",
-      "typeParameters": [
-        "A"
-      ],
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -4722,7 +4702,7 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "function",
-      "signature": "schedule<A> arg1: (Int -> A -> ScheduleDecision<A>) -> Schedule<A>",
+      "signature": "schedule<A> arg1: (Int -> A -> ScheduleDecision) -> Schedule<A>",
       "description": "Builds or transforms a cold standard Effect value.",
       "typeParameters": [
         "A"
