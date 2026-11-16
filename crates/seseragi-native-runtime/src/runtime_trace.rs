@@ -115,6 +115,9 @@ impl V {
             Self::Effect(v) => v.id(),
             Self::Fiber(v) => v.id(),
             Self::Deferred(v) => v.id(),
+            Self::Queue(v) => v.id(),
+            Self::Semaphore(v) => v.id(),
+            Self::Permit(v) => v.id(),
         })
     }
     pub fn reference(value: V) -> V {

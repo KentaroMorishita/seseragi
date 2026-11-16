@@ -1,0 +1,85 @@
+import * as effects from "std/effect"
+import * as lists from "std/list"
+import * as streams from "std/stream"
+
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+
+// Each opened source logs when it is released, so early stops are visible.
+effect fn opened label: String -> Unit with Console =
+  effects.acquireRelease (say `open:${label}`) (\_: Unit -> say `close:${label}`)
+
+fn ints values: Array<Int> -> streams.Stream<{ console: Console }, String, Int> = streams.fromArray values
+
+fn tracked label: String -> values: Array<Int> -> streams.Stream<{ console: Console }, String, Int> =
+  streams.flatMap (\_: Unit -> streams.fromArray values) (streams.fromEffect (opened label))
+
+effect fn broken label: String -> Int with Console fails String = do {
+  opened label
+  effects.fail `failed:${label}`
+}
+
+fn failing label: String -> streams.Stream<{ console: Console }, String, Int> =
+  streams.fromEffect (broken label)
+
+fn capacity value: Int -> String = match streams.bufferCapacity value {
+  Left error -> show error
+  Right _ -> "capacity"
+}
+
+pub effect fn main -> Unit with Console fails String = do {
+  let none: streams.Stream<{}, Never, Int> = streams.empty
+  let nothing: streams.Stream<{ console: Console }, String, Int> = streams.empty
+  emptyValues <- streams.runCollect none
+  say (show emptyValues)
+  let listed: streams.Stream<{}, Never, Int> = streams.fromIterable (lists.fromIterable [1, 2, 3])
+  fromList <- streams.runCollect listed
+  say (show fromList)
+  let arrayed: streams.Stream<{}, Never, Int> = streams.fromIterable [4, 5]
+  fromArray <- streams.runCollect arrayed
+  say (show fromArray)
+
+  // zip stops at the shorter source and releases the other side. The order of
+  // finalizers across the two sources is unspecified, so each case tracks one.
+  let letters: streams.Stream<{ console: Console }, String, String> = streams.fromArray ["a", "b", "c"]
+  pairs <- streams.zip letters (ints [1, 2]) |> streams.runCollect
+  say (show pairs)
+  shortLeft <- streams.zip (tracked "right" [10, 20, 30]) (ints [1]) |> streams.runCollect
+  say (show shortLeft)
+  firstPair <- streams.zip (ints [10, 20]) (tracked "left" [1, 2]) |> streams.take 1 |> streams.runCollect
+  say (show firstPair)
+  zipFailed <- streams.zip (failing "right") (ints [1, 2]) |> streams.runCollect |> effects.attempt
+  say (show zipFailed)
+
+  // merge emits every value of both sources and closes both on an early stop.
+  merged <- streams.merge (ints [3, 4]) (ints [1, 2]) |> streams.runCollect
+  say (show merged)
+  emptyMerge <- streams.merge nothing nothing |> streams.runCollect
+  say (show emptyMerge)
+  oneSide <- streams.merge nothing (ints [7]) |> streams.runCollect
+  say (show oneSide)
+  mergedFirst <- streams.merge nothing (tracked "left" [1, 2]) |> streams.take 1 |> streams.runCollect
+  say (show mergedFirst)
+  mergeFailed <- streams.merge (failing "right") nothing |> streams.runCollect |> effects.attempt
+  say (show mergeFailed)
+
+  // buffer keeps order, rejects a non-positive capacity, and releases on stop.
+  say (capacity 0)
+  say (capacity (-1))
+  say (capacity 2)
+  match streams.bufferCapacity 2 {
+    Left _ -> say "unexpected"
+    Right size -> do {
+      buffered <- streams.buffer size (ints [1, 2, 3, 4, 5]) |> streams.runCollect
+      say (show buffered)
+      again <- streams.buffer size (tracked "buffered" [1, 2, 3, 4]) |> streams.take 2 |> streams.runCollect
+      say (show again)
+      bufferFailed <- streams.buffer size (failing "buffered") |> streams.runCollect |> effects.attempt
+      say (show bufferFailed)
+      let source = streams.buffer size (ints [8, 9])
+      first <- streams.runCollect source
+      second <- streams.runCollect source
+      say `${show first} ${show second}`
+    }
+  }
+}

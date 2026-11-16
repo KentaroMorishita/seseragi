@@ -43,10 +43,11 @@ TypeScript ターゲットと同じプログラムを、Bun や Node.js なし�
 
 - 言語機能（M1）: 公式サンプルが使う機能すべて
 - CLI ツールに要るもの（M2）: ファイル・プロセス・テキスト・正規表現・日時・テストなど
+- 並行処理の一部（M3）: Fiber と Deferred、`std/queue`、`std/semaphore`、Stream の作成・変換・終端操作と zip・merge・buffer
 
 まだ足りないもの:
 
-- サーバーと並行処理（M3）: Effect の service と provide、race・parallel、`std/queue`、`std/semaphore`、Stream の一部、HTTP、Server-Sent Events、WebSocket
+- サーバーと並行処理（M3）: Effect の service と provide、race・parallel、HTTP、Server-Sent Events、WebSocket
 - 外部との連携（M4）: `foreign` 宣言、provider のネイティブ実装、SQLite と Postgres の adapter
 
 それぞれの Issue は、[ROADMAP](./ROADMAP.md) のマイルストーンから探せます。

@@ -21,6 +21,8 @@ enum Instruction {
     Attempt,
     Release,
     Provide,
+    // acquire, use, release: release runs masked after use ends in any way.
+    Bracket,
     Concurrent(ConcurrentOperation),
     FileSystem(NativeFileOperation),
     Stdin(NativeStdinOperation),
@@ -83,6 +85,12 @@ enum NativeFrame {
     MapError(V, Option<&'static NativeSource>),
     Attempt,
     Environment(V),
+    Bracket(V, V, Option<&'static NativeSource>),
+    Ensure(V, V, Option<&'static NativeSource>),
+    Ensured {
+        original: NativeOutcome,
+        previous_mask: bool,
+    },
     Register(V, Option<&'static NativeSource>),
     Scope,
     Cleanup {
@@ -386,6 +394,10 @@ impl NativeMachine {
                             }
                             Err(exit) => NativeState::Return(Err(exit.at(source))),
                         },
+                        Instruction::Bracket => {
+                            stack.push(NativeFrame::Bracket(c[1].clone(), c[2].clone(), source));
+                            NativeState::Evaluate(c[0].clone())
+                        }
                         Instruction::Release => match catch_native(|| Ok(c[0].apply(c[1].clone())))
                         {
                             Ok(next) => NativeState::Evaluate(next),
@@ -429,6 +441,48 @@ impl NativeMachine {
                             },
                             result => NativeState::Return(result),
                         },
+                        // An acquired resource owns its release before any
+                        // cancellation checkpoint can run.
+                        NativeFrame::Bracket(using, release, source) => match result {
+                            Ok(resource) => {
+                                stack.push(NativeFrame::Ensure(release, resource.clone(), source));
+                                match catch_native(|| Ok(using.apply(resource))) {
+                                    Ok(plan) => NativeState::Evaluate(plan),
+                                    Err(exit) => NativeState::Return(Err(exit.at(source))),
+                                }
+                            }
+                            error => NativeState::Return(error),
+                        },
+                        // The release is built only after `use` has ended.
+                        NativeFrame::Ensure(release, resource, source) => {
+                            let previous_mask = std::mem::replace(&mut context.masked, true);
+                            stack.push(NativeFrame::Ensured {
+                                original: result,
+                                previous_mask,
+                            });
+                            match catch_native(|| Ok(release.apply(resource))) {
+                                Ok(plan) => NativeState::Evaluate(plan),
+                                Err(exit) => NativeState::Return(Err(exit.at(source))),
+                            }
+                        }
+                        NativeFrame::Ensured {
+                            original,
+                            previous_mask,
+                        } => {
+                            context.masked = previous_mask;
+                            NativeState::Return(match result {
+                                Ok(_) => {
+                                    original.and_then(|value| context.checkpoint().map(|_| value))
+                                }
+                                Err(NativeExit::Defect(errors)) => Err(NativeExit::Defect(errors)),
+                                Err(NativeExit::Failure(_)) => Err(NativeExit::defects(vec![
+                                    "Effect finalizer produced a typed failure".into(),
+                                ])),
+                                Err(NativeExit::Cancelled) => Err(NativeExit::defects(vec![
+                                    "Effect finalizer was cancelled".into(),
+                                ])),
+                            })
+                        }
                         NativeFrame::Attempt => NativeState::Return(match result {
                             Ok(value) => context
                                 .checkpoint()
@@ -564,6 +618,7 @@ pub fn native_operation(name: &str, args: Vec<V>) -> V {
             Instruction::Provide,
             vec![args[0].clone(), args[1].clone(), V::Bool(true)],
         ),
+        "std/semaphore::withPermit" => native_with_permit(args[0].clone(), args[1].clone()),
         "std/ref::make" => V::leaf(args, |c, _| Ok(V::reference(c[0].clone()))),
         "std/ref::get" => V::leaf(args, |c, _| Ok(c[0].read_reference())),
         "std/ref::set" => V::leaf(args, |c, _| {

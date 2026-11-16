@@ -1,7 +1,9 @@
 use super::*;
 fn arity(name: &str) -> Option<usize> {
     Some(match name {
+        "std/stream::empty" => 0,
         "std/stream::singleton"
+        | "std/stream::fromIterable"
         | "std/stream::bufferCapacity"
         | "std/stream::fromArray"
         | "std/stream::fromEffect"
@@ -16,6 +18,9 @@ fn arity(name: &str) -> Option<usize> {
         | "std/stream::drop"
         | "std/stream::chunk"
         | "std/stream::concat"
+        | "std/stream::zip"
+        | "std/stream::merge"
+        | "std/stream::buffer"
         | "std/stream::runForEach" => 2,
         "std/stream::runFold" => 3,
         _ => return None,
@@ -45,13 +50,25 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<usize> {
+        let iterable = name == "std/stream::fromIterable";
         if self.program_wasm_library
             || scope.has_unproven_type_scope()
-            || !evidence.is_empty()
+            || evidence.len() != usize::from(iterable)
             || arguments.len() > arity(name).unwrap()
         {
             return Err("Rust backend: unproven native Stream application".into());
         }
+        // `fromIterable` reads its collection and element from the selected
+        // Iterable dictionary.
+        let iterable = if iterable {
+            self.validate_iterable_evidence(&evidence[0], scope)?;
+            Some((
+                self.local_canonical_type(&evidence[0].constraint.arguments[0], scope)?,
+                self.local_canonical_type(&evidence[0].constraint.arguments[1], scope)?,
+            ))
+        } else {
+            None
+        };
         let supplied = arguments
             .iter()
             .map(|a| {
@@ -85,6 +102,28 @@ impl Backend<'_> {
                         named("std/stream::BufferCapacity", vec![]),
                     ],
                 ),
+            ),
+            "std/stream::empty" => (vec![], stream(a.clone())),
+            "std/stream::fromIterable" => {
+                let (collection, element) = iterable.clone().unwrap();
+                (vec![collection], stream(element))
+            }
+            "std/stream::zip" => (
+                vec![stream(b.clone()), stream(a.clone())],
+                stream(CoreType::Tuple {
+                    elements: vec![a.clone(), b.clone()],
+                }),
+            ),
+            "std/stream::merge" => (
+                vec![stream(a.clone()), stream(a.clone())],
+                stream(a.clone()),
+            ),
+            "std/stream::buffer" => (
+                vec![
+                    named("std/stream::BufferCapacity", vec![]),
+                    stream(a.clone()),
+                ],
+                stream(a.clone()),
             ),
             "std/stream::singleton" => (vec![a.clone()], stream(a.clone())),
             "std/stream::fromArray" => (vec![array(a.clone())], stream(a.clone())),
@@ -181,22 +220,40 @@ impl Backend<'_> {
         &mut self,
         name: &str,
         arity: usize,
-        _evidence: &[CoreCallEvidence],
-        _scope: &Scope,
+        evidence: &[CoreCallEvidence],
+        scope: &Scope,
     ) -> Result<String> {
+        let dictionary = "\0stream_dictionaries".to_owned();
         let names: Vec<_> = (0..arity)
             .map(|i| format!("\0stream_argument_{i}"))
             .collect();
-        let args = names
+        let mut args = names
             .iter()
             .map(|n| format!("{}.clone()", id(n)))
-            .collect::<Vec<_>>()
-            .join(",");
-        let mut body = format!("native_stream_operation({}, vec![{args}])", quoted(name));
-        for i in (0..arity).rev() {
-            body = Self::closure(&names[i], &body, &names[..i].iter().cloned().collect());
+            .collect::<Vec<_>>();
+        if !evidence.is_empty() {
+            args.insert(0, format!("{}.index(0)", id(&dictionary)));
         }
-        Ok(body)
+        let mut body = format!(
+            "native_stream_operation({}, vec![{}])",
+            quoted(name),
+            args.join(",")
+        );
+        for i in (0..arity).rev() {
+            let mut captures: Scope = names[..i].iter().cloned().collect();
+            if !evidence.is_empty() {
+                captures.insert(dictionary.clone());
+            }
+            body = Self::closure(&names[i], &body, &captures);
+        }
+        if evidence.is_empty() {
+            return Ok(body);
+        }
+        let dictionaries = self.evidence(evidence, scope)?;
+        Ok(format!(
+            "{{ let {}=V::Tuple(Shared::new({dictionaries})); {body} }}",
+            id(&dictionary)
+        ))
     }
 
     pub(super) fn stream_operation_reference(

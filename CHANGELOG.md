@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.61.174] - 2026-11-17
+## [0.61.175] - 2026-11-17
 
 ### Added
 
@@ -12,6 +12,18 @@
 - `ScheduleDecision` has no type parameter, as spec §10.11 states. Code that wrote `ScheduleDecision<A>` needs to drop the type argument.
 - On the native target, `effects.attempt` around `effects.timeout` or `effects.timeoutFail` compiles when the source Effect already needs `Clock`.
 - `seseragi test --target native` no longer times out a test before its body has started. On a busy machine, a test with a zero or very short timeout could fail even though its body finishes at once; on the TS target such a body always runs first.
+
+## [0.61.174] - 2026-11-17
+
+### Added
+
+- The native target runs `std/queue` (`bounded`, `unbounded`, `offer`, `take`, `tryOffer`, `tryTake`, `size`, `close`) and `std/semaphore` (`make`, `acquire`, `release`, `withPermit`, `available`) and prints what the TS target prints. Waiting offers, takes and acquires resume in arrival order. A cancelled waiter leaves the queue without taking a value. `close` fails waiting takers, rejects later offers and still lets takers drain the values already queued. `withPermit` returns its permit on success, failure and cancellation. Program WASM still rejects these modules with `SES-RUST-0001`.
+- The native target runs the rest of `std/stream`: `empty`, `fromIterable`, `zip`, `merge`, `bufferCapacity` and `buffer`. `zip` stops at the shorter source, `merge` emits values from both sources, and `buffer` keeps the order. When one source ends, fails or the consumer stops early, the other source is closed before the result is returned.
+
+### Fixed
+
+- The native target accepts an argument whose failure type is `Never` where a Stream operation expects another failure type, as in `streams.fromEffect (quiet ())` for a `Stream<{}, String, Int>`. It used to stop with `SES-RUST-0001` ("local callable type parameter mismatch").
+- Generated TypeScript for a Stream that needs no environment, such as `streams.fromArray [1]` or `streams.empty` stored as `Stream<{}, Never, Int>`, and for a stored partial application such as `let fromList: List<Int> -> Stream<{}, Never, Int> = streams.fromIterable`, now type-checks under `strict`. The program behaved the same before; only `tsc` reported an error.
 
 ## [0.61.173] - 2026-11-16
 

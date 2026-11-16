@@ -1,0 +1,9 @@
+rejected NonPositiveCapacity 0
+rejected NonPositivePermits (-2)
+bounded 1 Right False 1,2,3 Right Nothing
+cancelled Right (Just 5)
+closed failed QueueClosed Left QueueClosed Left QueueClosed
+drain Right kept Left QueueClosed Left QueueClosed
+order [first, later] 0 1
+failure Left (Explicit boom) 1
+cancel 0 1
