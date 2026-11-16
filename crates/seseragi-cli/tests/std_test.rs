@@ -298,7 +298,9 @@ fn a_test_times_out_only_while_nothing_can_run_like_ts() {
     // On TS a test's timer fires only after every runnable step has run, so a
     // body that never waits finishes even with a zero timeout. A body that
     // waits or yields still times out.
-    fs::write(package.join("tests/basic.ssrg"), r#"
+    fs::write(
+        package.join("tests/basic.ssrg"),
+        r#"
 import * as t from "std/test"
 import * as e from "std/effect"
 import * as d from "std/deferred"
@@ -331,7 +333,9 @@ pub let tests:t.Test = t.suite "steps" [
   t.timeout (time.zeroDuration ()) (t.test "third" (busy ())),
   t.timeout (time.zeroDuration ()) (t.test "yielding" (yielding ()))
 ]
-"#).unwrap();
+"#,
+    )
+    .unwrap();
     for jobs in ["1", "4"] {
         let output = compare(&package, directory, &["--jobs", jobs], 1);
         assert_eq!(
