@@ -226,7 +226,10 @@ fn branch_result(branch: &V, outcome: V) -> V {
     if outcome.tagged(BRANCH_FAIL) {
         return native_operation("effect.fail", vec![outcome.payload()]);
     }
-    assert!(outcome.tagged(BRANCH_ENDED), "Rust ABI: stream branch outcome");
+    assert!(
+        outcome.tagged(BRANCH_ENDED),
+        "Rust ABI: stream branch outcome"
+    );
     branch.index(2).write_reference(V::Int(1));
     V::bind(
         native_operation("std/effect::join", vec![branch.index(0)]),
@@ -315,18 +318,15 @@ fn branch_close_pair(left: &V, right: &V) -> V {
 }
 fn native_stream_zip_cursor(left: V, right: V, results: V) -> V {
     let closed = stream_cell(V::Bool(false));
-    let close = V::fun(
-        vec![left.clone(), right.clone(), closed.clone()],
-        |c, _| {
-            V::effect(
-                Instruction::Defer,
-                vec![V::fun(c.to_vec(), |c, _| {
-                    c[2].write_reference(V::Bool(true));
-                    branch_close_pair(&c[0], &c[1])
-                })],
-            )
-        },
-    );
+    let close = V::fun(vec![left.clone(), right.clone(), closed.clone()], |c, _| {
+        V::effect(
+            Instruction::Defer,
+            vec![V::fun(c.to_vec(), |c, _| {
+                c[2].write_reference(V::Bool(true));
+                branch_close_pair(&c[0], &c[1])
+            })],
+        )
+    });
     let pull = V::fun(vec![left, right, results, closed, close.clone()], |c, _| {
         if c[3].read_reference().boolean() {
             return stream_pure(stream_done());
@@ -341,20 +341,23 @@ fn native_stream_zip_cursor(left: V, right: V, results: V) -> V {
                     V::fun(vec![c[0].clone(), c[1].clone(), first], |c, first_value| {
                         V::bind(
                             native_operation("std/queue::take", vec![c[1].clone()]),
-                            V::fun(vec![c[0].clone(), c[2].clone(), first_value], |c, second| {
-                                let branch = c[0].index(branch_side(&second));
-                                V::bind(
-                                    branch_result(&branch, second.index(1)),
-                                    V::fun(c.to_vec(), |c, second_value| {
-                                        let (left, right) = if branch_side(&c[1]) == 0 {
-                                            (c[2].clone(), second_value)
-                                        } else {
-                                            (second_value, c[2].clone())
-                                        };
-                                        branch_succeed(V::Tuple(Shared::new(vec![left, right])))
-                                    }),
-                                )
-                            }),
+                            V::fun(
+                                vec![c[0].clone(), c[2].clone(), first_value],
+                                |c, second| {
+                                    let branch = c[0].index(branch_side(&second));
+                                    V::bind(
+                                        branch_result(&branch, second.index(1)),
+                                        V::fun(c.to_vec(), |c, second_value| {
+                                            let (left, right) = if branch_side(&c[1]) == 0 {
+                                                (c[2].clone(), second_value)
+                                            } else {
+                                                (second_value, c[2].clone())
+                                            };
+                                            branch_succeed(V::Tuple(Shared::new(vec![left, right])))
+                                        }),
+                                    )
+                                },
+                            ),
                         )
                     }),
                 )
@@ -368,7 +371,9 @@ fn native_stream_zip_cursor(left: V, right: V, results: V) -> V {
                     collect,
                     V::fun(vec![c[4].clone()], |c, pair| {
                         let (left, right) = (pair.index(0), pair.index(1));
-                        if left.tagged("std/prelude::Nothing") || right.tagged("std/prelude::Nothing") {
+                        if left.tagged("std/prelude::Nothing")
+                            || right.tagged("std/prelude::Nothing")
+                        {
                             return branch_then(c[0].apply(V::Unit), stream_pure(stream_done()));
                         }
                         stream_pure(stream_item(V::Tuple(Shared::new(vec![
@@ -387,18 +392,15 @@ fn native_stream_zip_cursor(left: V, right: V, results: V) -> V {
 // close, slots]. A slot holds an outcome that arrived but was not chosen yet.
 fn native_stream_merge_cursor(left: V, right: V, results: V) -> V {
     let closed = stream_cell(V::Bool(false));
-    let close = V::fun(
-        vec![left.clone(), right.clone(), closed.clone()],
-        |c, _| {
-            V::effect(
-                Instruction::Defer,
-                vec![V::fun(c.to_vec(), |c, _| {
-                    c[2].write_reference(V::Bool(true));
-                    branch_close_pair(&c[0], &c[1])
-                })],
-            )
-        },
-    );
+    let close = V::fun(vec![left.clone(), right.clone(), closed.clone()], |c, _| {
+        V::effect(
+            Instruction::Defer,
+            vec![V::fun(c.to_vec(), |c, _| {
+                c[2].write_reference(V::Bool(true));
+                branch_close_pair(&c[0], &c[1])
+            })],
+        )
+    });
     let pair = |value: V| V::Tuple(Shared::new(vec![value.clone(), value]));
     let state = V::Tuple(Shared::new(vec![
         left,
@@ -433,17 +435,15 @@ fn branch_set_flag(cell: &V, side: usize, value: bool) {
     branch_set_slot(cell, side, V::Bool(value));
 }
 fn branch_settle() -> V {
-    V::effect(
-        Instruction::Concurrent(ConcurrentOperation::Settle),
-        vec![],
-    )
+    V::effect(Instruction::Concurrent(ConcurrentOperation::Settle), vec![])
 }
 // Moves every outcome that has already arrived into its branch's slot.
 fn native_stream_merge_collect(state: V) -> V {
     V::bind(
         native_operation("std/queue::tryTake", vec![state.index(2)]),
         V::fun(vec![state], |c, taken| {
-            if !(taken.tagged("std/prelude::Right") && taken.payload().tagged("std/prelude::Just")) {
+            if !(taken.tagged("std/prelude::Right") && taken.payload().tagged("std/prelude::Just"))
+            {
                 return branch_succeed(V::Unit);
             }
             native_stream_merge_store(&c[0], taken.payload().payload());
@@ -638,11 +638,15 @@ mod stream_branch_tests {
     #[test]
     fn zip_pairs_until_the_shorter_side_ends() {
         enable_cycle_collection();
-        let zipped = native_stream_operation("std/stream::zip", vec![array(&[1, 2]), array(&[3, 4, 5])]);
+        let zipped =
+            native_stream_operation("std/stream::zip", vec![array(&[1, 2]), array(&[3, 4, 5])]);
         match collect(zipped) {
             Ok(value) => assert_eq!(value.render(), "[(3, 1), (4, 2)]"),
             Err(NativeExit::Cancelled) => panic!("cancelled"),
-            Err(NativeExit::Defect(errors)) => panic!("defect {:?}", errors.iter().map(|e| e.value.clone()).collect::<Vec<_>>()),
+            Err(NativeExit::Defect(errors)) => panic!(
+                "defect {:?}",
+                errors.iter().map(|e| e.value.clone()).collect::<Vec<_>>()
+            ),
             Err(NativeExit::Failure(_)) => panic!("failure"),
         }
         collect_cycles().unwrap();

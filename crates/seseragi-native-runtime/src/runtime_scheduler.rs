@@ -673,12 +673,10 @@ impl NativeScheduler {
             | ConcurrentOperation::SemaphoreAcquire
             | ConcurrentOperation::SemaphoreRelease
             | ConcurrentOperation::SemaphoreAvailable
-            | ConcurrentOperation::Settle => {
-                match self.sync_operation(id, task, operation, &c) {
-                    Some(result) => result,
-                    None => return,
-                }
-            }
+            | ConcurrentOperation::Settle => match self.sync_operation(id, task, operation, &c) {
+                Some(result) => result,
+                None => return,
+            },
             ConcurrentOperation::ClockSleep => {
                 if let Some(environment) = &task.machine.context.test {
                     environment.borrow_mut().instant += native_duration_nanoseconds(&c[0])

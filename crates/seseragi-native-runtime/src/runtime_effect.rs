@@ -436,7 +436,9 @@ impl NativeMachine {
                         } => {
                             context.masked = previous_mask;
                             NativeState::Return(match result {
-                                Ok(_) => original.and_then(|value| context.checkpoint().map(|_| value)),
+                                Ok(_) => {
+                                    original.and_then(|value| context.checkpoint().map(|_| value))
+                                }
                                 Err(NativeExit::Defect(errors)) => Err(NativeExit::Defect(errors)),
                                 Err(NativeExit::Failure(_)) => Err(NativeExit::defects(vec![
                                     "Effect finalizer produced a typed failure".into(),

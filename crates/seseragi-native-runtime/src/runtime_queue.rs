@@ -196,7 +196,11 @@ impl NativeScheduler {
                 self.drain_queue(value);
             }
             V::Semaphore(state) => {
-                state.get().waiters.borrow_mut().retain(|other| *other != id);
+                state
+                    .get()
+                    .waiters
+                    .borrow_mut()
+                    .retain(|other| *other != id);
             }
             _ => unreachable!("native synchronization wait"),
         }
@@ -327,9 +331,7 @@ impl NativeScheduler {
                 self.suspend_sync(task, queue.clone());
                 return None;
             }
-            ConcurrentOperation::QueueSize => {
-                Ok(V::Int(c[0].queue().buffer.borrow().len() as i64))
-            }
+            ConcurrentOperation::QueueSize => Ok(V::Int(c[0].queue().buffer.borrow().len() as i64)),
             ConcurrentOperation::QueueClose => {
                 if !c[0].queue().closed.replace(true) {
                     self.drain_queue(&c[0]);
@@ -372,9 +374,7 @@ impl NativeScheduler {
                 self.release_permit(&c[0]);
                 Ok(V::Unit)
             }
-            ConcurrentOperation::SemaphoreAvailable => {
-                Ok(V::Int(c[0].semaphore().available.get()))
-            }
+            ConcurrentOperation::SemaphoreAvailable => Ok(V::Int(c[0].semaphore().available.get())),
             ConcurrentOperation::Settle => unreachable!("Settle suspends in the turn"),
             _ => unreachable!("native synchronization operation"),
         })
@@ -419,9 +419,7 @@ mod queue_tests {
         let plan = with_queue(
             1,
             |c, queue| {
-                let offer = |value: i64| {
-                    op("std/queue::offer", vec![V::Int(value), queue.clone()])
-                };
+                let offer = |value: i64| op("std/queue::offer", vec![V::Int(value), queue.clone()]);
                 let take = || {
                     V::bind(
                         op("std/queue::take", vec![queue.clone()]),
