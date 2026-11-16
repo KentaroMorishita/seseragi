@@ -259,7 +259,7 @@ fn native_benchmark_invoke(
                 };
             }
         }
-        if scheduler.ready.is_empty() {
+        if scheduler.idle() {
             let deadline = environment
                 .borrow()
                 .cleanup

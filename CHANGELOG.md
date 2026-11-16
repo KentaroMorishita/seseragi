@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.172] - 2026-11-16
+
+### Fixed
+
+- On the native target and in program WASM, `effects.yieldNow ()` resumes the calling Fiber only after every other runnable Fiber has reached a wait such as `deferred.await`, as on the TS target. A forked child that runs a few steps before printing used to be cut off, so `effects.interrupt` right after `yieldNow` could stop it before its output appeared on native but not on TS. A Fiber that never waits still lets the yielded Fiber resume after a bounded number of steps.
+
 ## [0.61.171] - 2026-11-15
 
 ### Changed

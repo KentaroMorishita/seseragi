@@ -523,7 +523,7 @@ fn native_test_run(modules: Vec<(String, V)>, options: &NativeTestOptions) -> i3
                 };
             }
         }
-        if scheduler.ready.is_empty() && !active.is_empty() {
+        if scheduler.idle() && !active.is_empty() {
             let deadline = active
                 .values()
                 .map(|execution| {
