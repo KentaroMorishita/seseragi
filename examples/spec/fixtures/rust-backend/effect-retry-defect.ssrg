@@ -1,0 +1,27 @@
+// retry does not run an Effect again after a Defect; the Defect ends the
+// program after the scope's finalizer.
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as time from "std/time"
+
+effect fn ignore _error: ConsoleError -> Unit with Clock, Console = effects.succeed ()
+effect fn say text: String -> Unit with Clock, Console =
+  println text
+  |> effects.recover ignore
+
+fn overflow -> Int = 9007199254740991 + 1
+
+effect fn broken counter: refs.Ref<Int> -> Int with Clock, Console fails String = do {
+  run <- refs.modify (\count: Int -> (count + 1, count + 1)) counter
+  say ("run " + show run)
+  if run < 10 then effects.succeed (overflow ()) else effects.fail "unreachable"
+}
+
+pub effect fn main -> Unit with Clock, Console fails String = effects.scoped (do {
+    effects.acquireRelease (say "acquired") (\_: Unit -> say "released")
+    counter <- refs.make 0
+    policy <- effects.recurs<String> 3 |> effects.fromEither |> effects.mapError show
+    effects.retry policy (broken counter)
+    say "unreachable"
+  }
+)

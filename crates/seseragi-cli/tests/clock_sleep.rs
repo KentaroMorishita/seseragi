@@ -462,6 +462,74 @@ fn race_timeout_retry_and_repeat_match_the_ts_target() {
 }
 
 #[test]
+fn race_and_timeout_boundaries_and_user_schedules_match_the_ts_target() {
+    // An expired timeoutFail, a loser whose finalizer sleeps before the result
+    // returns, and the count and input a user-made Schedule receives.
+    compare_clock_fixture("effect-race-timeout-boundaries", CLOCK_PROVIDER, false);
+}
+
+#[test]
+fn temporal_controls_without_a_clock_provider_are_refused_at_their_call() {
+    let scratch = Scratch::new();
+    let source = scratch.0.join("main.ssrg");
+    for operation in [
+        "effects.timeout (millis 10) (work ())",
+        "effects.timeoutFail \"late\" (millis 10) (work ())",
+        "effects.retry (effects.whileInput (\\_error: String -> False)) (work ())",
+        "effects.repeat (effects.whileInput (\\_value: Int -> False)) (work ())",
+    ] {
+        fs::write(
+            &source,
+            format!(
+                concat!(
+                    "import * as effects from \"std/effect\"\n",
+                    "import * as time from \"std/time\"\n",
+                    "fn millis value: Int -> time.Duration = match time.milliseconds value {{\n",
+                    "  Right duration -> duration\n",
+                    "  Left _ -> millis 0\n",
+                    "}}\n",
+                    "effect fn work -> Int fails String = effects.succeed 1\n",
+                    "pub effect fn main -> Unit with Clock fails String = do {{\n",
+                    "  _value <- {}\n",
+                    "  effects.succeed ()\n",
+                    "}}\n"
+                ),
+                operation
+            ),
+        )
+        .unwrap();
+        let output = scratch.0.join("refused").join("program.rs");
+        let result = bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["experimental", "emit-rust"])
+                .arg(&source)
+                .args(["--entry", "main", "--output"])
+                .arg(&output),
+            &scratch.0,
+        );
+        assert_eq!(result.status.code(), Some(2), "{operation}: {result:?}");
+        let stderr = String::from_utf8_lossy(&result.stderr);
+        let first = stderr.lines().next().unwrap_or_default();
+        assert!(
+            first.ends_with(
+                "main.ssrg:9:13: error[SES-RUST-0001]: The target cannot compile this code"
+            ),
+            "{operation}: {stderr}"
+        );
+        assert!(
+            stderr.contains("Clock requires explicit provider selection"),
+            "{operation}: {stderr}"
+        );
+        assert!(!output.parent().unwrap().exists());
+    }
+}
+
+#[test]
+fn retry_ends_with_a_defect_without_running_the_effect_again() {
+    compare_clock_fixture("effect-retry-defect", CLOCK_PROVIDER, true);
+}
+
+#[test]
 fn clock_now_provider_preflight_preserves_outputs_without_an_admitted_selection() {
     let scratch = Scratch::new();
     let source = scratch.0.join("main.ssrg");
