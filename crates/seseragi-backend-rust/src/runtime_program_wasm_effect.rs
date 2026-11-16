@@ -590,7 +590,7 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
             .with(|slot| slot.borrow_mut().take())
             .ok_or("program ABI: no running Effect")?;
         for _ in 0..quantum {
-            if run.scheduler.ready.is_empty() {
+            if run.scheduler.idle() {
                 // Every Fiber waits on another Fiber or a Deferred, and this
                 // ABI has no timer or host operation to wake one. Report it,
                 // so the host stops polling until it cancels the Effect.

@@ -2,14 +2,9 @@
 
 ## [0.61.172] - 2026-11-16
 
-### Added
+### Fixed
 
-- `seseragi upgrade --check` says whether a newer release exists, and `seseragi upgrade` installs it with the same install script as a first install, checking checksums. A CLI that the install script did not place, or one on Windows, is not replaced; the install command to run is printed instead.
-- The language server answers inlay hints, document highlights, folding ranges, selection ranges, Go to Type Definition and Go to Implementations. Inlay hints show the inferred type of an unannotated `let`, lambda parameter or `do` bind, and the inferred `with` and `fails` of an `effect fn`, in the same text as hover. `seseragi.inlayHints.bindingTypes` and `seseragi.inlayHints.effectRows` turn each kind off. Folding and selection keep working while the file has errors. Go to Implementations jumps from a trait to its instances, and from a trait method call to the method of the instance its argument selects.
-
-### Changed
-
-- A standalone `.ssrg` file that uses `Clock`, `Random`, `HttpClient` or another service with a toolchain default provider now runs and builds without a package, on the TS and native targets. `examples/spec/lessons/29-temporal-effects.ssrg` runs as a single file. It used to stop with "requires a resolved provider ... use a package with provider configuration", or `SES-RUST-0001` asking for `--provider` on the native target. A service with no default provider now reports the `[providers]` setting to write in `seseragi.toml`. Spec §15.13 states this rule.
+- On the native target and in program WASM, `effects.yieldNow ()` resumes the calling Fiber only after every other runnable Fiber has reached a wait such as `deferred.await`, as on the TS target. A forked child that runs a few steps before printing used to be cut off, so `effects.interrupt` right after `yieldNow` could stop it before its output appeared on native but not on TS. A Fiber that never waits still lets the yielded Fiber resume after a bounded number of steps.
 
 ## [0.61.171] - 2026-11-15
 

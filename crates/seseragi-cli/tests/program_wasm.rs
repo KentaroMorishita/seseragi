@@ -2076,14 +2076,14 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
 fn fibers_and_deferreds_run_in_the_ts_target_order() {
     let scratch = Scratch::new();
     let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-fibers.ssrg");
-    let expected = "child waits;parent opens;child got go;result go\nchild holds;child released;interrupted;\n-1\nfirst won lost\nopen;running;won lost;holds seven;succeeded seven;succeeded seven;won failed boom;failed boom;cancelled;open\n";
+    let expected = "child waits;parent opens;child got go;result go\nchild holds;child released;interrupted;\n-1\nfirst won lost\nopen;running;won lost;holds seven;succeeded seven;succeeded seven;won failed boom;failed boom;cancelled;open\nchild runs;parent done\n";
     let destination = scratch.0.join("fibers");
     successful(bounded(
         &mut build(
             &fixture,
             &destination,
             &[
-                "order", "cleanup", "failing", "first", "outcomes", "oneSided", "stuck",
+                "order", "cleanup", "failing", "first", "outcomes", "oneSided", "stuck", "yielded",
             ],
         ),
         &scratch.0,
@@ -2107,7 +2107,7 @@ fn fibers_and_deferreds_run_in_the_ts_target_order() {
         assert!(result.stderr.is_empty(), "{result:?}");
     }
     // The same bodies on the TS target and native print the same order.
-    let main = "\npub effect fn main = do {\n  a <- order ()\n  println a\n  b <- cleanup ()\n  println b\n  c <- failing () |> effects.recover (\\message: String -> effects.succeed (-1))\n  println (show c)\n  d <- first ()\n  println d\n  e <- outcomes ()\n  println (outcomeText e)\n}\nfn exitText exit: effects.FiberExit<String, String> -> String = match exit {\n  effects.FiberSucceeded value -> \"succeeded \" + value\n  effects.FiberFailed error -> \"failed \" + error\n  effects.FiberCancelled -> \"cancelled\"\n}\nfn polledExit polled: Maybe<effects.FiberExit<String, String>> -> String = match polled { Nothing -> \"running\"; Just exit -> exitText exit }\nfn polledGate polled: Maybe<Either<String, String>> -> String = match polled {\n  Nothing -> \"open\"\n  Just (Left error) -> \"failed \" + error\n  Just (Right value) -> \"holds \" + value\n}\nfn flag value: Bool -> String = if value then \"won\" else \"lost\"\nfn outcomeText value: ((Maybe<Either<String, String>>, Maybe<effects.FiberExit<String, String>>, Bool, Bool), (Maybe<Either<String, String>>, effects.FiberExit<String, String>, Maybe<effects.FiberExit<String, String>>), (Bool, effects.FiberExit<String, String>, Maybe<Either<String, String>>), (effects.FiberExit<String, String>, Maybe<Either<String, String>>)) -> String = match value {\n  ((before, waiting, completed, late), (after, joined, finished), (failed, failedExit, brokenPoll), (cancelled, neverPoll)) ->\n    polledGate before + \";\" + polledExit waiting + \";\" + flag completed + \" \" + flag late + \";\" + polledGate after + \";\" + exitText joined + \";\" + polledExit finished + \";\" + flag failed + \" \" + exitText failedExit + \";\" + polledGate brokenPoll + \";\" + exitText cancelled + \";\" + polledGate neverPoll\n}\n";
+    let main = "\npub effect fn main = do {\n  a <- order ()\n  println a\n  b <- cleanup ()\n  println b\n  c <- failing () |> effects.recover (\\message: String -> effects.succeed (-1))\n  println (show c)\n  d <- first ()\n  println d\n  e <- outcomes ()\n  println (outcomeText e)\n  f <- yielded ()\n  println f\n}\nfn exitText exit: effects.FiberExit<String, String> -> String = match exit {\n  effects.FiberSucceeded value -> \"succeeded \" + value\n  effects.FiberFailed error -> \"failed \" + error\n  effects.FiberCancelled -> \"cancelled\"\n}\nfn polledExit polled: Maybe<effects.FiberExit<String, String>> -> String = match polled { Nothing -> \"running\"; Just exit -> exitText exit }\nfn polledGate polled: Maybe<Either<String, String>> -> String = match polled {\n  Nothing -> \"open\"\n  Just (Left error) -> \"failed \" + error\n  Just (Right value) -> \"holds \" + value\n}\nfn flag value: Bool -> String = if value then \"won\" else \"lost\"\nfn outcomeText value: ((Maybe<Either<String, String>>, Maybe<effects.FiberExit<String, String>>, Bool, Bool), (Maybe<Either<String, String>>, effects.FiberExit<String, String>, Maybe<effects.FiberExit<String, String>>), (Bool, effects.FiberExit<String, String>, Maybe<Either<String, String>>), (effects.FiberExit<String, String>, Maybe<Either<String, String>>)) -> String = match value {\n  ((before, waiting, completed, late), (after, joined, finished), (failed, failedExit, brokenPoll), (cancelled, neverPoll)) ->\n    polledGate before + \";\" + polledExit waiting + \";\" + flag completed + \" \" + flag late + \";\" + polledGate after + \";\" + exitText joined + \";\" + polledExit finished + \";\" + flag failed + \" \" + exitText failedExit + \";\" + polledGate brokenPoll + \";\" + exitText cancelled + \";\" + polledGate neverPoll\n}\n";
     let source = scratch.0.join("oracle.ssrg");
     fs::write(
         &source,
