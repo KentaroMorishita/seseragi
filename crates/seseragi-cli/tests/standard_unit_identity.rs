@@ -186,12 +186,17 @@ fn queue_accepts_standard_unit_under_shadow_in_strict_ts_and_both_engines() {
             .arg(&out),
         fixture.path(),
     );
-    assert_eq!(result.status.code(), Some(2));
-    let stderr = String::from_utf8(result.stderr).unwrap();
-    assert!(stderr.contains("SES-RUST-0001"), "{stderr}");
-    assert!(stderr.contains("std/queue::unbounded"), "{stderr}");
-    assert!(!stderr.contains("SES-T0101"), "{stderr}");
-    assert!(!out.exists());
+    // The native target supports queues, and the shadowing `Unit` must not
+    // turn the standard one into a type error there either.
+    assert!(result.status.success(), "{result:?}");
+    let program = out.join(if cfg!(windows) {
+        "program.exe"
+    } else {
+        "program"
+    });
+    let run = bounded(&mut Command::new(program), fixture.path());
+    assert!(run.status.success(), "{run:?}");
+    assert!(run.stdout.is_empty(), "{run:?}");
 }
 
 #[test]
