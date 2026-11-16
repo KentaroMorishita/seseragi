@@ -1,10 +1,46 @@
 # Change Log
 
+## [0.61.175] - 2026-11-17
+
+### Added
+
+- The native target runs `effects.service`, `effects.provide` and `effects.provideSome`. `provide` and `provideSome` replace the environment only while their inner Effect runs, a forked Fiber starts in its parent's environment, and a finalizer runs in the environment of its acquisition, as on the TS target. Programs, `seseragi test --target native` and native benchmarks start with the same services as on TS. Program WASM still refuses these operations.
+
+### Fixed
+
+- A Schedule made with `effects.schedule` runs. Its decide used to be called with both arguments at once on the TS target, so every retry or repeat with a user-made Schedule stopped with a Defect, and the native target refused to compile one.
+- `ScheduleDecision` has no type parameter, as spec §10.11 states. Code that wrote `ScheduleDecision<A>` needs to drop the type argument.
+- On the native target, `effects.attempt` around `effects.timeout` or `effects.timeoutFail` compiles when the source Effect already needs `Clock`.
+- `seseragi test --target native` no longer times out a test before its body has started. On a busy machine, a test with a zero or very short timeout could fail even though its body finishes at once; on the TS target such a body always runs first.
+
+## [0.61.174] - 2026-11-17
+
+### Added
+
+- The native target runs `std/queue` (`bounded`, `unbounded`, `offer`, `take`, `tryOffer`, `tryTake`, `size`, `close`) and `std/semaphore` (`make`, `acquire`, `release`, `withPermit`, `available`) and prints what the TS target prints. Waiting offers, takes and acquires resume in arrival order. A cancelled waiter leaves the queue without taking a value. `close` fails waiting takers, rejects later offers and still lets takers drain the values already queued. `withPermit` returns its permit on success, failure and cancellation. Program WASM still rejects these modules with `SES-RUST-0001`.
+- The native target runs the rest of `std/stream`: `empty`, `fromIterable`, `zip`, `merge`, `bufferCapacity` and `buffer`. `zip` stops at the shorter source, `merge` emits values from both sources, and `buffer` keeps the order. When one source ends, fails or the consumer stops early, the other source is closed before the result is returned.
+
+### Fixed
+
+- The native target accepts an argument whose failure type is `Never` where a Stream operation expects another failure type, as in `streams.fromEffect (quiet ())` for a `Stream<{}, String, Int>`. It used to stop with `SES-RUST-0001` ("local callable type parameter mismatch").
+- Generated TypeScript for a Stream that needs no environment, such as `streams.fromArray [1]` or `streams.empty` stored as `Stream<{}, Never, Int>`, and for a stored partial application such as `let fromList: List<Int> -> Stream<{}, Never, Int> = streams.fromIterable`, now type-checks under `strict`. The program behaved the same before; only `tsc` reported an error.
+
+## [0.61.173] - 2026-11-16
+
+### Added
+
+- `seseragi upgrade --check` says whether a newer release exists, and `seseragi upgrade` installs it with the same install script as a first install, checking checksums. A CLI that the install script did not place, or one on Windows, is not replaced; the install command to run is printed instead.
+- The language server answers inlay hints, document highlights, folding ranges, selection ranges, Go to Type Definition and Go to Implementations. Inlay hints show the inferred type of an unannotated `let`, lambda parameter or `do` bind, and the inferred `with` and `fails` of an `effect fn`, in the same text as hover. `seseragi.inlayHints.bindingTypes` and `seseragi.inlayHints.effectRows` turn each kind off. Folding and selection keep working while the file has errors. Go to Implementations jumps from a trait to its instances, and from a trait method call to the method of the instance its argument selects.
+
+### Changed
+
+- A standalone `.ssrg` file that uses `Clock`, `Random`, `HttpClient` or another service with a toolchain default provider now runs and builds without a package, on the TS and native targets. `examples/spec/lessons/29-temporal-effects.ssrg` runs as a single file. It used to stop with "requires a resolved provider ... use a package with provider configuration", or `SES-RUST-0001` asking for `--provider` on the native target. A service with no default provider now reports the `[providers]` setting to write in `seseragi.toml`. Spec §15.13 states this rule.
+
 ## [0.61.172] - 2026-11-16
 
 ### Fixed
 
-- The native target accepts a generalized `let` whose type-parameter names match an enclosing function, such as `let p = tag` inside `fn outer<A>` when `tag` is declared as `fn tag<A> ... where Show<A>`. It prints the same text as the TS target. It used to stop with `SES-RUST-0001` ("unproven overlapping local type parameter scope"). A type parameter written by the programmer that shadows an enclosing one is still rejected as `SES-N0002`.
+- On the native target and in program WASM, `effects.yieldNow ()` resumes the calling Fiber only after every other runnable Fiber has reached a wait such as `deferred.await`, as on the TS target. A forked child that runs a few steps before printing used to be cut off, so `effects.interrupt` right after `yieldNow` could stop it before its output appeared on native but not on TS. A Fiber that never waits still lets the yielded Fiber resume after a bounded number of steps.
 
 ## [0.61.171] - 2026-11-15
 

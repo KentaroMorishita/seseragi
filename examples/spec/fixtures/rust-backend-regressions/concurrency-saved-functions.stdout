@@ -1,0 +1,4 @@
+iterable [1, 2, 3] [4, 5] [6, 7] [8, 9]
+queue hello hello again 42
+semaphore 1 2
+stream [(1, a), (2, b)] [1, 9] [5, 6, 7]

@@ -1,0 +1,93 @@
+// Boundary cases of race, timeout, timeoutFail, retry and repeat: an expired
+// timeoutFail, a loser whose finalizer takes time, and the count and input a
+// user-made Schedule receives.
+import * as effects from "std/effect"
+import * as clock from "std/clock"
+import * as refs from "std/ref"
+import * as time from "std/time"
+
+effect fn say text: String -> Unit with Console, Clock fails String =
+  println text
+  |> effects.mapError show
+
+effect fn ignore _error: String -> Unit with Console, Clock = effects.succeed ()
+
+fn millis value: Int -> time.Duration = match time.milliseconds value {
+  Right duration -> duration
+  Left _ -> millis 0
+}
+
+effect fn now label: String -> String with Console, Clock fails String =
+  effects.succeed label
+
+effect fn slowly label: String
+  -> milliseconds: Int
+  -> String
+with Console, Clock
+fails String =
+  do {
+    clock.sleep (millis milliseconds)
+    effects.succeed label
+  }
+
+effect fn acquire -> Unit with Console, Clock = effects.succeed ()
+
+// The finalizer waits before it reports, so a result returned before it
+// finishes would print first.
+effect fn slowRelease label: String -> _unit: Unit -> Unit with Console, Clock =
+  (do {
+    say ("release " + label + " started")
+    clock.sleep (millis 20)
+    say ("release " + label + " finished")
+  })
+  |> effects.recover ignore
+
+effect fn guarded label: String -> String with Console, Clock fails String =
+  effects.scoped (do {
+    effects.acquireRelease (acquire ()) (slowRelease label)
+    slowly label 60000
+  }
+)
+
+// Each run fails with its own number, so a decide that sees the wrong count
+// or input stops early.
+effect fn numbered counter: refs.Ref<Int> -> Int with Console, Clock fails String = do {
+  attempt <- refs.modify (\count: Int -> (count + 1, count + 1)) counter
+  say ("run " + show attempt)
+  effects.fail ("failure " + show attempt)
+}
+
+effect fn tens counter: refs.Ref<Int> -> Int with Console, Clock fails String = do {
+  run <- refs.modify (\count: Int -> (count + 1, count + 1)) counter
+  say ("run " + show run)
+  effects.succeed (run * 10)
+}
+
+fn retryDecision count: Int -> input: String -> effects.ScheduleDecision =
+  if input == "failure " + show count && count < 3 then
+    effects.ScheduleContinue (millis 0)
+  else
+    effects.ScheduleStop
+
+fn repeatDecision count: Int -> input: Int -> effects.ScheduleDecision =
+  if input == count * 10 && count < 4 then
+    effects.ScheduleContinue (millis 1)
+  else
+    effects.ScheduleStop
+
+pub effect fn main -> Unit with Console, Clock fails String = do {
+  expired <- effects.attempt (effects.timeoutFail "expired" (millis 10) (slowly "never" 60000))
+  say ("expired " + show expired)
+  guardedExpiry <- effects.attempt (effects.timeoutFail "guarded expired" (millis 10) (guarded "timeoutFail"))
+  say ("guarded expiry " + show guardedExpiry)
+  winner <- effects.race (guarded "race") (now "winner")
+  say ("race returned " + winner)
+  late <- effects.timeout (millis 10) (guarded "timeout")
+  say ("timeout returned " + show late)
+  failures <- refs.make 0
+  retried <- effects.attempt (effects.retry (effects.schedule retryDecision) (numbered failures))
+  say ("retried " + show retried)
+  successes <- refs.make 0
+  repeated <- effects.repeat (effects.schedule repeatDecision) (tens successes)
+  say ("repeated " + show repeated)
+}

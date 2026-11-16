@@ -534,7 +534,9 @@ impl Backend<'_> {
             | "std/prelude::Stdin"
             | "std/prelude::StdinError"
             | "std/stdin::ReadSize"
-            | "std/stdin::LineLimit" => Some(vec![]),
+            | "std/stdin::LineLimit"
+            | "std/semaphore::Semaphore"
+            | "std/semaphore::Permit" => Some(vec![]),
             "std/prelude::Array"
             | "std/prelude::Sum"
             | "std/prelude::Product"
@@ -543,6 +545,7 @@ impl Backend<'_> {
             | "std/prelude::Maybe"
             | "std/non-empty-list::NonEmptyList"
             | "std/ref::Ref"
+            | "std/queue::Queue"
             | "std/set::Set"
             | "std/prelude::Iterator"
             | "std/collection::ReduceStep"

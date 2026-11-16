@@ -40,8 +40,10 @@ authority.
 Native entry generation validates provider-required services against their
 resolved environment fields before starting a host or publishing process
 output. Missing, duplicate, wrong-target or empty selections return entry
-diagnostics. JSON diagnostics include compile warnings in one document;
-standalone files requiring those services need package provider configuration.
+diagnostics. JSON diagnostics include compile warnings in one document.
+Standalone files have no manifest, so they use the toolchain default provider
+for each service; `run` and `build --target native` likewise use the built-in
+native Clock unless `--provider` selects one.
 
 Experimental Rust emission and native builds check every destination leaf before
 generating files, reject symlink and non-regular output leaves, and reject names

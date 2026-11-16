@@ -69,11 +69,37 @@ pub(crate) fn plan_project_providers(
             None,
         ));
     };
-    let requirements = main_provider_requirements(&entry.typed_hir).map_err(|error| {
+    plan_entry_providers(&entry.typed_hir, input, configuration)
+}
+
+/// Resolves the providers that `main` of one already compiled module requires.
+///
+/// A standalone source file has no manifest, so only the toolchain defaults
+/// and the single-candidate rule in `configuration` can select a provider.
+/// `input` supplies the source used for requirement traces and for the
+/// standard-module target check.
+pub fn resolve_main_providers(
+    typed_hir: &seseragi_semantics::TypedModule,
+    input: &ProjectModuleInput,
+    configuration: &ProjectProviderConfiguration,
+) -> Result<ProviderResolution, ProjectProviderDiagnostic> {
+    validate_standard_module_targets(
+        &BTreeMap::from([(input.module_id.clone(), input.clone())]),
+        configuration,
+    )?;
+    plan_entry_providers(typed_hir, input, configuration)
+}
+
+fn plan_entry_providers(
+    typed_hir: &seseragi_semantics::TypedModule,
+    input: &ProjectModuleInput,
+    configuration: &ProjectProviderConfiguration,
+) -> Result<ProviderResolution, ProjectProviderDiagnostic> {
+    let requirements = main_provider_requirements(typed_hir).map_err(|error| {
         invalid_configuration(
             configuration,
             format!("cannot read provider requirements from main: {error}"),
-            main_origin(&entry.typed_hir).map(|span| trace(input, span)),
+            main_origin(typed_hir).map(|span| trace(input, span)),
         )
     })?;
     let traced = trace_main_requirements(input, &requirements);

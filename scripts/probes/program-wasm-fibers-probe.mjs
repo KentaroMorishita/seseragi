@@ -76,6 +76,9 @@ lines.push(
     polledGate(neverPoll),
   ].join(";")
 )
+const yielded = await run("yielded")
+assert.equal(yielded.tag, "Success")
+lines.push(yielded.value)
 
 // Every Fiber waits and nothing can wake one, so the run stays pending
 // without polling until the host cancels it.

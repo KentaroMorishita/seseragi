@@ -4,8 +4,9 @@ use crate::features::{self, DocumentState, SEMANTIC_TOKEN_TYPES};
 use crate::model::{
     CodeActionParams, DidChangeParams, DidChangeWatchedFilesParams,
     DidChangeWorkspaceFoldersParams, DidCloseParams, DidOpenParams, DocumentFormattingParams,
-    DocumentSymbolParams, InitializeParams, MarkupKind, ReferencesParams, RenameParams,
-    SemanticTokensParams, TextDocumentPositionParams, WorkspaceSymbolParams,
+    DocumentSymbolParams, InitializeParams, InlayHintParams, MarkupKind, ReferencesParams,
+    RenameParams, SelectionRangeParams, SemanticTokensParams, TextDocumentPositionParams,
+    WorkspaceSymbolParams,
 };
 use crate::protocol::{self, ProtocolError};
 use crate::workspace::{
@@ -64,6 +65,7 @@ struct State {
     scratch_documents: BTreeMap<String, DocumentState>,
     projects: BTreeMap<ProjectKey, ProjectSnapshot>,
     documents: BTreeMap<String, DocumentState>,
+    inlay_hints: features::InlayHintSettings,
 }
 
 pub fn run(mut reader: impl BufRead, mut writer: impl Write) -> Result<(), ServerError> {
@@ -96,6 +98,12 @@ impl State {
                         .map(|folder| folder.uri.clone()),
                     params.root_uri.clone(),
                 );
+                if let Some(settings) = message
+                    .pointer("/params/initializationOptions/inlayHints")
+                    .and_then(features::InlayHintSettings::from_json)
+                {
+                    self.inlay_hints = settings;
+                }
                 let encoding =
                     negotiate_position_encoding(&params.capabilities.general.position_encodings);
                 self.encoding = Some(encoding);
@@ -145,6 +153,12 @@ impl State {
                             "codeActionProvider": true,
                             "documentFormattingProvider": true,
                             "documentRangeFormattingProvider": true,
+                            "inlayHintProvider": true,
+                            "documentHighlightProvider": true,
+                            "foldingRangeProvider": true,
+                            "selectionRangeProvider": true,
+                            "typeDefinitionProvider": true,
+                            "implementationProvider": true,
                             "semanticTokensProvider": {
                                 "legend": {
                                     "tokenTypes": SEMANTIC_TOKEN_TYPES,
@@ -230,6 +244,77 @@ impl State {
                     None => return Ok(Vec::new()),
                 };
                 self.change_workspace_folders(params)
+            }
+            Some("workspace/didChangeConfiguration") => {
+                if let Some(settings) = message
+                    .pointer("/params/settings/seseragi/inlayHints")
+                    .and_then(features::InlayHintSettings::from_json)
+                {
+                    self.inlay_hints = settings;
+                }
+                Ok(Vec::new())
+            }
+            Some("textDocument/inlayHint") => {
+                let settings = self.inlay_hints;
+                let result = parse_params::<InlayHintParams>(&message)
+                    .and_then(|params| {
+                        let document = self.documents.get(&params.text_document.uri)?;
+                        let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+                        let start = document.clamped_byte_position(params.range.start, encoding);
+                        let end = document.clamped_byte_position(params.range.end, encoding);
+                        Some(features::inlay_hints(
+                            document, start, end, settings, encoding,
+                        ))
+                    })
+                    .unwrap_or_else(|| json!([]));
+                Ok(vec![response(id, result)])
+            }
+            Some("textDocument/documentHighlight") => Ok(vec![self.position_response(
+                id,
+                &message,
+                features::document_highlights,
+                json!([]),
+            )]),
+            Some("textDocument/foldingRange") => {
+                let result = parse_params::<DocumentSymbolParams>(&message)
+                    .and_then(|params| self.document_source(&params.text_document.uri))
+                    .map(crate::structure::folding_ranges)
+                    .unwrap_or_else(|| json!([]));
+                Ok(vec![response(id, result)])
+            }
+            Some("textDocument/selectionRange") => {
+                let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+                let result = parse_params::<SelectionRangeParams>(&message)
+                    .and_then(|params| {
+                        let source = self.document_source(&params.text_document.uri)?;
+                        let index = seseragi_source::LineIndex::new(source);
+                        let positions = params
+                            .positions
+                            .iter()
+                            .map(|position| {
+                                index
+                                    .try_offset_encoded(
+                                        seseragi_source::EncodedPosition {
+                                            line: position.line,
+                                            character: position.character,
+                                        },
+                                        encoding,
+                                    )
+                                    .ok()
+                            })
+                            .collect::<Option<Vec<_>>>()?;
+                        Some(crate::structure::selection_ranges(
+                            source, &positions, encoding,
+                        ))
+                    })
+                    .unwrap_or(Value::Null);
+                Ok(vec![response(id, result)])
+            }
+            Some("textDocument/typeDefinition") => {
+                Ok(vec![self.type_definition_response(id, &message)])
+            }
+            Some("textDocument/implementation") => {
+                Ok(vec![self.implementation_response(id, &message)])
             }
             Some("textDocument/hover") => {
                 let markup = self.hover_markup;
@@ -642,6 +727,115 @@ impl State {
                     )
                 })
         })
+    }
+
+    /// The latest text of a document, analysed or not. Folding and selection
+    /// ranges use it so they keep working while the source is unfinished.
+    fn document_source(&self, uri: &str) -> Option<&str> {
+        self.documents
+            .get(uri)
+            .map(|document| document.source.as_str())
+            .or_else(|| {
+                self.open_documents
+                    .get(uri)
+                    .map(|document| document.source.as_str())
+            })
+    }
+
+    fn type_definition_response(&self, id: Option<Value>, message: &Value) -> Value {
+        let result = parse_params::<TextDocumentPositionParams>(message)
+            .and_then(|params| {
+                let document = self.documents.get(&params.text_document.uri)?;
+                let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+                let types = features::nominal_types_at(document, &params, encoding);
+                let locations = types
+                    .iter()
+                    .filter_map(|nominal| {
+                        let (uri, defining, start, end) = match &nominal.canonical {
+                            Some(identity) => self.definition_location(&features::SymbolKey {
+                                identity: identity.clone(),
+                                namespace: "type".to_owned(),
+                            })?,
+                            None => {
+                                let span =
+                                    features::local_type_definition(document, &nominal.name)?;
+                                (
+                                    params.text_document.uri.as_str(),
+                                    document,
+                                    span.start,
+                                    span.end,
+                                )
+                            }
+                        };
+                        let range = features::range_json(&defining.source, start, end, encoding)?;
+                        Some(json!({"uri": uri, "range": range}))
+                    })
+                    .collect::<Vec<_>>();
+                (!locations.is_empty()).then_some(Value::Array(locations))
+            })
+            .unwrap_or(Value::Null);
+        response(id, result)
+    }
+
+    /// From a trait, lists its instances. From a trait method, lists the
+    /// instance methods; at a call whose argument type is known, only the
+    /// instance for that type.
+    fn implementation_response(&self, id: Option<Value>, message: &Value) -> Value {
+        let result = parse_params::<TextDocumentPositionParams>(message)
+            .and_then(|params| {
+                let document = self.documents.get(&params.text_document.uri)?;
+                let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+                let (trait_key, method, argument) =
+                    match features::implementation_target(document, &params, encoding)? {
+                        features::ImplementationTarget::Trait(key) => (key, None, None),
+                        features::ImplementationTarget::Method {
+                            method,
+                            name,
+                            argument,
+                        } => {
+                            let (_, defining, start, _) = self.definition_location(&method)?;
+                            let trait_key = features::trait_declaring(defining, start)?;
+                            // Narrow by the argument only when the method's
+                            // first parameter is typed by one trait parameter.
+                            let argument =
+                                features::dispatch_parameter(defining, start, &name).zip(argument);
+                            (trait_key, Some(name), argument)
+                        }
+                    };
+                let mut found = Vec::new();
+                for (uri, document) in &self.documents {
+                    for (span, matches) in features::implementations_in(
+                        document,
+                        &trait_key,
+                        method.as_deref(),
+                        argument
+                            .as_ref()
+                            .map(|(position, name)| (*position, name.as_str())),
+                    ) {
+                        found.push((uri, document, span, matches));
+                    }
+                }
+                // At a call whose argument type picks an instance, show only it.
+                if found.iter().any(|(.., matches)| *matches) {
+                    found.retain(|(.., matches)| *matches);
+                }
+                Some(Value::Array(
+                    found
+                        .into_iter()
+                        .filter_map(|(uri, document, span, _)| {
+                            let range = features::range_json(
+                                &document.source,
+                                span.start,
+                                span.end,
+                                encoding,
+                            )?;
+                            Some(json!({"uri": uri, "range": range}))
+                        })
+                        .collect(),
+                ))
+            })
+            .unwrap_or_else(|| json!([]));
+        response(id, result)
     }
 
     fn references_response(&self, id: Option<Value>, message: &Value) -> Value {
@@ -1600,7 +1794,7 @@ pub fn view -> html.Html<Never> =
             "seseragi.toml",
             &(manifest.to_owned() + "target = \"process\"\n"),
         );
-        let source = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+        let source = "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed 1]\n";
         workspace.write("src/main.ssrg", source);
         let uri = file_uri(&workspace.path().join("src/main.ssrg"));
         let manifest_uri = file_uri(&workspace.path().join("seseragi.toml"));

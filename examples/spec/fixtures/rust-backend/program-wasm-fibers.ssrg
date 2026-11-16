@@ -142,3 +142,23 @@ pub effect fn oneSided _trigger: Unit
     lost <- effects.await loser
     effects.succeed (won, lost)
   }
+
+effect fn busy cell: Ref<String> -> gate: Deferred<Never, Unit> -> Unit = do {
+  effects.succeed ()
+  effects.succeed ()
+  effects.succeed ()
+  log cell "child runs;"
+  deferreds.await gate
+}
+
+// After yieldNow, a forked child runs until it waits before the parent
+// takes its next step, even when the child needs several steps.
+pub effect fn yielded _trigger: Unit -> String = do {
+  cell <- refs.make ""
+  gate <- deferreds.make<Never, Unit> ()
+  child <- effects.fork (busy cell gate)
+  effects.yieldNow ()
+  effects.interrupt child
+  log cell "parent done"
+  refs.get cell
+}

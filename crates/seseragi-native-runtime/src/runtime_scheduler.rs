@@ -17,6 +17,20 @@ enum ConcurrentOperation {
     FailDeferred,
     // Emitted only after the explicit finite native Clock binding is proved.
     ClockSleep,
+    QueueBounded,
+    QueueUnbounded,
+    QueueOffer,
+    QueueTake,
+    QueueTryOffer,
+    QueueTryTake,
+    QueueSize,
+    QueueClose,
+    SemaphoreMake,
+    SemaphoreAcquire,
+    SemaphoreRelease,
+    SemaphoreAvailable,
+    // Waits until every other runnable Fiber has blocked or yielded.
+    Settle,
 }
 impl ConcurrentOperation {
     fn named(name: &str) -> Option<Self> {
@@ -33,6 +47,18 @@ impl ConcurrentOperation {
             "std/deferred::complete" => Self::CompleteDeferred,
             "std/deferred::succeed" => Self::SucceedDeferred,
             "std/deferred::fail" => Self::FailDeferred,
+            "std/queue::bounded" => Self::QueueBounded,
+            "std/queue::unbounded" => Self::QueueUnbounded,
+            "std/queue::offer" => Self::QueueOffer,
+            "std/queue::take" => Self::QueueTake,
+            "std/queue::tryOffer" => Self::QueueTryOffer,
+            "std/queue::tryTake" => Self::QueueTryTake,
+            "std/queue::size" => Self::QueueSize,
+            "std/queue::close" => Self::QueueClose,
+            "std/semaphore::make" => Self::SemaphoreMake,
+            "std/semaphore::acquire" => Self::SemaphoreAcquire,
+            "std/semaphore::release" => Self::SemaphoreRelease,
+            "std/semaphore::available" => Self::SemaphoreAvailable,
             _ => return None,
         })
     }
@@ -132,17 +158,24 @@ impl FiberWait {
 enum NativeWait {
     Fiber(V, FiberWait),
     Deferred(V),
+    // A Queue or Semaphore keeps its own FIFO of waiting tasks.
+    Sync(V),
+    Settle,
 }
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum WaitKey {
     Fiber(usize),
     Deferred(usize),
+    Sync(usize),
+    Settle,
 }
 impl NativeWait {
     fn key(&self) -> WaitKey {
         match self {
             Self::Fiber(value, _) => WaitKey::Fiber(value.fiber().task),
             Self::Deferred(value) => WaitKey::Deferred(value.node_id().expect("Deferred node")),
+            Self::Sync(value) => WaitKey::Sync(value.node_id().expect("synchronization node")),
+            Self::Settle => WaitKey::Settle,
         }
     }
     fn ready(&self) -> Option<NativeOutcome> {
@@ -159,6 +192,7 @@ impl NativeWait {
                 .borrow()
                 .clone()
                 .map(|v| v.map_err(NativeExit::failure)),
+            Self::Sync(_) | Self::Settle => None,
         }
     }
 }
@@ -177,10 +211,25 @@ struct NativeScheduler {
     tasks: BTreeMap<usize, NativeTask>,
     roots: BTreeMap<usize, Rc<RefCell<NativeProcess>>>,
     ready: std::collections::VecDeque<usize>,
+    // Fibers that called `yieldNow`. Like the TS runtime, where a yield waits
+    // for a later macrotask, they resume only after every other runnable Fiber
+    // has reached a wait. A budget keeps a Fiber that never waits from
+    // starving them.
+    yielded: std::collections::VecDeque<usize>,
+    yield_wait: usize,
     waiters: BTreeMap<WaitKey, Vec<usize>>,
+    // Tasks waiting until every other runnable Fiber has blocked or yielded.
+    // The yield budget also bounds this wait, so a Fiber that never waits
+    // cannot keep them suspended.
+    settling: Vec<usize>,
+    settle_wait: usize,
     // A program WASM run has no host: no clock, file, process, stdin or
     // signal. Those turns end as Defects instead of starting a host task.
     hostless: bool,
+    // Test roots that have not had a turn yet. As in the TS runtime, where a
+    // test body starts before any timer can fire, a test cannot time out
+    // before its first turn.
+    unstarted: std::collections::BTreeSet<usize>,
 }
 // The Defect for a turn a hostless run cannot perform, or the turn itself.
 fn native_hostless_turn(machine: &mut NativeMachine, turn: NativeTurn) -> NativeTurn {
@@ -197,6 +246,8 @@ fn native_hostless_turn(machine: &mut NativeMachine, turn: NativeTurn) -> Native
     machine.resume(Err(NativeExit::defects(vec![message.into()])));
     NativeTurn::Runnable
 }
+// How many turns of other Fibers a yielded Fiber waits at most.
+const NATIVE_YIELD_BUDGET: usize = 10_000;
 thread_local! {
     // Handles retained across independent root executions cannot address a
     // later task through a recycled scheduler-local index.
@@ -249,10 +300,24 @@ impl NativeScheduler {
                     return outcome;
                 }
             }
-            if scheduler.ready.is_empty() {
+            if scheduler.idle() {
                 scheduler.park_until_ready(None);
             }
         }
+    }
+    // No Fiber can take a turn until a wait, timer or host task completes.
+    fn idle(&self) -> bool {
+        self.ready.is_empty() && self.yielded.is_empty() && self.settling.is_empty()
+    }
+    fn next_runnable(&mut self) -> Option<usize> {
+        if !self.yielded.is_empty() {
+            if self.ready.is_empty() || self.yield_wait >= NATIVE_YIELD_BUDGET {
+                self.yield_wait = 0;
+                return self.yielded.pop_front();
+            }
+            self.yield_wait += 1;
+        }
+        self.ready.pop_front()
     }
     fn park_until_ready(&self, maximum: Option<std::time::Duration>) {
         for process in self.roots.values() {
@@ -297,13 +362,17 @@ impl NativeScheduler {
         self.poll_stdin();
         self.poll_children();
         self.poll_timers();
-        let Some(id) = self.ready.pop_front() else {
+        self.resume_settled();
+        let Some(id) = self.next_runnable() else {
             for process in self.roots.values() {
                 process.borrow().force_if_expired(true);
             }
             return None;
         };
         let mut task = self.tasks.remove(&id).expect("runnable native task");
+        if !self.unstarted.is_empty() {
+            self.unstarted.remove(&id);
+        }
         let process = task.machine.context.process.clone();
         let turn = task.machine.turn();
         let turn = if self.hostless {
@@ -323,6 +392,10 @@ impl NativeScheduler {
         );
         match turn {
             NativeTurn::Runnable => self.ready.push_back(id),
+            NativeTurn::Operation(ConcurrentOperation::Settle, _) => {
+                task.waiting = Some(NativeWait::Settle);
+                self.settling.push(id);
+            }
             NativeTurn::Operation(operation, captures) => {
                 self.operation(id, &mut task, operation, captures)
             }
@@ -437,6 +510,14 @@ impl NativeScheduler {
         }
         None
     }
+    fn spawn_test(&mut self, context: NativeContext, plan: V) -> usize {
+        let root = self.spawn(context, plan).fiber().task;
+        self.unstarted.insert(root);
+        root
+    }
+    fn started(&self, root: usize) -> bool {
+        !self.unstarted.contains(&root)
+    }
     fn discard_test(&mut self, environment: &Rc<RefCell<NativeTestEnvironment>>) {
         let removed = self
             .tasks
@@ -459,6 +540,7 @@ impl NativeScheduler {
             self.wake(WaitKey::Fiber(*id));
         }
         self.ready.retain(|id| !removed.contains(id));
+        self.yielded.retain(|id| !removed.contains(id));
         self.roots.retain(|id, _| !removed.contains(id));
         self.waiters.retain(|_, waiters| {
             waiters.retain(|id| !removed.contains(id));
@@ -502,6 +584,11 @@ impl NativeScheduler {
             }
             task.machine.resume(Err(NativeExit::Cancelled));
             self.ready.push_back(id);
+            if let NativeWait::Sync(value) = wait {
+                self.detach_sync(id, &value);
+            } else if matches!(wait, NativeWait::Settle) {
+                self.settling.retain(|other| *other != id);
+            }
         }
     }
     fn poll_files(&mut self) {
@@ -550,6 +637,27 @@ impl NativeScheduler {
             }
         }
     }
+    // Settled tasks resume ahead of every Fiber that only yielded, as a
+    // TypeScript continuation runs before a `yieldNow` timer.
+    fn resume_settled(&mut self) {
+        if self.settling.is_empty() {
+            return;
+        }
+        if !self.ready.is_empty() && self.settle_wait < NATIVE_YIELD_BUDGET {
+            self.settle_wait += 1;
+            return;
+        }
+        self.settle_wait = 0;
+        for id in std::mem::take(&mut self.settling).into_iter().rev() {
+            if let Some(task) = self.tasks.get_mut(&id) {
+                if matches!(task.waiting, Some(NativeWait::Settle)) {
+                    task.waiting = None;
+                    task.machine.resume(Ok(V::Unit));
+                    self.ready.push_front(id);
+                }
+            }
+        }
+    }
     fn wait(&mut self, id: usize, task: &mut NativeTask, wait: NativeWait) {
         if let Some(result) = wait.ready() {
             task.machine.resume(result);
@@ -576,6 +684,22 @@ impl NativeScheduler {
         c: Vec<V>,
     ) {
         let result = match operation {
+            ConcurrentOperation::QueueBounded
+            | ConcurrentOperation::QueueUnbounded
+            | ConcurrentOperation::QueueOffer
+            | ConcurrentOperation::QueueTake
+            | ConcurrentOperation::QueueTryOffer
+            | ConcurrentOperation::QueueTryTake
+            | ConcurrentOperation::QueueSize
+            | ConcurrentOperation::QueueClose
+            | ConcurrentOperation::SemaphoreMake
+            | ConcurrentOperation::SemaphoreAcquire
+            | ConcurrentOperation::SemaphoreRelease
+            | ConcurrentOperation::SemaphoreAvailable
+            | ConcurrentOperation::Settle => match self.sync_operation(id, task, operation, &c) {
+                Some(result) => result,
+                None => return,
+            },
             ConcurrentOperation::ClockSleep => {
                 if let Some(environment) = &task.machine.context.test {
                     environment.borrow_mut().instant += native_duration_nanoseconds(&c[0])
@@ -604,6 +728,7 @@ impl NativeScheduler {
                         test: task.machine.context.test.clone(),
                         temporaries: task.machine.context.temporaries.clone(),
                         process: task.machine.context.process.clone(),
+                        environment: task.machine.context.environment.clone(),
                         ..NativeContext::default()
                     },
                     c[0].clone(),
@@ -651,7 +776,11 @@ impl NativeScheduler {
                     .and_then(|v| native_fiber_exit(v).ok());
                 Ok(native_maybe(exit))
             }
-            ConcurrentOperation::Yield => Ok(V::Unit),
+            ConcurrentOperation::Yield => {
+                task.machine.resume(Ok(V::Unit));
+                self.yielded.push_back(id);
+                return;
+            }
             ConcurrentOperation::MakeDeferred => {
                 Ok(V::Deferred(Shared::new(NativeDeferred::default())))
             }
@@ -701,6 +830,24 @@ impl NativeScheduler {
 #[cfg(test)]
 mod scheduler_tests {
     use super::*;
+    #[test]
+    fn a_test_root_counts_as_started_only_after_its_first_turn() {
+        enable_cycle_collection();
+        let mut scheduler = NativeScheduler::default();
+        let root = scheduler.spawn_test(
+            NativeContext::default(),
+            native_operation("effect.succeed", vec![V::Unit]),
+        );
+        assert!(!scheduler.started(root));
+        let finished = scheduler.tick(0);
+        assert!(scheduler.started(root));
+        let finished = finished
+            .or_else(|| (0..8).find_map(|_| scheduler.tick(0)))
+            .expect("finished test root");
+        assert_eq!(finished.0, root);
+        assert!(finished.2.is_ok());
+        assert!(scheduler.started(root));
+    }
     #[test]
     fn tick_resumes_signal_waiters_in_their_own_root_process() {
         let _access = native_process_signal_host::TEST_ACCESS.lock().unwrap();
@@ -1094,6 +1241,101 @@ mod scheduler_tests {
         );
         assert_eq!(text.chars().filter(|c| *c == '1').count(), 100);
         drop(log);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    #[test]
+    fn a_yield_lets_other_fibers_run_until_they_wait() {
+        enable_cycle_collection();
+        let log = V::reference(V::text(""));
+        let gate = deferred();
+        // Several Effect steps before the child reaches its wait.
+        let child = then(
+            done(V::Unit),
+            then(
+                done(V::Unit),
+                then(
+                    done(V::Unit),
+                    then(
+                        append(&log, "child;"),
+                        op("std/deferred::await", vec![gate.clone()]),
+                    ),
+                ),
+            ),
+        );
+        let plan = V::bind(
+            op("std/effect::fork", vec![child]),
+            V::fun(vec![log.clone()], |c, fiber| {
+                then(
+                    op("std/effect::yieldNow", vec![V::Unit]),
+                    then(
+                        op("std/effect::interrupt", vec![fiber]),
+                        append(&c[0], "parent;"),
+                    ),
+                )
+            }),
+        );
+        run(plan).ok().unwrap();
+        assert_eq!(log.read_reference().render(), "child;parent;");
+        drop((log, gate));
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    fn spin(count: V) -> V {
+        let step = V::leaf(vec![count.clone()], |c, _| {
+            let V::Int(n) = c[0].read_reference() else {
+                unreachable!()
+            };
+            c[0].write_reference(V::Int(n + 1));
+            Ok(V::Unit)
+        });
+        V::bind(step, V::fun(vec![count], |c, _| spin(c[0].clone())))
+    }
+    #[test]
+    fn a_fiber_that_never_waits_does_not_starve_a_settling_fiber() {
+        enable_cycle_collection();
+        let count = V::reference(V::Int(0));
+        let settle = V::effect(Instruction::Concurrent(ConcurrentOperation::Settle), vec![]);
+        let plan = V::bind(
+            op("std/effect::fork", vec![spin(count.clone())]),
+            V::fun(vec![settle], |c, fiber| {
+                then(c[0].clone(), op("std/effect::interrupt", vec![fiber]))
+            }),
+        );
+        run(plan).ok().unwrap();
+        let V::Int(steps) = count.read_reference() else {
+            unreachable!()
+        };
+        assert!(
+            steps > 0 && (steps as usize) <= NATIVE_YIELD_BUDGET + 1,
+            "{steps}"
+        );
+        drop(count);
+        collect_cycles().unwrap();
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    #[test]
+    fn a_fiber_that_never_waits_does_not_starve_a_yielded_fiber() {
+        enable_cycle_collection();
+        let count = V::reference(V::Int(0));
+        let plan = V::bind(
+            op("std/effect::fork", vec![spin(count.clone())]),
+            V::fun(vec![], |_, fiber| {
+                then(
+                    op("std/effect::yieldNow", vec![V::Unit]),
+                    op("std/effect::interrupt", vec![fiber]),
+                )
+            }),
+        );
+        run(plan).ok().unwrap();
+        let V::Int(steps) = count.read_reference() else {
+            unreachable!()
+        };
+        assert!(
+            steps > 0 && (steps as usize) <= NATIVE_YIELD_BUDGET,
+            "{steps}"
+        );
+        drop(count);
+        collect_cycles().unwrap();
         assert_eq!(LIVE.with(Cell::get), 0);
     }
 }

@@ -211,3 +211,38 @@ fn from_maybe_nothing_as_the_entry_result_keeps_the_typed_failure_kind() {
 fn attempt_does_not_convert_a_scoped_finalizer_defect_into_a_value() {
     compare(&source("effects.attempt (effects.scoped (do { effects.acquireRelease (effects.succeed ()) brokenRelease; effects.fromMaybe \"typed\" absent }))"), b"acquired\nreleased\n", Some(("Defect", "deliberate")));
 }
+
+#[test]
+fn service_provide_and_provide_some_match_ts_and_native_at_runtime() {
+    // Saved Effects, nested and restored environments, typed failures, forked
+    // Fibers and finalizers all read the environment TS gives them.
+    compare(
+        include_str!("../../../examples/spec/fixtures/rust-backend/effect-environment.ssrg"),
+        include_bytes!("../../../examples/spec/fixtures/rust-backend/effect-environment.stdout"),
+        None,
+    );
+}
+
+#[test]
+fn environment_projection_and_selector_defects_keep_finalizers() {
+    for expression in [
+        "effects.provideSome (\\environment: { console: Console } -> if 42 / 0 == 0 then environment else environment) (say \"never\")",
+        "effects.service (\\_environment: { console: Console } -> 42 / 0)",
+        "effects.provide (if 42 / 0 == 0 then {} else {}) (effects.succeed ())",
+    ] {
+        compare(
+            &source(expression),
+            b"acquired\nreleased\n",
+            Some(("Defect", "Seseragi Int division by zero")),
+        );
+    }
+}
+
+#[test]
+fn a_saved_environment_projection_runs_only_when_its_effect_runs() {
+    compare(
+        &source("effects.succeed (effects.provideSome (\\environment: { console: Console } -> if 42 / 0 == 0 then environment else environment) (say \"never\"))"),
+        b"acquired\ncontinued\nreleased\n",
+        None,
+    );
+}

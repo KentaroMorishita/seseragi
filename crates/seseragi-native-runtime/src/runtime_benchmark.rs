@@ -189,6 +189,7 @@ fn native_benchmark_invoke(
     environment.borrow_mut().cleanup = None;
     let context = NativeContext {
         test: Some(environment.clone()),
+        environment: native_service_environment(&["console", "logger", "random"]),
         ..NativeContext::default()
     };
     let root = scheduler.spawn(context, body.clone()).fiber().task;
@@ -259,7 +260,7 @@ fn native_benchmark_invoke(
                 };
             }
         }
-        if scheduler.ready.is_empty() {
+        if scheduler.idle() {
             let deadline = environment
                 .borrow()
                 .cleanup

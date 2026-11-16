@@ -139,7 +139,23 @@ fn main_entry_source(
 ) -> Result<String, RunError> {
     let contract = main_contract(compiled).map_err(RunError::InvalidEntry)?;
     validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
-    entry_source(&contract, "./main.ts", None, options).map_err(RunError::InvalidEntry)
+    let providers = standalone_process_providers(compiled);
+    entry_source(&contract, "./main.ts", providers.as_ref(), options)
+        .map_err(RunError::InvalidEntry)
+}
+
+/// Selects the providers a standalone source file uses on the process target.
+///
+/// A single file has no manifest to select providers in, so the toolchain
+/// default for each service applies (spec 15.13). When no default fits, the
+/// entry reports the unresolved field instead of guessing a provider.
+pub(super) fn standalone_process_providers(
+    compiled: &CompiledModule,
+) -> Option<seseragi_driver::ProviderResolution> {
+    let configuration = crate::bun_process_provider_configuration().ok()?;
+    let module = &compiled.generated.metadata.module;
+    let input = seseragi_driver::ProjectModuleInput::new(module, module, "", "main.ts");
+    seseragi_driver::resolve_main_providers(&compiled.typed_hir, &input, &configuration).ok()
 }
 
 fn run_main_with_optional_source(

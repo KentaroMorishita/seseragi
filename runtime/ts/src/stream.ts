@@ -13,6 +13,7 @@ import {
 } from "./effect"
 import type { Iterator as SeseragiIterator } from "./iterator"
 import { type Either, Left, type Maybe, Right } from "./sum"
+import type { RuntimeDictionary } from "./traversable"
 
 const streamBrand: unique symbol = Symbol("seseragi.stream")
 const bufferCapacityBrand: unique symbol = Symbol("seseragi.buffer-capacity")
@@ -104,10 +105,12 @@ export function fromArray<Value>(
 
 export function fromIterable<Collection, Value>(
   values: Collection,
-  dictionary: Iterable<Collection, Value>
+  dictionary: Iterable<Collection, Value> | RuntimeDictionary
 ): Stream<unknown, never, Value> {
   return makeStream(() => {
-    let iterator: SeseragiIterator<Value> = dictionary.iterate(values)
+    let iterator: SeseragiIterator<Value> = (
+      dictionary as Iterable<Collection, Value>
+    ).iterate(values)
     return cursor(async () => {
       const result = iterator.next()
       if (result.tag === "Nothing") return done()

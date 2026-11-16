@@ -401,6 +401,45 @@ pub fn native_stream_operation(name: &'static str, arguments: Vec<V>) -> V {
                 ))
             }
         }
+        ("std/stream::empty", []) => V::fun(vec![], |_, _| {
+            V::fun(vec![], |_, _| stream_pure(stream_done()))
+        }),
+        // The Iterable dictionary starts a new Iterator for every terminal.
+        ("std/stream::fromIterable", [dictionary, values]) => {
+            V::fun(vec![dictionary.clone(), values.clone()], |captures, _| {
+                let iterator = captures[0].field("iterate").apply(captures[1].clone());
+                V::fun(vec![stream_cell(iterator)], |captures, _| {
+                    V::leaf(captures.to_vec(), |captures, _| {
+                        let pulled = native_iterator_operation(
+                            "std/iterator::next",
+                            vec![captures[0].read_reference()],
+                        );
+                        if pulled.tagged("std/prelude::Nothing") {
+                            return Ok(stream_done());
+                        }
+                        let pair = pulled.payload();
+                        captures[0].write_reference(pair.index(1));
+                        Ok(stream_item(pair.index(0)))
+                    })
+                })
+            })
+        }
+        ("std/stream::zip" | "std/stream::merge", [right, left]) => V::fun(
+            vec![
+                V::Int(i64::from(name == "std/stream::merge")),
+                left.clone(),
+                right.clone(),
+            ],
+            |captures, _| {
+                let V::Int(kind) = captures[0] else {
+                    unreachable!()
+                };
+                branch_open_pair(kind, captures[1].clone(), captures[2].clone())
+            },
+        ),
+        ("std/stream::buffer", [capacity, source]) => {
+            native_stream_buffer(capacity.payload(), source.clone())
+        }
         ("std/stream::singleton", [value]) => native_stream_singleton(value.clone()),
         ("std/stream::fromArray", [values]) => V::fun(vec![values.clone()], |captures, _| {
             V::fun(

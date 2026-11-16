@@ -90,7 +90,9 @@ fn with_clock(requirements: &CoreType) -> Result<CoreType> {
     })
 }
 
-/// `ty` with every record's fields in name order.
+/// `ty` with every record's fields in name order. A field the checker merged
+/// twice from `R & { clock: Clock }`, when R already needs `clock`, is the same
+/// requirement and counts once.
 fn records_in_name_order(ty: &CoreType) -> CoreType {
     match ty {
         CoreType::Record { closed, fields } => {
@@ -102,6 +104,7 @@ fn records_in_name_order(ty: &CoreType) -> CoreType {
                 })
                 .collect::<Vec<_>>();
             fields.sort_by(|left, right| left.name.cmp(&right.name));
+            fields.dedup();
             CoreType::Record {
                 closed: *closed,
                 fields,

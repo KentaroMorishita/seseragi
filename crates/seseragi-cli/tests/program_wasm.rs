@@ -984,6 +984,10 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         "fn selected value: Int -> Int = value",
         "import * as refs from \"std/ref\"\npub effect fn selected<A> value: A -> A = do { cell <- refs.make value; refs.get cell }",
         "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
+        "import * as queues from \"std/queue\"\npub effect fn selected value: Int -> Int = do { queue <- queues.unbounded<Int> (); queues.size queue }",
+        "import * as semaphores from \"std/semaphore\"\npub effect fn selected value: Int -> Int fails semaphores.SemaphoreCreateError = do { semaphore <- semaphores.make value; semaphores.available semaphore }",
+        "import * as queues from \"std/queue\"\nfn unused -> (Int -> Effect<{}, queues.QueueCreateError, queues.Queue<Int>>) = queues.bounded\npub fn selected value: Int -> Int = value",
+        "import * as streams from \"std/stream\"\nfn ints value: Int -> streams.Stream<{}, Never, Int> = streams.fromArray [value]\npub effect fn selected value: Int -> Array<(Int, Int)> = streams.zip (ints value) (ints value) |> streams.runCollect",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
         fs::write(&path,source).unwrap();
@@ -1847,6 +1851,8 @@ await owner.dispose();
         "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nimport { Ref } from \"std/ref\"\npub effect fn selected value: Int -> Ref<Int> = refs.make value",
         "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nfn identity value: Int -> Int = value\npub effect fn selected value: Int -> Int = do { cell <- refs.make identity; saved <- refs.get cell; effects.succeed (saved value) }",
         "import * as effects from \"std/effect\"\neffect fn add initial: Int -> delta: Int -> Int = effects.succeed (initial + delta)\npub effect fn selected initial: Int -> (Int -> Effect<{}, Never, Int>) = effects.succeed (add initial)",
+        // The environment operations run natively, not in program WASM.
+        "import * as effects from \"std/effect\"\npub effect fn selected value: Int -> Int = effects.provideSome (\\_environment: {} -> { offset: value }) (effects.service (\\environment: { offset: Int } -> environment.offset))",
 
     ].iter().enumerate() {
         let file = scratch.0.join(format!("unsupported-{index}.ssrg"));
@@ -2076,14 +2082,14 @@ fn effect_success_factory_standard_web_package_keeps_original_bridge_types() {
 fn fibers_and_deferreds_run_in_the_ts_target_order() {
     let scratch = Scratch::new();
     let fixture = root().join("examples/spec/fixtures/rust-backend/program-wasm-fibers.ssrg");
-    let expected = "child waits;parent opens;child got go;result go\nchild holds;child released;interrupted;\n-1\nfirst won lost\nopen;running;won lost;holds seven;succeeded seven;succeeded seven;won failed boom;failed boom;cancelled;open\n";
+    let expected = "child waits;parent opens;child got go;result go\nchild holds;child released;interrupted;\n-1\nfirst won lost\nopen;running;won lost;holds seven;succeeded seven;succeeded seven;won failed boom;failed boom;cancelled;open\nchild runs;parent done\n";
     let destination = scratch.0.join("fibers");
     successful(bounded(
         &mut build(
             &fixture,
             &destination,
             &[
-                "order", "cleanup", "failing", "first", "outcomes", "oneSided", "stuck",
+                "order", "cleanup", "failing", "first", "outcomes", "oneSided", "stuck", "yielded",
             ],
         ),
         &scratch.0,
@@ -2107,7 +2113,7 @@ fn fibers_and_deferreds_run_in_the_ts_target_order() {
         assert!(result.stderr.is_empty(), "{result:?}");
     }
     // The same bodies on the TS target and native print the same order.
-    let main = "\npub effect fn main = do {\n  a <- order ()\n  println a\n  b <- cleanup ()\n  println b\n  c <- failing () |> effects.recover (\\message: String -> effects.succeed (-1))\n  println (show c)\n  d <- first ()\n  println d\n  e <- outcomes ()\n  println (outcomeText e)\n}\nfn exitText exit: effects.FiberExit<String, String> -> String = match exit {\n  effects.FiberSucceeded value -> \"succeeded \" + value\n  effects.FiberFailed error -> \"failed \" + error\n  effects.FiberCancelled -> \"cancelled\"\n}\nfn polledExit polled: Maybe<effects.FiberExit<String, String>> -> String = match polled { Nothing -> \"running\"; Just exit -> exitText exit }\nfn polledGate polled: Maybe<Either<String, String>> -> String = match polled {\n  Nothing -> \"open\"\n  Just (Left error) -> \"failed \" + error\n  Just (Right value) -> \"holds \" + value\n}\nfn flag value: Bool -> String = if value then \"won\" else \"lost\"\nfn outcomeText value: ((Maybe<Either<String, String>>, Maybe<effects.FiberExit<String, String>>, Bool, Bool), (Maybe<Either<String, String>>, effects.FiberExit<String, String>, Maybe<effects.FiberExit<String, String>>), (Bool, effects.FiberExit<String, String>, Maybe<Either<String, String>>), (effects.FiberExit<String, String>, Maybe<Either<String, String>>)) -> String = match value {\n  ((before, waiting, completed, late), (after, joined, finished), (failed, failedExit, brokenPoll), (cancelled, neverPoll)) ->\n    polledGate before + \";\" + polledExit waiting + \";\" + flag completed + \" \" + flag late + \";\" + polledGate after + \";\" + exitText joined + \";\" + polledExit finished + \";\" + flag failed + \" \" + exitText failedExit + \";\" + polledGate brokenPoll + \";\" + exitText cancelled + \";\" + polledGate neverPoll\n}\n";
+    let main = "\npub effect fn main = do {\n  a <- order ()\n  println a\n  b <- cleanup ()\n  println b\n  c <- failing () |> effects.recover (\\message: String -> effects.succeed (-1))\n  println (show c)\n  d <- first ()\n  println d\n  e <- outcomes ()\n  println (outcomeText e)\n  f <- yielded ()\n  println f\n}\nfn exitText exit: effects.FiberExit<String, String> -> String = match exit {\n  effects.FiberSucceeded value -> \"succeeded \" + value\n  effects.FiberFailed error -> \"failed \" + error\n  effects.FiberCancelled -> \"cancelled\"\n}\nfn polledExit polled: Maybe<effects.FiberExit<String, String>> -> String = match polled { Nothing -> \"running\"; Just exit -> exitText exit }\nfn polledGate polled: Maybe<Either<String, String>> -> String = match polled {\n  Nothing -> \"open\"\n  Just (Left error) -> \"failed \" + error\n  Just (Right value) -> \"holds \" + value\n}\nfn flag value: Bool -> String = if value then \"won\" else \"lost\"\nfn outcomeText value: ((Maybe<Either<String, String>>, Maybe<effects.FiberExit<String, String>>, Bool, Bool), (Maybe<Either<String, String>>, effects.FiberExit<String, String>, Maybe<effects.FiberExit<String, String>>), (Bool, effects.FiberExit<String, String>, Maybe<Either<String, String>>), (effects.FiberExit<String, String>, Maybe<Either<String, String>>)) -> String = match value {\n  ((before, waiting, completed, late), (after, joined, finished), (failed, failedExit, brokenPoll), (cancelled, neverPoll)) ->\n    polledGate before + \";\" + polledExit waiting + \";\" + flag completed + \" \" + flag late + \";\" + polledGate after + \";\" + exitText joined + \";\" + polledExit finished + \";\" + flag failed + \" \" + exitText failedExit + \";\" + polledGate brokenPoll + \";\" + exitText cancelled + \";\" + polledGate neverPoll\n}\n";
     let source = scratch.0.join("oracle.ssrg");
     fs::write(
         &source,

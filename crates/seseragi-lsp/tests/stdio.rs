@@ -117,8 +117,8 @@ fn target_manifest(target: Option<&str>) -> String {
 #[test]
 fn native_target_reports_multiple_uses_at_the_backend_ranges_in_both_encodings() {
     let source = concat!(
-        "import { provideSome as compete, succeed } from \"std/effect\"\n",
-        "pub fn main -> (Task<Int>, Task<Int>) = { let _prefix = \"雪🙂\"; (compete (\\env: {} -> env) (succeed 1), compete (\\env: {} -> env) (succeed 3)) }\n",
+        "import { parallel as compete, succeed } from \"std/effect\"\n",
+        "pub fn main -> (Task<Array<Int>>, Task<Array<Int>>) = { let _prefix = \"雪🙂\"; (compete [succeed 1], compete [succeed 3]) }\n",
     );
     let core = seseragi_driver::compile_core_module(seseragi_driver::CompileInput::new(
         "main.ssrg",
@@ -175,7 +175,7 @@ fn native_target_reports_multiple_uses_at_the_backend_ranges_in_both_encodings()
 
 #[test]
 fn ts_targets_keep_native_limitations_out_of_editor_diagnostics() {
-    let source = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+    let source = "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed 1]\n";
     seseragi_driver::compile_module(seseragi_driver::CompileInput::new(
         "main.ssrg",
         "target/main",
@@ -209,7 +209,7 @@ fn native_support_does_not_hide_type_errors_or_warn_for_supported_file_operation
         published(&messages, &uri)["params"]["diagnostics"],
         json!([])
     );
-    let broken = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed \"wrong\")\n";
+    let broken = "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed \"wrong\"]\n";
     let mut expected = None;
     for target in ["native", "process"] {
         workspace.write("seseragi.toml", &target_manifest(Some(target)));
@@ -240,9 +240,9 @@ fn native_target_reports_dependency_features_in_the_defining_document() {
     let workspace = TempWorkspace::new();
     workspace.write("seseragi.toml", &(target_manifest(Some("native")) + "[dependencies]\nremote = { package = \"fixture/remote\", path = \"vendor/remote\" }\n"));
     workspace.write("vendor/remote/seseragi.toml", "[package]\nname = \"fixture/remote\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n[exports]\n\".\" = \"lib\"\n");
-    let dependency = "import * as effects from \"std/effect\"\npub effect fn task -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+    let dependency = "import * as effects from \"std/effect\"\npub effect fn task -> Array<Int> = effects.parallel [effects.succeed 1]\n";
     workspace.write("vendor/remote/src/lib.ssrg", dependency);
-    let source = "import { task } from \"remote\"\nimport { value } from \"./lib\"\npub effect fn main -> Int = task ()\npub fn local -> Int = value\n";
+    let source = "import { task } from \"remote\"\nimport { value } from \"./lib\"\npub effect fn main -> Array<Int> = task ()\npub fn local -> Int = value\n";
     workspace.write("src/main.ssrg", source);
     workspace.write("src/lib.ssrg", "pub let value: Int = 42\n");
     let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
@@ -263,12 +263,12 @@ fn native_target_reports_dependency_features_in_the_defining_document() {
     assert_eq!(diagnostics.len(), 1, "{diagnostics:?}");
     assert_eq!(
         diagnostics[0]["range"]["start"],
-        json!({"line": 1, "character": 28})
+        json!({"line": 1, "character": 35})
     );
     assert!(diagnostics[0]["message"]
         .as_str()
         .unwrap()
-        .contains("std/effect::provideSome"));
+        .contains("std/effect::parallel"));
 }
 
 #[test]
@@ -279,7 +279,7 @@ fn wasm_target_checks_selected_programs_without_warning_in_ts_ui_sources() {
         &(target_manifest(Some("web"))
             + "[web.programs.calculation]\nmodule = \"calculation\"\nexports = [\"amount\"]\n"),
     );
-    let ui = "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+    let ui = "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed 1]\n";
     let program = "import * as math from \"std/math\"\npub fn unused -> Float = math.sin 1.0\npub fn amount -> Int = 42\n";
     workspace.write("src/main.ssrg", ui);
     workspace.write("src/calculation.ssrg", program);
@@ -3418,4 +3418,291 @@ fn a_module_level_rec_group_is_checked_navigated_and_formatted() {
     };
     assert_eq!(target["range"]["start"]["line"], definition.line);
     assert_eq!(response(&messages, 4)["result"], json!([]));
+}
+
+const EDITOR_FEATURES: &str = "import * as clock from \"std/clock\"
+
+struct User { name: String }
+
+trait Describe<A> {
+  fn describe self: A -> String
+}
+
+instance Describe<User> {
+  fn describe self: User -> String = self.name
+}
+
+struct Team { size: Int }
+
+instance Describe<Team> {
+  fn describe self: Team -> String = \"team\"
+}
+
+pub fn make name: String -> User = {
+  let user = User { name }
+  user
+}
+
+pub fn twice -> (Int -> Int) = \\x -> x * 2
+
+pub effect fn tick =
+  do {
+    now <- clock.now ()
+    println \"tick\"
+  }
+
+pub fn label -> String = describe (Team { size: 2 })
+";
+
+fn position_of(source: &str, needle: &str, offset: usize) -> Value {
+    let byte = source.find(needle).unwrap() + offset;
+    let position = LineIndex::new(source)
+        .try_locate_encoded(byte, PositionEncoding::Utf16)
+        .unwrap();
+    json!({"line": position.line, "character": position.character})
+}
+
+fn line_of(source: &str, needle: &str) -> u64 {
+    position_of(source, needle, 0)["line"].as_u64().unwrap()
+}
+
+fn editor_session(settings: Option<Value>, requests: Vec<Value>) -> (String, Vec<Value>) {
+    editor_session_with(EDITOR_FEATURES, settings, requests)
+}
+
+fn editor_session_with(
+    source: &str,
+    settings: Option<Value>,
+    requests: Vec<Value>,
+) -> (String, Vec<Value>) {
+    let workspace = TempWorkspace::new();
+    workspace.write("main.ssrg", source);
+    let uri = file_uri(&workspace.path().join("main.ssrg"));
+    let mut params = json!({"capabilities": {}, "workspaceFolders": [{"uri": file_uri(workspace.path()), "name": "fixture"}]});
+    if let Some(settings) = settings {
+        params["initializationOptions"] = json!({"inlayHints": settings});
+    }
+    let mut input = vec![
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": params}),
+        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {"textDocument": {"uri": uri, "languageId": "seseragi", "version": 1, "text": source}}}),
+    ];
+    for mut request in requests {
+        if request["params"]["textDocument"].is_object() {
+            request["params"]["textDocument"]["uri"] = json!(uri);
+        }
+        input.push(request);
+    }
+    input.push(json!({"jsonrpc": "2.0", "id": 99, "method": "shutdown"}));
+    input.push(json!({"jsonrpc": "2.0", "method": "exit"}));
+    let messages = run_server(&input);
+    // The unused `now` is only a lint warning.
+    assert!(!published(&messages, &uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|diagnostic| diagnostic["severity"] == 1));
+    (uri, messages)
+}
+
+#[test]
+fn binary_advertises_the_editor_navigation_and_structure_methods() {
+    let messages = run_server(&[
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"capabilities": {}}}),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ]);
+    let capabilities = &response(&messages, 1)["result"]["capabilities"];
+    for provider in [
+        "inlayHintProvider",
+        "documentHighlightProvider",
+        "foldingRangeProvider",
+        "selectionRangeProvider",
+        "typeDefinitionProvider",
+        "implementationProvider",
+    ] {
+        assert_eq!(capabilities[provider], true, "{provider}");
+    }
+}
+
+#[test]
+fn binary_shows_inferred_binding_and_effect_row_inlay_hints() {
+    let whole = json!({"start": {"line": 0, "character": 0}, "end": {"line": 40, "character": 0}});
+    let request = |id: i64| json!({"jsonrpc": "2.0", "id": id, "method": "textDocument/inlayHint", "params": {"textDocument": {}, "range": whole}});
+    let (_, messages) = editor_session(None, vec![request(2)]);
+    let hints = response(&messages, 2)["result"].as_array().unwrap().clone();
+    let labels = hints
+        .iter()
+        .map(|hint| {
+            (
+                hint["position"].clone(),
+                hint["label"].as_str().unwrap().to_owned(),
+            )
+        })
+        .collect::<Vec<_>>();
+    let source = EDITOR_FEATURES;
+    for (needle, offset, label) in [
+        ("user = User", 4, ": User"),
+        ("\\x ->", 2, ": Int"),
+        ("now <-", 3, ": Instant"),
+        ("tick =", 4, "with Clock, Console fails ConsoleError"),
+    ] {
+        assert!(
+            labels.contains(&(position_of(source, needle, offset), label.to_owned())),
+            "{label} at {needle}: {labels:#?}"
+        );
+    }
+    // Annotated parameters and `self` get no hint.
+    assert!(
+        !labels.iter().any(|(_, label)| label == ": String"),
+        "{labels:#?}"
+    );
+
+    let (_, messages) = editor_session(
+        Some(json!({"bindingTypes": false, "effectRows": true})),
+        vec![request(2)],
+    );
+    let hints = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(hints.len(), 1, "{hints:#?}");
+    assert_eq!(hints[0]["label"], "with Clock, Console fails ConsoleError");
+
+    let (_, messages) = editor_session(
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "method": "workspace/didChangeConfiguration", "params": {"settings": {"seseragi": {"inlayHints": {"bindingTypes": true, "effectRows": false}}}}}),
+            request(2),
+        ],
+    );
+    let hints = response(&messages, 2)["result"].as_array().unwrap();
+    assert!(hints
+        .iter()
+        .all(|hint| hint["label"].as_str().unwrap().starts_with(": ")));
+    assert!(!hints.is_empty());
+}
+
+#[test]
+fn binary_highlights_folds_and_selects_within_a_document() {
+    let source = EDITOR_FEATURES;
+    let (_, messages) = editor_session(
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "id": 2, "method": "textDocument/documentHighlight", "params": {"textDocument": {}, "position": position_of(source, "user\n", 1)}}),
+            json!({"jsonrpc": "2.0", "id": 3, "method": "textDocument/foldingRange", "params": {"textDocument": {}}}),
+            json!({"jsonrpc": "2.0", "id": 4, "method": "textDocument/selectionRange", "params": {"textDocument": {}, "positions": [position_of(source, "x * 2", 0)]}}),
+        ],
+    );
+    let highlights = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(highlights.len(), 2, "{highlights:#?}");
+    assert_eq!(
+        highlights[0]["range"]["start"],
+        position_of(source, "user = User", 0)
+    );
+    assert_eq!(highlights[0]["kind"], 3);
+    assert_eq!(
+        highlights[1]["range"]["start"],
+        position_of(source, "user\n", 0)
+    );
+    assert_eq!(highlights[1]["kind"], 2);
+
+    let folds = response(&messages, 3)["result"].as_array().unwrap();
+    let make = line_of(source, "pub fn make");
+    let tick = line_of(source, "pub effect fn tick");
+    assert!(
+        folds
+            .iter()
+            .any(|fold| fold["startLine"] == make && fold["endLine"] == make + 3),
+        "{folds:#?}"
+    );
+    assert!(
+        folds
+            .iter()
+            .any(|fold| fold["startLine"] == tick + 1 && fold["endLine"] == tick + 3),
+        "{folds:#?}"
+    );
+
+    let mut selection = &response(&messages, 4)["result"][0];
+    let mut widths = Vec::new();
+    while !selection.is_null() {
+        let range = &selection["range"];
+        widths.push((range["start"].clone(), range["end"].clone()));
+        selection = &selection["parent"];
+    }
+    assert_eq!(widths[0].0, position_of(source, "x * 2", 0));
+    assert_eq!(widths[0].1, position_of(source, "x * 2", 1));
+    assert!(widths.len() >= 3, "{widths:#?}");
+}
+
+#[test]
+fn binary_jumps_from_values_to_types_and_from_traits_to_instances() {
+    let source = EDITOR_FEATURES;
+    let (uri, messages) = editor_session(
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "id": 2, "method": "textDocument/typeDefinition", "params": {"textDocument": {}, "position": position_of(source, "user\n", 1)}}),
+            json!({"jsonrpc": "2.0", "id": 3, "method": "textDocument/implementation", "params": {"textDocument": {}, "position": position_of(source, "Describe<A>", 1)}}),
+            json!({"jsonrpc": "2.0", "id": 4, "method": "textDocument/implementation", "params": {"textDocument": {}, "position": position_of(source, "describe (Team", 1)}}),
+        ],
+    );
+    let types = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(types.len(), 1, "{types:#?}");
+    assert_eq!(types[0]["uri"], uri);
+    assert_eq!(
+        types[0]["range"]["start"],
+        position_of(source, "User { name: String }", 0)
+    );
+
+    let instances = response(&messages, 3)["result"].as_array().unwrap();
+    let starts = instances
+        .iter()
+        .map(|location| location["range"]["start"].clone())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        starts,
+        vec![
+            position_of(source, "instance Describe<User>", 0),
+            position_of(source, "instance Describe<Team>", 0),
+        ]
+    );
+
+    // The argument is a Team, so only that instance's method is offered.
+    let methods = response(&messages, 4)["result"].as_array().unwrap();
+    assert_eq!(methods.len(), 1, "{methods:#?}");
+    assert_eq!(
+        methods[0]["range"]["start"],
+        position_of(source, "describe self: Team", 0)
+    );
+}
+
+const SECOND_PARAMETER_DISPATCH: &str = "trait Convert<A, B> {
+  fn convert value: B -> A
+}
+
+instance Convert<Int, String> {
+  fn convert value: String -> Int = 1
+}
+
+instance Convert<String, Int> {
+  fn convert value: Int -> String = \"one\"
+}
+
+pub fn number -> Int = convert \"x\"
+";
+
+#[test]
+fn binary_selects_the_instance_by_the_trait_parameter_the_argument_fills() {
+    let source = SECOND_PARAMETER_DISPATCH;
+    let (_, messages) = editor_session_with(
+        source,
+        None,
+        vec![
+            json!({"jsonrpc": "2.0", "id": 2, "method": "textDocument/implementation", "params": {"textDocument": {}, "position": position_of(source, "convert \"x\"", 1)}}),
+        ],
+    );
+    // A String argument fills `B`, the second trait parameter, so the
+    // `Convert<Int, String>` instance is the one that applies.
+    let methods = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(methods.len(), 1, "{methods:#?}");
+    assert_eq!(
+        methods[0]["range"]["start"],
+        position_of(source, "convert value: String", 0)
+    );
 }

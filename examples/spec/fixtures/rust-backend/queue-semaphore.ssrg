@@ -1,0 +1,106 @@
+import * as deferred from "std/deferred"
+import * as effects from "std/effect"
+import * as queues from "std/queue"
+import * as refs from "std/ref"
+import * as semaphores from "std/semaphore"
+
+type AppError deriving Show =
+  | QueueCreateFailure queues.QueueCreateError
+  | QueueFailure queues.QueueClosed
+  | SemaphoreFailure semaphores.SemaphoreCreateError
+  | Explicit String
+  | ConsoleFailure ConsoleError
+
+effect fn say text: String -> Unit with Console fails AppError =
+  println text |> effects.mapError ConsoleFailure
+
+effect fn record log: refs.Ref<Array<String>> -> text: String -> Unit =
+  refs.update (\items -> append items [text]) log
+
+fn created<E, A> result: Either<E, A> -> String where Show<E> = match result {
+  Left error -> `rejected ${show error}`
+  Right _ -> "created"
+}
+
+fn exit<A> result: effects.FiberExit<queues.QueueClosed, A> -> String where Show<A> = match result {
+  effects.FiberSucceeded value -> `succeeded ${show value}`
+  effects.FiberFailed error -> `failed ${show error}`
+  effects.FiberCancelled -> "cancelled"
+}
+
+pub effect fn main -> Unit with Console fails AppError = do {
+  zero <- queues.bounded<Int> 0 |> effects.attempt
+  say (created zero)
+  negative <- semaphores.make (-2) |> effects.attempt
+  say (created negative)
+
+  // A full bounded Queue suspends offers and admits them in FIFO order.
+  queue <- queues.bounded<Int> 1 |> effects.mapError QueueCreateFailure
+  queues.offer 1 queue |> effects.mapError QueueFailure
+  second <- effects.fork $ queues.offer 2 queue |> effects.mapError QueueFailure
+  third <- effects.fork $ queues.offer 3 queue |> effects.mapError QueueFailure
+  effects.yieldNow ()
+  waiting <- queues.size queue
+  full <- queues.tryOffer 9 queue
+  a <- queues.take queue |> effects.mapError QueueFailure
+  b <- queues.take queue |> effects.mapError QueueFailure
+  c <- queues.take queue |> effects.mapError QueueFailure
+  effects.join second
+  effects.join third
+  empty <- queues.tryTake queue
+  say `bounded ${waiting} ${show full} ${a},${b},${c} ${show empty}`
+
+  // A cancelled taker leaves the Queue without taking a value.
+  cancelled <- effects.fork $ queues.take queue |> effects.mapError QueueFailure
+  effects.yieldNow ()
+  effects.interrupt cancelled
+  queues.offer 5 queue |> effects.mapError QueueFailure
+  five <- queues.tryTake queue
+  say `cancelled ${show five}`
+
+  // close fails waiting takers, rejects offers, and still drains values.
+  open <- queues.unbounded<String> ()
+  taker <- effects.fork $ queues.take open
+  effects.yieldNow ()
+  queues.close open
+  takerExit <- effects.await taker
+  queues.close open
+  closed <- queues.offer "late" open |> effects.attempt
+  triedClosed <- queues.tryOffer "late" open
+  say `closed ${exit takerExit} ${show closed} ${show triedClosed}`
+  drained <- queues.unbounded<String> ()
+  queues.offer "kept" drained |> effects.mapError QueueFailure
+  queues.close drained
+  kept <- queues.take drained |> effects.attempt
+  after <- queues.take drained |> effects.attempt
+  afterTry <- queues.tryTake drained
+  say `drain ${show kept} ${show after} ${show afterTry}`
+
+  // Semaphore permits go to waiters in order; withPermit always releases.
+  semaphore <- semaphores.make 1 |> effects.mapError SemaphoreFailure
+  log <- refs.make<Array<String>> []
+  permit <- semaphores.acquire semaphore
+  first <- effects.fork $ semaphores.withPermit semaphore (record log "first")
+  later <- effects.fork $ semaphores.withPermit semaphore (record log "later")
+  effects.yieldNow ()
+  busy <- semaphores.available semaphore
+  semaphores.release permit
+  semaphores.release permit
+  effects.join first
+  effects.join later
+  order <- refs.get log
+  free <- semaphores.available semaphore
+  say `order ${show order} ${busy} ${free}`
+
+  failed <- semaphores.withPermit semaphore (effects.fail (Explicit "boom")) |> effects.attempt
+  afterFailure <- semaphores.available semaphore
+  say `failure ${show failed} ${afterFailure}`
+
+  gate <- deferred.make<Never, Unit> ()
+  holder <- effects.fork $ semaphores.withPermit semaphore (deferred.await gate)
+  effects.yieldNow ()
+  held <- semaphores.available semaphore
+  effects.interrupt holder
+  released <- semaphores.available semaphore
+  say `cancel ${held} ${released}`
+}

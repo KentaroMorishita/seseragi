@@ -20,6 +20,9 @@ enum Instruction {
     MapError,
     Attempt,
     Release,
+    Provide,
+    // acquire, use, release: release runs masked after use ends in any way.
+    Bracket,
     Concurrent(ConcurrentOperation),
     FileSystem(NativeFileOperation),
     Stdin(NativeStdinOperation),
@@ -81,6 +84,13 @@ enum NativeFrame {
     Recover(V, Option<&'static NativeSource>),
     MapError(V, Option<&'static NativeSource>),
     Attempt,
+    Environment(V),
+    Bracket(V, V, Option<&'static NativeSource>),
+    Ensure(V, V, Option<&'static NativeSource>),
+    Ensured {
+        original: NativeOutcome,
+        previous_mask: bool,
+    },
     Register(V, Option<&'static NativeSource>),
     Scope,
     Cleanup {
@@ -106,6 +116,10 @@ pub struct NativeContext {
     test: Option<Rc<RefCell<NativeTestEnvironment>>>,
     temporaries: Rc<RefCell<Vec<NativeTemporaryHandle>>>,
     process: Rc<RefCell<NativeProcess>>,
+    /// The environment that `effects.service` reads. `provide` and
+    /// `provideSome` replace it for one inner Effect; a forked Fiber starts
+    /// with its parent's.
+    environment: V,
 }
 impl Default for NativeContext {
     fn default() -> Self {
@@ -122,8 +136,19 @@ impl Default for NativeContext {
             test: None,
             temporaries: Rc::default(),
             process: Rc::default(),
+            environment: V::Unit,
         }
     }
+}
+/// A root environment of opaque service tokens. Native operations reach their
+/// host provider directly, so user code can only select and pass these on.
+pub(crate) fn native_service_environment(services: &[&str]) -> V {
+    V::Record(Shared::new(
+        services
+            .iter()
+            .map(|service| ((*service).to_owned(), V::Unit))
+            .collect(),
+    ))
 }
 impl NativeContext {
     fn checkpoint(&mut self) -> Result<(), NativeExit> {
@@ -351,6 +376,28 @@ impl NativeMachine {
                             stack.push(NativeFrame::Attempt);
                             NativeState::Evaluate(c[0].clone())
                         }
+                        // Captures: the environment or its projection, the
+                        // inner Effect, and whether the first is a projection.
+                        Instruction::Provide => match context.checkpoint().and_then(|_| {
+                            catch_native(|| {
+                                Ok(match c[2] {
+                                    V::Bool(true) => c[0].apply(context.environment.clone()),
+                                    _ => c[0].clone(),
+                                })
+                            })
+                        }) {
+                            Ok(environment) => {
+                                let previous =
+                                    std::mem::replace(&mut context.environment, environment);
+                                stack.push(NativeFrame::Environment(previous));
+                                NativeState::Evaluate(c[1].clone())
+                            }
+                            Err(exit) => NativeState::Return(Err(exit.at(source))),
+                        },
+                        Instruction::Bracket => {
+                            stack.push(NativeFrame::Bracket(c[1].clone(), c[2].clone(), source));
+                            NativeState::Evaluate(c[0].clone())
+                        }
                         Instruction::Release => match catch_native(|| Ok(c[0].apply(c[1].clone())))
                         {
                             Ok(next) => NativeState::Evaluate(next),
@@ -394,6 +441,48 @@ impl NativeMachine {
                             },
                             result => NativeState::Return(result),
                         },
+                        // An acquired resource owns its release before any
+                        // cancellation checkpoint can run.
+                        NativeFrame::Bracket(using, release, source) => match result {
+                            Ok(resource) => {
+                                stack.push(NativeFrame::Ensure(release, resource.clone(), source));
+                                match catch_native(|| Ok(using.apply(resource))) {
+                                    Ok(plan) => NativeState::Evaluate(plan),
+                                    Err(exit) => NativeState::Return(Err(exit.at(source))),
+                                }
+                            }
+                            error => NativeState::Return(error),
+                        },
+                        // The release is built only after `use` has ended.
+                        NativeFrame::Ensure(release, resource, source) => {
+                            let previous_mask = std::mem::replace(&mut context.masked, true);
+                            stack.push(NativeFrame::Ensured {
+                                original: result,
+                                previous_mask,
+                            });
+                            match catch_native(|| Ok(release.apply(resource))) {
+                                Ok(plan) => NativeState::Evaluate(plan),
+                                Err(exit) => NativeState::Return(Err(exit.at(source))),
+                            }
+                        }
+                        NativeFrame::Ensured {
+                            original,
+                            previous_mask,
+                        } => {
+                            context.masked = previous_mask;
+                            NativeState::Return(match result {
+                                Ok(_) => {
+                                    original.and_then(|value| context.checkpoint().map(|_| value))
+                                }
+                                Err(NativeExit::Defect(errors)) => Err(NativeExit::Defect(errors)),
+                                Err(NativeExit::Failure(_)) => Err(NativeExit::defects(vec![
+                                    "Effect finalizer produced a typed failure".into(),
+                                ])),
+                                Err(NativeExit::Cancelled) => Err(NativeExit::defects(vec![
+                                    "Effect finalizer was cancelled".into(),
+                                ])),
+                            })
+                        }
                         NativeFrame::Attempt => NativeState::Return(match result {
                             Ok(value) => context
                                 .checkpoint()
@@ -421,18 +510,33 @@ impl NativeMachine {
                             }
                             result => NativeState::Return(result),
                         },
+                        NativeFrame::Environment(previous) => {
+                            context.environment = previous;
+                            NativeState::Return(result)
+                        }
                         NativeFrame::Register(release, source) => match result {
                             Ok(resource) => {
+                                let release = V::Effect(Shared::new(EffectPlan {
+                                    source,
+                                    instruction: Instruction::Release,
+                                    captures: vec![release, resource.clone()],
+                                }));
+                                // A finalizer runs in the environment of its
+                                // acquisition, even when its scope closes
+                                // outside that provide.
+                                let release = match &context.environment {
+                                    V::Unit => release,
+                                    environment => V::effect(
+                                        Instruction::Provide,
+                                        vec![environment.clone(), release, V::Bool(false)],
+                                    ),
+                                };
                                 context
                                     .scopes
                                     .last_mut()
                                     .expect("owning native scope")
                                     .finalizers
-                                    .push(V::Effect(Shared::new(EffectPlan {
-                                        source,
-                                        instruction: Instruction::Release,
-                                        captures: vec![release, resource.clone()],
-                                    })));
+                                    .push(release);
                                 // A successful acquisition owns its finalizer
                                 // BEFORE the next cancellation checkpoint.
                                 NativeState::Return(context.checkpoint().map(|_| resource))
@@ -503,6 +607,18 @@ pub fn native_operation(name: &str, args: Vec<V>) -> V {
         "std/effect::recover" => V::effect(Instruction::Recover, args),
         "std/effect::mapError" | "effect.mapError" => V::effect(Instruction::MapError, args),
         "std/effect::flatMap" => V::bind(args[0].clone(), args[1].clone()),
+        "std/effect::service" => V::leaf(args, |c, context| {
+            Ok(c[0].apply(context.environment.clone()))
+        }),
+        "std/effect::provide" => V::effect(
+            Instruction::Provide,
+            vec![args[0].clone(), args[1].clone(), V::Bool(false)],
+        ),
+        "std/effect::provideSome" => V::effect(
+            Instruction::Provide,
+            vec![args[0].clone(), args[1].clone(), V::Bool(true)],
+        ),
+        "std/semaphore::withPermit" => native_with_permit(args[0].clone(), args[1].clone()),
         "std/ref::make" => V::leaf(args, |c, _| Ok(V::reference(c[0].clone()))),
         "std/ref::get" => V::leaf(args, |c, _| Ok(c[0].read_reference())),
         "std/ref::set" => V::leaf(args, |c, _| {
