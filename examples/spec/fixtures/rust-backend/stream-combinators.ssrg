@@ -23,6 +23,15 @@ effect fn broken label: String -> Int with Console fails String = do {
 fn failing label: String -> streams.Stream<{ console: Console }, String, Int> =
   streams.fromEffect (broken label)
 
+effect fn yieldedFailure label: String -> Int with Console fails String = do {
+  effects.yieldNow ()
+  effects.fail `failed:${label}`
+}
+
+// Fails only after a yieldNow, so in a later scheduler turn.
+fn failingLater label: String -> streams.Stream<{ console: Console }, String, Int> =
+  streams.fromEffect (yieldedFailure label)
+
 fn closedText _closed: queues.QueueClosed -> String = "closed"
 
 // A source that opens a resource, then waits on a Queue nobody fills.
@@ -72,6 +81,10 @@ pub effect fn main -> Unit with Console fails String = do {
   say (show rightFails)
   leftFails <- streams.zip nothing (failing "left") |> streams.runCollect |> effects.attempt
   say (show leftFails)
+  // A failure after yieldNow belongs to a later turn, so the right failure
+  // wins over it.
+  laterLeft <- streams.zip (failing "right") (failingLater "left") |> streams.runCollect |> effects.attempt
+  say (show laterLeft)
 
   // merge emits every value of both sources and closes both on an early stop.
   merged <- streams.merge (ints [3, 4]) (ints [1, 2]) |> streams.runCollect

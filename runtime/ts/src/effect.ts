@@ -917,11 +917,25 @@ export function interrupt<Failure, Success>(
   }
 }
 
+// Counts how many times a `yieldNow` has resumed. Work that runs after one
+// belongs to a later scheduler turn, as native code resumes a yielded Fiber
+// only after the others have reached a wait.
+let yieldTurn = 0
+
+export function currentYieldTurn(): number {
+  return yieldTurn
+}
+
 export function yieldNow(_unit?: Unit): Effect<unknown, never, Unit> {
   return async (_environment, context) => {
     const activeContext = context ?? createEffectExecution().context
     await awaitWithCancellation(
-      new Promise<void>((resolve) => setTimeout(resolve, 0)),
+      new Promise<void>((resolve) =>
+        setTimeout(() => {
+          yieldTurn += 1
+          resolve()
+        }, 0)
+      ),
       activeContext
     )
     return undefined

@@ -3,6 +3,7 @@ import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import {
   awaitEffectValue,
   createEffectExecution,
+  currentYieldTurn,
   type Effect,
   type EffectContext,
   type EffectExecution,
@@ -350,26 +351,43 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
     return Object.freeze({
       async next() {
         if (closed) return done()
-        startMergeDemand(leftBranch)
-        startMergeDemand(rightBranch)
-        let settledTurn = false
+        const branches: ReadonlyArray<MergeBranch<unknown>> = [
+          leftBranch,
+          rightBranch,
+        ]
+        // The scheduler turn in which each side's outcome arrived.
+        const turns: [number, number] = [0, 0]
+        branches.forEach((branch, side) => {
+          startMergeDemand(branch)
+          void branch.pending?.then(() => {
+            turns[side] = currentYieldTurn()
+          })
+        })
+        let stopTurn: number | undefined
         while (true) {
-          // A failure wins over an end, and the left failure over the right
-          // one. Either stops the pull still pending on the other side.
-          const settled = [leftBranch.settled, rightBranch.settled]
+          // Once a stop is seen, an outcome from a later turn no longer
+          // counts; that side is cancelled instead.
+          const settled = branches.map((branch, side) =>
+            stopTurn === undefined || (turns[side] ?? 0) <= stopTurn
+              ? branch.settled
+              : undefined
+          )
           const stops = settled.some(
             (outcome) =>
               outcome?.kind === "failure" ||
               (outcome?.kind === "result" && outcome.value.done)
           )
-          if (stops && !settledTurn && settled.includes(undefined)) {
+          if (stops && stopTurn === undefined && settled.includes(undefined)) {
             // Before stopping the other side, let it finish what it can in
             // this turn, as native code waits until every other Fiber has
-            // reached a wait.
-            settledTurn = true
+            // reached a wait. A Fiber resumed by `yieldNow` meanwhile is in
+            // a later turn.
+            stopTurn = currentYieldTurn()
             await new Promise<void>((resolve) => setTimeout(resolve, 0))
             continue
           }
+          // A failure wins over an end, and the left failure over the right
+          // one. Either stops the pull still pending on the other side.
           const failure = settled.find((outcome) => outcome?.kind === "failure")
           if (failure?.kind === "failure") {
             return await cleanupThenThrow(failure.error, [close])
@@ -384,7 +402,7 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
           }
           const [leftResult, rightResult] = settled
           if (leftResult?.kind === "result" && rightResult?.kind === "result") {
-            for (const branch of [leftBranch, rightBranch]) {
+            for (const branch of branches) {
               branch.pending = undefined
               branch.settled = undefined
             }
@@ -394,7 +412,7 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
             return item([leftValue.value, rightValue.value] as const)
           }
           await Promise.race(
-            [leftBranch, rightBranch].flatMap((branch) =>
+            branches.flatMap((branch) =>
               branch.settled === undefined && branch.pending !== undefined
                 ? [branch.pending]
                 : []
