@@ -822,6 +822,22 @@ impl NativeScheduler {
 mod scheduler_tests {
     use super::*;
     #[test]
+    fn a_timer_may_fire_only_when_no_microtask_is_pending() {
+        let mut scheduler = NativeScheduler::default();
+        assert!(!scheduler.microtask_pending());
+        scheduler.ready.push_back(1);
+        assert!(scheduler.microtask_pending());
+        // A yielded Fiber waits while others run, until its budget runs out.
+        scheduler.yielded.push_back(2);
+        scheduler.yield_wait = NATIVE_YIELD_BUDGET - 1;
+        assert!(scheduler.microtask_pending());
+        scheduler.yield_wait = NATIVE_YIELD_BUDGET;
+        assert!(!scheduler.microtask_pending());
+        scheduler.ready.clear();
+        scheduler.yield_wait = 0;
+        assert!(!scheduler.microtask_pending());
+    }
+    #[test]
     fn tick_resumes_signal_waiters_in_their_own_root_process() {
         let _access = native_process_signal_host::TEST_ACCESS.lock().unwrap();
         enable_cycle_collection();
