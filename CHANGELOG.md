@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.173] - 2026-11-16
+
+### Added
+
+- The native target runs `effects.service`, `effects.provide` and `effects.provideSome`. `provide` and `provideSome` replace the environment only while their inner Effect runs, a forked Fiber starts in its parent's environment, and a finalizer runs in the environment of its acquisition, as on the TS target. Programs, `seseragi test --target native` and native benchmarks start with the same services as on TS. Program WASM still refuses these operations.
+
+### Fixed
+
+- A Schedule made with `effects.schedule` runs. Its decide used to be called with both arguments at once on the TS target, so every retry or repeat with a user-made Schedule stopped with a Defect, and the native target refused to compile one.
+- `ScheduleDecision` has no type parameter, as spec §10.11 states. Code that wrote `ScheduleDecision<A>` needs to drop the type argument.
+- On the native target, `effects.attempt` around `effects.timeout` or `effects.timeoutFail` compiles when the source Effect already needs `Clock`.
+
 ## [0.61.172] - 2026-11-16
 
 ### Fixed
