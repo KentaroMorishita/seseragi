@@ -448,9 +448,10 @@ fn native_test_run(modules: Vec<(String, V)>, options: &NativeTestOptions) -> i3
             )));
             let context = NativeContext {
                 test: Some(environment.clone()),
+                environment: native_service_environment(&["clock", "console", "logger", "random"]),
                 ..NativeContext::default()
             };
-            let root = scheduler.spawn(context, case.body.clone()).fiber().task;
+            let root = scheduler.spawn_test(context, case.body.clone());
             environment.borrow_mut().root = root;
             let timeout = case.timeout.unwrap_or(options.timeout);
             active.insert(
@@ -468,7 +469,10 @@ fn native_test_run(modules: Vec<(String, V)>, options: &NativeTestOptions) -> i3
         let mut expired = Vec::new();
         for (root, execution) in &mut active {
             let mut environment = execution.environment.borrow_mut();
-            if environment.cleanup.is_none() && now >= execution.deadline {
+            if environment.cleanup.is_none()
+                && now >= execution.deadline
+                && scheduler.started(*root)
+            {
                 execution.timed_out = true;
                 environment.cleanup = Some((
                     now + native_test_cleanup_delay(options.cleanup, true),

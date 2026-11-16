@@ -1222,10 +1222,17 @@ export function NegativeRecurrences(value: number): ScheduleError {
   return Object.freeze({ tag: "NegativeRecurrences", value })
 }
 
-export function schedule<Input>(
+function scheduleOf<Input>(
   decide: (observation: number, input: Input) => ScheduleDecision
 ): Schedule<Input> {
   return Object.freeze({ decide }) as Schedule<Input>
+}
+
+/** `effects.schedule`. A Seseragi decide takes its arguments one at a time. */
+export function schedule<Input>(
+  decide: (observation: number) => (input: Input) => ScheduleDecision
+): Schedule<Input> {
+  return scheduleOf((observation, input: Input) => decide(observation)(input))
 }
 
 export function recurs<Input>(
@@ -1235,7 +1242,7 @@ export function recurs<Input>(
     return Left(NegativeRecurrences(additionalRuns))
   }
   return Right(
-    schedule((observation) =>
+    scheduleOf((observation) =>
       observation <= additionalRuns
         ? ScheduleContinue(createDuration(0n))
         : ScheduleStop
@@ -1251,7 +1258,7 @@ export function spaced<Input>(
     return Left(NegativeRecurrences(additionalRuns))
   }
   return Right(
-    schedule((observation) =>
+    scheduleOf((observation) =>
       observation <= additionalRuns ? ScheduleContinue(delay) : ScheduleStop
     )
   )
@@ -1260,7 +1267,7 @@ export function spaced<Input>(
 export function whileInput<Input>(
   predicate: (input: Input) => boolean
 ): Schedule<Input> {
-  return schedule((_observation, input) =>
+  return scheduleOf((_observation, input: Input) =>
     predicate(input) ? ScheduleContinue(createDuration(0n)) : ScheduleStop
   )
 }

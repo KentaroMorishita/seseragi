@@ -26,7 +26,6 @@ pub(super) fn effect_interface() -> ModuleInterface {
         )
     };
     let schedule = |input: InterfaceType| named_with("Schedule", vec![input]);
-    let decision = |input: InterfaceType| named_with("ScheduleDecision", vec![input]);
     let fiber = |failure: InterfaceType, success: InterfaceType| {
         named_with("Fiber", vec![failure, success])
     };
@@ -79,13 +78,14 @@ pub(super) fn effect_interface() -> ModuleInterface {
             Some(named("Int")),
         ),
         type_export(module, "Schedule", 1, "opaque-type"),
-        opaque_adt_type_export(module, "ScheduleDecision", ["A"]),
-        constructor_export(module, "ScheduleDecision", "ScheduleStop", ["A"], None),
+        // Spec 10.11: a decision does not depend on the observed input type.
+        opaque_adt_type_export(module, "ScheduleDecision", []),
+        constructor_export(module, "ScheduleDecision", "ScheduleStop", [], None),
         constructor_export(
             module,
             "ScheduleDecision",
             "ScheduleContinue",
-            ["A"],
+            [],
             Some(duration.clone()),
         ),
         opaque_adt_type_export(module, "ScheduleError", []),
@@ -379,7 +379,7 @@ pub(super) fn effect_interface() -> ModuleInterface {
             Vec::new(),
             vec![function_type(
                 vec![named("Int"), named("A")],
-                decision(named("A")),
+                named("ScheduleDecision"),
             )],
             schedule(named("A")),
         ),

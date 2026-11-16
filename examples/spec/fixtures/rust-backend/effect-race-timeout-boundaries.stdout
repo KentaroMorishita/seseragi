@@ -1,0 +1,19 @@
+expired Left expired
+release timeoutFail started
+release timeoutFail finished
+guarded expiry Left guarded expired
+release race started
+release race finished
+race returned winner
+release timeout started
+release timeout finished
+timeout returned Nothing
+run 1
+run 2
+run 3
+retried Left failure 3
+run 1
+run 2
+run 3
+run 4
+repeated 40

@@ -39,6 +39,7 @@ mod effect_conversions;
 mod effect_defects;
 mod either;
 mod entropy;
+mod environment;
 mod equality;
 mod filesystem;
 mod floats;
@@ -342,6 +343,16 @@ fn emit_body(
             } else {
                 ""
             };
+        let entry_value = format!("{}(vec![]).apply(V::Unit)", id(&entry.symbol));
+        let entry_value = if entry.is_effect && backend.capabilities.contains("effect-environment")
+        {
+            let environment = backend.entry_environment(entry).map_err(|error| {
+                crate::project::at(&error.message, &entry.origin, backend.owner)
+            })?;
+            format!("native_operation(\"std/effect::provide\", vec![{environment}, {entry_value}])")
+        } else {
+            entry_value
+        };
         if entry.is_effect {
             let runner = if backend.capabilities.contains("clock-sleep")
                 || backend.capabilities.contains("clock-now")
@@ -350,7 +361,7 @@ fn emit_body(
             } else {
                 "run_native_entry_with_show"
             };
-            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_main(|| {{ {process_startup}{runner}(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}, entry_failure_show) }})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
+            output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_main(|| {{ {process_startup}{runner}(|| {{ {startup}initialize_globals(); {entry_value} }}, {}, entry_failure_show) }})); }}\n", backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         } else {
             output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_main(|| run_native_pure_entry(|| {{ {startup}initialize_globals(); {}(vec![]).apply(V::Unit) }}, {}))); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
         }
@@ -1547,6 +1558,9 @@ impl<'a> Backend<'a> {
         if name.starts_with("std/ref::") {
             self.capabilities.insert("ref".into());
         }
+        if environment::is_environment_operation(name) {
+            self.capabilities.insert("effect-environment".into());
+        }
         if name.starts_with("console.")
             || name.starts_with("std/console::")
             || matches!(name, "std/prelude::print" | "std/prelude::println")
@@ -1823,6 +1837,7 @@ fn operation_arity(name: &str) -> Option<usize> {
         | "effect.fail"
         | "std/effect::defer"
         | "std/effect::scoped"
+        | "std/effect::service"
         | "std/ref::make"
         | "std/ref::get"
         | "std/prelude::println"
@@ -1837,6 +1852,8 @@ fn operation_arity(name: &str) -> Option<usize> {
         "std/effect::acquireRelease"
         | "std/effect::recover"
         | "std/effect::flatMap"
+        | "std/effect::provide"
+        | "std/effect::provideSome"
         | "std/effect::mapError"
         | "effect.mapError"
         | "std/ref::set"

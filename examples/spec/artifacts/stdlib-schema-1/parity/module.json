@@ -620,7 +620,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:14bd8793044253bf",
+      "interfaceFingerprint": "fnv1a64:01b285c584115058",
       "implementation": "lowering-runtime",
       "route": "effect-temporal-project"
     },

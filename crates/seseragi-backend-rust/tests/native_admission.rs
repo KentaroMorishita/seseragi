@@ -27,7 +27,7 @@ fn unsupported_features_have_target_codes_and_source_ranges() {
         "`[1, 2]",
     );
     let source =
-        "import * as effects from \"std/effect\"\npub effect fn probe -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+        "import * as effects from \"std/effect\"\npub effect fn probe -> Array<Int> = effects.parallel [effects.succeed 1]\n";
     let core = compile_core_module(CompileInput::new("bad.ssrg", "native/bad", source))
         .unwrap()
         .core_ir;
@@ -35,5 +35,5 @@ fn unsupported_features_have_target_codes_and_source_ranges() {
     assert_eq!(error.code, "SES-RUST-0001");
     let origin = error.origin.unwrap();
     assert!(origin.end > origin.start);
-    assert!(error.message.contains("provideSome"));
+    assert!(error.message.contains("std/effect::parallel"));
 }

@@ -970,12 +970,12 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 ("error[", Some(main.clone()), "value")
             }
             "unsupported" => {
-                let addition = "\nimport * as effects from \"std/effect\"\npub effect fn unsupported -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n";
+                let addition = "\nimport * as effects from \"std/effect\"\npub effect fn unsupported -> Array<Int> = effects.parallel [effects.succeed 1]\n";
                 fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
                 (
                     "SES-RUST-0001",
                     Some(library.clone()),
-                    "effects.provideSome (\\env: {} -> env) (effects.succeed 1)",
+                    "effects.parallel [effects.succeed 1]",
                 )
             }
             _ => ("SES-K0102", None, ""),
@@ -1625,7 +1625,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         let metadata: serde_json::Value = serde_json::from_slice(&fs::read(output.with_extension("rust-backend.json")).unwrap()).unwrap();
         assert!(metadata["capabilities"].as_array().unwrap().iter().any(|c| c == capability));
     }
-    for (name, source) in [("effect-provide-some", "import * as effects from \"std/effect\"\npub effect fn answer -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n")] {
+    for (name, source) in [("effect-parallel", "import * as effects from \"std/effect\"\npub effect fn answer -> Array<Int> = effects.parallel [effects.succeed 1]\n")] {
         let bad_path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&bad_path, source).unwrap();
         let bad_output = scratch.0.join(format!("{name}.rs"));
@@ -2490,7 +2490,7 @@ fn unsupported_async_operation_has_a_source_range_and_writes_nothing() {
     let path = scratch.0.join("async.ssrg");
     fs::write(
         &path,
-        "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.provideSome (\\env: {} -> env) (effects.succeed 1)\n",
+        "import * as effects from \"std/effect\"\npub effect fn main -> Array<Int> = effects.parallel [effects.succeed 1]\n",
     )
     .unwrap();
     let output = scratch.0.join("unsupported.rs");
@@ -2505,7 +2505,7 @@ fn unsupported_async_operation_has_a_source_range_and_writes_nothing() {
     let error = String::from_utf8_lossy(&result.stderr);
     assert_eq!(result.status.code(), Some(2));
     assert!(
-        error.contains("SES-RUST-0001") && error.contains("provideSome"),
+        error.contains("SES-RUST-0001") && error.contains("std/effect::parallel"),
         "{error}"
     );
     assert!(error.contains("async.ssrg:"), "{error}");

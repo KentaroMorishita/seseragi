@@ -7010,11 +7010,9 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "constructor",
-      "signature": "ScheduleContinue<A> arg1: Duration -> ScheduleDecision<A>",
+      "signature": "ScheduleContinue arg1: Duration -> ScheduleDecision",
       "description": "Builds or transforms a cold standard Effect value.",
-      "typeParameters": [
-        "A"
-      ],
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7023,11 +7021,9 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "opaque-type",
-      "signature": "ScheduleDecision<_>",
+      "signature": "ScheduleDecision",
       "description": "Type from the standard Effect control surface.",
-      "typeParameters": [
-        "A"
-      ],
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7047,11 +7043,9 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "constructor",
-      "signature": "ScheduleDecision<A>",
+      "signature": "ScheduleDecision",
       "description": "Builds or transforms a cold standard Effect value.",
-      "typeParameters": [
-        "A"
-      ],
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7515,7 +7509,7 @@
       "module": "std/effect",
       "category": "Effect",
       "kind": "function",
-      "signature": "schedule<A> arg1: (Int -> A -> ScheduleDecision<A>) -> Schedule<A>",
+      "signature": "schedule<A> arg1: (Int -> A -> ScheduleDecision) -> Schedule<A>",
       "description": "Builds or transforms a cold standard Effect value.",
       "typeParameters": [
         "A"
