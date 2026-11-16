@@ -1,0 +1,14 @@
+saved: first
+saved: second
+outside: outer
+inside: outer-inner
+outside again: outer
+provided: fixed
+pair: p/r
+before failure: failing
+recovered typed: handler
+child: parent
+acquire: acquired
+scope body: outer scope
+released: acquired
+done

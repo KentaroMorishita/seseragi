@@ -1847,6 +1847,8 @@ await owner.dispose();
         "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nimport { Ref } from \"std/ref\"\npub effect fn selected value: Int -> Ref<Int> = refs.make value",
         "import * as refs from \"std/ref\"\nimport * as effects from \"std/effect\"\nfn identity value: Int -> Int = value\npub effect fn selected value: Int -> Int = do { cell <- refs.make identity; saved <- refs.get cell; effects.succeed (saved value) }",
         "import * as effects from \"std/effect\"\neffect fn add initial: Int -> delta: Int -> Int = effects.succeed (initial + delta)\npub effect fn selected initial: Int -> (Int -> Effect<{}, Never, Int>) = effects.succeed (add initial)",
+        // The environment operations run natively, not in program WASM.
+        "import * as effects from \"std/effect\"\npub effect fn selected value: Int -> Int = effects.provideSome (\\_environment: {} -> { offset: value }) (effects.service (\\environment: { offset: Int } -> environment.offset))",
 
     ].iter().enumerate() {
         let file = scratch.0.join(format!("unsupported-{index}.ssrg"));

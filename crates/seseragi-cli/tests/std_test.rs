@@ -288,3 +288,48 @@ pub let tests:t.Test = t.suite "cleanup" [
         b"basic::cleanup::timeout: resource leak after timeout\n"
     );
 }
+
+#[test]
+fn native_test_cases_read_and_provide_services_like_ts() {
+    let scratch = tempfile::tempdir().unwrap();
+    let directory = scratch.path();
+    let package = package(directory);
+    // The test environment gives services to `effects.service`; a projection
+    // passes them on or replaces them for one inner Effect.
+    fs::write(
+        package.join("tests/services.ssrg"),
+        r#"import * as effects from "std/effect"
+import * as test from "std/test"
+
+struct Settings { label: String, }
+
+fn label -> Effect<{ settings: Settings }, Never, String> =
+  effects.service (\environment -> environment.settings.label)
+
+fn console -> Effect<test.TestEnvironment, Never, Console> =
+  effects.service (\environment -> environment.console)
+
+pub let tests: test.Test = test.suite "provided-services" [
+  test.test "reads a provided service" (do {
+    value <- effects.provideSome (\_environment: test.TestEnvironment -> { settings: Settings { label: "ok" } }) (label ())
+    test.equal "ok" value
+  }),
+  test.test "passes the console on" (do {
+    saved <- console ()
+    effects.provide { console: saved } (effects.succeed ())
+  })
+]
+"#,
+    )
+    .unwrap();
+    let output = compare(&package, directory, &["--filter", "provided-services"], 0);
+    assert_eq!(
+        output.stdout,
+        concat!(
+            "PASS services::provided-services::reads a provided service\n",
+            "PASS services::provided-services::passes the console on\n",
+            "2 passed; 0 failed; 0 skipped\n"
+        )
+        .as_bytes()
+    );
+}

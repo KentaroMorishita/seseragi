@@ -627,6 +627,7 @@ impl NativeScheduler {
                         test: task.machine.context.test.clone(),
                         temporaries: task.machine.context.temporaries.clone(),
                         process: task.machine.context.process.clone(),
+                        environment: task.machine.context.environment.clone(),
                         ..NativeContext::default()
                     },
                     c[0].clone(),

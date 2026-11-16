@@ -1,0 +1,73 @@
+import * as effects from "std/effect"
+
+struct Settings { label: String, }
+
+effect fn ignore _error:ConsoleError -> Unit with Console = effects.succeed ()
+effect fn say message:String -> Unit with Console = println message |> effects.recover ignore
+
+fn settings -> Effect<{ settings: Settings }, Never, Settings> =
+  effects.service (\environment -> environment.settings)
+
+effect fn showLabel prefix:String -> Unit with { settings: Settings, console: Console } = do {
+  current <- settings ()
+  say (prefix + ": " + current.label)
+}
+
+fn labelled label:String -> console:Console -> { settings: Settings, console: Console } =
+  { settings: Settings { label: label }, console: console }
+
+fn using<E, A> label:String
+  -> operation:Effect<{ settings: Settings, console: Console }, E, A>
+  -> Effect<{ console: Console }, E, A> =
+  effects.provideSome (\environment: { console: Console } -> labelled label environment.console) operation
+
+// Two services of the same type, told apart only by their selector.
+fn primary -> Effect<{ primary: Settings, replica: Settings }, Never, Settings> =
+  effects.service (\environment -> environment.primary)
+fn replica -> Effect<{ primary: Settings, replica: Settings }, Never, Settings> =
+  effects.service (\environment -> environment.replica)
+
+effect fn pair -> String with { primary: Settings, replica: Settings } = do {
+  first <- primary ()
+  second <- replica ()
+  effects.succeed (first.label + "/" + second.label)
+}
+
+effect fn failing -> Unit fails String with { settings: Settings, console: Console } = do {
+  showLabel "before failure"
+  effects.fail "typed"
+}
+
+effect fn released _value:Unit -> Unit with { settings: Settings, console: Console } =
+  showLabel "released"
+
+pub effect fn main = do {
+  // A saved Effect reads the environment of each run, not of its creation.
+  let shown = showLabel "saved"
+  using "first" shown
+  using "second" shown
+  // An inner provideSome replaces the environment only while it runs.
+  using "outer" (do {
+    showLabel "outside"
+    effects.provideSome (\environment: { settings: Settings, console: Console } -> labelled (environment.settings.label + "-inner") environment.console) (showLabel "inside")
+    showLabel "outside again"
+  })
+  // provide fixes the whole environment from a value.
+  console <- effects.service (\environment: { console: Console } -> environment.console)
+  effects.provide (labelled "fixed" console) (showLabel "provided")
+  joined <- effects.provide { primary: Settings { label: "p" }, replica: Settings { label: "r" } } (pair ())
+  say ("pair: " + joined)
+  // A typed failure leaves the provided environment before its handler runs.
+  using "handler" (effects.recover (\error: String -> showLabel ("recovered " + error)) (using "failing" (failing ())))
+  // A forked Fiber starts in its parent's environment.
+  using "parent" (do {
+    child <- effects.fork (showLabel "child")
+    effects.join child
+  })
+  // A finalizer runs in the environment of its acquisition.
+  using "outer scope" (effects.scoped (do {
+    using "acquired" (effects.acquireRelease (showLabel "acquire") released)
+    showLabel "scope body"
+  }))
+  say "done"
+}

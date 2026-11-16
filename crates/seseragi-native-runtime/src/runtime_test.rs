@@ -448,6 +448,7 @@ fn native_test_run(modules: Vec<(String, V)>, options: &NativeTestOptions) -> i3
             )));
             let context = NativeContext {
                 test: Some(environment.clone()),
+                environment: native_service_environment(&["clock", "console", "logger", "random"]),
                 ..NativeContext::default()
             };
             let root = scheduler.spawn(context, case.body.clone()).fiber().task;
