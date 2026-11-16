@@ -503,10 +503,11 @@ impl NativeScheduler {
         }
         None
     }
-    // Some Fiber can take a turn now. On the TS target such a turn is a
-    // microtask, and no timer fires before every microtask has run.
-    fn runnable(&self) -> bool {
-        !self.ready.is_empty()
+    // The next turn is one the TS target runs as a microtask, so no timer
+    // can fire before it. A Fiber resuming from `yieldNow` is a macrotask
+    // there, and a due timer may fire before it.
+    fn microtask_pending(&self) -> bool {
+        !self.ready.is_empty() && (self.yielded.is_empty() || self.yield_wait < NATIVE_YIELD_BUDGET)
     }
     fn discard_test(&mut self, environment: &Rc<RefCell<NativeTestEnvironment>>) {
         let removed = self

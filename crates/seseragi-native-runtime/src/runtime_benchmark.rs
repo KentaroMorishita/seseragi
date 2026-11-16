@@ -208,7 +208,10 @@ fn native_benchmark_invoke(
             scheduler.cancel(root);
         }
         // As for tests, the timer fires only when no Fiber can take a turn.
-        if environment.borrow().cleanup.is_none() && now >= deadline && !scheduler.runnable() {
+        if environment.borrow().cleanup.is_none()
+            && now >= deadline
+            && !scheduler.microtask_pending()
+        {
             timed_out = true;
             environment.borrow_mut().cleanup = Some((
                 now + native_test_cleanup_delay(options.cleanup, true),
