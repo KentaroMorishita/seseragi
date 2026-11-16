@@ -11,6 +11,18 @@ close:left
 open:right
 close:right
 Left failed:right
+open:right
+close:right
+[]
+open:left
+close:left
+[]
+open:right
+close:right
+Left failed:right
+open:left
+close:left
+Left failed:left
 [1, 2, 3, 4]
 []
 [7]

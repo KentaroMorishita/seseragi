@@ -1,5 +1,6 @@
 import * as effects from "std/effect"
 import * as lists from "std/list"
+import * as queues from "std/queue"
 import * as streams from "std/stream"
 
 effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
@@ -21,6 +22,15 @@ effect fn broken label: String -> Int with Console fails String = do {
 
 fn failing label: String -> streams.Stream<{ console: Console }, String, Int> =
   streams.fromEffect (broken label)
+
+fn closedText _closed: queues.QueueClosed -> String = "closed"
+
+// A source that opens a resource, then waits on a Queue nobody fills.
+fn waiting queue: queues.Queue<Int> -> streams.Stream<{ console: Console }, String, Int> =
+  streams.fromEffect (queues.take queue |> effects.mapError closedText)
+
+fn blocked label: String -> queue: queues.Queue<Int> -> streams.Stream<{ console: Console }, String, Int> =
+  streams.flatMap (\_: Unit -> waiting queue) (streams.fromEffect (opened label))
 
 fn capacity value: Int -> String = match streams.bufferCapacity value {
   Left error -> show error
@@ -50,6 +60,18 @@ pub effect fn main -> Unit with Console fails String = do {
   say (show firstPair)
   zipFailed <- streams.zip (failing "right") (ints [1, 2]) |> streams.runCollect |> effects.attempt
   say (show zipFailed)
+
+  // An end stops the pull still waiting on the other side. When an end and a
+  // failure arrive in the same turn, the failure wins.
+  queue <- queues.unbounded<Int> ()
+  rightWaits <- streams.zip (blocked "right" queue) nothing |> streams.runCollect
+  say (show rightWaits)
+  leftWaits <- streams.zip nothing (blocked "left" queue) |> streams.runCollect
+  say (show leftWaits)
+  rightFails <- streams.zip (failing "right") nothing |> streams.runCollect |> effects.attempt
+  say (show rightFails)
+  leftFails <- streams.zip nothing (failing "left") |> streams.runCollect |> effects.attempt
+  say (show leftFails)
 
   // merge emits every value of both sources and closes both on an early stop.
   merged <- streams.merge (ints [3, 4]) (ints [1, 2]) |> streams.runCollect
