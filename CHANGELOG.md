@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.178] - 2026-11-17
+
+### Fixed
+
+- A local function with its own `where` can use the enclosing function's constraints, such as `show seed` inside `fn pair<B> value: B -> String where Show<B>` declared in `fn both<A> seed: A -> String where Show<A>`. It used to report `SES-T0201` ("no Show<A> instance matches") on every target, while the same body without its own `where` already worked. This also holds for calls to other constrained functions, operators, enclosing lambdas, `rec` groups, nested local functions, local `effect fn` and local functions inside instance methods. Writing the enclosing constraint again in the local `where` still works.
+
 ## [0.61.177] - 2026-11-17
 
 ### Fixed
