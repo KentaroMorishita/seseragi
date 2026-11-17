@@ -304,6 +304,26 @@
       "end": 4106
     }
   ],
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_arrayShow",
+        "typeArguments": [
+          {
+            "kind": "string"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_stringShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.regex.compile-error-type",
     "core.regex.type",
@@ -2265,19 +2285,9 @@
                                 "value": {
                                   "kind": "dictionary-call",
                                   "dictionary": {
-                                    "kind": "type-application-call",
-                                    "callee": "_ssrg_show_arrayShow",
-                                    "typeArguments": [
-                                      {
-                                        "kind": "string"
-                                      }
-                                    ],
-                                    "arguments": [
-                                      {
-                                        "kind": "runtime-reference",
-                                        "name": "_ssrg_show_stringShow"
-                                      }
-                                    ]
+                                    "kind": "call",
+                                    "callee": "$ssrg$closedDisplay$0",
+                                    "arguments": []
                                   },
                                   "method": "show",
                                   "arguments": [

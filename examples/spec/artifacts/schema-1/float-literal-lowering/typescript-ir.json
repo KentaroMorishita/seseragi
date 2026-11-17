@@ -59,6 +59,24 @@
       "name": "$ssrg$closedDisplay$0",
       "factory": {
         "kind": "type-application-call",
+        "callee": "_ssrg_debug_arrayDebug",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_debug_floatDebug"
+          }
+        ]
+      }
+    },
+    {
+      "name": "$ssrg$closedDisplay$1",
+      "factory": {
+        "kind": "type-application-call",
         "callee": "_ssrg_debug_tupleDebug",
         "typeArguments": [
           {
@@ -351,19 +369,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_debug_arrayDebug",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_debug_floatDebug"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$0",
+                                  "arguments": []
                                 },
                                 "method": "debug",
                                 "arguments": [
@@ -428,7 +436,7 @@
                                 "kind": "dictionary-call",
                                 "dictionary": {
                                   "kind": "call",
-                                  "callee": "$ssrg$closedDisplay$0",
+                                  "callee": "$ssrg$closedDisplay$1",
                                   "arguments": []
                                 },
                                 "method": "debug",
