@@ -1,10 +1,16 @@
 # Change Log
 
-## [0.61.178] - 2026-11-17
+## [0.61.179] - 2026-11-17
 
 ### Fixed
 
 - `seseragi test --target native` and `seseragi bench --target native` time out a case only when no Fiber can take a turn, as on the TS target, where a test's timer fires only after every runnable step has run. A body that never waits used to fail when its Effect steps took longer than its timeout, so a test with a zero or very short timeout failed now and then on a busy machine.
+
+## [0.61.178] - 2026-11-17
+
+### Fixed
+
+- A local function with its own `where` can use the enclosing function's constraints, such as `show seed` inside `fn pair<B> value: B -> String where Show<B>` declared in `fn both<A> seed: A -> String where Show<A>`. It used to report `SES-T0201` ("no Show<A> instance matches") on every target, while the same body without its own `where` already worked. This also holds for calls to other constrained functions, operators, enclosing lambdas, `rec` groups, nested local functions, local `effect fn` and local functions inside instance methods. Writing the enclosing constraint again in the local `where` still works.
 
 ## [0.61.177] - 2026-11-17
 
