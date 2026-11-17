@@ -299,7 +299,17 @@ Windows では PowerShell で次のコマンドを実行します。
 powershell -ExecutionPolicy Bypass -c "irm https://github.com/KentaroMorishita/seseragi/releases/latest/download/install.ps1 | iex"
 ```
 
-`~/.seseragi/bin` に入ります。同じコマンドをもう一度実行すると、最新版に更新されます。
+`~/.seseragi/bin` に入ります。新しい版があるかは `seseragi upgrade --check` で確かめられ、`seseragi upgrade` で同じスクリプトを使って更新します（同じコマンドをもう一度実行しても更新できます）。
+
+Homebrew では、macOS（Apple シリコンと Intel）と Linux（x64）で次のコマンドで入れて、更新します。
+
+```sh
+brew install KentaroMorishita/seseragi/seseragi
+brew upgrade seseragi
+```
+
+最初のインストールでは、`KentaroMorishita/seseragi/seseragi` と省略しない名前で指定します。こうすると、Homebrew がこの tap の formula を信頼します。Homebrew で入れた CLI では、`seseragi upgrade` はファイルを置き換えず、`brew upgrade seseragi` を案内します。
+
 [GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases) からアーカイブを直接ダウンロードしても構いません。生成されたプログラムの実行には [Bun](https://bun.sh/) 1.4.4 以降が必要です。
 
 ```sh

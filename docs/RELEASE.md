@@ -204,6 +204,25 @@ tagを別SHAへ付け替えません。
 置き換えずにインストールのコマンドを表示します。Windows では実行中の `seseragi.exe` を
 置き換えられないため、コマンドの表示だけにします。
 
+## Homebrew の tap
+
+tap は [`KentaroMorishita/homebrew-seseragi`](https://github.com/KentaroMorishita/homebrew-seseragi) で、
+formula は `Formula/seseragi.rb` です。手で書き換えません。リリースのたびに、release workflow が作り直します。
+
+1. `publish` のあとで、`homebrew-verify` が公開したリリースの `.sha256` を取得し、
+   `scripts/homebrew-formula.ts` で formula を作る
+2. macOS（arm64、x64）と Linux（x64）で、その formula をローカルの tap から `brew install` し、
+   `seseragi --version`・`brew test`・`seseragi upgrade` が `brew upgrade seseragi` を案内することを確かめる
+3. `homebrew-publish` が、tap にだけ書き込める deploy key（secret `HOMEBREW_TAP_DEPLOY_KEY`）で
+   formula を tap の `main` へ push する
+
+formula が対象にするのは、リリースで配っている macOS と Linux のアーカイブです。Linux arm64 の
+アーカイブは配っていないので、formula も対象にしません。formula の書き方は
+`scripts/homebrew-formula.test.ts` で確かめています。
+
+Homebrew で入れた CLI は `<prefix>/Cellar/seseragi/<版>/bin` にあります。`seseragi upgrade` はこの場所を
+見分けて、ファイルを置き換えずに `brew upgrade seseragi` を案内します。
+
 ## Native archiveからinstall
 
 macOS / Linuxでは、GitHub ReleaseからOS / CPUに合うarchiveとchecksumを取得します。

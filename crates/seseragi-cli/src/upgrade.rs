@@ -31,6 +31,17 @@ pub(crate) fn upgrade(arguments: &[String]) -> Result<i32, String> {
         return Ok(0);
     }
     println!("seseragi {target} is available (installed: {current})");
+    let homebrew = std::env::current_exe()
+        .and_then(std::fs::canonicalize)
+        .is_ok_and(|executable| installed_by_homebrew(&executable));
+    if homebrew {
+        // Replacing files inside a Homebrew keg would leave Homebrew's
+        // record of the installed version wrong.
+        println!(
+            "This seseragi was installed with Homebrew. Update it with:\n  brew upgrade seseragi"
+        );
+        return Ok(0);
+    }
     if check_only {
         println!("Run `seseragi upgrade` to install it.");
         return Ok(0);
@@ -85,6 +96,20 @@ fn is_newer(candidate: &str, current: &str) -> bool {
         (Some(candidate), Some(current)) => candidate > current,
         _ => false,
     }
+}
+
+/// Whether this CLI runs from a Homebrew keg,
+/// `<prefix>/Cellar/seseragi/<version>/bin/seseragi`. Homebrew links it
+/// from `<prefix>/bin` next to `seseragi-lsp`, which looks like the install
+/// script's layout, so the resolved path is checked first.
+fn installed_by_homebrew(executable: &Path) -> bool {
+    let parts = executable
+        .components()
+        .map(|component| component.as_os_str())
+        .collect::<Vec<_>>();
+    parts
+        .windows(2)
+        .any(|pair| pair[0] == "Cellar" && pair[1] == "seseragi")
 }
 
 /// The install root, when this CLI runs from `<root>/bin` next to the LSP,
@@ -199,6 +224,25 @@ mod tests {
             command.contains("/releases/download/v0.61.173/install.ps1 | iex"),
             "{command}"
         );
+    }
+
+    #[test]
+    fn recognizes_a_homebrew_keg_only() {
+        for path in [
+            "/opt/homebrew/Cellar/seseragi/0.61.178/bin/seseragi",
+            "/usr/local/Cellar/seseragi/0.61.178/bin/seseragi",
+            "/home/linuxbrew/.linuxbrew/Cellar/seseragi/0.61.178/bin/seseragi",
+        ] {
+            assert!(installed_by_homebrew(Path::new(path)), "{path}");
+        }
+        for path in [
+            "/Users/me/.seseragi/bin/seseragi",
+            "/opt/homebrew/bin/seseragi",
+            "/opt/Cellar-backup/seseragi/bin/seseragi",
+            "/opt/homebrew/Cellar/other/1.0/bin/seseragi",
+        ] {
+            assert!(!installed_by_homebrew(Path::new(path)), "{path}");
+        }
     }
 
     #[test]
