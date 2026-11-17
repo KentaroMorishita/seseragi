@@ -309,6 +309,22 @@ fn native_url_domain_to_ascii(domain: &str) -> Option<String> {
             _ => mapped.extend(c.to_lowercase()),
         }
     }
+    // Only scripts whose letters IDNA keeps as they are, once lowercased,
+    // and which Unicode normalization never changes, are encoded natively.
+    // Any other character could normalize to a different host on the TS
+    // target, so it is refused.
+    let stable = |c: char| {
+        c.is_ascii()
+            || matches!(c as u32,
+                0x00c0..=0x00d6 | 0x00d8..=0x00f6 | 0x00f8..=0x017f | 0x0386 | 0x0388..=0x03ce
+                | 0x0400..=0x0482 | 0x048a..=0x04ff | 0x05d0..=0x05ea | 0x0621..=0x063a
+                | 0x0641..=0x064a | 0x13a0..=0x13f5 | 0x2600..=0x27bf | 0x3041..=0x3096
+                | 0x30a1..=0x30fa | 0x30fc | 0x4e00..=0x9fff | 0xac00..=0xd7a3
+                | 0x1f300..=0x1faff)
+    };
+    if !mapped.chars().all(stable) {
+        return None;
+    }
     if mapped.chars().any(|c| {
         c.is_control()
             || c.is_whitespace()
@@ -790,6 +806,8 @@ mod http_url_tests {
             ("http://a%E2%80%8B.com/", Some("http://a.com/")),
             ("http://a%CD%8F.com/", Some("http://a.com/")),
             ("http://a%E2%80%8D.com/", None),
+            ("http://%E0%A5%98.com/", None),
+            ("http://%E0%B8%81.com/", None),
             // Compatibility mappings need IDNA tables; they are refused.
             ("http://%EF%AC%83.com/", None),
             ("http://%E2%91%A0.com/", None),

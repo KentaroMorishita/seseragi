@@ -321,13 +321,26 @@ fn native_http_exchange(
             "cannot share the connection".into(),
         );
     };
+    let written = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let writer_done = written.clone();
     std::thread::spawn(move || {
         let _ = writer
             .write_all(&head)
             .and_then(|_| writer.write_all(&body));
+        writer_done.store(true, std::sync::atomic::Ordering::Release);
     });
     let mut reader = std::io::BufReader::with_capacity(NATIVE_HTTP_CHUNK_BYTES, stream);
-    let response = native_http_read_response(&mut reader, method == "HEAD", limit);
+    // A final response head stops a request body still being sent, as the TS
+    // HTTP/1 writer does; the response is still read to its end. A finished
+    // request is left alone, since some servers close on a half-closed
+    // connection.
+    let mut stop_writer = || {
+        if !written.load(std::sync::atomic::Ordering::Acquire) {
+            let _ = native_http_stop_writing(connection);
+        }
+    };
+    let response =
+        native_http_read_response(&mut reader, method == "HEAD", limit, &mut stop_writer);
     match response {
         Err(NativeHttpRead::Io(error)) => failure(error, "std/http::HttpConnectionFailure"),
         Err(NativeHttpRead::Protocol(message)) => {
@@ -492,16 +505,27 @@ fn native_http_append(body: &mut Vec<u8>, chunk: &[u8], limit: u64) -> Result<()
     Ok(())
 }
 
+fn native_http_stop_writing(
+    connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
+) -> std::io::Result<()> {
+    match connection.lock().unwrap().as_ref() {
+        Some(stream) => stream.shutdown(std::net::Shutdown::Write),
+        None => Ok(()),
+    }
+}
+
 fn native_http_read_response(
     reader: &mut impl std::io::BufRead,
     head_request: bool,
     limit: u64,
+    on_final_head: &mut dyn FnMut(),
 ) -> Result<(u16, Vec<(String, String)>, Vec<u8>), NativeHttpRead> {
     let mut informational = 0;
     let (status, headers) = loop {
         let (status, headers) = native_http_read_head(reader)?;
         native_http_framing(&headers)?;
         if !(100..200).contains(&status) {
+            on_final_head();
             break (status, headers);
         }
         informational += 1;
@@ -620,13 +644,12 @@ mod http_client_tests {
         head: bool,
         limit: u64,
     ) -> Result<(u16, Vec<(String, String)>, Vec<u8>), String> {
-        native_http_read_response(&mut std::io::BufReader::new(raw), head, limit).map_err(|error| {
-            match error {
+        native_http_read_response(&mut std::io::BufReader::new(raw), head, limit, &mut || {})
+            .map_err(|error| match error {
                 NativeHttpRead::Io(error) => format!("io {error}"),
                 NativeHttpRead::Protocol(message) => format!("protocol {message}"),
                 NativeHttpRead::Limit => "limit".into(),
-            }
-        })
+            })
     }
 
     #[test]

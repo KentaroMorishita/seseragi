@@ -138,6 +138,7 @@ impl Backend<'_> {
         self.capabilities.insert("http".into());
         if matches!(name, "std/http::sendBytes" | "std/http::sendEmpty") {
             self.capabilities.insert("effect-sync".into());
+            self.capabilities.insert("http-client".into());
         }
         let names: Vec<_> = (0..parameters.len())
             .map(|i| format!("\0http_argument_{i}"))
