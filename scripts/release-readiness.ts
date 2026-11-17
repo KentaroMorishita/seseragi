@@ -38,6 +38,7 @@ const INTERNAL_ONLY_PATHS = [
   /(^|\/)(?:tests?|[^/]*_tests?)\//u,
   /(^|\/)__snapshots__\//u,
   /(?:^|\/)[^/]*(?:_test|_tests|\.test)\.[^/]+$/u,
+  /(?:^|\/)tests\.rs$/u,
   /\.(?:snap|test)\.[^/]+$/u,
 ] as const
 

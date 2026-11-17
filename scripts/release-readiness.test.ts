@@ -173,6 +173,24 @@ describe("release readiness", () => {
     ).toEqual([])
   })
 
+  test("allows a Rust tests.rs module without a version bump", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    await mkdir(path.join(root, "crates", "seseragi-lsp", "src"), {
+      recursive: true,
+    })
+    await writeFile(
+      path.join(root, "crates", "seseragi-lsp", "src", "tests.rs"),
+      "test only\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "test through tests.rs")
+
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles
+    ).toEqual([])
+  })
+
   test("accepts a user-visible PR with a version and changelog boundary", async () => {
     const root = await repository()
     const base = git(root, "rev-parse", "HEAD")
