@@ -44,7 +44,7 @@ fn native_url_parse(input: &str) -> Option<NativeHttpUrl> {
         return native_url_opaque(rest).then_some(NativeHttpUrl::Other(scheme));
     };
     if scheme == "file" {
-        return Some(NativeHttpUrl::Other(scheme));
+        return native_url_file(rest).then_some(NativeHttpUrl::Other(scheme));
     }
     // A special scheme skips any slashes and backslashes before its authority.
     let rest = rest.trim_start_matches(['/', '\\']);
@@ -124,6 +124,23 @@ fn native_url_parse(input: &str) -> Option<NativeHttpUrl> {
     })
 }
 
+// A file URL is invalid only through its host, which takes no port or
+// credentials. A Windows drive letter in the host position is a path.
+fn native_url_file(rest: &str) -> bool {
+    let Some(rest) = rest
+        .strip_prefix(['/', '\\'])
+        .and_then(|r| r.strip_prefix(['/', '\\']))
+    else {
+        return true;
+    };
+    let end = rest.find(['/', '\\', '?', '#']).unwrap_or(rest.len());
+    let host = &rest[..end];
+    let drive = host.len() == 2
+        && host.as_bytes()[0].is_ascii_alphabetic()
+        && matches!(host.as_bytes()[1], b':' | b'|');
+    host.is_empty() || drive || native_url_host(host).is_some()
+}
+
 // A URL without a special scheme. Only an authority can make it invalid.
 fn native_url_opaque(rest: &str) -> bool {
     let Some(rest) = rest.strip_prefix("//") else {
@@ -141,8 +158,12 @@ fn native_url_opaque(rest: &str) -> bool {
         return false;
     };
     if let Some(port) = port {
-        if !port.bytes().all(|b| b.is_ascii_digit())
-            || port.trim_start_matches('0').parse::<u32>().unwrap_or(0) > 65535
+        // A port needs a host, and must fit in 16 bits.
+        let digits = port.trim_start_matches('0');
+        if host.is_empty()
+            || !port.bytes().all(|b| b.is_ascii_digit())
+            || digits.len() > 5
+            || (!digits.is_empty() && digits.parse::<u32>().map_or(true, |p| p > 65535))
         {
             return false;
         }
@@ -485,7 +506,10 @@ fn native_url_path(path: &str) -> String {
             native_url_encode(&mut segment, part, |b| {
                 b < 0x21
                     || b > 0x7e
-                    || matches!(b, b'"' | b'#' | b'<' | b'>' | b'?' | b'`' | b'{' | b'}')
+                    || matches!(
+                        b,
+                        b'"' | b'#' | b'<' | b'>' | b'?' | b'^' | b'`' | b'{' | b'}'
+                    )
             });
             segments.push(segment);
         }
@@ -543,6 +567,17 @@ mod http_url_tests {
             ("ftp://", None),
             ("1http://a/", None),
             ("example.com", None),
+            ("http://a/^", Some("http://a/%5E")),
+            ("file://[invalid]/", None),
+            ("file://a:80/", None),
+            ("file://u@a/", None),
+            ("file://C:/x", Some("other file")),
+            ("file:///x", Some("other file")),
+            ("file://host/x", Some("other file")),
+            ("foo://a:99999999999999999999/", None),
+            ("foo://:1/", None),
+            ("foo://a:1/", Some("other foo")),
+            ("foo:///x", Some("other foo")),
             ("http://a/{x}|`y`", Some("http://a/%7Bx%7D|%60y%60")),
             ("http://a?b#c d", Some("http://a/?b#c%20d")),
             ("http://09/", None),
