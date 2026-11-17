@@ -1,6 +1,7 @@
 // std/http values that need no HttpClient: methods, statuses, URLs, headers,
 // requests, body limits and error messages, including every refusal.
 import * as http from "std/http"
+import * as arrays from "std/array"
 
 effect fn say text: String -> Unit with Console = println text |> effects.recover ignore
 effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
@@ -115,4 +116,11 @@ pub effect fn main -> Unit with Console = do {
   say (http.errorMessage (http.HttpRequestLengthMismatch { declared: 3, actual: 2 }))
   say (http.errorMessage (http.HttpResponseBodyLimitExceeded { limitBytes: 10 }))
   say (http.errorMessage http.HttpClientUnavailable)
+  // HTTP values pass through generic Array and Effect operations.
+  say (show (map http.methodText (arrays.reverse [http.get, http.post])))
+  attempted <- effects.attempt (effects.succeed http.get)
+  say (match attempted {
+    Right method -> http.methodText method
+    Left _ -> "failed"
+  })
 }

@@ -481,6 +481,14 @@ impl Backend<'_> {
         }
         match name.as_str() {
             "std/path::Path"
+            | "std/http::Method"
+            | "std/http::Status"
+            | "std/http::Headers"
+            | "std/http::HttpUrl"
+            | "std/http::Request"
+            | "std/http::Response"
+            | "std/http::HttpBodyLimit"
+            | "std/http::HttpVersion"
             | "std/bytes::Byte"
             | "std/bytes::Bytes"
             | "std/bytes::ByteError"

@@ -43,3 +43,5 @@ HttpDnsFailure: no host
 HttpRequestLengthMismatch: declared 3, actual 2
 HttpResponseBodyLimitExceeded: 10 bytes
 HttpClientUnavailable
+[POST, GET]
+GET

@@ -248,10 +248,77 @@ fn native_url_host(text: &str) -> Option<String> {
     {
         return None;
     }
+    if domain
+        .split('.')
+        .any(|label| label.starts_with("xn--") && native_url_punycode(&label[4..]).is_none())
+    {
+        return None;
+    }
     if native_url_ends_in_number(&domain) {
         return native_url_ipv4(&domain);
     }
     Some(domain)
+}
+
+// Decodes a Punycode label (RFC 3492). As in the Bun URL parser, a label that
+// fails to decode, decodes to nothing but ASCII, or decodes to a character
+// IDNA refuses or maps, is not a valid host. Full IDNA validation (such as
+// normalization) is not done natively.
+fn native_url_punycode(input: &str) -> Option<String> {
+    let (base, tmin, tmax, skew, damp) = (36u32, 1u32, 26u32, 38u32, 700u32);
+    let adapt = |delta: u32, points: u32, first: bool| {
+        let mut delta = if first { delta / damp } else { delta / 2 };
+        delta += delta / points;
+        let mut k = 0;
+        while delta > ((base - tmin) * tmax) / 2 {
+            delta /= base - tmin;
+            k += base;
+        }
+        k + (base - tmin + 1) * delta / (delta + skew)
+    };
+    let (basic, rest) = match input.rfind('-') {
+        Some(dash) => (&input[..dash], &input[dash + 1..]),
+        None => ("", input),
+    };
+    let mut output: Vec<char> = basic.chars().collect();
+    let (mut n, mut i, mut bias) = (128u32, 0u32, 72u32);
+    let mut digits = rest.bytes().peekable();
+    while digits.peek().is_some() {
+        let (previous, mut weight, mut k) = (i, 1u32, base);
+        loop {
+            let digit = match digits.next()? {
+                b @ b'a'..=b'z' => (b - b'a') as u32,
+                b @ b'0'..=b'9' => (b - b'0') as u32 + 26,
+                _ => return None,
+            };
+            i = i.checked_add(digit.checked_mul(weight)?)?;
+            let t = if k <= bias {
+                tmin
+            } else if k >= bias + tmax {
+                tmax
+            } else {
+                k - bias
+            };
+            if digit < t {
+                break;
+            }
+            weight = weight.checked_mul(base - t)?;
+            k += base;
+        }
+        let points = output.len() as u32 + 1;
+        bias = adapt(i - previous, points, previous == 0);
+        n = n.checked_add(i / points)?;
+        i %= points;
+        // A decoded label holds only characters IDNA keeps as they are:
+        // no ASCII, controls, spaces or characters it would lowercase.
+        let c = char::from_u32(n).filter(|c| {
+            !c.is_ascii() && !c.is_control() && !c.is_whitespace() && !c.is_uppercase()
+        })?;
+        output.insert(i as usize, c);
+        i += 1;
+    }
+    let decoded: String = output.into_iter().collect();
+    (!decoded.is_ascii()).then_some(decoded)
 }
 
 fn native_url_ends_in_number(domain: &str) -> bool {
@@ -563,6 +630,16 @@ mod http_url_tests {
             ("http://256.0.0.1/", None),
             ("http://[1::2::3]/", None),
             ("http://%41.com/", Some("http://a.com/")),
+            ("http://xn--9ca.com/", Some("http://xn--9ca.com/")),
+            (
+                "http://XN--MNCHEN-3YA.de/",
+                Some("http://xn--mnchen-3ya.de/"),
+            ),
+            ("http://xn--ls8h.la/", Some("http://xn--ls8h.la/")),
+            ("http://xn--a.com/", None),
+            ("http://xn--.com/", None),
+            ("http://xn--abc-.com/", None),
+            ("http://xn--zz/", None),
             ("mailto:a@b", Some("other mailto")),
             ("ftp://a/", Some("other ftp")),
             ("ftp://", None),
