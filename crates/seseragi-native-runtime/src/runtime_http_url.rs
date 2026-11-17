@@ -282,6 +282,19 @@ fn native_url_domain_to_ascii(domain: &str) -> Option<String> {
     let mut mapped = String::new();
     for c in domain.chars() {
         match c as u32 {
+            // IDNA ignores these: soft hyphen, combining grapheme joiner,
+            // Mongolian variation selectors, zero width space, word joiner and
+            // invisible operators, variation selectors and the BOM.
+            0x00ad
+            | 0x034f
+            | 0x180b..=0x180d
+            | 0x180f
+            | 0x200b
+            | 0x2060..=0x2064
+            | 0xfe00..=0xfe0f
+            | 0xfeff
+            | 0x1bca0..=0x1bca3
+            | 0xe0100..=0xe01ef => {}
             0x3002 | 0xff0e | 0xff61 => mapped.push('.'),
             0xff01..=0xff5e => mapped.push(char::from_u32(c as u32 - 0xfee0).unwrap()),
             // Cherokee letters fold to the uppercase forms in IDNA.
@@ -767,6 +780,11 @@ mod http_url_tests {
                 "http://%E6%97%A5%E6%9C%AC.com/",
                 Some("http://xn--wgv71a.com/"),
             ),
+            ("http://a%C2%AD.com/", Some("http://a.com/")),
+            ("http://a%EF%B8%8F.com/", Some("http://a.com/")),
+            ("http://a%E2%80%8B.com/", Some("http://a.com/")),
+            ("http://a%CD%8F.com/", Some("http://a.com/")),
+            ("http://a%E2%80%8D.com/", None),
             // Compatibility mappings need IDNA tables; they are refused.
             ("http://%EF%AC%83.com/", None),
             ("http://%E2%91%A0.com/", None),

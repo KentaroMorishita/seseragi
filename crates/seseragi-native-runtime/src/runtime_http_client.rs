@@ -5,7 +5,8 @@
 // target. A compressed response body is not decoded natively yet.
 
 const NATIVE_HTTP_CHUNK_BYTES: usize = 64 * 1024;
-const NATIVE_HTTP_HEAD_BYTES: usize = 64 * 1024;
+const NATIVE_HTTP_HEAD_BYTES: usize = 16 * 1024;
+const NATIVE_HTTP_INFORMATIONAL_LIMIT: usize = 16;
 
 #[derive(Debug, PartialEq)]
 enum NativeHttpReply {
@@ -103,7 +104,7 @@ impl NativeHttpTask {
                     &method,
                     &url,
                     &headers,
-                    &body,
+                    body,
                     limit as u64,
                     &worker_cancelled,
                     &worker_connection,
@@ -193,6 +194,8 @@ fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
     let rest = url.strip_prefix("http://").ok_or_else(|| {
         NativeHttpReply::Failure("std/http::HttpProtocolFailure", "invalid HTTP URL".into())
     })?;
+    // An empty fragment can remain in a parsed URL; it is never sent.
+    let rest = rest.split('#').next().unwrap_or("");
     let end = rest.find(['/', '?']).unwrap_or(rest.len());
     let (authority, path) = rest.split_at(end);
     let (host, port) = if let Some(close) = authority.find(']') {
@@ -222,7 +225,7 @@ fn native_http_exchange(
     method: &str,
     url: &str,
     headers: &[(String, String)],
-    body: &[u8],
+    body: Vec<u8>,
     limit: u64,
     cancelled: &std::sync::atomic::AtomicBool,
     connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
@@ -246,22 +249,40 @@ fn native_http_exchange(
             format!("no address for {}", target.host),
         );
     }
-    let mut last = String::new();
-    let mut stream = None;
-    for address in addresses {
+    // Connecting blocks in the OS, so it runs on its own thread while this
+    // worker keeps observing cancellation. A connection made after
+    // cancellation is dropped, which closes it.
+    let (connected, connecting) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let mut last = String::new();
+        for address in addresses {
+            match std::net::TcpStream::connect(address) {
+                Ok(stream) => {
+                    let _ = connected.send(Ok(stream));
+                    return;
+                }
+                Err(error) => last = error.to_string(),
+            }
+        }
+        let _ = connected.send(Err(last));
+    });
+    let stream = loop {
         if is_cancelled() {
             return NativeHttpReply::Cancelled;
         }
-        match std::net::TcpStream::connect(address) {
-            Ok(connected) => {
-                stream = Some(connected);
-                break;
+        match connecting.recv_timeout(std::time::Duration::from_millis(20)) {
+            Ok(Ok(stream)) => break stream,
+            Ok(Err(last)) => {
+                return NativeHttpReply::Failure("std/http::HttpConnectionFailure", last)
             }
-            Err(error) => last = error.to_string(),
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => continue,
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+                return NativeHttpReply::Failure(
+                    "std/http::HttpConnectionFailure",
+                    "connection attempt ended without a result".into(),
+                )
+            }
         }
-    }
-    let Some(mut stream) = stream else {
-        return NativeHttpReply::Failure("std/http::HttpConnectionFailure", last);
     };
     if let Ok(clone) = stream.try_clone() {
         *connection.lock().unwrap() = Some(clone);
@@ -293,9 +314,20 @@ fn native_http_exchange(
             NativeHttpReply::Failure(tag, error.to_string())
         }
     };
-    if let Err(error) = stream.write_all(&head).and_then(|_| stream.write_all(body)) {
-        return failure(error, "std/http::HttpConnectionFailure");
-    }
+    // The request is written on its own thread, so a final response that
+    // arrives before the body is fully sent (such as 413) is still read.
+    // Closing the connection after the response stops the writer.
+    let Ok(mut writer) = stream.try_clone() else {
+        return NativeHttpReply::Failure(
+            "std/http::HttpConnectionFailure",
+            "cannot share the connection".into(),
+        );
+    };
+    std::thread::spawn(move || {
+        let _ = writer
+            .write_all(&head)
+            .and_then(|_| writer.write_all(&body));
+    });
     let mut reader = std::io::BufReader::with_capacity(NATIVE_HTTP_CHUNK_BYTES, stream);
     let response = native_http_read_response(&mut reader, method == "HEAD", limit);
     match response {
@@ -366,19 +398,23 @@ fn native_http_read_head(
 ) -> Result<NativeHttpHead, NativeHttpRead> {
     let mut budget = NATIVE_HTTP_HEAD_BYTES;
     let line = native_http_read_line(reader, &mut budget)?;
-    let line = String::from_utf8_lossy(&line).into_owned();
-    let mut parts = line.splitn(3, ' ');
-    let version = parts.next().unwrap_or("");
-    let code = parts.next().unwrap_or("");
-    if !matches!(version, "HTTP/1.0" | "HTTP/1.1")
-        || code.len() != 3
-        || !code.bytes().all(|b| b.is_ascii_digit())
-    {
-        return native_http_protocol("invalid HTTP status line");
-    }
-    let status: u16 = code.parse().unwrap();
+    // `HTTP/1.x NNN` with an optional reason, as the TS HTTP/1 reader takes.
+    let valid_text = |bytes: &[u8]| {
+        bytes
+            .iter()
+            .all(|b| *b == b'\t' || (0x20..=0x7e).contains(b) || *b >= 0x80)
+    };
+    let status = match line.as_slice() {
+        [b'H', b'T', b'T', b'P', b'/', b'1', b'.', b'0' | b'1', b' ', a, b, c, rest @ ..]
+            if [a, b, c].iter().all(|d| d.is_ascii_digit())
+                && (rest.is_empty() || (rest[0] == b' ' && valid_text(&rest[1..]))) =>
+        {
+            (*a - b'0') as u16 * 100 + (*b - b'0') as u16 * 10 + (*c - b'0') as u16
+        }
+        _ => return native_http_protocol("invalid HTTP status line"),
+    };
     if status < 100 {
-        return native_http_protocol("invalid HTTP status line");
+        return native_http_protocol("invalid HTTP response status");
     }
     let mut headers = Vec::new();
     loop {
@@ -386,21 +422,60 @@ fn native_http_read_head(
         if line.is_empty() {
             break;
         }
-        if matches!(line.first(), Some(b' ' | b'\t')) {
-            return native_http_protocol("obsolete header line folding");
-        }
-        let Some(colon) = line.iter().position(|b| *b == b':') else {
-            return native_http_protocol("invalid HTTP header line");
+        let colon = match line.iter().position(|b| *b == b':') {
+            Some(colon) if colon > 0 => colon,
+            _ => return native_http_protocol("invalid HTTP header"),
         };
         let name = String::from_utf8_lossy(&line[..colon]).to_ascii_lowercase();
-        if !native_http_token(&name) {
-            return native_http_protocol("invalid HTTP header name");
+        if !native_http_token(&name) || !valid_text(&line[colon + 1..]) {
+            return native_http_protocol("invalid HTTP header");
         }
         // Header bytes are Latin-1, as the TS hosts read them.
         let value: String = line[colon + 1..].iter().map(|b| *b as char).collect();
         headers.push((name, value.trim_matches([' ', '\t']).to_owned()));
     }
     Ok((status, headers))
+}
+
+// Framing headers are checked on every head, as on the TS HTTP/1 reader.
+fn native_http_framing(headers: &[(String, String)]) -> Result<(), NativeHttpRead> {
+    let transfer: Vec<_> = headers
+        .iter()
+        .filter(|(name, _)| name == "transfer-encoding")
+        .collect();
+    let lengths: Vec<_> = headers
+        .iter()
+        .filter(|(name, _)| name == "content-length")
+        .collect();
+    if !transfer.is_empty() && !lengths.is_empty() {
+        return native_http_protocol(
+            "HTTP response contains both Transfer-Encoding and Content-Length",
+        );
+    }
+    if let Some((_, value)) = lengths.first() {
+        let digits = !value.is_empty()
+            && value.bytes().all(|b| b.is_ascii_digit())
+            && (value == "0" || !value.starts_with('0'));
+        if lengths.len() != 1
+            || !digits
+            || value
+                .parse::<u64>()
+                .map_or(true, |length| length > 9_007_199_254_740_991)
+        {
+            return native_http_protocol("invalid response Content-Length");
+        }
+    }
+    let chunked = transfer
+        .iter()
+        .flat_map(|(_, value)| value.split(','))
+        .filter(|coding| coding.trim().eq_ignore_ascii_case("chunked"))
+        .count();
+    if chunked > 1 {
+        return native_http_protocol(
+            "HTTP response applies chunked transfer coding more than once",
+        );
+    }
+    Ok(())
 }
 
 fn native_http_append(body: &mut Vec<u8>, chunk: &[u8], limit: u64) -> Result<(), NativeHttpRead> {
@@ -417,13 +492,16 @@ fn native_http_read_response(
     head_request: bool,
     limit: u64,
 ) -> Result<(u16, Vec<(String, String)>, Vec<u8>), NativeHttpRead> {
+    let mut informational = 0;
     let (status, headers) = loop {
         let (status, headers) = native_http_read_head(reader)?;
-        if status == 101 {
-            return native_http_protocol("unexpected protocol upgrade");
-        }
+        native_http_framing(&headers)?;
         if !(100..200).contains(&status) {
             break (status, headers);
+        }
+        informational += 1;
+        if informational > NATIVE_HTTP_INFORMATIONAL_LIMIT {
+            return native_http_protocol("HTTP informational response limit exceeded");
         }
     };
     let values = |name: &str| -> Vec<String> {
@@ -444,17 +522,18 @@ fn native_http_read_response(
         .filter(|coding| !coding.is_empty())
         .collect();
     let mut buffer = vec![0u8; NATIVE_HTTP_CHUNK_BYTES];
-    if !codings.is_empty() {
-        if codings.last().map(String::as_str) != Some("chunked") || codings.len() != 1 {
-            return native_http_protocol("unsupported transfer coding");
-        }
+    let chunked = codings.last().map(String::as_str) == Some("chunked");
+    if chunked {
         loop {
             let mut budget = NATIVE_HTTP_HEAD_BYTES;
             let line = native_http_read_line(reader, &mut budget)?;
-            let size = String::from_utf8_lossy(&line);
-            let size = size.split(';').next().unwrap_or("").trim();
-            let Ok(mut remaining) = usize::from_str_radix(size, 16) else {
+            let size = line.split(|b| *b == b';').next().unwrap_or(&[]);
+            if size.is_empty() || !size.iter().all(u8::is_ascii_hexdigit) {
                 return native_http_protocol("invalid chunk size");
+            }
+            let Ok(mut remaining) = usize::from_str_radix(std::str::from_utf8(size).unwrap(), 16)
+            else {
+                return native_http_protocol("chunk size is too large");
             };
             if remaining == 0 {
                 // Trailers end with an empty line.
@@ -475,16 +554,8 @@ fn native_http_read_response(
                 return native_http_protocol("missing chunk terminator");
             }
         }
-    } else if let Some(first) = values("content-length").first().cloned() {
-        if values("content-length").iter().any(|other| *other != first)
-            || first.is_empty()
-            || !first.bytes().all(|b| b.is_ascii_digit())
-        {
-            return native_http_protocol("invalid Content-Length header");
-        }
-        let Ok(mut remaining) = first.parse::<u64>() else {
-            return native_http_protocol("invalid Content-Length header");
-        };
+    } else if let (true, Some(length)) = (codings.is_empty(), values("content-length").first()) {
+        let mut remaining: u64 = length.parse().unwrap();
         while remaining > 0 {
             let want = (remaining as usize).min(buffer.len());
             let read = reader.read(&mut buffer[..want])?;
@@ -495,6 +566,8 @@ fn native_http_read_response(
             remaining -= read as u64;
         }
     } else {
+        // No length, or a final transfer coding other than chunked: the body
+        // runs until the connection closes.
         loop {
             let read = reader.read(&mut buffer)?;
             if read == 0 {
@@ -596,6 +669,35 @@ mod http_client_tests {
                 "{raw:?}"
             );
         }
+        let informational = b"HTTP/1.1 103 Early Hints\r\n\r\n".repeat(17);
+        let mut raw = informational.clone();
+        raw.extend_from_slice(b"HTTP/1.1 200 OK\r\n\r\n");
+        assert!(read(&raw, false, 100)
+            .unwrap_err()
+            .contains("informational"));
+        let mut raw = informational[..informational.len() / 17 * 16].to_vec();
+        raw.extend_from_slice(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n");
+        assert_eq!(read(&raw, false, 100).unwrap().0, 200);
+        for raw in [
+            &b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Length: 1\r\n\r\n"[..],
+            b"HTTP/1.1 200 OK\r\nContent-Length: 1\r\nContent-Length: 1\r\n\r\nx",
+            b"HTTP/1.1 200 OK\r\nContent-Length: 9007199254740992\r\n\r\n",
+            b"HTTP/1.1 204 OK\r\nContent-Length: x\r\n\r\n",
+            b"HTTP/1.1 200 OK\r\nX-A: a\x00b\r\n\r\n",
+            b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked, chunked\r\n\r\n",
+        ] {
+            assert!(
+                read(raw, false, 100).unwrap_err().starts_with("protocol"),
+                "{raw:?}"
+            );
+        }
+        let (_, _, body) = read(
+            b"HTTP/1.1 200 OK\r\nTransfer-Encoding: gzip\r\n\r\nraw",
+            false,
+            100,
+        )
+        .unwrap();
+        assert_eq!(body, b"raw");
         let (_, _, body) = read(
             b"HTTP/1.1 200 OK\r\nContent-Encoding: zstd\r\n\r\nx",
             false,
@@ -633,6 +735,8 @@ mod http_client_tests {
             ("::1", 8080, "/?q")
         );
         assert_eq!(target.authority, "[::1]:8080");
+        let target = native_http_target("http://a/p?#").ok().unwrap();
+        assert_eq!(target.path, "/p?");
         assert!(matches!(
             native_http_target("https://a/"),
             Err(NativeHttpReply::Failure("std/http::HttpTlsFailure", _))
