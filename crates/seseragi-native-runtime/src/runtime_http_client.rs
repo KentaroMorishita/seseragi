@@ -227,7 +227,7 @@ fn native_http_exchange(
     headers: &[(String, String)],
     body: Vec<u8>,
     limit: u64,
-    cancelled: &std::sync::atomic::AtomicBool,
+    cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
     connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
 ) -> NativeHttpReply {
     use std::io::Write;
@@ -238,7 +238,15 @@ fn native_http_exchange(
     let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
     let (connected, connecting) = std::sync::mpsc::channel();
     let (host, port) = (target.host.clone(), target.port);
+    let connector_cancelled = cancelled.clone();
     std::thread::spawn(move || {
+        // After cancellation no further lookup or attempt starts. An attempt
+        // already blocked in the OS ends at the OS connect timeout, and its
+        // connection, if any, is dropped unused.
+        let stopped = || connector_cancelled.load(std::sync::atomic::Ordering::Acquire);
+        if stopped() {
+            return;
+        }
         // Name resolution also blocks in the OS, so it runs here too.
         let addresses = match std::net::ToSocketAddrs::to_socket_addrs(&(host.as_str(), port)) {
             Ok(addresses) => addresses.collect::<Vec<_>>(),
@@ -256,8 +264,15 @@ fn native_http_exchange(
         }
         let mut last = String::new();
         for address in addresses {
+            if stopped() {
+                return;
+            }
             match std::net::TcpStream::connect(address) {
                 Ok(stream) => {
+                    if stopped() {
+                        let _ = stream.shutdown(std::net::Shutdown::Both);
+                        return;
+                    }
                     let _ = connected.send(Ok(stream));
                     return;
                 }
@@ -455,6 +470,34 @@ fn native_http_read_head(
     Ok((status, headers))
 }
 
+// Transfer codings in order, skipping quoted commas and parameters, as the
+// TS HTTP/1 reader's `transferCodings` does.
+fn native_http_transfer_codings(value: &str) -> Result<Vec<String>, NativeHttpRead> {
+    let mut codings = Vec::new();
+    let (mut start, mut quoted, mut escaped) = (0, false, false);
+    let mut append = |end: usize, start: &mut usize| {
+        let coding = value[*start..end].split(';').next().unwrap_or("");
+        codings.push(coding.trim().to_ascii_lowercase());
+        *start = end + 1;
+    };
+    for (index, character) in value.char_indices() {
+        if escaped {
+            escaped = false;
+        } else if quoted && character == '\\' {
+            escaped = true;
+        } else if character == '"' {
+            quoted = !quoted;
+        } else if character == ',' && !quoted {
+            append(index, &mut start);
+        }
+    }
+    if quoted {
+        return native_http_protocol("invalid HTTP Transfer-Encoding parameter");
+    }
+    append(value.len(), &mut start);
+    Ok(codings)
+}
+
 // Framing headers are checked on every head, as on the TS HTTP/1 reader.
 fn native_http_framing(headers: &[(String, String)]) -> Result<(), NativeHttpRead> {
     let transfer: Vec<_> = headers
@@ -483,11 +526,13 @@ fn native_http_framing(headers: &[(String, String)]) -> Result<(), NativeHttpRea
             return native_http_protocol("invalid response Content-Length");
         }
     }
-    let chunked = transfer
-        .iter()
-        .flat_map(|(_, value)| value.split(','))
-        .filter(|coding| coding.trim().eq_ignore_ascii_case("chunked"))
-        .count();
+    let mut chunked = 0;
+    for (_, value) in &transfer {
+        chunked += native_http_transfer_codings(value)?
+            .iter()
+            .filter(|coding| *coding == "chunked")
+            .count();
+    }
     if chunked > 1 {
         return native_http_protocol(
             "HTTP response applies chunked transfer coding more than once",
@@ -544,12 +589,14 @@ fn native_http_read_response(
     if head_request || matches!(status, 204 | 304) {
         return Ok((status, headers, body));
     }
-    let codings: Vec<String> = values("transfer-encoding")
-        .iter()
-        .flat_map(|value| value.split(','))
-        .map(|coding| coding.trim().to_ascii_lowercase())
-        .filter(|coding| !coding.is_empty())
-        .collect();
+    let mut codings = Vec::new();
+    for value in values("transfer-encoding") {
+        codings.extend(
+            native_http_transfer_codings(&value)?
+                .into_iter()
+                .filter(|coding| !coding.is_empty()),
+        );
+    }
     let mut buffer = vec![0u8; NATIVE_HTTP_CHUNK_BYTES];
     let chunked = codings.last().map(String::as_str) == Some("chunked");
     if chunked {
@@ -719,6 +766,7 @@ mod http_client_tests {
             b"HTTP/1.1 204 OK\r\nContent-Length: x\r\n\r\n",
             b"HTTP/1.1 200 OK\r\nX-A: a\x00b\r\n\r\n",
             b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked, chunked\r\n\r\n",
+            b"HTTP/1.1 200 OK\r\nTransfer-Encoding: x;note=\"open, chunked\r\n\r\n",
             b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n0\r\nBad Trailer\r\n\r\n",
         ] {
             assert!(
@@ -733,6 +781,13 @@ mod http_client_tests {
         )
         .unwrap();
         assert_eq!(body, b"raw");
+        let (_, _, body) = read(
+            b"HTTP/1.1 200 OK\r\nTransfer-Encoding: x;note=\"a, chunked, b\", chunked\r\n\r\n2\r\nok\r\n0\r\n\r\n",
+            false,
+            100,
+        )
+        .unwrap();
+        assert_eq!(body, b"ok");
         let (_, _, body) = read(
             b"HTTP/1.1 200 OK\r\nContent-Encoding: zstd\r\n\r\nx",
             false,
