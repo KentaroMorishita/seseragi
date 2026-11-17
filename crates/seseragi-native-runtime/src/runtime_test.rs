@@ -466,12 +466,17 @@ fn native_test_run(modules: Vec<(String, V)>, options: &NativeTestOptions) -> i3
             );
         }
         let now = std::time::Instant::now();
+        // As on the TS target, a test's timer fires only when no Fiber can
+        // take a turn, so a body that never waits is never cut off midway.
+        let timers = !scheduler.microtask_pending();
         let mut expired = Vec::new();
         for (root, execution) in &mut active {
             let mut environment = execution.environment.borrow_mut();
-            if environment.cleanup.is_none()
-                && now >= execution.deadline
+            // A case that has not had its first turn cannot time out either.
+            if timers
                 && scheduler.started(*root)
+                && environment.cleanup.is_none()
+                && now >= execution.deadline
             {
                 execution.timed_out = true;
                 environment.cleanup = Some((

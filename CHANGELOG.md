@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- A requirement row `R & { clock: Clock }` keeps one `clock` field when `R` already requires `Clock`. The unresolved shorthand `with Clock` is the standard service `std/clock::Clock`. `effects.timeout`, `effects.timeoutFail`, `effects.retry`, and `effects.repeat` show that field once, including in a type error. A type parameter or local type that is only spelled `Clock` stays distinct, and two fields that share a name but have different types are still an error.
+- `seseragi test --target native` and `seseragi bench --target native` time out a case only when no Fiber can take a turn, as on the TS target, where a test's timer fires only after every runnable step has run. A body that never waits used to fail when its Effect steps took longer than its timeout, so a test with a zero or very short timeout failed now and then on a busy machine.
 
 ## [0.61.178] - 2026-11-17
 
