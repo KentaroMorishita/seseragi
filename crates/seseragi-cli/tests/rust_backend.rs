@@ -326,6 +326,15 @@ fn closed_display_dictionaries_keep_raw_types_values_cold_effects_and_cleanup() 
 }
 
 #[test]
+fn array_index_matches_keep_values_order_defects_and_cleanup() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("array-index-match", 0),
+        ("array-index-effects", 0),
+        ("array-index-match-defect", 70),
+    ]);
+}
+
+#[test]
 fn closed_display_factories_are_lazy_on_fresh_bun_and_node_modules() {
     use prefix_process::{bounded, runtime, successful};
     let scratch = Scratch::new();

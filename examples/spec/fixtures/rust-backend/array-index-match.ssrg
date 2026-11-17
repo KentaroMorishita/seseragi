@@ -1,0 +1,43 @@
+fn sum remaining: Int -> values: Array<Int> -> total: Int -> Int =
+  if remaining == 0 then total else match values[1] {
+    Just value -> sum (remaining - 1) values (total + value)
+    Nothing -> total
+  }
+
+fn describe values: Array<Int> -> index: Int -> String = match values[index] {
+  Just 0 -> "zero"
+  Just value when value < 0 -> "negative " + show value
+  Just value -> "value " + show value
+  Nothing -> "none"
+}
+
+fn whole values: Array<Int> -> index: Int -> String = match values[index] {
+  Just 7 -> "seven"
+  found -> "found " + show found
+}
+
+fn nested values: Array<Maybe<Int>> -> index: Int -> Int = match values[index] {
+  Just (Just value) -> value
+  Just Nothing -> -1
+  _ -> -2
+}
+
+fn applied functions: Array<Int -> Int> -> index: Int -> Int = match functions[index] {
+  Just f -> f 10
+  Nothing -> 0
+}
+
+fn pick values: Array<Int> -> index: Int -> Int = match values[index] {
+  Just value -> value
+  Nothing -> 0
+}
+
+pub fn probe -> Array<String> = {
+  let values = [0, 7, -3]
+  let step = 5
+  [show (sum 1000 [3, 7] 0), describe values 0, describe values 1, describe values 2,
+    describe values 3, describe values (-1), whole values 1, whole values 0, whole values 9,
+    show (nested [Just 4, Nothing] 0), show (nested [Just 4, Nothing] 1),
+    show (nested [Just 4, Nothing] 2), show (applied [\x: Int -> x + step] 0),
+    show (applied [] 0), show (pick values (9007199254740991 + 0))]
+}
