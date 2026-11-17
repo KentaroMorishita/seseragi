@@ -788,6 +788,26 @@ impl<'a> Backend<'a> {
         )
     }
 
+    /// Builds a closed standard tuple or collection display dictionary once
+    /// per program, at its first read, and shares it afterwards.
+    fn closed_display(
+        &mut self,
+        selected: &CoreCallEvidence,
+        scope: &Scope,
+        dictionary: String,
+    ) -> String {
+        match seseragi_lowering::closed_standard_display_key(selected, scope.bound_type_names()) {
+            Some(key) => {
+                self.closed_dictionary_sites += 1;
+                format!(
+                    "cached({}, || {dictionary})",
+                    quoted(&format!("closed-standard-display:{key}"))
+                )
+            }
+            None => dictionary,
+        }
+    }
+
     fn evidence(&mut self, evidence: &[CoreCallEvidence], scope: &Scope) -> Result<String> {
         let mut values = Vec::new();
         for selected in evidence {
@@ -860,18 +880,7 @@ impl<'a> Backend<'a> {
                 }
             }
             if let Some(dictionary) = self.structural_display_dictionary(selected, scope)? {
-                if let Some(key) = seseragi_lowering::closed_standard_display_key(
-                    selected,
-                    scope.bound_type_names(),
-                ) {
-                    self.closed_dictionary_sites += 1;
-                    values.push(format!(
-                        "cached({}, || {dictionary})",
-                        quoted(&format!("closed-standard-display:{key}"))
-                    ));
-                } else {
-                    values.push(dictionary);
-                }
+                values.push(self.closed_display(selected, scope, dictionary));
                 continue;
             }
             if let Some(dictionary) = self.filesystem_display_dictionary(selected, scope)? {
@@ -899,7 +908,7 @@ impl<'a> Backend<'a> {
                 continue;
             }
             if let Some(dictionary) = self.list_dictionary(selected, scope)? {
-                values.push(dictionary);
+                values.push(self.closed_display(selected, scope, dictionary));
                 continue;
             }
             if let Some(dictionary) = lists::primitive_display(selected) {

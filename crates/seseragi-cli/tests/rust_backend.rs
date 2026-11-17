@@ -315,6 +315,7 @@ fn closed_display_dictionaries_keep_raw_types_values_cold_effects_and_cleanup() 
     compare_raw_ts_and_native_fixtures(&[
         ("tuple-show-kernel", 0),
         ("closed-display-values", 0),
+        ("closed-collection-display", 0),
         ("tuple-display", 0),
         ("tuple-nominal", 0),
         ("closed-display-effects", 0),

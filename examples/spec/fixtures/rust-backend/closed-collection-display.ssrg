@@ -1,0 +1,22 @@
+type Box = | Box Int
+
+instance Show<Box> {
+  fn show value: Box -> String = match value { Box n -> `box=${show n}` }
+}
+
+fn through<A> values: Array<A> -> String where Show<A> = show values
+
+fn retained seed: Int -> Unit -> String = \_ -> show (Just [seed, seed + 1])
+
+pub fn kernel value: Int -> String = show [value, value + 1, value + 2, value + 3]
+
+pub fn probe -> Array<String> = {
+  let display: Array<Int> -> String = show
+  let before = retained 41
+  let after = retained (-7)
+  let nothing: Maybe<Int> = Nothing
+  [display [1, 2], display [], kernel 41, before (), after (),
+    debug ["a", "b"], show `[(1, True), (2, False)], debug `[[1.5], []],
+    show (1..3), show [1..3, 4..=5], show (Just (-1)), show nothing,
+    through [True], show [Box 1, Box 2], show [[`[Just 'c']]]]
+}
