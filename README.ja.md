@@ -347,7 +347,7 @@ cargo install --git https://github.com/KentaroMorishita/seseragi --locked sesera
 # Playground をローカルで起動する
 bun run dev:playground
 
-# 変更した範囲に応じてチェックする（check:sample / check:playground / check:extension / check:release もあります）
+# 変更した範囲に応じてチェックする（check:sample / check:sample-catalog / check:tour / check:playground / check:extension / check:release もあります）
 bun run check:rust
 ```
 

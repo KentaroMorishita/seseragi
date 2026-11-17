@@ -371,7 +371,7 @@ cargo install --git https://github.com/KentaroMorishita/seseragi --locked sesera
 # Start the Playground locally
 bun run dev:playground
 
-# Run the checks for what you changed (there are also check:sample / check:playground / check:extension / check:release)
+# Run the checks for what you changed (there are also check:sample / check:sample-catalog / check:tour / check:playground / check:extension / check:release)
 bun run check:rust
 ```
 

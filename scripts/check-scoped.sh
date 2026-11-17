@@ -28,11 +28,15 @@ check_step() {
 
 usage() {
   cat <<'EOF'
-Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|production|wasm|extension|release|release-gate|release-gate-after-wasm|full> [args...]
+Usage: scripts/check-scoped.sh <sample|sample-catalog|tour|playground|rust|conformance|production|wasm|extension|release|release-gate|release-gate-after-wasm|full> [args...]
 
 Scoped lanes:
-  sample       Native CLI samples, every sample compile/format, and manifest freshness
-  playground   Sample checks plus Playground lint, tests, typecheck, and Vite build
+  sample       Run the changed samples through the native CLI (--all for every sample)
+  sample-catalog
+               Sample metadata, catalog, Playground manifest, WASM compile and formatting
+  tour         Tour lessons, exercises and diagnostics through the native CLI and WASM,
+               and the formatting of the spec examples
+  playground   Catalog and Tour checks plus Playground lint, tests, typecheck, and Vite build
   rust         Rust format and workspace (or forwarded target) tests
   conformance  Canonical conformance fixtures (optional path arguments)
   production   First-party production artifact shape, budgets, and identity
@@ -69,24 +73,43 @@ require_extension_tools() {
   require_executable "$EXTENSION_VSCE" "cd extensions/seseragi && bun install --frozen-lockfile"
 }
 
+# Runs the samples through the native CLI. Without --all, only the samples
+# changed from the base branch run (see scripts/check-samples-cli.ts).
 run_native_sample_checks() {
-  echo "Checking runnable samples through the native CLI..."
+  echo "Running samples through the native CLI..."
+  check_step bun test scripts/sample-selection.test.ts
+  check_step bun scripts/check-samples-cli.ts "$@"
+}
+
+run_native_tour_checks() {
+  echo "Checking Tour lessons and spec formatting through the native CLI..."
   check_step bun test scripts/sample-cli-process.test.ts
-  check_step bun run test:samples:cli
+  check_step bun run test:tour:cli
 }
 
 run_sample_manifest_check() {
-  echo "Checking the committed Playground sample manifest..."
+  echo "Checking sample metadata, the catalog and the Playground sample manifest..."
   pushd apps/playground >/dev/null
     check_step bun run samples:check
   popd >/dev/null
 }
 
-run_sample_compiler_checks() {
+run_sample_catalog_checks() {
   require_playground_tools
-  echo "Compiling and formatting every canonical sample through committed WASM..."
+  run_sample_manifest_check
+  echo "Compiling and formatting every sample through committed WASM..."
   pushd apps/playground >/dev/null
-    check_step bun test tests/sample-compilation.test.ts
+    check_step bun test tests/sample-catalog.test.ts tests/sample-compilation.test.ts
+  popd >/dev/null
+}
+
+run_tour_checks() {
+  require_playground_tools
+  run_native_tour_checks
+  echo "Checking the Tour manifest and compiling every lesson through committed WASM..."
+  pushd apps/playground >/dev/null
+    check_step bun run tour:check
+    check_step bun test tests/tour-compilation.test.ts
   popd >/dev/null
 }
 
@@ -95,16 +118,6 @@ run_production_checks() {
   cargo test --locked -p seseragi-cli --test production || return $?
   bun test scripts/production-artifacts.test.ts || return $?
   bun scripts/check-production-artifacts.ts
-}
-
-run_sample_base_checks() {
-  run_native_sample_checks
-  run_sample_manifest_check
-}
-
-run_sample_checks() {
-  run_sample_base_checks
-  run_sample_compiler_checks
 }
 
 run_playground_lint() {
@@ -128,8 +141,11 @@ run_playground_lint() {
     apps/playground/e2e \
     apps/playground/tests \
     scripts/check-samples-cli.ts \
+    scripts/check-tour-cli.ts \
     scripts/sample-cli-process.ts \
     scripts/sample-cli-process.test.ts \
+    scripts/sample-selection.ts \
+    scripts/sample-selection.test.ts \
     scripts/check-project-fixtures.ts \
     scripts/check-project-fixtures.test.ts \
     scripts/check-playground-isolated-build.ts \
@@ -149,7 +165,8 @@ run_playground_bundle_build() {
 
 run_playground_checks() {
   require_playground_tools
-  run_sample_base_checks
+  run_sample_manifest_check
+  run_native_tour_checks
   run_playground_lint
 
   echo "Running Playground tests..."
@@ -382,8 +399,11 @@ run_full_checks() {
     extensions/seseragi/tests \
     extensions/seseragi-legacy/extension.js \
     scripts/check-samples-cli.ts \
+    scripts/check-tour-cli.ts \
     scripts/sample-cli-process.ts \
     scripts/sample-cli-process.test.ts \
+    scripts/sample-selection.ts \
+    scripts/sample-selection.test.ts \
     scripts/generate-playground-samples.ts \
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
@@ -433,7 +453,8 @@ run_full_checks() {
   run_conformance_checks
   check_step run_production_checks
   check_step bun scripts/check-production-browser.ts
-  run_native_sample_checks
+  run_native_sample_checks --all
+  run_native_tour_checks
   if [[ "$wasm_mode" == "check" ]]; then
     run_wasm_checks
   else
@@ -476,11 +497,25 @@ shift || true
 
 case "$lane" in
   sample)
+    if (($# > 1)) || { (($# == 1)) && [[ "$1" != "--all" ]]; }; then
+      echo "sample lane accepts only --all" >&2
+      exit 2
+    fi
+    run_native_sample_checks "$@"
+    ;;
+  sample-catalog)
     (($# == 0)) || {
-      echo "sample lane does not accept arguments" >&2
+      echo "sample-catalog lane does not accept arguments" >&2
       exit 2
     }
-    run_sample_checks
+    run_sample_catalog_checks
+    ;;
+  tour)
+    (($# == 0)) || {
+      echo "tour lane does not accept arguments" >&2
+      exit 2
+    }
+    run_tour_checks
     ;;
   playground)
     (($# == 0)) || {
