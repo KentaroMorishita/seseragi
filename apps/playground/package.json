@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/playground",
-  "version": "0.61.182",
+  "version": "0.61.183",
   "private": true,
   "type": "module",
   "scripts": {
@@ -25,7 +25,6 @@
     "typecheck": "bun run catalog:check && tsc --noEmit"
   },
   "dependencies": {
-    "@seseragi/runtime": "file:../../runtime/ts",
     "@codemirror/autocomplete": "^6.0.0",
     "@codemirror/commands": "^6.10.1",
     "@codemirror/language": "^6.11.3",
@@ -33,7 +32,11 @@
     "@codemirror/search": "^6.0.0",
     "@codemirror/state": "^6.5.2",
     "@codemirror/view": "^6.38.6",
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/geist-mono": "5.3.0",
+    "@fontsource-variable/noto-sans-jp": "5.3.1",
     "@lezer/highlight": "^1.2.1",
+    "@seseragi/runtime": "file:../../runtime/ts",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
