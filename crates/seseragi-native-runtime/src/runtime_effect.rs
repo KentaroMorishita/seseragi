@@ -32,6 +32,9 @@ enum Instruction {
     HttpSend,
     // Captures: the handle of an open exchange.
     HttpNext,
+    // Captures: the handle of an open exchange and one request body chunk,
+    // or Unit for the end of the body.
+    HttpWrite,
     SignalTransaction,
     SignalSubscribe,
 }
@@ -243,6 +246,7 @@ enum NativeTurn {
     ChildProcess(NativeChildOperation, Vec<V>),
     Http(Vec<V>),
     HttpNext(Vec<V>),
+    HttpWrite(Vec<V>),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -333,6 +337,13 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::HttpNext(c);
+                            }
+                        }
+                        Instruction::HttpWrite => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::HttpWrite(c);
                             }
                         }
                         Instruction::HttpSend => {

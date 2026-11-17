@@ -1,5 +1,5 @@
-// sendBytes and sendEmpty against a local test server whose address is the
-// first argument. Errors print only their tag, because the messages come from
+// sendBytes, sendEmpty and exchange against a local test server whose address
+// is the first argument. Errors print only their tag, because the messages come from
 // each host's HTTP stack.
 import * as http from "std/http"
 import * as process from "std/process"
@@ -7,6 +7,8 @@ import * as effects from "std/effect"
 import * as text from "std/text"
 import * as time from "std/time"
 import * as streams from "std/stream"
+import * as deferred from "std/deferred"
+import * as bytes from "std/bytes"
 
 effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
 effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
@@ -79,20 +81,62 @@ fn step text: String -> event: http.HttpEvent -> String = (match event {
   http.ResponseTrailers headers -> text + "[trailers " + headerText headers + "]"
 })
 
-fn exchanged result: Either<Either<Never, http.HttpError>, String> -> String = match result {
+fn exchanged result: Either<Either<String, http.HttpError>, String> -> String = match result {
   Right text -> text
   Left (Right error) -> "error " + tag error
-  Left _ -> "body failed"
+  Left (Left error) -> "body failed " + error
 }
 
-effect fn events base: String -> path: String -> method: http.Method -> body: http.Body<{}, Never> -> Unit with Console, { httpClient: http.HttpClient } =
+effect fn exchangeWith label: String -> request: http.Request -> body: http.Body<{}, String> -> Unit with Console, { httpClient: http.HttpClient } = do {
+  result <- effects.attempt (streams.runFold "" step (http.exchange body request))
+  say ("exchange " + label + ": " + exchanged result)
+}
+
+effect fn events base: String -> path: String -> method: http.Method -> body: http.Body<{}, String> -> Unit with Console, { httpClient: http.HttpClient } =
   match http.parseUrl (base + path) {
-    Right url -> do {
-      result <- effects.attempt (streams.runFold "" step (http.exchange body (http.request method url)))
-      say ("exchange " + path + ": " + exchanged result)
+    Right url -> exchangeWith path (http.request method url) body
+    Left error -> say (show error)
+  }
+
+// A body that never ends, as fast as the connection takes it. The TS hosts
+// do not answer an early response to such a body yet, so only the native
+// run passes the "endless" argument that sends it.
+fn endless -> http.Body<{}, String> =
+  http.streamBody (streams.unfold (\n: Int -> Just (text.encodeUtf8 "ab", n + 1)) 0)
+
+effect fn boom -> bytes.Bytes fails String = effects.fail "boom"
+
+effect fn wait gate: deferred.Deferred<Never, bytes.Bytes> -> bytes.Bytes = deferred.await gate
+
+effect fn stalled -> bytes.Bytes = do {
+  gate <- deferred.make ()
+  wait gate
+}
+
+// A body whose second pull fails, or never ends.
+fn second outcome: Int -> http.Body<{}, String> =
+  http.streamBody (streams.flatMap (\n: Int ->
+    if n == 0 then streams.singleton (text.encodeUtf8 "ab")
+    else if outcome == 0 then streams.fromEffect (boom ())
+    else streams.fromEffect (effects.mapError (\_never: Never -> "never") (stalled ()))) (streams.fromArray [0, 1]))
+
+// The request body is sent chunk by chunk while the response is read. A
+// final response stops the body, even while it waits for its next chunk.
+effect fn streaming base: String -> Unit with Console, { httpClient: http.HttpClient } = do {
+  events base "/framing" http.put (http.streamBody (streams.fromArray [text.encodeUtf8 "ab", text.encodeUtf8 "", text.encodeUtf8 "c"]))
+  events base "/framing" http.post (http.bytesBody (text.encodeUtf8 "abc"))
+  events base "/framing" http.get (http.emptyBody ())
+  events base "/reject" http.post (second 1)
+  events base "/first" http.post (second 1)
+  events base "/echo" http.post (second 0)
+  match http.parseUrl (base + "/echo") {
+    Right url -> match http.withRequestHeader "content-length" "5" (http.request http.post url) {
+      Right declared -> exchangeWith "/echo declared" declared (http.streamBody (streams.fromArray [text.encodeUtf8 "abc"]))
+      Left error -> say (show error)
     }
     Left error -> say (show error)
   }
+}
 
 fn millis value: Int -> time.Duration = match time.milliseconds value {
   Right duration -> duration
@@ -135,4 +179,12 @@ pub effect fn main -> Unit with Console, Clock, { httpClient: http.HttpClient, p
   events base "/trailers" http.get (http.emptyBody ())
   events base "/early" http.get (http.emptyBody ())
   events "http://127.0.0.1:9" "/refused" http.get (http.emptyBody ())
+  streaming base
+  match args {
+    [_, mode, ..._] -> if mode == "endless" then do {
+      events base "/reject" http.post (endless ())
+      events base "/first" http.post (endless ())
+    } else effects.succeed ()
+    _ -> effects.succeed ()
+  }
 }

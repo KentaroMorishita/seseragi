@@ -112,6 +112,7 @@ fn serve() -> String {
                 let method = parts.next().unwrap_or("").to_owned();
                 let path = parts.next().unwrap_or("").to_owned();
                 let mut length = 0;
+                let mut declared = false;
                 let mut chunked = false;
                 loop {
                     let mut header = String::new();
@@ -121,15 +122,59 @@ fn serve() -> String {
                     if let Some((name, value)) = header.split_once(':') {
                         if name.eq_ignore_ascii_case("content-length") {
                             length = value.trim().parse().unwrap_or(0);
+                            declared = true;
                         }
                         if name.eq_ignore_ascii_case("transfer-encoding") {
                             chunked = value.to_ascii_lowercase().contains("chunked");
                         }
                     }
                 }
+                let plain = |status: &str, headers: &str, body: &[u8]| {
+                    let mut response = format!(
+                        "HTTP/1.1 {status}\r\n{headers}Content-Length: {}\r\nConnection: close\r\n\r\n",
+                        body.len()
+                    )
+                    .into_bytes();
+                    response.extend_from_slice(body);
+                    response
+                };
+                // Answers before the request body ends, then reads the rest
+                // of the request until the client stops sending, so closing
+                // the connection never discards the response.
+                let early = |stream: &mut std::net::TcpStream,
+                             reader: &mut BufReader<std::net::TcpStream>,
+                             response: Vec<u8>| {
+                    let _ = stream.write_all(&response);
+                    let _ = stream.set_read_timeout(Some(std::time::Duration::from_secs(5)));
+                    let mut rest = [0u8; 4096];
+                    while matches!(reader.read(&mut rest), Ok(read) if read > 0) {}
+                    let _ = stream.shutdown(std::net::Shutdown::Both);
+                };
+                if path == "/reject" {
+                    // The body is never read.
+                    early(
+                        &mut stream,
+                        &mut reader,
+                        plain("413 Payload Too Large", "", b"too large"),
+                    );
+                    return;
+                }
+                if path == "/first" {
+                    // Only the first chunk of the body is read.
+                    let mut size = String::new();
+                    let _ = reader.read_line(&mut size);
+                    let size = usize::from_str_radix(size.trim(), 16).unwrap_or(0);
+                    let mut chunk = vec![0; size];
+                    let _ = reader.read_exact(&mut chunk);
+                    let mut answer = b"first ".to_vec();
+                    answer.extend_from_slice(&chunk);
+                    early(&mut stream, &mut reader, plain("200 OK", "", &answer));
+                    return;
+                }
                 let mut body = vec![0; length];
                 let _ = reader.read_exact(&mut body);
                 // A request body of unknown length arrives chunked.
+                let mut sizes = Vec::new();
                 while chunked {
                     let mut size = String::new();
                     if reader.read_line(&mut size).unwrap_or(0) == 0 {
@@ -145,17 +190,9 @@ fn serve() -> String {
                     if size == 0 {
                         break;
                     }
+                    sizes.push(size.to_string());
                     body.extend_from_slice(&chunk[..size]);
                 }
-                let plain = |status: &str, headers: &str, body: &[u8]| {
-                    let mut response = format!(
-                        "HTTP/1.1 {status}\r\n{headers}Content-Length: {}\r\nConnection: close\r\n\r\n",
-                        body.len()
-                    )
-                    .into_bytes();
-                    response.extend_from_slice(body);
-                    response
-                };
                 if path == "/hang" {
                     // Never answer; record when the client closes.
                     *hang.0.lock().unwrap() = false;
@@ -194,6 +231,17 @@ fn serve() -> String {
                     "/empty" => b"HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n".to_vec(),
                     "/headers" => plain("200 OK", "X-Multi: a\r\nX-Multi: b\r\n", b"ok"),
                     "/big" => plain("200 OK", "", &[b'x'; 100]),
+                    // How the request body was framed.
+                    "/framing" => {
+                        let framing = if chunked {
+                            format!("chunks {}", sizes.join(","))
+                        } else if declared {
+                            format!("length {length}")
+                        } else {
+                            "none".into()
+                        };
+                        plain("200 OK", "", framing.as_bytes())
+                    }
                     "/echo" => {
                         let mut echoed = format!("{method} {} ", body.len()).into_bytes();
                         echoed.extend_from_slice(&body);
@@ -240,15 +288,21 @@ fn http_exchanges_match_bun_node_and_native() {
             .arg(&native),
         &directory,
     ));
+    // Only the native run sends request bodies that never end; see the
+    // fixture's `endless`.
     let output = successful(bounded(
         Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
             .arg(&base)
+            .arg("endless")
             .env("PATH", ""),
         &directory,
     ));
     assert_eq!(
         String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&expected),
+        format!(
+            "{}exchange /reject: [started 413]too large\nexchange /first: [started 200]first ab\n",
+            String::from_utf8_lossy(&expected)
+        ),
         "native"
     );
     let ts = directory.join("ts");

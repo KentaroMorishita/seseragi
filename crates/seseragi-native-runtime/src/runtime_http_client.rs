@@ -31,17 +31,14 @@ fn native_http_failure(tag: &'static str, message: &str) -> NativeExit {
     NativeExit::failure(V::adt(tag, V::text(message)))
 }
 
-// The Content-Length a request declares must match its body, as on TS.
-fn native_http_declared_length(
-    headers: &[(String, String)],
-    actual: usize,
-) -> Result<(), NativeExit> {
+// The Content-Length a request declares, checked before anything is sent.
+fn native_http_declared(headers: &[(String, String)]) -> Result<Option<i64>, NativeExit> {
     let values: Vec<_> = headers
         .iter()
         .filter(|(name, _)| name == "content-length")
         .collect();
     let Some((_, value)) = values.first() else {
-        return Ok(());
+        return Ok(None);
     };
     let digits = values.len() == 1
         && !value.is_empty()
@@ -53,25 +50,87 @@ fn native_http_declared_length(
             "invalid Content-Length header",
         ));
     }
-    let declared = match value.parse::<i64>() {
-        Ok(declared) if declared <= 9_007_199_254_740_991 => declared,
-        _ => {
-            return Err(native_http_failure(
-                "std/http::HttpProtocolFailure",
-                "Content-Length exceeds the safe integer range",
-            ))
-        }
-    };
-    if declared != actual as i64 {
-        return Err(NativeExit::failure(V::adt(
-            "std/http::HttpRequestLengthMismatch",
-            native_http_record(vec![
-                ("declared", V::Int(declared)),
-                ("actual", V::Int(actual as i64)),
-            ]),
-        )));
+    match value.parse::<i64>() {
+        Ok(declared) if declared <= 9_007_199_254_740_991 => Ok(Some(declared)),
+        _ => Err(native_http_failure(
+            "std/http::HttpProtocolFailure",
+            "Content-Length exceeds the safe integer range",
+        )),
     }
-    Ok(())
+}
+
+fn native_http_length_mismatch(declared: i64, actual: i64) -> V {
+    V::adt(
+        "std/http::HttpRequestLengthMismatch",
+        native_http_record(vec![
+            ("declared", V::Int(declared)),
+            ("actual", V::Int(actual)),
+        ]),
+    )
+}
+
+// The Content-Length a request declares must match its body, as on TS.
+fn native_http_declared_length(
+    headers: &[(String, String)],
+    actual: usize,
+) -> Result<(), NativeExit> {
+    match native_http_declared(headers)? {
+        Some(declared) if declared != actual as i64 => Err(NativeExit::failure(
+            native_http_length_mismatch(declared, actual as i64),
+        )),
+        _ => Ok(()),
+    }
+}
+
+// A request body: whole bytes for `sendBytes` and `sendEmpty`, or the parts
+// an exchange's body Fiber hands over one at a time.
+enum NativeHttpBody {
+    Bytes(Vec<u8>),
+    Parts {
+        parts: std::sync::mpsc::Receiver<NativeHttpPart>,
+        // The length a body knows in advance; None sends it chunked.
+        length: Option<u64>,
+        // Woken after each part is taken, so a waiting hand-over retries.
+        runtime: std::thread::Thread,
+    },
+}
+
+enum NativeHttpPart {
+    Chunk(Vec<u8>),
+    End,
+}
+
+// Writes the parts of a body as they arrive, in chunked framing when its
+// length is unknown. Returns once the body ends, a write fails, or the
+// exchange stops handing parts over.
+fn native_http_write_parts(
+    writer: &mut impl std::io::Write,
+    parts: &std::sync::mpsc::Receiver<NativeHttpPart>,
+    chunked: bool,
+    runtime: &std::thread::Thread,
+) -> std::io::Result<bool> {
+    loop {
+        let part = parts.recv();
+        runtime.unpark();
+        match part {
+            Ok(NativeHttpPart::Chunk(bytes)) if chunked => {
+                for piece in bytes.chunks(NATIVE_HTTP_CHUNK_BYTES) {
+                    let mut frame = format!("{:x}\r\n", piece.len()).into_bytes();
+                    frame.extend_from_slice(piece);
+                    frame.extend_from_slice(b"\r\n");
+                    writer.write_all(&frame)?;
+                }
+            }
+            Ok(NativeHttpPart::Chunk(bytes)) => writer.write_all(&bytes)?,
+            Ok(NativeHttpPart::End) => {
+                if chunked {
+                    writer.write_all(b"0\r\n\r\n")?;
+                }
+                return Ok(true);
+            }
+            Err(_) => return Ok(false),
+        }
+    }
 }
 
 impl NativeHttpTask {
@@ -104,7 +163,7 @@ impl NativeHttpTask {
                     &method,
                     &url,
                     &headers,
-                    body,
+                    NativeHttpBody::Bytes(body),
                     limit as u64,
                     &worker_cancelled,
                     &worker_connection,
@@ -231,7 +290,7 @@ fn native_http_open(
     method: &str,
     url: &str,
     headers: &[(String, String)],
-    body: Vec<u8>,
+    body: NativeHttpBody,
     cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
     connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
 ) -> Result<NativeHttpOpened, NativeHttpReply> {
@@ -318,8 +377,26 @@ fn native_http_open(
         head.extend(b"\r\n");
     }
     let declared = headers.iter().any(|(name, _)| name == "content-length");
-    if !declared && (!body.is_empty() || matches!(method, "POST" | "PUT" | "PATCH")) {
-        head.extend(format!("content-length: {}\r\n", body.len()).bytes());
+    // A body of known length declares it, as the TS HTTP/1 writer does; any
+    // other body is sent chunked.
+    let mut chunked = false;
+    match &body {
+        NativeHttpBody::Bytes(bytes) => {
+            if !declared && (!bytes.is_empty() || matches!(method, "POST" | "PUT" | "PATCH")) {
+                head.extend(format!("content-length: {}\r\n", bytes.len()).bytes());
+            }
+        }
+        NativeHttpBody::Parts { length, .. } => {
+            if !declared {
+                match length {
+                    Some(length) => head.extend(format!("content-length: {length}\r\n").bytes()),
+                    None => {
+                        chunked = true;
+                        head.extend(b"transfer-encoding: chunked\r\n");
+                    }
+                }
+            }
+        }
     }
     head.extend(b"connection: close\r\n\r\n");
     // The request is written on its own thread, so a final response that
@@ -334,10 +411,15 @@ fn native_http_open(
     let written = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
     let writer_done = written.clone();
     std::thread::spawn(move || {
-        let _ = writer
-            .write_all(&head)
-            .and_then(|_| writer.write_all(&body));
-        writer_done.store(true, std::sync::atomic::Ordering::Release);
+        let finished = writer.write_all(&head).and_then(|_| match &body {
+            NativeHttpBody::Bytes(bytes) => writer.write_all(bytes).map(|_| true),
+            NativeHttpBody::Parts { parts, runtime, .. } => {
+                native_http_write_parts(&mut writer, parts, chunked, runtime)
+            }
+        });
+        if matches!(finished, Ok(true)) {
+            writer_done.store(true, std::sync::atomic::Ordering::Release);
+        }
     });
     Ok((
         std::io::BufReader::with_capacity(NATIVE_HTTP_CHUNK_BYTES, stream),
@@ -350,7 +432,7 @@ fn native_http_exchange(
     method: &str,
     url: &str,
     headers: &[(String, String)],
-    body: Vec<u8>,
+    body: NativeHttpBody,
     limit: u64,
     cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
     connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
