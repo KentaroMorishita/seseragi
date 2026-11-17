@@ -113,7 +113,144 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
     })
 }
 
+// The Body and exchange functions take the environment and failure of the
+// request body Stream as type arguments, read from the canonical type in use.
+fn generic(name: &str) -> bool {
+    matches!(
+        name,
+        "std/http::emptyBody"
+            | "std/http::bytesBody"
+            | "std/http::streamBody"
+            | "std/http::exchange"
+    )
+}
+
+// R & { httpClient: HttpClient }, with closed records merged as the checker does.
+fn http_requirements(environment: CoreType) -> Result<CoreType> {
+    let mut operands = match environment {
+        CoreType::RequirementMerge { operands } => operands,
+        environment => vec![environment],
+    };
+    operands.push(CoreType::Record {
+        closed: true,
+        fields: vec![seseragi_lowering::CoreRecordField {
+            name: "httpClient".into(),
+            optional: false,
+            type_ref: ty("std/http::HttpClient"),
+        }],
+    });
+    let mut fields = BTreeMap::new();
+    let mut other = Vec::new();
+    for operand in operands {
+        match operand {
+            CoreType::Record {
+                closed: true,
+                fields: row,
+            } => {
+                for field in row {
+                    if let Some(previous) = fields.insert(field.name.clone(), field.clone()) {
+                        if previous != field {
+                            return Err("Rust backend: conflicting HttpClient requirement".into());
+                        }
+                    }
+                }
+            }
+            operand => other.push(operand),
+        }
+    }
+    let row = CoreType::Record {
+        closed: true,
+        fields: fields.into_values().collect(),
+    };
+    if other.is_empty() {
+        Ok(row)
+    } else {
+        other.push(row);
+        Ok(CoreType::RequirementMerge { operands: other })
+    }
+}
+
+fn generic_signature(name: &str, full: &CoreType) -> Result<(Vec<CoreType>, CoreType)> {
+    let body = |environment: CoreType, failure: CoreType| {
+        applied("std/http::Body", vec![environment, failure])
+    };
+    let CoreType::Function { parameter, result } = full else {
+        return Err("Rust backend: std/http body functions need an applied type".into());
+    };
+    let arguments = |value: &CoreType, owner: &str, count: usize| match value {
+        CoreType::Named { name, arguments } if name == owner && arguments.len() == count => {
+            Ok(arguments.clone())
+        }
+        _ => Err(format!("Rust backend: expected canonical {owner}")),
+    };
+    Ok(match name {
+        "std/http::emptyBody" => {
+            let types = arguments(result, "std/http::Body", 2)?;
+            (
+                vec![ty("std/prelude::Unit")],
+                body(types[0].clone(), types[1].clone()),
+            )
+        }
+        "std/http::bytesBody" => {
+            let types = arguments(result, "std/http::Body", 2)?;
+            (
+                vec![ty("std/bytes::Bytes")],
+                body(types[0].clone(), types[1].clone()),
+            )
+        }
+        "std/http::streamBody" => {
+            let types = arguments(parameter, "std/stream::Stream", 3)?;
+            (
+                vec![applied(
+                    "std/stream::Stream",
+                    vec![types[0].clone(), types[1].clone(), ty("std/bytes::Bytes")],
+                )],
+                body(types[0].clone(), types[1].clone()),
+            )
+        }
+        "std/http::exchange" => {
+            let types = arguments(parameter, "std/http::Body", 2)?;
+            (
+                vec![
+                    body(types[0].clone(), types[1].clone()),
+                    ty("std/http::Request"),
+                ],
+                applied(
+                    "std/stream::Stream",
+                    vec![
+                        http_requirements(types[0].clone())?,
+                        applied(
+                            "std/prelude::Either",
+                            vec![types[1].clone(), ty("std/http::HttpError")],
+                        ),
+                        ty("std/http::HttpEvent"),
+                    ],
+                ),
+            )
+        }
+        _ => unreachable!(),
+    })
+}
+
 impl Backend<'_> {
+    fn http_signature(
+        &self,
+        name: &str,
+        full: &CoreType,
+        scope: &Scope,
+    ) -> Result<Option<(Vec<CoreType>, CoreType)>> {
+        if !generic(name) {
+            return Ok(signature(name));
+        }
+        if scope.has_unproven_type_scope() {
+            return Err("Rust backend: unproven std/http body type scope".into());
+        }
+        Ok(Some(generic_signature(
+            name,
+            &self.local_canonical_type(full, scope)?,
+        )?))
+    }
+
     pub(super) fn http_reference(
         &mut self,
         name: &str,
@@ -121,12 +258,12 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<Option<String>> {
-        let Some((parameters, result)) = signature(name) else {
-            return Ok(None);
-        };
-        if scope.contains(name) {
+        if scope.contains(name) || (signature(name).is_none() && !generic(name)) {
             return Ok(None);
         }
+        let Some((parameters, result)) = self.http_signature(name, type_ref, scope)? else {
+            return Ok(None);
+        };
         if self.program_wasm_library {
             return Err("Rust backend: std/http is not admitted in program WASM".into());
         }
@@ -136,7 +273,13 @@ impl Backend<'_> {
             return Err("Rust backend: unproven native std/http reference contract".into());
         }
         self.capabilities.insert("http".into());
-        if matches!(name, "std/http::sendBytes" | "std/http::sendEmpty") {
+        if generic(name) {
+            self.capabilities.insert("stream".into());
+        }
+        if matches!(
+            name,
+            "std/http::sendBytes" | "std/http::sendEmpty" | "std/http::exchange"
+        ) {
             self.capabilities.insert("effect-sync".into());
             self.capabilities.insert("http-client".into());
         }
@@ -196,12 +339,21 @@ impl Backend<'_> {
             ),
             _ => return Ok(None),
         };
-        let Some((parameters, expected)) = signature(callee) else {
-            return Ok(None);
-        };
-        if scope.contains(callee) {
+        if scope.contains(callee) || (signature(callee).is_none() && !generic(callee)) {
             return Ok(None);
         }
+        let supplied = arguments
+            .iter()
+            .map(|argument| {
+                local::method_argument_type(argument)
+                    .ok_or_else(|| "Rust backend: missing std/http argument type".into())
+            })
+            .collect::<Result<Vec<_>>>()?;
+        let Some((parameters, expected)) =
+            self.http_signature(callee, &arrow(&supplied, type_ref.clone()), scope)?
+        else {
+            return Ok(None);
+        };
         if !valid || arguments.len() > parameters.len() {
             return Err("Rust backend: unproven native std/http call".into());
         }

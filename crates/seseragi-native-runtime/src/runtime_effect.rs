@@ -30,6 +30,8 @@ enum Instruction {
     ChildProcess(NativeChildOperation),
     // Captures: the body limit, the request body and the Request.
     HttpSend,
+    // Captures: the handle of an open exchange.
+    HttpNext,
     SignalTransaction,
     SignalSubscribe,
 }
@@ -240,6 +242,7 @@ enum NativeTurn {
     ProcessSignalPull(usize),
     ChildProcess(NativeChildOperation, Vec<V>),
     Http(Vec<V>),
+    HttpNext(Vec<V>),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -323,6 +326,13 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::FileSystem(operation, c);
+                            }
+                        }
+                        Instruction::HttpNext => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::HttpNext(c);
                             }
                         }
                         Instruction::HttpSend => {

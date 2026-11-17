@@ -9,3 +9,9 @@
 /refused: error HttpConnectionFailure
 /hang: timed out
 /closed: 200 [] closed
+exchange /headers: [started 200]ok
+exchange /echo: [started 200]POST 3 雪
+exchange /echo: [started 200]PUT 3 abc
+exchange /trailers: [started 200]abcd[trailers [x-t=1]]
+exchange /early: [informational 103][started 200]early
+exchange /refused: error HttpConnectionFailure

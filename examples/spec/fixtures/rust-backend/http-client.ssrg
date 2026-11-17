@@ -6,6 +6,7 @@ import * as process from "std/process"
 import * as effects from "std/effect"
 import * as text from "std/text"
 import * as time from "std/time"
+import * as streams from "std/stream"
 
 effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
 effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
@@ -67,6 +68,32 @@ effect fn post base: String -> limit: http.HttpBodyLimit -> Unit with Console, {
     Left error -> say (show error)
   }
 
+fn headerText headers: http.Headers -> String =
+  show (map (\entry: (String, String) -> match entry { (name, value) -> name + "=" + value }) (http.headerEntries headers))
+
+// Body chunks are joined, since hosts may split a body differently.
+fn step text: String -> event: http.HttpEvent -> String = (match event {
+  http.InformationalResponse head -> text + "[informational " + show (http.statusCode head.status) + "]"
+  http.ResponseStarted head -> text + "[started " + show (http.statusCode head.status) + "]"
+  http.ResponseBodyChunk bytes -> text + (match text.decodeUtf8 bytes { Right value -> value; Left _ -> "<binary>" })
+  http.ResponseTrailers headers -> text + "[trailers " + headerText headers + "]"
+})
+
+fn exchanged result: Either<Either<Never, http.HttpError>, String> -> String = match result {
+  Right text -> text
+  Left (Right error) -> "error " + tag error
+  Left _ -> "body failed"
+}
+
+effect fn events base: String -> path: String -> method: http.Method -> body: http.Body<{}, Never> -> Unit with Console, { httpClient: http.HttpClient } =
+  match http.parseUrl (base + path) {
+    Right url -> do {
+      result <- effects.attempt (streams.runFold "" step (http.exchange body (http.request method url)))
+      say ("exchange " + path + ": " + exchanged result)
+    }
+    Left error -> say (show error)
+  }
+
 fn millis value: Int -> time.Duration = match time.milliseconds value {
   Right duration -> duration
   Left _ -> millis 0
@@ -102,4 +129,10 @@ pub effect fn main -> Unit with Console, Clock, { httpClient: http.HttpClient, p
   post base limit
   get "http://127.0.0.1:9" "/refused" limit
   cancelled base limit
+  events base "/headers" http.get (http.emptyBody ())
+  events base "/echo" http.post (http.bytesBody (text.encodeUtf8 "雪"))
+  events base "/echo" http.put (http.streamBody (streams.fromArray [text.encodeUtf8 "ab", text.encodeUtf8 "c"]))
+  events base "/trailers" http.get (http.emptyBody ())
+  events base "/early" http.get (http.emptyBody ())
+  events "http://127.0.0.1:9" "/refused" http.get (http.emptyBody ())
 }

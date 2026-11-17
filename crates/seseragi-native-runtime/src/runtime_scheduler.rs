@@ -204,6 +204,8 @@ struct NativeTask {
     stdin: Option<NativeStdinTask>,
     child: Option<NativeChildTask>,
     http: Option<NativeHttpTask>,
+    // The exchange whose next event this task waits for.
+    http_next: Option<i64>,
     timer: Option<NativeTimer>,
     process_signal: Option<usize>,
 }
@@ -238,6 +240,7 @@ fn native_hostless_turn(machine: &mut NativeMachine, turn: NativeTurn) -> Native
         NativeTurn::ChildProcess(..) => "program ABI: child processes are unavailable in WASM",
         NativeTurn::FileSystem(..)
         | NativeTurn::Http(..)
+        | NativeTurn::HttpNext(..)
         | NativeTurn::Stdin(..)
         | NativeTurn::Operation(ConcurrentOperation::ClockSleep, _) => {
             "program ABI: unadmitted host operation"
@@ -283,6 +286,7 @@ impl NativeScheduler {
                 stdin: None,
                 child: None,
                 http: None,
+                http_next: None,
                 timer: None,
                 process_signal: None,
             },
@@ -362,6 +366,7 @@ impl NativeScheduler {
         self.poll_process_signals();
         self.poll_files();
         self.poll_http();
+        self.poll_http_next();
         self.poll_stdin();
         self.poll_children();
         self.poll_timers();
@@ -390,6 +395,7 @@ impl NativeScheduler {
                 | NativeTurn::Operation(..)
                 | NativeTurn::FileSystem(..)
                 | NativeTurn::Http(..)
+                | NativeTurn::HttpNext(..)
                 | NativeTurn::Stdin(..)
                 | NativeTurn::ProcessSignalPull(..)
                 | NativeTurn::ChildProcess(..)
@@ -410,6 +416,16 @@ impl NativeScheduler {
                         task.machine.resume(Err(exit));
                         self.ready.push_back(id);
                     }
+                }
+            }
+            NativeTurn::HttpNext(captures) => {
+                let handle = native_http_int(&captures[0]);
+                match native_http_stream_next(handle) {
+                    Some(outcome) => {
+                        task.machine.resume(outcome);
+                        self.ready.push_back(id);
+                    }
+                    None => task.http_next = Some(handle),
                 }
             }
             NativeTurn::Http(captures) => match NativeHttpTask::start(captures) {
@@ -512,6 +528,7 @@ impl NativeScheduler {
             || task.waiting.is_some()
             || task.file.is_some()
             || task.http.is_some()
+            || task.http_next.is_some()
             || task.stdin.is_some()
             || task.child.is_some()
             || task.timer.is_some()
@@ -591,6 +608,10 @@ impl NativeScheduler {
         if let Some(http) = &task.http {
             http.cancel();
         }
+        if task.http_next.take().is_some() {
+            task.machine.resume(Err(NativeExit::Cancelled));
+            self.ready.push_back(id);
+        }
         if let Some(file) = &task.file {
             // A blocking OS call has no invented abort. Observe it and join
             // its worker after close, before running language finalizers.
@@ -609,6 +630,18 @@ impl NativeScheduler {
                 self.detach_sync(id, &value);
             } else if matches!(wait, NativeWait::Settle) {
                 self.settling.retain(|other| *other != id);
+            }
+        }
+    }
+    fn poll_http_next(&mut self) {
+        for (id, task) in &mut self.tasks {
+            let Some(handle) = task.http_next else {
+                continue;
+            };
+            if let Some(outcome) = native_http_stream_next(handle) {
+                task.http_next = None;
+                task.machine.resume(outcome);
+                self.ready.push_back(*id);
             }
         }
     }

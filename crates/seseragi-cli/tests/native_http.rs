@@ -112,6 +112,7 @@ fn serve() -> String {
                 let method = parts.next().unwrap_or("").to_owned();
                 let path = parts.next().unwrap_or("").to_owned();
                 let mut length = 0;
+                let mut chunked = false;
                 loop {
                     let mut header = String::new();
                     if reader.read_line(&mut header).unwrap_or(0) == 0 || header.trim().is_empty() {
@@ -121,10 +122,31 @@ fn serve() -> String {
                         if name.eq_ignore_ascii_case("content-length") {
                             length = value.trim().parse().unwrap_or(0);
                         }
+                        if name.eq_ignore_ascii_case("transfer-encoding") {
+                            chunked = value.to_ascii_lowercase().contains("chunked");
+                        }
                     }
                 }
                 let mut body = vec![0; length];
                 let _ = reader.read_exact(&mut body);
+                // A request body of unknown length arrives chunked.
+                while chunked {
+                    let mut size = String::new();
+                    if reader.read_line(&mut size).unwrap_or(0) == 0 {
+                        break;
+                    }
+                    let size =
+                        usize::from_str_radix(size.trim().split(';').next().unwrap_or(""), 16)
+                            .unwrap_or(0);
+                    let mut chunk = vec![0; size + 2];
+                    if reader.read_exact(&mut chunk).is_err() {
+                        break;
+                    }
+                    if size == 0 {
+                        break;
+                    }
+                    body.extend_from_slice(&chunk[..size]);
+                }
                 let plain = |status: &str, headers: &str, body: &[u8]| {
                     let mut response = format!(
                         "HTTP/1.1 {status}\r\n{headers}Content-Length: {}\r\nConnection: close\r\n\r\n",
@@ -161,6 +183,12 @@ fn serve() -> String {
                 };
                 let response = match path.as_str() {
                     "/text" => plain("200 OK", "", b"hello"),
+                    "/trailers" => b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n2\r\nab\r\n2\r\ncd\r\n0\r\nX-T: 1\r\n\r\n".to_vec(),
+                    "/early" => {
+                        let mut response = b"HTTP/1.1 103 Early Hints\r\nLink: </a>\r\n\r\n".to_vec();
+                        response.extend(plain("200 OK", "", b"early"));
+                        response
+                    }
                     "/closed" => plain("200 OK", "", closed().as_bytes()),
                     "/chunked" => b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n2\r\nab\r\n2\r\ncd\r\n0\r\n\r\n".to_vec(),
                     "/empty" => b"HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n".to_vec(),

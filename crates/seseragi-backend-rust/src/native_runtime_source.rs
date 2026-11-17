@@ -79,6 +79,7 @@ pub const SOURCE: &str = concat!(
     include_str!("../../seseragi-native-runtime/src/runtime_http_url.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_http.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_http_client.rs"),
+    include_str!("../../seseragi-native-runtime/src/runtime_http_exchange.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_process_signals.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_process_signal_host.rs"),
     include_str!("../../seseragi-native-runtime/src/runtime_child_process.rs"),

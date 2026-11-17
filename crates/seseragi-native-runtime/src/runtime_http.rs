@@ -348,6 +348,15 @@ pub fn native_http_operation(name: &str, arguments: Vec<V>) -> V {
             native_http_inner(&a[0], "std/http::Response").field("headers")
         }
         "std/http::responseBody" => native_http_inner(&a[0], "std/http::Response").field("body"),
+        "std/http::emptyBody" => {
+            native_http_body(native_stream_operation("std/stream::empty", vec![]), 0)
+        }
+        "std/http::bytesBody" => {
+            let length = native_bytes(&a[0]).len() as i64;
+            native_http_body(native_stream_singleton(a[0].clone()), length)
+        }
+        "std/http::streamBody" => native_http_body(a[0].clone(), -1),
+        "std/http::exchange" => native_http_exchange_stream(a[0].clone(), a[1].clone()),
         "std/http::sendBytes" => V::effect(Instruction::HttpSend, arguments),
         "std/http::sendEmpty" => V::effect(
             Instruction::HttpSend,
