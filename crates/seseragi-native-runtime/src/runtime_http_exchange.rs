@@ -59,7 +59,10 @@ fn native_http_stream_open(request: &V, body: Vec<u8>) -> Result<i64, NativeExit
     native_http_declared_length(&headers, body.len()).map_err(native_http_right)?;
     let cancelled = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
     let connection = std::sync::Arc::new(std::sync::Mutex::new(None));
-    let (send, events) = std::sync::mpsc::channel();
+    // One event at most waits in the channel: the worker reads the next one
+    // only after the consumer has taken it, so an unread response stays in
+    // the connection rather than in memory.
+    let (send, events) = std::sync::mpsc::sync_channel(1);
     let runtime = std::thread::current();
     let (worker_cancelled, worker_connection) = (cancelled.clone(), connection.clone());
     std::thread::Builder::new()
@@ -106,7 +109,12 @@ fn native_http_stream_open(request: &V, body: Vec<u8>) -> Result<i64, NativeExit
                 return;
             }
             match result {
-                Ok(()) => drop(send),
+                Ok(()) => {
+                    // The end of the events is a disconnection; wake the
+                    // runtime so a waiting pull observes it.
+                    drop(send);
+                    runtime.unpark();
+                }
                 Err(NativeHttpRead::Io(error)) => {
                     publish(Err(NativeHttpReply::Failure(
                         "std/http::HttpConnectionFailure",
