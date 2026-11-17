@@ -216,7 +216,7 @@ fn native_process_signals(watched: V) -> V {
         unique
             .into_iter()
             .map(|signal| V::Int(signal as i64))
-            .collect(),
+            .collect::<Vec<_>>(),
         |captures, _| {
             V::leaf(captures.to_vec(), |captures, context| {
                 let watched = captures

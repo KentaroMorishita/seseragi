@@ -782,8 +782,15 @@ impl<'a> Backend<'a> {
             .enumerate()
             .map(|(index, name)| format!("let {} = captures[{index}].clone();", id(name)))
             .collect::<String>();
+        // A capture array lets the runtime keep a few captures in the
+        // function's own node.
+        let values = if scope.iter().next().is_none() {
+            "vec![]".to_owned()
+        } else {
+            format!("[{values}]")
+        };
         format!(
-            "V::fun(vec![{values}], |captures, {}| {{ {restore} {body} }})",
+            "V::fun({values}, |captures, {}| {{ {restore} {body} }})",
             id(parameter)
         )
     }
