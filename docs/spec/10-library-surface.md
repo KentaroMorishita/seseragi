@@ -2110,9 +2110,12 @@ fn merge<R, E, A>
 ```
 
 `concat suffix prefix` はprefix完了後にsuffixを開始します。`zip` は両sourceから一件ずつ要求し、短い側が
-終了した時点で長い側をcancelします。`merge` は両sourceを同時に開始し、利用可能になった値から出します。
-同じscheduler turnならleftを先に出します。一方が通常終了しても他方を継続し、一方がfailureなら他方を
-cancelしてfinalizer完了後にそのfailureを返します。同じturnのfailureはleftを選びます。mergeは各sourceに
+終了した時点で長い側の未完了の要求をcancelし、finalizer完了後に終了します。一方がfailureなら他方をcancelし、
+finalizer完了後にそのfailureを返します。終了またはfailureで打ち切る前に、同じscheduler turnで出た他方の結果も
+見ます。`yieldNow` のあとに再開した処理は後のturnです。同じturnではfailureを終了より優先し、両方がfailureなら
+leftを選びます。
+`merge` は両sourceを同時に開始し、利用可能になった値から出します。同じscheduler turnならleftを先に出します。
+一方が通常終了しても他方を継続し、一方がfailureなら他方をcancelしてfinalizer完了後にそのfailureを返します。同じturnのfailureはleftを選びます。mergeは各sourceに
 高々一件だけ未完了のdemandを出し、sourceごとに高々一件の完成済みvalueを保持します。
 failure時は選ばれなかったsourceを含む両sourceのfinalizer完了を待ちますが、sibling source間のfinalizer外部操作順は
 保証しません。各source scope内のLIFO、left failureの選択、terminal result公開前のcleanup完了だけが観測保証です。

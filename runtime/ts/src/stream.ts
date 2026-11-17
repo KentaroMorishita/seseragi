@@ -2,6 +2,7 @@ import { defectWithSuppressed } from "./cleanup-defect"
 import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import {
   awaitEffectValue,
+  awaitTurnEnd,
   createEffectExecution,
   type Effect,
   type EffectContext,
@@ -335,31 +336,79 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
   left: Stream<Environment, Failure, LeftValue>
 ): Stream<Environment, Failure, readonly [LeftValue, RightValue]> {
   return makeStream(async (environment, context) => {
-    const leftBranch = await openBranch(left, environment, context)
-    const rightBranch = await openBranch(right, environment, context).catch(
-      (error) => cleanupThenThrow(error, [() => closeBranch(leftBranch)])
-    )
+    const leftBranch = await openMergeBranch(left, environment, context)
+    const rightBranch = await openMergeBranch(
+      right,
+      environment,
+      context
+    ).catch((error) => cleanupThenThrow(error, [() => closeBranch(leftBranch)]))
     let closed = false
-    const close = async (): Promise<void> => {
-      if (closed) return
+    // Both sides are pulled at once, so a close can start while another is
+    // still running; the second one waits for the first to finish.
+    const close = onceAsync(async (): Promise<void> => {
       closed = true
       await closeBranches([leftBranch, rightBranch])
-    }
+    })
     return Object.freeze({
       async next() {
         if (closed) return done()
-        try {
-          const [leftResult, rightResult] = await Promise.all([
-            leftBranch.cursor.next(),
-            rightBranch.cursor.next(),
-          ])
-          if (leftResult.done || rightResult.done) {
+        const branches: ReadonlyArray<MergeBranch<unknown>> = [
+          leftBranch,
+          rightBranch,
+        ]
+        for (const branch of branches) startMergeDemand(branch)
+        let turnEnded = false
+        while (true) {
+          const settled = branches.map((branch) => branch.settled)
+          const stops = settled.some(
+            (outcome) =>
+              outcome?.kind === "failure" ||
+              (outcome?.kind === "result" && outcome.value.done)
+          )
+          if (stops && !turnEnded && settled.includes(undefined)) {
+            // Before stopping the other side, let it finish what it can in
+            // this turn, as native code waits until every other Fiber has
+            // reached a wait. A Fiber that yielded resumes only afterwards,
+            // so the stop cancels it first.
+            turnEnded = true
+            await awaitTurnEnd()
+            continue
+          }
+          // A failure wins over an end, and the left failure over the right
+          // one. Either stops the pull still pending on the other side.
+          const failure = settled.find((outcome) => outcome?.kind === "failure")
+          if (failure?.kind === "failure") {
+            return await cleanupThenThrow(failure.error, [close])
+          }
+          if (
+            settled.some(
+              (outcome) => outcome?.kind === "result" && outcome.value.done
+            )
+          ) {
             await close()
             return done()
           }
-          return item([leftResult.value, rightResult.value] as const)
-        } catch (error) {
-          return await cleanupThenThrow(error, [close])
+          const [leftResult, rightResult] = settled
+          if (leftResult?.kind === "result" && rightResult?.kind === "result") {
+            for (const branch of branches) {
+              branch.pending = undefined
+              branch.settled = undefined
+            }
+            const leftValue = leftResult.value as IteratorYieldResult<LeftValue>
+            const rightValue =
+              rightResult.value as IteratorYieldResult<RightValue>
+            return item([leftValue.value, rightValue.value] as const)
+          }
+          await Promise.race(
+            branches.flatMap((branch) =>
+              branch.settled === undefined && branch.pending !== undefined
+                ? [branch.pending]
+                : []
+            )
+          )
+          // Let every completion from the same scheduler turn become visible
+          // before the checks above choose.
+          await Promise.resolve()
         }
       },
       close,
@@ -380,11 +429,12 @@ export function merge<Environment, Failure, Value>(
     ).catch((error) => cleanupThenThrow(error, [() => closeBranch(leftBranch)]))
     const branches = [leftBranch, rightBranch] as const
     let closed = false
-    const close = async (): Promise<void> => {
-      if (closed) return
+    // Both sides are pulled at once, so a close can start while another is
+    // still running; the second one waits for the first to finish.
+    const close = onceAsync(async (): Promise<void> => {
       closed = true
       await closeBranches(branches)
-    }
+    })
     return Object.freeze({
       async next() {
         if (closed) return done()
