@@ -1,14 +1,16 @@
 # Change Log
 
+## [0.61.180] - 2026-11-17
+
+### Fixed
+
+- A requirement row `R & { clock: Clock }` keeps one `clock` field when `R` already requires `Clock`. The unresolved shorthand `with Clock` is the standard service `std/clock::Clock`. `effects.timeout`, `effects.timeoutFail`, `effects.retry`, and `effects.repeat` show that field once, including in a type error. A type parameter or local type that is only spelled `Clock` stays distinct, and two fields that share a name but have different types are still an error.
+
 ## [0.61.179] - 2026-11-17
 
-### Added
+### Fixed
 
-- Homebrew installs the CLI and the language server on macOS (Apple silicon and Intel) and Linux (x64): `brew install KentaroMorishita/seseragi/seseragi`, and `brew upgrade seseragi` updates it. Use the full name for the first install so Homebrew trusts the tap. Each release updates the formula in `KentaroMorishita/homebrew-seseragi` from the published checksums, after installing it on each of those systems.
-
-### Changed
-
-- `seseragi upgrade` recognizes a CLI installed with Homebrew and prints `brew upgrade seseragi` instead of replacing its files. Homebrew links the CLI from a `bin` that also holds `seseragi-lsp`, so `seseragi upgrade` used to treat it as an install-script location.
+- `seseragi test --target native` and `seseragi bench --target native` time out a case only when no Fiber can take a turn, as on the TS target, where a test's timer fires only after every runnable step has run. A body that never waits used to fail when its Effect steps took longer than its timeout, so a test with a zero or very short timeout failed now and then on a busy machine.
 
 ## [0.61.178] - 2026-11-17
 
