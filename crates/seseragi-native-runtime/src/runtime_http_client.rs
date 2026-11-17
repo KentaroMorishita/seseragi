@@ -236,24 +236,24 @@ fn native_http_exchange(
         Err(reply) => return reply,
     };
     let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
-    let addresses =
-        match std::net::ToSocketAddrs::to_socket_addrs(&(target.host.as_str(), target.port)) {
+    let (connected, connecting) = std::sync::mpsc::channel();
+    let (host, port) = (target.host.clone(), target.port);
+    std::thread::spawn(move || {
+        // Name resolution also blocks in the OS, so it runs here too.
+        let addresses = match std::net::ToSocketAddrs::to_socket_addrs(&(host.as_str(), port)) {
             Ok(addresses) => addresses.collect::<Vec<_>>(),
             Err(error) => {
-                return NativeHttpReply::Failure("std/http::HttpDnsFailure", error.to_string())
+                let _ = connected.send(Err(("std/http::HttpDnsFailure", error.to_string())));
+                return;
             }
         };
-    if addresses.is_empty() {
-        return NativeHttpReply::Failure(
-            "std/http::HttpDnsFailure",
-            format!("no address for {}", target.host),
-        );
-    }
-    // Connecting blocks in the OS, so it runs on its own thread while this
-    // worker keeps observing cancellation. A connection made after
-    // cancellation is dropped, which closes it.
-    let (connected, connecting) = std::sync::mpsc::channel();
-    std::thread::spawn(move || {
+        if addresses.is_empty() {
+            let _ = connected.send(Err((
+                "std/http::HttpDnsFailure",
+                format!("no address for {host}"),
+            )));
+            return;
+        }
         let mut last = String::new();
         for address in addresses {
             match std::net::TcpStream::connect(address) {
@@ -264,7 +264,7 @@ fn native_http_exchange(
                 Err(error) => last = error.to_string(),
             }
         }
-        let _ = connected.send(Err(last));
+        let _ = connected.send(Err(("std/http::HttpConnectionFailure", last)));
     });
     let stream = loop {
         if is_cancelled() {
@@ -272,9 +272,7 @@ fn native_http_exchange(
         }
         match connecting.recv_timeout(std::time::Duration::from_millis(20)) {
             Ok(Ok(stream)) => break stream,
-            Ok(Err(last)) => {
-                return NativeHttpReply::Failure("std/http::HttpConnectionFailure", last)
-            }
+            Ok(Err((tag, message))) => return NativeHttpReply::Failure(tag, message),
             Err(std::sync::mpsc::RecvTimeoutError::Timeout) => continue,
             Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
                 return NativeHttpReply::Failure(
@@ -393,17 +391,34 @@ fn native_http_read_line(
 
 type NativeHttpHead = (u16, Vec<(String, String)>);
 
+fn native_http_field_text(bytes: &[u8]) -> bool {
+    bytes
+        .iter()
+        .all(|b| *b == b'\t' || (0x20..=0x7e).contains(b) || *b >= 0x80)
+}
+
+// A header or trailer line, checked as the TS HTTP/1 reader does.
+fn native_http_header_line(line: &[u8]) -> Result<(String, String), NativeHttpRead> {
+    let colon = match line.iter().position(|b| *b == b':') {
+        Some(colon) if colon > 0 => colon,
+        _ => return native_http_protocol("invalid HTTP header"),
+    };
+    let name = String::from_utf8_lossy(&line[..colon]).to_ascii_lowercase();
+    if !native_http_token(&name) || !native_http_field_text(&line[colon + 1..]) {
+        return native_http_protocol("invalid HTTP header");
+    }
+    // Header bytes are Latin-1, as the TS hosts read them.
+    let value: String = line[colon + 1..].iter().map(|b| *b as char).collect();
+    Ok((name, value.trim_matches([' ', '\t']).to_owned()))
+}
+
 fn native_http_read_head(
     reader: &mut impl std::io::BufRead,
 ) -> Result<NativeHttpHead, NativeHttpRead> {
     let mut budget = NATIVE_HTTP_HEAD_BYTES;
     let line = native_http_read_line(reader, &mut budget)?;
     // `HTTP/1.x NNN` with an optional reason, as the TS HTTP/1 reader takes.
-    let valid_text = |bytes: &[u8]| {
-        bytes
-            .iter()
-            .all(|b| *b == b'\t' || (0x20..=0x7e).contains(b) || *b >= 0x80)
-    };
+    let valid_text = native_http_field_text;
     let status = match line.as_slice() {
         [b'H', b'T', b'T', b'P', b'/', b'1', b'.', b'0' | b'1', b' ', a, b, c, rest @ ..]
             if [a, b, c].iter().all(|d| d.is_ascii_digit())
@@ -422,17 +437,7 @@ fn native_http_read_head(
         if line.is_empty() {
             break;
         }
-        let colon = match line.iter().position(|b| *b == b':') {
-            Some(colon) if colon > 0 => colon,
-            _ => return native_http_protocol("invalid HTTP header"),
-        };
-        let name = String::from_utf8_lossy(&line[..colon]).to_ascii_lowercase();
-        if !native_http_token(&name) || !valid_text(&line[colon + 1..]) {
-            return native_http_protocol("invalid HTTP header");
-        }
-        // Header bytes are Latin-1, as the TS hosts read them.
-        let value: String = line[colon + 1..].iter().map(|b| *b as char).collect();
-        headers.push((name, value.trim_matches([' ', '\t']).to_owned()));
+        headers.push(native_http_header_line(&line)?);
     }
     Ok((status, headers))
 }
@@ -536,8 +541,14 @@ fn native_http_read_response(
                 return native_http_protocol("chunk size is too large");
             };
             if remaining == 0 {
-                // Trailers end with an empty line.
-                while !native_http_read_line(reader, &mut budget)?.is_empty() {}
+                // Trailers are checked like headers and end with an empty line.
+                loop {
+                    let line = native_http_read_line(reader, &mut budget)?;
+                    if line.is_empty() {
+                        break;
+                    }
+                    native_http_header_line(&line)?;
+                }
                 break;
             }
             while remaining > 0 {
@@ -685,6 +696,7 @@ mod http_client_tests {
             b"HTTP/1.1 204 OK\r\nContent-Length: x\r\n\r\n",
             b"HTTP/1.1 200 OK\r\nX-A: a\x00b\r\n\r\n",
             b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked, chunked\r\n\r\n",
+            b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n0\r\nBad Trailer\r\n\r\n",
         ] {
             assert!(
                 read(raw, false, 100).unwrap_err().starts_with("protocol"),

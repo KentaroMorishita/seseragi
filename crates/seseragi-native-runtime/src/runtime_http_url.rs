@@ -296,7 +296,11 @@ fn native_url_domain_to_ascii(domain: &str) -> Option<String> {
             | 0x1bca0..=0x1bca3
             | 0xe0100..=0xe01ef => {}
             0x3002 | 0xff0e | 0xff61 => mapped.push('.'),
-            0xff01..=0xff5e => mapped.push(char::from_u32(c as u32 - 0xfee0).unwrap()),
+            0xff01..=0xff5e => mapped.push(
+                char::from_u32(c as u32 - 0xfee0)
+                    .unwrap()
+                    .to_ascii_lowercase(),
+            ),
             // Cherokee letters fold to the uppercase forms in IDNA.
             0x13a0..=0x13f5 => mapped.push(c),
             0x13f8..=0x13fd => mapped.push(char::from_u32(c as u32 - 8).unwrap()),
@@ -781,6 +785,7 @@ mod http_url_tests {
                 Some("http://xn--wgv71a.com/"),
             ),
             ("http://a%C2%AD.com/", Some("http://a.com/")),
+            ("http://%EF%BC%A1.com/", Some("http://a.com/")),
             ("http://a%EF%B8%8F.com/", Some("http://a.com/")),
             ("http://a%E2%80%8B.com/", Some("http://a.com/")),
             ("http://a%CD%8F.com/", Some("http://a.com/")),
