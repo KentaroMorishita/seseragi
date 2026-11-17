@@ -78,6 +78,8 @@ include!("runtime_queue.rs");
 include!("runtime_stream_branch.rs");
 include!("runtime_path.rs");
 include!("runtime_process.rs");
+include!("runtime_http_url.rs");
+include!("runtime_http.rs");
 include!("runtime_process_signals.rs");
 include!("runtime_process_signal_host.rs");
 include!("runtime_child_process.rs");
