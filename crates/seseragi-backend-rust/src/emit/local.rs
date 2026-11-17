@@ -17,6 +17,10 @@ pub(super) struct Scope {
     pub(super) callables: BTreeMap<String, LocalCallable>,
     pub(super) dictionaries: Vec<CoreInstanceConstraint>,
     type_parameters: BTreeMap<String, (u32, CoreType)>,
+    /// Identities displaced when a generalized let reuses an enclosing
+    /// spelling. The source name then denotes the let's own declaration.
+    /// Lookups of `\0type_parameter::…` still find the outer binder.
+    shadowed_type_parameter_arities: BTreeMap<String, u32>,
     unproven_type_scope: bool,
 }
 
@@ -29,6 +33,7 @@ impl Scope {
         self.type_parameters
             .get(name)
             .map(|(arity, _)| *arity)
+            .or_else(|| self.shadowed_type_parameter_arities.get(name).copied())
             .or_else(|| {
                 // Matching returns canonical scope identities. Recover their
                 // kind from the recorded binding, without parsing its name.
@@ -50,9 +55,51 @@ impl Scope {
         parameters: impl Iterator<Item = (String, u32)>,
         declaration: &str,
     ) {
+        self.bind_type_parameters(parameters, declaration, false);
+    }
+
+    /// Register a generalized let's type parameters. The scheme keeps the
+    /// declaration's spellings, which can match an enclosing binder even
+    /// though the type checker treats them as a new scheme. The source name
+    /// then denotes this declaration, and the outer identity stays
+    /// addressable. A spelling repeated inside this declaration is still
+    /// unproven. Named local functions do not use this path: a source shadow
+    /// is rejected before lowering, and a forged one stays unproven.
+    fn shadow_type_parameters(
+        &mut self,
+        parameters: impl Iterator<Item = (String, u32)>,
+        declaration: &str,
+    ) {
+        self.bind_type_parameters(parameters, declaration, true);
+    }
+
+    fn bind_type_parameters(
+        &mut self,
+        parameters: impl Iterator<Item = (String, u32)>,
+        declaration: &str,
+        shadow: bool,
+    ) {
+        let mut introduced = BTreeSet::new();
         for (index, (name, arity)) in parameters.enumerate() {
-            if self.type_parameters.contains_key(&name) {
-                self.unproven_type_scope = true;
+            let repeated = !introduced.insert(name.clone());
+            if let Some((previous_arity, previous)) = self.type_parameters.get(&name).cloned() {
+                if shadow && !repeated {
+                    match previous {
+                        CoreType::Named {
+                            name: identity,
+                            arguments,
+                        } if arguments.is_empty() => {
+                            self.shadowed_type_parameter_arities
+                                .insert(identity, previous_arity);
+                        }
+                        // The outer binder cannot stay addressable. Keep the
+                        // scope unproven instead of compiling against the wrong
+                        // declaration.
+                        _ => self.unproven_type_scope = true,
+                    }
+                } else {
+                    self.unproven_type_scope = true;
+                }
             }
             self.type_parameters.insert(
                 name,
@@ -161,7 +208,7 @@ impl Backend<'_> {
         }
         let mut inner = scope.clone();
         let declaration = self.fresh();
-        inner.type_parameters(
+        inner.shadow_type_parameters(
             type_parameters.iter().map(|p| (p.name.clone(), p.arity)),
             &declaration,
         );
@@ -185,13 +232,17 @@ impl Backend<'_> {
         }
         if !callable.variables.is_empty() {
             let declaration = self.fresh();
-            typed_scope.type_parameters(
-                callable
-                    .variables
-                    .iter()
-                    .map(|(name, arity)| (name.clone(), *arity)),
-                &declaration,
-            );
+            let parameters = callable
+                .variables
+                .iter()
+                .map(|(name, arity)| (name.clone(), *arity));
+            // A generalized let has no source name of its own. A named local
+            // function does, and overlap there remains unproven.
+            if callable.self_name.is_none() {
+                typed_scope.shadow_type_parameters(parameters, &declaration);
+            } else {
+                typed_scope.type_parameters(parameters, &declaration);
+            }
         }
         let scope = &typed_scope;
         if callable.constraints.is_empty() {
