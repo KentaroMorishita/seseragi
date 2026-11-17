@@ -1,10 +1,16 @@
 # Change Log
 
-## [0.61.176] - 2026-11-17
+## [0.61.177] - 2026-11-17
 
 ### Fixed
 
 - `seseragi test --target native` and `seseragi bench --target native` time out a case only when no Fiber can take a turn, as on the TS target, where a test's timer fires only after every runnable step has run. A body that never waits used to fail when its Effect steps took longer than its timeout, so a test with a zero or very short timeout failed now and then on a busy machine.
+
+## [0.61.176] - 2026-11-17
+
+### Fixed
+
+- The native target accepts a generalized `let` whose type-parameter names match an enclosing function, such as `let p = tag` inside `fn outer<A>` when `tag` is declared as `fn tag<A> ... where Show<A>`. It prints the same text as the TS target. It used to stop with `SES-RUST-0001` ("unproven overlapping local type parameter scope"). A type parameter written by the programmer that shadows an enclosing one is still rejected as `SES-N0002`.
 
 ## [0.61.175] - 2026-11-17
 
