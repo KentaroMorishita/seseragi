@@ -46,6 +46,7 @@ mod floats;
 mod hashing;
 mod html;
 mod html_flow;
+mod http;
 mod iterable;
 mod iterator;
 mod json;
@@ -1291,6 +1292,9 @@ impl<'a> Backend<'a> {
                     return Ok(value);
                 }
                 if let Some(value) = self.process_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.http_call(expr, scope)? {
                     return Ok(value);
                 }
                 if let Some(value) = self.random_call(expr, scope)? {

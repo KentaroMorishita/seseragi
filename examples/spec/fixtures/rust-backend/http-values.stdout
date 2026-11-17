@@ -1,0 +1,41 @@
+[GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, CONNECT, TRACE]
+custom ok PURGE
+custom error InvalidHttpMethod "get"
+custom error InvalidHttpMethod "BAD METHOD"
+status ok 100 True False False False False
+status ok 204 False True False False False
+status ok 302 False False True False False
+status ok 404 False False False True False
+status ok 503 False False False False True
+status ok 999 False False False False False
+status error InvalidHttpStatus 99
+status error InvalidHttpStatus 1000
+url ok http://example.com/b/%7E?q=a%20b
+url ok https://[::1]:8443/x
+url ok http://127.0.0.1/
+url error InvalidHttpUrl { offset: 9 }
+url error InvalidHttpUrl { offset: 9 }
+url error InvalidHttpUrl { offset: 0 }
+url error UnsupportedHttpScheme "ftp"
+url error HttpUrlContainsUserInfo
+url error HttpUrlContainsFragment
+url error InvalidHttpUrl { offset: 0 }
+[x-one=1, x-two=2, x-one=3]
+set ok [x-one=4, x-two=2]
+[x-two=2]
+[1, 3]
+append error InvalidHeaderName "Bad Name"
+append error ManagedHttpHeader "host"
+append error InvalidHeaderValue { name: "x", offset: 1 }
+append error InvalidHeaderValue { name: "x", offset: 0 }
+append error InvalidHeaderName ":path"
+request ok ok
+request error ManagedHttpHeader "connection"
+request done
+limit ok limit
+limit error InvalidHttpBodyLimit 0
+limit error InvalidHttpBodyLimit (-5)
+HttpDnsFailure: no host
+HttpRequestLengthMismatch: declared 3, actual 2
+HttpResponseBodyLimitExceeded: 10 bytes
+HttpClientUnavailable
