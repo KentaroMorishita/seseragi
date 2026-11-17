@@ -585,12 +585,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "hello-world",
       "title": "Hello world",
-      "summary": "最小の公開mainから文字列を出力し、まず実行の手触りをつかみます。",
+      "summary": "データ型とパターンマッチ、パイプラインで挨拶を組み立てる最初のサンプルです。",
       "kind": "lesson",
       "difficulty": "beginner",
       "topics": [
-        "effect fn",
-        "main",
+        "type",
+        "match",
+        "pipeline",
         "println"
       ],
       "capabilities": [
@@ -604,8 +605,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/hello-world/main.ssrg",
       "guidePath": "examples/samples/hello-world/guide.md",
       "expectedOutputPath": "examples/samples/hello-world/stdout.txt",
-      "sourceHash": "sha256:d7360be0b54120636ec9da3fd33a6887c8db4a569fb67aaf4828196a18188684",
-      "workspaceHash": "sha256:fc7a36aa9691bfb525972875e6066580b028ab9db338b82faece103d489d1d98"
+      "sourceHash": "sha256:0fe8937712e696ed914ed89019f570c24bced9c1e7e3578fe18d239402eddf3d",
+      "workspaceHash": "sha256:49924ca6588e2d7415efa94a42cd070201b35c85decdeafbd4c4e71782692583"
     },
     source: sample11Source,
     manifest: "",
@@ -806,8 +807,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/newtypes/main.ssrg",
       "guidePath": "examples/samples/newtypes/guide.md",
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
-      "sourceHash": "sha256:0326df93f9fb4dca03b598395be5df4ffea4750a436ca340280eee719963c950",
-      "workspaceHash": "sha256:1691365692c01aebcaf7d6a4383be8c7b336b8cbb608c00c12c4733ab993f822"
+      "sourceHash": "sha256:b3c4693ad5fa119b312c2bafa4635573a882f0ad5728d916fe4404afb3db0c0a",
+      "workspaceHash": "sha256:7145483a01035009c91898c420b7086dc967cdfbb1a511253c4282e8aba279c4"
     },
     source: sample16Source,
     manifest: "",
@@ -1419,7 +1420,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "type-aliases",
       "title": "型aliasとTask",
-      "summary": "透明なgeneric aliasと標準Taskを、Signal更新まで実行して確認します。",
+      "summary": "透明なgeneric aliasと標準Taskを、Signal更新前後のパス比較で確認します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1442,8 +1443,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/type-aliases/main.ssrg",
       "guidePath": "examples/samples/type-aliases/guide.md",
       "expectedOutputPath": "examples/samples/type-aliases/stdout.txt",
-      "sourceHash": "sha256:6fd6dab488c0798633011857926b16e574fb46d361345e33859685413d743299",
-      "workspaceHash": "sha256:26917c7149d8111431da2ac665641811788c81b2dbac588301594ccf3dc0ccbf"
+      "sourceHash": "sha256:e1bf42638d6c27a338a0bc286fbf6cb84269413e18a2b07a94f3495e46699c92",
+      "workspaceHash": "sha256:f8ee134cc1c0cbf02037e4c0e76087720bb29a486068b37aa9eac1163eabee69"
     },
     source: sample27Source,
     manifest: "",

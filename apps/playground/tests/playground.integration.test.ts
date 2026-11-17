@@ -2668,9 +2668,9 @@ describe("Playground sample catalog", () => {
 
   test("starts minimal and keeps explanatory prose in the guide", () => {
     const hello = samples.find((sample) => sample.id === "hello-world")
-    expect(hello?.source.trim()).toBe(
-      'pub effect fn main = println "Hello, Seseragi!"'
-    )
+    expect(hello?.source).toContain("type Mode =")
+    expect(hello?.source).toContain("|> greeting")
+    expect(hello?.source).toContain("|> println")
     for (const sample of samples) {
       expect(sample.source).not.toContain("Lesson ")
       expect(sample.source).not.toContain("Expected stdout")
@@ -3500,7 +3500,7 @@ fails String =
 
     expect(sample?.source).toContain("alias Pair<A>")
     expect(sample?.source).toContain("Task<Unit>")
-    expect(sample?.expectedOutput).toBe("user: 42, signal: 42")
+    expect(sample?.expectedOutput).toBe("/users/41 -> /users/42")
   })
 
   test("returns structured diagnostics for invalid source", async () => {
