@@ -253,6 +253,9 @@ fn native_url_host(text: &str) -> Option<String> {
     {
         return None;
     }
+    if !native_url_bidi(&domain) {
+        return None;
+    }
     if native_url_ends_in_number(&domain) {
         return native_url_ipv4(&domain);
     }
@@ -410,6 +413,79 @@ fn native_url_punycode_encode(label: &str) -> Option<String> {
         n += 1;
     }
     Some(output)
+}
+
+// The IDNA Bidi rule (RFC 5893) for a domain with right-to-left text, as the
+// Bun URL parser applies it. Characters are classed only for the scripts the
+// native runtime encodes; any other right-to-left character is refused.
+fn native_url_bidi(domain: &str) -> bool {
+    #[derive(Clone, Copy, PartialEq)]
+    enum Class {
+        L,
+        R,
+        Al,
+        En,
+        An,
+        Es,
+        On,
+    }
+    let class = |c: char| -> Option<Class> {
+        Some(match c as u32 {
+            0x30..=0x39 => Class::En,
+            0x2d => Class::Es,
+            0x41..=0x5a | 0x61..=0x7a => Class::L,
+            0x00..=0x7f => Class::On,
+            0x05d0..=0x05ea | 0x05ef..=0x05f2 => Class::R,
+            0x0621..=0x063a | 0x0641..=0x064a => Class::Al,
+            0x0660..=0x0669 => Class::An,
+            0x0590..=0x08ff
+            | 0xfb1d..=0xfdff
+            | 0xfe70..=0xfeff
+            | 0x10800..=0x10fff
+            | 0x1e800..=0x1efff => return None,
+            0x2600..=0x27bf | 0x1f300..=0x1faff => Class::On,
+            _ => Class::L,
+        })
+    };
+    let mut labels = Vec::new();
+    for label in domain.split('.').filter(|label| !label.is_empty()) {
+        let text = match label.strip_prefix("xn--") {
+            Some(encoded) => match native_url_punycode(encoded) {
+                Some(decoded) => decoded,
+                None => return false,
+            },
+            None => label.to_owned(),
+        };
+        match text.chars().map(class).collect::<Option<Vec<_>>>() {
+            Some(classes) => labels.push(classes),
+            None => return false,
+        }
+    }
+    let bidi = labels
+        .iter()
+        .flatten()
+        .any(|class| matches!(class, Class::R | Class::Al | Class::An));
+    if !bidi {
+        return true;
+    }
+    labels.iter().all(|classes| match classes.first() {
+        Some(Class::R | Class::Al) => {
+            let allowed = classes.iter().all(|class| *class != Class::L);
+            let last = matches!(
+                classes.last(),
+                Some(Class::R | Class::Al | Class::En | Class::An)
+            );
+            let numbers = !(classes.contains(&Class::En) && classes.contains(&Class::An));
+            allowed && last && numbers
+        }
+        Some(Class::L) => {
+            let allowed = classes
+                .iter()
+                .all(|class| !matches!(class, Class::R | Class::Al | Class::An));
+            allowed && matches!(classes.last(), Some(Class::L | Class::En))
+        }
+        _ => false,
+    })
 }
 
 // Decodes a Punycode label (RFC 3492). As in the Bun URL parser, a label that
@@ -807,6 +883,15 @@ mod http_url_tests {
             ("http://a%CD%8F.com/", Some("http://a.com/")),
             ("http://a%E2%80%8D.com/", None),
             ("http://%E0%A5%98.com/", None),
+            ("http://xn--a-0hc.com/", None),
+            ("http://a%D7%90.com/", None),
+            ("http://1%D7%90.com/", None),
+            ("http://%D7%90%D7%91.1a.com/", None),
+            ("http://%D7%90%D7%91.com/", Some("http://xn--4dbc.com/")),
+            ("http://%D7%90%D7%91.a.com/", Some("http://xn--4dbc.a.com/")),
+            ("http://%D7%901.com/", Some("http://xn--1-zhc.com/")),
+            ("http://%D8%A8%D8%AA.com/", Some("http://xn--ngbe.com/")),
+            ("http://%D7%90-%D7%91.com/", Some("http://xn----zhce.com/")),
             ("http://%E0%B8%81.com/", None),
             // Compatibility mappings need IDNA tables; they are refused.
             ("http://%EF%AC%83.com/", None),
