@@ -917,11 +917,39 @@ export function interrupt<Failure, Success>(
   }
 }
 
+// Waiters for the end of the current scheduler turn. When a `yieldNow` timer
+// fires while some wait, they are released first and the yielded Fiber
+// resumes in a later macrotask, as native code resumes a yielded Fiber only
+// after the others have reached a wait.
+const turnEndWaiters = new Set<() => void>()
+
+export function awaitTurnEnd(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const release = (): void => {
+      if (turnEndWaiters.delete(release)) resolve()
+    }
+    turnEndWaiters.add(release)
+    setTimeout(release, 0)
+  })
+}
+
+function releaseTurnEndWaiters(): boolean {
+  if (turnEndWaiters.size === 0) return false
+  for (const release of [...turnEndWaiters]) release()
+  return true
+}
+
 export function yieldNow(_unit?: Unit): Effect<unknown, never, Unit> {
   return async (_environment, context) => {
     const activeContext = context ?? createEffectExecution().context
     await awaitWithCancellation(
-      new Promise<void>((resolve) => setTimeout(resolve, 0)),
+      new Promise<void>((resolve) => {
+        const resume = (): void => {
+          if (releaseTurnEndWaiters()) setTimeout(resume, 0)
+          else resolve()
+        }
+        setTimeout(resume, 0)
+      }),
       activeContext
     )
     return undefined
