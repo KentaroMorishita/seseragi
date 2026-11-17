@@ -39,6 +39,7 @@ const INTERNAL_ONLY_PATHS = [
   /(^|\/)__snapshots__\//u,
   /(?:^|\/)[^/]*(?:_test|_tests|\.test)\.[^/]+$/u,
   /\.(?:snap|test)\.[^/]+$/u,
+  /^apps\/playground\/src\/generated\/(?:sample|tour|deep-dive)-manifest\.ts$/u,
 ] as const
 
 export type ReleaseReadinessState =
