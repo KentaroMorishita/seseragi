@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.177] - 2026-11-17
+
+### Fixed
+
+- A requirement row `R & { clock: Clock }` keeps one `clock` field when `R` already requires `Clock`. The unresolved shorthand and `std/clock::Clock` name the same service. `effects.timeout`, `effects.timeoutFail`, `effects.retry`, and `effects.repeat` show that field once, including in a type error. Two fields that share a name but have different types are still an error.
+
 ## [0.61.176] - 2026-11-17
 
 ### Fixed
