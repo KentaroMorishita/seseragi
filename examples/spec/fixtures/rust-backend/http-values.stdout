@@ -14,6 +14,10 @@ url ok http://example.com/b/%7E?q=a%20b
 url ok https://[::1]:8443/x
 url ok http://127.0.0.1/
 url ok http://xn--58d.com/
+url ok http://xn--9ca.com/
+url ok http://a.com/
+url ok http://a.b/
+url ok http://xn--mnchen-3ya.de/
 url ok http://a/%5E%7B%7D%60|
 url error InvalidHttpUrl { offset: 0 }
 url error InvalidHttpUrl { offset: 0 }

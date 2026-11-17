@@ -218,13 +218,12 @@ fn native_url_host(text: &str) -> Option<String> {
         return Some(format!("[{}]", native_url_ipv6(inner)?));
     }
     let decoded = native_url_percent_decode(text);
-    // Percent-decoding to a non-ASCII domain needs IDNA, which is not
-    // supported natively. Such a host is refused.
     let domain = String::from_utf8(decoded).ok()?;
-    if !domain.is_ascii() {
-        return None;
-    }
-    let domain = domain.to_ascii_lowercase();
+    let domain = if domain.is_ascii() {
+        domain.to_ascii_lowercase()
+    } else {
+        native_url_domain_to_ascii(&domain)?
+    };
     if domain.is_empty()
         || domain.bytes().any(|b| {
             b <= 0x20
@@ -258,6 +257,109 @@ fn native_url_host(text: &str) -> Option<String> {
         return native_url_ipv4(&domain);
     }
     Some(domain)
+}
+
+// A small part of IDNA ToASCII for a host that is not ASCII after
+// percent-decoding: full stops and fullwidth ASCII map to ASCII, letters
+// lowercase, and each label that is still not ASCII becomes Punycode. Full
+// IDNA needs Unicode mapping and normalization tables the native runtime does
+// not carry, so a host with a combining mark, which normalization could
+// change, is refused rather than encoded differently from the TS target.
+fn native_url_domain_to_ascii(domain: &str) -> Option<String> {
+    let mapped: String = domain
+        .chars()
+        .map(|c| match c as u32 {
+            0x3002 | 0xff0e | 0xff61 => '.',
+            0xff01..=0xff5e => char::from_u32(c as u32 - 0xfee0).unwrap(),
+            _ => c,
+        })
+        .flat_map(char::to_lowercase)
+        .collect();
+    if mapped.chars().any(|c| {
+        c.is_control()
+            || c.is_whitespace()
+            || matches!(c as u32,
+                0x0300..=0x036f | 0x1ab0..=0x1aff | 0x1dc0..=0x1dff | 0x20d0..=0x20ff | 0xfe20..=0xfe2f)
+    }) {
+        return None;
+    }
+    let labels = mapped
+        .split('.')
+        .map(|label| {
+            if label.is_ascii() {
+                Some(label.to_owned())
+            } else {
+                Some(format!("xn--{}", native_url_punycode_encode(label)?))
+            }
+        })
+        .collect::<Option<Vec<_>>>()?;
+    Some(labels.join("."))
+}
+
+// Encodes a label as Punycode (RFC 3492).
+fn native_url_punycode_encode(label: &str) -> Option<String> {
+    let (base, tmin, tmax, skew, damp) = (36u32, 1u32, 26u32, 38u32, 700u32);
+    let adapt = |delta: u32, points: u32, first: bool| {
+        let mut delta = if first { delta / damp } else { delta / 2 };
+        delta += delta / points;
+        let mut k = 0;
+        while delta > ((base - tmin) * tmax) / 2 {
+            delta /= base - tmin;
+            k += base;
+        }
+        k + (base - tmin + 1) * delta / (delta + skew)
+    };
+    let digit = |d: u32| {
+        (if d < 26 {
+            b'a' + d as u8
+        } else {
+            b'0' + (d - 26) as u8
+        }) as char
+    };
+    let input: Vec<u32> = label.chars().map(|c| c as u32).collect();
+    let mut output: String = label.chars().filter(char::is_ascii).collect();
+    let basic = output.len() as u32;
+    let mut handled = basic;
+    if basic > 0 {
+        output.push('-');
+    }
+    let (mut n, mut delta, mut bias) = (128u32, 0u32, 72u32);
+    while (handled as usize) < input.len() {
+        let m = *input.iter().filter(|c| **c >= n).min()?;
+        delta = delta.checked_add((m - n).checked_mul(handled + 1)?)?;
+        n = m;
+        for c in &input {
+            if *c < n {
+                delta = delta.checked_add(1)?;
+            }
+            if *c == n {
+                let mut q = delta;
+                let mut k = base;
+                loop {
+                    let t = if k <= bias {
+                        tmin
+                    } else if k >= bias + tmax {
+                        tmax
+                    } else {
+                        k - bias
+                    };
+                    if q < t {
+                        break;
+                    }
+                    output.push(digit(t + (q - t) % (base - t)));
+                    q = (q - t) / (base - t);
+                    k += base;
+                }
+                output.push(digit(q));
+                bias = adapt(delta, handled + 1, handled == basic);
+                delta = 0;
+                handled += 1;
+            }
+        }
+        delta += 1;
+        n += 1;
+    }
+    Some(output)
 }
 
 // Decodes a Punycode label (RFC 3492). As in the Bun URL parser, a label that
@@ -629,6 +731,21 @@ mod http_url_tests {
             ("http://256.0.0.1/", None),
             ("http://[1::2::3]/", None),
             ("http://%41.com/", Some("http://a.com/")),
+            ("http://%C3%A9.com/", Some("http://xn--9ca.com/")),
+            ("http://%C3%89.com/", Some("http://xn--9ca.com/")),
+            ("http://%EF%BD%81.com/", Some("http://a.com/")),
+            ("http://a%E3%80%82b/", Some("http://a.b/")),
+            ("http://%E2%98%83.com/", Some("http://xn--n3h.com/")),
+            ("http://%F0%9F%92%A9.la/", Some("http://xn--ls8h.la/")),
+            ("http://M%C3%BCnchen.DE/", Some("http://xn--mnchen-3ya.de/")),
+            (
+                "http://%E4%BE%8B%E3%81%88.jp/",
+                Some("http://xn--r8jz45g.jp/"),
+            ),
+            ("http://%FF.com/", None),
+            ("http://%C2%A0.com/", None),
+            // Normalization would compose this; it is refused natively.
+            ("http://e%CC%81.com/", None),
             ("http://xn--9ca.com/", Some("http://xn--9ca.com/")),
             (
                 "http://XN--MNCHEN-3YA.de/",
