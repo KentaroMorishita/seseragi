@@ -417,7 +417,8 @@ fn native_http_read_line(
     Ok(line)
 }
 
-type NativeHttpHead = (u16, Vec<(String, String)>);
+// The minor HTTP/1 version, the status and the headers of one response head.
+type NativeHttpHead = (u8, u16, Vec<(String, String)>);
 
 fn native_http_field_text(bytes: &[u8]) -> bool {
     bytes
@@ -447,12 +448,15 @@ fn native_http_read_head(
     let line = native_http_read_line(reader, &mut budget)?;
     // `HTTP/1.x NNN` with an optional reason, as the TS HTTP/1 reader takes.
     let valid_text = native_http_field_text;
-    let status = match line.as_slice() {
-        [b'H', b'T', b'T', b'P', b'/', b'1', b'.', b'0' | b'1', b' ', a, b, c, rest @ ..]
+    let (minor, status) = match line.as_slice() {
+        [b'H', b'T', b'T', b'P', b'/', b'1', b'.', minor @ (b'0' | b'1'), b' ', a, b, c, rest @ ..]
             if [a, b, c].iter().all(|d| d.is_ascii_digit())
                 && (rest.is_empty() || (rest[0] == b' ' && valid_text(&rest[1..]))) =>
         {
-            (*a - b'0') as u16 * 100 + (*b - b'0') as u16 * 10 + (*c - b'0') as u16
+            (
+                *minor - b'0',
+                (*a - b'0') as u16 * 100 + (*b - b'0') as u16 * 10 + (*c - b'0') as u16,
+            )
         }
         _ => return native_http_protocol("invalid HTTP status line"),
     };
@@ -467,7 +471,7 @@ fn native_http_read_head(
         }
         headers.push(native_http_header_line(&line)?);
     }
-    Ok((status, headers))
+    Ok((minor, status, headers))
 }
 
 // Transfer codings in order, skipping quoted commas and parameters, as the
@@ -559,23 +563,51 @@ fn native_http_stop_writing(
     }
 }
 
-fn native_http_read_response(
+// One step of a response, as `std/http.exchange` reports it.
+#[derive(Debug, PartialEq)]
+enum NativeHttpEvent {
+    Head {
+        informational: bool,
+        minor: u8,
+        status: u16,
+        headers: Vec<(String, String)>,
+    },
+    Chunk(Vec<u8>),
+    Trailers(Vec<(String, String)>),
+}
+
+// Reads one response and reports each head, body chunk (at most 64 KiB) and
+// non-empty trailer block in order, as the TS HTTP/1 reader does.
+fn native_http_read_events(
     reader: &mut impl std::io::BufRead,
     head_request: bool,
-    limit: u64,
     on_final_head: &mut dyn FnMut(),
-) -> Result<(u16, Vec<(String, String)>, Vec<u8>), NativeHttpRead> {
+    emit: &mut dyn FnMut(NativeHttpEvent) -> Result<(), NativeHttpRead>,
+) -> Result<(), NativeHttpRead> {
     let mut informational = 0;
-    let (status, headers) = loop {
-        let (status, headers) = native_http_read_head(reader)?;
+    let headers = loop {
+        let (minor, status, headers) = native_http_read_head(reader)?;
         native_http_framing(&headers)?;
-        if !(100..200).contains(&status) {
+        let final_head = !(100..200).contains(&status);
+        if final_head {
             on_final_head();
-            break (status, headers);
+        } else {
+            informational += 1;
+            if informational > NATIVE_HTTP_INFORMATIONAL_LIMIT {
+                return native_http_protocol("HTTP informational response limit exceeded");
+            }
         }
-        informational += 1;
-        if informational > NATIVE_HTTP_INFORMATIONAL_LIMIT {
-            return native_http_protocol("HTTP informational response limit exceeded");
+        emit(NativeHttpEvent::Head {
+            informational: !final_head,
+            minor,
+            status,
+            headers: headers.clone(),
+        })?;
+        if final_head {
+            if head_request || matches!(status, 204 | 304) {
+                return Ok(());
+            }
+            break headers;
         }
     };
     let values = |name: &str| -> Vec<String> {
@@ -585,10 +617,6 @@ fn native_http_read_response(
             .map(|(_, value)| value.clone())
             .collect()
     };
-    let mut body = Vec::new();
-    if head_request || matches!(status, 204 | 304) {
-        return Ok((status, headers, body));
-    }
     let mut codings = Vec::new();
     for value in values("transfer-encoding") {
         codings.extend(
@@ -613,14 +641,18 @@ fn native_http_read_response(
             };
             if remaining == 0 {
                 // Trailers are checked like headers and end with an empty line.
+                let mut trailers = Vec::new();
                 loop {
                     let line = native_http_read_line(reader, &mut budget)?;
                     if line.is_empty() {
                         break;
                     }
-                    native_http_header_line(&line)?;
+                    trailers.push(native_http_header_line(&line)?);
                 }
-                break;
+                if !trailers.is_empty() {
+                    emit(NativeHttpEvent::Trailers(trailers))?;
+                }
+                return Ok(());
             }
             while remaining > 0 {
                 let want = remaining.min(buffer.len());
@@ -628,7 +660,7 @@ fn native_http_read_response(
                 if read == 0 {
                     return native_http_protocol("connection closed inside a chunk");
                 }
-                native_http_append(&mut body, &buffer[..read], limit)?;
+                emit(NativeHttpEvent::Chunk(buffer[..read].to_vec()))?;
                 remaining -= read;
             }
             let mut budget = 2;
@@ -644,7 +676,7 @@ fn native_http_read_response(
             if read == 0 {
                 return native_http_protocol("connection closed before the body ended");
             }
-            native_http_append(&mut body, &buffer[..read], limit)?;
+            emit(NativeHttpEvent::Chunk(buffer[..read].to_vec()))?;
             remaining -= read as u64;
         }
     } else {
@@ -655,12 +687,42 @@ fn native_http_read_response(
             if read == 0 {
                 break;
             }
-            native_http_append(&mut body, &buffer[..read], limit)?;
+            emit(NativeHttpEvent::Chunk(buffer[..read].to_vec()))?;
         }
     }
-    let encoded = values("content-encoding")
+    Ok(())
+}
+
+// `sendBytes` and `sendEmpty`: the events of one exchange collected into a
+// response, with the body limit checked before each chunk is kept.
+fn native_http_read_response(
+    reader: &mut impl std::io::BufRead,
+    head_request: bool,
+    limit: u64,
+    on_final_head: &mut dyn FnMut(),
+) -> Result<(u16, Vec<(String, String)>, Vec<u8>), NativeHttpRead> {
+    let mut head = None;
+    let mut body = Vec::new();
+    native_http_read_events(reader, head_request, on_final_head, &mut |event| {
+        match event {
+            NativeHttpEvent::Head {
+                informational: false,
+                status,
+                headers,
+                ..
+            } => head = Some((status, headers)),
+            NativeHttpEvent::Chunk(chunk) => native_http_append(&mut body, &chunk, limit)?,
+            _ => {}
+        }
+        Ok(())
+    })?;
+    let Some((status, headers)) = head else {
+        return native_http_protocol("HTTP response has no final head");
+    };
+    let encoded = headers
         .iter()
-        .flat_map(|value| value.split(','))
+        .filter(|(name, _)| name == "content-encoding")
+        .flat_map(|(_, value)| value.split(','))
         .map(|coding| coding.trim().to_ascii_lowercase())
         .filter(|coding| !coding.is_empty())
         .collect::<Vec<_>>();
