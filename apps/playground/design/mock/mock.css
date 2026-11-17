@@ -1467,6 +1467,13 @@ body[data-state~="map"] .overlay--map {
   text-transform: uppercase;
 }
 
+.extras-note {
+  margin-left: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .extras {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
