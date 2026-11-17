@@ -3,195 +3,220 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Tour 画面案（モック）</title>
+    <title>Tour 画面案 v2（モック）</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+    />
     <link rel="stylesheet" href="./mock.css" />
+    <script src="./mock.js" defer></script>
   </head>
-  <body>
+  <body class="tour-page">
     <!--
-      状態の切り替え（確認用）:
-        tour.html              レッスン表示（モバイルは「レッスン」タブ）
-        tour.html#curriculum   目次を開いた状態
-        tour.html#code         モバイルで「試す」タブを開いた状態
-      目次の章立ては画面構成を見るための例です。正式な再編は #1347 1-1 の検討で決めます。
+      状態（# にカンマでつなぐ）: en / dark / map / code
+        tour.html          レッスン（ライト・日本語）
+        tour.html#en       英語（本文が未翻訳のときの表示）
+        tour.html#map      目次（コースマップ）
+        tour.html#code     モバイルでコードに切り替えたとき
+      章立てと「24」は画面の形を見るための例です。正式な構成は Tour 再編の Issue で決めます。
     -->
-    <div class="shell">
-      <header class="bar">
-        <a class="brand" href="./index.html">
-          <img src="../../../../assets/brand/public/brand/seseragi-icon.svg" alt="" />
-          <span class="desktop-only">Seseragi</span>
-        </a>
-        <nav class="surface-switch" aria-label="画面の切り替え">
-          <a href="./playground.html">Playground</a>
-          <a href="./tour.html" aria-current="page">Tour</a>
-        </nav>
-        <a class="btn btn--ghost desktop-only" href="#curriculum"><span class="icon">☰</span>目次</a>
-        <div class="tour-loc desktop-only">
-          <span>第1章 はじめの一歩</span>
-          <div class="progress" aria-hidden="true"><span style="width: 4%"></span></div>
-          <strong>1 / 24</strong>
+    <div class="app">
+      <header class="top">
+        <div class="top-left">
+          <a class="logo" href="./index.html">
+            <img src="../../../../assets/brand/public/brand/seseragi-icon.svg" alt="" />
+            <span class="desktop-only">Seseragi</span>
+            <span class="ver desktop-only">0.61</span>
+          </a>
         </div>
-        <div class="spacer mobile-only"></div>
-        <button class="btn btn--icon btn--ghost desktop-only" type="button" aria-label="その他">⋯</button>
-        <button class="btn btn--primary" type="button">
-          <span class="icon">▶</span>実行<kbd class="desktop-only">⌘↵</kbd>
-        </button>
+        <nav class="surface" aria-label="画面の切り替え" data-en-label="Switch surface">
+          <a href="./playground.html">
+            <svg class="i" viewBox="0 0 16 16"><path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5" /></svg>Playground
+          </a>
+          <a href="./tour.html" aria-current="page">
+            <svg class="i" viewBox="0 0 16 16"><path d="M2.5 3.5h4A1.5 1.5 0 0 1 8 5v8a1.5 1.5 0 0 0-1.5-1.5h-4zM13.5 3.5h-4A1.5 1.5 0 0 0 8 5v8a1.5 1.5 0 0 1 1.5-1.5h4z" /></svg>Tour
+          </a>
+        </nav>
+        <div class="top-right">
+          <button class="search-trigger" type="button" aria-label="例・レッスン・API を探す" data-en-label="Search examples, lessons, and API">
+            <svg class="i" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+            <span data-en="Examples, lessons, API…">例・レッスン・API を探す</span>
+            <kbd>⌘K</kbd>
+          </button>
+          <button class="icon-btn desktop-only" type="button" data-theme-toggle aria-label="テーマを切り替える" data-en-label="Toggle theme">
+            <svg class="i" viewBox="0 0 16 16"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z" /></svg>
+          </button>
+          <div class="lang" role="group" aria-label="表示言語 / Language">
+            <a href="#" data-lang="ja" lang="ja" aria-label="日本語">JA</a>
+            <a href="#" data-lang="en" lang="en" aria-label="English">EN</a>
+          </div>
+        </div>
       </header>
 
-      <div>
-        <div class="subbar mobile-only">
-          <a class="picker" href="#curriculum">
-            <span class="label">☰ 1 / 24</span>
-            <span class="title">はじめの一歩</span>
-            <span class="chev">⌄</span>
-          </a>
-          <button class="btn btn--icon" type="button" aria-label="その他">⋯</button>
-        </div>
-        <div class="progress mobile-only" style="width: 100%; height: 3px; border-radius: 0" aria-hidden="true"><span style="width: 4%"></span></div>
+      <div class="subbar">
+        <button class="icon-btn" type="button" data-view="map" aria-label="目次" data-en-label="Contents">
+          <svg class="i" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1" /><rect x="9" y="2.5" width="4.5" height="4.5" rx="1" /><rect x="2.5" y="9" width="4.5" height="4.5" rx="1" /><rect x="9" y="9" width="4.5" height="4.5" rx="1" /></svg>
+        </button>
+        <span class="chapter-label" data-en="1 · First steps">1 · はじめの一歩</span>
+        <div class="segments" aria-hidden="true"><span class="is-now"></span><span></span><span></span></div>
+        <span class="counter">1/24</span>
       </div>
 
-      <main class="tour-work">
+      <main class="tour">
         <article class="lesson" aria-labelledby="lesson-title">
-          <div class="lesson-scroll">
-            <span class="kicker">第1章 はじめの一歩 · 1 / 24</span>
-            <h1 id="lesson-title">最初のプログラムを動かす</h1>
-            <p class="lead">コードはそのまま動く一行のプログラムです。動かしてから、少しだけ書き換えてみましょう。</p>
-
-            <section class="task" aria-labelledby="task-title">
-              <h2 id="task-title">やってみよう</h2>
-              <ol class="steps">
-                <li>
-                  <span class="check is-done">✓</span>
-                  <span>「実行」を押す<span class="sub">出力に Hello, Seseragi! と表示されます。</span></span>
-                </li>
-                <li>
-                  <span class="check"></span>
-                  <span><code class="inline">Seseragi</code> をあなたの名前に変えて、もう一度実行する<span class="sub">例: Hello, Mio! と表示されれば完了です。</span></span>
-                </li>
-              </ol>
-              <div class="task-foot">
-                <button class="btn" type="button">答えを見る</button>
-                <button class="btn btn--ghost" type="button">↺ 最初のコードに戻す</button>
-              </div>
-            </section>
-
-            <h2 class="section">コードを読む</h2>
-            <ol class="reading">
-              <li class="is-focus">
-                <span class="line-ref">1 行目</span>
-                <p><code class="inline">pub effect fn main</code> はプログラムの入口です。くわしくは次のレッスンで読みます。</p>
-              </li>
-              <li>
-                <span class="line-ref">1 行目</span>
-                <p><code class="inline">println</code> は、渡した文字列を出力に一行表示します。</p>
-              </li>
-            </ol>
-
-            <details class="more">
-              <summary>よくある間違い: 文字列の代わりに数を渡す</summary>
-              <div class="body">
-                <code class="inline">println 42</code> のように書くと、実行する前にエラーが表示されます。
-                <div style="margin-top: 12px"><button class="btn" type="button">エラーの例を開く</button></div>
-              </div>
-            </details>
-            <details class="more">
-              <summary>もっと詳しく: なぜ入口に effect と書くのか</summary>
-              <div class="body">外の世界とやりとりする関数の扱いを、設計の背景から読みます。</div>
-            </details>
+          <div class="lesson-top">
+            <button class="ghost" type="button" data-view="map">
+              <svg class="i" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1" /><rect x="9" y="2.5" width="4.5" height="4.5" rx="1" /><rect x="2.5" y="9" width="4.5" height="4.5" rx="1" /><rect x="9" y="9" width="4.5" height="4.5" rx="1" /></svg>
+              <span data-en="Contents">目次</span>
+            </button>
+            <span class="chapter-label" data-en="Chapter 1 · First steps">第1章 · はじめの一歩</span>
+            <div class="segments" aria-hidden="true"><span class="is-now"></span><span></span><span></span></div>
+            <span class="counter">1 / 24</span>
           </div>
 
-          <nav class="lesson-nav" aria-label="レッスンの移動">
-            <button class="btn btn--ghost" type="button" disabled style="opacity: 0.45">← 前へ</button>
-            <button class="btn btn--next next" type="button">次へ: プログラムの入口を読む →</button>
-          </nav>
+          <div class="lesson-scroll">
+            <h1 id="lesson-title" data-en="Run your first program">最初のプログラムを動かす</h1>
+            <p class="lead" data-en="This one line is a complete program. Run it, then change a little of it.">この一行は、そのまま動くプログラムです。動かしてから、少しだけ書き換えてみましょう。</p>
+
+            <div class="fallback en-only" lang="en">
+              <span>文A</span>
+              <span><strong>This lesson isn't translated yet.</strong> Its text is shown in the original Japanese. Buttons, code, and output work the same.</span>
+            </div>
+
+            <div lang="ja">
+              <section class="task" aria-labelledby="task-title">
+                <div class="task-head">
+                  <h2 id="task-title" data-en="Try it">やってみよう</h2>
+                  <span class="tag tag--accent">1 / 2</span>
+                </div>
+                <ol class="steps">
+                  <li class="is-done-row">
+                    <span class="check is-done">✓</span>
+                    <span><span class="what">「実行」を押す</span><span class="sub">出力に Hello, Seseragi! と出ます。</span></span>
+                  </li>
+                  <li class="is-now">
+                    <span class="check"></span>
+                    <span><span class="what"><code class="inline">Seseragi</code> をあなたの名前に変えて、もう一度実行する</span><span class="sub">Hello, Mio! のように出れば完了です。</span></span>
+                  </li>
+                </ol>
+                <div class="task-foot">
+                  <button class="btn" type="button" data-en="Show answer">答えを見る</button>
+                  <button class="ghost" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.5-3.5M3 3v2.5h2.5" /></svg><span data-en="Back to the starting code">最初のコードに戻す</span></button>
+                </div>
+              </section>
+
+              <h2 class="sec" data-en="Read the code">コードを読む</h2>
+              <ol class="notes">
+                <li class="is-active"><span class="pin">1</span><p><code class="inline">pub effect fn main</code> はプログラムの入口です。くわしくは次のレッスンで読みます。</p></li>
+                <li><span class="pin">2</span><p><code class="inline">println</code> は、渡した文字列を出力に一行で表示します。</p></li>
+              </ol>
+
+              <h2 class="sec" data-en="Going further">もう少し</h2>
+              <div class="fold">よくある間違い：文字列の代わりに数を渡す<svg class="i chev" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg></div>
+              <div class="fold">なぜ入口に effect と書くのか<svg class="i chev" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg></div>
+            </div>
+          </div>
+
+          <div class="next-wrap">
+            <a class="next-lesson" href="#">
+              <span>
+                <small data-en="Next">次へ</small>
+                <strong data-en="Read the program's entry point">プログラムの入口を読む</strong>
+              </span>
+              <span class="arrow"><svg class="i" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" /></svg></span>
+            </a>
+          </div>
         </article>
 
-        <section class="lab" aria-label="コードと出力">
-          <section class="pane" aria-label="コード">
-            <div class="pane-head">
-              <span class="file-tab">main.ssrg</span>
+        <section class="lab" aria-label="コードと出力" data-en-label="Code and output">
+          <section class="card code-card" aria-label="コード" data-en-label="Code">
+            <div class="card-head">
+              <span class="file-pill">main.ssrg</span>
               <div class="spacer"></div>
-              <button class="btn btn--ghost" type="button"><span class="icon">≡</span>整形</button>
-              <button class="btn btn--ghost" type="button">↺ 戻す</button>
+              <button class="ghost" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M3 4h10M3 8h7M3 12h10" /></svg><span data-en="Format">整形</span></button>
+              <button class="ghost" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.5-3.5M3 3v2.5h2.5" /></svg><span data-en="Reset">戻す</span></button>
             </div>
-<pre class="code"><span class="ln is-focus"><span class="k">pub effect fn</span> main <span class="o">=</span> println <span class="s">"Hello, <span class="mark-edit">Seseragi</span>!"</span></span></pre>
+            <div class="code-wrap">
+<pre class="code"><span class="ln is-hint"><span class="pin pin-in">1</span><span class="k">pub effect fn</span> main <span class="p">=</span> <span class="pin pin-in">2</span>println <span class="s">"Hello, <span class="edit-here">Seseragi</span>!"</span></span></pre>
+            </div>
           </section>
-          <section class="pane" aria-label="出力">
-            <div class="pane-head">
-              <span class="pane-title">出力</span>
-              <div class="seg" role="group" aria-label="出力の表示">
-                <button type="button" aria-pressed="true">テキスト</button>
-                <button type="button" aria-pressed="false">画面</button>
-              </div>
+
+          <div class="flow desktop-only">
+            <div class="run">
+              <button class="run-btn" type="button" aria-label="実行" data-en-label="Run">
+                <svg class="i" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z" /></svg>
+              </button>
+              <span class="run-label"><span data-en="Run">実行</span><kbd>⌘↵</kbd></span>
             </div>
-            <div class="output">
-              <div class="run-meta"><span class="ok">✓ 実行しました</span><span>· 12ms</span></div>
-<pre class="stdout">Hello, Seseragi!</pre>
-              <div class="match">✓ 期待どおりの出力です。次は名前を変えてみましょう。</div>
+          </div>
+
+          <section class="card out-card" aria-label="出力" data-en-label="Output">
+            <span class="sheet-handle" aria-hidden="true"></span>
+            <div class="card-head">
+              <span class="card-title" data-en="Output">出力</span>
+              <div class="seg" role="group" aria-label="出力の表示" data-en-label="Output view">
+                <button type="button" aria-pressed="true" data-en="Console">コンソール</button>
+                <button type="button" aria-pressed="false" data-en="Preview">画面</button>
+              </div>
+              <div class="spacer"></div>
+              <span class="status-chip"><svg class="i" viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" /></svg>12 ms</span>
+            </div>
+            <div class="out-body">
+              <div class="console">
+                <ol>
+                  <li>Hello, Seseragi!</li>
+                </ol>
+                <div class="expect">
+                  <svg class="i" viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" /></svg>
+                  <span data-en="Matches the expected output. Now change the name.">期待どおりの出力です。次は名前を変えてみましょう。</span>
+                </div>
+              </div>
             </div>
           </section>
         </section>
       </main>
-
-      <footer class="status desktop-only">
-        <span><span class="dot"></span>準備できました</span>
-        <span>進み具合はこのブラウザに保存されます</span>
-        <div class="spacer"></div>
-        <a href="#">ドキュメント</a>
-        <a href="https://github.com/KentaroMorishita/seseragi">GitHub</a>
-      </footer>
-
-      <nav class="tabbar" aria-label="表示の切り替え">
-        <a href="#" class="tab-lesson"><span class="icon">✎</span>レッスン</a>
-        <a href="#code" class="tab-code"><span class="icon">▶</span>試す</a>
-      </nav>
     </div>
 
-    <div class="scrim"></div>
-    <aside class="drawer" aria-label="目次">
-      <div class="drawer-head">
-        <strong>目次</strong>
-        <div class="spacer"></div>
-        <span style="color: var(--fg-3); font-size: 12px; margin-right: 8px">1 / 24 完了 0</span>
-        <a class="btn btn--icon btn--ghost" href="#" aria-label="閉じる">×</a>
-      </div>
-      <div class="drawer-body">
-        <p class="track-label">本編（約 60 分）</p>
-        <div class="chapter is-current">
-          <span class="num">1</span>
-          <span class="name">はじめの一歩<small>動かす・書き換える</small></span>
-          <span class="meta">0 / 3</span>
+    <button class="fab" type="button">
+      <svg class="i" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z" /></svg>
+      <span data-en="Run">実行</span>
+    </button>
+
+    <nav class="view-switch" aria-label="表示の切り替え" data-en-label="Views">
+      <a href="#" data-view="" data-current-view=""><span data-en="Lesson">レッスン</span></a>
+      <a href="#" data-view="code" data-current-view="code"><span data-en="Code">コード</span></a>
+    </nav>
+
+    <div class="overlay overlay--map" role="dialog" aria-label="目次" data-en-label="Contents">
+      <div class="map">
+        <div class="map-head">
+          <div>
+            <h2 data-en="Contents">目次</h2>
+            <p data-en="Main course: 8 chapters, 24 lessons, about 60 minutes · Progress is saved in this browser">本編 8 章・24 レッスン・約 60 分 · 進み具合はこのブラウザに保存されます</p>
+          </div>
+          <span class="spacer"></span>
+          <a class="btn" href="#" data-view="" data-en="Close">閉じる</a>
         </div>
-        <ul class="lessons">
-          <li class="is-current"><span class="st">●</span>最初のプログラムを動かす</li>
-          <li><span class="st">○</span>プログラムの入口を読む</li>
-          <li><span class="st">○</span>値に名前を付ける</li>
-        </ul>
-        <div class="chapter"><span class="num">2</span><span class="name">値と型<small>文字列・数・真偽値・型推論</small></span><span class="meta">0 / 3</span></div>
-        <div class="chapter"><span class="num">3</span><span class="name">関数と |&gt;<small>定義する・渡す・つなぐ</small></span><span class="meta">0 / 4</span></div>
-        <div class="chapter"><span class="num">4</span><span class="name">データの形と match<small>type・レコード・分岐</small></span><span class="meta">0 / 3</span></div>
-        <div class="chapter"><span class="num">5</span><span class="name">Maybe と Either<small>ないかもしれない・失敗するかもしれない</small></span><span class="meta">0 / 3</span></div>
-        <div class="chapter"><span class="num">6</span><span class="name">Effect<small>入力・出力・失敗を扱う</small></span><span class="meta">0 / 3</span></div>
-        <div class="chapter"><span class="num">7</span><span class="name">Signal で画面を動かす<small>状態と表示</small></span><span class="meta">0 / 3</span></div>
-        <div class="chapter"><span class="num">8</span><span class="name">仕上げの課題<small>ここまでを組み合わせる</small></span><span class="meta">0 / 2</span></div>
-
-        <p class="track-label">寄り道（いつでも読めます）</p>
-        <div class="chapter"><span class="num">+</span><span class="name">いろいろな値の書き方<small>リテラルを一通り</small></span><span class="meta">6</span></div>
-        <div class="chapter"><span class="num">+</span><span class="name">エディターの使い方<small>整形・元に戻す・エラー表示</small></span><span class="meta">2</span></div>
-        <div class="chapter"><span class="num">+</span><span class="name">画面づくりをもっと<small>部品・イベント・複数ファイル</small></span><span class="meta">12</span></div>
-        <div class="chapter"><span class="num">+</span><span class="name">抽象を設計する<small>型クラスと法則</small></span><span class="meta">5</span></div>
+        <div class="chapters">
+          <div class="chapter is-current"><span class="no" data-en="01 · In progress">01 · いまここ</span><strong data-en="First steps">はじめの一歩</strong><p data-en="Run it and change it">動かす・書き換える</p><div class="meta"><span data-en="3 lessons">3 レッスン</span><span class="spacer"></span><span>0 / 3</span></div><div class="bar"><span style="width: 12%"></span></div></div>
+          <div class="chapter"><span class="no">02</span><strong data-en="Values and types">値と型</strong><p data-en="Strings, numbers, booleans, inference">文字列・数・真偽値・型推論</p><div class="meta"><span data-en="3 lessons">3 レッスン</span></div><div class="bar"></div></div>
+          <div class="chapter"><span class="no">03</span><strong data-en="Functions and |>">関数と |&gt;</strong><p data-en="Define, pass, and chain">定義する・渡す・つなぐ</p><div class="meta"><span data-en="4 lessons">4 レッスン</span></div><div class="bar"></div></div>
+          <div class="chapter"><span class="no">04</span><strong data-en="Data shapes and match">データの形と match</strong><p data-en="type, records, branching">type・レコード・分岐</p><div class="meta"><span data-en="3 lessons">3 レッスン</span></div><div class="bar"></div></div>
+          <div class="chapter"><span class="no">05</span><strong>Maybe / Either</strong><p data-en="Might be missing, might fail">ないかもしれない・失敗するかもしれない</p><div class="meta"><span data-en="3 lessons">3 レッスン</span></div><div class="bar"></div></div>
+          <div class="chapter"><span class="no">06</span><strong>Effect</strong><p data-en="Input, output, and failure">入力・出力・失敗を扱う</p><div class="meta"><span data-en="3 lessons">3 レッスン</span></div><div class="bar"></div></div>
+          <div class="chapter"><span class="no">07</span><strong data-en="Pages with Signal">Signal で画面を動かす</strong><p data-en="State and view">状態と表示</p><div class="meta"><span data-en="3 lessons">3 レッスン</span></div><div class="bar"></div></div>
+          <div class="chapter"><span class="no">08</span><strong data-en="Final challenges">仕上げの課題</strong><p data-en="Put it all together">ここまでを組み合わせる</p><div class="meta"><span data-en="2 lessons">2 レッスン</span></div><div class="bar"></div></div>
+        </div>
+        <p class="extras-title" data-en="Side trips — read any time">寄り道 — いつでも読めます</p>
+        <div class="extras">
+          <div class="extra"><span><span data-en="All the ways to write values">いろいろな値の書き方</span><small data-en="6 lessons">6 レッスン</small></span></div>
+          <div class="extra"><span><span data-en="Using the editor">エディターの使い方</span><small data-en="2 lessons">2 レッスン</small></span></div>
+          <div class="extra"><span><span data-en="More UI building">画面づくりをもっと</span><small data-en="12 lessons">12 レッスン</small></span></div>
+          <div class="extra" lang="ja"><span>抽象を設計する<small><span class="ja-only">5 レッスン</span><span class="en-only" lang="en">5 lessons · Japanese only</span></small></span></div>
+        </div>
       </div>
-    </aside>
-
-    <script>
-      // 確認用: URL の # で表示状態を切り替える（例: #curriculum, #code）
-      const apply = () => {
-        const state = location.hash.slice(1).replace(/,/g, " ");
-        document.body.dataset.state = state;
-        document.querySelector(".tab-lesson").setAttribute("aria-current", String(state !== "code"));
-        document.querySelector(".tab-code").setAttribute("aria-current", String(state === "code"));
-      };
-      addEventListener("hashchange", apply);
-      apply();
-    </script>
+    </div>
   </body>
 </html>

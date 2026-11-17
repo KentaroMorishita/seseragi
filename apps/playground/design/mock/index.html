@@ -3,39 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>画面デザイン案モック</title>
+    <title>画面案 v2 モック</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700&display=swap" />
     <link rel="stylesheet" href="./mock.css" />
     <style>
       body { overflow: auto; }
-      main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
-      h1 { font-size: 24px; margin: 0 0 8px; }
-      h2 { font-size: 16px; margin: 32px 0 8px; }
+      main { max-width: 720px; margin: 0 auto; padding: 48px 16px 64px; }
+      h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.02em; }
+      h2 { margin: 32px 0 8px; font-size: 13px; color: var(--fg-3); letter-spacing: 0.06em; text-transform: uppercase; }
       p, li { color: var(--fg-2); }
       ul { padding-left: 20px; }
+      li a { color: var(--accent-ink); font-weight: 600; }
     </style>
   </head>
   <body>
     <main>
-      <h1>Playground / Tour 画面デザイン案</h1>
+      <h1>Playground / Tour 画面案 v2「澄んだ流れ」</h1>
       <p>
-        画面構成を目で見て判断するための静的なモックです。本体のコードとは独立しており、
-        ボタンは動きません。デザインの決めごとは <code class="inline">apps/playground/DESIGN.md</code> にあります。
+        画面を目で見て判断するための静的なモックです。本体のコードとは独立しています。
+        決めごとは <code class="inline">apps/playground/DESIGN.md</code> にあります。旧案は
+        <code class="inline">design/archive/v1/</code> に残しています。
       </p>
 
-      <h2>見られる状態</h2>
+      <h2>Playground</h2>
       <ul>
-        <li><a href="./playground.html">Playground: 初めて開いたとき</a></li>
-        <li><a href="./playground.html#discover">Playground: 「例を探す」を開いたとき</a></li>
-        <li><a href="./playground.html#output">Playground: モバイルで「出力」タブを開いたとき</a></li>
-        <li><a href="./tour.html">Tour: レッスンの表示</a></li>
-        <li><a href="./tour.html#curriculum">Tour: 目次を開いたとき</a></li>
-        <li><a href="./tour.html#code">Tour: モバイルで「試す」タブを開いたとき</a></li>
+        <li><a href="./playground.html">初めて開いたとき</a>（<a href="./playground.html#dark">ダーク</a> · <a href="./playground.html#en">English</a>）</li>
+        <li><a href="./playground.html#palette">⌘K で例・レッスン・API を探す</a>（<a href="./playground.html#en,palette">English</a>）</li>
+        <li><a href="./playground.html#output">モバイルで出力を広げたとき</a></li>
       </ul>
 
-      <h2>開き方</h2>
+      <h2>Tour</h2>
+      <ul>
+        <li><a href="./tour.html">レッスン</a>（<a href="./tour.html#dark">ダーク</a> · <a href="./tour.html#en">English：本文が未翻訳のとき</a>）</li>
+        <li><a href="./tour.html#map">目次（コースマップ）</a></li>
+        <li><a href="./tour.html#code">モバイルでコードに切り替えたとき</a></li>
+      </ul>
+
+      <h2>見方</h2>
       <p>
-        このフォルダの HTML をブラウザで直接開きます。モバイル表示は、開発者ツールで幅を 390px
-        前後にすると確認できます。
+        モバイル表示は、開発者ツールで幅を 390px 前後にすると確認できます。状態は URL の # で切り替えます。
+        右上の JA / EN、月のアイコン、下の切り替えボタンも押せます。
       </p>
     </main>
   </body>
