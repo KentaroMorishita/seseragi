@@ -7,3 +7,5 @@
 /echo: 200 [] POST 6 雪abc
 /echo declared: error HttpRequestLengthMismatch: declared 2, actual 3
 /refused: error HttpConnectionFailure
+/hang: timed out
+/closed: 200 [] closed

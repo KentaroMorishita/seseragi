@@ -5,6 +5,7 @@ import * as http from "std/http"
 import * as process from "std/process"
 import * as effects from "std/effect"
 import * as text from "std/text"
+import * as time from "std/time"
 
 effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
 effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
@@ -66,7 +67,26 @@ effect fn post base: String -> limit: http.HttpBodyLimit -> Unit with Console, {
     Left error -> say (show error)
   }
 
-pub effect fn main -> Unit with Console, { httpClient: http.HttpClient, process: process.Process } fails String = do {
+fn millis value: Int -> time.Duration = match time.milliseconds value {
+  Right duration -> duration
+  Left _ -> millis 0
+}
+
+// A cancelled exchange closes its connection before the program goes on.
+effect fn cancelled base: String -> limit: http.HttpBodyLimit -> Unit with Console, Clock, { httpClient: http.HttpClient } =
+  match parsed base "/hang" {
+    Right request -> do {
+      result <- effects.timeout (millis 200) (effects.attempt (http.sendEmpty limit request))
+      say ("/hang: " + match result {
+        Just _ -> "answered"
+        Nothing -> "timed out"
+      })
+      get base "/closed" limit
+    }
+    Left error -> say (show error)
+  }
+
+pub effect fn main -> Unit with Console, Clock, { httpClient: http.HttpClient, process: process.Process } fails String = do {
   args <- process.arguments () |> effects.mapError show
   let base = match args { [first, ..._] -> first; _ -> "http://127.0.0.1:9" }
   let limit = http.defaultBodyLimit ()
@@ -81,4 +101,5 @@ pub effect fn main -> Unit with Console, { httpClient: http.HttpClient, process:
   }
   post base limit
   get "http://127.0.0.1:9" "/refused" limit
+  cancelled base limit
 }

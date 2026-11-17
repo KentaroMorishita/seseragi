@@ -93,11 +93,15 @@ fn http_values_match_bun_node_and_native() {
 // A local HTTP/1.1 server. Every connection gets one response and closes.
 fn serve() -> String {
     use std::io::{BufRead, BufReader, Read, Write};
+    use std::sync::{Arc, Condvar, Mutex};
     let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
     let base = format!("http://{}", listener.local_addr().unwrap());
+    // Whether the connection of the last /hang request has been closed.
+    let hang: Arc<(Mutex<bool>, Condvar)> = Arc::new((Mutex::new(true), Condvar::new()));
     std::thread::spawn(move || {
         for stream in listener.incoming() {
             let Ok(mut stream) = stream else { continue };
+            let hang = hang.clone();
             std::thread::spawn(move || {
                 let mut reader = BufReader::new(stream.try_clone().unwrap());
                 let mut line = String::new();
@@ -130,8 +134,34 @@ fn serve() -> String {
                     response.extend_from_slice(body);
                     response
                 };
+                if path == "/hang" {
+                    // Never answer; record when the client closes.
+                    *hang.0.lock().unwrap() = false;
+                    let mut rest = [0u8; 64];
+                    while matches!(reader.read(&mut rest), Ok(read) if read > 0) {}
+                    *hang.0.lock().unwrap() = true;
+                    hang.1.notify_all();
+                    return;
+                }
+                let closed = || {
+                    let (closed, changed) = &*hang;
+                    let guard = changed
+                        .wait_timeout_while(
+                            closed.lock().unwrap(),
+                            std::time::Duration::from_secs(5),
+                            |closed| !*closed,
+                        )
+                        .unwrap()
+                        .0;
+                    if *guard {
+                        "closed"
+                    } else {
+                        "open"
+                    }
+                };
                 let response = match path.as_str() {
                     "/text" => plain("200 OK", "", b"hello"),
+                    "/closed" => plain("200 OK", "", closed().as_bytes()),
                     "/chunked" => b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n2\r\nab\r\n2\r\ncd\r\n0\r\n\r\n".to_vec(),
                     "/empty" => b"HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n".to_vec(),
                     "/headers" => plain("200 OK", "X-Multi: a\r\nX-Multi: b\r\n", b"ok"),
@@ -173,7 +203,12 @@ fn http_exchanges_match_bun_node_and_native() {
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .args(["experimental", "build-native"])
             .arg(&input)
-            .args(["--entry", "main", "--out-dir"])
+            .args(["--entry", "main"])
+            .args([
+                "--provider",
+                "std/clock::Clock=seseragi/runtime-native#clock",
+            ])
+            .args(["--out-dir"])
             .arg(&native),
         &directory,
     ));
