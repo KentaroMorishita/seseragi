@@ -579,14 +579,143 @@ fn native_http_exchange_stream(body: V, request: V) -> V {
                         ),
                         V::fun(vec![id, outcome], |c, fiber| {
                             let captures = vec![c[0].clone(), c[1].clone(), fiber];
-                            stream_pure(stream_cursor(
+                            let cursor = stream_cursor(
                                 V::fun(captures.clone(), |c, _| native_http_exchange_pull(c)),
                                 V::fun(captures, |c, _| native_http_exchange_close(c)),
-                            ))
+                            );
+                            // The scope also closes the exchange, since a
+                            // terminal operation does not close a cursor
+                            // whose pull failed.
+                            V::effect(
+                                Instruction::AcquireRelease,
+                                vec![
+                                    stream_pure(cursor),
+                                    V::fun(vec![], |_, cursor| stream_close(&cursor)),
+                                ],
+                            )
                         }),
                     )
                 },
             ),
         )
     })
+}
+
+#[cfg(test)]
+mod http_exchange_tests {
+    use super::*;
+
+    // A server that reads every request and never answers.
+    fn silent() -> String {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let base = format!("http://{}", listener.local_addr().unwrap());
+        std::thread::spawn(move || {
+            for stream in listener.incoming() {
+                let Ok(mut stream) = stream else { continue };
+                std::thread::spawn(move || {
+                    let mut rest = [0u8; 4096];
+                    while matches!(std::io::Read::read(&mut stream, &mut rest), Ok(read) if read > 0)
+                    {
+                    }
+                });
+            }
+        });
+        base
+    }
+
+    fn post(url: &str, headers: &[(&str, &str)]) -> V {
+        let url = native_http_operation("std/http::parseUrl", vec![V::text(url)]);
+        let mut request = native_http_operation(
+            "std/http::request",
+            vec![
+                native_http_operation("std/http::post", vec![]),
+                url.payload(),
+            ],
+        );
+        for (name, value) in headers {
+            request = native_http_operation(
+                "std/http::withRequestHeader",
+                vec![V::text(name), V::text(value), request],
+            )
+            .payload();
+        }
+        request
+    }
+
+    fn bytes(text: &str) -> V {
+        V::Bytes(Shared::new(text.as_bytes().to_vec()))
+    }
+
+    // Runs an exchange to its end and returns its failure.
+    fn failure(body: V, request: V) -> V {
+        let events = native_http_operation("std/http::exchange", vec![body, request]);
+        let result = NativeContext::default()
+            .root(V::effect(
+                Instruction::Attempt,
+                vec![native_stream_operation(
+                    "std/stream::runCollect",
+                    vec![events],
+                )],
+            ))
+            .unwrap_or_else(|_| panic!("the exchange ended without a result"));
+        assert!(result.tagged("std/prelude::Left"), "{}", result.render());
+        result.payload()
+    }
+
+    fn open_exchanges() -> usize {
+        NATIVE_HTTP_STREAMS.with(|streams| streams.borrow().1.len())
+    }
+
+    #[test]
+    fn failed_exchanges_release_their_connections() {
+        let base = silent();
+        let ab = native_stream_operation(
+            "std/stream::fromArray",
+            vec![V::Array(Shared::new(vec![bytes("ab")]))],
+        );
+        // The body fails after its first chunk; the server is still waiting.
+        let failing = native_stream_operation(
+            "std/stream::concat",
+            vec![
+                native_stream_operation(
+                    "std/stream::fromEffect",
+                    vec![native_operation("effect.fail", vec![V::text("boom")])],
+                ),
+                ab.clone(),
+            ],
+        );
+        let error = failure(
+            native_http_operation("std/http::streamBody", vec![failing]),
+            post(&format!("{base}/"), &[]),
+        );
+        assert_eq!(error.render(), native_left(V::text("boom")).render());
+        assert_eq!(open_exchanges(), 0);
+
+        // The body ends shorter than it declares.
+        let error = failure(
+            native_http_operation("std/http::streamBody", vec![ab]),
+            post(&format!("{base}/"), &[("content-length", "5")]),
+        );
+        assert!(error.tagged("std/prelude::Right"), "{}", error.render());
+        assert!(
+            error
+                .payload()
+                .tagged("std/http::HttpRequestLengthMismatch"),
+            "{}",
+            error.render()
+        );
+        assert_eq!(open_exchanges(), 0);
+
+        // The connection is refused.
+        let error = failure(
+            native_http_operation("std/http::emptyBody", vec![V::Unit]),
+            post("http://127.0.0.1:9/", &[]),
+        );
+        assert!(
+            error.payload().tagged("std/http::HttpConnectionFailure"),
+            "{}",
+            error.render()
+        );
+        assert_eq!(open_exchanges(), 0);
+    }
 }
