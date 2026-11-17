@@ -348,6 +348,11 @@ pub fn native_http_operation(name: &str, arguments: Vec<V>) -> V {
             native_http_inner(&a[0], "std/http::Response").field("headers")
         }
         "std/http::responseBody" => native_http_inner(&a[0], "std/http::Response").field("body"),
+        "std/http::sendBytes" => V::effect(Instruction::HttpSend, arguments),
+        "std/http::sendEmpty" => V::effect(
+            Instruction::HttpSend,
+            vec![a[0].clone(), V::Bytes(Shared::new(Vec::new())), a[1].clone()],
+        ),
         "std/http::errorMessage" => V::text(&native_http_error_message(&a[0])),
         _ => panic!("Rust ABI: unsupported std/http operation {name}"),
     }

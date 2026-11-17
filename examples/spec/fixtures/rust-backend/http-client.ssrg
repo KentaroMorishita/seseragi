@@ -1,0 +1,84 @@
+// sendBytes and sendEmpty against a local test server whose address is the
+// first argument. Errors print only their tag, because the messages come from
+// each host's HTTP stack.
+import * as http from "std/http"
+import * as process from "std/process"
+import * as effects from "std/effect"
+import * as text from "std/text"
+
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+fn tag error: http.HttpError -> String = match error {
+  http.HttpDnsFailure _ -> "HttpDnsFailure"
+  http.HttpConnectionFailure _ -> "HttpConnectionFailure"
+  http.HttpTlsFailure _ -> "HttpTlsFailure"
+  http.HttpProtocolFailure _ -> "HttpProtocolFailure"
+  http.HttpRequestBodyFailure _ -> "HttpRequestBodyFailure"
+  http.HttpRequestLengthMismatch _ -> http.errorMessage error
+  http.HttpResponseBodyLimitExceeded _ -> http.errorMessage error
+  http.HttpClientUnavailable -> "HttpClientUnavailable"
+}
+
+fn bodyText response: http.Response -> String =
+  match text.decodeUtf8 (http.responseBody response) {
+    Right value -> value
+    Left _ -> "<binary>"
+  }
+
+fn describe result: Either<http.HttpError, http.Response> -> String = match result {
+  Right response ->
+    show (http.statusCode (http.responseStatus response))
+    + " " + show (http.headerValues "x-multi" (http.responseHeaders response))
+    + " " + bodyText response
+  Left error -> "error " + tag error
+}
+
+fn parsed base: String -> path: String -> Either<http.HttpBuildError, http.Request> =
+  match http.parseUrl (base + path) {
+    Right url -> Right (http.request http.get url)
+    Left error -> Left error
+  }
+
+effect fn get base: String -> path: String -> limit: http.HttpBodyLimit -> Unit with Console, { httpClient: http.HttpClient } =
+  match parsed base path {
+    Right request -> do {
+      result <- effects.attempt (http.sendEmpty limit request)
+      say (path + ": " + describe result)
+    }
+    Left error -> say (path + ": " + show error)
+  }
+
+effect fn post base: String -> limit: http.HttpBodyLimit -> Unit with Console, { httpClient: http.HttpClient } =
+  match http.parseUrl (base + "/echo") {
+    Right url -> do {
+      let request = http.request http.post url
+      result <- effects.attempt (http.sendBytes limit (text.encodeUtf8 "雪abc") request)
+      say ("/echo: " + describe result)
+      match http.withRequestHeader "content-length" "2" request {
+        Right declared -> do {
+          mismatch <- effects.attempt (http.sendBytes limit (text.encodeUtf8 "abc") declared)
+          say ("/echo declared: " + describe mismatch)
+        }
+        Left error -> say (show error)
+      }
+    }
+    Left error -> say (show error)
+  }
+
+pub effect fn main -> Unit with Console, { httpClient: http.HttpClient, process: process.Process } fails String = do {
+  args <- process.arguments () |> effects.mapError show
+  let base = match args { [first, ..._] -> first; _ -> "http://127.0.0.1:9" }
+  let limit = http.defaultBodyLimit ()
+  get base "/text" limit
+  get base "/chunked" limit
+  get base "/empty" limit
+  get base "/headers" limit
+  get base "/missing" limit
+  match http.bodyLimit 10 {
+    Right small -> get base "/big" small
+    Left error -> say (show error)
+  }
+  post base limit
+  get "http://127.0.0.1:9" "/refused" limit
+}

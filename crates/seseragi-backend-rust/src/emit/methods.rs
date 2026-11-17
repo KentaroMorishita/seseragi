@@ -489,6 +489,7 @@ impl Backend<'_> {
             | "std/http::Response"
             | "std/http::HttpBodyLimit"
             | "std/http::HttpVersion"
+            | "std/http::HttpClient"
             | "std/bytes::Byte"
             | "std/bytes::Bytes"
             | "std/bytes::ByteError"
