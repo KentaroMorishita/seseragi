@@ -177,26 +177,16 @@ fn queue_nominal_unit_arguments_fail_before_either_target_emits_outputs() {
 fn queue_accepts_standard_unit_under_shadow_in_strict_ts_and_both_engines() {
     let fixture = Fixture::new("import * as queue from \"std/queue\"\ntype Unit = | FakeUnit\nimport * as effects from \"std/effect\"\npub effect fn main = do { queue.unbounded<Int> (); effects.succeed () }\n");
     fixture.typescript(b"");
-    let out = fixture.path().join("native");
-    let result = bounded(
-        Command::new(env!("CARGO_BIN_EXE_seseragi"))
-            .args(["experimental", "build-native"])
-            .arg(fixture.path())
-            .args(["--entry", "main", "--out-dir"])
-            .arg(&out),
+    // std/queue runs natively, so the shadowed Unit must not change the
+    // standard one there either.
+    let result = successful(bounded(
+        Command::new(fixture.native())
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
         fixture.path(),
-    );
-    // The native target supports queues, and the shadowing `Unit` must not
-    // turn the standard one into a type error there either.
-    assert!(result.status.success(), "{result:?}");
-    let program = out.join(if cfg!(windows) {
-        "program.exe"
-    } else {
-        "program"
-    });
-    let run = bounded(&mut Command::new(program), fixture.path());
-    assert!(run.status.success(), "{run:?}");
-    assert!(run.stdout.is_empty(), "{run:?}");
+    ));
+    assert!(result.stdout.is_empty(), "{result:?}");
+    assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
 }
 
 #[test]

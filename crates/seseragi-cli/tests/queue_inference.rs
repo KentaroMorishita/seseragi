@@ -127,9 +127,8 @@ impl Fixture {
         }
     }
 
-    /// The native target runs the same program and prints what the TS
-    /// target prints.
-    fn native_matches(&self, expected: &[u8]) {
+    // std/queue runs natively and prints what the TS target prints.
+    fn native(&self, expected: &[u8]) {
         let out = self.path().join("native");
         successful(bounded(
             Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -139,13 +138,14 @@ impl Fixture {
                 .arg(&out),
             self.path(),
         ));
-        let program = out.join(if cfg!(windows) {
-            "program.exe"
-        } else {
-            "program"
-        });
-        let output = successful(bounded(&mut Command::new(program), self.path()));
-        assert_eq!(output.stdout, expected, "{output:?}");
+        let output = successful(bounded(
+            Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            self.path(),
+        ));
+        assert_eq!(output.stdout, expected);
+        assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
     }
 }
 
@@ -166,7 +166,7 @@ fn direct_and_named_reexport_queues_keep_fifo_and_closed_errors_in_bun_and_node(
         let fixture = Fixture::new(import, &body);
         let expected = b"Right [Right Nothing, 2, 1, 2, Left QueueClosed, Left QueueClosed, Left QueueClosed, Left QueueClosed]\n";
         fixture.typescript(expected);
-        fixture.native_matches(expected);
+        fixture.native(expected);
     }
 }
 
@@ -187,7 +187,7 @@ fn named_reexport_preserves_explicit_queue_effects_and_rejects_wrong_elements() 
             fixture.path(),
         ));
         fixture.typescript(b"");
-        fixture.native_matches(b"");
+        fixture.native(b"");
         fs::write(fixture.path().join("src/main.ssrg"), format!("{import}\npub effect fn main = do {{ q <- queue.unbounded<Int> (); queue.offer \"bad\" q }}\n")).unwrap();
         successful(bounded(
             Command::new(env!("CARGO_BIN_EXE_seseragi"))
