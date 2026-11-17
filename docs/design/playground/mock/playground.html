@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Playground 画面案 v2（モック）</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="./mock.css" />
+    <script src="./mock.js" defer></script>
+  </head>
+  <body>
+    <!--
+      状態（# にカンマでつなぐ）: en / dark / quiet / palette / output
+        playground.html             初めて開いたとき（ライト・日本語）
+        playground.html#quiet       2 回目から。初回の案内を畳んだ通常状態
+        playground.html#dark        ダーク
+        playground.html#en          英語
+        playground.html#palette     ⌘K（例・レッスン・API・設定をまとめて探す）
+        playground.html#output      モバイルで出力のシートを広げたとき
+    -->
+    <div class="app">
+      <header class="top">
+        <div class="top-left">
+          <a class="logo" href="./index.html">
+            <img src="../../../../assets/brand/public/brand/seseragi-icon.svg" alt="" />
+            <span class="desktop-only">Seseragi</span>
+            <span class="ver desktop-only">0.61</span>
+          </a>
+        </div>
+        <nav class="surface" aria-label="Playground / Tour">
+          <a href="./playground.html" aria-current="page">
+            <svg class="i" viewBox="0 0 16 16"><path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5" /></svg>Playground
+          </a>
+          <a href="./tour.html">
+            <svg class="i" viewBox="0 0 16 16"><path d="M2.5 3.5h4A1.5 1.5 0 0 1 8 5v8a1.5 1.5 0 0 0-1.5-1.5h-4zM13.5 3.5h-4A1.5 1.5 0 0 0 8 5v8a1.5 1.5 0 0 1 1.5-1.5h4z" /></svg>Tour
+          </a>
+        </nav>
+        <div class="top-right">
+          <button class="search-trigger" type="button" data-view="palette" aria-label="Search examples, lessons, and API">
+            <svg class="i" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+            <span>Examples, lessons, API…</span>
+            <kbd>⌘K</kbd>
+          </button>
+          <button class="icon-btn desktop-only" type="button" data-theme-toggle aria-label="Toggle theme">
+            <svg class="i" viewBox="0 0 16 16"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z" /></svg>
+          </button>
+          <div class="lang" role="group" aria-label="Language">
+            <a href="#" data-lang="ja" lang="ja" aria-label="日本語">JA</a>
+            <a href="#" data-lang="en" lang="en" aria-label="English">EN</a>
+          </div>
+        </div>
+      </header>
+
+      <div class="subbar">
+        <button class="picker" type="button" data-view="palette">
+          <span class="badge"><svg class="i" viewBox="0 0 16 16"><path d="M8 2 13.5 5v6L8 14 2.5 11V5zM2.5 5 8 8l5.5-3M8 8v6" /></svg></span>
+          <span class="name" data-en="Weather advice">天気のアドバイス</span>
+          <svg class="i chev" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Format"><svg class="i" viewBox="0 0 16 16"><path d="M3 4h10M3 8h7M3 12h10" /></svg></button>
+        <button class="icon-btn" type="button" aria-label="More">⋯</button>
+      </div>
+
+      <main class="stage">
+        <section class="card code-card" aria-label="Code">
+          <div class="card-head">
+            <button class="picker" type="button" data-view="palette">
+              <span class="badge"><svg class="i" viewBox="0 0 16 16"><path d="M8 2 13.5 5v6L8 14 2.5 11V5zM2.5 5 8 8l5.5-3M8 8v6" /></svg></span>
+              <span class="name" data-en="Weather advice">天気のアドバイス</span>
+              <svg class="i chev" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg>
+            </button>
+            <span class="file-pill">main.ssrg</span>
+            <div class="spacer"></div>
+            <button class="ghost" type="button"><svg class="i" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" /><path d="M6.5 6.3a1.6 1.6 0 1 1 2.2 1.5c-.5.2-.7.6-.7 1.1M8 11.2v.1" /></svg><span>Guide</span></button>
+            <button class="ghost" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M3 4h10M3 8h7M3 12h10" /></svg><span>Format</span></button>
+            <button class="ghost" type="button" aria-label="Reset"><svg class="i" viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.5-3.5M3 3v2.5h2.5" /></svg></button>
+          </div>
+          <div class="code-wrap">
+            <div class="coach" style="top: 346px; left: 262px">
+              <strong data-en="Change 3 to 12, then press Run.">3 を 12 に変えて、Run を押してみましょう。</strong>
+              <span data-en="This code already runs, and its result is already showing.">このコードはそのまま動きます。結果はもう出ています。</span>
+              <div class="row">
+                <a href="./tour.html" data-en="Learn in the Tour →">Tour で基本から →</a>
+                <button class="dim" type="button" data-toggle="quiet">Close</button>
+              </div>
+            </div>
+<pre class="code"><span class="ln"><span class="c" data-en="// Returns a short piece of advice for each kind of weather.">// 天気ごとに、ひとことアドバイスを返します。</span></span><span class="ln"><span class="k">type</span> <span class="t">Weather</span> <span class="p">=</span></span><span class="ln">  <span class="p">|</span> <span class="t">Sunny</span></span><span class="ln">  <span class="p">|</span> <span class="t">Rainy</span> <span class="t">Int</span></span><span class="ln"> </span><span class="ln"><span class="k">fn</span> advice weather<span class="p">:</span> <span class="t">Weather</span> <span class="p">-&gt;</span> <span class="t">String</span> <span class="p">=</span> <span class="k">match</span> weather <span class="p">{</span></span><span class="ln">  <span class="t">Sunny</span> <span class="p">-&gt;</span> <span class="s" data-en='"Nice day for a walk"'>"散歩日和です"</span></span><span class="ln">  <span class="t">Rainy</span> mm <span class="p">-&gt;</span> <span class="s" data-en="`Take an umbrella (">`傘を持って出かけましょう（</span><span class="p">${</span>mm<span class="p">}</span><span class="s" data-en="mm)`">mm）`</span></span><span class="ln"><span class="p">}</span></span><span class="ln"> </span><span class="ln is-hint"><span class="k">let</span> forecast <span class="p">=</span> <span class="p">[</span><span class="t">Sunny</span><span class="p">,</span> <span class="edit-here"><span class="t">Rainy</span> 3</span><span class="p">,</span> <span class="t">Sunny</span><span class="p">]</span></span><span class="ln"> </span><span class="ln"><span class="k">pub effect fn</span> main <span class="p">=</span> forecast <span class="f">|&gt;</span> map advice <span class="f">|&gt;</span> join <span class="s">"\n"</span> <span class="f">|&gt;</span> println</span></pre>
+          </div>
+        </section>
+
+        <div class="flow desktop-only">
+          <div class="run">
+            <button class="run-btn" type="button" aria-label="Run">
+              <svg class="i" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z" /></svg>
+            </button>
+            <span class="run-label"><span>Run</span><kbd>⌘↵</kbd></span>
+          </div>
+        </div>
+
+        <section class="card out-card" aria-label="Output">
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <div class="card-head">
+            <span class="card-title">Output</span>
+            <div class="seg" role="group" aria-label="Output view">
+              <button type="button" aria-pressed="true" >Console</button>
+              <button type="button" aria-pressed="false" >Preview</button>
+            </div>
+            <div class="spacer"></div>
+            <span class="status-chip"><svg class="i" viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" /></svg>18 ms</span>
+          </div>
+          <div class="out-body">
+            <div class="console">
+              <div class="meta" data-en="Ran automatically when the page opened">開いたときに自動で実行しました</div>
+              <ol>
+                <li data-en="Nice day for a walk">散歩日和です</li>
+                <li data-en="Take an umbrella (3mm)">傘を持って出かけましょう（3mm）</li>
+                <li data-en="Nice day for a walk">散歩日和です</li>
+              </ol>
+            </div>
+            <div class="try-next">
+              <div class="try-next-head">
+                <h3>Try next</h3>
+                <span class="count">4</span>
+                <span class="spacer"></span>
+                <button class="ghost ghost--sm" type="button" data-toggle="quiet"><span class="when-open">Hide</span><span class="when-quiet">Show</span><svg class="i chev" viewBox="0 0 16 16"><path d="m4 10 4-4 4 4" /></svg></button>
+              </div>
+              <div class="prompts">
+                <button class="prompt" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M8 2.5v3M8 10.5v3M2.5 8h3M10.5 8h3" /></svg><span data-en="Make it rain 12mm">雨量を 12mm にする</span></button>
+                <button class="prompt" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M8 2.5v3M8 10.5v3M2.5 8h3M10.5 8h3" /></svg><span data-en="Add Cloudy">くもりを足す</span></button>
+                <button class="prompt" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M8 2.5v3M8 10.5v3M2.5 8h3M10.5 8h3" /></svg><span data-en="Show it in Preview">Preview に表示する</span></button>
+                <a class="prompt prompt--link" href="./tour.html"><svg class="i" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" /></svg><span data-en="Learn the basics in order">基本から順に学ぶ</span></a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <button class="fab" type="button">
+      <svg class="i" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z" /></svg>
+      <span>Run</span>
+    </button>
+
+    <footer class="foot">
+      <span><span class="dot"></span><span>Ready</span></span>
+      <a href="#">Docs</a>
+      <a href="https://github.com/KentaroMorishita/seseragi">GitHub</a>
+    </footer>
+
+    <div class="overlay overlay--palette" role="dialog" aria-label="Search">
+      <div class="palette">
+        <div class="palette-input">
+          <svg class="i" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+          <span><span class="typed" data-en="for">集計</span><span class="caret"></span></span>
+          <span class="spacer"></span>
+          <kbd>esc</kbd>
+        </div>
+        <div class="scopes">
+          <button class="scope" type="button" aria-pressed="true">All</button>
+          <button class="scope" type="button" aria-pressed="false">Examples</button>
+          <button class="scope" type="button" aria-pressed="false">Lessons</button>
+          <button class="scope" type="button" aria-pressed="false">API</button>
+          <button class="scope" type="button" aria-pressed="false">Settings</button>
+        </div>
+        <div class="results">
+          <h4>Examples</h4>
+          <div class="result is-active">
+            <span class="ico teal"><svg class="i" viewBox="0 0 16 16"><path d="M8 2 13.5 5v6L8 14 2.5 11V5zM2.5 5 8 8l5.5-3M8 8v6" /></svg></span>
+            <span><strong data-en="Total and show sales">売上を集計して表示する</strong><small data-en="Filter an array, format it, and show it with the total">条件で絞った配列を整形し、合計と一緒に表示します</small></span>
+            <span class="tag tag--accent">Featured</span>
+          </div>
+          <div class="result">
+            <span class="ico"><svg class="i" viewBox="0 0 16 16"><path d="M8 2 13.5 5v6L8 14 2.5 11V5zM2.5 5 8 8l5.5-3M8 8v6" /></svg></span>
+            <span><strong data-en="Print FizzBuzz in order">FizzBuzz を順に出力する</strong><small data-en="Classify numbers with tuple patterns and ranges">タプルのパターンと範囲で数を分類します</small></span>
+            <span class="tag">Snippet</span>
+          </div>
+          <div class="result" lang="ja">
+            <span class="ico"><svg class="i" viewBox="0 0 16 16"><path d="M8 2 13.5 5v6L8 14 2.5 11V5zM2.5 5 8 8l5.5-3M8 8v6" /></svg></span>
+            <span><strong>ToDo フォーム</strong><small>入力チェック、絞り込み、キーボード操作をまとめた完成例</small></span>
+            <span class="tag" lang="en">App</span><span class="tag en-only" lang="en">Japanese only</span>
+          </div>
+          <h4>Lessons</h4>
+          <div class="result">
+            <span class="ico violet"><svg class="i" viewBox="0 0 16 16"><path d="M2.5 3.5h4A1.5 1.5 0 0 1 8 5v8a1.5 1.5 0 0 0-1.5-1.5h-4zM13.5 3.5h-4A1.5 1.5 0 0 0 8 5v8a1.5 1.5 0 0 1 1.5-1.5h4z" /></svg></span>
+            <span><strong data-en="Combine values with sum">値を sum でまとめる</strong><small data-en="Chapter 3 · Functions and |>">第3章 · 関数と |&gt;</small></span>
+            <span class="tag">3-4</span>
+          </div>
+          <h4>API</h4>
+          <div class="result">
+            <span class="ico amber"><svg class="i" viewBox="0 0 16 16"><path d="M10 2.5c-1.5 0-2 .8-2.3 2.2L6.4 11c-.3 1.6-.9 2.5-2.4 2.5M5 6.5h5" /></svg></span>
+            <span><strong class="sig">sum</strong><small class="sig">fn sum&lt;C, A&gt; values: C -&gt; A</small></span>
+            <span class="tag">Prelude</span>
+          </div>
+          <div class="result">
+            <span class="ico amber"><svg class="i" viewBox="0 0 16 16"><path d="M10 2.5c-1.5 0-2 .8-2.3 2.2L6.4 11c-.3 1.6-.9 2.5-2.4 2.5M5 6.5h5" /></svg></span>
+            <span><strong class="sig">filter</strong><small class="sig">fn filter&lt;A&gt; predicate: (A -&gt; Bool) -&gt; values: Array&lt;A&gt; -&gt; Array&lt;A&gt;</small></span>
+            <span class="tag">std/array</span>
+          </div>
+        </div>
+        <div class="palette-foot">
+          <span><kbd>↑</kbd> <kbd>↓</kbd> <span>Navigate</span></span>
+          <span><kbd>↵</kbd> <span>Open</span></span>
+          <span class="spacer"></span>
+          <span>New file ⌘N</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

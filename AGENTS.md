@@ -18,8 +18,11 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
 ## Build, test, and development commands
 
 - `bun run build`: build the Rust workspace and production Playground bundle.
-- `bun run check:playground`: run native samples, sample manifest freshness,
-  Playground tests, TypeScript typecheck, and the Vite build.
+- `bun run check:sample`: run the changed samples through the native CLI
+  (`-- --all` for every sample). `check:sample-catalog` checks sample
+  metadata and the Playground manifest; `check:tour` checks the Tour.
+- `bun run check:playground`: run the catalog and Tour checks, Playground
+  tests, TypeScript typecheck, and the Vite build.
 - `bun run check:rust`: run Rust formatting and workspace (or targeted crate)
   tests. Use `check:conformance` and `check:wasm` only when the change needs
   those boundaries.

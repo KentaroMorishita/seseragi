@@ -10,8 +10,10 @@
 | --- | --- |
 | `docs/` の文書だけ（`docs/spec/` を除く） | `git diff --check`。リンク先があることを確かめる |
 | `README.md`、`README.ja.md` | `bun run check:readme` |
-| サンプルのソースや情報（`examples/samples/`） | `bun run check:sample` |
-| Playground の画面や Tour | `bun run check:playground` |
+| サンプルのソース（`examples/samples/`） | `bun run check:sample` |
+| サンプルの `sample.json`、`discover-groups.json`、Discover への表示 | `bun run check:sample-catalog` |
+| Tour のレッスン（`examples/tour/`）、`examples/spec/lessons/`、`examples/spec/playground/` | `bun run check:tour` |
+| Playground の画面 | `bun run check:playground` |
 | Web UI の見た目 | `cd apps/playground && bun run test:visual`（[Web UI の見た目の確認](#web-ui-の見た目の確認)） |
 | Rust のコード（コンパイラー、CLI、LSP） | `bun run check:rust`。1つのクレートだけなら `bun run check:rust -- -p <crate>` |
 | コンパイラーの中間成果物の形 | 下の[各チェックの中身](#各チェックの中身)の「コンパイラーの成果物」 |
@@ -54,7 +56,7 @@ cd apps/playground && bun install --frozen-lockfile
 cd ../../extensions/seseragi && bun install --frozen-lockfile
 ```
 
-- `check:sample` と `check:playground` は、コミットした WASM と Playground の TypeScript のツールを使うので、Playground のインストールが必要です。
+- `check:sample-catalog`、`check:tour`、`check:playground` は、コミットした WASM と Playground の TypeScript のツールを使うので、Playground のインストールが必要です。`check:sample` はルートのインストールだけで動きます。
 - `check:conformance` は、実行時のパッケージを試す処理がルートの Node の型を使うので、ルートと Playground の両方が必要です。
 - ロックファイルや依存を変えたときも、そのフォルダーで `--frozen-lockfile` のインストールを明示的に行います。
 - 全体のチェックは、ルートと Playground を先にインストールし、拡張機能のパッケージを作るときにもインストールします。
@@ -88,8 +90,10 @@ SESERAGI_TEST_BROWSER_PATH=/path/to/google/chrome bun test tests
 
 | チェック | コマンド | 確かめること |
 | --- | --- | --- |
-| サンプル | `bun run check:sample` | native の CLI でサンプルを実行する。すべてのサンプルを WASM でコンパイルし、整形する。Playground のサンプル一覧が最新か |
-| Playground | `bun run check:playground` | サンプルのチェック、Playground とカタログの lint、Tour の一覧、Playground のテスト、TypeScript の型検査、Vite のビルド |
+| サンプル | `bun run check:sample` | 変えたサンプルだけを native の CLI で実行し、終了コードが 0 かを確かめる。`stdout.txt` があれば、出力が一致するかも確かめる。対話型のサンプルはコンパイルだけ、パッケージの形のものはビルドする。`bun run check:sample -- --all` ですべてのサンプルを対象にする |
+| サンプルのカタログ | `bun run check:sample-catalog` | `sample.json` の形式、`discover-groups.json` との整合性、Preview の CSS クラス、Playground のサンプル一覧が最新か。すべてのサンプルを WASM でコンパイルし、整形の結果が同じかを確かめる。Rust のビルドは要らない |
+| Tour | `bun run check:tour` | Tour のレッスン、演習、診断の例を native の CLI で整形の確認・実行・出力の比較にかける。Tour の一覧が最新か。すべてのレッスンを WASM でコンパイルする。`examples/spec/lessons` と `examples/spec/playground` の整形も確かめる |
+| Playground | `bun run check:playground` | カタログと Tour のチェック、Playground の lint、Playground のテスト、TypeScript の型検査、Vite のビルド |
 | Web UI の見た目 | `cd apps/playground && bun run test:visual` | Chromium で、すべての HTML サンプルの画面の大きさごとの表示、操作、画像が読めないときの代わりの表示、Code と Explorer を確かめる。確認用の PNG と HTML の報告を出す |
 | Rust | `bun run check:rust` | Rust の整形と、ワークスペースのテスト |
 | 本番用ビルドをブラウザーで | `bun run check:production:browser` | CLI で Web のひな形と Flow を開発用とリリース用にビルドし、Chromium で操作して、表示と入力の値、ソースマップの既定、JavaScript の例外を確かめる。Playground の依存と Chromium が必要。全体のチェックとリリースのチェックにも含まれる |
@@ -106,12 +110,20 @@ SESERAGI_TEST_BROWSER_PATH=/path/to/google/chrome bun test tests
 | 手元の Web 製品の E2E | native のアーカイブと VSIX を作った後に `bun run test:local-web-e2e` | 展開した CLI とインストールした VSIX だけを使い、複数モジュールの Web プロジェクトで、LSP、開発サーバー、ブラウザー、編集、診断、回復、本番用ビルドを同じソースで確かめる。報告と PNG を `target/local-web-product-e2e` に残す |
 | 版と native の配布物 | `bun run check:release` | 版の元の値、Cargo・JS・WASM の版がそろっていること、CHANGELOG、手元の環境向けの CLI と LSP のアーカイブとチェックサム、展開し直して実行できること |
 | タグのリリースの前のチェック | `bun run check:release-gate` | 全体のチェックと同じ内容。ただし native と VSIX のパッケージの確認は、同じコミットを使うリリースの各ジョブに任せ、成果物を二重に作らない |
-| リポジトリ全体 | `bun run check` または `bun run check:full` | 整形、lint、Rust のワークスペース、すべての fixture、native のサンプル、WASM、Playground、拡張機能 |
+| リポジトリ全体 | `bun run check` または `bun run check:full` | 整形、lint、Rust のワークスペース、すべての fixture、すべてのサンプルの実行と Web のサンプルのビルド、Tour、WASM、Playground、拡張機能 |
 
 ### チェックの決まり
 
 - Playground のテスト、型検査、ビルドは、カタログと Tour の一覧の確認を1度だけ済ませてから実行します。同じ確認を3回繰り返しません。
-- `check:sample` は、CLI で実行するサンプルだけでなく、ブラウザーで操作するサンプルも、コミットした WASM でコンパイルします。すべてのソースがフォーマッターの出力と一致することも確かめます。一覧やハッシュだけを更新して、壊れたソースが通ることはありません。
+- サンプルのチェックは3つに分かれています。
+  - `check:sample` は、サンプルを足したり直したりするときに必ず通すチェックです。変えたサンプルが動くことだけを確かめます。
+    - 対象は、ベースのブランチ（既定は `origin/main`、`SESERAGI_SAMPLE_BASE` で変えられる）との差分と、まだコミットしていない変更で決まります。
+    - 差分が求められないときと、サンプルを実行するスクリプト自体を変えたときは、すべてのサンプルを実行します。
+    - `sample.json` は必須です。実行するファイル（`files.source` か `files.manifest`）が読めないと失敗します。それ以外の形式は確かめません。
+  - `check:sample-catalog` は、Discover に出すための情報を確かめます。CLI で実行するサンプルだけでなく、ブラウザーで操作するサンプルも、コミットした WASM でコンパイルします。すべてのソースがフォーマッターの出力と一致することも確かめます。一覧やハッシュだけを更新して、壊れたソースが通ることはありません。
+  - `check:tour` は、Tour と仕様のお手本のコードを確かめます。
+- PR の CI では、`.github/workflows/samples.yml` が、変えたサンプルの `check:sample` と `check:sample-catalog` を実行します。Tour や仕様のお手本のコードを変えたときは `check:tour` も実行します。
+- すべてのサンプルの実行と、すべての Web のサンプルのビルドは、リポジトリ全体のチェックとリリースの前のチェックで行います。コンパイラーや実行時のライブラリの変更で、変えていないサンプルが壊れたときは、ここで見つかります。
 - サンプルと Tour のコマンドは、プロセスの終了と、標準出力・標準エラーの終わりの両方を確かめます。
   - 時間切れは、それだけで失敗として返します。後片付けで標準入出力を無期限に待ちません。
   - POSIX では、親が先に終わっても、持っているプロセスのグループを止めます。

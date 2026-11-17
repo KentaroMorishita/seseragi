@@ -65,7 +65,7 @@ repository rootで次を実行し、必ずnative compilerの出力から再生�
 bun run tour:diagnostics:update
 ```
 
-通常の`bun run test:samples:cli`はexerciseの実行結果とdiagnostic snapshotのfreshnessを
+通常の`bun run check:tour`はexerciseの実行結果とdiagnostic snapshotのfreshnessを
 検証し、差分を自動更新しません。
 
 ## Data model

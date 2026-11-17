@@ -30,7 +30,7 @@ examples/samples/<sample-id>/
   sample.json
   guide.md
   stdin.txt       # 標準入力を使う場合だけ
-  stdout.txt      # 対話型でない場合
+  stdout.txt      # 出力を固定したい場合だけ（任意）
 ```
 
 複数ファイルからなるサンプルは、通常の Seseragi パッケージと同じ構成にします。
@@ -44,7 +44,7 @@ examples/samples/<sample-id>/
   sample.json
   guide.md
   stdin.txt       # 標準入力を使う場合だけ
-  stdout.txt      # 対話型でない場合
+  stdout.txt      # 出力を固定したい場合だけ（任意）
 ```
 
 ファイル構成は `seseragi.toml` の `layout.source` と `run.entry`、そして `src/` 以下のファイルで決まります。
@@ -184,9 +184,28 @@ URL を含む属性はスタイルで回避せず、`WebUrl` を使ってくだ�
 
 ## 生成とチェック
 
+### サンプルを足したり直したりしたとき
+
+リポジトリのルートで次を実行します。
+
+```sh
+bun run check:sample
+```
+
+- 変えたサンプルだけを native の CLI で実行し、終了コードが 0 かを確かめます。
+- `stdout.txt` があるときだけ、出力が一致するかも確かめます。出力を変えたくないサンプルには `stdout.txt` を置いてください。
+- 対話型のサンプルはコンパイルだけを、パッケージの形のサンプルはビルドを確かめます。
+- `sample.json` は必須です。このチェックは、実行するファイル（`files.source` か `files.manifest`）が読めることだけを確かめます。
+
+### Discover に出す情報
+
+`sample.json` の形式と Discover の一覧は、別のチェックで確かめます。Rust のビルドは要りません。
+
 ```sh
 cd apps/playground
 bun run samples:generate
+cd ../..
+bun run check:sample-catalog
 ```
 
 生成スクリプトはディレクトリを自動で見つけ、次をチェックします。

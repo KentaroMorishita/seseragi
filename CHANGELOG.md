@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.182] - 2026-11-18
+
+### Changed
+
+- A sample's `stdout.txt` is optional. The Playground no longer refuses a sample that is not interactive and has no expected output; when a sample has one, its output is still compared.
+- `bun run check:sample` runs only the samples changed from the base branch and checks that each exits with 0 (and matches its `stdout.txt` when there is one). The sample metadata, the Discover catalog and the Playground manifest moved to `bun run check:sample-catalog`, and the Tour moved to `bun run check:tour`. The repository-wide check and the release gate still run every sample and build every Web sample.
+
 ## [0.61.181] - 2026-11-17
 
 ### Added
