@@ -103,7 +103,13 @@ fn native_http_stream_open(request: &V, length: i64) -> Result<i64, NativeExit> 
     std::thread::Builder::new()
         .name("seseragi-http-exchange".into())
         .spawn(move || {
-            let stop_body = || worker_stopped.store(true, std::sync::atomic::Ordering::Release);
+            // The runtime is woken at once, since the next event may wait
+            // for room in the channel while the scheduler must still cancel
+            // the body Fiber.
+            let stop_body = || {
+                worker_stopped.store(true, std::sync::atomic::Ordering::Release);
+                runtime.unpark();
+            };
             let publish = |item| {
                 let sent = send.send(item).is_ok();
                 runtime.unpark();
@@ -277,7 +283,8 @@ fn native_http_body_tasks_to_stop() -> Vec<usize> {
 
 // A body Fiber ended. A Defect, even one raised while the body was being
 // stopped, stops the exchange and wakes its pull, as TS reports a Defect
-// from cancelling the body.
+// from cancelling the body. So does a cancellation the exchange did not ask
+// for.
 fn native_http_body_task_ended(task: usize, outcome: &NativeOutcome) {
     NATIVE_HTTP_STREAMS.with(|streams| {
         let mut streams = streams.borrow_mut();
@@ -290,7 +297,10 @@ fn native_http_body_task_ended(task: usize, outcome: &NativeOutcome) {
             .find(|stream| stream.body_task == Some(task))
         {
             stream.body_task = None;
-            if matches!(outcome, Err(NativeExit::Defect(_))) {
+            // A body Fiber cancelled by anything but its exchange, such as a
+            // join of an interrupted Fiber, ends the body early too.
+            let cancelled = matches!(outcome, Err(NativeExit::Cancelled)) && !stream.body_cancelled;
+            if matches!(outcome, Err(NativeExit::Defect(_))) || cancelled {
                 stream.abort();
             }
         }
@@ -542,15 +552,16 @@ fn native_http_exchange_pull(c: &[V]) -> V {
                 if !matches!(failure, V::Unit) {
                     return native_http_fail(failure);
                 }
-                // The body Fiber ended with a Defect; interrupting it reports
-                // the Defect, and closing the exchange does not again.
+                // The body Fiber ended with a Defect or was cancelled.
+                // Interrupting it reports a Defect, and closing the exchange
+                // does not again; a cancelled body is a body failure.
                 c[1].write_reference(V::adt(NATIVE_HTTP_BODY_DEFECT, V::Unit));
                 return V::bind(
                     native_operation("std/effect::interrupt", vec![c[2].clone()]),
                     V::fun(vec![], |_, _| {
                         native_http_fail(native_right(V::adt(
                             "std/http::HttpRequestBodyFailure",
-                            V::text("request body stopped"),
+                            V::text("request body was cancelled"),
                         )))
                     }),
                 );
@@ -859,13 +870,15 @@ mod http_exchange_tests {
     #[test]
     fn a_final_response_stops_the_body_while_the_consumer_waits() {
         let base = answering(
-            b"HTTP/1.1 103 Early Hints\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok",
+            b"HTTP/1.1 103 Early Hints\r\n\r\nHTTP/1.1 103 Early Hints\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok",
         );
         bounded(move || {
             // The body holds a resource and never produces a chunk. The
-            // consumer, still handling the 103, waits until the body has
-            // released that resource, so only stopping the body at the final
-            // response, before the consumer takes it, lets both go on.
+            // consumer, still handling the first 103, waits until the body
+            // has released that resource, so only stopping the body at the
+            // final response, before the consumer takes it, lets both go on.
+            // The second 103 can fill the event channel while the worker
+            // reads the final response.
             let plan = V::bind(
                 native_operation("std/deferred::make", vec![V::Unit]),
                 V::fun(vec![V::text(&base)], |c, released| {
@@ -959,6 +972,50 @@ mod http_exchange_tests {
             assert!(
                 matches!(&result, Err(NativeExit::Defect(errors)) if errors.iter().any(|error| error.value == "release failed")),
                 "the exchange did not report the Defect"
+            );
+            assert_eq!(open_exchanges(), 0);
+        });
+    }
+
+    #[test]
+    fn a_body_cancelled_from_inside_fails_the_exchange() {
+        let base = silent();
+        bounded(move || {
+            // The body joins a Fiber that has been interrupted.
+            let joined = V::bind(
+                native_operation(
+                    "std/effect::fork",
+                    vec![V::bind(
+                        native_operation("std/deferred::make", vec![V::Unit]),
+                        V::fun(vec![], |_, never| {
+                            native_operation("std/deferred::await", vec![never])
+                        }),
+                    )],
+                ),
+                V::fun(vec![], |_, worker| {
+                    V::bind(
+                        native_operation("std/effect::interrupt", vec![worker.clone()]),
+                        V::fun(vec![worker], |c, _| {
+                            native_operation("std/effect::join", vec![c[0].clone()])
+                        }),
+                    )
+                }),
+            );
+            let error = failure(
+                native_http_operation(
+                    "std/http::streamBody",
+                    vec![native_stream_operation(
+                        "std/stream::fromEffect",
+                        vec![joined],
+                    )],
+                ),
+                post(&format!("{base}/"), &[]),
+            );
+            assert!(
+                error.tagged("std/prelude::Right")
+                    && error.payload().tagged("std/http::HttpRequestBodyFailure"),
+                "{}",
+                error.render()
             );
             assert_eq!(open_exchanges(), 0);
         });
