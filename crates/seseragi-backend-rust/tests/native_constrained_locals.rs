@@ -17,6 +17,19 @@ fn constrained_local_callables_keep_dictionary_frames_and_source_arity() {
 }
 
 #[test]
+fn local_functions_with_their_own_where_keep_the_enclosing_dictionaries() {
+    run(
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/local-dictionaries-inherited.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/local-dictionaries-inherited.stdout"
+        )
+        .trim_end(),
+    );
+}
+
+#[test]
 fn constrained_locals_preserve_enclosing_self_tail_calls_and_snapshots() {
     let source = r#"
 fn carry remaining: Int -> snapshot: (Unit -> String) -> (Unit -> String) = {
