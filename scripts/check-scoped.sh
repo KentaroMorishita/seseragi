@@ -265,7 +265,9 @@ run_release_contract_metadata_check() {
     scripts/local-web-product-e2e.ts \
     scripts/local-web-product-e2e-extension.cjs \
     scripts/local-web-product-e2e.test.ts \
-    scripts/install.test.ts
+    scripts/install.test.ts \
+    scripts/homebrew-formula.ts \
+    scripts/homebrew-formula.test.ts
   check_step bun test \
     scripts/release-contract.test.ts \
     scripts/release-gate.test.ts \
@@ -275,7 +277,8 @@ run_release_contract_metadata_check() {
     scripts/release-promotion.test.ts \
     scripts/local-dogfood.test.ts \
     scripts/local-web-product-e2e.test.ts \
-    scripts/install.test.ts
+    scripts/install.test.ts \
+    scripts/homebrew-formula.test.ts
 }
 
 run_release_contract_check() {
