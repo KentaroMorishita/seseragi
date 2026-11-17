@@ -189,6 +189,68 @@ pub(crate) fn scoped_call_evidence_from(
         .collect()
 }
 
+/// The enclosing declaration's evidence that a local function's own `where`
+/// would otherwise hide.
+///
+/// A local function with its own constraints receives its own dictionaries,
+/// numbered from 0, so the enclosing dictionaries are not visible by index.
+/// Each enclosing constraint the local function does not restate becomes an
+/// extra constraint of the local function, numbered after its own. Callers
+/// in the enclosing body then pass the enclosing dictionary, as if the
+/// constraint had been written in the local `where`.
+///
+/// Returns the renumbered evidence, supertrait expansions included, and the
+/// added constraints in parameter order.
+pub(crate) fn inherited_call_evidence(
+    enclosing: &[ScopedCallEvidence],
+    own: &[ScopedCallEvidence],
+    own_count: usize,
+) -> (Vec<ScopedCallEvidence>, Vec<(TypedConstraint, String)>) {
+    let mut seen = BTreeSet::new();
+    let mut kept = Vec::<usize>::new();
+    let mut added = Vec::new();
+    // `scoped_call_evidence_from` lists a constraint before its supertrait
+    // expansions, so the first entry of an index is the declared constraint.
+    for evidence in enclosing {
+        if !seen.insert(evidence.index) {
+            continue;
+        }
+        let restated = own.iter().any(|own| {
+            own.trait_identity == evidence.trait_identity && own.constraint == evidence.constraint
+        });
+        if restated {
+            continue;
+        }
+        kept.push(evidence.index);
+        // The enclosing dictionary parameter was declared with aliases
+        // expanded, so the added constraint must name the same types.
+        let constraint = TypedConstraint {
+            name: evidence.constraint.name.clone(),
+            arguments: evidence.source_arguments.as_ref().map_or_else(
+                || evidence.constraint.arguments.clone(),
+                |arguments| {
+                    arguments
+                        .iter()
+                        .map(|argument| argument.type_ref.clone())
+                        .collect()
+                },
+            ),
+        };
+        added.push((constraint, evidence.trait_identity.clone()));
+    }
+    let renumbered = enclosing
+        .iter()
+        .filter_map(|evidence| {
+            let position = kept.iter().position(|index| *index == evidence.index)?;
+            Some(ScopedCallEvidence {
+                index: own_count + position,
+                ..evidence.clone()
+            })
+        })
+        .collect();
+    (renumbered, added)
+}
+
 pub(crate) fn scoped_resolved_call_evidence(
     constraints: &[ResolvedCallConstraint],
     resolution: &TypedResolution<'_>,

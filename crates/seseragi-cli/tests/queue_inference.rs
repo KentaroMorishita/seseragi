@@ -127,24 +127,25 @@ impl Fixture {
         }
     }
 
-    fn native_queue_is_unsupported(&self) {
+    // std/queue runs natively and prints what the TS target prints.
+    fn native(&self, expected: &[u8]) {
         let out = self.path().join("native");
-        let output = bounded(
+        successful(bounded(
             Command::new(env!("CARGO_BIN_EXE_seseragi"))
                 .args(["experimental", "build-native"])
                 .arg(self.path())
                 .args(["--entry", "main", "--out-dir"])
                 .arg(&out),
             self.path(),
-        );
-        assert_eq!(output.status.code(), Some(2), "{output:?}");
-        assert!(output.stdout.is_empty());
-        let stderr = String::from_utf8(output.stderr).unwrap();
-        assert!(stderr.contains("SES-RUST-0001"), "{stderr}");
-        assert!(stderr.contains("std/queue::unbounded"), "{stderr}");
-        assert!(!stderr.contains("SES-T0101"), "{stderr}");
-        assert!(!out.exists());
-        assert!(!self.path().join(".seseragi/native").exists());
+        ));
+        let output = successful(bounded(
+            Command::new(out.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+            self.path(),
+        ));
+        assert_eq!(output.stdout, expected);
+        assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
     }
 }
 
@@ -163,8 +164,9 @@ fn direct_and_named_reexport_queues_keep_fifo_and_closed_errors_in_bun_and_node(
             TRANSFER.to_owned()
         };
         let fixture = Fixture::new(import, &body);
-        fixture.typescript(b"Right [Right Nothing, 2, 1, 2, Left QueueClosed, Left QueueClosed, Left QueueClosed, Left QueueClosed]\n");
-        fixture.native_queue_is_unsupported();
+        let expected = b"Right [Right Nothing, 2, 1, 2, Left QueueClosed, Left QueueClosed, Left QueueClosed, Left QueueClosed]\n";
+        fixture.typescript(expected);
+        fixture.native(expected);
     }
 }
 
@@ -185,7 +187,7 @@ fn named_reexport_preserves_explicit_queue_effects_and_rejects_wrong_elements() 
             fixture.path(),
         ));
         fixture.typescript(b"");
-        fixture.native_queue_is_unsupported();
+        fixture.native(b"");
         fs::write(fixture.path().join("src/main.ssrg"), format!("{import}\npub effect fn main = do {{ q <- queue.unbounded<Int> (); queue.offer \"bad\" q }}\n")).unwrap();
         successful(bounded(
             Command::new(env!("CARGO_BIN_EXE_seseragi"))

@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.61.178] - 2026-11-17
+
+### Fixed
+
+- A local function with its own `where` can use the enclosing function's constraints, such as `show seed` inside `fn pair<B> value: B -> String where Show<B>` declared in `fn both<A> seed: A -> String where Show<A>`. It used to report `SES-T0201` ("no Show<A> instance matches") on every target, while the same body without its own `where` already worked. This also holds for calls to other constrained functions, operators, enclosing lambdas, `rec` groups, nested local functions, local `effect fn` and local functions inside instance methods. Writing the enclosing constraint again in the local `where` still works.
+
+## [0.61.177] - 2026-11-17
+
+### Fixed
+
+- `streams.zip` stops as soon as one side ends or fails, on both the TS and the native target, and cancels the pull still waiting on the other side. It used to wait for that pull first, so a side that never produced another value, such as `streams.fromEffect (queues.take queue)` on an empty queue, kept `zip` from finishing after the other side had ended. Before stopping, `zip` also looks at the other side's outcome from the same scheduler turn: a failure wins over an end, and the left failure wins over the right one. Work that resumes after `yieldNow` belongs to a later turn.
+- On the TS target, closing a `zip` or `merge` that is already closing now waits for the first close to finish. An outer `zip` used to finish before an inner one had closed its source, and lost a failure raised while closing it.
+
 ## [0.61.176] - 2026-11-17
 
 ### Fixed
